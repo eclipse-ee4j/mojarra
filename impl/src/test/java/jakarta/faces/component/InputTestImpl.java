@@ -16,10 +16,10 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIInput;
-
 /**
- * <p>Test {@link UIInput} subclass.</p>
+ * <p>
+ * Test {@link UIInput} subclass.
+ * </p>
  */
 public class InputTestImpl extends UIInput {
 
@@ -33,6 +33,6 @@ public class InputTestImpl extends UIInput {
 
     @Override
     public boolean compareValues(Object previous, Object value) {
-        return (super.compareValues(previous, value));
+        return super.compareValues(previous, value);
     }
 }

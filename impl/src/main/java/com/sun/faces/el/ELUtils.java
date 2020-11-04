@@ -17,7 +17,6 @@ package com.sun.faces.el;
 
 import static com.sun.faces.RIConstants.EMPTY_CLASS_ARGS;
 import static com.sun.faces.cdi.CdiUtils.getBeanReference;
-import static com.sun.faces.el.FacesCompositeELResolver.ELResolverChainType.Faces;
 import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.ReflectionUtils.lookupMethod;
@@ -28,16 +27,12 @@ import static com.sun.faces.util.Util.getWebXmlVersion;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.cdi.CdiExtension;
 import com.sun.faces.context.flash.FlashELResolver;
-import com.sun.faces.util.MessageUtils;
 
 import jakarta.el.ArrayELResolver;
 import jakarta.el.BeanELResolver;
@@ -51,18 +46,11 @@ import jakarta.el.ResourceBundleELResolver;
 import jakarta.el.ValueExpression;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.FacesException;
-import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.el.EvaluationException;
-import jakarta.faces.el.PropertyResolver;
-import jakarta.faces.el.ReferenceSyntaxException;
-import jakarta.faces.el.VariableResolver;
 
 /**
- * <p>
  * Utility class for EL related methods.
- * </p>
  */
 public class ELUtils {
 
@@ -91,34 +79,6 @@ public class ELUtils {
      * #{cc.attrs.myaction}).
      */
     private static final Pattern METHOD_EXPRESSION_LOOKUP = Pattern.compile(".[{]cc[.]attrs[.]\\w+[}]");
-
-    private static final String APPLICATION_SCOPE = "applicationScope";
-    private static final String SESSION_SCOPE = "sessionScope";
-    private static final String REQUEST_SCOPE = "requestScope";
-    private static final String VIEW_SCOPE = "viewScope";
-    private static final String COOKIE_IMPLICIT_OBJ = "cookie";
-    private static final String FACES_CONTEXT_IMPLICIT_OBJ = "facesContext";
-    private static final String HEADER_IMPLICIT_OBJ = "header";
-    private static final String HEADER_VALUES_IMPLICIT_OBJ = "headerValues";
-    private static final String INIT_PARAM_IMPLICIT_OBJ = "initParam";
-    private static final String PARAM_IMPLICIT_OBJ = "param";
-    private static final String PARAM_VALUES_IMPLICIT_OBJ = "paramValues";
-    private static final String VIEW_IMPLICIT_OBJ = "view";
-
-    public enum Scope {
-        NONE("none"), REQUEST("request"), VIEW("view"), SESSION("session"), APPLICATION("application");
-
-        String scope;
-
-        Scope(String scope) {
-            this.scope = scope;
-        }
-
-        @Override
-        public String toString() {
-            return scope;
-        }
-    }
 
     public static final ArrayELResolver ARRAY_RESOLVER = new ArrayELResolver();
     public static final BeanELResolver BEAN_RESOLVER = new BeanELResolver();
@@ -176,8 +136,6 @@ public class ELUtils {
         composite.add(FLASH_RESOLVER);
         composite.addPropertyELResolver(COMPOSITE_COMPONENT_ATTRIBUTES_EL_RESOLVER);
         addELResolvers(composite, associate.getELResolversFromFacesConfig());
-        addVariableResolvers(composite, Faces, associate);
-        addPropertyResolvers(composite, associate);
         composite.add(associate.getApplicationELResolvers());
         composite.addPropertyELResolver(RESOURCE_RESOLVER);
         composite.addPropertyELResolver(BUNDLE_RESOLVER);
@@ -245,197 +203,9 @@ public class ELUtils {
     public static Object evaluateValueExpression(ValueExpression expression, ELContext elContext) {
         if (expression.isLiteralText()) {
             return expression.getExpressionString();
-        } else {
-            return expression.getValue(elContext);
-        }
-    }
-
-    /**
-     * @param associate the <code>ApplicationAssociate</code>
-     * @param provideDefault whether or not to return a <code>DummpyPropertyResolverImpl</code>
-     * @return the <code>PropertyResolver</code>s set via
-     * {@link jakarta.faces.application.Application#setPropertyResolver(jakarta.faces.el.PropertyResolver)} or, if that is
-     * <code>null</code>, return the <code>PropertyResolver</code> chain from the parsed configuration resources. If either
-     * of those are null, and <code>provideDefault</code> is <code>true</code>, return the
-     * <code>DummyPropertyResolverImpl</code>.
-     */
-    @SuppressWarnings("deprecation")
-    public static PropertyResolver getDelegatePR(ApplicationAssociate associate, boolean provideDefault) {
-
-        PropertyResolver pr = associate.getLegacyPropertyResolver();
-        if (pr == null) {
-            pr = associate.getLegacyPRChainHead();
-            if (pr == null && provideDefault) {
-                pr = new DummyPropertyResolverImpl();
-            }
         }
 
-        return pr;
-
-    }
-
-    /**
-     * @param associate the <code>ApplicationAssociate</code>
-     * @param provideDefault whether or not to return a <code>DummpyPropertyResolverImpl</code>
-     * @return the <code>VariableResolver</code>s set via
-     * {@link jakarta.faces.application.Application#setVariableResolver(jakarta.faces.el.VariableResolver)} or, if that is
-     * <code>null</code>, return the <code>VariableResolver</code> chain from the parsed configuration resources. If either
-     * of those are null, , and <code>provideDefault</code> is <code>true</code>, return the
-     * <code>ChainAwareVariableResolver</code>.
-     */
-    @SuppressWarnings("deprecation")
-    public static VariableResolver getDelegateVR(ApplicationAssociate associate, boolean provideDefault) {
-
-        VariableResolver vr = associate.getLegacyVariableResolver();
-        if (vr == null) {
-            vr = associate.getLegacyVRChainHead();
-            if (vr == null && provideDefault) {
-                vr = new ChainAwareVariableResolver();
-            }
-        }
-
-        return vr;
-
-    }
-
-    /**
-     * @param expressionString the expression string, with delimiters intact.
-     * @return a List of expressions from the expressionString
-     * @throws ReferenceSyntaxException if the expression string is invalid
-     */
-    @SuppressWarnings("deprecation")
-    public static List<String> getExpressionsFromString(String expressionString) throws ReferenceSyntaxException {
-
-        if (null == expressionString) {
-            return Collections.emptyList();
-        }
-        // noinspection CollectionWithoutInitialCapacity
-        List<String> result = new ArrayList<>();
-        int i, j, len = expressionString.length(), cur = 0;
-        while (cur < len && -1 != (i = expressionString.indexOf("#{", cur))) {
-            if (-1 == (j = expressionString.indexOf('}', i + 2))) {
-                throw new ReferenceSyntaxException(MessageUtils.getExceptionMessageString(MessageUtils.INVALID_EXPRESSION_ID, expressionString));
-            }
-            cur = j + 1;
-            result.add(expressionString.substring(i, cur));
-        }
-        return result;
-
-    }
-
-    /**
-     * <p>
-     * This method is used by the ManagedBeanFactory to ensure that properties set by an expression point to an object with
-     * an accepted lifespan.
-     * </p>
-     *
-     * <p>
-     * get the scope of the expression. Return <code>null</code> if it isn't scoped
-     * </p>
-     *
-     * <p>
-     * For example, the expression: <code>sessionScope.TestBean.one</code> should return "session" as the scope.
-     * </p>
-     *
-     * @param valueBinding the expression
-     *
-     * @param outString an allocated String Array into which we put the first segment.
-     *
-     * @return the scope of the expression
-     *
-     * @throws ReferenceSyntaxException if valueBinding is syntactically invalid
-     */
-    @SuppressWarnings("deprecation")
-    public static ELUtils.Scope getScope(String valueBinding, String[] outString) throws ReferenceSyntaxException {
-
-        if (valueBinding == null || 0 == valueBinding.length()) {
-            return null;
-        }
-        valueBinding = stripBracketsIfNecessary(valueBinding);
-
-        int segmentIndex = getFirstSegmentIndex(valueBinding);
-
-        // examine first segment and see if it is a scope
-        String identifier = valueBinding;
-
-        if (segmentIndex > 0) {
-            // get first segment designated by a "." or "["
-            identifier = valueBinding.substring(0, segmentIndex);
-        }
-
-        // check to see if the identifier is a named scope.
-
-        FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext ec = context.getExternalContext();
-
-        if (null != outString) {
-            outString[0] = identifier;
-        }
-        if (REQUEST_SCOPE.equalsIgnoreCase(identifier)) {
-            return Scope.REQUEST;
-        }
-        if (VIEW_SCOPE.equalsIgnoreCase(identifier)) {
-            return Scope.VIEW;
-        }
-        if (SESSION_SCOPE.equalsIgnoreCase(identifier)) {
-            return Scope.SESSION;
-        }
-        if (APPLICATION_SCOPE.equalsIgnoreCase(identifier)) {
-            return Scope.APPLICATION;
-        }
-
-        // handle implicit objects
-        if (INIT_PARAM_IMPLICIT_OBJ.equalsIgnoreCase(identifier)) {
-            return Scope.APPLICATION;
-        }
-        if (COOKIE_IMPLICIT_OBJ.equalsIgnoreCase(identifier)) {
-            return Scope.REQUEST;
-        }
-        if (FACES_CONTEXT_IMPLICIT_OBJ.equalsIgnoreCase(identifier)) {
-            return Scope.REQUEST;
-        }
-        if (HEADER_IMPLICIT_OBJ.equalsIgnoreCase(identifier)) {
-            return Scope.REQUEST;
-        }
-        if (HEADER_VALUES_IMPLICIT_OBJ.equalsIgnoreCase(identifier)) {
-            return Scope.REQUEST;
-        }
-        if (PARAM_IMPLICIT_OBJ.equalsIgnoreCase(identifier)) {
-            return Scope.REQUEST;
-        }
-        if (PARAM_VALUES_IMPLICIT_OBJ.equalsIgnoreCase(identifier)) {
-            return Scope.REQUEST;
-        }
-        if (VIEW_IMPLICIT_OBJ.equalsIgnoreCase(identifier)) {
-            return Scope.REQUEST;
-        }
-
-        Map<String, Object> requestMap = ec.getRequestMap();
-        if (requestMap != null && requestMap.containsKey(identifier)) {
-            return Scope.REQUEST;
-        }
-
-        UIViewRoot root = context.getViewRoot();
-        if (root != null) {
-            Map<String, Object> viewMap = root.getViewMap(false);
-            if (viewMap != null && viewMap.containsKey(identifier)) {
-                return Scope.VIEW;
-            }
-        }
-
-        Map<String, Object> sessionMap = ec.getSessionMap();
-        if (sessionMap != null && sessionMap.containsKey(identifier)) {
-            return Scope.SESSION;
-        }
-
-        Map<String, Object> appMap = ec.getApplicationMap();
-        if (appMap != null && appMap.containsKey(identifier)) {
-            return Scope.APPLICATION;
-        }
-
-        // not present in any scope
-        return null;
-
+        return expression.getValue(elContext);
     }
 
     /**
@@ -445,9 +215,7 @@ public class ELUtils {
      * @return a new <code>ValueExpression</code> instance based off the provided <code>valueRef</code>
      */
     public static ValueExpression createValueExpression(String expression) {
-
         return createValueExpression(expression, Object.class);
-
     }
 
     public static ValueExpression createValueExpression(String expression, Class<?> expectedType) {
@@ -456,22 +224,10 @@ public class ELUtils {
     }
 
     public static Object coerce(Object value, Class<?> toType) {
-
-        FacesContext context = FacesContext.getCurrentInstance();
-        return context.getApplication().getExpressionFactory().coerceToType(value, toType);
+        return FacesContext.getCurrentInstance().getApplication().getExpressionFactory().coerceToType(value, toType);
 
     }
 
-    public static Scope getScope(String scope) {
-
-        for (Scope s : Scope.values()) {
-            if (s.toString().equals(scope)) {
-                return s;
-            }
-        }
-        return null;
-
-    }
 
     // --------------------------------------------------------- Private Methods
 
@@ -484,218 +240,12 @@ public class ELUtils {
      * @param resolvers a <code>List</code> of <code>ELResolver</code>s
      */
     private static void addELResolvers(CompositeELResolver target, List<ELResolver> resolvers) {
-
         if (resolvers != null && !resolvers.isEmpty()) {
             for (ELResolver resolver : resolvers) {
                 target.add(resolver);
             }
         }
 
-    }
-
-    /**
-     * <p>
-     * Add any <code>PropertyResolver</code>s to the specified <code>CompositeELResolver</code>.
-     * </p>
-     *
-     * @param target the <code>CompositeELResolver</code> to which the <code>PropertyResolver</code>s will be added.
-     * @param associate our ApplicationAssociate
-     */
-    @SuppressWarnings("deprecation")
-    private static void addPropertyResolvers(CompositeELResolver target, ApplicationAssociate associate) {
-
-        PropertyResolver pr = getDelegatePR(associate, false);
-        if (pr != null) {
-            target.add(new PropertyResolverChainWrapper(pr));
-        }
-
-    }
-
-    /**
-     * <p>
-     * Add any <code>VariableResolver</code>s to the specified <code>CompositeELResolver</code>.
-     * </p>
-     *
-     * @param target the <code>CompositeELResolver</code> to which the <code>VariableResolver</code>s will be added.
-     * @param associate our ApplicationAssociate
-     */
-    @SuppressWarnings("deprecation")
-    private static void addVariableResolvers(FacesCompositeELResolver target, FacesCompositeELResolver.ELResolverChainType chainType,
-            ApplicationAssociate associate) {
-
-        VariableResolver vr = getDelegateVR(associate, true);
-        if (vr != null) {
-            VariableResolverChainWrapper vrChainWrapper = new VariableResolverChainWrapper(vr);
-            target.addRootELResolver(vrChainWrapper);
-            associate.setLegacyVRChainHeadWrapperForFaces(vrChainWrapper);
-        }
-
-    }
-
-    /**
-     * <p/>
-     * The the first segment of a String tokenized by a "." or "["
-     *
-     * @param valueBinding the expression from which the first segment will be obtained
-     * @return index of the first occurrence of . or [
-     */
-    private static int getFirstSegmentIndex(String valueBinding) {
-
-        int segmentIndex = valueBinding.indexOf('.');
-        int bracketIndex = valueBinding.indexOf('[');
-
-        // there is no "." in the valueBinding so take the bracket value
-        if (segmentIndex < 0) {
-            segmentIndex = bracketIndex;
-        } else {
-            // if there is a bracket proceed
-            if (bracketIndex > 0) {
-                // if the bracket index is before the "." then
-                // get the bracket index
-                if (segmentIndex > bracketIndex) {
-                    segmentIndex = bracketIndex;
-                }
-            }
-        }
-        return segmentIndex;
-
-    }
-
-    @SuppressWarnings("deprecation")
-    private static String stripBracketsIfNecessary(String expression) throws ReferenceSyntaxException {
-
-        assert null != expression;
-
-        // look for invalid expressions
-        if (expression.charAt(0) == '#') {
-            if (expression.charAt(1) != '{') {
-                throw new ReferenceSyntaxException(MessageUtils.getExceptionMessageString(MessageUtils.INVALID_EXPRESSION_ID, expression));
-            }
-            int len = expression.length();
-            if (expression.charAt(len - 1) != '}') {
-                throw new ReferenceSyntaxException(MessageUtils.getExceptionMessageString(MessageUtils.INVALID_EXPRESSION_ID, expression));
-            }
-            expression = expression.substring(2, len - 1);
-        }
-
-        return expression;
-
-    }
-
-    public static Scope getScopeForExpression(String expression) {
-
-        if (SharedUtils.isMixedExpression(expression)) {
-            return getNarrowestScopeFromExpression(expression);
-        } else {
-            return getScopeForSingleExpression(expression);
-        }
-
-    }
-
-    @SuppressWarnings("deprecation")
-    public static boolean hasValidLifespan(Scope expressionScope, Scope beanScope) throws EvaluationException {
-
-        // if the managed bean's scope is "none" but the scope of the
-        // referenced object is not "none", scope is invalid
-        if (beanScope == Scope.NONE) {
-            return expressionScope == Scope.NONE;
-        }
-
-        // if the managed bean's scope is "request" it is able to refer
-        // to objects in any scope
-        if (beanScope == Scope.REQUEST) {
-            return true;
-        }
-
-        // if the managed bean's scope is "view" it is able to refer to
-        // objects in other "view", "session", "application" or "none" scopes.
-        if (beanScope == Scope.VIEW) {
-            return expressionScope != Scope.REQUEST;
-        }
-
-        // if the managed bean's scope is "session" it is able to refer
-        // to objects in other "session", "application", or "none" scopes
-        if (beanScope == Scope.SESSION) {
-            return !(expressionScope == Scope.REQUEST || expressionScope == Scope.VIEW);
-        }
-
-        // if the managed bean's scope is "application" it is able to refer
-        // to objects in other "application", or "none" scopes
-        if (beanScope == Scope.APPLICATION) {
-            return !(expressionScope == Scope.REQUEST || expressionScope == Scope.VIEW || expressionScope == Scope.SESSION);
-        }
-
-        // the managed bean is required to be in either "request", "view",
-        // "session", "application", or "none" scopes. One of the previous decision
-        // statements must be true.
-        // noinspection ConstantConditions
-        assert false;
-        return false;
-    }
-
-    @SuppressWarnings("deprecation")
-    public static ELUtils.Scope getScopeForSingleExpression(String value) throws EvaluationException {
-        String[] firstSegment = new String[1];
-        ELUtils.Scope valueScope = ELUtils.getScope(value, firstSegment);
-
-        if (valueScope == null) {
-            // Perhaps the bean hasn't been created yet. See what its
-            // scope would be when it is created.
-            if (firstSegment[0] != null) {
-
-            } else {
-                // we are referring to a bean that doesn't exist in the
-                // configuration file. Give it a wide scope...
-                valueScope = Scope.APPLICATION;
-            }
-        }
-        return valueScope;
-    }
-
-    @SuppressWarnings("deprecation")
-    public static Scope getNarrowestScopeFromExpression(String expression) throws ReferenceSyntaxException {
-        // break the argument expression up into its component
-        // expressions, ignoring literals.
-        List<String> expressions = ELUtils.getExpressionsFromString(expression);
-
-        int shortestScope = Scope.NONE.ordinal();
-        Scope result = Scope.NONE;
-        for (String expr : expressions) {
-            // loop over the expressions
-
-            Scope lScope = getScopeForSingleExpression(expr);
-            // don't consider none
-            if (null == lScope || lScope == Scope.NONE) {
-                continue;
-            }
-
-            int currentScope = lScope.ordinal();
-
-            // if we have no basis for comparison
-            if (Scope.NONE.ordinal() == shortestScope) {
-                shortestScope = currentScope;
-                result = lScope;
-            } else {
-                // we have a basis for comparison
-                if (currentScope < shortestScope) {
-                    shortestScope = currentScope;
-                    result = lScope;
-                }
-            }
-        }
-        return result;
-    }
-
-    public static boolean isScopeValid(String scopeName) {
-        if (scopeName == null) {
-            return false;
-        }
-        for (Scope scope : Scope.values()) {
-            if (scopeName.equals(scope.toString())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /*

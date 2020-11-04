@@ -25,7 +25,6 @@ import jakarta.el.ValueExpression;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
-import jakarta.faces.el.ValueBinding;
 
 /**
  * <p>
@@ -224,7 +223,6 @@ import jakarta.faces.el.ValueBinding;
  *
  *
  */
-
 public class UISelectMany extends UIInput {
 
     // ------------------------------------------------------ Manifest Constants
@@ -268,9 +266,7 @@ public class UISelectMany extends UIInput {
 
     @Override
     public String getFamily() {
-
         return COMPONENT_FAMILY;
-
     }
 
     /**
@@ -282,9 +278,7 @@ public class UISelectMany extends UIInput {
      * @return the selected values, or <code>null</code>.
      */
     public Object[] getSelectedValues() {
-
         return (Object[]) getValue();
-
     }
 
     /**
@@ -296,71 +290,11 @@ public class UISelectMany extends UIInput {
      * @param selectedValues The new selected values (if any)
      */
     public void setSelectedValues(Object selectedValues[]) {
-
         setValue(selectedValues);
-
     }
 
     // ---------------------------------------------------------------- Bindings
 
-    /**
-     * <p>
-     * Return any {@link ValueBinding} set for <code>value</code> if a {@link ValueBinding} for <code>selectedValues</code>
-     * is requested; otherwise, perform the default superclass processing for this method.
-     * </p>
-     *
-     * <p>
-     * This method relies on the superclass to provide the <code>ValueExpression</code> to <code>ValueBinding</code>
-     * wrapping.
-     * </p>
-     *
-     * @param name Name of the attribute or property for which to retrieve a {@link ValueBinding}
-     * @return the value binding, or <code>null</code>
-     * @throws NullPointerException if <code>name</code> is <code>null</code>
-     *
-     * @deprecated this has been replaced by {@link #getValueExpression(java.lang.String)}.
-     */
-    @Deprecated
-    @Override
-    public ValueBinding getValueBinding(String name) {
-
-        if ("selectedValues".equals(name)) {
-            return super.getValueBinding("value");
-        } else {
-            return super.getValueBinding(name);
-        }
-
-    }
-
-    /**
-     * <p>
-     * Store any {@link ValueBinding} specified for <code>selectedValues</code> under <code>value</code> instead; otherwise,
-     * perform the default superclass processing for this method.
-     * </p>
-     *
-     * <p>
-     * This method relies on the superclass to wrap the argument <code>ValueBinding</code> in a
-     * <code>ValueExpression</code>.
-     * </p>
-     *
-     * @param name Name of the attribute or property for which to set a {@link ValueBinding}
-     * @param binding The {@link ValueBinding} to set, or <code>null</code> to remove any currently set {@link ValueBinding}
-     *
-     * @throws NullPointerException if <code>name</code> is <code>null</code>
-     *
-     * @deprecated This has been replaced by {@link #setValueExpression(java.lang.String, jakarta.el.ValueExpression)}.
-     */
-    @Deprecated
-    @Override
-    public void setValueBinding(String name, ValueBinding binding) {
-
-        if ("selectedValues".equals(name)) {
-            super.setValueBinding("value", binding);
-        } else {
-            super.setValueBinding(name, binding);
-        }
-
-    }
 
     /**
      * <p>
@@ -375,7 +309,6 @@ public class UISelectMany extends UIInput {
      */
     @Override
     public ValueExpression getValueExpression(String name) {
-
         if ("selectedValues".equals(name)) {
             return super.getValueExpression("value");
         } else {
@@ -399,7 +332,6 @@ public class UISelectMany extends UIInput {
      */
     @Override
     public void setValueExpression(String name, ValueExpression binding) {
-
         if ("selectedValues".equals(name)) {
             super.setValueExpression("value", binding);
         } else {
@@ -422,7 +354,6 @@ public class UISelectMany extends UIInput {
      */
     @Override
     protected boolean compareValues(Object previous, Object value) {
-
         if (previous == null && value != null) {
             return true;
         } else if (previous != null && value == null) {
@@ -481,14 +412,13 @@ public class UISelectMany extends UIInput {
 
     /**
      * <p>
-     * Return the number of occurrances of a particular element in the array.
+     * Return the number of occurrences of a particular element in the array.
      * </p>
      *
      * @param element object whose occurrance is to be counted in the array.
      * @param array object representing the old value of this component.
      */
     private static int countElementOccurrence(Object element, Object[] array) {
-
         int count = 0;
         for (int i = 0; i < array.length; ++i) {
             Object arrayElement = array[i];
@@ -613,13 +543,11 @@ public class UISelectMany extends UIInput {
     // --------------------------------------------------------- Private Methods
 
     private Iterator getValuesIterator(Object value) {
-
         if (value instanceof Collection) {
             return ((Collection) value).iterator();
-        } else {
-            return new ArrayIterator(value);
         }
 
+        return new ArrayIterator(value);
     }
 
     // ---------------------------------------------------------- Nested Classes

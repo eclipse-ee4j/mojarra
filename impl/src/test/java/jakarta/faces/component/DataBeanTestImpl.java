@@ -21,10 +21,14 @@ import java.io.Serializable;
 // Test JavaBean for DataModel Tests
 public class DataBeanTestImpl implements Serializable {
 
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
     private String command;
 
     public String getCommand() {
-        return (this.command);
+        return this.command;
     }
 
     public void setCommand(String command) {
@@ -34,7 +38,7 @@ public class DataBeanTestImpl implements Serializable {
     private String input;
 
     public String getInput() {
-        return (this.input);
+        return this.input;
     }
 
     public void setInput(String input) {
@@ -44,7 +48,7 @@ public class DataBeanTestImpl implements Serializable {
     private String output;
 
     public String getOutput() {
-        return (this.output);
+        return this.output;
     }
 
     public void setOutput(String output) {

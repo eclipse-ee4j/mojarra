@@ -54,11 +54,6 @@ import jakarta.faces.component.search.SearchExpressionHandler;
 import jakarta.faces.component.search.SearchKeywordResolver;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
-import jakarta.faces.el.MethodBinding;
-import jakarta.faces.el.PropertyResolver;
-import jakarta.faces.el.ReferenceSyntaxException;
-import jakarta.faces.el.ValueBinding;
-import jakarta.faces.el.VariableResolver;
 import jakarta.faces.event.ActionListener;
 import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
@@ -66,10 +61,9 @@ import jakarta.faces.flow.FlowHandler;
 import jakarta.faces.validator.Validator;
 
 /**
- * <p>
- * <strong>Application</strong> represents a per-web-application singleton object where applications based on JavaServer
+ * <strong>Application</strong> represents a per-web-application singleton object where applications based on
  * Faces (or implementations wishing to provide extended functionality) can register application-wide singletons that
- * provide functionality required by JavaServer Faces.
+ * provide functionality required by Faces.
  */
 public class ApplicationImpl extends Application {
 
@@ -449,12 +443,6 @@ public class ApplicationImpl extends Application {
         return instanceFactory.createComponent(context, componentResource, getExpressionFactory());
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public UIComponent createComponent(ValueBinding componentBinding, FacesContext context, String componentType) throws FacesException {
-        return instanceFactory.createComponent(componentBinding, context, componentType);
-    }
-
     /**
      * @see jakarta.faces.application.Application#getComponentTypes()
      */
@@ -581,62 +569,6 @@ public class ApplicationImpl extends Application {
     @Override
     public SearchKeywordResolver getSearchKeywordResolver() {
         return searchExpression.getSearchKeywordResolver();
-    }
-
-    // ----------------------------------------------------------- Deprecated methods
-
-    /**
-     * @see jakarta.faces.application.Application#setPropertyResolver(jakarta.faces.el.PropertyResolver)
-     */
-    @Override
-    @Deprecated
-    public PropertyResolver getPropertyResolver() {
-        return expressionLanguage.getPropertyResolver();
-    }
-
-    /**
-     * @see jakarta.faces.application.Application#setPropertyResolver(jakarta.faces.el.PropertyResolver)
-     */
-    @Override
-    @Deprecated
-    public void setPropertyResolver(PropertyResolver resolver) {
-        expressionLanguage.setPropertyResolver(resolver);
-    }
-
-    /**
-     * @see jakarta.faces.application.Application#createMethodBinding(String, Class[])
-     */
-    @Override
-    @Deprecated
-    public MethodBinding createMethodBinding(String ref, Class<?> params[]) {
-        return expressionLanguage.createMethodBinding(ref, params);
-    }
-
-    /**
-     * @see jakarta.faces.application.Application#createValueBinding(String)
-     */
-    @Override
-    @Deprecated
-    public ValueBinding createValueBinding(String ref) throws ReferenceSyntaxException {
-        return expressionLanguage.createValueBinding(ref);
-    }
-
-    /**
-     * @see jakarta.faces.application.Application#getVariableResolver()
-     */
-    @Override
-    @Deprecated
-    public VariableResolver getVariableResolver() {
-        return expressionLanguage.getVariableResolver();
-    }
-
-    /**
-     * @see jakarta.faces.application.Application#setVariableResolver(jakarta.faces.el.VariableResolver)
-     */
-    @Override
-    @Deprecated
-    public void setVariableResolver(VariableResolver resolver) {
-        expressionLanguage.setVariableResolver(resolver);
     }
 
 }

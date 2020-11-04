@@ -28,18 +28,16 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIComponentBase;
 import jakarta.faces.component.search.UntargetableComponent;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.el.ValueBinding;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.FacesEvent;
 import jakarta.faces.event.FacesListener;
 import jakarta.faces.render.Renderer;
 
-@SuppressWarnings({ "deprecation" })
 public class UILeaf extends UIComponentBase implements UntargetableComponent {
 
     private final static Map<String, UIComponent> facets = new HashMap<String, UIComponent>(0, 1.0f) {
 
-        private static final long serialVersionUID = 6132215325480325558L;
+        private static final long serialVersionUID = 2063657587950149152L;
 
         @Override
         public void putAll(Map map) {
@@ -55,15 +53,6 @@ public class UILeaf extends UIComponentBase implements UntargetableComponent {
     private UIComponent parent;
     private boolean returnLocalTransient = true;
 
-    @Override
-    public ValueBinding getValueBinding(String binding) {
-        return null;
-    }
-
-    @Override
-    public void setValueBinding(String name, ValueBinding binding) {
-        // do nothing
-    }
 
     @Override
     public ValueExpression getValueExpression(String name) {

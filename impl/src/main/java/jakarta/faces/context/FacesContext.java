@@ -58,7 +58,6 @@ import jakarta.faces.render.RenderKit;
 
 public abstract class FacesContext {
 
-    @SuppressWarnings({ "UnusedDeclaration" })
     private FacesContext defaultFacesContext;
     private boolean processingEvents = true;
     private boolean isCreatedFromValidFactory = true;
@@ -132,20 +131,19 @@ public abstract class FacesContext {
      *
      * @since 2.0
      */
-
     public Map<Object, Object> getAttributes() {
-
         if (defaultFacesContext != null) {
             return defaultFacesContext.getAttributes();
         }
+
         if (!isCreatedFromValidFactory) {
             if (attributesForInvalidFactoryConstruction == null) {
                 attributesForInvalidFactoryConstruction = new HashMap<>();
             }
             return attributesForInvalidFactoryConstruction;
         }
-        throw new UnsupportedOperationException();
 
+        throw new UnsupportedOperationException();
     }
 
     private Map<Object, Object> attributesForInvalidFactoryConstruction;
@@ -164,12 +162,11 @@ public abstract class FacesContext {
      *
      * @since 2.0
      */
-
     public PartialViewContext getPartialViewContext() {
-
         if (defaultFacesContext != null) {
             return defaultFacesContext.getPartialViewContext();
         }
+
         if (!isCreatedFromValidFactory) {
             if (partialViewContextForInvalidFactoryConstruction == null) {
                 PartialViewContextFactory f = (PartialViewContextFactory) FactoryFinder.getFactory(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY);
@@ -177,11 +174,11 @@ public abstract class FacesContext {
             }
             return partialViewContextForInvalidFactoryConstruction;
         }
-        throw new UnsupportedOperationException();
 
+        throw new UnsupportedOperationException();
     }
 
-    private PartialViewContext partialViewContextForInvalidFactoryConstruction = null;
+    private PartialViewContext partialViewContextForInvalidFactoryConstruction;
 
     /**
      * <p>
@@ -233,9 +230,7 @@ public abstract class FacesContext {
      *
      * @since 1.2
      */
-
     public ELContext getELContext() {
-
         if (defaultFacesContext != null) {
             return defaultFacesContext.getELContext();
         }
@@ -252,13 +247,11 @@ public abstract class FacesContext {
      * @return instance of <code>ExceptionHandler</code>.
      */
     public ExceptionHandler getExceptionHandler() {
-
         if (defaultFacesContext != null) {
             return defaultFacesContext.getExceptionHandler();
         }
 
         throw new UnsupportedOperationException();
-
     }
 
     /**
@@ -269,7 +262,6 @@ public abstract class FacesContext {
      * @param exceptionHandler the <code>ExceptionHandler</code> for this request.
      */
     public void setExceptionHandler(ExceptionHandler exceptionHandler) {
-
         if (defaultFacesContext != null) {
             defaultFacesContext.setExceptionHandler(exceptionHandler);
         } else {

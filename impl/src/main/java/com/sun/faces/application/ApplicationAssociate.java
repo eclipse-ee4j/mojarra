@@ -68,7 +68,6 @@ import com.sun.faces.component.search.SearchExpressionHandlerImpl;
 import com.sun.faces.config.ConfigManager;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.el.DemuxCompositeELResolver;
-import com.sun.faces.el.VariableResolverChainWrapper;
 import com.sun.faces.facelets.PrivateApiFaceletCacheAdapter;
 import com.sun.faces.facelets.compiler.Compiler;
 import com.sun.faces.facelets.compiler.SAXCompiler;
@@ -100,8 +99,6 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.search.SearchExpressionHandler;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.el.PropertyResolver;
-import jakarta.faces.el.VariableResolver;
 import jakarta.faces.event.PostConstructApplicationEvent;
 import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
@@ -158,21 +155,7 @@ public class ApplicationAssociate {
     };
 
     private List<ELResolver> elResolversFromFacesConfig;
-
-    @SuppressWarnings("deprecation")
-    private VariableResolver legacyVRChainHead;
-
-    private VariableResolverChainWrapper legacyVRChainHeadWrapperForFaces;
-
-    @SuppressWarnings("deprecation")
-    private PropertyResolver legacyPRChainHead;
     private ExpressionFactory expressionFactory;
-
-    @SuppressWarnings("deprecation")
-    private PropertyResolver legacyPropertyResolver;
-
-    @SuppressWarnings("deprecation")
-    private VariableResolver legacyVariableResolver;
 
     private InjectionProvider injectionProvider;
     private ResourceCache resourceCache;
@@ -445,14 +428,6 @@ public class ApplicationAssociate {
         }
     }
 
-    public void installProgrammaticallyAddedResolvers() {
-        // Ensure custom resolvers are inserted at the correct place.
-        VariableResolver variableResolver = getLegacyVariableResolver();
-        if (variableResolver != null) {
-            getLegacyVRChainHeadWrapperForFaces().setWrapped(variableResolver);
-        }
-    }
-
     public boolean isDevModeEnabled() {
         return devModeEnabled;
     }
@@ -468,46 +443,6 @@ public class ApplicationAssociate {
      */
     public PropertyEditorHelper getPropertyEditorHelper() {
         return propertyEditorHelper;
-    }
-
-    /**
-     * This method is called by <code>ConfigureListener</code> and will contain any <code>VariableResolvers</code> defined
-     * within faces-config configuration files.
-     *
-     * @param resolver VariableResolver
-     */
-    @SuppressWarnings("deprecation")
-    public void setLegacyVRChainHead(VariableResolver resolver) {
-        legacyVRChainHead = resolver;
-    }
-
-    @SuppressWarnings("deprecation")
-    public VariableResolver getLegacyVRChainHead() {
-        return legacyVRChainHead;
-    }
-
-    public VariableResolverChainWrapper getLegacyVRChainHeadWrapperForFaces() {
-        return legacyVRChainHeadWrapperForFaces;
-    }
-
-    public void setLegacyVRChainHeadWrapperForFaces(VariableResolverChainWrapper legacyVRChainHeadWrapperForFaces) {
-        this.legacyVRChainHeadWrapperForFaces = legacyVRChainHeadWrapperForFaces;
-    }
-
-    /**
-     * This method is called by <code>ConfigureListener</code> and will contain any <code>PropertyResolvers</code> defined
-     * within faces-config configuration files.
-     *
-     * @param resolver PropertyResolver
-     */
-    @SuppressWarnings("deprecation")
-    public void setLegacyPRChainHead(PropertyResolver resolver) {
-        legacyPRChainHead = resolver;
-    }
-
-    @SuppressWarnings("deprecation")
-    public PropertyResolver getLegacyPRChainHead() {
-        return legacyPRChainHead;
     }
 
     public FlowHandler getFlowHandler() {
@@ -556,42 +491,6 @@ public class ApplicationAssociate {
 
     public String getContextName() {
         return contextName;
-    }
-
-    /**
-     * Maintains the PropertyResolver called through Application.setPropertyResolver()
-     *
-     * @param resolver PropertyResolver
-     */
-    @SuppressWarnings("deprecation")
-    public void setLegacyPropertyResolver(PropertyResolver resolver) {
-        legacyPropertyResolver = resolver;
-    }
-
-    /**
-     * @return the PropertyResolver called through Application.getPropertyResolver()
-     */
-    @SuppressWarnings("deprecation")
-    public PropertyResolver getLegacyPropertyResolver() {
-        return legacyPropertyResolver;
-    }
-
-    /**
-     * Maintains the PropertyResolver called through Application.setVariableResolver()
-     *
-     * @param resolver VariableResolver
-     */
-    @SuppressWarnings("deprecation")
-    public void setLegacyVariableResolver(VariableResolver resolver) {
-        legacyVariableResolver = resolver;
-    }
-
-    /**
-     * @return the VariableResolver called through Application.getVariableResolver()
-     */
-    @SuppressWarnings("deprecation")
-    public VariableResolver getLegacyVariableResolver() {
-        return legacyVariableResolver;
     }
 
     /**
@@ -807,7 +706,6 @@ public class ApplicationAssociate {
     }
 
     protected Compiler createCompiler(Map<String, Object> appMap, WebConfiguration webConfig) {
-
         Compiler newCompiler = new SAXCompiler();
 
         loadDecorators(appMap, newCompiler);

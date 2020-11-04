@@ -16,11 +16,15 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIComponent;
 import jakarta.faces.event.FacesEvent;
 import jakarta.faces.event.FacesListener;
 
 public class EventTestImpl extends FacesEvent {
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
     public EventTestImpl(UIComponent component) {
         this(component, null);
@@ -34,12 +38,12 @@ public class EventTestImpl extends FacesEvent {
     private String id;
 
     public String getId() {
-        return (this.id);
+        return this.id;
     }
 
     @Override
     public boolean isAppropriateListener(FacesListener listener) {
-        return (listener instanceof ListenerTestImpl);
+        return listener instanceof ListenerTestImpl;
     }
 
     @Override

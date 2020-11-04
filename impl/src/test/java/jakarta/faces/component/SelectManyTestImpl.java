@@ -16,16 +16,15 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.UISelectMany;
-
 /**
  * <p>
- * Test {@link UISelectMany} subclass.</p>
+ * Test {@link UISelectMany} subclass.
+ * </p>
  */
 public class SelectManyTestImpl extends UISelectMany {
 
     @Override
     public boolean compareValues(Object previous, Object value) {
-        return (super.compareValues(previous, value));
+        return super.compareValues(previous, value);
     }
 }

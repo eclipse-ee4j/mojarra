@@ -22,7 +22,8 @@ import java.util.Map;
 
 /**
  * <p>
- * Base bean for parsing configuration information.</p>
+ * Base bean for parsing configuration information.
+ * </p>
  */
 public class ConfigBase {
 
@@ -47,25 +48,6 @@ public class ConfigBase {
         this.navigationHandler = navigationHandler;
     }
 
-    private String propertyResolver = null;
-
-    public String getPropertyResolver() {
-        return (this.propertyResolver);
-    }
-
-    public void setPropertyResolver(String propertyResolver) {
-        this.propertyResolver = propertyResolver;
-    }
-
-    private String variableResolver = null;
-
-    public String getVariableResolver() {
-        return (this.variableResolver);
-    }
-
-    public void setVariableResolver(String variableResolver) {
-        this.variableResolver = variableResolver;
-    }
 
     // ------------------------------------------------------------ <component>
     private Map components = null;

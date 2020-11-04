@@ -19,13 +19,9 @@ package jakarta.faces.component;
 import static jakarta.faces.event.PhaseId.APPLY_REQUEST_VALUES;
 import static jakarta.faces.event.PhaseId.INVOKE_APPLICATION;
 
-import com.sun.faces.application.MethodBindingMethodExpressionAdapter;
-import com.sun.faces.application.MethodExpressionMethodBindingAdapter;
-
 import jakarta.el.MethodExpression;
 import jakarta.faces.application.Application;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.el.MethodBinding;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.ActionListener;
@@ -60,7 +56,6 @@ import jakarta.faces.render.Renderer;
  * be changed by calling the <code>setRendererType()</code> method.
  * </p>
  */
-
 public class UICommand extends UIComponentBase implements ActionSource2 {
 
     // ------------------------------------------------------ Manifest Constants
@@ -204,9 +199,6 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
         if (event instanceof ActionEvent) {
             FacesContext context = event.getFacesContext();
 
-            // Notify the specified action listener method (if any)
-            notifySpecifiedActionListener(context, event);
-
             // Invoke the default ActionListener
             ActionListener listener = context.getApplication().getActionListener();
             if (listener != null) {
@@ -239,80 +231,6 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
         }
 
         super.queueEvent(event);
-    }
-
-    // ---------------------------------------------------------- Deprecated code
-
-    /**
-     * {@inheritDoc}
-     *
-     * @deprecated This has been replaced by {@link #getActionExpression}.
-     */
-    @Deprecated
-    @Override
-    public MethodBinding getAction() {
-        MethodBinding result = null;
-        MethodExpression me;
-
-        if (null != (me = getActionExpression())) {
-            // if the MethodExpression is an instance of our private
-            // wrapper class.
-            if (me.getClass().equals(MethodExpressionMethodBindingAdapter.class)) {
-                result = ((MethodExpressionMethodBindingAdapter) me).getWrapped();
-            } else {
-                // otherwise, this is a real MethodExpression. Wrap it
-                // in a MethodBinding.
-                result = new MethodBindingMethodExpressionAdapter(me);
-            }
-        }
-        return result;
-
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @deprecated This has been replaced by {@link #setActionExpression(jakarta.el.MethodExpression)}.
-     */
-    @Deprecated
-    @Override
-    public void setAction(MethodBinding action) {
-        MethodExpressionMethodBindingAdapter adapter;
-        if (null != action) {
-            adapter = new MethodExpressionMethodBindingAdapter(action);
-            setActionExpression(adapter);
-        } else {
-            setActionExpression(null);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @deprecated Use {@link #getActionListeners} instead.
-     */
-    @Deprecated
-    @Override
-    public MethodBinding getActionListener() {
-        return (MethodBinding) getStateHelper().get(PropertyKeys.methodBindingActionListener);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @deprecated This has been replaced by {@link #addActionListener(jakarta.faces.event.ActionListener)}.
-     */
-    @Deprecated
-    @Override
-    public void setActionListener(MethodBinding actionListener) {
-        getStateHelper().put(PropertyKeys.methodBindingActionListener, actionListener);
-    }
-
-    private void notifySpecifiedActionListener(FacesContext context, FacesEvent event) {
-        MethodBinding mb = getActionListener();
-        if (mb != null) {
-            mb.invoke(context, new Object[] { event });
-        }
     }
 
 }

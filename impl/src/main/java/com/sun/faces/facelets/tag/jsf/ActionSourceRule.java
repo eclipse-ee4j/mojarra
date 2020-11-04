@@ -16,7 +16,6 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
-import com.sun.faces.facelets.el.LegacyMethodBinding;
 
 import jakarta.el.ExpressionFactory;
 import jakarta.el.MethodExpression;
@@ -42,20 +41,6 @@ final class ActionSourceRule extends MetaRule {
     public final static Class[] ACTION_LISTENER_SIG = new Class[] { ActionEvent.class };
     public final static Class[] ACTION_LISTENER_ZEROARG_SIG = new Class[] {};
 
-    final static class ActionMapper extends Metadata {
-
-        private final TagAttribute attr;
-
-        public ActionMapper(TagAttribute attr) {
-            this.attr = attr;
-        }
-
-        @Override
-        public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((ActionSource) instance).setAction(new LegacyMethodBinding(attr.getMethodExpression(ctx, Object.class, ActionSourceRule.ACTION_SIG)));
-        }
-    }
-
     final static class ActionMapper2 extends Metadata {
 
         private final TagAttribute attr;
@@ -67,22 +52,6 @@ final class ActionSourceRule extends MetaRule {
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
             ((ActionSource2) instance).setActionExpression(attr.getMethodExpression(ctx, Object.class, ActionSourceRule.ACTION_SIG));
-        }
-
-    }
-
-    final static class ActionListenerMapper extends Metadata {
-
-        private final TagAttribute attr;
-
-        public ActionListenerMapper(TagAttribute attr) {
-            this.attr = attr;
-        }
-
-        @Override
-        public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((ActionSource) instance)
-                    .setActionListener(new LegacyMethodBinding(attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_LISTENER_SIG)));
         }
 
     }
@@ -119,24 +88,18 @@ final class ActionSourceRule extends MetaRule {
 
     @Override
     public Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta) {
-        if (meta.isTargetInstanceOf(ActionSource.class)) {
-
-            if ("action".equals(name)) {
-                if (meta.isTargetInstanceOf(ActionSource2.class)) {
-                    return new ActionMapper2(attribute);
-                } else {
-                    return new ActionMapper(attribute);
-                }
-            }
-
-            if ("actionListener".equals(name)) {
-                if (meta.isTargetInstanceOf(ActionSource2.class)) {
-                    return new ActionListenerMapper2(attribute);
-                } else {
-                    return new ActionListenerMapper(attribute);
-                }
-            }
+        if (!meta.isTargetInstanceOf(ActionSource.class)) {
+            return null;
         }
+
+        if ("action".equals(name)) {
+            return new ActionMapper2(attribute);
+        }
+
+        if ("actionListener".equals(name)) {
+            return new ActionListenerMapper2(attribute);
+        }
+
         return null;
     }
 }

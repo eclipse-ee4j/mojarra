@@ -18,12 +18,12 @@ package jakarta.faces.component;
 
 import java.io.IOException;
 
-import jakarta.faces.component.UIComponentBase;
 import jakarta.faces.context.FacesContext;
 
 /**
  * <p>
- * Test <code>UIComponent</code> for unit tests.</p>
+ * Test <code>UIComponent</code> for unit tests.
+ * </p>
  */
 public class ComponentTestImpl extends UIComponentBase {
 
@@ -37,12 +37,12 @@ public class ComponentTestImpl extends UIComponentBase {
     }
 
     public String getComponentType() {
-        return ("TestComponent");
+        return "TestComponent";
     }
 
     @Override
     public String getFamily() {
-        return ("Test");
+        return "Test";
     }
 
     // -------------------------------------------------- Trace-Enabled Methods
@@ -72,7 +72,7 @@ public class ComponentTestImpl extends UIComponentBase {
 
     public void updateModel(FacesContext context) {
         trace("u-" + getId());
-        //        super.updateModel(context);
+        // super.updateModel(context);
     }
 
     @Override
@@ -117,6 +117,6 @@ public class ComponentTestImpl extends UIComponentBase {
 
     // Retrieve the current trace log
     public static String trace() {
-        return (trace.toString());
+        return trace.toString();
     }
 }

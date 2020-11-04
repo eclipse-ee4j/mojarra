@@ -41,7 +41,6 @@ import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitHint;
 import jakarta.faces.component.visit.VisitResult;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.el.ValueBinding;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.FacesEvent;
 import jakarta.faces.event.FacesListener;
@@ -730,37 +729,6 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
     // ----------------------------------------------------- UIComponent Methods
 
-    /**
-     * <p>
-     * If "name" is something other than "value", "var", or "rowIndex", rely on the superclass conversion from
-     * <code>ValueBinding</code> to <code>ValueExpression</code>.
-     * </p>
-     *
-     * @param name Name of the attribute or property for which to set a {@link ValueBinding}
-     * @param binding The {@link ValueBinding} to set, or <code>null</code> to remove any currently set {@link ValueBinding}
-     *
-     * @throws IllegalArgumentException if <code>name</code> is one of <code>id</code>, <code>parent</code>,
-     * <code>var</code>, or <code>rowIndex</code>
-     * @throws NullPointerException if <code>name</code> is <code>null</code>
-     * @deprecated This has been replaced by {@link #setValueExpression(java.lang.String, jakarta.el.ValueExpression)}.
-     */
-    @Deprecated
-    @Override
-    public void setValueBinding(String name, ValueBinding binding) {
-
-        if (null != name) {
-            switch (name) {
-            case "value":
-                setDataModel(null);
-                break;
-            case "var":
-            case "rowIndex":
-                throw new IllegalArgumentException();
-            }
-        }
-        super.setValueBinding(name, binding);
-
-    }
 
     /**
      * <p>

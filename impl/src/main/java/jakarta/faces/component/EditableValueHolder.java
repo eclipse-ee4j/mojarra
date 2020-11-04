@@ -16,7 +16,6 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.el.MethodBinding;
 import jakarta.faces.event.ValueChangeEvent;
 import jakarta.faces.event.ValueChangeListener;
 import jakarta.faces.render.Renderer;
@@ -51,7 +50,6 @@ public interface EditableValueHolder extends ValueHolder {
      *
      * @since 2.0
      */
-
     void resetValue();
 
     /**
@@ -203,86 +201,4 @@ public interface EditableValueHolder extends ValueHolder {
      */
     void removeValueChangeListener(ValueChangeListener listener);
 
-    // -------------------------------------------------------------- Deprecated methods
-
-    /**
-     * <p>
-     * If {@link #setValidator} was not previously called for this instance, this method must return <code>null</code>. If
-     * it was called, this method must return the exact <code>MethodBinding</code> instance that was passed to
-     * {@link #setValidator}.
-     * </p>
-     *
-     * <p>
-     * This method will be called during the <em>Process Validations</em> or <em>Apply Request Values</em> phases (depending
-     * on the value of the <code>immediate</code> property).
-     * </p>
-     *
-     * @return the validator as a method binding.
-     * @deprecated {@link #getValidators} should be used instead.
-     */
-    @Deprecated
-    MethodBinding getValidator();
-
-    /**
-     * <p>
-     * Wrap the argument <code>validatorBinding</code> in an implementation of {@link jakarta.faces.validator.Validator} and
-     * store it in the internal data structure that backs the {@link #getValidators} method, taking care to over-write any
-     * instance that was stored by a previous call to <code>setValidator</code>.
-     * </p>
-     *
-     * <p>
-     * The argument method will be called during the <em>Process Validations</em> or <em>Apply Request Values</em> phases
-     * (depending on the value of the <code>immediate</code> property).
-     * </p>
-     *
-     * <p>
-     * Any method referenced by such an expression must be public, with a return type of <code>void</code>, and accept
-     * parameters of type {@link jakarta.faces.context.FacesContext}, {@link UIComponent}, and <code>Object</code>.
-     * </p>
-     *
-     * @param validatorBinding The new <code>MethodBinding</code> instance
-     *
-     * @deprecated Use {@link #addValidator} instead, obtaining the argument {@link Validator} by creating an instance of
-     * {@link jakarta.faces.validator.MethodExpressionValidator}.
-     */
-    @Deprecated
-    void setValidator(MethodBinding validatorBinding);
-
-    /**
-     * <p>
-     * If {@link #setValueChangeListener} was not previously called for this instance, this method must return
-     * <code>null</code>. If it was called, this method must return the exact <code>MethodBinding</code> instance that was
-     * passed to {@link #setValueChangeListener}.
-     * </p>
-     *
-     * @return the value change listener.
-     * @deprecated Use {@link #getValueChangeListeners} instead.
-     */
-    @Deprecated
-    MethodBinding getValueChangeListener();
-
-    /**
-     * <p>
-     * Wrap the argument <code>valueChangeMethod</code> in an implementation of {@link ValueChangeListener} and store it in
-     * the internal data structure that backs the {@link #getValueChangeListeners} method, taking care to over-write any
-     * instance that was stored by a previous call to <code>setValueChangeListener</code>.
-     * </p>
-     *
-     * <p>
-     * This argument method will be called during the <em>Process Validations</em> or <em>Apply Request Values</em> phases
-     * (depending on the value of the <code>immediate</code> property).
-     * </p>
-     *
-     * <p>
-     * Any method referenced by such an expression must be public, with a return type of <code>void</code>, and accept a
-     * parameter of type {@link jakarta.faces.event.ValueChangeEvent}.
-     * </p>
-     *
-     * @param valueChangeMethod The new method binding instance
-     *
-     * @deprecated Use {@link #addValueChangeListener} instead, obtaining the argument {@link ValueChangeListener} by
-     * creating an instance of {@link jakarta.faces.event.MethodExpressionValueChangeListener}.
-     */
-    @Deprecated
-    void setValueChangeListener(MethodBinding valueChangeMethod);
 }

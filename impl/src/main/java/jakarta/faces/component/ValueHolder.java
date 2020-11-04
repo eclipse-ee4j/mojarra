@@ -25,7 +25,6 @@ import jakarta.faces.convert.Converter;
  * {@link UIComponent} that wishes to support a local value, as well as access data in the model tier via a <em>value
  * expression</em>, and support conversion between String and the model tier data's native data type.
  */
-
 public interface ValueHolder {
 
     // -------------------------------------------------------------- Properties
@@ -46,9 +45,7 @@ public interface ValueHolder {
      * {@link jakarta.faces.context.FacesContext#isValidationFailed} returning <code>true</code>, always return the local
      * value. Otherwise, first, consult the local value property of this component. If non-<code>null</code> return it. If
      * <code>null</code>, see if we have a {@link ValueExpression} for the <code>value</code> property. If so, return the
-     * result of evaluating the property, otherwise return <code>null</code>. Note that because the specification for
-     * {@link UIComponent#setValueBinding} requires a call through to {@link UIComponent#setValueExpression}, legacy tags
-     * will continue to work.
+     * result of evaluating the property, otherwise return <code>null</code>.
      * </p>
      *
      * @return the value.

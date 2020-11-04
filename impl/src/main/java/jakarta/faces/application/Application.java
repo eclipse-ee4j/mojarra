@@ -35,11 +35,6 @@ import jakarta.faces.component.search.SearchExpressionHandler;
 import jakarta.faces.component.search.SearchKeywordResolver;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
-import jakarta.faces.el.MethodBinding;
-import jakarta.faces.el.PropertyResolver;
-import jakarta.faces.el.ReferenceSyntaxException;
-import jakarta.faces.el.ValueBinding;
-import jakarta.faces.el.VariableResolver;
 import jakarta.faces.event.ActionListener;
 import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
@@ -70,7 +65,6 @@ import jakarta.faces.view.ViewDeclarationLanguage;
 
 public abstract class Application {
 
-    @SuppressWarnings({ "UnusedDeclaration" })
     private Application defaultApplication;
 
     // ------------------------------------------------------------- Properties
@@ -276,55 +270,6 @@ public abstract class Application {
 
     /**
      * <p>
-     * Return a {@link PropertyResolver} instance that wraps the {@link ELResolver} instance that Faces provides to the
-     * Jakarta Expression Language for the resolution of expressions that appear programmatically in an application.
-     * </p>
-     *
-     * <p>
-     * Note that this no longer returns the default <code>PropertyResolver</code> since that class is now a no-op that aids
-     * in allowing custom <code>PropertyResolver</code>s to affect the EL resolution process.
-     * </p>
-     *
-     * @return the property resolver.
-     * @deprecated This has been replaced by {@link #getELResolver}.
-     */
-    @Deprecated
-    public abstract PropertyResolver getPropertyResolver();
-
-    /**
-     * <p>
-     * Set the {@link PropertyResolver} instance that will be utilized to resolve method and value bindings.
-     * </p>
-     *
-     * <p>
-     * This method is now deprecated but the implementation must cause the argument to be set as the head of the legacy
-     * <code>PropertyResolver</code> chain, replacing any existing value that was set from the application configuration
-     * resources.
-     * </p>
-     *
-     * <p>
-     * It is illegal to call this method after the application has received any requests from the client. If an attempt is
-     * made to register a listener after that time it must have no effect.
-     * </p>
-     *
-     * @param resolver The new {@link PropertyResolver} instance
-     *
-     * @throws NullPointerException if <code>resolver</code> is <code>null</code>
-     *
-     * @deprecated The recommended way to affect the execution of the Jakarta Expression Language is to provide an
-     * <code>&lt;el-resolver&gt;</code> element at the right place in the application configuration resources which will be
-     * considered in the normal course of expression evaluation. This method now will cause the argument
-     * <code>resolver</code> to be wrapped inside an implementation of {@link ELResolver} and exposed to the Jakarta
-     * Expression Language resolution system as if the user had called {@link #addELResolver}.
-     *
-     * @throws IllegalStateException if called after the first request to the {@link jakarta.faces.webapp.FacesServlet} has
-     * been serviced.
-     */
-    @Deprecated
-    public abstract void setPropertyResolver(PropertyResolver resolver);
-
-    /**
-     * <p>
      * Find a <code>ResourceBundle</code> as defined in the application configuration resources under the specified name. If
      * a <code>ResourceBundle</code> was defined for the name, return an instance that uses the locale of the current
      * {@link jakarta.faces.component.UIViewRoot}.
@@ -343,13 +288,11 @@ public abstract class Application {
      * @since 1.2
      */
     public ResourceBundle getResourceBundle(FacesContext ctx, String name) {
-
         if (defaultApplication != null) {
             return defaultApplication.getResourceBundle(ctx, name);
         }
 
         throw new UnsupportedOperationException();
-
     }
 
     /**
@@ -413,60 +356,6 @@ public abstract class Application {
 
     /**
      * <p>
-     * Return the {@link VariableResolver} that wraps the {@link ELResolver} instance that Faces provides to the Jakarta
-     * Expression Language for the resolution of expressions that appear programmatically in an application. The
-     * implementation of the <code>VariableResolver</code>must pass <code>null</code> as the base argument for any methods
-     * invoked on the underlying <code>ELResolver</code>.
-     * </p>
-     *
-     * <p>
-     * Note that this method no longer returns the default <code>VariableResolver</code>, since that class now is a no-op
-     * that aids in allowing custom <code>VariableResolver</code>s to affect the Jakarta Expression Language resolution
-     * process.
-     * </p>
-     *
-     * @return the variable resolver.
-     * @deprecated This has been replaced by {@link #getELResolver}.
-     */
-    @Deprecated
-    public abstract VariableResolver getVariableResolver();
-
-    /**
-     * <p>
-     * Set the {@link VariableResolver} instance that will be consulted to resolve method and value bindings.
-     * </p>
-     *
-     * <p>
-     * This method is now deprecated but the implementation must cause the argument to be set as the head of the legacy
-     * <code>VariableResolver</code> chain, replacing any existing value that was set from the application configuration
-     * resources.
-     * </p>
-     *
-     * <p>
-     * It is illegal to call this method after the application has received any requests from the client. If an attempt is
-     * made to register a listener after that time it must have no effect.
-     * </p>
-     *
-     * @param resolver The new {@link VariableResolver} instance
-     *
-     * @throws NullPointerException if <code>resolver</code> is <code>null</code>
-     *
-     * @deprecated The recommended way to affect the execution of the Jakarta Expression Language is to provide an
-     * <code>&lt;el-resolver&gt;</code> element at the
-     *
-     * right place in the application configuration resources which will be considered in the normal course of expression
-     * evaluation. This method now will cause the argument <code>resolver</code> to be wrapped inside an implementation of
-     * {@link ELResolver} and exposed to the Jakarta Expression Language resolution system as if the user had called
-     * {@link #addELResolver}.
-     *
-     * @throws IllegalStateException if called after the first request to the {@link jakarta.faces.webapp.FacesServlet} has
-     * been serviced.
-     */
-    @Deprecated
-    public abstract void setVariableResolver(VariableResolver resolver);
-
-    /**
-     * <p>
      * <span class="changed_modified_2_0_rev_a">Cause</span> an the argument <code>resolver</code> to be added to the
      * resolver chain as specified in section 5.5.1 of the Jakarta Server Faces Specification.
      * </p>
@@ -496,13 +385,11 @@ public abstract class Application {
      * @since 1.2
      */
     public void addELResolver(ELResolver resolver) {
-
         if (defaultApplication != null) {
             defaultApplication.addELResolver(resolver);
         } else {
             throw new UnsupportedOperationException();
         }
-
     }
 
     /**
@@ -552,12 +439,11 @@ public abstract class Application {
      * @since 1.2
      */
     public ELResolver getELResolver() {
-
         if (defaultApplication != null) {
             return defaultApplication.getELResolver();
         }
-        throw new UnsupportedOperationException();
 
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -760,25 +646,6 @@ public abstract class Application {
 
     /**
      * <p>
-     * Wrap the argument <code>componentBinding</code> in an implementation of {@link ValueExpression} and call through to
-     * {@link #createComponent(jakarta.el.ValueExpression,jakarta.faces.context.FacesContext,java.lang.String)}.
-     * </p>
-     *
-     * @param componentBinding {@link ValueBinding} representing a component value binding expression (typically specified
-     * by the <code>component</code> attribute of a custom tag)
-     * @param context {@link FacesContext} for the current request
-     * @param componentType Component type to create if the {@link ValueBinding} does not return a component instance
-     * @return the UI component.
-     * @throws FacesException if a {@link UIComponent} cannot be created
-     * @throws NullPointerException if any parameter is <code>null</code>
-     * @deprecated This has been replaced by
-     * {@link #createComponent(jakarta.el.ValueExpression,jakarta.faces.context.FacesContext,java.lang.String)}.
-     */
-    @Deprecated
-    public abstract UIComponent createComponent(ValueBinding componentBinding, FacesContext context, String componentType) throws FacesException;
-
-    /**
-     * <p>
      * <span class="changed_modified_2_0">Call</span> the <code>getValue()</code> method on the specified
      * {@link ValueExpression}. If it returns a {@link UIComponent} instance, return it as the value of this method. If it
      * does not, instantiate a new {@link UIComponent} instance of the specified component type, pass the new component to
@@ -811,13 +678,11 @@ public abstract class Application {
      * @since 1.2
      */
     public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType) throws FacesException {
-
         if (defaultApplication != null) {
             return defaultApplication.createComponent(componentExpression, context, componentType);
         }
 
         throw new UnsupportedOperationException();
-
     }
 
     /**
@@ -1258,24 +1123,6 @@ public abstract class Application {
 
     /**
      * <p>
-     * Call {@link #getExpressionFactory} then call {@link ExpressionFactory#createMethodExpression}, passing the given
-     * arguments, and wrap the result in a <code>MethodBinding</code> implementation, returning it.
-     * </p>
-     *
-     * @param ref Method binding expression for which to return a {@link MethodBinding} instance
-     * @param params Parameter signatures that must be compatible with those of the method to be invoked, or a zero-length
-     * array or <code>null</code> for a method that takes no parameters
-     * @return the method binding.
-     * @throws NullPointerException if <code>ref</code> is <code>null</code>
-     * @throws ReferenceSyntaxException if the specified <code>ref</code> has invalid syntax
-     * @deprecated This has been replaced by calling {@link #getExpressionFactory} then
-     * {@link ExpressionFactory#createMethodExpression}.
-     */
-    @Deprecated
-    public abstract MethodBinding createMethodBinding(String ref, Class<?> params[]) throws ReferenceSyntaxException;
-
-    /**
-     * <p>
      * Return an <code>Iterator</code> over the supported <code>Locale</code>s for this appication.
      * </p>
      *
@@ -1310,13 +1157,11 @@ public abstract class Application {
      */
 
     public void addELContextListener(ELContextListener listener) {
-
         if (defaultApplication != null) {
             defaultApplication.addELContextListener(listener);
         } else {
             throw new UnsupportedOperationException();
         }
-
     }
 
     /**
@@ -1335,13 +1180,11 @@ public abstract class Application {
      */
 
     public void removeELContextListener(ELContextListener listener) {
-
         if (defaultApplication != null) {
             defaultApplication.removeELContextListener(listener);
         } else {
             throw new UnsupportedOperationException();
         }
-
     }
 
     /**
@@ -1362,12 +1205,11 @@ public abstract class Application {
      */
 
     public ELContextListener[] getELContextListeners() {
-
         if (defaultApplication != null) {
             return defaultApplication.getELContextListeners();
         }
-        throw new UnsupportedOperationException();
 
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -1414,23 +1256,6 @@ public abstract class Application {
      * @return an iterator of validator ids.
      */
     public abstract Iterator<String> getValidatorIds();
-
-    /**
-     * <p>
-     * Call {@link #getExpressionFactory} then call {@link ExpressionFactory#createValueExpression}, passing the argument
-     * <code>ref</code>, <code>Object.class</code> for the expectedType, and <code>null</code>, for the fnMapper.
-     * </p>
-     *
-     *
-     * @param ref Value binding expression for which to return a {@link ValueBinding} instance
-     * @return the value binding.
-     * @throws NullPointerException if <code>ref</code> is <code>null</code>
-     * @throws ReferenceSyntaxException if the specified <code>ref</code> has invalid syntax
-     * @deprecated This has been replaced by calling {@link #getExpressionFactory} then
-     * {@link ExpressionFactory#createValueExpression}.
-     */
-    @Deprecated
-    public abstract ValueBinding createValueBinding(String ref) throws ReferenceSyntaxException;
 
     /**
      * <p class="changed_added_2_0">

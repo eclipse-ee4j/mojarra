@@ -21,11 +21,10 @@ import jakarta.faces.event.FacesListener;
 
 public class ListenerTestImpl implements FacesListener {
 
-    public ListenerTestImpl(String id,
-            String fromId, String toId) {
+    public ListenerTestImpl(String id, String fromId, String toId) {
         this.id = id;
         this.fromId = fromId; // When an event with this id is received ...
-        this.toId = toId;     // queue an additional event with this id
+        this.toId = toId; // queue an additional event with this id
     }
 
     public ListenerTestImpl(String id) {
@@ -43,7 +42,7 @@ public class ListenerTestImpl implements FacesListener {
     private String toId = null;
 
     public String getId() {
-        return (this.id);
+        return this.id;
     }
 
     public void processTest(EventTestImpl event) {
@@ -76,6 +75,6 @@ public class ListenerTestImpl implements FacesListener {
 
     // Retrieve the current trace log
     public static String trace() {
-        return (trace.toString());
+        return trace.toString();
     }
 }

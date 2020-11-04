@@ -21,7 +21,8 @@ import jakarta.faces.event.ActionListener;
 
 /**
  * <p>
- * Test implementation of {@link ActionListener}.</p>
+ * Test implementation of {@link ActionListener}.
+ * </p>
  */
 public class CommandActionListenerTestImpl implements ActionListener {
 
@@ -52,6 +53,6 @@ public class CommandActionListenerTestImpl implements ActionListener {
 
     // Retrieve the current trace log
     public static String trace() {
-        return (trace.toString());
+        return trace.toString();
     }
 }

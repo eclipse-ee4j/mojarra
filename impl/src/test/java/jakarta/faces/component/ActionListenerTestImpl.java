@@ -16,14 +16,14 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.StateHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.ActionListener;
 
 /**
  * <p>
- * Test {@link ActionListener} implementation.</p>
+ * Test {@link ActionListener} implementation.
+ * </p>
  */
 public class ActionListenerTestImpl implements ActionListener, StateHolder {
 
@@ -38,7 +38,7 @@ public class ActionListenerTestImpl implements ActionListener, StateHolder {
 
     // ----------------------------------------------------------- Pubic Methods
     public String getId() {
-        return (this.id);
+        return this.id;
     }
 
     @Override
@@ -52,8 +52,7 @@ public class ActionListenerTestImpl implements ActionListener, StateHolder {
             return false;
         }
         ActionListenerTestImpl other = (ActionListenerTestImpl) otherObj;
-        if ((null != id && null == other.id)
-                || (null == id && null != other.id)) {
+        if (null != id && null == other.id || null == id && null != other.id) {
             return false;
         }
         boolean idsAreEqual = true;
@@ -79,7 +78,7 @@ public class ActionListenerTestImpl implements ActionListener, StateHolder {
 
     // Retrieve the current trace log
     public static String trace() {
-        return (trace.toString());
+        return trace.toString();
     }
 
     //

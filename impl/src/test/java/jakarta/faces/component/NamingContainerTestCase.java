@@ -16,31 +16,22 @@
 
 package jakarta.faces.component;
 
-import com.sun.faces.junit.JUnitFacesTestCaseBase;
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import com.sun.faces.mock.MockRenderKit;
-
-import jakarta.faces.FactoryFinder;
-import jakarta.faces.component.NamingContainer;
-import jakarta.faces.component.UIForm;
-import jakarta.faces.component.UINamingContainer;
-import jakarta.faces.component.UIPanel;
-import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.render.RenderKit;
-import jakarta.faces.render.RenderKitFactory;
-
 import java.util.HashMap;
 import java.util.Map;
 
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
+import com.sun.faces.junit.JUnitFacesTestCaseBase;
+import com.sun.faces.mock.MockRenderKit;
+
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.RenderKitFactory;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * <p>
- * Unit tests for the {@link NamingContainer} functionality of all the standard
- * component classes.</p>
+ * Unit tests for the {@link NamingContainer} functionality of all the standard component classes.
+ * </p>
  */
 public class NamingContainerTestCase extends JUnitFacesTestCaseBase {
 
@@ -68,8 +59,7 @@ public class NamingContainerTestCase extends JUnitFacesTestCaseBase {
         RenderKitFactory renderKitFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
         RenderKit renderKit = new MockRenderKit();
         try {
-            renderKitFactory.addRenderKit(RenderKitFactory.HTML_BASIC_RENDER_KIT,
-                    renderKit);
+            renderKitFactory.addRenderKit(RenderKitFactory.HTML_BASIC_RENDER_KIT, renderKit);
         } catch (IllegalArgumentException e) {
         }
         Map map = new HashMap();
@@ -80,7 +70,7 @@ public class NamingContainerTestCase extends JUnitFacesTestCaseBase {
     // Return the tests included in this test case.
     public static Test suite() {
 
-        return (new TestSuite(NamingContainerTestCase.class));
+        return new TestSuite(NamingContainerTestCase.class);
 
     }
 
@@ -203,7 +193,7 @@ public class NamingContainerTestCase extends JUnitFacesTestCaseBase {
         // "d" has children "e" and "f"
         // "c" has children "h" and "i"
         // Components "b" and "d" implement NamingContainer
-        UIViewRoot a = (UIViewRoot) root;
+        UIViewRoot a = root;
         a.setId("a");
         UIForm b = new UIForm();
         b.setId("b");

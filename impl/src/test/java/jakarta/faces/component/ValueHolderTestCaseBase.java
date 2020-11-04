@@ -20,28 +20,18 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.util.Map;
 
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UIComponentBase;
-import jakarta.faces.component.UIOutput;
-import jakarta.faces.component.ValueHolder;
 import jakarta.faces.component.html.HtmlInputText;
-import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.LongConverter;
 import jakarta.faces.convert.NumberConverter;
 import jakarta.faces.convert.ShortConverter;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
  * <p>
- * Unit tests for {@link ValueHolder}. Any test case for a component class that
- * implements {@link ValueHolder} should extend this class.</p>
+ * Unit tests for {@link ValueHolder}. Any test case for a component class that implements {@link ValueHolder} should
+ * extend this class.
+ * </p>
  */
 public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
 
@@ -67,7 +57,7 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
 
     // Return the tests included in this test case.
     public static Test suite() {
-        return (new TestSuite(ValueHolderTestCaseBase.class));
+        return new TestSuite(ValueHolderTestCaseBase.class);
     }
 
     // ------------------------------------------------- Individual Test Methods
@@ -87,13 +77,12 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
                 public void run() {
                     int threadNum = 0;
                     try {
-                        threadNum = Integer.valueOf(Thread.currentThread().
-                                getName()).intValue();
+                        threadNum = Integer.valueOf(Thread.currentThread().getName()).intValue();
                     } catch (NumberFormatException ex) {
                         fail("Expected thread name to be an integer");
                     }
                     // Even threadNums use HtmlInputText, odd use this component
-                    boolean isEven = (threadNum % 2) == 0;
+                    boolean isEven = threadNum % 2 == 0;
                     ValueHolder vh = null;
                     UIComponent newComp = null;
                     if (isEven) {
@@ -148,12 +137,11 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
     private void clearDescriptors() throws Exception {
         Field descriptorsField = UIComponentBase.class.getDeclaredField("descriptors");
         descriptorsField.setAccessible(true);
-        Map<Class<?>, Map<String, PropertyDescriptor>> descriptors
-                = (Map<Class<?>, Map<String, PropertyDescriptor>>) descriptorsField
-                .get(null);
+        Map<Class<?>, Map<String, PropertyDescriptor>> descriptors = (Map<Class<?>, Map<String, PropertyDescriptor>>) descriptorsField.get(null);
         descriptors.clear();
     }
 
+    @Override
     public void testAttributesTransparency() {
         super.testAttributesTransparency();
         ValueHolder vh = (ValueHolder) component;
@@ -162,21 +150,19 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
 
     // Test attribute-property transparency
     public boolean doTestAttributesTransparency(ValueHolder vh, UIComponent newComp) {
-        assertEquals(vh.getValue(),
-                (String) newComp.getAttributes().get("value"));
+        assertEquals(vh.getValue(), newComp.getAttributes().get("value"));
         vh.setValue("foo");
         assertEquals("foo", (String) newComp.getAttributes().get("value"));
         vh.setValue(null);
-        assertNull((String) newComp.getAttributes().get("value"));
+        assertNull(newComp.getAttributes().get("value"));
         newComp.getAttributes().put("value", "bar");
         assertEquals("bar", vh.getValue());
         newComp.getAttributes().put("value", null);
         assertNull(vh.getValue());
 
-        assertEquals(vh.getConverter(),
-                (String) newComp.getAttributes().get("converter"));
+        assertEquals(vh.getConverter(), newComp.getAttributes().get("converter"));
         vh.setConverter(new LongConverter());
-        assertNotNull((Converter) newComp.getAttributes().get("converter"));
+        assertNotNull(newComp.getAttributes().get("converter"));
         assertTrue(newComp.getAttributes().get("converter") instanceof LongConverter);
         vh.setConverter(null);
         assertNull(newComp.getAttributes().get("converter"));
@@ -213,21 +199,20 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
     }
 
     // Test setting properties to valid values
+    @Override
     public void testPropertiesValid() throws Exception {
         super.testPropertiesValid();
         ValueHolder vh = (ValueHolder) component;
 
         // value
         vh.setValue("foo.bar");
-        assertEquals("expected value",
-                "foo.bar", vh.getValue());
+        assertEquals("expected value", "foo.bar", vh.getValue());
         vh.setValue(null);
         assertNull("erased value", vh.getValue());
 
         // converter
         vh.setConverter(new LongConverter());
-        assertTrue("expected converter",
-                vh.getConverter() instanceof LongConverter);
+        assertTrue("expected converter", vh.getConverter() instanceof LongConverter);
         vh.setConverter(null);
         assertNull("erased converter", vh.getConverter());
     }
@@ -255,17 +240,7 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
         ValueHolder vh1 = (ValueHolder) comp1;
         ValueHolder vh2 = (ValueHolder) comp2;
         assertEquals(vh1.getValue(), vh2.getValue());
-        checkNumberConverter((NumberConverter) vh1.getConverter(),
-                (NumberConverter) vh2.getConverter());
-    }
-
-    // Populate a pristine component to be used in state holder tests
-    @Override
-    protected void populateComponent(UIComponent component) {
-        super.populateComponent(component);
-        ValueHolder vh = (ValueHolder) component;
-        vh.setValue("component value");
-        vh.setConverter(createNumberConverter());
+        checkNumberConverter((NumberConverter) vh1.getConverter(), (NumberConverter) vh2.getConverter());
     }
 
     // Create and configure a NumberConverter
@@ -280,7 +255,7 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
         nc.setMinFractionDigits(2);
         nc.setMinIntegerDigits(5);
         nc.setType("currency");
-        return (nc);
+        return nc;
     }
 
     protected void checkNumberConverters(NumberConverter nc1, NumberConverter nc2) {

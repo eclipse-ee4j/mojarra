@@ -16,20 +16,22 @@
 
 package jakarta.faces.component;
 
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertTrue;
+
 import java.lang.reflect.Method;
-import jakarta.el.ELContext;
-import jakarta.el.ValueExpression;
 
 import org.junit.Test;
-import static org.easymock.EasyMock.*;
-import static org.junit.Assert.*;
 import org.powermock.api.easymock.PowerMock;
 
-import jakarta.faces.component.UIParameter;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
 
 public class UIParameterTest {
-    
+
     /**
      * Test isDisable method.
      */
@@ -39,13 +41,13 @@ public class UIParameterTest {
         ValueExpression valueExpression = PowerMock.createMock(ValueExpression.class);
         Method method = FacesContext.class.getDeclaredMethod("setCurrentInstance", FacesContext.class);
         method.setAccessible(true);
-        method.invoke(null, facesContext);        
+        method.invoke(null, facesContext);
         UIParameter parameter = new UIParameter();
         parameter.setDisable(true);
         assertTrue(parameter.isDisable());
         method.invoke(null, (FacesContext) null);
     }
-    
+
     /**
      * Test isDisable method.
      */
@@ -56,7 +58,7 @@ public class UIParameterTest {
         ValueExpression valueExpression = PowerMock.createMock(ValueExpression.class);
         Method method = FacesContext.class.getDeclaredMethod("setCurrentInstance", FacesContext.class);
         method.setAccessible(true);
-        method.invoke(null, facesContext);        
+        method.invoke(null, facesContext);
         expect(facesContext.getExternalContext()).andReturn(null).anyTimes();
         expect(valueExpression.isLiteralText()).andReturn(false).anyTimes();
         expect(facesContext.getELContext()).andReturn(elContext);

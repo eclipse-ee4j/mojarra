@@ -57,9 +57,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.application.ValueBindingValueExpressionAdapter;
-import com.sun.faces.application.ValueExpressionValueBindingAdapter;
-
 import jakarta.el.ELException;
 import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
@@ -68,7 +65,6 @@ import jakarta.faces.component.behavior.Behavior;
 import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.el.ValueBinding;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.BehaviorEvent;
 import jakarta.faces.event.ComponentSystemEventListener;
@@ -3404,60 +3400,6 @@ public abstract class UIComponentBase extends UIComponent {
                 ++j;
             }
         }
-    }
-
-    // ------------------------------------------- Deprecated code
-
-    /**
-     * {@inheritDoc}
-     *
-     * @throws NullPointerException {@inheritDoc}
-     * @deprecated This has been replaced by {@link #getValueExpression}.
-     */
-    @Deprecated
-    @Override
-    public ValueBinding getValueBinding(String name) {
-
-        if (name == null) {
-            throw new NullPointerException();
-        }
-        ValueBinding result = null;
-        ValueExpression ve;
-
-        if (null != (ve = getValueExpression(name))) {
-            // if the ValueExpression is an instance of our private
-            // wrapper class.
-            if (ve.getClass().equals(ValueExpressionValueBindingAdapter.class)) {
-                result = ((ValueExpressionValueBindingAdapter) ve).getWrapped();
-            } else {
-                // otherwise, this is a real ValueExpression. Wrap it
-                // in a ValueBinding.
-                result = new ValueBindingValueExpressionAdapter(ve);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @throws IllegalArgumentException {@inheritDoc}
-     * @throws NullPointerException {@inheritDoc}
-     * @deprecated This has been replaced by {@link #setValueExpression}.
-     */
-    @Deprecated
-    @Override
-    public void setValueBinding(String name, ValueBinding binding) {
-        if (name == null) {
-            throw new NullPointerException();
-        }
-        if (binding != null) {
-            ValueExpressionValueBindingAdapter adapter = new ValueExpressionValueBindingAdapter(binding);
-            setValueExpression(name, adapter);
-        } else {
-            setValueExpression(name, null);
-        }
-
     }
 
 }

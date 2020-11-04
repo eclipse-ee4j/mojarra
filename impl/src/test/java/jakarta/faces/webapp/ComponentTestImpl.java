@@ -18,10 +18,10 @@ package jakarta.faces.webapp;
 
 import java.io.IOException;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponentBase;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
-import jakarta.faces.el.ValueBinding;
 
 // Test UIComponent Class
 public class ComponentTestImpl extends UIComponentBase {
@@ -46,9 +46,9 @@ public class ComponentTestImpl extends UIComponentBase {
         if (this.label != null) {
             return (this.label);
         }
-        ValueBinding vb = getValueBinding("label");
+        ValueExpression vb = getValueExpression("label");
         if (vb != null) {
-            return ((String) vb.getValue(getFacesContext()));
+            return ((String) vb.getValue(getFacesContext().getELContext()));
         } else {
             return (null);
         }

@@ -16,19 +16,14 @@
 
 package jakarta.faces.component;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UISelectItems;
 import jakarta.faces.model.SelectItem;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
  * <p>
- * Unit tests for {@link UISelectItems}.</p>
+ * Unit tests for {@link UISelectItems}.
+ * </p>
  */
 public class UISelectItemsTestCase extends UIComponentBaseTestCase {
 
@@ -55,7 +50,7 @@ public class UISelectItemsTestCase extends UIComponentBaseTestCase {
 
     // Return the tests included in this test case.
     public static Test suite() {
-        return (new TestSuite(UISelectItemsTestCase.class));
+        return new TestSuite(UISelectItemsTestCase.class);
     }
 
     // ------------------------------------------------- Individual Test Methods
@@ -65,8 +60,7 @@ public class UISelectItemsTestCase extends UIComponentBaseTestCase {
         super.testAttributesTransparency();
         UISelectItems selectItems = (UISelectItems) component;
 
-        assertEquals(selectItems.getValue(),
-                component.getAttributes().get("value"));
+        assertEquals(selectItems.getValue(), component.getAttributes().get("value"));
         SelectItem item = new SelectItem("foo");
         selectItems.setValue(item);
         assertEquals(item, component.getAttributes().get("value"));
@@ -107,31 +101,9 @@ public class UISelectItemsTestCase extends UIComponentBaseTestCase {
         // value
         SelectItem item = new SelectItem("foo");
         selectItems.setValue(item);
-        assertEquals("expected value",
-                item, selectItems.getValue());
+        assertEquals("expected value", item, selectItems.getValue());
         selectItems.setValue(null);
         assertNull("erased value", selectItems.getValue());
-    }
-
-    @Override
-    public void testValueBindings() {
-        super.testValueBindings();
-        UISelectItems test = (UISelectItems) component;
-
-        // "value" property
-        request.setAttribute("foo", "bar");
-        test.setValue(null);
-        assertNull(test.getValue());
-        test.setValueBinding("value", application.createValueBinding("#{foo}"));
-        assertNotNull(test.getValueBinding("value"));
-        assertEquals("bar", test.getValue());
-        test.setValue("baz");
-        assertEquals("baz", test.getValue());
-        test.setValue(null);
-        assertEquals("bar", test.getValue());
-        test.setValueBinding("value", null);
-        assertNull(test.getValueBinding("value"));
-        assertNull(test.getValue());
     }
 
     // --------------------------------------------------------- Support Methods
@@ -140,6 +112,6 @@ public class UISelectItemsTestCase extends UIComponentBaseTestCase {
     protected UIComponent createComponent() {
         UIComponent component = new UISelectItems();
         component.setRendererType(null);
-        return (component);
+        return component;
     }
 }

@@ -16,20 +16,13 @@
 
 package jakarta.faces.component;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
-
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UIGraphic;
-import jakarta.faces.el.ValueBinding;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
  * <p>
- * Unit tests for {@link UIGraphic}.</p>
+ * Unit tests for {@link UIGraphic}.
+ * </p>
  */
 public class UIGraphicTestCase extends UIComponentBaseTestCase {
 
@@ -56,7 +49,7 @@ public class UIGraphicTestCase extends UIComponentBaseTestCase {
 
     // Return the tests included in this test case.
     public static Test suite() {
-        return (new TestSuite(UIGraphicTestCase.class));
+        return new TestSuite(UIGraphicTestCase.class);
     }
 
     // ------------------------------------------------- Individual Test Methods
@@ -67,23 +60,21 @@ public class UIGraphicTestCase extends UIComponentBaseTestCase {
         super.testAttributesTransparency();
         UIGraphic graphic = (UIGraphic) component;
 
-        assertEquals(graphic.getValue(),
-                (String) component.getAttributes().get("value"));
+        assertEquals(graphic.getValue(), component.getAttributes().get("value"));
         graphic.setValue("foo");
         assertEquals("foo", (String) component.getAttributes().get("value"));
         graphic.setValue(null);
-        assertNull((String) component.getAttributes().get("value"));
+        assertNull(component.getAttributes().get("value"));
         component.getAttributes().put("value", "bar");
         assertEquals("bar", graphic.getValue());
         component.getAttributes().put("value", null);
         assertNull(graphic.getValue());
 
-        assertEquals(graphic.getUrl(),
-                (String) graphic.getAttributes().get("url"));
+        assertEquals(graphic.getUrl(), (String) graphic.getAttributes().get("url"));
         graphic.setUrl("foo");
         assertEquals("foo", (String) graphic.getAttributes().get("url"));
         graphic.setUrl(null);
-        assertNull((String) graphic.getAttributes().get("url"));
+        assertNull(graphic.getAttributes().get("url"));
         graphic.getAttributes().put("url", "bar");
         assertEquals("bar", graphic.getUrl());
         graphic.getAttributes().put("url", null);
@@ -112,76 +103,12 @@ public class UIGraphicTestCase extends UIComponentBaseTestCase {
         UIGraphic graphic = (UIGraphic) component;
     }
 
-    // Test setting properties to valid values
-    @Override
-    public void testPropertiesValid() throws Exception {
-        super.testPropertiesValid();
-        UIGraphic graphic = (UIGraphic) component;
-
-        // value
-        graphic.setValue("foo.bar");
-        assertEquals("expected value",
-                "foo.bar", graphic.getValue());
-        graphic.setValue(null);
-        assertNull("erased value", graphic.getValue());
-
-        // Test transparency between "value" and "url" properties
-        graphic.setUrl("foo");
-        assertEquals("foo", (String) graphic.getValue());
-        graphic.setUrl(null);
-        assertNull(graphic.getValue());
-        graphic.setValue("bar");
-        assertEquals("bar", graphic.getUrl());
-        graphic.setValue(null);
-        assertNull(graphic.getUrl());
-
-        // Transparency applies to value bindings as well
-        assertNull(graphic.getValueBinding("url"));
-        assertNull(graphic.getValueBinding("value"));
-        request.setAttribute("foo", "bar");
-        ValueBinding vb = application.createValueBinding("#{foo}");
-        graphic.setValueBinding("url", vb);
-        assertTrue(vb == graphic.getValueBinding("url"));
-        assertTrue(vb == graphic.getValueBinding("value"));
-        graphic.setValueBinding("url", null);
-        assertNull(graphic.getValueBinding("url"));
-        assertNull(graphic.getValueBinding("value"));
-        graphic.setValueBinding("value", vb);
-        assertTrue(vb == graphic.getValueBinding("url"));
-        assertTrue(vb == graphic.getValueBinding("value"));
-        graphic.setValueBinding("url", null);
-        assertNull(graphic.getValueBinding("url"));
-        assertNull(graphic.getValueBinding("value"));
-    }
-
-    public void PENDING_FIXME_testValueBindings() {
-
-        super.testValueBindings();
-        UIGraphic test = (UIGraphic) component;
-
-        // "value" property
-        request.setAttribute("foo", "bar");
-        test.setValue(null);
-        assertNull(test.getValue());
-        test.setValueBinding("value", application.createValueBinding("#{foo}"));
-        assertNotNull(test.getValueBinding("value"));
-        assertEquals("bar", test.getValue());
-        test.setValue("baz");
-        assertEquals("baz", test.getValue());
-        test.setValue(null);
-        assertEquals("bar", test.getValue());
-        test.setValueBinding("value", null);
-        assertNull(test.getValueBinding("value"));
-        assertNull(test.getValue());
-
-    }
-
     // --------------------------------------------------------- Support Methods
     // Create a pristine component of the type to be used in state holder tests
     @Override
     protected UIComponent createComponent() {
         UIComponent component = new UIGraphic();
         component.setRendererType(null);
-        return (component);
+        return component;
     }
 }

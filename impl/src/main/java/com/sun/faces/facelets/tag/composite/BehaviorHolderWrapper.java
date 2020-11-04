@@ -33,7 +33,6 @@ import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.component.visit.VisitCallback;
 import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.el.ValueBinding;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ComponentSystemEvent;
 import jakarta.faces.event.ComponentSystemEventListener;
@@ -207,19 +206,6 @@ public class BehaviorHolderWrapper extends UIComponent implements ClientBehavior
         return parent.getRendersChildren();
     }
 
-    /**
-     * @see jakarta.faces.component.UIComponent#getValueBinding(java.lang.String)
-     * @deprecated
-     */
-    @Deprecated
-    @Override
-    public ValueBinding getValueBinding(String name) {
-        return parent.getValueBinding(name);
-    }
-
-    /**
-     * @see jakarta.faces.component.UIComponent#getValueExpression(java.lang.String)
-     */
     @Override
     public ValueExpression getValueExpression(String name) {
         return parent.getValueExpression(name);
@@ -374,16 +360,6 @@ public class BehaviorHolderWrapper extends UIComponent implements ClientBehavior
     @Override
     public void setTransient(boolean newTransientValue) {
         parent.setTransient(newTransientValue);
-    }
-
-    /**
-     * @see jakarta.faces.component.UIComponent#setValueBinding(java.lang.String, jakarta.faces.el.ValueBinding)
-     * @deprecated
-     */
-    @Deprecated
-    @Override
-    public void setValueBinding(String name, ValueBinding binding) {
-        parent.setValueBinding(name, binding);
     }
 
     /**

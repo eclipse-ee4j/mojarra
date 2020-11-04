@@ -16,8 +16,6 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.UISelectItem;
-
 public class UISelectItemSub extends UISelectItem {
 
     public UISelectItemSub(String value, String label, String description) {

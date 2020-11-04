@@ -31,7 +31,6 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.ConverterException;
-import jakarta.faces.el.MethodBinding;
 import jakarta.faces.event.ExceptionQueuedEvent;
 import jakarta.faces.event.ExceptionQueuedEventContext;
 import jakarta.faces.event.PhaseId;
@@ -88,7 +87,6 @@ import jakarta.faces.validator.ValidatorException;
  * calling the <code>setRendererType()</code> method.
  * </p>
  */
-
 public class UIInput extends UIOutput implements EditableValueHolder {
 
     private static final String BEANS_VALIDATION_AVAILABLE = "jakarta.faces.private.BEANS_VALIDATION_AVAILABLE";
@@ -498,135 +496,6 @@ public class UIInput extends UIOutput implements EditableValueHolder {
 
     }
 
-    /**
-     * <p>
-     * Return a <code>MethodBinding</code> pointing at a method that will be called during <em>Process Validations</em>
-     * phase of the request processing lifecycle, to validate the current value of this component.
-     * </p>
-     *
-     * @deprecated {@link #getValidators} should be used instead.
-     */
-    @Deprecated
-    @Override
-    public MethodBinding getValidator() {
-        MethodBinding result = null;
-
-        Validator[] curValidators = getValidators();
-        // go through our lisetners list and find the one and only
-        // MethodBindingValidator instance, if present.
-        if (null != curValidators) {
-            for (int i = 0; i < curValidators.length; i++) {
-                // We are guaranteed to have at most one instance of
-                // MethodBindingValidator in the curValidators list.
-                if (MethodBindingValidator.class == curValidators[i].getClass()) {
-                    result = ((MethodBindingValidator) curValidators[i]).getWrapped();
-                    break;
-                }
-            }
-        }
-        return result;
-
-    }
-
-    /**
-     * <p>
-     * Set a <code>MethodBinding</code> pointing at a method that will be called during <em>Process Validations</em> phase
-     * of the request processing lifecycle, to validate the current value of this component.
-     * </p>
-     *
-     * <p>
-     * Any method referenced by such an expression must be public, with a return type of <code>void</code>, and accept
-     * parameters of type {@link FacesContext}, {@link UIComponent}, and <code>Object</code>.
-     * </p>
-     *
-     * @param validatorBinding The new <code>MethodBinding</code> instance
-     * @deprecated Use {@link #addValidator} instead, obtaining the argument {@link Validator} by creating an instance of
-     * {@link jakarta.faces.validator.MethodExpressionValidator}.
-     */
-    @Deprecated
-    @Override
-    public void setValidator(MethodBinding validatorBinding) {
-        Validator[] curValidators = getValidators();
-        // see if we need to null-out, or replace an existing validator
-        if (null != curValidators) {
-            for (int i = 0; i < curValidators.length; i++) {
-                // if we want to remove the validatorBinding
-                if (null == validatorBinding) {
-                    // We are guaranteed to have at most one instance of
-                    // MethodBindingValidator in the curValidators
-                    // list.
-                    if (MethodBindingValidator.class == curValidators[i].getClass()) {
-                        removeValidator(curValidators[i]);
-                        return;
-                    }
-                }
-                // if we want to replace the validatorBinding
-                else // noinspection ObjectEquality
-                if (validatorBinding == curValidators[i]) {
-                    removeValidator(curValidators[i]);
-                    break;
-                }
-            }
-        }
-        addValidator(new MethodBindingValidator(validatorBinding));
-
-    }
-
-    @Override
-    public MethodBinding getValueChangeListener() {
-        MethodBinding result = null;
-
-        ValueChangeListener[] curListeners = getValueChangeListeners();
-        // go through our lisetners list and find the one and only
-        // MethodBindingValueChangeListener instance, if present.
-        if (null != curListeners) {
-            for (int i = 0; i < curListeners.length; i++) {
-                // We are guaranteed to have at most one instance of
-                // MethodBindingValueChangeListener in the curListeners list.
-                if (MethodBindingValueChangeListener.class == curListeners[i].getClass()) {
-                    result = ((MethodBindingValueChangeListener) curListeners[i]).getWrapped();
-                    break;
-                }
-            }
-        }
-        return result;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param valueChangeListener the value change listener.
-     * @deprecated Use {@link #addValueChangeListener} instead, obtaining the argument {@link ValueChangeListener} by
-     * creating an instance of {@link jakarta.faces.event.MethodExpressionValueChangeListener}.
-     */
-    @Deprecated
-    @Override
-    public void setValueChangeListener(MethodBinding valueChangeListener) {
-
-        ValueChangeListener[] curListeners = getValueChangeListeners();
-        // see if we need to null-out, or replace an existing listener
-        if (null != curListeners) {
-            for (int i = 0; i < curListeners.length; i++) {
-                // if we want to remove the valueChangeListener
-                if (null == valueChangeListener) {
-                    // We are guaranteed to have at most one instance of
-                    // MethodBindingValueChangeListener in the curListeners
-                    // list.
-                    if (MethodBindingValueChangeListener.class == curListeners[i].getClass()) {
-                        removeFacesListener(curListeners[i]);
-                        return;
-                    }
-                }
-                // if we want to replace the valueChangeListener
-                else // noinspection ObjectEquality
-                if (valueChangeListener == curListeners[i]) {
-                    removeFacesListener(curListeners[i]);
-                    break;
-                }
-            }
-        }
-        addValueChangeListener(new MethodBindingValueChangeListener(valueChangeListener));
-    }
 
     // ----------------------------------------------------- UIComponent Methods
 
@@ -639,7 +508,6 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      */
     @Override
     public void markInitialState() {
-
         super.markInitialState();
         if (validators != null) {
             validators.markInitialState();
@@ -649,7 +517,6 @@ public class UIInput extends UIOutput implements EditableValueHolder {
 
     @Override
     public void clearInitialState() {
-
         if (initialStateMarked()) {
             super.clearInitialState();
             if (validators != null) {
@@ -671,7 +538,6 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      */
     @Override
     public void processDecodes(FacesContext context) {
-
         if (context == null) {
             throw new NullPointerException();
         }
@@ -703,7 +569,6 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      */
     @Override
     public void processValidators(FacesContext context) {
-
         if (context == null) {
             throw new NullPointerException();
         }
@@ -740,7 +605,6 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      */
     @Override
     public void processUpdates(FacesContext context) {
-
         if (context == null) {
             throw new NullPointerException();
         }
@@ -773,7 +637,6 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      */
     @Override
     public void decode(FacesContext context) {
-
         if (context == null) {
             throw new NullPointerException();
         }
@@ -818,7 +681,6 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * @throws NullPointerException if <code>context</code> is <code>null</code>
      */
     public void updateModel(FacesContext context) {
-
         if (context == null) {
             throw new NullPointerException();
         }
@@ -918,7 +780,6 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * @throws NullPointerException if <code>context</code> is null
      */
     public void validate(FacesContext context) {
-
         if (context == null) {
             throw new NullPointerException();
         }

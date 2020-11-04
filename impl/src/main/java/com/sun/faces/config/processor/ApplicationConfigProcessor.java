@@ -22,7 +22,6 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -50,8 +49,6 @@ import com.sun.faces.application.ApplicationResourceBundle;
 import com.sun.faces.config.ConfigurationException;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.manager.documents.DocumentInfo;
-import com.sun.faces.el.ChainAwareVariableResolver;
-import com.sun.faces.el.DummyPropertyResolverImpl;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
@@ -66,8 +63,6 @@ import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.search.SearchExpressionHandler;
 import jakarta.faces.component.search.SearchKeywordResolver;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.el.PropertyResolver;
-import jakarta.faces.el.VariableResolver;
 import jakarta.faces.event.ActionListener;
 import jakarta.faces.event.NamedEvent;
 import jakarta.faces.event.SystemEvent;
@@ -150,16 +145,6 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
      * <code>/faces-config/application/search-keyword-resolver</code>
      */
     private static final String SEARCH_KEYWORD_RESOLVER = "search-keyword-resolver";
-
-    /**
-     * <code>/faces-config/application/property-resolver</code>
-     */
-    private static final String PROPERTY_RESOLVER = "property-resolver";
-
-    /**
-     * <code>/faces-config/application/variable-resolver</code>
-     */
-    private static final String VARIABLE_RESOLVER = "variable-resolver";
 
     /**
      * <code>/faces-config/application/locale-config/default-locale</code>
@@ -278,12 +263,6 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                                 break;
                             case EL_RESOLVER:
                                 addELResolver(servletContext, facesContext, associate, n);
-                                break;
-                            case PROPERTY_RESOLVER:
-                                addPropertyResolver(servletContext, facesContext, associate, n);
-                                break;
-                            case VARIABLE_RESOLVER:
-                                addVariableResolver(servletContext, facesContext, associate, n);
                                 break;
                             case DEFAULT_LOCALE:
                                 setDefaultLocale(application, n);
@@ -444,7 +423,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
             if (bundle != null) {
 
                 if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.log(Level.FINE, MessageFormat.format("Calling Application.setMessageBundle({0})", bundle));
+                    LOGGER.log(Level.FINE, format("Calling Application.setMessageBundle({0})", bundle));
                 }
                 application.setMessageBundle(bundle);
             }
@@ -456,7 +435,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
             String id = getNodeText(defaultId);
             if (id != null) {
                 if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.log(Level.FINE, MessageFormat.format("Calling Application.setDefaultRenderKitId({0})", id));
+                    LOGGER.log(Level.FINE, format("Calling Application.setDefaultRenderKitId({0})", id));
                 }
                 application.setDefaultRenderKitId(id);
             }
@@ -528,7 +507,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                         stateManagers.add(instance);
                     }
                     if (LOGGER.isLoggable(Level.FINE)) {
-                        LOGGER.log(Level.FINE, MessageFormat.format("Calling Application.setStateManagers({0})", manager));
+                        LOGGER.log(Level.FINE, format("Calling Application.setStateManagers({0})", manager));
                     }
 
                     application.setStateManager(instance);
@@ -632,67 +611,9 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                     if (didPerformInjection[0]) {
                         searchKeywordResolvers.add(keywordResolver);
                     }
-                    if (LOGGER.isLoggable(FINE)) {
-                        LOGGER.log(FINE, format("Adding ''{0}'' to SearchKeywordResolver chain", searchKeywordResolverClass));
-                    }
+                    LOGGER.log(FINE, () -> format("Adding ''{0}'' to SearchKeywordResolver chain", searchKeywordResolverClass));
 
                     application.addSearchKeywordResolver(keywordResolver);
-                }
-            }
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    private void addPropertyResolver(ServletContext sc, FacesContext facesContext, ApplicationAssociate associate, Node propertyResolver) {
-        if (propertyResolver != null) {
-
-            if (associate != null) {
-                Object resolverImpl = associate.getLegacyPRChainHead();
-                if (resolverImpl == null) {
-                    resolverImpl = new DummyPropertyResolverImpl();
-                }
-
-                String resolver = getNodeText(propertyResolver);
-                if (resolver != null) {
-                    boolean[] didPerformInjection = { false };
-                    resolverImpl = createInstance(sc, facesContext, resolver, PropertyResolver.class, resolverImpl, propertyResolver, false,
-                            didPerformInjection);
-                    if (LOGGER.isLoggable(FINE)) {
-                        LOGGER.log(FINE, format("Adding ''{0}'' to PropertyResolver chain", resolverImpl));
-                    }
-                }
-
-                if (resolverImpl != null) {
-                    associate.setLegacyPRChainHead((PropertyResolver) resolverImpl);
-                }
-            }
-        }
-
-    }
-
-    @SuppressWarnings("deprecation")
-    private void addVariableResolver(ServletContext sc, FacesContext facesContext, ApplicationAssociate associate, Node variableResolver) {
-        if (variableResolver != null) {
-
-            if (associate != null) {
-                Object resolverImpl = associate.getLegacyVRChainHead();
-                if (resolverImpl == null) {
-                    resolverImpl = new ChainAwareVariableResolver();
-                }
-
-                String resolver = getNodeText(variableResolver);
-
-                if (resolver != null) {
-                    boolean[] didPerformInjection = { false };
-                    resolverImpl = createInstance(sc, facesContext, resolver, VariableResolver.class, resolverImpl, variableResolver, false,
-                            didPerformInjection);
-                    if (LOGGER.isLoggable(FINE)) {
-                        LOGGER.log(FINE, format("Adding ''{0}'' to VariableResolver chain", resolverImpl));
-                    }
-                }
-
-                if (resolverImpl != null) {
-                    associate.setLegacyVRChainHead((VariableResolver) resolverImpl);
                 }
             }
         }
@@ -704,9 +625,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
             if (defLocale != null) {
                 Locale def = getLocaleFromString(defLocale);
                 if (def != null) {
-                    if (LOGGER.isLoggable(FINE)) {
-                        LOGGER.log(FINE, format("Setting default Locale to ''{0}''", defLocale));
-                    }
+                    LOGGER.log(FINE, () -> format("Setting default Locale to ''{0}''", defLocale));
                     application.setDefaultLocale(def);
                 }
             }
@@ -721,15 +640,12 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
             if (locString != null) {
                 Locale loc = Util.getLocaleFromString(locString);
                 if (loc != null) {
-                    if (LOGGER.isLoggable(Level.FINE)) {
-                        LOGGER.log(Level.FINE, MessageFormat.format("Adding supported Locale ''{0}''", locString));
-                    }
+                    LOGGER.log(Level.FINE, () -> format("Adding supported Locale ''{0}''", locString));
                     sLocales.add(loc);
                 }
                 application.setSupportedLocales(sLocales);
             }
         }
-
     }
 
     private void addResouceBundle(ApplicationAssociate associate, Node resourceBundle) {

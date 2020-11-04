@@ -16,18 +16,19 @@
 
 package jakarta.faces.component;
 
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import org.easymock.EasyMock;
 import org.junit.Test;
 
-import jakarta.faces.component.StateHolderSaver;
-import jakarta.faces.component.UIInput;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.LengthValidator;
 import jakarta.faces.validator.LongRangeValidator;
 import jakarta.faces.validator.Validator;
-
-import static org.junit.Assert.*;
-import static org.easymock.EasyMock.*;
 
 /**
  * @author Manfred Riem (manfred.riem@oracle.com)
@@ -197,13 +198,13 @@ public class UIInputTest {
         input.markInitialState();
         input.restoreState(context, state);
         assertTrue(input.getValidators().length == 3);
-       
+
         Validator[] validators = input.getValidators();
         for (int i = 0, len = validators.length; i < len; i++) {
             LengthValidator v = (LengthValidator) validators[i];
-            assertTrue(v.getMinimum() == (i + 1));
+            assertTrue(v.getMinimum() == i + 1);
         }
-        
+
         verify(context);
     }
 }

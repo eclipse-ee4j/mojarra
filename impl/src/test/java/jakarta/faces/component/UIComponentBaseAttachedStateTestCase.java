@@ -16,6 +16,13 @@
 
 package jakarta.faces.component;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
+
 import com.sun.faces.mock.MockExternalContext;
 import com.sun.faces.mock.MockFacesContext;
 import com.sun.faces.mock.MockHttpServletRequest;
@@ -24,29 +31,12 @@ import com.sun.faces.mock.MockLifecycle;
 import com.sun.faces.mock.MockServletContext;
 
 import jakarta.faces.FactoryFinder;
-import jakarta.faces.component.PartialStateHolder;
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UIComponentBase;
-import jakarta.faces.component.UIOutput;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.FacesListener;
 import jakarta.faces.event.ValueChangeListener;
-
-import java.lang.reflect.Method;
-import java.util.HashMap;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
 
 public class UIComponentBaseAttachedStateTestCase extends TestCase {
 
@@ -62,7 +52,7 @@ public class UIComponentBaseAttachedStateTestCase extends TestCase {
 
     // Return the tests included in this test case.
     public static Test suite() {
-        return (new TestSuite(UIComponentBaseAttachedStateTestCase.class));
+        return new TestSuite(UIComponentBaseAttachedStateTestCase.class);
     }
 
     @Override
@@ -70,18 +60,17 @@ public class UIComponentBaseAttachedStateTestCase extends TestCase {
         super.setUp();
         component = new UIOutput();
         facesContext = new MockFacesContext();
-        
+
         servletContext = new MockServletContext();
         servletContext.addInitParameter("appParamName", "appParamValue");
         servletContext.setAttribute("appScopeName", "appScopeValue");
         request = new MockHttpServletRequest(null);
         request.setAttribute("reqScopeName", "reqScopeValue");
         response = new MockHttpServletResponse();
-        
+
         // Create something to stand-in as the InitFacesContext
-        new MockFacesContext(new MockExternalContext(servletContext, request, response),
-                new MockLifecycle());
-        
+        new MockFacesContext(new MockExternalContext(servletContext, request, response), new MockLifecycle());
+
     }
 
     @Override
@@ -94,8 +83,7 @@ public class UIComponentBaseAttachedStateTestCase extends TestCase {
     }
 
     public void testAttachedObjectsSet() throws Exception {
-        Set<ValueChangeListener> returnedAttachedObjects = null,
-                attachedObjects = new HashSet<ValueChangeListener>();
+        Set<ValueChangeListener> returnedAttachedObjects = null, attachedObjects = new HashSet<>();
         ValueChangeListener toAdd = new ValueChangeListenerTestImpl();
         attachedObjects.add(toAdd);
         toAdd = new ValueChangeListenerTestImpl();
@@ -107,8 +95,7 @@ public class UIComponentBaseAttachedStateTestCase extends TestCase {
     }
 
     public void testAttachedObjectsStack() throws Exception {
-        Stack<ValueChangeListener> returnedAttachedObjects = null,
-                attachedObjects = new Stack<ValueChangeListener>();
+        Stack<ValueChangeListener> returnedAttachedObjects = null, attachedObjects = new Stack<>();
         ValueChangeListener toAdd = new ValueChangeListenerTestImpl();
         attachedObjects.add(toAdd);
         toAdd = new ValueChangeListenerTestImpl();
@@ -120,8 +107,7 @@ public class UIComponentBaseAttachedStateTestCase extends TestCase {
     }
 
     public void testAttachedObjectsMap() throws Exception {
-        Map<String, ValueChangeListener> returnedAttachedObjects = null,
-                attachedObjects = new HashMap<String, ValueChangeListener>();
+        Map<String, ValueChangeListener> returnedAttachedObjects = null, attachedObjects = new HashMap<>();
         ValueChangeListener toAdd = new ValueChangeListenerTestImpl();
         attachedObjects.put("one", toAdd);
         toAdd = new ValueChangeListenerTestImpl();
@@ -134,8 +120,7 @@ public class UIComponentBaseAttachedStateTestCase extends TestCase {
 
     // Regression test for bug #907
     public void testAttachedObjectsCount() throws Exception {
-        Set<ValueChangeListener> returnedAttachedObjects = null,
-                attachedObjects = new HashSet<ValueChangeListener>();
+        Set<ValueChangeListener> returnedAttachedObjects = null, attachedObjects = new HashSet<>();
         ValueChangeListener toAdd = new ValueChangeListenerTestImpl();
         attachedObjects.add(toAdd);
         toAdd = new ValueChangeListenerTestImpl();
@@ -303,7 +288,7 @@ public class UIComponentBaseAttachedStateTestCase extends TestCase {
 
         @Override
         public Object saveState(FacesContext context) {
-            return ((!initialState) ? new Object[]{value} : null);
+            return !initialState ? new Object[] { value } : null;
         }
 
         @Override

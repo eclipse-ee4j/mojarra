@@ -16,14 +16,13 @@
 
 package jakarta.faces.component;
 
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UIPanel;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
  * <p>
- * Unit tests for {@link UIPanel}.</p>
+ * Unit tests for {@link UIPanel}.
+ * </p>
  */
 public class UIPanelTestCase extends UIComponentBaseTestCase {
 
@@ -51,7 +50,7 @@ public class UIPanelTestCase extends UIComponentBaseTestCase {
 
     // Return the tests included in this test case.
     public static Test suite() {
-        return (new TestSuite(UIPanelTestCase.class));
+        return new TestSuite(UIPanelTestCase.class);
     }
 
     // ------------------------------------------------- Individual Test Methods
@@ -81,17 +80,12 @@ public class UIPanelTestCase extends UIComponentBaseTestCase {
         UIPanel panel = (UIPanel) component;
     }
 
-    public void PENDING_FIXME_testValueBindings() {
-        super.testValueBindings();
-        UIPanel test = (UIPanel) component;
-    }
-
     // --------------------------------------------------------- Support Methods
     // Create a pristine component of the type to be used in state holder tests
     @Override
     protected UIComponent createComponent() {
         UIComponent component = new UIPanel();
         component.setRendererType(null);
-        return (component);
+        return component;
     }
 }

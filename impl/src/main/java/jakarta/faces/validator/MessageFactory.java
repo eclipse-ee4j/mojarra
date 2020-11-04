@@ -28,7 +28,6 @@ import jakarta.faces.application.ApplicationFactory;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.el.ValueBinding;
 
 /**
  *
@@ -289,12 +288,6 @@ class MessageFactory {
             if (parameters != null) {
                 for (int i = 0; i < parameters.length; i++) {
                     Object o = parameters[i];
-                    if (o instanceof ValueBinding) {
-                        if (context == null) {
-                            context = FacesContext.getCurrentInstance();
-                        }
-                        o = ((ValueBinding) o).getValue(context);
-                    }
                     if (o instanceof ValueExpression) {
                         if (context == null) {
                             context = FacesContext.getCurrentInstance();

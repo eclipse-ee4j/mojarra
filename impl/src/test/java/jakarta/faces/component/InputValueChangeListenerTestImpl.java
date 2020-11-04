@@ -21,7 +21,8 @@ import jakarta.faces.event.ValueChangeListener;
 
 /**
  * <p>
- * Test implementation of {@link ValueChangeListener}.</p>
+ * Test implementation of {@link ValueChangeListener}.
+ * </p>
  */
 public class InputValueChangeListenerTestImpl implements ValueChangeListener {
 
@@ -52,6 +53,6 @@ public class InputValueChangeListenerTestImpl implements ValueChangeListener {
 
     // Retrieve the current trace log
     public static String trace() {
-        return (trace.toString());
+        return trace.toString();
     }
 }
