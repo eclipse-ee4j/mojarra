@@ -38,7 +38,6 @@
     </dependencies> 
        
     <modules>
-        <module>cdiBeanValidator</module>
         <module>cdiMethodValidation</module>
         <module>cdiMultiTenantJspSetsTccl</module>
         <module>cdiMultiTenantSetsTccl</module>

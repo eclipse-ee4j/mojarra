@@ -33,6 +33,7 @@
     <name>Mojarra ${project.version} - Test - Faces 2.2</name>
 
     <modules>
+        <module>cdiBeanValidator</module>
         <module>cdiInitDestroyEvent</module>
         <module>viewscope</module>
         <module>viewActionCdiViewScoped</module>
