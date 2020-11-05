@@ -62,7 +62,6 @@
         <module>passthrough</module>
         <module>uiinput</module>
         <module>uiinput-required-true</module>
-        <module>validateWholeBean</module>
         <module>websocket</module>
         <module>xhtmlMappingToFaceletByDefault</module>
         <module>searchExpression</module>

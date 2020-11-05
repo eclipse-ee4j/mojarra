@@ -18,8 +18,6 @@ package com.sun.faces.ext.component;
 
 import static com.sun.faces.ext.component.MessageFactory.getLabel;
 import static com.sun.faces.ext.component.MessageFactory.getMessage;
-import static com.sun.faces.ext.component.MultiFieldValidationUtils.FAILED_FIELD_LEVEL_VALIDATION;
-import static com.sun.faces.ext.component.MultiFieldValidationUtils.getMultiFieldValidationCandidates;
 import static com.sun.faces.util.BeanValidation.getBeanValidator;
 import static com.sun.faces.util.ReflectionUtils.setProperties;
 import static com.sun.faces.util.Util.getValueExpressionNullSafe;
@@ -27,6 +25,8 @@ import static com.sun.faces.util.copier.CopierUtils.getCopier;
 import static jakarta.faces.component.visit.VisitContext.createVisitContext;
 import static jakarta.faces.component.visit.VisitResult.ACCEPT;
 import static jakarta.faces.validator.BeanValidator.MESSAGE_ID;
+import static jakarta.faces.validator.BeanValidator.VALIDATOR_ID;
+import static java.util.Collections.emptyMap;
 
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -36,6 +36,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import jakarta.el.ValueExpression;
+import jakarta.el.ValueReference;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.EditableValueHolder;
@@ -51,10 +52,19 @@ import jakarta.faces.validator.ValidatorException;
 import jakarta.validation.ConstraintViolation;
 
 class WholeBeanValidator implements Validator<Object> {
-
     private static final Logger LOGGER = Logger.getLogger("jakarta.faces.validator", "jakarta.faces.LogStrings");
 
     private static final String ERROR_MISSING_FORM = "f:validateWholeBean must be nested directly in an UIForm.";
+
+    static final String MULTI_FIELD_VALIDATION_CANDIDATES = VALIDATOR_ID + ".MULTI_FIELD_VALIDATION_CANDIDATES";
+
+    /**
+     * <p class="changed_added_2_3">
+     * Special value to indicate the proposed value for a property failed field-level validation. This prevents any attempt
+     * to perform class level validation.
+     * </p>
+     */
+    static final String FAILED_FIELD_LEVEL_VALIDATION = VALIDATOR_ID + ".FAILED_FIELD_LEVEL_VALIDATION";
 
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
@@ -220,14 +230,14 @@ class WholeBeanValidator implements Validator<Object> {
 
                 if (valueExpression != null) {
 
-                    ValueReference valueReference = new ValueExpressionAnalyzer(valueExpression).getReference(context.getELContext());
+                    ValueReference valueReference = valueExpression.getValueReference(context.getELContext());
 
                     if (valueReference != null && valueReference.getBase().equals(base)) {
                         Map<String, Object> tuple = new HashMap<>();
                         tuple.put("component", component);
                         tuple.put("value", getComponentValue(component));
 
-                        candidate.put(valueReference.getProperty(), tuple);
+                        candidate.put(valueReference.getProperty().toString(), tuple);
                     }
                 }
             }
@@ -240,6 +250,74 @@ class WholeBeanValidator implements Validator<Object> {
 
             return inputComponent.getSubmittedValue() != null ? inputComponent.getSubmittedValue() : inputComponent.getLocalValue();
         }
+    }
+
+    /*
+     * <p class="changed_added_2_3">Returns a data structure that stores the information necessary to perform class-level
+     * validation by <code>&lt;f:validateWholeBean &gt;</code> components elsewhere in the tree. The lifetime of this data
+     * structure does not extend beyond the current {@code FacesContext}. The data structure must conform to the following
+     * specification.</p>
+     *
+     * <div class="changed_added_2_3">
+     *
+     * <ul>
+     *
+     * <li><p>It is a non-thread-safe {@code Map}.</p></li>
+     *
+     * <li><p>Keys are CDI bean instances that are referenced by the {@code value} attribute of
+     * <code>&lt;f:validateWholeBean &gt;</code> components.</p></li>
+     *
+     * <li>
+     *
+     * <p>Values are {@code Map}s that represent the properties to be stored on the CDI bean instance that is the current
+     * key. The inner {@code Map} must conform to the following specification.</p>
+     *
+     * <ul>
+     *
+     * <li><p>It is a non-thread-safe {@code Map}.</p></li>
+     *
+     * <li><p>Keys are property names.</p></li>
+     *
+     * <li><p>Values are {@code Map} instances. In this innermost map, the following keys are supported.</p>
+     *
+     * <p>component: Object that is the EditableValueHolder</p> <p>value: Object that is the value of the property</p>
+     *
+     * </li>
+     *
+     * </ul>
+     *
+     * </li>
+     *
+     *
+     *
+     * </ul>
+     *
+     * </div>
+     *
+     * @param context the {@link FacesContext} for this request
+     *
+     * @param create if {@code true}, the data structure must be created if not present. If {@code false} the data structure
+     * must not be created and {@code Collections.emptyMap()} must be returned.
+     *
+     * @return the data structure representing the multi-field validation candidates
+     *
+     * @since 2.3
+     */
+    static Map<Object, Map<String, Map<String, Object>>> getMultiFieldValidationCandidates(FacesContext context, boolean create) {
+        Map<Object, Object> attrs = context.getAttributes();
+
+        @SuppressWarnings("unchecked")
+        Map<Object, Map<String, Map<String, Object>>> multiFieldValidationCandidates = (Map<Object, Map<String, Map<String, Object>>>) attrs.get(MULTI_FIELD_VALIDATION_CANDIDATES);
+        if (multiFieldValidationCandidates == null) {
+            if (create) {
+                multiFieldValidationCandidates = new HashMap<>();
+                attrs.put(MULTI_FIELD_VALIDATION_CANDIDATES, multiFieldValidationCandidates);
+            } else {
+                multiFieldValidationCandidates = emptyMap();
+            }
+        }
+
+        return multiFieldValidationCandidates;
     }
 
 }

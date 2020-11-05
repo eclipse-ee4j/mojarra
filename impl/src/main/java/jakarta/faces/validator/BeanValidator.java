@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import jakarta.el.ValueExpression;
+import jakarta.el.ValueReference;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.PartialStateHolder;
@@ -300,12 +301,8 @@ public class BeanValidator implements Validator, PartialStateHolder {
 
         Class<?>[] validationGroupsArray = parseValidationGroups(getValidationGroups());
 
-        // PENDING(rlubke, driscoll): When Jakarta Expression Language 1.3 is present, we won't need
-        // this.
+        ValueReference valueReference = valueExpression.getValueReference(context.getELContext());
 
-        ValueExpressionAnalyzer expressionAnalyzer = new ValueExpressionAnalyzer(valueExpression);
-
-        ValueReference valueReference = expressionAnalyzer.getReference(context.getELContext());
         if (valueReference == null) {
             return;
         }
@@ -316,8 +313,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
             Set violationsRaw = null;
 
             try {
-                violationsRaw = beanValidator.validateValue(valueReference.getBaseClass(), valueReference.getProperty(), value, validationGroupsArray);
-
+                violationsRaw = beanValidator.validateValue(valueReference.getBase().getClass(), valueReference.getProperty().toString(), value, validationGroupsArray);
             } catch (IllegalArgumentException iae) {
                 LOGGER.fine("Unable to validate expression " + valueExpression.getExpressionString()
                         + " using Bean Validation.  Unable to get value of expression. " + " Message from Bean Validation: " + iae.getMessage());
@@ -342,7 +338,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
                 // Record the fact that this field failed validation, so that multi-field
                 // validation is not attempted.
                 if (wholeBeanValidationEnabled(context, validationGroupsArray)) {
-                    recordValidationResult(context, component, valueReference.getBase(), valueReference.getProperty(), FAILED_FIELD_LEVEL_VALIDATION);
+                    recordValidationResult(context, component, valueReference.getBase(), valueReference.getProperty().toString(), FAILED_FIELD_LEVEL_VALIDATION);
                 }
 
                 throw toThrow;
@@ -352,11 +348,11 @@ public class BeanValidator implements Validator, PartialStateHolder {
         // Record the fact that this field passed validation, so that multi-field
         // validation can be performed if desired
         if (wholeBeanValidationEnabled(context, validationGroupsArray)) {
-            recordValidationResult(context, component, valueReference.getBase(), valueReference.getProperty(), value);
+            recordValidationResult(context, component, valueReference.getBase(), valueReference.getProperty().toString(), value);
         }
     }
 
-    private boolean isResolvable(ValueReference valueReference, ValueExpression valueExpression) {
+    private boolean isResolvable(jakarta.el.ValueReference valueReference, ValueExpression valueExpression) {
         Boolean resolvable = null;
         String failureMessage = null;
 
@@ -368,7 +364,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
                     + " using Bean Validation.  Unable to get value of expression.";
             resolvable = false;
         } else {
-            Class<?> baseClass = valueReference.getBaseClass();
+            Class<?> baseClass = valueReference.getBase() == null ? null : valueReference.getBase().getClass();
 
             // case 1, base classes of Map, List, or Array are not resolvable
             if (baseClass != null) {

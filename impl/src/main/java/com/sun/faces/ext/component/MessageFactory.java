@@ -44,58 +44,39 @@ public class MessageFactory {
     }
 
     /**
-     * @see #getMessage(String, Object...)
-     * @param severity set a custom severity
-     */
-    public static FacesMessage getMessage(String messageId, FacesMessage.Severity severity, Object... params) {
-        FacesMessage message = getMessage(messageId, params);
-        message.setSeverity(severity);
-        return message;
-    }
-
-    /**
-     * @see #getMessage(Locale, String, Object...)
-     * @param severity set a custom severity
-     */
-    public static FacesMessage getMessage(Locale locale, String messageId, FacesMessage.Severity severity, Object... params) {
-        FacesMessage message = getMessage(locale, messageId, params);
-        message.setSeverity(severity);
-        return message;
-    }
-
-    /**
-     * @see #getMessage(FacesContext, String, Object...)
-     * @param severity set a custom severity
-     */
-    public static FacesMessage getMessage(FacesContext context, String messageId, FacesMessage.Severity severity, Object... params) {
-        FacesMessage message = getMessage(context, messageId, params);
-        message.setSeverity(severity);
-        return message;
-    }
-
-    /**
      * <p>
-     * This version of getMessage() is used for localizing implementation specific messages.
+     * Creates and returns a FacesMessage for the specified Locale.
      * </p>
      *
+     * @param context - the <code>FacesContext</code> for the current request
      * @param messageId - the key of the message in the resource bundle
      * @param params - substittion parameters
      *
      * @return a localized <code>FacesMessage</code> with the severity of FacesMessage.SEVERITY_ERROR
      */
-    public static FacesMessage getMessage(String messageId, Object... params) {
-        Locale locale = null;
-        FacesContext context = FacesContext.getCurrentInstance();
-        // context.getViewRoot() may not have been initialized at this point.
-        if (context != null && context.getViewRoot() != null) {
+    public static FacesMessage getMessage(FacesContext context, String messageId, Object... params) {
+        if (context == null || messageId == null) {
+            throw new NullPointerException(" context " + context + " messageId " + messageId);
+        }
+
+        Locale locale;
+        // viewRoot may not have been initialized at this point.
+        if (context.getViewRoot() != null) {
             locale = context.getViewRoot().getLocale();
-            if (locale == null) {
-                locale = Locale.getDefault();
-            }
         } else {
             locale = Locale.getDefault();
         }
 
+        if (locale == null) {
+            throw new NullPointerException(" locale is null ");
+        }
+
+        FacesMessage message = getMessage(locale, messageId, params);
+        if (message != null) {
+            return message;
+        }
+
+        locale = Locale.getDefault();
         return getMessage(locale, messageId, params);
     }
 
@@ -110,7 +91,7 @@ public class MessageFactory {
      *
      * @return a localized <code>FacesMessage</code> with the severity of FacesMessage.SEVERITY_ERROR
      */
-    public static FacesMessage getMessage(Locale locale, String messageId, Object... params) {
+    private static FacesMessage getMessage(Locale locale, String messageId, Object... params) {
         String summary = null;
         String detail = null;
         ResourceBundle bundle;
@@ -169,41 +150,6 @@ public class MessageFactory {
         return ret;
     }
 
-    /**
-     * <p>
-     * Creates and returns a FacesMessage for the specified Locale.
-     * </p>
-     *
-     * @param context - the <code>FacesContext</code> for the current request
-     * @param messageId - the key of the message in the resource bundle
-     * @param params - substittion parameters
-     *
-     * @return a localized <code>FacesMessage</code> with the severity of FacesMessage.SEVERITY_ERROR
-     */
-    public static FacesMessage getMessage(FacesContext context, String messageId, Object... params) {
-
-        if (context == null || messageId == null) {
-            throw new NullPointerException(" context " + context + " messageId " + messageId);
-        }
-        Locale locale;
-        // viewRoot may not have been initialized at this point.
-        if (context.getViewRoot() != null) {
-            locale = context.getViewRoot().getLocale();
-        } else {
-            locale = Locale.getDefault();
-        }
-
-        if (null == locale) {
-            throw new NullPointerException(" locale is null ");
-        }
-
-        FacesMessage message = getMessage(locale, messageId, params);
-        if (message != null) {
-            return message;
-        }
-        locale = Locale.getDefault();
-        return getMessage(locale, messageId, params);
-    }
 
     /**
      * <p>
@@ -228,7 +174,7 @@ public class MessageFactory {
         return o;
     }
 
-    protected static Application getApplication() {
+    private static Application getApplication() {
         FacesContext context = FacesContext.getCurrentInstance();
         if (context != null) {
             return FacesContext.getCurrentInstance().getApplication();
@@ -237,7 +183,7 @@ public class MessageFactory {
         return afactory.getApplication();
     }
 
-    protected static ClassLoader getCurrentLoader(Class fallbackClass) {
+    private static ClassLoader getCurrentLoader(Class fallbackClass) {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         if (loader == null) {
             loader = fallbackClass.getClassLoader();
