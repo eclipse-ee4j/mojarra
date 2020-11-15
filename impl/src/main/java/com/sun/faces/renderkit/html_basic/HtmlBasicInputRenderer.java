@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import javax.el.PropertyNotFoundException;
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.component.UIComponent;
@@ -68,7 +69,23 @@ public abstract class HtmlBasicInputRenderer extends HtmlBasicRenderer {
         }
 
         if (null == converter && null != valueExpression) {
-            Class converterType = valueExpression.getType(context.getELContext());
+            Class converterType;
+            try {
+                converterType = valueExpression.getType(context.getELContext());
+            } catch (PropertyNotFoundException e) {
+                if (submittedValue == null) {
+                    if (logger.isLoggable(Level.FINE)) {
+                        logger.log(Level.FINE,
+                                   "Property of value expression {0} of component {1} could not be found, but submitted value is null in first place, so not attempting to convert",
+                                   new Object[]{
+                                         valueExpression.getExpressionString(),
+                                         component.getId() });
+                    }
+                    converterType = null; // See issue 4734.
+                } else {
+                    throw e;
+                }
+            }
             // if converterType is null, assume the modelType is "String".
             if (converterType == null ||
                 converterType == Object.class) {
@@ -82,8 +99,8 @@ public abstract class HtmlBasicInputRenderer extends HtmlBasicRenderer {
                 return newValue;
             }
 
-            // If the converterType is a String, and we don't have a 
-            // converter-for-class for java.lang.String, assume the type is 
+            // If the converterType is a String, and we don't have a
+            // converter-for-class for java.lang.String, assume the type is
             // "String".
             if (converterType == String.class && !hasStringConverter(context)) {
                 if (logger.isLoggable(Level.FINE)) {
