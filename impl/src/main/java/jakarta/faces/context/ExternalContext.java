@@ -2220,4 +2220,13 @@ public abstract class ExternalContext {
         }
     }
 
+    /**
+     * <p>
+     * <span class="changed_added_4_0">Release</span> any resources associated with this <code>ExternalContext</code>
+     * instance. This method is called during during destruction of the associated <code>FacesContext</code>.
+     * </p>
+     *
+     * @since 4.0
+     */
+    public abstract void release(); 
 }

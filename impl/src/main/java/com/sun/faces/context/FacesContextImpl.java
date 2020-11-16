@@ -497,6 +497,9 @@ public class FacesContextImpl extends FacesContext {
     public void release() {
 
         released = true;
+        if (externalContext != null) {
+            externalContext.release();
+        }
         externalContext = null;
         responseStream = null;
         responseWriter = null;
