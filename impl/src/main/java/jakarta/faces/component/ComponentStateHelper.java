@@ -30,6 +30,7 @@ import java.util.Map;
 
 import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
+import java.util.function.Supplier;
 
 /**
  * A base implementation for maps which implement the PartialStateHolder and TransientStateHolder interfaces.
@@ -170,6 +171,28 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
         }
 
         return coalesce(retVal, defaultValue);
+    }
+    
+    /**
+     * @see StateHelper#eval(java.io.Serializable, Supplier)
+     */
+    @Override
+    public Object eval(Serializable key, Supplier<Object> defaultValueSupplier) {
+        Object retVal = get(key);
+
+        if (retVal == null) {
+            ValueExpression valueExpression = component.getValueExpression(key.toString());
+            if (valueExpression != null) {
+                retVal = valueExpression.getValue(component.getFacesContext().getELContext());
+            }
+
+        }
+
+        if (retVal == null) {
+            retVal = defaultValueSupplier.get();
+        }
+
+        return retVal;
     }
 
     /**
