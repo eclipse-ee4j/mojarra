@@ -16,8 +16,10 @@
 
 package javax.faces.component;
 
+import static com.sun.faces.facelets.tag.jsf.ComponentSupport.MARK_CREATED;
 import static com.sun.faces.util.Util.coalesce;
 import static com.sun.faces.util.Util.isEmpty;
+import static javax.faces.component.UIComponent.PropertyKeys;
 import static javax.faces.component.UIComponentBase.restoreAttachedState;
 import static javax.faces.component.UIComponentBase.saveAttachedState;
 
@@ -112,6 +114,15 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
      */
     @Override
     public Object put(Serializable key, String mapKey, Object value) {
+        if (MARK_CREATED.equals(mapKey)) {
+            if (PropertyKeys.attributes.equals(key)) {
+                UIComponent parent = component.getParent();
+                if (parent != null) {
+                    // remember this component by its mark id
+                    parent.addToDescendantMarkIdCache(component);
+                }
+            }
+        }
 
         Object ret = null;
         if (component.initialStateMarked()) {
