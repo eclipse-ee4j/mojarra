@@ -59,9 +59,13 @@ import jakarta.faces.convert.ConverterException;
  * </p>
  *
  * </div>
+ * 
+ * <div class="changed_modified_4_0">
+ * @param <T> The component class.
+ * </div>
  */
 
-public abstract class Renderer {
+public abstract class Renderer<T extends UIComponent> {
 
     /**
      * <p class="changed_added_2_2">
@@ -91,7 +95,7 @@ public abstract class Renderer {
      *
      * @throws NullPointerException if <code>context</code> or <code>component</code> is <code>null</code>
      */
-    public void decode(FacesContext context, UIComponent component) {
+    public void decode(FacesContext context, T component) {
         if (null == context || null == component) {
             throw new NullPointerException();
         }
@@ -111,7 +115,7 @@ public abstract class Renderer {
      * @throws IOException if an input/output error occurs while rendering
      * @throws NullPointerException if <code>context</code> or <code>component</code> is null
      */
-    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
+    public void encodeBegin(FacesContext context, T component) throws IOException {
         if (null == context || null == component) {
             throw new NullPointerException();
         }
@@ -130,7 +134,7 @@ public abstract class Renderer {
      * @throws IOException if an input/output error occurs while rendering
      * @throws NullPointerException if <code>context</code> or <code>component</code> is <code>null</code>
      */
-    public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
+    public void encodeChildren(FacesContext context, T component) throws IOException {
         if (context == null || component == null) {
             throw new NullPointerException();
         }
@@ -155,7 +159,7 @@ public abstract class Renderer {
      * @throws IOException if an input/output error occurs while rendering
      * @throws NullPointerException if <code>context</code> or <code>component</code> is <code>null</code>
      */
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
+    public void encodeEnd(FacesContext context, T component) throws IOException {
         if (null == context || null == component) {
             throw new NullPointerException();
         }

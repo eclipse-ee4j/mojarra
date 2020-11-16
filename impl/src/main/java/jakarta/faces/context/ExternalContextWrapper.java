@@ -1077,4 +1077,16 @@ public abstract class ExternalContextWrapper extends ExternalContext implements 
         return getWrapped().getFlash();
     }
 
+    /**
+     * <p>
+     * The default behavior of this method is to call {@link ExternalContext#release()} on the wrapped
+     * {@link ExternalContext} object.
+     * </p>
+     *
+     * @see jakarta.faces.context.ExternalContext#release()
+     */
+    @Override
+    public void release() {
+        getWrapped().release();
+    }
 }

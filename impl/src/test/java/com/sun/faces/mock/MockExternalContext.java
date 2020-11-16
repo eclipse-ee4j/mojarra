@@ -333,6 +333,11 @@ public class MockExternalContext extends ExternalContext {
         return (((HttpServletRequest) request).isUserInRole(role));
     }
 
+    @Override
+    public void release() {
+
+    }
+
 
     private class LocalesIterator implements Iterator {
 

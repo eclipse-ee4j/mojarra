@@ -17,6 +17,7 @@
 package jakarta.faces.component;
 
 import java.io.Serializable;
+import java.util.function.Supplier;
 
 /**
  * <p class="changed_added_2_0">
@@ -112,6 +113,19 @@ public interface StateHelper extends StateHolder {
      * @since 2.0
      */
     Object eval(Serializable key, Object defaultValue);
+    
+    /**
+     * <p class="changed_added_4_0">
+     * Performs the same logic as {@link #eval(java.io.Serializable)} } but if no value is found, this will return the
+     * return-value of the <code>defaultValueSupplier</code>
+     * </p>
+     *
+     * @param key the key for which the value should be returned.
+     * @param defaultValueSupplier the supplier used to evaluate the default value if no value is found in the call to <code>eval()</code>.
+     * @return the evaluated value.
+     * @since 4.0
+     */
+    Object eval(Serializable key, Supplier<Object> defaultValueSupplier);
 
     /**
      * <p class="changed_added_2_0">
