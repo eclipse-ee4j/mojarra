@@ -1027,6 +1027,26 @@ public class ExternalContextImpl extends ExternalContext {
         }
         return flash;
     }
+    
+    @Override
+    public void release() {
+        servletContext = null;
+        request = null;
+        response = null;
+        clientWindow = null;
+
+        applicationMap = null;
+        sessionMap = null;
+        requestMap = null;
+        requestParameterMap = null;
+        requestParameterValuesMap = null;
+        requestHeaderMap = null;
+        requestHeaderValuesMap = null;
+        cookieMap = null;
+        initParameterMap = null;
+        fallbackContentTypeMap = null;
+        flash = null;
+    }
 
     private void pushIfPossibleAndNecessary(String result) {
         FacesContext context = FacesContext.getCurrentInstance();
