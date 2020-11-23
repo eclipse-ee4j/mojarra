@@ -29,7 +29,7 @@ Eclipse's implementation of the Jakarta Faces specification
 - Jakarta JSON Processing  2.0 (optional, only when `<f:websocket>` is used)
 - Jakarta Validation 3.0 (optional, only when `<f:validateBean>` or `<f:validateWholeBean>` is used; 2.0 recommended)
 
-CDI is explicitly required because since Jakarta Faces 2.3 the `javax.faces.bean.*` annotations such as `@ManagedBean` are **deprecated**, and several implicit Jakarta Expression Language objects are produced via CDI producers, and `<f:websocket>` manages the Jakarta WebSocket sessions and events via CDI.
+CDI is explicitly required because since Jakarta Faces 2.3 the `javax.faces.bean.*` annotations such as `@ManagedBean` are deprecated, and in 4.0 these have been removed. Several implicit Jakarta Expression Language objects are produced via CDI producers, and `<f:websocket>` manages the Jakarta WebSocket sessions and events via CDI.
 
 
 ## Installation
