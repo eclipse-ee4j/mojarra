@@ -401,7 +401,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
         response.getWriter().println(Arrays.equals(control, test));
         response.getWriter().println(wrapper.containsHeader("content-length"));
         response.getWriter().println(wrapper.containsHeader("last-modified"));
-        response.getWriter().println(wrapper.containsHeader("expires"));
+        response.getWriter().println(wrapper.containsHeader("cache-control"));
         response.getWriter().println(wrapper.containsHeader("etag"));
     }
     
@@ -419,7 +419,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
         response.getWriter().println(Arrays.equals(control, test));
         response.getWriter().println(wrapper.containsHeader("content-length"));
         response.getWriter().println(wrapper.containsHeader("last-modified"));
-        response.getWriter().println(wrapper.containsHeader("expires"));
+        response.getWriter().println(wrapper.containsHeader("cache-control"));
         response.getWriter().println(wrapper.containsHeader("etag"));
     }
     
@@ -514,7 +514,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
         response.getWriter().println(Arrays.equals(control, test));
         response.getWriter().println(wrapper.containsHeader("content-length"));
         response.getWriter().println(wrapper.containsHeader("last-modified"));
-        response.getWriter().println(wrapper.containsHeader("expires"));
+        response.getWriter().println(wrapper.containsHeader("cache-control"));
         response.getWriter().println(wrapper.containsHeader("etag"));
         response.getWriter().println(wrapper.containsHeader("content-encoding"));
     }
@@ -534,7 +534,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
         response.getWriter().println(Arrays.equals(control, test));
         response.getWriter().println(wrapper.containsHeader("content-length"));
         response.getWriter().println(wrapper.containsHeader("last-modified"));
-        response.getWriter().println(wrapper.containsHeader("expires"));
+        response.getWriter().println(wrapper.containsHeader("cache-control"));
         response.getWriter().println(wrapper.containsHeader("etag"));
         response.getWriter().println(wrapper.containsHeader("content-encoding"));
     }
@@ -553,7 +553,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
          response.getWriter().println(Arrays.equals(control, test));
          response.getWriter().println(wrapper.containsHeader("content-length"));
          response.getWriter().println(wrapper.containsHeader("last-modified"));
-         response.getWriter().println(wrapper.containsHeader("expires"));
+         response.getWriter().println(wrapper.containsHeader("cache-control"));
          response.getWriter().println(wrapper.containsHeader("etag"));
          response.getWriter().println(!wrapper.containsHeader("content-encoding"));
     }
@@ -569,7 +569,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
          response.getWriter().println(Arrays.equals(control, test));
          response.getWriter().println(wrapper.containsHeader("content-length"));
          response.getWriter().println(wrapper.containsHeader("last-modified"));
-         response.getWriter().println(wrapper.containsHeader("expires"));
+         response.getWriter().println(wrapper.containsHeader("cache-control"));
          response.getWriter().println(wrapper.containsHeader("etag"));
          response.getWriter().println(!wrapper.containsHeader("content-encoding"));
     }
@@ -590,7 +590,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
         response.getWriter().println(Arrays.equals(control, test));
         response.getWriter().println(wrapper.containsHeader("content-length"));
         response.getWriter().println(wrapper.containsHeader("last-modified"));
-        response.getWriter().println(wrapper.containsHeader("expires"));
+        response.getWriter().println(wrapper.containsHeader("cache-control"));
         response.getWriter().println(wrapper.containsHeader("etag"));
         response.getWriter().println(!wrapper.containsHeader("content-encoding"));
     }
@@ -614,7 +614,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
         response.getWriter().println(Arrays.equals(control, test));
         response.getWriter().println(wrapper.containsHeader("content-length"));
         response.getWriter().println(wrapper.containsHeader("last-modified"));
-        response.getWriter().println(wrapper.containsHeader("expires"));
+        response.getWriter().println(wrapper.containsHeader("cache-control"));
         response.getWriter().println(wrapper.containsHeader("etag"));
         response.getWriter().println(!wrapper.containsHeader("content-encoding"));
     }
@@ -634,7 +634,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
         response.getWriter().println(Arrays.equals(control, test));
         response.getWriter().println(wrapper.containsHeader("content-length"));
         response.getWriter().println(wrapper.containsHeader("last-modified"));
-        response.getWriter().println(wrapper.containsHeader("expires"));
+        response.getWriter().println(wrapper.containsHeader("cache-control"));
         response.getWriter().println(wrapper.containsHeader("etag"));
         response.getWriter().println(wrapper.containsHeader("content-encoding"));
     }
@@ -650,7 +650,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
         response.getWriter().println(Arrays.equals(control, test));
         response.getWriter().println(wrapper.containsHeader("content-length"));
         response.getWriter().println(wrapper.containsHeader("last-modified"));
-        response.getWriter().println(wrapper.containsHeader("expires"));
+        response.getWriter().println(wrapper.containsHeader("cache-control"));
         response.getWriter().println(wrapper.containsHeader("etag"));
         response.getWriter().println(!wrapper.containsHeader("content-encoding"));
     }
