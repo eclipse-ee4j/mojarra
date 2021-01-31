@@ -23,9 +23,19 @@ import javax.xml.namespace.NamespaceContext;
 
 class FacesConfigNamespaceContext implements NamespaceContext {
 
+    String defaultNamespace = null;
+
+    public FacesConfigNamespaceContext() {
+        this.defaultNamespace = "https://jakarta.ee/xml/ns/jakartaee";
+    }
+
+    public FacesConfigNamespaceContext(String namespace) {
+        this.defaultNamespace = namespace;
+    }
+
     @Override
     public String getNamespaceURI(String prefix) {
-        return "https://jakarta.ee/xml/ns/jakartaee";
+        return this.defaultNamespace;
     }
 
     @Override

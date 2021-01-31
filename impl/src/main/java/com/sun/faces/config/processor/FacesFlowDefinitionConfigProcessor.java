@@ -279,7 +279,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
         }
 
         XPath xpath = XPathFactory.newInstance().newXPath();
-        xpath.setNamespaceContext(new FacesConfigNamespaceContext());
+        xpath.setNamespaceContext(new FacesConfigNamespaceContext(namespace));
 
         String nameStr = "";
         NodeList nameList = (NodeList) xpath.evaluate("./ns1:name/text()", document.getDocumentElement(), XPathConstants.NODESET);
