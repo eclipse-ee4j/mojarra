@@ -25,11 +25,11 @@ class FacesConfigNamespaceContext implements NamespaceContext {
 
     private String defaultNamespace = null;
 
-    public FacesConfigNamespaceContext() {
+    FacesConfigNamespaceContext() {
         this.defaultNamespace = "https://jakarta.ee/xml/ns/jakartaee";
     }
 
-    public FacesConfigNamespaceContext(String namespace) {
+    FacesConfigNamespaceContext(String namespace) {
         this.defaultNamespace = namespace;
     }
 
