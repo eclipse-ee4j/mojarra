@@ -13,13 +13,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        experimental: [false]
         java: [ '1.8' ]
         os: [ubuntu-latest]
+        experimental: [false]
         include:
           - java: 11
-            experimental: true
             os: ubuntu-latest
+            experimental: true
+          - java: 15
+            os: ubuntu-latest
+            experimental: true
     continue-on-error: ${{ matrix.experimental }}            
     steps:
     - name: Checkout Sources
