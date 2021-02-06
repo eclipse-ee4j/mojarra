@@ -19,6 +19,7 @@ jobs:
         include:
           - java: 11
             experimental: true
+            os: ubuntu-latest
     continue-on-error: ${{ matrix.experimental }}            
     steps:
     - name: Checkout Sources
