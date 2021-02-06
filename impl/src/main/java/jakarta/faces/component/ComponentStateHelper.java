@@ -188,7 +188,7 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
 
         }
 
-        if (retVal == null) {
+        if (retVal == null && defaultValueSupplier != null) {
             retVal = defaultValueSupplier.get();
         }
 

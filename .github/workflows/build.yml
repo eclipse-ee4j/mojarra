@@ -29,4 +29,4 @@ jobs:
       with:
         java-version: ${{ matrix.java }}
     - name: Build with Maven
-      run: mvn --no-transfer-progress -DskipTests -DskipITs install
+      run: mvn --no-transfer-progress install
