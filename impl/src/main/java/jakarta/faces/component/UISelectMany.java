@@ -46,7 +46,7 @@ import jakarta.faces.convert.Converter;
  *
  * <p>
  * The {@link jakarta.faces.render.Renderer} for this component must perform the following logic on
- * <a name="getConvertedValue"><code>getConvertedValue()</code></a>:
+ * <a id="getConvertedValue"><code>getConvertedValue()</code></a>:
  * </p>
  *
  * <blockquote>
