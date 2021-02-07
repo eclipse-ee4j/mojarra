@@ -51,6 +51,9 @@ public class HtmlOutputFormat extends UIOutput {
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlOutputFormat";
 
+    /**
+     * The property keys.
+     */
     protected enum PropertyKeys {
         dir, escape, lang, role, style, styleClass, title,;
 

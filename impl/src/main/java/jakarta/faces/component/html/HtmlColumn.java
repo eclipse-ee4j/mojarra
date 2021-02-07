@@ -43,6 +43,9 @@ public class HtmlColumn extends UIColumn {
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlColumn";
 
+    /**
+     * The property keys.
+     */
     protected enum PropertyKeys {
         footerClass, headerClass, rowHeader, styleClass,;
 

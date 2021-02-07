@@ -52,6 +52,9 @@ public class HtmlInputText extends UIInput implements ClientBehaviorHolder {
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlInputText";
 
+    /**
+     * The property keys.
+     */
     protected enum PropertyKeys {
         accesskey, alt, autocomplete, dir, disabled, label, lang, maxlength, onblur, onchange, onclick, ondblclick, onfocus, onkeydown, onkeypress, onkeyup,
         onmousedown, onmousemove, onmouseout, onmouseover, onmouseup, onselect, readonly, role, size, style, styleClass, tabindex, title,;

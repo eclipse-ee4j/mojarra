@@ -52,6 +52,9 @@ public class HtmlOutputLabel extends UIOutput implements ClientBehaviorHolder {
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlOutputLabel";
 
+    /**
+     * The property keys.
+     */
     protected enum PropertyKeys {
         accesskey, dir, escape, forVal("for"), lang, onblur, onclick, ondblclick, onfocus, onkeydown, onkeypress, onkeyup, onmousedown, onmousemove, onmouseout,
         onmouseover, onmouseup, role, style, styleClass, tabindex, title,;

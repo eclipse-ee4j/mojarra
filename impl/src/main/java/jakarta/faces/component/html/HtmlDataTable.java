@@ -53,6 +53,9 @@ public class HtmlDataTable extends UIData implements ClientBehaviorHolder {
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlDataTable";
 
+    /**
+     * The property keys.
+     */
     protected enum PropertyKeys {
         bgcolor, bodyrows, border, captionClass, captionStyle, cellpadding, cellspacing, columnClasses, dir, footerClass, frame, headerClass, lang, onclick,
         ondblclick, onkeydown, onkeypress, onkeyup, onmousedown, onmousemove, onmouseout, onmouseover, onmouseup, role, rowClass, rowClasses, rules, style,

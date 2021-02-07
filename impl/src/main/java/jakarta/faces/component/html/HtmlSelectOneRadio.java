@@ -53,6 +53,9 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlSelectOneRadio";
 
+    /**
+     * The property keys.
+     */
     protected enum PropertyKeys {
         accesskey, border, dir, disabled, disabledClass, enabledClass, group, label, lang, layout, onblur, onchange, onclick, ondblclick, onfocus, onkeydown,
         onkeypress, onkeyup, onmousedown, onmousemove, onmouseout, onmouseover, onmouseup, onselect, readonly, role, style, styleClass, tabindex, title,;

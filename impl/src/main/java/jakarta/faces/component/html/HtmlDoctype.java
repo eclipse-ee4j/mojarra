@@ -46,6 +46,9 @@ public class HtmlDoctype extends UIOutput {
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.OutputDoctype";
 
+    /**
+     * The property keys.
+     */
     protected enum PropertyKeys {
         publicVal("public"), rootElement, system,;
 

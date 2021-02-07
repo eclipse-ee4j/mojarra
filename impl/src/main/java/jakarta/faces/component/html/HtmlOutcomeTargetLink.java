@@ -52,6 +52,9 @@ public class HtmlOutcomeTargetLink extends UIOutcomeTarget implements ClientBeha
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlOutcomeTargetLink";
 
+    /**
+     * The property keys.
+     */
     protected enum PropertyKeys {
         accesskey, charset, coords, dir, disabled, hreflang, lang, onblur, onclick, ondblclick, onfocus, onkeydown, onkeypress, onkeyup, onmousedown,
         onmousemove, onmouseout, onmouseover, onmouseup, rel, rev, role, shape, style, styleClass, tabindex, target, title, type,;

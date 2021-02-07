@@ -46,7 +46,7 @@ import jakarta.faces.view.ViewMetadata;
  * for classes, interfaces and enums.
  * </p>
  *
- * <h3 id="usage">Usage</h3>
+ * <h2 id="usage">Usage</h2>
  *
  * <p>
  * The below constant fields:

@@ -23,6 +23,9 @@ import java.lang.annotation.Target;
 
 import jakarta.inject.Qualifier;
 
+/**
+ * The <code>SessionMap</code> annotation.
+ */
 @Target({ ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD })
 @Qualifier
 @Retention(value = RetentionPolicy.RUNTIME)

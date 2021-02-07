@@ -49,6 +49,9 @@ public class HtmlCommandScript extends UICommand {
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlCommandScript";
 
+    /**
+     * The property keys.
+     */
     protected enum PropertyKeys {
         autorun, execute, name, onerror, onevent, render, resetValues,;
 

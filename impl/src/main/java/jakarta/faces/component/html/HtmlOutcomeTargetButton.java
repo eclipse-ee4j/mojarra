@@ -54,6 +54,9 @@ public class HtmlOutcomeTargetButton extends UIOutcomeTarget implements ClientBe
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlOutcomeTargetButton";
 
+    /**
+     * The property keys.
+     */
     protected enum PropertyKeys {
         accesskey, alt, dir, disabled, image, lang, onblur, onclick, ondblclick, onfocus, onkeydown, onkeypress, onkeyup, onmousedown, onmousemove, onmouseout,
         onmouseover, onmouseup, role, style, styleClass, tabindex, title,;

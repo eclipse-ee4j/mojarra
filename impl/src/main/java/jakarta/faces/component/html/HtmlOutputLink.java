@@ -53,6 +53,9 @@ public class HtmlOutputLink extends UIOutput implements ClientBehaviorHolder {
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlOutputLink";
 
+    /**
+     * The property keys.
+     */
     protected enum PropertyKeys {
         accesskey, charset, coords, dir, disabled, fragment, hreflang, lang, onblur, onclick, ondblclick, onfocus, onkeydown, onkeypress, onkeyup, onmousedown,
         onmousemove, onmouseout, onmouseover, onmouseup, rel, rev, role, shape, style, styleClass, tabindex, target, title, type,;

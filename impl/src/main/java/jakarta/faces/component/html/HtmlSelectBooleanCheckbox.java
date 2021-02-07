@@ -54,6 +54,9 @@ public class HtmlSelectBooleanCheckbox extends UISelectBoolean implements Client
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlSelectBooleanCheckbox";
 
+    /**
+     * The property keys.
+     */
     protected enum PropertyKeys {
         accesskey, dir, disabled, label, lang, onblur, onchange, onclick, ondblclick, onfocus, onkeydown, onkeypress, onkeyup, onmousedown, onmousemove,
         onmouseout, onmouseover, onmouseup, onselect, readonly, role, style, styleClass, tabindex, title,;

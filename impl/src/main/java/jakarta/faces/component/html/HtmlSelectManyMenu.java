@@ -53,6 +53,9 @@ public class HtmlSelectManyMenu extends UISelectMany implements ClientBehaviorHo
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlSelectManyMenu";
 
+    /**
+     * The property keys.
+     */
     protected enum PropertyKeys {
         accesskey, dir, disabled, disabledClass, enabledClass, label, lang, onblur, onchange, onclick, ondblclick, onfocus, onkeydown, onkeypress, onkeyup,
         onmousedown, onmousemove, onmouseout, onmouseover, onmouseup, readonly, role, style, styleClass, tabindex, title,;

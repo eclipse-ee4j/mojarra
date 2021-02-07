@@ -46,6 +46,9 @@ public class HtmlHead extends UIOutput {
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.OutputHead";
 
+    /**
+     * The property keys.
+     */
     protected enum PropertyKeys {
         dir, lang, xmlns,;
 

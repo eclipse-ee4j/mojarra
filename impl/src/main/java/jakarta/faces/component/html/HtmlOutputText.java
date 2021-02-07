@@ -53,6 +53,9 @@ public class HtmlOutputText extends UIOutput {
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlOutputText";
 
+    /**
+     * The property keys.
+     */
     protected enum PropertyKeys {
         dir, escape, lang, role, style, styleClass, title,;
 

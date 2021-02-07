@@ -20,6 +20,9 @@ import java.util.Map;
 
 import jakarta.faces.context.FacesContext;
 
+/**
+ * A flow call node.
+ */
 public abstract class FlowCallNode extends FlowNode {
 
     public abstract Map<String, Parameter> getOutboundParameters();
