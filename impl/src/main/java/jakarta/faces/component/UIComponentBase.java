@@ -723,6 +723,13 @@ public abstract class UIComponentBase extends UIComponent {
      * implementation of {@link SystemEventListener#isListenerForSource} must return true if the instance class of this
      * <code>UIComponent</code> is assignable from the argument to <code>isListenerForSource</code>.
      * </p>
+     * <p class="changed_added_4_0">
+     * The listener instance referenced by argument <code>componentListener</code> may not already be installed as a listener for events of type
+     * <code>eventClass</code> originating from this specific instance of <code>UIComponent</code>. When doing the
+     * comparison to determine if an existing listener is equal to the argument <code>componentListener</code> (and thus
+     * must be removed), the <code>equals()</code> method on the <em>existing listener</em> must be invoked, passing the
+     * argument <code>componentListener</code>, rather than the other way around.
+     * </p>
      *
      * @param eventClass the <code>Class</code> of event for which <code>listener</code> must be fired.
      * @param componentListener the implementation of {@link jakarta.faces.event.ComponentSystemEventListener} whose
