@@ -24,28 +24,28 @@
  */
 
 // Detect if this is already loaded, and if loaded, if it's a higher version
-if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
-      (jsf.implversion && jsf.implversion >= 3))) {
+if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
+      (faces.implversion && faces.implversion >= 3))) {
 
     /**
      * <span class="changed_modified_2_2">The top level global namespace
      * for JavaServer Faces functionality.</span>
 
-     * @name jsf
+     * @name faces
      * @namespace
      */
-    var jsf = {};
+    var faces = {};
 
     /**
 
      * <span class="changed_modified_2_2 changed_modified_2_3">The namespace for Ajax
      * functionality.</span>
 
-     * @name jsf.ajax
+     * @name faces.ajax
      * @namespace
      * @exec
      */
-    jsf.ajax = function() {
+    faces.ajax = function() {
 
         var eventListeners = [];
         var errorListeners = [];
@@ -165,7 +165,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
         var FrameTransport = function FrameTransport(context) {
             this.context = context;
             this.frame = null;
-            this.FRAME_ID = "JSFFrameId";
+            this.FRAME_ID = "FacesFrameId";
             this.FRAME_PARTIAL_ID = "Faces-Request";
             this.partial = null;
             this.aborted = false;
@@ -421,7 +421,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
         };
 
         /**
-         * Get an array of all JSF form elements which need their view state to be updated.
+         * Get an array of all Faces form elements which need their view state to be updated.
          * This covers at least the form that submitted the request and any form that is covered in the render target list.
          * 
          * @param context An object containing the request context, including the following properties:
@@ -478,7 +478,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
          * <p>Namespace given space separated parameters if necessary (only
          * call this if there is a namingContainerPrefix!).  This
          * function is here for backwards compatibility with manual
-         * jsf.ajax.request() calls written before Spec790 changes.</p>
+         * faces.ajax.request() calls written before Spec790 changes.</p>
 
          * @param parameters Spaceseparated string of parameters as
          * usually specified in f:ajax execute and render attributes.
@@ -506,7 +506,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
         	for (var i = 0; i < targetClientIds.length; i++) {
         	    var targetClientId = targetClientIds[i];
 
-        	    if (targetClientId.indexOf(jsf.separatorchar) == 0) {
+        	    if (targetClientId.indexOf(faces.separatorchar) == 0) {
         	        targetClientId = targetClientId.substring(1);
 
         	        if (targetClientId.indexOf(namingContainerPrefix) != 0) {
@@ -514,13 +514,13 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
                     }
         	    }
         	    else if (targetClientId.indexOf(namingContainerPrefix) != 0) {
-        	        var parentClientId = sourceClientId.substring(0, sourceClientId.lastIndexOf(jsf.separatorchar));
+        	        var parentClientId = sourceClientId.substring(0, sourceClientId.lastIndexOf(faces.separatorchar));
 
         	        if (namingContainerPrefix + targetClientId == parentClientId) {
         	            targetClientId = parentClientId;
         	        }
         	        else {
-        	            targetClientId = parentClientId + jsf.separatorchar + targetClientId;
+        	            targetClientId = parentClientId + faces.separatorchar + targetClientId;
         	        }
 				}
 
@@ -1282,7 +1282,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
                 cloneAttributes(origElement, newElement);
             } catch (ex) {
                 // if in dev mode, report an error, else try to limp onward
-                if (jsf.getProjectStage() == "Development") {
+                if (faces.getProjectStage() == "Development") {
                     throw new Error("Error updating attributes");
                 }
             }
@@ -1347,7 +1347,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
         };
 
         /**
-         * Update hidden state fields from the server into the DOM for any JSF forms which need to be updated.
+         * Update hidden state fields from the server into the DOM for any Faces forms which need to be updated.
          * This covers at least the form that submitted the request and any form that is covered in the render target list.
          * 
          * @param updateElement The update element of partial response holding the state value.
@@ -1416,8 +1416,8 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
             var scripts = []; // temp holding value for array of script nodes
 
             id = updateElement.getAttribute('id');
-            var viewStateRegex = new RegExp(context.namingContainerPrefix + "jakarta.faces.ViewState" + jsf.separatorchar + ".+$");
-            var windowIdRegex = new RegExp(context.namingContainerPrefix + "jakarta.faces.ClientWindow" + jsf.separatorchar + ".+$");
+            var viewStateRegex = new RegExp(context.namingContainerPrefix + "jakarta.faces.ViewState" + faces.separatorchar + ".+$");
+            var windowIdRegex = new RegExp(context.namingContainerPrefix + "jakarta.faces.ClientWindow" + faces.separatorchar + ".+$");
 
             if (id.match(viewStateRegex)) {
                 updateHiddenStateFields(updateElement, context, "jakarta.faces.ViewState");
@@ -1673,7 +1673,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
                             document.body.removeChild(c);
                         }
                     } else if (name === 'dir') {
-                        if (jsf.getProjectStage() == 'Development') {
+                        if (faces.getProjectStage() == 'Development') {
                             throw new Error("Cannot set 'dir' attribute in IE");
                         }
                     } else {
@@ -1858,7 +1858,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
             req.onComplete = function onComplete() {
                 if (req.xmlReq.status && (req.xmlReq.status >= 200 && req.xmlReq.status < 300)) {
                     sendEvent(req.xmlReq, req.context, "complete");
-                    jsf.ajax.response(req.xmlReq, req.context);
+                    faces.ajax.response(req.xmlReq, req.context);
                 } else {
                     sendEvent(req.xmlReq, req.context, "complete");
                     sendError(req.xmlReq, req.context, "httpError");
@@ -2041,7 +2041,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
                 }
             }
 
-            if (!sent && jsf.getProjectStage() === "Development") {
+            if (!sent && faces.getProjectStage() === "Development") {
                 if (status == "serverError") {
                     alert("serverError: " + serverErrorName + " " + serverErrorMessage);
                 } else {
@@ -2098,7 +2098,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
              * Register a callback for error handling.
              * <p><b>Usage:</b></p>
              * <pre><code>
-             * jsf.ajax.addOnError(handleError);
+             * faces.ajax.addOnError(handleError);
              * ...
              * var handleError = function handleError(data) {
              * ...
@@ -2107,25 +2107,25 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
              * <p><b>Implementation Requirements:</b></p>
              * This function must accept a reference to an existing JavaScript function.
              * The JavaScript function reference must be added to a list of callbacks, making it possible
-             * to register more than one callback by invoking <code>jsf.ajax.addOnError</code>
+             * to register more than one callback by invoking <code>faces.ajax.addOnError</code>
              * more than once.  This function must throw an error if the <code>callback</code>
              * argument is not a function.
              *
-             * @member jsf.ajax
+             * @member faces.ajax
              * @param callback a reference to a function to call on an error
              */
             addOnError: function addOnError(callback) {
                 if (typeof callback === 'function') {
                     errorListeners[errorListeners.length] = callback;
                 } else {
-                    throw new Error("jsf.ajax.addOnError:  Added a callback that was not a function.");
+                    throw new Error("faces.ajax.addOnError:  Added a callback that was not a function.");
                 }
             },
             /**
              * Register a callback for event handling.
              * <p><b>Usage:</b></p>
              * <pre><code>
-             * jsf.ajax.addOnEvent(statusUpdate);
+             * faces.ajax.addOnEvent(statusUpdate);
              * ...
              * var statusUpdate = function statusUpdate(data) {
              * ...
@@ -2134,18 +2134,18 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
              * <p><b>Implementation Requirements:</b></p>
              * This function must accept a reference to an existing JavaScript function.
              * The JavaScript function reference must be added to a list of callbacks, making it possible
-             * to register more than one callback by invoking <code>jsf.ajax.addOnEvent</code>
+             * to register more than one callback by invoking <code>faces.ajax.addOnEvent</code>
              * more than once.  This function must throw an error if the <code>callback</code>
              * argument is not a function.
              *
-             * @member jsf.ajax
+             * @member faces.ajax
              * @param callback a reference to a function to call on an event
              */
             addOnEvent: function addOnEvent(callback) {
                 if (typeof callback === 'function') {
                     eventListeners[eventListeners.length] = callback;
                 } else {
-                    throw new Error("jsf.ajax.addOnEvent: Added a callback that was not a function");
+                    throw new Error("faces.ajax.addOnEvent: Added a callback that was not a function");
                 }
             },
             /**
@@ -2158,7 +2158,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
              * Example showing all optional arguments:
              *
              * &lt;commandButton id="button1" value="submit"
-             *     onclick="jsf.ajax.request(this,event,
+             *     onclick="faces.ajax.request(this,event,
              *       {execute:'button1',render:'status',onevent: handleEvent,onerror: handleError});return false;"/&gt;
              * &lt;/commandButton/&gt;
              * </pre></code>
@@ -2192,7 +2192,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
              * <li>Determine the <code>source</code> element's <code>form</code>
              * element.</li>
              * <li>Get the <code>form</code> view state by calling
-             * {@link jsf.getViewState} passing the
+             * {@link faces.getViewState} passing the
              * <code>form</code> element as the argument.</li>
              * <li>Collect post data arguments for the Ajax request.
              * <ul>
@@ -2205,7 +2205,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
              * <tr>
              * <td><code>jakarta.faces.ViewState</code></td>
              * <td><code>Contents of jakarta.faces.ViewState hidden field.  This is included when
-             * {@link jsf.getViewState} is used.</code></td>
+             * {@link faces.getViewState} is used.</code></td>
              * </tr>
              * <tr>
              * <td><code>jakarta.faces.partial.ajax</code></td>
@@ -2218,7 +2218,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
              * <tr class="changed_added_2_2">
              * <td><code>jakarta.faces.ClientWindow</code></td>
 
-             * <td><code>Call jsf.getClientWindow(), passing the current
+             * <td><code>Call faces.getClientWindow(), passing the current
              * form.  If the return is non-null, it must be set as the
              * value of this name/value pair, otherwise, a name/value
              * pair for client window must not be sent.</code></td>
@@ -2339,7 +2339,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
              * hidden inline frame.  Note that using a hidden inline
              * frame does <strong>not</strong> use
              * <code>XMLHttpRequest</code>, but the request must be sent
-             * with all the parameters that a JSF
+             * with all the parameters that a Faces
              * <code>XMLHttpRequest</code> would have been sent with.
              * In this way, the server side processing of the request
              * will be identical whether or the request is multipart or
@@ -2363,7 +2363,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
              * must examine the queue and determine the next request to be sent.  The behavior of the
              * request callback function must be as follows:
              * <ul>
-             * <li>If the request completed successfully invoke {@link jsf.ajax.response}
+             * <li>If the request completed successfully invoke {@link faces.ajax.response}
              * passing the <code>request</code> object.</li>
              * <li>If the request did not complete successfully, notify the client.</li>
              * <li>Regardless of the outcome of the request (success or error) every request in the
@@ -2440,8 +2440,8 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
 
              * </table>
              * The <code>options</code> argument is optional.
-             * @member jsf.ajax
-             * @function jsf.ajax.request
+             * @member faces.ajax
+             * @function faces.ajax.request
 
              * @throws Error if first required argument
              * <code>element</code> is not specified, or if one or more
@@ -2458,7 +2458,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
                 var context = {};
 
                 if (typeof source === 'undefined' || source === null) {
-                    throw new Error("jsf.ajax.request: source not set");
+                    throw new Error("faces.ajax.request: source not set");
                 }
                 if(delayHandler) {
                     clearTimeout(delayHandler);
@@ -2471,7 +2471,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
                 } else if (typeof source === 'object') {
                     element = source;
                 } else {
-                    throw new Error("jsf.ajax.request: source must be object or string");
+                    throw new Error("faces.ajax.request: source must be object or string");
                 }
                 // attempt to handle case of name unset
                 // this might be true in a badly written composite component
@@ -2491,7 +2491,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
                 if (options.onerror && typeof options.onerror === 'function') {
                     onerror = options.onerror;
                 } else if (options.onerror && typeof options.onerror !== 'function') {
-                    throw new Error("jsf.ajax.request: Added an onerror callback that was not a function");
+                    throw new Error("faces.ajax.request: Added an onerror callback that was not a function");
                 }
 
                 // Event handler for this request
@@ -2500,23 +2500,23 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
                 if (options.onevent && typeof options.onevent === 'function') {
                     onevent = options.onevent;
                 } else if (options.onevent && typeof options.onevent !== 'function') {
-                    throw new Error("jsf.ajax.request: Added an onevent callback that was not a function");
+                    throw new Error("faces.ajax.request: Added an onevent callback that was not a function");
                 }
 
                 form = getForm(element);
                 if (!form) {
-                    throw new Error("jsf.ajax.request: Method must be called within a form");
+                    throw new Error("faces.ajax.request: Method must be called within a form");
                 }
 
                 viewStateElement = getHiddenStateField(form, "jakarta.faces.ViewState");
                 if (!viewStateElement) {
-                    throw new Error("jsf.ajax.request: Form has no view state element");
+                    throw new Error("faces.ajax.request: Form has no view state element");
                 }
                 
                 context.form = form;
                 context.formId = form.id;
                 
-                var viewState = jsf.getViewState(form);
+                var viewState = faces.getViewState(form);
 
                 // Set up additional arguments to be used in the request..
                 // Make sure "jakarta.faces.source" is set up.
@@ -2694,7 +2694,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
              * from the server.
              * <p><b>Usage:</b></p>
              * <pre><code>
-             * jsf.ajax.response(request, context);
+             * faces.ajax.response(request, context);
              * </pre></code>
              * <p><b>Implementation Requirements:</b></p>
              * This function must evaluate the markup returned in the
@@ -2914,11 +2914,11 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
              *
              * @throws  Error if request contains no data
              *
-             * @function jsf.ajax.response
+             * @function faces.ajax.response
              */
             response: function response(request, context) {
                 if (!request) {
-                    throw new Error("jsf.ajax.response: Request parameter is unset");
+                    throw new Error("faces.ajax.response: Request parameter is unset");
                 }
 
                 // ensure context source is the dom element and not the ID
@@ -2942,7 +2942,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
 
                 var partialResponse = xml.getElementsByTagName("partial-response")[0];
                 var namingContainerId = partialResponse.getAttribute("id");
-                var namingContainerPrefix = namingContainerId ? (namingContainerId + jsf.separatorchar) : "";
+                var namingContainerPrefix = namingContainerId ? (namingContainerId + faces.separatorchar) : "";
                 var responseType = partialResponse.firstChild;
                 
                 context.namingContainerId = namingContainerId;
@@ -3035,7 +3035,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
      * not cause any network transaction to happen to the server.</p>
      * <p><b>Usage:</b></p>
      * <pre><code>
-     * var stage = jsf.getProjectStage();
+     * var stage = faces.getProjectStage();
      * if (stage === ProjectStage.Development) {
      *  ...
      * } else if stage === ProjectStage.Production) {
@@ -3047,20 +3047,20 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
      * running application in a typical product development lifecycle.  Refer
      * to <code>jakarta.faces.application.Application.getProjectStage</code> and
      * <code>jakarta.faces.application.ProjectStage</code>.
-     * @function jsf.getProjectStage
+     * @function faces.getProjectStage
      */
-    jsf.getProjectStage = function() {
+    faces.getProjectStage = function() {
         // First, return cached value if available
         if (typeof mojarra !== 'undefined' && typeof mojarra.projectStageCache !== 'undefined') {
             return mojarra.projectStageCache;
         }
         var scripts = document.getElementsByTagName("script"); // nodelist of scripts
-        var script; // jsf.js script
+        var script; // faces.js script
         var s = 0; // incremental variable for for loop
         var stage; // temp value for stage
         var match; // temp value for match
         while (s < scripts.length) {
-            if (typeof scripts[s].src === 'string' && scripts[s].src.match('\/javax\.faces\.resource\/jsf\.js\?.*ln=javax\.faces')) {
+            if (typeof scripts[s].src === 'string' && scripts[s].src.match('\/javax\.faces\.resource\/faces\.js\?.*ln=javax\.faces')) {
                 script = scripts[s].src;
                 break;
             }
@@ -3089,7 +3089,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
      * all input controls of type <code>hidden</code>.</p>
      * <p><b>Usage:</b></p>
      * <pre><code>
-     * var state = jsf.getViewState(form);
+     * var state = faces.getViewState(form);
      * </pre></code>
      *
      * @param form The <code>form</code> element whose contained
@@ -3099,11 +3099,11 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
      * Section 17.13.2 of the HTML Specification</a>.
      *
      * @returns String The encoded state for the specified form's input controls.
-     * @function jsf.getViewState
+     * @function faces.getViewState
      */
-    jsf.getViewState = function(form) {
+    faces.getViewState = function(form) {
         if (!form) {
-            throw new Error("jsf.getViewState:  form must be set");
+            throw new Error("faces.getViewState:  form must be set");
         }
         var els = form.elements;
         var len = els.length;
@@ -3178,9 +3178,9 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
      * @returns String The windowId of the current window, or null 
      *  if the windowId cannot be determined.
      * @throws an error if more than one unique WindowId is found.
-     * @function jsf.getClientWindow
+     * @function faces.getClientWindow
      */
-    jsf.getClientWindow = function(node) {
+    faces.getClientWindow = function(node) {
         var FORM = "form";
         var WIN_ID = "jakarta.faces.ClientWindow";
 
@@ -3288,11 +3288,11 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
      * <p class="changed_added_2_3">
      * The Push functionality.
      * </p>
-     * @name jsf.push
+     * @name faces.push
      * @namespace
      * @exec
      */
-    jsf.push = (function(window) {
+    faces.push = (function(window) {
 
         // "Constant" fields ----------------------------------------------------------------------------------------------
 
@@ -3394,7 +3394,7 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
 
         /**
          * Initialize a websocket on the given client identifier. When connected, it will stay open and reconnect as
-         * long as URL is valid and <code>jsf.push.close()</code> hasn't explicitly been called on the same client
+         * long as URL is valid and <code>faces.push.close()</code> hasn't explicitly been called on the same client
          * identifier.
          * @param {string} clientId The client identifier of the websocket.
          * @param {string} url The URL of the websocket. All open websockets on the same URL will receive the
@@ -3414,8 +3414,8 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
          * for an elaborate list.
          * @param {Object} behaviors Client behavior functions to be invoked when specific message is received.
          * @param {boolean} autoconnect Whether or not to automatically connect the socket. Defaults to <code>false</code>.
-         * @member jsf.push
-         * @function jsf.push.init
+         * @member faces.push
+         * @function faces.push.init
          */
         self.init = function(clientId, url, channel, onopen, onmessage, onclose, behaviors, autoconnect) {
             onclose = resolveFunction(onclose);
@@ -3438,8 +3438,8 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
          * Open the websocket on the given client identifier.
          * @param {string} clientId The client identifier of the websocket.
          * @throws {Error} When client identifier is unknown. You may need to initialize it first via <code>init()</code> function.
-         * @member jsf.push
-         * @function jsf.push.open
+         * @member faces.push
+         * @function faces.push.open
          */
         self.open = function(clientId) {
             getSocket(clientId).open();
@@ -3449,8 +3449,8 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
          * Close the websocket on the given client identifier.
          * @param {string} clientId The client identifier of the websocket.
          * @throws {Error} When client identifier is unknown. You may need to initialize it first via <code>init()</code> function.
-         * @member jsf.push
-         * @function jsf.push.close
+         * @member faces.push
+         * @function faces.push.close
          */
         self.close = function(clientId) {
             getSocket(clientId).close();
@@ -3494,10 +3494,10 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
 
     /**
      * The namespace for JavaServer Faces JavaScript utilities.
-     * @name jsf.util
+     * @name faces.util
      * @namespace
      */
-    jsf.util = {};
+    faces.util = {};
 
     /**
      * <p>A varargs function that invokes an arbitrary number of scripts.
@@ -3513,9 +3513,9 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
      * @returns boolean <code>false</code> if any scripts in the chain return <code>false</code>,
      *  otherwise returns <code>true</code>
      * 
-     * @function jsf.util.chain
+     * @function faces.util.chain
      */
-    jsf.util.chain = function(source, event) {
+    faces.util.chain = function(source, event) {
 
         if (arguments.length < 3) {
             return true;
@@ -3542,13 +3542,13 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
      * <p class="changed_added_2_2">The result of calling
      * <code>UINamingContainer.getNamingContainerSeparatorChar().</code></p>
      */
-    jsf.separatorchar = '#{facesContext.namingContainerSeparatorChar}';
+    faces.separatorchar = '#{facesContext.namingContainerSeparatorChar}';
 
     /**
      * <p class="changed_added_2_3">
      * The result of calling <code>ExternalContext.getRequestContextPath()</code>.
      */
-    jsf.contextpath = '#{facesContext.externalContext.requestContextPath}';
+    faces.contextpath = '#{facesContext.externalContext.requestContextPath}';
 
     /**
      * <p>An integer specifying the specification version that this file implements.
@@ -3556,15 +3556,15 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
      * minor release number, leftmost digits, major release number.
      * This number may only be incremented by a new release of the specification.</p>
      */
-    jsf.specversion = 23000;
+    faces.specversion = 23000;
 
     /**
      * <p>An integer specifying the implementation version that this file implements.
      * It's a monotonically increasing number, reset with every increment of
-     * <code>jsf.specversion</code>
+     * <code>faces.specversion</code>
      * This number is implementation dependent.</p>
      */
-    jsf.implversion = 3;
+    faces.implversion = 3;
 
 
 } //end if version detection block
@@ -3586,9 +3586,9 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 23000 ) &&
  */
 
 /**
- @project JSF Ajax Library
+ @project Faces Ajax Library
  @version 2.0
- @description This is the standard implementation of the JSF Ajax Library.
+ @description This is the standard implementation of the Faces Ajax Library.
  */
 
 /**
@@ -3667,7 +3667,7 @@ mojarra.apf = function apf(f, pvp) {
  *  fields.
  * @param t - the target of the form submission
  */
-mojarra.jsfcljs = function jsfcljs(f, pvp, t) {
+mojarra.facescljs = function facescljs(f, pvp, t) {
     mojarra.apf(f, pvp);
     var ft = f.target;
     if (t) {
@@ -3694,13 +3694,13 @@ mojarra.jsfcljs = function jsfcljs(f, pvp, t) {
  *  @param e event of the calling function
  *  @return object that f returns
  */
-mojarra.jsfcbk = function jsfcbk(f, t, e) {
+mojarra.facescbk = function facescbk(f, t, e) {
     return f.call(t,e);
 };
 
 /*
  * This is called by the AjaxBehaviorRenderer script to
- * trigger a jsf.ajax.request() call.
+ * trigger a faces.ajax.request() call.
  *
  *  @param s the source element or id
  *  @param e event of the calling function
@@ -3726,7 +3726,7 @@ mojarra.ab = function ab(s, e, n, ex, re, op) {
         op["render"] = re;
     }
 
-    jsf.ajax.request(s, e, op);
+    faces.ajax.request(s, e, op);
 };
 
 /*

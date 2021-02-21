@@ -206,7 +206,7 @@ public class ClientResourceInfo extends ResourceInfo {
         }
         // Specialcasing for handling JSF script in uncompressed state
         if (isDevStage && JSF_SCRIPT_LIBRARY_NAME.equals(libraryName) && JSF_SCRIPT_RESOURCE_NAME.equals(name)) {
-            sb.append('/').append("jsf-uncompressed.js");
+            sb.append('/').append("faces-uncompressed.js");
         } else {
             sb.append('/').append(name);
         }
