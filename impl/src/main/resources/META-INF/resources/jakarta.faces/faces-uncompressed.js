@@ -3667,7 +3667,7 @@ mojarra.apf = function apf(f, pvp) {
  *  fields.
  * @param t - the target of the form submission
  */
-mojarra.facescljs = function facescljs(f, pvp, t) {
+mojarra.cljs = function cljs(f, pvp, t) {
     mojarra.apf(f, pvp);
     var ft = f.target;
     if (t) {
