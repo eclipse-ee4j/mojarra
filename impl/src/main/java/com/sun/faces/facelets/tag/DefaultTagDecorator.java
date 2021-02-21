@@ -99,7 +99,7 @@ class DefaultTagDecorator implements TagDecorator {
     @Override
     public Tag decorate(Tag tag) {
         String ns = tag.getNamespace();
-        if (!hasJsfAttribute(tag)) {
+        if (!hasFacesAttribute(tag)) {
             // return immediately, if we have no faces: attribute
             return null;
         }
@@ -118,7 +118,7 @@ class DefaultTagDecorator implements TagDecorator {
         return defaultElementConverter.decorate(tag);
     }
 
-    private boolean hasJsfAttribute(Tag tag) {
+    private boolean hasFacesAttribute(Tag tag) {
         for (String ns : tag.getAttributes().getNamespaces()) {
             if (Namespace.faces.uri.equals(ns)) {
                 return true;

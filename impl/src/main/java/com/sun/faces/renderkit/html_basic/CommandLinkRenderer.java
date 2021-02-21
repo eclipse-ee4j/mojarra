@@ -82,7 +82,7 @@ public class CommandLinkRenderer extends LinkRenderer {
         if (componentDisabled) {
             renderAsDisabled(context, component);
         } else {
-            RenderKitUtils.renderJsfJsIfNecessary(context);
+            RenderKitUtils.renderFacesJsIfNecessary(context);
             renderAsActive(context, component);
         }
 

@@ -184,7 +184,7 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
 
         // In the wrapping case, we assume that some wrapped component
         // is going to be Ajax enabled and install the Ajax resource.
-        RenderKitUtils.installJsfJsIfNecessary(ctx.getFacesContext());
+        RenderKitUtils.installFacesJsIfNecessary(ctx.getFacesContext());
 
         AjaxBehavior ajaxBehavior = createAjaxBehavior(ctx, eventName);
 
@@ -278,7 +278,7 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
 
         AjaxBehavior ajaxBehavior = createAjaxBehavior(ctx, eventName);
         bHolder.addClientBehavior(eventName, ajaxBehavior);
-        RenderKitUtils.installJsfJsIfNecessary(ctx.getFacesContext());
+        RenderKitUtils.installFacesJsIfNecessary(ctx.getFacesContext());
     }
 
     // Construct our AjaxBehavior from tag parameters.

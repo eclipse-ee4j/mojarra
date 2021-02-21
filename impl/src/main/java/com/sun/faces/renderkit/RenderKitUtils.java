@@ -961,7 +961,7 @@ public class RenderKitUtils {
         return origIdentifier.replace("-", "$_");
     }
 
-    private static UIComponent createJsfJs() {
+    private static UIComponent createFacesJs() {
 
         UIOutput output = new UIOutput();
         output.setRendererType("jakarta.faces.resource.Script");
@@ -977,9 +977,9 @@ public class RenderKitUtils {
      *
      * @param context the <code>FacesContext</code> for the current request
      */
-    public static void installJsfJsIfNecessary(FacesContext context) {
+    public static void installFacesJsIfNecessary(FacesContext context) {
 
-        if (isJsfJsInstalled(context)) {
+        if (isFacesJsInstalled(context)) {
             return;
         }
 
@@ -988,7 +988,7 @@ public class RenderKitUtils {
             return;
         }
 
-        context.getViewRoot().addComponentResource(context, createJsfJs(), "head");
+        context.getViewRoot().addComponentResource(context, createFacesJs(), "head");
     }
 
     /**
@@ -999,9 +999,9 @@ public class RenderKitUtils {
      * @param context the <code>FacesContext</code> for the current request
      * @throws java.io.IOException if an error occurs writing to the response
      */
-    public static void renderJsfJsIfNecessary(FacesContext context) throws IOException {
+    public static void renderFacesJsIfNecessary(FacesContext context) throws IOException {
 
-        if (isJsfJsInstalled(context)) {
+        if (isFacesJsInstalled(context)) {
             return;
         }
 
@@ -1011,11 +1011,11 @@ public class RenderKitUtils {
         }
 
         // Since we've now determined that it's not in the page, we need to manually render it.
-        createJsfJs().encodeAll(context);
+        createFacesJs().encodeAll(context);
         resourceHandler.markResourceRendered(context, JSF_SCRIPT_RESOURCE_NAME, JSF_SCRIPT_LIBRARY_NAME);
     }
 
-    public static boolean isJsfJsInstalled(FacesContext context) {
+    public static boolean isFacesJsInstalled(FacesContext context) {
 
         if (RequestStateManager.containsKey(context, RequestStateManager.SCRIPT_STATE)) {
             return true;

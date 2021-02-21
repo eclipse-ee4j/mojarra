@@ -93,7 +93,7 @@ public class WebsocketRenderer extends HtmlBasicRenderer implements ComponentSys
             String behaviors = getBehaviorScripts(context, websocket);
             boolean connected = websocket.isConnected();
 
-            RenderKitUtils.renderJsfJsIfNecessary(context);
+            RenderKitUtils.renderFacesJsIfNecessary(context);
 
             ResponseWriter writer = context.getResponseWriter();
             writer.startElement("script", component);

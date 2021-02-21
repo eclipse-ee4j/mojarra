@@ -441,7 +441,7 @@ public class InstanceFactory {
         notNull("targetClass", targetClass);
         Converter returnVal = null;
 
-        if (version.isJsf23()) {
+        if (version.isFaces23()) {
             BeanManager beanManager = getBeanManager();
             returnVal = CdiUtils.createConverter(beanManager, targetClass);
             if (returnVal != null) {
@@ -1049,7 +1049,7 @@ public class InstanceFactory {
     }
 
     private Behavior createCDIBehavior(String behaviorId) {
-        if (version.isJsf23()) {
+        if (version.isFaces23()) {
             return CdiUtils.createBehavior(getBeanManager(), behaviorId);
         }
 
@@ -1057,7 +1057,7 @@ public class InstanceFactory {
     }
 
     private Converter<?> createCDIConverter(String converterId) {
-        if (version.isJsf23()) {
+        if (version.isFaces23()) {
             return CdiUtils.createConverter(getBeanManager(), converterId);
         }
 
@@ -1065,7 +1065,7 @@ public class InstanceFactory {
     }
 
     private Validator<?> createCDIValidator(String validatorId) {
-        if (version.isJsf23()) {
+        if (version.isFaces23()) {
             return CdiUtils.createValidator(getBeanManager(), validatorId);
         }
 
