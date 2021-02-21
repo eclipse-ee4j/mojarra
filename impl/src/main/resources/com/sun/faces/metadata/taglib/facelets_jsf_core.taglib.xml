@@ -2914,7 +2914,7 @@ public class BackingBean implements PasswordHolder, Cloneable {
                     Defaults to <code>true</code>.
                     It's interpreted as a JavaScript instruction whether to open or close the websocket push connection.
                     This attribute is implicitly re-evaluated on every ajax request by a <code>PreRenderViewEvent</code> listener on the <code>UIViewRoot</code>.
-                    You can also explicitly set it to <code>false</code> and then manually control in JavaScript by <code>jsf.push.open(clientId)</code> and <code>jsf.push.close(clientId)</code>.
+                    You can also explicitly set it to <code>false</code> and then manually control in JavaScript by <code>faces.push.open(clientId)</code> and <code>faces.push.close(clientId)</code>.
                 </p>
             ]]></description>
             <name>connected</name>

@@ -233,23 +233,23 @@ import jakarta.websocket.CloseReason.CloseCodes;
  * that ajax request.
  * <p>
  * You can also explicitly set it to <code>false</code> and manually open the push connection in client side by invoking
- * <strong><code>jsf.push.open(clientId)</code></strong>, passing the component's client ID.
+ * <strong><code>faces.push.open(clientId)</code></strong>, passing the component's client ID.
  *
  * <pre>
- * &lt;h:commandButton ... onclick="jsf.push.open('foo')"&gt;
+ * &lt;h:commandButton ... onclick="faces.push.open('foo')"&gt;
  *     &lt;f:ajax ... /&gt;
  * &lt;/h:commandButton&gt;
  * &lt;f:websocket id="foo" channel="bar" scope="view" ... connected="false" /&gt;
  * </pre>
  * <p>
  * In case you intend to have an one-time push and don't expect more messages, you can optionally explicitly close the
- * push connection from client side by invoking <strong><code>jsf.push.close(clientId)</code></strong>, passing the
+ * push connection from client side by invoking <strong><code>faces.push.close(clientId)</code></strong>, passing the
  * component's client ID. For example, in the <code>onmessage</code> JavaScript listener function as below:
  *
  * <pre>
  * function someWebsocketListener(message) {
  *     // ...
- *     jsf.push.close('foo');
+ *     faces.push.close('foo');
  * }
  * </pre>
  *
@@ -311,7 +311,7 @@ import jakarta.websocket.CloseReason.CloseCodes;
  * </ul>
  * <p>
  * When a session or view scoped socket is automatically closed with close reason code <code>1000</code> by the server
- * (and thus not manually by the client via <code>jsf.push.close(clientId)</code>), then it means that the session or
+ * (and thus not manually by the client via <code>faces.push.close(clientId)</code>), then it means that the session or
  * view has expired.
  *
  *

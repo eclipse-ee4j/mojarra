@@ -47,8 +47,8 @@ public class WebsocketFacesListener implements SystemEventListener {
 
     // Constants ------------------------------------------------------------------------------------------------------
 
-    private static final String SCRIPT_OPEN = "jsf.push.open('%s');";
-    private static final String SCRIPT_CLOSE = "jsf.push.close('%s');";
+    private static final String SCRIPT_OPEN = "faces.push.open('%s');";
+    private static final String SCRIPT_CLOSE = "faces.push.close('%s');";
 
     // Initialization -------------------------------------------------------------------------------------------------
 
