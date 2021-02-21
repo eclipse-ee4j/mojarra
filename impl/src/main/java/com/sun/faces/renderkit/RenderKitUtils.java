@@ -1121,7 +1121,7 @@ public class RenderKitUtils {
     }
 
     // Check the request parameters to see whether an action event has
-    // been triggered either via jsf.ajax.request() or via a submitting
+    // been triggered either via faces.ajax.request() or via a submitting
     // behavior.
     public static boolean isPartialOrBehaviorAction(FacesContext context, String clientId) {
         if (clientId == null || clientId.length() == 0) {
@@ -1139,7 +1139,7 @@ public class RenderKitUtils {
             return "action".equals(behaviorEvent);
         }
 
-        // Not a Behavior-related request. Check for jsf.ajax.request()
+        // Not a Behavior-related request. Check for faces.ajax.request()
         // request params.
         String partialEvent = PARTIAL_EVENT_PARAM.getValue(context);
 

@@ -24442,7 +24442,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
 
   <div class="changed_added_2_3">
                     <p>
-                        Render a JavaScript function that invokes <code>jsf.ajax.request()</code> function.
+                        Render a JavaScript function that invokes <code>faces.ajax.request()</code> function.
                     </p>
     
                     <h3>Encode Behavior</h3>
@@ -24450,18 +24450,18 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
                         Render an HTML <code>script</code> element. If the value of the "name" attribute does not contain a
                         period <code>.</code> indicating a namespaced function name, then render JavaScript <code>var</code>
                         keyword, followed by a space character. Render the value of the "name" attribute, followed by 
-                        JavaScript assignment operator. Render JavaScript function which invokes <code>jsf.ajax.request()</code>
+                        JavaScript assignment operator. Render JavaScript function which invokes <code>faces.ajax.request()</code>
                         with data provided by <code>execute</code>, <code>render</code>, <code>onbegin</code>,
                         <code>oncomplete</code>, <code>onsuccess</code> and <code>onerror</code> arguments, if any. 
                     </p>
                     <p>
                         If the component being rendered has any <code>UIParameter</code> children, each one of them must be
-                        encoded into <code>params</code> object of the <code>options</code> object of the <code>jsf.ajax.request()</code>
+                        encoded into <code>params</code> object of the <code>options</code> object of the <code>faces.ajax.request()</code>
                         function.
                     </p>
                     <p>
                         If the rendered JavaScript function is invoked with an object argument, each property must be
-                        encoded into <code>params</code> object of the <code>options</code> object of the <code>jsf.ajax.request()</code>
+                        encoded into <code>params</code> object of the <code>options</code> object of the <code>faces.ajax.request()</code>
                         function. This will override any property with the same key.
                     </p>
     
