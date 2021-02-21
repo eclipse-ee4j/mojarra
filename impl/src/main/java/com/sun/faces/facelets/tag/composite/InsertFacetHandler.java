@@ -122,7 +122,7 @@ public class InsertFacetHandler extends TagHandlerImpl {
 
             if (compositeParent == null) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.log(Level.WARNING, "jsf.composite.component.insertfacet.missing.template", location.toString());
+                    LOGGER.log(Level.WARNING, "faces.composite.component.insertfacet.missing.template", location.toString());
                 }
                 return;
             }

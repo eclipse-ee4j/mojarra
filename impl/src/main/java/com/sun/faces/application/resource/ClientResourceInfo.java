@@ -240,7 +240,7 @@ public class ClientResourceInfo extends ResourceInfo {
                         } else {
                             compressible = false;
                             if (LOGGER.isLoggable(Level.WARNING)) {
-                                LOGGER.log(Level.WARNING, "jsf.application.resource.unable_to_create_compression_directory", newDir.getCanonicalPath());
+                                LOGGER.log(Level.WARNING, "faces.application.resource.unable_to_create_compression_directory", newDir.getCanonicalPath());
                             }
                         }
                     } else {

@@ -338,7 +338,7 @@ public class InstanceFactory {
 
         behavior = newThing(behaviorId, behaviorMap);
 
-        notNullNamedObject(behavior, behaviorId, "jsf.cannot_instantiate_behavior_error");
+        notNullNamedObject(behavior, behaviorId, "faces.cannot_instantiate_behavior_error");
 
         if (LOGGER.isLoggable(FINE)) {
             LOGGER.fine(MessageFormat.format("created behavior of type ''{0}''", behaviorId));
@@ -419,7 +419,7 @@ public class InstanceFactory {
 
         converter = newThing(converterId, converterIdMap);
 
-        notNullNamedObject(converter, converterId, "jsf.cannot_instantiate_converter_error");
+        notNullNamedObject(converter, converterId, "faces.cannot_instantiate_converter_error");
 
         if (LOGGER.isLoggable(FINE)) {
             LOGGER.fine(MessageFormat.format("created converter of type ''{0}''", converterId));
@@ -547,7 +547,7 @@ public class InstanceFactory {
 
         validator = newThing(validatorId, validatorMap);
 
-        notNullNamedObject(validator, validatorId, "jsf.cannot_instantiate_validator_error");
+        notNullNamedObject(validator, validatorId, "faces.cannot_instantiate_validator_error");
 
         if (LOGGER.isLoggable(FINE)) {
             LOGGER.fine(MessageFormat.format("created validator of type ''{0}''", validatorId));
@@ -691,12 +691,12 @@ public class InstanceFactory {
             component = newThing(componentType, componentMap);
         } catch (Exception ex) {
             if (LOGGER.isLoggable(SEVERE)) {
-                LOGGER.log(Level.SEVERE, "jsf.cannot_instantiate_component_error", componentType);
+                LOGGER.log(Level.SEVERE, "faces.cannot_instantiate_component_error", componentType);
             }
             throw new FacesException(ex);
         }
 
-        notNullNamedObject(component, componentType, "jsf.cannot_instantiate_component_error");
+        notNullNamedObject(component, componentType, "faces.cannot_instantiate_component_error");
 
         if (LOGGER.isLoggable(FINE)) {
             LOGGER.log(FINE, MessageFormat.format("Created component with component type of ''{0}''", componentType));

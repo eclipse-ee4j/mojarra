@@ -1082,7 +1082,7 @@ public class RenderKitUtils {
                 }
                 if (messageCount > 0) {
                     if (LOGGER.isLoggable(Level.INFO)) {
-                        LOGGER.log(Level.INFO, "jsf.non_displayed_message", builder.toString());
+                        LOGGER.log(Level.INFO, "faces.non_displayed_message", builder.toString());
                     }
                 }
             }
@@ -1111,7 +1111,7 @@ public class RenderKitUtils {
             ctx.responseComplete();
         } else {
             if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING, "jsf.facelets.error.page.response.committed");
+                LOGGER.log(Level.WARNING, "faces.facelets.error.page.response.committed");
             }
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, fe.toString(), fe);

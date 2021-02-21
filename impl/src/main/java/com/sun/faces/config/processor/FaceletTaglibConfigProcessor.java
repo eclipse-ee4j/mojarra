@@ -394,7 +394,7 @@ public class FaceletTaglibConfigProcessor extends AbstractConfigProcessor {
                 String message = defNotFound.toString();
                 if (message.contains("com/sun/facelets/") || message.contains("com.sun.facelets.")) {
                     if (LOGGER.isLoggable(WARNING)) {
-                        LOGGER.log(WARNING, "jsf.config.legacy.facelet.warning", new Object[] { handlerClass, });
+                        LOGGER.log(WARNING, "faces.config.legacy.facelet.warning", new Object[] { handlerClass, });
                     }
                 } else {
                     throw defNotFound;
@@ -452,7 +452,7 @@ public class FaceletTaglibConfigProcessor extends AbstractConfigProcessor {
                     String message = defNotFound.toString();
                     if (message.contains("com/sun/facelets/") || message.contains("com.sun.facelets.")) {
                         if (LOGGER.isLoggable(Level.WARNING)) {
-                            LOGGER.log(Level.WARNING, "jsf.config.legacy.facelet.warning", new Object[] { handlerClass, });
+                            LOGGER.log(Level.WARNING, "faces.config.legacy.facelet.warning", new Object[] { handlerClass, });
                         }
                     } else {
                         throw defNotFound;
@@ -494,7 +494,7 @@ public class FaceletTaglibConfigProcessor extends AbstractConfigProcessor {
                     String message = defNotFound.toString();
                     if (message.contains("com/sun/facelets/") || message.contains("com.sun.facelets.")) {
                         if (LOGGER.isLoggable(Level.WARNING)) {
-                            LOGGER.log(Level.WARNING, "jsf.config.legacy.facelet.warning", new Object[] { handlerClass, });
+                            LOGGER.log(Level.WARNING, "faces.config.legacy.facelet.warning", new Object[] { handlerClass, });
                         }
                     } else {
                         throw defNotFound;
@@ -545,7 +545,7 @@ public class FaceletTaglibConfigProcessor extends AbstractConfigProcessor {
                     String message = defNotFound.toString();
                     if (message.contains("com/sun/facelets/") || message.contains("com.sun.facelets.")) {
                         if (LOGGER.isLoggable(Level.WARNING)) {
-                            LOGGER.log(Level.WARNING, "jsf.config.legacy.facelet.warning", new Object[] { handlerClass, });
+                            LOGGER.log(Level.WARNING, "faces.config.legacy.facelet.warning", new Object[] { handlerClass, });
                         }
                     } else {
                         throw defNotFound;

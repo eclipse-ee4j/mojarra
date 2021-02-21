@@ -113,7 +113,7 @@ final class ServiceFactoryUtils {
                     }
                 } catch (Exception e) {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.log(Level.SEVERE, "jsf.spi.provider.cannot_read_service", new Object[] { serviceName });
+                        LOGGER.log(Level.SEVERE, "faces.spi.provider.cannot_read_service", new Object[] { serviceName });
                         LOGGER.log(Level.SEVERE, e.toString(), e);
                     }
                 } finally {

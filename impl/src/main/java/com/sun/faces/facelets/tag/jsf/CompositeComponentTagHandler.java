@@ -101,7 +101,7 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
             cc = (UIComponent) ve.getValue(ctx);
             if (cc != null && !UIComponent.isCompositeComponent(cc)) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE, "jsf.compcomp.binding.eval.non.compcomp", binding.toString());
+                    LOGGER.log(Level.SEVERE, "faces.compcomp.binding.eval.non.compcomp", binding.toString());
                 }
                 cc = null;
             }

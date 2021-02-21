@@ -63,7 +63,7 @@ public abstract class BaseWebConfigResourceProvider implements ConfigurationReso
                         urls.add(u);
                     } else {
                         if (LOGGER.isLoggable(WARNING)) {
-                            LOGGER.log(WARNING, "jsf.config.web_resource_not_found", new Object[] { path, JakartaFacesConfigFiles.getQualifiedName() });
+                            LOGGER.log(WARNING, "faces.config.web_resource_not_found", new Object[] { path, JakartaFacesConfigFiles.getQualifiedName() });
                         }
                     }
                 }

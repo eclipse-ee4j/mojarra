@@ -243,14 +243,14 @@ public class DocumentOrderingWrapper {
                 } else if (found && name.equals(wrapper.getDocumentId())) {
                     // we've already processed a document with this name
                     if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.log(Level.WARNING, "jsf.configuration.absolute.order.duplicate.document", new Object[] { name });
+                        LOGGER.log(Level.WARNING, "faces.configuration.absolute.order.duplicate.document", new Object[] { name });
                     }
                     // only log this once
                     break;
                 }
             }
             if (!found && LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING, "jsf.configuration.absolute.order.missing.document", new Object[] { name });
+                LOGGER.log(Level.WARNING, "faces.configuration.absolute.order.missing.document", new Object[] { name });
             }
         }
 

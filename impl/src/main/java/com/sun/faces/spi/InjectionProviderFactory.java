@@ -90,14 +90,14 @@ public class InjectionProviderFactory {
 
         if (!NoopInjectionProvider.class.equals(provider.getClass()) && !WebContainerInjectionProvider.class.equals(provider.getClass())) {
             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.log(Level.FINE, "jsf.spi.injection.provider_configured", new Object[] { provider.getClass().getName() });
+                LOGGER.log(Level.FINE, "faces.spi.injection.provider_configured", new Object[] { provider.getClass().getName() });
             }
             return provider;
         } else if (WebContainerInjectionProvider.class.equals(provider.getClass())) {
-            LOGGER.info("jsf.core.injection.provider_generic_web_configured");
+            LOGGER.info("faces.core.injection.provider_generic_web_configured");
             return provider;
         } else {
-            LOGGER.log(WARNING, "jsf.spi.injection.no_injection");
+            LOGGER.log(WARNING, "faces.spi.injection.no_injection");
             return provider;
         }
 
@@ -117,22 +117,22 @@ public class InjectionProviderFactory {
                         return (InjectionProvider) clazz.newInstance();
                     } catch (InvocationTargetException ite) {
                         if (LOGGER.isLoggable(Level.SEVERE)) {
-                            LOGGER.log(Level.SEVERE, "jsf.spi.injection.provider_cannot_instantiate", new Object[] { className });
+                            LOGGER.log(Level.SEVERE, "faces.spi.injection.provider_cannot_instantiate", new Object[] { className });
                             LOGGER.log(Level.SEVERE, "", ite);
                         }
                     }
                 } else {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.log(Level.SEVERE, "jsf.spi.injection.provider_not_implemented", new Object[] { className });
+                        LOGGER.log(Level.SEVERE, "faces.spi.injection.provider_not_implemented", new Object[] { className });
                     }
                 }
             } catch (ClassNotFoundException cnfe) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE, "jsf.spi.injection.provider_not_found", new Object[] { className });
+                    LOGGER.log(Level.SEVERE, "faces.spi.injection.provider_not_found", new Object[] { className });
                 }
             } catch (InstantiationException | IllegalAccessException ie) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE, "jsf.spi.injection.provider_cannot_instantiate", new Object[] { className });
+                    LOGGER.log(Level.SEVERE, "faces.spi.injection.provider_cannot_instantiate", new Object[] { className });
                     LOGGER.log(Level.SEVERE, "", ie);
                 }
             }
@@ -245,7 +245,7 @@ public class InjectionProviderFactory {
         String[] parts = Util.split(appMap, entry, ":");
         if (parts.length != 2) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE, "jsf.spi.injection.invalid_service_entry", new Object[] { entry });
+                LOGGER.log(Level.SEVERE, "faces.spi.injection.invalid_service_entry", new Object[] { entry });
             }
             return null;
         }
@@ -258,13 +258,13 @@ public class InjectionProviderFactory {
                 }
             } else {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE, "jsf.spi.injection.provider.entry_not_discoverable", new Object[] { parts[0] });
+                    LOGGER.log(Level.SEVERE, "faces.spi.injection.provider.entry_not_discoverable", new Object[] { parts[0] });
                 }
                 return null;
             }
         } catch (ClassNotFoundException cnfe) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE, "jsf.spi.injection.provider_not_found", new Object[] { parts[0] });
+                LOGGER.log(Level.SEVERE, "faces.spi.injection.provider_not_found", new Object[] { parts[0] });
             }
             return null;
         }
@@ -317,7 +317,7 @@ public class InjectionProviderFactory {
                     }
                 } catch (Exception e) {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.log(Level.SEVERE, "jsf.spi.provider.cannot_read_service", new Object[] { INJECTION_SERVICE });
+                        LOGGER.log(Level.SEVERE, "faces.spi.provider.cannot_read_service", new Object[] { INJECTION_SERVICE });
                         LOGGER.log(Level.SEVERE, e.toString(), e);
                     }
                 } finally {

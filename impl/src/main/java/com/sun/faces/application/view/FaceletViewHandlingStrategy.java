@@ -664,7 +664,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                     // validator, or valueChangeListener. We can ignore the
                     // target(s) in this case
                     if (LOGGER.isLoggable(WARNING)) {
-                        LOGGER.log(WARNING, "jsf.compcomp.unecessary.targets.attribute",
+                        LOGGER.log(WARNING, "faces.compcomp.unecessary.targets.attribute",
                                 new Object[] { getCompositeComponentName(topLevelComponent), attrName });
                     }
                     handler = retargetHandlerManager.getDefaultHandler();

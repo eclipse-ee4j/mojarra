@@ -476,7 +476,7 @@ public class MultiViewHandler extends ViewHandler {
         while (uri.startsWith(mappingMod)) {
             if (!logged && LOGGER.isLoggable(WARNING)) {
                 logged = true;
-                LOGGER.log(WARNING, "jsf.viewhandler.requestpath.recursion", new Object[] { uri, mapping });
+                LOGGER.log(WARNING, "faces.viewhandler.requestpath.recursion", new Object[] { uri, mapping });
             }
             uri = uri.substring(length - 1);
         }
@@ -723,7 +723,7 @@ public class MultiViewHandler extends ViewHandler {
 
         if (viewId.length() == 0 || viewId.charAt(0) != '/') {
             if (LOGGER.isLoggable(SEVERE)) {
-                LOGGER.log(SEVERE, "jsf.illegal_view_id_error", viewId);
+                LOGGER.log(SEVERE, "faces.illegal_view_id_error", viewId);
             }
             throw new IllegalArgumentException(getExceptionMessageString(ILLEGAL_VIEW_ID_ID, viewId));
         }

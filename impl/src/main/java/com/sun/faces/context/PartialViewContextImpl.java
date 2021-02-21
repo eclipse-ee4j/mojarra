@@ -386,7 +386,7 @@ public class PartialViewContextImpl extends PartialViewContext {
                 for (String cur : unvisitedClientIds) {
                     builder.append(cur).append(" ");
                 }
-                LOGGER.log(Level.FINER, "jsf.context.partial_visit_context_unvisited_children", new Object[] { builder.toString() });
+                LOGGER.log(Level.FINER, "faces.context.partial_visit_context_unvisited_children", new Object[] { builder.toString() });
             }
         }
     }
