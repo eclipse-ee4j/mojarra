@@ -820,10 +820,10 @@ public abstract class UIComponentBase extends UIComponent {
         }
 
         if (listenersByEventClass != null) {
-            return listenersByEventClass.get(eventClass);
+            return listenersByEventClass.getOrDefault(eventClass, Collections.emptyList());
         }
 
-        return null;
+        return Collections.emptyList();
     }
 
     // ------------------------------------------------ Lifecycle Phase Handlers

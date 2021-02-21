@@ -1830,7 +1830,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * </p>
      *
      * @param eventClass the event class.
-     * @return the list of listeners.
+     * @return the list of listeners, <span class="changed_modified_4_0">never <code>null</code></span>.
      * @since 2.1
      */
     @Override
