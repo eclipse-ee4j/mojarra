@@ -71,6 +71,7 @@ public class FacesContextImpl extends FacesContext {
     private ResponseStream responseStream = null;
     private ResponseWriter responseWriter = null;
     private ExternalContext externalContext = null;
+    private Lifecycle lifecycle;
     private Application application = null;
     private UIViewRoot viewRoot = null;
     private ELContext elContext = null;
@@ -97,12 +98,22 @@ public class FacesContextImpl extends FacesContext {
         Util.notNull("ec", ec);
         Util.notNull("lifecycle", lifecycle);
         externalContext = ec;
+        this.lifecycle = lifecycle;
         setCurrentInstance(this);
         DEFAULT_FACES_CONTEXT.set(this);
         rkFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
     }
 
     // ---------------------------------------------- Methods from FacesContext
+
+    /**
+     * @see jakarta.faces.context.FacesContext#getLifecycle()
+     */
+    @Override
+    public Lifecycle getLifecycle() {
+        assertNotReleased();
+        return lifecycle;
+    }
 
     /**
      * @see jakarta.faces.context.FacesContext#getExternalContext()
@@ -500,6 +511,7 @@ public class FacesContextImpl extends FacesContext {
         if (externalContext != null) {
             externalContext.release();
         }
+        lifecycle = null;
         externalContext = null;
         responseStream = null;
         responseWriter = null;
