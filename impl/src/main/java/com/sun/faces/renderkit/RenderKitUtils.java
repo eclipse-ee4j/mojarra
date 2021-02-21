@@ -1269,7 +1269,7 @@ public class RenderKitUtils {
 
     // --------------------------------------------------------- Private Methods
 
-    // Appends a script to a jsf.util.chain() call
+    // Appends a script to a faces.util.chain() call
     private static void appendScriptToChain(StringBuilder builder, String script) {
 
         if (script == null || script.length() == 0) {
@@ -1277,7 +1277,7 @@ public class RenderKitUtils {
         }
 
         if (builder.length() == 0) {
-            builder.append("jsf.util.chain(this,event,");
+            builder.append("faces.util.chain(this,event,");
         }
 
         if (builder.charAt(builder.length() - 1) != ',') {
@@ -1340,7 +1340,7 @@ public class RenderKitUtils {
         builder.append("'");
     }
 
-    // Appends one or more behavior scripts a jsf.util.chain() call
+    // Appends one or more behavior scripts a faces.util.chain() call
     private static boolean appendBehaviorsToChain(StringBuilder builder, FacesContext context, UIComponent component, List<ClientBehavior> behaviors,
             String behaviorEventName, Collection<ClientBehaviorContext.Parameter> params) {
 

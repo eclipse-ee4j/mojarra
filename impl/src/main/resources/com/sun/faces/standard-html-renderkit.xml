@@ -23284,7 +23284,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
        <li>renderer specific scripts</li>
        </ul>
        If any of the scripts in the chain returns <code>false</code>, subsequent script must not be executed.
-       The specification provides a utility function <code>jsf.util.chain</code> to handle this capability.  If there
+       The specification provides a utility function <code>faces.util.chain</code> to handle this capability.  If there
        are <code>UIParameter</code> children the parameter names and values must be passed into the client behavior
        getScript method via the <code>ClientBehaviorContext</code>.</p> 
          
