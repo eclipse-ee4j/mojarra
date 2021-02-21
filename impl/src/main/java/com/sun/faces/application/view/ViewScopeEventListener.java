@@ -32,7 +32,7 @@ import jakarta.faces.event.ViewMapListener;
  * </p>
  *
  * <p>
- * See jsf-ri-config.xml for the actual registration of this listener.
+ * See MojarraRuntimePopulator for the actual registration of this listener.
  * </p>
  */
 public class ViewScopeEventListener implements ViewMapListener {

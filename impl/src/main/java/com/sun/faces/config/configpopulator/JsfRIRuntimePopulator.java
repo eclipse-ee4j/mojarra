@@ -5,7 +5,7 @@ import org.w3c.dom.Element;
 
 import jakarta.faces.application.ApplicationConfigurationPopulator;
 
-public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulator {
+public final class MojarraRuntimePopulator extends ApplicationConfigurationPopulator {
     @Override
     public void populateApplicationConfiguration(Document toPopulate) {
         String ns = toPopulate.getDocumentElement().getNamespaceURI();
