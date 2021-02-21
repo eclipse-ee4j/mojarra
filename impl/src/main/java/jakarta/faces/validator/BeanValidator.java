@@ -485,8 +485,8 @@ public class BeanValidator implements Validator, PartialStateHolder {
         ValidatorFactory validatorFactory = getValidatorFactory(context);
 
         ValidatorContext validatorContext = validatorFactory.usingContext();
-        MessageInterpolator jsfMessageInterpolator = new JsfAwareMessageInterpolator(context, validatorFactory.getMessageInterpolator());
-        validatorContext.messageInterpolator(jsfMessageInterpolator);
+        MessageInterpolator facesMessageInterpolator = new FacesAwareMessageInterpolator(context, validatorFactory.getMessageInterpolator());
+        validatorContext.messageInterpolator(facesMessageInterpolator);
 
         return validatorContext.getValidator();
     }
@@ -511,12 +511,12 @@ public class BeanValidator implements Validator, PartialStateHolder {
         return validatorFactory;
     }
 
-    private static class JsfAwareMessageInterpolator implements MessageInterpolator {
+    private static class FacesAwareMessageInterpolator implements MessageInterpolator {
 
         private FacesContext context;
         private MessageInterpolator delegate;
 
-        public JsfAwareMessageInterpolator(FacesContext context, MessageInterpolator delegate) {
+        public FacesAwareMessageInterpolator(FacesContext context, MessageInterpolator delegate) {
             this.context = context;
             this.delegate = delegate;
         }

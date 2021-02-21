@@ -36,7 +36,7 @@ import jakarta.faces.context.FacesContext;
 public class ClientResourceInfo extends ResourceInfo {
 
     private static final Logger LOGGER = FacesLogger.RESOURCE.getLogger();
-    private static final String COMPRESSED_CONTENT_DIRECTORY = "jsf-compressed";
+    private static final String COMPRESSED_CONTENT_DIRECTORY = "faces-compressed";
     boolean cacheTimestamp;
     boolean isDevStage;
     String compressedPath;

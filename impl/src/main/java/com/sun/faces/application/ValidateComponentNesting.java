@@ -62,9 +62,9 @@ public class ValidateComponentNesting implements SystemEventListener {
     @Override
     public void processEvent(SystemEvent event) throws AbortProcessingException {
         UIComponent root = (UIComponent) event.getSource();
-        FacesContext jsf = FacesContext.getCurrentInstance();
+        FacesContext ctx = FacesContext.getCurrentInstance();
         EnumSet<VisitHint> hints = EnumSet.of(VisitHint.SKIP_ITERATION);
-        VisitContext visitContext = VisitContext.createVisitContext(jsf, null, hints);
+        VisitContext visitContext = VisitContext.createVisitContext(ctx, null, hints);
 
         root.visitTree(visitContext, new ValidateFormNestingCallback());
     }
