@@ -26,6 +26,7 @@ import com.sun.faces.util.MessageFactory;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.RequestStateManager;
 
+import jakarta.el.PropertyNotFoundException;
 import jakarta.el.ValueExpression;
 import jakarta.faces.application.Application;
 import jakarta.faces.component.UIComponent;
@@ -63,7 +64,23 @@ public abstract class HtmlBasicInputRenderer extends HtmlBasicRenderer {
         }
 
         if (null == converter && null != valueExpression) {
-            Class converterType = valueExpression.getType(context.getELContext());
+            Class converterType;
+            try {
+                converterType = valueExpression.getType(context.getELContext());
+            } catch (PropertyNotFoundException e) {
+                if (submittedValue == null) {
+                    if (logger.isLoggable(Level.FINE)) {
+                        logger.log(Level.FINE,
+                                   "Property of value expression {0} of component {1} could not be found, but submitted value is null in first place, so not attempting to convert",
+                                   new Object[]{
+                                         valueExpression.getExpressionString(),
+                                         component.getId() });
+                    }
+                    converterType = null; // See issue 4734.
+                } else {
+                    throw e;
+                }
+            }
             // if converterType is null, assume the modelType is "String".
             if (converterType == null || converterType == Object.class) {
                 if (logger.isLoggable(Level.FINE)) {
