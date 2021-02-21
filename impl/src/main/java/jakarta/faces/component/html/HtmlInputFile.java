@@ -43,7 +43,7 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlInputFile";
 
     protected enum PropertyKeys {
-        accesskey, alt, autocomplete, dir, disabled, label, lang, maxlength, onblur, onchange, onclick, ondblclick, onfocus, onkeydown, onkeypress, onkeyup,
+        accesskey, alt, autocomplete, dir, disabled, label, lang, maxlength, multiple, onblur, onchange, onclick, ondblclick, onfocus, onkeydown, onkeypress, onkeyup,
         onmousedown, onmousemove, onmouseout, onmouseover, onmouseup, onselect, readonly, role, size, style, styleClass, tabindex, title,;
 
         String toString;
@@ -259,6 +259,36 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
     public void setLang(java.lang.String lang) {
         getStateHelper().put(PropertyKeys.lang, lang);
         handleAttribute("lang", lang);
+    }
+
+    /**
+     * <p>
+     * Return the value of the <code>multiple</code> property.
+     * </p>
+     * <p>
+     * Contents: Flag indicating that this element must allow multiple file selection. A value
+     * of false causes no attribute to be rendered, while a value of true causes the attribute to be rendered as
+     * multiple="multiple".
+     *
+     * @return the value of the property
+     *
+     */
+    public boolean isMultiple() {
+        return (java.lang.Boolean) getStateHelper().eval(PropertyKeys.multiple, false);
+
+    }
+
+    /**
+     * <p>
+     * Set the value of the <code>multiple</code> property.
+     * </p>
+     *
+     * @param multiple the new property value
+     *
+     */
+    public void setMaxlength(boolean multiple) {
+        getStateHelper().put(PropertyKeys.multiple, multiple);
+        handleAttribute("multiple", multiple);
     }
 
     /**
