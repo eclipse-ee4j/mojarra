@@ -69,7 +69,7 @@ public class RequestStateManager {
      * This attribute is used by the loadBundle tag for tracking views/subviews within the logical view (this is only used
      * when 1.1 compatibility is enabled).
      */
-    public static final String VIEWTAG_STACK_ATTR_NAME = RIConstants.FACES_PREFIX + "taglib.jsf_core.VIEWTAG_STACK";
+    public static final String VIEWTAG_STACK_ATTR_NAME = RIConstants.FACES_PREFIX + "taglib.faces_core.VIEWTAG_STACK";
 
     /**
      * Attribute to store the {@link jakarta.faces.webapp.FacesServlet} path of the original request.
