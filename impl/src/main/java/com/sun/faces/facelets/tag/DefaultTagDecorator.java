@@ -19,9 +19,9 @@ package com.sun.faces.facelets.tag;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.sun.faces.facelets.tag.jsf.PassThroughAttributeLibrary;
-import com.sun.faces.facelets.tag.jsf.PassThroughElementLibrary;
-import com.sun.faces.facelets.tag.jsf.html.HtmlLibrary;
+import com.sun.faces.facelets.tag.faces.PassThroughAttributeLibrary;
+import com.sun.faces.facelets.tag.faces.PassThroughElementLibrary;
+import com.sun.faces.facelets.tag.faces.html.HtmlLibrary;
 
 import jakarta.faces.render.Renderer;
 import jakarta.faces.view.Location;
@@ -32,26 +32,26 @@ import jakarta.faces.view.facelets.TagAttributes;
 import jakarta.faces.view.facelets.TagDecorator;
 
 /**
- * A simple tag decorator to enable jsf: syntax
+ * A simple tag decorator to enable faces: syntax
  */
 class DefaultTagDecorator implements TagDecorator {
 
     private enum Mapper {
-        a(new ElementConverter("h:commandLink", "jsf:action"), new ElementConverter("h:commandLink", "jsf:actionListener"),
-                new ElementConverter("h:outputLink", "jsf:value"), new ElementConverter("h:link", "jsf:outcome")),
+        a(new ElementConverter("h:commandLink", "faces:action"), new ElementConverter("h:commandLink", "faces:actionListener"),
+                new ElementConverter("h:outputLink", "faces:value"), new ElementConverter("h:link", "faces:outcome")),
 
         img("h:graphicImage"), body("h:body"), head("h:head"), label("h:outputLabel"), script("h:outputScript"), link("h:outputStylesheet"),
 
         form("h:form"), textarea("h:inputTextarea"),
         // TODO if we want the name of the button to become the id, we have to do .id("name")
-        button(new ElementConverter("h:button", "jsf:outcome"), new ElementConverter("h:commandButton")),
+        button(new ElementConverter("h:button", "faces:outcome"), new ElementConverter("h:commandButton")),
 
         select(new ElementConverter("h:selectManyListbox", "multiple").id("name"),
-                // TODO this is a little bit ugly to handle the name as if it were jsf:id. we should not support this
+                // TODO this is a little bit ugly to handle the name as if it were faces:id. we should not support this
                 new ElementConverter("h:selectOneListbox").id("name")),
 
         input(new ElementConverter("h:inputText", "type")
-                // TODO this is a little bit ugly to handle the name as if it were jsf:id. we should not support this
+                // TODO this is a little bit ugly to handle the name as if it were faces:id. we should not support this
                 .id("name").map("hidden", "inputHidden").map("password", "inputSecret").map("number", "inputText").map("search", "inputText")
                 .map("email", "inputText").map("datetime", "inputText").map("date", "inputText").map("month", "inputText").map("week", "inputText")
                 .map("time", "inputText").map("datetime-local", "inputText").map("range", "inputText").map("color", "inputText").map("url", "inputText")
@@ -94,20 +94,20 @@ class DefaultTagDecorator implements TagDecorator {
         }
     }
 
-    private ElementConverter defaultElementConverter = new ElementConverter("jsf:element");
+    private ElementConverter defaultElementConverter = new ElementConverter("faces:element");
 
     @Override
     public Tag decorate(Tag tag) {
         String ns = tag.getNamespace();
         if (!hasJsfAttribute(tag)) {
-            // return immediately, if we have no jsf: attribute
+            // return immediately, if we have no faces: attribute
             return null;
         }
         // we only handle html tags!
         if (!("".equals(ns) || "http://www.w3.org/1999/xhtml".equals(ns))) {
             throw new FaceletException("Elements with namespace " + ns + " may not have attributes in namespace " + Namespace.faces.uri + "." + " Namespace "
                     + Namespace.faces.uri + " is intended for otherwise non-JSF-aware markup, such as <input type=\"text\" " + Namespace.faces.name() + ":id >"
-                    + " It is not valid to have <h:commandButton jsf:id=\"button\" />.");
+                    + " It is not valid to have <h:commandButton faces:id=\"button\" />.");
         }
         for (Mapper mapper : Mapper.values()) {
             if (tag.getLocalName().equals(mapper.name())) {

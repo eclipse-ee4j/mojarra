@@ -126,7 +126,7 @@
     <component>
       <component-type>jakarta.faces.Input</component-type>
       <renderer-type>jakarta.faces.Text</renderer-type>
-      <handler-class>com.sun.faces.facelets.tag.jsf.ComponentHandler</handler-class>
+      <handler-class>com.sun.faces.facelets.tag.faces.ComponentHandler</handler-class>
       <component-extension>
 
         <composite:attribute name="foo" default="bar" />

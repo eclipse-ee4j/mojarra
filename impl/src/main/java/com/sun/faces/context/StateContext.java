@@ -37,7 +37,7 @@ import java.util.logging.Logger;
 import com.sun.faces.RIConstants;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.ApplicationStateInfo;
-import com.sun.faces.facelets.tag.jsf.ComponentSupport;
+import com.sun.faces.facelets.tag.faces.ComponentSupport;
 import com.sun.faces.util.ComponentStruct;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MostlySingletonSet;

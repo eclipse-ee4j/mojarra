@@ -65,7 +65,7 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             }
             {
                 Element tag_handler_delegate_factoryElement = toPopulate.createElementNS(ns, "tag-handler-delegate-factory");
-                tag_handler_delegate_factoryElement.appendChild(toPopulate.createTextNode("com.sun.faces.facelets.tag.jsf.TagHandlerDelegateFactoryImpl"));
+                tag_handler_delegate_factoryElement.appendChild(toPopulate.createTextNode("com.sun.faces.facelets.tag.faces.TagHandlerDelegateFactoryImpl"));
                 factoryElement.appendChild(tag_handler_delegate_factoryElement);
             }
             {
@@ -657,7 +657,7 @@ public final class JsfRIRuntimePopulator extends ApplicationConfigurationPopulat
             }
             {
                 Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.facelets.tag.jsf.CompositeComponentImpl"));
+                component_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.facelets.tag.faces.CompositeComponentImpl"));
                 componentElement.appendChild(component_classElement);
             }
             faces_configElement.appendChild(componentElement);

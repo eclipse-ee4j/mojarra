@@ -85,7 +85,7 @@ import com.sun.faces.facelets.el.VariableMapperWrapper;
 import com.sun.faces.facelets.impl.DefaultFaceletFactory;
 import com.sun.faces.facelets.impl.XMLFrontMatterSaver;
 import com.sun.faces.facelets.tag.composite.CompositeComponentBeanInfo;
-import com.sun.faces.facelets.tag.jsf.CompositeComponentTagHandler;
+import com.sun.faces.facelets.tag.faces.CompositeComponentTagHandler;
 import com.sun.faces.facelets.tag.ui.UIDebug;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.Cache;

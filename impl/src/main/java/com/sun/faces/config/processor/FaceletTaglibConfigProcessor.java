@@ -37,7 +37,7 @@ import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.facelets.compiler.Compiler;
 import com.sun.faces.facelets.tag.TagLibrary;
 import com.sun.faces.facelets.tag.TagLibraryImpl;
-import com.sun.faces.facelets.tag.jsf.CompositeComponentTagLibrary;
+import com.sun.faces.facelets.tag.faces.CompositeComponentTagLibrary;
 import com.sun.faces.facelets.util.ReflectionUtil;
 import com.sun.faces.util.FacesLogger;
 
