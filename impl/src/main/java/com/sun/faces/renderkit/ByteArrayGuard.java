@@ -195,7 +195,7 @@ public final class ByteArrayGuard {
          */
         try {
             InitialContext context = new InitialContext();
-            String encodedKeyArray = (String) context.lookup("java:comp/env/jsf/ClientSideSecretKey");
+            String encodedKeyArray = (String) context.lookup("java:comp/env/faces/ClientSideSecretKey");
             byte[] keyArray = Base64.getDecoder().decode(encodedKeyArray);
             sk = new SecretKeySpec(keyArray, KEY_ALGORITHM);
         } catch (NamingException exception) {
