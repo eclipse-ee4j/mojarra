@@ -615,7 +615,7 @@ public class ResourceManager {
                     } catch (PatternSyntaxException pse) {
                         if (LOGGER.isLoggable(Level.WARNING)) {
                             // PENDING i18n
-                            LOGGER.log(Level.WARNING, "jsf.resource.mime.type.configration.invalid", new Object[] { pattern, pse.getPattern() });
+                            LOGGER.log(Level.WARNING, "faces.resource.mime.type.configration.invalid", new Object[] { pattern, pse.getPattern() });
                         }
                     }
                 }

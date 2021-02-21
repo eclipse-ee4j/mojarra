@@ -424,7 +424,7 @@ public class ClientSideStateHelper extends StateHelper {
             guard = new ByteArrayGuard();
         } else {
             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.log(Level.FINE, "jsf.config.webconfig.enventry.clientencrypt");
+                LOGGER.log(Level.FINE, "faces.config.webconfig.enventry.clientencrypt");
             }
 
         }
@@ -445,7 +445,7 @@ public class ClientSideStateHelper extends StateHelper {
             csBuffSize = Integer.parseInt(size);
             if (csBuffSize % 2 != 0) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.log(Level.WARNING, "jsf.renderkit.resstatemgr.clientbuf_div_two",
+                    LOGGER.log(Level.WARNING, "faces.renderkit.resstatemgr.clientbuf_div_two",
                             new Object[] { ClientStateWriteBufferSize.getQualifiedName(), size, defaultSize });
                 }
                 csBuffSize = Integer.parseInt(defaultSize);
@@ -457,7 +457,7 @@ public class ClientSideStateHelper extends StateHelper {
             }
         } catch (NumberFormatException nfe) {
             if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING, "jsf.renderkit.resstatemgr.clientbuf_not_integer",
+                LOGGER.log(Level.WARNING, "faces.renderkit.resstatemgr.clientbuf_not_integer",
                         new Object[] { ClientStateWriteBufferSize.getQualifiedName(), size, defaultSize });
             }
             csBuffSize = Integer.parseInt(defaultSize);

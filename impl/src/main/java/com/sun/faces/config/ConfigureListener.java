@@ -165,11 +165,11 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
         try {
             if (LOGGER.isLoggable(INFO)) {
-                LOGGER.log(INFO, "jsf.config.listener.version", getServletContextIdentifier(servletContext));
+                LOGGER.log(INFO, "faces.config.listener.version", getServletContextIdentifier(servletContext));
             }
 
             if (webConfig.isOptionEnabled(VerifyFacesConfigObjects)) {
-                LOGGER.warning("jsf.config.verifyobjects.development_only");
+                LOGGER.warning("faces.config.verifyobjects.development_only");
 
                 // If we're verifying, force bean validation to occur at startup as well
                 webConfig.overrideContextInitParameter(EnableLazyBeanValidation, false);
@@ -186,7 +186,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
             // and optionally that configured objects can be created.
             Verifier verifier = Verifier.getCurrentInstance();
             if (verifier != null && !verifier.isApplicationValid() && LOGGER.isLoggable(SEVERE)) {
-                LOGGER.severe("jsf.config.verifyobjects.failures_detected");
+                LOGGER.severe("faces.config.verifyobjects.failures_detected");
                 StringBuilder sb = new StringBuilder(128);
                 for (String msg : verifier.getMessages()) {
                     sb.append(msg).append('\n');
@@ -234,7 +234,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
             Verifier.setCurrentInstance(null);
 
-            LOGGER.log(FINE, "jsf.config.listener.version.complete");
+            LOGGER.log(FINE, "faces.config.listener.version.complete");
 
             if (timer != null) {
                 timer.stopTiming();
@@ -662,7 +662,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         private void warnProcessingError(Exception e, ServletContext sc) {
 
             if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING, MessageFormat.format("jsf.configuration.web.xml.parse.failed", getServletContextIdentifier(sc)), e);
+                LOGGER.log(Level.WARNING, MessageFormat.format("faces.configuration.web.xml.parse.failed", getServletContextIdentifier(sc)), e);
             }
 
         }

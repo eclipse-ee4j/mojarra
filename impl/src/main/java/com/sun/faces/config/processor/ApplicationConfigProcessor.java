@@ -776,7 +776,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
 
     private void processViewHandlers(ServletContext servletContext, FacesContext facesContext, Application application, LinkedHashMap<String, Node> viewHandlers) {
         if (viewHandlers.containsKey("com.sun.facelets.FaceletViewHandler")) {
-            LOGGER.log(SEVERE, "jsf.application.legacy_facelet_viewhandler_detected", "com.sun.facelets.FaceletViewHandler");
+            LOGGER.log(SEVERE, "faces.application.legacy_facelet_viewhandler_detected", "com.sun.facelets.FaceletViewHandler");
             throw new FacesException("Use of com.sun.facelets.FaceletViewHandler is no longer supported");
         }
 

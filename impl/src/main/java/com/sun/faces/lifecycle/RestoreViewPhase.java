@@ -276,7 +276,7 @@ public class RestoreViewPhase extends Phase {
                     }
 
                     if (!refererOriginatesInThisWebapp) {
-                        String message = FacesLogger.LIFECYCLE.interpolateMessage(context, "jsf.lifecycle.invalid.referer", new String[] { referer, viewId });
+                        String message = FacesLogger.LIFECYCLE.interpolateMessage(context, "faces.lifecycle.invalid.referer", new String[] { referer, viewId });
                         LOGGER.log(SEVERE, message);
                         throw new ProtectedViewException(message);
                     }
@@ -295,7 +295,7 @@ public class RestoreViewPhase extends Phase {
                     }
 
                     if (!originOriginatesInThisWebapp) {
-                        String message = FacesLogger.LIFECYCLE.interpolateMessage(context, "jsf.lifecycle.invalid.origin", new String[] { origin, viewId });
+                        String message = FacesLogger.LIFECYCLE.interpolateMessage(context, "faces.lifecycle.invalid.origin", new String[] { origin, viewId });
                         LOGGER.log(SEVERE, message);
                         throw new ProtectedViewException(message);
                     }

@@ -120,7 +120,7 @@ public abstract class AnnotationScanner extends AnnotationProvider {
                 String[] parts = Util.split(sc, option, ":");
                 if (parts.length != 3) {
                     if (LOGGER.isLoggable(WARNING)) {
-                        LOGGER.log(WARNING, "jsf.annotation.scanner.configuration.invalid",
+                        LOGGER.log(WARNING, "faces.annotation.scanner.configuration.invalid",
                                 new String[] { AnnotationScanPackages.getQualifiedName(), option });
                     }
                 } else {
@@ -129,7 +129,7 @@ public abstract class AnnotationScanner extends AnnotationProvider {
                         classpathPackages.put(WILDCARD, normalizeJarPackages(Util.split(sc, parts[2], ",")));
                     } else if (WILDCARD.equals(parts[1]) && classpathPackages.containsKey(WILDCARD)) {
                         if (LOGGER.isLoggable(WARNING)) {
-                            LOGGER.log(WARNING, "jsf.annotation.scanner.configuration.duplicate.wildcard",
+                            LOGGER.log(WARNING, "faces.annotation.scanner.configuration.duplicate.wildcard",
                                     new String[] { AnnotationScanPackages.getQualifiedName(), option });
                         }
                     } else {

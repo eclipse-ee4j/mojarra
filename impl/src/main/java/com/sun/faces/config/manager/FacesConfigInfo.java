@@ -155,7 +155,7 @@ public class FacesConfigInfo {
 
         NodeList orderingElements = documentElement.getElementsByTagNameNS(namespace, ORDERING);
         if (orderingElements.getLength() > 0) {
-            LOGGER.warning("jsf.configuration.web.faces.config.contains.ordering");
+            LOGGER.warning("faces.configuration.web.faces.config.contains.ordering");
         }
 
         NodeList absoluteOrderingElements = documentElement.getElementsByTagNameNS(namespace, ABSOLUTE_ORDERING);

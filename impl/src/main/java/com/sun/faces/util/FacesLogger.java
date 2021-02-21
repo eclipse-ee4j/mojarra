@@ -39,7 +39,7 @@ public enum FacesLogger {
     RENDERKIT("renderkit"), TAGLIB("taglib"), TIMING("timing"), UTIL("util"), FLASH("flash");
 
     private static final String LOGGER_RESOURCES = "com.sun.faces.LogStrings";
-    public static final String FACES_LOGGER_NAME_PREFIX = "jakarta.enterprise.resource.webcontainer.jsf.";
+    public static final String FACES_LOGGER_NAME_PREFIX = "jakarta.enterprise.resource.webcontainer.faces.";
     private String loggerName;
 
     FacesLogger(String loggerName) {

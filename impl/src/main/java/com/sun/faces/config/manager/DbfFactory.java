@@ -117,7 +117,7 @@ public class DbfFactory {
                 URL schemaUrl = getClass().getResource(schemaInfo[1]);
                 if (schemaUrl == null) {
                     if (LOGGER.isLoggable(FINE)) {
-                        LOGGER.log(FINE, "jsf.config.cannot_resolve_entities", new Object[] { schemaInfo[1], schemaInfo[0] });
+                        LOGGER.log(FINE, "faces.config.cannot_resolve_entities", new Object[] { schemaInfo[1], schemaInfo[0] });
                     }
 
                     // The resource isn't available on the classpath, so
@@ -134,7 +134,7 @@ public class DbfFactory {
 
                             if (schemaUrl == null) {
                                 if (LOGGER.isLoggable(FINE)) {
-                                    LOGGER.log(FINE, "jsf.config.cannot_resolve_entities", new Object[] { schemaInfo[1], schemaInfo[2] });
+                                    LOGGER.log(FINE, "faces.config.cannot_resolve_entities", new Object[] { schemaInfo[1], schemaInfo[2] });
                                 }
                             } else {
                                 entities.put(schemaInfo[0], schemaUrl.toString());
@@ -196,7 +196,7 @@ public class DbfFactory {
                 try {
                     source = new InputSource(new URL(entityURL).openStream());
                 } catch (Exception e) {
-                    LOGGER.log(Level.WARNING, "jsf.config.cannot_create_inputsource", entityURL);
+                    LOGGER.log(Level.WARNING, "faces.config.cannot_create_inputsource", entityURL);
                     source = null;
                 }
             }

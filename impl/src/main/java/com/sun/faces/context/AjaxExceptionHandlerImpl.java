@@ -52,9 +52,9 @@ import jakarta.faces.event.SystemEvent;
 public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
 
     private static final Logger LOGGER = FacesLogger.CONTEXT.getLogger();
-    private static final String LOG_BEFORE_KEY = "jsf.context.exception.handler.log_before";
-    private static final String LOG_AFTER_KEY = "jsf.context.exception.handler.log_after";
-    private static final String LOG_KEY = "jsf.context.exception.handler.log";
+    private static final String LOG_BEFORE_KEY = "faces.context.exception.handler.log_before";
+    private static final String LOG_AFTER_KEY = "faces.context.exception.handler.log_after";
+    private static final String LOG_KEY = "faces.context.exception.handler.log";
 
     private LinkedList<ExceptionQueuedEvent> unhandledExceptions;
     private LinkedList<ExceptionQueuedEvent> handledExceptions;

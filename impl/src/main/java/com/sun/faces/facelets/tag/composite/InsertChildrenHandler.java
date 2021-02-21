@@ -116,7 +116,7 @@ public class InsertChildrenHandler extends TagHandlerImpl {
 
             if (compositeParent == null) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.log(Level.WARNING, "jsf.composite.component.insertchildren.missing.template", location.toString());
+                    LOGGER.log(Level.WARNING, "faces.composite.component.insertchildren.missing.template", location.toString());
                 }
                 return;
             }

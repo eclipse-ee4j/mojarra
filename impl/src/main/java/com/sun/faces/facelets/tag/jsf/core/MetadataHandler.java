@@ -61,7 +61,7 @@ public class MetadataHandler extends TagHandlerImpl {
         }
         if (root == null) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE, "jsf.metadata.uiviewroot.unavailable");
+                LOGGER.log(Level.SEVERE, "faces.metadata.uiviewroot.unavailable");
             }
             return;
         }
