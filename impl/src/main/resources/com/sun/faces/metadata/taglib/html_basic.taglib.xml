@@ -11437,9 +11437,9 @@
         </attribute>
         <attribute>
             <description>
-                <![CDATA[Flag indicating that this element must allow multiple file selection. A value
+                <![CDATA[<span class="changed_added_4_0">Flag indicating that this element must allow multiple file selection. A value
                 of false causes no attribute to be rendered, while a value of true causes the attribute to be rendered as
-                multiple="multiple".]]>
+                multiple="multiple".</span>]]>
             </description>
             <name>multiple</name>
             <required>false</required>

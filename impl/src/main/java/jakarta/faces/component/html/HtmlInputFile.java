@@ -262,7 +262,7 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
     }
 
     /**
-     * <p>
+     * <p class="changed_added_4_0">
      * Return the value of the <code>multiple</code> property.
      * </p>
      * <p>
@@ -271,7 +271,6 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      * multiple="multiple".
      *
      * @return the value of the property
-     *
      */
     public boolean isMultiple() {
         return (java.lang.Boolean) getStateHelper().eval(PropertyKeys.multiple, false);
@@ -279,14 +278,14 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
     }
 
     /**
-     * <p>
+     * <p class="changed_added_4_0">
      * Set the value of the <code>multiple</code> property.
      * </p>
      *
      * @param multiple the new property value
      *
      */
-    public void setMaxlength(boolean multiple) {
+    public void setMultiple(boolean multiple) {
         getStateHelper().put(PropertyKeys.multiple, multiple);
         handleAttribute("multiple", multiple);
     }
