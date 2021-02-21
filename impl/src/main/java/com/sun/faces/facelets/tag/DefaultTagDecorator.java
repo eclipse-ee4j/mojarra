@@ -85,7 +85,7 @@ class DefaultTagDecorator implements TagDecorator {
     }
 
     private enum Namespace {
-        p(PassThroughAttributeLibrary.Namespace), jsf(PassThroughElementLibrary.Namespace), h(HtmlLibrary.Namespace);
+        p(PassThroughAttributeLibrary.Namespace), faces(PassThroughElementLibrary.Namespace), h(HtmlLibrary.Namespace);
 
         private String uri;
 
@@ -105,8 +105,8 @@ class DefaultTagDecorator implements TagDecorator {
         }
         // we only handle html tags!
         if (!("".equals(ns) || "http://www.w3.org/1999/xhtml".equals(ns))) {
-            throw new FaceletException("Elements with namespace " + ns + " may not have attributes in namespace " + Namespace.jsf.uri + "." + " Namespace "
-                    + Namespace.jsf.uri + " is intended for otherwise non-JSF-aware markup, such as <input type=\"text\" jsf:id >"
+            throw new FaceletException("Elements with namespace " + ns + " may not have attributes in namespace " + Namespace.faces.uri + "." + " Namespace "
+                    + Namespace.faces.uri + " is intended for otherwise non-JSF-aware markup, such as <input type=\"text\" " + Namespace.faces.name() + ":id >"
                     + " It is not valid to have <h:commandButton jsf:id=\"button\" />.");
         }
         for (Mapper mapper : Mapper.values()) {
@@ -120,7 +120,7 @@ class DefaultTagDecorator implements TagDecorator {
 
     private boolean hasJsfAttribute(Tag tag) {
         for (String ns : tag.getAttributes().getNamespaces()) {
-            if (Namespace.jsf.uri.equals(ns)) {
+            if (Namespace.faces.uri.equals(ns)) {
                 return true;
             }
         }
@@ -242,7 +242,7 @@ class DefaultTagDecorator implements TagDecorator {
             String qName;
             String value = attribute.getValue();
 
-            if (Namespace.jsf.uri.equals(attribute.getNamespace())) {
+            if (Namespace.faces.uri.equals(attribute.getNamespace())) {
                 // make this a component attribute
                 qName = myLocalName;
                 ns = "";
