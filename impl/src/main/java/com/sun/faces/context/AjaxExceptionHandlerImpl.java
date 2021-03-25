@@ -17,8 +17,6 @@
 package com.sun.faces.context;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -178,10 +176,7 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
             writer.endDocument();
 
             if (LOGGER.isLoggable(Level.SEVERE)) {
-                StringWriter sw = new StringWriter();
-                PrintWriter pw = new PrintWriter(sw);
-                t.printStackTrace(pw);
-                LOGGER.log(Level.SEVERE, sw.toString());
+                LOGGER.log(Level.SEVERE, t.toString(), t);
             }
 
             context.responseComplete();
