@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,25 +17,26 @@
 package com.sun.faces.flow;
 
 import java.io.Serializable;
-import javax.el.ValueExpression;
-import javax.faces.flow.Parameter;
+
+import jakarta.el.ValueExpression;
+import jakarta.faces.flow.Parameter;
 
 public class ParameterImpl extends Parameter implements Serializable {
-    
+
     private static final long serialVersionUID = -5433802753213440653L;
 
     private String name;
     private ValueExpression value;
-    
+
     public ParameterImpl() {
-        
+
     }
 
     public ParameterImpl(String name, ValueExpression value) {
         this.name = name;
         this.value = value;
     }
-    
+
     @Override
     public String getName() {
         return name;
@@ -53,7 +54,5 @@ public class ParameterImpl extends Parameter implements Serializable {
     public void setValue(ValueExpression value) {
         this.value = value;
     }
-    
-    
-    
+
 }

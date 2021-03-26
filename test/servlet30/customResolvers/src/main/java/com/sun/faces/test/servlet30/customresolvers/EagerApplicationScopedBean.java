@@ -16,14 +16,15 @@
 
 package com.sun.faces.test.servlet30.customresolvers;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import javax.el.ELResolver;
-import javax.enterprise.context.ApplicationScoped;
 import javax.faces.application.Application;
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
-import javax.inject.Named;
+import javax.faces.el.VariableResolver;
 
-@Named
+@ManagedBean(eager=true)
 @ApplicationScoped
 public class EagerApplicationScopedBean {
 
@@ -32,6 +33,9 @@ public class EagerApplicationScopedBean {
         Application app = null;
         FacesContext context = FacesContext.getCurrentInstance();
         app = context.getApplication();
+        VariableResolver oldVr = app.getVariableResolver();
+        VariableResolver newVr = new NewVariableResolver(oldVr, context);
+        app.setVariableResolver(newVr);
         ELResolver newER = new NewELResolver(context);
         app.addELResolver(newER);
 

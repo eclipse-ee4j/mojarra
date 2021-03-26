@@ -17,9 +17,10 @@
 package com.sun.faces.test.javaee8.cdi;
 
 import javax.enterprise.context.RequestScoped;
-import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import jakarta.faces.convert.FacesConverter;
 
 @Named(value="injectConverter3Bean")
 @RequestScoped

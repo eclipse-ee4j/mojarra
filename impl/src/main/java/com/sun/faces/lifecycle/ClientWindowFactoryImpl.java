@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,35 +16,34 @@
 
 package com.sun.faces.lifecycle;
 
-import javax.faces.application.Application;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.PostConstructApplicationEvent;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.SystemEventListener;
-import javax.faces.lifecycle.ClientWindow;
-import javax.faces.lifecycle.ClientWindowFactory;
-
 import com.sun.faces.config.WebConfiguration;
 
+import jakarta.faces.application.Application;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.PostConstructApplicationEvent;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.event.SystemEventListener;
+import jakarta.faces.lifecycle.ClientWindow;
+import jakarta.faces.lifecycle.ClientWindowFactory;
+
 public class ClientWindowFactoryImpl extends ClientWindowFactory {
-    
+
     private boolean isClientWindowEnabled = false;
     private WebConfiguration config = null;
 
     public ClientWindowFactoryImpl() {
         super(null);
         FacesContext context = FacesContext.getCurrentInstance();
-        context.getApplication().subscribeToEvent(PostConstructApplicationEvent.class,
-                         Application.class, new PostConstructApplicationListener());
+        context.getApplication().subscribeToEvent(PostConstructApplicationEvent.class, Application.class, new PostConstructApplicationListener());
     }
-    
+
     public ClientWindowFactoryImpl(boolean ignored) {
         super(null);
         isClientWindowEnabled = false;
     }
-    
+
     private class PostConstructApplicationListener implements SystemEventListener {
 
         @Override
@@ -54,27 +53,26 @@ public class ClientWindowFactoryImpl extends ClientWindowFactory {
 
         @Override
         public void processEvent(SystemEvent event) throws AbortProcessingException {
-            ClientWindowFactoryImpl.this.postConstructApplicationInitialization();
+            postConstructApplicationInitialization();
         }
-        
+
     }
-    
+
     private void postConstructApplicationInitialization() {
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext extContext = context.getExternalContext();
         config = WebConfiguration.getInstance(extContext);
         String optionValue = config.getOptionValue(WebConfiguration.WebContextInitParameter.ClientWindowMode);
-        
-        isClientWindowEnabled = (null != optionValue) && "url".equals(optionValue);
+
+        isClientWindowEnabled = null != optionValue && "url".equals(optionValue);
     }
-    
-    
+
     @Override
     public ClientWindow getClientWindow(FacesContext context) {
         if (!isClientWindowEnabled) {
             return null;
         }
-        
+
         return new ClientWindowImpl();
     }
 }

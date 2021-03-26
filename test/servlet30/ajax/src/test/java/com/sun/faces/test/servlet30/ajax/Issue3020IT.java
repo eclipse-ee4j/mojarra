@@ -18,12 +18,14 @@ package com.sun.faces.test.servlet30.ajax;
 
 import com.gargoylesoftware.htmlunit.ScriptException;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 public class Issue3020IT {
 
@@ -53,9 +55,9 @@ public class Issue3020IT {
         webClient.waitForBackgroundJavaScript(60000);
 
         // Check that the ajax request succeeds
-        assertTrue(page.getHtmlElementById("result").asText().contains("aaaaaaaaaa"));
+        assertTrue(page.getHtmlElementById("result").asText().contains("aaaaaaaaaa")); 
     }
-
+    
     @Test
     public void testDelayNegative() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/issue3020Negative.xhtml");
@@ -64,7 +66,7 @@ public class Issue3020IT {
         boolean exceptionCaught = false;
         try {
             in1.type("a");
-
+            
             webClient.waitForBackgroundJavaScript(60000);
         } catch (ScriptException se) {
             assertTrue(se.getMessage().contains("NaN"));
@@ -74,5 +76,6 @@ public class Issue3020IT {
         // Check that the ajax request does not succeed
         assertTrue(exceptionCaught);
     }
+    
 
 }

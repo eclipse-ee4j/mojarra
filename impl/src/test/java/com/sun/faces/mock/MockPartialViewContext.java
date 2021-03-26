@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,12 +17,13 @@
 package com.sun.faces.mock;
 
 import java.util.Collection;
-import java.util.Map;
-import java.util.List;
 import java.util.HashMap;
-import javax.faces.context.PartialResponseWriter;
-import javax.faces.context.PartialViewContext;
-import javax.faces.event.PhaseId;
+import java.util.List;
+import java.util.Map;
+
+import jakarta.faces.context.PartialResponseWriter;
+import jakarta.faces.context.PartialViewContext;
+import jakarta.faces.event.PhaseId;
 
 /**
  * MockPartialViewContext implementation.
@@ -35,7 +36,6 @@ public class MockPartialViewContext extends PartialViewContext {
 
     // ------------------------------------------------------------ Constructors
     public MockPartialViewContext() {
-
         attributes = new HashMap<Object, Object>();
 
     }
@@ -72,14 +72,17 @@ public class MockPartialViewContext extends PartialViewContext {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public PartialResponseWriter getPartialResponseWriter() {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public boolean isAjaxRequest() {
         return false;
     }
 
+    @Override
     public boolean isPartialRequest() {
         return partial;
     }
@@ -88,14 +91,17 @@ public class MockPartialViewContext extends PartialViewContext {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public boolean isExecuteAll() {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public boolean isRenderAll() {
         return renderAll;
     }
 
+    @Override
     public void setRenderAll(boolean renderAll) {
         this.renderAll = renderAll;
     }
@@ -108,10 +114,12 @@ public class MockPartialViewContext extends PartialViewContext {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public void processPartial(PhaseId phaseId) {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public void release() {
         // no-op
     }

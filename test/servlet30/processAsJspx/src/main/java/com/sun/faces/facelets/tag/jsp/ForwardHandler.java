@@ -17,10 +17,15 @@
 package com.sun.faces.facelets.tag.jsp;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.el.ELContext;
+import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
@@ -41,11 +46,17 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+
+
+
 
 public class ForwardHandler extends TagHandler {
 
     private final TagAttribute page;
-    private static final Logger LOGGER = Logger.getLogger("javax.faces.webapp", "javax.faces.LogStrings");
+    private static final Logger LOGGER =
+          Logger.getLogger("jakarta.faces.webapp", "jakarta.faces.LogStrings");
+
 
     public ForwardHandler(TagConfig config) {
         super(config);
@@ -54,7 +65,6 @@ public class ForwardHandler extends TagHandler {
 
     }
 
-    @Override
     public void apply(FaceletContext ctx, UIComponent component) throws IOException {
         nextHandler.apply(ctx, component);
         FacesContext context = ctx.getFacesContext();
@@ -75,7 +85,9 @@ public class ForwardHandler extends TagHandler {
 
             // Acquire our FacesContextFactory instance
             try {
-                facesContextFactory = (FacesContextFactory) FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
+                facesContextFactory = (FacesContextFactory)
+                    FactoryFinder.getFactory
+                    (FactoryFinder.FACES_CONTEXT_FACTORY);
             } catch (FacesException e) {
                 ResourceBundle rb = LOGGER.getResourceBundle();
                 String msg = rb.getString("severe.webapp.facesservlet.init_failed");
@@ -86,14 +98,16 @@ public class ForwardHandler extends TagHandler {
 
             // Acquire our Lifecycle instance
             try {
-                LifecycleFactory lifecycleFactory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
+                LifecycleFactory lifecycleFactory = (LifecycleFactory)
+                      FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
                 String lifecycleId;
 
-                // This is a bug. Custom lifecycles configured via a <init-parameter>
-                // are not available at this point. The correct solution
+                // This is a bug.  Custom lifecycles configured via a <init-parameter>
+                // are not available at this point.  The correct solution
                 // would be to have some way to get the currently active Lifecycle
                 // instance.
-                lifecycleId = servletContext.getInitParameter(FacesServlet.LIFECYCLE_ID_ATTR);
+                lifecycleId = servletContext.getInitParameter
+                                 (FacesServlet.LIFECYCLE_ID_ATTR);
 
                 if (lifecycleId == null) {
                     lifecycleId = LifecycleFactory.DEFAULT_LIFECYCLE;
@@ -111,7 +125,10 @@ public class ForwardHandler extends TagHandler {
             FacesContext newFacesContext = null;
 
             try {
-                newFacesContext = facesContextFactory.getFacesContext(servletContext, req, extContext.getResponse(), lifecycle);
+                newFacesContext = facesContextFactory.
+                        getFacesContext(servletContext, req,
+                                        (ServletResponse) extContext.getResponse(),
+                                        lifecycle);
                 WrapFacesContextToAllowSetCurrentInstance.doSetCurrentInstance(newFacesContext);
                 rd.forward(req, (ServletResponse) extContext.getResponse());
             } catch (ServletException ex) {
@@ -144,6 +161,7 @@ public class ForwardHandler extends TagHandler {
         private static void doSetCurrentInstance(FacesContext currentInstance) {
             setCurrentInstance(currentInstance);
         }
+
 
     }
 

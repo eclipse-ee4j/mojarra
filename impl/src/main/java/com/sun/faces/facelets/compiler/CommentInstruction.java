@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,12 +16,13 @@
 
 package com.sun.faces.facelets.compiler;
 
+import java.io.IOException;
+
 import com.sun.faces.facelets.el.ELText;
 
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.faces.context.FacesContext;
-import java.io.IOException;
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.faces.context.FacesContext;
 
 final class CommentInstruction implements Instruction {
     private final ELText text;
@@ -33,12 +34,12 @@ final class CommentInstruction implements Instruction {
     @Override
     public void write(FacesContext context) throws IOException {
         ELContext elContext = context.getELContext();
-        context.getResponseWriter().writeComment(this.text.toString(elContext));
+        context.getResponseWriter().writeComment(text.toString(elContext));
     }
 
     @Override
     public Instruction apply(ExpressionFactory factory, ELContext ctx) {
-        ELText t = this.text.apply(factory, ctx);
+        ELText t = text.apply(factory, ctx);
         return new CommentInstruction(t);
     }
 

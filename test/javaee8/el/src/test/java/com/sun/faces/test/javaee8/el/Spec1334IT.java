@@ -54,4 +54,11 @@ public class Spec1334IT {
         assertTrue(page.asXml().contains("{}"));
     }
 
+    @Test
+    @JsfTest(value = JsfVersion.JSF_2_3_0_M01,
+            excludes = {WEBLOGIC_12_1_4, WEBLOGIC_12_2_1})
+    public void testViewMapJsp() throws Exception {
+        HtmlPage page = webClient.getPage(webUrl + "faces/viewMap.jsp");
+        assertTrue(page.asXml().contains("{}"));
+    }
 }

@@ -16,11 +16,6 @@
 
 package com.sun.faces.test.javaee6web.injection;
 
-import java.io.Serializable;
-
-
-public class Foo implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class Foo {
 
 }

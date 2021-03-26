@@ -41,7 +41,7 @@ public class Issue2932IT {
 
     @Test
     public void testDefaultHeaders() throws Exception {
-        Page page = webClient.getPage(webUrl + "faces/javax.faces.resource/css/images/background.png");
+        Page page = webClient.getPage(webUrl + "faces/jakarta.faces.resource/css/images/background.png");
         assertEquals(200, page.getWebResponse().getStatusCode());
         assertNotNull(page.getWebResponse().getResponseHeaderValue("Last-Modified"));
         assertNotNull(page.getWebResponse().getResponseHeaderValue("ETag"));

@@ -23,10 +23,10 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd"
     version="2.0">
     <navigation-rule>
-        <from-view-id>/viewParams1.xhtml</from-view-id>
+        <from-view-id>/viewParams1.jsp</from-view-id>
         <navigation-case>
             <from-outcome>viewParams1</from-outcome>
-            <to-view-id>/viewParams1b.xhtml</to-view-id>
+            <to-view-id>/viewParams1b.jsp</to-view-id>
             <redirect include-view-params="true"/>
         </navigation-case>
     </navigation-rule>

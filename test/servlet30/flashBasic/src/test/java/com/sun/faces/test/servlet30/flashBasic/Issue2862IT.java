@@ -51,20 +51,20 @@ public class Issue2862IT {
     @Test
     public void testDropFlashCookie() throws Exception {
 
-        HtmlPage page = webClient.getPage(webUrl + "faces/flashDropCookie.xhtml");
+        HtmlPage page = webClient.getPage(webUrl + "faces/flashDropCookie.xhtml") ;
         webClient.getOptions().setRedirectEnabled(true);
         HtmlTextInput textInput = (HtmlTextInput) page.getHtmlElementById("input");
         textInput.setValueAttribute("test");
         HtmlSubmitInput button = (HtmlSubmitInput) page.getHtmlElementById("submit");
-
+       
         int currentSize = webClient.getCookieManager().getCookies().size();
-
+        
         page = button.click();
         HtmlElement element = page.getHtmlElementById("link");
         page = element.click();
-
+        
         int newSize = webClient.getCookieManager().getCookies().size();
-
-        assertTrue(newSize < currentSize);
+        
+        assertTrue( newSize < currentSize );
     }
 }

@@ -19,24 +19,22 @@ package com.sun.faces.test.servlet30.navigation2;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
 import javax.servlet.ServletContext;
 
 /**
- * Backing Bean class that redirects on startSearch() to an other JSF page and tries to transmit the
- * content of the searchTerm property as a URL HTTP-GET parameter.
+ * Backing Bean class that redirects on startSearch() to an other JSF page and
+ * tries to transmit the content of the searchTerm property as a URL HTTP-GET
+ * parameter.
  *
  * @author deconstruct
  */
-@Named
+@ManagedBean
 @ViewScoped
 public class OutcomeParameterBean implements Serializable {
-
-    private static final long serialVersionUID = 1L;
 
     private String searchTermA = "Laurel & Hardy";
     private String searchTermB = "Laurel & Hardy";
@@ -46,8 +44,7 @@ public class OutcomeParameterBean implements Serializable {
 
     public String startSearchWithUrlEncode() throws UnsupportedEncodingException {
         String queryUrlParameter = java.net.URLEncoder.encode(searchTermA, "UTF-8");
-        String redirectTarget = "/outcomeParameterResults.xhtml?query=" + queryUrlParameter
-                + "&otherParameter=someValue&faces-redirect=true";
+        String redirectTarget = "/outcomeParameterResults.xhtml?query=" + queryUrlParameter + "&otherParameter=someValue&faces-redirect=true";
         return redirectTarget;
     }
 
@@ -59,8 +56,10 @@ public class OutcomeParameterBean implements Serializable {
     public void startSearchViaExternalContext() throws UnsupportedEncodingException, IOException {
         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
         String contextPath = ((ServletContext) externalContext.getContext()).getContextPath();
-        String redirectTarget = contextPath + "/faces/outcomeParameterResults.xhtml?query="
-                + java.net.URLEncoder.encode(searchTermC, "UTF-8") + "&otherParameter=someValue";
+        String redirectTarget = contextPath
+                + "/faces/outcomeParameterResults.xhtml?query="
+                + java.net.URLEncoder.encode(searchTermC, "UTF-8")
+                + "&otherParameter=someValue";
 
         FacesContext.getCurrentInstance().getExternalContext().redirect(redirectTarget);
     }

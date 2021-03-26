@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2019 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -29,23 +29,24 @@ import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.enterprise.context.ContextNotActiveException;
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.CDI;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.util.TypeLiteral;
-import javax.faces.component.behavior.Behavior;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.model.DataModel;
-import javax.faces.validator.Validator;
-
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
+
+import jakarta.enterprise.context.ContextNotActiveException;
+import jakarta.enterprise.context.spi.Context;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.Annotated;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.util.TypeLiteral;
+import jakarta.faces.component.behavior.Behavior;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.model.DataModel;
+import jakarta.faces.validator.Validator;
 
 /**
  * A static utility class for CDI.
@@ -57,11 +58,13 @@ public final class CdiUtils {
      */
     private static final Logger LOGGER = FacesLogger.APPLICATION_VIEW.getLogger();
 
-    private final static Type CONVERTER_TYPE = 
-        new TypeLiteral<Converter<?>>() { private static final long serialVersionUID = 1L;}.getType();
-        
-    private final static Type VALIDATOR_TYPE = 
-        new TypeLiteral<Validator<?>>() { private static final long serialVersionUID = 1L;}.getType();
+    private final static Type CONVERTER_TYPE = new TypeLiteral<Converter<?>>() {
+        private static final long serialVersionUID = 1L;
+    }.getType();
+
+    private final static Type VALIDATOR_TYPE = new TypeLiteral<Validator<?>>() {
+        private static final long serialVersionUID = 1L;
+    }.getType();
 
     /**
      * Constructor.
@@ -78,11 +81,11 @@ public final class CdiUtils {
      */
     public static Converter<?> createConverter(BeanManager beanManager, String value) {
         Converter<?> managedConverter = createConverter(beanManager, new FacesConverterAnnotationLiteral(value, Object.class));
-        
+
         if (managedConverter != null) {
             return new CdiConverter(value, Object.class, managedConverter);
         }
-       
+
         return null;
     }
 
@@ -94,57 +97,52 @@ public final class CdiUtils {
      * @return the converter, or null if we could not match one.
      */
     public static Converter<?> createConverter(BeanManager beanManager, Class<?> forClass) {
-        Converter<?> managedConverter = createConverter(beanManager, new FacesConverterAnnotationLiteral("", forClass));
-        
+        Converter<?> managedConverter = null;
+
+        for (Class<?> forClassOrSuperclass = forClass; managedConverter == null && forClassOrSuperclass != null
+                && forClassOrSuperclass != Object.class; forClassOrSuperclass = forClassOrSuperclass.getSuperclass()) {
+            managedConverter = createConverter(beanManager, new FacesConverterAnnotationLiteral("", forClassOrSuperclass));
+        }
+
         if (managedConverter != null) {
             return new CdiConverter("", forClass, managedConverter);
         }
-       
+
         return null;
     }
-    
+
     private static Converter<?> createConverter(BeanManager beanManager, Annotation qualifier) {
-        
-        // Try to find parameterized converter first     
-        Converter<?> managedConverter = (Converter<?>) getBeanReferenceByType(
-            beanManager,
-            CONVERTER_TYPE,
-            qualifier);
-        
+
+        // Try to find parameterized converter first
+        Converter<?> managedConverter = (Converter<?>) getBeanReferenceByType(beanManager, CONVERTER_TYPE, qualifier);
+
         if (managedConverter == null) {
-            // No parameterized converter, try raw converter            
-            managedConverter = getBeanReference(
-                beanManager,
-                Converter.class,
-                qualifier);
+            // No parameterized converter, try raw converter
+            managedConverter = getBeanReference(beanManager, Converter.class, qualifier);
         }
-        
+
         return managedConverter;
     }
 
     /**
      * Create a behavior using the FacesBehavior value attribute.
-     * 
+     *
      * @param beanManager the bean manager.
      * @param value the value attribute.
      * @return the behavior, or null if we could not match one.
      */
     public static Behavior createBehavior(BeanManager beanManager, String value) {
         Behavior delegatingBehavior = null;
-        
-        Behavior managedBehavior = getBeanReference(
-            beanManager,
-            Behavior.class,
-            new FacesBehaviorAnnotationLiteral(value)
-        );
-        
+
+        Behavior managedBehavior = getBeanReference(beanManager, Behavior.class, new FacesBehaviorAnnotationLiteral(value));
+
         if (managedBehavior != null) {
             delegatingBehavior = new CdiBehavior(value, managedBehavior);
         }
-        
+
         return delegatingBehavior;
     }
-    
+
     /**
      * Create a validator using the FacesValidator value attribute.
      *
@@ -153,33 +151,36 @@ public final class CdiUtils {
      * @return the validator, or null if we could not match one.
      */
     public static Validator<?> createValidator(BeanManager beanManager, String value) {
-        
+
         Annotation qualifier = new FacesValidatorAnnotationLiteral(value);
-        
-        // Try to find parameterized validator first  
-        Validator<?> managedValidator = (Validator<?>) getBeanReferenceByType(
-            beanManager,
-            VALIDATOR_TYPE,
-            qualifier);
-                
-                
+
+        // Try to find parameterized validator first
+        Validator<?> managedValidator = (Validator<?>) getBeanReferenceByType(beanManager, VALIDATOR_TYPE, qualifier);
+
         if (managedValidator == null) {
             // No parameterized validator, try raw validator
-            managedValidator = getBeanReference(
-                beanManager,
-                Validator.class,
-                qualifier);
+            managedValidator = getBeanReference(beanManager, Validator.class, qualifier);
         }
-        
+
         if (managedValidator != null) {
             return new CdiValidator(value, managedValidator);
         }
-    
+
         return null;
+    }
+
+    public static void addAnnotatedTypes(BeforeBeanDiscovery beforeBean, BeanManager beanManager, Class<?>... types) {
+        for (Class<?> type : types) {
+            beforeBean.addAnnotatedType(beanManager.createAnnotatedType(type), "Mojarra " + type.getName());
+        }
     }
 
     public static <T> T getBeanReference(Class<T> type, Annotation... qualifiers) {
         return type.cast(getBeanReferenceByType(Util.getCdiBeanManager(FacesContext.getCurrentInstance()), type, qualifiers));
+    }
+
+    public static <T> T getBeanReference(FacesContext facesContext, Class<T> type, Annotation... qualifiers) {
+        return type.cast(getBeanReferenceByType(Util.getCdiBeanManager(facesContext), type, qualifiers));
     }
 
     /**
@@ -206,7 +207,7 @@ public final class CdiUtils {
 
     /**
      * Returns concrete (non-proxied) bean instance of given class in current context.
-     * 
+     *
      * @param type the required bean type the instance must have
      * @param create whether to auto-create bean if not exist
      * @return a bean instance adhering to the required type
@@ -221,23 +222,22 @@ public final class CdiUtils {
 
             if (create) {
                 return context.get(bean, beanManager.createCreationalContext(bean));
-            }
-            else {
+            } else {
                 return context.get(bean);
             }
-        }
-        else {
+        } else {
             return null;
         }
     }
 
     /**
      * Finds an annotation in an Annotated, taking stereo types into account
-     * 
+     *
      * @param beanManager the current bean manager
      * @param annotated the Annotated in which to search
      * @param annotationType the type of the annotation to search for
-     * @return An Optional that contains an instance of annotation type for which was searched if the annotated contained this. 
+     * @return An Optional that contains an instance of annotation type for which was searched if the annotated contained
+     * this.
      */
     public static <A extends Annotation> Optional<A> getAnnotation(BeanManager beanManager, Annotated annotated, Class<A> annotationType) {
 
@@ -262,11 +262,7 @@ public final class CdiUtils {
 
             try {
                 if (beanManager.isStereotype(annotation.annotationType())) {
-                    annotations.addAll(
-                        beanManager.getStereotypeDefinition(
-                             annotation.annotationType()
-                        )
-                     );
+                    annotations.addAll(beanManager.getStereotypeDefinition(annotation.annotationType()));
                 }
             } catch (Exception e) {
                 // Log and continue, if it's not allowed to test if it's a stereo type
@@ -279,33 +275,25 @@ public final class CdiUtils {
 
         return empty();
     }
-    
+
     public static DataModel<?> createDataModel(final Class<?> forClass) {
-        
-        List<DataModel<?>> dataModel = new ArrayList<DataModel<?>>(1);
+
+        List<DataModel<?>> dataModel = new ArrayList<>(1);
         CDI<Object> cdi = CDI.current();
-        
+
         // Scan the map in order, the first class that is a super class or equal to the class for which
         // we're looking for a DataModel is the closest match, since the Map is sorted on inheritance relation
-        getDataModelClassesMap(cdi).entrySet().stream()
-            .filter(e -> e.getKey().isAssignableFrom(forClass))
-            .findFirst()
-            .ifPresent(
-                    
-                 // Get the bean from CDI which is of the class type that we found during annotation scanning
-                 // and has the @FacesDataModel annotation, with the "forClass" attribute set to the closest
-                 // super class of our target class.
-                    
-                e -> dataModel.add(
-                    cdi.select(
-                        e.getValue(),
-                        new FacesDataModelAnnotationLiteral(e.getKey())
-                    ).get())
-            );
-        
-        return dataModel.isEmpty()? null : dataModel.get(0);
+        getDataModelClassesMap(cdi).entrySet().stream().filter(e -> e.getKey().isAssignableFrom(forClass)).findFirst().ifPresent(
+
+                // Get the bean from CDI which is of the class type that we found during annotation scanning
+                // and has the @FacesDataModel annotation, with the "forClass" attribute set to the closest
+                // super class of our target class.
+
+                e -> dataModel.add(cdi.select(e.getValue(), new FacesDataModelAnnotationLiteral(e.getKey())).get()));
+
+        return dataModel.isEmpty() ? null : dataModel.get(0);
     }
-    
+
     @SuppressWarnings("unchecked")
     public static Map<Class<?>, Class<? extends DataModel<?>>> getDataModelClassesMap(CDI<Object> cdi) {
         BeanManager beanManager = cdi.getBeanManager();
@@ -313,18 +301,18 @@ public final class CdiUtils {
         // Get the Map with classes for which a custom DataModel implementation is available from CDI
         Bean<?> bean = beanManager.resolve(beanManager.getBeans("comSunFacesDataModelClassesMap"));
         Object beanReference = beanManager.getReference(bean, Map.class, beanManager.createCreationalContext(bean));
-        
+
         return (Map<Class<?>, Class<? extends DataModel<?>>>) beanReference;
     }
 
-    /** 
+    /**
      * Returns the current injection point.
      */
     public static InjectionPoint getCurrentInjectionPoint(BeanManager beanManager, CreationalContext<?> creationalContext) {
         Bean<? extends Object> bean = beanManager.resolve(beanManager.getBeans(InjectionPoint.class));
         InjectionPoint injectionPoint = (InjectionPoint) beanManager.getReference(bean, InjectionPoint.class, creationalContext);
 
-        if (injectionPoint == null) { // It's broken in some Weld versions. Below is a work around. 
+        if (injectionPoint == null) { // It's broken in some Weld versions. Below is a work around.
             bean = beanManager.resolve(beanManager.getBeans(InjectionPointGenerator.class));
             injectionPoint = (InjectionPoint) beanManager.getInjectableReference(bean.getInjectionPoints().iterator().next(), creationalContext);
         }
@@ -344,7 +332,7 @@ public final class CdiUtils {
 
         return null;
     }
-    
+
     /**
      * Returns true if given scope is active in current context.
      */

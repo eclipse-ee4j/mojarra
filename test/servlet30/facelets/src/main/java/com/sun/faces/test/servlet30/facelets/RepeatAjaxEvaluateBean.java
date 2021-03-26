@@ -16,24 +16,20 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-import static java.util.Arrays.asList;
-
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.inject.Named;
 
-@Named
+@ManagedBean(name = "repeatAjaxEvaluateBean")
 @SessionScoped
 public class RepeatAjaxEvaluateBean implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
-    private final static List<String> list = asList("1", "2", "3");
+    private final static List<String> list = Arrays.asList("1", "2", "3");
 
     public List<String> getList1() {
         if (FacesContext.getCurrentInstance().isPostback()) {

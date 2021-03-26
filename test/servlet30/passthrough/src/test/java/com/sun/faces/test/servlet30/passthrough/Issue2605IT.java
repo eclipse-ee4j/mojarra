@@ -16,10 +16,15 @@
 
 package com.sun.faces.test.servlet30.passthrough;
 
+import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebResponse;
+import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.*;
 import static org.junit.Assert.*;
 
@@ -101,9 +106,9 @@ public class Issue2605IT {
         assertTrue(xml.contains("id=\"" + "colors" + "\""));
         WebResponse resp = page.getWebResponse();
         String text = resp.getContentAsString();
-        assertTrue(text.contains("<option id=" + '"' + "r" + '"' + " value=" + '"' + "red" + '"'));
-        assertTrue(text.contains("<option id=" + '"' + "b" + '"' + " value=" + '"' + "blue" + '"'));
-        assertTrue(text.contains("<option id=" + '"' + "g" + '"' + " value=" + '"' + "green" + '"'));
+        assertTrue(text.contains("<option id="+'"'+"r"+'"'+" value="+'"'+"red"+'"'));
+        assertTrue(text.contains("<option id="+'"'+"b"+'"'+" value="+'"'+"blue"+'"'));
+        assertTrue(text.contains("<option id="+'"'+"g"+'"'+" value="+'"'+"green"+'"'));
     }
 
     @Test

@@ -34,7 +34,7 @@
             </description> 
             <display-name>Generic Logout Button</display-name> 
             <from-action>#{userBean.logout}</from-action> 
-            <to-view-id>/logout.xhtml</to-view-id> 
+            <to-view-id>/logout.jsp</to-view-id> 
         </navigation-case> 
         <!-- Handle a generic error outcome from any Action --> 
         <navigation-case> 
@@ -44,7 +44,7 @@
             </description> 
             <display-name>Generic Error Outcome</display-name> 
             <from-action>#{newCustomer.loginRequired}</from-action> 
-            <to-view-id>/must-login-first.xhtml</to-view-id> 
+            <to-view-id>/must-login-first.jsp</to-view-id> 
         </navigation-case> 
     </navigation-rule> 
 
@@ -52,7 +52,7 @@
         <description>
             LOGIN PAGE NAVIGATION HANDLING
         </description>
-        <from-view-id> /login.xhtml </from-view-id>
+        <from-view-id> /login.jsp </from-view-id>
         <navigation-case>
             <description>
                 Handle case where login succeeded.
@@ -60,7 +60,7 @@
             <display-name>Successful Login</display-name>
             <from-action>#{userBean.login}</from-action>
             <from-outcome>success</from-outcome>
-            <to-view-id>/home.xhtml</to-view-id>
+            <to-view-id>/home.jsp</to-view-id>
         </navigation-case>
         <navigation-case>
             <description>
@@ -69,7 +69,7 @@
             <display-name>Successful New User Registration</display-name>
             <from-action>#{userBean.register}</from-action>
             <from-outcome>success</from-outcome>
-            <to-view-id>/welcome.xhtml</to-view-id>
+            <to-view-id>/welcome.jsp</to-view-id>
         </navigation-case>
         <navigation-case>
             <description>
@@ -79,8 +79,173 @@
             <display-name>Failed New User Registration</display-name>
             <from-action>#{userBean.register}</from-action>
             <from-outcome>duplicateUserName</from-outcome>
-            <to-view-id>/try-another-name.xhtml</to-view-id>
+            <to-view-id>/try-another-name.jsp</to-view-id>
         </navigation-case>
     </navigation-rule>
+
+    <navigation-rule>
+        <description>
+            Assume there is a search form on every page. These navigation
+            cases get merged with the application-wide rules above because
+            they use the same from-view-id pattern. The same thing would
+            also happen if from-view-id was omitted here, because that is
+            equivalent to a matching pattern of *.
+        </description>
+        <from-view-id> * </from-view-id>
+        <navigation-case>
+            <display-name>Search Form Success</display-name>
+            <from-action>#{searchForm.go}</from-action>
+            <from-outcome>success</from-outcome>
+            <to-view-id>/search-results.jsp</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <display-name>Search Form Failure</display-name>
+            <from-action>#{searchForm.go}</from-action>
+            <to-view-id>/search-problem.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <description>
+            Searching works slightly differently in part of the site.
+        </description>
+        <from-view-id> /movies/* </from-view-id>
+        <navigation-case>
+            <display-name>Search Form Success</display-name>
+            <from-action>#{searchForm.go}</from-action>
+            <from-outcome>success</from-outcome>
+            <to-view-id>/movie-search-results.jsp</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <display-name>Search Form Failure</display-name>
+            <from-action>#{searchForm.go}</from-action>
+            <to-view-id>/search-problem.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+
+    <navigation-rule>
+        <from-view-id>/dir3/*</from-view-id>
+        <navigation-case>
+            <from-outcome>home</from-outcome>
+            <to-view-id>/dir3/home.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <from-view-id>/dir1/dir2/dir3/*</from-view-id>
+        <navigation-case>
+            <from-outcome>home</from-outcome>
+            <to-view-id>/dir1/dir2/dir3/home.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+
+    <navigation-rule>
+        <from-view-id>/page1.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>redirectOutcome1</from-outcome>
+            <to-view-id>/page2.xhtml</to-view-id>
+            <redirect include-view-params="true">
+                <view-param>
+                    <name>foo</name>
+                    <value>bar</value>
+                </view-param>
+                <view-param>
+                    <name>foo</name>
+                    <value>bar2</value>
+                </view-param>
+                <view-param>
+                    <name>foo2</name>
+                    <value>bar3</value>
+                </view-param>
+            </redirect>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>redirectOutcome2</from-outcome>
+            <to-view-id>/page2.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>redirectOutcome3</from-outcome>
+            <to-view-id>/page2.xhtml</to-view-id>
+            <redirect>
+                <view-param>
+                    <name>param</name>
+                    <value>#{navbean.increment}</value>
+                </view-param>
+            </redirect>
+        </navigation-case>
+    </navigation-rule>
+
+
+
+    <managed-bean>
+        <!-- Basic information about this bean -->
+        <description>
+            Auto-creates the form handler for new customers into request scope
+            if it is not already present.
+        </description>
+        <display-name>New Customer Form Handler</display-name>
+        <managed-bean-name>newCustomer</managed-bean-name>
+        <managed-bean-class>com.sun.faces.test.servlet30.listener.NewCustomerFormHandler</managed-bean-class>
+    
+        <managed-bean-scope>session</managed-bean-scope>
+        <!-- Managed property initializations -->
+        <managed-property>
+            <property-name>minimumAge</property-name>
+            <value>#{initParam.minimumCustomerAge}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>maximumAge</property-name>
+            <value>65</value>
+        </managed-property>
+        <managed-property>
+            <property-name>nationality</property-name>
+            <null-value/>
+        </managed-property>
+        <managed-property>
+            <property-name>allowableValues</property-name>
+            <!-- Assume the type is java.util.List -->
+            <list-entries>
+                <value-class>java.lang.Integer</value-class>
+                <value>10</value>
+                <value>20</value>
+                <value>60</value>
+                <null-value/>
+            </list-entries>
+        </managed-property>
+        <managed-property>
+            <property-name>firstNames</property-name>
+            <!-- Assume the type is java.util.List or java.lang.String[] -->
+            <list-entries>
+                <value>Thomas</value>
+                <value>#{jsfSimple.simpleProperty}</value>
+                <null-value/>
+            </list-entries>
+        </managed-property>
+        <managed-property>
+            <description>
+                Map property with a description.
+            </description>
+            <display-name>Claim Amounts</display-name>
+            <property-name>claimAmounts</property-name>
+            <map-entries>
+                <key-class>java.lang.String</key-class> <!-- Default so redundant -->
+                <value-class>java.lang.Double</value-class>
+                <map-entry>
+                    <key>fire</key>
+                    <value>1000.00</value>
+                </map-entry>
+                <map-entry>
+                    <key>water</key>
+                    <value>#{claimConfiguration.waterDamageAmount}</value>
+                </map-entry>
+                <map-entry>
+                    <key>earthquake</key>
+                    <null-value/>
+                </map-entry>
+            </map-entries>
+        </managed-property></managed-bean>
 
 </faces-config>

@@ -25,9 +25,12 @@
 
 package com.sun.faces.test.servlet30.customresolvers;
 
+import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
 import javax.faces.context.FacesContext;
+import javax.faces.el.EvaluationException;
+import javax.faces.el.VariableResolver;
 import javax.faces.event.ActionEvent;
 import javax.servlet.ServletContext;
 import javax.servlet.jsp.JspApplicationContext;
@@ -38,7 +41,29 @@ import javax.servlet.jsp.JspFactory;
  * @author edburns
  */
 public class Bean {
-
+    
+    /** Creates a new instance of Bean */
+    public Bean() {
+    }
+    
+    public String callMethodsOnVariableResolver(FacesContext context, 
+            VariableResolver vr) throws EvaluationException {
+        Object result = null;
+        
+        result = vr.resolveVariable(context, "noneBean");
+        
+        if (!(result instanceof TestBean)) {
+            throw new IllegalStateException("Bean not of correct type");
+        }
+        
+        result = vr.resolveVariable(context, "custom");
+        
+        if (!result.equals("custom")) {
+            throw new IllegalStateException("Bean not of correct type");
+        }
+        
+        return "success";
+    }
 
     public void verifyELResolverChainIsCorrectlyConfigured(ActionEvent e) {
         String result = null;
@@ -96,52 +121,52 @@ public class Bean {
             }
         }
     }
+    
+    public String getInvokeVariableResolverThruChain() throws EvaluationException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        VariableResolver vr = context.getApplication().getVariableResolver();
+        return callMethodsOnVariableResolver(context, vr);
+    }
+    
+    public String getInvokeVariableResolverDirectly() throws EvaluationException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        VariableResolver vr = (VariableResolver) context.getExternalContext().getApplicationMap().get("newVR");
+        return callMethodsOnVariableResolver(context, vr);
+    }
+    
+    public String getInvokeELResolverThruChain() throws EvaluationException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        ELResolver er = context.getApplication().getELResolver();
+        boolean isReadOnly = er.isReadOnly(context.getELContext(), "newERThruChain", null);
 
-//    public String getInvokeVariableResolverThruChain() throws EvaluationException {
-//        FacesContext context = FacesContext.getCurrentInstance();
-//        VariableResolver vr = context.getApplication().getVariableResolver();
-//        return callMethodsOnVariableResolver(context, vr);
-//    }
-//
-//    public String getInvokeVariableResolverDirectly() throws EvaluationException {
-//        FacesContext context = FacesContext.getCurrentInstance();
-//        VariableResolver vr = (VariableResolver) context.getExternalContext().getApplicationMap().get("newVR");
-//        return callMethodsOnVariableResolver(context, vr);
-//    }
-//
-//    public String getInvokeELResolverThruChain() throws EvaluationException {
-//        FacesContext context = FacesContext.getCurrentInstance();
-//        ELResolver er = context.getApplication().getELResolver();
-//        boolean isReadOnly = er.isReadOnly(context.getELContext(), "newERThruChain", null);
-//
-//        return Boolean.valueOf(isReadOnly).toString();
-//    }
-//
-//    public String getInvokeELResolverDirectly() throws EvaluationException {
-//        FacesContext context = FacesContext.getCurrentInstance();
-//        ELResolver er = (ELResolver) context.getExternalContext().getApplicationMap().get("newER");
-//        boolean isReadOnly = er.isReadOnly(context.getELContext(), "newERDirect", null);
-//
-//        return Boolean.valueOf(isReadOnly).toString();
-//    }
-//
-//    public String getInvokeVariableResolverThruChain1() throws EvaluationException {
-//        FacesContext context = FacesContext.getCurrentInstance();
-//        VariableResolver vr = context.getApplication().getVariableResolver();
-//        Object result = vr.resolveVariable(context, "nonmanaged");
-//        if (!(result instanceof TestBean)) {
-//            throw new IllegalStateException("Bean not of correct type");
-//        }
-//        return "success";
-//    }
+        return Boolean.valueOf(isReadOnly).toString();
+    }
 
-//    public String getInvokeVariableResolverDirectly1() throws EvaluationException {
-//        FacesContext context = FacesContext.getCurrentInstance();
-//        VariableResolver vr = (VariableResolver) context.getExternalContext().getApplicationMap().get("newVR");
-//        Object result = vr.resolveVariable(context, "nonmanaged");
-//        if (!(result instanceof TestBean)) {
-//            throw new IllegalStateException("Bean not of correct type");
-//        }
-//        return "success";
-//    }
+    public String getInvokeELResolverDirectly() throws EvaluationException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        ELResolver er = (ELResolver) context.getExternalContext().getApplicationMap().get("newER");
+        boolean isReadOnly = er.isReadOnly(context.getELContext(), "newERDirect", null);
+
+        return Boolean.valueOf(isReadOnly).toString();
+    }
+
+    public String getInvokeVariableResolverThruChain1() throws EvaluationException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        VariableResolver vr = context.getApplication().getVariableResolver();
+        Object result = vr.resolveVariable(context, "nonmanaged");
+        if (!(result instanceof TestBean)) {
+            throw new IllegalStateException("Bean not of correct type");
+        }
+        return "success";
+    }
+    
+    public String getInvokeVariableResolverDirectly1() throws EvaluationException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        VariableResolver vr = (VariableResolver) context.getExternalContext().getApplicationMap().get("newVR");
+        Object result = vr.resolveVariable(context, "nonmanaged");
+        if (!(result instanceof TestBean)) {
+            throw new IllegalStateException("Bean not of correct type");
+        }
+        return "success";
+    }
 }

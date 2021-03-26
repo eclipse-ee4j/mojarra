@@ -17,25 +17,26 @@
 package com.sun.faces.test.servlet30.component;
 
 import java.util.Map;
-
 import javax.faces.component.FacesComponent;
 import javax.faces.component.html.HtmlInputText;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ListenerFor;
+import javax.faces.event.ListenersFor;
 import javax.faces.event.PostValidateEvent;
 import javax.faces.event.PreValidateEvent;
 
-@FacesComponent("com.sun.faces.test.servlet30.component.ListenersComponent")
-@ListenerFor(systemEventClass = PreValidateEvent.class)
-@ListenerFor(systemEventClass = PostValidateEvent.class)
+@FacesComponent(value = "com.sun.faces.test.servlet30.component.ListenersComponent")
+@ListenersFor({
+    @ListenerFor(systemEventClass = PreValidateEvent.class),
+    @ListenerFor(systemEventClass = PostValidateEvent.class)
+})
 public class ListenersComponent extends HtmlInputText {
 
     @Override
     public void processEvent(ComponentSystemEvent event) throws AbortProcessingException {
         Map<String, Object> requestMap = FacesContext.getCurrentInstance().getExternalContext().getRequestMap();
-
         if (event instanceof PreValidateEvent) {
             requestMap.put("preValidateEvent", "preValidateEvent");
         } else if (event instanceof PostValidateEvent) {

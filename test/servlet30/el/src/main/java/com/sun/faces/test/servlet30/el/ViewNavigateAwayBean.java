@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
- * Copyright (c) 2018 Payara Services Limited.
- * All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,23 +16,18 @@
 
 package com.sun.faces.test.servlet30.el;
 
-import java.io.Serializable;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
 
 /**
  * A ViewScoped bean testing navigate away functionality.
  */
-
-@Named
+@ManagedBean(name = "viewNavigateAwayBean")
 @ViewScoped
-public class ViewNavigateAwayBean implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class ViewNavigateAwayBean {
 
     /**
      * Stores the text.

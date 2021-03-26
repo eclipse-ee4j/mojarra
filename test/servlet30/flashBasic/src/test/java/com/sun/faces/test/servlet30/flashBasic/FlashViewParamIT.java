@@ -74,7 +74,7 @@ public class FlashViewParamIT {
         link = (HtmlAnchor) page.getElementById("nextCommandLink");
         page = link.click();
         assertTrue(page.asText().contains("foo = bar"));
-
+        
         cookie = webClient.getCookieManager().getCookie("csfcfc");
         assertTrue(cookie.isHttpOnly());
 
@@ -82,7 +82,7 @@ public class FlashViewParamIT {
         HtmlSubmitInput submitButton = (HtmlSubmitInput) page.getElementById("nextCommandButton");
         page = submitButton.click();
         assertTrue(page.asText().contains("foo = bar"));
-
+        
         cookie = webClient.getCookieManager().getCookie("csfcfc");
         assertTrue(cookie.isHttpOnly());
     }

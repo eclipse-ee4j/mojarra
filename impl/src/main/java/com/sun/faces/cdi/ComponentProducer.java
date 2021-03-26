@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,15 +16,14 @@
 
 package com.sun.faces.cdi;
 
-import static javax.faces.component.UIComponent.getCurrentComponent;
+import static jakarta.faces.component.UIComponent.getCurrentComponent;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- * The Component producer is the CDI producer that allows EL resolving of
- * <code>#{component}</code>
+ * The Component producer is the CDI producer that allows EL resolving of <code>#{component}</code>
  * </p>
  *
  * @since 2.3
@@ -36,11 +35,9 @@ public class ComponentProducer extends CdiProducer<UIComponent> {
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
+
     public ComponentProducer() {
-        super.name("component")
-             .beanClassAndType(UIComponent.class)
-             .create(e -> getCurrentComponent(FacesContext.getCurrentInstance()));
+        super.name("component").beanClassAndType(UIComponent.class).create(e -> getCurrentComponent(FacesContext.getCurrentInstance()));
     }
 
 }

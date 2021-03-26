@@ -16,6 +16,7 @@
 
 package com.sun.faces.test.servlet30.lifecycleFacesServletAccess;
 
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.junit.After;

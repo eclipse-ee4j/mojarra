@@ -16,12 +16,11 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
+import java.io.Serializable;
+import javax.faces.bean.ManagedBean;
 
-@Named
-@RequestScoped
-public class OutputTextScript2Bean {
+@ManagedBean(name = "outputTextScript2Bean")
+public class OutputTextScript2Bean implements Serializable {
 
     private String comment = "Dummy Commnet";
 

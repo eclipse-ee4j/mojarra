@@ -16,11 +16,11 @@
 
 package com.sun.faces.test.servlet30.bogusrenderkitid;
 
-import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
-import javax.inject.Named;
 
-@Named
+@ManagedBean
 @RequestScoped
 public class BogusRenderKitIdBean {
 
@@ -30,7 +30,8 @@ public class BogusRenderKitIdBean {
     }
 
     public String getViewRootRenderKitId() {
-        return FacesContext.getCurrentInstance().getViewRoot().getRenderKitId();
+        FacesContext context = FacesContext.getCurrentInstance();
+        return context.getViewRoot().getRenderKitId();
 
     }
 }

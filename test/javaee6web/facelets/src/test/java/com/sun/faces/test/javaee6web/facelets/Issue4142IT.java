@@ -16,15 +16,14 @@
 
 package com.sun.faces.test.javaee6web.facelets;
 
-import static org.junit.Assert.assertTrue;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.DomNode;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.DomNode;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import static org.junit.Assert.*;
 
 public class Issue4142IT {
 
@@ -37,22 +36,23 @@ public class Issue4142IT {
         webClient = new WebClient();
     }
 
-    @After
-    public void tearDown() {
-        webClient.close();
-    }
-
     @Test
     public void testIssue4142() throws Exception {
 
         HtmlPage page = webClient.getPage(webUrl + "faces/issue4142.xhtml");
-        DomNode dataTableNode = page.getHtmlElementById("exampledatatable");
-        assertTrue(dataTableNode != null);
-
-        // Launch the same request second time within the same session
+        DomNode dn = page.getHtmlElementById("exampledatatable");
+        assertTrue(dn != null);
+        
+        //launch the same request second time within the same session
         page = webClient.getPage(webUrl + "faces/issue4142.xhtml");
-        dataTableNode = page.getHtmlElementById("exampledatatable");
-        assertTrue(dataTableNode != null);
+        dn = page.getHtmlElementById("exampledatatable");
+        assertTrue(dn != null);
+
+    }
+
+    @After
+    public void tearDown() {
+        webClient.close();
     }
 
 }

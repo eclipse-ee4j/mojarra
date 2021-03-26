@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,10 +17,12 @@
 package com.sun.faces.mock;
 
 import java.util.Iterator;
+
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.lifecycle.Lifecycle;
+import jakarta.faces.lifecycle.LifecycleFactory;
+
 import java.util.ArrayList;
-import javax.faces.FactoryFinder;
-import javax.faces.lifecycle.LifecycleFactory;
-import javax.faces.lifecycle.Lifecycle;
 
 public class MockLifecycleFactory extends LifecycleFactory {
 

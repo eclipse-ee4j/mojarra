@@ -16,16 +16,12 @@
 
 package com.sun.faces.test.servlet30.ajax;
 
-import java.io.Serializable;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
-
-@Named
+@ManagedBean(name = "issue2041Bean")
 @SessionScoped
-public class Issue2041Bean implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class Issue2041Bean {
 
     String currentPage = "issue2041-page1.xhtml";
 

@@ -43,8 +43,9 @@ public class Issue3097IT {
     }
 
     /*
-     * This test is purposely only triggering when server side state saving as there is no way to force
-     * a view to expire when client side state saving.
+     * This test is purposely only triggering when server side state saving 
+     * as there is no way to force a view to expire when client side state 
+     * saving.
      */
     @Test
     public void testViewExpired1() throws Exception {
@@ -59,7 +60,7 @@ public class Issue3097IT {
             page = submitButton.click();
             webClient.waitForBackgroundJavaScript(60000);
             String text = page.asXml();
-            assertTrue(text.indexOf("class javax.faces.application.ViewExpiredException") != -1);
+            assertTrue(text.indexOf("class jakarta.faces.application.ViewExpiredException") != -1);
         }
     }
 }

@@ -16,14 +16,12 @@
 
 package com.sun.faces.test.servlet30.multitenantsetstccl;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import static org.junit.Assert.assertTrue;
 
 public class Issue3341IT {
 
@@ -44,16 +42,15 @@ public class Issue3341IT {
     @Test
     public void testTCCLReplacementResilience() throws Exception {
         HtmlPage page = webClient.getPage(webUrl);
-        String pageText = page.getBody().asText();
 
+        String pageText = page.getBody().asText();
         assertTrue(pageText.matches("(?s).*Duke.*submit.*"));
         assertTrue(pageText.matches("(?s).*First name:\\s*Duke.*"));
         assertTrue(pageText.matches("(?s).*BeforeServlet init found Lifecycle:\\s*TRUE.*"));
         assertTrue(pageText.matches("(?s).*BeforeServlet init found FacesContext:\\sTRUE.*"));
         assertTrue(pageText.matches("(?s).*BeforeServlet request found Lifecycle:\\s*TRUE.*"));
-
-        // Yes, the FacesContext.getCurrentInstance() should not be found
+        // Yes, the FacesContext.getCurrentInstance() should not be found 
         // because this is in a Filter before the run of the FacesServlet.service().
-        assertTrue(pageText.matches("(?s).*BeforeServlet request found FacesContext:\\s*FALSE.*"));
+        assertTrue(pageText.matches("(?s).*BeforeServlet request found FacesContext:\\s*FALSE.*"));        
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -25,11 +25,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.context.FacesContext;
-
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationFactory;
+import jakarta.faces.context.FacesContext;
 
 /**
  * Default implementation of {@link ApplicationFactory}.
@@ -38,14 +38,12 @@ public class ApplicationFactoryImpl extends ApplicationFactory {
 
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
-    
     // Attribute Instance Variables
-    
+
     private final Map<String, Application> applicationHolder = new ConcurrentHashMap<>(1);
-    
+
     private final String createdBy;
 
-    
     // Constructors and Initializers
 
     public ApplicationFactoryImpl() {
@@ -55,8 +53,9 @@ public class ApplicationFactoryImpl extends ApplicationFactory {
     }
 
     /**
-     * <p>Create (if needed) and return an {@link Application} instance
-     * for this web application.</p>
+     * <p>
+     * Create (if needed) and return an {@link Application} instance for this web application.
+     * </p>
      */
     @Override
     public Application getApplication() {
@@ -66,29 +65,30 @@ public class ApplicationFactoryImpl extends ApplicationFactory {
             if (LOGGER.isLoggable(FINE)) {
                 LOGGER.fine(format("Created Application instance ''{0}''", applicationHolder));
             }
-            
+
             return applicationImpl;
         });
     }
 
     /**
-     * <p>Replace the {@link Application} instance that will be
-     * returned for this web application.</p>
+     * <p>
+     * Replace the {@link Application} instance that will be returned for this web application.
+     * </p>
      *
      * @param application The replacement {@link Application} instance
      */
     @Override
     public void setApplication(Application application) {
-        
+
         notNull("application", application);
-        
+
         applicationHolder.put("default", application);
-        
+
         if (LOGGER.isLoggable(FINE)) {
             LOGGER.fine(format("set Application Instance to ''{0}''", application.getClass().getName()));
         }
     }
-    
+
     @Override
     public String toString() {
         return super.toString() + " created by " + createdBy;

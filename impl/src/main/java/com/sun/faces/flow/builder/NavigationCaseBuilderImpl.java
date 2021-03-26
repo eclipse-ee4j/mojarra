@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,18 +16,20 @@
 
 package com.sun.faces.flow.builder;
 
-import com.sun.faces.util.Util;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
-import javax.el.ValueExpression;
-import javax.faces.application.NavigationCase;
-import javax.faces.flow.builder.NavigationCaseBuilder;
+
+import com.sun.faces.util.Util;
+
+import jakarta.el.ValueExpression;
+import jakarta.faces.application.NavigationCase;
+import jakarta.faces.flow.builder.NavigationCaseBuilder;
 
 public class NavigationCaseBuilderImpl extends NavigationCaseBuilder {
-    
+
     private FlowBuilderImpl root;
     private MutableNavigationCase navCase;
 
@@ -35,7 +37,7 @@ public class NavigationCaseBuilderImpl extends NavigationCaseBuilder {
         navCase = new MutableNavigationCase();
         this.root = root;
     }
-    
+
     @Override
     public NavigationCaseBuilder toFlowDocumentId(String toFlowDocumentId) {
         Util.notNull("toFlowDocumentId", toFlowDocumentId);
@@ -61,7 +63,7 @@ public class NavigationCaseBuilderImpl extends NavigationCaseBuilder {
     public NavigationCaseBuilder fromViewId(String fromViewId) {
         Util.notNull("fromViewId", fromViewId);
         navCase.setFromViewId(fromViewId);
-        Map<String,Set<NavigationCase>> rules = root._getFlow()._getNavigationCases();
+        Map<String, Set<NavigationCase>> rules = root._getFlow()._getNavigationCases();
         Set<NavigationCase> cases = rules.get(fromViewId);
         if (null == cases) {
             cases = new CopyOnWriteArraySet<>();
@@ -107,7 +109,7 @@ public class NavigationCaseBuilderImpl extends NavigationCaseBuilder {
         public RedirectBuilder parameter(String name, String value) {
             Util.notNull("name", name);
             Util.notNull("value", value);
-            Map<String, List<String>> redirectParams = NavigationCaseBuilderImpl.this.navCase.getParameters();
+            Map<String, List<String>> redirectParams = navCase.getParameters();
             List<String> values = redirectParams.get(name);
             if (null == values) {
                 values = new CopyOnWriteArrayList<>();
@@ -119,14 +121,10 @@ public class NavigationCaseBuilderImpl extends NavigationCaseBuilder {
 
         @Override
         public RedirectBuilder includeViewParams() {
-            NavigationCaseBuilderImpl.this.navCase.isIncludeViewParams();
+            navCase.isIncludeViewParams();
             return this;
         }
-    
-        
-        
-        
+
     }
-    
-    
+
 }

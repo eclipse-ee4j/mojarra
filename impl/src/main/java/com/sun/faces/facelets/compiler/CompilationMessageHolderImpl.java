@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,19 +16,23 @@
 
 package com.sun.faces.facelets.compiler;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 
 /**
  *
  * @author edburns
  */
 public class CompilationMessageHolderImpl implements CompilerPackageCompilationMessageHolder {
-    
+
     private Map<String, List<FacesMessage>> messageListMap;
     private CompilationManager compilationManager;
-
 
     private Map<String, List<FacesMessage>> getMessageListMap() {
         if (null == messageListMap) {
@@ -36,17 +40,16 @@ public class CompilationMessageHolderImpl implements CompilerPackageCompilationM
         }
         return messageListMap;
     }
-    
+
     @Override
-    public List<FacesMessage> getNamespacePrefixMessages(FacesContext context,
-            String prefix) {
+    public List<FacesMessage> getNamespacePrefixMessages(FacesContext context, String prefix) {
         List<FacesMessage> result = null;
         Map<String, List<FacesMessage>> map = getMessageListMap();
         if (null == (result = map.get(prefix))) {
             result = new ArrayList<>();
             map.put(prefix, result);
         }
-        
+
         return result;
     }
 
@@ -74,7 +77,7 @@ public class CompilationMessageHolderImpl implements CompilerPackageCompilationM
 
     @Override
     public void setCurrentCompositeComponentCompilationManager(CompilationManager manager) {
-        this.compilationManager = manager;
+        compilationManager = manager;
     }
 
 }

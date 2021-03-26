@@ -16,17 +16,16 @@
 
 package com.sun.faces.test.javaee6web.facelets;
 
-import static org.junit.Assert.assertTrue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.sun.faces.test.junit.JsfTestRunner;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
 
 @RunWith(JsfTestRunner.class)
 public class Issue4073IT {
@@ -44,13 +43,13 @@ public class Issue4073IT {
     public void tearDown() {
         webClient.close();
     }
-
+    
     @Test
     public void testButton2SetValueNotNull() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/issue4073.xhtml");
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("comp_id:Button_id");
         page = button.click();
-
+        
         assertTrue(page.asText().contains("Hello World"));
     }
 

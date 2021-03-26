@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -28,30 +28,32 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 
 /**
- * This class implements an abstract ConcurrentCache with  objects in the cache potentially expiring.
- * Only non-expired objects will be returned from the cache or considered to be contained in the cache
- * The cache is self-managing, so no remove() method is defined
+ * This class implements an abstract ConcurrentCache with objects in the cache potentially expiring. Only non-expired
+ * objects will be returned from the cache or considered to be contained in the cache The cache is self-managing, so no
+ * remove() method is defined
  */
 public final class ExpiringConcurrentCache<K, V> extends ConcurrentCache<K, V> {
-    
+
     /**
      * Interface for checking whether a cached object expired
      */
-    public interface ExpiryChecker<K, V>{
+    public interface ExpiryChecker<K, V> {
         /**
          * Checks whether a cached object expired
+         *
          * @param key cache key
          * @param value cached value
          * @return true if the value expired and should be removed from the cache, false otherwise
          */
-        public boolean isExpired(K key, V value);
+        boolean isExpired(K key, V value);
     }
-    
+
     /**
      * Public constructor.
+     *
      * @param f used to create new instances of objects that are not already available
      * @param checker used to check whether an object in the cache has expired
      */
@@ -59,28 +61,23 @@ public final class ExpiringConcurrentCache<K, V> extends ConcurrentCache<K, V> {
         super(f);
         _checker = checker;
     }
-    
+
     @Override
     public V get(final K key) throws ExecutionException {
         // This method uses a design pattern from "Java concurrency in practice".
-        // The pattern ensures that only one thread gets to create an object  missing in the cache,
+        // The pattern ensures that only one thread gets to create an object missing in the cache,
         // while the all the other threads tring to get it are waiting
         while (true) {
             boolean newlyCached = false;
-            
+
             Future<V> f = _cache.get(key);
             if (f == null) {
-                Callable<V> callable = new Callable<V>() {
-                    @Override
-                    public V call() throws Exception {
-                        return getFactory().newInstance(key);
-                    }
-                };
+                Callable<V> callable = () -> getFactory().newInstance(key);
                 FutureTask<V> ft = new FutureTask<>(callable);
                 // here is the real beauty of the concurrent utilities.
-                // 1.  putIfAbsent() is atomic
-                // 2.  putIfAbsent() will return the value already associated
-                //     with the specified key
+                // 1. putIfAbsent() is atomic
+                // 2. putIfAbsent() will return the value already associated
+                // with the specified key
                 // So, if multiple threads make it to this point
                 // they will all be calling f.get() on the same
                 // FutureTask instance, so this guarantees that the instances
@@ -95,34 +92,31 @@ public final class ExpiringConcurrentCache<K, V> extends ConcurrentCache<K, V> {
             try {
                 V obj = f.get();
                 if (!newlyCached && _getExpiryChecker().isExpired(key, obj)) {
-                    
+
                     // Note that we are using both key and value in remove() call to ensure
                     // that we are not removing the Future added after expiry check by a different thread
                     _cache.remove(key, f);
-                }
-                else {
+                } else {
                     return obj;
                 }
             } catch (CancellationException ce) {
                 if (_LOGGER.isLoggable(Level.SEVERE)) {
-                    _LOGGER.log(Level.SEVERE,
-                               ce.toString(),
-                               ce);
+                    _LOGGER.log(Level.SEVERE, ce.toString(), ce);
                 }
                 _cache.remove(key, f);
             } catch (ExecutionException ee) {
                 _cache.remove(key, f);
                 throw ee;
-            } catch (InterruptedException ie) {                 
-                throw new FacesException(ie); 
-                
+            } catch (InterruptedException ie) {
+                throw new FacesException(ie);
+
             }
-        }  
+        }
     }
-    
+
     @Override
     public boolean containsKey(final K key) {
-        
+
         Future<V> f = _cache.get(key);
 
         if (f != null && f.isDone() && !f.isCancelled()) {
@@ -136,7 +130,7 @@ public final class ExpiringConcurrentCache<K, V> extends ConcurrentCache<K, V> {
                     // that we are not removing the Future added after expiry check by a different thread
                     _cache.remove(key, f);
                 } else {
-                    
+
                     return true;
                 }
             } catch (TimeoutException | ExecutionException ce) {
@@ -149,19 +143,16 @@ public final class ExpiringConcurrentCache<K, V> extends ConcurrentCache<K, V> {
 
             }
         }
-        
+
         return false;
     }
-
-    
-
 
     private ExpiryChecker<K, V> _getExpiryChecker() {
         return _checker;
     }
-    
+
     private final ExpiryChecker<K, V> _checker;
     private final ConcurrentMap<K, Future<V>> _cache = new ConcurrentHashMap<>();
-    
+
     private static final Logger _LOGGER = FacesLogger.UTIL.getLogger();
 }

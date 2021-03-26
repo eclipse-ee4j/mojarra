@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -23,9 +23,8 @@ import java.util.Objects;
 
 /**
  * <p class="changed_added_2_3">
- * ParameterizedTypeImpl is a basic implementation of the ParameterizedType
- * interface. It is used by the dynamic CDI producers that produce generic
- * types.
+ * ParameterizedTypeImpl is a basic implementation of the ParameterizedType interface. It is used by the dynamic CDI
+ * producers that produce generic types.
  * </p>
  *
  * @since 2.3
@@ -50,10 +49,8 @@ public class ParameterizedTypeImpl implements ParameterizedType {
     /**
      * Constructs an instance of ParameterizedType without an owner type
      *
-     * @param rawType Type representing the class or interface that declares
-     * this type.
-     * @param actualTypeArguments Array of Types representing the actual type
-     * arguments for this type
+     * @param rawType Type representing the class or interface that declares this type.
+     * @param actualTypeArguments Array of Types representing the actual type arguments for this type
      */
     public ParameterizedTypeImpl(Class<?> rawType, Type[] actualTypeArguments) {
         this(null, rawType, actualTypeArguments);
@@ -62,15 +59,11 @@ public class ParameterizedTypeImpl implements ParameterizedType {
     /**
      * Constructs an instance of ParameterizedType
      *
-     * @param ownerType the Type representing the type that this type is
-     * embedded in, if any. It can be null.
-     * @param rawType the Type representing the class or interface that declares
-     * this type.
-     * @param actualTypeArguments Array of Types representing the actual type
-     * arguments for this type
+     * @param ownerType the Type representing the type that this type is embedded in, if any. It can be null.
+     * @param rawType the Type representing the class or interface that declares this type.
+     * @param actualTypeArguments Array of Types representing the actual type arguments for this type
      */
-    public ParameterizedTypeImpl(Type ownerType, Class<?> rawType,
-            Type[] actualTypeArguments) {
+    public ParameterizedTypeImpl(Type ownerType, Class<?> rawType, Type[] actualTypeArguments) {
 
         this.ownerType = ownerType;
         this.rawType = rawType;
@@ -115,24 +108,20 @@ public class ParameterizedTypeImpl implements ParameterizedType {
      */
     @Override
     public boolean equals(Object other) {
-        return other instanceof ParameterizedType
-                ? equals((ParameterizedType) other) : false;
+        return other instanceof ParameterizedType ? equals((ParameterizedType) other) : false;
     }
 
     /**
      *
-     * Tests if an other instance of ParameterizedType is "equal to" this
-     * instance.
+     * Tests if an other instance of ParameterizedType is "equal to" this instance.
      *
      * @param other the other instance of ParameterizedType
      * @return true if instances equal, false otherwise.
      */
     public boolean equals(ParameterizedType other) {
         return this == other ? true
-                : Objects.equals(getOwnerType(), other.getOwnerType())
-                && Objects.equals(getRawType(), other.getRawType())
-                && Arrays.equals(getActualTypeArguments(),
-                        other.getActualTypeArguments());
+                : Objects.equals(getOwnerType(), other.getOwnerType()) && Objects.equals(getRawType(), other.getRawType())
+                        && Arrays.equals(getActualTypeArguments(), other.getActualTypeArguments());
     }
 
     /**
@@ -142,8 +131,6 @@ public class ParameterizedTypeImpl implements ParameterizedType {
      */
     @Override
     public int hashCode() {
-        return Objects.hashCode(getOwnerType())
-                ^ Objects.hashCode(getRawType())
-                ^ Arrays.hashCode(getActualTypeArguments());
+        return Objects.hashCode(getOwnerType()) ^ Objects.hashCode(getRawType()) ^ Arrays.hashCode(getActualTypeArguments());
     }
 }

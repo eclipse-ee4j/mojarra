@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 2017, 2018 Oracle and/or its affiliates.
- * Copyright (c) 2018 Payara Services Limited.
- * All rights reserved.
+ * Copyright (c) 2017, 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -20,21 +18,18 @@ package com.sun.faces.test.servlet30.dynamic;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.event.ActionEvent;
-import javax.inject.Named;
 
-@Named
+@ManagedBean(name = "issue1414Bean")
 @SessionScoped
 public class Issue1414Bean implements Serializable {
-
-    private static final long serialVersionUID = 1L;
 
     public void temporaryMoveComponent(ActionEvent ae) {
 
         System.out.println("Temporarily moving a component");
-
         UIComponent button = ae.getComponent();
         UIComponent movefrom = button.findComponent("movefrom");
         UIComponent moveto = button.findComponent("moveto");

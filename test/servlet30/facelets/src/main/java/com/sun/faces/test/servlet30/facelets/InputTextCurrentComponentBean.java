@@ -16,14 +16,15 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-import javax.enterprise.context.RequestScoped;
+import java.io.Serializable;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.inject.Named;
 
-@Named
+@ManagedBean(name = "inputTextCurrentComponentBean")
 @RequestScoped
-public class InputTextCurrentComponentBean {
+public class InputTextCurrentComponentBean implements Serializable {
 
     private String text;
 
@@ -32,8 +33,7 @@ public class InputTextCurrentComponentBean {
     }
 
     public void setText(String text) {
-        this.text = UIComponent.getCurrentComponent(FacesContext.getCurrentInstance())
-                               .getClass()
-                               .getName();
+        UIComponent uic = UIComponent.getCurrentComponent(FacesContext.getCurrentInstance());
+        this.text = uic.getClass().getName();
     }
 }

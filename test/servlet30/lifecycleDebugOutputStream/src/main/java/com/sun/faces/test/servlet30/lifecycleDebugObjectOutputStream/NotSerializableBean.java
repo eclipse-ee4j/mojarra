@@ -21,40 +21,38 @@ import java.io.NotSerializableException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Map;
-import javax.inject.Named;
-import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 
-@Named
+@ManagedBean
 @RequestScoped
 public class NotSerializableBean implements Serializable {
-
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
-
-    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+    
+    private void writeObject(java.io.ObjectOutputStream out)
+            throws IOException {
         throw new NotSerializableException("Intentional failure");
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in)
+            throws IOException, ClassNotFoundException {
         throw new NotSerializableException("Intentional failure");
-
+        
     }
 
-    private void readObjectNoData() throws ObjectStreamException {
+    private void readObjectNoData() 
+                    throws ObjectStreamException {
         throw new NotSerializableException("Intentional failure");
-
+        
     }
-
+    
     private String putBadBeanInViewScope = "";
 
     public String getPutBadBeanInViewScope() {
         FacesContext context = FacesContext.getCurrentInstance();
         Map<String, String> queryParams = context.getExternalContext().getRequestParameterMap();
         if (queryParams.containsKey("fail")) {
-            context.getViewRoot().getViewMap(true).put("badBean", this);
+                context.getViewRoot().getViewMap(true).put("badBean", this);
         }
         return putBadBeanInViewScope;
     }
@@ -62,5 +60,5 @@ public class NotSerializableBean implements Serializable {
     public void setPutBadBeanInViewScope(String putBadBeanInViewScope) {
         this.putBadBeanInViewScope = putBadBeanInViewScope;
     }
-
+    
 }

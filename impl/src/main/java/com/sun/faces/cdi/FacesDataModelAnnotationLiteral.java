@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,13 +16,13 @@
 
 package com.sun.faces.cdi;
 
-import javax.enterprise.util.AnnotationLiteral;
-import javax.faces.model.FacesDataModel;
+import jakarta.enterprise.util.AnnotationLiteral;
+import jakarta.faces.model.FacesDataModel;
 
 @SuppressWarnings("all")
 class FacesDataModelAnnotationLiteral extends AnnotationLiteral<FacesDataModel> implements FacesDataModel {
     private static final long serialVersionUID = 1L;
-    
+
     /**
      * Stores the forClass attribute.
      */
@@ -32,6 +32,7 @@ class FacesDataModelAnnotationLiteral extends AnnotationLiteral<FacesDataModel> 
         this.forClass = forClass;
     }
 
+    @Override
     public Class<?> forClass() {
         return forClass;
     }

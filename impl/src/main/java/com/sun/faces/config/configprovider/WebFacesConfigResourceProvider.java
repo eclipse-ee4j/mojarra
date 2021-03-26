@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,13 +16,14 @@
 
 package com.sun.faces.config.configprovider;
 
+import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.JakartaFacesConfigFiles;
+
 import java.net.URI;
 import java.util.Collection;
 
-import javax.servlet.ServletContext;
+import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
 
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter;
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.JavaxFacesConfigFiles;
+import jakarta.servlet.ServletContext;
 
 /**
  *
@@ -39,12 +40,10 @@ public class WebFacesConfigResourceProvider extends BaseWebConfigResourceProvide
     private static final String[] EXCLUDES = { WEB_INF_RESOURCE };
     private static final String SEPARATORS = ",|;";
 
-
     // ------------------------------ Methods from ConfigurationResourceProvider
 
-
     /**
-     * @see com.sun.faces.spi.ConfigurationResourceProvider#getResources(javax.servlet.ServletContext)
+     * @see com.sun.faces.spi.ConfigurationResourceProvider#getResources(jakarta.servlet.ServletContext)
      */
     @Override
     public Collection<URI> getResources(ServletContext context) {
@@ -64,15 +63,13 @@ public class WebFacesConfigResourceProvider extends BaseWebConfigResourceProvide
         return urls;
     }
 
-
     // ------------------------------ Methods from BaseWebConfigResourceProvider
-
 
     @Override
     protected WebContextInitParameter getParameter() {
-        return JavaxFacesConfigFiles;
+        return JakartaFacesConfigFiles;
     }
-    
+
     @Override
     protected String[] getExcludedResources() {
         return EXCLUDES;

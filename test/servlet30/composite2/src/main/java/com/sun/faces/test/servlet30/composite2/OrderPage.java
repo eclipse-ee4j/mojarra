@@ -16,19 +16,14 @@
 
 package com.sun.faces.test.servlet30.composite2;
 
-import java.io.Serializable;
 import java.util.List;
+import jakarta.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 
-import javax.annotation.PostConstruct;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
-
-
-@Named
+@ManagedBean(name = "orderPage")
 @ViewScoped
-public class OrderPage implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class OrderPage {
 
     private Order order;
     private List<Line> availableLines;

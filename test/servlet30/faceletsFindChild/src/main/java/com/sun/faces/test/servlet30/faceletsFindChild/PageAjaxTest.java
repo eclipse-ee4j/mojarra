@@ -20,15 +20,16 @@ import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.inject.Named;
+
+import jakarta.faces.bean.*;
 
 @SessionScoped
-@Named
+@ManagedBean(name = "pageAjaxTest2")
 public class PageAjaxTest implements Serializable {
 
-    private static final long serialVersionUID = 1L;
     private final NumberFormat format;
 
     public PageAjaxTest() {

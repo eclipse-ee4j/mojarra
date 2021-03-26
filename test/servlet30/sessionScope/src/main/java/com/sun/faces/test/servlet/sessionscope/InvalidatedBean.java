@@ -16,40 +16,68 @@
 
 package com.sun.faces.test.servlet.sessionscope;
 
-import java.io.Serializable;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 
 /**
- * A SessionScoped bean testing session invalidation functionality.
+ * A ViewScoped bean testing session invalidation functionality.
  */
-@Named
+@ManagedBean(name = "invalidatedBean")
 @SessionScoped
-public class InvalidatedBean implements Serializable {
+public class InvalidatedBean {
 
-    private static final long serialVersionUID = 1L;
+    /**
+     * Stores the text.
+     */
+    private String text;
 
-    @Inject
-    private ApplicationScopedBean applicationScopedBean;
+    /**
+     * Constructor.
+     */
+    public InvalidatedBean() {
+        this.text = "This is from the constructor";
+    }
 
-    private String text = "This is from the initialiser";
-
+    /**
+     * Post-construct.
+     *
+     */
     @PostConstruct
     public void init() {
-        applicationScopedBean.setCount(0);
-        text = "This is from the @PostConstruct";
+        FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().remove("count");
+        this.text = "This is from the @PostConstruct";
     }
 
+    /**
+     * Pre-destroy
+     */
     @PreDestroy
     public void destroy() {
-        applicationScopedBean.setCount(applicationScopedBean.getCount() + 1);
+        /*
+         * For the purpose of the test we can actually ask for the current 
+         * instance of the FacesContext, because we trigger invalidating of the 
+         * session through a JSF page, however in the normal case of session 
+         * invalidation this will NOT be true. So this means that normally the 
+         * @PreDestroy annotated method should not try to use 
+         * FacesContext.getCurrentInstance().
+         */
+        if (FacesContext.getCurrentInstance() != null) {
+            Integer count = 0;
+            if (FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().containsKey("count")) {
+                count = (Integer) FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().get("count");
+            }
+            count++;
+            FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().put("count", count);
+        }
     }
 
+    /**
+     * Get the text.
+     */
     public String getText() {
-        return text;
+        return this.text;
     }
 }

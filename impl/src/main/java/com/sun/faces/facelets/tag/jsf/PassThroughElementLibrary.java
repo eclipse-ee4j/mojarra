@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,7 +18,6 @@ package com.sun.faces.facelets.tag.jsf;
 
 import com.sun.faces.facelets.tag.AbstractTagLibrary;
 
-
 public final class PassThroughElementLibrary extends AbstractTagLibrary {
 
     public final static String Namespace = "http://xmlns.jcp.org/jsf";
@@ -27,8 +26,7 @@ public final class PassThroughElementLibrary extends AbstractTagLibrary {
 
     public PassThroughElementLibrary() {
         super(Namespace);
-        
-        this.addComponent("element", "javax.faces.Panel",
-                "javax.faces.passthrough.Element", PassThroughElementComponentHandler.class);
+
+        this.addComponent("element", "jakarta.faces.Panel", "jakarta.faces.passthrough.Element", PassThroughElementComponentHandler.class);
     }
 }

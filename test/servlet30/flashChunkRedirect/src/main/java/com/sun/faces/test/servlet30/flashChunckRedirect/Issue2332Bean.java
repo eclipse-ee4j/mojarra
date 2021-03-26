@@ -16,14 +16,14 @@
 
 package com.sun.faces.test.servlet30.flashChunckRedirect;
 
-import javax.inject.Named;
-import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 import javax.faces.event.ActionEvent;
 
 @RequestScoped
-@Named
+@ManagedBean(name = "issue2332Bean")
 public class Issue2332Bean {
 
     private Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();

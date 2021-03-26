@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,30 +16,30 @@
 
 package com.sun.faces.renderkit.html_basic;
 
-import com.sun.faces.config.FaceletsConfiguration;
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.renderkit.RenderKitUtils;
-import com.sun.faces.renderkit.Attribute;
-import com.sun.faces.renderkit.AttributeManager;
-
 import java.io.IOException;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.render.Renderer;
+import com.sun.faces.config.FaceletsConfiguration;
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.AttributeManager;
+import com.sun.faces.renderkit.RenderKitUtils;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.render.Renderer;
 
 /**
  * /**
- * <p>This <code>Renderer</code> is responsible for rendering
- * the standard HTML head elements as well as rendering any resources
- * that should be output before the <code>head</code> tag is closed.</p>
+ * <p>
+ * This <code>Renderer</code> is responsible for rendering the standard HTML head elements as well as rendering any
+ * resources that should be output before the <code>head</code> tag is closed.
+ * </p>
  */
 public class HeadRenderer extends Renderer {
 
-    private static final Attribute[] HEAD_ATTRIBUTES =
-          AttributeManager.getAttributes(AttributeManager.Key.OUTPUTHEAD);
+    private static final Attribute[] HEAD_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTPUTHEAD);
 
     @Override
     public void decode(FacesContext context, UIComponent component) {
@@ -47,14 +47,10 @@ public class HeadRenderer extends Renderer {
     }
 
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         writer.startElement("head", component);
-        RenderKitUtils.renderPassThruAttributes(context,
-                                                writer,
-                                                component,
-                                                HEAD_ATTRIBUTES);
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, HEAD_ATTRIBUTES);
         WebConfiguration webConfig = WebConfiguration.getInstance(context.getExternalContext());
         FaceletsConfiguration faceletsConfig = webConfig.getFaceletsConfiguration();
         if (faceletsConfig.isOutputHtml5Doctype(context.getViewRoot().getViewId())) {
@@ -64,25 +60,20 @@ public class HeadRenderer extends Renderer {
     }
 
     @Override
-    public void encodeChildren(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
         // no-op
     }
 
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         encodeHeadResources(context);
         writer.endElement("head");
     }
 
-
     // --------------------------------------------------------- Private Methods
 
-
-    private void encodeHeadResources(FacesContext context)
-    throws IOException {
+    private void encodeHeadResources(FacesContext context) throws IOException {
 
         UIViewRoot viewRoot = context.getViewRoot();
         for (UIComponent resource : viewRoot.getComponentResources(context, "head")) {
@@ -90,5 +81,5 @@ public class HeadRenderer extends Renderer {
         }
 
     }
-    
+
 }

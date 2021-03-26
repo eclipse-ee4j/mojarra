@@ -18,8 +18,8 @@ package com.sun.faces.test.servlet30.composite;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
-
 import javax.faces.component.UINamingContainer;
 
 public abstract class PreRenderViewComponentBase extends UINamingContainer {
@@ -28,10 +28,9 @@ public abstract class PreRenderViewComponentBase extends UINamingContainer {
 
     @Override
     public Map<String, Object> getAttributes() {
-        if (localAttrs == null) {
+        if (null == localAttrs) {
             localAttrs = new MapWrapper(super.getAttributes());
         }
-
         return localAttrs;
     }
 

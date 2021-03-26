@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,24 +16,25 @@
 
 package com.sun.faces.spi;
 
-import com.sun.faces.util.Util;
-import com.sun.faces.util.FacesLogger;
-
-import javax.faces.FacesException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.List;
-import java.util.Enumeration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.net.URL;
-import java.net.URLConnection;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
+
+import jakarta.faces.FacesException;
 
 /**
  * <p>
@@ -45,9 +46,7 @@ final class ServiceFactoryUtils {
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
     private static final String[] EMPTY_ARRAY = new String[0];
 
-
     // ---------------------------------------------------------- Public Methods
-
 
     static Object getProviderFromEntry(String entry, Class<?>[] argumentTypes, Object[] arguments) throws FacesException {
 
@@ -62,12 +61,12 @@ final class ServiceFactoryUtils {
                 throw new FacesException("Unable to find constructor accepting arguments: " + Arrays.toString(arguments));
             }
             return c.newInstance(arguments);
-        } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+        } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException e) {
             throw new FacesException(e);
         }
 
     }
-
 
     static String[] getServiceEntries(String key) {
 
@@ -83,9 +82,7 @@ final class ServiceFactoryUtils {
             urls = loader.getResources(serviceName);
         } catch (IOException ioe) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE,
-                           ioe.toString(),
-                           ioe);
+                LOGGER.log(Level.SEVERE, ioe.toString(), ioe);
             }
         }
 
@@ -103,30 +100,21 @@ final class ServiceFactoryUtils {
                     input = conn.getInputStream();
                     if (input != null) {
                         try {
-                            reader =
-                                  new BufferedReader(new InputStreamReader(input,
-                                                                           "UTF-8"));
+                            reader = new BufferedReader(new InputStreamReader(input, "UTF-8"));
                         } catch (Exception e) {
                             // The DM_DEFAULT_ENCODING warning is acceptable here
                             // because we explicitly *want* to use the Java runtime's
                             // default encoding.
-                            reader =
-                                  new BufferedReader(new InputStreamReader(input));
+                            reader = new BufferedReader(new InputStreamReader(input));
                         }
-                        for (String line = reader.readLine();
-                             line != null;
-                             line = reader.readLine()) {
+                        for (String line = reader.readLine(); line != null; line = reader.readLine()) {
                             results.add(line.trim());
                         }
                     }
                 } catch (Exception e) {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.log(Level.SEVERE,
-                                   "jsf.spi.provider.cannot_read_service",
-                                   new Object[]{serviceName});
-                        LOGGER.log(Level.SEVERE,
-                                   e.toString(),
-                                   e);
+                        LOGGER.log(Level.SEVERE, "jsf.spi.provider.cannot_read_service", new Object[] { serviceName });
+                        LOGGER.log(Level.SEVERE, e.toString(), e);
                     }
                 } finally {
                     if (input != null) {
@@ -151,9 +139,7 @@ final class ServiceFactoryUtils {
             }
         }
 
-        return ((results != null && !results.isEmpty())
-                ? results.toArray(new String[results.size()])
-                : EMPTY_ARRAY);
+        return results != null && !results.isEmpty() ? results.toArray(new String[results.size()]) : EMPTY_ARRAY;
 
     }
 

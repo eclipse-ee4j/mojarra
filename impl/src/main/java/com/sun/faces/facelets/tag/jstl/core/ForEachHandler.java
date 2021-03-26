@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,20 +16,24 @@
 
 package com.sun.faces.facelets.tag.jstl.core;
 
-import com.sun.faces.facelets.tag.TagHandlerImpl;
-
-import com.sun.faces.facelets.tag.jsf.IterationIdManager;
-
-import javax.el.ValueExpression;
-import javax.el.VariableMapper;
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagAttributeException;
-import javax.faces.view.facelets.TagConfig;
 import java.io.IOException;
 import java.lang.reflect.Array;
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+
+import com.sun.faces.facelets.tag.TagHandlerImpl;
+import com.sun.faces.facelets.tag.jsf.IterationIdManager;
+
+import jakarta.el.ValueExpression;
+import jakarta.el.VariableMapper;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributeException;
+import jakarta.faces.view.facelets.TagConfig;
 
 /**
  * @author Jacob Hookom
@@ -46,20 +50,20 @@ public final class ForEachHandler extends TagHandlerImpl {
         protected final int len;
 
         public ArrayIterator(Object src) {
-            this.i = 0;
-            this.array = src;
-            this.len = Array.getLength(src);
+            i = 0;
+            array = src;
+            len = Array.getLength(src);
         }
 
         @Override
         public boolean hasNext() {
-            return this.i < this.len;
+            return i < len;
         }
 
         @Override
         public Object next() {
             try {
-                return Array.get(this.array, this.i++);
+                return Array.get(array, i++);
             } catch (ArrayIndexOutOfBoundsException ioob) {
                 throw new NoSuchElementException();
             }
@@ -90,38 +94,35 @@ public final class ForEachHandler extends TagHandlerImpl {
      */
     public ForEachHandler(TagConfig config) {
         super(config);
-        this.items = this.getAttribute("items");
-        this.var = this.getAttribute("var");
-        this.begin = this.getAttribute("begin");
-        this.end = this.getAttribute("end");
-        this.step = this.getAttribute("step");
-        this.varStatus = this.getAttribute("varStatus");
-        this.tranzient = this.getAttribute("transient");
+        items = getAttribute("items");
+        var = getAttribute("var");
+        begin = getAttribute("begin");
+        end = getAttribute("end");
+        step = getAttribute("step");
+        varStatus = getAttribute("varStatus");
+        tranzient = getAttribute("transient");
 
-        if (this.items == null && this.begin != null && this.end == null) {
-            throw new TagAttributeException(
-                    this.tag,
-                    this.begin,
+        if (items == null && begin != null && end == null) {
+            throw new TagAttributeException(tag, begin,
                     "If the 'items' attribute is not specified, but the 'begin' attribute is, then the 'end' attribute is required");
         }
     }
 
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException {
-        
-        int s = this.getBegin(ctx);
-        int e = this.getEnd(ctx);
-        int m = this.getStep(ctx);
-        Integer sO = this.begin != null ? s : null;
-        Integer eO = this.end != null ? e : null;
-        Integer mO = this.step != null ? m : null;
-        
-        boolean t = this.getTransient(ctx);
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
+
+        int s = getBegin(ctx);
+        int e = getEnd(ctx);
+        int m = getStep(ctx);
+        Integer sO = begin != null ? s : null;
+        Integer eO = end != null ? e : null;
+        Integer mO = step != null ? m : null;
+
+        boolean t = getTransient(ctx);
         Object src = null;
         ValueExpression srcVE = null;
-        if (this.items != null) {
-            srcVE = this.items.getValueExpression(ctx, Object.class);
+        if (items != null) {
+            srcVE = items.getValueExpression(ctx, Object.class);
             src = srcVE.getValue(ctx);
         } else {
             byte[] b = new byte[e + 1];
@@ -131,7 +132,7 @@ public final class ForEachHandler extends TagHandlerImpl {
             src = b;
         }
         if (src != null) {
-            Iterator itr = this.toIterator(src);
+            Iterator itr = toIterator(src);
             if (itr != null) {
                 int i = 0;
 
@@ -141,18 +142,18 @@ public final class ForEachHandler extends TagHandlerImpl {
                     i++;
                 }
 
-                String v = this.getVarName(ctx);
-                String vs = this.getVarStatusName(ctx);
+                String v = getVarName(ctx);
+                String vs = getVarStatusName(ctx);
                 VariableMapper vars = ctx.getVariableMapper();
                 ValueExpression ve = null;
-                ValueExpression vO = this.capture(v, vars);
-                ValueExpression vsO = this.capture(vs, vars);
+                ValueExpression vO = capture(v, vars);
+                ValueExpression vsO = capture(vs, vars);
                 int mi = 0;
                 Object value = null;
                 int count = 0;
-                
+
                 IterationIdManager.startIteration(ctx);
-                
+
                 try {
                     boolean first = true;
                     while (i <= e && itr.hasNext()) {
@@ -164,14 +165,14 @@ public final class ForEachHandler extends TagHandlerImpl {
                             if (t || srcVE == null) {
                                 ctx.setAttribute(v, value);
                             } else {
-                                ve = this.getVarExpr(srcVE, src, value, i, s);
+                                ve = getVarExpr(srcVE, src, value, i, s);
                                 vars.setVariable(v, ve);
                             }
                         }
 
                         // set the varStatus
                         if (vs != null) {
-                            JstlIterationStatus itrS = new JstlIterationStatus(first, !itr.hasNext(),i, sO, eO, mO, value, count);
+                            JstlIterationStatus itrS = new JstlIterationStatus(first, !itr.hasNext(), i, sO, eO, mO, value, count);
                             if (t || srcVE == null) {
                                 ctx.setAttribute(vs, itrS);
                             } else {
@@ -180,9 +181,8 @@ public final class ForEachHandler extends TagHandlerImpl {
                             }
                         }
 
-
                         // execute body
-                        this.nextHandler.apply(ctx, parent);
+                        nextHandler.apply(ctx, parent);
 
                         // increment steps
                         mi = 1;
@@ -192,7 +192,7 @@ public final class ForEachHandler extends TagHandlerImpl {
                             i++;
                         }
                         i++;
-                        
+
                         first = false;
                     }
                 } finally {
@@ -216,35 +216,34 @@ public final class ForEachHandler extends TagHandlerImpl {
     }
 
     private int getBegin(FaceletContext ctx) {
-        if (this.begin != null) {
-            return this.begin.getInt(ctx);
+        if (begin != null) {
+            return begin.getInt(ctx);
         }
         return 0;
     }
 
     private int getEnd(FaceletContext ctx) {
-        if (this.end != null) {
-            return this.end.getInt(ctx);
+        if (end != null) {
+            return end.getInt(ctx);
         }
-        return Integer.MAX_VALUE - 1; //hotspot bug in the JVM
+        return Integer.MAX_VALUE - 1; // hotspot bug in the JVM
     }
 
     private int getStep(FaceletContext ctx) {
-        if (this.step != null) {
-            return this.step.getInt(ctx);
+        if (step != null) {
+            return step.getInt(ctx);
         }
         return 1;
     }
 
     private boolean getTransient(FaceletContext ctx) {
-        if (this.tranzient != null) {
-            return this.tranzient.getBoolean(ctx);
+        if (tranzient != null) {
+            return tranzient.getBoolean(ctx);
         }
         return false;
     }
 
-    private ValueExpression getVarExpr(ValueExpression ve, Object src,
-            Object value, int i, int start) {
+    private ValueExpression getVarExpr(ValueExpression ve, Object src, Object value, int i, int start) {
         if (src instanceof List || src.getClass().isArray()) {
             return new IndexedValueExpression(ve, i);
         } else if (src instanceof Map && value instanceof Map.Entry) {
@@ -256,15 +255,15 @@ public final class ForEachHandler extends TagHandlerImpl {
     }
 
     private String getVarName(FaceletContext ctx) {
-        if (this.var != null) {
-            return this.var.getValue(ctx);
+        if (var != null) {
+            return var.getValue(ctx);
         }
         return null;
     }
 
     private String getVarStatusName(FaceletContext ctx) {
-        if (this.varStatus != null) {
-            return this.varStatus.getValue(ctx);
+        if (varStatus != null) {
+            return varStatus.getValue(ctx);
         }
         return null;
     }
@@ -279,8 +278,7 @@ public final class ForEachHandler extends TagHandlerImpl {
         } else if (src.getClass().isArray()) {
             return new ArrayIterator(src);
         } else {
-            throw new TagAttributeException(this.tag, this.items,
-                    "Must evaluate to a Collection, Map, Array, or null.");
+            throw new TagAttributeException(tag, items, "Must evaluate to a Collection, Map, Array, or null.");
         }
     }
 

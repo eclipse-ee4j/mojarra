@@ -49,28 +49,31 @@ public class ParamHandler extends TagHandlerImpl {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext,
-     * javax.faces.component.UIComponent)
+     *      jakarta.faces.component.UIComponent)
      */
-    @Override
-    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent)
+            throws IOException {
         String nameStr = this.name.getValue(ctx);
-        ValueExpression valueVE = this.value.getValueExpression(ctx, Object.class);
+        ValueExpression valueVE = this.value.getValueExpression(ctx,
+                Object.class);
         ctx.getVariableMapper().setVariable(nameStr, valueVE);
         setParam(ctx.getFacesContext(), parent, nameStr, valueVE);
     }
 
-    private void setParam(FacesContext context, UIComponent component, String name, ValueExpression valueVE) {
-        Map<String, ValueExpression> params = (Map<String, ValueExpression>) context.getAttributes().get(component);
+    private void setParam(FacesContext context, UIComponent component,
+            String name, ValueExpression valueVE) {
+        Map<String,ValueExpression> params = (Map<String, ValueExpression>)
+                context.getAttributes().get(component);
         if (null == params) {
-            params = new HashMap<String, ValueExpression>();
+            params = new HashMap<String,ValueExpression>();
             context.getAttributes().put(component, params);
         }
         params.put(name, valueVE);
     }
 
-    static Map<String, ValueExpression> getParams(FacesContext context, UIComponent component) {
+    static Map<String,ValueExpression> getParams(FacesContext context, UIComponent component) {
         return (Map<String, ValueExpression>) context.getAttributes().get(component);
     }
 

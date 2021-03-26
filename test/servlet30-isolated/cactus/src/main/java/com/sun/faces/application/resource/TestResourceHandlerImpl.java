@@ -27,7 +27,6 @@ import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.zip.GZIPOutputStream;
 
-import javax.faces.application.*;
 import javax.faces.application.Application;
 import javax.faces.application.Resource;
 import javax.faces.application.ResourceHandler;
@@ -40,6 +39,9 @@ import javax.servlet.http.HttpServletResponseWrapper;
 import com.sun.faces.cactus.ServletFacesTestCase;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.util.Util;
+
+import jakarta.faces.application.*;
+
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.InitFacesContext;
 import java.lang.reflect.Method;

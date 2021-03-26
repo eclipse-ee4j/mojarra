@@ -24,12 +24,7 @@ import javax.faces.event.PhaseListener;
  *
  * @author frederick.kaempfer
  */
-public class MyPhaseListener implements PhaseListener {
-
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1L;
+public class MyPhaseListener implements  PhaseListener{
 
     @Override
     public void afterPhase(PhaseEvent event) {
@@ -44,5 +39,7 @@ public class MyPhaseListener implements PhaseListener {
     public PhaseId getPhaseId() {
         return PhaseId.RENDER_RESPONSE;
     }
-
+    
+    
+    
 }

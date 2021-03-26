@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
- * Copyright (c) 2018 Payara Services Limited.
- * All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,73 +16,69 @@
 
 package com.sun.faces.test.servlet30.application;
 
-import static org.junit.Assert.assertTrue;
-
-import java.io.Serializable;
-import java.util.Iterator;
-
-import javax.enterprise.context.SessionScoped;
 import javax.faces.FacesException;
 import javax.faces.application.Application;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.validator.LengthValidator;
 import javax.faces.validator.Validator;
-import javax.inject.Named;
+import java.util.Iterator;
 
-@Named
+import static org.junit.Assert.*;
+
+@ManagedBean
 @SessionScoped
-public class ApplicationConfigBean implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class ApplicationConfigBean {
 
     public static String standardComponentTypes[] = {
-        "javax.faces.Column",
-        "javax.faces.Command",
-        "javax.faces.Data",
-        "javax.faces.Form",
-        "javax.faces.Graphic",
-        "javax.faces.Input",
-        "javax.faces.Message",
-        "javax.faces.Messages",
-        "javax.faces.NamingContainer",
-        "javax.faces.Output",
-        "javax.faces.Panel",
-        "javax.faces.Parameter",
-        "javax.faces.SelectBoolean",
-        "javax.faces.SelectItem",
-        "javax.faces.SelectItems",
-        "javax.faces.SelectMany",
-        "javax.faces.SelectOne",
-        "javax.faces.ViewRoot",
-        "javax.faces.HtmlCommandButton",
-        "javax.faces.HtmlCommandLink",
-        "javax.faces.HtmlDataTable",
-        "javax.faces.HtmlForm",
-        "javax.faces.HtmlGraphicImage",
-        "javax.faces.HtmlInputHidden",
-        "javax.faces.HtmlInputSecret",
-        "javax.faces.HtmlInputText",
-        "javax.faces.HtmlInputTextarea",
-        "javax.faces.HtmlMessage",
-        "javax.faces.HtmlMessages",
-        "javax.faces.HtmlOutputFormat",
-        "javax.faces.HtmlOutputLabel",
-        "javax.faces.HtmlOutputLink",
-        "javax.faces.HtmlOutputText",
-        "javax.faces.HtmlPanelGrid",
-        "javax.faces.HtmlPanelGroup",
-        "javax.faces.HtmlSelectBooleanCheckbox",
-        "javax.faces.HtmlSelectManyCheckbox",
-        "javax.faces.HtmlSelectManyListbox",
-        "javax.faces.HtmlSelectManyMenu",
-        "javax.faces.HtmlSelectOneListbox",
-        "javax.faces.HtmlSelectOneMenu",
-        "javax.faces.HtmlSelectOneRadio"
+        "jakarta.faces.Column",
+        "jakarta.faces.Command",
+        "jakarta.faces.Data",
+        "jakarta.faces.Form",
+        "jakarta.faces.Graphic",
+        "jakarta.faces.Input",
+        "jakarta.faces.Message",
+        "jakarta.faces.Messages",
+        "jakarta.faces.NamingContainer",
+        "jakarta.faces.Output",
+        "jakarta.faces.Panel",
+        "jakarta.faces.Parameter",
+        "jakarta.faces.SelectBoolean",
+        "jakarta.faces.SelectItem",
+        "jakarta.faces.SelectItems",
+        "jakarta.faces.SelectMany",
+        "jakarta.faces.SelectOne",
+        "jakarta.faces.ViewRoot",
+        "jakarta.faces.HtmlCommandButton",
+        "jakarta.faces.HtmlCommandLink",
+        "jakarta.faces.HtmlDataTable",
+        "jakarta.faces.HtmlForm",
+        "jakarta.faces.HtmlGraphicImage",
+        "jakarta.faces.HtmlInputHidden",
+        "jakarta.faces.HtmlInputSecret",
+        "jakarta.faces.HtmlInputText",
+        "jakarta.faces.HtmlInputTextarea",
+        "jakarta.faces.HtmlMessage",
+        "jakarta.faces.HtmlMessages",
+        "jakarta.faces.HtmlOutputFormat",
+        "jakarta.faces.HtmlOutputLabel",
+        "jakarta.faces.HtmlOutputLink",
+        "jakarta.faces.HtmlOutputText",
+        "jakarta.faces.HtmlPanelGrid",
+        "jakarta.faces.HtmlPanelGroup",
+        "jakarta.faces.HtmlSelectBooleanCheckbox",
+        "jakarta.faces.HtmlSelectManyCheckbox",
+        "jakarta.faces.HtmlSelectManyListbox",
+        "jakarta.faces.HtmlSelectManyMenu",
+        "jakarta.faces.HtmlSelectOneListbox",
+        "jakarta.faces.HtmlSelectOneMenu",
+        "jakarta.faces.HtmlSelectOneRadio"
     };
 
-    public static Class<?> standardComponentClasses[] = {
+    public static Class standardComponentClasses[] = {
         javax.faces.component.UIColumn.class,
         javax.faces.component.UICommand.class,
         javax.faces.component.UIData.class,
@@ -130,21 +124,21 @@ public class ApplicationConfigBean implements Serializable {
     };
 
     public static String standardConverterIds[] = {
-        "javax.faces.BigDecimal",
-        "javax.faces.BigInteger",
-        "javax.faces.Boolean",
-        "javax.faces.Byte",
-        "javax.faces.Character",
-        "javax.faces.DateTime",
-        "javax.faces.Double",
-        "javax.faces.Float",
-        "javax.faces.Integer",
-        "javax.faces.Long",
-        "javax.faces.Number",
-        "javax.faces.Short"
+        "jakarta.faces.BigDecimal",
+        "jakarta.faces.BigInteger",
+        "jakarta.faces.Boolean",
+        "jakarta.faces.Byte",
+        "jakarta.faces.Character",
+        "jakarta.faces.DateTime",
+        "jakarta.faces.Double",
+        "jakarta.faces.Float",
+        "jakarta.faces.Integer",
+        "jakarta.faces.Long",
+        "jakarta.faces.Number",
+        "jakarta.faces.Short"
     };
 
-    public static Class<?> standardConverterClasses[] = {
+    public static Class standardConverterClasses[] = {
         javax.faces.convert.BigDecimalConverter.class,
         javax.faces.convert.BigIntegerConverter.class,
         javax.faces.convert.BooleanConverter.class,
@@ -159,7 +153,7 @@ public class ApplicationConfigBean implements Serializable {
         javax.faces.convert.ShortConverter.class
     };
 
-    public static Class<?> standardConverterByIdClasses[] = {
+    public static Class standardConverterByIdClasses[] = {
         java.math.BigDecimal.class,
         java.math.BigInteger.class,
         java.lang.Boolean.class,
@@ -174,7 +168,7 @@ public class ApplicationConfigBean implements Serializable {
         java.lang.Short.class
     };
 
-    public static Class<?> standardConverterPrimitiveClasses[] = {
+    public static Class standardConverterPrimitiveClasses[] = {
         null,
         null,
         java.lang.Boolean.TYPE,
@@ -191,10 +185,11 @@ public class ApplicationConfigBean implements Serializable {
 
     private String title = "Test Application Config";
     public String getTitle() {
-        return title;
+        return title; 
     }
 
     public ApplicationConfigBean() {
+
         componentPositive();
         componentNegative();
         getComponentTypes();
@@ -214,9 +209,10 @@ public class ApplicationConfigBean implements Serializable {
         FacesContext fc = FacesContext.getCurrentInstance();
         Application app = fc.getApplication();
 
-        app.addComponent(testComponent.getComponentType(), "com.sun.faces.test.servlet30.application.TestComponent");
+        app.addComponent(testComponent.getComponentType(), 
+            "com.sun.faces.test.servlet30.application.TestComponent");
 
-        newTestComponent = (TestComponent) app.createComponent(testComponent.getComponentType());
+        newTestComponent = (TestComponent)app.createComponent(testComponent.getComponentType());
         assertTrue(null != newTestComponent && newTestComponent != testComponent);
 
         // built-in components
@@ -253,7 +249,7 @@ public class ApplicationConfigBean implements Serializable {
         FacesContext fc = FacesContext.getCurrentInstance();
         Application app = fc.getApplication();
 
-        Iterator<String> iter = app.getComponentTypes();
+        Iterator iter = app.getComponentTypes();
         assertTrue(null != iter);
         assertTrue(isSubset(standardComponentTypes, iter));
     }
@@ -264,12 +260,13 @@ public class ApplicationConfigBean implements Serializable {
 
         TestConverter newTestConverter = null;
         TestConverter testConverter = new TestConverter();
-        Converter<?> conv = null;
+        Converter conv = null;
 
         // runtime addition
 
-        app.addConverter(testConverter.getConverterId(), "com.sun.faces.test.servlet30.application.TestConverter");
-        newTestConverter = (TestConverter) app.createConverter(testConverter.getConverterId());
+        app.addConverter(testConverter.getConverterId(),
+            "com.sun.faces.test.servlet30.application.TestConverter");
+        newTestConverter = (TestConverter)app.createConverter(testConverter.getConverterId());
         assertTrue(null != newTestConverter && newTestConverter != testConverter);
 
         // built-in converters
@@ -288,12 +285,14 @@ public class ApplicationConfigBean implements Serializable {
                 continue;
             }
             conv = app.createConverter(standardConverterByIdClasses[i]);
-            assertTrue("null != " + standardConverterByIdClasses[i].toString(), null != conv);
+            assertTrue("null != " + standardConverterByIdClasses[i].toString(),
+                       null != conv);
             assertTrue(standardConverterClasses[i].isAssignableFrom(conv.getClass()));
         }
 
         // primitive classes
-        for (int i = 0, len = standardConverterPrimitiveClasses.length; i < len; i++) {
+        for (int i = 0, len = standardConverterPrimitiveClasses.length; i <
+            len; i++) {
             if (null == standardConverterPrimitiveClasses[i]) {
                 continue;
             }
@@ -329,7 +328,7 @@ public class ApplicationConfigBean implements Serializable {
         FacesContext fc = FacesContext.getCurrentInstance();
         Application app = fc.getApplication();
 
-        Iterator<String> iter = app.getConverterIds();
+        Iterator iter = app.getConverterIds();
         assertTrue(null != iter);
 
         assertTrue(isSubset(standardConverterIds, iter));
@@ -339,22 +338,22 @@ public class ApplicationConfigBean implements Serializable {
         FacesContext fc = FacesContext.getCurrentInstance();
         Application app = fc.getApplication();
 
-        Validator<?> newTestValidator = null;
-        Validator<?> testValidator = new LengthValidator();
-        Validator<?> val = null;
+        Validator newTestValidator = null;
+        Validator testValidator = new LengthValidator();
+        Validator val = null;
 
         // runtime addition
 
-        app.addValidator("Billybob", "javax.faces.validator.LengthValidator");
+        app.addValidator("Billybob", "jakarta.faces.validator.LengthValidator");
         newTestValidator = app.createValidator("Billybob");
         assertTrue(null != newTestValidator && newTestValidator != testValidator);
 
         // test standard validators
-        val = app.createValidator("javax.faces.DoubleRange");
+        val = app.createValidator("jakarta.faces.DoubleRange");
         assertTrue(null != val && val instanceof Validator);
-        val = app.createValidator("javax.faces.Length");
+        val = app.createValidator("jakarta.faces.Length");
         assertTrue(null != val && val instanceof Validator);
-        val = app.createValidator("javax.faces.LongRange");
+        val = app.createValidator("jakarta.faces.LongRange");
         assertTrue(null != val && val instanceof Validator);
     }
 
@@ -383,20 +382,24 @@ public class ApplicationConfigBean implements Serializable {
         FacesContext fc = FacesContext.getCurrentInstance();
         Application app = fc.getApplication();
 
-        Iterator<String> iter = app.getValidatorIds();
+        Iterator iter = app.getValidatorIds();
         assertTrue(null != iter);
 
-        String standardValidatorIds[] = { "javax.faces.DoubleRange", "javax.faces.Length", "javax.faces.LongRange" };
+        String standardValidatorIds[] = {
+            "jakarta.faces.DoubleRange",
+            "jakarta.faces.Length",
+            "jakarta.faces.LongRange"
+        };
         assertTrue(isSubset(standardValidatorIds, iter));
     }
 
-    private String status = "";
+    private String status="";
 
     public String getStatus() {
         return status;
     }
 
-    public boolean isSubset(String[] subset, Iterator<String> superset) {
+    public boolean isSubset(String[] subset, Iterator superset) {
         int i, len = subset.length;
         boolean[] hits = new boolean[len];
         String cur = null;
@@ -404,10 +407,11 @@ public class ApplicationConfigBean implements Serializable {
             hits[i] = false;
         }
 
+
         // for each element in the superset, go through the entire subset,
         // marking our "hits" array if there is a match.
         while (superset.hasNext()) {
-            cur = superset.next();
+            cur = (String) superset.next();
             for (i = 0; i < len; i++) {
                 if (cur.equals(subset[i])) {
                     hits[i] = true;
@@ -423,6 +427,7 @@ public class ApplicationConfigBean implements Serializable {
         }
         return true;
     }
+
 
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,19 +18,17 @@ package com.sun.faces.application.annotation;
 
 import java.lang.annotation.Annotation;
 
-import javax.faces.application.ResourceDependencies;
-import javax.faces.application.ResourceDependency;
-
 import com.sun.faces.util.Util;
+
+import jakarta.faces.application.ResourceDependencies;
+import jakarta.faces.application.ResourceDependency;
 
 /**
  * <code>Scanner</code> implementation responsible for {@link ResourceDependency} annotations.
  */
 class ResourceDependencyScanner implements Scanner {
 
-
     // ---------------------------------------------------- Methods from Scanner
-
 
     @Override
     public Class<? extends Annotation> getAnnotation() {
@@ -38,7 +36,6 @@ class ResourceDependencyScanner implements Scanner {
         return ResourceDependency.class;
 
     }
-
 
     @Override
     public RuntimeAnnotationHandler scan(Class<?> clazz) {
@@ -57,7 +54,7 @@ class ResourceDependencyScanner implements Scanner {
         }
 
         return handler;
-        
+
     }
-    
+
 }

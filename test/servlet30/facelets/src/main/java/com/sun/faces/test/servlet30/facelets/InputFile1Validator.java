@@ -27,16 +27,16 @@ import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 import javax.servlet.http.Part;
 
-@FacesValidator(value = "InputFile1Validator")
+@FacesValidator(value="InputFile1Validator")
 public class InputFile1Validator implements Validator {
 
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
         Part file = (Part) value;
-
+        
         try {
             InputStream is = file.getInputStream();
-            String text = new Scanner(is).useDelimiter("\\A").next();
+            String text = new Scanner( is ).useDelimiter("\\A").next();
             // Do not accept an upload unless it contains the string
             // JSR-344
             if (!text.contains("JSR-344")) {
@@ -46,6 +46,6 @@ public class InputFile1Validator implements Validator {
             throw new ValidatorException(new FacesMessage("Invalid file"), ex);
         } catch (ValidatorException ex) {
             throw new ValidatorException(new FacesMessage("Invalid file"), ex);
-        }
+        }   
     }
 }

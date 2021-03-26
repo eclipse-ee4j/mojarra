@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.sun.faces.test</groupId>
         <artifactId>pom</artifactId>
-        <version>3.0.0-m01-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
     </parent>
     
     <groupId>com.sun.faces.test.servlet40</groupId>
@@ -32,13 +32,7 @@
     <name>Mojarra ${project.version} - Test - Servlet 4.0</name>
     
     <modules>
-        <module>el</module>
-        <module>exactMapping</module>
-        <module>faceletCacheFactory</module>
-        <module>facelets</module>
-        <module>getViews</module>
         <module>refreshPeriodExplicit</module>
         <module>refreshPeriodProduction</module>
-        <module>systemEvent</module>
   </modules>
 </project>

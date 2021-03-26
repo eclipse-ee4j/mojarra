@@ -35,11 +35,11 @@ import javax.faces.model.SelectItem;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.FacesException;
-import javax.inject.Named;
-import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.model.SelectItemGroup;
 
-@Named
+@ManagedBean
 @RequestScoped
 
 public class SelectMany05Bean {
@@ -63,7 +63,7 @@ public class SelectMany05Bean {
     private Object someValues;
     private Collection<HobbitBean> hobbitCollection;
     private DataModel<HobbitBean> hobbitDataModel;
-
+    
     private List<SelectItem> groupedItems;
 
     public void setGroupedItems(List<SelectItem> groupedItems) {
@@ -99,36 +99,42 @@ public class SelectMany05Bean {
         initialListValues.add("Pippin");
         initialListValues.add("Merry");
         hobbitDataModel = new ListDataModel<HobbitBean>(new ArrayList<HobbitBean>(Arrays.asList(hobbits)));
-
-        String strings[] = { "Bobby", "Jerry", "Phil", "Mickey", "Billy", "Brent" };
+        
+        String strings [] = { "Bobby", "Jerry", "Phil", "Mickey", "Billy", "Brent" };
         setArrayValues(strings);
-
+        
         groupedItems = new ArrayList<SelectItem>();
         SelectItemGroup group = new SelectItemGroup("Pitched Instruments");
-        SelectItem[] selectItemInstances = new SelectItem[3];
+        SelectItem [] selectItemInstances = new SelectItem[3];
         selectItemInstances[0] = new SelectItem("Bobby", "Bobby");
         selectItemInstances[1] = new SelectItem("Jerry", "Jerry");
         selectItemInstances[2] = new SelectItem("Brent", "Brent");
         group.setSelectItems(selectItemInstances);
         groupedItems.add(group);
-
+        
         group = new SelectItemGroup("Percussion");
         selectItemInstances = new SelectItem[2];
         selectItemInstances[0] = new SelectItem("Mickey", "Mickey");
         selectItemInstances[1] = new SelectItem("Billy", "Billy");
         group.setSelectItems(selectItemInstances);
         groupedItems.add(group);
-
+        
     }
-
-    protected HobbitBean[] getHobbitBeanArray() {
-        HobbitBean[] hobbits = { new HobbitBean("Bilbo", "Bilbo - <Ring Finder>"), new HobbitBean("Frodo", "Frodo - <Ring Bearer>"),
-                new HobbitBean("Merry", "Merry - <Trouble Maker>"), new HobbitBean("Pippin", "Pipping - <Trouble Maker>") };
+    
+    protected HobbitBean [] getHobbitBeanArray() {
+        HobbitBean[] hobbits = {
+              new HobbitBean("Bilbo", "Bilbo - <Ring Finder>"),
+              new HobbitBean("Frodo", "Frodo - <Ring Bearer>"),
+              new HobbitBean("Merry", "Merry - <Trouble Maker>"),
+              new HobbitBean("Pippin", "Pipping - <Trouble Maker>")
+        };
         return hobbits;
     }
 
-    // ---------------------------------------------------------- Public Methods
 
+
+   // ---------------------------------------------------------- Public Methods
+    
     public Collection<HobbitBean> getHobbitCollection() {
         return hobbitCollection;
     }
@@ -202,6 +208,7 @@ public class SelectMany05Bean {
 
     ////////////////////////////////////////////////////////////////////////////
 
+
     public SortedSet<String> getInitialSortedSetValues() {
         return initialSortedSetValues;
     }
@@ -268,7 +275,7 @@ public class SelectMany05Bean {
         this.collectionFromHintValues = collectionFromHintValues;
     }
 
-    public Collection<String> getCollectionFromHintValues2() {
+     public Collection<String> getCollectionFromHintValues2() {
         return collectionFromHintValues2;
     }
 
@@ -324,7 +331,7 @@ public class SelectMany05Bean {
     }
 
     public void setSomeValues(Object someValues) {
-        // validate the case where the type is Object.class. The logic should
+        // validate the case where the type is Object.class.  The logic should
         // default the value to Object[].
         if (!someValues.getClass().isArray()) {
             throw new FacesException("[someValues] Error: Expected value to be an array type");
@@ -332,19 +339,24 @@ public class SelectMany05Bean {
         this.someValues = someValues;
     }
 
+
     // ---------------------------------------------------------- Nested Classes
+
 
     public static final class HobbitBean implements Comparable {
 
         private String name;
         private String bio;
 
+
         // -------------------------------------------------------- Constructors
+
 
         public HobbitBean(String name, String bio) {
             this.name = name;
             this.bio = bio;
         }
+
 
         public String getName() {
             return name;
@@ -384,10 +396,12 @@ public class SelectMany05Bean {
             hash = 29 * hash + (this.bio != null ? this.bio.hashCode() : 0);
             return hash;
         }
+        
+        
 
         // --------------------------------------------- Methods from Comparable
 
-        @Override
+
         public int compareTo(Object o) {
             return name.compareTo(((HobbitBean) o).name);
         }

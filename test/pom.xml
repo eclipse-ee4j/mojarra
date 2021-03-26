@@ -24,21 +24,18 @@
 
     <groupId>com.sun.faces.test</groupId>
     <artifactId>pom</artifactId>
-    <version>3.0.0-m01-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Mojarra ${project.version} - Test</name>
     
     <properties>
+        <jsf.groupId>org.glassfish</jsf.groupId>
+        <jsf.artifactId>jakarta.faces</jsf.artifactId>
+        <jsf.version>${project.version}</jsf.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        
-        <jsf.artifactId>javax.faces</jsf.artifactId>
-        <jsf.groupId>org.glassfish</jsf.groupId>
-        <jsf.version>${project.version}</jsf.version>
-        
         <webapp.partialStateSaving>true</webapp.partialStateSaving>
         <webapp.projectStage>Production</webapp.projectStage>
         <webapp.stateSavingMethod>server</webapp.stateSavingMethod>
@@ -46,9 +43,7 @@
     
     <modules>
         <module>servlet30</module>
-        <!--  
         <module>servlet30-isolated</module>
-        -->
         <module>servlet31</module>
         <module>servlet40</module>
         <module>javaee6</module>
@@ -115,7 +110,7 @@
                 <plugin>
                     <groupId>org.codehaus.cargo</groupId>
                     <artifactId>cargo-maven2-plugin</artifactId>
-                    <version>1.6.8</version>
+                    <version>1.6.2</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.wagon</groupId>
@@ -157,22 +152,16 @@
     </build>
     
     <dependencies>
-        <!--
-        
-            Until we have particular changes that will change the JSF API we
-            can safely just rely on the javax/javaee-web-api. 
-        
         <dependency>
-            <groupId>javax.faces</groupId>
-            <artifactId>javax.faces-api</artifactId>
-            <version>2.3</version>
+            <groupId>jakarta.faces</groupId>
+            <artifactId>jakarta.faces-api</artifactId>
+            <version>3.0.0-RC1</version>
             <scope>provided</scope>
         </dependency>
         
-            -->
         <dependency>
             <groupId>org.glassfish</groupId>
-            <artifactId>javax.faces</artifactId>
+            <artifactId>jakarta.faces</artifactId>
             <version>${jsf.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -192,7 +181,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.13.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -204,7 +193,7 @@
         <dependency>
             <groupId>com.sun.faces</groupId>
             <artifactId>util</artifactId>
-            <version>3.0.0-m01-SNAPSHOT</version>
+            <version>4.0.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -277,7 +266,7 @@
                 <glassfish.cargo.configType>standalone</glassfish.cargo.configType>
                 <glassfish.cargo.config>${glassfish.cargo.home}/glassfish/domains</glassfish.cargo.config>
                 <glassfish.cargo.domain>domain1</glassfish.cargo.domain>
-                <glassfish.cargo.id>glassfish5x</glassfish.cargo.id>
+                <glassfish.cargo.id>glassfish4x</glassfish.cargo.id>
                 <glassfish.cargo.serverName>localhost</glassfish.cargo.serverName>
                 <glassfish.cargo.servletPort>8080</glassfish.cargo.servletPort>
             </properties>
@@ -336,7 +325,7 @@
                                     <artifactItems>
                                         <artifactItem>
                                             <groupId>org.glassfish</groupId>
-                                            <artifactId>javax.faces</artifactId>
+                                            <artifactId>jakarta.faces</artifactId>
                                             <version>${jsf.version}</version>
                                             <type>jar</type>
                                             <overWrite>true</overWrite>                                     
@@ -353,7 +342,7 @@
             <dependencies>
                 <dependency>
                     <groupId>org.glassfish</groupId>
-                    <artifactId>javax.faces</artifactId>
+                    <artifactId>jakarta.faces</artifactId>
                     <version>${jsf.version}</version>
                     <scope>provided</scope>
                 </dependency>
@@ -760,7 +749,7 @@
                                             <type>jar</type>
                                             <overWrite>true</overWrite>                                     
                                             <outputDirectory>${integration.container.extractDir}/apache-tomcat-${tomcat.version}/apache-tomcat-${tomcat.version}/lib</outputDirectory>
-                                            <destFileName>javax.faces.jar</destFileName>
+                                            <destFileName>jakarta.faces.jar</destFileName>
                                         </artifactItem>
                                         <artifactItem>
                                             <groupId>javax.servlet.jsp.jstl</groupId> 
@@ -944,7 +933,7 @@
                                             <type>jar</type>
                                             <overWrite>true</overWrite>                                     
                                             <outputDirectory>${weblogic.patch.home}/tmp.mojarra</outputDirectory>
-                                            <destFileName>javax.faces.jar</destFileName>
+                                            <destFileName>jakarta.faces.jar</destFileName>
                                         </artifactItem>
                                     </artifactItems>
                                 </configuration>
@@ -980,7 +969,7 @@
                                                dest="${weblogic.patch.home}/tmp.mojarra/wls.mojarra" />
                                         <delete dir="${weblogic.patch.home}/tmp.mojarra/wls.mojarra/javax" />
                                         <delete dir="${weblogic.patch.home}/tmp.mojarra/wls.mojarra/com/sun" />
-                                        <unzip src="${weblogic.patch.home}/tmp.mojarra/javax.faces.jar"
+                                        <unzip src="${weblogic.patch.home}/tmp.mojarra/jakarta.faces.jar"
                                                dest="${weblogic.patch.home}/tmp.mojarra/wls.mojarra" />
                                         <zip destfile="${weblogic.patch.home}/tmp.mojarra/${weblogic.patch.mojarraJarName}"
                                              basedir="${weblogic.patch.home}/tmp.mojarra/wls.mojarra"

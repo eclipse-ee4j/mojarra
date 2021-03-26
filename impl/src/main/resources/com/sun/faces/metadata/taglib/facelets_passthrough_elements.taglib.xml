@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
-    Copyright (c) 2009, 2018 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2009, 2020 Oracle and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License v. 2.0, which is available at
@@ -24,9 +24,9 @@
     <description><![CDATA[
 
 <p class="changed_added_2_2">The presence of an <br />
-        attribute from this namespace on an otherwise non-JSF aware<br />
+        attribute from this namespace on an otherwise non-Faces aware<br />
         markup element indicates that the markup element must be treated<br />
-        as a JSF component that will be rendered equivalently to what is<br />
+        as a Faces component that will be rendered equivalently to what is<br />
         specified directly in the Facelet page, with the added benefit<br />
         of being associated with a server side <code>UIComponent</code><br />
         instance.
@@ -35,7 +35,7 @@
 
         <div class="changed_added_2_2">
 
-        <p>Please see the documentation for Java class <code>javax.faces.view.facelets.TagDecorator</code>.</p>
+        <p>Please see the documentation for Java class <code>jakarta.faces.view.facelets.TagDecorator</code>.</p>
 
         </div>
 
@@ -47,13 +47,13 @@
 
      <p class="changed_added_2_2">Markup element
      that causes a component of <code>component-family:
-     javax.faces.Panel</code> with <code>renderer-type:
-     javax.faces.passthrough.Element</code> to be inserted in the tree.
+     jakarta.faces.Panel</code> with <code>renderer-type:
+     jakarta.faces.passthrough.Element</code> to be inserted in the tree.
      This element is primarily intended to be used by the default
      <code>TagDecorator</code>, when no match is found as described in
      the javadoc for that class.  The component that backs this element
      must implement
-     <code>javax.faces.component.behavior.ClientBehaviorHolder</code>
+     <code>jakarta.faces.component.behavior.ClientBehaviorHolder</code>
      and return "click" from its <code>getDefaultEventName()</code>
      method.  The list of events returned from its
      <code>getEventNames()</code> method must include the "on*"
@@ -70,7 +70,7 @@
          its value must be set into the component's pass through
          attributes map under the key given by the value of the symbolic
          constant
-         <code>javax.faces.render.Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY</code>.</p>
+         <code>jakarta.faces.render.Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY</code>.</p>
           
             ]]></description>
             <name>elementName</name>

@@ -22,13 +22,13 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:ui="http://java.sun.com/jsf/facelets">
 
-    <h:body>
+<h:body>
+
+    Listener invoked: #{actionListenerBean.invoked}
+
+    <h:form id="form">
+        <ui:include src="/include.xhtml" />
+    </h:form>
     
-        Listener invoked: #{actionListenerBean.invoked}
-    
-        <h:form id="form">
-            <ui:include src="/include.xhtml" />
-        </h:form>
-        
-    </h:body>
+</h:body>
 </html>

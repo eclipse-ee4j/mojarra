@@ -17,9 +17,10 @@
 package com.sun.faces.test.javaee8.ajax;
 
 import javax.enterprise.inject.Model;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIOutput;
-import javax.faces.context.FacesContext;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.context.FacesContext;
 
 @Model
 public class Spec1423 {
@@ -51,7 +52,7 @@ public class Spec1423 {
     public void addComponentResourceToHead() {
         UIOutput script = new UIOutput();
         script.setId("addedViaHead");
-        script.setRendererType("javax.faces.resource.Script");
+        script.setRendererType("jakarta.faces.resource.Script");
         script.getAttributes().put("library", "spec1423");
         script.getAttributes().put("name", "addedViaHead.js");
         FacesContext context = FacesContext.getCurrentInstance();
@@ -61,7 +62,7 @@ public class Spec1423 {
     public void addComponentResourceToBody() {
         UIOutput script = new UIOutput();
         script.setId("addedViaBody");
-        script.setRendererType("javax.faces.resource.Script");
+        script.setRendererType("jakarta.faces.resource.Script");
         script.getAttributes().put("library", "spec1423");
         script.getAttributes().put("name", "addedViaBody.js");
         FacesContext context = FacesContext.getCurrentInstance();

@@ -19,25 +19,22 @@ package com.sun.faces.test.servlet30.facelets;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import jakarta.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 
-import javax.annotation.PostConstruct;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
-
-@Named
+@ManagedBean(name = "nestedForEachBean")
 @ViewScoped
 public class NestedForEachBean implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
-    private List<List<NestedForEachItem>> items;
+    List<List<NestedForEachItem>> items;
 
     @PostConstruct
     public void init() {
-        items = new ArrayList<>();
+        items = new ArrayList();
 
         for (int i = 0; i < 3; i++) {
-            List<NestedForEachItem> list = new ArrayList<>();
+            List<NestedForEachItem> list = new ArrayList();
             list.add(new NestedForEachItem("list" + i + "item1"));
             list.add(new NestedForEachItem("list" + i + "item2"));
             list.add(new NestedForEachItem("list" + i + "item3"));

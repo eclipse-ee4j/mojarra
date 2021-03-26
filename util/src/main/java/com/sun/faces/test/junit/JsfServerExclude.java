@@ -23,6 +23,7 @@ public enum JsfServerExclude {
     GLASSFISH_4_0("Glassfish", "4.0"),
     GLASSFISH_3_1_2_2("Glassfish", "3.1.2.2"),
     TOMCAT_7_0_35("Tomcat", "7.0.35"),
+    WEBLOGIC_12_3_1("Weblogic", "12.3.1.0"),
     WEBLOGIC_12_2_1("Weblogic", "12.2.1.0"),
     WEBLOGIC_12_1_4("Weblogic", "12.1.4.0"),
     WEBLOGIC_12_1_3("Weblogic", "12.1.3.0"),

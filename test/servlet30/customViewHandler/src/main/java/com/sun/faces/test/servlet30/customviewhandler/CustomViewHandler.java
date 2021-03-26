@@ -19,16 +19,24 @@ package com.sun.faces.test.servlet30.customviewhandler;
 import javax.faces.application.ViewHandler;
 import javax.faces.application.ViewHandlerWrapper;
 import javax.faces.context.FacesContext;
+import java.lang.Override;
+import java.lang.String;
 
 public class CustomViewHandler extends ViewHandlerWrapper {
 
+    private ViewHandler oldViewHandler = null;
+
     public CustomViewHandler(ViewHandler oldViewHandler) {
-        super(oldViewHandler);
+	this.oldViewHandler = oldViewHandler;
+    }
+
+    public ViewHandler getWrapped() {
+	return oldViewHandler;
     }
 
     @Override
     public String deriveViewId(FacesContext context, String path) {
-        return getWrapped().deriveViewId(context, path + ".xhtml");
+        return oldViewHandler.deriveViewId(context, path + ".jsp");
     }
 
     @Override

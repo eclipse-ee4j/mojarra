@@ -17,9 +17,10 @@
 package com.sun.faces.test.javaee8.cdi;
 
 import javax.enterprise.context.RequestScoped;
-import javax.faces.application.ResourceHandler;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import jakarta.faces.application.ResourceHandler;
 
 @Named
 @RequestScoped
@@ -29,7 +30,7 @@ public class InjectResourceHandlerBean {
     private ResourceHandler resourceHandler;
     
     public boolean isJsfLibraryExists() {
-        return resourceHandler.libraryExists("javax.faces");
+        return resourceHandler.libraryExists("jakarta.faces");
     }
 
 }

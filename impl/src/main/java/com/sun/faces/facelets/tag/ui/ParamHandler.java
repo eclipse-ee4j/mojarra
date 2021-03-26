@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,14 +16,15 @@
 
 package com.sun.faces.facelets.tag.ui;
 
+import java.io.IOException;
+
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 
-import javax.el.ValueExpression;
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagConfig;
-import java.io.IOException;
+import jakarta.el.ValueExpression;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
 
 /**
  * @author Jacob Hookom
@@ -39,22 +40,19 @@ public class ParamHandler extends TagHandlerImpl {
      */
     public ParamHandler(TagConfig config) {
         super(config);
-        this.name = this.getRequiredAttribute("name");
-        this.value = this.getRequiredAttribute("value");
+        name = getRequiredAttribute("name");
+        value = getRequiredAttribute("value");
     }
 
     /*
      * (non-Javadoc)
-     * 
-     * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext,
-     *      javax.faces.component.UIComponent)
+     *
+     * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext, jakarta.faces.component.UIComponent)
      */
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException {
-        String nameStr = this.name.getValue(ctx);
-        ValueExpression valueVE = this.value.getValueExpression(ctx,
-                Object.class);
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
+        String nameStr = name.getValue(ctx);
+        ValueExpression valueVE = value.getValueExpression(ctx, Object.class);
         ctx.getVariableMapper().setVariable(nameStr, valueVE);
     }
 

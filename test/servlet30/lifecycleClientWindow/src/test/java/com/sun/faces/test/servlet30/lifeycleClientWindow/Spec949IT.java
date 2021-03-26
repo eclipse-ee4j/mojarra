@@ -73,37 +73,37 @@ public class Spec949IT {
 
         doTestClientWindowsDifferent("/faces/disableClientWindow.xhtml", "disableClientWindowButtonLiteral");
     }
-
+    
     public void doTestClientWindowsDifferent(String path, String id) throws Exception {
         HtmlPage page;
         List<DomElement> clientWindowHiddenFields;
         HtmlElement link;
         String clientWindowBeforeClick, clientWindowAfterClick;
-
+        
         // Click the link and verify the ClientWindow is different on the new page.
         page = webClient.getPage(webUrl + path);
         link = (HtmlElement) page.getElementById(id);
-        clientWindowHiddenFields = page.getElementsByName("javax.faces.ClientWindow");
-        clientWindowBeforeClick = ((HtmlInput) clientWindowHiddenFields.get(0)).getDefaultValue();
-
+        clientWindowHiddenFields = page.getElementsByName("jakarta.faces.ClientWindow");
+        clientWindowBeforeClick = ((HtmlInput)clientWindowHiddenFields.get(0)).getDefaultValue();
+        
         page = link.click();
-        clientWindowHiddenFields = page.getElementsByName("javax.faces.ClientWindow");
-        clientWindowAfterClick = ((HtmlInput) clientWindowHiddenFields.get(0)).getDefaultValue();
-
+        clientWindowHiddenFields = page.getElementsByName("jakarta.faces.ClientWindow");
+        clientWindowAfterClick = ((HtmlInput)clientWindowHiddenFields.get(0)).getDefaultValue();
+        
         assertNotSame("ClientWindow should not be the same on second page", clientWindowBeforeClick, clientWindowAfterClick);
-
+        
     }
-
+    
     public String doTestAndReturnClientWindow(WebClient yourClient, String windowName) throws Exception {
         String clientWindow;
-
-        //
+        
+        // 
         // Do some actions on this page
         //
         HtmlPage page = (HtmlPage) yourClient.openWindow(new URL(webUrl), windowName).getEnclosedPage();
         HtmlTextInput textField = (HtmlTextInput) page.getElementById("firstName");
         textField.setValueAttribute("ajaxFirstName");
-
+        
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("submitAjax");
         page = button.click();
         webClient.waitForBackgroundJavaScript(120000);
@@ -113,17 +113,19 @@ public class Spec949IT {
         final String clientWindowLabel = "ClientWindow: ";
         int clientWindowLabelIndex = pageText.indexOf(clientWindowLabel);
         clientWindow = pageText.substring(clientWindowLabelIndex + clientWindowLabel.length());
-
+        
+        
         textField = (HtmlTextInput) page.getElementById("firstName");
         textField.setValueAttribute("nonAjaxFirstName");
-
+        
         button = (HtmlSubmitInput) page.getElementById("submitNonAjax");
         page = button.click();
         webClient.waitForBackgroundJavaScript(120000);
         pageText = page.asText();
         assertTrue(pageText.contains("|nonAjaxFirstName|"));
-
-        //
+        
+        
+        // 
         // visit another page via a commandLink
         //
         HtmlAnchor link = (HtmlAnchor) page.getElementById("commandLink");
@@ -135,14 +137,14 @@ public class Spec949IT {
         clientWindowLabelIndex = pageText.indexOf(clientWindowLabel);
         String newPageClientWindow = pageText.substring(clientWindowLabelIndex + clientWindowLabel.length());
         assertEquals(clientWindow, newPageClientWindow);
-
-        //
+        
+        // 
         // Go back to the first page
         //
         button = (HtmlSubmitInput) page.getElementById("back");
         page = button.click();
-
-        //
+        
+        // 
         // visit another page via an h:link
         //
         link = (HtmlAnchor) page.getElementById("outcomeTargetLink");
@@ -154,7 +156,7 @@ public class Spec949IT {
         clientWindowLabelIndex = pageText.indexOf(clientWindowLabel);
         newPageClientWindow = pageText.substring(clientWindowLabelIndex + clientWindowLabel.length());
         assertEquals(clientWindow, newPageClientWindow);
-
+        
         return clientWindow;
-    }
+    }    
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,6 +17,12 @@
 package com.sun.faces.el;
 
 import com.sun.faces.facelets.tag.composite.CompositeComponentBeanInfo;
+
+import jakarta.faces.application.Resource;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.context.FacesContext;
+
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
@@ -24,12 +30,9 @@ import java.beans.SimpleBeanInfo;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import javax.el.ELContext;
-import javax.el.MapELResolver;
-import javax.faces.application.Resource;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIPanel;
-import javax.faces.context.FacesContext;
+import jakarta.el.ELContext;
+import jakarta.el.MapELResolver;
+
 import org.easymock.EasyMock;
 import org.junit.Test;
 import static org.junit.Assert.*;

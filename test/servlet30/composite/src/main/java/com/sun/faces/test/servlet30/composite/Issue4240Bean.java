@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
- * Copyright (c) 2018 Payara Services Limited.
- * All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,23 +16,20 @@
 
 package com.sun.faces.test.servlet30.composite;
 
+import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
 
-import javax.faces.event.AjaxBehaviorEvent;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
 
-
+@ManagedBean(name="testBean")
+@ViewScoped
 /**
  * Created by xinyuan.zhang on 5/5/17.
  */
-@Named("testBean")
-@ViewScoped
 public class Issue4240Bean implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
-    private boolean isVisible;
+    private boolean isVisible = false;
 
     public void onSetItemVisible(AjaxBehaviorEvent e) {
         this.isVisible = true;

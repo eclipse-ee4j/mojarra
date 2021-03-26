@@ -22,7 +22,7 @@
         <parent>
         <groupId>com.sun.faces.test.servlet30_isolated</groupId>
         <artifactId>pom</artifactId>
-        <version>3.0.0-m01-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>cactus</artifactId>
     <packaging>war</packaging>
@@ -94,7 +94,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.13.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

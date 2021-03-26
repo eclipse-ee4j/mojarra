@@ -34,11 +34,6 @@ do
 
    cd $i
 
-   if [ "$exit_code" -ne "0" ]; then
-     printf "\n\n\n\n EXITING BECAUSE OF FAILURES. SEE ABOVE! \n\n\n\n"
-     exit $exit_code
-   fi
-
    printf "\n\n\n\n\n **************************************  \n Descending into $i \n **************************************  \n\n\n\n\n\n"
 
    $top_dir/bin/test-glassfish-default.sh

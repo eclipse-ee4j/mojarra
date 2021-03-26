@@ -27,6 +27,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.sun.faces.test.htmlunit.IgnoringIncorrectnessListener;
 import static com.sun.faces.test.junit.JsfServerExclude.WEBLOGIC_12_2_1;
+import static com.sun.faces.test.junit.JsfServerExclude.WEBLOGIC_12_3_1;
 import com.sun.faces.test.junit.JsfTest;
 import com.sun.faces.test.junit.JsfTestRunner;
 import static com.sun.faces.test.junit.JsfVersion.JSF_2_3_0_M07;
@@ -45,7 +46,7 @@ public class Spec1424IT {
         webClient.setJavaScriptTimeout(120000);
     }
 
-    @JsfTest(value = JSF_2_3_0_M07, excludes = {WEBLOGIC_12_2_1})
+    @JsfTest(value = JSF_2_3_0_M07, excludes = {WEBLOGIC_12_2_1, WEBLOGIC_12_3_1})
     @Test
     public void test() throws Exception {
         webClient.setIncorrectnessListener(new IgnoringIncorrectnessListener());

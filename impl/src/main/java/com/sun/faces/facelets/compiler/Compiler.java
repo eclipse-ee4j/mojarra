@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,18 +16,6 @@
 
 package com.sun.faces.facelets.compiler;
 
-import com.sun.faces.facelets.tag.CompositeTagDecorator;
-import com.sun.faces.facelets.tag.CompositeTagLibrary;
-import com.sun.faces.facelets.tag.TagLibrary;
-import com.sun.faces.facelets.util.ReflectionUtil;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
-
-import javax.el.ExpressionFactory;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.FaceletHandler;
-import javax.faces.view.facelets.TagDecorator;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -37,9 +25,22 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.sun.faces.facelets.tag.CompositeTagDecorator;
+import com.sun.faces.facelets.tag.CompositeTagLibrary;
+import com.sun.faces.facelets.tag.TagLibrary;
+import com.sun.faces.facelets.util.ReflectionUtil;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
+
+import jakarta.el.ExpressionFactory;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.TagDecorator;
+
 /**
  * A Compiler instance may handle compiling multiple sources
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -49,11 +50,9 @@ public abstract class Compiler {
 
     public final static String EXPRESSION_FACTORY = "compiler.ExpressionFactory";
 
-    private static final TagLibrary EMPTY_LIBRARY = new CompositeTagLibrary(
-            new TagLibrary[0]);
+    private static final TagLibrary EMPTY_LIBRARY = new CompositeTagLibrary(new TagLibrary[0]);
 
-    private static final TagDecorator EMPTY_DECORATOR = new CompositeTagDecorator(
-            new TagDecorator[0]);
+    private static final TagDecorator EMPTY_DECORATOR = new CompositeTagDecorator(new TagDecorator[0]);
 
     private boolean validating = false;
 
@@ -67,60 +66,52 @@ public abstract class Compiler {
 
     private final Map features = new HashMap();
 
-
     /**
-     * 
+     *
      */
     public Compiler() {
-        
+
     }
 
-    public final FaceletHandler compile(URL src, String alias)
-    throws IOException {
-        //if (!this.initialized)
-        //    this.initialize();
-        return this.doCompile(src, alias);
+    public final FaceletHandler compile(URL src, String alias) throws IOException {
+        // if (!this.initialized)
+        // this.initialize();
+        return doCompile(src, alias);
     }
 
-    public final FaceletHandler metadataCompile(URL src, String alias)
-    throws IOException {
+    public final FaceletHandler metadataCompile(URL src, String alias) throws IOException {
 
-        return this.doMetadataCompile(src, alias);
+        return doMetadataCompile(src, alias);
     }
 
-    protected abstract FaceletHandler doMetadataCompile(URL src, String alias)
-    throws IOException;
+    protected abstract FaceletHandler doMetadataCompile(URL src, String alias) throws IOException;
 
-    protected abstract FaceletHandler doCompile(URL src, String alias)
-    throws IOException;
+    protected abstract FaceletHandler doCompile(URL src, String alias) throws IOException;
 
     public final TagDecorator createTagDecorator() {
-        if (this.decorators.size() > 0) {
-            return new CompositeTagDecorator((TagDecorator[]) this.decorators
-                    .toArray(new TagDecorator[this.decorators.size()]));
+        if (decorators.size() > 0) {
+            return new CompositeTagDecorator((TagDecorator[]) decorators.toArray(new TagDecorator[decorators.size()]));
         }
         return EMPTY_DECORATOR;
     }
 
     public final void addTagDecorator(TagDecorator decorator) {
         Util.notNull("decorator", decorator);
-        if (!this.decorators.contains(decorator)) {
-            this.decorators.add(decorator);
+        if (!decorators.contains(decorator)) {
+            decorators.add(decorator);
         }
     }
 
     public final ExpressionFactory createExpressionFactory() {
         ExpressionFactory el = null;
-        el = (ExpressionFactory) this.featureInstance(EXPRESSION_FACTORY);
+        el = (ExpressionFactory) featureInstance(EXPRESSION_FACTORY);
         if (el == null) {
             try {
-                el = FacesContext.getCurrentInstance().getApplication()
-                        .getExpressionFactory();
+                el = FacesContext.getCurrentInstance().getApplication().getExpressionFactory();
                 if (el == null) {
-                	if (log.isLoggable(Level.WARNING)) {
-	                    log.warning("No default ExpressionFactory from Faces Implementation, attempting to load from Feature["
-	                                + EXPRESSION_FACTORY + "]");
-                	}
+                    if (log.isLoggable(Level.WARNING)) {
+                        log.warning("No default ExpressionFactory from Faces Implementation, attempting to load from Feature[" + EXPRESSION_FACTORY + "]");
+                    }
                 }
             } catch (Exception e) {
                 if (log.isLoggable(Level.FINEST)) {
@@ -129,50 +120,48 @@ public abstract class Compiler {
             }
         }
         if (el == null) {
-            this.features.put(EXPRESSION_FACTORY, "com.sun.el.ExpressionFactoryImpl");
-            el = (ExpressionFactory) this.featureInstance(EXPRESSION_FACTORY);
+            features.put(EXPRESSION_FACTORY, "com.sun.el.ExpressionFactoryImpl");
+            el = (ExpressionFactory) featureInstance(EXPRESSION_FACTORY);
         }
         return el;
     }
 
     private final Object featureInstance(String name) {
-        String type = (String) this.features.get(name);
+        String type = (String) features.get(name);
         if (type != null) {
             try {
                 return ReflectionUtil.forName(type).newInstance();
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException t) {
-                throw new FaceletException("Could not instantiate feature["
-                        + name + "]: " + type);
+                throw new FaceletException("Could not instantiate feature[" + name + "]: " + type);
             }
         }
         return null;
     }
 
     public final TagLibrary createTagLibrary(CompilationMessageHolder unit) {
-        if (this.libraries.size() > 0) {
-            return new CompositeTagLibrary((TagLibrary[]) this.libraries
-                    .toArray(new TagLibrary[this.libraries.size()]), unit);
+        if (libraries.size() > 0) {
+            return new CompositeTagLibrary((TagLibrary[]) libraries.toArray(new TagLibrary[libraries.size()]), unit);
         }
         return EMPTY_LIBRARY;
     }
 
     public final void addTagLibrary(TagLibrary library) {
         Util.notNull("library", library);
-        if (!this.libraries.contains(library)) {
-            this.libraries.add(library);
+        if (!libraries.contains(library)) {
+            libraries.add(library);
         }
     }
 
     public final void setFeature(String name, String value) {
-        this.features.put(name, value);
+        features.put(name, value);
     }
 
     public final String getFeature(String name) {
-        return (String) this.features.get(name);
+        return (String) features.get(name);
     }
 
     public final boolean isTrimmingComments() {
-        return this.trimmingComments;
+        return trimmingComments;
     }
 
     public final void setTrimmingComments(boolean trimmingComments) {
@@ -180,7 +169,7 @@ public abstract class Compiler {
     }
 
     public final boolean isTrimmingWhitespace() {
-        return this.trimmingWhitespace;
+        return trimmingWhitespace;
     }
 
     public final void setTrimmingWhitespace(boolean trimmingWhitespace) {
@@ -188,7 +177,7 @@ public abstract class Compiler {
     }
 
     public final boolean isValidating() {
-        return this.validating;
+        return validating;
     }
 
     public final void setValidating(boolean validating) {

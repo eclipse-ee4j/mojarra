@@ -19,7 +19,7 @@ package com.sun.faces.test.servlet30.facescomponenttag;
 import javax.faces.component.FacesComponent;
 import javax.faces.component.html.HtmlInputText;
 
-@FacesComponent(value = "TagNameExplicitlyDeclared", createTag = true, tagName = "myTag")
+@FacesComponent(value="TagNameExplicitlyDeclared", createTag=true, tagName="myTag")
 public class TagNameExplicitlyDeclared extends HtmlInputText {
-
+    
 }

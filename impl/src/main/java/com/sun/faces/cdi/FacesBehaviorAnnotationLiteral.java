@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,15 +16,14 @@
 
 package com.sun.faces.cdi;
 
-import javax.enterprise.util.AnnotationLiteral;
-import javax.faces.component.behavior.FacesBehavior;
+import jakarta.enterprise.util.AnnotationLiteral;
+import jakarta.faces.component.behavior.FacesBehavior;
 
 /**
  * A helper class.
  *
  * <p>
- * Used in CdiUtils to define a CDI qualifier so we can get a match out using
- * the BeanManager API.
+ * Used in CdiUtils to define a CDI qualifier so we can get a match out using the BeanManager API.
  * </p>
  */
 @SuppressWarnings("all")
@@ -34,7 +33,7 @@ class FacesBehaviorAnnotationLiteral extends AnnotationLiteral<FacesBehavior> im
      * Stores the serial version UID.
      */
     private static final long serialVersionUID = -258069073667018312L;
-    
+
     /**
      * Stores the value.
      */

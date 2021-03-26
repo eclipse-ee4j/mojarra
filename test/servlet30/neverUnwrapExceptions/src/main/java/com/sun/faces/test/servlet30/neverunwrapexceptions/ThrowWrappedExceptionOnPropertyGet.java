@@ -16,25 +16,21 @@
 
 package com.sun.faces.test.servlet30.neverunwrapexceptions;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
-
-@Named("bean")
-@RequestScoped
 public class ThrowWrappedExceptionOnPropertyGet {
-
+    
     private String stringProperty = "This is a String property";
 
     public String getStringProperty() {
-        if (stringProperty != null) {
-            throw new IllegalStateException(new IllegalArgumentException(new UnsupportedOperationException()));
-        }
-
-        return stringProperty;
+	if (null != stringProperty) {
+	    throw new IllegalStateException(new IllegalArgumentException(new UnsupportedOperationException()));
+	}
+        return (this.stringProperty);
     }
+
 
     public void setStringProperty(String stringProperty) {
         this.stringProperty = stringProperty;
     }
+
 
 }

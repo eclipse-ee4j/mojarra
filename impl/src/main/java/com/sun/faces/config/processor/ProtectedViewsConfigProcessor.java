@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -24,10 +24,6 @@ import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.application.ViewHandler;
-import javax.faces.context.FacesContext;
-import javax.servlet.ServletContext;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -37,10 +33,13 @@ import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.ServletContext;
+
 /**
- * This <code>ConfigProcessor</code> handles all elements defined under
- * <code>/protected-views</code>.
- * 
+ * This <code>ConfigProcessor</code> handles all elements defined under <code>/protected-views</code>.
+ *
  */
 public class ProtectedViewsConfigProcessor extends AbstractConfigProcessor {
 
@@ -64,7 +63,7 @@ public class ProtectedViewsConfigProcessor extends AbstractConfigProcessor {
     // -------------------------------------------- Methods from ConfigProcessor
 
     /**
-     * @see ConfigProcessor#process(javax.servlet.ServletContext,com.sun.faces.config.manager.documents.DocumentInfo[])
+     * @see ConfigProcessor#process(jakarta.servlet.ServletContext,com.sun.faces.config.manager.documents.DocumentInfo[])
      */
     @Override
     public void process(ServletContext servletContext, FacesContext facesContext, DocumentInfo[] documentInfos) throws Exception {
@@ -73,11 +72,11 @@ public class ProtectedViewsConfigProcessor extends AbstractConfigProcessor {
             if (LOGGER.isLoggable(FINE)) {
                 LOGGER.log(FINE, format("Processing protected-views element for document: ''{0}''", documentInfos[i].getSourceURI()));
             }
-            
+
             Document document = documentInfos[i].getDocument();
             String namespace = document.getDocumentElement().getNamespaceURI();
             NodeList protectedViews = document.getDocumentElement().getElementsByTagNameNS(namespace, PROTECTED_VIEWS);
-            
+
             if (protectedViews != null && protectedViews.getLength() > 0) {
                 processProtectedViews(facesContext, protectedViews, namespace, documentInfos[i]);
             }
@@ -111,18 +110,18 @@ public class ProtectedViewsConfigProcessor extends AbstractConfigProcessor {
                     if (config == null) {
                         config = WebConfiguration.getInstance();
                     }
-                    
+
                     if (viewHandler == null) {
                         viewHandler = context.getApplication().getViewHandler();
                     }
-                    
+
                     viewHandler.addProtectedView(urlPattern);
 
                 } else {
                     if (LOGGER.isLoggable(WARNING)) {
-                        LOGGER.log(WARNING, format(
-                                "Processing protected-views elements for document: ''{0}'', encountered <url-pattern> element without expected children",
-                                info.getSourceURI()));
+                        LOGGER.log(WARNING,
+                                format("Processing protected-views elements for document: ''{0}'', encountered <url-pattern> element without expected children",
+                                        info.getSourceURI()));
                     }
                 }
             }

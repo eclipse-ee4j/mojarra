@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -21,17 +21,17 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.PropertyNotFoundException;
-import javax.el.PropertyNotWritableException;
-import javax.el.ValueExpression;
-import javax.el.ValueReference;
-import javax.faces.view.facelets.TagAttribute;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.PropertyNotFoundException;
+import jakarta.el.PropertyNotWritableException;
+import jakarta.el.ValueExpression;
+import jakarta.el.ValueReference;
+import jakarta.faces.view.facelets.TagAttribute;
 
 /**
- * 
- * 
+ *
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -74,7 +74,7 @@ public final class TagValueExpression extends ValueExpression implements Externa
         } catch (PropertyNotFoundException pnfe) {
             throw new PropertyNotFoundException(tagAttribute + ": " + pnfe.getMessage(), pnfe);
         } catch (ELException e) {
-            throw new ELException(this.tagAttribute + ": " + e.getMessage(), e);
+            throw new ELException(tagAttribute + ": " + e.getMessage(), e);
         }
     }
 
@@ -83,9 +83,9 @@ public final class TagValueExpression extends ValueExpression implements Externa
         try {
             return wrapped.isReadOnly(context);
         } catch (PropertyNotFoundException pnfe) {
-            throw new PropertyNotFoundException(this.tagAttribute + ": " + pnfe.getMessage(), pnfe);
+            throw new PropertyNotFoundException(tagAttribute + ": " + pnfe.getMessage(), pnfe);
         } catch (ELException e) {
-            throw new ELException(this.tagAttribute + ": " + e.getMessage(), e);
+            throw new ELException(tagAttribute + ": " + e.getMessage(), e);
         }
     }
 
@@ -139,7 +139,7 @@ public final class TagValueExpression extends ValueExpression implements Externa
     public boolean isLiteralText() {
         return wrapped.isLiteralText();
     }
-    
+
     @Override
     public ValueReference getValueReference(ELContext context) {
         return wrapped.getValueReference(context);

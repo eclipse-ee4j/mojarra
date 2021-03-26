@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class Issue2608IT {
-
+    
     /**
      * Stores the web URL.
      */
@@ -67,7 +67,7 @@ public class Issue2608IT {
         assertTrue(xml.contains("type=\"" + "text" + "\""));
         assertTrue(xml.contains("name=\"" + "input1" + "\""));
         assertTrue(xml.contains("placeholder=\"" + "Enter text here" + "\""));
-    }
+    } 
 
     // This tests the following markup:
     // <h:inputText id="input2" type="text" p:autocomplete="on" />
@@ -82,7 +82,7 @@ public class Issue2608IT {
         assertTrue(xml.contains("type=\"" + "text" + "\""));
         assertTrue(xml.contains("name=\"" + "input2" + "\""));
         assertTrue(xml.contains("autocomplete=\"" + "on" + "\""));
-    }
+    } 
 
     // This tests the following markup:
     // <h:inputText id="input3" type="text" p:autofocus="autofocus" />
@@ -97,7 +97,7 @@ public class Issue2608IT {
         assertTrue(xml.contains("type=\"" + "text" + "\""));
         assertTrue(xml.contains("name=\"" + "input3" + "\""));
         assertTrue(xml.contains("autofocus=\"" + "autofocus" + "\""));
-    }
+    } 
 
     // This tests the following markup:
     // <h:inputText id="input4" type="text" p:list="mydatalist" />
@@ -112,7 +112,7 @@ public class Issue2608IT {
         assertTrue(xml.contains("type=\"" + "text" + "\""));
         assertTrue(xml.contains("name=\"" + "input4" + "\""));
         assertTrue(xml.contains("list=\"" + "mydatalist" + "\""));
-    }
+    } 
 
     // This tests the following markup:
     // <h:inputText id="input5" type="text" p:pattern="[A-Za-z]{3}" />
@@ -127,7 +127,7 @@ public class Issue2608IT {
         assertTrue(xml.contains("type=\"" + "text" + "\""));
         assertTrue(xml.contains("name=\"" + "input5" + "\""));
         assertTrue(xml.contains("pattern=\"" + "[A-Za-z]{3}" + "\""));
-    }
+    } 
 
     // This tests the following markup:
     // <h:inputText id="input6" type="text" p:required="required" />
@@ -142,7 +142,7 @@ public class Issue2608IT {
         assertTrue(xml.contains("type=\"" + "text" + "\""));
         assertTrue(xml.contains("name=\"" + "input6" + "\""));
         assertTrue(xml.contains("required=\"" + "required" + "\""));
-    }
+    } 
 
     // This tests the following markup:
     // <h:inputText id="input7" type="text" p:dirname="input7.dir" />
@@ -157,5 +157,5 @@ public class Issue2608IT {
         assertTrue(xml.contains("type=\"" + "text" + "\""));
         assertTrue(xml.contains("name=\"" + "input7" + "\""));
         assertTrue(xml.contains("dirname=\"" + "input7.dir" + "\""));
-    }
+    } 
 }

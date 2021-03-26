@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,26 +19,23 @@ package com.sun.faces.application.annotation;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 /**
- * Implementations of the interface will be called during application
- * initialization to process any configuration annotations within the
- * web application.
+ * Implementations of the interface will be called during application initialization to process any configuration
+ * annotations within the web application.
  */
 public interface ConfigAnnotationHandler {
 
     /**
-     * @return a <code>Collection</code> of annotations handled by this
-     *  ConfigAnnotationHandler implementation
+     * @return a <code>Collection</code> of annotations handled by this ConfigAnnotationHandler implementation
      */
-    public Collection<Class<? extends Annotation>> getHandledAnnotations();
-
+    Collection<Class<? extends Annotation>> getHandledAnnotations();
 
     /**
      * <p>
-     * Collect metadata based on the provided <code>Class</code> and
-     * <code>Annotation</code> to be processed later by {@link #push(javax.faces.context.FacesContext)}.
+     * Collect metadata based on the provided <code>Class</code> and <code>Annotation</code> to be processed later by
+     * {@link #push(jakarta.faces.context.FacesContext)}.
      * </p>
      *
      * <p>
@@ -49,13 +46,11 @@ public interface ConfigAnnotationHandler {
      * @param target annotated class
      * @param annotation <code>Annotation</code> to process
      */
-    public void collect(Class<?> target, Annotation annotation);
-
+    void collect(Class<?> target, Annotation annotation);
 
     /**
-     * <code>Push<code> the configuration based on the collected metadata
-     * to the current application.
+     * <code>Push<code> the configuration based on the collected metadata to the current application.
      */
-    public void push(FacesContext ctx);    
+    void push(FacesContext ctx);
 
 }

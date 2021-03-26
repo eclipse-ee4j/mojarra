@@ -89,7 +89,7 @@ public class TestNestedELResolver extends TestCase {
 
     private FacesContext createStubbedFacesContext() throws Exception {
         ServletContext context = new MockServletContext();
-        ((MockServletContext) context).addInitParameter("javax.faces.DISABLE_FACELET_JSF_VIEWHANDLER", "true");
+        ((MockServletContext) context).addInitParameter("jakarta.faces.DISABLE_FACELET_JSF_VIEWHANDLER", "true");
         HttpSession session = new MockHttpSession(context);
         ServletRequest request = new MockHttpServletRequest(session);
         ServletResponse response = new MockHttpServletResponse();

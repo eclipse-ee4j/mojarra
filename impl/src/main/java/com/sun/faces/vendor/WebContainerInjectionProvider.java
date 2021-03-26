@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -26,12 +26,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
 import com.sun.faces.spi.InjectionProvider;
 import com.sun.faces.spi.InjectionProviderException;
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 
 /**
  * <p>
@@ -46,9 +46,8 @@ import com.sun.faces.util.FacesLogger;
 public class WebContainerInjectionProvider implements InjectionProvider {
 
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
-    
+
     private static Map<Class<?>, ConcurrentHashMap<Class<? extends Annotation>, MethodHolder>> methodsPerClazz = new ConcurrentHashMap<>();
-    
 
     // ------------------------------------------ Methods from InjectionProvider
 
@@ -71,14 +70,13 @@ public class WebContainerInjectionProvider implements InjectionProvider {
         }
     }
 
-    
     // --------------------------------------------------------- Private Methods
 
     private static void invokeAnnotatedMethod(Method method, Object managedBean) throws InjectionProviderException {
         if (method != null) {
             boolean accessible = method.isAccessible();
             method.setAccessible(true);
-            
+
             try {
                 method.invoke(managedBean);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
@@ -149,32 +147,29 @@ public class WebContainerInjectionProvider implements InjectionProvider {
     private static Method getAnnotatedMethodForMethodArr(Method[] methods, Class<? extends Annotation> annotation) {
         for (Method method : methods) {
             if (method.isAnnotationPresent(annotation)) {
-                
+
                 // validate method
                 if (Modifier.isStatic(method.getModifiers())) {
                     if (LOGGER.isLoggable(WARNING)) {
-                        LOGGER.log(WARNING, "jsf.core.web.injection.method_not_static",
-                                new Object[] { method.toString(), annotation.getName() });
+                        LOGGER.log(WARNING, "jsf.core.web.injection.method_not_static", new Object[] { method.toString(), annotation.getName() });
                     }
                     continue;
                 }
-                
+
                 if (!Void.TYPE.equals(method.getReturnType())) {
                     if (LOGGER.isLoggable(WARNING)) {
-                        LOGGER.log(WARNING, "jsf.core.web.injection.method_return_not_void",
-                                new Object[] { method.toString(), annotation.getName() });
+                        LOGGER.log(WARNING, "jsf.core.web.injection.method_return_not_void", new Object[] { method.toString(), annotation.getName() });
                     }
                     continue;
                 }
-                
+
                 if (method.getParameterTypes().length != 0) {
                     if (LOGGER.isLoggable(WARNING)) {
-                        LOGGER.log(WARNING, "jsf.core.web.injection.method_no_params",
-                                new Object[] { method.toString(), annotation.getName() });
+                        LOGGER.log(WARNING, "jsf.core.web.injection.method_no_params", new Object[] { method.toString(), annotation.getName() });
                     }
                     continue;
                 }
-                
+
                 Class<?>[] exceptions = method.getExceptionTypes();
                 if (method.getExceptionTypes().length != 0) {
                     boolean hasChecked = false;
@@ -192,7 +187,7 @@ public class WebContainerInjectionProvider implements InjectionProvider {
                         continue;
                     }
                 }
-                
+
                 // we found a match.
                 return method;
             }

@@ -18,18 +18,22 @@ package com.sun.faces.test.servlet30.facelets;
 
 import java.util.Arrays;
 import java.util.List;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
-
-@Named
+@ManagedBean
 @RequestScoped
 public class Issue2900Bean {
-
-    private final List<String> cities = Arrays.asList("london, sydney, berlin, washington");
-
+    
+    
+    private List<String> cities;
+    
+    public Issue2900Bean() {
+        cities = Arrays.asList("london, sydney, berlin, washington");
+    }
+    
     public List<String> getCities() {
         return cities;
     }
-
+    
 }

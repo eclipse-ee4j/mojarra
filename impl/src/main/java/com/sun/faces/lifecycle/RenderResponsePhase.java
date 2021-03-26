@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,40 +18,35 @@
 
 package com.sun.faces.lifecycle;
 
-
-import javax.faces.FacesException;
-import javax.faces.view.ViewDeclarationLanguage;
-import javax.faces.application.Application;
-import javax.faces.application.ViewHandler;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
-import javax.faces.event.PostRenderViewEvent;
-
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.DebugUtil;
+import com.sun.faces.util.FacesLogger;
 
-import javax.faces.event.PreRenderViewEvent;
-
+import jakarta.faces.FacesException;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.event.PostRenderViewEvent;
+import jakarta.faces.event.PreRenderViewEvent;
+import jakarta.faces.view.ViewDeclarationLanguage;
 
 /**
- * <B>Lifetime And Scope</B> <P> Same lifetime and scope as
- * DefaultLifecycleImpl.
+ * <B>Lifetime And Scope</B>
+ * <P>
+ * Same lifetime and scope as DefaultLifecycleImpl.
  *
  */
 
 public class RenderResponsePhase extends Phase {
 
-
     // Log instance for this class
     private static Logger LOGGER = FacesLogger.LIFECYCLE.getLogger();
 
-
     // ---------------------------------------------------------- Public Methods
-
 
     @Override
     public void execute(FacesContext facesContext) throws FacesException {
@@ -60,47 +55,43 @@ public class RenderResponsePhase extends Phase {
             LOGGER.fine("Entering RenderResponsePhase");
         }
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("About to render view " +
-                 facesContext.getViewRoot().getViewId());
+            LOGGER.fine("About to render view " + facesContext.getViewRoot().getViewId());
         }
         // For requests intended to produce a partial response, we need prohibit
         // writing any content outside of the view itself (f:view).
         facesContext.getPartialViewContext();
-        
+
         try {
 
             ViewHandler vh = facesContext.getApplication().getViewHandler();
 
-            ViewDeclarationLanguage vdl =
-                  vh.getViewDeclarationLanguage(facesContext,
-                                                    facesContext.getViewRoot().getViewId());
+            ViewDeclarationLanguage vdl = vh.getViewDeclarationLanguage(facesContext, facesContext.getViewRoot().getViewId());
             if (vdl != null) {
                 vdl.buildView(facesContext, facesContext.getViewRoot());
             }
-            
+
             Application application = facesContext.getApplication();
             boolean viewIdsUnchanged;
-            
+
             do {
                 String beforePublishViewId = facesContext.getViewRoot().getViewId();
-                
+
                 // The before render event on the view root is a special case to keep door open for navigation
                 // this must be called *after* PDL.buildView() and before VH.renderView()
                 application.publishEvent(facesContext, PreRenderViewEvent.class, facesContext.getViewRoot());
-                
+
                 String afterPublishViewId = facesContext.getViewRoot().getViewId();
-                
-                viewIdsUnchanged = beforePublishViewId == null && afterPublishViewId == null ||
-                        (beforePublishViewId != null && afterPublishViewId != null) &&
-                        beforePublishViewId.equals(afterPublishViewId);
+
+                viewIdsUnchanged = beforePublishViewId == null && afterPublishViewId == null
+                        || beforePublishViewId != null && afterPublishViewId != null && beforePublishViewId.equals(afterPublishViewId);
                 if (facesContext.getResponseComplete()) {
                     return;
                 }
             } while (!viewIdsUnchanged);
-            
-            //render the view
+
+            // render the view
             vh.renderView(facesContext, facesContext.getViewRoot());
-            
+
             application.publishEvent(facesContext, PostRenderViewEvent.class, facesContext.getViewRoot());
 
         } catch (IOException e) {
@@ -118,14 +109,12 @@ public class RenderResponsePhase extends Phase {
 
     }
 
-
     @Override
     public PhaseId getId() {
 
         return PhaseId.RENDER_RESPONSE;
 
     }
-
 
 // The testcase for this class is TestRenderResponsePhase.java
 

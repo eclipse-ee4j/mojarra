@@ -29,7 +29,7 @@ public class TestPropertyResolver extends PropertyResolver {
         root = propertyResolver;
     }
     
-    // Specified by javax.faces.el.PropertyResolver.getValue(Object,String)
+    // Specified by jakarta.faces.el.PropertyResolver.getValue(Object,String)
     public Object getValue(Object base, Object property) {
          if (property.equals("customPRTest1")) {
             return "TestPropertyResolver";

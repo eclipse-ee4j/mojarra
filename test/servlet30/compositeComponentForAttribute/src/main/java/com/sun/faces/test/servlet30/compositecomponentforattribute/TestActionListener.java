@@ -16,20 +16,23 @@
 
 package com.sun.faces.test.servlet30.compositecomponentforattribute;
 
-import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
-
 import javax.faces.application.FacesMessage;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ActionEvent;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionListener;
+import javax.faces.event.ActionEvent;
+import javax.faces.event.AbortProcessingException;
 
 public class TestActionListener implements ActionListener {
 
+    public TestActionListener() {
+    }
+
     @Override
-    public void processAction(ActionEvent ae) throws AbortProcessingException {
-        ae.getFacesContext()
-          .addMessage(
-              ae.getComponent().getClientId(ae.getFacesContext()),
-              new FacesMessage(SEVERITY_ERROR, ae.getComponent().getId() + " was pressed", null));
+    public void processAction(ActionEvent ae)
+            throws AbortProcessingException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        context.addMessage(ae.getComponent().getClientId(context),
+                new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        ae.getComponent().getId() + " was pressed", null));
     }
 }

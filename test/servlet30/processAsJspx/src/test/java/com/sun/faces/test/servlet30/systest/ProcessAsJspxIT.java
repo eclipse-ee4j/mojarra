@@ -21,6 +21,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebResponse;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.regex.Pattern;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
@@ -53,7 +54,8 @@ public class ProcessAsJspxIT {
     }
 
     private String getRawMarkup(String path) throws Exception {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(webClient.getPage(path).getWebResponse().getContentAsStream()));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(
+                webClient.getPage(path).getWebResponse().getContentAsStream()));
         StringBuilder builder = new StringBuilder();
         String cur;
         while (null != (cur = reader.readLine())) {
@@ -90,22 +92,19 @@ public class ProcessAsJspxIT {
         String xml = getRawMarkup("/faces/xmlviewWithHtmlRoot.view.xml");
         assertTrue(xml.matches("(?s).*<html.*xmlns=\"http://www.w3.org/1999/xhtml\">.*"));
         xml = getRawMarkup("/faces/xmlviewWithHtmlRootAndXmlnsOnHeadAndBody.view.xml");
-        assertTrue(xml
-                .matches("(?s).*<html>.*<head.*xmlns=\"http://www.w3.org/1999/xhtml\">.*<body.*xmlns=\"http://www.w3.org/1999/xhtml\">.*"));
+        assertTrue(xml.matches("(?s).*<html>.*<head.*xmlns=\"http://www.w3.org/1999/xhtml\">.*<body.*xmlns=\"http://www.w3.org/1999/xhtml\">.*"));
     }
 
     public void testProcessAsXmlWithDoctype() throws Exception {
 
         String xml = getRawMarkup("/faces/xmlviewWithDoctype.view.xml");
-        assertTrue(xml.matches(
-                "(?s).*<!DOCTYPE.*html.*PUBLIC.*\"-//W3C//DTD.*XHTML.*1.0.*Transitional//EN\".*\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html.*xmlns=\"http://www.w3.org/1999/xhtml\".*"));
+        assertTrue(xml.matches("(?s).*<!DOCTYPE.*html.*PUBLIC.*\"-//W3C//DTD.*XHTML.*1.0.*Transitional//EN\".*\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html.*xmlns=\"http://www.w3.org/1999/xhtml\".*"));
     }
 
     public void testProcessAsXmlMathML() throws Exception {
 
         String xml = getRawMarkup("/faces/mathmlview.view.xml");
-        assertTrue(xml.matches(
-                "(?s).*<html.*xmlns=\"http://www.w3.org/1999/xhtml\">.*<head>.*<title>.*Raw.*XML.*View.*with.*MathML</title>.*</head>.*<body>.*<p>.*<math.*xmlns=\"http://www.w3.org/1998/Math/MathML\">.*<msup>.*<msqrt>.*<mrow>.*<mi>.*a</mi>.*<mo>.*\\+</mo>.*<mi>.*b</mi>.*</mrow>.*</msqrt>.*<mn>.*27</mn>.*</msup>.*</math>.*</p>.*</body>.*</html>.*"));
+        assertTrue(xml.matches("(?s).*<html.*xmlns=\"http://www.w3.org/1999/xhtml\">.*<head>.*<title>.*Raw.*XML.*View.*with.*MathML</title>.*</head>.*<body>.*<p>.*<math.*xmlns=\"http://www.w3.org/1998/Math/MathML\">.*<msup>.*<msqrt>.*<mrow>.*<mi>.*a</mi>.*<mo>.*\\+</mo>.*<mi>.*b</mi>.*</mrow>.*</msqrt>.*<mn>.*27</mn>.*</msup>.*</math>.*</p>.*</body>.*</html>.*"));
 
         Page page = webClient.getPage(webUrl + "faces/mathmlview.view.xml");
         WebResponse response = page.getWebResponse();

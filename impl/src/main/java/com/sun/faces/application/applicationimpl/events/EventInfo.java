@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -25,16 +25,15 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.SystemEventListener;
-
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.event.SystemEventListener;
+
 /**
- * Represent a logical association between a SystemEvent and a Source. This call will contain the
- * Listeners specific to this association as well as provide a method to construct new SystemEvents
- * as required.
+ * Represent a logical association between a SystemEvent and a Source. This call will contain the Listeners specific to
+ * this association as well as provide a method to construct new SystemEvents as required.
  */
 public class EventInfo {
 
@@ -52,8 +51,8 @@ public class EventInfo {
 
         this.systemEvent = systemEvent;
         this.sourceClass = sourceClass;
-        this.listeners = new CopyOnWriteArraySet<>();
-        this.constructorMap = new HashMap<>();
+        listeners = new CopyOnWriteArraySet<>();
+        constructorMap = new HashMap<>();
         if (!sourceClass.equals(Void.class)) {
             eventConstructor = getEventConstructor(sourceClass);
         }

@@ -16,8 +16,8 @@
 
 package com.sun.faces.test.javaee6web.injectartifacts;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
 import javax.faces.application.ConfigurableNavigationHandlerWrapper;
 import javax.faces.application.ConfigurableNavigationHandler;
 

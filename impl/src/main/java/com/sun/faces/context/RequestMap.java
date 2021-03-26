@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,51 +17,43 @@
 package com.sun.faces.context;
 
 import java.util.Enumeration;
-import java.util.Map;
 import java.util.Iterator;
-
-import javax.servlet.ServletRequest;
+import java.util.Map;
 
 import com.sun.faces.util.Util;
 
+import jakarta.servlet.ServletRequest;
+
 /**
- * @see javax.faces.context.ExternalContext#getRequestMap() 
+ * @see jakarta.faces.context.ExternalContext#getRequestMap()
  */
 public class RequestMap extends BaseContextMap<Object> {
 
     private final ServletRequest request;
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public RequestMap(ServletRequest request) {
         this.request = request;
     }
 
-
     // -------------------------------------------------------- Methods from Map
-
 
     @Override
     public void clear() {
-        for (Enumeration e = request.getAttributeNames();
-             e.hasMoreElements(); ) {
+        for (Enumeration e = request.getAttributeNames(); e.hasMoreElements();) {
             request.removeAttribute((String) e.nextElement());
         }
     }
 
-
     // Supported by maps if overridden
     @Override
     public void putAll(Map t) {
-        for (Iterator i = t.entrySet().iterator(); i.hasNext(); ) {
+        for (Iterator i = t.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry) i.next();
-            request.setAttribute((String) entry.getKey(),
-                                        entry.getValue());
+            request.setAttribute((String) entry.getKey(), entry.getValue());
         }
     }
-
 
     @Override
     public Object get(Object key) {
@@ -69,15 +61,13 @@ public class RequestMap extends BaseContextMap<Object> {
         return request.getAttribute(key.toString());
     }
 
-
     @Override
     public Object put(String key, Object value) {
         Util.notNull("key", key);
         Object result = request.getAttribute(key);
         request.setAttribute(key, value);
-        return (result);
+        return result;
     }
-
 
     @Override
     public Object remove(Object key) {
@@ -87,47 +77,39 @@ public class RequestMap extends BaseContextMap<Object> {
         String keyString = key.toString();
         Object result = request.getAttribute(keyString);
         request.removeAttribute(keyString);
-        return (result);
+        return result;
     }
-
 
     @Override
     public boolean containsKey(Object key) {
-        return (request.getAttribute(key.toString()) != null);
+        return request.getAttribute(key.toString()) != null;
     }
-
 
     @Override
     public boolean equals(Object obj) {
-        return !(obj == null || !(obj instanceof RequestMap))
-               && super.equals(obj);
+        return !(obj == null || !(obj instanceof RequestMap)) && super.equals(obj);
     }
-
 
     @Override
     public int hashCode() {
         int hashCode = 7 * request.hashCode();
-        for (Iterator i = entrySet().iterator(); i.hasNext(); ) {
+        for (Iterator i = entrySet().iterator(); i.hasNext();) {
             hashCode += i.next().hashCode();
         }
         return hashCode;
     }
 
-
     // --------------------------------------------- Methods from BaseContextMap
 
-
     @Override
-    protected Iterator<Map.Entry<String,Object>> getEntryIterator() {
+    protected Iterator<Map.Entry<String, Object>> getEntryIterator() {
         return new EntryIterator(request.getAttributeNames());
     }
-
 
     @Override
     protected Iterator<String> getKeyIterator() {
         return new KeyIterator(request.getAttributeNames());
     }
-
 
     @Override
     protected Iterator<Object> getValueIterator() {

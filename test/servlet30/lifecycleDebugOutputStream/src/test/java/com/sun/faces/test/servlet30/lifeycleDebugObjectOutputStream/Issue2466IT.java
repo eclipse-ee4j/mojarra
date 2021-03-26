@@ -16,6 +16,7 @@
 
 package com.sun.faces.test.servlet30.lifeycleDebugObjectOutputStream;
 
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -44,31 +45,34 @@ public class Issue2466IT {
     @Test
     public void testConfigurationEffective() throws Exception {
         HtmlPage page = webClient.getPage(webUrl);
-
+        
         HtmlCheckBoxInput checkbox = (HtmlCheckBoxInput) page.getElementById("checkbox");
         checkbox.setChecked(true);
-
+        
         HtmlTextInput inputText = (HtmlTextInput) page.getElementById("inputText");
         final String textValue = System.currentTimeMillis() + "";
         inputText.setValueAttribute(textValue);
-
+        
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("button");
-
+        
         page = button.click();
-
+        
         String text = page.getBody().asText();
-
+        
         assertTrue(text.contains("checkbox: true"));
         assertTrue(text.contains("inputText: " + textValue));
-
+        
         /******
-         * Because this test has no way to run only when the state saving mode would always cause
-         * serialization, this is commented out. But it is useful when running the test app interactively.
+         * Because this test has no way to run only when the 
+         * state saving mode would always cause serialization, this 
+         * is commented out.  But it is useful when running the test app
+         * interactively.
          * 
-         * webClient.getOptions().setThrowExceptionOnFailingStatusCode(false); HtmlAnchor fail =
-         * (HtmlAnchor) page.getElementById("fail"); page = fail.click();
-         * 
-         * assertTrue(page.asText().contains("Intentional failure"));
+        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+        HtmlAnchor fail = (HtmlAnchor) page.getElementById("fail");
+        page = fail.click();
+        
+        assertTrue(page.asText().contains("Intentional failure"));
          *****/
 
     }
