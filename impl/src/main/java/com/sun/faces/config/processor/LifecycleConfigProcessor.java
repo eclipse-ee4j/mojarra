@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -24,13 +24,6 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 
-import javax.faces.FactoryFinder;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseListener;
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.lifecycle.LifecycleFactory;
-import javax.servlet.ServletContext;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -39,10 +32,16 @@ import org.w3c.dom.NodeList;
 import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseListener;
+import jakarta.faces.lifecycle.Lifecycle;
+import jakarta.faces.lifecycle.LifecycleFactory;
+import jakarta.servlet.ServletContext;
+
 /**
  * <p>
- * This <code>ConfigProcessor</code> handles all elements defined under
- * <code>/faces-config/lifecycle</code>.
+ * This <code>ConfigProcessor</code> handles all elements defined under <code>/faces-config/lifecycle</code>.
  * </p>
  */
 public class LifecycleConfigProcessor extends AbstractConfigProcessor {
@@ -65,14 +64,13 @@ public class LifecycleConfigProcessor extends AbstractConfigProcessor {
     private List<PhaseListener> appPhaseListeners;
 
     public LifecycleConfigProcessor() {
-        appPhaseListeners = new CopyOnWriteArrayList<PhaseListener>();
+        appPhaseListeners = new CopyOnWriteArrayList<>();
     }
-
 
     // -------------------------------------------- Methods from ConfigProcessor
 
     /**
-     * @see ConfigProcessor#process(javax.servlet.ServletContext,com.sun.faces.config.manager.documents.DocumentInfo[])
+     * @see ConfigProcessor#process(jakarta.servlet.ServletContext,com.sun.faces.config.manager.documents.DocumentInfo[])
      */
     @Override
     public void process(ServletContext servletContext, FacesContext facesContext, DocumentInfo[] documentInfos) throws Exception {
@@ -83,11 +81,11 @@ public class LifecycleConfigProcessor extends AbstractConfigProcessor {
             if (LOGGER.isLoggable(FINE)) {
                 LOGGER.log(FINE, format("Processing lifecycle elements for document: ''{0}''", documentInfos[i].getSourceURI()));
             }
-            
+
             Document document = documentInfos[i].getDocument();
             String namespace = document.getDocumentElement().getNamespaceURI();
             NodeList lifecycles = document.getElementsByTagNameNS(namespace, LIFECYCLE);
-            
+
             if (lifecycles != null) {
                 for (int c = 0, csize = lifecycles.getLength(); c < csize; c++) {
                     Node lifecyleNode = lifecycles.item(c);
@@ -100,15 +98,13 @@ public class LifecycleConfigProcessor extends AbstractConfigProcessor {
         }
 
     }
-    
+
     @Override
     public void destroy(ServletContext sc, FacesContext facesContext) {
         destroyInstances(sc, facesContext, appPhaseListeners);
     }
-  
 
     // --------------------------------------------------------- Private Methods
-    
 
     private void addPhaseListeners(ServletContext sc, FacesContext facesContext, LifecycleFactory factory, NodeList phaseListeners) {
 
@@ -116,28 +112,25 @@ public class LifecycleConfigProcessor extends AbstractConfigProcessor {
             for (int i = 0, size = phaseListeners.getLength(); i < size; i++) {
                 Node phaseListenerNode = phaseListeners.item(i);
                 String phaseListenerClassName = getNodeText(phaseListenerNode);
-                
+
                 if (phaseListenerClassName != null) {
                     boolean[] didPerformInjection = { false };
-                    
-                    PhaseListener phaseListener = (PhaseListener) 
-                        createInstance(
-                                sc, facesContext, phaseListenerClassName, 
-                                PhaseListener.class, null, phaseListenerNode, 
-                                true, didPerformInjection);
-                    
+
+                    PhaseListener phaseListener = (PhaseListener) createInstance(sc, facesContext, phaseListenerClassName, PhaseListener.class, null,
+                            phaseListenerNode, true, didPerformInjection);
+
                     if (phaseListener != null) {
                         if (didPerformInjection[0]) {
                             appPhaseListeners.add(phaseListener);
                         }
-                        
+
                         for (Iterator<String> t = factory.getLifecycleIds(); t.hasNext();) {
-                            String lfId = (String) t.next();
+                            String lfId = t.next();
                             Lifecycle lifecycle = factory.getLifecycle(lfId);
                             if (LOGGER.isLoggable(FINE)) {
                                 LOGGER.log(FINE, format("Adding PhaseListener ''{0}'' to lifecycle ''{0}}", phaseListenerClassName, lfId));
                             }
-                            
+
                             lifecycle.addPhaseListener(phaseListener);
                         }
                     }
@@ -145,12 +138,12 @@ public class LifecycleConfigProcessor extends AbstractConfigProcessor {
             }
         }
     }
-    
+
     private void destroyInstances(ServletContext sc, FacesContext facesContext, List<?> instances) {
         for (Object instance : instances) {
             destroyInstance(sc, facesContext, instance.getClass().getName(), instance);
         }
-        
+
         instances.clear();
     }
 

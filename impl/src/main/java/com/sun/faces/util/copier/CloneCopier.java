@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -30,42 +30,40 @@ import java.lang.reflect.Method;
  */
 public class CloneCopier implements Copier {
 
-	private static final String ERROR_CANT_CLONE =
-			"Can not clone object of type %s since it doesn't implement Cloneable";
+    private static final String ERROR_CANT_CLONE = "Can not clone object of type %s since it doesn't implement Cloneable";
 
-	@Override
-	public Object copy(Object object) {
+    @Override
+    public Object copy(Object object) {
 
-		if (!(object instanceof Cloneable)) {
-			throw new IllegalStateException(format(ERROR_CANT_CLONE, object.getClass()));
-		}
+        if (!(object instanceof Cloneable)) {
+            throw new IllegalStateException(format(ERROR_CANT_CLONE, object.getClass()));
+        }
 
-		try {
+        try {
 
-			Method cloneMethod = getMethod(object, "clone");
+            Method cloneMethod = getMethod(object, "clone");
 
-			if (!cloneMethod.isAccessible()) {
-				cloneMethod.setAccessible(true);
-			}
+            if (!cloneMethod.isAccessible()) {
+                cloneMethod.setAccessible(true);
+            }
 
-			return cloneMethod.invoke(object);
+            return cloneMethod.invoke(object);
 
+        } catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
-		} catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			throw new IllegalStateException(e);
-		}
-	}
+    private Method getMethod(Object object, String name) {
+        for (Class<?> c = object.getClass(); c != null; c = c.getSuperclass()) {
+            for (Method method : c.getDeclaredMethods()) {
+                if (method.getName().equals(name)) {
+                    return method;
+                }
+            }
+        }
 
-	private Method getMethod(Object object, String name) {
-		for (Class<?> c = object.getClass(); c != null; c = c.getSuperclass()) {
-			for (Method method : c.getDeclaredMethods()) {
-				if (method.getName().equals(name)) {
-					return method;
-				}
-			}
-		}
-
-		return null;
-	}
+        return null;
+    }
 
 }

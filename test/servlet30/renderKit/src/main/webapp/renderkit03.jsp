@@ -17,13 +17,13 @@
 --%>
 
 <%@ page contentType="text/html"
-%><%@ page import="javax.faces.FactoryFinder"
-%><%@ page import="javax.faces.context.FacesContext"
-%><%@ page import="javax.faces.context.FacesContextFactory"
-%><%@ page import="javax.faces.component.UIViewRoot"
-%><%@ page import="javax.faces.lifecycle.Lifecycle"
-%><%@ page import="javax.faces.render.RenderKitFactory"
-%><%@ page import="javax.faces.lifecycle.LifecycleFactory"
+%><%@ page import="jakarta.faces.FactoryFinder"
+%><%@ page import="jakarta.faces.context.FacesContext"
+%><%@ page import="jakarta.faces.context.FacesContextFactory"
+%><%@ page import="jakarta.faces.component.UIViewRoot"
+%><%@ page import="jakarta.faces.lifecycle.Lifecycle"
+%><%@ page import="jakarta.faces.render.RenderKitFactory"
+%><%@ page import="jakarta.faces.lifecycle.LifecycleFactory"
 %><%
 
 // This test demonstrates the request processing lifecycle of
@@ -51,9 +51,9 @@
     }
 
     // Acquire a view
-    UIViewRoot view = facesContext.getApplication().getViewHandler().restoreView(facesContext, "/renderkit03A.xhtml");
+    UIViewRoot view = facesContext.getApplication().getViewHandler().restoreView(facesContext, "/renderkit03A.jsp");
     if ( view == null)  {
-        view = facesContext.getApplication().getViewHandler().createView(facesContext, "/renderkit03A.xhtml");
+        view = facesContext.getApplication().getViewHandler().createView(facesContext, "/renderkit03A.jsp");
     }
     // Set the RenderKitFactory.HTML_BASIC_RENDER_KIT renderkit Id
     view.setRenderKitId("CUSTOM");

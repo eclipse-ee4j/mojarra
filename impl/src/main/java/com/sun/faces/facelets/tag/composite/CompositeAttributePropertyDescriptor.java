@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,14 +16,16 @@
 
 package com.sun.faces.facelets.tag.composite;
 
-import com.sun.faces.facelets.util.ReflectionUtil;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
-import javax.el.ELContext;
-import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
+
+import com.sun.faces.facelets.util.ReflectionUtil;
+
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
 
 /**
  * A property descriptor for a composite component attribute.
@@ -37,7 +39,7 @@ public class CompositeAttributePropertyDescriptor extends PropertyDescriptor {
     @Override
     public Object getValue(String attributeName) {
         Object result = super.getValue(attributeName);
-        if ("type".equals(attributeName) && (null != result) && !(result instanceof Class)) {
+        if ("type".equals(attributeName) && null != result && !(result instanceof Class)) {
             FacesContext context = FacesContext.getCurrentInstance();
             ELContext elContext = context.getELContext();
             String classStr = (String) ((ValueExpression) result).getValue(elContext);
@@ -45,14 +47,14 @@ public class CompositeAttributePropertyDescriptor extends PropertyDescriptor {
                 try {
                     result = ReflectionUtil.forName(classStr);
 
-                    this.setValue(attributeName, result);
+                    setValue(attributeName, result);
                 } catch (ClassNotFoundException ex) {
                     classStr = "java.lang." + classStr; // NOPMD
                     boolean throwException = false;
                     try {
                         result = ReflectionUtil.forName(classStr);
 
-                        this.setValue(attributeName, result);
+                        setValue(attributeName, result);
                     } catch (ClassNotFoundException ex2) {
                         throwException = true;
                     }

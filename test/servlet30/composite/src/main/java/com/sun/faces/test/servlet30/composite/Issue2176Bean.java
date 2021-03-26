@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
- * Copyright (c) 2018 Payara Services Limited.
- * All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,64 +16,45 @@
 
 package com.sun.faces.test.servlet30.composite;
 
-import static javax.faces.component.UIComponent.ATTRS_WITH_DECLARED_DEFAULT_VALUES;
-import static javax.faces.component.UIComponent.BEANINFO_KEY;
-import static javax.faces.component.visit.VisitContext.createVisitContext;
-import static javax.faces.component.visit.VisitResult.ACCEPT;
-
 import java.beans.BeanInfo;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * @author Manfred Riem (manfred.riem@oracle.com)
  */
-@Named
+@ManagedBean(name = "issue2176Bean")
 @SessionScoped
 public class Issue2176Bean implements Serializable {
-
-    private static final long serialVersionUID = 1L;
 
     /**
      * Stores the previos count.
      */
     private int previousCount = -1;
 
-    @Inject
-    private FacesContext context;
-
     /**
      * Get the status.
      */
     public String getStatus() {
         String result = "SUCCESS";
-
-        List<Integer> seenCount = new ArrayList<Integer>();
+        final List<Integer> seenCount = new ArrayList<Integer>();
         seenCount.add(0);
+        VisitContext visitContext = VisitContext.createVisitContext(FacesContext.getCurrentInstance());
+        FacesContext.getCurrentInstance().getViewRoot().visitTree(visitContext, new VisitCallback() {
 
-        context.getViewRoot().visitTree(createVisitContext(context), new VisitCallback() {
-
-            @Override
             public VisitResult visit(VisitContext context, UIComponent target) {
-                if ("javax.faces.Composite".equals(target.getRendererType())) {
-
-                    BeanInfo beanInfo = (BeanInfo) target.getAttributes().get(BEANINFO_KEY);
-
-                    @SuppressWarnings("unchecked")
-                    Collection<String> ids = (Collection<String>)
-                            beanInfo.getBeanDescriptor()
-                                    .getValue(ATTRS_WITH_DECLARED_DEFAULT_VALUES);
+                if ("jakarta.faces.Composite".equals(target.getRendererType())) {
+                    BeanInfo beanInfo = (BeanInfo) target.getAttributes().get(UIComponent.BEANINFO_KEY);
+                    Collection<String> ids = (Collection<String>) beanInfo.getBeanDescriptor().getValue(UIComponent.ATTRS_WITH_DECLARED_DEFAULT_VALUES);
 
                     int count = 0;
                     if (ids != null) {
@@ -83,19 +62,16 @@ public class Issue2176Bean implements Serializable {
                             count++;
                         }
                     }
-
+                    
                     seenCount.set(0, Integer.valueOf(seenCount.get(0).intValue() + count));
                 }
-
-                return ACCEPT;
+                return VisitResult.ACCEPT;
             }
         });
-
-        int observedCount = seenCount.get(0);
+        int observedCount = (Integer) seenCount.get(0);
         if (previousCount != -1 && observedCount > previousCount) {
             result = "FAILED";
         }
-
         previousCount = observedCount;
         return result;
     }

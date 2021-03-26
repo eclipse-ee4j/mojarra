@@ -16,7 +16,9 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-public class NestedForEachItem {
+import java.io.Serializable;
+
+public class NestedForEachItem implements Serializable {
 
     private String value;
 

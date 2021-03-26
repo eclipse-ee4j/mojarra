@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,13 +16,13 @@
 
 package com.sun.faces.application.applicationimpl.events;
 
-import javax.faces.event.SystemEvent;
-
 import com.sun.faces.util.Cache;
 import com.sun.faces.util.Cache.Factory;
 
+import jakarta.faces.event.SystemEvent;
+
 /**
- * Utility class for dealing with {@link javax.faces.component.UIComponent} events.
+ * Utility class for dealing with {@link jakarta.faces.component.UIComponent} events.
  */
 public class ComponentSystemEventHelper {
 
@@ -34,17 +34,9 @@ public class ComponentSystemEventHelper {
 
         // Initialize the 'sources' cache for, ahem, readability...
         // ~generics++
-        Factory<Class<?>, Cache<Class<? extends SystemEvent>, EventInfo>> eventCacheFactory = new Factory<Class<?>, Cache<Class<? extends SystemEvent>, EventInfo>>() {
-            @Override
-            public Cache<Class<? extends SystemEvent>, EventInfo> newInstance(final Class<?> sourceClass) throws InterruptedException {
-                Factory<Class<? extends SystemEvent>, EventInfo> eventInfoFactory = new Factory<Class<? extends SystemEvent>, EventInfo>() {
-                    @Override
-                    public EventInfo newInstance(final Class<? extends SystemEvent> systemEventClass) throws InterruptedException {
-                        return new EventInfo(systemEventClass, sourceClass);
-                    }
-                };
-                return new Cache<>(eventInfoFactory);
-            }
+        Factory<Class<?>, Cache<Class<? extends SystemEvent>, EventInfo>> eventCacheFactory = sourceClass -> {
+            Factory<Class<? extends SystemEvent>, EventInfo> eventInfoFactory = systemEventClass -> new EventInfo(systemEventClass, sourceClass);
+            return new Cache<>(eventInfoFactory);
         };
         sourceCache = new Cache<>(eventCacheFactory);
 

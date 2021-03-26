@@ -33,7 +33,7 @@ import com.sun.faces.cactus.ServletFacesTestCase;
 /**
  * <p>
  * Test case for both {@link ExceptionHandlerImpl} and the <code>ExceptionHandler</code>
- * created by {@link javax.faces.webapp.PreJsf2ExceptionHandlerFactory}.
+ * created by {@link jakarta.faces.webapp.PreJsf2ExceptionHandlerFactory}.
  * </p>
  *
  * <p>

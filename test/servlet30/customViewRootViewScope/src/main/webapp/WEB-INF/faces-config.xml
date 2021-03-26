@@ -21,4 +21,11 @@
     <factory>
         <application-factory>com.sun.faces.test.servlet30.customviewrootviewscope.ApplicationFactoryImpl</application-factory>
     </factory>
+    <managed-bean>
+        <managed-bean-name>userBean</managed-bean-name>
+        <managed-bean-class>
+            com.sun.faces.test.servlet30.customviewrootviewscope.UserBean
+        </managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
 </faces-config>

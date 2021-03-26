@@ -49,21 +49,21 @@ public class Issue3171IT {
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
         webClient.getOptions().setThrowExceptionOnScriptError(false);
         String pageText = page.asText();
-
+        
         assertTrue(pageText.contains("not an ajax request"));
-
+        
         HtmlSubmitInput button = page.getHtmlElementById("submit");
 
         page = button.click();
         webClient.waitForBackgroundJavaScript(60000);
-
+        
         pageText = page.asText();
         String pageXml = page.asXml();
         HtmlElement span = page.getHtmlElementById("exceptionDuringRender");
         String spanXML = span.asXml();
-
+        
         assertTrue(pageText.contains("not an ajax request"));
         assertTrue(pageText.contains("Error from submit"));
-
+        
     }
 }

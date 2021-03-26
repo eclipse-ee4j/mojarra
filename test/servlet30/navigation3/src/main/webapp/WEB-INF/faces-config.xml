@@ -29,36 +29,36 @@
         <!-- Logout button on every page -->
         <navigation-case>
             <from-action>#{UserBean.Logout}</from-action>
-            <to-view-id>/logout.xhtml</to-view-id>
+            <to-view-id>/logout.jsp</to-view-id>
         </navigation-case>
         <!-- Generic "not logged in" handler -->
         <navigation-case>
             <from-outcome>loginRequired</from-outcome>
-            <to-view-id>/must-login-first.xhtml</to-view-id>
+            <to-view-id>/must-login-first.jsp</to-view-id>
         </navigation-case>
     </navigation-rule>
 
 
     <!-- Second navigation rule (login page only) -->
     <navigation-rule>
-        <from-view-id> /login.xhtml </from-view-id>
+        <from-view-id> /login.jsp </from-view-id>
         <!-- Login action was invoked successfully -->
         <navigation-case>
             <from-action>#{UserBean.login}</from-action>
             <from-outcome>success</from-outcome>
-            <to-view-id>/home.xhtml</to-view-id>
+            <to-view-id>/home.jsp</to-view-id>
         </navigation-case>
         <!-- User registration required -->
         <navigation-case>
             <from-action>#{UserBean.register}</from-action>
             <from-outcome>success</from-outcome>
-            <to-view-id>/get-user-info.xhtml</to-view-id>
+            <to-view-id>/get-user-info.jsp</to-view-id>
         </navigation-case>
         <!-- User registration failed -->
         <navigation-case>
             <from-action>#{UserBean.register}</from-action>
             <from-outcome>duplicate</from-outcome>
-            <to-view-id>/try-another-name.xhtml</to-view-id>
+            <to-view-id>/try-another-name.jsp</to-view-id>
         </navigation-case>
     </navigation-rule>
 
@@ -69,7 +69,7 @@
         <!-- General search form handling -->
         <navigation-case>
             <from-action>#{SearchForm.go}</from-action>
-            <to-view-id>/search-results.xhtml</to-view-id>
+            <to-view-id>/search-results.jsp</to-view-id>
         </navigation-case>
     </navigation-rule>
 
@@ -81,7 +81,7 @@
         <!-- Special search form handling -->
         <navigation-case>
             <from-action>#{SearchForm.go}</from-action>
-            <to-view-id>/movies/movie-search-results.xhtml</to-view-id>
+            <to-view-id>/movies/movie-search-results.jsp</to-view-id>
         </navigation-case>
     </navigation-rule>
 

@@ -24,6 +24,8 @@ import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.MessageUtils;
 
+
+import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIForm;
 import javax.faces.component.UINamingContainer;
@@ -42,12 +44,15 @@ import java.util.Map;
 
 public class FormRenderer extends Renderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.FORMFORM);
+    private static final Attribute[] ATTRIBUTES =
+          AttributeManager.getAttributes(AttributeManager.Key.FORMFORM);
 
     public static final String SCRIPT_ELEMENT = "script";
     public static final String SCRIPT_TYPE = "type";
-    public static final String CLEAR_HIDDEN_FIELD_FN_NAME = "clearFormHiddenParams";
-    public static final String FORM_CLIENT_ID_ATTR = "com.sun.faces.FORM_CLIENT_ID_ATTR";
+    public static final String CLEAR_HIDDEN_FIELD_FN_NAME = 
+         "clearFormHiddenParams";
+    public static final String FORM_CLIENT_ID_ATTR = 
+         "com.sun.faces.FORM_CLIENT_ID_ATTR";
 
     //
     // Protected Constants
@@ -63,10 +68,11 @@ public class FormRenderer extends Renderer {
 
     // Attribute Instance Variables
 
+
     // Relationship Instance Variables
 
     //
-    // Constructors and Initializers
+    // Constructors and Initializers    
     //
 
     public FormRenderer() {
@@ -85,13 +91,13 @@ public class FormRenderer extends Renderer {
     // Methods From Renderer
     //
 
-    @Override
     public void decode(FacesContext context, UIComponent component) {
-        // Was our form the one that was submitted? If so, we need to set
+        // Was our form the one that was submitted?  If so, we need to set
         // the indicator accordingly..
         //
         String clientId = component.getClientId(context);
-        Map requestParameterMap = context.getExternalContext().getRequestParameterMap();
+        Map requestParameterMap = context.getExternalContext()
+            .getRequestParameterMap();
         if (requestParameterMap.containsKey(clientId)) {
             ((UIForm) component).setSubmitted(true);
         } else {
@@ -99,17 +105,18 @@ public class FormRenderer extends Renderer {
         }
     }
 
-    @Override
-    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
+
+    public void encodeBegin(FacesContext context, UIComponent component)
+        throws IOException {
         String styleClass = null;
 
         if (context == null) {
             throw new NullPointerException(
-                    MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
+                MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
         }
         if (component == null) {
             throw new NullPointerException(
-                    MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "component"));
+                MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "component"));
         }
         // suppress rendering if "rendered" property on the component is
         // false.
@@ -124,49 +131,57 @@ public class FormRenderer extends Renderer {
         writer.writeAttribute("id", component.getClientId(context), "clientId");
         writer.writeAttribute("method", "post", null);
         writer.writeAttribute("action", getActionStr(context), null);
-        if (null != (styleClass = (String) component.getAttributes().get("styleClass"))) {
+        if (null != (styleClass = (String)
+            component.getAttributes().get("styleClass"))) {
             writer.writeAttribute("class", styleClass, "styleClass");
         }
         String acceptcharset = null;
-        if (null != (acceptcharset = (String) component.getAttributes().get("acceptcharset"))) {
-            writer.writeAttribute("accept-charset", acceptcharset, "acceptcharset");
+        if (null != (acceptcharset = (String)
+            component.getAttributes().get("acceptcharset"))) {
+            writer.writeAttribute("accept-charset", acceptcharset, 
+                    "acceptcharset");
         }
-
-        RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES);
+        
+        RenderKitUtils.renderPassThruAttributes(context,
+              writer,
+                                                component,
+                                                ATTRIBUTES);       
         writer.writeText("\n", null);
-
+        
         // store the clientId of the form in request scope. This will be used
         // by the commandLinkRenderer and ButtonRenderer to arrive the name of
         // the javascript function to invoke from the onclick event handler.
         // PENDING (visvan) we need to fix this dependency between the renderers.
         // This solution is only temporary.
-        Map requestMap = context.getExternalContext().getRequestMap();
+        Map requestMap =context.getExternalContext().getRequestMap();
         requestMap.put(FORM_CLIENT_ID_ATTR, component.getClientId(context));
     }
 
+
     /**
-     * <p>
-     * Return the value to be rendered as the <code>action</code> attribute of the form generated for
-     * this component.
-     * </p>
+     * <p>Return the value to be rendered as the <code>action</code> attribute
+     * of the form generated for this component.</p>
      *
      * @param context FacesContext for the response we are creating
      */
     private String getActionStr(FacesContext context) {
         String viewId = context.getViewRoot().getViewId();
-        String actionURL = context.getApplication().getViewHandler().getActionURL(context, viewId);
+        String actionURL =
+            context.getApplication().getViewHandler().
+            getActionURL(context, viewId);
         return (context.getExternalContext().encodeActionURL(actionURL));
     }
 
-    @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
+
+    public void encodeEnd(FacesContext context, UIComponent component)
+        throws IOException {
         if (context == null) {
             throw new NullPointerException(
-                    MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
+                MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
         }
         if (component == null) {
             throw new NullPointerException(
-                    MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "component"));
+                MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "component"));
         }
         // suppress rendering if "rendered" property on the component is
         // false.
@@ -185,23 +200,25 @@ public class FormRenderer extends Renderer {
         //
         writer.startElement("input", component);
         writer.writeAttribute("type", "hidden", "type");
-        writer.writeAttribute("name", component.getClientId(context), "clientId");
+        writer.writeAttribute("name", component.getClientId(context),
+                              "clientId");
         writer.writeAttribute("value", component.getClientId(context), "value");
         writer.endElement("input");
 
         renderNeededHiddenFields(context, component);
         writer.endElement("form");
-
+        
         Map requestMap = context.getExternalContext().getRequestMap();
-        String formClientId = (String) requestMap.put(FORM_CLIENT_ID_ATTR, null);
+        String formClientId = (String)requestMap.put(FORM_CLIENT_ID_ATTR, null);
     }
 
+
     /**
-     * <p>
-     * Render any need hidden fields.
-     * </p>
+     * <p>Render any need hidden fields.</p>
      */
-    private static void renderNeededHiddenFields(FacesContext context, UIComponent component) throws IOException {
+    private static void renderNeededHiddenFields(FacesContext context,
+                                                 UIComponent component)
+        throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
         Map map = getHiddenFieldMap(context, false);
@@ -216,38 +233,44 @@ public class FormRenderer extends Renderer {
                     writer.endElement("input");
                 }
             }
-
+                
             // Clear the hidden field map
             Map requestMap = context.getExternalContext().getRequestMap();
             requestMap.put(HIDDEN_FIELD_KEY, null);
         }
         String formTarget = (String) component.getAttributes().get("target");
-        renderClearHiddenParamsJavaScript(context, writer, map, formTarget, component.getClientId(context));
+        renderClearHiddenParamsJavaScript(context,
+                                          writer,
+                                          map,
+                                          formTarget,
+                                          component.getClientId(context));
     }
 
+
     /**
-     * <p>
-     * Remember that we will need a new hidden field.
-     * </p>
+     * <p>Remember that we will need a new hidden field.</p>
      */
-    public static void addNeededHiddenField(FacesContext context, String clientId) {
+    public static void addNeededHiddenField(FacesContext context,
+                                            String clientId) {
         Map map = getHiddenFieldMap(context, true);
         if (!map.containsKey(clientId)) {
             map.put(clientId, Boolean.TRUE);
         }
     }
 
+
     /**
-     * <p>
-     * Note that a hidden field has already been rendered.
-     * </p>
+     * <p>Note that a hidden field has already been rendered.</p>
      */
-    public static void addRenderedHiddenField(FacesContext context, String clientId) {
+    public static void addRenderedHiddenField(FacesContext context,
+                                              String clientId) {
         Map map = getHiddenFieldMap(context, true);
         map.put(clientId, Boolean.FALSE);
     }
 
-    private static Map getHiddenFieldMap(FacesContext context, boolean createIfNew) {
+
+    private static Map getHiddenFieldMap(FacesContext context,
+                                         boolean createIfNew) {
         Map requestMap = context.getExternalContext().getRequestMap();
         Map map = (Map) requestMap.get(HIDDEN_FIELD_KEY);
         if (map == null) {
@@ -261,49 +284,54 @@ public class FormRenderer extends Renderer {
     }
 
     /**
-     * Generates a JavaScript function to clear all the hidden fields associated with a form and reset
-     * the target attribute if necessary.
+     * Generates a JavaScript function to clear all the hidden fields
+     * associated with a form and reset the target attribute if necessary.
      */
-    private static void renderClearHiddenParamsJavaScript(FacesContext ctx, ResponseWriter writer, Map formParams, String formTarget,
-            String formName) throws IOException {
-
-        // clear all the hidden field parameters in the form represented by
-        // formName.
-        writer.write("\n");
-        writer.startElement(SCRIPT_ELEMENT, null);
-        writer.writeAttribute(SCRIPT_TYPE, "text/javascript", null);
-        writer.write("\n<!--");
-        writer.write("\nfunction ");
-        String functionName = (CLEAR_HIDDEN_FIELD_FN_NAME + "_" + formName.replace(UINamingContainer.getSeparatorChar(ctx), '_'));
-        writer.write(functionName);
-        writer.write("(curFormName) {");
-        writer.write("\n  var curForm = document.forms[curFormName];");
-        if (formParams != null) {
+    private static void renderClearHiddenParamsJavaScript(FacesContext ctx,
+                                                          ResponseWriter writer,
+                                                          Map formParams,
+                                                          String formTarget,
+                                                          String formName)
+    throws IOException {
+            
+         // clear all the hidden field parameters in the form represented by
+         // formName.
+         writer.write("\n");
+         writer.startElement(SCRIPT_ELEMENT, null);
+         writer.writeAttribute(SCRIPT_TYPE, "text/javascript", null);
+         writer.write("\n<!--");
+         writer.write("\nfunction ");
+         String functionName = (CLEAR_HIDDEN_FIELD_FN_NAME + "_" + formName.replace(UINamingContainer.getSeparatorChar(ctx), '_'));
+         writer.write(functionName);
+         writer.write("(curFormName) {");
+         writer.write("\n  var curForm = document.forms[curFormName];"); 
+         if (formParams != null) {
             Iterator entries = formParams.entrySet().iterator();
             // clear only the hidden fields rendered by the form.
             while (entries.hasNext()) {
                 Map.Entry entry = (Map.Entry) entries.next();
                 if (Boolean.TRUE.equals(entry.getValue())) {
-                    writer.write("\n curForm.elements['");
+                    writer.write("\n curForm.elements['"); 
                     writer.write((String) entry.getKey());
                     writer.write("'].value = null;");
                 }
             }
-        }
-        // clear form target attribute if its present
-        if (formTarget != null && formTarget.length() > 0) {
-            writer.write("\n  curForm.target=");
-            writer.write("'");
-            writer.write(formTarget);
-            writer.write("';");
-        }
-        writer.write("\n}");
-        writer.write("\n//-->\n");
-        writer.endElement(SCRIPT_ELEMENT);
-        writer.write("\n");
+         }
+         // clear form target attribute if its present
+         if (formTarget != null && formTarget.length() > 0) {
+             writer.write("\n  curForm.target=");
+             writer.write("'");
+             writer.write(formTarget);
+             writer.write("';");
+         }
+         writer.write("\n}");
+         writer.write("\n//-->\n");
+         writer.endElement(SCRIPT_ELEMENT);
+         writer.write("\n");
+         
+     }
 
-    }
-
-    private static final String HIDDEN_FIELD_KEY = RIConstants.FACES_PREFIX + "FormHiddenFieldMap";
+    private static final String HIDDEN_FIELD_KEY =
+        RIConstants.FACES_PREFIX + "FormHiddenFieldMap";
 
 } // end of class FormRenderer

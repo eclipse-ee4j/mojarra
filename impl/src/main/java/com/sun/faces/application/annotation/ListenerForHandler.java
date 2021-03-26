@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,12 +16,12 @@
 
 package com.sun.faces.application.annotation;
 
-import javax.faces.application.Application;
-import javax.faces.event.ListenerFor;
-import javax.faces.event.ComponentSystemEventListener;
-import javax.faces.context.FacesContext;
-import javax.faces.component.UIComponent;
-import javax.faces.event.SystemEventListener;
+import jakarta.faces.application.Application;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.ComponentSystemEventListener;
+import jakarta.faces.event.ListenerFor;
+import jakarta.faces.event.SystemEventListener;
 
 /**
  * {@link RuntimeAnnotationHandler} responsible for processing {@link ListenerFor} annotations.
@@ -30,9 +30,7 @@ class ListenerForHandler implements RuntimeAnnotationHandler {
 
     private ListenerFor[] listenersFor;
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public ListenerForHandler(ListenerFor[] listenersFor) {
 
@@ -40,11 +38,9 @@ class ListenerForHandler implements RuntimeAnnotationHandler {
 
     }
 
-
     // ----------------------------------- Methods from RuntimeAnnotationHandler
 
-
-    @SuppressWarnings({"UnusedDeclaration"})
+    @SuppressWarnings({ "UnusedDeclaration" })
     @Override
     public void apply(FacesContext ctx, Object... params) {
 
@@ -62,28 +58,21 @@ class ListenerForHandler implements RuntimeAnnotationHandler {
 
         if (listener instanceof ComponentSystemEventListener) {
             for (int i = 0, len = listenersFor.length; i < len; i++) {
-                    target.subscribeToEvent(listenersFor[i].systemEventClass(),
-                                            (ComponentSystemEventListener) listener);
+                target.subscribeToEvent(listenersFor[i].systemEventClass(), (ComponentSystemEventListener) listener);
+            }
+        } else if (listener instanceof SystemEventListener) {
+            Class sourceClassValue = null;
+            Application app = ctx.getApplication();
+            for (int i = 0, len = listenersFor.length; i < len; i++) {
+                sourceClassValue = listenersFor[i].sourceClass();
+                if (sourceClassValue == Void.class) {
+                    app.subscribeToEvent(listenersFor[i].systemEventClass(), (SystemEventListener) listener);
+                } else {
+                    app.subscribeToEvent(listenersFor[i].systemEventClass(), listenersFor[i].sourceClass(), (SystemEventListener) listener);
+
+                }
             }
         }
-	else if (listener instanceof SystemEventListener) {
-	    Class sourceClassValue = null;
-	    Application app = ctx.getApplication();
-            for (int i = 0, len = listenersFor.length; i < len; i++) {
-		sourceClassValue = listenersFor[i].sourceClass();
-		if (sourceClassValue == Void.class) {
-		    app.subscribeToEvent(listenersFor[i].systemEventClass(), 
-					 (SystemEventListener) listener); 
-                }
-                else {
-		    app.subscribeToEvent(listenersFor[i].systemEventClass(), 
-					 listenersFor[i].sourceClass(),
-					 (SystemEventListener) listener); 
-                    
-                }
-	    }
-	}
-
 
     }
 

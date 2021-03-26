@@ -48,4 +48,9 @@ public class Spec1325IT {
         assertTrue(page.asXml().contains("com.sun.faces.config.WebConfiguration"));
     }
     
+    @Test
+    public void testApplicationMapJsp() throws Exception {
+        HtmlPage page = webClient.getPage(webUrl + "faces/applicationMap.jsp");
+        assertTrue(page.asXml().contains("com.sun.faces.config.WebConfiguration"));
+    }
 }

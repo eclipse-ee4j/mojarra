@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,29 +16,30 @@
 
 package com.sun.faces.flow.builder;
 
-import com.sun.faces.flow.ViewNodeImpl;
 import java.util.List;
-import javax.faces.flow.ViewNode;
-import javax.faces.flow.builder.ViewBuilder;
+
+import com.sun.faces.flow.ViewNodeImpl;
+
+import jakarta.faces.flow.ViewNode;
+import jakarta.faces.flow.builder.ViewBuilder;
 
 public class ViewBuilderImpl extends ViewBuilder {
-    
+
     private FlowBuilderImpl root;
     private ViewNodeImpl viewNode;
 
     public ViewBuilderImpl(FlowBuilderImpl root, String viewNodeId, String vdlDocumentId) {
         this.root = root;
-        
+
         List<ViewNode> viewNodes = root._getFlow()._getViews();
         viewNode = new ViewNodeImpl(viewNodeId, vdlDocumentId);
         viewNodes.add(viewNode);
     }
-    
+
     @Override
     public ViewBuilder markAsStartNode() {
         root._getFlow().setStartNodeId(viewNode.getId());
         return this;
     }
-    
-    
+
 }

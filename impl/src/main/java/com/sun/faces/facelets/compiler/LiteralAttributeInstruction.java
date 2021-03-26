@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,11 +16,11 @@
 
 package com.sun.faces.facelets.compiler;
 
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.faces.context.FacesContext;
 import java.io.IOException;
 
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.faces.context.FacesContext;
 
 final class LiteralAttributeInstruction implements Instruction {
     private final String attr;
@@ -34,7 +34,7 @@ final class LiteralAttributeInstruction implements Instruction {
 
     @Override
     public void write(FacesContext context) throws IOException {
-      context.getResponseWriter().writeAttribute(this.attr, this.text, null);
+        context.getResponseWriter().writeAttribute(attr, text, null);
     }
 
     @Override

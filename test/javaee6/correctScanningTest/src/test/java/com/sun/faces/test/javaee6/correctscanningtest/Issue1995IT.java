@@ -16,20 +16,18 @@
 
 package com.sun.faces.test.javaee6.correctscanningtest;
 
-import static com.sun.faces.test.junit.JsfServerExclude.WEBLOGIC_12_1_4;
-import static com.sun.faces.test.junit.JsfServerExclude.WEBLOGIC_12_2_1;
-import static com.sun.faces.test.junit.JsfVersion.JSF_2_3_0;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import static com.sun.faces.test.junit.JsfServerExclude.WEBLOGIC_12_1_4;
+import static com.sun.faces.test.junit.JsfServerExclude.WEBLOGIC_12_2_1;
 import com.sun.faces.test.junit.JsfTest;
 import com.sun.faces.test.junit.JsfTestRunner;
+import static com.sun.faces.test.junit.JsfVersion.JSF_2_3_0;
+import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
 
 @RunWith(JsfTestRunner.class)
 public class Issue1995IT {
@@ -58,10 +56,7 @@ public class Issue1995IT {
     @Test
     public void testScanning1() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "1/faces/index.xhtml");
-
-        System.out.println(page.asXml());
-
-        assertTrue("view state not found", page.asXml().contains("javax.faces.ViewState"));
+        assertTrue(page.asXml().contains("jakarta.faces.ViewState"));
         assertTrue(page.asText().matches("(?s).*.war_1\\s+bean:\\s+war1Bean\\s+war_2\\s+bean:\\s+bean:\\s+bar..*"));
     }
 
@@ -69,10 +64,7 @@ public class Issue1995IT {
     @Test
     public void testScanning2() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "2/faces/index.xhtml");
-
-        System.out.println(page.asXml());
-
-        assertTrue(page.asXml().contains("javax.faces.ViewState"));
+        assertTrue(page.asXml().contains("jakarta.faces.ViewState"));
         assertTrue(page.asText().matches("(?s).*.war_1\\s+bean:\\s+war_2\\s+bean:\\s+war2Bean\\s+bean:\\s+bar..*"));
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2019 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,9 +16,10 @@
 
 package com.sun.faces.cdi;
 
+import static com.sun.faces.cdi.CdiUtils.addAnnotatedTypes;
 import static com.sun.faces.cdi.CdiUtils.getAnnotation;
+import static jakarta.faces.annotation.FacesConfig.Version.JSF_2_3;
 import static java.util.Collections.unmodifiableMap;
-import static javax.faces.annotation.FacesConfig.Version.JSF_2_3;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -33,25 +34,24 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.AfterDeploymentValidation;
-import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessBean;
-import javax.enterprise.inject.spi.ProcessManagedBean;
-import javax.faces.annotation.FacesConfig;
-import javax.faces.annotation.ManagedProperty;
-import javax.faces.model.DataModel;
-import javax.faces.model.FacesDataModel;
-
 import com.sun.faces.push.WebsocketChannelManager;
 import com.sun.faces.push.WebsocketSessionManager;
 import com.sun.faces.push.WebsocketUserManager;
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
+import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
+import jakarta.enterprise.inject.spi.AnnotatedField;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessBean;
+import jakarta.enterprise.inject.spi.ProcessManagedBean;
+import jakarta.faces.annotation.FacesConfig;
+import jakarta.faces.annotation.ManagedProperty;
+import jakarta.faces.model.DataModel;
+import jakarta.faces.model.FacesDataModel;
 
 /**
  * The CDI extension.
@@ -79,12 +79,8 @@ public class CdiExtension implements Extension {
      * @param beanManager the bean manager.
      */
     public void beforeBean(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
-        beforeBeanDiscovery.addAnnotatedType(beanManager.createAnnotatedType(WebsocketUserManager.class), null);
-        beforeBeanDiscovery.addAnnotatedType(beanManager.createAnnotatedType(WebsocketSessionManager.class), null);
-        beforeBeanDiscovery.addAnnotatedType(beanManager.createAnnotatedType(WebsocketChannelManager.class), null);
-        beforeBeanDiscovery.addAnnotatedType(beanManager.createAnnotatedType(WebsocketChannelManager.ViewScope.class), null);
-        beforeBeanDiscovery.addAnnotatedType(beanManager.createAnnotatedType(InjectionPointGenerator.class), null);
-        beforeBeanDiscovery.addAnnotatedType(beanManager.createAnnotatedType(WebsocketPushContextProducer.class), null);
+        addAnnotatedTypes(beforeBeanDiscovery, beanManager, WebsocketUserManager.class, WebsocketSessionManager.class, WebsocketChannelManager.class,
+                WebsocketChannelManager.ViewScope.class, InjectionPointGenerator.class, WebsocketPushContextProducer.class);
     }
 
     /**
@@ -135,9 +131,7 @@ public class CdiExtension implements Extension {
 
         Optional<FacesDataModel> optionalFacesDataModel = getAnnotation(beanManager, event.getAnnotated(), FacesDataModel.class);
         if (optionalFacesDataModel.isPresent()) {
-            forClassToDataModelClass.put(
-                optionalFacesDataModel.get().forClass(),
-                (Class<? extends DataModel<?>>) event.getBean().getBeanClass());
+            forClassToDataModelClass.put(optionalFacesDataModel.get().forClass(), (Class<? extends DataModel<?>>) event.getBean().getBeanClass());
         }
     }
 
@@ -147,16 +141,17 @@ public class CdiExtension implements Extension {
             ProcessManagedBean<T> event = eventIn; // JDK8 u60 workaround
 
             getAnnotation(beanManager, event.getAnnotated(), FacesConfig.class)
-                    .ifPresent(config ->
-                            setAddBeansForJSFImplicitObjects(config.version().ordinal() >= JSF_2_3.ordinal()));
+                    .ifPresent(config -> setAddBeansForJSFImplicitObjects(config.version().ordinal() >= JSF_2_3.ordinal()));
 
             for (AnnotatedField<? super T> field : event.getAnnotatedBeanClass().getFields()) {
-                if (field.isAnnotationPresent(ManagedProperty.class) && (field.getBaseType() instanceof Class || field.getBaseType() instanceof ParameterizedType)) {
+                if (field.isAnnotationPresent(ManagedProperty.class)
+                        && (field.getBaseType() instanceof Class || field.getBaseType() instanceof ParameterizedType)) {
                     managedPropertyTargetTypes.add(field.getBaseType());
                 }
             }
         } catch (Exception e) {
-            // Log and continue; if we are not allowed somehow to investigate this ManagedBean, we're unlikely to be interested in it anyway
+            // Log and continue; if we are not allowed somehow to investigate this ManagedBean, we're unlikely to be interested in
+            // it anyway
             // but logging at SEVERE level is important
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.warning("Exception happened when collecting: " + e);

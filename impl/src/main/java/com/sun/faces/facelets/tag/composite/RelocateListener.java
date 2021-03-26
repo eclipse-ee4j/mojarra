@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,22 +16,19 @@
 
 package com.sun.faces.facelets.tag.composite;
 
-import javax.faces.component.StateHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.event.ComponentSystemEventListener;
-import javax.faces.context.FacesContext;
-import javax.faces.view.Location;
-import javax.faces.application.Resource;
+import jakarta.faces.application.Resource;
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.ComponentSystemEventListener;
+import jakarta.faces.view.Location;
 
 /**
- * Base class for listeners used to relocate children and facets within the context
- * of composite components.
+ * Base class for listeners used to relocate children and facets within the context of composite components.
  */
 abstract class RelocateListener implements ComponentSystemEventListener, StateHolder {
 
-
     // ------------------------------------------------ Methods from StateHolder
-
 
     @Override
     public Object saveState(FacesContext context) {
@@ -58,39 +55,30 @@ abstract class RelocateListener implements ComponentSystemEventListener, StateHo
         // no-op
     }
 
-
     // ----------------------------------------------------- Private Methods
 
-
-
     /**
-     * @return the <code>Resource</code> instance that was used to create
-     *         the argument composite component.
+     * @return the <code>Resource</code> instance that was used to create the argument composite component.
      */
     protected Resource getBackingResource(UIComponent component) {
 
-        assert (UIComponent.isCompositeComponent(component));
-        Resource resource = (Resource) component.getAttributes()
-              .get(Resource.COMPONENT_RESOURCE_KEY);
+        assert UIComponent.isCompositeComponent(component);
+        Resource resource = (Resource) component.getAttributes().get(Resource.COMPONENT_RESOURCE_KEY);
         if (resource == null) {
-            throw new IllegalStateException(
-                  "Backing resource information not found in composite component attribute map");
+            throw new IllegalStateException("Backing resource information not found in composite component attribute map");
         }
         return resource;
 
     }
 
-
     /**
-     * @return <code>true</code> if the argument handler is from the same
-     *         template source as the argument <code>Resource</code> otherwise
-     *         <code>false</code>
+     * @return <code>true</code> if the argument handler is from the same template source as the argument
+     * <code>Resource</code> otherwise <code>false</code>
      */
-    protected boolean resourcesMatch(Resource compositeResource,
-                                     Location handlerLocation) {
+    protected boolean resourcesMatch(Resource compositeResource, Location handlerLocation) {
 
         String resName = compositeResource.getResourceName();
-        return (handlerLocation.getPath().contains(resName));
+        return handlerLocation.getPath().contains(resName);
 
     }
 

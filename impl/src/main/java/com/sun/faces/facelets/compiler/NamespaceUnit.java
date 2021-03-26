@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,14 +16,15 @@
 
 package com.sun.faces.facelets.compiler;
 
-import com.sun.faces.facelets.tag.TagLibrary;
-
-import javax.faces.view.facelets.FaceletHandler;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.sun.faces.facelets.tag.TagLibrary;
+
+import jakarta.faces.view.facelets.FaceletHandler;
+
 /**
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -31,25 +32,24 @@ final class NamespaceUnit extends CompilationUnit {
 
     private final Map ns = new HashMap();
     private final TagLibrary library;
-    
+
     public NamespaceUnit(TagLibrary library) {
         this.library = library;
     }
 
     @Override
     public FaceletHandler createFaceletHandler() {
-        FaceletHandler next = this.getNextFaceletHandler();
-        return new NamespaceHandler(next, this.library, this.ns);
+        FaceletHandler next = getNextFaceletHandler();
+        return new NamespaceHandler(next, library, ns);
     }
-    
+
     public void setNamespace(String prefix, String uri) {
-        this.ns.put(prefix, uri);
+        ns.put(prefix, uri);
     }
-    
+
     @Override
     public void addChild(CompilationUnit unit) {
         super.addChild(unit);
     }
-    
 
 }

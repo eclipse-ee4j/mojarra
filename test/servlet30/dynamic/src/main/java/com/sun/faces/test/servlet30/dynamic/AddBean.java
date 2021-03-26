@@ -1,7 +1,6 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
- * Copyright (c) 2018 Payara Services Limited.
- * All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -17,26 +16,26 @@
 
 package com.sun.faces.test.servlet30.dynamic;
 
-import static java.util.Arrays.asList;
-import static javax.faces.component.UINamingContainer.getSeparatorChar;
-
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UINamingContainer;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
 
-@Named
-@ApplicationScoped
+@ManagedBean(name = "addBean")
 public class AddBean {
 
-    private static final List<String> LIST = asList("Foo", "Bar", "Baz");
+    private static final List<String>   LIST;
 
-    @Inject
-    private FacesContext facesContext;
+    static {
+        LIST = new ArrayList<String>();
+        LIST.add( "Foo" );
+        LIST.add( "Bar" );
+        LIST.add( "Baz" );
+    }
 
     public List<String> getList() {
         return LIST;
@@ -53,7 +52,9 @@ public class AddBean {
      * Appends an OutputText component to another component.
      */
     public void addComponent() {
-        UIComponent group = facesContext.getViewRoot().findComponent("dynamicForm" + getSeparatorChar(facesContext) + "group");
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        UIComponent group = ctx.getViewRoot().findComponent("dynamicForm" +
+            UINamingContainer.getSeparatorChar(ctx) +  "group");
         HtmlOutputText output = new HtmlOutputText();
         output.setValue("OUTPUT");
         group.getChildren().add(output);

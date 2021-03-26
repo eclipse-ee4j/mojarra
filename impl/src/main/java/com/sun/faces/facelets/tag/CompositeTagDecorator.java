@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,14 +18,13 @@ package com.sun.faces.facelets.tag;
 
 import com.sun.faces.util.Util;
 
-import javax.faces.view.facelets.Tag;
-import javax.faces.view.facelets.TagDecorator;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagDecorator;
 
 /**
- * A TagDecorator that is composed of 1 or more TagDecorator instances. It uses
- * the chain of responsibility pattern to stop processing if any of the
- * TagDecorators return a value other than null.
- * 
+ * A TagDecorator that is composed of 1 or more TagDecorator instances. It uses the chain of responsibility pattern to
+ * stop processing if any of the TagDecorators return a value other than null.
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -38,25 +37,25 @@ public final class CompositeTagDecorator implements TagDecorator {
     public CompositeTagDecorator(TagDecorator[] decorators) {
         Util.notNull("decorators", decorators);
         this.decorators = decorators;
-        this.defaultTagDecorator = new DefaultTagDecorator();
+        defaultTagDecorator = new DefaultTagDecorator();
     }
 
     /**
-     * Uses the chain of responsibility pattern to stop processing if any of
-     * the TagDecorators return a value other than null.
+     * Uses the chain of responsibility pattern to stop processing if any of the TagDecorators return a value other than
+     * null.
      */
     @Override
     public Tag decorate(Tag tag) {
         // eliminate the jsf: attributes
         Tag noJsfAttributes = defaultTagDecorator.decorate(tag);
-        if(noJsfAttributes != null) {
+        if (noJsfAttributes != null) {
             // pass the converted tag to the other decorators
             tag = noJsfAttributes;
         }
 
         Tag t = null;
-        for (int i = 0; i < this.decorators.length; i++) {
-            t = this.decorators[i].decorate(tag);
+        for (int i = 0; i < decorators.length; i++) {
+            t = decorators[i].decorate(tag);
             if (t != null) {
                 return t;
             }

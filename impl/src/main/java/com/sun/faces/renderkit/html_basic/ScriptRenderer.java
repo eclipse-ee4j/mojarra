@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,11 +18,13 @@ package com.sun.faces.renderkit.html_basic;
 
 import java.io.IOException;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.ResponseWriter;
 
 /**
- * <p>This <code>Renderer</code> handles the rendering of <code>script</code> references.</p>
+ * <p>
+ * This <code>Renderer</code> handles the rendering of <code>script</code> references.
+ * </p>
  */
 public class ScriptRenderer extends ScriptStyleBaseRenderer {
 

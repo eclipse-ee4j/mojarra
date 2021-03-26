@@ -54,4 +54,11 @@ public class Spec1328IT {
         assertTrue(page.asXml().contains("Session"));
     }
     
+    @Test
+    @JsfTest(value = JsfVersion.JSF_2_3_0_M01,
+            excludes = {WEBLOGIC_12_1_4, WEBLOGIC_12_2_1})
+    public void testApplicationMapJsp() throws Exception {
+        HtmlPage page = webClient.getPage(webUrl + "faces/session.jsp");
+        assertTrue(page.asXml().contains("Session"));
+    }
 }

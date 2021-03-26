@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,11 +16,11 @@
 
 package com.sun.faces.context;
 
-import javax.faces.context.ExceptionHandler;
-import javax.faces.context.ExceptionHandlerFactory;
-import javax.faces.context.FacesContext;
-
 import com.sun.faces.application.ApplicationAssociate;
+
+import jakarta.faces.context.ExceptionHandler;
+import jakarta.faces.context.ExceptionHandlerFactory;
+import jakarta.faces.context.FacesContext;
 
 /**
  * Default ExceptionHandlerFactory implementation.
@@ -35,25 +35,21 @@ public class ExceptionHandlerFactoryImpl extends ExceptionHandlerFactory {
         super(null);
     }
 
-    
     /**
-     * @see javax.faces.context.ExceptionHandlerFactory#getExceptionHandler()
+     * @see jakarta.faces.context.ExceptionHandlerFactory#getExceptionHandler()
      */
     @Override
     public ExceptionHandler getExceptionHandler() {
         FacesContext fc = FacesContext.getCurrentInstance();
         ApplicationAssociate myAssociate = getAssociate(fc);
 
-        ExceptionHandler result = new AjaxNoAjaxExceptionHandler(
-                new AjaxExceptionHandlerImpl(new ExceptionHandlerImpl(Boolean.TRUE)),
-                new ExceptionHandlerImpl(((myAssociate != null) ? myAssociate.isErrorPagePresent() : Boolean.TRUE)));
+        ExceptionHandler result = new AjaxNoAjaxExceptionHandler(new AjaxExceptionHandlerImpl(new ExceptionHandlerImpl(Boolean.TRUE)),
+                new ExceptionHandlerImpl(myAssociate != null ? myAssociate.isErrorPagePresent() : Boolean.TRUE));
         return result;
 
     }
 
-
     // --------------------------------------------------------- Private Methods
-
 
     private ApplicationAssociate getAssociate(FacesContext ctx) {
 

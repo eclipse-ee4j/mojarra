@@ -16,25 +16,20 @@
 
 package com.sun.faces.test.servlet30.composite;
 
-import javax.enterprise.context.ApplicationScoped;
+import java.io.Serializable;
+import javax.faces.bean.ManagedBean;
 import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ComponentSystemEvent;
-import javax.inject.Inject;
-import javax.inject.Named;
 
+@ManagedBean(name = "event1Bean")
+public class Event1Bean implements Serializable {
 
-@Named
-@ApplicationScoped
-public class Event1Bean {
-
-    @Inject
-    private FacesContext facesContext;
-
-    public void listener(ComponentSystemEvent event) throws AbortProcessingException {
-        ((UIOutput) facesContext.getViewRoot()
-                                .findComponent("form:out"))
-                                .setValue("LISTENER CALLED");
+    public void listener(ComponentSystemEvent event)
+            throws AbortProcessingException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        UIOutput output = (UIOutput) context.getViewRoot().findComponent("form:out");
+        output.setValue("LISTENER CALLED");
     }
 }

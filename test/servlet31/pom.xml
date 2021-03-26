@@ -23,7 +23,7 @@
     <parent>
         <groupId>com.sun.faces.test</groupId>
         <artifactId>pom</artifactId>
-        <version>3.0.0-m01-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
     </parent>
     
     <groupId>com.sun.faces.test.servlet31</groupId>
@@ -36,6 +36,7 @@
         <module>facelets</module>
         <module>faceletsEmptyAsNull</module>
         <module>resourcehandler</module>
+        <module>viewhandler</module>
     </modules>
     
 </project>

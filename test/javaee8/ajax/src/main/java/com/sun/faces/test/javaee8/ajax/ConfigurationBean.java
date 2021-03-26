@@ -16,9 +16,9 @@
 
 package com.sun.faces.test.javaee8.ajax;
 
-import static javax.faces.annotation.FacesConfig.Version.JSF_2_3;
+import static jakarta.faces.annotation.FacesConfig.Version.JSF_2_3;
 
-import javax.faces.annotation.FacesConfig;
+import jakarta.faces.annotation.FacesConfig;
 
 @FacesConfig(
 	// Activates CDI build-in beans

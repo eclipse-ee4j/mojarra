@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -20,31 +20,26 @@ package com.sun.faces.renderkit.html_basic;
 
 import java.io.IOException;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+
 /**
- * <B>SecretRenderer</B> is a class that renders the current value of
- * <code>UIInput<code> component as a password field.
+ * <B>SecretRenderer</B> is a class that renders the current value of <code>UIInput<code> component as a password field.
  */
 
 public class SecretRenderer extends HtmlBasicInputRenderer {
 
-
-    private static final Attribute[] ATTRIBUTES =
-          AttributeManager.getAttributes(AttributeManager.Key.INPUTSECRET);
+    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.INPUTSECRET);
 
     // ---------------------------------------------------------- Public Methods
 
-
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -52,15 +47,11 @@ public class SecretRenderer extends HtmlBasicInputRenderer {
 
     // ------------------------------------------------------- Protected Methods
 
-
     @Override
-    protected void getEndTextToRender(FacesContext context,
-                                      UIComponent component,
-                                      String currentValue)
-          throws IOException {
+    protected void getEndTextToRender(FacesContext context, UIComponent component, String currentValue) throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
-        assert(writer != null);
+        assert writer != null;
 
         String redisplay = String.valueOf(component.getAttributes().get("redisplay"));
         if (redisplay == null || !redisplay.equals("true")) {
@@ -70,19 +61,15 @@ public class SecretRenderer extends HtmlBasicInputRenderer {
         writer.startElement("input", component);
         writeIdAttributeIfNecessary(context, writer, component);
         writer.writeAttribute("type", "password", "type");
-        writer.writeAttribute("name", component.getClientId(context),
-                              "clientId");
+        writer.writeAttribute("name", component.getClientId(context), "clientId");
 
-        String autoComplete = (String)
-              component.getAttributes().get("autocomplete");
+        String autoComplete = (String) component.getAttributes().get("autocomplete");
         if (autoComplete != null) {
             // only output the autocomplete attribute if the value
             // is 'off' since its lack of presence will be interpreted
             // as 'on' by the browser
             if ("off".equals(autoComplete)) {
-                writer.writeAttribute("autocomplete",
-                                      "off",
-                                      "autocomplete");
+                writer.writeAttribute("autocomplete", "off", "autocomplete");
             }
         }
 
@@ -91,18 +78,13 @@ public class SecretRenderer extends HtmlBasicInputRenderer {
             writer.writeAttribute("value", currentValue, "value");
         }
 
-        RenderKitUtils.renderPassThruAttributes(context,
-                                                writer,
-                                                component,
-                                                ATTRIBUTES,
-                                                getNonOnChangeBehaviors(component));
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES, getNonOnChangeBehaviors(component));
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
         RenderKitUtils.renderOnchange(context, component, false);
 
         String styleClass;
-        if (null != (styleClass = (String)
-              component.getAttributes().get("styleClass"))) {
+        if (null != (styleClass = (String) component.getAttributes().get("styleClass"))) {
             writer.writeAttribute("class", styleClass, "styleClass");
         }
 

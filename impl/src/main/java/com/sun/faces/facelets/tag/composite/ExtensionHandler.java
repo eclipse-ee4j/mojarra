@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,15 +16,15 @@
 
 package com.sun.faces.facelets.tag.composite;
 
+import java.io.IOException;
+
 import com.sun.faces.facelets.compiler.CompilationMessageHolder;
 import com.sun.faces.facelets.compiler.EncodingHandler;
 
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagHandler;
-import java.io.IOException;
-
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagHandler;
 
 public class ExtensionHandler extends TagHandler {
 
@@ -36,7 +36,7 @@ public class ExtensionHandler extends TagHandler {
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         // extract a prefix from the child content
         if (null != nextHandler) {
-            String content = this.nextHandler.toString().trim();
+            String content = nextHandler.toString().trim();
             if (content.startsWith("<")) {
                 int i;
                 if (-1 != (i = content.indexOf(":"))) {
@@ -51,8 +51,5 @@ public class ExtensionHandler extends TagHandler {
         }
 
     }
-    
-    
-    
 
 }

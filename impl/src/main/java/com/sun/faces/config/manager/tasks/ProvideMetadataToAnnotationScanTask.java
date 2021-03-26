@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -29,12 +29,12 @@ import com.sun.faces.spi.AnnotationScanner;
 import com.sun.faces.spi.InjectionProvider;
 
 public final class ProvideMetadataToAnnotationScanTask {
-    
+
     private static final Pattern JAR_PATTERN = Pattern.compile("(.*/(\\S*\\.jar)).*(/faces-config.xml|/*.\\.faces-config.xml)");
 
     private final DocumentInfo[] documentInfos;
     private final InjectionProvider containerConnector;
-    
+
     private Set<URI> uris;
     private Set<String> jarNames;
 
@@ -102,9 +102,9 @@ public final class ProvideMetadataToAnnotationScanTask {
 
     public AnnotationScanner getAnnotationScanner() {
         if (containerConnector instanceof AnnotationScanner) {
-            return (AnnotationScanner) this.containerConnector;
+            return (AnnotationScanner) containerConnector;
         }
-        
+
         return null;
     }
 }

@@ -18,10 +18,10 @@ package com.sun.faces.test.servlet31.facelets;
 
 import java.util.Arrays;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 
-@Named
+@ManagedBean(name = "repeatNestedBean")
 @RequestScoped
 public class RepeatNestedBean {
 

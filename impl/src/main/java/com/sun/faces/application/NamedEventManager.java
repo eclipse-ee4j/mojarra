@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -23,15 +23,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.faces.FacesException;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.PostAddToViewEvent;
-import javax.faces.event.PostRenderViewEvent;
-import javax.faces.event.PostValidateEvent;
-import javax.faces.event.PreRenderComponentEvent;
-import javax.faces.event.PreRenderViewEvent;
-import javax.faces.event.PreValidateEvent;
-import javax.faces.event.SystemEvent;
+import jakarta.faces.FacesException;
+import jakarta.faces.event.ComponentSystemEvent;
+import jakarta.faces.event.PostAddToViewEvent;
+import jakarta.faces.event.PostRenderViewEvent;
+import jakarta.faces.event.PostValidateEvent;
+import jakarta.faces.event.PreRenderComponentEvent;
+import jakarta.faces.event.PreRenderViewEvent;
+import jakarta.faces.event.PreValidateEvent;
+import jakarta.faces.event.SystemEvent;
 
 /**
  * Note: New, relevant spec'd ComponentSystemEvents must be added to the constructor
@@ -42,12 +42,12 @@ public class NamedEventManager {
     private Map<String, Set<Class<? extends SystemEvent>>> duplicateNames = new ConcurrentHashMap<>();
 
     public NamedEventManager() {
-        namedEvents.put("javax.faces.event.PreRenderComponent", PreRenderComponentEvent.class);
-        namedEvents.put("javax.faces.event.PreRenderView", PreRenderViewEvent.class);
-        namedEvents.put("javax.faces.event.PostRenderView", PostRenderViewEvent.class);
-        namedEvents.put("javax.faces.event.PostAddToView", PostAddToViewEvent.class);
-        namedEvents.put("javax.faces.event.PreValidate", PreValidateEvent.class);
-        namedEvents.put("javax.faces.event.PostValidate", PostValidateEvent.class);
+        namedEvents.put("jakarta.faces.event.PreRenderComponent", PreRenderComponentEvent.class);
+        namedEvents.put("jakarta.faces.event.PreRenderView", PreRenderViewEvent.class);
+        namedEvents.put("jakarta.faces.event.PostRenderView", PostRenderViewEvent.class);
+        namedEvents.put("jakarta.faces.event.PostAddToView", PostAddToViewEvent.class);
+        namedEvents.put("jakarta.faces.event.PreValidate", PreValidateEvent.class);
+        namedEvents.put("jakarta.faces.event.PostValidate", PostValidateEvent.class);
         namedEvents.put("preRenderComponent", PreRenderComponentEvent.class);
         namedEvents.put("preRenderView", PreRenderViewEvent.class);
         namedEvents.put("postRenderView", PostRenderViewEvent.class);
@@ -66,7 +66,7 @@ public class NamedEventManager {
 
         if (namedEvent == null) {
             try {
-                namedEvent = (Class<? extends SystemEvent>) loadClass(name, this);
+                namedEvent = loadClass(name, this);
             } catch (ClassNotFoundException ex) {
                 throw new FacesException("An unknown event type was specified:  " + name, ex);
             }

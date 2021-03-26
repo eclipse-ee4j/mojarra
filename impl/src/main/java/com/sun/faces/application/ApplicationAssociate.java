@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -13,7 +13,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
-
 package com.sun.faces.application;
 
 import static com.sun.faces.RIConstants.FACES_CONFIG_VERSION;
@@ -36,16 +35,16 @@ import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.Util.getFacesConfigXmlVersion;
 import static com.sun.faces.util.Util.isCdiAvailable;
 import static com.sun.faces.util.Util.split;
+import static jakarta.faces.FactoryFinder.FACELET_CACHE_FACTORY;
+import static jakarta.faces.FactoryFinder.FLOW_HANDLER_FACTORY;
+import static jakarta.faces.application.ProjectStage.Development;
+import static jakarta.faces.application.ProjectStage.Production;
 import static java.lang.Long.parseLong;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.INFO;
 import static java.util.logging.Level.SEVERE;
-import static javax.faces.FactoryFinder.FACELET_CACHE_FACTORY;
-import static javax.faces.FactoryFinder.FLOW_HANDLER_FACTORY;
-import static javax.faces.application.ProjectStage.Development;
-import static javax.faces.application.ProjectStage.Production;
 
 import java.io.IOException;
 import java.net.URL;
@@ -60,32 +59,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
-import javax.el.CompositeELResolver;
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.NavigationCase;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.search.SearchExpressionHandler;
-import javax.faces.component.search.SearchKeywordResolver;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PostConstructApplicationEvent;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.SystemEventListener;
-import javax.faces.flow.FlowHandler;
-import javax.faces.flow.FlowHandlerFactory;
-import javax.faces.view.facelets.FaceletCache;
-import javax.faces.view.facelets.FaceletCacheFactory;
-import javax.faces.view.facelets.FaceletsResourceResolver;
-import javax.faces.view.facelets.ResourceResolver;
-import javax.faces.view.facelets.TagDecorator;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-
 import com.sun.faces.RIConstants;
 import com.sun.faces.application.annotation.AnnotationManager;
 import com.sun.faces.application.annotation.FacesComponentUsage;
@@ -95,7 +68,6 @@ import com.sun.faces.component.search.SearchExpressionHandlerImpl;
 import com.sun.faces.config.ConfigManager;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.el.DemuxCompositeELResolver;
-import com.sun.faces.el.FacesCompositeELResolver;
 import com.sun.faces.facelets.PrivateApiFaceletCacheAdapter;
 import com.sun.faces.facelets.compiler.Compiler;
 import com.sun.faces.facelets.compiler.SAXCompiler;
@@ -115,16 +87,40 @@ import com.sun.faces.facelets.util.ReflectionUtil;
 import com.sun.faces.spi.InjectionProvider;
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.el.CompositeELResolver;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.NavigationCase;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.search.SearchExpressionHandler;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PostConstructApplicationEvent;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.event.SystemEventListener;
+import jakarta.faces.flow.FlowHandler;
+import jakarta.faces.flow.FlowHandlerFactory;
+import jakarta.faces.view.facelets.FaceletCache;
+import jakarta.faces.view.facelets.FaceletCacheFactory;
+import jakarta.faces.view.facelets.FaceletsResourceResolver;
+import jakarta.faces.view.facelets.ResourceResolver;
+import jakarta.faces.view.facelets.TagDecorator;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+
 /**
  * <p>
- * Break out the things that are associated with the Application, but need to be present even when
- * the user has replaced the Application instance.
+ * Break out the things that are associated with the Application, but need to be present even when the user has replaced
+ * the Application instance.
  * </p>
  * <p/>
  * <p>
- * For example: the user replaces ApplicationFactory, and wants to intercept calls to
- * createValueExpression() and createMethodExpression() for certain kinds of expressions, but allow
- * the existing application to handle the rest.
+ * For example: the user replaces ApplicationFactory, and wants to intercept calls to createValueExpression() and
+ * createMethodExpression() for certain kinds of expressions, but allow the existing application to handle the rest.
  * </p>
  */
 public class ApplicationAssociate {
@@ -134,16 +130,15 @@ public class ApplicationAssociate {
     private ApplicationImpl applicationImpl;
 
     /**
-     * Overall Map containing <code>from-view-id</code> key and <code>Set</code> of
-     * <code>NavigationCase</code> objects for that key; The <code>from-view-id</code> strings in
-     * this map will be stored as specified in the configuration file - some of them will have a
-     * trailing asterisk "*" signifying wild card, and some may be specified as an asterisk "*".
+     * Overall Map containing <code>from-view-id</code> key and <code>Set</code> of <code>NavigationCase</code> objects for
+     * that key; The <code>from-view-id</code> strings in this map will be stored as specified in the configuration file -
+     * some of them will have a trailing asterisk "*" signifying wild card, and some may be specified as an asterisk "*".
      */
     private Map<String, Set<NavigationCase>> navigationMap;
 
     /*
-     * The FacesComponentTagLibrary uses the information in this map to help it fabricate tag
-     * handlers for components annotated with FacesComponent. Key: namespace
+     * The FacesComponentTagLibrary uses the information in this map to help it fabricate tag handlers for components
+     * annotated with FacesComponent. Key: namespace
      */
     private Map<String, List<FacesComponentUsage>> facesComponentsByNamespace;
 
@@ -160,11 +155,7 @@ public class ApplicationAssociate {
     };
 
     private List<ELResolver> elResolversFromFacesConfig;
-    private List<SearchKeywordResolver> searchKeywordResolversFromFacesConfig;
-
     private ExpressionFactory expressionFactory;
-
-    private FacesCompositeELResolver facesELResolverForJsp;
 
     private InjectionProvider injectionProvider;
     private ResourceCache resourceCache;
@@ -198,6 +189,51 @@ public class ApplicationAssociate {
     private Map<String, List<String>> resourceLibraryContracts;
 
     Map<String, ApplicationResourceBundle> resourceBundles = new HashMap<>();
+
+
+    public static void setCurrentInstance(ApplicationAssociate associate) {
+        if (associate == null) {
+            instance.remove();
+        } else {
+            instance.set(associate);
+        }
+    }
+
+    public static ApplicationAssociate getCurrentInstance() {
+        ApplicationAssociate associate = instance.get();
+        if (associate == null) {
+            // Fallback to ExternalContext lookup
+            return getInstance();
+        }
+
+        return associate;
+    }
+
+    public static ApplicationAssociate getInstance() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext == null) {
+           return null;
+        }
+
+        return ApplicationAssociate.getInstance(facesContext.getExternalContext());
+    }
+
+    public static ApplicationAssociate getInstance(ExternalContext externalContext) {
+        if (externalContext == null) {
+            return null;
+        }
+
+        return (ApplicationAssociate) externalContext.getApplicationMap().get(ASSOCIATE_KEY);
+    }
+
+    public static ApplicationAssociate getInstance(ServletContext context) {
+        if (context == null) {
+            return null;
+        }
+
+        return (ApplicationAssociate) context.getAttribute(ASSOCIATE_KEY);
+    }
+
 
 
     public ApplicationAssociate(ApplicationImpl appImpl) {
@@ -254,7 +290,7 @@ public class ApplicationAssociate {
     }
 
     public void setResourceLibraryContracts(Map<String, List<String>> map) {
-        this.resourceLibraryContracts = map;
+        resourceLibraryContracts = map;
     }
 
     private class PostConstructApplicationListener implements SystemEventListener {
@@ -266,21 +302,21 @@ public class ApplicationAssociate {
 
         @Override
         public void processEvent(SystemEvent event) {
-            ApplicationAssociate.this.initializeFacelets();
+            initializeFacelets();
 
-            if (ApplicationAssociate.this.flowHandler == null) {
+            if (flowHandler == null) {
                 FlowHandlerFactory flowHandlerFactory = (FlowHandlerFactory) FactoryFinder.getFactory(FLOW_HANDLER_FACTORY);
-                ApplicationAssociate.this.flowHandler = flowHandlerFactory.createFlowHandler(FacesContext.getCurrentInstance());
+                flowHandler = flowHandlerFactory.createFlowHandler(FacesContext.getCurrentInstance());
             }
 
-            if (ApplicationAssociate.this.searchExpressionHandler == null) {
-                ApplicationAssociate.this.searchExpressionHandler = new SearchExpressionHandlerImpl();
+            if (searchExpressionHandler == null) {
+                searchExpressionHandler = new SearchExpressionHandlerImpl();
             }
 
             FacesContext context = FacesContext.getCurrentInstance();
             if (isCdiAvailable(context)) {
                 try {
-                    new JavaFlowLoaderHelper().loadFlows(context, ApplicationAssociate.this.flowHandler);
+                    new JavaFlowLoaderHelper().loadFlows(context, flowHandler);
                 } catch (IOException ex) {
                     LOGGER.log(SEVERE, null, ex);
                 }
@@ -307,54 +343,14 @@ public class ApplicationAssociate {
         }
 
         FacesContext ctx = FacesContext.getCurrentInstance();
+
         Map<String, Object> appMap = ctx.getExternalContext().getApplicationMap();
         compiler = createCompiler(appMap, webConfig);
         faceletFactory = createFaceletFactory(ctx, compiler, webConfig);
     }
 
-    public static ApplicationAssociate getInstance(ExternalContext externalContext) {
-        if (externalContext == null) {
-            return null;
-        }
-
-        return (ApplicationAssociate) externalContext.getApplicationMap().get(ASSOCIATE_KEY);
-    }
-
     public long getTimeOfInstantiation() {
         return timeOfInstantiation;
-    }
-
-    public static ApplicationAssociate getInstance(ServletContext context) {
-        if (context == null) {
-            return null;
-        }
-
-        return (ApplicationAssociate) context.getAttribute(ASSOCIATE_KEY);
-    }
-
-    public static void setCurrentInstance(ApplicationAssociate associate) {
-        if (associate == null) {
-            instance.remove();
-        } else {
-            instance.set(associate);
-        }
-    }
-
-    public static ApplicationAssociate getCurrentInstance() {
-
-        ApplicationAssociate associate = instance.get();
-        if (associate == null) {
-            // Fallback to ExternalContext lookup
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            if (facesContext != null) {
-                ExternalContext extContext = facesContext.getExternalContext();
-                if (extContext != null) {
-                    return ApplicationAssociate.getInstance(extContext);
-                }
-            }
-        }
-
-        return associate;
     }
 
     public ApplicationStateInfo getApplicationStateInfo() {
@@ -449,10 +445,6 @@ public class ApplicationAssociate {
         return propertyEditorHelper;
     }
 
-    public FacesCompositeELResolver getFacesELResolverForJsp() {
-        return facesELResolverForJsp;
-    }
-
     public FlowHandler getFlowHandler() {
         return flowHandler;
     }
@@ -469,24 +461,12 @@ public class ApplicationAssociate {
         this.searchExpressionHandler = searchExpressionHandler;
     }
 
-    public void setFacesELResolverForJsp(FacesCompositeELResolver celr) {
-        facesELResolverForJsp = celr;
-    }
-
     public void setELResolversFromFacesConfig(List<ELResolver> resolvers) {
-        this.elResolversFromFacesConfig = resolvers;
+        elResolversFromFacesConfig = resolvers;
     }
 
     public List<ELResolver> getELResolversFromFacesConfig() {
         return elResolversFromFacesConfig;
-    }
-
-    public void setSearchKeywordResolversFromFacesConfig(List<SearchKeywordResolver> searchKeywordResolversFromFacesConfig) {
-        this.searchKeywordResolversFromFacesConfig = searchKeywordResolversFromFacesConfig;
-    }
-
-    public List<SearchKeywordResolver> getSearchKeywordResolversFromFacesConfig() {
-        return searchKeywordResolversFromFacesConfig;
     }
 
     public void setExpressionFactory(ExpressionFactory expressionFactory) {
@@ -494,7 +474,7 @@ public class ApplicationAssociate {
     }
 
     public ExpressionFactory getExpressionFactory() {
-        return this.expressionFactory;
+        return expressionFactory;
     }
 
     public CompositeELResolver getApplicationELResolvers() {
@@ -517,7 +497,7 @@ public class ApplicationAssociate {
      * Called by application code to indicate we've processed the first request to the application.
      */
     public void setRequestServiced() {
-        this.requestServiced = true;
+        requestServiced = true;
     }
 
     /**
@@ -544,13 +524,11 @@ public class ApplicationAssociate {
     }
 
     /**
-     * Add a navigation case to the internal case set. If a case set does not already exist in the
-     * case list map containing this case (identified by <code>from-view-id</code>), start a new
-     * list, add the case to it, and store the set in the case set map. If a case set already
-     * exists, overwrite the previous case.
+     * Add a navigation case to the internal case set. If a case set does not already exist in the case list map containing
+     * this case (identified by <code>from-view-id</code>), start a new list, add the case to it, and store the set in the
+     * case set map. If a case set already exists, overwrite the previous case.
      *
-     * @param navigationCase the navigation case containing navigation mapping information from the
-     *            configuration file.
+     * @param navigationCase the navigation case containing navigation mapping information from the configuration file.
      */
     public void addNavigationCase(NavigationCase navigationCase) {
 
@@ -565,9 +543,8 @@ public class ApplicationAssociate {
     }
 
     /**
-     * Return a <code>Map</code> of navigation mappings loaded from the configuration system. The
-     * key for the returned <code>Map</code> is <code>from-view-id</code>, and the value is a
-     * <code>List</code> of navigation cases.
+     * Return a <code>Map</code> of navigation mappings loaded from the configuration system. The key for the returned
+     * <code>Map</code> is <code>from-view-id</code>, and the value is a <code>List</code> of navigation cases.
      *
      * @return Map the map of navigation mappings.
      */
@@ -609,7 +586,6 @@ public class ApplicationAssociate {
      * <p/>
      * values: ResourceBundleBean instances.
      */
-
 
     public void addResourceBundle(String var, ApplicationResourceBundle bundle) {
         resourceBundles.put(var, bundle);
@@ -682,7 +658,7 @@ public class ApplicationAssociate {
         } else {
 
             Set<? extends Class<?>> resourceResolvers = getAnnotatedClasses(ctx).get(FaceletsResourceResolver.class);
-            if ((null != resourceResolvers) && !resourceResolvers.isEmpty()) {
+            if (null != resourceResolvers && !resourceResolvers.isEmpty()) {
                 Class<?> resolverClass = resourceResolvers.iterator().next();
                 if (resourceResolvers.size() > 1 && LOGGER.isLoggable(SEVERE)) {
                     LOGGER.log(SEVERE, "Found more than one class " + "annotated with FaceletsResourceResolver.  Will " + "use {0} and ignore the others",
@@ -708,7 +684,7 @@ public class ApplicationAssociate {
                 cache = new PrivateApiFaceletCacheAdapter(privateApiCache);
             } catch (ClassCastException e) {
                 if (LOGGER.isLoggable(INFO)) {
-                    LOGGER.log(INFO, "Please remove context-param when using javax.faces.view.facelets.FaceletCache class with name:" + faceletCacheName
+                    LOGGER.log(INFO, "Please remove context-param when using jakarta.faces.view.facelets.FaceletCache class with name:" + faceletCacheName
                             + "and use the new FaceletCacheFactory API", e);
                 }
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
@@ -730,7 +706,6 @@ public class ApplicationAssociate {
     }
 
     protected Compiler createCompiler(Map<String, Object> appMap, WebConfiguration webConfig) {
-
         Compiler newCompiler = new SAXCompiler();
 
         loadDecorators(appMap, newCompiler);

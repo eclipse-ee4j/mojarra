@@ -14,8 +14,9 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.faces.test.servlet30.resource;
+package com.sun.faces.test.servlet30.resource; 
 
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -45,17 +46,18 @@ public class Issue2889IT {
         webClient.close();
     }
 
+
     // ------------------------------------------------------------ Test Methods
 
     // Assert that a resource that is loaded via a component ResourceDepencies annotation
     // is still there after postback.
     @Test
     public void testComponentResourceDependency() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "faces/issue2889.xhtml");
+        HtmlPage page = webClient.getPage(webUrl+"faces/issue2889.xhtml");
         assertTrue(page.asXml().contains("foo.js"));
-        HtmlAnchor anchor = (HtmlAnchor) page.getElementById("form:link");
+        HtmlAnchor anchor = (HtmlAnchor)page.getElementById("form:link");
         page = anchor.click();
         assertTrue(page.asXml().contains("foo.js"));
     }
-
+    
 }

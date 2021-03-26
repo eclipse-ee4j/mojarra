@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -23,9 +23,19 @@ import javax.xml.namespace.NamespaceContext;
 
 class FacesConfigNamespaceContext implements NamespaceContext {
 
+    private String defaultNamespace = null;
+
+    FacesConfigNamespaceContext() {
+        this.defaultNamespace = "https://jakarta.ee/xml/ns/jakartaee";
+    }
+
+    FacesConfigNamespaceContext(String namespace) {
+        this.defaultNamespace = namespace;
+    }
+
     @Override
     public String getNamespaceURI(String prefix) {
-        return "http://xmlns.jcp.org/xml/ns/javaee";
+        return this.defaultNamespace;
     }
 
     @Override

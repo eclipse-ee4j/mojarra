@@ -16,11 +16,11 @@
 
 package com.sun.faces.test.servlet30.flashCustom;
 
-import javax.inject.Named;
-import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 
-@Named
+@ManagedBean(name = "customFlashBean")
 @RequestScoped
 public class CustomFlashBean {
 

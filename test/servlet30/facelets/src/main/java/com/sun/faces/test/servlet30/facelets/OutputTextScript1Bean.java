@@ -16,12 +16,11 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
+import java.io.Serializable;
+import javax.faces.bean.ManagedBean;
 
-@Named
-@RequestScoped
-public class OutputTextScript1Bean {
+@ManagedBean(name = "outputTextScript1Bean")
+public class OutputTextScript1Bean implements Serializable {
 
     private String xmlparam = "";
 

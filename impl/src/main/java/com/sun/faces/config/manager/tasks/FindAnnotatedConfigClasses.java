@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -25,13 +25,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import javax.servlet.ServletContext;
-
 import com.sun.faces.config.InitFacesContext;
 import com.sun.faces.config.manager.spi.FilterClassesFromFacesInitializerAnnotationProvider;
 import com.sun.faces.spi.AnnotationProvider;
 import com.sun.faces.spi.AnnotationProviderFactory;
 import com.sun.faces.util.Timer;
+
+import jakarta.servlet.ServletContext;
 
 /**
  * Scans the class files within a web application returning a <code>Set</code> of classes that have been annotated with
@@ -49,9 +49,9 @@ public class FindAnnotatedConfigClasses implements Callable<Map<Class<? extends 
     @SuppressWarnings("unchecked")
     public FindAnnotatedConfigClasses(ServletContext servletContext, InitFacesContext facesContext, ProvideMetadataToAnnotationScanTask metadataGetter) {
         this.facesContext = facesContext;
-        this.provider = AnnotationProviderFactory.createAnnotationProvider(servletContext);
+        provider = AnnotationProviderFactory.createAnnotationProvider(servletContext);
         this.metadataGetter = metadataGetter;
-        this.annotatedSet = (Set<Class<?>>) servletContext.getAttribute(ANNOTATED_CLASSES);
+        annotatedSet = (Set<Class<?>>) servletContext.getAttribute(ANNOTATED_CLASSES);
     }
 
     // ----------------------------------------------- Methods from Callable
@@ -72,10 +72,10 @@ public class FindAnnotatedConfigClasses implements Callable<Map<Class<? extends 
         // This is where we discover what kind of InjectionProvider we have.
         if (provider instanceof FilterClassesFromFacesInitializerAnnotationProvider && annotationScanner != null) {
             // This InjectionProvider is capable of annotation scanning *and* injection.
-            
+
             // Note that DelegatingAnnotationProvider itself doesn't use the provided scanner, but just uses the classes
             // that were already scanned by the ServletContainerInitializer and stored there.
-            
+
             ((FilterClassesFromFacesInitializerAnnotationProvider) provider).setAnnotationScanner(annotationScanner, metadataGetter.getJarNames(annotatedSet));
             scanUris = emptySet();
         } else {
@@ -85,7 +85,7 @@ public class FindAnnotatedConfigClasses implements Callable<Map<Class<? extends 
 
         // Note that DelegatingAnnotationProvider itself ignores the scanUris and directly gets the classes from the
         // ServletContext where they were stored by the ServletContainerInitializer
-        
+
         Map<Class<? extends Annotation>, Set<Class<?>>> annotatedClasses = provider.getAnnotatedClasses(scanUris);
 
         if (t != null) {

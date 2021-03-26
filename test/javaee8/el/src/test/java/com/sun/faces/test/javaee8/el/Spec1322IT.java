@@ -48,4 +48,9 @@ public class Spec1322IT {
         assertTrue(page.asXml().contains("com.sun.faces.context.ExternalContextImpl"));
     }
     
+    @Test
+    public void testExternalContextJsp() throws Exception {
+        HtmlPage page = webClient.getPage(webUrl + "faces/externalContext.jsp");
+        assertTrue(page.asXml().contains("com.sun.faces.context.ExternalContextImpl"));
+    }
 }

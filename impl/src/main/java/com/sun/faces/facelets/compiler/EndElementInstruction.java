@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,18 +16,18 @@
 
 package com.sun.faces.facelets.compiler;
 
+import java.io.IOException;
+import java.util.List;
 
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.MessageUtils;
 
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import java.io.IOException;
-import java.util.List;
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
 
 final class EndElementInstruction implements Instruction {
 
@@ -42,14 +42,14 @@ final class EndElementInstruction implements Instruction {
 
     @Override
     public void write(FacesContext context) throws IOException {
-        if (HEAD_ELEMENT.equalsIgnoreCase(this.element)) {
+        if (HEAD_ELEMENT.equalsIgnoreCase(element)) {
             warnUnhandledResources(context, HEAD_ELEMENT);
         }
-        if (BODY_ELEMENT.equalsIgnoreCase(this.element)) {
+        if (BODY_ELEMENT.equalsIgnoreCase(element)) {
             warnUnhandledResources(context, BODY_ELEMENT);
             RenderKitUtils.renderUnhandledMessages(context);
         }
-        context.getResponseWriter().endElement(this.element);
+        context.getResponseWriter().endElement(element);
     }
 
     @Override
@@ -62,19 +62,15 @@ final class EndElementInstruction implements Instruction {
         return true;
     }
 
-
     // --------------------------------------------------------- Private Methods
 
     private void warnUnhandledResources(FacesContext ctx, String target) {
 
         UIViewRoot root = ctx.getViewRoot();
         if (root != null) {
-            List<UIComponent> headResources =
-                  root.getComponentResources(ctx, target);
+            List<UIComponent> headResources = root.getComponentResources(ctx, target);
             if (headResources != null && !headResources.isEmpty()) {
-                FacesMessage m =
-                      MessageUtils.getExceptionMessage(MessageUtils.NO_RESOURCE_TARGET_AVAILABLE,
-                                                       target);
+                FacesMessage m = MessageUtils.getExceptionMessage(MessageUtils.NO_RESOURCE_TARGET_AVAILABLE, target);
                 ctx.addMessage(null, m);
             }
         }

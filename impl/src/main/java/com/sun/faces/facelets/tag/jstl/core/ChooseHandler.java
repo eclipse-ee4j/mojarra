@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,57 +16,57 @@
 
 package com.sun.faces.facelets.tag.jstl.core;
 
-import com.sun.faces.facelets.tag.TagHandlerImpl;
-
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.sun.faces.facelets.tag.TagHandlerImpl;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagException;
+
 /**
  * @author Jacob Hookom
  */
 public final class ChooseHandler extends TagHandlerImpl {
-    
+
     private final ChooseOtherwiseHandler otherwise;
     private final ChooseWhenHandler[] when;
-    
+
     public ChooseHandler(TagConfig config) {
         super(config);
-        
+
         List whenList = new ArrayList();
         Iterator itr = this.findNextByType(ChooseWhenHandler.class);
         while (itr.hasNext()) {
             whenList.add(itr.next());
         }
         if (whenList.isEmpty()) {
-            throw new TagException(this.tag, "Choose Tag must have one or more When Tags");
+            throw new TagException(tag, "Choose Tag must have one or more When Tags");
         }
-        this.when = (ChooseWhenHandler[]) whenList.toArray(new ChooseWhenHandler[whenList.size()]);
-        
+        when = (ChooseWhenHandler[]) whenList.toArray(new ChooseWhenHandler[whenList.size()]);
+
         itr = this.findNextByType(ChooseOtherwiseHandler.class);
         if (itr.hasNext()) {
-            this.otherwise = (ChooseOtherwiseHandler) itr.next();
+            otherwise = (ChooseOtherwiseHandler) itr.next();
         } else {
-            this.otherwise = null;
+            otherwise = null;
         }
     }
 
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException {
-        for (int i = 0; i < this.when.length; i++) {
-            if (this.when[i].isTestTrue(ctx)) {
-                this.when[i].apply(ctx, parent);
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
+        for (int i = 0; i < when.length; i++) {
+            if (when[i].isTestTrue(ctx)) {
+                when[i].apply(ctx, parent);
                 return;
             }
         }
-        if (this.otherwise != null) {
-            this.otherwise.apply(ctx, parent);
+        if (otherwise != null) {
+            otherwise.apply(ctx, parent);
         }
     }
 

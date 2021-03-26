@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,38 +16,34 @@
 
 package com.sun.faces.facelets.impl;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import com.sun.faces.util.Cache;
 import com.sun.faces.util.Util;
 
-import javax.faces.context.FacesContext;
-import java.util.concurrent.atomic.AtomicInteger;
+import jakarta.faces.context.FacesContext;
 
 /**
- * Used to provide aliases to Facelets generated unique IDs with tend to be
- * womewhat long.
+ * Used to provide aliases to Facelets generated unique IDs with tend to be womewhat long.
  */
 public class IdMapper {
 
     private static final String KEY = IdMapper.class.getName();
 
-    private Cache<String,String> idCache = new Cache<>(new IdGen());
-
+    private Cache<String, String> idCache = new Cache<>(new IdGen());
 
     // ------------------------------------------------------------ Constructors
 
-
-    IdMapper() { }
-
+    IdMapper() {
+    }
 
     // ---------------------------------------------------------- Public Methods
-
 
     public String getAliasedId(String id) {
 
         return idCache.get(id);
 
     }
-
 
     public static void setMapper(FacesContext ctx, IdMapper mapper) {
 
@@ -60,24 +56,20 @@ public class IdMapper {
 
     }
 
-
     public static IdMapper getMapper(FacesContext ctx) {
 
         Util.notNull("ctx", ctx);
-        return ((IdMapper) ctx.getAttributes().get(KEY));
+        return (IdMapper) ctx.getAttributes().get(KEY);
 
     }
 
-    
     // ---------------------------------------------------------- Nested Classes
 
-    private static final class IdGen implements Cache.Factory<String,String> {
+    private static final class IdGen implements Cache.Factory<String, String> {
 
         private AtomicInteger counter = new AtomicInteger(0);
 
-
         // ------------------------------------------ Methods from Cache.Factory
-
 
         @Override
         public String newInstance(String arg) throws InterruptedException {

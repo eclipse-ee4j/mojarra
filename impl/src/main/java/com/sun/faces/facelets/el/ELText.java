@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,26 +16,27 @@
 
 package com.sun.faces.facelets.el;
 
-import com.sun.faces.el.ELUtils;
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
-import javax.faces.context.ResponseWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sun.faces.el.ELUtils;
 import com.sun.faces.util.HtmlUtils;
 import com.sun.faces.util.MessageUtils;
-import javax.faces.context.FacesContext;
-import javax.faces.view.Location;
+
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.view.Location;
 
 /**
- * Handles parsing EL Strings in accordance with the EL-API Specification. The
- * parser accepts either <code>${..}</code> or <code>#{..}</code>.
- * 
+ * Handles parsing EL Strings in accordance with the EL-API Specification. The parser accepts either <code>${..}</code>
+ * or <code>#{..}</code>.
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -44,7 +45,7 @@ public class ELText {
     private static final class LiteralValueExpression extends ValueExpression {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
 
@@ -66,7 +67,7 @@ public class ELText {
 
         @Override
         public String getExpressionString() {
-            return this.text;
+            return text;
         }
 
         @Override
@@ -109,41 +110,38 @@ public class ELText {
         }
 
         @Override
-        public void write(Writer out, ELContext ctx) throws ELException,
-                IOException {
-            for (int i = 0; i < this.txt.length; i++) {
-                this.txt[i].write(out, ctx);
+        public void write(Writer out, ELContext ctx) throws ELException, IOException {
+            for (int i = 0; i < txt.length; i++) {
+                txt[i].write(out, ctx);
             }
         }
 
         @Override
-        public void writeText(ResponseWriter out, ELContext ctx)
-                throws ELException, IOException {
-            for (int i = 0; i < this.txt.length; i++) {
-                this.txt[i].writeText(out, ctx);
+        public void writeText(ResponseWriter out, ELContext ctx) throws ELException, IOException {
+            for (int i = 0; i < txt.length; i++) {
+                txt[i].writeText(out, ctx);
             }
         }
 
         @Override
         public String toString(ELContext ctx) {
             StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < this.txt.length; i++) {
-                sb.append(this.txt[i].toString(ctx));
+            for (int i = 0; i < txt.length; i++) {
+                sb.append(txt[i].toString(ctx));
             }
             return sb.toString();
         }
 
         /*
-         * public String toString(ELContext ctx) { StringBuffer sb = new
-         * StringBuffer(); for (int i = 0; i < this.txt.length; i++) {
-         * sb.append(this.txt[i].toString(ctx)); } return sb.toString(); }
+         * public String toString(ELContext ctx) { StringBuffer sb = new StringBuffer(); for (int i = 0; i < this.txt.length;
+         * i++) { sb.append(this.txt[i].toString(ctx)); } return sb.toString(); }
          */
 
         @Override
         public String toString() {
             StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < this.txt.length; i++) {
-                sb.append(this.txt[i].toString());
+            for (int i = 0; i < txt.length; i++) {
+                sb.append(txt[i].toString());
             }
             return sb.toString();
         }
@@ -155,10 +153,10 @@ public class ELText {
 
         @Override
         public ELText apply(ExpressionFactory factory, ELContext ctx) {
-            int len = this.txt.length;
+            int len = txt.length;
             ELText[] nt = new ELText[len];
             for (int i = 0; i < len; i++) {
-                nt[i] = this.txt[i].apply(factory, ctx);
+                nt[i] = txt[i].apply(factory, ctx);
             }
             return new ELTextComposite(nt);
         }
@@ -180,20 +178,18 @@ public class ELText {
         @Override
         public ELText apply(ExpressionFactory factory, ELContext ctx) {
             ELText result = null;
-            if (this.ve instanceof ContextualCompositeValueExpression) {
+            if (ve instanceof ContextualCompositeValueExpression) {
                 result = new ELTextVariable(ve);
             } else {
-                result = new ELTextVariable(factory.createValueExpression(ctx,
-                    this.ve.getExpressionString(), String.class));
+                result = new ELTextVariable(factory.createValueExpression(ctx, ve.getExpressionString(), String.class));
             }
-            
+
             return result;
         }
 
         @Override
-        public void write(Writer out, ELContext ctx) throws ELException,
-                IOException {
-            Object v = this.ve.getValue(ctx);
+        public void write(Writer out, ELContext ctx) throws ELException, IOException {
+            Object v = ve.getValue(ctx);
             if (v != null) {
                 char[] buffer = new char[1028];
                 HtmlUtils.writeTextForXML(out, v.toString(), buffer);
@@ -202,7 +198,7 @@ public class ELText {
 
         @Override
         public String toString(ELContext ctx) throws ELException {
-            Object v = this.ve.getValue(ctx);
+            Object v = ve.getValue(ctx);
             if (v != null) {
                 return v.toString();
             }
@@ -211,9 +207,8 @@ public class ELText {
         }
 
         @Override
-        public void writeText(ResponseWriter out, ELContext ctx)
-                throws ELException, IOException {
-            Object v = this.ve.getValue(ctx);
+        public void writeText(ResponseWriter out, ELContext ctx) throws ELException, IOException {
+            Object v = ve.getValue(ctx);
             if (v != null) {
                 out.writeText(v.toString(), null);
             }
@@ -228,22 +223,18 @@ public class ELText {
 
     /**
      * If it's literal text
-     * 
-     * @return true if the String is literal (doesn't contain <code>#{..}</code>
-     *         or <code>${..}</code>)
+     *
+     * @return true if the String is literal (doesn't contain <code>#{..}</code> or <code>${..}</code>)
      */
     public boolean isLiteral() {
         return true;
     }
 
     /**
-     * Return an instance of <code>this</code> that is applicable given the
-     * ELContext and ExpressionFactory state.
-     * 
-     * @param factory
-     *            the ExpressionFactory to use
-     * @param ctx
-     *            the ELContext to use
+     * Return an instance of <code>this</code> that is applicable given the ELContext and ExpressionFactory state.
+     *
+     * @param factory the ExpressionFactory to use
+     * @param ctx the ELContext to use
      * @return an ELText instance
      */
     public ELText apply(ExpressionFactory factory, ELContext ctx) {
@@ -251,50 +242,42 @@ public class ELText {
     }
 
     /**
-     * Allow this instance to write to the passed Writer, given the ELContext
-     * state
-     * 
-     * @param out
-     *            Writer to write to
-     * @param ctx
-     *            current ELContext state
+     * Allow this instance to write to the passed Writer, given the ELContext state
+     *
+     * @param out Writer to write to
+     * @param ctx current ELContext state
      * @throws ELException
      * @throws IOException
      */
-    public void write(Writer out, ELContext ctx) throws ELException,
-            IOException {
-        out.write(this.literal);
+    public void write(Writer out, ELContext ctx) throws ELException, IOException {
+        out.write(literal);
     }
 
-    public void writeText(ResponseWriter out, ELContext ctx)
-            throws ELException, IOException {
-        out.writeText(this.literal, null);
+    public void writeText(ResponseWriter out, ELContext ctx) throws ELException, IOException {
+        out.writeText(literal, null);
     }
 
     /**
      * Evaluates the ELText to a String
-     * 
-     * @param ctx
-     *            current ELContext state
+     *
+     * @param ctx current ELContext state
      * @throws ELException
      * @return the evaluated String
      */
     public String toString(ELContext ctx) throws ELException {
-        return this.literal;
+        return literal;
     }
 
     @Override
     public String toString() {
-        return this.literal;
+        return literal;
     }
 
     /**
      * Parses the passed string to determine if it's literal or not
-     * 
-     * @param in
-     *            input String
-     * @return true if the String is literal (doesn't contain <code>#{..}</code>
-     *         or <code>${..}</code>)
+     *
+     * @param in input String
+     * @return true if the String is literal (doesn't contain <code>#{..}</code> or <code>${..}</code>)
      */
     public static boolean isLiteral(String in) {
         ELText txt = parse(in);
@@ -302,48 +285,39 @@ public class ELText {
     }
 
     /**
-     * Factory method for creating an unvalidated ELText instance. NOTE: All
-     * expressions in the passed String are treated as
-     * {@link com.sun.faces.facelets.el.ELText.LiteralValueExpression}, with one
-     * exception: composite component expressions.  These are treated as
-     * ContextualCompositeValueExpressions.
-     * 
-     * @param in
-     *            String to parse
+     * Factory method for creating an unvalidated ELText instance. NOTE: All expressions in the passed String are treated as
+     * {@link com.sun.faces.facelets.el.ELText.LiteralValueExpression}, with one exception: composite component expressions.
+     * These are treated as ContextualCompositeValueExpressions.
+     *
+     * @param in String to parse
      * @return ELText instance that knows if the String was literal or not
-     * @throws javax.el.ELException
+     * @throws jakarta.el.ELException
      */
     public static ELText parse(String in) throws ELException {
         return parse(null, null, in);
     }
-    
+
     public static ELText parse(String in, String alias) throws ELException {
         return parse(null, null, in, alias);
     }
-    
-    public static ELText parse(ExpressionFactory fact, ELContext ctx, String in)
-            throws ELException {
+
+    public static ELText parse(ExpressionFactory fact, ELContext ctx, String in) throws ELException {
         return parse(null, null, in, null);
-    }    
+    }
 
     /**
-     * Factory method for creating a validated ELText instance. When an
-     * Expression is hit, it will use the ExpressionFactory to create a
-     * ValueExpression instance, resolving any functions at that time. <p/>
+     * Factory method for creating a validated ELText instance. When an Expression is hit, it will use the ExpressionFactory
+     * to create a ValueExpression instance, resolving any functions at that time.
+     * <p/>
      * Variables and properties will not be evaluated.
-     * 
-     * @param fact
-     *            ExpressionFactory to use
-     * @param ctx
-     *            ELContext to validate against
-     * @param in
-     *            String to parse
+     *
+     * @param fact ExpressionFactory to use
+     * @param ctx ELContext to validate against
+     * @param in String to parse
      * @return ELText that can be re-applied later
-     * @throws javax.el.ELException
+     * @throws jakarta.el.ELException
      */
-    public static ELText parse(ExpressionFactory fact, ELContext ctx, String in,
-            String alias)
-            throws ELException {
+    public static ELText parse(ExpressionFactory fact, ELContext ctx, String in, String alias) throws ELException {
         char[] ca = in.toCharArray();
         int i = 0;
         char c = 0;
@@ -374,26 +348,21 @@ public class ELText {
                         }
                         vlen = findVarLength(ca, i);
                         if (ctx != null && fact != null) {
-                            ve = fact.createValueExpression(ctx, new String(ca,
-                                    i, vlen), String.class);
+                            ve = fact.createValueExpression(ctx, new String(ca, i, vlen), String.class);
                             t = new ELTextVariable(ve);
                         } else {
                             String expr = new String(ca, i, vlen);
                             if (null != alias && ELUtils.isCompositeComponentExpr(expr)) {
                                 if (ELUtils.isCompositeComponentLookupWithArgs(expr)) {
-                                    String message =
-                                            MessageUtils.getExceptionMessageString(MessageUtils.ARGUMENTS_NOT_LEGAL_CC_ATTRS_EXPR);
+                                    String message = MessageUtils.getExceptionMessageString(MessageUtils.ARGUMENTS_NOT_LEGAL_CC_ATTRS_EXPR);
                                     throw new ELException(message);
-                                }    
+                                }
                                 FacesContext context = FacesContext.getCurrentInstance();
                                 ELContext elContext = context.getELContext();
-                                ValueExpression delegate = 
-                                        context.getApplication().getExpressionFactory().
-                                        createValueExpression(elContext, expr, Object.class);
-                                Location location = new Location(alias, -1, -1);                                
-                                ve = new ContextualCompositeValueExpression(location,
-                                                                            delegate);
-                                
+                                ValueExpression delegate = context.getApplication().getExpressionFactory().createValueExpression(elContext, expr, Object.class);
+                                Location location = new Location(alias, -1, -1);
+                                ve = new ContextualCompositeValueExpression(location, delegate);
+
                             } else {
                                 ve = new LiteralValueExpression(expr);
                             }
@@ -434,7 +403,7 @@ public class ELText {
         boolean insideString = false;
         while (i < len) {
             c = ca[i];
-            if ('\\' == c && i<len-1) {
+            if ('\\' == c && i < len - 1) {
                 i++;
             } else if ('\'' == c || '"' == c) {
                 if (str == c) {
@@ -446,7 +415,7 @@ public class ELText {
                 }
             } else if ('{' == c && !insideString) {
                 nested++;
-            } else if (str == 0 && ('}' == c)) {
+            } else if (str == 0 && '}' == c) {
                 if (nested > 1) {
                     nested--;
                 } else {
@@ -457,8 +426,7 @@ public class ELText {
             }
             i++;
         }
-        throw new ELException("EL Expression Unbalanced: ... "
-                + new String(ca, s, i - s));
+        throw new ELException("EL Expression Unbalanced: ... " + new String(ca, s, i - s));
     }
 
 }

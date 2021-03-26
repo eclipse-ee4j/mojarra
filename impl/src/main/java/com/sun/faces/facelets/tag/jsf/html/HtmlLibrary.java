@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -29,121 +29,81 @@ public final class HtmlLibrary extends AbstractHtmlLibrary {
     public HtmlLibrary() {
         this(Namespace);
     }
-    
+
     public HtmlLibrary(String namespace) {
         super(namespace);
-        
-        this.addHtmlComponent("body", "javax.faces.OutputBody",
-                "javax.faces.Body");
 
-        this.addHtmlComponent("button", "javax.faces.HtmlOutcomeTargetButton",
-                "javax.faces.Button");
+        addHtmlComponent("body", "jakarta.faces.OutputBody", "jakarta.faces.Body");
 
-        this.addHtmlComponent("column", "javax.faces.Column", null);
+        addHtmlComponent("button", "jakarta.faces.HtmlOutcomeTargetButton", "jakarta.faces.Button");
 
-        this.addHtmlComponent("commandButton", "javax.faces.HtmlCommandButton",
-                "javax.faces.Button");
+        addHtmlComponent("column", "jakarta.faces.Column", null);
 
-        this.addHtmlComponent("commandLink", "javax.faces.HtmlCommandLink",
-                "javax.faces.Link");
+        addHtmlComponent("commandButton", "jakarta.faces.HtmlCommandButton", "jakarta.faces.Button");
 
-        this.addHtmlComponent("commandScript", "javax.faces.HtmlCommandScript",
-                "javax.faces.Script");
+        addHtmlComponent("commandLink", "jakarta.faces.HtmlCommandLink", "jakarta.faces.Link");
 
-        this.addHtmlComponent("dataTable", "javax.faces.HtmlDataTable",
-                "javax.faces.Table");
+        addHtmlComponent("commandScript", "jakarta.faces.HtmlCommandScript", "jakarta.faces.Script");
 
-        this.addHtmlComponent("form", "javax.faces.HtmlForm",
-                "javax.faces.Form");
+        addHtmlComponent("dataTable", "jakarta.faces.HtmlDataTable", "jakarta.faces.Table");
 
-        this.addHtmlComponent("graphicImage", "javax.faces.HtmlGraphicImage",
-                "javax.faces.Image");
+        addHtmlComponent("form", "jakarta.faces.HtmlForm", "jakarta.faces.Form");
 
-        this.addHtmlComponent("head", "javax.faces.Output",
-                "javax.faces.Head");
+        addHtmlComponent("graphicImage", "jakarta.faces.HtmlGraphicImage", "jakarta.faces.Image");
 
-        this.addHtmlComponent("html", "javax.faces.Output",
-                "javax.faces.Html");
+        addHtmlComponent("head", "jakarta.faces.Output", "jakarta.faces.Head");
 
-        this.addHtmlComponent("doctype", "javax.faces.Output",
-                "javax.faces.Doctype");
+        addHtmlComponent("html", "jakarta.faces.Output", "jakarta.faces.Html");
 
-        this.addHtmlComponent("inputFile", "javax.faces.HtmlInputFile",
-                "javax.faces.File");
+        addHtmlComponent("doctype", "jakarta.faces.Output", "jakarta.faces.Doctype");
 
-        this.addHtmlComponent("inputHidden", "javax.faces.HtmlInputHidden",
-                "javax.faces.Hidden");
+        addHtmlComponent("inputFile", "jakarta.faces.HtmlInputFile", "jakarta.faces.File");
 
-        this.addHtmlComponent("inputSecret", "javax.faces.HtmlInputSecret",
-                "javax.faces.Secret");
+        addHtmlComponent("inputHidden", "jakarta.faces.HtmlInputHidden", "jakarta.faces.Hidden");
 
-        this.addHtmlComponent("inputText", "javax.faces.HtmlInputText",
-                "javax.faces.Text");
+        addHtmlComponent("inputSecret", "jakarta.faces.HtmlInputSecret", "jakarta.faces.Secret");
 
-        this.addHtmlComponent("inputTextarea", "javax.faces.HtmlInputTextarea",
-                "javax.faces.Textarea");
+        addHtmlComponent("inputText", "jakarta.faces.HtmlInputText", "jakarta.faces.Text");
 
-        this.addHtmlComponent("link", "javax.faces.HtmlOutcomeTargetLink",
-                "javax.faces.Link");
+        addHtmlComponent("inputTextarea", "jakarta.faces.HtmlInputTextarea", "jakarta.faces.Textarea");
 
-        this.addHtmlComponent("message", "javax.faces.HtmlMessage",
-                "javax.faces.Message");
+        addHtmlComponent("link", "jakarta.faces.HtmlOutcomeTargetLink", "jakarta.faces.Link");
 
-        this.addHtmlComponent("messages", "javax.faces.HtmlMessages",
-                "javax.faces.Messages");
+        addHtmlComponent("message", "jakarta.faces.HtmlMessage", "jakarta.faces.Message");
 
-        this.addHtmlComponent("outputFormat", "javax.faces.HtmlOutputFormat",
-                "javax.faces.Format");
+        addHtmlComponent("messages", "jakarta.faces.HtmlMessages", "jakarta.faces.Messages");
 
-        this.addHtmlComponent("outputLabel", "javax.faces.HtmlOutputLabel",
-                "javax.faces.Label");
+        addHtmlComponent("outputFormat", "jakarta.faces.HtmlOutputFormat", "jakarta.faces.Format");
 
-        this.addHtmlComponent("outputLink", "javax.faces.HtmlOutputLink",
-                "javax.faces.Link");
+        addHtmlComponent("outputLabel", "jakarta.faces.HtmlOutputLabel", "jakarta.faces.Label");
 
-        this.addHtmlComponent("outputText", "javax.faces.HtmlOutputText",
-                "javax.faces.Text");
-        
-        this.addComponent("outputScript",
-                          "javax.faces.Output",
-                          "javax.faces.resource.Script",
-                          ScriptResourceHandler.class);
+        addHtmlComponent("outputLink", "jakarta.faces.HtmlOutputLink", "jakarta.faces.Link");
 
-        this.addComponent("outputStylesheet",
-                          "javax.faces.Output",
-                          "javax.faces.resource.Stylesheet",
-                          StylesheetResourceHandler.class);
+        addHtmlComponent("outputText", "jakarta.faces.HtmlOutputText", "jakarta.faces.Text");
 
-        this.addHtmlComponent("panelGrid", "javax.faces.HtmlPanelGrid",
-                "javax.faces.Grid");
+        this.addComponent("outputScript", "jakarta.faces.Output", "jakarta.faces.resource.Script", ScriptResourceHandler.class);
 
-        this.addHtmlComponent("panelGroup", "javax.faces.HtmlPanelGroup",
-                "javax.faces.Group");
+        this.addComponent("outputStylesheet", "jakarta.faces.Output", "jakarta.faces.resource.Stylesheet", StylesheetResourceHandler.class);
 
-        this.addHtmlComponent("selectBooleanCheckbox",
-                              "javax.faces.HtmlSelectBooleanCheckbox",
-                              "javax.faces.Checkbox");
+        addHtmlComponent("panelGrid", "jakarta.faces.HtmlPanelGrid", "jakarta.faces.Grid");
 
-        this.addHtmlComponent("selectManyCheckbox",
-                "javax.faces.HtmlSelectManyCheckbox", "javax.faces.Checkbox");
+        addHtmlComponent("panelGroup", "jakarta.faces.HtmlPanelGroup", "jakarta.faces.Group");
 
-        this.addHtmlComponent("selectManyListbox",
-                "javax.faces.HtmlSelectManyListbox", "javax.faces.Listbox");
+        addHtmlComponent("selectBooleanCheckbox", "jakarta.faces.HtmlSelectBooleanCheckbox", "jakarta.faces.Checkbox");
 
-        this.addHtmlComponent("selectManyMenu",
-                "javax.faces.HtmlSelectManyMenu", "javax.faces.Menu");
+        addHtmlComponent("selectManyCheckbox", "jakarta.faces.HtmlSelectManyCheckbox", "jakarta.faces.Checkbox");
 
-        this.addHtmlComponent("selectOneListbox",
-                "javax.faces.HtmlSelectOneListbox", "javax.faces.Listbox");
+        addHtmlComponent("selectManyListbox", "jakarta.faces.HtmlSelectManyListbox", "jakarta.faces.Listbox");
 
-        this.addHtmlComponent("selectOneMenu", "javax.faces.HtmlSelectOneMenu",
-                "javax.faces.Menu");
+        addHtmlComponent("selectManyMenu", "jakarta.faces.HtmlSelectManyMenu", "jakarta.faces.Menu");
 
-        this.addHtmlComponent("selectOneRadio",
-                "javax.faces.HtmlSelectOneRadio", "javax.faces.Radio");
+        addHtmlComponent("selectOneListbox", "jakarta.faces.HtmlSelectOneListbox", "jakarta.faces.Listbox");
 
-        this.addHtmlComponent("title", "javax.faces.Output",
-                "javax.faces.Title");
+        addHtmlComponent("selectOneMenu", "jakarta.faces.HtmlSelectOneMenu", "jakarta.faces.Menu");
+
+        addHtmlComponent("selectOneRadio", "jakarta.faces.HtmlSelectOneRadio", "jakarta.faces.Radio");
+
+        addHtmlComponent("title", "jakarta.faces.Output", "jakarta.faces.Title");
     }
 
 }

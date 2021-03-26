@@ -20,34 +20,30 @@
  */
 package com.sun.faces.test.servlet30.facelets;
 
-import static javax.faces.component.visit.VisitResult.ACCEPT;
-import static javax.faces.component.visit.VisitResult.REJECT;
-
+import com.sun.faces.component.visit.FullVisitContext;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.enterprise.context.RequestScoped;
+import javax.el.ValueExpression;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.ValueHolder;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
-import javax.inject.Named;
 
-import com.sun.faces.component.visit.FullVisitContext;
-
-@Named
+@ManagedBean(name = "repeatTooManyBean")
 @RequestScoped
 public class RepeatTooManyBean {
 
-    private List<String> list;
+    private List<String> _list;
     private StringBuilder iterations = new StringBuilder();
 
     public RepeatTooManyBean() {
-        list = new ArrayList<>();
+        _list = new ArrayList();
         for (int i = 1; i <= 10; i++) {
-            list.add(String.valueOf(i));
+            _list.add(String.valueOf(i));
         }
     }
 
@@ -56,21 +52,22 @@ public class RepeatTooManyBean {
     }
 
     public List<String> getList() {
-        return list;
+        return _list;
     }
 
     public void visitChildren() {
         final FacesContext context = FacesContext.getCurrentInstance();
-
         context.getViewRoot().visitTree(new FullVisitContext(context), new VisitCallback() {
             @Override
             public VisitResult visit(VisitContext visitContext, UIComponent target) {
-                if (target instanceof ValueHolder && target.getId().equals("out")) {
-                    iterations.append(target.getValueExpression("value").getValue(context.getELContext()));
-                    return REJECT;
+                if (target instanceof ValueHolder
+                        && target.getId().equals("out")) {
+                    ValueExpression expr = target.getValueExpression("value");
+                    Object value = expr.getValue(context.getELContext());
+                    iterations.append(value);
+                    return VisitResult.REJECT;
                 }
-
-                return ACCEPT;
+                return VisitResult.ACCEPT;
             }
         });
     }

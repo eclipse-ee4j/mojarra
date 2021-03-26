@@ -19,25 +19,20 @@ package com.sun.faces.test.servlet30.renderkit;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Named;
-import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 
-@Named
+@ManagedBean(name = "issue1830Bean")
 @RequestScoped
 public class Issue1830Bean implements Serializable {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1L;
-
     /**
      * Get the repeat.
      */
     public List<List<String>> getRepeat() {
         List<List<String>> result = new ArrayList<List<String>>();
-        for (int i = 0; i < 10; i++) {
+        for (int i=0; i<10; i++) {
             List<String> subList = new ArrayList<String>();
-            for (int j = 0; j < 10; j++) {
+            for(int j=0; j<10; j++) {
                 subList.add(Integer.toString(j));
             }
             result.add(subList);

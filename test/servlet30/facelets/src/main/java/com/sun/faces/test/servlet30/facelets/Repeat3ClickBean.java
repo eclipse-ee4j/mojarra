@@ -16,20 +16,19 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-import static java.util.Arrays.asList;
-
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 
-@Named
+@ManagedBean
 @ViewScoped
 public class Repeat3ClickBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private List<String> list = asList(new String[] { "One", "Two", "Three" });
+    private List<String> list = Arrays.asList(new String[]{"One", "Two", "Three"});
     private boolean hide = true;
 
     public List<String> getList() {

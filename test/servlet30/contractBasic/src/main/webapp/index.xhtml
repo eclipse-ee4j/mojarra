@@ -18,30 +18,27 @@
 -->
 
 <!DOCTYPE html>
+
 <html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:ui="http://java.sun.com/jsf/facelets">
-    
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
     <body>
         <ui:composition template="/topNav_Template.xhtml">
             <ui:define name="title">
-                    title
+                title
             </ui:define>
-            
             <ui:define name="nav">
-                    nav
+                nav
             </ui:define>
-            
             <ui:define name="content">
-                <h:form prependId="false">
+                <h:form prependId="false">                
                     <p>
                         <h:commandButton id="button" value="next" action="page2" />
                     </p>
                 </h:form>
-                
                 <h:form prependId="false">
                     <p>
-                        <h:commandButton id="currentButton" value="Stay here" />
+                        <h:commandButton id="currentButton" value="Stay here"/>
                     </p>
                 </h:form>
             </ui:define>

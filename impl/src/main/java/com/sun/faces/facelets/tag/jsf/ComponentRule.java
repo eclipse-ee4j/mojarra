@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,14 +19,14 @@ package com.sun.faces.facelets.tag.jsf;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.MetaRule;
-import javax.faces.view.facelets.Metadata;
-import javax.faces.view.facelets.MetadataTarget;
-import javax.faces.view.facelets.TagAttribute;
-
 import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRule;
+import jakarta.faces.view.facelets.Metadata;
+import jakarta.faces.view.facelets.MetadataTarget;
+import jakarta.faces.view.facelets.TagAttribute;
 
 /**
  *
@@ -47,7 +47,7 @@ final class ComponentRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((UIComponent) instance).getAttributes().put(this.name, this.value);
+            ((UIComponent) instance).getAttributes().put(name, value);
         }
     }
 
@@ -59,8 +59,7 @@ final class ComponentRule extends MetaRule {
 
         private final Class type;
 
-        public ValueExpressionMetadata(String name, Class type,
-                TagAttribute attr) {
+        public ValueExpressionMetadata(String name, Class type, TagAttribute attr) {
             this.name = name;
             this.attr = attr;
             this.type = type;
@@ -68,8 +67,7 @@ final class ComponentRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((UIComponent) instance).setValueExpression(this.name, this.attr
-                    .getValueExpression(ctx, this.type));
+            ((UIComponent) instance).setValueExpression(name, attr.getValueExpression(ctx, type));
         }
 
     }
@@ -83,8 +81,7 @@ final class ComponentRule extends MetaRule {
     }
 
     @Override
-    public Metadata applyRule(String name, TagAttribute attribute,
-            MetadataTarget meta) {
+    public Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta) {
         if (meta.isTargetInstanceOf(UIComponent.class)) {
 
             // if component and dynamic, then must set expression
@@ -107,8 +104,7 @@ final class ComponentRule extends MetaRule {
 
     private static void warnAttr(TagAttribute attr, Class type, String n) {
         if (log.isLoggable(Level.FINER)) {
-            log.finer(attr + " Property '" + n + "' is not on type: "
-                    + type.getName());
+            log.finer(attr + " Property '" + n + "' is not on type: " + type.getName());
         }
     }
 

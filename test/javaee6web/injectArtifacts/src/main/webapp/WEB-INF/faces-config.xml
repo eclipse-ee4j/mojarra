@@ -35,7 +35,7 @@
         <resource-handler>com.sun.faces.test.javaee6web.injectartifacts.FacesConfigResourceHandler</resource-handler>
         <system-event-listener>
             <system-event-listener-class>com.sun.faces.test.javaee6web.injectartifacts.FacesConfigSystemEventListener</system-event-listener-class>
-            <system-event-class>javax.faces.event.PreRenderViewEvent</system-event-class>
+            <system-event-class>jakarta.faces.event.PreRenderViewEvent</system-event-class>
         </system-event-listener>
     </application>
     <lifecycle>

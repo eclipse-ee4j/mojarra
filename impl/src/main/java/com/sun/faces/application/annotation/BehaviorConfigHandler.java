@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,37 +17,33 @@
 package com.sun.faces.application.annotation;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
-import javax.faces.application.Application;
-import javax.faces.component.behavior.FacesBehavior;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.Application;
+import jakarta.faces.component.behavior.FacesBehavior;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p>
- * <code>ConfigAnnotationHandler</code> for {@link FacesBehavior} annotated
- * classes.
+ * <code>ConfigAnnotationHandler</code> for {@link FacesBehavior} annotated classes.
  * </p>
  */
 public class BehaviorConfigHandler implements ConfigAnnotationHandler {
 
     private static final Collection<Class<? extends Annotation>> HANDLES;
     static {
-        Collection<Class<? extends Annotation>> handles =
-              new ArrayList<>(1);
+        Collection<Class<? extends Annotation>> handles = new ArrayList<>(1);
         handles.add(FacesBehavior.class);
         HANDLES = Collections.unmodifiableCollection(handles);
     }
 
-    private Map<String,String> behaviors;
-
+    private Map<String, String> behaviors;
 
     // ------------------------------------- Methods from ComponentConfigHandler
-
 
     /**
      * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#getHandledAnnotations()
@@ -58,7 +54,6 @@ public class BehaviorConfigHandler implements ConfigAnnotationHandler {
         return HANDLES;
 
     }
-
 
     /**
      * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#collect(Class, java.lang.annotation.Annotation)
@@ -73,16 +68,15 @@ public class BehaviorConfigHandler implements ConfigAnnotationHandler {
 
     }
 
-
     /**
-     * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#push(javax.faces.context.FacesContext)
+     * @see com.sun.faces.application.annotation.ConfigAnnotationHandler#push(jakarta.faces.context.FacesContext)
      */
     @Override
     public void push(FacesContext ctx) {
 
         if (behaviors != null) {
             Application app = ctx.getApplication();
-            for (Map.Entry<String,String> entry : behaviors.entrySet()) {
+            for (Map.Entry<String, String> entry : behaviors.entrySet()) {
                 app.addBehavior(entry.getKey(), entry.getValue());
             }
         }

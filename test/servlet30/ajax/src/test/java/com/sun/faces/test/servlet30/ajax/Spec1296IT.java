@@ -22,6 +22,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 public class Spec1296IT {
 
@@ -45,7 +46,6 @@ public class Spec1296IT {
     public void testPartialResponseWriterOutsideFacesServlet() throws Exception {
         Page page = webClient.getPage(webUrl + "BeforeFilter");
         String pageXml = page.getWebResponse().getContentAsString("UTF-8");
-        assertTrue(pageXml.matches(
-                "(?s).*<\\?xml\\s+version=\\'1\\.0\\'\\s+encoding=\\'UTF-8\\'\\?>\\s*<partial-response>\\s*<changes>\\s*<update\\s+id=\\\"foo\\\">\\s*<\\!\\[CDATA\\[\\s*\\]]>\\s*</update>\\s*</changes>\\s*</partial-response>.*"));
+        assertTrue(pageXml.matches("(?s).*<\\?xml\\s+version=\\'1\\.0\\'\\s+encoding=\\'UTF-8\\'\\?>\\s*<partial-response>\\s*<changes>\\s*<update\\s+id=\\\"foo\\\">\\s*<\\!\\[CDATA\\[\\s*\\]]>\\s*</update>\\s*</changes>\\s*</partial-response>.*"));
     }
 }

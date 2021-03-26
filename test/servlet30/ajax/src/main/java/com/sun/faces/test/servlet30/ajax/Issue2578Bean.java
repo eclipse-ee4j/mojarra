@@ -19,19 +19,16 @@ package com.sun.faces.test.servlet30.ajax;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Iterator;
-
-import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIForm;
 import javax.faces.event.ActionEvent;
-import javax.inject.Named;
 
-@Named
+@ManagedBean
 @SessionScoped
 public class Issue2578Bean implements Serializable {
-
-    private static final long serialVersionUID = 1L;
 
     private Date date;
     private Date date2;
@@ -53,6 +50,8 @@ public class Issue2578Bean implements Serializable {
     public void setDate2(Date date2) {
         this.date2 = date2;
     }
+    
+    
 
     public String getText() {
         return text;
@@ -61,6 +60,8 @@ public class Issue2578Bean implements Serializable {
     public void setText(String text) {
         this.text = text;
     }
+    
+    
 
     public Date getDate() {
         return date;
@@ -69,8 +70,8 @@ public class Issue2578Bean implements Serializable {
     public void setDate(Date date) {
         this.date = date;
     }
-
-    public void altClear(ActionEvent event) {
+    
+    public void altClear(ActionEvent event){
         this.date = null;
         this.date2 = null;
         this.text = null;

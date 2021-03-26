@@ -10,11 +10,14 @@ import com.sun.faces.lifecycle.LifecycleImpl;
 import com.sun.faces.mock.MockHttpServletRequest;
 import com.sun.faces.mock.MockHttpServletResponse;
 import com.sun.faces.mock.MockServletContext;
+
+import jakarta.faces.FactoryFinder;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.el.ELResolver;
-import javax.faces.FactoryFinder;
+import jakarta.el.ELResolver;
+
 import java.net.URL;
 
 public class ELUtilsTest {

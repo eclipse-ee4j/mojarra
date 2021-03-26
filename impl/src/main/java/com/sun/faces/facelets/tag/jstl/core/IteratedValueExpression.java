@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,10 +18,11 @@ package com.sun.faces.facelets.tag.jstl.core;
 
 import java.util.Collection;
 import java.util.Iterator;
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.PropertyNotWritableException;
-import javax.el.ValueExpression;
+
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.PropertyNotWritableException;
+import jakarta.el.ValueExpression;
 
 public final class IteratedValueExpression extends ValueExpression {
 
@@ -41,7 +42,7 @@ public final class IteratedValueExpression extends ValueExpression {
     /*
      * (non-Javadoc)
      *
-     * @see javax.el.ValueExpression#getValue(javax.el.ELContext)
+     * @see jakarta.el.ValueExpression#getValue(jakarta.el.ELContext)
      */
     @Override
     public Object getValue(ELContext context) {
@@ -50,7 +51,7 @@ public final class IteratedValueExpression extends ValueExpression {
         Object result = null;
         int i = start;
         if (i != 0) {
-            while(i != 0) {
+            while (i != 0) {
                 result = iterator.next();
                 if (!iterator.hasNext()) {
                     throw new ELException("Unable to position start");
@@ -60,7 +61,7 @@ public final class IteratedValueExpression extends ValueExpression {
         } else {
             result = iterator.next();
         }
-        while(i < index) {
+        while (i < index) {
             if (!iterator.hasNext()) {
                 throw new ELException("Unable to get given value");
             }
@@ -73,8 +74,7 @@ public final class IteratedValueExpression extends ValueExpression {
     /*
      * (non-Javadoc)
      *
-     * @see javax.el.ValueExpression#setValue(javax.el.ELContext,
-     *      java.lang.Object)
+     * @see jakarta.el.ValueExpression#setValue(jakarta.el.ELContext, java.lang.Object)
      */
     @Override
     public void setValue(ELContext context, Object value) {
@@ -85,7 +85,7 @@ public final class IteratedValueExpression extends ValueExpression {
     /*
      * (non-Javadoc)
      *
-     * @see javax.el.ValueExpression#isReadOnly(javax.el.ELContext)
+     * @see jakarta.el.ValueExpression#isReadOnly(jakarta.el.ELContext)
      */
     @Override
     public boolean isReadOnly(ELContext context) {
@@ -96,7 +96,7 @@ public final class IteratedValueExpression extends ValueExpression {
     /*
      * (non-Javadoc)
      *
-     * @see javax.el.ValueExpression#getType(javax.el.ELContext)
+     * @see jakarta.el.ValueExpression#getType(jakarta.el.ELContext)
      */
     @Override
     public Class getType(ELContext context) {
@@ -107,7 +107,7 @@ public final class IteratedValueExpression extends ValueExpression {
     /*
      * (non-Javadoc)
      *
-     * @see javax.el.ValueExpression#getExpectedType()
+     * @see jakarta.el.ValueExpression#getExpectedType()
      */
     @Override
     public Class getExpectedType() {
@@ -117,37 +117,37 @@ public final class IteratedValueExpression extends ValueExpression {
     /*
      * (non-Javadoc)
      *
-     * @see javax.el.Expression#getExpressionString()
+     * @see jakarta.el.Expression#getExpressionString()
      */
     @Override
     public String getExpressionString() {
-        return this.orig.getExpressionString();
+        return orig.getExpressionString();
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see javax.el.Expression#equals(java.lang.Object)
+     * @see jakarta.el.Expression#equals(java.lang.Object)
      */
     @Override
     public boolean equals(Object obj) {
-        return this.orig.equals(obj);
+        return orig.equals(obj);
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see javax.el.Expression#hashCode()
+     * @see jakarta.el.Expression#hashCode()
      */
     @Override
     public int hashCode() {
-        return this.orig.hashCode();
+        return orig.hashCode();
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see javax.el.Expression#isLiteralText()
+     * @see jakarta.el.Expression#isLiteralText()
      */
     @Override
     public boolean isLiteralText() {

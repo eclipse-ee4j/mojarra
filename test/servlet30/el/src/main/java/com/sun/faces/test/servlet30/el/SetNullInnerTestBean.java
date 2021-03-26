@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
- * Copyright (c) 2018 Payara Services Limited.
- * All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -21,8 +19,6 @@ package com.sun.faces.test.servlet30.el;
 import java.io.Serializable;
 
 public class SetNullInnerTestBean implements Serializable {
-
-    private static final long serialVersionUID = 1L;
 
     public String getTest4() {
         return "You should not see me!";

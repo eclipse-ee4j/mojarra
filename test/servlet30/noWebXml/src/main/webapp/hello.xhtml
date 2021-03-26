@@ -22,15 +22,16 @@
 -->
 
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" xmlns:h="http://java.sun.com/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:h="http://java.sun.com/jsf/html">
     <head>
         <title>Hello JSF 2!</title>
     </head>
-    
     <body>
         <h:form id="form">
-            <h:inputText id="string" value="#{hello.fname}" />
-            <h:commandButton id="command" value="submit" action="submit?faces-redirect=true"/>
+            <h:inputText id="string"
+                         value="#{hello.fname}"/>
+            <h:commandButton id="command" value="submit" action="submit?faces-redirect=true"></h:commandButton>
         </h:form>
     </body>
 </html>

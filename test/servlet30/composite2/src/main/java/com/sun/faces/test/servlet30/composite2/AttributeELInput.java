@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 2017, 2018 Oracle and/or its affiliates.
- * Copyright (c) 2018 Payara Services Limited.
- * All rights reserved.
+ * Copyright (c) 2017, 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -25,11 +23,13 @@ import javax.faces.component.UINamingContainer;
 public class AttributeELInput extends UINamingContainer {
 
     protected enum PropertyKeys {
+
         mandatory
     }
 
     public Boolean getMandatory() {
-        return (Boolean) getStateHelper().eval(PropertyKeys.mandatory);
+        Boolean val = (Boolean) getStateHelper().eval(PropertyKeys.mandatory);
+        return val;
     }
 
     public void setMandatory(Boolean val) {

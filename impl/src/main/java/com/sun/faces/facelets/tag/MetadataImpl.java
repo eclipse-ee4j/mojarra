@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,11 +16,11 @@
 
 package com.sun.faces.facelets.tag;
 
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.Metadata;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.Metadata;
 
 /**
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -28,16 +28,16 @@ final class MetadataImpl extends Metadata {
 
     private final Metadata[] mappers;
     private final int size;
-    
+
     public MetadataImpl(Metadata[] mappers) {
         this.mappers = mappers;
-        this.size = mappers.length;
+        size = mappers.length;
     }
 
     @Override
     public void applyMetadata(FaceletContext ctx, Object instance) {
         for (int i = 0; i < size; i++) {
-            this.mappers[i].applyMetadata(ctx, instance);
+            mappers[i].applyMetadata(ctx, instance);
         }
     }
 

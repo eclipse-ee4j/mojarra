@@ -16,18 +16,14 @@
 
 package com.sun.faces.test.servlet30.ajax;
 
-import static org.junit.Assert.assertTrue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.DomNodeList;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.junit.*;
+import static org.junit.Assert.*;
 
 public class Issue1817IT {
 
@@ -48,13 +44,10 @@ public class Issue1817IT {
     @Test
     public void testAjaxUIRepeat() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/issue1817.xhtml");
-        DomNodeList<DomElement> elements = page.getElementsByTagName("a");
-
+        final DomNodeList<DomElement> elements = page.getElementsByTagName("a");
         for (DomElement elem : elements) {
             webClient.waitForBackgroundJavaScript(60000);
-
             System.out.println(elem);
-
             HtmlElement anchor = page.getHtmlElementById(elem.getId());
             page = anchor.click();
             webClient.waitForBackgroundJavaScript(60000);

@@ -19,6 +19,8 @@ package com.sun.faces.facelets.tag.jsp;
 import com.sun.faces.util.Util;
 import java.io.IOException;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.component.UIComponent;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -27,6 +29,9 @@ import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
+
+
+
 
 public class UseBeanHandler extends TagHandler {
 
@@ -50,7 +55,6 @@ public class UseBeanHandler extends TagHandler {
         this.beanName = this.getAttribute("beanName");
     }
 
-    @Override
     public void apply(FaceletContext fc, UIComponent uic) throws IOException {
         FacesContext facesContext = fc.getFacesContext();
         ExternalContext extContext = facesContext.getExternalContext();
@@ -72,12 +76,12 @@ public class UseBeanHandler extends TagHandler {
                 throw new FaceletException("Invalid scope name " + scopeName + ".");
             }
         }
-        assert (null != scopeMap);
+        assert(null != scopeMap);
         String idVal = this.id.getValue(fc);
         Object bean = scopeMap.get(idVal);
         boolean instantiatedByThisMetod = null != bean;
 
-        if (!instantiatedByThisMetod) {
+        if(!instantiatedByThisMetod) {
             // case 1 we have a class with an optional type
             // case 2 we have a beanName and type
             // case 3 we can have just a type
@@ -122,5 +126,7 @@ public class UseBeanHandler extends TagHandler {
             nextHandler.apply(fc, uic);
         }
     }
+
+
 
 }

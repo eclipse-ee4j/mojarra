@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,13 +19,10 @@ package com.sun.faces.renderkit.html_basic;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.WebConfiguration;
@@ -33,20 +30,21 @@ import com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter;
 import com.sun.faces.io.FastStringWriter;
 import com.sun.faces.util.HtmlUtils;
 import com.sun.faces.util.MessageUtils;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import javax.el.ValueExpression;
-import javax.faces.context.ExternalContext;
-import javax.faces.render.Renderer;
 
+import jakarta.el.ValueExpression;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.render.Renderer;
 
 /**
- * <p><strong>HtmlResponseWriter</strong> is an Html specific implementation
- * of the <code>ResponseWriter</code> abstract class.
- * Kudos to Adam Winer (Oracle) for much of this code.
+ * <p>
+ * <strong>HtmlResponseWriter</strong> is an Html specific implementation of the <code>ResponseWriter</code> abstract
+ * class. Kudos to Adam Winer (Oracle) for much of this code.
  */
 public class HtmlResponseWriter extends ResponseWriter {
-
 
     // Content Type for this Writer.
     //
@@ -69,7 +67,7 @@ public class HtmlResponseWriter extends ResponseWriter {
     //
     private WebConfiguration.DisableUnicodeEscaping disableUnicodeEscaping;
 
-    //Flag to escape Unicode
+    // Flag to escape Unicode
     //
     private boolean escapeUnicode;
 
@@ -78,7 +76,7 @@ public class HtmlResponseWriter extends ResponseWriter {
     private boolean escapeIso;
 
     // True when we shouldn't be escaping output (basically,
-    // inside of <script> and <style> elements).   Note
+    // inside of <script> and <style> elements). Note
     // that this will *not* be set for CDATA blocks - that's
     // instead the writingCdata flag
     //
@@ -122,7 +120,7 @@ public class HtmlResponseWriter extends ResponseWriter {
     // of all attributes for a particular element to reduce the number
     // of writes
     private FastStringWriter attributesBuffer;
-    
+
     // Enables hiding of inlined script and style
     // elements from old browsers
     private Boolean isScriptHidingEnabled;
@@ -143,12 +141,12 @@ public class HtmlResponseWriter extends ResponseWriter {
     // Secondary cdata buffer, used for writeText
     private final static int cdataTextBufferSize = 128;
     private char[] cdataTextBuffer = new char[cdataTextBufferSize];
-    
+
     private Map<String, Object> passthroughAttributes;
 
     // Internal buffer for to store the result of String.getChars() for
     // values passed to the writer as String to reduce the overhead
-    // of String.charAt().  This buffer will be grown, if necessary, to
+    // of String.charAt(). This buffer will be grown, if necessary, to
     // accomodate larger values.
     private char[] textBuffer = new char[128];
 
@@ -157,13 +155,13 @@ public class HtmlResponseWriter extends ResponseWriter {
     private LinkedList<String> elementNames;
 
     private static final String BREAKCDATA = "]]><![CDATA[";
-    private static final char[] ESCAPEDSINGLEBRACKET = ("]"+BREAKCDATA).toCharArray();
-    private static final char[] ESCAPEDLT= ("&lt;"+BREAKCDATA).toCharArray();
-    private static final char[] ESCAPEDSTART= ("&lt;"+BREAKCDATA+"![").toCharArray();
-    private static final char[] ESCAPEDEND= ("]"+BREAKCDATA+"]>").toCharArray();
+    private static final char[] ESCAPEDSINGLEBRACKET = ("]" + BREAKCDATA).toCharArray();
+    private static final char[] ESCAPEDLT = ("&lt;" + BREAKCDATA).toCharArray();
+    private static final char[] ESCAPEDSTART = ("&lt;" + BREAKCDATA + "![").toCharArray();
+    private static final char[] ESCAPEDEND = ("]" + BREAKCDATA + "]>").toCharArray();
 
-    private static final int CLOSEBRACKET = (int)']';
-    private static final int LT = (int)'<';
+    private static final int CLOSEBRACKET = ']';
+    private static final int LT = '<';
 
     static final Pattern CDATA_START_SLASH_SLASH;
 
@@ -195,48 +193,41 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     // ------------------------------------------------------------ Constructors
 
-
     /**
-     * Constructor sets the <code>ResponseWriter</code> and
-     * encoding, and enables script hiding by default.
+     * Constructor sets the <code>ResponseWriter</code> and encoding, and enables script hiding by default.
      *
-     * @param writer      the <code>ResponseWriter</code>
+     * @param writer the <code>ResponseWriter</code>
      * @param contentType the content type.
-     * @param encoding    the character encoding.
+     * @param encoding the character encoding.
      *
-     * @throws javax.faces.FacesException the encoding is not recognized.
+     * @throws jakarta.faces.FacesException the encoding is not recognized.
      */
-    public HtmlResponseWriter(Writer writer,
-                              String contentType,
-                              String encoding)
-    throws FacesException {
+    public HtmlResponseWriter(Writer writer, String contentType, String encoding) throws FacesException {
         this(writer, contentType, encoding, null, null, null, false);
     }
 
     /**
-     * <p>Constructor sets the <code>ResponseWriter</code> and
-     * encoding.</p>
+     * <p>
+     * Constructor sets the <code>ResponseWriter</code> and encoding.
+     * </p>
      *
-     * <p>The argument configPrefs is a map of configurable prefs that affect
-     * this instance's behavior.  Supported keys are:</p>
+     * <p>
+     * The argument configPrefs is a map of configurable prefs that affect this instance's behavior. Supported keys are:
+     * </p>
      *
-     * <p>BooleanWebContextInitParameter.EnableJSStyleHiding: <code>true</code>
-     * if the writer should attempt to hide JS from older browsers</p>
+     * <p>
+     * BooleanWebContextInitParameter.EnableJSStyleHiding: <code>true</code> if the writer should attempt to hide JS from
+     * older browsers
+     * </p>
      *
-     * @param writer      the <code>ResponseWriter</code>
+     * @param writer the <code>ResponseWriter</code>
      * @param contentType the content type.
-     * @param encoding    the character encoding.
+     * @param encoding the character encoding.
      *
-     * @throws javax.faces.FacesException the encoding is not recognized.
+     * @throws jakarta.faces.FacesException the encoding is not recognized.
      */
-    public HtmlResponseWriter(Writer writer,
-                              String contentType,
-                              String encoding,
-                              Boolean isScriptHidingEnabled,
-                              Boolean isScriptInAttributeValueEnabled,
-                              WebConfiguration.DisableUnicodeEscaping disableUnicodeEscaping,
-                              boolean isPartial)
-    throws FacesException {
+    public HtmlResponseWriter(Writer writer, String contentType, String encoding, Boolean isScriptHidingEnabled, Boolean isScriptInAttributeValueEnabled,
+            WebConfiguration.DisableUnicodeEscaping disableUnicodeEscaping, boolean isPartial) throws FacesException {
 
         this.writer = writer;
 
@@ -250,25 +241,21 @@ public class HtmlResponseWriter extends ResponseWriter {
         WebConfiguration webConfig = null;
         if (isScriptHidingEnabled == null) {
             webConfig = getWebConfiguration(webConfig);
-            isScriptHidingEnabled = (null == webConfig) ? BooleanWebContextInitParameter.EnableJSStyleHiding.getDefaultValue() :
-                                webConfig.isOptionEnabled(
-                                BooleanWebContextInitParameter.EnableJSStyleHiding);
+            isScriptHidingEnabled = null == webConfig ? BooleanWebContextInitParameter.EnableJSStyleHiding.getDefaultValue()
+                    : webConfig.isOptionEnabled(BooleanWebContextInitParameter.EnableJSStyleHiding);
         }
 
         if (isScriptInAttributeValueEnabled == null) {
             webConfig = getWebConfiguration(webConfig);
-            isScriptInAttributeValueEnabled = (null == webConfig) ? BooleanWebContextInitParameter.EnableScriptInAttributeValue.getDefaultValue() :
-                             webConfig.isOptionEnabled(
-                             BooleanWebContextInitParameter.EnableScriptInAttributeValue);
+            isScriptInAttributeValueEnabled = null == webConfig ? BooleanWebContextInitParameter.EnableScriptInAttributeValue.getDefaultValue()
+                    : webConfig.isOptionEnabled(BooleanWebContextInitParameter.EnableScriptInAttributeValue);
         }
 
         if (disableUnicodeEscaping == null) {
             webConfig = getWebConfiguration(webConfig);
-            disableUnicodeEscaping =
-                    WebConfiguration.DisableUnicodeEscaping.getByValue(
-                        (null == webConfig) ? WebConfiguration.WebContextInitParameter.DisableUnicodeEscaping.getDefaultValue() :
-                                webConfig.getOptionValue(
-                                 WebConfiguration.WebContextInitParameter.DisableUnicodeEscaping));
+            disableUnicodeEscaping = WebConfiguration.DisableUnicodeEscaping
+                    .getByValue(null == webConfig ? WebConfiguration.WebContextInitParameter.DisableUnicodeEscaping.getDefaultValue()
+                            : webConfig.getOptionValue(WebConfiguration.WebContextInitParameter.DisableUnicodeEscaping));
             if (disableUnicodeEscaping == null) {
                 disableUnicodeEscaping = WebConfiguration.DisableUnicodeEscaping.False;
             }
@@ -280,40 +267,37 @@ public class HtmlResponseWriter extends ResponseWriter {
         this.isScriptInAttributeValueEnabled = isScriptInAttributeValueEnabled;
         this.disableUnicodeEscaping = disableUnicodeEscaping;
 
-        this.attributesBuffer = new FastStringWriter(128);
+        attributesBuffer = new FastStringWriter(128);
 
         // Check the character encoding
         if (!HtmlUtils.validateEncoding(encoding)) {
-            throw new IllegalArgumentException(MessageUtils.getExceptionMessageString(
-                  MessageUtils.ENCODING_ERROR_MESSAGE_ID));
+            throw new IllegalArgumentException(MessageUtils.getExceptionMessageString(MessageUtils.ENCODING_ERROR_MESSAGE_ID));
         }
 
         String charsetName = encoding.toUpperCase();
 
-        switch (disableUnicodeEscaping)
-        {
-            case True:
-                // html escape noting (except the dangerous characters like "<>'" etc
-                escapeUnicode = false;
-                escapeIso = false;
-                break;
-            case False:
-                // html escape any non-ascii character
-                escapeUnicode = true;
-                escapeIso = true;
-                break;
-            case Auto:
-                // is stream capable of rendering unicode, do not escape
-                escapeUnicode = !HtmlUtils.isUTFencoding(charsetName);
-                // is stream capable of rendering unicode or iso-8859-1, do not escape
-                escapeIso = !HtmlUtils.isISO8859_1encoding(charsetName) && !HtmlUtils.isUTFencoding(charsetName);
-                break;
+        switch (disableUnicodeEscaping) {
+        case True:
+            // html escape noting (except the dangerous characters like "<>'" etc
+            escapeUnicode = false;
+            escapeIso = false;
+            break;
+        case False:
+            // html escape any non-ascii character
+            escapeUnicode = true;
+            escapeIso = true;
+            break;
+        case Auto:
+            // is stream capable of rendering unicode, do not escape
+            escapeUnicode = !HtmlUtils.isUTFencoding(charsetName);
+            // is stream capable of rendering unicode or iso-8859-1, do not escape
+            escapeIso = !HtmlUtils.isISO8859_1encoding(charsetName) && !HtmlUtils.isUTFencoding(charsetName);
+            break;
         }
     }
 
     private WebConfiguration getWebConfiguration(WebConfiguration webConfig) {
-        if (webConfig != null)
-        {
+        if (webConfig != null) {
             return webConfig;
         }
 
@@ -329,7 +313,6 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     // -------------------------------------------------- Methods From Closeable
 
-
     /** Methods From <code>java.io.Writer</code> */
 
     @Override
@@ -341,7 +324,6 @@ public class HtmlResponseWriter extends ResponseWriter {
     }
 
     // -------------------------------------------------- Methods From Flushable
-
 
     /**
      * Flush any buffered output to the contained writer.
@@ -364,7 +346,6 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     // ---------------------------------------------------------- Public Methods
 
-
     /** @return the content type such as "text/html" for this ResponseWriter. */
     @Override
     public String getContentType() {
@@ -373,29 +354,22 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     }
 
-
     /**
-     * <p>Create a new instance of this <code>ResponseWriter</code> using
-     * a different <code>Writer</code>.
+     * <p>
+     * Create a new instance of this <code>ResponseWriter</code> using a different <code>Writer</code>.
      *
-     * @param writer The <code>Writer</code> that will be used to create
-     *               another <code>ResponseWriter</code>.
+     * @param writer The <code>Writer</code> that will be used to create another <code>ResponseWriter</code>.
      */
     @Override
     public ResponseWriter cloneWithWriter(Writer writer) {
 
         try {
-            HtmlResponseWriter responseWriter =  new HtmlResponseWriter(writer,
-                                          getContentType(),
-                                          getCharacterEncoding(),
-                                          isScriptHidingEnabled,
-                                          isScriptInAttributeValueEnabled,
-                                          disableUnicodeEscaping,
-                                          isPartial);
-            responseWriter.dontEscape = this.dontEscape;
-            responseWriter.writingCdata = this.writingCdata;
+            HtmlResponseWriter responseWriter = new HtmlResponseWriter(writer, getContentType(), getCharacterEncoding(), isScriptHidingEnabled,
+                    isScriptInAttributeValueEnabled, disableUnicodeEscaping, isPartial);
+            responseWriter.dontEscape = dontEscape;
+            responseWriter.writingCdata = writingCdata;
             return responseWriter;
-            
+
         } catch (FacesException e) {
             // This should never happen
             throw new IllegalStateException();
@@ -403,14 +377,13 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     }
 
-
     /** Output the text for the end of a document. */
     @Override
     public void endDocument() throws IOException {
 
         /*
-         * If the FastStringWriter is kept because of an error in <script>
-         * writing we get it here and write out the result. See issue #3473
+         * If the FastStringWriter is kept because of an error in <script> writing we get it here and write out the result. See
+         * issue #3473
          */
         if (writer instanceof FastStringWriter) {
             FastStringWriter fastStringWriter = (FastStringWriter) writer;
@@ -419,29 +392,26 @@ public class HtmlResponseWriter extends ResponseWriter {
             writer = origWriter;
             writer.write(result);
         }
-        
+
         writer.flush();
 
     }
 
-
     /**
-     * <p>Write the end of an element. This method will first
-     * close any open element created by a call to
+     * <p>
+     * Write the end of an element. This method will first close any open element created by a call to
      * <code>startElement()</code>.
      *
      * @param name Name of the element to be ended
      *
-     * @throws IOException          if an input/output error occurs
-     * @throws NullPointerException if <code>name</code>
-     *                              is <code>null</code>
+     * @throws IOException if an input/output error occurs
+     * @throws NullPointerException if <code>name</code> is <code>null</code>
      */
     @Override
     public void endElement(String name) throws IOException {
 
         if (name == null) {
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(
-                  MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "name"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "name"));
         }
 
         // Keep track when we are exiting a script or style element
@@ -460,12 +430,9 @@ public class HtmlResponseWriter extends ResponseWriter {
             dontEscape = false;
         }
 
-        isXhtml = getContentType().equals(
-            RIConstants.XHTML_CONTENT_TYPE);
+        isXhtml = getContentType().equals(RIConstants.XHTML_CONTENT_TYPE);
 
-        if (isScriptOrStyle(name)
-             && !scriptOrStyleSrc
-             && writer instanceof FastStringWriter) {
+        if (isScriptOrStyle(name) && !scriptOrStyleSrc && writer instanceof FastStringWriter) {
             String result = ((FastStringWriter) writer).getBuffer().toString();
             writer = origWriter;
 
@@ -473,40 +440,30 @@ public class HtmlResponseWriter extends ResponseWriter {
                 String trim = result.trim();
                 if (isXhtml) {
                     if (isScript) {
-                        Matcher
-                            cdataStartSlashSlash =
-                              CDATA_START_SLASH_SLASH.matcher(trim),
-                            cdataEndSlashSlash =
-                              CDATA_END_SLASH_SLASH.matcher(trim),
-                            cdataStartSlashStar =
-                              CDATA_START_SLASH_STAR.matcher(trim),
-                            cdataEndSlashStar =
-                              CDATA_END_SLASH_STAR.matcher(trim);
+                        Matcher cdataStartSlashSlash = CDATA_START_SLASH_SLASH.matcher(trim), cdataEndSlashSlash = CDATA_END_SLASH_SLASH.matcher(trim),
+                                cdataStartSlashStar = CDATA_START_SLASH_STAR.matcher(trim), cdataEndSlashStar = CDATA_END_SLASH_STAR.matcher(trim);
                         int trimLen = trim.length(), start, end;
                         // case 1 start is // end is //
-                        if (cdataStartSlashSlash.find() &&
-                            cdataEndSlashSlash.find()) {
+                        if (cdataStartSlashSlash.find() && cdataEndSlashSlash.find()) {
                             start = cdataStartSlashSlash.end() - cdataStartSlashSlash.start();
                             end = trimLen - (cdataEndSlashSlash.end() - cdataEndSlashSlash.start());
                             writer.write(trim.substring(start, end));
                         }
                         // case 2 start is // end is /* */
-                        else if ((null != cdataStartSlashSlash.reset() && cdataStartSlashSlash.find()) &&
-                                 cdataEndSlashStar.find()) {
+                        else if (null != cdataStartSlashSlash.reset() && cdataStartSlashSlash.find() && cdataEndSlashStar.find()) {
                             start = cdataStartSlashSlash.end() - cdataStartSlashSlash.start();
                             end = trimLen - (cdataEndSlashStar.end() - cdataEndSlashStar.start());
                             writer.write(trim.substring(start, end));
                         }
                         // case 3 start is /* */ end is /* */
-                        else if (cdataStartSlashStar.find() &&
-                                 (null != cdataEndSlashStar.reset() && cdataEndSlashStar.find())) {
+                        else if (cdataStartSlashStar.find() && null != cdataEndSlashStar.reset() && cdataEndSlashStar.find()) {
                             start = cdataStartSlashStar.end() - cdataStartSlashStar.start();
                             end = trimLen - (cdataEndSlashStar.end() - cdataEndSlashStar.start());
                             writer.write(trim.substring(start, end));
                         }
                         // case 4 start is /* */ end is //
-                        else if ((null != cdataStartSlashStar.reset() && cdataStartSlashStar.find()) &&
-                                 (null != cdataEndSlashStar.reset() && cdataEndSlashSlash.find())) {
+                        else if (null != cdataStartSlashStar.reset() && cdataStartSlashStar.find()
+                                && null != cdataEndSlashStar.reset() && cdataEndSlashSlash.find()) {
                             start = cdataStartSlashStar.end() - cdataStartSlashStar.start();
                             end = trimLen - (cdataEndSlashSlash.end() - cdataEndSlashSlash.start());
                             writer.write(trim.substring(start, end));
@@ -544,11 +501,16 @@ public class HtmlResponseWriter extends ResponseWriter {
                 }
             }
         }
-        isScript = false;
-        isStyle = false;
-        
-        dontEscape = false;
-        
+
+        if (!withinScript || isScript) {
+            isScript = false;
+        } else if (!withinStyle || isStyle) {
+            isStyle = false;
+        }
+        if (!withinScript && !withinScript) {
+            dontEscape = false;
+        }
+
         if ("cdata".equalsIgnoreCase(name)) {
             endCDATA();
             return;
@@ -578,12 +540,9 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     }
 
-
     /**
-     * @return the character encoding, such as "ISO-8859-1" for this
-     *         ResponseWriter.  Refer to:
-     *         <a href="http://www.iana.org/assignments/character-sets">theIANA</a>
-     *         for a list of character encodings.
+     * @return the character encoding, such as "ISO-8859-1" for this ResponseWriter. Refer to:
+     * <a href="http://www.iana.org/assignments/character-sets">theIANA</a> for a list of character encodings.
      */
     @Override
     public String getCharacterEncoding() {
@@ -592,9 +551,10 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     }
 
-
     /**
-     * <p>Write the text that should begin a response.</p>
+     * <p>
+     * Write the text that should begin a response.
+     * </p>
      *
      * @throws IOException if an input/output error occurs
      */
@@ -605,28 +565,23 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     }
 
-
     /**
-     * <p>Write the start of an element, up to and including the
-     * element name.  Clients call <code>writeAttribute()</code> or
-     * <code>writeURIAttribute()</code> methods to add attributes after
-     * calling this method.
+     * <p>
+     * Write the start of an element, up to and including the element name. Clients call <code>writeAttribute()</code> or
+     * <code>writeURIAttribute()</code> methods to add attributes after calling this method.
      *
-     * @param name                Name of the starting element
-     * @param componentForElement The UIComponent instance that applies to this
-     *                            element.  This argument may be <code>null</code>.
+     * @param name Name of the starting element
+     * @param componentForElement The UIComponent instance that applies to this element. This argument may be
+     * <code>null</code>.
      *
-     * @throws IOException          if an input/output error occurs
-     * @throws NullPointerException if <code>name</code>
-     *                              is <code>null</code>
+     * @throws IOException if an input/output error occurs
+     * @throws NullPointerException if <code>name</code> is <code>null</code>
      */
     @Override
-    public void startElement(String name, UIComponent componentForElement)
-          throws IOException {
+    public void startElement(String name, UIComponent componentForElement) throws IOException {
 
         if (name == null) {
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(
-                  MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "name"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "name"));
         }
 
         // Keep track if we are in either a script or style element so we
@@ -664,14 +619,13 @@ public class HtmlResponseWriter extends ResponseWriter {
         writer.write('<');
         String elementName = pushElementName(name);
         writer.write(elementName);
-        
+
         closeStart = true;
 
     }
 
-
     /**
-     * Starts a CDATA block.  Nested blocks are not allowed.
+     * Starts a CDATA block. Nested blocks are not allowed.
      *
      * @since 2.0
      * @throws IOException on a read/write error
@@ -683,7 +637,7 @@ public class HtmlResponseWriter extends ResponseWriter {
         if (writingCdata) {
             throw new IllegalStateException("CDATA tags may not nest");
         }
-        closeStartIfNecessary();        
+        closeStartIfNecessary();
         writingCdata = true;
         writer.write("<![CDATA[");
         closeStart = false;
@@ -733,33 +687,27 @@ public class HtmlResponseWriter extends ResponseWriter {
         writer.write(str, off, len);
     }
 
-
     /**
-     * <p>Write a properly escaped attribute name and the corresponding
-     * value.  The value text will be converted to a String if
-     * necessary.  This method may only be called after a call to
-     * <code>startElement()</code>, and before the opened element has been
-     * closed.</p>
+     * <p>
+     * Write a properly escaped attribute name and the corresponding value. The value text will be converted to a String if
+     * necessary. This method may only be called after a call to <code>startElement()</code>, and before the opened element
+     * has been closed.
+     * </p>
      *
-     * @param name                  Attribute name to be added
-     * @param value                 Attribute value to be added
-     * @param componentPropertyName The name of the component property to
-     *                              which this attribute argument applies.  This argument may be
-     *                              <code>null</code>.
+     * @param name Attribute name to be added
+     * @param value Attribute value to be added
+     * @param componentPropertyName The name of the component property to which this attribute argument applies. This
+     * argument may be <code>null</code>.
      *
-     * @throws IllegalStateException if this method is called when there
-     *                               is no currently open element
-     * @throws IOException           if an input/output error occurs
-     * @throws NullPointerException  if <code>name</code> is <code>null</code>
+     * @throws IllegalStateException if this method is called when there is no currently open element
+     * @throws IOException if an input/output error occurs
+     * @throws NullPointerException if <code>name</code> is <code>null</code>
      */
     @Override
-    public void writeAttribute(String name, Object value,
-                               String componentPropertyName)
-          throws IOException {
+    public void writeAttribute(String name, Object value, String componentPropertyName) throws IOException {
 
         if (name == null) {
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(
-                  MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "name"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "name"));
         }
         if (value == null) {
             return;
@@ -768,7 +716,7 @@ public class HtmlResponseWriter extends ResponseWriter {
         if (isCdata) {
             return;
         }
-        
+
         if (containsPassThroughAttribute(name)) {
             return;
         }
@@ -782,11 +730,11 @@ public class HtmlResponseWriter extends ResponseWriter {
         // Output Boolean values specially
         if (valueClass == Boolean.class) {
             if (Boolean.TRUE.equals(value)) {
-                // NOTE:  HTML 4.01 states that boolean attributes
-                //        may legally take a single value which is the
-                //        name of the attribute itself or appear using
-                //        minimization.
-                //  http://www.w3.org/TR/html401/intro/sgmltut.html#h-3.3.4.2
+                // NOTE: HTML 4.01 states that boolean attributes
+                // may legally take a single value which is the
+                // name of the attribute itself or appear using
+                // minimization.
+                // http://www.w3.org/TR/html401/intro/sgmltut.html#h-3.3.4.2
                 attributesBuffer.write(' ');
                 attributesBuffer.write(name);
                 attributesBuffer.write("=\"");
@@ -800,38 +748,28 @@ public class HtmlResponseWriter extends ResponseWriter {
             // write the attribute value
             String val = value.toString();
             ensureTextBufferCapacity(val);
-            HtmlUtils.writeAttribute(attributesBuffer,
-                                     escapeUnicode,
-                                     escapeIso,
-                                     buffer,
-                                     val,
-                                     textBuffer,
-                                     isScriptInAttributeValueEnabled);
+            HtmlUtils.writeAttribute(attributesBuffer, escapeUnicode, escapeIso, buffer, val, textBuffer, isScriptInAttributeValueEnabled);
             attributesBuffer.write('"');
         }
 
     }
 
-
     /**
-     * <p>Write a comment string containing the specified text.
-     * The text will be converted to a String if necessary.
-     * If there is an open element that has been created by a call
-     * to <code>startElement()</code>, that element will be closed
-     * first.</p>
+     * <p>
+     * Write a comment string containing the specified text. The text will be converted to a String if necessary. If there
+     * is an open element that has been created by a call to <code>startElement()</code>, that element will be closed first.
+     * </p>
      *
      * @param comment Text content of the comment
      *
-     * @throws IOException          if an input/output error occurs
-     * @throws NullPointerException if <code>comment</code>
-     *                              is <code>null</code>
+     * @throws IOException if an input/output error occurs
+     * @throws NullPointerException if <code>comment</code> is <code>null</code>
      */
     @Override
     public void writeComment(Object comment) throws IOException {
 
         if (comment == null) {
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(
-                  MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID));
         }
 
         if (writingCdata) {
@@ -850,14 +788,15 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     }
 
-
     /**
-     * <p>Write a properly escaped single character, If there
-     * is an open element that has been created by a call to
-     * <code>startElement()</code>, that element will be closed first.</p>
+     * <p>
+     * Write a properly escaped single character, If there is an open element that has been created by a call to
+     * <code>startElement()</code>, that element will be closed first.
+     * </p>
      * <p/>
-     * <p>All angle bracket occurrences in the argument must be escaped
-     * using the &amp;gt; &amp;lt; syntax.</p>
+     * <p>
+     * All angle bracket occurrences in the argument must be escaped using the &amp;gt; &amp;lt; syntax.
+     * </p>
      *
      * @param text Text to be written
      *
@@ -876,7 +815,7 @@ public class HtmlResponseWriter extends ResponseWriter {
         } else if (isPartial || !writingCdata) {
             charHolder[0] = text;
             HtmlUtils.writeText(writer, escapeUnicode, escapeIso, buffer, charHolder);
-        } else {  // if writingCdata
+        } else { // if writingCdata
             assert writingCdata;
             charHolder[0] = text;
             writeEscaped(charHolder, 0, 1);
@@ -884,31 +823,31 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     }
 
-
     /**
-     * <p>Write properly escaped text from a character array.
-     * The output from this command is identical to the invocation:
-     * <code>writeText(c, 0, c.length)</code>.
-     * If there is an open element that has been created by a call to
-     * <code>startElement()</code>, that element will be closed first.</p>
+     * <p>
+     * Write properly escaped text from a character array. The output from this command is identical to the invocation:
+     * <code>writeText(c, 0, c.length)</code>. If there is an open element that has been created by a call to
+     * <code>startElement()</code>, that element will be closed first.
+     * </p>
      * </p>
      * <p/>
-     * <p>All angle bracket occurrences in the argument must be escaped
-     * using the &amp;gt; &amp;lt; syntax.</p>
+     * <p>
+     * All angle bracket occurrences in the argument must be escaped using the &amp;gt; &amp;lt; syntax.
+     * </p>
      *
      * @param text Text to be written
      *
-     * @throws IOException          if an input/output error occurs
-     * @throws NullPointerException if <code>text</code>
-     *                              is <code>null</code>
+     * @throws IOException if an input/output error occurs
+     * @throws NullPointerException if <code>text</code> is <code>null</code>
      */
     public void writeText(char text[]) throws IOException {
 
         if (text == null) {
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(
-                  MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "text"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "text"));
         }
         closeStartIfNecessary();
+
+        if (text.length == 0) return;
 
         if (dontEscape) {
             if (writingCdata) {
@@ -925,31 +864,29 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     }
 
-
     /**
-     * <p>Write a properly escaped object. The object will be converted
-     * to a String if necessary.  If there is an open element
-     * that has been created by a call to <code>startElement()</code>,
-     * that element will be closed first.</p>
+     * <p>
+     * Write a properly escaped object. The object will be converted to a String if necessary. If there is an open element
+     * that has been created by a call to <code>startElement()</code>, that element will be closed first.
+     * </p>
      *
-     * @param text                  Text to be written
-     * @param componentPropertyName The name of the component property to
-     *                              which this text argument applies.  This argument may be <code>null</code>.
+     * @param text Text to be written
+     * @param componentPropertyName The name of the component property to which this text argument applies. This argument
+     * may be <code>null</code>.
      *
-     * @throws IOException          if an input/output error occurs
-     * @throws NullPointerException if <code>text</code>
-     *                              is <code>null</code>
+     * @throws IOException if an input/output error occurs
+     * @throws NullPointerException if <code>text</code> is <code>null</code>
      */
     @Override
-    public void writeText(Object text, String componentPropertyName)
-          throws IOException {
+    public void writeText(Object text, String componentPropertyName) throws IOException {
 
         if (text == null) {
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(
-                  MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "text"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "text"));
         }
         closeStartIfNecessary();
         String textStr = text.toString();
+
+        if (textStr.length() == 0) return;
 
         if (dontEscape) {
             if (writingCdata) {
@@ -959,12 +896,7 @@ public class HtmlResponseWriter extends ResponseWriter {
             }
         } else if (isPartial || !writingCdata) {
             ensureTextBufferCapacity(textStr);
-            HtmlUtils.writeText(writer,
-                                escapeUnicode,
-                                escapeIso,
-                                buffer,
-                                textStr,
-                                textBuffer);
+            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, buffer, textStr, textBuffer);
         } else { // if writingCdata
             assert writingCdata;
             int textLen = textStr.length();
@@ -974,7 +906,7 @@ public class HtmlResponseWriter extends ResponseWriter {
                 textStr.getChars(0, textLen, cdataTextBuffer, 0);
                 writeEscaped(cdataTextBuffer, 0, textLen);
             } else { // <16
-                for (int i=0; i < textLen;  i++)  {
+                for (int i = 0; i < textLen; i++) {
                     cdataTextBuffer[i] = textStr.charAt(i);
                 }
                 writeEscaped(cdataTextBuffer, 0, textLen);
@@ -982,33 +914,30 @@ public class HtmlResponseWriter extends ResponseWriter {
         }
     }
 
-
     /**
-     * <p>Write properly escaped text from a character array.
-     * If there is an open element that has been created by a call
-     * to <code>startElement()</code>, that element will be closed
-     * first.</p>
+     * <p>
+     * Write properly escaped text from a character array. If there is an open element that has been created by a call to
+     * <code>startElement()</code>, that element will be closed first.
+     * </p>
      * <p/>
-     * <p>All angle bracket occurrences in the argument must be escaped
-     * using the &amp;gt; &amp;lt; syntax.</p>
+     * <p>
+     * All angle bracket occurrences in the argument must be escaped using the &amp;gt; &amp;lt; syntax.
+     * </p>
      *
      * @param text Text to be written
-     * @param off  Starting offset (zero-relative)
-     * @param len  Number of characters to be written
+     * @param off Starting offset (zero-relative)
+     * @param len Number of characters to be written
      *
-     * @throws IndexOutOfBoundsException if the calculated starting or
-     *                                   ending position is outside the bounds of the character array
-     * @throws IOException               if an input/output error occurs
-     * @throws NullPointerException      if <code>text</code>
-     *                                   is <code>null</code>
+     * @throws IndexOutOfBoundsException if the calculated starting or ending position is outside the bounds of the
+     * character array
+     * @throws IOException if an input/output error occurs
+     * @throws NullPointerException if <code>text</code> is <code>null</code>
      */
     @Override
-    public void writeText(char text[], int off, int len)
-          throws IOException {
+    public void writeText(char text[], int off, int len) throws IOException {
 
         if (text == null) {
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(
-                  MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "text"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "text"));
         }
         if (off < 0 || off > text.length || len < 0 || len > text.length) {
             throw new IndexOutOfBoundsException();
@@ -1016,7 +945,9 @@ public class HtmlResponseWriter extends ResponseWriter {
         closeStartIfNecessary();
 
         // optimize away zero length write, called by Facelets to close tags
-        if (len == 0) return;
+        if (len == 0) {
+            return;
+        }
 
         if (dontEscape) {
             if (writingCdata) {
@@ -1033,54 +964,45 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     }
 
-
     /**
-     * <p>Write a properly encoded URI attribute name and the corresponding
-     * value. The value text will be converted to a String if necessary).
-     * This method may only be called after a call to
-     * <code>startElement()</code>, and before the opened element has been
-     * closed.</p>
+     * <p>
+     * Write a properly encoded URI attribute name and the corresponding value. The value text will be converted to a String
+     * if necessary). This method may only be called after a call to <code>startElement()</code>, and before the opened
+     * element has been closed.
+     * </p>
      *
-     * @param name                  Attribute name to be added
-     * @param value                 Attribute value to be added
-     * @param componentPropertyName The name of the component property to
-     *                              which this attribute argument applies.  This argument may be
-     *                              <code>null</code>.
+     * @param name Attribute name to be added
+     * @param value Attribute value to be added
+     * @param componentPropertyName The name of the component property to which this attribute argument applies. This
+     * argument may be <code>null</code>.
      *
-     * @throws IllegalStateException if this method is called when there
-     *                               is no currently open element
-     * @throws IOException           if an input/output error occurs
-     * @throws NullPointerException  if <code>name</code> or
-     *                               <code>value</code> is <code>null</code>
+     * @throws IllegalStateException if this method is called when there is no currently open element
+     * @throws IOException if an input/output error occurs
+     * @throws NullPointerException if <code>name</code> or <code>value</code> is <code>null</code>
      */
     @Override
-    public void writeURIAttribute(String name, Object value,
-                                  String componentPropertyName)
-          throws IOException {
+    public void writeURIAttribute(String name, Object value, String componentPropertyName) throws IOException {
         if (null != name && containsPassThroughAttribute(name)) {
             return;
         }
-        writeURIAttributeIgnoringPassThroughAttributes(name, value, 
-                componentPropertyName, false);
+        writeURIAttributeIgnoringPassThroughAttributes(name, value, componentPropertyName, false);
 
     }
-    
-    private void writeURIAttributeIgnoringPassThroughAttributes(String name, Object value,
-            String componentPropertyName, boolean isPassthrough) throws IOException {
-        
+
+    private void writeURIAttributeIgnoringPassThroughAttributes(String name, Object value, String componentPropertyName, boolean isPassthrough)
+            throws IOException {
+
         if (name == null) {
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(
-                  MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "name"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "name"));
         }
         if (value == null) {
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(
-                  MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "value"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "value"));
         }
 
         if (isCdata) {
             return;
         }
-        
+
         if (name.equals(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY)) {
             return;
         }
@@ -1097,18 +1019,9 @@ public class HtmlResponseWriter extends ResponseWriter {
         ensureTextBufferCapacity(stringValue);
         // Javascript URLs should not be URL-encoded
         if (stringValue.startsWith("javascript:") || isPassthrough) {
-            HtmlUtils.writeAttribute(attributesBuffer,
-                                     escapeUnicode,
-                                     escapeIso,
-                                     buffer,
-                                     stringValue,
-                                     textBuffer,
-                                     isScriptInAttributeValueEnabled);
+            HtmlUtils.writeAttribute(attributesBuffer, escapeUnicode, escapeIso, buffer, stringValue, textBuffer, isScriptInAttributeValueEnabled);
         } else {
-            HtmlUtils.writeURL(attributesBuffer,
-                               stringValue,
-                               textBuffer,
-                               encoding);
+            HtmlUtils.writeURL(attributesBuffer, stringValue, textBuffer, encoding);
         }
 
         attributesBuffer.write('"');
@@ -1128,8 +1041,8 @@ public class HtmlResponseWriter extends ResponseWriter {
     }
 
     /**
-     * This method automatically closes a previous element (if not
-     * already closed).
+     * This method automatically closes a previous element (if not already closed).
+     *
      * @throws IOException if an error occurs writing
      */
     private void closeStartIfNecessary() throws IOException {
@@ -1139,8 +1052,7 @@ public class HtmlResponseWriter extends ResponseWriter {
             writer.write('>');
             closeStart = false;
             if (isScriptOrStyle() && !scriptOrStyleSrc) {
-                isXhtml = getContentType().equals(
-                     RIConstants.XHTML_CONTENT_TYPE);
+                isXhtml = getContentType().equals(RIConstants.XHTML_CONTENT_TYPE);
                 if (isXhtml) {
                     if (!writingCdata) {
                         if (isScript) {
@@ -1166,16 +1078,16 @@ public class HtmlResponseWriter extends ResponseWriter {
         }
 
     }
-    
+
     private void considerPassThroughAttributes(Map<String, Object> toCopy) {
-        assert(null != toCopy && !toCopy.isEmpty());
-        
+        assert null != toCopy && !toCopy.isEmpty();
+
         if (null != passthroughAttributes) {
             throw new IllegalStateException("Error, this method should only be called once per instance.");
         }
         passthroughAttributes = new ConcurrentHashMap<>(toCopy);
     }
-    
+
     private boolean containsPassThroughAttribute(String attrName) {
         boolean result = false;
         if (null != passthroughAttributes) {
@@ -1184,11 +1096,9 @@ public class HtmlResponseWriter extends ResponseWriter {
         return result;
     }
 
-
     private void flushAttributes() throws IOException {
-        boolean hasPassthroughAttributes = 
-                null != passthroughAttributes && !passthroughAttributes.isEmpty();
-        
+        boolean hasPassthroughAttributes = null != passthroughAttributes && !passthroughAttributes.isEmpty();
+
         if (hasPassthroughAttributes) {
             FacesContext context = FacesContext.getCurrentInstance();
             for (Map.Entry<String, Object> entry : passthroughAttributes.entrySet()) {
@@ -1201,7 +1111,6 @@ public class HtmlResponseWriter extends ResponseWriter {
             }
         }
 
-
         // a little complex, but the end result is, potentially, two
         // fewer temp objects created per call.
         StringBuilder b = attributesBuffer.getBuffer();
@@ -1209,7 +1118,7 @@ public class HtmlResponseWriter extends ResponseWriter {
         if (totalLength != 0) {
             int curIdx = 0;
             while (curIdx < totalLength) {
-                if ((totalLength - curIdx) > buffer.length) {
+                if (totalLength - curIdx > buffer.length) {
                     int end = curIdx + buffer.length;
                     b.getChars(curIdx, end, buffer, 0);
                     writer.write(buffer);
@@ -1223,12 +1132,12 @@ public class HtmlResponseWriter extends ResponseWriter {
             }
             attributesBuffer.reset();
         }
-        
+
         if (hasPassthroughAttributes) {
             passthroughAttributes.clear();
             passthroughAttributes = null;
         }
-        
+
     }
 
     private String getAttributeValue(FacesContext context, Object valObj) {
@@ -1243,26 +1152,26 @@ public class HtmlResponseWriter extends ResponseWriter {
     }
 
     private String pushElementName(String original) {
-        
+
         if (original.equals("option")) {
-            if(elementNames == null) {
+            if (elementNames == null) {
                 elementNames = new LinkedList<>();
             }
             elementNames.push(original);
             return original;
         }
-        
+
         String name = getElementName(original);
 
-        if(passthroughAttributes != null) {
+        if (passthroughAttributes != null) {
             passthroughAttributes.remove(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY);
-            if(passthroughAttributes.isEmpty()) {
+            if (passthroughAttributes.isEmpty()) {
                 passthroughAttributes = null;
             }
         }
 
-        if(!original.equals(name) || elementNames != null) {
-            if(elementNames == null) {
+        if (!original.equals(name) || elementNames != null) {
+            if (elementNames == null) {
                 elementNames = new LinkedList<>();
             }
             elementNames.push(name);
@@ -1271,18 +1180,18 @@ public class HtmlResponseWriter extends ResponseWriter {
     }
 
     private String popElementName(String original) {
-        if(elementNames == null || elementNames.isEmpty()) {
+        if (elementNames == null || elementNames.isEmpty()) {
             return original;
         }
         return elementNames.pop();
     }
 
     private String getElementName(String name) {
-        if(containsPassThroughAttribute(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY)) {
+        if (containsPassThroughAttribute(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY)) {
             FacesContext context = FacesContext.getCurrentInstance();
 
             String elementName = getAttributeValue(context, passthroughAttributes.get(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY));
-            if(elementName != null && elementName.trim().length() > 0) {
+            if (elementName != null && elementName.trim().length() > 0) {
                 return elementName;
             }
         }
@@ -1304,124 +1213,125 @@ public class HtmlResponseWriter extends ResponseWriter {
             }
         }
 
-        return (isScript || isStyle);
+        return isScript || isStyle;
     }
 
     private boolean isScriptOrStyle() {
-        return (isScript || isStyle);
+        return isScript || isStyle;
     }
 
-/*
- *  Method to escape all CDATA instances in a character array, then write to writer.
- *
- * This method looks for occurrences of "<![" and "]]>"
- */
-private void writeEscaped(char cbuf[], int offset, int length) throws IOException {
-    if (cbuf == null || cbuf.length == 0 || length == 0) {
-        return;
-    }
+    /*
+     * Method to escape all CDATA instances in a character array, then write to writer.
+     *
+     * This method looks for occurrences of "<![" and "]]>"
+     */
+    private void writeEscaped(char cbuf[], int offset, int length) throws IOException {
+        if (cbuf == null || cbuf.length == 0 || length == 0) {
+            return;
+        }
 
-   if (offset < 0 || length < 0 || offset + length > cbuf.length ) {
-        throw new IndexOutOfBoundsException("off < 0 || len < 0 || off + len > cbuf.length");
-   }
+        if (offset < 0 || length < 0 || offset + length > cbuf.length) {
+            throw new IndexOutOfBoundsException("off < 0 || len < 0 || off + len > cbuf.length");
+        }
 
-    // Single char case
-    if (length == 1) {
-        if (cbuf[offset] == '<') {
-            appendBuffer(ESCAPEDLT);
-        } else if (cbuf[offset] == ']') {
-            appendBuffer(ESCAPEDSINGLEBRACKET);
-        } else {
-            appendBuffer(cbuf[offset]);
+        // Single char case
+        if (length == 1) {
+            if (cbuf[offset] == '<') {
+                appendBuffer(ESCAPEDLT);
+            } else if (cbuf[offset] == ']') {
+                appendBuffer(ESCAPEDSINGLEBRACKET);
+            } else {
+                appendBuffer(cbuf[offset]);
+            }
+            flushBuffer();
+            return;
+        }
+        // two char case
+        if (length == 2) {
+            if (cbuf[offset] == '<' && cbuf[offset + 1] == '!') {
+                appendBuffer(ESCAPEDLT);
+                appendBuffer(cbuf[offset + 1]);
+            } else if (cbuf[offset] == ']' && cbuf[offset + 1] == ']') {
+                appendBuffer(ESCAPEDSINGLEBRACKET);
+                appendBuffer(ESCAPEDSINGLEBRACKET);
+            } else {
+                appendBuffer(cbuf[offset]);
+                appendBuffer(cbuf[offset + 1]);
+            }
+            flushBuffer();
+            return;
+        }
+        // > 2 char case
+        boolean last = false;
+        for (int i = offset; i < length - 2; i++) {
+            if (cbuf[i] == '<' && cbuf[i + 1] == '!' && cbuf[i + 2] == '[') {
+                appendBuffer(ESCAPEDSTART);
+                i += 2;
+            } else if (cbuf[i] == ']' && cbuf[i + 1] == ']' && cbuf[i + 2] == '>') {
+                appendBuffer(ESCAPEDEND);
+                i += 2;
+            } else {
+                appendBuffer(cbuf[i]);
+            }
+            if (i == offset + length - 1) {
+                last = true;
+            }
+        }
+        // if we didn't look at the last characters, look at them now
+        if (!last) {
+            if (cbuf[offset + length - 2] == '<') {
+                appendBuffer(ESCAPEDLT);
+            } else if (cbuf[offset + length - 2] == ']') {
+                appendBuffer(ESCAPEDSINGLEBRACKET);
+            } else {
+                appendBuffer(cbuf[offset + length - 2]);
+            }
+            if (cbuf[offset + length - 1] == '<') {
+                appendBuffer(ESCAPEDLT);
+            } else if (cbuf[offset + length - 1] == ']') {
+                appendBuffer(ESCAPEDSINGLEBRACKET);
+            } else {
+                appendBuffer(cbuf[offset + length - 1]);
+            }
         }
         flushBuffer();
-        return;
     }
-    // two char case
-    if (length == 2) {
-        if (cbuf[offset] == '<' && cbuf[offset + 1] == '!') {
-            appendBuffer(ESCAPEDLT);
-            appendBuffer(cbuf[offset + 1]);
-        } else if (cbuf[offset] == ']' && cbuf[offset + 1] == ']') {
-            appendBuffer(ESCAPEDSINGLEBRACKET);
-            appendBuffer(ESCAPEDSINGLEBRACKET);
-        } else {
-            appendBuffer(cbuf[offset]);
-            appendBuffer(cbuf[offset + 1]);
-        }
-        flushBuffer();
-        return;
-    }
-    // > 2 char case
-    boolean last = false;
-    for (int i = offset; i < length - 2; i++) {
-        if (cbuf[i] == '<' && cbuf[i + 1] == '!' && cbuf[i + 2] == '[') {
-            appendBuffer(ESCAPEDSTART);
-            i += 2;
-        } else if (cbuf[i] == ']' && cbuf[i + 1] == ']' && cbuf[i + 2] == '>') {
-            appendBuffer(ESCAPEDEND);
-            i += 2;
-        } else {
-            appendBuffer(cbuf[i]);
-        }
-        if (i == (offset + length - 1)) {
-            last = true;
-        }
-    }
-    // if we didn't look at the last characters, look at them now
-    if (!last) {
-        if (cbuf[offset + length - 2] == '<') {
-            appendBuffer(ESCAPEDLT);
-        } else if (cbuf[offset + length - 2] == ']') {
-            appendBuffer(ESCAPEDSINGLEBRACKET);
-        } else {
-            appendBuffer(cbuf[offset + length - 2]);
-        }
-        if (cbuf[offset + length - 1] == '<') {
-            appendBuffer(ESCAPEDLT);
-        } else if (cbuf[offset + length - 1] == ']') {
-            appendBuffer(ESCAPEDSINGLEBRACKET);
-        } else {
-            appendBuffer(cbuf[offset + length - 1]);
-        }
-    }
-    flushBuffer();
-}
 
-/*
- *  append a character array to the cdatabuffer
- */
-private void appendBuffer(char[] cbuf) throws IOException {
-    if (cbuf.length + cdataBufferLength >= cdataBufferSize) {
-        flushBuffer();
+    /*
+     * append a character array to the cdatabuffer
+     */
+    private void appendBuffer(char[] cbuf) throws IOException {
+        if (cbuf.length + cdataBufferLength >= cdataBufferSize) {
+            flushBuffer();
+        }
+        if (cbuf.length >= cdataBufferSize) { // bigger than the buffer, direct write
+            writer.write(cbuf);
+        }
+        System.arraycopy(cbuf, 0, cdataBuffer, cdataBufferLength, cbuf.length);
+        cdataBufferLength = cdataBufferLength + cbuf.length;
     }
-    if (cbuf.length >= cdataBufferSize) {  // bigger than the buffer, direct write
-        writer.write(cbuf);
-    }
-    System.arraycopy(cbuf, 0, cdataBuffer, cdataBufferLength, cbuf.length);
-    cdataBufferLength = cdataBufferLength + cbuf.length;
-}
-/*
- * append a character to the cdatabuffer
- */
-private void appendBuffer(char c) throws IOException {
-    if (cdataBufferLength + 1 >= cdataBufferSize) {
-        flushBuffer();
-    }
-    cdataBuffer[cdataBufferLength] = c;
-    cdataBufferLength++;
-}
 
-/*
- * flush the cdatabuffer to the writer
- */
-private void flushBuffer() throws IOException {
-    if (cdataBufferLength == 0) {
-        return;
+    /*
+     * append a character to the cdatabuffer
+     */
+    private void appendBuffer(char c) throws IOException {
+        if (cdataBufferLength + 1 >= cdataBufferSize) {
+            flushBuffer();
+        }
+        cdataBuffer[cdataBufferLength] = c;
+        cdataBufferLength++;
     }
-    writer.write(cdataBuffer, 0, cdataBufferLength);
-    cdataBufferLength = 0;
-}
+
+    /*
+     * flush the cdatabuffer to the writer
+     */
+    private void flushBuffer() throws IOException {
+        if (cdataBufferLength == 0) {
+            return;
+        }
+        writer.write(cdataBuffer, 0, cdataBufferLength);
+        cdataBufferLength = 0;
+    }
 
     /**
      * When writing un-escaped CDATA, "]]>" sequence still has to be escaped by breaking CDATA block.
@@ -1460,7 +1370,7 @@ private void flushBuffer() throws IOException {
             } else {
                 appendBuffer(cbuf[i]);
             }
-            if (i == (offset + length - 1)) {
+            if (i == offset + length - 1) {
                 last = true;
             }
         }

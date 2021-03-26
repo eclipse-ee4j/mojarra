@@ -25,15 +25,13 @@ public class DocumentPopulator extends ApplicationConfigurationPopulator {
 
     /**
      * <p>
-     * /faces-config/lifecycle
-     * </p>
+     * /faces-config/lifecycle</p>
      */
     private static final String LIFECYCLE = "lifecycle";
 
     /**
      * <p>
-     * /faces-config/lifecycle/phase-listener
-     * </p>
+     * /faces-config/lifecycle/phase-listener</p>
      */
     private static final String PHASE_LISTENER = "phase-listener";
 

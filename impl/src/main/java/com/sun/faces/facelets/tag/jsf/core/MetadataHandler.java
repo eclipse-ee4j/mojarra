@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,24 +16,24 @@
 
 package com.sun.faces.facelets.tag.jsf.core;
 
-import com.sun.faces.facelets.tag.TagHandlerImpl;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
-
-import javax.faces.application.Application;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIPanel;
-import javax.faces.component.UIViewRoot;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagConfig;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.sun.faces.facelets.tag.TagHandlerImpl;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
+
+import jakarta.faces.application.Application;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagConfig;
+
 /**
  * <p>
- * This is a specialized <code>FacetHandler</code> to enable
- * <code>f:metadata</code> support.
+ * This is a specialized <code>FacetHandler</code> to enable <code>f:metadata</code> support.
  *
  * </p>
  */
@@ -41,20 +41,16 @@ public class MetadataHandler extends TagHandlerImpl {
 
     private static final Logger LOGGER = FacesLogger.TAGLIB.getLogger();
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public MetadataHandler(TagConfig config) {
         super(config);
     }
 
-
     // ------------------------------------------------- Methods from TagHandler
 
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-          throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
 
         Util.notNull("parent", parent);
         UIViewRoot root;
@@ -72,13 +68,12 @@ public class MetadataHandler extends TagHandlerImpl {
 
         UIComponent facetComponent = null;
         if (root.getFacetCount() > 0) {
-              facetComponent = root.getFacets().get(UIViewRoot.METADATA_FACET_NAME);
+            facetComponent = root.getFacets().get(UIViewRoot.METADATA_FACET_NAME);
         }
         if (facetComponent == null) {
-            root.getAttributes().put(FacetHandler.KEY,
-                                       UIViewRoot.METADATA_FACET_NAME);
+            root.getAttributes().put(FacetHandler.KEY, UIViewRoot.METADATA_FACET_NAME);
             try {
-                this.nextHandler.apply(ctx, root);
+                nextHandler.apply(ctx, root);
             } finally {
                 root.getAttributes().remove(FacetHandler.KEY);
             }

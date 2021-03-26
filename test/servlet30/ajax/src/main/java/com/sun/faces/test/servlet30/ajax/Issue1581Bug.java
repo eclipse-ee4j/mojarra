@@ -19,38 +19,34 @@ package com.sun.faces.test.servlet30.ajax;
 import java.io.Serializable;
 
 public class Issue1581Bug implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
     private boolean uiselected;
     private String text;
 
-    public String getText() {
-        return text;
+    public String getText() { 
+        return text; 
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setText(String text) { 
+        this.text = text; 
     }
 
-    public boolean getUiselected() {
-        return uiselected;
+    public boolean getUiselected() { 
+        return uiselected; 
     }
 
-    public void setUiselected(boolean uiselected) {
-        this.uiselected = uiselected;
+    public void setUiselected(boolean uiselected) { 
+        this.uiselected = uiselected; 
     }
 
-    public Issue1581Bug(boolean uiselected, String text) {
-        this.uiselected = uiselected;
-        this.text = text;
+    public Issue1581Bug(boolean uiselected, String text) { 
+        this.uiselected = uiselected; this.text = text; 
     }
 
     public Issue1581Bug() {
     }
 
     @Override
-    public String toString() {
-        return text + " " + uiselected;
+    public String toString() { 
+        return text+" "+uiselected; 
     }
 }

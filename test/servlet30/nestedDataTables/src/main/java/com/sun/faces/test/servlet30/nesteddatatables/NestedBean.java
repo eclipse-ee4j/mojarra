@@ -24,21 +24,25 @@ import javax.faces.event.ActionEvent;
  * @author edburns
  */
 public class NestedBean {
-
-    private String id;
-
-    public void executeLink(ActionEvent event) {
-        String whichLink = "You clicked on link: " + id;
-        System.out.println(whichLink);
-        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("whichLink", whichLink);
+    
+    /** Creates a new instance of NestedBean */
+    public NestedBean() {
     }
-
+    
+    private String id;
+    
     public String getId() {
         return id;
     }
-
+    
     public void setId(String id) {
         this.id = id;
     }
-
+    
+    public void executeLink(ActionEvent event) {
+        String whichLink = "You clicked on link: "+id;
+        System.out.println(whichLink);
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("whichLink", whichLink);
+    }
+    
 }

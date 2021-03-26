@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -28,31 +28,28 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javax.faces.FacesException;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIImportConstants;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.view.ViewMetadata;
-import javax.faces.view.facelets.Facelet;
-
 import com.sun.faces.RIConstants;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.context.FacesFileNotFoundException;
 import com.sun.faces.facelets.impl.DefaultFaceletFactory;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIImportConstants;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewMetadata;
+import jakarta.faces.view.facelets.Facelet;
 
 /**
- * @see javax.faces.view.ViewMetadata
+ * @see jakarta.faces.view.ViewMetadata
  */
 public class ViewMetadataImpl extends ViewMetadata {
 
     private String viewId;
     private DefaultFaceletFactory faceletFactory;
 
-
     // ---------------------------------------------------------------------------------------------------- Constructors
-
 
     public ViewMetadataImpl(String viewId) {
 
@@ -60,12 +57,10 @@ public class ViewMetadataImpl extends ViewMetadata {
 
     }
 
-
     // --------------------------------------------------------------------------------------- Methods from ViewMetadata
 
-
     /**
-     * @see javax.faces.view.ViewMetadata#getViewId()
+     * @see jakarta.faces.view.ViewMetadata#getViewId()
      */
     @Override
     public String getViewId() {
@@ -75,7 +70,7 @@ public class ViewMetadataImpl extends ViewMetadata {
     }
 
     /**
-     * @see javax.faces.view.ViewMetadata#createMetadataView(javax.faces.context.FacesContext)
+     * @see jakarta.faces.view.ViewMetadata#createMetadataView(jakarta.faces.context.FacesContext)
      */
     @Override
     public UIViewRoot createMetadataView(FacesContext context) {
@@ -83,21 +78,20 @@ public class ViewMetadataImpl extends ViewMetadata {
         UIViewRoot result = null;
         UIViewRoot currentViewRoot = context.getViewRoot();
         Map<String, Object> currentViewMapShallowCopy = Collections.emptyMap();
-        
+
         try {
             context.setProcessingEvents(false);
             if (faceletFactory == null) {
-                ApplicationAssociate associate = ApplicationAssociate
-                      .getInstance(context.getExternalContext());
+                ApplicationAssociate associate = ApplicationAssociate.getInstance(context.getExternalContext());
                 faceletFactory = associate.getFaceletFactory();
-                assert (faceletFactory != null);
+                assert faceletFactory != null;
             }
             ViewHandler vh = context.getApplication().getViewHandler();
             result = vh.createView(context, viewId);
 
-            // Stash away view id before invoking handlers so that 
+            // Stash away view id before invoking handlers so that
             // StateContext.partialStateSaving() can determine the current
-            // view. 
+            // view.
             context.getAttributes().put(RIConstants.VIEWID_KEY_NAME, viewId);
             // If the currentViewRoot has a viewMap, make sure the entries are
             // copied to the temporary UIViewRoot before invoking handlers.
@@ -110,8 +104,8 @@ public class ViewMetadataImpl extends ViewMetadata {
                     resultViewMap.putAll(currentViewMapShallowCopy);
                 }
             }
-            
-            // Only replace the current context's UIViewRoot if there is 
+
+            // Only replace the current context's UIViewRoot if there is
             // one to replace.
             if (null != currentViewRoot) {
                 // This clear's the ViewMap of the current UIViewRoot before
@@ -128,7 +122,8 @@ public class ViewMetadataImpl extends ViewMetadata {
         } catch (FacesFileNotFoundException ffnfe) {
             try {
                 context.getExternalContext().responseSendError(404, ffnfe.getMessage());
-            } catch(IOException ioe) {}
+            } catch (IOException ioe) {
+            }
             context.responseComplete();
         } catch (IOException ioe) {
             throw new FacesException(ioe);
@@ -145,7 +140,7 @@ public class ViewMetadataImpl extends ViewMetadata {
         }
 
         return result;
-        
+
     }
 
     // ----------------------------------------------------------------------------------------------- UIImportConstants
@@ -176,6 +171,7 @@ public class ViewMetadataImpl extends ViewMetadata {
 
     /**
      * Collect constants of the given type. That are, all public static final fields of the given type.
+     *
      * @param type The fully qualified name of the type to collect constants for.
      * @return Constants of the given type.
      */
@@ -188,10 +184,9 @@ public class ViewMetadataImpl extends ViewMetadata {
             if (isPublic(modifiers) && isStatic(modifiers) && isFinal(modifiers)) {
                 try {
                     constants.put(field.getName(), field.get(null));
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     throw new IllegalArgumentException(
-                        String.format("UIImportConstants cannot access constant field '%s' of type '%s'.", type, field.getName()), e);
+                            String.format("UIImportConstants cannot access constant field '%s' of type '%s'.", type, field.getName()), e);
                 }
             }
         }
@@ -201,6 +196,7 @@ public class ViewMetadataImpl extends ViewMetadata {
 
     /**
      * Convert the given type, which should represent a fully qualified name, to a concrete {@link Class} instance.
+     *
      * @param type The fully qualified name of the class.
      * @return The concrete {@link Class} instance.
      * @throws IllegalArgumentException When it is missing in the classpath.
@@ -208,8 +204,7 @@ public class ViewMetadataImpl extends ViewMetadata {
     private static Class<?> toClass(String type) {
         try {
             return Class.forName(type, true, Thread.currentThread().getContextClassLoader());
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             // Perhaps it's an inner enum which is incorrectly specified as com.example.SomeClass.SomeEnum.
             // Let's be lenient on that although the proper type notation should be com.example.SomeClass$SomeEnum.
             int i = type.lastIndexOf('.');
@@ -217,14 +212,12 @@ public class ViewMetadataImpl extends ViewMetadata {
             if (i > 0) {
                 try {
                     return toClass(new StringBuilder(type).replace(i, i + 1, "$").toString());
-                }
-                catch (Exception ignore) {
+                } catch (Exception ignore) {
                     ignore = null; // Just continue to IllegalArgumentException on original ClassNotFoundException.
                 }
             }
 
-            throw new IllegalArgumentException(
-                String.format("UIImportConstants cannot find type '%s' in classpath.", type), e);
+            throw new IllegalArgumentException(String.format("UIImportConstants cannot find type '%s' in classpath.", type), e);
         }
     }
 
@@ -248,8 +241,7 @@ public class ViewMetadataImpl extends ViewMetadata {
         @Override
         public Object get(Object key) {
             if (!containsKey(key)) {
-                throw new IllegalArgumentException(
-                    String.format("UIImportConstants type '%s' does not have the constant '%s'.", type, key));
+                throw new IllegalArgumentException(String.format("UIImportConstants type '%s' does not have the constant '%s'.", type, key));
             }
 
             return super.get(key);

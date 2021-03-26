@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,14 +18,13 @@ package com.sun.faces.facelets.tag;
 
 import com.sun.faces.util.Util;
 
-import javax.faces.view.facelets.MetaRuleset;
-import javax.faces.view.facelets.MetaTagHandler;
-import javax.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.MetaTagHandler;
+import jakarta.faces.view.facelets.TagConfig;
 
 /**
- * A base tag for wiring state to an object instance based on rules populated at
- * the time of creating a MetaRuleset.
- * 
+ * A base tag for wiring state to an object instance based on rules populated at the time of creating a MetaRuleset.
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -37,13 +36,13 @@ public abstract class MetaTagHandlerImpl extends MetaTagHandler {
 
     /**
      * Extend this method in order to add your own rules.
-     * 
+     *
      * @param type
      */
     @Override
     protected MetaRuleset createMetaRuleset(Class type) {
         Util.notNull("type", type);
-        return new MetaRulesetImpl(this.tag, type);
+        return new MetaRulesetImpl(tag, type);
     }
 
 }

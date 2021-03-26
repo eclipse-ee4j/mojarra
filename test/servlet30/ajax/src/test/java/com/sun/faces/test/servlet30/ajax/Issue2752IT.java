@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.faces.test.servlet30.ajax;
+package com.sun.faces.test.servlet30.ajax; 
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -47,15 +47,16 @@ public class Issue2752IT {
         webClient.close();
     }
 
+
     // ------------------------------------------------------------ Test Methods
 
     /**
-     * This test verifies that the page contains updated information from an Ajax response. The response
-     * is updated in <code>InsertBean</code>.
+     * This test verifies that the page contains updated information from an
+     * Ajax response.  The response is updated in <code>InsertBean</code>.
      */
     @Test
     public void testInsertFromResponse() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "faces/insertElement.xhtml");
+        HtmlPage page = webClient.getPage(webUrl+"faces/insertElement.xhtml");
         HtmlSubmitInput beforeButton = page.getHtmlElementById("beforeButton");
         page = beforeButton.click();
         // This will ensure JavaScript finishes before evaluating the page.

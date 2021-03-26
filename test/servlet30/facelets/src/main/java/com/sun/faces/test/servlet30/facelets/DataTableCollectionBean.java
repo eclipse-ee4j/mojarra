@@ -20,16 +20,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
-
-@Named
+@ManagedBean(name = "dataTableCollectionBean")
 @RequestScoped
 public class DataTableCollectionBean implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+    
     Collection<DataTableCollectionItem> users;
 
     public Collection<DataTableCollectionItem> getUsers() {
@@ -39,34 +36,33 @@ public class DataTableCollectionBean implements Serializable {
     public void setUsers(Collection<DataTableCollectionItem> users) {
         this.users = users;
     }
-
+    
     public DataTableCollectionBean() {
-        users = new MyCollection<>(new ArrayList<DataTableCollectionItem>());
-
+        users = new MyCollection(new ArrayList<DataTableCollectionItem>());
         DataTableCollectionItem b;
         for (int i = 0; i < 3; i++) {
             b = new DataTableCollectionItem();
             b.setFirstName("First" + i);
-            b.setLastName("Last" + i);
+            b.setLastName("Last"+i);
             users.add(b);
         }
     }
-
-    private static class MyCollection<T> implements Collection<T> {
-
-        private final Collection<T> inner;
-
-        private MyCollection(Collection<T> c) {
+    
+    private static class MyCollection implements Collection {
+        
+        private Collection inner;
+        
+        private MyCollection(Collection c) {
             inner = c;
         }
 
         @Override
-        public boolean add(T e) {
+        public boolean add(Object e) {
             return inner.add(e);
         }
 
         @Override
-        public boolean addAll(Collection<? extends T> c) {
+        public boolean addAll(Collection c) {
             return inner.addAll(c);
         }
 
@@ -81,7 +77,7 @@ public class DataTableCollectionBean implements Serializable {
         }
 
         @Override
-        public boolean containsAll(Collection<?> c) {
+        public boolean containsAll(Collection c) {
             return inner.containsAll(c);
         }
 
@@ -91,7 +87,7 @@ public class DataTableCollectionBean implements Serializable {
         }
 
         @Override
-        public Iterator<T> iterator() {
+        public Iterator iterator() {
             return inner.iterator();
         }
 
@@ -101,12 +97,12 @@ public class DataTableCollectionBean implements Serializable {
         }
 
         @Override
-        public boolean removeAll(Collection<?> c) {
+        public boolean removeAll(Collection c) {
             return inner.removeAll(c);
         }
 
         @Override
-        public boolean retainAll(Collection<?> c) {
+        public boolean retainAll(Collection c) {
             return inner.retainAll(c);
         }
 
@@ -121,8 +117,8 @@ public class DataTableCollectionBean implements Serializable {
         }
 
         @Override
-        public <E> E[] toArray(E[] a) {
+        public Object[] toArray(Object[] a) {
             return inner.toArray(a);
-        }
-    }
+        }   
+    }    
 }

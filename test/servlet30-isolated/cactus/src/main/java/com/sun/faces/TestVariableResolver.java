@@ -33,7 +33,7 @@ public class TestVariableResolver extends VariableResolver {
     // Relationship Instance Variables
     // 
 
-    // Specified by javax.faces.el.VariableResolver.resolveVariable()
+    // Specified by jakarta.faces.el.VariableResolver.resolveVariable()
     public Object resolveVariable(FacesContext context, String name)
             throws EvaluationException {
         if (name.equals("customVRTest1")) {

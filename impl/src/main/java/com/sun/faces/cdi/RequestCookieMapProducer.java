@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,36 +19,30 @@ package com.sun.faces.cdi;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import javax.enterprise.context.RequestScoped;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- * The CookieMapProducer is the CDI producer that allows injection of the
- * request cookie map using @Inject and allows the EL resolving of #{cookie}
+ * The CookieMapProducer is the CDI producer that allows injection of the request cookie map using @Inject and allows
+ * the EL resolving of #{cookie}
  * </p>
  *
  * @since 2.3
  * @see ExternalContext#getRequestCookieMap()
  */
 public class RequestCookieMapProducer extends CdiProducer<Map<String, Object>> {
-    
+
     /**
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
+
     public RequestCookieMapProducer() {
-        super.name("cookie")
-             .scope(RequestScoped.class)
-             .qualifiers(new RequestCookieMapAnnotationLiteral())
-             .types(
-                 new ParameterizedTypeImpl(Map.class, new Type[]{String.class, Object.class}),
-                 Map.class,
-                 Object.class)
-             .beanClass(Map.class)
-             .create(e -> FacesContext.getCurrentInstance().getExternalContext().getRequestCookieMap());
+        super.name("cookie").scope(RequestScoped.class).qualifiers(new RequestCookieMapAnnotationLiteral())
+                .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, Object.class }), Map.class, Object.class).beanClass(Map.class)
+                .create(e -> FacesContext.getCurrentInstance().getExternalContext().getRequestCookieMap());
     }
-    
+
 }

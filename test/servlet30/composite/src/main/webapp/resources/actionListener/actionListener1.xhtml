@@ -28,7 +28,7 @@
     <composite:interface>
         <composite:attribute name="display"/>
         <composite:attribute name="aListener" 
-                             method-signature="void actionListener(javax.faces.event.ActionEvent)" />
+                             method-signature="void actionListener(jakarta.faces.event.ActionEvent)" />
     </composite:interface>
     <composite:implementation>
         <h:commandButton id="button" value="#{cc.attrs.display}" actionListener="#{cc.attrs.aListener}" />

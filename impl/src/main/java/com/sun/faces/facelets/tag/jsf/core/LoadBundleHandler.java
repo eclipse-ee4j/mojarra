@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,26 +16,34 @@
 
 package com.sun.faces.facelets.tag.jsf.core;
 
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+import java.util.Set;
+
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 import com.sun.faces.facelets.tag.jsf.ComponentSupport;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagAttributeException;
-import javax.faces.view.facelets.TagConfig;
-import java.io.IOException;
-import java.util.*;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributeException;
+import jakarta.faces.view.facelets.TagConfig;
 
 /**
- * Load a resource bundle localized for the Locale of the current view, and
- * expose it (as a Map) in the request attributes of the current request. <p/>
- * See <a target="_new"
- * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/loadBundle.html">tag
+ * Load a resource bundle localized for the Locale of the current view, and expose it (as a Map) in the request
+ * attributes of the current request.
+ * <p/>
+ * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/loadBundle.html">tag
  * documentation</a>.
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -55,12 +63,12 @@ public final class LoadBundleHandler extends TagHandlerImpl {
 
             @Override
             public Object getKey() {
-                return this.key;
+                return key;
             }
 
             @Override
             public Object getValue() {
-                return this.value;
+                return value;
             }
 
             @Override
@@ -70,13 +78,12 @@ public final class LoadBundleHandler extends TagHandlerImpl {
 
             @Override
             public int hashCode() {
-                return this.key.hashCode();
+                return key.hashCode();
             }
 
             @Override
             public boolean equals(Object obj) {
-                return (obj instanceof ResourceEntry && this.hashCode() == obj
-                        .hashCode());
+                return obj instanceof ResourceEntry && hashCode() == obj.hashCode();
             }
         }
 
@@ -108,23 +115,23 @@ public final class LoadBundleHandler extends TagHandlerImpl {
 
         @Override
         public Set entrySet() {
-            Enumeration e = this.bundle.getKeys();
+            Enumeration e = bundle.getKeys();
             Set s = new HashSet();
             String k;
             while (e.hasMoreElements()) {
                 k = (String) e.nextElement();
-                s.add(new ResourceEntry(k, this.bundle.getString(k)));
+                s.add(new ResourceEntry(k, bundle.getString(k)));
             }
             return s;
         }
 
         @Override
         public Object get(Object key) {
-        	try {
-        		return this.bundle.getObject((String) key);
-        	} catch( java.util.MissingResourceException mre ) {
-        		return "???"+key+"???";
-        	}
+            try {
+                return bundle.getObject((String) key);
+            } catch (java.util.MissingResourceException mre) {
+                return "???" + key + "???";
+            }
         }
 
         @Override
@@ -134,7 +141,7 @@ public final class LoadBundleHandler extends TagHandlerImpl {
 
         @Override
         public Set keySet() {
-            Enumeration e = this.bundle.getKeys();
+            Enumeration e = bundle.getKeys();
             Set s = new HashSet();
             while (e.hasMoreElements()) {
                 s.add(e.nextElement());
@@ -159,15 +166,15 @@ public final class LoadBundleHandler extends TagHandlerImpl {
 
         @Override
         public int size() {
-            return this.keySet().size();
+            return keySet().size();
         }
 
         @Override
         public Collection values() {
-            Enumeration e = this.bundle.getKeys();
+            Enumeration e = bundle.getKeys();
             Set s = new HashSet();
             while (e.hasMoreElements()) {
-                s.add(this.bundle.getObject((String) e.nextElement()));
+                s.add(bundle.getObject((String) e.nextElement()));
             }
             return s;
         }
@@ -182,33 +189,30 @@ public final class LoadBundleHandler extends TagHandlerImpl {
      */
     public LoadBundleHandler(TagConfig config) {
         super(config);
-        this.basename = this.getRequiredAttribute("basename");
-        this.var = this.getRequiredAttribute("var");
+        basename = getRequiredAttribute("basename");
+        var = getRequiredAttribute("var");
     }
 
     /**
      * See taglib documentation.
      */
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
         ResourceBundle bundle = null;
         try {
-            String name = this.basename.getValue(ctx);
+            String name = basename.getValue(ctx);
             ClassLoader cl = Thread.currentThread().getContextClassLoader();
             if (root != null && root.getLocale() != null) {
                 bundle = ResourceBundle.getBundle(name, root.getLocale(), cl);
             } else {
-                bundle = ResourceBundle
-                        .getBundle(name, Locale.getDefault(), cl);
+                bundle = ResourceBundle.getBundle(name, Locale.getDefault(), cl);
             }
         } catch (Exception e) {
-            throw new TagAttributeException(this.tag, this.basename, e);
+            throw new TagAttributeException(tag, basename, e);
         }
         ResourceBundleMap map = new ResourceBundleMap(bundle);
         FacesContext faces = ctx.getFacesContext();
-        faces.getExternalContext().getRequestMap().put(this.var.getValue(ctx),
-                map);
+        faces.getExternalContext().getRequestMap().put(var.getValue(ctx), map);
     }
 }

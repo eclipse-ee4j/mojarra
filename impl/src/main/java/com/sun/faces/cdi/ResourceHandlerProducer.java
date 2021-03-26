@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,15 +16,15 @@
 
 package com.sun.faces.cdi;
 
-import javax.enterprise.context.RequestScoped;
-import javax.faces.application.Application;
-import javax.faces.application.ResourceHandler;
-import javax.faces.context.FacesContext;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- *  The ResourceHandlerProducer is the CDI producer that allows you to inject the 
- *  ResourceHandler and to do EL resolving of #{resource}
+ * The ResourceHandlerProducer is the CDI producer that allows you to inject the ResourceHandler and to do EL resolving
+ * of #{resource}
  * </p>
  *
  * @since 2.3
@@ -37,12 +37,10 @@ public class ResourceHandlerProducer extends CdiProducer<ResourceHandler> {
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
+
     public ResourceHandlerProducer() {
-        super.name("resource")
-             .scope(RequestScoped.class)
-             .beanClassAndType(ResourceHandler.class)
-             .create(e -> FacesContext.getCurrentInstance().getApplication().getResourceHandler());
+        super.name("resource").scope(RequestScoped.class).beanClassAndType(ResourceHandler.class)
+                .create(e -> FacesContext.getCurrentInstance().getApplication().getResourceHandler());
     }
 
 }

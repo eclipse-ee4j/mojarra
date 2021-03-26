@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,14 +18,13 @@ package com.sun.faces.context;
 
 import java.io.FileNotFoundException;
 
-
 /*
  * This exception thrown in cases when a resource is not found entirely
  * due to error originating in the user agent, as opposed to an error
  * originating due to the server side code.  For example it is thrown
  * when the user agent requests a non-existent Facelet page.  It is not
  * thrown when a Facelet template client cannot load it's template.
- * 
+ *
  * The default ExceptionHandler looks for the existence of this
  * exception as a way to tell when it should send an HTTP 404 status
  * code, or an HTTP 500 status code.
@@ -40,7 +39,5 @@ public class FacesFileNotFoundException extends FileNotFoundException {
 
     public FacesFileNotFoundException() {
     }
-
-
 
 }

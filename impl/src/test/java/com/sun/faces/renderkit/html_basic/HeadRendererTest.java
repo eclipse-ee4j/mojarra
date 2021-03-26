@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,14 +18,16 @@ package com.sun.faces.renderkit.html_basic;
 
 import java.io.StringWriter;
 import java.util.Collections;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.html.HtmlHead;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
+
 import static junit.framework.Assert.assertTrue;
 import static org.easymock.EasyMock.expect;
 import org.junit.Test;
 import org.powermock.api.easymock.PowerMock;
+
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.html.HtmlHead;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 
 /**
  * The JUnit tests for the HeadRenderer class.

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,40 +16,38 @@
 
 package com.sun.faces.facelets.el;
 
-import com.sun.faces.component.CompositeComponentStackManager;
-
-import com.sun.faces.util.FacesLogger;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
-import javax.el.MethodInfo;
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.MethodNotFoundException;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.ComponentSystemEventListener;
-import javax.faces.event.PostAddToViewEvent;
-import javax.faces.validator.ValidatorException;
-import javax.faces.view.Location;
+import com.sun.faces.component.CompositeComponentStackManager;
+import com.sun.faces.util.FacesLogger;
+
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.MethodExpression;
+import jakarta.el.MethodInfo;
+import jakarta.el.MethodNotFoundException;
+import jakarta.el.ValueExpression;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ComponentSystemEvent;
+import jakarta.faces.event.ComponentSystemEventListener;
+import jakarta.faces.event.PostAddToViewEvent;
+import jakarta.faces.validator.ValidatorException;
+import jakarta.faces.view.Location;
 
 /**
  * <p>
- * This specialized <code>MethodExpression</code> enables the evaluation of
- * composite component expressions.  Instances of this expression will be created
- * when {@link com.sun.faces.facelets.tag.TagAttributeImpl#getValueExpression(javax.faces.view.facelets.FaceletContext, Class)}
+ * This specialized <code>MethodExpression</code> enables the evaluation of composite component expressions. Instances
+ * of this expression will be created when
+ * {@link com.sun.faces.facelets.tag.TagAttributeImpl#getValueExpression(jakarta.faces.view.facelets.FaceletContext, Class)}
  * is invoked and the expression represents a composite component expression (i.e. #{cc.[properties]}).
  * </p>
  *
  * <p>
- * It's important to note that these <code>MethodExpression</code>s are context
- * sensitive in that they leverage the location in which they were referenced
- * in order to push the proper composite component to the evaluation context
+ * It's important to note that these <code>MethodExpression</code>s are context sensitive in that they leverage the
+ * location in which they were referenced in order to push the proper composite component to the evaluation context
  * prior to evaluating the expression itself.
  * </p>
  *
@@ -80,23 +78,23 @@ import javax.faces.view.Location;
  * &lt;/composite:implementation&gt;
  * </pre>
  *
- * When <code>commandButton</code> is clicked, the <code>ContextualCompositeMethodExpression</code>
- * first is looked up by {@link com.sun.faces.facelets.tag.TagAttributeImpl.AttributeLookupMethodExpression}
- * which results an instance of <code>ContextualCompositeMethodExpression</code>.
- * When this <code>ContextualCompositeMethodExpression is invoked, the {@link javax.faces.view.Location}
+ * When <code>commandButton</code> is clicked, the <code>ContextualCompositeMethodExpression</code> first is looked up
+ * by {@link com.sun.faces.facelets.tag.TagAttributeImpl.AttributeLookupMethodExpression} which results an instance of
+ * <code>ContextualCompositeMethodExpression</code>. When this
+ * <code>ContextualCompositeMethodExpression is invoked, the {@link jakarta.faces.view.Location}
  * object necessary to find the proper composite component will be derived from
- * source <code>ValueExpression</code> provided at construction time.  Using the
- * derived {@link javax.faces.view.Location}, we can find the composite component
- * that matches 'owns' the template in which the expression was defined in by
- * comparing the path of the Location with the name and library of the {@link javax.faces.application.Resource}
- * instance associated with each composite component.  If a matching composite
- * component is found, it will be made available to the EL by calling {@link CompositeComponentStackManager#push(javax.faces.component.UIComponent)}.
+ * source <code>ValueExpression</code> provided at construction time. Using the derived
+ * {@link jakarta.faces.view.Location}, we can find the composite component that matches 'owns' the template in which
+ * the expression was defined in by comparing the path of the Location with the name and library of the
+ * {@link jakarta.faces.application.Resource} instance associated with each composite component. If a matching composite
+ * component is found, it will be made available to the EL by calling
+ * {@link CompositeComponentStackManager#push(jakarta.faces.component.UIComponent)}.
  * </p>
  */
 public class ContextualCompositeMethodExpression extends MethodExpression {
 
     private static final long serialVersionUID = -6281398928485392830L;
-    
+
     // Log instance for this class
     private static final Logger LOGGER = FacesLogger.FACELETS_EL.getLogger();
 
@@ -105,37 +103,29 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
     private final Location location;
     private String ccClientId;
 
-
     // -------------------------------------------------------- Constructors
 
-
-    public ContextualCompositeMethodExpression(ValueExpression source,
-                                               MethodExpression delegate) {
+    public ContextualCompositeMethodExpression(ValueExpression source, MethodExpression delegate) {
 
         this.delegate = delegate;
         this.source = source;
-        this.location = null;
+        location = null;
         FacesContext ctx = FacesContext.getCurrentInstance();
         UIComponent cc = UIComponent.getCurrentCompositeComponent(ctx);
         cc.subscribeToEvent(PostAddToViewEvent.class, new SetClientIdListener(this));
     }
 
-
-    public ContextualCompositeMethodExpression(Location location,
-                                               MethodExpression delegate) {
-
+    public ContextualCompositeMethodExpression(Location location, MethodExpression delegate) {
 
         this.delegate = delegate;
         this.location = location;
-        this.source = null;
+        source = null;
         FacesContext ctx = FacesContext.getCurrentInstance();
         UIComponent cc = UIComponent.getCurrentCompositeComponent(ctx);
         cc.subscribeToEvent(PostAddToViewEvent.class, new SetClientIdListener(this));
     }
 
-
     // ------------------------------------------- Methods from MethodExpression
-
 
     @Override
     public MethodInfo getMethodInfo(ELContext elContext) {
@@ -159,19 +149,18 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
             }
         } catch (ELException ele) {
             /*
-             * If we got a validator exception it is actually correct to 
-             * immediately bubble it up. 
+             * If we got a validator exception it is actually correct to immediately bubble it up.
              */
             if (ele.getCause() != null && ele.getCause() instanceof ValidatorException) {
                 throw (ValidatorException) ele.getCause();
             }
-            
+
             if (source != null && ele instanceof MethodNotFoundException) {
-                // special handling when an ELException handling.  This is necessary
+                // special handling when an ELException handling. This is necessary
                 // when there are multiple levels of composite component nesting.
                 // When this happens, we need to evaluate the source expression
                 // to find and invoke the MethodExpression at the next highest
-                // nesting level.  Is there a cleaner way to detect this case?
+                // nesting level. Is there a cleaner way to detect this case?
                 try {
                     Object fallback = source.getValue(elContext);
                     if (fallback != null && fallback instanceof MethodExpression) {
@@ -179,24 +168,21 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
 
                     }
 
-                } catch(ELException ex) {
-                    
+                } catch (ELException ex) {
+
                     /*
-                     * If we got a validator exception it is actually correct to 
-                     * immediately bubble it up. 
+                     * If we got a validator exception it is actually correct to immediately bubble it up.
                      */
                     if (ex.getCause() != null && ex.getCause() instanceof ValidatorException) {
                         throw (ValidatorException) ex.getCause();
                     }
-                    
+
                     if (LOGGER.isLoggable(Level.WARNING)) {
                         LOGGER.log(Level.WARNING, ele.toString());
-                        LOGGER.log(Level.WARNING,
-                            "jsf.facelets.el.method.expression.invoke.error: {0} {1}",
-                                   new Object[] { ex.toString(),
-                                                  source.getExpressionString() });
+                        LOGGER.log(Level.WARNING, "jsf.facelets.el.method.expression.invoke.error: {0} {1}",
+                                new Object[] { ex.toString(), source.getExpressionString() });
                     }
-                    
+
                     if (!(ex instanceof MethodNotFoundException)) {
                         throw ex;
                     }
@@ -207,9 +193,7 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
 
     }
 
-
     // ------------------------------------------------- Methods from Expression
-
 
     @Override
     public String getExpressionString() {
@@ -218,15 +202,13 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
 
     }
 
-
-    @SuppressWarnings({"EqualsWhichDoesntCheckParameterClass"})
+    @SuppressWarnings({ "EqualsWhichDoesntCheckParameterClass" })
     @Override
     public boolean equals(Object o) {
 
         return delegate.equals(o);
 
     }
-
 
     @Override
     public int hashCode() {
@@ -235,7 +217,6 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
 
     }
 
-
     @Override
     public boolean isLiteralText() {
 
@@ -243,14 +224,11 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
 
     }
 
-
     // ----------------------------------------------------- Private Methods
-
 
     private boolean pushCompositeComponent(FacesContext ctx) {
 
-        CompositeComponentStackManager manager =
-              CompositeComponentStackManager.getManager(ctx);
+        CompositeComponentStackManager manager = CompositeComponentStackManager.getManager(ctx);
         UIComponent foundCc = null;
 
         if (location != null) {
@@ -273,11 +251,9 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
         return manager.push(foundCc);
     }
 
-
     private void popCompositeComponent(FacesContext ctx) {
 
-        CompositeComponentStackManager manager =
-              CompositeComponentStackManager.getManager(ctx);
+        CompositeComponentStackManager manager = CompositeComponentStackManager.getManager(ctx);
         manager.pop();
 
     }
@@ -285,10 +261,10 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
     private class SetClientIdListener implements ComponentSystemEventListener {
 
         private ContextualCompositeMethodExpression ccME;
-        
+
         public SetClientIdListener() {
         }
-        
+
         public SetClientIdListener(ContextualCompositeMethodExpression ccME) {
             this.ccME = ccME;
         }

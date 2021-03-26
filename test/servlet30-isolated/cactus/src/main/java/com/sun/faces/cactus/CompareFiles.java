@@ -91,7 +91,7 @@ public class CompareFiles {
 
         while (null != newLine && null != oldLine) {
             if (!newLine.equals(oldLine)) {
-                if (oldLine.contains("javax.faces.Token")) {
+                if (oldLine.contains("jakarta.faces.Token")) {
                     break;
                 }
                 if (null != oldLinesToIgnore && oldLinesToIgnore.size() > 0) {

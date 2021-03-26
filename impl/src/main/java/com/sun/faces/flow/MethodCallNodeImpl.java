@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,48 +16,47 @@
 
 package com.sun.faces.flow;
 
-
-import com.sun.faces.facelets.util.ReflectionUtil;
-import com.sun.faces.util.FacesLogger;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.MethodCallNode;
-import javax.faces.flow.Parameter;
+
+import com.sun.faces.facelets.util.ReflectionUtil;
+import com.sun.faces.util.FacesLogger;
+
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.MethodCallNode;
+import jakarta.faces.flow.Parameter;
 
 public class MethodCallNodeImpl extends MethodCallNode implements Serializable {
 
     private static final long serialVersionUID = -5400138716176841428L;
-    
+
     private final String id;
-    
+
     private static final Logger LOGGER = FacesLogger.FLOW.getLogger();
-    
+
     public MethodCallNodeImpl(String id) {
         this.id = id;
-        _parameters = new CopyOnWriteArrayList<>();            
+        _parameters = new CopyOnWriteArrayList<>();
     }
-    
-    public MethodCallNodeImpl(FacesContext context, String id, 
-            String methodExpressionString,
-            String defaultOutcomeString,
+
+    public MethodCallNodeImpl(FacesContext context, String id, String methodExpressionString, String defaultOutcomeString,
             List<Parameter> parametersFromConfig) {
         this(id);
         if (null != parametersFromConfig) {
             _parameters.addAll(parametersFromConfig);
         }
         parameters = Collections.unmodifiableList(_parameters);
-        
+
         ExpressionFactory ef = context.getApplication().getExpressionFactory();
-        Class [] paramTypes = new Class[0];
+        Class[] paramTypes = new Class[0];
         if (0 < parameters.size()) {
             paramTypes = new Class[parameters.size()];
             int i = 0;
@@ -67,8 +66,7 @@ public class MethodCallNodeImpl extends MethodCallNode implements Serializable {
                         paramTypes[i] = ReflectionUtil.forName(cur.getName());
                     } catch (ClassNotFoundException cnfe) {
                         if (LOGGER.isLoggable(Level.SEVERE)) {
-                            LOGGER.log(Level.SEVERE, "parameter " + cur.getName() + 
-                                    "incorrect type", cnfe);
+                            LOGGER.log(Level.SEVERE, "parameter " + cur.getName() + "incorrect type", cnfe);
                         }
                         paramTypes[i] = null;
                     }
@@ -79,18 +77,16 @@ public class MethodCallNodeImpl extends MethodCallNode implements Serializable {
             }
         }
         ELContext elContext = context.getELContext();
-        methodExpression = ef.createMethodExpression(elContext, 
-                methodExpressionString, null, paramTypes);
-        
+        methodExpression = ef.createMethodExpression(elContext, methodExpressionString, null, paramTypes);
+
         if (null != defaultOutcomeString) {
-            outcome = ef.createValueExpression(elContext, defaultOutcomeString, 
-                    Object.class);
+            outcome = ef.createValueExpression(elContext, defaultOutcomeString, Object.class);
         }
-        
+
     }
-    
+
     private MethodExpression methodExpression;
-    
+
     private ValueExpression outcome;
 
     private List<Parameter> _parameters;
@@ -105,7 +101,7 @@ public class MethodCallNodeImpl extends MethodCallNode implements Serializable {
     public List<Parameter> getParameters() {
         return parameters;
     }
-    
+
     public List<Parameter> _getParameters() {
         if (null == parameters) {
             parameters = Collections.unmodifiableList(_parameters);
@@ -117,11 +113,11 @@ public class MethodCallNodeImpl extends MethodCallNode implements Serializable {
     public MethodExpression getMethodExpression() {
         return methodExpression;
     }
-    
+
     public void setMethodExpression(MethodExpression methodExpression) {
         this.methodExpression = methodExpression;
     }
-    
+
     @Override
     public ValueExpression getOutcome() {
         return outcome;
@@ -130,6 +126,5 @@ public class MethodCallNodeImpl extends MethodCallNode implements Serializable {
     public void setOutcome(ValueExpression outcome) {
         this.outcome = outcome;
     }
-    
-    
+
 }

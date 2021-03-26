@@ -45,10 +45,10 @@ public class Issue3344IT {
     @Test
     public void testXmlPreambleOnRedirect() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/ajaxRedirect01.xhtml");
-
+        
         HtmlSubmitInput button = page.getHtmlElementById("button");
         page = button.click();
-
+        
         webClient.waitForBackgroundJavaScript(60000);
         assertTrue(page.asXml().contains("&lt;?xml version=\"1.0\" encoding=\"UTF-8\"?&gt;"));
     }

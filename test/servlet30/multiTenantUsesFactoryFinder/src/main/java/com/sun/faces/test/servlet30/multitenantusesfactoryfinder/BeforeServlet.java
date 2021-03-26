@@ -42,18 +42,22 @@ public class BeforeServlet extends HttpServlet {
         super.init(config);
         LifecycleFactory lifecycle = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
         ServletContext sc = config.getServletContext();
-        sc.setAttribute(INIT_HAS_LIFECYCLE_KEY, (null != lifecycle) ? "TRUE" : "FALSE");
+        sc.setAttribute(INIT_HAS_LIFECYCLE_KEY,
+                (null != lifecycle) ? "TRUE" : "FALSE");
         FacesContext initFacesContext = FacesContext.getCurrentInstance();
-        sc.setAttribute(INIT_HAS_INITFACESCONTEXT_KEY, (null != initFacesContext) ? "TRUE" : "FALSE");
+        sc.setAttribute(INIT_HAS_INITFACESCONTEXT_KEY,
+                (null != initFacesContext) ? "TRUE" : "FALSE");
     }
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         LifecycleFactory lifecycle = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-        req.setAttribute(REQUEST_HAS_LIFECYCLE, (null != lifecycle) ? "TRUE" : "FALSE");
+        req.setAttribute(REQUEST_HAS_LIFECYCLE,
+                (null != lifecycle) ? "TRUE" : "FALSE");
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        req.setAttribute(REQUEST_HAS_FACESCONTEXT, (null != facesContext) ? "TRUE" : "FALSE");
+        req.setAttribute(REQUEST_HAS_FACESCONTEXT,
+                (null != facesContext) ? "TRUE" : "FALSE");
 
         getServletContext().getRequestDispatcher("/faces/index.xhtml").forward(req, resp);
     }

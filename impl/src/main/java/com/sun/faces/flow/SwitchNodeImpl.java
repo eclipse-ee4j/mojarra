@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -20,16 +20,17 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.SwitchCase;
-import javax.faces.flow.SwitchNode;
+
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.SwitchCase;
+import jakarta.faces.flow.SwitchNode;
 
 public class SwitchNodeImpl extends SwitchNode implements Serializable {
-    
+
     private static final long serialVersionUID = -9203493858518714933L;
-        
+
     private final String id;
     private ValueExpression defaultOutcome;
     private CopyOnWriteArrayList<SwitchCase> _cases;
@@ -37,8 +38,8 @@ public class SwitchNodeImpl extends SwitchNode implements Serializable {
 
     public SwitchNodeImpl(String id) {
         this.id = id;
-        
-        this.defaultOutcome = null;
+
+        defaultOutcome = null;
         _cases = new CopyOnWriteArrayList<>();
         cases = Collections.unmodifiableList(_cases);
     }
@@ -52,13 +53,13 @@ public class SwitchNodeImpl extends SwitchNode implements Serializable {
             return false;
         }
         final SwitchNodeImpl other = (SwitchNodeImpl) obj;
-        if ((this.id == null) ? (other.id != null) : !this.id.equals(other.id)) {
+        if (id == null ? other.id != null : !id.equals(other.id)) {
             return false;
         }
-        if (this.defaultOutcome != other.defaultOutcome && (this.defaultOutcome == null || !this.defaultOutcome.equals(other.defaultOutcome))) {
+        if (defaultOutcome != other.defaultOutcome && (defaultOutcome == null || !defaultOutcome.equals(other.defaultOutcome))) {
             return false;
         }
-        if (this._cases != other._cases && (this._cases == null || !this._cases.equals(other._cases))) {
+        if (_cases != other._cases && (_cases == null || !_cases.equals(other._cases))) {
             return false;
         }
         return true;
@@ -67,17 +68,17 @@ public class SwitchNodeImpl extends SwitchNode implements Serializable {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 47 * hash + (this.id != null ? this.id.hashCode() : 0);
-        hash = 47 * hash + (this.defaultOutcome != null ? this.defaultOutcome.hashCode() : 0);
-        hash = 47 * hash + (this._cases != null ? this._cases.hashCode() : 0);
+        hash = 47 * hash + (id != null ? id.hashCode() : 0);
+        hash = 47 * hash + (defaultOutcome != null ? defaultOutcome.hashCode() : 0);
+        hash = 47 * hash + (_cases != null ? _cases.hashCode() : 0);
         return hash;
     }
-    
+
     @Override
     public String getId() {
         return id;
     }
-        
+
     @Override
     public List<SwitchCase> getCases() {
         return cases;
@@ -90,27 +91,25 @@ public class SwitchNodeImpl extends SwitchNode implements Serializable {
     @Override
     public String getDefaultOutcome(FacesContext context) {
         String result = null;
-        
+
         if (null != defaultOutcome) {
             Object objResult = defaultOutcome.getValue(context.getELContext());
-            result = (null != objResult) ? objResult.toString() : null;
+            result = null != objResult ? objResult.toString() : null;
         }
         return result;
     }
-    
+
     public void setDefaultOutcome(String defaultOutcome) {
         if (null == defaultOutcome) {
             this.defaultOutcome = null;
         }
         FacesContext context = FacesContext.getCurrentInstance();
         ExpressionFactory eFactory = context.getApplication().getExpressionFactory();
-        this.defaultOutcome = eFactory.createValueExpression(context.getELContext(), 
-                defaultOutcome, Object.class);
+        this.defaultOutcome = eFactory.createValueExpression(context.getELContext(), defaultOutcome, Object.class);
     }
-    
+
     public void setDefaultOutcome(ValueExpression defaultOutcome) {
         this.defaultOutcome = defaultOutcome;
     }
 
-    
 }

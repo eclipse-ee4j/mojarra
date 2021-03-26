@@ -19,7 +19,8 @@ package com.sun.faces.test.javaee8.ajax;
 import java.util.List;
 
 import javax.enterprise.inject.Model;
-import javax.faces.context.FacesContext;
+
+import jakarta.faces.context.FacesContext;
 
 @Model
 public class Spec1412 {

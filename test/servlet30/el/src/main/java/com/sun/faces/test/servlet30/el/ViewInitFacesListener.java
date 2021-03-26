@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
- * Copyright (c) 2018 Payara Services Limited.
- * All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,20 +16,17 @@
 
 package com.sun.faces.test.servlet30.el;
 
-import java.util.Map;
-
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
+import java.util.Map;
 
 /**
- * A system event listener that registers as a preRenderComponent event
- * listener.
+ * A system event listener that registers as a preRenderComponent event listener.
  */
 public class ViewInitFacesListener implements SystemEventListener {
-
     /**
      * Constructor.
      */
@@ -39,11 +34,10 @@ public class ViewInitFacesListener implements SystemEventListener {
         FacesContext fc = FacesContext.getCurrentInstance();
         UIViewRoot viewRoot = fc.getViewRoot();
         if (viewRoot != null) {
-            Map<String, Object> viewMap = viewRoot.getViewMap();
+            Map viewMap = viewRoot.getViewMap();
             if (viewMap != null) {
-                // TODO: uses Mojarra specific code. Should not depend on this!
-                if (FacesContext.getCurrentInstance() != null
-                        && FacesContext.getCurrentInstance().getClass().getName().equals("com.sun.faces.config.InitFacesContext")) {
+                if (FacesContext.getCurrentInstance() != null &&
+                        FacesContext.getCurrentInstance().getClass().getName().equals("com.sun.faces.config.InitFacesContext")) {
                     FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().put("viewMapCreated", "Yes");
                 }
             }
@@ -52,26 +46,23 @@ public class ViewInitFacesListener implements SystemEventListener {
 
     /**
      * Process the event.
-     *
+     * 
      * @param event the system event.
      * @throws AbortProcessingException when processing needs to be aborted.
      */
-    @Override
     public void processEvent(SystemEvent event) throws AbortProcessingException {
     }
 
     /**
      * Is a listener for source.
-     *
+     * 
      * @param source the source.
      * @return true or false.
      */
-    @Override
     public boolean isListenerForSource(Object source) {
         if (source instanceof UIViewRoot) {
             return true;
         }
-
         return false;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,13 +16,14 @@
 
 package com.sun.faces.facelets.tag.jstl.core;
 
+import java.io.IOException;
+
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagConfig;
-import java.io.IOException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
 
 /**
  * @author Jacob Hookom
@@ -30,19 +31,18 @@ import java.io.IOException;
 public final class ChooseWhenHandler extends TagHandlerImpl {
 
     private final TagAttribute test;
-    
+
     public ChooseWhenHandler(TagConfig config) {
         super(config);
-        this.test = this.getRequiredAttribute("test");
+        test = getRequiredAttribute("test");
     }
 
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException {
-        this.nextHandler.apply(ctx, parent);
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
+        nextHandler.apply(ctx, parent);
     }
-    
+
     public boolean isTestTrue(FaceletContext ctx) {
-        return this.test.getBoolean(ctx);
+        return test.getBoolean(ctx);
     }
 }
