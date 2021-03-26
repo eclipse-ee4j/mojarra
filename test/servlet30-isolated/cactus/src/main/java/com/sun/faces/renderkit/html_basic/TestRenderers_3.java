@@ -373,7 +373,7 @@ public class TestRenderers_3 extends JspFacesTestCase {
         input1.setValue(null);
         input1.setId("myInputDateHidden");
         Converter converter = application.createConverter(
-                "javax.faces.DateTime");
+                "jakarta.faces.DateTime");
         input1.setConverter(converter);
         input1.getAttributes().put("dateStyle", "medium");
         root.getChildren().add(input1);
@@ -404,7 +404,7 @@ public class TestRenderers_3 extends JspFacesTestCase {
         UIInput input2 = new UIInput();
         input2.setValue(null);
         input2.setId("myNumberHidden");
-        converter = application.createConverter("javax.faces.Number");
+        converter = application.createConverter("jakarta.faces.Number");
         ((NumberConverter) converter).setType("percent");
         input2.setConverter(converter);
         root.getChildren().add(input2);

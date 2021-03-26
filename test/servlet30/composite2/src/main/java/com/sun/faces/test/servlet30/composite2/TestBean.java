@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
- * Copyright (c) 2018 Payara Services Limited.
- * All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -15,30 +13,19 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
+
 package com.sun.faces.test.servlet30.composite2;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
-
-
-@Named
+@ManagedBean
 @SessionScoped
 public class TestBean implements Serializable {
     private static final long serialVersionUID = 8797989409085180214L;
-
-    private String myname = "ok";
-    private String targets = "cancel sub:command";
-    private String targetsEL = "cancelEL sub:commandEL";
-    private String event = "action";
-    private boolean mydefault = true;
-
-    public String doAction() {
-        System.out.println("TestBean#doAction");
-        return null;
-    }
-
+    
     public String getMyname() {
         return myname;
     }
@@ -59,4 +46,14 @@ public class TestBean implements Serializable {
         return mydefault;
     }
 
+    private String myname = "ok";
+    private String targets = "cancel sub:command";
+    private String targetsEL = "cancelEL sub:commandEL";
+    private String event = "action";
+    private boolean mydefault = true;
+
+    public String doAction() {
+        System.out.println("TestBean#doAction");
+        return null;
+    }
 }

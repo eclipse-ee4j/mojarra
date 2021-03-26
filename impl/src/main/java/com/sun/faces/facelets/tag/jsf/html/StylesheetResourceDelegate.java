@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,33 +16,29 @@
 
 package com.sun.faces.facelets.tag.jsf.html;
 
-import javax.faces.view.facelets.ComponentHandler;
-import javax.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
 
 /**
  * <code>ComponentResourceDelegate</code> for stylesheet references.
  */
 public class StylesheetResourceDelegate extends ComponentResourceDelegate {
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public StylesheetResourceDelegate(ComponentHandler owner) {
         super(owner);
     }
 
-
     // ----------------------------------- Methods from ComponentResourceDelegate
-
 
     /**
      * @param ctx the <code>FacesContext</code> for the current request
-     * @return <code>head</code> as external stylesheet references
-     *  are only valid in the head of a document, this method returns
-     *  <code>head</code>
+     * @return <code>head</code> as external stylesheet references are only valid in the head of a document, this method
+     * returns <code>head</code>
      */
-    @Override protected String getLocationTarget(FaceletContext ctx) {
+    @Override
+    protected String getLocationTarget(FaceletContext ctx) {
 
         return "head";
 

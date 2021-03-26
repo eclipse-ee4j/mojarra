@@ -18,10 +18,10 @@ package com.sun.faces.test.servlet30.jspflash;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.inject.Named;
-import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 
-@Named
+@ManagedBean(name = "bean")
 @RequestScoped
 public class Bean {
 
@@ -36,7 +36,8 @@ public class Bean {
 
         if (null != stringVal && stringVal.equals("addMessage")) {
             FacesContext context = FacesContext.getCurrentInstance();
-            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "test that this persists across the redirect",
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "test that this persists across the redirect",
                     "This message must persist across the redirect");
             context.addMessage(null, message);
             context.getExternalContext().getFlash().setKeepMessages(true);

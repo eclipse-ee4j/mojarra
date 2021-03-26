@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
 
-import javax.faces.component.NamingContainer;
+import jakarta.faces.component.NamingContainer;
 
 
 public class ReplaceViewHandlerTestCase extends HtmlUnitFacesTestCase {

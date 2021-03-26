@@ -16,18 +16,18 @@
 
 package com.sun.faces.test.servlet30.composite;
 
-import javax.enterprise.context.ApplicationScoped;
+import java.io.Serializable;
+import javax.faces.bean.ManagedBean;
 import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.AjaxBehaviorEvent;
-import javax.inject.Named;
 
-@Named
-@ApplicationScoped
-public class Ajax1Bean {
+@ManagedBean(name = "ajax1Bean")
+public class Ajax1Bean implements Serializable {
 
-    public void processAjaxBehavior(AjaxBehaviorEvent event) throws AbortProcessingException {
+    public void processAjaxBehavior(AjaxBehaviorEvent event) 
+        throws AbortProcessingException {
         FacesContext context = FacesContext.getCurrentInstance();
         UIOutput output = (UIOutput) context.getViewRoot().findComponent("form:cc_ajax:out");
         output.setValue("PROCESSAJAXBEHAVIOR CALLED");

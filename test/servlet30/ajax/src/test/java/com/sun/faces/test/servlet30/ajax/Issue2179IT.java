@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class Issue2179IT {
-
+    
     /**
      * Stores the web URL.
      */
@@ -72,7 +72,7 @@ public class Issue2179IT {
         webClient.getOptions().setJavaScriptEnabled(true);
         webClient.setJavaScriptTimeout(60000);
         HtmlPage page = webClient.getPage(webUrl + "/faces/issue2179-page2.xhtml");
-        HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("form:submit");
+        HtmlSubmitInput button = (HtmlSubmitInput)page.getElementById("form:submit");
         page = button.click();
         webClient.waitForBackgroundJavaScript(60000);
         assertTrue(page.asXml().contains("Name: form:submit Error: serverError"));

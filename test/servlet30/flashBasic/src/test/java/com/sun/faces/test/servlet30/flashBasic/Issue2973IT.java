@@ -52,7 +52,7 @@ public class Issue2973IT {
     @Test
     public void testServerRestartHandledGracefully() throws Exception {
 
-        HtmlPage page = webClient.getPage(webUrl + "faces/issue2973/page1.xhtml");
+        HtmlPage page = webClient.getPage(webUrl + "faces/issue2973/page1.xhtml") ;
         webClient.getOptions().setRedirectEnabled(true);
         HtmlTextInput textInput = (HtmlTextInput) page.getElementById("input");
         String message = "" + System.currentTimeMillis();
@@ -60,24 +60,24 @@ public class Issue2973IT {
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("button");
         page = button.click();
         HtmlElement value = (HtmlElement) page.getElementById("response");
-
+        
         assertEquals(message, value.asText());
-
+        
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
         boolean assertionValue = false;
         for (int i = 0; i < 3; i++) {
-            page = webClient.getPage(webUrl + "faces/issue2973/page1.xhtml");
+            page = webClient.getPage(webUrl + "faces/issue2973/page1.xhtml") ;
             button = (HtmlSubmitInput) page.getElementById("restart");
             page = button.click();
             Thread.sleep(3000);
-
+            
             textInput = (HtmlTextInput) page.getElementById("input");
             message = "" + System.currentTimeMillis();
             textInput.setValueAttribute(message);
             button = (HtmlSubmitInput) page.getElementById("button");
             page = button.click();
             value = (HtmlElement) page.getElementById("response");
-
+        
             if (null != value) {
                 assertionValue = message.equals(value.asText());
             }
@@ -85,7 +85,7 @@ public class Issue2973IT {
                 break;
             }
         }
-        assertTrue(assertionValue);
-
+        assertTrue(assertionValue);   
+        
     }
 }

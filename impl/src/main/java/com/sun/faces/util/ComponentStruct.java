@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,20 +16,19 @@
 
 package com.sun.faces.util;
 
-import javax.faces.component.StateHolder;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.context.FacesContext;
 
 /**
- * Utility class to enable partial state saving of components that have been
- * dynamically added to the view.
+ * Utility class to enable partial state saving of components that have been dynamically added to the view.
  */
-public class ComponentStruct implements StateHolder {   
-    
+public class ComponentStruct implements StateHolder {
+
     /**
      * Marker that specifies this is an ADD.
      */
     public static final String ADD = "ADD";
-    
+
     /**
      * Marker that specifies this is a REMOVE.
      */
@@ -40,15 +39,16 @@ public class ComponentStruct implements StateHolder {
     private String parentClientId;
     private String clientId;
     private String id;
-    
-    public ComponentStruct() {}
-    
+
+    public ComponentStruct() {
+    }
+
     public ComponentStruct(String action, String clientId, String id) {
         this.action = action;
         this.clientId = clientId;
         this.id = id;
     }
-    
+
     public ComponentStruct(String action, String facetName, String parentClientId, String clientId, String id) {
         this.action = action;
         this.facetName = facetName;
@@ -67,17 +67,17 @@ public class ComponentStruct implements StateHolder {
         if (ctx == null) {
             throw new NullPointerException();
         }
-        
+
         if (state == null) {
             return;
         }
-        
+
         Object s[] = (Object[]) state;
-        this.action = (String) s[0];
-        this.parentClientId = (String) s[1];
-        this.clientId = (String) s[2];
-        this.id = (String) s[3];
-        this.facetName = (String) s[4];
+        action = (String) s[0];
+        parentClientId = (String) s[1];
+        clientId = (String) s[2];
+        id = (String) s[3];
+        facetName = (String) s[4];
     }
 
     @Override
@@ -85,14 +85,14 @@ public class ComponentStruct implements StateHolder {
         if (ctx == null) {
             throw new NullPointerException();
         }
-        
+
         Object state[] = new Object[5];
-        state[0] = this.action;
-        state[1] = this.parentClientId;
-        state[2] = this.clientId;
-        state[3] = this.id;
-        state[4] = this.facetName;
-        
+        state[0] = action;
+        state[1] = parentClientId;
+        state[2] = clientId;
+        state[3] = id;
+        state[4] = facetName;
+
         return state;
     }
 
@@ -103,27 +103,27 @@ public class ComponentStruct implements StateHolder {
     @Override
     public boolean equals(Object obj) {
         boolean result = false;
-        
+
         if (obj instanceof ComponentStruct) {
             ComponentStruct struct = (ComponentStruct) obj;
-            result = struct.clientId.equals(this.clientId);
+            result = struct.clientId.equals(clientId);
         }
-        
+
         return result;
     }
 
     /**
      * Hash code.
-     * 
+     *
      * @return the hashcode.
      */
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 89 * hash + (this.clientId != null ? this.clientId.hashCode() : 0);
+        hash = 89 * hash + (clientId != null ? clientId.hashCode() : 0);
         return hash;
     }
-    
+
     public String getAction() {
         return action;
     }
@@ -143,5 +143,5 @@ public class ComponentStruct implements StateHolder {
     public String getId() {
         return id;
     }
-    
+
 }

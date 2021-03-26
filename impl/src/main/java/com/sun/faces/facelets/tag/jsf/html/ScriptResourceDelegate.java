@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,9 +16,9 @@
 
 package com.sun.faces.facelets.tag.jsf.html;
 
-import javax.faces.view.facelets.ComponentHandler;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
 
 /**
  * <code>ComponentResourceDelegate</code> for script references.
@@ -27,26 +27,23 @@ public class ScriptResourceDelegate extends ComponentResourceDelegate {
 
     // ------------------------------------------------------------ Constructors
 
-
     public ScriptResourceDelegate(ComponentHandler owner) {
 
         super(owner);
 
     }
 
-
     // ----------------------------------- Methods from ComponentResourceDelegate
-
 
     /**
      * @param ctx the <code>FacesContext</code> for the current request
-     * @return the current value of the "target" attribute of the component
-     *  associated with this delegate
+     * @return the current value of the "target" attribute of the component associated with this delegate
      */
-    @Override protected String getLocationTarget(FaceletContext ctx) {
+    @Override
+    protected String getLocationTarget(FaceletContext ctx) {
 
         TagAttribute attr = getAttribute("target");
-        return ((attr != null) ? attr.getValue(ctx) : null);
+        return attr != null ? attr.getValue(ctx) : null;
 
     }
 

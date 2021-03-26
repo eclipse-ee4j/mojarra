@@ -16,15 +16,13 @@
 
 package com.sun.faces.test.servlet30.writeattributescriptdisabled;
 
-import static org.junit.Assert.assertTrue;
-
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import org.junit.After;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public class WriteAttributeScriptDisabledIT {
 
@@ -45,8 +43,8 @@ public class WriteAttributeScriptDisabledIT {
     @Test
     public void testWriteAttributeDisabled() throws Exception {
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
-        HtmlPage page = webClient.getPage(webUrl + "faces/test.xhtml");
-        HtmlAnchor link = page.getAnchors().get(0);
+        HtmlPage page = webClient.getPage(webUrl + "faces/test.jsp");
+        HtmlAnchor link = (HtmlAnchor) page.getAnchors().get(0);
         HtmlPage errorPage = (HtmlPage) link.click();
         assertTrue(errorPage.asText().indexOf("new value!") == -1);
     }

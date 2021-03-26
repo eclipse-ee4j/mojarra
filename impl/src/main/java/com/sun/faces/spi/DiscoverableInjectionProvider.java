@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,32 +19,33 @@ package com.sun.faces.spi;
 import com.sun.faces.util.Util;
 
 /**
- * <p><code>InjectionProvider</code>s that implement this interface
- * can be configured via <code>META-INF/services/com.sun.faces.spi.injectionprovider</code>.
+ * <p>
+ * <code>InjectionProvider</code>s that implement this interface can be configured via
+ * <code>META-INF/services/com.sun.faces.spi.injectionprovider</code>.
  *
- * <p>The format of the configuration entries is:</p>
+ * <p>
+ * The format of the configuration entries is:
+ * </p>
  * <ul>
- *   <li><code>&lt;InjectionProviderClassName&gt;:&lt;DelegateClassName&gt;</code></li>
+ * <li><code>&lt;InjectionProviderClassName&gt;:&lt;DelegateClassName&gt;</code></li>
  * <ul>
  *
- * <p>Example:</p}
+ * <p>
+ * Example:</p}
  * <ul>
- *    <li><code>com.sun.faces.vendor.GlassFishInjectionProvider:com.sun.enterprise.InjectionManager</code></li>
+ * <li><code>com.sun.faces.vendor.GlassFishInjectionProvider:com.sun.enterprise.InjectionManager</code></li>
  * </ul>
  *
- * <p>Multiple <code>DiscoverableInjectionProvider</code>s can be configured
- * within a single services entry.</p>
+ * <p>
+ * Multiple <code>DiscoverableInjectionProvider</code>s can be configured within a single services entry.
+ * </p>
  */
 public abstract class DiscoverableInjectionProvider implements InjectionProvider {
 
-
     /**
-     * @param delegateClass the name of the delegate used by the
-     *  <code>InjectionProvider</code> implementation.
-     * @return returns <code>true</code> if the
-     *  <code>InjectionProvider</code> instance
-     *  is appropriate for the container its currently
-     *  deployed within, otherwise return <code>false</code>
+     * @param delegateClass the name of the delegate used by the <code>InjectionProvider</code> implementation.
+     * @return returns <code>true</code> if the <code>InjectionProvider</code> instance is appropriate for the container its
+     * currently deployed within, otherwise return <code>false</code>
      */
     public static boolean isInjectionFeatureAvailable(String delegateClass) {
 
@@ -54,7 +55,7 @@ public abstract class DiscoverableInjectionProvider implements InjectionProvider
         } catch (Exception e) {
             return false;
         }
-        
+
     }
 
 }

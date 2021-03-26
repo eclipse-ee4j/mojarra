@@ -26,7 +26,7 @@ import javax.faces.event.PreRenderViewEvent;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 
-@FacesComponent(value = "com.sun.faces.test.servlet30.dynamic.RecursiveComponent")
+@FacesComponent( value = "com.sun.faces.test.servlet30.dynamic.RecursiveComponent" )
 public class RecursiveComponent extends UIComponentBase implements SystemEventListener {
 
     //
@@ -34,10 +34,10 @@ public class RecursiveComponent extends UIComponentBase implements SystemEventLi
     //
 
     public RecursiveComponent() {
-        setRendererType("component");
+        setRendererType( "component" );
         FacesContext context = FacesContext.getCurrentInstance();
         UIViewRoot root = context.getViewRoot();
-        root.subscribeToViewEvent(PreRenderViewEvent.class, this);
+        root.subscribeToViewEvent( PreRenderViewEvent.class, this );
     }
 
     //
@@ -49,21 +49,21 @@ public class RecursiveComponent extends UIComponentBase implements SystemEventLi
         return "com.sun.faces.test.servlet30.dynamic";
     }
 
-    @Override
-    public boolean isListenerForSource(Object source) {
-        return (source instanceof UIViewRoot);
+    public boolean isListenerForSource( Object source ) {
+        return ( source instanceof UIViewRoot );
     }
 
     // This event method will add a new nested component for pre-render event.
 
     @Override
-    public void processEvent(SystemEvent event) throws AbortProcessingException {
-        if (!FacesContext.getCurrentInstance().isPostback()) {
+    public void processEvent( SystemEvent event )
+        throws AbortProcessingException {
+        if ( !FacesContext.getCurrentInstance().isPostback() ) {
             HtmlOutputText component = new HtmlOutputText();
-            component.setValue("Dynamically added child");
-            getChildren().add(component);
-            if (!(getParent() instanceof RecursiveComponent)) {
-                getChildren().add(new RecursiveComponent());
+            component.setValue( "Dynamically added child" );
+            getChildren().add( component );
+            if ( !( getParent() instanceof RecursiveComponent ) ) {
+                getChildren().add( new RecursiveComponent() );
             }
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -20,25 +20,28 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIOutput;
-import javax.faces.context.FacesContext;
+
 import org.junit.Test;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.context.FacesContext;
+
 import static org.junit.Assert.*;
 
 public class HtmlResponseWriterTest {
-    
+
     /**
      * Test cloneWithWriter method.
      * @throws java.lang.Exception
      */
     @Test
     public void testCloneWithWriter() throws Exception {
-        
+
         Method method = FacesContext.class.getDeclaredMethod("setCurrentInstance", FacesContext.class);
         method.setAccessible(true);
         method.invoke(null, new Object[] { null });
-        
+
         Writer writer = new StringWriter();
         HtmlResponseWriter responseWriter = new HtmlResponseWriter(writer, "text/html", "UTF-8");
         Field field = responseWriter.getClass().getDeclaredField("dontEscape");
@@ -64,8 +67,8 @@ public class HtmlResponseWriterTest {
 
         Method method = FacesContext.class.getDeclaredMethod("setCurrentInstance", FacesContext.class);
         method.setAccessible(true);
-        method.invoke(null, new Object[] { null });        
-        
+        method.invoke(null, new Object[] { null });
+
         Writer writer = new StringWriter();
         HtmlResponseWriter responseWriter = new HtmlResponseWriter(writer, "text/html", "UTF-8");
         Field field = responseWriter.getClass().getDeclaredField("writingCdata");
@@ -88,7 +91,7 @@ public class HtmlResponseWriterTest {
      */
     @Test
     public void testCDATAWithXHTML() throws Exception {
-        
+
         Method method = FacesContext.class.getDeclaredMethod("setCurrentInstance", FacesContext.class);
         method.setAccessible(true);
         method.invoke(null, new Object[] { null });
@@ -182,5 +185,27 @@ public class HtmlResponseWriterTest {
         responseWriter.endElement("style");
         responseWriter.flush();
         assertEquals(expectedStart + "abc]]]><![CDATA[]>abc" + expectedEnd, stringWriter.toString());
+    }
+
+    /**
+     * Test CDATA escaping with zero length content.
+     */
+    @Test
+    public void testUnescapedCDataWithZeroLengthContent() throws Exception {
+        String expectedStart = "<style>\n<![CDATA[\n";
+        String expectedEnd = "\n]]>\n</style>";
+
+        // make sure empty string is handle correct
+        StringWriter stringWriter = new StringWriter();
+        HtmlResponseWriter responseWriter = new HtmlResponseWriter(stringWriter, "application/xhtml+xml", "UTF-8");
+        responseWriter.startElement("style", null);
+        responseWriter.startCDATA();
+        responseWriter.writeText("".toCharArray());
+        responseWriter.writeText("", null);
+        responseWriter.endCDATA();
+        responseWriter.endElement("style");
+        responseWriter.flush();
+        assertEquals(expectedStart + expectedEnd, stringWriter.toString());
+
     }
 }

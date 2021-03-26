@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -23,6 +23,10 @@ import static com.sun.faces.util.Util.isEmpty;
 import static com.sun.faces.util.Util.loadClass;
 import static com.sun.faces.util.Util.notNull;
 import static com.sun.faces.util.Util.notNullNamedObject;
+import static jakarta.faces.application.Resource.COMPONENT_RESOURCE_KEY;
+import static jakarta.faces.component.UIComponent.ATTRS_WITH_DECLARED_DEFAULT_VALUES;
+import static jakarta.faces.component.UIComponent.BEANINFO_KEY;
+import static jakarta.faces.component.UIComponent.COMPOSITE_COMPONENT_TYPE_KEY;
 import static java.beans.Introspector.getBeanInfo;
 import static java.beans.PropertyEditorManager.findEditor;
 import static java.text.MessageFormat.format;
@@ -30,10 +34,6 @@ import static java.util.Collections.unmodifiableMap;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
-import static javax.faces.application.Resource.COMPONENT_RESOURCE_KEY;
-import static javax.faces.component.UIComponent.ATTRS_WITH_DECLARED_DEFAULT_VALUES;
-import static javax.faces.component.UIComponent.BEANINFO_KEY;
-import static javax.faces.component.UIComponent.COMPOSITE_COMPONENT_TYPE_KEY;
 
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
@@ -57,22 +57,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.faces.FacesException;
-import javax.faces.application.Application;
-import javax.faces.application.Resource;
-import javax.faces.component.UIComponent;
-import javax.faces.component.behavior.Behavior;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.DateTimeConverter;
-import javax.faces.render.RenderKit;
-import javax.faces.render.Renderer;
-import javax.faces.validator.Validator;
-import javax.faces.view.ViewDeclarationLanguage;
-
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.ConverterPropertyEditorFactory;
 import com.sun.faces.application.ViewMemberInstanceFactoryMetadataMap;
@@ -82,6 +66,22 @@ import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.ReflectionUtils;
 import com.sun.faces.util.Util;
+
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.Resource;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.behavior.Behavior;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.DateTimeConverter;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.Renderer;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.view.ViewDeclarationLanguage;
 
 public class InstanceFactory {
 
@@ -97,14 +97,14 @@ public class InstanceFactory {
     private static final Map<Class<?>, String> STANDARD_TYPE_TO_CONV_ID_MAP = new HashMap<>(16, 1.0f);
 
     static {
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("javax.faces.Byte", new Class[] { Byte.TYPE, Byte.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("javax.faces.Boolean", new Class[] { Boolean.TYPE, Boolean.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("javax.faces.Character", new Class[] { Character.TYPE, Character.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("javax.faces.Short", new Class[] { Short.TYPE, Short.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("javax.faces.Integer", new Class[] { Integer.TYPE, Integer.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("javax.faces.Long", new Class[] { Long.TYPE, Long.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("javax.faces.Float", new Class[] { Float.TYPE, Float.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("javax.faces.Double", new Class[] { Double.TYPE, Double.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Byte", new Class[] { Byte.TYPE, Byte.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Boolean", new Class[] { Boolean.TYPE, Boolean.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Character", new Class[] { Character.TYPE, Character.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Short", new Class[] { Short.TYPE, Short.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Integer", new Class[] { Integer.TYPE, Integer.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Long", new Class[] { Long.TYPE, Long.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Float", new Class[] { Float.TYPE, Float.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Double", new Class[] { Double.TYPE, Double.class });
         for (Map.Entry<String, Class<?>[]> entry : STANDARD_CONV_ID_TO_TYPE_MAP.entrySet()) {
             Class<?>[] types = entry.getValue();
             String key = entry.getKey();
@@ -123,7 +123,8 @@ public class InstanceFactory {
 
     private TimeZone systemTimeZone;
 
-    private static final class ComponentResourceClassNotFound{}
+    private static final class ComponentResourceClassNotFound {
+    }
 
     //
     // These four maps store store "identifier" | "class name"
@@ -146,7 +147,7 @@ public class InstanceFactory {
     private BeanManager beanManager;
 
     public InstanceFactory(ApplicationAssociate applicationAssociate) {
-        this.associate = applicationAssociate;
+        associate = applicationAssociate;
         version = new Version();
 
         componentMap = new ViewMemberInstanceFactoryMetadataMap<>(new ConcurrentHashMap<>());
@@ -166,10 +167,9 @@ public class InstanceFactory {
     }
 
     /**
-     * @see javax.faces.application.Application#addComponent(java.lang.String, java.lang.String)
+     * @see jakarta.faces.application.Application#addComponent(java.lang.String, java.lang.String)
      */
     public void addComponent(String componentType, String componentClass) {
-
         notNull(COMPONENT_TYPE, componentType);
         notNull(COMPONENT_CLASS, componentClass);
 
@@ -186,7 +186,6 @@ public class InstanceFactory {
     }
 
     public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType) throws FacesException {
-
         notNull(COMPONENT_EXPRESSION, componentExpression);
         notNull(CONTEXT, context);
         notNull(COMPONENT_TYPE, componentType);
@@ -195,7 +194,6 @@ public class InstanceFactory {
     }
 
     public UIComponent createComponent(String componentType) throws FacesException {
-
         notNull(COMPONENT_TYPE, componentType);
 
         return createComponentApplyAnnotations(FacesContext.getCurrentInstance(), componentType, null, true);
@@ -269,12 +267,12 @@ public class InstanceFactory {
             }
         }
 
-        // Step 4. Use javax.faces.NamingContainer as the component type
+        // Step 4. Use jakarta.faces.NamingContainer as the component type
         if (result == null) {
-            result = app.createComponent("javax.faces.NamingContainer");
+            result = app.createComponent("jakarta.faces.NamingContainer");
         }
 
-        result.setRendererType("javax.faces.Composite");
+        result.setRendererType("jakarta.faces.Composite");
 
         Map<String, Object> attrs = result.getAttributes();
         attrs.put(COMPONENT_RESOURCE_KEY, componentResource);
@@ -287,7 +285,6 @@ public class InstanceFactory {
     }
 
     public UIComponent createComponent(FacesContext context, String componentType, String rendererType) {
-
         notNull(CONTEXT, context);
         notNull(COMPONENT_TYPE, componentType);
 
@@ -295,7 +292,6 @@ public class InstanceFactory {
     }
 
     public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType, String rendererType) {
-
         notNull(COMPONENT_EXPRESSION, componentExpression);
         notNull(CONTEXT, context);
         notNull(COMPONENT_TYPE, componentType);
@@ -304,17 +300,16 @@ public class InstanceFactory {
     }
 
     /**
-     * @see javax.faces.application.Application#getComponentTypes()
+     * @see jakarta.faces.application.Application#getComponentTypes()
      */
     public Iterator<String> getComponentTypes() {
         return componentMap.keySet().iterator();
     }
 
     /**
-     * @see javax.faces.application.Application#addBehavior(String, String)
+     * @see jakarta.faces.application.Application#addBehavior(String, String)
      */
     public void addBehavior(String behaviorId, String behaviorClass) {
-
         notNull("behaviorId", behaviorId);
         notNull("behaviorClass", behaviorClass);
 
@@ -331,10 +326,9 @@ public class InstanceFactory {
     }
 
     /**
-     * @see javax.faces.application.Application#createBehavior(String)
+     * @see jakarta.faces.application.Application#createBehavior(String)
      */
     public Behavior createBehavior(String behaviorId) throws FacesException {
-
         notNull("behaviorId", behaviorId);
 
         Behavior behavior = createCDIBehavior(behaviorId);
@@ -356,14 +350,13 @@ public class InstanceFactory {
     }
 
     /**
-     * @see javax.faces.application.Application#getBehaviorIds()
+     * @see jakarta.faces.application.Application#getBehaviorIds()
      */
     public Iterator<String> getBehaviorIds() {
         return behaviorMap.keySet().iterator();
     }
 
     public void addConverter(String converterId, String converterClass) {
-
         notNull("converterId", converterId);
         notNull("converterClass", converterClass);
 
@@ -389,10 +382,9 @@ public class InstanceFactory {
     }
 
     /**
-     * @see javax.faces.application.Application#addConverter(Class, String)
+     * @see jakarta.faces.application.Application#addConverter(Class, String)
      */
     public void addConverter(Class<?> targetClass, String converterClass) {
-
         notNull("targetClass", targetClass);
         notNull("converterClass", converterClass);
 
@@ -415,10 +407,9 @@ public class InstanceFactory {
     }
 
     /**
-     * @see javax.faces.application.Application#createConverter(String)
+     * @see jakarta.faces.application.Application#createConverter(String)
      */
     public Converter<?> createConverter(String converterId) {
-
         notNull("converterId", converterId);
 
         Converter<?> converter = createCDIConverter(converterId);
@@ -444,11 +435,10 @@ public class InstanceFactory {
     }
 
     /**
-     * @see javax.faces.application.Application#createConverter(Class)
+     * @see jakarta.faces.application.Application#createConverter(Class)
      */
     public Converter createConverter(Class<?> targetClass) {
-
-        Util.notNull("targetClass", targetClass);
+        notNull("targetClass", targetClass);
         Converter returnVal = null;
 
         if (version.isJsf23()) {
@@ -510,7 +500,7 @@ public class InstanceFactory {
     }
 
     /**
-     * @see javax.faces.application.Application#getConverterIds()
+     * @see jakarta.faces.application.Application#getConverterIds()
      */
     public Iterator<String> getConverterIds() {
         return converterIdMap.keySet().iterator();
@@ -518,19 +508,18 @@ public class InstanceFactory {
     }
 
     /**
-     * @see javax.faces.application.Application#getConverterTypes()
+     * @see jakarta.faces.application.Application#getConverterTypes()
      */
     public Iterator<Class<?>> getConverterTypes() {
         return converterTypeMap.keySet().iterator();
     }
 
     /**
-     * @see javax.faces.application.Application#addValidator(String, String)
+     * @see jakarta.faces.application.Application#addValidator(String, String)
      */
     public void addValidator(String validatorId, String validatorClass) {
-
-        Util.notNull("validatorId", validatorId);
-        Util.notNull("validatorClass", validatorClass);
+        notNull("validatorId", validatorId);
+        notNull("validatorClass", validatorClass);
 
         if (LOGGER.isLoggable(Level.FINE) && validatorMap.containsKey(validatorId)) {
             LOGGER.log(Level.FINE, "validatorId {0} has already been registered.  Replacing existing validator class type {1} with {2}.",
@@ -546,10 +535,9 @@ public class InstanceFactory {
     }
 
     /**
-     * @see javax.faces.application.Application#createValidator(String)
+     * @see jakarta.faces.application.Application#createValidator(String)
      */
     public Validator<?> createValidator(String validatorId) throws FacesException {
-
         notNull("validatorId", validatorId);
 
         Validator<?> validator = createCDIValidator(validatorId);
@@ -571,17 +559,16 @@ public class InstanceFactory {
     }
 
     /**
-     * @see javax.faces.application.Application#getValidatorIds()
+     * @see jakarta.faces.application.Application#getValidatorIds()
      */
     public Iterator<String> getValidatorIds() {
         return validatorMap.keySet().iterator();
     }
 
     /**
-     * @see javax.faces.application.Application#addDefaultValidatorId(String)
+     * @see jakarta.faces.application.Application#addDefaultValidatorId(String)
      */
     public synchronized void addDefaultValidatorId(String validatorId) {
-
         notNull("validatorId", validatorId);
 
         defaultValidatorInfo = null;
@@ -589,7 +576,7 @@ public class InstanceFactory {
     }
 
     /**
-     * @see javax.faces.application.Application#getDefaultValidatorInfo()
+     * @see jakarta.faces.application.Application#getDefaultValidatorInfo()
      */
     public Map<String, String> getDefaultValidatorInfo() {
 
@@ -621,12 +608,7 @@ public class InstanceFactory {
 
     }
 
-
-
-
-
     // --------------------------------------------------------- Private Methods
-
 
     private UIComponent createComponentFromScriptResource(FacesContext context, Resource scriptComponentResource, Resource componentResource) {
 
@@ -671,9 +653,8 @@ public class InstanceFactory {
 
     /**
      * Leveraged by
-     * {@link Application#createComponent(javax.el.ValueExpression, javax.faces.context.FacesContext, String)}
-     * and
-     * {@link Application#createComponent(javax.el.ValueExpression, javax.faces.context.FacesContext, String, String)}.
+     * {@link Application#createComponent(jakarta.el.ValueExpression, jakarta.faces.context.FacesContext, String)} and
+     * {@link Application#createComponent(jakarta.el.ValueExpression, jakarta.faces.context.FacesContext, String, String)}.
      * This method will apply any component and render annotations that may be present.
      */
     private UIComponent createComponentApplyAnnotations(FacesContext ctx, ValueExpression componentExpression, String componentType, String rendererType,
@@ -688,7 +669,7 @@ public class InstanceFactory {
                 c = this.createComponentApplyAnnotations(ctx, componentType, rendererType, applyAnnotations);
                 componentExpression.setValue(ctx.getELContext(), c);
             } else if (applyAnnotations) {
-                this.applyAnnotations(ctx, rendererType, c);
+                applyAnnotations(ctx, rendererType, c);
             }
         } catch (Exception ex) {
             throw new FacesException(ex);
@@ -700,8 +681,8 @@ public class InstanceFactory {
 
     /**
      * Leveraged by {@link Application#createComponent(String)} and
-     * {@link Application#createComponent(javax.faces.context.FacesContext, String, String)} This
-     * method will apply any component and render annotations that may be present.
+     * {@link Application#createComponent(jakarta.faces.context.FacesContext, String, String)} This method will apply any
+     * component and render annotations that may be present.
      */
     private UIComponent createComponentApplyAnnotations(FacesContext ctx, String componentType, String rendererType, boolean applyAnnotations) {
 
@@ -727,7 +708,6 @@ public class InstanceFactory {
 
         return component;
     }
-
 
     /**
      * Process any annotations associated with this component/renderer.
@@ -756,20 +736,17 @@ public class InstanceFactory {
 
     /**
      * <p>
-     * PRECONDITIONS: the values in the Map are either Strings representing fully qualified java
-     * class names, or java.lang.Class instances.
+     * PRECONDITIONS: the values in the Map are either Strings representing fully qualified java class names, or
+     * java.lang.Class instances.
      * </p>
      * <p>
-     * ALGORITHM: Look in the argument map for a value for the argument key. If found, if the value
-     * is instanceof String, assume the String specifies a fully qualified java class name and
-     * obtain the java.lang.Class instance for that String using Util.loadClass(). Replace the
-     * String instance in the argument map with the Class instance. If the value is instanceof
-     * Class, proceed. Assert that the value is either instanceof java.lang.Class or
-     * java.lang.String.
+     * ALGORITHM: Look in the argument map for a value for the argument key. If found, if the value is instanceof String,
+     * assume the String specifies a fully qualified java class name and obtain the java.lang.Class instance for that String
+     * using Util.loadClass(). Replace the String instance in the argument map with the Class instance. If the value is
+     * instanceof Class, proceed. Assert that the value is either instanceof java.lang.Class or java.lang.String.
      * </p>
      * <p>
-     * Now that you have a java.lang.class, call its newInstance and return it as the result of this
-     * method.
+     * Now that you have a java.lang.class, call its newInstance and return it as the result of this method.
      * </p>
      *
      * @param key Used to look up the value in the <code>Map</code>.
@@ -822,13 +799,14 @@ public class InstanceFactory {
     }
 
     /*
-     * This method makes it so that any cc:attribute elements that have a "default" attribute value
-     * have those values pushed into the composite component attribute map so that programmatic
-     * access (as opposed to EL access) will find the attribute values.
+     * This method makes it so that any cc:attribute elements that have a "default" attribute value have those values pushed
+     * into the composite component attribute map so that programmatic access (as opposed to EL access) will find the
+     * attribute values.
      *
      */
     @SuppressWarnings("unchecked")
-    private void pushDeclaredDefaultValuesToAttributesMap(FacesContext context, BeanInfo componentMetadata, Map<String, Object> attrs, UIComponent component, ExpressionFactory expressionFactory) {
+    private void pushDeclaredDefaultValuesToAttributesMap(FacesContext context, BeanInfo componentMetadata, Map<String, Object> attrs, UIComponent component,
+            ExpressionFactory expressionFactory) {
 
         Collection<String> attributesWithDeclaredDefaultValues = null;
         PropertyDescriptor[] propertyDescriptors = null;
@@ -902,13 +880,11 @@ public class InstanceFactory {
         return value;
     }
 
-
     /**
      * <p>
      * To enable EL Coercion to use JSF Custom converters, this method will call
-     * <code>PropertyEditorManager.registerEditor()</code>, passing the
-     * <code>ConverterPropertyEditor</code> class for the <code>targetClass</code> if the target
-     * class is not one of the standard by-type converter target classes.
+     * <code>PropertyEditorManager.registerEditor()</code>, passing the <code>ConverterPropertyEditor</code> class for the
+     * <code>targetClass</code> if the target class is not one of the standard by-type converter target classes.
      *
      * @param targetClass the target class for which a PropertyEditory may or may not be created
      */
@@ -986,25 +962,22 @@ public class InstanceFactory {
 
     /**
      * <p>
-     * The same as newThing except that a single argument constructor that accepts a Class is looked
-     * for before calling the no-arg version.
+     * The same as newThing except that a single argument constructor that accepts a Class is looked for before calling the
+     * no-arg version.
      * </p>
      *
      * <p>
-     * PRECONDITIONS: the values in the Map are either Strings representing fully qualified java
-     * class names, or java.lang.Class instances.
+     * PRECONDITIONS: the values in the Map are either Strings representing fully qualified java class names, or
+     * java.lang.Class instances.
      * </p>
      * <p>
-     * ALGORITHM: Look in the argument map for a value for the argument key. If found, if the value
-     * is instanceof String, assume the String specifies a fully qualified java class name and
-     * obtain the java.lang.Class instance for that String using Util.loadClass(). Replace the
-     * String instance in the argument map with the Class instance. If the value is instanceof
-     * Class, proceed. Assert that the value is either instanceof java.lang.Class or
-     * java.lang.String.
+     * ALGORITHM: Look in the argument map for a value for the argument key. If found, if the value is instanceof String,
+     * assume the String specifies a fully qualified java class name and obtain the java.lang.Class instance for that String
+     * using Util.loadClass(). Replace the String instance in the argument map with the Class instance. If the value is
+     * instanceof Class, proceed. Assert that the value is either instanceof java.lang.Class or java.lang.String.
      * </p>
      * <p>
-     * Now that you have a java.lang.class, call its newInstance and return it as the result of this
-     * method.
+     * Now that you have a java.lang.class, call its newInstance and return it as the result of this method.
      * </p>
      *
      * @param key Used to look up the value in the <code>Map</code>.
@@ -1061,8 +1034,6 @@ public class InstanceFactory {
         }
         return result;
     }
-
-
 
     /**
      * Get the bean manager.

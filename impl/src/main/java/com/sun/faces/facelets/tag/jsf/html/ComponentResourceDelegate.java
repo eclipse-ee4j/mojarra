@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,25 +16,25 @@
 
 package com.sun.faces.facelets.tag.jsf.html;
 
+import static com.sun.faces.facelets.tag.jsf.ComponentSupport.MARK_CREATED;
+
+import java.util.List;
+
 import com.sun.faces.facelets.tag.jsf.ComponentSupport;
 import com.sun.faces.facelets.tag.jsf.ComponentTagHandlerDelegateImpl;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.ComponentHandler;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagAttributes;
-import java.util.List;
-
-import static com.sun.faces.facelets.tag.jsf.ComponentSupport.MARK_CREATED;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributes;
 
 /**
- * This class overrides key methods from <code>ComponentTagHandlerDelegateImpl</code>
- * in order to properly find existing component resources as well as properly handling
- * the case when this concrete implementations of this class are applied more than
- * once for a particular request.
+ * This class overrides key methods from <code>ComponentTagHandlerDelegateImpl</code> in order to properly find existing
+ * component resources as well as properly handling the case when this concrete implementations of this class are
+ * applied more than once for a particular request.
  */
 public abstract class ComponentResourceDelegate extends ComponentTagHandlerDelegateImpl {
 
@@ -42,22 +42,17 @@ public abstract class ComponentResourceDelegate extends ComponentTagHandlerDeleg
 
     // ------------------------------------------------------------ Constructors
 
-
     public ComponentResourceDelegate(ComponentHandler owner) {
 
         super(owner);
-        this.attributes = owner.getTag().getAttributes();
+        attributes = owner.getTag().getAttributes();
 
     }
 
-
     // ----------------------------------------- Methods from TagHandlerDelegate
 
-
     @Override
-    protected UIComponent findChild(FaceletContext ctx,
-                                    UIComponent parent,
-                                    String tagId) {
+    protected UIComponent findChild(FaceletContext ctx, UIComponent parent, String tagId) {
 
         // If we have a target for this particular component, we need to
         // query the UIViewRoot's component resources, otherwise defer
@@ -65,8 +60,7 @@ public abstract class ComponentResourceDelegate extends ComponentTagHandlerDeleg
         String target = getLocationTarget(ctx);
         if (target != null) {
             final UIViewRoot root = ctx.getFacesContext().getViewRoot();
-            List<UIComponent> resources =
-                  root.getComponentResources(ctx.getFacesContext(), target);
+            List<UIComponent> resources = root.getComponentResources(ctx.getFacesContext(), target);
             for (UIComponent c : resources) {
                 String cid = (String) c.getAttributes().get(MARK_CREATED);
                 if (tagId.equals(cid)) {
@@ -80,21 +74,18 @@ public abstract class ComponentResourceDelegate extends ComponentTagHandlerDeleg
 
     }
 
-
-    @Override protected void addComponentToView(FaceletContext ctx,
-                                                UIComponent parent,
-                                                UIComponent c,
-                                                boolean componentFound) {
+    @Override
+    protected void addComponentToView(FaceletContext ctx, UIComponent parent, UIComponent c, boolean componentFound) {
 
         if (!componentFound) {
             // default to the existing logic which will add the component
-            // in-place.  An event will be fired to move the component
+            // in-place. An event will be fired to move the component
             // as a UIViewRoot component resource
             super.addComponentToView(ctx, parent, c, componentFound);
         } else {
             // when re-applying we supress events for existing components,
             // so if we simply relied on the default logic, the resources
-            // wouldn't be be moved.  We'll do it manually instead.
+            // wouldn't be be moved. We'll do it manually instead.
             String target = getLocationTarget(ctx);
             if (target != null) {
                 final UIViewRoot root = ctx.getFacesContext().getViewRoot();
@@ -106,20 +97,14 @@ public abstract class ComponentResourceDelegate extends ComponentTagHandlerDeleg
 
     }
 
-
-
-
     @Override
-    protected void doOrphanedChildCleanup(FaceletContext ctx,
-                                          UIComponent parent,
-                                          UIComponent c) {
+    protected void doOrphanedChildCleanup(FaceletContext ctx, UIComponent parent, UIComponent c) {
 
         FacesContext context = ctx.getFacesContext();
-        boolean suppressEvents =
-              ComponentSupport.suppressViewModificationEvents(context);
+        boolean suppressEvents = ComponentSupport.suppressViewModificationEvents(context);
         if (suppressEvents) {
             // if the component has already been found, it will be removed
-            // and added back to the view.  We don't want to publish events
+            // and added back to the view. We don't want to publish events
             // for this case.
             context.setProcessingEvents(false);
         }
@@ -135,12 +120,9 @@ public abstract class ComponentResourceDelegate extends ComponentTagHandlerDeleg
 
     }
 
-
     // ------------------------------------------------------- Protected Methods
 
-
     protected abstract String getLocationTarget(FaceletContext ctx);
-
 
     protected TagAttribute getAttribute(String name) {
 

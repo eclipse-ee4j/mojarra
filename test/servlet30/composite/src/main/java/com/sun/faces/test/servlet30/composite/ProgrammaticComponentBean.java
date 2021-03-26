@@ -18,30 +18,33 @@ package com.sun.faces.test.servlet30.composite;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.enterprise.context.RequestScoped;
-import javax.faces.component.UIComponent;
+import javax.faces.application.Application;
+import javax.faces.application.ViewHandler;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
-import javax.inject.Named;
+import javax.faces.component.UIComponent;
+import javax.faces.view.ViewDeclarationLanguage;
 
-@Named
+@ManagedBean
 @RequestScoped
 public class ProgrammaticComponentBean {
-
-    public String getTest() {
-        Map<String, Object> attrs = new HashMap<>();
+    
+    public String getTest() {        
+        Map<String, Object> attrs=new HashMap<String, Object>();
         attrs.put("pi", (float) 3.14);
         attrs.put("pagecontent", "" + System.currentTimeMillis());
-
+        
         FacesContext context = FacesContext.getCurrentInstance();
-
-        UIComponent c = context.getApplication()
-                               .getViewHandler()
-                               .getViewDeclarationLanguage(context, context.getViewRoot().getViewId())
-                               .createComponent(context,
-                                   "http://java.sun.com/jsf/composite/programmatic",
-                                   "programmaticComponent", attrs);
-
+        Application application = context.getApplication();
+        ViewHandler vh = application.getViewHandler();
+        ViewDeclarationLanguage vdl = vh.getViewDeclarationLanguage(context, 
+                context.getViewRoot().getViewId());
+        
+        UIComponent c = vdl.createComponent(FacesContext.getCurrentInstance(), 
+                "http://java.sun.com/jsf/composite/programmatic", 
+                "programmaticComponent", attrs);
+        
         return null == c ? "FAILURE" : "SUCCESS";
     }
 }

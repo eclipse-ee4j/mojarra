@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,31 +18,32 @@
 
 package com.sun.faces.renderkit.html_basic;
 
-import com.sun.faces.renderkit.RenderKitUtils;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 
-import javax.faces.FacesException;
-import javax.faces.application.FacesMessage;
-import javax.faces.application.ProjectStage;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIForm;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.ConverterException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Part;
+import com.sun.faces.renderkit.RenderKitUtils;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.ConverterException;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Part;
 
 public class FileRenderer extends TextRenderer {
 
-   // ---------------------------------------------------------- Public Methods
+    // ---------------------------------------------------------- Public Methods
 
-	@Override
-	public void decode(FacesContext context, UIComponent component) {
+    @Override
+    public void decode(FacesContext context, UIComponent component) {
 
-		rendererParamsNotNull(context, component);
+        rendererParamsNotNull(context, component);
 
         if (!shouldDecode(component)) {
             return;
@@ -54,10 +55,10 @@ public class FileRenderer extends TextRenderer {
             clientId = component.getClientId(context);
         }
 
-        assert(clientId != null);
+        assert clientId != null;
         ExternalContext externalContext = context.getExternalContext();
         Map<String, String> requestMap = externalContext.getRequestParameterMap();
-        
+
         if (requestMap.containsKey(clientId)) {
             setSubmittedValue(component, requestMap.get(clientId));
         }
@@ -67,7 +68,7 @@ public class FileRenderer extends TextRenderer {
             Collection<Part> parts = request.getParts();
             for (Part cur : parts) {
                 if (clientId.equals(cur.getName())) {
-                    // The cause of 3404 is here: the component should not be 
+                    // The cause of 3404 is here: the component should not be
                     // transient, rather, the value should not saved as part of
                     // the state
                     // component.setTransient(true);
@@ -77,33 +78,32 @@ public class FileRenderer extends TextRenderer {
         } catch (IOException | ServletException ioe) {
             throw new FacesException(ioe);
         }
-            
+
     }
-    
-    // If we are in Project Stage Development mode, the parent form 
+
+    // If we are in Project Stage Development mode, the parent form
     // must have an enctype of "multipart/form-data" for this component.
     // If not, produce a message.
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
         if (context.isProjectStage(ProjectStage.Development)) {
             boolean produceMessage = false;
             UIForm form = RenderKitUtils.getForm(component, context);
             if (null != form) {
-                String encType = (String)form.getAttributes().get("enctype");
+                String encType = (String) form.getAttributes().get("enctype");
                 if (null == encType || !encType.equals("multipart/form-data")) {
                     produceMessage = true;
-                } 
+                }
             } else {
                 produceMessage = true;
             }
-            
+
             if (produceMessage) {
                 FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN,
-                    "File upload component requires a form with an enctype of multipart/form-data",
-                    "File upload component requires a form with an enctype of multipart/form-data");
-                context.addMessage(component.getClientId(context), message);   
-            }       
+                        "File upload component requires a form with an enctype of multipart/form-data",
+                        "File upload component requires a form with an enctype of multipart/form-data");
+                context.addMessage(component.getClientId(context), message);
+            }
         }
         super.encodeBegin(context, component);
     }
@@ -118,7 +118,5 @@ public class FileRenderer extends TextRenderer {
         }
         return submittedValue;
     }
-        
-        
 
 }

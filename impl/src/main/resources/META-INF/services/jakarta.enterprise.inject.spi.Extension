@@ -1,0 +1,4 @@
+com.sun.faces.application.view.ViewScopeExtension
+com.sun.faces.flow.FlowCDIExtension
+com.sun.faces.flow.FlowDiscoveryCDIExtension
+com.sun.faces.cdi.CdiExtension

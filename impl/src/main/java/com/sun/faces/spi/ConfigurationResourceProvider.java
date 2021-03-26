@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,11 +19,12 @@ package com.sun.faces.spi;
 import java.net.URI;
 import java.util.Collection;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
- * <p> Classes that implement this interface return zero or more
- * <code>URL</code>s which refer to application configuration resources.
+ * <p>
+ * Classes that implement this interface return zero or more <code>URL</code>s which refer to application configuration
+ * resources.
  * </p>
  *
  * @see FacesConfigResourceProvider
@@ -34,20 +35,18 @@ public interface ConfigurationResourceProvider {
     /**
      * @param context the <code>ServletContext</code> for this application
      *
-     * @return a List zero or more <code>URL</code> instances representing
-     *         application configuration resources
+     * @return a List zero or more <code>URL</code> instances representing application configuration resources
      */
-    public Collection<URI> getResources(ServletContext context);
-    
+    Collection<URI> getResources(ServletContext context);
+
     /**
-     * Parameter to force the XML validation of the JSF configuration files
-     * returned by getResources.
-     * 
+     * Parameter to force the XML validation of the Faces configuration files returned by getResources.
+     *
      * @param uri the URI for which Mojarra asks if validation is needed. Should always be one as returned by getResources
      * @param globalValidateXml the global (application level) value of the validateXml parameter
      * @return true if Mojarra should validate the given URI file, false if not
      */
-    default public boolean validateXml(URI uri, boolean globalValidateXml) {
+    default boolean validateXml(URI uri, boolean globalValidateXml) {
         return globalValidateXml;
     }
 

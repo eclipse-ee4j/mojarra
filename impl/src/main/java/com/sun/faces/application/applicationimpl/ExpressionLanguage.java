@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -23,16 +23,16 @@ import static com.sun.faces.util.Util.getCdiBeanManager;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.el.CompositeELResolver;
-import javax.el.ELContextListener;
-import javax.el.ELException;
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.faces.context.FacesContext;
-
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.el.FacesCompositeELResolver;
+
+import jakarta.el.CompositeELResolver;
+import jakarta.el.ELContextListener;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.faces.context.FacesContext;
 
 public class ExpressionLanguage {
 
@@ -40,22 +40,20 @@ public class ExpressionLanguage {
 
     private final ApplicationAssociate associate;
 
-
     private List<ELContextListener> elContextListeners;
     private CompositeELResolver elResolvers;
-    private FacesCompositeELResolver compositeELResolver;
+    private volatile FacesCompositeELResolver compositeELResolver;
 
     private Version version = new Version();
 
     public ExpressionLanguage(ApplicationAssociate applicationAssociate) {
-        this.associate = applicationAssociate;
-
+        associate = applicationAssociate;
         elContextListeners = new CopyOnWriteArrayList<>();
         elResolvers = new CompositeELResolver();
     }
 
     /**
-     * @see javax.faces.application.Application#addELContextListener(javax.el.ELContextListener)
+     * @see jakarta.faces.application.Application#addELContextListener(jakarta.el.ELContextListener)
      */
     public void addELContextListener(ELContextListener listener) {
         if (listener != null) {
@@ -64,7 +62,7 @@ public class ExpressionLanguage {
     }
 
     /**
-     * @see javax.faces.application.Application#removeELContextListener(javax.el.ELContextListener)
+     * @see jakarta.faces.application.Application#removeELContextListener(jakarta.el.ELContextListener)
      */
     public void removeELContextListener(ELContextListener listener) {
         if (listener != null) {
@@ -73,7 +71,7 @@ public class ExpressionLanguage {
     }
 
     /**
-     * @see javax.faces.application.Application#getELContextListeners()
+     * @see jakarta.faces.application.Application#getELContextListeners()
      */
     public ELContextListener[] getELContextListeners() {
         if (!elContextListeners.isEmpty()) {
@@ -84,22 +82,24 @@ public class ExpressionLanguage {
     }
 
     /**
-     * @see javax.faces.application.Application#getELResolver()
+     * @see jakarta.faces.application.Application#getELResolver()
      */
     public ELResolver getELResolver() {
-
         if (compositeELResolver == null) {
-            performOneTimeELInitialization();
+            synchronized (this) {
+                if (compositeELResolver == null) {
+                    performOneTimeELInitialization();
+                }
+            }
         }
 
         return compositeELResolver;
     }
 
     /**
-     * @see javax.faces.application.Application#addELResolver(javax.el.ELResolver)
+     * @see jakarta.faces.application.Application#addELResolver(jakarta.el.ELResolver)
      */
     public void addELResolver(ELResolver resolver) {
-
         if (associate.hasRequestBeenServiced()) {
             throw new IllegalStateException(getExceptionMessageString(ILLEGAL_ATTEMPT_SETTING_APPLICATION_ARTIFACT_ID, "ELResolver"));
         }
@@ -118,15 +118,14 @@ public class ExpressionLanguage {
     }
 
     /**
-     * @see javax.faces.application.Application#getExpressionFactory()
+     * @see jakarta.faces.application.Application#getExpressionFactory()
      */
     public ExpressionFactory getExpressionFactory() {
         return associate.getExpressionFactory();
     }
 
     /**
-     * @see javax.faces.application.Application#evaluateExpressionGet(javax.faces.context.FacesContext,
-     *      String, Class)
+     * @see jakarta.faces.application.Application#evaluateExpressionGet(jakarta.faces.context.FacesContext, String, Class)
      */
     @SuppressWarnings("unchecked")
     public <T> T evaluateExpressionGet(FacesContext context, String expression, Class<? extends T> expectedType) throws ELException {
@@ -145,15 +144,11 @@ public class ExpressionLanguage {
         this.compositeELResolver = compositeELResolver;
     }
 
-
-
-
     private void performOneTimeELInitialization() {
         if (compositeELResolver != null) {
             throw new IllegalStateException("Class invariant invalidated: " + "The Application instance's ELResolver is not null " + "and it should be.");
         }
         associate.initializeELResolverChains();
     }
-
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,10 +16,10 @@
 
 package com.sun.faces.cdi;
 
-import javax.faces.component.StateHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
 
 /**
  * A delegate to the CDI managed converter.
@@ -30,26 +30,26 @@ public class CdiConverter implements Converter, StateHolder {
      * Stores the converter-id (if any).
      */
     private String converterId;
-    
+
     /**
      * Stores a transient reference to the CDI managed converter.
      */
     private transient Converter delegate;
-    
+
     /**
      * Stores the for-class (if any).
      */
     private Class forClass;
-    
+
     /**
-     * Constructor. 
+     * Constructor.
      */
     public CdiConverter() {
     }
-    
+
     /**
      * Constructor.
-     * 
+     *
      * @param converterId the converter id.
      * @param forClass the for class.
      * @param delegate the delegate.
@@ -59,10 +59,10 @@ public class CdiConverter implements Converter, StateHolder {
         this.forClass = forClass;
         this.delegate = delegate;
     }
-    
+
     /**
      * Get the object.
-     * 
+     *
      * @param facesContext the Faces context.
      * @param component the UI component.
      * @param value the value.
@@ -75,7 +75,7 @@ public class CdiConverter implements Converter, StateHolder {
 
     /**
      * Get the string representation.
-     * 
+     *
      * @param facesContext the Faces context.
      * @param component the UI component.
      * @param value the value.
@@ -88,21 +88,18 @@ public class CdiConverter implements Converter, StateHolder {
 
     /**
      * Save the state.
-     * 
+     *
      * @param facesContext the Faces context.
      * @return the saved object.
      */
     @Override
     public Object saveState(FacesContext facesContext) {
-        return new Object[] {
-            converterId,
-            forClass
-        };
+        return new Object[] { converterId, forClass };
     }
 
     /**
      * Restore the state.
-     * 
+     *
      * @param facesContext the Faces context.
      * @param state the state.
      */
@@ -115,7 +112,7 @@ public class CdiConverter implements Converter, StateHolder {
 
     /**
      * Is the converter transient.
-     * 
+     *
      * @return false
      */
     @Override
@@ -125,12 +122,12 @@ public class CdiConverter implements Converter, StateHolder {
 
     /**
      * Set the converter to transient.
-     * 
+     *
      * <p>
-     *  We ignore the call as our proxy is always non-transient.
+     * We ignore the call as our proxy is always non-transient.
      * </p>
-     * 
-     * @param transientValue 
+     *
+     * @param transientValue
      */
     @Override
     public void setTransient(boolean transientValue) {
@@ -138,7 +135,7 @@ public class CdiConverter implements Converter, StateHolder {
 
     /**
      * Get the delegate.
-     * 
+     *
      * @param facesContext the Faces context.
      * @return the delegate.
      */

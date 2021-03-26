@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,7 +16,7 @@
 
 package com.sun.faces.context;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * A utility class for dealing with context-param entries.
@@ -59,6 +59,6 @@ public class ContextParamUtils {
      * @return the value.
      */
     public static <T extends Object> T getValue(ServletContext servletContext, ContextParam contextParam, Class<T> clazz) {
-        return (T) clazz.cast(getValue(servletContext, contextParam));
+        return clazz.cast(getValue(servletContext, contextParam));
     }
 }

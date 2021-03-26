@@ -47,8 +47,9 @@ public class Issue1781IT {
     }
 
     /**
-     * Test attaching a ClientBehaviorHolder to h:body. Note the current 2.1 spec does not allow using
-     * f:ajax outside of a form so this will throw a script error which we are going to ignore.
+     * Test attaching a ClientBehaviorHolder to h:body. Note the current 2.1
+     * spec does not allow using f:ajax outside of a form so this will throw
+     * a script error which we are going to ignore.
      */
     @JsfTest(JsfVersion.JSF_2_2_1)
     @Test

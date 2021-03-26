@@ -14,13 +14,15 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.faces.test.servlet30.ajax;
+package com.sun.faces.test.servlet30.ajax; 
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 
 import org.junit.*;
+
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -46,16 +48,17 @@ public class Issue2574IT {
         webClient.close();
     }
 
+
     // ------------------------------------------------------------ Test Methods
 
     /**
-     * This test verifies that an attribute nameed 'value' can be successfully updated from a partial
-     * response (over Ajax).
+     * This test verifies that an attribute nameed 'value' can be successfully updated
+     * from a partial response (over Ajax). 
      */
     @Test
     public void testOtherScriptType() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "faces/issue2574.xhtml");
-        HtmlSubmitInput button1 = (HtmlSubmitInput) page.getElementById("form:refresh");
+        HtmlPage page = webClient.getPage(webUrl+"faces/issue2574.xhtml");
+        HtmlSubmitInput button1 = (HtmlSubmitInput)page.getElementById("form:refresh");
         page = button1.click();
         webClient.waitForBackgroundJavaScript(60000);
         assertTrue(page.asXml().contains("This script must not be eval'ed on ajax response."));

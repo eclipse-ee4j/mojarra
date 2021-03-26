@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.faces.test.servlet30.ajax;
+package com.sun.faces.test.servlet30.ajax; 
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
@@ -47,38 +47,39 @@ public class Issue2750IT {
         webClient.close();
     }
 
+
     // ------------------------------------------------------------ Test Methods
 
     /**
-     * This test verifies that an attribute named 'checked' can be successfully updated from a partial
-     * response (over Ajax).
+     * This test verifies that an attribute named 'checked' can be successfully updated
+     * from a partial response (over Ajax). 
      */
     @Test
     public void testUpdateAttributeNamedChecked() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "faces/attributeNameIsChecked.xhtml");
-        HtmlCheckBoxInput cbox = (HtmlCheckBoxInput) page.getElementById("form1:foo");
+        HtmlPage page = webClient.getPage(webUrl+"faces/attributeNameIsChecked.xhtml");
+        HtmlCheckBoxInput cbox = (HtmlCheckBoxInput)page.getElementById("form1:foo");
         assertTrue(cbox.isChecked() == false);
         assertTrue(page.asXml().contains("foo"));
-        HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("form1:button");
+        HtmlSubmitInput button = (HtmlSubmitInput)page.getElementById("form1:button");
         page = button.click();
         webClient.waitForBackgroundJavaScript(60000);
-        cbox = (HtmlCheckBoxInput) page.getElementById("form1:foo");
+        cbox = (HtmlCheckBoxInput)page.getElementById("form1:foo");
         assertTrue(cbox.isChecked() == true);
     }
 
     /**
-     * This test verifies that an attribute named 'readonly' can be successfully updated from a partial
-     * response (over Ajax).
+     * This test verifies that an attribute named 'readonly' can be successfully updated
+     * from a partial response (over Ajax).
      */
     @Test
     public void testUpdateAttributeNamedReadonly() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "faces/attributeNameIsReadonly.xhtml");
-        HtmlTextInput input = (HtmlTextInput) page.getElementById("form1:foo");
+        HtmlPage page = webClient.getPage(webUrl+"faces/attributeNameIsReadonly.xhtml");
+        HtmlTextInput input = (HtmlTextInput)page.getElementById("form1:foo");
         assertTrue(input.isReadOnly() == false);
-        HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("form1:button");
+        HtmlSubmitInput button = (HtmlSubmitInput)page.getElementById("form1:button");
         page = button.click();
         webClient.waitForBackgroundJavaScript(60000);
-        input = (HtmlTextInput) page.getElementById("form1:foo");
+        input = (HtmlTextInput)page.getElementById("form1:foo");
         assertTrue(input.isReadOnly() == true);
     }
 

@@ -19,9 +19,7 @@ package com.sun.faces.test;
 import java.io.Serializable;
 
 public class Foo implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+    
     private String name = "";
 
     public Foo(String name) {
@@ -41,16 +39,13 @@ public class Foo implements Serializable {
         if (obj == null) {
             return false;
         }
-
         if (getClass() != obj.getClass()) {
             return false;
         }
-
         final Foo other = (Foo) obj;
         if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
             return false;
         }
-
         return true;
     }
 
@@ -60,5 +55,7 @@ public class Foo implements Serializable {
         hash = 41 * hash + (this.name != null ? this.name.hashCode() : 0);
         return hash;
     }
-
+    
+    
+    
 }

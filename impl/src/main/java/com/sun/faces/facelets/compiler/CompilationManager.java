@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,6 +16,13 @@
 
 package com.sun.faces.facelets.compiler;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.facelets.tag.TagAttributesImpl;
@@ -28,20 +35,18 @@ import com.sun.faces.facelets.tag.ui.CompositionHandler;
 import com.sun.faces.facelets.tag.ui.UILibrary;
 import com.sun.faces.util.FacesLogger;
 
-import javax.faces.view.facelets.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Stack;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import jakarta.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributeException;
+import jakarta.faces.view.facelets.TagDecorator;
+import jakarta.faces.view.facelets.TagException;
 
 /**
- * Compilation unit for managing the creation of a single FaceletHandler based
- * on events from an XML parser.
- * 
+ * Compilation unit for managing the creation of a single FaceletHandler based on events from an XML parser.
+ *
  * @see {@link com.sun.faces.facelets.compiler.Compiler}
- * 
+ *
  * @author Jacob Hookom
  */
 final class CompilationManager {
@@ -61,45 +66,46 @@ final class CompilationManager {
     private int tagId;
 
     private boolean finished;
-    
+
     private final String alias;
-    
+
     private CompilationMessageHolder messageHolder = null;
 
     private WebConfiguration config;
-    
+
     public CompilationManager(String alias, Compiler compiler) {
-        
+
         // this is our alias
         this.alias = alias;
 
         // grab compiler state
         this.compiler = compiler;
-        this.tagDecorator = compiler.createTagDecorator();
-        this.tagLibrary = compiler.createTagLibrary(this.getCompilationMessageHolder());
+        tagDecorator = compiler.createTagDecorator();
+        tagLibrary = compiler.createTagLibrary(getCompilationMessageHolder());
 
         // namespace management
-        this.namespaceManager = new NamespaceManager();
+        namespaceManager = new NamespaceManager();
 
         // tag uids
-        this.tagId = 0;
+        tagId = 0;
 
         // for composition use
-        this.finished = false;
+        finished = false;
 
         // our compilationunit stack
-        this.units = new Stack<>();
-        this.units.push(new CompilationUnit());
+        units = new Stack<>();
+        units.push(new CompilationUnit());
 
         config = WebConfiguration.getInstance();
-        
+
     }
-        
+
     private InterfaceUnit interfaceUnit;
+
     private InterfaceUnit getInterfaceUnit() {
         return interfaceUnit;
     }
-    
+
     public CompilationMessageHolder getCompilationMessageHolder() {
         if (null == messageHolder) {
             messageHolder = new CompilationMessageHolderImpl();
@@ -114,7 +120,7 @@ final class CompilationManager {
     public WebConfiguration getWebConfiguration() {
         return config;
     }
-    
+
     public void setCompilationMessageHolder(CompilationMessageHolder messageHolder) {
         this.messageHolder = messageHolder;
     }
@@ -122,9 +128,9 @@ final class CompilationManager {
     private void setInterfaceUnit(InterfaceUnit interfaceUnit) {
         this.interfaceUnit = interfaceUnit;
     }
-    
+
     public void writeInstruction(String value) {
-        if (this.finished) {
+        if (finished) {
             return;
         }
 
@@ -134,18 +140,18 @@ final class CompilationManager {
         }
 
         TextUnit unit;
-        if (this.currentUnit() instanceof TextUnit) {
-            unit = (TextUnit) this.currentUnit();
+        if (currentUnit() instanceof TextUnit) {
+            unit = (TextUnit) currentUnit();
         } else {
-            unit = new TextUnit(this.alias, this.nextTagId());
-            this.startUnit(unit);
+            unit = new TextUnit(alias, nextTagId());
+            startUnit(unit);
         }
         unit.writeInstruction(value);
     }
 
     public void writeText(String value) {
 
-        if (this.finished) {
+        if (finished) {
             return;
         }
 
@@ -155,52 +161,53 @@ final class CompilationManager {
         }
 
         TextUnit unit;
-        if (this.currentUnit() instanceof TextUnit) {
-            unit = (TextUnit) this.currentUnit();
+        if (currentUnit() instanceof TextUnit) {
+            unit = (TextUnit) currentUnit();
         } else {
-            unit = new TextUnit(this.alias, this.nextTagId());
-            this.startUnit(unit);
+            unit = new TextUnit(alias, nextTagId());
+            startUnit(unit);
         }
         unit.write(value);
     }
 
     public void writeComment(String text) {
-        if (this.compiler.isTrimmingComments())
-            return; 
-
-        if (this.finished) {
+        if (compiler.isTrimmingComments()) {
             return;
         }
-          
+
+        if (finished) {
+            return;
+        }
+
         // don't carelessly add empty tags
         if (text.length() == 0) {
             return;
         }
-          
+
         TextUnit unit;
-        if (this.currentUnit() instanceof TextUnit) {
-            unit = (TextUnit) this.currentUnit();
+        if (currentUnit() instanceof TextUnit) {
+            unit = (TextUnit) currentUnit();
         } else {
-            unit = new TextUnit(this.alias, this.nextTagId());
-            this.startUnit(unit);
+            unit = new TextUnit(alias, nextTagId());
+            startUnit(unit);
         }
-          
+
         unit.writeComment(text);
     }
 
     public void writeWhitespace(String text) {
-        if (!this.compiler.isTrimmingWhitespace()) {
-            this.writeText(text);
+        if (!compiler.isTrimmingWhitespace()) {
+            writeText(text);
         }
     }
 
     private String nextTagId() {
-        return Integer.toHexString(Math.abs(this.alias.hashCode() ^ 13 * this.tagId++));
+        return Integer.toHexString(Math.abs(alias.hashCode() ^ 13 * tagId++));
     }
 
     public void pushTag(Tag orig) {
 
-        if (this.finished) {
+        if (finished) {
             return;
         }
 
@@ -208,35 +215,33 @@ final class CompilationManager {
             log.fine("Tag Pushed: " + orig);
         }
 
-        Tag t = this.tagDecorator.decorate(orig);
-        String[] qname = this.determineQName(t);
-        t = this.trimAttributes(t);
+        Tag t = tagDecorator.decorate(orig);
+        String[] qname = determineQName(t);
+        t = trimAttributes(t);
 
         boolean handled = false;
 
         if (isTrimmed(qname[0], qname[1])) {
-        	if (log.isLoggable(Level.FINE)) {
-        		log.fine("Composition Found, Popping Parent Tags");
-        	}
-           
+            if (log.isLoggable(Level.FINE)) {
+                log.fine("Composition Found, Popping Parent Tags");
+            }
+
             CompilationUnit viewRootUnit = getViewRootUnitFromStack(units);
-            this.units.clear();
-            NamespaceUnit nsUnit = this.namespaceManager
-                    .toNamespaceUnit(this.tagLibrary);
-            this.units.push(nsUnit);
+            units.clear();
+            NamespaceUnit nsUnit = namespaceManager.toNamespaceUnit(tagLibrary);
+            units.push(nsUnit);
             if (viewRootUnit != null) {
                 viewRootUnit.removeChildren();
-                this.currentUnit().addChild(viewRootUnit);
+                currentUnit().addChild(viewRootUnit);
             }
-            this.startUnit(new TrimmedTagUnit(this.tagLibrary, qname[0], qname[1], t, this
-                    .nextTagId()));
+            startUnit(new TrimmedTagUnit(tagLibrary, qname[0], qname[1], t, nextTagId()));
             if (log.isLoggable(Level.FINE)) {
-            	log.fine("New Namespace and [Trimmed] TagUnit pushed");
+                log.fine("New Namespace and [Trimmed] TagUnit pushed");
             }
         } else if (isImplementation(qname[0], qname[1])) {
-        	if (log.isLoggable(Level.FINE)) {
-        		log.fine("Composite Component Implementation Found, Popping Parent Tags");
-        	}
+            if (log.isLoggable(Level.FINE)) {
+                log.fine("Composite Component Implementation Found, Popping Parent Tags");
+            }
 
             // save aside the InterfaceUnit
             InterfaceUnit iface = getInterfaceUnit();
@@ -245,36 +250,34 @@ final class CompilationManager {
             }
 
             // Cleare the parent tags
-            this.units.clear();
-            NamespaceUnit nsUnit = this.namespaceManager
-                    .toNamespaceUnit(this.tagLibrary);
-            this.units.push(nsUnit);
-            this.currentUnit().addChild(iface);
-            this.startUnit(new ImplementationUnit(this.tagLibrary, qname[0], qname[1], t, this
-                    .nextTagId()));
+            units.clear();
+            NamespaceUnit nsUnit = namespaceManager.toNamespaceUnit(tagLibrary);
+            units.push(nsUnit);
+            currentUnit().addChild(iface);
+            startUnit(new ImplementationUnit(tagLibrary, qname[0], qname[1], t, nextTagId()));
             if (log.isLoggable(Level.FINE)) {
-            	log.fine("New Namespace and ImplementationUnit pushed");
+                log.fine("New Namespace and ImplementationUnit pushed");
             }
-            
+
         } else if (isRemove(qname[0], qname[1])) {
-            this.units.push(new RemoveUnit());
-        } else if (this.tagLibrary.containsTagHandler(qname[0], qname[1])) {
+            units.push(new RemoveUnit());
+        } else if (tagLibrary.containsTagHandler(qname[0], qname[1])) {
             if (isInterface(qname[0], qname[1])) {
-                InterfaceUnit iface = new InterfaceUnit(this.tagLibrary, qname[0], qname[1], t, this.nextTagId());
+                InterfaceUnit iface = new InterfaceUnit(tagLibrary, qname[0], qname[1], t, nextTagId());
                 setInterfaceUnit(iface);
-                this.startUnit(iface);
+                startUnit(iface);
             } else {
-                this.startUnit(new TagUnit(this.tagLibrary, qname[0], qname[1], t, this.nextTagId()));
+                startUnit(new TagUnit(tagLibrary, qname[0], qname[1], t, nextTagId()));
             }
-        } else if (this.tagLibrary.containsNamespace(qname[0], t)) {
-            throw new TagException(orig, "Tag Library supports namespace: "+qname[0]+", but no tag was defined for name: "+qname[1]);
+        } else if (tagLibrary.containsNamespace(qname[0], t)) {
+            throw new TagException(orig, "Tag Library supports namespace: " + qname[0] + ", but no tag was defined for name: " + qname[1]);
         } else {
             TextUnit unit;
-            if (this.currentUnit() instanceof TextUnit) {
-                unit = (TextUnit) this.currentUnit();
+            if (currentUnit() instanceof TextUnit) {
+                unit = (TextUnit) currentUnit();
             } else {
-                unit = new TextUnit(this.alias, this.nextTagId());
-                this.startUnit(unit);
+                unit = new TextUnit(alias, nextTagId());
+                startUnit(unit);
             }
             unit.startTag(t);
         }
@@ -282,41 +285,40 @@ final class CompilationManager {
 
     public void popTag() {
 
-        if (this.finished) {
+        if (finished) {
             return;
         }
 
-        CompilationUnit unit = this.currentUnit();
+        CompilationUnit unit = currentUnit();
 
         if (unit instanceof TextUnit) {
             TextUnit t = (TextUnit) unit;
             if (t.isClosed()) {
-                this.finishUnit();
+                finishUnit();
             } else {
                 t.endTag();
                 return;
             }
         }
 
-        unit = this.currentUnit();
+        unit = currentUnit();
         if (unit instanceof TagUnit) {
             TagUnit t = (TagUnit) unit;
             if (t instanceof TrimmedTagUnit) {
-                this.finished = true;
+                finished = true;
                 return;
             }
         }
 
-        this.finishUnit();
+        finishUnit();
     }
 
     public void popNamespace(String ns) {
-        this.namespaceManager.popNamespace(ns);
-        if (this.currentUnit() instanceof NamespaceUnit) {
-            this.finishUnit();
+        namespaceManager.popNamespace(ns);
+        if (currentUnit() instanceof NamespaceUnit) {
+            finishUnit();
         }
     }
-
 
     public void pushNamespace(String prefix, String uri) {
 
@@ -324,31 +326,31 @@ final class CompilationManager {
             log.fine("Namespace Pushed " + prefix + ": " + uri);
         }
 
-        boolean alreadyPresent = this.namespaceManager.getNamespace(prefix) != null;
-        this.namespaceManager.pushNamespace(prefix, uri);
+        boolean alreadyPresent = namespaceManager.getNamespace(prefix) != null;
+        namespaceManager.pushNamespace(prefix, uri);
         NamespaceUnit unit;
-        if (this.currentUnit() instanceof NamespaceUnit && !alreadyPresent) {
-            unit = (NamespaceUnit) this.currentUnit();
+        if (currentUnit() instanceof NamespaceUnit && !alreadyPresent) {
+            unit = (NamespaceUnit) currentUnit();
         } else {
-            unit = new NamespaceUnit(this.tagLibrary);
-            this.startUnit(unit);
+            unit = new NamespaceUnit(tagLibrary);
+            startUnit(unit);
         }
         unit.setNamespace(prefix, uri);
     }
 
     public FaceletHandler createFaceletHandler() {
-        return ((CompilationUnit) this.units.get(0)).createFaceletHandler();
+        return units.get(0).createFaceletHandler();
     }
 
     private CompilationUnit currentUnit() {
-        if (!this.units.isEmpty()) {
-            return (CompilationUnit) this.units.peek();
+        if (!units.isEmpty()) {
+            return units.peek();
         }
         return null;
     }
 
     private void finishUnit() {
-        CompilationUnit unit = this.units.pop();
+        CompilationUnit unit = units.pop();
         unit.finishNotify(this);
 
         if (log.isLoggable(Level.FINE)) {
@@ -370,44 +372,41 @@ final class CompilationManager {
     private void startUnit(CompilationUnit unit) {
 
         if (log.isLoggable(Level.FINE)) {
-            log.fine("Starting Unit: " + unit + " and adding it to parent: "
-                    + this.currentUnit());
+            log.fine("Starting Unit: " + unit + " and adding it to parent: " + currentUnit());
         }
 
-        this.currentUnit().addChild(unit);
-        this.units.push(unit);
+        currentUnit().addChild(unit);
+        units.push(unit);
         unit.startNotify(this);
     }
 
     private Tag trimAttributes(Tag tag) {
-        Tag t = this.trimJSFCAttribute(tag);
-        t = this.trimNSAttributes(t);
+        Tag t = trimJSFCAttribute(tag);
+        t = trimNSAttributes(t);
         return t;
     }
 
     protected static boolean isRemove(String ns, String name) {
-        return (UILibrary.Namespace.equals(ns) || UILibrary.XMLNSNamespace.equals(ns))
-                && "remove".equals(name);
+        return (UILibrary.Namespace.equals(ns) || UILibrary.XMLNSNamespace.equals(ns)) && "remove".equals(name);
     }
 
-    // edburns: This is the magic line that tells the system to trim out the 
+    // edburns: This is the magic line that tells the system to trim out the
     // extra content above and below the tag.
     protected static boolean isTrimmed(String ns, String name) {
-        boolean matchInUILibrary = (UILibrary.Namespace.equals(ns) || UILibrary.XMLNSNamespace.equals(ns)) && 
-                (CompositionHandler.Name.equals(name) || 
-                ComponentRefHandler.Name.equals(name));
+        boolean matchInUILibrary = (UILibrary.Namespace.equals(ns) || UILibrary.XMLNSNamespace.equals(ns))
+                && (CompositionHandler.Name.equals(name) || ComponentRefHandler.Name.equals(name));
         return matchInUILibrary;
     }
 
     protected static boolean isImplementation(String ns, String name) {
-        boolean matchInCompositeLibrary = (CompositeLibrary.Namespace.equals(ns) || CompositeLibrary.XMLNSNamespace.equals(ns)) && 
-                (ImplementationHandler.Name.equals(name));
+        boolean matchInCompositeLibrary = (CompositeLibrary.Namespace.equals(ns) || CompositeLibrary.XMLNSNamespace.equals(ns))
+                && ImplementationHandler.Name.equals(name);
         return matchInCompositeLibrary;
     }
 
     protected static boolean isInterface(String ns, String name) {
-        boolean matchInCompositeLibrary = (CompositeLibrary.Namespace.equals(ns) || CompositeLibrary.XMLNSNamespace.equals(ns)) && 
-                (InterfaceHandler.Name.equals(name));
+        boolean matchInCompositeLibrary = (CompositeLibrary.Namespace.equals(ns) || CompositeLibrary.XMLNSNamespace.equals(ns))
+                && InterfaceHandler.Name.equals(name);
         return matchInCompositeLibrary;
     }
 
@@ -421,14 +420,13 @@ final class CompilationManager {
             String namespace, localName;
             int c = value.indexOf(':');
             if (c == -1) {
-                namespace = this.namespaceManager.getNamespace("");
+                namespace = namespaceManager.getNamespace("");
                 localName = value;
             } else {
                 String prefix = value.substring(0, c);
-                namespace = this.namespaceManager.getNamespace(prefix);
+                namespace = namespaceManager.getNamespace(prefix);
                 if (namespace == null) {
-                    throw new TagAttributeException(tag, attr,
-                            "No Namespace matched for: " + prefix);
+                    throw new TagAttributeException(tag, attr, "No Namespace matched for: " + prefix);
                 }
                 localName = value.substring(c + 1);
             }
@@ -458,8 +456,7 @@ final class CompilationManager {
         TagAttribute[] attr = tag.getAttributes().getAll();
         int remove = 0;
         for (int i = 0; i < attr.length; i++) {
-            if (attr[i].getQName().startsWith("xmlns")
-                    && this.tagLibrary.containsNamespace(attr[i].getValue(), null)) {
+            if (attr[i].getQName().startsWith("xmlns") && tagLibrary.containsNamespace(attr[i].getValue(), null)) {
                 remove |= 1 << i;
                 if (log.isLoggable(Level.FINE)) {
                     log.fine(attr[i] + " Namespace Bound to TagLibrary");
@@ -478,28 +475,25 @@ final class CompilationManager {
                 }
                 attrList.add(attr[i]);
             }
-            attr = (TagAttribute[]) attrList.toArray(new TagAttribute[attrList
-                    .size()]);
-            return new Tag(tag.getLocation(), tag.getNamespace(), tag
-                    .getLocalName(), tag.getQName(), new TagAttributesImpl(attr));
+            attr = (TagAttribute[]) attrList.toArray(new TagAttribute[attrList.size()]);
+            return new Tag(tag.getLocation(), tag.getNamespace(), tag.getLocalName(), tag.getQName(), new TagAttributesImpl(attr));
         }
     }
 
     /**
-     * 
+     *
      * @param units the compilation units.
-     * @return Get the view 
+     * @return Get the view
      */
     private CompilationUnit getViewRootUnitFromStack(Stack<CompilationUnit> units) {
         CompilationUnit result = null;
         Iterator<CompilationUnit> iterator = units.iterator();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             CompilationUnit compilationUnit = iterator.next();
             if (compilationUnit instanceof TagUnit) {
                 TagUnit tagUnit = (TagUnit) compilationUnit;
                 String ns = tagUnit.getTag().getNamespace();
-                if ((ns.equals(RIConstants.CORE_NAMESPACE) || ns.equals(RIConstants.CORE_NAMESPACE_NEW)) &&
-                        tagUnit.getTag().getLocalName().equals("view")) {
+                if ((ns.equals(RIConstants.CORE_NAMESPACE) || ns.equals(RIConstants.CORE_NAMESPACE_NEW)) && tagUnit.getTag().getLocalName().equals("view")) {
                     result = tagUnit;
                     break;
                 }

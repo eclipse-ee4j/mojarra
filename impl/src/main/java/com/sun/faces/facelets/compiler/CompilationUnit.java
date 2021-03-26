@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,16 +16,17 @@
 
 package com.sun.faces.facelets.compiler;
 
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.CompositeFaceletHandler;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletHandler;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.CompositeFaceletHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletHandler;
+
 /**
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -33,9 +34,9 @@ class CompilationUnit {
 
     protected final static FaceletHandler LEAF = new FaceletHandler() {
         @Override
-        public void apply(FaceletContext ctx, UIComponent parent)
-                throws IOException {
+        public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         }
+
         @Override
         public String toString() {
             return "FaceletHandler Tail";
@@ -52,36 +53,35 @@ class CompilationUnit {
     }
 
     protected void finishNotify(CompilationManager manager) {
-        
+
     }
 
     public void addChild(CompilationUnit unit) {
-        if (this.children == null) {
-            this.children = new ArrayList();
+        if (children == null) {
+            children = new ArrayList();
         }
-        this.children.add(unit);
+        children.add(unit);
     }
-    
+
     public void removeChildren() {
-        this.children.clear();
+        children.clear();
     }
 
     public FaceletHandler createFaceletHandler() {
-        return this.getNextFaceletHandler();
+        return getNextFaceletHandler();
     }
 
     protected final FaceletHandler getNextFaceletHandler() {
-        if (this.children == null || this.children.size() == 0) {
+        if (children == null || children.size() == 0) {
             return LEAF;
         }
-        if (this.children.size() == 1) {
-            CompilationUnit u = (CompilationUnit) this.children.get(0);
+        if (children.size() == 1) {
+            CompilationUnit u = (CompilationUnit) children.get(0);
             return u.createFaceletHandler();
         }
-        FaceletHandler[] fh = new FaceletHandler[this.children.size()];
+        FaceletHandler[] fh = new FaceletHandler[children.size()];
         for (int i = 0; i < fh.length; i++) {
-            fh[i] = ((CompilationUnit) this.children.get(i))
-                    .createFaceletHandler();
+            fh[i] = ((CompilationUnit) children.get(i)).createFaceletHandler();
         }
         return new CompositeFaceletHandler(fh);
     }

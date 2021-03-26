@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 2017, 2018 Oracle and/or its affiliates.
- * Copyright (c) 2018 Payara Services Limited.
- * All rights reserved.
+ * Copyright (c) 2017, 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,15 +16,17 @@
 
 package com.sun.faces.test.servlet30.composite2;
 
-import javax.enterprise.context.RequestScoped;
+import java.io.Serializable;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.component.UIComponent;
-import javax.inject.Named;
 
-@Named
+@ManagedBean
 @RequestScoped
-public class UserBean {
+public class UserBean implements Serializable {
+    
+    public UserBean() {}
 
-    private UIComponent composite;
     private UIComponent nonComposite;
 
     public UIComponent getNonComposite() {
@@ -36,6 +36,9 @@ public class UserBean {
     public void setNonComposite(UIComponent boundComponent) {
         this.nonComposite = boundComponent;
     }
+    
+    
+    private UIComponent composite;
 
     public UIComponent getComposite() {
         return composite;
@@ -44,5 +47,6 @@ public class UserBean {
     public void setComposite(UIComponent composite) {
         this.composite = composite;
     }
-
+    
 }
+

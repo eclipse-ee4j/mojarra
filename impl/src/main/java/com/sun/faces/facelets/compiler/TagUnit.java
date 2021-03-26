@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,13 +19,13 @@ package com.sun.faces.facelets.compiler;
 import com.sun.faces.RIConstants;
 import com.sun.faces.facelets.tag.TagLibrary;
 
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.FaceletHandler;
-import javax.faces.view.facelets.Tag;
-import javax.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagConfig;
 
 /**
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -36,9 +36,9 @@ class TagUnit extends CompilationUnit implements TagConfig {
     private final String id;
 
     private final Tag tag;
-    
+
     private final String namespace;
-    
+
     private final String name;
 
     public TagUnit(TagLibrary library, String namespace, String name, Tag tag, String id) {
@@ -50,26 +50,19 @@ class TagUnit extends CompilationUnit implements TagConfig {
     }
 
     /*
-     * special case if you have a ui:composition tag.  If and only if the
-     * composition is on the same facelet page as the
-     * composite:implementation, throw a FacesException with a helpful error
-     * message.
-     * */
+     * special case if you have a ui:composition tag. If and only if the composition is on the same facelet page as the
+     * composite:implementation, throw a FacesException with a helpful error message.
+     */
 
     @Override
     protected void startNotify(CompilationManager manager) {
-        if (this.name.equals("composition") && (this.namespace.equals(RIConstants.FACELET_NAMESPACE) || this.namespace.equals(RIConstants.FACELET_NAMESPACE))) {
-            CompilerPackageCompilationMessageHolder messageHolder =
-                    (CompilerPackageCompilationMessageHolder) manager.getCompilationMessageHolder();
-            CompilationManager compositeComponentCompilationManager = messageHolder.
-                getCurrentCompositeComponentCompilationManager();
+        if (name.equals("composition") && (namespace.equals(RIConstants.FACELET_NAMESPACE) || namespace.equals(RIConstants.FACELET_NAMESPACE))) {
+            CompilerPackageCompilationMessageHolder messageHolder = (CompilerPackageCompilationMessageHolder) manager.getCompilationMessageHolder();
+            CompilationManager compositeComponentCompilationManager = messageHolder.getCurrentCompositeComponentCompilationManager();
             if (manager.equals(compositeComponentCompilationManager)) {
                 // PENDING I18N
-                String messageStr = 
-                        "Because the definition of ui:composition causes any " +
-                        "parent content to be ignored, it is invalid to use " +
-                        "ui:composition directly inside of a composite component. " +
-                        "Consider ui:decorate instead.";
+                String messageStr = "Because the definition of ui:composition causes any " + "parent content to be ignored, it is invalid to use "
+                        + "ui:composition directly inside of a composite component. " + "Consider ui:decorate instead.";
                 throw new FaceletException(messageStr);
             }
         }
@@ -77,27 +70,27 @@ class TagUnit extends CompilationUnit implements TagConfig {
 
     @Override
     public FaceletHandler createFaceletHandler() {
-        return this.library.createTagHandler(this.namespace, this.name, this);
+        return library.createTagHandler(namespace, name, this);
     }
 
     @Override
     public FaceletHandler getNextHandler() {
-        return this.getNextFaceletHandler();
+        return getNextFaceletHandler();
     }
 
     @Override
     public Tag getTag() {
-        return this.tag;
+        return tag;
     }
 
     @Override
     public String getTagId() {
-        return this.id;
+        return id;
     }
 
     @Override
     public String toString() {
-        return this.tag.toString();
+        return tag.toString();
     }
 
 }

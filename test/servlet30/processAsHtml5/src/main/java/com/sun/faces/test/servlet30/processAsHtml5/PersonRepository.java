@@ -16,23 +16,19 @@
 
 package com.sun.faces.test.servlet30.processAsHtml5;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import javax.faces.bean.ApplicationScoped;
-import javax.inject.Named;
+import javax.faces.bean.ManagedBean;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-@Named
+@ManagedBean
 @ApplicationScoped
 public class PersonRepository implements Serializable {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1L;
     private Map<Integer, Person> persons = new TreeMap<Integer, Person>();
 
     @PostConstruct

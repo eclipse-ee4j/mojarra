@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,14 +16,15 @@
 
 package com.sun.faces.facelets.tag.ui;
 
+import java.io.IOException;
+
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagConfig;
-import java.io.IOException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
 
 /**
  * @author Jacob Hookom
@@ -37,7 +38,7 @@ public final class DefineHandler extends TagHandlerImpl {
      */
     public DefineHandler(TagConfig config) {
         super(config);
-        TagAttribute attr = this.getRequiredAttribute("name");
+        TagAttribute attr = getRequiredAttribute("name");
         if (!attr.isLiteral()) {
             FacesContext context = FacesContext.getCurrentInstance();
             FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
@@ -49,23 +50,20 @@ public final class DefineHandler extends TagHandlerImpl {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext,
-     *      javax.faces.component.UIComponent)
+     *
+     * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext, jakarta.faces.component.UIComponent)
      */
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         // no-op
-    	//this.nextHandler.apply(ctx, parent);
+        // this.nextHandler.apply(ctx, parent);
     }
-    
-    public void applyDefinition(FaceletContext ctx, UIComponent parent)
-    		throws IOException {
-    	this.nextHandler.apply(ctx, parent);
+
+    public void applyDefinition(FaceletContext ctx, UIComponent parent) throws IOException {
+        nextHandler.apply(ctx, parent);
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 }

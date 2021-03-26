@@ -19,57 +19,67 @@ package com.sun.faces.test.servlet30.wcagdatatable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
-
 /**
  *
  * @author edburns
  */
-@Named("dataSource")
-@RequestScoped
 public class WindowsCodePageData {
-
+    
     /** Creates a new instance of WindowsCodePageData */
     public WindowsCodePageData() {
         codePageData = new ArrayList<WindowsCodePageDataBean>();
         WindowsCodePageDataBean bean = null;
-        bean = new WindowsCodePageDataBean("1200", "Unicode (BMP of ISO 10646)", false, false, true, true, true);
+        bean = new WindowsCodePageDataBean("1200", "Unicode (BMP of ISO 10646)",
+                false, false, true, true, true);
         codePageData.add(bean);
-        bean = new WindowsCodePageDataBean("1251", "Windows 3.1 Cyrillic", true, false, true, true, true);
+        bean = new WindowsCodePageDataBean("1251", "Windows 3.1 Cyrillic",
+                true, false, true, true, true);
         codePageData.add(bean);
-        bean = new WindowsCodePageDataBean("1250", "Windows 3.1 Eastern European", true, false, true, true, true);
+        bean = new WindowsCodePageDataBean("1250", "Windows 3.1 Eastern European",
+                true, false, true, true, true);
         codePageData.add(bean);
-        bean = new WindowsCodePageDataBean("1252", "Windows 3.1 US (ANSI)", true, false, true, true, true);
+        bean = new WindowsCodePageDataBean("1252", "Windows 3.1 US (ANSI)",
+                true, false, true, true, true);
         codePageData.add(bean);
-        bean = new WindowsCodePageDataBean("1253", "Windows 3.1 Greek", true, false, true, true, true);
+        bean = new WindowsCodePageDataBean("1253", "Windows 3.1 Greek",
+                true, false, true, true, true);
         codePageData.add(bean);
-        bean = new WindowsCodePageDataBean("1254", "Windows 3.1 Turkish", true, false, true, true, true);
+        bean = new WindowsCodePageDataBean("1254", "Windows 3.1 Turkish",
+                true, false, true, true, true);
         codePageData.add(bean);
-        bean = new WindowsCodePageDataBean("1255", "Hebrew", true, false, false, false, true);
+        bean = new WindowsCodePageDataBean("1255", "Hebrew",
+                true, false, false, false, true);
         codePageData.add(bean);
-        bean = new WindowsCodePageDataBean("1256", "Arabic", true, false, false, false, true);
+        bean = new WindowsCodePageDataBean("1256", "Arabic",
+                true, false, false, false, true);
         codePageData.add(bean);
-        bean = new WindowsCodePageDataBean("1257", "Baltic", true, false, false, false, true);
+        bean = new WindowsCodePageDataBean("1257", "Baltic",
+                true, false, false, false, true);
         codePageData.add(bean);
-        bean = new WindowsCodePageDataBean("1361", "Korean (Johab)", true, false, false, true, true);
+        bean = new WindowsCodePageDataBean("1361", "Korean (Johab)",
+                true, false, false, true, true);
         codePageData.add(bean);
-        bean = new WindowsCodePageDataBean("437", "MS-DOS United States", false, true, true, true, true);
+        bean = new WindowsCodePageDataBean("437", "MS-DOS United States",
+                false, true, true, true, true);
         codePageData.add(bean);
-        bean = new WindowsCodePageDataBean("708", "Arabic (ASMO 708)", false, true, false, false, true);
+        bean = new WindowsCodePageDataBean("708", "Arabic (ASMO 708)",
+                false, true, false, false, true);
         codePageData.add(bean);
-        bean = new WindowsCodePageDataBean("709", "Arabic (ASMO 449+, BCON V4)", false, true, false, false, true);
+        bean = new WindowsCodePageDataBean("709", "Arabic (ASMO 449+, BCON V4)",
+                false, true, false, false, true);
         codePageData.add(bean);
-        bean = new WindowsCodePageDataBean("710", "Arabic (Transparent Arabic)", false, true, false, false, true);
+        bean = new WindowsCodePageDataBean("710", "Arabic (Transparent Arabic)",
+                false, true, false, false, true);
         codePageData.add(bean);
-        bean = new WindowsCodePageDataBean("720", "Arabic (Transparent ASMO)", false, true, false, false, true);
+        bean = new WindowsCodePageDataBean("720", "Arabic (Transparent ASMO)",
+                false, true, false, false, true);
         codePageData.add(bean);
     }
-
+    
     private List<WindowsCodePageDataBean> codePageData = null;
-
+    
     public List<WindowsCodePageDataBean> getCodePageData() {
         return codePageData;
     }
-
+    
 }

@@ -19,13 +19,13 @@ package com.sun.faces.test.servlet30.customlifecycle;
 import com.sun.faces.lifecycle.LifecycleImpl;
 
 public class NewLifecycle extends LifecycleImpl {
-
+    
     private String lifecycleId = null;
 
     public NewLifecycle(String lifecycleId) {
         this.lifecycleId = lifecycleId;
     }
-
+    
     public String getLifecycleId() {
         return lifecycleId;
     }

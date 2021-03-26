@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,25 +18,18 @@ package com.sun.faces.application.applicationimpl.events;
 
 import static com.sun.faces.util.Util.coalesce;
 
-import javax.faces.event.SystemEvent;
-
 import com.sun.faces.util.Cache;
-import com.sun.faces.util.Cache.Factory;
+
+import jakarta.faces.event.SystemEvent;
 
 /**
- * Simple wrapper class for application level SystemEvents. It provides the structure to map a
- * single SystemEvent to multiple sources which are represented by <code>SourceInfo</code>
- * instances.
+ * Simple wrapper class for application level SystemEvents. It provides the structure to map a single SystemEvent to
+ * multiple sources which are represented by <code>SourceInfo</code> instances.
  */
 public class SystemEventInfo {
 
-    private Cache<Class<?>, EventInfo> cache = new Cache<>(new Factory<Class<?>, EventInfo>() {
-        @Override
-        public EventInfo newInstance(Class<?> arg) throws InterruptedException {
-            return new EventInfo(systemEvent, arg);
-        }
-    });
     private Class<? extends SystemEvent> systemEvent;
+    private Cache<Class<?>, EventInfo> cache = new Cache<>(arg -> new EventInfo(systemEvent, arg));
 
     // -------------------------------------------------------- Constructors
 

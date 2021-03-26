@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,25 +16,23 @@
 
 package com.sun.faces.spi;
 
-
-import java.util.List;
-
 import static com.sun.faces.spi.ServiceFactoryUtils.getProviderFromEntry;
 import static com.sun.faces.spi.ServiceFactoryUtils.getServiceEntries;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.faces.FacesException;
+
 /**
- * Factory class for creating <code>ConfigurationResourceProvider</code> instances
- * using the Java services discovery mechanism.
+ * Factory class for creating <code>ConfigurationResourceProvider</code> instances using the Java services discovery
+ * mechanism.
  */
 public class ConfigurationResourceProviderFactory {
 
@@ -60,9 +58,7 @@ public class ConfigurationResourceProviderFactory {
 
     }
 
-
     // ---------------------------------------------------------- Public Methods
-
 
     /**
      * @param providerType the type of providers that should be discovered and instantiated.
@@ -74,12 +70,12 @@ public class ConfigurationResourceProviderFactory {
 
         String[] serviceEntries = getServiceEntries(providerType.servicesKey);
         List<ConfigurationResourceProvider> providers = new ArrayList<>();
-        
+
         if (serviceEntries.length > 0) {
             for (String serviceEntry : serviceEntries) {
                 try {
                     ConfigurationResourceProvider provider = (ConfigurationResourceProvider) getProviderFromEntry(serviceEntry, null, null);
-                    
+
                     if (provider != null) {
                         if (ProviderType.FacesConfig == providerType) {
                             if (!(provider instanceof FacesConfigResourceProvider)) {
@@ -87,7 +83,8 @@ public class ConfigurationResourceProviderFactory {
                             }
                         } else {
                             if (!(provider instanceof FaceletConfigResourceProvider)) {
-                                throw new IllegalStateException("Expected ConfigurationResourceProvider type to be an instance of FaceletConfigResourceProvider");
+                                throw new IllegalStateException(
+                                        "Expected ConfigurationResourceProvider type to be an instance of FaceletConfigResourceProvider");
                             }
                         }
                         providers.add(provider);
@@ -105,15 +102,14 @@ public class ConfigurationResourceProviderFactory {
             ServiceLoader serviceLoader;
 
             switch (providerType) {
-                case FacesConfig:
-                    serviceLoader = ServiceLoader.load(FacesConfigResourceProvider.class);
+            case FacesConfig:
+                serviceLoader = ServiceLoader.load(FacesConfigResourceProvider.class);
                 break;
-                case FaceletConfig:
-                    serviceLoader = ServiceLoader.load(FaceletConfigResourceProvider.class);
+            case FaceletConfig:
+                serviceLoader = ServiceLoader.load(FaceletConfigResourceProvider.class);
                 break;
-                default:
-                    throw new UnsupportedOperationException(providerType.servicesKey +
-                        " cannot be loaded via ServiceLoader API.");
+            default:
+                throw new UnsupportedOperationException(providerType.servicesKey + " cannot be loaded via ServiceLoader API.");
             }
 
             Iterator iterator = serviceLoader.iterator();

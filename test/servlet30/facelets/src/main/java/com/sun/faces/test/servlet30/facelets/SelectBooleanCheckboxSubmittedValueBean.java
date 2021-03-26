@@ -22,19 +22,16 @@
 package com.sun.faces.test.servlet30.facelets;
 
 import java.io.Serializable;
-
-import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ValueChangeEvent;
-import javax.inject.Named;
 
-@Named
+@ManagedBean(name = "selectBooleanCheckboxSubmittedValueBean")
 @SessionScoped
 public class SelectBooleanCheckboxSubmittedValueBean implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+    
     private Boolean box1;
     private Boolean box2;
 
@@ -45,7 +42,7 @@ public class SelectBooleanCheckboxSubmittedValueBean implements Serializable {
     public Boolean getBox2() {
         return box2;
     }
-
+    
     public void setBox1(Boolean box1) {
         this.box1 = box1;
     }
@@ -55,6 +52,7 @@ public class SelectBooleanCheckboxSubmittedValueBean implements Serializable {
     }
 
     public void valueChange(ValueChangeEvent event) throws AbortProcessingException {
-        FacesContext.getCurrentInstance().renderResponse();
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        ctx.renderResponse();
     }
 }

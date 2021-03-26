@@ -22,6 +22,8 @@ import com.sun.faces.application.view.FaceletPartialStateManagementStrategy;
 import com.sun.faces.cactus.ServletFacesTestCase;
 import com.sun.faces.util.Util;
 
+import jakarta.faces.event.*;
+
 import java.util.*;
 import java.util.logging.Logger;
 import javax.faces.component.UIColumn;
@@ -41,7 +43,11 @@ import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
-import javax.faces.event.*;
+import javax.faces.event.AbortProcessingException;
+import javax.faces.event.ComponentSystemEvent;
+import javax.faces.event.ComponentSystemEventListener;
+import javax.faces.event.PhaseId;
+import javax.faces.event.PostRestoreStateEvent;
 import javax.faces.model.ArrayDataModel;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;

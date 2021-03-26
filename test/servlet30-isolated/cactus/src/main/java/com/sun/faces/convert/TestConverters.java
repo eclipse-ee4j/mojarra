@@ -371,7 +371,7 @@ public class TestConverters extends JspFacesTestCase {
         // test model type of boolean []
         UISelectMany booleanv = new UISelectMany();
         booleanv.setId("bool");
-        booleanv.setRendererType("javax.faces.Checkbox");
+        booleanv.setRendererType("jakarta.faces.Checkbox");
         booleanv.setValueExpression("value",
             (getFacesContext().getApplication().getExpressionFactory().createValueExpression(getFacesContext().getELContext(),  "#{bean.booleans}",
             Boolean.class)));
@@ -389,7 +389,7 @@ public class TestConverters extends JspFacesTestCase {
         // test model type of boolean []
         booleanv = new UISelectMany();
         booleanv.setId("bool2");
-        booleanv.setRendererType("javax.faces.Checkbox");
+        booleanv.setRendererType("jakarta.faces.Checkbox");
         booleanv.setValueExpression("value",
             (getFacesContext().getApplication().getExpressionFactory().createValueExpression(getFacesContext().getELContext(),"#{bean.booleans}",
             Object.class)));
@@ -406,7 +406,7 @@ public class TestConverters extends JspFacesTestCase {
         // test model type of byte []
         UISelectMany bytev = new UISelectMany();
         bytev.setId("byte");
-        bytev.setRendererType("javax.faces.Checkbox");
+        bytev.setRendererType("jakarta.faces.Checkbox");
        
         bytev.setValueExpression("value", 
             getFacesContext().getApplication().getExpressionFactory().createValueExpression(getFacesContext().getELContext(), "#{bean.bytes}", 
@@ -427,7 +427,7 @@ public class TestConverters extends JspFacesTestCase {
         // test model type of char []
         UISelectMany charv = new UISelectMany();
         charv.setId("char");
-        charv.setRendererType("javax.faces.Checkbox");
+        charv.setRendererType("jakarta.faces.Checkbox");
         charv.setValueExpression("value",  
             getFacesContext().getApplication().getExpressionFactory().createValueExpression(getFacesContext().getELContext(),"#{bean.chars}", 
             Object.class));
@@ -447,7 +447,7 @@ public class TestConverters extends JspFacesTestCase {
         // test model type of short []
         UISelectMany shortv = new UISelectMany();
         shortv.setId("short");
-        shortv.setRendererType("javax.faces.Checkbox");
+        shortv.setRendererType("jakarta.faces.Checkbox");
         shortv.setValueExpression("value",  
         getFacesContext().getApplication().getExpressionFactory().createValueExpression(getFacesContext().getELContext(),"#{bean.shorts}", Object.class));
         root.getChildren().add(shortv);
@@ -467,7 +467,7 @@ public class TestConverters extends JspFacesTestCase {
         // test model type of int []
         UISelectMany intv = new UISelectMany();
         intv.setId("int");
-        intv.setRendererType("javax.faces.Checkbox");
+        intv.setRendererType("jakarta.faces.Checkbox");
         intv.setValueExpression("value", 
              getFacesContext().getApplication().getExpressionFactory().createValueExpression(getFacesContext().getELContext(),"#{bean.ints}",
              Object.class));
@@ -488,7 +488,7 @@ public class TestConverters extends JspFacesTestCase {
         // test model type of float []
         UISelectMany floatv = new UISelectMany();
         floatv.setId("float");
-        floatv.setRendererType("javax.faces.Checkbox");
+        floatv.setRendererType("jakarta.faces.Checkbox");
         floatv.setValueExpression("value",  
             getFacesContext().getApplication().getExpressionFactory().createValueExpression(getFacesContext().getELContext(),"#{bean.floats}", 
             Object.class));
@@ -509,7 +509,7 @@ public class TestConverters extends JspFacesTestCase {
         // test model type of long []
         UISelectMany longv = new UISelectMany();
         longv.setId("long");
-        longv.setRendererType("javax.faces.Checkbox");
+        longv.setRendererType("jakarta.faces.Checkbox");
         longv.setValueExpression("value",  
             getFacesContext().getApplication().getExpressionFactory().createValueExpression(getFacesContext().getELContext(),"#{bean.longs}", 
             Object.class));
@@ -530,7 +530,7 @@ public class TestConverters extends JspFacesTestCase {
         // test model type of double []
         UISelectMany doublev = new UISelectMany();
         doublev.setId("double");
-        doublev.setRendererType("javax.faces.Checkbox");
+        doublev.setRendererType("jakarta.faces.Checkbox");
         doublev.setValueExpression("value",
             getFacesContext().getApplication().getExpressionFactory().createValueExpression(getFacesContext().getELContext(),"#{bean.doubles}", 
             Object.class));
@@ -553,7 +553,7 @@ public class TestConverters extends JspFacesTestCase {
         // test model type of String []
         UISelectMany str = new UISelectMany();
         str.setId("str");
-        str.setRendererType("javax.faces.Checkbox");
+        str.setRendererType("jakarta.faces.Checkbox");
         str.setValueExpression("value", 
              getFacesContext().getApplication().getExpressionFactory().createValueExpression(getFacesContext().getELContext(),"#{bean.strings}", 
              Object.class));
@@ -571,11 +571,11 @@ public class TestConverters extends JspFacesTestCase {
         // test model type of Date []
         UISelectMany date = new UISelectMany();
         Converter dateConv = Util.getConverterForIdentifer(
-            "javax.faces.DateTime", getFacesContext());
+            "jakarta.faces.DateTime", getFacesContext());
         assertNotNull(dateConv);
         date.setConverter(dateConv);
         date.setId("date");
-        date.setRendererType("javax.faces.Checkbox");
+        date.setRendererType("jakarta.faces.Checkbox");
         date.setValueExpression("value",  
             getFacesContext().getApplication().getExpressionFactory().createValueExpression(getFacesContext().getELContext(),"#{bean.dates}", 
             Object.class));
@@ -610,11 +610,11 @@ public class TestConverters extends JspFacesTestCase {
         // test model type of Number []
         UISelectMany number = new UISelectMany();
         Converter numberConv = Util.getConverterForIdentifer(
-            "javax.faces.Number", getFacesContext());
+            "jakarta.faces.Number", getFacesContext());
         assertNotNull(numberConv);
         number.setConverter(numberConv);
         number.setId("num");
-        number.setRendererType("javax.faces.Checkbox");
+        number.setRendererType("jakarta.faces.Checkbox");
         number.setValueExpression("value",
             getFacesContext().getApplication().getExpressionFactory().createValueExpression(getFacesContext().getELContext(),"#{bean.numbers}", 
             Object.class));
@@ -638,7 +638,7 @@ public class TestConverters extends JspFacesTestCase {
         // test model type of List of Strings
         UISelectMany stringList = new UISelectMany();
         stringList.setId("stringList");
-        stringList.setRendererType("javax.faces.Checkbox");
+        stringList.setRendererType("jakarta.faces.Checkbox");
         stringList.setValueExpression("value",
              getFacesContext().getApplication().getExpressionFactory().createValueExpression(getFacesContext().getELContext(),"#{bean.stringList}", 
              Object.class));
@@ -669,7 +669,7 @@ public class TestConverters extends JspFacesTestCase {
         root.getChildren().add(text);
 
         Converter converter = null;
-        converter = application.createConverter("javax.faces.DateTime");
+        converter = application.createConverter("jakarta.faces.DateTime");
 
         // date
         String stringToConvert = "Jan 1, 1967";
@@ -681,7 +681,7 @@ public class TestConverters extends JspFacesTestCase {
         assertTrue(str.equals(stringToConvert));
 
         // time
-        converter = application.createConverter("javax.faces.DateTime");
+        converter = application.createConverter("jakarta.faces.DateTime");
         ((DateTimeConverter) converter).setType("time");
         text = new UIInput();
         text.setId("my_input_time");
@@ -693,7 +693,7 @@ public class TestConverters extends JspFacesTestCase {
         assertTrue(str.equals(stringToConvert));
 
         // datetime
-        converter = application.createConverter("javax.faces.DateTime");
+        converter = application.createConverter("jakarta.faces.DateTime");
         ((DateTimeConverter) converter).setType("both");
         text = new UIInput();
         text.setId("my_input_datetime");
@@ -758,14 +758,14 @@ public class TestConverters extends JspFacesTestCase {
 
         // control setup, now test the converter.
         Application app = getFacesContext().getApplication();
-        DateTimeConverter converter = (DateTimeConverter) app.createConverter("javax.faces.DateTime");
+        DateTimeConverter converter = (DateTimeConverter) app.createConverter("jakarta.faces.DateTime");
         converter.setType("both");
         assertNotNull(converter);
         assertTrue(TimeZone.getTimeZone("GMT").toString(), TimeZone.getTimeZone("GMT").equals(converter.getTimeZone()));
         assertTrue(formatted, formatted.equals(converter.getAsString(getFacesContext(), input, parsed)));
         assertTrue(parsed.toString(), parsed.equals(converter.getAsObject(getFacesContext(), input, formatted)));
 
-        app.addConverter(java.util.Date.class, "javax.faces.convert.DateTimeConverter");
+        app.addConverter(java.util.Date.class, "jakarta.faces.convert.DateTimeConverter");
         converter = (DateTimeConverter) app.createConverter(java.util.Date.class);
         converter.setType("both");
         assertNotNull(converter);
@@ -793,14 +793,14 @@ public class TestConverters extends JspFacesTestCase {
 
         // control setup, now test the converter.
         Application app = getFacesContext().getApplication();
-        DateTimeConverter converter = (DateTimeConverter) app.createConverter("javax.faces.DateTime");
+        DateTimeConverter converter = (DateTimeConverter) app.createConverter("jakarta.faces.DateTime");
         converter.setType("both");
         assertNotNull(converter);
         assertTrue(TimeZone.getDefault().toString(), TimeZone.getDefault().equals(converter.getTimeZone()));
         assertTrue(formatted, formatted.equals(converter.getAsString(getFacesContext(), input, parsed)));
         assertTrue(parsed.toString(), parsed.equals(converter.getAsObject(getFacesContext(), input, formatted)));
 
-        app.addConverter(java.util.Date.class, "javax.faces.convert.DateTimeConverter");
+        app.addConverter(java.util.Date.class, "jakarta.faces.convert.DateTimeConverter");
         converter = (DateTimeConverter) app.createConverter(java.util.Date.class);
         converter.setType("both");
         assertNotNull(converter);
@@ -819,7 +819,7 @@ public class TestConverters extends JspFacesTestCase {
         text.setId("my_input_number");
         root.getChildren().add(text);
 
-        Converter converter = application.createConverter("javax.faces.Number");
+        Converter converter = application.createConverter("jakarta.faces.Number");
 
         String stringToConvert = "99.9";
         Object obj = converter.getAsObject(getFacesContext(), text,
@@ -832,7 +832,7 @@ public class TestConverters extends JspFacesTestCase {
 
     public void testNumberConverterSpacesNBSP() throws Exception {
         UIInput text = new UIInput();
-        NumberConverter converter = (NumberConverter) application.createConverter("javax.faces.Number");
+        NumberConverter converter = (NumberConverter) application.createConverter("jakarta.faces.Number");
         converter.setType("currency");
         converter.setLocale(Locale.FRANCE);
         String toConv = "12 345,68 " + '\u20aC';
@@ -853,7 +853,7 @@ public class TestConverters extends JspFacesTestCase {
     public void testDoubleConverter(UIViewRoot root) throws ConverterException,
         InstantiationException, IllegalAccessException, ClassNotFoundException {
         System.out.println("Tesing DoubleConverter");
-        Converter converter = application.createConverter("javax.faces.Double");
+        Converter converter = application.createConverter("jakarta.faces.Double");
         assertNotNull(converter);
     }
 
@@ -904,7 +904,7 @@ public class TestConverters extends JspFacesTestCase {
         //java.lang.Integer should chosen over the inherited 
         //java.lang.Number converter
         application.addConverter(java.lang.Number.class,
-                                 "javax.faces.convert.NumberConverter");
+                                 "jakarta.faces.convert.NumberConverter");
         converter = application.createConverter(java.lang.Integer.class);
         assertTrue(converter != null);
         assertTrue(converter instanceof javax.faces.convert.IntegerConverter);
@@ -913,7 +913,7 @@ public class TestConverters extends JspFacesTestCase {
         //java.sql.Date extends java.util.Date
         //Test to find converter registered to java.util.Date
         application.addConverter(java.util.Date.class,
-                                 "javax.faces.convert.DateTimeConverter");
+                                 "jakarta.faces.convert.DateTimeConverter");
         converter = null;
         converter = application.createConverter(java.sql.Date.class);
         assertTrue(converter != null);
@@ -922,7 +922,7 @@ public class TestConverters extends JspFacesTestCase {
         //a subclass of java.util.AbstractCollection 
         //Test to find the converter registered to java.util.AbstractCollection
         application.addConverter(java.util.AbstractCollection.class,
-                                 "javax.faces.convert.DateTimeConverter");
+                                 "jakarta.faces.convert.DateTimeConverter");
         converter = null;
         try {
             converter = application.createConverter(java.util.HashSet.class);
@@ -935,7 +935,7 @@ public class TestConverters extends JspFacesTestCase {
         //java.lang.String implements java.lang.CharSequence
         //Test to find the converter registered to java.lang.CharSequence
         application.addConverter(java.text.CharacterIterator.class,
-                                 "javax.faces.convert.CharacterConverter");
+                                 "jakarta.faces.convert.CharacterConverter");
         converter = null;
         converter =
             application.createConverter(
@@ -947,7 +947,7 @@ public class TestConverters extends JspFacesTestCase {
         //java.lang.Cloneable
         //Test to find the converter registered to java.lang.Cloneable
         application.addConverter(java.lang.Cloneable.class,
-                                 "javax.faces.convert.CharacterConverter");
+                                 "jakarta.faces.convert.CharacterConverter");
         converter = null;
         converter =
             application.createConverter(

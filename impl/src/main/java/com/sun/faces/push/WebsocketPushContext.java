@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -30,12 +30,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 
-import javax.enterprise.context.SessionScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.push.Push;
-import javax.faces.push.PushContext;
-
 import com.sun.faces.cdi.CdiUtils;
+import com.sun.faces.util.Json;
+
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.push.Push;
+import jakarta.faces.push.PushContext;
 
 /**
  * <p class="changed_added_2_3">
@@ -63,9 +64,9 @@ public class WebsocketPushContext implements PushContext {
     // Constructors ---------------------------------------------------------------------------------------------------
 
     /**
-     * Creates a socket push context whereby the mutable map of session and view scope channel identifiers is
-     * referenced, so it's still available when another thread invokes {@link #send(Object)} during which the session
-     * and view scope is not necessarily active anymore.
+     * Creates a socket push context whereby the mutable map of session and view scope channel identifiers is referenced, so
+     * it's still available when another thread invokes {@link #send(Object)} during which the session and view scope is not
+     * necessarily active anymore.
      */
     public WebsocketPushContext(String channel, WebsocketSessionManager socketSessions, WebsocketUserManager socketUsers) {
         this.channel = channel;
@@ -80,7 +81,7 @@ public class WebsocketPushContext implements PushContext {
 
     @Override
     public Set<Future<Void>> send(Object message) {
-        return socketSessions.send(getChannelId(channel, sessionScope, viewScope), message);
+        return socketSessions.send(getChannelId(channel, sessionScope, viewScope), Json.encode(message));
     }
 
     @Override
@@ -91,13 +92,14 @@ public class WebsocketPushContext implements PushContext {
     @Override
     public <S extends Serializable> Map<S, Set<Future<Void>>> send(Object message, Collection<S> users) {
         Map<S, Set<Future<Void>>> resultsByUser = new HashMap<>(users.size());
+        String json = Json.encode(message);
 
         for (S user : users) {
             Set<String> channelIds = socketUsers.getChannelIds(user, channel);
             Set<Future<Void>> results = new HashSet<>(channelIds.size());
 
             for (String channelId : channelIds) {
-                results.addAll(socketSessions.send(channelId, message));
+                results.addAll(socketSessions.send(channelId, json));
             }
 
             resultsByUser.put(user, results);

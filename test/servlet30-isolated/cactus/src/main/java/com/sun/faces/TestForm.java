@@ -20,7 +20,7 @@ import javax.faces.component.html.HtmlForm;
 
 public class TestForm extends HtmlForm {
 
-    public static final String COMPONENT_TYPE = "javax.faces.TestForm";
+    public static final String COMPONENT_TYPE = "jakarta.faces.TestForm";
 
     public TestForm() {
         super();

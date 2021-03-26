@@ -16,6 +16,7 @@
 
 package com.sun.faces.test.servlet30.faceletsFindChild;
 
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -23,7 +24,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 public class AutomatedTestIT {
     /**
@@ -37,7 +40,7 @@ public class AutomatedTestIT {
 
     /**
      * Setup before testing.
-     *
+     * 
      * @throws Exception when a serious error occurs.
      */
     @BeforeClass
@@ -46,7 +49,7 @@ public class AutomatedTestIT {
 
     /**
      * Cleanup after testing.
-     *
+     * 
      * @throws Exception when a serious error occurs.
      */
     @AfterClass
@@ -84,6 +87,6 @@ public class AutomatedTestIT {
         HtmlPage page = webClient.getPage(webUrl);
 
         assertTrue(page.getBody().asText().indexOf("") != -1);
-
+        
     }
 }

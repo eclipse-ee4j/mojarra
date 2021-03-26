@@ -47,7 +47,8 @@ public class MyExceptionHandler extends ExceptionHandlerWrapper {
         for (Iterator<ExceptionQueuedEvent> it = getUnhandledExceptionQueuedEvents().iterator(); it.hasNext();) {
 
             ExceptionQueuedEvent event = it.next();
-            ExceptionQueuedEventContext context = (ExceptionQueuedEventContext) event.getSource();
+            ExceptionQueuedEventContext context
+                    = (ExceptionQueuedEventContext) event.getSource();
             Throwable t = context.getException();
 
             logger.log(Level.WARNING, "Exception handled by exception handler: " + t.getMessage());
@@ -57,9 +58,9 @@ public class MyExceptionHandler extends ExceptionHandlerWrapper {
 
         getWrapped().handle();
     }
-
+    
     public static final String KEY = "exceptionHandlerMessage";
-
+    
     private void appendMessage(FacesContext context, Throwable t) {
         Map<Object, Object> attrs = context.getAttributes();
         String cur = attrs.containsKey(KEY) ? (String) attrs.get(KEY) : "";
@@ -67,7 +68,7 @@ public class MyExceptionHandler extends ExceptionHandlerWrapper {
         attrs.put(KEY, cur);
         HttpServletResponse resp = (HttpServletResponse) context.getExternalContext().getResponse();
         resp.addHeader(KEY, t.getMessage());
-
+        
     }
 
     @Override

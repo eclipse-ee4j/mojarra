@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,31 +16,28 @@
 
 package com.sun.faces.renderkit.html_basic;
 
-import com.sun.faces.renderkit.Attribute;
-import com.sun.faces.renderkit.AttributeManager;
-import com.sun.faces.renderkit.RenderKitUtils;
 import java.io.IOException;
 import java.util.Iterator;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
+import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.AttributeManager;
+import com.sun.faces.renderkit.RenderKitUtils;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 
 /**
- * Arbitrary grouping "renderer" that simply renders its children
- * recursively in the <code>encodeEnd()</code> method.
+ * Arbitrary grouping "renderer" that simply renders its children recursively in the <code>encodeEnd()</code> method.
  *
  */
 public class GroupRenderer extends HtmlBasicRenderer {
 
-private static final Attribute[] ATTRIBUTES =
-          AttributeManager.getAttributes(AttributeManager.Key.PANELGROUP);
+    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.PANELGROUP);
     // ---------------------------------------------------------- Public Methods
 
-
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -53,7 +50,7 @@ private static final Attribute[] ATTRIBUTES =
         ResponseWriter writer = context.getResponseWriter();
 
         if (divOrSpan(component)) {
-            if (("block".equals(component.getAttributes().get("layout")))) {
+            if ("block".equals(component.getAttributes().get("layout"))) {
                 writer.startElement("div", component);
             } else {
                 writer.startElement("span", component);
@@ -65,18 +62,13 @@ private static final Attribute[] ATTRIBUTES =
             // JAVASERVERFACES-3270: do not manually render "style" as it is handled
             // in renderPassThruAttributes().
         }
-        
-        RenderKitUtils.renderPassThruAttributes(context,
-                                                writer,
-                                                component,
-                                                ATTRIBUTES);
+
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES);
 
     }
 
-
     @Override
-    public void encodeChildren(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -92,10 +84,8 @@ private static final Attribute[] ATTRIBUTES =
 
     }
 
-
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -115,7 +105,6 @@ private static final Attribute[] ATTRIBUTES =
 
     }
 
-
     @Override
     public boolean getRendersChildren() {
 
@@ -125,18 +114,14 @@ private static final Attribute[] ATTRIBUTES =
 
     // --------------------------------------------------------- Private Methods
 
-
     /**
      * @param component <code>UIComponent</code> for this group
      *
-     * @return <code>true</code> if we need to render a div or span element
-     *  around this group.
+     * @return <code>true</code> if we need to render a div or span element around this group.
      */
     private boolean divOrSpan(UIComponent component) {
 
-        return (shouldWriteIdAttribute(component) ||
-            (component.getAttributes().get("style") != null) ||
-            (component.getAttributes().get("styleClass") != null));
+        return shouldWriteIdAttribute(component) || component.getAttributes().get("style") != null || component.getAttributes().get("styleClass") != null;
 
     }
 

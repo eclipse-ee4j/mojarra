@@ -17,19 +17,16 @@
 package com.sun.faces.test.servlet30.ajax;
 
 import java.io.Serializable;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
-
-@Named
+@ManagedBean
 @ViewScoped
-public class ViewScopeBean implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class ViewScopeBean implements Serializable{
 
     public ViewScopeBean() {
 
-        if (System.getProperty("RESULT") == null) {
+        if (null == System.getProperty("RESULT")) {
             System.setProperty("RESULT", "VIEWCOPEBEAN() CALLED ");
         } else {
             String result = System.getProperty("RESULT");
@@ -40,17 +37,17 @@ public class ViewScopeBean implements Serializable {
     }
 
     public String getBeanVal() {
-        if (System.getProperty("RESULT") == null) {
+        if (null == System.getProperty("RESULT")) {
             System.setProperty("RESULT", "");
         }
-
+       
         return System.getProperty("RESULT");
     }
 
-    // Reset property to the single constructor load so we can determine if the
+    // Reset property to the single constructor load so we can determine if the 
     // constructor is called more than once.
     public void reset() {
         System.setProperty("RESULT", "VIEWSCOPEBEAN() CALLED ");
     }
-
+    
 }

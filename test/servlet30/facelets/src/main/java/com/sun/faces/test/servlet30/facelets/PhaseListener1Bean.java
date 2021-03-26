@@ -17,75 +17,71 @@
 package com.sun.faces.test.servlet30.facelets;
 
 import java.util.List;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
+import jakarta.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
-import javax.inject.Named;
 
-@Named
+@ManagedBean(name = "phaseListener1Bean")
 @RequestScoped
 public class PhaseListener1Bean {
-
+    
     private PhaseListener listener;
-
+    
     @PostConstruct
     public void initialize() {
         listener = new PhaseListener() {
-            @Override
             public void afterPhase(PhaseEvent event) {
 
             }
 
-            @Override
             public void beforePhase(PhaseEvent event) {
 
             }
 
-            @Override
             public PhaseId getPhaseId() {
                 return PhaseId.ANY_PHASE;
             }
         };
     }
-
+    
     public void submit() {
 
         FacesContext ctx = FacesContext.getCurrentInstance();
         UIViewRoot viewRoot = ctx.getViewRoot();
         List<PhaseListener> listeners = viewRoot.getPhaseListeners();
-
+        
         if (listeners == null || listeners.isEmpty()) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR: No listeners registered",
-                    "ERROR: No listeners registered");
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                                "ERROR: No listeners registered",
+                                                "ERROR: No listeners registered");
             ctx.addMessage(null, msg);
         }
-
+        
         if (listeners.size() > 1) {
             String message = "ERROR: Expected one registered listener but found: " + listeners.size();
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, message, message);
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                                message,
+                                                message);
             ctx.addMessage(null, msg);
         }
     }
 
     public PhaseListener getListener() {
         return new PhaseListener() {
-            @Override
             public void afterPhase(PhaseEvent event) {
 
             }
 
-            @Override
             public void beforePhase(PhaseEvent event) {
 
             }
 
-            @Override
             public PhaseId getPhaseId() {
                 return PhaseId.ANY_PHASE;
             }

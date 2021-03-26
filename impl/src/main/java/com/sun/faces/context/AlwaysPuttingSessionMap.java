@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,9 +16,9 @@
 
 package com.sun.faces.context;
 
-import javax.faces.application.ProjectStage;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import jakarta.faces.application.ProjectStage;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 public class AlwaysPuttingSessionMap extends SessionMap {
 
@@ -31,11 +31,8 @@ public class AlwaysPuttingSessionMap extends SessionMap {
         HttpSession session = getSession(true);
         Object result = session.getAttribute(key);
         session.setAttribute(key, value);
-        
+
         return result;
     }
-    
-    
-    
-    
+
 }

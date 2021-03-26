@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,19 +16,25 @@
 
 package com.sun.faces.facelets.tag;
 
-import javax.faces.view.facelets.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRule;
+import jakarta.faces.view.facelets.Metadata;
+import jakarta.faces.view.facelets.MetadataTarget;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributeException;
+
 /**
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
 final class BeanPropertyTagRule extends MetaRule {
-    
+
     final static class LiteralPropertyMetadata extends Metadata {
-        
+
         private final Method method;
 
         private final TagAttribute attribute;
@@ -43,21 +49,20 @@ final class BeanPropertyTagRule extends MetaRule {
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
             if (value == null) {
-                String str = this.attribute.getValue();
-                value = new Object[] { ctx.getExpressionFactory().coerceToType(str,
-                        method.getParameterTypes()[0]) };
+                String str = attribute.getValue();
+                value = new Object[] { ctx.getExpressionFactory().coerceToType(str, method.getParameterTypes()[0]) };
             }
             try {
-                method.invoke(instance, this.value);
+                method.invoke(instance, value);
             } catch (InvocationTargetException e) {
-                throw new TagAttributeException(this.attribute, e.getCause());
+                throw new TagAttributeException(attribute, e.getCause());
             } catch (IllegalAccessException | IllegalArgumentException e) {
-                throw new TagAttributeException(this.attribute, e);
+                throw new TagAttributeException(attribute, e);
             }
         }
 
     }
-    
+
     final static class DynamicPropertyMetadata extends Metadata {
 
         private final Method method;
@@ -68,28 +73,26 @@ final class BeanPropertyTagRule extends MetaRule {
 
         public DynamicPropertyMetadata(Method method, TagAttribute attribute) {
             this.method = method;
-            this.type = method.getParameterTypes()[0];
+            type = method.getParameterTypes()[0];
             this.attribute = attribute;
         }
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
             try {
-                this.method.invoke(instance, new Object[] { this.attribute
-                        .getObject(ctx, this.type) });
+                method.invoke(instance, attribute.getObject(ctx, type));
             } catch (InvocationTargetException e) {
-                throw new TagAttributeException(this.attribute, e.getCause());
+                throw new TagAttributeException(attribute, e.getCause());
             } catch (IllegalAccessException | IllegalArgumentException e) {
-                throw new TagAttributeException(this.attribute, e);
+                throw new TagAttributeException(attribute, e);
             }
         }
     }
-    
+
     public final static BeanPropertyTagRule Instance = new BeanPropertyTagRule();
 
     @Override
-    public Metadata applyRule(String name, TagAttribute attribute,
-            MetadataTarget meta) {
+    public Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta) {
         Method m = meta.getWriteMethod(name);
 
         // if the property is writable

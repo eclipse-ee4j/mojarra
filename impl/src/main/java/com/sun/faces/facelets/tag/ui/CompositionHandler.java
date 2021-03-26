@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,6 +16,15 @@
 
 package com.sun.faces.facelets.tag.ui;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.facelets.FaceletContextImplBase;
 import com.sun.faces.facelets.TemplateClient;
@@ -23,26 +32,20 @@ import com.sun.faces.facelets.el.VariableMapperWrapper;
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 import com.sun.faces.util.FacesLogger;
 
-import javax.el.VariableMapper;
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagAttributeException;
-import javax.faces.view.facelets.TagConfig;
-import java.io.IOException;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.faces.context.FacesContext;
+import jakarta.el.VariableMapper;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributeException;
+import jakarta.faces.view.facelets.TagConfig;
 
 /**
  * @author Jacob Hookom
  */
-public final class CompositionHandler extends TagHandlerImpl implements
-        TemplateClient {
+public final class CompositionHandler extends TagHandlerImpl implements TemplateClient {
 
     private static final Logger log = FacesLogger.FACELETS_COMPOSITION.getLogger();
-
 
     public final static String Name = "composition";
 
@@ -57,14 +60,14 @@ public final class CompositionHandler extends TagHandlerImpl implements
      */
     public CompositionHandler(TagConfig config) {
         super(config);
-        this.template = this.getAttribute("template");
-        if (this.template != null) {
-            this.handlers = new HashMap();
+        template = getAttribute("template");
+        if (template != null) {
+            handlers = new HashMap();
             Iterator itr = this.findNextByType(DefineHandler.class);
             DefineHandler d = null;
             while (itr.hasNext()) {
                 d = (DefineHandler) itr.next();
-                this.handlers.put(d.getName(), d);
+                handlers.put(d.getName(), d);
                 if (log.isLoggable(Level.FINE)) {
                     log.fine(tag + " found Define[" + d.getName() + "]");
                 }
@@ -75,31 +78,29 @@ public final class CompositionHandler extends TagHandlerImpl implements
                 paramC.add(itr.next());
             }
             if (paramC.size() > 0) {
-                this.params = new ParamHandler[paramC.size()];
-                for (int i = 0; i < this.params.length; i++) {
-                    this.params[i] = (ParamHandler) paramC.get(i);
+                params = new ParamHandler[paramC.size()];
+                for (int i = 0; i < params.length; i++) {
+                    params[i] = (ParamHandler) paramC.get(i);
                 }
             } else {
-                this.params = null;
+                params = null;
             }
         } else {
-            this.params = null;
-            this.handlers = null;
+            params = null;
+            handlers = null;
         }
     }
 
     /*
      * (non-Javadoc)
-     * 
-     * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext,
-     *      javax.faces.component.UIComponent)
+     *
+     * @see com.sun.facelets.FaceletHandler#apply(com.sun.facelets.FaceletContext, jakarta.faces.component.UIComponent)
      */
     @Override
-    public void apply(FaceletContext ctxObj, UIComponent parent)
-            throws IOException {
+    public void apply(FaceletContext ctxObj, UIComponent parent) throws IOException {
         FaceletContextImplBase ctx = (FaceletContextImplBase) ctxObj;
 
-        if (this.template != null) {
+        if (template != null) {
 
             FacesContext facesContext = ctx.getFacesContext();
             Integer compositionCount = (Integer) facesContext.getAttributes().get("com.sun.faces.uiCompositionCount");
@@ -109,40 +110,40 @@ public final class CompositionHandler extends TagHandlerImpl implements
                 compositionCount++;
             }
             facesContext.getAttributes().put("com.sun.faces.uiCompositionCount", compositionCount);
-            
+
             VariableMapper orig = ctx.getVariableMapper();
-            if (this.params != null) {
+            if (params != null) {
                 VariableMapper vm = new VariableMapperWrapper(orig);
                 ctx.setVariableMapper(vm);
-                for (int i = 0; i < this.params.length; i++) {
-                    this.params[i].apply(ctx, parent);
+                for (int i = 0; i < params.length; i++) {
+                    params[i].apply(ctx, parent);
                 }
             }
 
             ctx.extendClient(this);
             String path = null;
             try {
-                path = this.template.getValue(ctx);
+                path = template.getValue(ctx);
                 if (path.trim().length() == 0) {
-                    throw new TagAttributeException(this.tag, this.template, "Invalid path : " + path);
+                    throw new TagAttributeException(tag, template, "Invalid path : " + path);
                 }
-                WebConfiguration webConfig = WebConfiguration.getInstance(); 
+                WebConfiguration webConfig = WebConfiguration.getInstance();
                 if (path.startsWith(webConfig.getOptionValue(WebConfiguration.WebContextInitParameter.WebAppContractsDirectory))) {
-                    throw new TagAttributeException(this.tag, this.template, "Invalid path, contract resources cannot be accessed this way : " + path);
+                    throw new TagAttributeException(tag, template, "Invalid path, contract resources cannot be accessed this way : " + path);
                 }
                 ctx.includeFacelet(parent, path);
             } catch (IOException e) {
                 if (log.isLoggable(Level.FINE)) {
                     log.log(Level.FINE, e.toString(), e);
                 }
-                throw new TagAttributeException(this.tag, this.template, "Invalid path : " + path);
+                throw new TagAttributeException(tag, template, "Invalid path : " + path);
             } finally {
                 ctx.popClient(this);
                 ctx.setVariableMapper(orig);
-                
+
                 compositionCount = (Integer) facesContext.getAttributes().get("com.sun.faces.uiCompositionCount");
                 compositionCount--;
-                
+
                 if (compositionCount == 0) {
                     facesContext.getAttributes().remove("com.sun.faces.uiCompositionCount");
                 } else {
@@ -150,18 +151,17 @@ public final class CompositionHandler extends TagHandlerImpl implements
                 }
             }
         } else {
-            this.nextHandler.apply(ctx, parent);
+            nextHandler.apply(ctx, parent);
         }
     }
 
     @Override
-    public boolean apply(FaceletContext ctx, UIComponent parent, String name)
-          throws IOException {
+    public boolean apply(FaceletContext ctx, UIComponent parent, String name) throws IOException {
         if (name != null) {
-            if (this.handlers == null) {
+            if (handlers == null) {
                 return false;
             }
-            DefineHandler handler = (DefineHandler) this.handlers.get(name);
+            DefineHandler handler = (DefineHandler) handlers.get(name);
             if (handler != null) {
                 handler.applyDefinition(ctx, parent);
                 return true;
@@ -169,7 +169,7 @@ public final class CompositionHandler extends TagHandlerImpl implements
                 return false;
             }
         } else {
-            this.nextHandler.apply(ctx, parent);
+            nextHandler.apply(ctx, parent);
             return true;
         }
     }

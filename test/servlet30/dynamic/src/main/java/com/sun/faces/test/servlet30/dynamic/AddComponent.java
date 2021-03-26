@@ -26,7 +26,7 @@ import javax.faces.event.PreRenderViewEvent;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 
-@FacesComponent(value = "com.sun.faces.test.servlet30.dynamic.AddComponent")
+@FacesComponent( value = "com.sun.faces.test.servlet30.dynamic.AddComponent" )
 public class AddComponent extends UIComponentBase implements SystemEventListener {
 
     //
@@ -34,10 +34,10 @@ public class AddComponent extends UIComponentBase implements SystemEventListener
     //
 
     public AddComponent() {
-        setRendererType("component");
+        setRendererType( "component" );
         FacesContext context = FacesContext.getCurrentInstance();
         UIViewRoot root = context.getViewRoot();
-        root.subscribeToViewEvent(PreRenderViewEvent.class, this);
+        root.subscribeToViewEvent( PreRenderViewEvent.class, this );
     }
 
     //
@@ -49,19 +49,19 @@ public class AddComponent extends UIComponentBase implements SystemEventListener
         return "com.sun.faces.test.servlet30.dynamic";
     }
 
-    @Override
-    public boolean isListenerForSource(Object source) {
-        return (source instanceof UIViewRoot);
+    public boolean isListenerForSource( Object source ) {
+        return ( source instanceof UIViewRoot );
     }
 
     // This event method will add a new component for pre-render event.
 
     @Override
-    public void processEvent(SystemEvent event) throws AbortProcessingException {
-        if (!FacesContext.getCurrentInstance().isPostback()) {
+    public void processEvent( SystemEvent event )
+        throws AbortProcessingException {
+        if ( !FacesContext.getCurrentInstance().isPostback() ) {
             HtmlOutputText component = new HtmlOutputText();
-            component.setValue("Dynamically added child");
-            getChildren().add(component);
+            component.setValue( "Dynamically added child" );
+            getChildren().add( component );
         }
     }
 }

@@ -21,18 +21,24 @@ import javax.faces.application.ApplicationFactory;
 
 public class ApplicationFactoryImpl extends ApplicationFactory {
 
+    private final ApplicationFactory parent;
     private Application myApplication;
 
     public ApplicationFactoryImpl(ApplicationFactory parent) {
-        super(parent);
+        this.parent = parent;
+    }
+
+    @Override
+    public ApplicationFactory getWrapped() {
+        return parent;
     }
 
     @Override
     public Application getApplication() {
-        if (myApplication == null) {
-            myApplication = new ApplicationImpl(getWrapped().getApplication());
+        if (null == myApplication) {
+            Application fromParent = parent.getApplication();
+            myApplication = new ApplicationImpl(fromParent);
         }
-
         return myApplication;
     }
 

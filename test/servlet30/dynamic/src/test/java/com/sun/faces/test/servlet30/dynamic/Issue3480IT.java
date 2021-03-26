@@ -16,15 +16,13 @@
 
 package com.sun.faces.test.servlet30.dynamic;
 
-import static org.junit.Assert.assertTrue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.junit.After;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 
 public class Issue3480IT {
 
@@ -47,7 +45,6 @@ public class Issue3480IT {
         HtmlPage page = webClient.getPage(webUrl + "faces/removeAndReAdd.xhtml");
         HtmlElement submit = page.getHtmlElementById("form:submit");
         page = submit.click();
-
         assertTrue(page.asXml().contains("Mark ID equals: TRUE"));
         assertTrue(page.asXml().contains("Children list empty: TRUE"));
     }

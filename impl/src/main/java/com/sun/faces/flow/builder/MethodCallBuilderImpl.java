@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,16 +16,18 @@
 
 package com.sun.faces.flow.builder;
 
-import com.sun.faces.flow.MethodCallNodeImpl;
 import java.util.List;
-import javax.el.ELContext;
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
-import javax.faces.flow.Parameter;
-import javax.faces.flow.builder.MethodCallBuilder;
+
+import com.sun.faces.flow.MethodCallNodeImpl;
+
+import jakarta.el.ELContext;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
+import jakarta.faces.flow.Parameter;
+import jakarta.faces.flow.builder.MethodCallBuilder;
 
 public class MethodCallBuilderImpl extends MethodCallBuilder {
-    
+
     private FlowBuilderImpl root;
     private String methodCallId;
     private MethodCallNodeImpl methodCallNode;
@@ -33,10 +35,10 @@ public class MethodCallBuilderImpl extends MethodCallBuilder {
 
     public MethodCallBuilderImpl(FlowBuilderImpl root, String id) {
         this.root = root;
-        this.methodCallId = id;
-        this.methodCallNode = new MethodCallNodeImpl(id);
+        methodCallId = id;
+        methodCallNode = new MethodCallNodeImpl(id);
         this.root._getFlow()._getMethodCalls().add(methodCallNode);
-                
+
     }
 
     @Override
@@ -74,7 +76,7 @@ public class MethodCallBuilderImpl extends MethodCallBuilder {
         methodCallNode._getParameters().addAll(parameters);
         return this;
     }
-    
+
     @Override
     public MethodCallBuilder expression(MethodExpression me) {
         methodCallNode.setMethodExpression(me);
@@ -86,8 +88,5 @@ public class MethodCallBuilderImpl extends MethodCallBuilder {
         root._getFlow().setStartNodeId(methodCallId);
         return this;
     }
-    
-    
-    
-    
+
 }

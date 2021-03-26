@@ -16,15 +16,13 @@
 
 package com.sun.faces.test.servlet30.navigation;
 
-import static org.junit.Assert.assertTrue;
-
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import static org.junit.Assert.*;
 
 public class Issue2266IT {
 
@@ -44,12 +42,9 @@ public class Issue2266IT {
 
     @Test
     public void testViewParamsNullPointerException() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "faces/viewParams1.xhtml");
+        HtmlPage page = webClient.getPage(webUrl + "faces/viewParams1.jsp");
         HtmlSubmitInput button = (HtmlSubmitInput) page.getHtmlElementById("form:button");
         page = button.click();
-
-        System.out.println("\n" + page.asXml() + "\n");
-
         assertTrue(page.asXml().contains("PAGE 2 OUTPUT"));
     }
 }

@@ -16,15 +16,13 @@
 
 package com.sun.faces.test.servlet30.component;
 
-import static org.junit.Assert.assertTrue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import org.junit.After;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 
 public class Issue2544IT {
 
@@ -46,7 +44,7 @@ public class Issue2544IT {
     public void testComponentEndlessLoop() throws Exception {
         int cnt = 0;
         while (cnt <= 100) {
-            HtmlPage page = webClient.getPage(webUrl + "componentEndlessLoop.xhtml");
+            HtmlPage page = webClient.getPage(webUrl + "faces/componentEndlessLoop.xhtml");
             HtmlSubmitInput button = (HtmlSubmitInput) page.getHtmlElementById("form:button");
             button.click();
             cnt++;

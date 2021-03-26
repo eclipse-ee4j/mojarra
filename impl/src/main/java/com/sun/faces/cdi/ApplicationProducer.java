@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,30 +16,27 @@
 
 package com.sun.faces.cdi;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- * The ApplicationProducer is the CDI producer that allows EL resolving 
- * of #{application}
+ * The ApplicationProducer is the CDI producer that allows EL resolving of #{application}
  * </p>
  *
  * @since 2.3
  * @see ExternalContext
  */
 public class ApplicationProducer extends CdiProducer<Object> {
-    
+
     /**
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
+
     public ApplicationProducer() {
-        super.name("application")
-             .scope(ApplicationScoped.class)
-             .create(e -> FacesContext.getCurrentInstance().getExternalContext().getContext());
+        super.name("application").scope(ApplicationScoped.class).create(e -> FacesContext.getCurrentInstance().getExternalContext().getContext());
     }
 
 }

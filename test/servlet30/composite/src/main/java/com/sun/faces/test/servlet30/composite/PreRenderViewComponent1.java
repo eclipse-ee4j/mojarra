@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
- * Copyright (c) 2018 Payara Services Limited.
- * All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,7 +17,7 @@
 package com.sun.faces.test.servlet30.composite;
 
 import java.util.Map;
-
+import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
 import javax.faces.component.FacesComponent;
 import javax.faces.component.NamingContainer;
@@ -33,42 +31,43 @@ import javax.faces.event.ComponentSystemEventListener;
 import javax.faces.event.PreRenderComponentEvent;
 
 @FacesComponent("com.sun.faces.test.servlet30.composite.PreRenderViewComponent1")
-public class PreRenderViewComponent1 extends PreRenderViewComponentBase implements NamingContainer, ComponentSystemEventListener {
+public class PreRenderViewComponent1 extends PreRenderViewComponentBase
+        implements NamingContainer, ComponentSystemEventListener {
 
-    public static final String COMPONENT_FAMILY = "javax.faces.NamingContainer";
+    public static final String COMPONENT_FAMILY = "jakarta.faces.NamingContainer";
 
     public PreRenderViewComponent1() {
+        super();
+        FacesContext ctx = FacesContext.getCurrentInstance();
         subscribeToEvent(PreRenderComponentEvent.class, this);
     }
 
     @Override
     public String getFamily() {
-        return COMPONENT_FAMILY;
+        return (COMPONENT_FAMILY);
     }
 
     @Override
     public void processEvent(ComponentSystemEvent e) throws AbortProcessingException {
         if (e instanceof PreRenderComponentEvent) {
-            processPreRenderViewEvent((PreRenderComponentEvent) e);
+            this.processPreRenderViewEvent((PreRenderComponentEvent) e);
         }
     }
 
     private void processPreRenderViewEvent(PreRenderComponentEvent e) throws AbortProcessingException {
         FacesContext ctx = FacesContext.getCurrentInstance();
-
         if (!ctx.isPostback()) {
+            UIComponent parent = findComponent("controls");
+            ExpressionFactory ef = ctx.getApplication().getExpressionFactory();
             HtmlOutputText itemCheck = new HtmlOutputText();
             Map<String, Object> attrs = getAttributes();
             Object item = attrs.get("item");
             boolean itemIsNull = (item == null);
             itemCheck.setValue("Item Attribute is null: " + itemIsNull);
-
             HtmlInputText txt = new HtmlInputText();
             txt.setId("txt");
-            ValueExpression ve = ctx.getApplication().getExpressionFactory().createValueExpression(ctx.getELContext(), "#{cc.attrs.item.text}", String.class);
+            ValueExpression ve = ef.createValueExpression(ctx.getELContext(), "#{cc.attrs.item.text}", java.lang.String.class);
             txt.setValueExpression("value", ve);
-
-            UIComponent parent = findComponent("controls");
             parent.getChildren().add(txt);
             parent.getChildren().add(itemCheck);
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,20 +22,19 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
-import javax.faces.component.UICommand;
-import javax.faces.component.UIComponent;
-import javax.faces.component.html.HtmlCommandScript;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.PhaseId;
-
 import com.sun.faces.renderkit.RenderKitUtils;
 
+import jakarta.faces.component.UICommand;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlCommandScript;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.ActionEvent;
+import jakarta.faces.event.PhaseId;
 
 /**
- * <b>CommandScriptRenderer</b> is a class that renders the current value of
- * <code>UICommand<code> as a Script that acts like an Ajax Button.
+ * <b>CommandScriptRenderer</b> is a class that renders the current value of <code>UICommand<code> as a Script that acts
+ * like an Ajax Button.
  */
 public class CommandScriptRenderer extends HtmlBasicRenderer {
 
@@ -75,11 +74,11 @@ public class CommandScriptRenderer extends HtmlBasicRenderer {
 
         HtmlCommandScript commandScript = (HtmlCommandScript) component;
         String clientId = commandScript.getClientId(context);
-        
+
         if (RenderKitUtils.getForm(commandScript, context) == null) {
             throw new IllegalArgumentException("commandScript ID " + clientId + " must be placed in UIForm");
         }
-        
+
         String name = commandScript.getName();
 
         if (name == null || !PATTERN_NAME.matcher(name).matches()) {
@@ -89,8 +88,8 @@ public class CommandScriptRenderer extends HtmlBasicRenderer {
         RenderKitUtils.renderJsfJsIfNecessary(context);
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
-        
+        assert writer != null;
+
         writer.startElement("span", commandScript);
         writer.writeAttribute("id", clientId, "id");
         writer.startElement("script", commandScript);
@@ -109,7 +108,7 @@ public class CommandScriptRenderer extends HtmlBasicRenderer {
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         writer.endElement("script");
         writer.endElement("span");

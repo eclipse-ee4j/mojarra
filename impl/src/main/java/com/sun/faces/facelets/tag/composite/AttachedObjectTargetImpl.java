@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,22 +16,22 @@
 
 package com.sun.faces.facelets.tag.composite;
 
-import com.sun.faces.util.Util;
-
-import javax.el.ValueExpression;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UINamingContainer;
-import javax.faces.context.FacesContext;
-import javax.faces.view.AttachedObjectTarget;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.sun.faces.util.Util;
+
+import jakarta.el.ValueExpression;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.AttachedObjectTarget;
 
 public class AttachedObjectTargetImpl implements AttachedObjectTarget {
 
     private String name = null;
-    
+
     @Override
     public String getName() {
         return name;
@@ -43,7 +43,7 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget {
 
     @Override
     public List<UIComponent> getTargets(UIComponent topLevelComponent) {
-        assert(null != name);
+        assert null != name;
 
         List<UIComponent> result;
         FacesContext ctx = FacesContext.getCurrentInstance();
@@ -53,17 +53,14 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget {
             String[] targetArray = Util.split(appMap, targetsListStr, " ");
             result = new ArrayList<>(targetArray.length);
             for (int i = 0, len = targetArray.length; i < len; i++) {
-                UIComponent comp = topLevelComponent.findComponent(
-                      augmentSearchId(ctx, topLevelComponent, targetArray[i]));
+                UIComponent comp = topLevelComponent.findComponent(augmentSearchId(ctx, topLevelComponent, targetArray[i]));
                 if (null != comp) {
                     result.add(comp);
                 }
             }
-        }
-        else {
+        } else {
             result = new ArrayList<>(1);
-            UIComponent comp = topLevelComponent.findComponent(
-                  augmentSearchId(ctx, topLevelComponent, name));
+            UIComponent comp = topLevelComponent.findComponent(augmentSearchId(ctx, topLevelComponent, name));
             if (null != comp) {
                 result.add(comp);
             }
@@ -78,15 +75,12 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget {
         this.targetsList = targetsList;
     }
 
-
     // if the current composite component ID is the same as the target ID,
     // we'll need to make the ID passed to findComponent be a combination
-    // of the two so we find the correct component.  If we don't do this,
+    // of the two so we find the correct component. If we don't do this,
     // we end with a StackOverFlowException as 'c' will be what is found
     // and not the child of 'c'.
-    private String augmentSearchId(FacesContext ctx,
-                                   UIComponent c,
-                                   String targetId) {
+    private String augmentSearchId(FacesContext ctx, UIComponent c, String targetId) {
 
         if (targetId.equals(c.getId())) {
             return targetId + UINamingContainer.getSeparatorChar(ctx) + targetId;

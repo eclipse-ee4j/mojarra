@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,19 +19,19 @@ package com.sun.faces.component.search;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.search.SearchExpressionContext;
-import javax.faces.component.search.SearchKeywordContext;
-import javax.faces.component.search.SearchKeywordResolver;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.search.SearchExpressionContext;
+import jakarta.faces.component.search.SearchKeywordContext;
+import jakarta.faces.component.search.SearchKeywordResolver;
 
 public class CompositeSearchKeywordResolver extends SearchKeywordResolver {
 
     private static final int NUMBER_OF_DEFAULT_IMPLEMENTATIONS = 12;
-    
+
     private final List<SearchKeywordResolver> resolvers;
 
     public CompositeSearchKeywordResolver() {
-        this.resolvers = new ArrayList<>(NUMBER_OF_DEFAULT_IMPLEMENTATIONS);
+        resolvers = new ArrayList<>(NUMBER_OF_DEFAULT_IMPLEMENTATIONS);
     }
 
     public void add(SearchKeywordResolver searchKeywordResolver) {

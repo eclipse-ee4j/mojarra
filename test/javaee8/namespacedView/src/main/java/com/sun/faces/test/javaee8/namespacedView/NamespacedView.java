@@ -16,8 +16,8 @@
 
 package com.sun.faces.test.javaee8.namespacedView;
 
-import javax.faces.component.NamingContainer;
-import javax.faces.component.UIViewRoot;
+import jakarta.faces.component.NamingContainer;
+import jakarta.faces.component.UIViewRoot;
 
 public class NamespacedView extends UIViewRoot implements NamingContainer {
     //

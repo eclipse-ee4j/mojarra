@@ -50,7 +50,7 @@ public class FlashIT {
         webClient.close();
     }
 
-    @JsfTest(value = JSF_2_2_0_M02, excludes = { WEBLOGIC_12_1_4, WEBLOGIC_12_2_1 })
+    @JsfTest(value = JSF_2_2_0_M02, excludes = {WEBLOGIC_12_1_4, WEBLOGIC_12_2_1})
     @Test
     public void testFlash() throws Exception {
         // Get the first page
@@ -77,7 +77,7 @@ public class FlashIT {
 
         // the page contains the following span, with the following id, with no contents
         // meaning the flash has no value for foo
-        // assertTrue(pageText.matches("(?s)(?m).*<span.*id=\"fooValueId\">\\s*</span>.*"));
+        //assertTrue(pageText.matches("(?s)(?m).*<span.*id=\"fooValueId\">\\s*</span>.*"));
         // fill in "addMessage" in the textBox
         HtmlTextInput text = (HtmlTextInput) page.getHtmlElementById("inputText");
         text.setValueAttribute("addMessage");
@@ -268,6 +268,6 @@ public class FlashIT {
 
         page = webClient.getPage(webUrl + "faces/flash14.xhtml");
         pageText = page.asText();
-        assertTrue(pageText.matches("(?s).*\\[received javax.faces.event.PreClearFlashEvent source:\\{\\}\\].*"));
+        assertTrue(pageText.matches("(?s).*\\[received jakarta.faces.event.PreClearFlashEvent source:\\{\\}\\].*"));
     }
 }

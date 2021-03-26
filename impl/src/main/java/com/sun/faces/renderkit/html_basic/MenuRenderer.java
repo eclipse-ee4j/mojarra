@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -50,44 +50,45 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.el.ELException;
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UISelectMany;
-import javax.faces.component.UISelectOne;
-import javax.faces.component.ValueHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.convert.Converter;
-import javax.faces.convert.ConverterException;
-import javax.faces.model.SelectItem;
-import javax.faces.model.SelectItemGroup;
-
+import com.sun.faces.RIConstants;
 import com.sun.faces.io.FastStringWriter;
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
+import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.renderkit.SelectItemsIterator;
 import com.sun.faces.util.RequestStateManager;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ELException;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UISelectMany;
+import jakarta.faces.component.UISelectOne;
+import jakarta.faces.component.ValueHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.ConverterException;
+import jakarta.faces.model.SelectItem;
+import jakarta.faces.model.SelectItemGroup;
+
 /**
- * <B>MenuRenderer</B> is a class that renders the current value of
- * <code>UISelectOne<code> or <code>UISelectMany<code> component as a list of menu
- * options.
+ * <B>MenuRenderer</B> is a class that renders the current value of <code>UISelectOne<code> or <code>UISelectMany<code>
+ * component as a list of menu options.
  */
 public class MenuRenderer extends HtmlBasicInputRenderer {
 
     private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.SELECTMANYMENU);
 
-    
     // ---------------------------------------------------------- Public Methods
 
     public Object convertSelectManyValue(FacesContext context, UISelectMany uiSelectMany, String[] newValues) throws ConverterException {
@@ -100,12 +101,12 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         // If we have a ValueExpression
         if (valueExpression != null) {
             Class<?> modelType = valueExpression.getType(context.getELContext());
-            
+
             // Does the valueExpression resolve properly to something with a type?
             if (modelType != null) {
                 convertedValue = convertSelectManyValuesForModel(context, uiSelectMany, modelType, newValues);
             }
-            
+
             // If it could not be converted, as a fall back try the type of
             // the valueExpression's current value covering some edge cases such
             // as where the current value came from a Map.
@@ -115,11 +116,10 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
                     convertedValue = convertSelectManyValuesForModel(context, uiSelectMany, value.getClass(), newValues);
                 }
             }
-            
+
             if (convertedValue == null) {
-                Object[] params = { (newValues == null) ? "" : stream(newValues).collect(joining("")), valueExpression.getExpressionString() };
-                throw new ConverterException(
-                    getExceptionMessage(CONVERSION_ERROR_MESSAGE_ID, params));
+                Object[] params = { newValues == null ? "" : stream(newValues).collect(joining("")), valueExpression.getExpressionString() };
+                throw new ConverterException(getExceptionMessage(CONVERSION_ERROR_MESSAGE_ID, params));
             }
         } else {
             // No ValueExpression, just use Object array.
@@ -130,7 +130,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         if (logger.isLoggable(FINE)) {
             logger.fine("SelectMany Component  " + uiSelectMany.getId() + " convertedValues " + convertedValue);
         }
-        
+
         return convertedValue;
     }
 
@@ -141,11 +141,11 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         }
 
         Object convertedValue = super.getConvertedValue(context, uiSelectOne, newValue);
-        
+
         if (logger.isLoggable(FINE)) {
             logger.fine("SelectOne Component  " + uiSelectOne.getId() + " convertedValue " + convertedValue);
         }
-        
+
         return convertedValue;
     }
 
@@ -163,7 +163,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         if (clientId == null) {
             clientId = component.getClientId(context);
         }
-        
+
         // Currently we assume the model type to be of type string or
         // convertible to string and localized by the application.
         if (component instanceof UISelectMany) {
@@ -172,8 +172,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
             decodeUISelectOne(context, component, clientId);
         }
     }
-    
-   
+
     @Override
     public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
         rendererParamsNotNull(context, component);
@@ -194,45 +193,44 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
     public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue) throws ConverterException {
 
         if (component instanceof UISelectMany) {
-            
+
             // Need to set the 'TARGET_COMPONENT_ATTRIBUTE_NAME' request attr so the
             // coerce-value call in the jsf-api UISelectMany.matchValue will work
             // (need a better way to determine the currently processing UIComponent ...)
             RequestStateManager.set(context, TARGET_COMPONENT_ATTRIBUTE_NAME, component);
-            
-            return convertSelectManyValue(context, ((UISelectMany) component), (String[]) submittedValue);
+
+            return convertSelectManyValue(context, (UISelectMany) component, (String[]) submittedValue);
         } else {
-            return convertSelectOneValue(context, ((UISelectOne) component), (String) submittedValue);
+            return convertSelectOneValue(context, (UISelectOne) component, (String) submittedValue);
         }
 
     }
 
-    
     // ------------------------------------------------------- Protected Methods
 
     /*
-     * Converts the provided string array and places them into the correct provided model
-     * type.
+     * Converts the provided string array and places them into the correct provided model type.
      */
     @SuppressWarnings("unchecked")
     protected Object convertSelectManyValuesForModel(FacesContext context, UISelectMany uiSelectMany, Class<?> modelType, String[] newValues) {
 
         if (modelType.isArray()) {
             return convertSelectManyValuesForArray(context, uiSelectMany, modelType.getComponentType(), newValues);
-        } 
-        
+        }
+
         if (Collection.class.isAssignableFrom(modelType)) {
             return convertSelectManyValuesForCollection(context, uiSelectMany, (Class<? extends Collection<Object>>) modelType, newValues);
-        } 
-        
+        }
+
         if (Object.class.equals(modelType)) {
             return convertSelectManyValuesForArray(context, uiSelectMany, modelType, newValues);
-        } 
-        
+        }
+
         throw new FacesException("Target model Type is no a Collection or Array");
     }
 
-    protected Object convertSelectManyValuesForArray(FacesContext context, UISelectMany uiSelectMany, Class<?> elementType, String[] newValues) throws ConverterException {
+    protected Object convertSelectManyValuesForArray(FacesContext context, UISelectMany uiSelectMany, Class<?> elementType, String[] newValues)
+            throws ConverterException {
 
         Object array;
         Converter<?> converter;
@@ -289,11 +287,12 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         return array;
     }
 
-    protected Collection<Object> convertSelectManyValuesForCollection(FacesContext context, UISelectMany uiSelectMany, Class<? extends Collection<Object>> collectionType, String[] newValues) {
+    protected Collection<Object> convertSelectManyValuesForCollection(FacesContext context, UISelectMany uiSelectMany,
+            Class<? extends Collection<Object>> collectionType, String[] newValues) {
 
         Collection<Object> collection = null;
         Converter<?> converter;
-        int length = (null != newValues) ? newValues.length : 0;
+        int length = null != newValues ? newValues.length : 0;
 
         // See if the collectionType hint is available, if so, use that.
         Object collectionTypeHint = uiSelectMany.getAttributes().get("collectionType");
@@ -397,9 +396,9 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
         writer.writeText("\t", component, null);
-        writer.startElement("option", (null != selectComponent) ? selectComponent : component);
+        writer.startElement("option", null != selectComponent ? selectComponent : component);
         writer.writeAttribute("value", valueString, "value");
 
         if (isSelected) {
@@ -433,7 +432,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         }
         writer.endElement("option");
         writer.writeText("\n", component, null);
-        
+
         return true;
     }
 
@@ -453,7 +452,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
                 }
             }
         }
-        
+
         return false;
     }
 
@@ -465,7 +464,8 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
             Object value = select.getValue();
             if (value == null) {
                 return null;
-            } if (value instanceof Collection) {
+            }
+            if (value instanceof Collection) {
                 return ((Collection<Object>) value).toArray();
             } else if (value.getClass().isArray()) {
                 if (getLength(value) == 0) {
@@ -483,7 +483,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         if (val != null) {
             return new Object[] { val };
         }
-        
+
         return null;
     }
 
@@ -494,7 +494,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         if (component instanceof UISelectMany) {
             return " multiple ";
         }
-        
+
         return "";
     }
 
@@ -510,7 +510,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         if (val != null) {
             return new Object[] { val };
         }
-        
+
         return null;
     }
 
@@ -519,27 +519,27 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         if (isAllNull(itemValue, valueArray)) {
             return true;
         }
-        
+
         if (valueArray != null) {
-            
+
             if (!valueArray.getClass().isArray()) {
                 logger.warning("valueArray is not an array, the actual type is " + valueArray.getClass());
                 return valueArray.equals(itemValue);
             }
-            
+
             int len = getLength(valueArray);
             for (int i = 0; i < len; i++) {
-               
+
                 Object value = get(valueArray, i);
-                
+
                 if (isAllNull(itemValue, value)) {
                     return true;
-                } 
-                
-                if ((value == null) ^ (itemValue == null)) {
+                }
+
+                if (value == null ^ itemValue == null) {
                     continue;
                 }
-                
+
                 Object compareValue;
                 if (converter == null) {
                     compareValue = coerceToModelType(context, itemValue, value.getClass());
@@ -555,10 +555,10 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
                 if (value.equals(compareValue)) {
                     return true;
                 }
-                
+
             }
         }
-        
+
         return false;
     }
 
@@ -570,7 +570,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         if (component instanceof ValueHolder) {
             converter = ((ValueHolder) component).getConverter();
         }
-        
+
         int count = 0;
         Object currentSelections = getCurrentSelectedValues(component);
         Object[] submittedValues = getSubmittedSelectedValues(component);
@@ -583,12 +583,12 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
 
             if (item instanceof SelectItemGroup) {
                 // render OPTGROUP
-                writer.startElement("optgroup", (null != selectComponent) ? selectComponent : component);
+                writer.startElement("optgroup", null != selectComponent ? selectComponent : component);
                 writer.writeAttribute("label", item.getLabel(), "label");
 
                 // if the component is disabled, "disabled" attribute would be rendered
                 // on "select" tag, so don't render "disabled" on every option.
-                if ((!optionInfo.isDisabled()) && item.isDisabled()) {
+                if (!optionInfo.isDisabled() && item.isDisabled()) {
                     writer.writeAttribute("disabled", true, "disabled");
                 }
                 count++;
@@ -619,17 +619,17 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         if (logger.isLoggable(FINER)) {
             logger.log(FINER, "Rendering 'select'");
         }
-        
+
         writer.startElement("select", component);
         writeIdAttributeIfNecessary(context, writer, component);
         writer.writeAttribute("name", component.getClientId(context), "clientId");
-        
+
         // Render styleClass attribute if present.
         String styleClass;
         if ((styleClass = (String) component.getAttributes().get("styleClass")) != null) {
             writer.writeAttribute("class", styleClass, "styleClass");
         }
-        
+
         if (!getMultipleText(component).equals("")) {
             writer.writeAttribute("multiple", true, "multiple");
         }
@@ -645,13 +645,13 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         context.setResponseWriter(writer.cloneWithWriter(bufferedWriter));
         int count = renderOptions(context, component, items);
         context.setResponseWriter(writer);
-        
+
         // If "size" is *not* set explicitly, we have to default it correctly
         Integer size = (Integer) component.getAttributes().get("size");
         if (size == null || size == MIN_VALUE) {
             size = count;
         }
-        
+
         writeDefaultSize(writer, size);
 
         renderPassThruAttributes(context, writer, component, ATTRIBUTES, getNonOnChangeBehaviors(component));
@@ -683,11 +683,9 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
     }
 
     /**
-     * @param collection
-     *            a Collection instance
+     * @param collection a Collection instance
      *
-     * @return a new <code>Collection</code> instance or null if the instance cannot be
-     *         created
+     * @return a new <code>Collection</code> instance or null if the instance cannot be created
      */
     protected Collection<Object> createCollection(Collection<Object> collection, Class<? extends Collection<Object>> fallBackType) {
 
@@ -712,16 +710,14 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
      * Utility method to invoke the the <code>clone</code> method on the provided value.
      * </p>
      *
-     * @param value
-     *            the value to clone
-     * @return the result of invoking <code>clone()</code> or <code>null</code> if the
-     *         value could not be cloned or does not implement the {@link Cloneable}
-     *         interface
+     * @param value the value to clone
+     * @return the result of invoking <code>clone()</code> or <code>null</code> if the value could not be cloned or does not
+     * implement the {@link Cloneable} interface
      */
     protected Collection<Object> cloneValue(Object value) {
 
         if (value instanceof Cloneable) {
-            
+
             // Even though Clonable marks an instance of a Class as being
             // safe to call .clone(), .clone() by default is protected.
             // The Collection classes that do implement Clonable do so at variable
@@ -733,7 +729,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
                     @SuppressWarnings("unchecked")
                     Collection<Object> clonedCollected = (Collection<Object>) cloneMethod.invoke(value);
                     clonedCollected.clear();
-                    
+
                     return clonedCollected;
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                     if (logger.isLoggable(SEVERE)) {
@@ -753,10 +749,8 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
     }
 
     /**
-     * @param type
-     *            the target model type
-     * @param initialSize
-     *            the initial size of the <code>Collection</code>
+     * @param type the target model type
+     * @param initialSize the initial size of the <code>Collection</code>
      * @return a <code>Collection</code> instance that best matches <code>type</code>
      */
     protected Collection<Object> bestGuess(Class<? extends Collection<Object>> type, int initialSize) {
@@ -764,15 +758,15 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         if (SortedSet.class.isAssignableFrom(type)) {
             return new TreeSet<>();
         }
-        
+
         if (Queue.class.isAssignableFrom(type)) {
             return new LinkedList<>();
         }
-        
+
         if (Set.class.isAssignableFrom(type)) {
             return new HashSet<>(initialSize);
         }
-        
+
         // This covers the where type is List or Collection
         return new ArrayList<>(initialSize);
     }
@@ -780,9 +774,8 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
     /**
      * <p>
      * Create a collection from the provided hint.
-     * 
-     * @param collectionTypeHint
-     *            the Collection type as either a String or Class
+     *
+     * @param collectionTypeHint the Collection type as either a String or Class
      * @return a new Collection instance
      */
     @SuppressWarnings("unchecked")
@@ -805,7 +798,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         if (createdCollection == null) {
             throw new FacesException("Unable to create collection type " + collectionType);
         }
-        
+
         return createdCollection;
     }
 
@@ -814,40 +807,57 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         return result != null ? (Boolean) result : false;
 
     }
-    
-    
+
     // ------------------------------------------------------- Private Methods
-    
+
     private void decodeUISelectMany(FacesContext context, UISelectMany component, String clientId) {
-        
-        Map<String, String[]> requestParameterValuesMap = context.getExternalContext()
-                                                                 .getRequestParameterValuesMap();
-        
+
+        Map<String, String[]> requestParameterValuesMap = context.getExternalContext().getRequestParameterValuesMap();
+
         if (requestParameterValuesMap.containsKey(clientId)) {
             String newValues[] = requestParameterValuesMap.get(clientId);
+
+            if (newValues != null && newValues.length > 0) {
+                Set<String> disabledSelectItemValues = getDisabledSelectItemValues(context, component);
+                if (!disabledSelectItemValues.isEmpty()) {
+                    List<String> newValuesList = new ArrayList<>(Arrays.asList(newValues));
+
+                    if (newValuesList.removeAll(disabledSelectItemValues)) {
+                        newValues = newValuesList.toArray(new String[newValuesList.size()]);
+                    }
+                }
+            }
+
             setSubmittedValue(component, newValues);
-            
+
             if (logger.isLoggable(FINE)) {
                 logger.fine("submitted values for UISelectMany component " + component.getId() + " after decoding " + Arrays.toString(newValues));
             }
         } else {
             // Use the empty array, not null, to distinguish between an deselected UISelectMany and a disabled one
             setSubmittedValue(component, new String[0]);
-            
+
             if (logger.isLoggable(FINE)) {
                 logger.fine("Set empty array for UISelectMany component " + component.getId() + " after decoding ");
             }
         }
     }
-    
+
     private void decodeUISelectOne(FacesContext context, UIComponent component, String clientId) {
-        Map<String, String> requestParameterMap = context.getExternalContext()
-                                                         .getRequestParameterMap();
-        
+        Map<String, String> requestParameterMap = context.getExternalContext().getRequestParameterMap();
+
         if (requestParameterMap.containsKey(clientId)) {
             String newValue = requestParameterMap.get(clientId);
+
+            if (newValue != null && !newValue.isEmpty()) {
+                Set<String> disabledSelectItemValues = getDisabledSelectItemValues(context, component);
+                if (disabledSelectItemValues.contains(newValue)) {
+                    newValue = RIConstants.NO_VALUE;
+                }
+            }
+
             setSubmittedValue(component, newValue);
-            
+
             if (logger.isLoggable(FINE)) {
                 logger.fine("submitted value for UISelectOne component " + component.getId() + " after decoding " + newValue);
             }
@@ -857,22 +867,30 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
             setSubmittedValue(component, NO_VALUE);
         }
     }
-    
+
+    private Set<String> getDisabledSelectItemValues(FacesContext context, UIComponent component) {
+        Set<String> disabledSelectItemValues = new HashSet<>(2);
+        RenderKitUtils.getSelectItems(context, component).forEachRemaining(selectItem -> {
+            if (selectItem.isDisabled()) {
+                disabledSelectItemValues.add(getFormattedValue(context, component, selectItem.getValue()));
+            }
+        });
+        return disabledSelectItemValues;
+    }
+
     private boolean isNoValueOrNull(String newValue, UIComponent component) {
         if (NO_VALUE.equals(newValue)) {
             return true;
         }
-        
+
         if (newValue == null) {
             if (logger.isLoggable(FINE)) {
-                logger.fine(
-                    "No conversion necessary for SelectOne Component  " + 
-                    component.getId() + " since the new value is null ");
+                logger.fine("No conversion necessary for SelectOne Component  " + component.getId() + " since the new value is null ");
             }
-            
+
             return true;
         }
-        
+
         return false;
     }
 

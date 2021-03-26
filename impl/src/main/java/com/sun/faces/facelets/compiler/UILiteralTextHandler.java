@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,46 +16,45 @@
 
 package com.sun.faces.facelets.compiler;
 
-import com.sun.faces.facelets.tag.jsf.ComponentSupport;
-
-import javax.faces.component.UIComponent;
-import javax.faces.component.UniqueIdVendor;
-import javax.faces.view.facelets.FaceletContext;
 import java.io.IOException;
 
+import com.sun.faces.facelets.tag.jsf.ComponentSupport;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UniqueIdVendor;
+import jakarta.faces.view.facelets.FaceletContext;
+
 final class UILiteralTextHandler extends AbstractUIHandler {
-    
+
     protected final String txtString;
-    
+
     public UILiteralTextHandler(String txtString) {
         this.txtString = txtString;
     }
 
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         if (parent != null) {
-            UIComponent c = new UILiteralText(this.txtString);
+            UIComponent c = new UILiteralText(txtString);
             String uid;
             UIComponent ancestorNamingContainer = parent.getNamingContainer();
-            if (null != ancestorNamingContainer &&
-                    ancestorNamingContainer instanceof UniqueIdVendor) {
+            if (null != ancestorNamingContainer && ancestorNamingContainer instanceof UniqueIdVendor) {
                 uid = ((UniqueIdVendor) ancestorNamingContainer).createUniqueId(ctx.getFacesContext(), null);
             } else {
                 uid = ComponentSupport.getViewRoot(ctx, parent).createUniqueId();
             }
             c.setId(uid);
-            this.addComponent(ctx, parent, c);
+            addComponent(ctx, parent, c);
         }
     }
 
     @Override
     public String getText() {
-        return this.txtString;
+        return txtString;
     }
 
     @Override
     public String getText(FaceletContext ctx) {
-        return this.txtString;
+        return txtString;
     }
 }

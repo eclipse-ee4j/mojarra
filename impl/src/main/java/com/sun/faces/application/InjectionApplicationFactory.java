@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -25,17 +25,17 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.context.FacesContext;
-
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationFactory;
+import jakarta.faces.context.FacesContext;
+
 /**
- * This {@link javax.faces.application.ApplicationFactory} is responsible for injecting the default
- * {@link Application} instance into the top-level {@link Application} as configured by the runtime.
- * Doing this allows us to preserve backwards compatibility as the API evolves without having the
- * API rely on implementation specific details.
+ * This {@link jakarta.faces.application.ApplicationFactory} is responsible for injecting the default
+ * {@link Application} instance into the top-level {@link Application} as configured by the runtime. Doing this allows
+ * us to preserve backwards compatibility as the API evolves without having the API rely on implementation specific
+ * details.
  */
 public class InjectionApplicationFactory extends ApplicationFactory {
 
@@ -97,7 +97,7 @@ public class InjectionApplicationFactory extends ApplicationFactory {
 
             } catch (NoSuchFieldException nsfe) {
                 if (LOGGER.isLoggable(FINE)) {
-                    LOGGER.log(FINE, "Unable to find private field named 'defaultApplication' in javax.faces.application.Application.");
+                    LOGGER.log(FINE, "Unable to find private field named 'defaultApplication' in jakarta.faces.application.Application.");
                 }
             } catch (SecurityException | IllegalArgumentException | IllegalAccessException e) {
                 if (LOGGER.isLoggable(SEVERE)) {

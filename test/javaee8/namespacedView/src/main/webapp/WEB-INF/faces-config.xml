@@ -23,7 +23,7 @@
               version="2.3">
               
     <component>
-        <component-type>javax.faces.ViewRoot</component-type>
+        <component-type>jakarta.faces.ViewRoot</component-type>
         <component-class>com.sun.faces.test.javaee8.namespacedView.NamespacedView</component-class>
     </component>
 </faces-config>

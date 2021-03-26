@@ -21,26 +21,27 @@ import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import javax.inject.Named;
-import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.event.ActionEvent;
 
-@Named
+@ManagedBean
 @RequestScoped
 public class Bean {
-
+    
     public void putNonSerializableDataInState(ActionEvent ae) {
         ae.getComponent().getAttributes().put("myAttribute", new NotSerializableClass());
     }
-
+    
     private static class NotSerializableClass implements Serializable {
-        private void writeObject(ObjectOutputStream out) throws IOException {
+        private void writeObject(ObjectOutputStream out) throws IOException
+        {
             throw new NotSerializableException("This class is not really Serializable");
         }
-
-        private void readObject(ObjectInputStream in) throws IOException {
+        private void readObject(ObjectInputStream in) throws IOException
+        {
             throw new NotSerializableException("This class is not really Serializable");
         }
     }
-
+    
 }

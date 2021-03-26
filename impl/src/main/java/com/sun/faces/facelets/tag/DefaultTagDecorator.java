@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,34 +16,31 @@
 
 package com.sun.faces.facelets.tag;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.sun.faces.facelets.tag.jsf.PassThroughAttributeLibrary;
 import com.sun.faces.facelets.tag.jsf.PassThroughElementLibrary;
 import com.sun.faces.facelets.tag.jsf.html.HtmlLibrary;
 
-import javax.faces.render.Renderer;
-import javax.faces.view.Location;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.Tag;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagAttributes;
-import javax.faces.view.facelets.TagDecorator;
-import java.util.HashMap;
-import java.util.Map;
+import jakarta.faces.render.Renderer;
+import jakarta.faces.view.Location;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributes;
+import jakarta.faces.view.facelets.TagDecorator;
 
 /**
  * A simple tag decorator to enable jsf: syntax
  */
 class DefaultTagDecorator implements TagDecorator {
 
-    private static enum Mapper {
-        a(
-                new ElementConverter("h:commandLink", "jsf:action"),
-                new ElementConverter("h:commandLink", "jsf:actionListener"),
-                new ElementConverter("h:outputLink", "jsf:value"),
-                new ElementConverter("h:link", "jsf:outcome")),
+    private enum Mapper {
+        a(new ElementConverter("h:commandLink", "jsf:action"), new ElementConverter("h:commandLink", "jsf:actionListener"),
+                new ElementConverter("h:outputLink", "jsf:value"), new ElementConverter("h:link", "jsf:outcome")),
 
-        img("h:graphicImage"), body("h:body"), head("h:head"), label("h:outputLabel"), script("h:outputScript"),
-        link("h:outputStylesheet"),
+        img("h:graphicImage"), body("h:body"), head("h:head"), label("h:outputLabel"), script("h:outputScript"), link("h:outputStylesheet"),
 
         form("h:form"), textarea("h:inputTextarea"),
         // TODO if we want the name of the button to become the id, we have to do .id("name")
@@ -55,34 +52,19 @@ class DefaultTagDecorator implements TagDecorator {
 
         input(new ElementConverter("h:inputText", "type")
                 // TODO this is a little bit ugly to handle the name as if it were jsf:id. we should not support this
-                .id("name")
-                .map("hidden", "inputHidden")
-                .map("password", "inputSecret")
-                .map("number", "inputText")
-                .map("search", "inputText")
-                .map("email", "inputText")
-                .map("datetime", "inputText")
-                .map("date", "inputText")
-                .map("month", "inputText")
-                .map("week", "inputText")
-                .map("time", "inputText")
-                .map("datetime-local", "inputText")
-                .map("range", "inputText")
-                .map("color", "inputText")
-                .map("url", "inputText")
-                .map("checkbox", "selectBooleanCheckbox")
-                .map("file", "inputFile")
-                .map("submit", "commandButton")
-                .map("reset", "commandButton")
+                .id("name").map("hidden", "inputHidden").map("password", "inputSecret").map("number", "inputText").map("search", "inputText")
+                .map("email", "inputText").map("datetime", "inputText").map("date", "inputText").map("month", "inputText").map("week", "inputText")
+                .map("time", "inputText").map("datetime-local", "inputText").map("range", "inputText").map("color", "inputText").map("url", "inputText")
+                .map("checkbox", "selectBooleanCheckbox").map("file", "inputFile").map("submit", "commandButton").map("reset", "commandButton")
                 .map("button", "button"));
 
         private ElementConverter elementConverter;
 
         private Mapper(final ElementConverter... elementConverters) {
             if (elementConverters.length == 1) {
-                this.elementConverter = elementConverters[0];
+                elementConverter = elementConverters[0];
             } else {
-                this.elementConverter = new ElementConverter() {
+                elementConverter = new ElementConverter() {
                     @Override
                     public Tag decorate(Tag tag) {
                         for (ElementConverter converter : elementConverters) {
@@ -102,10 +84,8 @@ class DefaultTagDecorator implements TagDecorator {
         }
     }
 
-    private static enum Namespace {
-        p(PassThroughAttributeLibrary.Namespace),
-        jsf(PassThroughElementLibrary.Namespace),
-        h(HtmlLibrary.Namespace);
+    private enum Namespace {
+        p(PassThroughAttributeLibrary.Namespace), jsf(PassThroughElementLibrary.Namespace), h(HtmlLibrary.Namespace);
 
         private String uri;
 
@@ -125,12 +105,9 @@ class DefaultTagDecorator implements TagDecorator {
         }
         // we only handle html tags!
         if (!("".equals(ns) || "http://www.w3.org/1999/xhtml".equals(ns))) {
-            throw new FaceletException("Elements with namespace " +
-                    ns + " may not have attributes in namespace " +
-                    Namespace.jsf.uri + "." +
-                    " Namespace " + Namespace.jsf.uri +
-                    " is intended for otherwise non-JSF-aware markup, such as <input type=\"text\" jsf:id >" +
-                    " It is not valid to have <h:commandButton jsf:id=\"button\" />.");
+            throw new FaceletException("Elements with namespace " + ns + " may not have attributes in namespace " + Namespace.jsf.uri + "." + " Namespace "
+                    + Namespace.jsf.uri + " is intended for otherwise non-JSF-aware markup, such as <input type=\"text\" jsf:id >"
+                    + " It is not valid to have <h:commandButton jsf:id=\"button\" />.");
         }
         for (Mapper mapper : Mapper.values()) {
             if (tag.getLocalName().equals(mapper.name())) {
@@ -168,13 +145,13 @@ class DefaultTagDecorator implements TagDecorator {
 
         private ElementConverter(String faceletsTag, String arbiterAttributeName) {
             String[] strings = faceletsTag.split(":");
-            this.namespace = Namespace.valueOf(strings[0]);
-            this.localName = strings[1];
+            namespace = Namespace.valueOf(strings[0]);
+            localName = strings[1];
             this.arbiterAttributeName = arbiterAttributeName;
 
             if (arbiterAttributeName != null && arbiterAttributeName.indexOf(':') > 0) {
                 strings = arbiterAttributeName.split(":");
-                this.arbiterAttributeNamespace = Namespace.valueOf(strings[0]).uri;
+                arbiterAttributeNamespace = Namespace.valueOf(strings[0]).uri;
                 this.arbiterAttributeName = strings[1];
             }
         }
@@ -200,20 +177,18 @@ class DefaultTagDecorator implements TagDecorator {
 
             if (arbiterAttribute == null) {
                 // no arbiter
-                return null;//convertTag(tag, namespace, localName);
+                return null;// convertTag(tag, namespace, localName);
             }
 
-            // PENDING 
+            // PENDING
             /**
-             if (!arbiterAttribute.isLiteral()) {
-             // TODO should we throw an exception here?
-             }
+             * if (!arbiterAttribute.isLiteral()) { // TODO should we throw an exception here? }
              **/
 
             String myLocalName = additionalMappings.get(arbiterAttribute.getValue());
 
             if (myLocalName == null) {
-                myLocalName = this.localName;
+                myLocalName = localName;
             }
 
             return convertTag(tag, namespace, myLocalName);
@@ -259,7 +234,6 @@ class DefaultTagDecorator implements TagDecorator {
 
             return new TagAttributeImpl(location, ns, myLocalName, qName, value);
         }
-
 
         protected TagAttribute convertTagAttribute(TagAttribute attribute) {
             Location location = attribute.getLocation();

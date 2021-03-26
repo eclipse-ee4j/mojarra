@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,8 +18,8 @@ package com.sun.faces.facelets.tag.jstl.core;
 
 import com.sun.faces.facelets.tag.IterationStatus;
 
-import javax.el.ELContext;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
 
 /**
  * @author Jacob Hookom
@@ -28,14 +28,14 @@ import javax.el.ValueExpression;
 public final class IterationStatusExpression extends ValueExpression {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
 
     private final IterationStatus status;
 
     /**
-     * 
+     *
      */
     public IterationStatusExpression(IterationStatus status) {
         this.status = status;
@@ -43,19 +43,18 @@ public final class IterationStatusExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see javax.el.ValueExpression#getValue(javax.el.ELContext)
+     *
+     * @see jakarta.el.ValueExpression#getValue(jakarta.el.ELContext)
      */
     @Override
     public Object getValue(ELContext context) {
-        return this.status;
+        return status;
     }
 
     /*
      * (non-Javadoc)
-     * 
-     * @see javax.el.ValueExpression#setValue(javax.el.ELContext,
-     *      java.lang.Object)
+     *
+     * @see jakarta.el.ValueExpression#setValue(jakarta.el.ELContext, java.lang.Object)
      */
     @Override
     public void setValue(ELContext context, Object value) {
@@ -64,8 +63,8 @@ public final class IterationStatusExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see javax.el.ValueExpression#isReadOnly(javax.el.ELContext)
+     *
+     * @see jakarta.el.ValueExpression#isReadOnly(jakarta.el.ELContext)
      */
     @Override
     public boolean isReadOnly(ELContext context) {
@@ -74,8 +73,8 @@ public final class IterationStatusExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see javax.el.ValueExpression#getType(javax.el.ELContext)
+     *
+     * @see jakarta.el.ValueExpression#getType(jakarta.el.ELContext)
      */
     @Override
     public Class getType(ELContext context) {
@@ -84,8 +83,8 @@ public final class IterationStatusExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see javax.el.ValueExpression#getExpectedType()
+     *
+     * @see jakarta.el.ValueExpression#getExpectedType()
      */
     @Override
     public Class getExpectedType() {
@@ -94,12 +93,12 @@ public final class IterationStatusExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see javax.el.Expression#getExpressionString()
+     *
+     * @see jakarta.el.Expression#getExpressionString()
      */
     @Override
     public String getExpressionString() {
-        return this.toString();
+        return toString();
     }
 
     @Override
@@ -111,26 +110,26 @@ public final class IterationStatusExpression extends ValueExpression {
             return false;
         }
         final IterationStatusExpression other = (IterationStatusExpression) obj;
-        if (this.status != other.status && (this.status == null || !this.status.equals(other.status))) {
+        if (status != other.status && (status == null || !status.equals(other.status))) {
             return false;
         }
         return true;
     }
-    
+
     /*
      * (non-Javadoc)
-     * 
-     * @see javax.el.Expression#hashCode()
+     *
+     * @see jakarta.el.Expression#hashCode()
      */
     @Override
     public int hashCode() {
-        return this.status.hashCode();
+        return status.hashCode();
     }
 
     /*
      * (non-Javadoc)
-     * 
-     * @see javax.el.Expression#isLiteralText()
+     *
+     * @see jakarta.el.Expression#isLiteralText()
      */
     @Override
     public boolean isLiteralText() {
@@ -139,7 +138,7 @@ public final class IterationStatusExpression extends ValueExpression {
 
     @Override
     public String toString() {
-        return this.status.toString();
+        return status.toString();
     }
 
 }

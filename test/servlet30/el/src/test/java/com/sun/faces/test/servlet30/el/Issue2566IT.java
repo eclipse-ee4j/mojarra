@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
- * Copyright (c) 2018 Payara Services Limited.
- * All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,14 +16,12 @@
 
 package com.sun.faces.test.servlet30.el;
 
-import static org.junit.Assert.assertTrue;
-
+import com.gargoylesoftware.htmlunit.TextPage;
+import com.gargoylesoftware.htmlunit.WebClient;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import static org.junit.Assert.*;
 
 public class Issue2566IT {
 
@@ -45,7 +41,7 @@ public class Issue2566IT {
 
     @Test
     public void testIssue1533() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "faces/issue2566.xhtml");
-        assertTrue(page.getWebResponse().getContentAsString().indexOf("EL Resolver Passed") != -1);
+        TextPage page = webClient.getPage(webUrl + "issue2566.jsp");
+        assertTrue(page.getContent().indexOf("EL Resolver Passed") != -1);
     }
 }

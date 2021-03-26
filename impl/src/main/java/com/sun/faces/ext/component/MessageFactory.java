@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -21,13 +21,13 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import javax.el.ValueExpression;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
+import jakarta.el.ValueExpression;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationFactory;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 
 /**
  *
@@ -44,59 +44,39 @@ public class MessageFactory {
     }
 
     /**
-     * @see #getMessage(String, Object...)
-     * @param severity set a custom severity
-     */
-    public static FacesMessage getMessage(String messageId, FacesMessage.Severity severity, Object... params) {
-        FacesMessage message = getMessage(messageId, params);
-        message.setSeverity(severity);
-        return message;
-    }
-
-    /**
-     * @see #getMessage(Locale, String, Object...)
-     * @param severity set a custom severity
-     */
-    public static FacesMessage getMessage(Locale locale, String messageId, FacesMessage.Severity severity, Object... params) {
-        FacesMessage message = getMessage(locale, messageId, params);
-        message.setSeverity(severity);
-        return message;
-    }
-
-    /**
-     * @see #getMessage(FacesContext, String, Object...)
-     * @param severity set a custom severity
-     */
-    public static FacesMessage getMessage(FacesContext context, String messageId, FacesMessage.Severity severity, Object... params) {
-        FacesMessage message = getMessage(context, messageId, params);
-        message.setSeverity(severity);
-        return message;
-    }
-
-    /**
      * <p>
-     * This version of getMessage() is used for localizing implementation specific messages.
+     * Creates and returns a FacesMessage for the specified Locale.
      * </p>
      *
+     * @param context - the <code>FacesContext</code> for the current request
      * @param messageId - the key of the message in the resource bundle
      * @param params - substittion parameters
      *
-     * @return a localized <code>FacesMessage</code> with the severity of
-     *         FacesMessage.SEVERITY_ERROR
+     * @return a localized <code>FacesMessage</code> with the severity of FacesMessage.SEVERITY_ERROR
      */
-    public static FacesMessage getMessage(String messageId, Object... params) {
-        Locale locale = null;
-        FacesContext context = FacesContext.getCurrentInstance();
-        // context.getViewRoot() may not have been initialized at this point.
-        if (context != null && context.getViewRoot() != null) {
+    public static FacesMessage getMessage(FacesContext context, String messageId, Object... params) {
+        if (context == null || messageId == null) {
+            throw new NullPointerException(" context " + context + " messageId " + messageId);
+        }
+
+        Locale locale;
+        // viewRoot may not have been initialized at this point.
+        if (context.getViewRoot() != null) {
             locale = context.getViewRoot().getLocale();
-            if (locale == null) {
-                locale = Locale.getDefault();
-            }
         } else {
             locale = Locale.getDefault();
         }
 
+        if (locale == null) {
+            throw new NullPointerException(" locale is null ");
+        }
+
+        FacesMessage message = getMessage(locale, messageId, params);
+        if (message != null) {
+            return message;
+        }
+
+        locale = Locale.getDefault();
         return getMessage(locale, messageId, params);
     }
 
@@ -109,10 +89,9 @@ public class MessageFactory {
      * @param messageId - the key of the message in the resource bundle
      * @param params - substittion parameters
      *
-     * @return a localized <code>FacesMessage</code> with the severity of
-     *         FacesMessage.SEVERITY_ERROR
+     * @return a localized <code>FacesMessage</code> with the severity of FacesMessage.SEVERITY_ERROR
      */
-    public static FacesMessage getMessage(Locale locale, String messageId, Object... params) {
+    private static FacesMessage getMessage(Locale locale, String messageId, Object... params) {
         String summary = null;
         String detail = null;
         ResourceBundle bundle;
@@ -149,7 +128,7 @@ public class MessageFactory {
             }
         }
 
-        // no hit found in the standard javax.faces.Messages bundle.
+        // no hit found in the standard jakarta.faces.Messages bundle.
         // check the Mojarra resources
         if (summary == null) {
             // see if we have a summary in the app provided bundle
@@ -168,45 +147,9 @@ public class MessageFactory {
         // At this point, we have a summary and a bundle.
         FacesMessage ret = new BindingFacesMessage(locale, summary, detail, params);
         ret.setSeverity(FacesMessage.SEVERITY_ERROR);
-        return (ret);
+        return ret;
     }
 
-    /**
-     * <p>
-     * Creates and returns a FacesMessage for the specified Locale.
-     * </p>
-     *
-     * @param context - the <code>FacesContext</code> for the current request
-     * @param messageId - the key of the message in the resource bundle
-     * @param params - substittion parameters
-     *
-     * @return a localized <code>FacesMessage</code> with the severity of
-     *         FacesMessage.SEVERITY_ERROR
-     */
-    public static FacesMessage getMessage(FacesContext context, String messageId, Object... params) {
-
-        if (context == null || messageId == null) {
-            throw new NullPointerException(" context " + context + " messageId " + messageId);
-        }
-        Locale locale;
-        // viewRoot may not have been initialized at this point.
-        if (context.getViewRoot() != null) {
-            locale = context.getViewRoot().getLocale();
-        } else {
-            locale = Locale.getDefault();
-        }
-
-        if (null == locale) {
-            throw new NullPointerException(" locale is null ");
-        }
-
-        FacesMessage message = getMessage(locale, messageId, params);
-        if (message != null) {
-            return message;
-        }
-        locale = Locale.getDefault();
-        return (getMessage(locale, messageId, params));
-    }
 
     /**
      * <p>
@@ -221,7 +164,7 @@ public class MessageFactory {
     public static Object getLabel(FacesContext context, UIComponent component) {
 
         Object o = component.getAttributes().get("label");
-        if (o == null || (o instanceof String && ((String) o).length() == 0)) {
+        if (o == null || o instanceof String && ((String) o).length() == 0) {
             o = component.getValueExpression("label");
         }
         // Use the "clientId" if there was no label specified.
@@ -231,16 +174,16 @@ public class MessageFactory {
         return o;
     }
 
-    protected static Application getApplication() {
+    private static Application getApplication() {
         FacesContext context = FacesContext.getCurrentInstance();
         if (context != null) {
-            return (FacesContext.getCurrentInstance().getApplication());
+            return FacesContext.getCurrentInstance().getApplication();
         }
         ApplicationFactory afactory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-        return (afactory.getApplication());
+        return afactory.getApplication();
     }
 
-    protected static ClassLoader getCurrentLoader(Class fallbackClass) {
+    private static ClassLoader getCurrentLoader(Class fallbackClass) {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         if (loader == null) {
             loader = fallbackClass.getClassLoader();
@@ -249,14 +192,17 @@ public class MessageFactory {
     }
 
     /**
-     * This class overrides FacesMessage to provide the evaluation of binding expressions in
-     * addition to Strings. It is often the case, that a binding expression may reference a
-     * localized property value that would be used as a substitution parameter in the message. For
-     * example: <code>#{bundle.userLabel}</code> "bundle" may not be available until the page is
-     * rendered. The "late" binding evaluation in <code>getSummary</code> and <code>getDetail</code>
-     * allow the expression to be evaluated when that property is available.
+     * This class overrides FacesMessage to provide the evaluation of binding expressions in addition to Strings. It is
+     * often the case, that a binding expression may reference a localized property value that would be used as a
+     * substitution parameter in the message. For example: <code>#{bundle.userLabel}</code> "bundle" may not be available
+     * until the page is rendered. The "late" binding evaluation in <code>getSummary</code> and <code>getDetail</code> allow
+     * the expression to be evaluated when that property is available.
      */
     static class BindingFacesMessage extends FacesMessage {
+        /**
+         *
+         */
+        private static final long serialVersionUID = 7020392746585505562L;
         BindingFacesMessage(Locale locale, String messageFormat, String detailMessageFormat,
                 // array of parameters, both Strings and ValueBindings
                 Object[] parameters) {
@@ -288,14 +234,12 @@ public class MessageFactory {
             if (parameters != null) {
                 for (int i = 0; i < parameters.length; i++) {
                     Object o = parameters[i];
-
                     if (o instanceof ValueExpression) {
                         if (context == null) {
                             context = FacesContext.getCurrentInstance();
                         }
                         o = ((ValueExpression) o).getValue(context.getELContext());
                     }
-
                     // to avoid 'null' appearing in message
                     if (o == null) {
                         o = "";

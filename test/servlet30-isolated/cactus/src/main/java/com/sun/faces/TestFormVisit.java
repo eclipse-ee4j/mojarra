@@ -24,7 +24,7 @@ import javax.faces.context.FacesContext;
 
 public class TestFormVisit extends HtmlForm {
 
-    public static final String COMPONENT_TYPE = "javax.faces.TestFormVisit";
+    public static final String COMPONENT_TYPE = "jakarta.faces.TestFormVisit";
 
     public TestFormVisit() {
         super();

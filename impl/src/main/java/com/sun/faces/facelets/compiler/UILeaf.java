@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -23,21 +23,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.el.ValueExpression;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIComponentBase;
-import javax.faces.component.search.UntargetableComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.FacesEvent;
-import javax.faces.event.FacesListener;
-import javax.faces.render.Renderer;
+import jakarta.el.ValueExpression;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIComponentBase;
+import jakarta.faces.component.search.UntargetableComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.FacesEvent;
+import jakarta.faces.event.FacesListener;
+import jakarta.faces.render.Renderer;
 
 public class UILeaf extends UIComponentBase implements UntargetableComponent {
 
-    private final static Map<String,UIComponent> facets = new HashMap<String,UIComponent>(0, 1.0f){
+    private final static Map<String, UIComponent> facets = new HashMap<String, UIComponent>(0, 1.0f) {
 
-        private static final long serialVersionUID = 6132215325480325558L;
+        private static final long serialVersionUID = 2063657587950149152L;
 
         @Override
         public void putAll(Map map) {
@@ -71,13 +71,13 @@ public class UILeaf extends UIComponentBase implements UntargetableComponent {
 
     @Override
     public UIComponent getParent() {
-        return this.parent;
+        return parent;
     }
 
     @Override
     public void setParent(UIComponent parent) {
         this.parent = parent;
-                }
+    }
 
     @Override
     public String getRendererType() {
@@ -110,7 +110,7 @@ public class UILeaf extends UIComponentBase implements UntargetableComponent {
     }
 
     @Override
-    public Map<String,UIComponent> getFacets() {
+    public Map<String, UIComponent> getFacets() {
         return facets;
     }
 
@@ -156,7 +156,7 @@ public class UILeaf extends UIComponentBase implements UntargetableComponent {
 
     @Override
     public void encodeAll(FacesContext faces) throws IOException {
-        this.encodeBegin(faces);
+        encodeBegin(faces);
     }
 
     @Override
@@ -204,10 +204,9 @@ public class UILeaf extends UIComponentBase implements UntargetableComponent {
         return null;
     }
 
-
     @Override
     public boolean isTransient() {
-        return ((returnLocalTransient) || super.isTransient());
+        return returnLocalTransient || super.isTransient();
     }
 
     @Override

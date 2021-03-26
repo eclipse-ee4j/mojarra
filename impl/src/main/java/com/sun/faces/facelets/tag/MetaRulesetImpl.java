@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,44 +16,55 @@
 
 package com.sun.faces.facelets.tag;
 
+import java.beans.IntrospectionException;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
-import javax.faces.view.facelets.*;
-import java.beans.IntrospectionException;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.lang.ref.WeakReference;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRule;
+import jakarta.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.Metadata;
+import jakarta.faces.view.facelets.MetadataTarget;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagException;
 
 /**
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
 public class MetaRulesetImpl extends MetaRuleset {
 
     private final static Logger LOGGER = FacesLogger.FACELETS_META.getLogger();
-    private final static Map<Class, WeakReference<MetadataTarget>> metadata =
-          Collections.synchronizedMap(new WeakHashMap<>());
+    private final static Map<Class, WeakReference<MetadataTarget>> metadata = Collections.synchronizedMap(new WeakHashMap<>());
 
     private final Tag tag;
     private final Class type;
-    private final Map<String,TagAttribute> attributes;
+    private final Map<String, TagAttribute> attributes;
     private final List<Metadata> mappers;
     private final List<MetaRule> rules;
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public MetaRulesetImpl(Tag tag, Class<?> type) {
 
         this.tag = tag;
         this.type = type;
-        this.attributes = new HashMap<>();
-        this.mappers = new ArrayList<>();
-        this.rules = new ArrayList<>();
+        attributes = new HashMap<>();
+        mappers = new ArrayList<>();
+        rules = new ArrayList<>();
 
         // setup attributes
         TagAttribute[] attrs = this.tag.getAttributes().getAll();
@@ -66,32 +77,29 @@ public class MetaRulesetImpl extends MetaRuleset {
         }
 
         // add default rules
-        this.rules.add(BeanPropertyTagRule.Instance);
+        rules.add(BeanPropertyTagRule.Instance);
 
     }
 
-
     // ---------------------------------------------------------- Public Methods
-
 
     @Override
     public MetaRuleset ignore(String attribute) {
 
         Util.notNull("attribute", attribute);
-        this.attributes.remove(attribute);
+        attributes.remove(attribute);
         return this;
 
     }
-
 
     @Override
     public MetaRuleset alias(String attribute, String property) {
 
         Util.notNull("attribute", attribute);
         Util.notNull("property", property);
-        TagAttribute attr = this.attributes.remove(attribute);
+        TagAttribute attr = attributes.remove(attribute);
         if (attr != null) {
-            this.attributes.put(property, attr);
+            attributes.put(property, attr);
         }
         return this;
 
@@ -101,8 +109,8 @@ public class MetaRulesetImpl extends MetaRuleset {
     public MetaRuleset add(Metadata mapper) {
 
         Util.notNull("mapper", mapper);
-        if (!this.mappers.contains(mapper)) {
-            this.mappers.add(mapper);
+        if (!mappers.contains(mapper)) {
+            mappers.add(mapper);
         }
         return this;
 
@@ -112,49 +120,48 @@ public class MetaRulesetImpl extends MetaRuleset {
     public MetaRuleset addRule(MetaRule rule) {
 
         Util.notNull("rule", rule);
-        this.rules.add(rule);
+        rules.add(rule);
         return this;
 
     }
 
-
     @Override
-     public Metadata finish() {
+    public Metadata finish() {
 
-        if (!this.attributes.isEmpty()) {
-            if (this.rules.isEmpty()) {
+        if (!attributes.isEmpty()) {
+            if (rules.isEmpty()) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
-                    for (Iterator<TagAttribute> itr = this.attributes.values().iterator(); itr.hasNext(); ) {
-                        LOGGER.severe(itr.next() + " Unhandled by MetaTagHandler for type "+this.type.getName());
+                    for (Iterator<TagAttribute> itr = attributes.values().iterator(); itr.hasNext();) {
+                        LOGGER.severe(itr.next() + " Unhandled by MetaTagHandler for type " + type.getName());
                     }
                 }
             } else {
-                MetadataTarget target = this.getMetadataTarget();
+                MetadataTarget target = getMetadataTarget();
                 // now iterate over attributes
-                int ruleEnd = this.rules.size() - 1;
-                for (Map.Entry<String,TagAttribute> entry : attributes.entrySet()) {
+                int ruleEnd = rules.size() - 1;
+                for (Map.Entry<String, TagAttribute> entry : attributes.entrySet()) {
                     Metadata data = null;
                     int i = ruleEnd;
                     while (data == null && i >= 0) {
-                        MetaRule rule = this.rules.get(i);
+                        MetaRule rule = rules.get(i);
                         data = rule.applyRule(entry.getKey(), entry.getValue(), target);
                         i--;
                     }
                     if (data == null) {
                         if (LOGGER.isLoggable(Level.SEVERE)) {
-                            LOGGER.severe(entry.getValue() + " Unhandled by MetaTagHandler for type "+this.type.getName());
+                            LOGGER.severe(entry.getValue() + " Unhandled by MetaTagHandler for type " + type.getName());
                         }
                     } else {
-                        this.mappers.add(data);
+                        mappers.add(data);
                     }
                 }
             }
         }
 
-        if (this.mappers.isEmpty()) {
+        if (mappers.isEmpty()) {
             return NONE;
         } else {
-            return new MetadataImpl(this.mappers.toArray(new Metadata[this.mappers.size()]));
+            return new MetadataImpl(mappers.toArray(new Metadata[mappers.size()]));
         }
 
     }
@@ -162,14 +169,12 @@ public class MetaRulesetImpl extends MetaRuleset {
     @Override
     public MetaRuleset ignoreAll() {
 
-        this.attributes.clear();
+        attributes.clear();
         return this;
 
     }
 
-
     // ------------------------------------------------------- Protected Methods
-
 
     protected MetadataTarget getMetadataTarget() {
         WeakReference<MetadataTarget> metaRef = metadata.get(type);
@@ -178,8 +183,7 @@ public class MetaRulesetImpl extends MetaRuleset {
             try {
                 meta = new MetadataTargetImpl(type);
             } catch (IntrospectionException e) {
-                throw new TagException(this.tag,
-                        "Error Creating TargetMetadata", e);
+                throw new TagException(tag, "Error Creating TargetMetadata", e);
             }
             metadata.put(type, new WeakReference<>(meta));
         }
@@ -187,11 +191,8 @@ public class MetaRulesetImpl extends MetaRuleset {
 
     }
 
-
-
     // --------------------------------------------------------- Private Methods
 
-    
     private final static Metadata NONE = new Metadata() {
 
         @Override

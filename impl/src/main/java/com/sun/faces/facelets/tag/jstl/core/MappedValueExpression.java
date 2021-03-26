@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,10 +16,11 @@
 
 package com.sun.faces.facelets.tag.jstl.core;
 
-import javax.el.ELContext;
-import javax.el.ValueExpression;
 import java.io.Serializable;
 import java.util.Map;
+
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
 
 /**
  * @author Jacob Hookom
@@ -56,7 +57,7 @@ public final class MappedValueExpression extends ValueExpression {
     }
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
 
@@ -65,38 +66,37 @@ public final class MappedValueExpression extends ValueExpression {
     private final ValueExpression orig;
 
     /**
-     * 
+     *
      */
     public MappedValueExpression(ValueExpression orig, Map.Entry entry) {
         this.orig = orig;
-        this.key = entry.getKey();
+        key = entry.getKey();
     }
 
     /*
      * (non-Javadoc)
-     * 
-     * @see javax.el.ValueExpression#getValue(javax.el.ELContext)
+     *
+     * @see jakarta.el.ValueExpression#getValue(jakarta.el.ELContext)
      */
     @Override
     public Object getValue(ELContext context) {
-        Object base = this.orig.getValue(context);
+        Object base = orig.getValue(context);
         if (base != null) {
             context.setPropertyResolved(true);
             return new Entry((Map) base, key);
-            
+
         }
         return null;
     }
 
     /*
      * (non-Javadoc)
-     * 
-     * @see javax.el.ValueExpression#setValue(javax.el.ELContext,
-     *      java.lang.Object)
+     *
+     * @see jakarta.el.ValueExpression#setValue(jakarta.el.ELContext, java.lang.Object)
      */
     @Override
     public void setValue(ELContext context, Object value) {
-        Object base = this.orig.getValue(context);
+        Object base = orig.getValue(context);
         if (base != null) {
             context.setPropertyResolved(false);
             context.getELResolver().setValue(context, base, key, value);
@@ -105,12 +105,12 @@ public final class MappedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see javax.el.ValueExpression#isReadOnly(javax.el.ELContext)
+     *
+     * @see jakarta.el.ValueExpression#isReadOnly(jakarta.el.ELContext)
      */
     @Override
     public boolean isReadOnly(ELContext context) {
-        Object base = this.orig.getValue(context);
+        Object base = orig.getValue(context);
         if (base != null) {
             context.setPropertyResolved(false);
             return context.getELResolver().isReadOnly(context, base, key);
@@ -120,12 +120,12 @@ public final class MappedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see javax.el.ValueExpression#getType(javax.el.ELContext)
+     *
+     * @see jakarta.el.ValueExpression#getType(jakarta.el.ELContext)
      */
     @Override
     public Class getType(ELContext context) {
-        Object base = this.orig.getValue(context);
+        Object base = orig.getValue(context);
         if (base != null) {
             context.setPropertyResolved(false);
             return context.getELResolver().getType(context, base, key);
@@ -135,8 +135,8 @@ public final class MappedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see javax.el.ValueExpression#getExpectedType()
+     *
+     * @see jakarta.el.ValueExpression#getExpectedType()
      */
     @Override
     public Class getExpectedType() {
@@ -145,28 +145,28 @@ public final class MappedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see javax.el.Expression#getExpressionString()
+     *
+     * @see jakarta.el.Expression#getExpressionString()
      */
     @Override
     public String getExpressionString() {
-        return this.orig.getExpressionString();
+        return orig.getExpressionString();
     }
 
     /*
      * (non-Javadoc)
-     * 
-     * @see javax.el.Expression#equals(java.lang.Object)
+     *
+     * @see jakarta.el.Expression#equals(java.lang.Object)
      */
     @Override
     public boolean equals(Object obj) {
-        return this.orig.equals(obj);
+        return orig.equals(obj);
     }
 
     /*
      * (non-Javadoc)
-     * 
-     * @see javax.el.Expression#hashCode()
+     *
+     * @see jakarta.el.Expression#hashCode()
      */
     @Override
     public int hashCode() {
@@ -175,8 +175,8 @@ public final class MappedValueExpression extends ValueExpression {
 
     /*
      * (non-Javadoc)eturn new Map.Entry<K, V>
-     * 
-     * @see javax.el.Expression#isLiteralText()
+     *
+     * @see jakarta.el.Expression#isLiteralText()
      */
     @Override
     public boolean isLiteralText() {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2015, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,6 +18,8 @@
 /*
 Overall document style
 */
+
+@import url('resources/fonts/dejavu.css');
 
 body {
     background-color:#ffffff;
@@ -588,6 +590,8 @@ div.contentContainer ul.blockList li.blockList h2{
     padding-bottom:0px;
 }
 
+
+/* Change bars from http://www.geocities.com/hentaihelper/2atimlin.htm */
 
 /* put a red "change" bar in the left margin			*/
 /*

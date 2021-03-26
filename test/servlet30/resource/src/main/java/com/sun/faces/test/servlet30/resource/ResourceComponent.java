@@ -21,7 +21,7 @@ import javax.faces.component.FacesComponent;
 import javax.faces.component.UIComponentBase;
 
 @FacesComponent("com.sun.faces.test.servlet30.resource.ResourceComponent")
-@ResourceDependencies({ @javax.faces.application.ResourceDependency(library = "js", name = "foo.js", target = "body") })
+@ResourceDependencies({@javax.faces.application.ResourceDependency(library="js", name="foo.js", target="body")})
 public class ResourceComponent extends UIComponentBase {
 
     //

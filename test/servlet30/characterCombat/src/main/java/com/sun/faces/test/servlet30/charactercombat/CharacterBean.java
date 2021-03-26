@@ -16,20 +16,13 @@
 
 package com.sun.faces.test.servlet30.charactercombat;
 
-/**
- * <p>
- * CharacterBean represents the data of an individual character
- * </p>
- */
+/** <p>CharacterBean represents the data of an individual character</p> */
 public class CharacterBean {
 
-    String name;
-    SpeciesBean species;
+    String name = null;
 
     /**
-     * <p>
-     * Get the character name
-     * </p>
+     * <p>Get the character name</p>
      *
      * @return character name String
      */
@@ -38,9 +31,7 @@ public class CharacterBean {
     }
 
     /**
-     * <p>
-     * Set the character name
-     * </p>
+     * <p>Set the character name</p>
      *
      * @param name
      */
@@ -48,11 +39,10 @@ public class CharacterBean {
         this.name = name;
     }
 
+    SpeciesBean species = null;
 
     /**
-     * <p>
-     * Get the species bean
-     * </p>
+     * <p>Get the species bean</p>
      *
      * @return species SpeciesBean
      */
@@ -61,9 +51,7 @@ public class CharacterBean {
     }
 
     /**
-     * <p>
-     * Set the species bean
-     * </p>
+     * <p>Set the species bean</p>
      *
      * @param species SpeciesBean
      */

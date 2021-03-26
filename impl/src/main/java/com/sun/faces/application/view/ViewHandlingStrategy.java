@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -20,28 +20,27 @@ import static com.sun.faces.util.Util.getFacesMapping;
 import static com.sun.faces.util.Util.getStateManager;
 import static com.sun.faces.util.Util.isPrefixMapped;
 import static com.sun.faces.util.Util.notNull;
+import static jakarta.faces.component.UIViewRoot.COMPONENT_TYPE;
 import static java.util.logging.Level.FINE;
-import static javax.faces.component.UIViewRoot.COMPONENT_TYPE;
 
 import java.io.IOException;
 import java.util.Locale;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.view.ViewDeclarationLanguage;
-
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewDeclarationLanguage;
+
 /**
  * <p>
- * This represents how a particular page description language
- * is to be rendered/restored.
+ * This represents how a particular page description language is to be rendered/restored.
  * <p>
  */
 public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
@@ -51,22 +50,18 @@ public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
     protected ApplicationAssociate associate;
     protected WebConfiguration webConfig;
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public ViewHandlingStrategy() {
         FacesContext ctx = FacesContext.getCurrentInstance();
         webConfig = WebConfiguration.getInstance(ctx.getExternalContext());
         associate = ApplicationAssociate.getInstance(ctx.getExternalContext());
     }
-    
 
     // ---------------------------------------------------------- Public Methods
 
-
     /**
-     * @see ViewDeclarationLanguage#restoreView(javax.faces.context.FacesContext, String)
+     * @see ViewDeclarationLanguage#restoreView(jakarta.faces.context.FacesContext, String)
      */
     @Override
     public UIViewRoot restoreView(FacesContext ctx, String viewId) {
@@ -95,15 +90,15 @@ public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
             // this is necessary to allow decorated impls.
             ViewHandler outerViewHandler = ctx.getApplication().getViewHandler();
             String renderKitId = outerViewHandler.calculateRenderKitId(ctx);
-            
+
             viewRoot = getStateManager(ctx).restoreView(ctx, viewId, renderKitId);
         }
 
         return viewRoot;
     }
-    
+
     /**
-     * @see ViewDeclarationLanguage#createView(javax.faces.context.FacesContext, String)
+     * @see ViewDeclarationLanguage#createView(jakarta.faces.context.FacesContext, String)
      */
     @Override
     public UIViewRoot createView(FacesContext ctx, String viewId) {
@@ -126,7 +121,7 @@ public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
         if (logger.isLoggable(FINE)) {
             logger.log(FINE, "Created new view for " + viewId);
         }
-        
+
         // PENDING(): not sure if we should set the RenderKitId here.
         // The UIViewRoot ctor sets the renderKitId to the default
         // one.
@@ -134,8 +129,7 @@ public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
         if (locale == null) {
             locale = ctx.getApplication().getViewHandler().calculateLocale(ctx);
             if (logger.isLoggable(FINE)) {
-                logger.fine(
-                    "Locale for this view as determined by calculateLocale " + locale.toString());
+                logger.fine("Locale for this view as determined by calculateLocale " + locale.toString());
             }
         } else {
             if (logger.isLoggable(FINE)) {
@@ -145,10 +139,9 @@ public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
 
         if (renderKitId == null) {
             renderKitId = ctx.getApplication().getViewHandler().calculateRenderKitId(ctx);
-            
+
             if (logger.isLoggable(FINE)) {
-                logger.fine(
-                    "RenderKitId for this view as determined by calculateRenderKitId " + renderKitId);
+                logger.fine("RenderKitId for this view as determined by calculateRenderKitId " + renderKitId);
             }
         } else {
             if (logger.isLoggable(FINE)) {
@@ -166,8 +159,8 @@ public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
     /**
      *
      * @param viewId the view ID
-     * @return <code>true</code> if this <code>ViewHandlingStrategy</code>
-     *  handles the the view type represented by <code>viewId</code>
+     * @return <code>true</code> if this <code>ViewHandlingStrategy</code> handles the the view type represented by
+     * <code>viewId</code>
      */
     public abstract boolean handlesViewId(String viewId);
 

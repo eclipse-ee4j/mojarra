@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -32,28 +32,28 @@ public final class UILibrary extends AbstractTagLibrary {
     public UILibrary() {
         this(Namespace);
     }
-    
+
     public UILibrary(String namespace) {
         super(namespace);
-        
-        this.addTagHandler("include", IncludeHandler.class);
 
-        this.addTagHandler("composition", CompositionHandler.class);
-        
+        addTagHandler("include", IncludeHandler.class);
+
+        addTagHandler("composition", CompositionHandler.class);
+
         this.addComponent("component", ComponentRef.COMPONENT_TYPE, null, ComponentRefHandler.class);
-        
+
         this.addComponent("fragment", ComponentRef.COMPONENT_TYPE, null, ComponentRefHandler.class);
 
-        this.addTagHandler("define", DefineHandler.class);
+        addTagHandler("define", DefineHandler.class);
 
-        this.addTagHandler("insert", InsertHandler.class);
+        addTagHandler("insert", InsertHandler.class);
 
-        this.addTagHandler("param", ParamHandler.class);
+        addTagHandler("param", ParamHandler.class);
 
-        this.addTagHandler("decorate", DecorateHandler.class);
-        
+        addTagHandler("decorate", DecorateHandler.class);
+
         this.addComponent("repeat", UIRepeat.COMPONENT_TYPE, null, RepeatHandler.class);
-        
-        this.addComponent("debug", UIDebug.COMPONENT_TYPE, null);     
+
+        this.addComponent("debug", UIDebug.COMPONENT_TYPE, null);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,27 +16,27 @@
 
 package com.sun.faces.el;
 
-import javax.el.ELResolver;
-import javax.el.CompositeELResolver;
+import jakarta.el.CompositeELResolver;
+import jakarta.el.ELResolver;
 
 /**
- * Maintains an ordered composite list of child <code>ELResolver for JSF</code>.
+ * Maintains an ordered composite list of child <code>ELResolver for Faces</code>.
  *
  */
 public abstract class FacesCompositeELResolver extends CompositeELResolver {
-    
-  /**
-   * <p><b>Faces</b> indicates this CompositeELResolver instance is the
-   * JSF chain, specified in section 5.6.2 of the spec.</p>
-   */
-  public enum ELResolverChainType {
-      Faces
-  }
 
-  public abstract ELResolverChainType getChainType();
+    /**
+     * <p>
+     * <b>Faces</b> indicates this CompositeELResolver instance is the Faces chain, specified in section 5.6.2 of the spec.
+     * </p>
+     */
+    public enum ELResolverChainType {
+        Faces
+    }
 
-  public abstract void addRootELResolver(ELResolver elResolver);
+    public abstract ELResolverChainType getChainType();
 
-  public abstract void addPropertyELResolver(ELResolver elResolver);
+    public abstract void addRootELResolver(ELResolver elResolver);
+
+    public abstract void addPropertyELResolver(ELResolver elResolver);
 }
-

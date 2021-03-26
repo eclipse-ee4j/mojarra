@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -23,25 +23,27 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Collections;
-import javax.faces.FactoryFinder;
-import javax.faces.webapp.PreJsf2ExceptionHandlerFactory;
-import javax.faces.application.Application;
-import javax.faces.application.FacesMessage;
-import javax.faces.application.ViewHandler;
-import javax.faces.application.FacesMessage.Severity;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseStream;
-import javax.faces.context.ResponseWriter;
-import javax.faces.context.PartialViewContext;
-import javax.faces.context.ExceptionHandler;
-import javax.faces.event.PhaseId;
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
-import javax.el.ELContext;
+
+import jakarta.el.ELContext;
 import com.sun.faces.renderkit.RenderKitUtils;
+
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.application.FacesMessage.Severity;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExceptionHandler;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialViewContext;
+import jakarta.faces.context.ResponseStream;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.lifecycle.Lifecycle;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.webapp.PreJsf2ExceptionHandlerFactory;
 
 // Mock Object for FacesContext
 public class MockFacesContext extends FacesContext {

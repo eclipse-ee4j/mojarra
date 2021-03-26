@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -21,12 +21,6 @@ import static java.util.logging.Level.FINE;
 
 import java.util.logging.Logger;
 
-import javax.faces.application.Application;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.FacesConverter;
-import javax.servlet.ServletContext;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -38,10 +32,15 @@ import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
+import jakarta.faces.application.Application;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.FacesConverter;
+import jakarta.servlet.ServletContext;
+
 /**
  * <p>
- * This <code>ConfigProcessor</code> handles all elements defined under
- * <code>/faces-config/converter</code>.
+ * This <code>ConfigProcessor</code> handles all elements defined under <code>/faces-config/converter</code>.
  * </p>
  */
 public class ConverterConfigProcessor extends AbstractConfigProcessor {
@@ -54,14 +53,12 @@ public class ConverterConfigProcessor extends AbstractConfigProcessor {
     private static final String CONVERTER = "converter";
 
     /**
-     * <code>/faces-config/converter/converter-id</code> (mutually exclusive with
-     * converter-for-class)
+     * <code>/faces-config/converter/converter-id</code> (mutually exclusive with converter-for-class)
      */
     private static final String CONVERTER_ID = "converter-id";
 
     /**
-     * <code>/faces-config/converter/converter-for-class</code> (mutually exclusive with
-     * converter-id)
+     * <code>/faces-config/converter/converter-for-class</code> (mutually exclusive with converter-id)
      */
     private static final String CONVERTER_FOR_CLASS = "converter-for-class";
 
@@ -73,7 +70,7 @@ public class ConverterConfigProcessor extends AbstractConfigProcessor {
     // -------------------------------------------- Methods from ConfigProcessor
 
     /**
-     * @see ConfigProcessor#process(javax.servlet.ServletContext,com.sun.faces.config.manager.documents.DocumentInfo[])
+     * @see ConfigProcessor#process(jakarta.servlet.ServletContext,com.sun.faces.config.manager.documents.DocumentInfo[])
      */
     @Override
     public void process(ServletContext sc, FacesContext facesContext, DocumentInfo[] documentInfos) throws Exception {
@@ -135,8 +132,7 @@ public class ConverterConfigProcessor extends AbstractConfigProcessor {
                 try {
                     Class<?> cfcClass = Util.loadClass(converterForClass, this.getClass());
                     if (LOGGER.isLoggable(FINE)) {
-                        LOGGER.log(FINE,
-                                format("[Converter for Class] Calling Application.addConverter({0}, {1}", converterForClass, converterClass));
+                        LOGGER.log(FINE, format("[Converter for Class] Calling Application.addConverter({0}, {1}", converterForClass, converterClass));
                     }
                     if (verifier != null) {
                         verifier.validateObject(Verifier.ObjectType.CONVERTER, converterClass, Converter.class);

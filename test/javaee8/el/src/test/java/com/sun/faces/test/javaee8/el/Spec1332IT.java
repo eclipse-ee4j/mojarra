@@ -48,4 +48,9 @@ public class Spec1332IT {
         assertTrue(page.asXml().contains("UIViewRoot"));
     }
     
+    @Test
+    public void testViewJsp() throws Exception {
+        HtmlPage page = webClient.getPage(webUrl + "faces/view.jsp");
+        assertTrue(page.asXml().contains("UIViewRoot"));
+    }
 }

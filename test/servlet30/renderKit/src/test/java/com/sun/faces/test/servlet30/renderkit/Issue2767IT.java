@@ -16,9 +16,13 @@
 
 package com.sun.faces.test.servlet30.renderkit;
 
+import com.gargoylesoftware.htmlunit.html.HtmlOption;
+import java.util.List;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
+import com.gargoylesoftware.htmlunit.html.HtmlSelect;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import org.junit.*;
 import static org.junit.Assert.*;
 

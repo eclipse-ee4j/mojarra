@@ -16,7 +16,7 @@
 
 package com.sun.faces.test.javaee6web.ajax;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import javax.enterprise.inject.Model;
 import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.html.HtmlInputText;

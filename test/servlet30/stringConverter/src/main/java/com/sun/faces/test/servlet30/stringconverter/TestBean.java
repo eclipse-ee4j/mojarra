@@ -19,11 +19,15 @@ package com.sun.faces.test.servlet30.stringconverter;
 import java.beans.FeatureDescriptor;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.ResourceBundle;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import javax.el.ELContext;
 import javax.el.ELResolver;
 import javax.faces.FactoryFinder;
@@ -35,6 +39,9 @@ import javax.faces.component.html.HtmlCommandButton;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.el.EvaluationException;
+import javax.faces.el.PropertyNotFoundException;
+import javax.faces.el.PropertyResolver;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.SystemEvent;
@@ -47,43 +54,35 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
- * <p>
- * Test JavaBean for managed object creation facility.
- * </p>
+ * <p>Test JavaBean for managed object creation facility.</p>
  */
 public class TestBean implements SystemEventListenerHolder {
 
-    @Override
     public List<SystemEventListener> getListenersForEventClass(Class<? extends SystemEvent> arg0) {
         return Collections.EMPTY_LIST;
     }
-
-    public enum Suit {
-        Hearts, Clubs, Diamonds, Spades
-    }
-
-    public enum Color {
-        Red, Blue, Green, Orange
-    }
+    
+public enum Suit { Hearts, Clubs, Diamonds, Spades }
+public enum Color { Red, Blue, Green, Orange }
 
     private Random random;
-    private ArrayList newList1 = new ArrayList();
-    private ArrayList newList2 = new ArrayList();
+    private ArrayList newList1= new ArrayList();
+    private ArrayList newList2= new ArrayList();
     private ArrayList oneElementList;
     private List newList3 = new ArrayList();
 
     ServletContext servletContext = null;
-
+    
     public Suit returnSpades() {
         return Suit.Spades;
     }
-
+    
     public Suit returnDiamonds() {
         return Suit.Diamonds;
     }
 
     public TestBean() {
-        random = new Random(4143);
+    random = new Random(4143);
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext extContext = (null != context) ? context.getExternalContext() : null;
         servletContext = (null != extContext) ? (ServletContext) extContext.getContext() : null;
@@ -91,24 +90,26 @@ public class TestBean implements SystemEventListenerHolder {
         oneElementList.add("hello");
     }
 
+
     private boolean booleanProperty = true;
+
 
     public boolean getBooleanProperty() {
         return (this.booleanProperty);
     }
+
 
     public void setBooleanProperty(boolean booleanProperty) {
         this.booleanProperty = booleanProperty;
     }
 
     private boolean booleanProperty2 = false;
-
     public boolean getBooleanProperty2() {
-        return booleanProperty2;
+    return booleanProperty2;
     }
 
     public void setBooleanProperty2(boolean newBooleanProperty2) {
-        booleanProperty2 = newBooleanProperty2;
+    booleanProperty2 = newBooleanProperty2;
     }
 
     protected String successOutcome = "/success.xhtml";
@@ -120,7 +121,6 @@ public class TestBean implements SystemEventListenerHolder {
     public void setSuccessOutcome(String successOutcome) {
         this.successOutcome = successOutcome;
     }
-
     protected String failureOutcome = "/failure.xhtml";
 
     public String getFailureOutcome() {
@@ -131,47 +131,60 @@ public class TestBean implements SystemEventListenerHolder {
         this.failureOutcome = failureOutcome;
     }
 
+
+
     private byte byteProperty = 12;
+
 
     public byte getByteProperty() {
         return (this.byteProperty);
     }
 
+
     public void setByteProperty(byte byteProperty) {
         this.byteProperty = byteProperty;
     }
 
+
     private double doubleProperty = 123.45;
+
 
     public double getDoubleProperty() {
         return (this.doubleProperty);
     }
 
+
     public void setDoubleProperty(double doubleProperty) {
         this.doubleProperty = doubleProperty;
     }
 
+
     private float floatProperty = (float) 12.34;
+
 
     public float getFloatProperty() {
         return (this.floatProperty);
     }
 
+
     public void setFloatProperty(float floatProperty) {
         this.floatProperty = floatProperty;
     }
 
+
     private int intProperty = 123;
+
 
     public int getIntProperty() {
         return (this.intProperty);
     }
 
+
     public void setIntProperty(int intProperty) {
         this.intProperty = intProperty;
     }
 
-    private int[] intsProperty = { 5, 6, 7 };
+    private int[] intsProperty = {5, 6, 7};
 
     public int[] getIntsProperty() {
         return (this.intsProperty);
@@ -183,57 +196,65 @@ public class TestBean implements SystemEventListenerHolder {
 
     private long longProperty = 12345;
 
+
     public long getLongProperty() {
         return (this.longProperty);
     }
+
 
     public void setLongProperty(long longProperty) {
         this.longProperty = longProperty;
     }
 
+
     private short shortProperty = 1234;
+
 
     public short getShortProperty() {
         return (this.shortProperty);
     }
 
+
     public void setShortProperty(short shortProperty) {
         this.shortProperty = shortProperty;
     }
 
+
     private String stringProperty = "This is a String property";
+
 
     public String getStringProperty() {
         return (this.stringProperty);
     }
 
+
     public void setStringProperty(String stringProperty) {
         this.stringProperty = stringProperty;
     }
 
+
     private UIInput userName = null;
+
 
     public UIInput getUserName() {
         return (this.userName);
     }
+
 
     public void setUserName(UIInput userName) {
         this.userName = userName;
     }
 
     private String renderKitInfo = null;
-
     public String getRenderKitInfo() {
-        renderKitInfo = FacesContext.getCurrentInstance().getViewRoot().getRenderKitId();
+        renderKitInfo = FacesContext.getCurrentInstance().
+            getViewRoot().getRenderKitId();
         return renderKitInfo;
     }
-
     public void setRenderKitInfo(String renderKitInfo) {
         this.renderKitInfo = renderKitInfo;
     }
-
     private String responseWriterInfo = null;
-
     public String getResponseWriterInfo() {
         FacesContext context = FacesContext.getCurrentInstance();
         if (null != context) {
@@ -244,16 +265,17 @@ public class TestBean implements SystemEventListenerHolder {
         }
         return responseWriterInfo;
     }
-
     public void setResponseWriterInfo(String responseWriterInfo) {
         this.responseWriterInfo = responseWriterInfo;
     }
 
     private Object bean = null;
 
+
     public Object getBean() {
         return (this.bean);
     }
+
 
     public void setBean(Object bean) {
         this.bean = bean;
@@ -262,39 +284,38 @@ public class TestBean implements SystemEventListenerHolder {
     public List selectList = null;
 
     public List getSelectList() {
-        if (null == selectList) {
-            selectList = new ArrayList();
-            selectList.add(new SelectItem("one", "one", "one"));
-            selectList.add(new SelectItem("two", "two", "two"));
-            selectList.add(new SelectItem("three", "three", "three"));
-        }
-        return selectList;
+    if (null == selectList) {
+        selectList = new ArrayList();
+        selectList.add(new SelectItem("one", "one", "one"));
+        selectList.add(new SelectItem("two", "two", "two"));
+        selectList.add(new SelectItem("three", "three", "three"));
+    }
+    return selectList;
     }
 
     public void setSelectList(List newSelectList) {
-        selectList = newSelectList;
+    selectList = newSelectList;
     }
 
     protected String selection = null;
 
     public String getSelection() {
-        return selection;
+    return selection;
     }
 
     public void setSelection(String newSelection) {
-        selection = newSelection;
+    selection = newSelection;
     }
 
-    protected String[] multiSelection;
-
-    public String[] getMultiSelection() {
-        return multiSelection;
+    protected String [] multiSelection;
+    public String [] getMultiSelection() {
+    return multiSelection;
     }
 
-    public void setMultiSelection(String[] newMultiSelection) {
-        multiSelection = newMultiSelection;
+    public void setMultiSelection(String [] newMultiSelection) {
+    multiSelection = newMultiSelection;
     }
-
+    
     public Object getNullProperty() {
         return null;
     }
@@ -307,149 +328,156 @@ public class TestBean implements SystemEventListenerHolder {
         this.oneElementList = oneElementList;
     }
 
-    public void valueChanged(ValueChangeEvent event) throws AbortProcessingException {
-        String[] values = (String[]) event.getNewValue();
-        if (null == values) {
-            valueChangeMessage = "";
-        } else {
-            valueChangeMessage = "value changed, new values: ";
-            for (int i = 0; i < values.length; i++) {
-                valueChangeMessage = valueChangeMessage + " " + values[i];
-            }
+    public void valueChanged(ValueChangeEvent event)
+        throws AbortProcessingException {
+    String [] values = (String []) event.getNewValue();
+    if (null == values) {
+        valueChangeMessage = "";
+    }
+    else {
+        valueChangeMessage = "value changed, new values: ";
+        for (int i = 0; i < values.length; i++) {
+        valueChangeMessage = valueChangeMessage + " " + values[i];
         }
+    }
     }
 
     protected String valueChangeMessage;
-
     public String getValueChangeMessage() {
-        return valueChangeMessage;
+    return valueChangeMessage;
     }
 
     public void setValueChangeMessage(String newValueChangeMessage) {
-        valueChangeMessage = newValueChangeMessage;
+    valueChangeMessage = newValueChangeMessage;
     }
 
     public List getNondeterministicSelectList() {
-        ArrayList list = new ArrayList(3);
-        String str = new String((new Float(random.nextFloat())).toString());
-        list.add(new SelectItem(str, str, str));
-        str = new String((new Float(random.nextFloat())).toString());
-        list.add(new SelectItem(str, str, str));
-        str = new String((new Float(random.nextFloat())).toString());
-        list.add(new SelectItem(str, str, str));
-        return list;
+    ArrayList list = new ArrayList(3);
+    String str = new String((new Float(random.nextFloat())).toString());
+    list.add(new SelectItem(str, str, str));
+    str = new String((new Float(random.nextFloat())).toString());
+    list.add(new SelectItem(str, str, str));
+    str = new String((new Float(random.nextFloat())).toString());
+    list.add(new SelectItem(str, str, str));
+    return list;
     }
 
     public void setNondeterministicSelectList(List newNondeterministicSelectList) {
     }
 
     public void addComponentToTree(ActionEvent action) {
-        HtmlOutputText output = new HtmlOutputText();
-        output.setValue("<p>==new output==</p>");
-        output.setEscape(false);
+    HtmlOutputText output = new HtmlOutputText();
+    output.setValue("<p>==new output==</p>");
+    output.setEscape(false);
 
-        FacesContext ctx = FacesContext.getCurrentInstance();
-        UIComponent group = ctx.getViewRoot().findComponent("form" + UINamingContainer.getSeparatorChar(ctx) + "addHere");
-        group.getChildren().add(output);
+    FacesContext ctx = FacesContext.getCurrentInstance();
+    UIComponent group = ctx.getViewRoot().findComponent("form" + UINamingContainer.getSeparatorChar(ctx) +  "addHere");
+    group.getChildren().add(output);
 
     }
 
     /*
-     * replace the propertyResolver with one that does our bidding for this test.
+     * replace the propertyResolver with one that does our bidding for
+     * this test.
      */
 
     public void replacePropertyResolver(ActionEvent action) {
-        FacesContext context = FacesContext.getCurrentInstance();
-        Application app = context.getApplication();
+    FacesContext context = FacesContext.getCurrentInstance();
+    Application app = context.getApplication();
 
-//    // see if we need to take action-
-//    if (null == context.getExternalContext().getSessionMap().get("systest.replacePropertyResolver")) {
-//        final PropertyResolver oldProp = app.getPropertyResolver();
-//        PropertyResolver
-//        newProp = new PropertyResolver() {
-//            public Object getValue(Object base, Object property)
-//            throws EvaluationException, PropertyNotFoundException {
-//            return oldProp.getValue(base, property);
-//            }
-//
-//            public Object getValue(Object base, int index)
-//            throws EvaluationException, PropertyNotFoundException {
-//            return oldProp.getValue(base, index);
-//            }
-//
-//            public void setValue(Object base, Object property, Object value)
-//            throws EvaluationException, PropertyNotFoundException {
-//            TestBean.this.setValueChangeMessage("setValue() called");
-//            oldProp.setValue(base, property, value);
-//            }
-//
-//            public void setValue(Object base, int index, Object value)
-//            throws EvaluationException, PropertyNotFoundException {
-//            TestBean.this.setValueChangeMessage("setValue() called");
-//            oldProp.setValue(base, index, value);
-//            }
-//
-//            public boolean isReadOnly(Object base, Object property)
-//            throws EvaluationException, PropertyNotFoundException {
-//            return oldProp.isReadOnly(base, property);
-//            }
-//
-//            public boolean isReadOnly(Object base, int index)
-//            throws EvaluationException, PropertyNotFoundException {
-//            return oldProp.isReadOnly(base, index);
-//            }
-//
-//            public Class getType(Object base, Object property)
-//            throws EvaluationException, PropertyNotFoundException {
-//            return oldProp.getType(base, property);
-//            }
-//
-//            public Class getType(Object base, int index)
-//            throws EvaluationException, PropertyNotFoundException {
-//            return oldProp.getType(base, index);
-//            }
-//
-//        };
-//        app.setPropertyResolver(newProp);
-//        context.getExternalContext().getSessionMap().put("systest.replacePropertyResolver", oldProp);
-//    }
+    // see if we need to take action-
+    if (null == context.getExternalContext().getSessionMap().get("systest.replacePropertyResolver")) {
+        final PropertyResolver oldProp = app.getPropertyResolver();
+        PropertyResolver
+        newProp = new PropertyResolver() {
+            public Object getValue(Object base, Object property)
+            throws EvaluationException, PropertyNotFoundException {
+            return oldProp.getValue(base, property);
+            }
+
+            public Object getValue(Object base, int index)
+            throws EvaluationException, PropertyNotFoundException {
+            return oldProp.getValue(base, index);
+            }
+
+            public void setValue(Object base, Object property, Object value)
+            throws EvaluationException, PropertyNotFoundException {
+            TestBean.this.setValueChangeMessage("setValue() called");
+            oldProp.setValue(base, property, value);
+            }
+
+            public void setValue(Object base, int index, Object value)
+            throws EvaluationException, PropertyNotFoundException {
+            TestBean.this.setValueChangeMessage("setValue() called");
+            oldProp.setValue(base, index, value);
+            }
+
+            public boolean isReadOnly(Object base, Object property)
+            throws EvaluationException, PropertyNotFoundException {
+            return oldProp.isReadOnly(base, property);
+            }
+
+            public boolean isReadOnly(Object base, int index)
+            throws EvaluationException, PropertyNotFoundException {
+            return oldProp.isReadOnly(base, index);
+            }
+
+            public Class getType(Object base, Object property)
+            throws EvaluationException, PropertyNotFoundException {
+            return oldProp.getType(base, property);
+            }
+
+            public Class getType(Object base, int index)
+            throws EvaluationException, PropertyNotFoundException {
+            return oldProp.getType(base, index);
+            }
+
+        };
+        app.setPropertyResolver(newProp);
+        context.getExternalContext().getSessionMap().put("systest.replacePropertyResolver", oldProp);
     }
+    }
+
+
 
     /*
      * restore the original PropertyResolver.
      */
 
     public void restorePropertyResolver(ActionEvent action) {
-//        FacesContext context = FacesContext.getCurrentInstance();
-//        Application app = context.getApplication();
-//        PropertyResolver oldProp = null;
-//
-//        // see if we need to take action-
-//        if (null != (oldProp = (PropertyResolver) context.getExternalContext().getSessionMap().get("systest.replacePropertyResolver"))) {
-//            app.setPropertyResolver(oldProp);
-//            context.getExternalContext().getSessionMap().remove("systest.replacePropertyResolver");
-//            setValueChangeMessage(null);
-//
-//        }
+    FacesContext context = FacesContext.getCurrentInstance();
+    Application app = context.getApplication();
+    PropertyResolver oldProp = null;
+
+    // see if we need to take action-
+    if (null != (oldProp = (PropertyResolver) context.getExternalContext().getSessionMap().get("systest.replacePropertyResolver"))) {
+        app.setPropertyResolver(oldProp);
+        context.getExternalContext().getSessionMap().remove("systest.replacePropertyResolver");
+        setValueChangeMessage(null);
+
+    }
     }
 
     protected HtmlCommandButton boundButton = new HtmlCommandButton();
-
     public HtmlCommandButton getBoundButton() {
-        if (null != boundButton) {
-            boundButton.setValue("button label");
-        }
-        return boundButton;
+    if (null != boundButton) {
+        boundButton.setValue("button label");
+    }
+    return boundButton;
     }
 
     public void setBoundButton(HtmlCommandButton newBoundButton) {
-        boundButton = newBoundButton;
+    boundButton = newBoundButton;
     }
 
     public String getFactoryPrintout() {
         String result = "";
-        String[] factoryNames = { FactoryFinder.APPLICATION_FACTORY, FactoryFinder.FACES_CONTEXT_FACTORY, FactoryFinder.LIFECYCLE_FACTORY,
-                FactoryFinder.RENDER_KIT_FACTORY };
+        String[] factoryNames = {
+              FactoryFinder.APPLICATION_FACTORY,
+              FactoryFinder.FACES_CONTEXT_FACTORY,
+              FactoryFinder.LIFECYCLE_FACTORY,
+              FactoryFinder.RENDER_KIT_FACTORY
+        };
         for (int i = 0; i < factoryNames.length; i++) {
             String tmp = FactoryFinder.getFactory(factoryNames[i]).toString();
             if (tmp.startsWith("com.sun.faces")) {
@@ -459,7 +487,8 @@ public class TestBean implements SystemEventListenerHolder {
                 tmp = tmp.substring(0, idx);
                 result += tmp + ' ';
             } else {
-                result += FactoryFinder.getFactory(factoryNames[i]).toString() + ' ';
+                result += FactoryFinder.getFactory(factoryNames[i]).toString()
+                          + ' ';
             }
         }
         return result;
@@ -472,7 +501,6 @@ public class TestBean implements SystemEventListenerHolder {
 
     /**
      * Getter for property setPropertyTarget.
-     * 
      * @return Value of property setPropertyTarget.
      */
     public String getSetPropertyTarget() {
@@ -482,7 +510,6 @@ public class TestBean implements SystemEventListenerHolder {
 
     /**
      * Setter for property setPropertyTarget.
-     * 
      * @param setPropertyTarget New value of property setPropertyTarget.
      */
     public void setSetPropertyTarget(String setPropertyTarget) {
@@ -498,7 +525,6 @@ public class TestBean implements SystemEventListenerHolder {
 
     /**
      * Getter for property counter.
-     * 
      * @return Value of property counter.
      */
     public String getCounter() {
@@ -513,7 +539,6 @@ public class TestBean implements SystemEventListenerHolder {
 
     /**
      * Getter for property validatorMessage.
-     * 
      * @return Value of property validatorMessage.
      */
     public String getValidatorMessage() {
@@ -528,7 +553,6 @@ public class TestBean implements SystemEventListenerHolder {
 
     /**
      * Getter for property converterMessage.
-     * 
      * @return Value of property converterMessage.
      */
     public String getConverterMessage() {
@@ -544,29 +568,32 @@ public class TestBean implements SystemEventListenerHolder {
         return newList2;
     }
 
-    public void valueChange1(ValueChangeEvent vce) {
+   public void valueChange1(ValueChangeEvent vce) {
         String newValue = vce.getNewValue().toString();
-        if (newList1.size() == 3) {
+        if (newList1.size() == 3){
             newList1.clear();
         }
         newList1.add(newValue);
-    }
-
-    public void valueChange0() {
-        FacesContext.getCurrentInstance().getExternalContext().getRequestMap().put("valueChange0Called", "true");
-    }
-
+   }
+   
+   public void valueChange0() {
+       FacesContext.getCurrentInstance().getExternalContext().getRequestMap().put("valueChange0Called", 
+               "true");
+   }
+   
     public void actionListener0() {
-        FacesContext.getCurrentInstance().getExternalContext().getRequestMap().put("actionListener0Called", "true");
-    }
+       FacesContext.getCurrentInstance().getExternalContext().getRequestMap().put("actionListener0Called", 
+               "true");
+   }
 
-    public void valueChange2(ValueChangeEvent vce) {
+
+   public void valueChange2(ValueChangeEvent vce) {
         String newValue = vce.getNewValue().toString();
-        if (newList2.size() == 3) {
+        if (newList2.size() == 3){
             newList2.clear();
         }
         newList2.add(newValue);
-    }
+   }
 
     private Integer selectedValue = new Integer(2);
 
@@ -578,16 +605,19 @@ public class TestBean implements SystemEventListenerHolder {
         this.selectedValue = selectedValue;
     }
 
-    public SelectItem[] getMySelectItems() {
-        return new SelectItem[] { new SelectItem(new Integer(1), "1"), new SelectItem(new Integer(2), "2"),
-                new SelectItem(new Integer(3), "3") };
+    public SelectItem[] getMySelectItems(){
+        return new SelectItem[]{
+            new SelectItem(new Integer(1),"1"),
+            new SelectItem(new Integer(2),"2"),
+            new SelectItem(new Integer(3),"3")
+        };
     }
 
     private int intVal = 3;
-
     public int getInt() {
         return intVal;
     }
+
 
     public void setInt(int newIntVal) {
         intVal = newIntVal;
@@ -596,11 +626,10 @@ public class TestBean implements SystemEventListenerHolder {
     /**
      * Holds value of property postConstructCalled.
      */
-    private boolean postConstructCalled = false;
+    private boolean postConstructCalled  = false;
 
     /**
      * Getter for property postConstructCalled.
-     * 
      * @return Value of property postConstructCalled.
      */
     public boolean isPostConstructCalled() {
@@ -610,24 +639,23 @@ public class TestBean implements SystemEventListenerHolder {
 
     /**
      * Setter for property postConstructCalled.
-     * 
      * @param postConstructCalled New value of property postConstructCalled.
      */
     public void setPostConstructCalled(boolean postConstructCalled) {
 
         this.postConstructCalled = postConstructCalled;
-        appendStatusMessage("bean: " + getStringProperty() + " postConstructCalled: " + postConstructCalled);
+        appendStatusMessage("bean: " + getStringProperty() +
+                            " postConstructCalled: " + postConstructCalled);
 
     }
 
     /**
      * Holds value of property preDestroyCalled.
      */
-    private boolean preDestroyCalled = false;
+    private boolean preDestroyCalled  = false;
 
     /**
      * Getter for property preDestroyCalled.
-     * 
      * @return Value of property preDestroyCalled.
      */
     public boolean isPreDestroyCalled() {
@@ -637,16 +665,16 @@ public class TestBean implements SystemEventListenerHolder {
 
     /**
      * Setter for property preDestroyCalled.
-     * 
      * @param preDestroyCalled New value of property preDestroyCalled.
      */
     public void setPreDestroyCalled(boolean preDestroyCalled) {
         this.preDestroyCalled = preDestroyCalled;
-        appendStatusMessage("bean: " + getStringProperty() + " preDestroyCalled: " + preDestroyCalled);
+        appendStatusMessage("bean: " + getStringProperty() +
+                            " preDestroyCalled: " + preDestroyCalled);
     }
 
     public String invalidateSession() {
-        ((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true)).invalidate();
+        ((HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(true)).invalidate();
         return null;
     }
 
@@ -656,19 +684,22 @@ public class TestBean implements SystemEventListenerHolder {
     }
 
     public String removeRequestBean2() {
-        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        HttpServletRequest request = (HttpServletRequest)
+              FacesContext.getCurrentInstance().getExternalContext().getRequest();
         request.removeAttribute("requestBean");
         return null;
     }
 
     public String replaceRequestBean() {
-        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        HttpServletRequest request = (HttpServletRequest)
+            FacesContext.getCurrentInstance().getExternalContext().getRequest();
         request.setAttribute("requestBean", new TestBean());
         return null;
     }
 
     public String replaceRequestBean2() {
-        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        HttpServletRequest request = (HttpServletRequest)
+            FacesContext.getCurrentInstance().getExternalContext().getRequest();
         Object oldValue = request.getAttribute("requestBean");
         request.setAttribute("requestBean", oldValue);
         return null;
@@ -680,19 +711,22 @@ public class TestBean implements SystemEventListenerHolder {
     }
 
     public String removeSessionBean2() {
-        HttpSession request = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+        HttpSession request = (HttpSession)
+              FacesContext.getCurrentInstance().getExternalContext().getSession(true);
         request.removeAttribute("sessionBean");
         return null;
     }
 
     public String replaceSessionBean() {
-        HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+        HttpSession session = (HttpSession)
+            FacesContext.getCurrentInstance().getExternalContext().getSession(true);
         session.setAttribute("sessionBean", new TestBean());
         return null;
     }
 
     public String replaceSessionBean2() {
-        HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+        HttpSession session = (HttpSession)
+            FacesContext.getCurrentInstance().getExternalContext().getSession(true);
         Object oldValue = session.getAttribute("sessionBean");
         session.setAttribute("sessionBean", oldValue);
         return null;
@@ -704,19 +738,22 @@ public class TestBean implements SystemEventListenerHolder {
     }
 
     public String removeApplicationBean2() {
-        ServletContext request = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+        ServletContext request = (ServletContext)
+              FacesContext.getCurrentInstance().getExternalContext().getContext();
         request.removeAttribute("applicationBean");
         return null;
     }
 
     public String replaceApplicationBean() {
-        ServletContext application = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+        ServletContext application = (ServletContext)
+            FacesContext.getCurrentInstance().getExternalContext().getContext();
         application.setAttribute("applicationBean", new TestBean());
         return null;
     }
 
     public String replaceApplicationBean2() {
-        ServletContext application = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+        ServletContext application = (ServletContext)
+            FacesContext.getCurrentInstance().getExternalContext().getContext();
         Object oldValue = application.getAttribute("applicationBean");
         application.setAttribute("applicationBean", oldValue);
         return null;
@@ -749,7 +786,7 @@ public class TestBean implements SystemEventListenerHolder {
             return;
         }
         String oldMessage = (String) servletContext.getAttribute("previousRequestStatus");
-        oldMessage = (null != oldMessage) ? oldMessage + "\n" : "";
+        oldMessage = (null != oldMessage) ? oldMessage + "\n": "";
         message = (null != message) ? message : "";
         oldMessage = oldMessage + message;
         servletContext.setAttribute("previousRequestStatus", oldMessage);
@@ -767,7 +804,7 @@ public class TestBean implements SystemEventListenerHolder {
         }
         return null;
     }
-
+    
     /**
      * Holds value of property suit.
      */
@@ -775,7 +812,6 @@ public class TestBean implements SystemEventListenerHolder {
 
     /**
      * Getter for property suit.
-     * 
      * @return Value of property suit.
      */
     public Suit getSuit() {
@@ -784,7 +820,6 @@ public class TestBean implements SystemEventListenerHolder {
 
     /**
      * Setter for property suit.
-     * 
      * @param suit New value of property suit.
      */
     public void setSuit(Suit suit) {
@@ -798,7 +833,6 @@ public class TestBean implements SystemEventListenerHolder {
 
     /**
      * Getter for property referencedSuit.
-     * 
      * @return Value of property referencedSuit.
      */
     public Suit getReferencedSuit() {
@@ -835,9 +869,12 @@ public class TestBean implements SystemEventListenerHolder {
         controlDesc.setShortDescription("");
 
         builder.append("<h1>getFeatureDescriptors output</h1>\n");
-        for (Iterator i = resolver.getFeatureDescriptors(elContext, null); i.hasNext();) {
+        for (Iterator i = resolver.getFeatureDescriptors(elContext, null);
+                i.hasNext();) {
             FeatureDescriptor test = (FeatureDescriptor) i.next();
-            builder.append("<p>Name: ").append(test.getName()).append(" displayName: ").append(test.getDisplayName()).append("</p>\n");
+            builder.append("<p>Name: ").append(test.getName()).
+                    append(" displayName: ").append(test.getDisplayName()).
+                    append("</p>\n");
         }
 
         return builder.toString();
@@ -845,7 +882,6 @@ public class TestBean implements SystemEventListenerHolder {
 
     /**
      * Setter for property referencedSuit.
-     * 
      * @param referencedSuit New value of property referencedSuit.
      */
     public void setReferencedSuit(Suit referencedSuit) {
@@ -859,7 +895,6 @@ public class TestBean implements SystemEventListenerHolder {
 
     /**
      * Getter for property color.
-     * 
      * @return Value of property color.
      */
     public Color getColor() {
@@ -868,7 +903,6 @@ public class TestBean implements SystemEventListenerHolder {
 
     /**
      * Setter for property color.
-     * 
      * @param color New value of property color.
      */
     public void setColor(Color color) {
@@ -893,7 +927,7 @@ public class TestBean implements SystemEventListenerHolder {
     }
 
     private Integer idcounter = new Integer(0);
-
+ 
     public List getNewList3() {
         return newList3;
     }
@@ -913,5 +947,7 @@ public class TestBean implements SystemEventListenerHolder {
         idcounter++;
         return null;
     }
+
+
 
 }

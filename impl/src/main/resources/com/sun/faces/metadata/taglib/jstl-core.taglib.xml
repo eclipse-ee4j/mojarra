@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
-    Copyright (c) 2009, 2018 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2009, 2020 Oracle and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,12 +19,12 @@
 
 <facelet-taglib xmlns="http://xmlns.jcp.org/xml/ns/javaee"
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facelettaglibrary_2_2.xsd"
-                version="2.2">
+                xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee hhttps://jakarta.ee/xml/ns/jakartaee/web-facelettaglibrary_3_0.xsd"
+                version="3.0">
   <description>
 <![CDATA[<p>JSTL 1.2 core library</p>
 
-<p>The pre JSF 2.0 version of Facelets incorrectly declared the taglib
+<p>The pre Faces version of Facelets incorrectly declared the taglib
 uri to be <code>http://xmlns.jcp.org/jstl/core</code>.  For backwards
 compatibility implementations must correctly handle inclusions with the
 incorrect uri, and the correct uri, declared here.</p>
@@ -162,7 +162,7 @@ incorrect uri, and the correct uri, declared here.</p>
             <description><![CDATA[
                 Name of the exported scoped variable for the
                 status of the iteration. Object exported is of type
-                javax.servlet.jsp.jstl.core.LoopTagStatus. This scoped variable
+                jakarta.servlet.jsp.jstl.core.LoopTagStatus. This scoped variable
                 has nested
                 visibility.
             ]]></description>

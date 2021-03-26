@@ -16,15 +16,15 @@
 
 package com.sun.faces.test.servlet31.facelets;
 
-import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
-
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
-import javax.inject.Named;
 import javax.servlet.http.Part;
 
-@Named
+@ManagedBean
 public class FileAjaxUploadBean {
+
+    private Part file;
 
     public Part getFile() {
         return null;
@@ -32,7 +32,7 @@ public class FileAjaxUploadBean {
 
     public void setFile(Part p) {
         FacesMessage msg = new FacesMessage("file 1 is saved");
-        msg.setSeverity(SEVERITY_ERROR);
+        msg.setSeverity(FacesMessage.SEVERITY_ERROR);
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
@@ -42,7 +42,7 @@ public class FileAjaxUploadBean {
 
     public void setFile2(Part p) {
         FacesMessage msg = new FacesMessage("file 2 is saved");
-        msg.setSeverity(SEVERITY_ERROR);
+        msg.setSeverity(FacesMessage.SEVERITY_ERROR);
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 }

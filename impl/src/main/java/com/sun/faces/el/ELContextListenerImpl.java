@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,17 +16,17 @@
 
 package com.sun.faces.el;
 
-import javax.faces.context.FacesContext;
-import javax.el.ELContext;
-import javax.el.ELContextListener;
-import javax.el.ELContextEvent;
-import javax.el.ExpressionFactory;
+import jakarta.el.ELContext;
+import jakarta.el.ELContextEvent;
+import jakarta.el.ELContextListener;
+import jakarta.el.ExpressionFactory;
+import jakarta.faces.context.FacesContext;
 
 public class ELContextListenerImpl implements ELContextListener {
-    
+
     public ELContextListenerImpl() {
     }
-    
+
     /**
      * Invoked when a new <code>ELContext</code> has been created.
      *
@@ -34,25 +34,23 @@ public class ELContextListenerImpl implements ELContextListener {
      */
     @Override
     public void contextCreated(ELContextEvent ece) {
-        
-        
+
         FacesContext context = FacesContext.getCurrentInstance();
-        if ( context == null) {
+        if (context == null) {
             return;
         }
-        ELContext source = (ELContext)ece.getSource();
-        // Register FacesContext with JSP
+        ELContext source = (ELContext) ece.getSource();
+        // Register FacesContext with Jakarta Server Pages
         source.putContext(FacesContext.class, context);
         ExpressionFactory exFactory = ELUtils.getDefaultExpressionFactory(context);
         if (null != exFactory) {
             source.putContext(ExpressionFactory.class, exFactory);
         }
-        
-        // dispatch the event to any JSF applications interested in
+
+        // dispatch the event to any Faces applications interested in
         // the event.
-        ELContextListener[] listeners = 
-            context.getApplication().getELContextListeners();
-        if ( listeners == null) {
+        ELContextListener[] listeners = context.getApplication().getELContextListeners();
+        if (listeners == null) {
             return;
         }
         for (int i = 0; i < listeners.length; ++i) {
@@ -60,5 +58,5 @@ public class ELContextListenerImpl implements ELContextListener {
             elcl.contextCreated(new ELContextEvent(source));
         }
     }
-    
+
 }

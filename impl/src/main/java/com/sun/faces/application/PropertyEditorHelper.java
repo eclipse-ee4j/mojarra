@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,17 +16,17 @@
 
 package com.sun.faces.application;
 
-import javax.faces.FacesException;
-import javax.faces.application.Application;
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.ConverterException;
-
 import com.sun.faces.util.MessageFactory;
 import com.sun.faces.util.RequestStateManager;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.ConverterException;
 
 /**
  * Helper class to aid the ConverterPropertyEditorBase in converting properties.
@@ -42,8 +42,7 @@ public class PropertyEditorHelper {
     }
 
     /**
-     * Convert the <code>textValue</code> to an object of type targetClass by delegating to a
-     * converter.
+     * Convert the <code>textValue</code> to an object of type targetClass by delegating to a converter.
      */
     public Object convertToObject(Class<?> targetClass, String textValue) {
         UIComponent component = getComponent();
@@ -64,8 +63,7 @@ public class PropertyEditorHelper {
     }
 
     /**
-     * Convert an object of type targetClass to text by delegating to a converter obtained from the
-     * Faces application.
+     * Convert an object of type targetClass to text by delegating to a converter obtained from the Faces application.
      */
     public String convertToString(Class<?> targetClass, Object value) {
         UIComponent component = getComponent();
@@ -84,14 +82,14 @@ public class PropertyEditorHelper {
     }
 
     /**
-     * Return the {@link javax.faces.component.UIComponent} that is currently being processed.
+     * Return the {@link jakarta.faces.component.UIComponent} that is currently being processed.
      *
      * @return the current component, or null.
      */
     protected UIComponent getComponent() {
         FacesContext context = FacesContext.getCurrentInstance();
         if (context != null) {
-            return ((UIComponent) RequestStateManager.get(context, RequestStateManager.TARGET_COMPONENT_ATTRIBUTE_NAME));
+            return (UIComponent) RequestStateManager.get(context, RequestStateManager.TARGET_COMPONENT_ATTRIBUTE_NAME);
         }
         return null;
     }

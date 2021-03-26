@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,11 +16,11 @@
 
 package com.sun.faces.cdi;
 
-import javax.faces.component.StateHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.Validator;
-import javax.faces.validator.ValidatorException;
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.validator.ValidatorException;
 
 /**
  * A delegate to the CDI managed validator.
@@ -62,9 +62,7 @@ public class CdiValidator implements Validator, StateHolder {
      */
     @Override
     public Object saveState(FacesContext facesContext) {
-        return new Object[]{
-            validatorId
-        };
+        return new Object[] { validatorId };
     }
 
     /**
@@ -117,11 +115,11 @@ public class CdiValidator implements Validator, StateHolder {
 
     /**
      * Validate.
-     * 
+     *
      * @param facesContext the Faces context.
      * @param component the UI component.
      * @param value the value.
-     * @throws ValidatorException when a validation error occurs. 
+     * @throws ValidatorException when a validation error occurs.
      */
     @Override
     public void validate(FacesContext facesContext, UIComponent component, Object value) throws ValidatorException {

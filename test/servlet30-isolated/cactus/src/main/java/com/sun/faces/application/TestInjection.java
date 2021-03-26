@@ -16,8 +16,8 @@
 
 package com.sun.faces.application;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import javax.faces.FactoryFinder;
 import javax.faces.application.ApplicationFactory;
 

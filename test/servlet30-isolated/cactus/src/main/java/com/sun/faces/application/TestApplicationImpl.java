@@ -632,7 +632,7 @@ public class TestApplicationImpl extends JspFacesTestCase {
         FacesContext context = getFacesContext();
         Application app = context.getApplication();
 
-        Converter intConverter = application.createConverter("javax.faces.Integer");
+        Converter intConverter = application.createConverter("jakarta.faces.Integer");
         Converter intConverter2 = application.createConverter(Integer.TYPE);
         Converter intConverter3 = application.createConverter(Integer.class);
 
@@ -640,9 +640,9 @@ public class TestApplicationImpl extends JspFacesTestCase {
              && IntegerConverter.class.equals(intConverter2.getClass())
              && IntegerConverter.class.equals(intConverter3.getClass()));
 
-        app.addConverter("javax.faces.Integer", CustomIntConverter.class.getName());
+        app.addConverter("jakarta.faces.Integer", CustomIntConverter.class.getName());
 
-        intConverter = application.createConverter("javax.faces.Integer");
+        intConverter = application.createConverter("jakarta.faces.Integer");
         intConverter2 = application.createConverter(Integer.TYPE);
         intConverter3 = application.createConverter(Integer.class);
 
@@ -652,7 +652,7 @@ public class TestApplicationImpl extends JspFacesTestCase {
 
         app.addConverter(Integer.TYPE, IntegerConverter.class.getName());
 
-        intConverter = application.createConverter("javax.faces.Integer");
+        intConverter = application.createConverter("jakarta.faces.Integer");
         intConverter2 = application.createConverter(Integer.TYPE);
         intConverter3 = application.createConverter(Integer.class);
 
@@ -662,7 +662,7 @@ public class TestApplicationImpl extends JspFacesTestCase {
 
         app.addConverter(Integer.class, CustomIntConverter.class.getName());
 
-        intConverter = application.createConverter("javax.faces.Integer");
+        intConverter = application.createConverter("jakarta.faces.Integer");
         intConverter2 = application.createConverter(Integer.TYPE);
         intConverter3 = application.createConverter(Integer.class);
 
@@ -671,7 +671,7 @@ public class TestApplicationImpl extends JspFacesTestCase {
              && CustomIntConverter.class.equals(intConverter3.getClass()));
 
         // reset to the standard converter
-        app.addConverter("javax.faces.Integer", IntegerConverter.class.getName());
+        app.addConverter("jakarta.faces.Integer", IntegerConverter.class.getName());
     }
 
 

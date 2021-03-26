@@ -31,7 +31,7 @@ import static org.junit.Assert.assertTrue;
 public class Issue3359IT {
     private String webUrl;
     private WebClient webClient;
-
+    
     @Before
     public void setUp() {
         webUrl = System.getProperty("integration.url");
@@ -47,22 +47,22 @@ public class Issue3359IT {
     @Test
     public void testIssue3359Fixed() throws Exception {
         HtmlPage page = webClient.getPage(webUrl);
-
-        String savingMethod = ((HtmlInput) page.getElementById("helloForm:stateSavingMethod")).getValueAttribute();
-        String origStateId = ((HtmlHiddenInput) page.getElementByName("javax.faces.ViewState")).getValueAttribute();
-
-        HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("helloForm:button");
+        
+        String savingMethod = ((HtmlInput)page.getElementById("helloForm:stateSavingMethod")).getValueAttribute();
+        String origStateId =  ((HtmlHiddenInput)page.getElementByName("jakarta.faces.ViewState")).getValueAttribute();
+        
+        HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("helloForm:button"); 
         page = button.click();
-
-        HtmlAnchor anchor = (HtmlAnchor) page.getElementById("link");
+        
+        HtmlAnchor anchor = (HtmlAnchor)page.getElementById("link");
         page = anchor.click();
-
+        
         button = (HtmlSubmitInput) page.getElementById("helloForm:button");
-        HtmlHiddenInput hi = (HtmlHiddenInput) (page.getElementByName("javax.faces.ViewState"));
+        HtmlHiddenInput hi = (HtmlHiddenInput)(page.getElementByName("jakarta.faces.ViewState"));
         hi.setValueAttribute(origStateId);
         page = button.click();
-
-        if ("client".equalsIgnoreCase(savingMethod)) {
+        
+        if ( "client".equalsIgnoreCase( savingMethod ) ) {
             assertTrue(page.asXml().contains("Go back to the index page"));
         } else {
             assertTrue(page.asXml().contains("ViewExpiredException"));

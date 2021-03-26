@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,14 +16,14 @@
 
 package com.sun.faces.cdi;
 
-import javax.enterprise.context.RequestScoped;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- * The ExternalContextProducer is the CDI producer that allows injection of the
- * ExternalContext using @Inject and allows EL resolving of #{externalContext}
+ * The ExternalContextProducer is the CDI producer that allows injection of the ExternalContext using @Inject and allows
+ * EL resolving of #{externalContext}
  * </p>
  *
  * @since 2.3
@@ -35,13 +35,10 @@ public class ExternalContextProducer extends CdiProducer<ExternalContext> {
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
+
     public ExternalContextProducer() {
-        super.name("externalContext")
-             .scope(RequestScoped.class)
-             .types(ExternalContext.class)
-             .beanClass(ExternalContext.class)
-             .create(e -> FacesContext.getCurrentInstance().getExternalContext());
+        super.name("externalContext").scope(RequestScoped.class).types(ExternalContext.class).beanClass(ExternalContext.class)
+                .create(e -> FacesContext.getCurrentInstance().getExternalContext());
     }
 
 }

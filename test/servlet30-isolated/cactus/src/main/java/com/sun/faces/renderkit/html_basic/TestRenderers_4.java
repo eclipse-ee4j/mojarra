@@ -148,7 +148,7 @@ public class TestRenderers_4 extends JspFacesTestCase {
 
         headerGroup = new UIPanel();
         headerGroup.setId("header");
-        headerGroup.setRendererType("javax.faces.Group");
+        headerGroup.setRendererType("jakarta.faces.Group");
         header1 = new UIOutput();
         header1.setValue("header1 ");
         headerGroup.getChildren().add(header1);
@@ -159,7 +159,7 @@ public class TestRenderers_4 extends JspFacesTestCase {
 
         footerGroup = new UIPanel();
         footerGroup.setId("footer");
-        footerGroup.setRendererType("javax.faces.Group");
+        footerGroup.setRendererType("jakarta.faces.Group");
         footer1 = new UIOutput();
         footer1.setValue("footer1 ");
         footerGroup.getChildren().add(footer1);
@@ -209,7 +209,7 @@ public class TestRenderers_4 extends JspFacesTestCase {
         headerGroup = new UIPanel();
         headerGroup.setRendered(false);
         headerGroup.setId("header");
-        headerGroup.setRendererType("javax.faces.Group");
+        headerGroup.setRendererType("jakarta.faces.Group");
         header1 = new UIOutput();
         header1.setValue("header1 ");
         headerGroup.getChildren().add(header1);
@@ -220,7 +220,7 @@ public class TestRenderers_4 extends JspFacesTestCase {
 
         footerGroup = new UIPanel();
         footerGroup.setId("footer");
-        footerGroup.setRendererType("javax.faces.Group");
+        footerGroup.setRendererType("jakarta.faces.Group");
         footer1 = new UIOutput();
         footer1.setValue("footer1 ");
         footerGroup.getChildren().add(footer1);

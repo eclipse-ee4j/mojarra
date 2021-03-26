@@ -16,18 +16,13 @@
 
 package com.sun.faces.test.servlet30.invalidmapping;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.junit.After;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
-@Ignore("Consider what to do here")
 public class InvalidMappingIT {
 
     private String webUrl;
@@ -49,18 +44,11 @@ public class InvalidMappingIT {
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
         webClient.getOptions().setPrintContentOnFailingStatusCode(false);
         webClient.getOptions().setTimeout(0);
-        HtmlPage page = (HtmlPage) webClient.getPage(webUrl + "test.xhtml");
-
-        System.out.println(page.asXml());
-
-
+        HtmlPage page = (HtmlPage) webClient.getPage(webUrl + "test.jsp");
         assertEquals(500, page.getWebResponse().getStatusCode());
         String pageText = page.asXml();
-
-        System.out.println(pageText);
-
         assertTrue(pageText.contains("FacesServlet"));
-        assertTrue(pageText.contains("url-pattern"));
+        assertTrue(pageText.contains("url-pattern")); 
         assertTrue(pageText.contains("/*"));
     }
 }

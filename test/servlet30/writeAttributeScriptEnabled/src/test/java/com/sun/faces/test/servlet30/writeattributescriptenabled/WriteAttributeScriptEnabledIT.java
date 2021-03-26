@@ -16,15 +16,13 @@
 
 package com.sun.faces.test.servlet30.writeattributescriptenabled;
 
-import static org.junit.Assert.assertTrue;
-
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import org.junit.After;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public class WriteAttributeScriptEnabledIT {
 
@@ -47,14 +45,14 @@ public class WriteAttributeScriptEnabledIT {
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
 
         // HACK: The first request to the page will result in the value
-        // having jsessionid encoded in the link value. Making a second
+        // having jsessionid encoded in the link value.  Making a second
         // request to the page means we've joined the session and the value
         // will no longer include the jsessionid (at least when cookies are enabled)
         // and clicking the link will not produce JS errors.
-        HtmlPage page = webClient.getPage(webUrl + "faces/test.xhtml");
-        page = webClient.getPage(webUrl + "faces/test.xhtml");
+        HtmlPage page = webClient.getPage(webUrl + "faces/test.jsp");
+        page = webClient.getPage(webUrl + "faces/test.jsp");
 
-        HtmlAnchor link = page.getAnchors().get(0);
+        HtmlAnchor link = (HtmlAnchor) page.getAnchors().get(0);
 
         HtmlPage errorPage = (HtmlPage) link.click();
         assertTrue(errorPage.asText().indexOf("new value!") >= 0);

@@ -36,48 +36,48 @@ public class TestApplicationImpl_Config extends ServletFacesTestCase {
 //
 
     public static String standardComponentTypes[] = {
-        "javax.faces.Column",
-        "javax.faces.Command",
-        "javax.faces.Data",
-        "javax.faces.Form",
-        "javax.faces.Graphic",
-        "javax.faces.Input",
-        "javax.faces.Message",
-        "javax.faces.Messages",
-        "javax.faces.NamingContainer",
-        "javax.faces.Output",
-        "javax.faces.Panel",
-        "javax.faces.Parameter",
-        "javax.faces.SelectBoolean",
-        "javax.faces.SelectItem",
-        "javax.faces.SelectItems",
-        "javax.faces.SelectMany",
-        "javax.faces.SelectOne",
-        "javax.faces.ViewRoot",
-        "javax.faces.HtmlCommandButton",
-        "javax.faces.HtmlCommandLink",
-        "javax.faces.HtmlDataTable",
-        "javax.faces.HtmlForm",
-        "javax.faces.HtmlGraphicImage",
-        "javax.faces.HtmlInputHidden",
-        "javax.faces.HtmlInputSecret",
-        "javax.faces.HtmlInputText",
-        "javax.faces.HtmlInputTextarea",
-        "javax.faces.HtmlMessage",
-        "javax.faces.HtmlMessages",
-        "javax.faces.HtmlOutputFormat",
-        "javax.faces.HtmlOutputLabel",
-        "javax.faces.HtmlOutputLink",
-        "javax.faces.HtmlOutputText",
-        "javax.faces.HtmlPanelGrid",
-        "javax.faces.HtmlPanelGroup",
-        "javax.faces.HtmlSelectBooleanCheckbox",
-        "javax.faces.HtmlSelectManyCheckbox",
-        "javax.faces.HtmlSelectManyListbox",
-        "javax.faces.HtmlSelectManyMenu",
-        "javax.faces.HtmlSelectOneListbox",
-        "javax.faces.HtmlSelectOneMenu",
-        "javax.faces.HtmlSelectOneRadio"
+        "jakarta.faces.Column",
+        "jakarta.faces.Command",
+        "jakarta.faces.Data",
+        "jakarta.faces.Form",
+        "jakarta.faces.Graphic",
+        "jakarta.faces.Input",
+        "jakarta.faces.Message",
+        "jakarta.faces.Messages",
+        "jakarta.faces.NamingContainer",
+        "jakarta.faces.Output",
+        "jakarta.faces.Panel",
+        "jakarta.faces.Parameter",
+        "jakarta.faces.SelectBoolean",
+        "jakarta.faces.SelectItem",
+        "jakarta.faces.SelectItems",
+        "jakarta.faces.SelectMany",
+        "jakarta.faces.SelectOne",
+        "jakarta.faces.ViewRoot",
+        "jakarta.faces.HtmlCommandButton",
+        "jakarta.faces.HtmlCommandLink",
+        "jakarta.faces.HtmlDataTable",
+        "jakarta.faces.HtmlForm",
+        "jakarta.faces.HtmlGraphicImage",
+        "jakarta.faces.HtmlInputHidden",
+        "jakarta.faces.HtmlInputSecret",
+        "jakarta.faces.HtmlInputText",
+        "jakarta.faces.HtmlInputTextarea",
+        "jakarta.faces.HtmlMessage",
+        "jakarta.faces.HtmlMessages",
+        "jakarta.faces.HtmlOutputFormat",
+        "jakarta.faces.HtmlOutputLabel",
+        "jakarta.faces.HtmlOutputLink",
+        "jakarta.faces.HtmlOutputText",
+        "jakarta.faces.HtmlPanelGrid",
+        "jakarta.faces.HtmlPanelGroup",
+        "jakarta.faces.HtmlSelectBooleanCheckbox",
+        "jakarta.faces.HtmlSelectManyCheckbox",
+        "jakarta.faces.HtmlSelectManyListbox",
+        "jakarta.faces.HtmlSelectManyMenu",
+        "jakarta.faces.HtmlSelectOneListbox",
+        "jakarta.faces.HtmlSelectOneMenu",
+        "jakarta.faces.HtmlSelectOneRadio"
     };
 
     public static Class standardComponentClasses[] = {
@@ -126,18 +126,18 @@ public class TestApplicationImpl_Config extends ServletFacesTestCase {
     };
 
     public static String standardConverterIds[] = {
-        "javax.faces.BigDecimal",
-        "javax.faces.BigInteger",
-        "javax.faces.Boolean",
-        "javax.faces.Byte",
-        "javax.faces.Character",
-        "javax.faces.DateTime",
-        "javax.faces.Double",
-        "javax.faces.Float",
-        "javax.faces.Integer",
-        "javax.faces.Long",
-        "javax.faces.Number",
-        "javax.faces.Short"
+        "jakarta.faces.BigDecimal",
+        "jakarta.faces.BigInteger",
+        "jakarta.faces.Boolean",
+        "jakarta.faces.Byte",
+        "jakarta.faces.Character",
+        "jakarta.faces.DateTime",
+        "jakarta.faces.Double",
+        "jakarta.faces.Float",
+        "jakarta.faces.Integer",
+        "jakarta.faces.Long",
+        "jakarta.faces.Number",
+        "jakarta.faces.Short"
     };
     public static Class standardConverterClasses[] = {
         javax.faces.convert.BigDecimalConverter.class,
@@ -400,7 +400,7 @@ public class TestApplicationImpl_Config extends ServletFacesTestCase {
 //        // runtime addition
 //
 //        application.addValidator("Billybob",
-//                                 "javax.faces.validator.LengthValidator");
+//                                 "jakarta.faces.validator.LengthValidator");
 //        assertTrue(null != (newTestValidator =
 //            application.createValidator("Billybob")));
 //        assertTrue(newTestValidator != testValidator);
@@ -408,14 +408,14 @@ public class TestApplicationImpl_Config extends ServletFacesTestCase {
 //        // test standard components
 //        assertTrue(
 //            null !=
-//            (val = application.createValidator("javax.faces.DoubleRange")));
+//            (val = application.createValidator("jakarta.faces.DoubleRange")));
 //        assertTrue(val instanceof Validator);
 //        assertTrue(
-//            null != (val = application.createValidator("javax.faces.Length")));
+//            null != (val = application.createValidator("jakarta.faces.Length")));
 //        assertTrue(val instanceof Validator);
 //        assertTrue(
 //            null !=
-//            (val = application.createValidator("javax.faces.LongRange")));
+//            (val = application.createValidator("jakarta.faces.LongRange")));
 //        assertTrue(val instanceof Validator);
 
     }
@@ -450,9 +450,9 @@ public class TestApplicationImpl_Config extends ServletFacesTestCase {
 //        Iterator iter = application.getValidatorIds();
 //        assertTrue(null != iter);
 //        String standardValidatorIds[] = {
-//            "javax.faces.DoubleRange",
-//            "javax.faces.Length",
-//            "javax.faces.LongRange"
+//            "jakarta.faces.DoubleRange",
+//            "jakarta.faces.Length",
+//            "jakarta.faces.LongRange"
 //        };
 //
 //        assertTrue(isSubset(standardValidatorIds, iter));
@@ -488,19 +488,19 @@ public class TestApplicationImpl_Config extends ServletFacesTestCase {
 //        assertTrue(null != (propResolver =
 //                            application.getPropertyResolver()));
 //        assertTrue(
-//            application.getPropertyResolver() instanceof javax.faces.el.PropertyResolver);
+//            application.getPropertyResolver() instanceof jakarta.faces.el.PropertyResolver);
 //        assertTrue(null != (varResolver =
 //                            application.getVariableResolver()));
-//        assertTrue(varResolver instanceof javax.faces.el.VariableResolver);
+//        assertTrue(varResolver instanceof jakarta.faces.el.VariableResolver);
 //
 //        assertTrue(null != (viewHandler =
 //                            application.getViewHandler()));
-//        assertTrue(viewHandler instanceof javax.faces.application.ViewHandler);
+//        assertTrue(viewHandler instanceof jakarta.faces.application.ViewHandler);
 //
 //        assertTrue(null != (stateManager =
 //                            application.getStateManager()));
 //        assertTrue(
-//            stateManager instanceof javax.faces.application.StateManager);
+//            stateManager instanceof jakarta.faces.application.StateManager);
 //        System.out.println("DEFAULT:" + application.getDefaultRenderKitId());
 //        assertEquals("WackyRenderKit", application.getDefaultRenderKitId());
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,16 +16,15 @@
 
 package com.sun.faces.application;
 
-import com.sun.faces.application.view.JspStateManagementStrategy;
+import static java.lang.Boolean.TRUE;
+
 import java.io.IOException;
 import java.util.Map;
-import javax.faces.application.StateManager;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.render.RenderKit;
-import javax.faces.render.ResponseStateManager;
-import javax.faces.view.StateManagementStrategy;
-import javax.faces.view.ViewDeclarationLanguage;
+
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewDeclarationLanguage;
 
 /**
  * <p>
@@ -42,36 +41,25 @@ public class StateManagerImpl extends StateManager {
      */
     @Override
     public Object saveView(FacesContext context) {
-        Object result = null;
-
-        if (context != null && !context.getViewRoot().isTransient()) {
-            UIViewRoot viewRoot = context.getViewRoot();
-            StateManagementStrategy strategy = null;
-            String viewId = viewRoot.getViewId();
-
-            ViewDeclarationLanguage vdl = context.getApplication().getViewHandler().getViewDeclarationLanguage(context, viewId);
-
-            if (vdl != null) {
-                strategy = vdl.getStateManagementStrategy(context, viewId);
-            }
-
-            Map<Object, Object> contextAttributes = context.getAttributes();
-
-            try {
-                contextAttributes.put(StateManager.IS_SAVING_STATE, Boolean.TRUE);
-
-                if (strategy != null) {
-                    result = strategy.saveView(context);
-                } else {
-                    strategy = new JspStateManagementStrategy(context);
-                    result = strategy.saveView(context);
-                }
-            } finally {
-                contextAttributes.remove(StateManager.IS_SAVING_STATE);
-            }
+        if (context == null || context.getViewRoot().isTransient()) {
+            return null;
         }
 
-        return result;
+        String viewId = context.getViewRoot().getViewId();
+        ViewDeclarationLanguage vdl = context.getApplication().getViewHandler().getViewDeclarationLanguage(context, viewId);
+        if (vdl == null) {
+            return null;
+        }
+
+        Map<Object, Object> contextAttributes = context.getAttributes();
+        try {
+            contextAttributes.put(IS_SAVING_STATE, TRUE);
+
+            return vdl.getStateManagementStrategy(context, viewId)
+                      .saveView(context);
+        } finally {
+            contextAttributes.remove(IS_SAVING_STATE);
+        }
     }
 
     /**
@@ -83,39 +71,28 @@ public class StateManagerImpl extends StateManager {
      */
     @Override
     public void writeState(FacesContext context, Object state) throws IOException {
-        RenderKit rk = context.getRenderKit();
-        ResponseStateManager rsm = rk.getResponseStateManager();
-        rsm.writeState(context, state);
+        context.getRenderKit()
+               .getResponseStateManager()
+               .writeState(context, state);
     }
 
     /**
      * Restores the view.
-     * 
+     *
      * @param context the Faces context.
      * @param viewId the view id.
      * @param renderKitId the render kit id.
      * @return the view root.
-     * @see StateManager#restoreView(javax.faces.context.FacesContext, java.lang.String,
-     *      java.lang.String)
+     * @see StateManager#restoreView(jakarta.faces.context.FacesContext, java.lang.String, java.lang.String)
      */
     @Override
     public UIViewRoot restoreView(FacesContext context, String viewId, String renderKitId) {
-        UIViewRoot result;
-        StateManagementStrategy strategy = null;
-
         ViewDeclarationLanguage vdl = context.getApplication().getViewHandler().getViewDeclarationLanguage(context, viewId);
-
-        if (vdl != null) {
-            strategy = vdl.getStateManagementStrategy(context, viewId);
+        if (vdl == null) {
+            return null;
         }
 
-        if (strategy != null) {
-            result = strategy.restoreView(context, viewId, renderKitId);
-        } else {
-            strategy = new JspStateManagementStrategy(context);
-            result = strategy.restoreView(context, viewId, renderKitId);
-        }
-
-        return result;
+        return vdl.getStateManagementStrategy(context, viewId)
+                  .restoreView(context, viewId, renderKitId);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,11 +18,12 @@ package com.sun.faces.flow.builder;
 
 import com.sun.faces.flow.ReturnNodeImpl;
 import com.sun.faces.util.Util;
-import javax.el.ValueExpression;
-import javax.faces.flow.builder.ReturnBuilder;
+
+import jakarta.el.ValueExpression;
+import jakarta.faces.flow.builder.ReturnBuilder;
 
 public class ReturnBuilderImpl extends ReturnBuilder {
-    
+
     private FlowBuilderImpl root;
     String id;
 
@@ -36,7 +37,7 @@ public class ReturnBuilderImpl extends ReturnBuilder {
         root._getFlow().setStartNodeId(id);
         return this;
     }
-    
+
     @Override
     public ReturnBuilder fromOutcome(String outcome) {
         Util.notNull("outcome", outcome);
