@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -13,7 +13,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
-
 package com.sun.faces.el;
 
 import static com.sun.faces.RIConstants.EMPTY_CLASS_ARGS;
@@ -31,31 +30,27 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import javax.el.ArrayELResolver;
-import javax.el.BeanELResolver;
-import javax.el.CompositeELResolver;
-import javax.el.ELContext;
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
-import javax.el.ListELResolver;
-import javax.el.MapELResolver;
-import javax.el.ResourceBundleELResolver;
-import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.servlet.ServletContext;
-import javax.servlet.jsp.JspApplicationContext;
-import javax.servlet.jsp.JspFactory;
-
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.cdi.CdiExtension;
 import com.sun.faces.context.flash.FlashELResolver;
 
+import jakarta.el.ArrayELResolver;
+import jakarta.el.BeanELResolver;
+import jakarta.el.CompositeELResolver;
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ListELResolver;
+import jakarta.el.MapELResolver;
+import jakarta.el.ResourceBundleELResolver;
+import jakarta.el.ValueExpression;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+
 /**
- * <p>
  * Utility class for EL related methods.
- * </p>
  */
 public class ELUtils {
 
@@ -65,8 +60,7 @@ public class ELUtils {
     private static final Pattern COMPOSITE_COMPONENT_EXPRESSION = Pattern.compile(".(?:[ ]+|[\\[{,(])cc[.].+[}]");
 
     /**
-     * Used to determine if EL method arguments are being passed to a composite component lookup
-     * expression.
+     * Used to determine if EL method arguments are being passed to a composite component lookup expression.
      *
      * For example:
      *
@@ -86,23 +80,6 @@ public class ELUtils {
      */
     private static final Pattern METHOD_EXPRESSION_LOOKUP = Pattern.compile(".[{]cc[.]attrs[.]\\w+[}]");
 
-
-    public enum Scope {
-        NONE("none"), REQUEST("request"), VIEW("view"), SESSION("session"), APPLICATION("application");
-
-        String scope;
-
-        Scope(String scope) {
-            this.scope = scope;
-        }
-
-        @Override
-        public String toString() {
-            return scope;
-        }
-
-    }
-
     public static final ArrayELResolver ARRAY_RESOLVER = new ArrayELResolver();
     public static final BeanELResolver BEAN_RESOLVER = new BeanELResolver();
     public static final FacesResourceBundleELResolver FACES_BUNDLE_RESOLVER = new FacesResourceBundleELResolver();
@@ -114,7 +91,6 @@ public class ELUtils {
     public static final ScopedAttributeELResolver SCOPED_RESOLVER = new ScopedAttributeELResolver();
     public static final ResourceELResolver RESOURCE_RESOLVER = new ResourceELResolver();
     public static final CompositeComponentAttributesELResolver COMPOSITE_COMPONENT_ATTRIBUTES_EL_RESOLVER = new CompositeComponentAttributesELResolver();
-
 
     // ------------------------------------------------------------ Constructors
 
@@ -149,7 +125,6 @@ public class ELUtils {
      * @param associate our ApplicationAssociate
      */
     public static void buildFacesResolver(FacesCompositeELResolver composite, ApplicationAssociate associate) {
-
         checkNotNull(composite, associate);
 
         if (!tryAddCDIELResolver(composite)) {
@@ -186,7 +161,7 @@ public class ELUtils {
     private static boolean tryAddCDIELResolver(FacesCompositeELResolver composite) {
         FacesContext facesContext = FacesContext.getCurrentInstance();
 
-        javax.enterprise.inject.spi.BeanManager beanManager = getCdiBeanManager(facesContext);
+        BeanManager beanManager = getCdiBeanManager(facesContext);
 
         if (beanManager == null) {
             // TODO: use version enum and >=
@@ -216,8 +191,8 @@ public class ELUtils {
                     composite.addRootELResolver(streamELResolver);
 
                     // Assume that if we have getStreamELResolver, then we must have
-                    // javax.el.staticFieldELResolver
-                    composite.addRootELResolver((ELResolver) newInstance("javax.el.StaticFieldELResolver"));
+                    // jakarta.el.staticFieldELResolver
+                    composite.addRootELResolver((ELResolver) newInstance("jakarta.el.StaticFieldELResolver"));
                 }
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException t) {
                 // This is normal on containers that do not have these ELResolvers
@@ -228,9 +203,19 @@ public class ELUtils {
     public static Object evaluateValueExpression(ValueExpression expression, ELContext elContext) {
         if (expression.isLiteralText()) {
             return expression.getExpressionString();
-        } else {
-            return expression.getValue(elContext);
         }
+
+        return expression.getValue(elContext);
+    }
+
+    /**
+     * Create a <code>ValueExpression</code> with the expected type of <code>Object.class</code>
+     *
+     * @param expression an EL expression
+     * @return a new <code>ValueExpression</code> instance based off the provided <code>valueRef</code>
+     */
+    public static ValueExpression createValueExpression(String expression) {
+        return createValueExpression(expression, Object.class);
     }
 
     public static ValueExpression createValueExpression(String expression, Class<?> expectedType) {
@@ -238,18 +223,20 @@ public class ELUtils {
         return context.getApplication().getExpressionFactory().createValueExpression(context.getELContext(), expression, expectedType);
     }
 
+    public static Object coerce(Object value, Class<?> toType) {
+        return FacesContext.getCurrentInstance().getApplication().getExpressionFactory().coerceToType(value, toType);
+
+    }
 
 
     // --------------------------------------------------------- Private Methods
 
     /**
      * <p>
-     * Add the <code>ELResolvers</code> from the provided list to the target
-     * <code>CompositeELResolver</code>.
+     * Add the <code>ELResolvers</code> from the provided list to the target <code>CompositeELResolver</code>.
      * </p>
      *
-     * @param target the <code>CompositeELResolver</code> to which the <code>ELResolver</code>s will be
-     * added.
+     * @param target the <code>CompositeELResolver</code> to which the <code>ELResolver</code>s will be added.
      * @param resolvers a <code>List</code> of <code>ELResolver</code>s
      */
     private static void addELResolvers(CompositeELResolver target, List<ELResolver> resolvers) {
@@ -258,69 +245,31 @@ public class ELUtils {
                 target.add(resolver);
             }
         }
+
     }
 
-    public static boolean isScopeValid(String scopeName) {
-        if (scopeName == null) {
-            return false;
-        }
-
-        for (Scope scope : Scope.values()) {
-            if (scopeName.equals(scope.toString())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * First look in the ApplicationAssociate. If that fails, try the Jsp engine. If that fails, return
-     * null;
+    /*
+     * First look in the ApplicationAssociate. If that fails, return null;
+     *
      */
     public static ExpressionFactory getDefaultExpressionFactory(FacesContext facesContext) {
-        ExpressionFactory result;
-        if (null == facesContext) {
+        if (facesContext == null) {
             return null;
         }
+
         ExternalContext extContext = facesContext.getExternalContext();
-        if (null == extContext) {
+        if (extContext == null) {
             return null;
         }
 
-        ApplicationAssociate associate = ApplicationAssociate.getInstance(extContext);
-        result = getDefaultExpressionFactory(associate, facesContext);
-
-        return result;
+        return getDefaultExpressionFactory(ApplicationAssociate.getInstance(extContext), facesContext);
     }
 
     public static ExpressionFactory getDefaultExpressionFactory(ApplicationAssociate associate, FacesContext facesContext) {
-        ExpressionFactory result = null;
-
-        if (null != associate) {
-            result = associate.getExpressionFactory();
+        if (associate == null) {
+            return null;
         }
 
-        if (null == result) {
-            if (null == facesContext) {
-                return null;
-            }
-            ExternalContext extContext = facesContext.getExternalContext();
-            if (null == extContext) {
-                return null;
-            }
-
-            Object servletContext = extContext.getContext();
-            if (null != servletContext) {
-                if (servletContext instanceof ServletContext) {
-                    ServletContext sc = (ServletContext) servletContext;
-                    JspApplicationContext jspAppContext = JspFactory.getDefaultFactory().getJspApplicationContext(sc);
-                    if (null != jspAppContext) {
-                        result = jspAppContext.getExpressionFactory();
-                    }
-                }
-            }
-        }
-
-        return result;
+        return associate.getExpressionFactory();
     }
 }

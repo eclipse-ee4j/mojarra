@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,76 +18,69 @@ package com.sun.faces.renderkit.html_basic;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.component.ActionSource;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.component.behavior.AjaxBehavior;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.component.behavior.ClientBehaviorContext;
-import javax.faces.component.html.HtmlCommandScript;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AjaxBehaviorEvent;
-import javax.faces.event.PhaseId;
-import javax.faces.render.ClientBehaviorRenderer;
-
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.FacesLogger;
-import java.util.EnumSet;
-import java.util.Set;
-import javax.faces.component.UINamingContainer;
-import javax.faces.component.search.ComponentNotFoundException;
-import javax.faces.component.search.SearchExpressionContext;
-import javax.faces.component.search.SearchExpressionHandler;
-import javax.faces.component.search.SearchExpressionHint;
+
+import jakarta.faces.component.ActionSource;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.component.behavior.AjaxBehavior;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorContext;
+import jakarta.faces.component.html.HtmlCommandScript;
+import jakarta.faces.component.search.ComponentNotFoundException;
+import jakarta.faces.component.search.SearchExpressionContext;
+import jakarta.faces.component.search.SearchExpressionHandler;
+import jakarta.faces.component.search.SearchExpressionHint;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AjaxBehaviorEvent;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.render.ClientBehaviorRenderer;
 
 /*
  *<b>AjaxBehaviorRenderer</b> renders Ajax behavior for a component.
  * It also
  */
 
-public class AjaxBehaviorRenderer extends ClientBehaviorRenderer  {
+public class AjaxBehaviorRenderer extends ClientBehaviorRenderer {
 
     // Log instance for this class
     protected static final Logger logger = FacesLogger.RENDERKIT.getLogger();
 
-
     // ------------------------------------------------------ Rendering Methods
 
     @Override
-    public String getScript(ClientBehaviorContext behaviorContext,
-                            ClientBehavior behavior) {
+    public String getScript(ClientBehaviorContext behaviorContext, ClientBehavior behavior) {
         if (!(behavior instanceof AjaxBehavior)) {
             // TODO: use MessageUtils for this error message?
-            throw new IllegalArgumentException(
-                "Instance of javax.faces.component.behavior.AjaxBehavior required: " + behavior);
+            throw new IllegalArgumentException("Instance of jakarta.faces.component.behavior.AjaxBehavior required: " + behavior);
         }
 
-        if (((AjaxBehavior)behavior).isDisabled()) {
+        if (((AjaxBehavior) behavior).isDisabled()) {
             return null;
         }
-        return buildAjaxCommand(behaviorContext, (AjaxBehavior)behavior);
+        return buildAjaxCommand(behaviorContext, (AjaxBehavior) behavior);
     }
 
-
     @Override
-    public void decode(FacesContext context,
-                       UIComponent component,
-                       ClientBehavior behavior) {
+    public void decode(FacesContext context, UIComponent component, ClientBehavior behavior) {
         if (null == context || null == component || null == behavior) {
             throw new NullPointerException();
         }
 
         if (!(behavior instanceof AjaxBehavior)) {
             // TODO: use MessageUtils for this error message?
-            throw new IllegalArgumentException(
-                "Instance of javax.faces.component.behavior.AjaxBehavior required: " + behavior);
+            throw new IllegalArgumentException("Instance of jakarta.faces.component.behavior.AjaxBehavior required: " + behavior);
         }
 
-        AjaxBehavior ajaxBehavior = (AjaxBehavior)behavior;
+        AjaxBehavior ajaxBehavior = (AjaxBehavior) behavior;
 
         // First things first - if AjaxBehavior is disabled, we are done.
         if (ajaxBehavior.isDisabled()) {
@@ -97,52 +90,43 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer  {
         component.queueEvent(createEvent(context, component, ajaxBehavior));
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine("This command resulted in form submission " +
-                " AjaxBehaviorEvent queued.");
-            logger.log(Level.FINE,
-                "End decoding component {0}", component.getId());
+            logger.fine("This command resulted in form submission " + " AjaxBehaviorEvent queued.");
+            logger.log(Level.FINE, "End decoding component {0}", component.getId());
         }
-
 
     }
 
     // Creates an AjaxBehaviorEvent for the specified component/behavior
-    private static AjaxBehaviorEvent createEvent(
-            FacesContext facesContext, UIComponent component, AjaxBehavior ajaxBehavior) {
+    private static AjaxBehaviorEvent createEvent(FacesContext facesContext, UIComponent component, AjaxBehavior ajaxBehavior) {
 
         AjaxBehaviorEvent event = new AjaxBehaviorEvent(facesContext, component, ajaxBehavior);
 
-        PhaseId phaseId = isImmediate(component, ajaxBehavior) ?
-                              PhaseId.APPLY_REQUEST_VALUES :
-                              PhaseId.INVOKE_APPLICATION;
+        PhaseId phaseId = isImmediate(component, ajaxBehavior) ? PhaseId.APPLY_REQUEST_VALUES : PhaseId.INVOKE_APPLICATION;
 
         event.setPhaseId(phaseId);
 
         return event;
     }
 
-
-    // Tests whether we should perform immediate processing.  Note
+    // Tests whether we should perform immediate processing. Note
     // that we "inherit" immediate from the parent if not specified
     // on the behavior.
-    private static boolean isImmediate(UIComponent component,
-                                       AjaxBehavior ajaxBehavior) {
+    private static boolean isImmediate(UIComponent component, AjaxBehavior ajaxBehavior) {
 
         boolean immediate = false;
 
         if (ajaxBehavior.isImmediateSet()) {
             immediate = ajaxBehavior.isImmediate();
         } else if (component instanceof EditableValueHolder) {
-            immediate = ((EditableValueHolder)component).isImmediate();
+            immediate = ((EditableValueHolder) component).isImmediate();
         } else if (component instanceof ActionSource) {
-            immediate = ((ActionSource)component).isImmediate();
+            immediate = ((ActionSource) component).isImmediate();
         }
 
         return immediate;
     }
 
-    private static String buildAjaxCommand(ClientBehaviorContext behaviorContext,
-                                           AjaxBehavior ajaxBehavior) {
+    private static String buildAjaxCommand(ClientBehaviorContext behaviorContext, AjaxBehavior ajaxBehavior) {
 
         // First things first - if AjaxBehavior is disabled, we are done.
         if (ajaxBehavior.isDisabled()) {
@@ -170,13 +154,13 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer  {
         // won't work.
         ClientBehaviorContext.Parameter foundparam = null;
         for (ClientBehaviorContext.Parameter param : params) {
-            if (param.getName().equals("incExec") && (Boolean)param.getValue()) {
+            if (param.getName().equals("incExec") && (Boolean) param.getValue()) {
                 foundparam = param;
             }
         }
         if (foundparam != null && !execute.contains(sourceId)) {
-                execute = new LinkedList<>(execute);
-                execute.add(component.getClientId());
+            execute = new LinkedList<>(execute);
+            execute.add(component.getClientId());
         }
         if (foundparam != null) {
             try {
@@ -189,7 +173,7 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer  {
             }
         }
 
-        HtmlCommandScript commandScript = (component instanceof HtmlCommandScript) ? (HtmlCommandScript) component : null;
+        HtmlCommandScript commandScript = component instanceof HtmlCommandScript ? (HtmlCommandScript) component : null;
 
         if (commandScript != null) {
             String name = commandScript.getName();
@@ -208,8 +192,7 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer  {
 
                 if (paramValue == null) {
                     ajaxCommand.append("null");
-                }
-                else {
+                } else {
                     RenderKitUtils.appendQuotedValue(ajaxCommand, paramValue.toString());
                 }
 
@@ -239,8 +222,7 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer  {
         ajaxCommand.append(",");
         appendIds(behaviorContext.getFacesContext(), component, ajaxCommand, render);
 
-        if ((onevent != null) || (onerror != null) || (delay != null) ||
-                (resetValues != null) || !params.isEmpty())  {
+        if (onevent != null || onerror != null || delay != null || resetValues != null || !params.isEmpty()) {
 
             ajaxCommand.append(",{");
 
@@ -263,14 +245,11 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer  {
             if (!params.isEmpty()) {
                 if (commandScript != null) {
                     RenderKitUtils.appendProperty(ajaxCommand, "params", params.iterator().next().getName(), false);
-                }
-                else {
+                } else {
                     RenderKitUtils.appendProperty(ajaxCommand, "params", "{", false);
 
                     for (ClientBehaviorContext.Parameter param : params) {
-                        RenderKitUtils.appendProperty(ajaxCommand,
-                                param.getName(),
-                                param.getValue());
+                        RenderKitUtils.appendProperty(ajaxCommand, param.getName(), param.getValue());
                     }
 
                     ajaxCommand.append("}");
@@ -294,16 +273,13 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer  {
         return ajaxCommand.toString();
     }
 
-    private static final Set<SearchExpressionHint> EXPRESSION_HINTS =
-            EnumSet.of(SearchExpressionHint.RESOLVE_CLIENT_SIDE, SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
+    private static final Set<SearchExpressionHint> EXPRESSION_HINTS = EnumSet.of(SearchExpressionHint.RESOLVE_CLIENT_SIDE,
+            SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
 
     // Appends an ids argument to the ajax command
-    private static void appendIds(FacesContext facesContext,
-                                  UIComponent component,
-                                  StringBuilder builder,
-                                  Collection<String> ids) {
+    private static void appendIds(FacesContext facesContext, UIComponent component, StringBuilder builder, Collection<String> ids) {
 
-        if ((null == ids) || ids.isEmpty()) {
+        if (null == ids || ids.isEmpty()) {
             builder.append('0');
             return;
         }
@@ -325,13 +301,11 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer  {
                 first = false;
             }
 
-            if (id.equals("@all") || id.equals("@none") ||
-                id.equals("@form") || id.equals("@this")) {
+            if (id.equals("@all") || id.equals("@none") || id.equals("@form") || id.equals("@this")) {
                 builder.append(id);
             } else {
-                if (searchExpressionContext == null)  {
-                    searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(
-                            facesContext, component, EXPRESSION_HINTS, null);
+                if (searchExpressionContext == null) {
+                    searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(facesContext, component, EXPRESSION_HINTS, null);
                 }
                 if (handler == null) {
                     handler = facesContext.getApplication().getSearchExpressionHandler();
@@ -355,7 +329,7 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer  {
         if (resolvedComponent == null) {
             if (id.charAt(0) == UINamingContainer.getSeparatorChar(FacesContext.getCurrentInstance())) {
                 return id.substring(1);
-        }
+            }
             return id;
         }
 

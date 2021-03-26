@@ -17,9 +17,10 @@
 package com.sun.faces.test.javaee8.cdi;
 
 import javax.enterprise.context.RequestScoped;
-import javax.faces.context.ExternalContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import jakarta.faces.context.ExternalContext;
 
 @Named(value="injectExternalContextBean")
 @RequestScoped

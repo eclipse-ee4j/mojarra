@@ -121,8 +121,8 @@ public class TestRenderKit extends ServletFacesTestCase {
 
         // 1. Verify "getRenderer()" returns a Renderer instance
         //  
-        Renderer renderer = renderKit.getRenderer("javax.faces.Form",
-                                                  "javax.faces.Form");
+        Renderer renderer = renderKit.getRenderer("jakarta.faces.Form",
+                                                  "jakarta.faces.Form");
         assertTrue(renderer instanceof FormRenderer);
 
         // 2. Verify "getRenderer()" returns null

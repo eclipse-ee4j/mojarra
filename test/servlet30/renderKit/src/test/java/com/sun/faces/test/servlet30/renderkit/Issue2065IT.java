@@ -40,7 +40,7 @@ public class Issue2065IT {
     @Test
     public void testAddClientBehaviorRenderer() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/issue2065.xhtml");
-        assertTrue(page.asText().contains("javax.faces.behavior.Ajax;"));
+        assertTrue(page.asText().contains("jakarta.faces.behavior.Ajax;"));
         assertTrue(page.asText().contains("com.sun.faces.test.agnostic.renderKit.basic.Issue2065ClientBehaviorRenderer;"));
     }
 }

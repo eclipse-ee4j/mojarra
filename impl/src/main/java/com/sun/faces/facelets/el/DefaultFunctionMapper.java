@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,9 +16,6 @@
 
 package com.sun.faces.facelets.el;
 
-import com.sun.faces.facelets.util.ReflectionUtil;
-
-import javax.el.FunctionMapper;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -28,74 +25,73 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.sun.faces.facelets.util.ReflectionUtil;
+
+import jakarta.el.FunctionMapper;
+
 /**
  * Default implementation of the FunctionMapper
  *
  * @author Jacob Hookom
  * @version $Id$
  * @see java.lang.reflect.Method
- * @see javax.el.FunctionMapper
+ * @see jakarta.el.FunctionMapper
  */
-public final class DefaultFunctionMapper extends FunctionMapper implements
-                                                                Externalizable {
+public final class DefaultFunctionMapper extends FunctionMapper implements Externalizable {
 
     private static final long serialVersionUID = 1L;
 
     private Map functions = null;
 
     /*
-      * (non-Javadoc)
-      *
-      * @see javax.el.FunctionMapper#resolveFunction(java.lang.String,
-      *      java.lang.String)
-      */
+     * (non-Javadoc)
+     *
+     * @see jakarta.el.FunctionMapper#resolveFunction(java.lang.String, java.lang.String)
+     */
     @Override
     public Method resolveFunction(String prefix, String localName) {
-        if (this.functions != null) {
-            Function f = (Function) this.functions
-                  .get(prefix + ":" + localName);
+        if (functions != null) {
+            Function f = (Function) functions.get(prefix + ":" + localName);
             return f.getMethod();
         }
         return null;
     }
 
     public void addFunction(String prefix, String localName, Method m) {
-        if (this.functions == null) {
-            this.functions = new HashMap();
+        if (functions == null) {
+            functions = new HashMap();
         }
         Function f = new Function(prefix, localName, m);
         synchronized (this) {
-            this.functions.put(prefix + ":" + localName, f);
+            functions.put(prefix + ":" + localName, f);
         }
     }
 
     /*
-      * (non-Javadoc)
-      *
-      * @see java.io.Externalizable#writeExternal(java.io.ObjectOutput)
-      */
+     * (non-Javadoc)
+     *
+     * @see java.io.Externalizable#writeExternal(java.io.ObjectOutput)
+     */
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(this.functions);
+        out.writeObject(functions);
     }
 
     /*
-      * (non-Javadoc)
-      *
-      * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
-      */
+     * (non-Javadoc)
+     *
+     * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
+     */
     @Override
-    public void readExternal(ObjectInput in) throws IOException,
-                                                    ClassNotFoundException {
-        this.functions = (Map) in.readObject();
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        functions = (Map) in.readObject();
     }
 
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer(128);
         sb.append("FunctionMapper[\n");
-        for (Iterator itr = this.functions.values().iterator();
-             itr.hasNext();) {
+        for (Iterator itr = functions.values().iterator(); itr.hasNext();) {
             sb.append(itr.next()).append('\n');
         }
         sb.append(']');
@@ -138,50 +134,48 @@ public final class DefaultFunctionMapper extends FunctionMapper implements
         }
 
         /*
-           * (non-Javadoc)
-           *
-           * @see java.io.Externalizable#writeExternal(java.io.ObjectOutput)
-           */
+         * (non-Javadoc)
+         *
+         * @see java.io.Externalizable#writeExternal(java.io.ObjectOutput)
+         */
         @Override
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeUTF((this.prefix != null) ? this.prefix : "");
-            out.writeUTF(this.localName);
-            out.writeUTF(this.m.getDeclaringClass().getName());
-            out.writeUTF(this.m.getName());
-            out.writeObject(ReflectionUtil.toTypeNameArray(this.m
-                  .getParameterTypes()));
+            out.writeUTF(prefix != null ? prefix : "");
+            out.writeUTF(localName);
+            out.writeUTF(m.getDeclaringClass().getName());
+            out.writeUTF(m.getName());
+            out.writeObject(ReflectionUtil.toTypeNameArray(m.getParameterTypes()));
         }
 
         /*
-           * (non-Javadoc)
-           *
-           * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
-           */
+         * (non-Javadoc)
+         *
+         * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
+         */
         @Override
-        public void readExternal(ObjectInput in) throws IOException,
-                                                        ClassNotFoundException {
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
 
-            this.prefix = in.readUTF();
-            if ("".equals(this.prefix)) {
-                this.prefix = null;
+            prefix = in.readUTF();
+            if ("".equals(prefix)) {
+                prefix = null;
             }
-            this.localName = in.readUTF();
-            this.owner = in.readUTF();
-            this.name = in.readUTF();
-            this.types = (String[]) in.readObject();
+            localName = in.readUTF();
+            owner = in.readUTF();
+            name = in.readUTF();
+            types = (String[]) in.readObject();
         }
 
         public Method getMethod() {
-            if (this.m == null) {
+            if (m == null) {
                 try {
-                    Class t = ReflectionUtil.forName(this.owner);
-                    Class[] p = ReflectionUtil.toTypeArray(this.types);
-                    this.m = t.getMethod(this.name, p);
+                    Class t = ReflectionUtil.forName(owner);
+                    Class[] p = ReflectionUtil.toTypeArray(types);
+                    m = t.getMethod(name, p);
                 } catch (ClassNotFoundException | NoSuchMethodException | SecurityException e) {
                     e.printStackTrace();
                 }
             }
-            return this.m;
+            return m;
         }
 
         public boolean matches(String prefix, String localName) {
@@ -197,37 +191,37 @@ public final class DefaultFunctionMapper extends FunctionMapper implements
         }
 
         /*
-           * (non-Javadoc)
-           *
-           * @see java.lang.Object#equals(java.lang.Object)
-           */
+         * (non-Javadoc)
+         *
+         * @see java.lang.Object#equals(java.lang.Object)
+         */
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof Function) {
-                return this.hashCode() == obj.hashCode();
+                return hashCode() == obj.hashCode();
             }
             return false;
         }
 
         /*
-           * (non-Javadoc)
-           *
-           * @see java.lang.Object#hashCode()
-           */
+         * (non-Javadoc)
+         *
+         * @see java.lang.Object#hashCode()
+         */
         @Override
         public int hashCode() {
-            return (this.prefix + this.localName).hashCode();
+            return (prefix + localName).hashCode();
         }
 
         @Override
         public String toString() {
             StringBuffer sb = new StringBuffer(32);
             sb.append("Function[");
-            if (this.prefix != null) {
-                sb.append(this.prefix).append(':');
+            if (prefix != null) {
+                sb.append(prefix).append(':');
             }
-            sb.append(this.name).append("] ");
-            sb.append(this.m);
+            sb.append(name).append("] ");
+            sb.append(m);
             return sb.toString();
         }
     }

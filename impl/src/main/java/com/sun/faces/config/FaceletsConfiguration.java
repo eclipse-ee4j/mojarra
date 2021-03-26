@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -20,8 +20,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.faces.context.FacesContext;
-
+import jakarta.faces.context.FacesContext;
 
 /*
  * This read-only singleton class is vended by the WebConfiguration.
@@ -41,14 +40,12 @@ public class FaceletsConfiguration {
 
     private WebConfiguration config;
 
-    private  Map<String, String> faceletsProcessingMappings;
-
+    private Map<String, String> faceletsProcessingMappings;
 
     public FaceletsConfiguration(WebConfiguration config) {
         this.config = config;
 
-        faceletsProcessingMappings =
-                config.getFacesConfigOptionValue(WebConfiguration.WebContextInitParameter.FaceletsProcessingFileExtensionProcessAs);
+        faceletsProcessingMappings = config.getFacesConfigOptionValue(WebConfiguration.WebContextInitParameter.FaceletsProcessingFileExtensionProcessAs);
 
     }
 
@@ -61,7 +58,7 @@ public class FaceletsConfiguration {
 
         String extension = getExtension(alias);
 
-        assert (null != faceletsProcessingMappings);
+        assert null != faceletsProcessingMappings;
         if (faceletsProcessingMappings.containsKey(extension)) {
             String value = faceletsProcessingMappings.get(extension);
             currentModeIsXhtml = value.equals("xhtml");
@@ -69,19 +66,18 @@ public class FaceletsConfiguration {
 
         return currentModeIsXhtml;
     }
-    
+
     public boolean isOutputHtml5Doctype(String alias) {
         boolean currentModeIsHtml5 = true;
-        
+
         String extension = getExtension(alias);
 
-        assert (null != faceletsProcessingMappings);
+        assert null != faceletsProcessingMappings;
         if (faceletsProcessingMappings.containsKey(extension)) {
             String value = faceletsProcessingMappings.get(extension);
             currentModeIsHtml5 = value.equals("html5");
         }
-        
-        
+
         return currentModeIsHtml5;
     }
 
@@ -90,7 +86,7 @@ public class FaceletsConfiguration {
 
         String extension = getExtension(alias);
 
-        assert (null != faceletsProcessingMappings);
+        assert null != faceletsProcessingMappings;
         if (faceletsProcessingMappings.containsKey(extension)) {
             String value = faceletsProcessingMappings.get(extension);
             consumeComments = value.equals("xml") || value.equals("jspx");
@@ -105,7 +101,7 @@ public class FaceletsConfiguration {
 
         String extension = getExtension(alias);
 
-        assert (null != faceletsProcessingMappings);
+        assert null != faceletsProcessingMappings;
         if (faceletsProcessingMappings.containsKey(extension)) {
             String value = faceletsProcessingMappings.get(extension);
             consumeCDATA = value.equals("jspx") || value.equals("xml");
@@ -120,18 +116,17 @@ public class FaceletsConfiguration {
 
         result = (Boolean) context.getAttributes().get(ESCAPE_INLINE_TEXT_ATTRIBUTE_NAME);
         if (null == result) {
-        
+
             String extension = getExtension(context.getViewRoot().getViewId());
 
-            assert (null != faceletsProcessingMappings);
+            assert null != faceletsProcessingMappings;
             if (faceletsProcessingMappings.containsKey(extension)) {
                 String value = faceletsProcessingMappings.get(extension);
                 result = value.equals("xml") || value.equals("xhtml");
             } else {
                 result = Boolean.TRUE;
             }
-            context.getAttributes().put(ESCAPE_INLINE_TEXT_ATTRIBUTE_NAME,
-                    result);
+            context.getAttributes().put(ESCAPE_INLINE_TEXT_ATTRIBUTE_NAME, result);
         }
 
         return result;
@@ -164,8 +159,7 @@ public class FaceletsConfiguration {
             }
         }
 
-        return (ext == null) ? "xhtml": ext;
+        return ext == null ? "xhtml" : ext;
     }
-
 
 }

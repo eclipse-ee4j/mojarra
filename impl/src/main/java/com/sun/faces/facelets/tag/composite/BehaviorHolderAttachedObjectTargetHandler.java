@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,45 +16,43 @@
 
 package com.sun.faces.facelets.tag.composite;
 
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagConfig;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
 
-
-public class BehaviorHolderAttachedObjectTargetHandler extends
-      AttachedObjectTargetHandler {
+public class BehaviorHolderAttachedObjectTargetHandler extends AttachedObjectTargetHandler {
 
     public BehaviorHolderAttachedObjectTargetHandler(TagConfig config) {
         super(config);
     }
 
-    /* (non-Javadoc)
-      * @see com.sun.faces.facelets.tag.composite.AttachedObjectTargetHandler#newAttachedObjectTargetImpl()
-      */
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.sun.faces.facelets.tag.composite.AttachedObjectTargetHandler#newAttachedObjectTargetImpl()
+     */
     @Override
     AttachedObjectTargetImpl newAttachedObjectTargetImpl() {
         BehaviorHolderAttachedObjectTargetImpl target = new BehaviorHolderAttachedObjectTargetImpl();
-        TagAttribute event = this.getAttribute("event");
+        TagAttribute event = getAttribute("event");
         FaceletContext ctx = null;
 
         if (null != event) {
             if (!event.isLiteral()) {
                 FacesContext facesContext = FacesContext.getCurrentInstance();
-                ctx = (FaceletContext) facesContext.getAttributes()
-                  .get(FaceletContext.FACELET_CONTEXT_KEY);
-                String eventStr = (String)event.getValueExpression(ctx, String.class).getValue(ctx);
+                ctx = (FaceletContext) facesContext.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
+                String eventStr = (String) event.getValueExpression(ctx, String.class).getValue(ctx);
                 target.setEvent(eventStr);
             } else {
                 target.setEvent(event.getValue());
             }
         }
-        TagAttribute defaultAttr = this.getAttribute("default");
+        TagAttribute defaultAttr = getAttribute("default");
         if (null != defaultAttr) {
             if (null == ctx) {
                 FacesContext facesContext = FacesContext.getCurrentInstance();
-                ctx = (FaceletContext) facesContext.getAttributes()
-                  .get(FaceletContext.FACELET_CONTEXT_KEY);
+                ctx = (FaceletContext) facesContext.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
             }
             target.setDefaultEvent(defaultAttr.getBoolean(ctx));
         }

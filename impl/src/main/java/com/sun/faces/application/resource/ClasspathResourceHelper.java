@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,7 +19,7 @@ package com.sun.faces.application.resource;
 import static com.sun.faces.config.WebConfiguration.META_INF_CONTRACTS_DIR;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.CacheResourceModificationTimestamp;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableMissingResourceLibraryDetection;
-import static javax.faces.application.ProjectStage.Development;
+import static jakarta.faces.application.ProjectStage.Development;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,43 +28,37 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.faces.application.ProjectStage;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.ResourceResolver;
-
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.facelets.impl.DefaultResourceResolver;
 import com.sun.faces.util.Util;
 
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.ResourceResolver;
 
 /**
  * <p>
- * A {@link ResourceHelper} implementation for finding/serving resources
- * found on the classpath within the <code>META-INF/resources directory.
+ * A {@link ResourceHelper} implementation for finding/serving resources found on the classpath within the
+ * <code>META-INF/resources directory.
  * </p>
  *
  * @since 2.0
  */
 public class ClasspathResourceHelper extends ResourceHelper {
 
-
     private static final String BASE_RESOURCE_PATH = "META-INF/resources";
     private boolean cacheTimestamp;
     private volatile ZipDirectoryEntryScanner libraryScanner;
     private boolean enableMissingResourceLibraryDetection;
 
-
-
     // ------------------------------------------------------------ Constructors
-
 
     public ClasspathResourceHelper() {
 
         WebConfiguration webconfig = WebConfiguration.getInstance();
         cacheTimestamp = webconfig.isOptionEnabled(CacheResourceModificationTimestamp);
-        enableMissingResourceLibraryDetection =
-                webconfig.isOptionEnabled(EnableMissingResourceLibraryDetection);
+        enableMissingResourceLibraryDetection = webconfig.isOptionEnabled(EnableMissingResourceLibraryDetection);
 
     }
 
@@ -77,10 +71,10 @@ public class ClasspathResourceHelper extends ResourceHelper {
             return false;
         }
         final ClasspathResourceHelper other = (ClasspathResourceHelper) obj;
-        if (this.cacheTimestamp != other.cacheTimestamp) {
+        if (cacheTimestamp != other.cacheTimestamp) {
             return false;
         }
-        if (this.enableMissingResourceLibraryDetection != other.enableMissingResourceLibraryDetection) {
+        if (enableMissingResourceLibraryDetection != other.enableMissingResourceLibraryDetection) {
             return false;
         }
         return true;
@@ -89,15 +83,12 @@ public class ClasspathResourceHelper extends ResourceHelper {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 67 * hash + (this.cacheTimestamp ? 1 : 0);
-        hash = 67 * hash + (this.enableMissingResourceLibraryDetection ? 1 : 0);
+        hash = 67 * hash + (cacheTimestamp ? 1 : 0);
+        hash = 67 * hash + (enableMissingResourceLibraryDetection ? 1 : 0);
         return hash;
     }
 
-    
-
     // --------------------------------------------- Methods from ResourceHelper
-
 
     /**
      * @see com.sun.faces.application.resource.ResourceHelper#getBaseResourcePath()
@@ -111,15 +102,16 @@ public class ClasspathResourceHelper extends ResourceHelper {
     public String getBaseContractsPath() {
         return META_INF_CONTRACTS_DIR;
     }
-    
+
     /**
-     * @see ResourceHelper#getNonCompressedInputStream(com.sun.faces.application.resource.ResourceInfo, javax.faces.context.FacesContext)
+     * @see ResourceHelper#getNonCompressedInputStream(com.sun.faces.application.resource.ResourceInfo,
+     * jakarta.faces.context.FacesContext)
      */
     @Override
     protected InputStream getNonCompressedInputStream(ResourceInfo resource, FacesContext ctx) throws IOException {
 
         InputStream in = null;
-        
+
         if (ctx.isProjectStage(Development)) {
             ClassLoader loader = Util.getCurrentLoader(getClass());
             String path = resource.getPath();
@@ -129,7 +121,7 @@ public class ClasspathResourceHelper extends ResourceHelper {
             if (in == null && getClass().getClassLoader().getResource(path) != null) {
                 in = getClass().getClassLoader().getResource(path).openStream();
             }
-        } else {        
+        } else {
             ClassLoader loader = Util.getCurrentLoader(getClass());
             String path = resource.getPath();
             in = loader.getResourceAsStream(path);
@@ -140,13 +132,13 @@ public class ClasspathResourceHelper extends ResourceHelper {
         return in;
     }
 
-
     /**
-     * @see ResourceHelper#getURL(com.sun.faces.application.resource.ResourceInfo, javax.faces.context.FacesContext)
+     * @see ResourceHelper#getURL(com.sun.faces.application.resource.ResourceInfo, jakarta.faces.context.FacesContext)
      */
     @Override
     public URL getURL(ResourceInfo resource, FacesContext ctx) {
-        ResourceResolver nonDefaultResourceResolver = (ResourceResolver) ctx.getAttributes().get(DefaultResourceResolver.NON_DEFAULT_RESOURCE_RESOLVER_PARAM_NAME);
+        ResourceResolver nonDefaultResourceResolver = (ResourceResolver) ctx.getAttributes()
+                .get(DefaultResourceResolver.NON_DEFAULT_RESOURCE_RESOLVER_PARAM_NAME);
         String path = resource.getPath();
         URL url = null;
         if (null != nonDefaultResourceResolver) {
@@ -164,9 +156,8 @@ public class ClasspathResourceHelper extends ResourceHelper {
 
     }
 
-    
     /**
-     * @see ResourceHelper#findLibrary(String, String, String, javax.faces.context.FacesContext)
+     * @see ResourceHelper#findLibrary(String, String, String, jakarta.faces.context.FacesContext)
      */
     @Override
     public LibraryInfo findLibrary(String libraryName, String localePrefix, String contract, FacesContext ctx) {
@@ -176,12 +167,7 @@ public class ClasspathResourceHelper extends ResourceHelper {
         if (localePrefix == null) {
             basePath = getBasePath(contract) + '/' + libraryName + '/';
         } else {
-            basePath = getBasePath(contract)
-                       + '/'
-                       + localePrefix
-                       + '/'
-                       + libraryName
-                       + '/';
+            basePath = getBasePath(contract) + '/' + localePrefix + '/' + libraryName + '/';
         }
 
         URL basePathURL = loader.getResource(basePath);
@@ -194,24 +180,17 @@ public class ClasspathResourceHelper extends ResourceHelper {
         }
 
         return new LibraryInfo(libraryName, null, localePrefix, contract, this);
-        
+
     }
 
-    public LibraryInfo findLibraryWithZipDirectoryEntryScan(String libraryName,
-                                                            String localePrefix,
-                                                            String contract, FacesContext ctx, boolean forceScan) {
+    public LibraryInfo findLibraryWithZipDirectoryEntryScan(String libraryName, String localePrefix, String contract, FacesContext ctx, boolean forceScan) {
 
         ClassLoader loader = Util.getCurrentLoader(this);
         String basePath;
         if (localePrefix == null) {
             basePath = getBasePath(contract) + '/' + libraryName + '/';
         } else {
-            basePath = getBasePath(contract)
-                       + '/'
-                       + localePrefix
-                       + '/'
-                       + libraryName
-                       + '/';
+            basePath = getBasePath(contract) + '/' + localePrefix + '/' + libraryName + '/';
         }
 
         URL basePathURL = loader.getResource(basePath);
@@ -219,7 +198,7 @@ public class ClasspathResourceHelper extends ResourceHelper {
             // try using this class' loader (necessary when running in OSGi)
             basePathURL = this.getClass().getClassLoader().getResource(basePath);
             if (basePathURL == null) {
-                if (null != localePrefix && libraryName.equals("javax.faces")) {
+                if (null != localePrefix && libraryName.equals("jakarta.faces")) {
                     return null;
                 }
                 if (enableMissingResourceLibraryDetection || forceScan) {
@@ -237,24 +216,19 @@ public class ClasspathResourceHelper extends ResourceHelper {
     }
 
     /**
-     * @see ResourceHelper#findResource(LibraryInfo, String, String, boolean, javax.faces.context.FacesContext)
+     * @see ResourceHelper#findResource(LibraryInfo, String, String, boolean, jakarta.faces.context.FacesContext)
      */
     @Override
-    public ResourceInfo findResource(LibraryInfo library,
-                                     String resourceName,
-                                     String localePrefix,
-                                     boolean compressable,
-                                     FacesContext ctx) {
+    public ResourceInfo findResource(LibraryInfo library, String resourceName, String localePrefix, boolean compressable, FacesContext ctx) {
 
         resourceName = trimLeadingSlash(resourceName);
-        ContractInfo [] outContract = new ContractInfo[1];
+        ContractInfo[] outContract = new ContractInfo[1];
         outContract[0] = null;
-        String [] outBasePath = new String[1];
+        String[] outBasePath = new String[1];
         outBasePath[0] = null;
-        
+
         ClassLoader loader = Util.getCurrentLoader(this);
-        URL basePathURL = findPathConsideringContracts(loader, library, resourceName, 
-                localePrefix, outContract, outBasePath, ctx);
+        URL basePathURL = findPathConsideringContracts(loader, library, resourceName, localePrefix, outContract, outBasePath, ctx);
         String basePath = outBasePath[0];
         if (null == basePathURL) {
             basePath = deriveBasePath(library, resourceName, localePrefix);
@@ -287,36 +261,21 @@ public class ClasspathResourceHelper extends ResourceHelper {
         ClientResourceInfo value;
 
         if (library != null) {
-            value = new ClientResourceInfo(library,
-                                     outContract[0],
-                                     resourceName,
-                                     null,
-                                     compressable,
-                                     resourceSupportsEL(resourceName, library.getName(), ctx),
-                                     ctx.isProjectStage(ProjectStage.Development),
-                                     cacheTimestamp);
+            value = new ClientResourceInfo(library, outContract[0], resourceName, null, compressable, resourceSupportsEL(resourceName, library.getName(), ctx),
+                    ctx.isProjectStage(ProjectStage.Development), cacheTimestamp);
         } else {
-            value = new ClientResourceInfo(outContract[0],
-                                     resourceName,
-                                     null,
-                                     localePrefix,
-                                     this,
-                                     compressable,
-                                     resourceSupportsEL(resourceName, null, ctx),
-                                     ctx.isProjectStage(ProjectStage.Development),
-                                     cacheTimestamp);
+            value = new ClientResourceInfo(outContract[0], resourceName, null, localePrefix, this, compressable, resourceSupportsEL(resourceName, null, ctx),
+                    ctx.isProjectStage(ProjectStage.Development), cacheTimestamp);
         }
-        
+
         if (value.isCompressable()) {
             value = handleCompression(value);
         }
         return value;
 
     }
-    
-    private String deriveBasePath(LibraryInfo library,
-            String resourceName,
-            String localePrefix) {
+
+    private String deriveBasePath(LibraryInfo library, String resourceName, String localePrefix) {
         String basePath = null;
         if (library != null) {
             basePath = library.getPath(localePrefix) + '/' + resourceName;
@@ -324,51 +283,41 @@ public class ClasspathResourceHelper extends ResourceHelper {
             if (localePrefix == null) {
                 basePath = getBaseResourcePath() + '/' + resourceName;
             } else {
-                basePath = getBaseResourcePath()
-                        + '/'
-                        + localePrefix
-                        + '/'
-                        + resourceName;
+                basePath = getBaseResourcePath() + '/' + localePrefix + '/' + resourceName;
             }
-        }            
+        }
         return basePath;
     }
 
-    private URL findPathConsideringContracts(ClassLoader loader, 
-                                     LibraryInfo library,
-                                     String resourceName,
-                                     String localePrefix,
-                                     ContractInfo [] outContract,
-                                     String [] outBasePath,
-                                     FacesContext ctx) {
+    private URL findPathConsideringContracts(ClassLoader loader, LibraryInfo library, String resourceName, String localePrefix, ContractInfo[] outContract,
+            String[] outBasePath, FacesContext ctx) {
         UIViewRoot root = ctx.getViewRoot();
         List<String> contracts = null;
         URL result = null;
-        
+
         if (library != null) {
-            if(library.getContract() == null) {
+            if (library.getContract() == null) {
                 contracts = Collections.emptyList();
             } else {
-                contracts = new ArrayList<String>(1);
+                contracts = new ArrayList<>(1);
                 contracts.add(library.getContract());
             }
         } else if (root == null) {
-            String contractName = ctx.getExternalContext().getRequestParameterMap()
-                  .get("con");
-            if (null != contractName && 0 < contractName.length()) {
+            String contractName = ctx.getExternalContext().getRequestParameterMap().get("con");
+            if (null != contractName && 0 < contractName.length() && !ResourceManager.nameContainsForbiddenSequence(contractName)) {
                 contracts = new ArrayList<>();
                 contracts.add(contractName);
             } else {
                 return null;
             }
         } else {
-       		contracts = ctx.getResourceLibraryContracts();
+            contracts = ctx.getResourceLibraryContracts();
         }
 
         String basePath = null;
-        
+
         for (String curContract : contracts) {
-        
+
             if (library != null) {
                 // PENDING(fcaputo) no need to iterate over the contracts, if we have a library
                 basePath = library.getPath(localePrefix) + '/' + resourceName;
@@ -376,15 +325,10 @@ public class ClasspathResourceHelper extends ResourceHelper {
                 if (localePrefix == null) {
                     basePath = getBaseContractsPath() + '/' + curContract + '/' + resourceName;
                 } else {
-                    basePath = getBaseContractsPath()
-                            + '/' + curContract 
-                            + '/'
-                            + localePrefix
-                            + '/'
-                            + resourceName;
+                    basePath = getBaseContractsPath() + '/' + curContract + '/' + localePrefix + '/' + resourceName;
                 }
             }
-            
+
             if (null != (result = loader.getResource(basePath))) {
                 outContract[0] = new ContractInfo(curContract);
                 outBasePath[0] = basePath;
@@ -393,7 +337,7 @@ public class ClasspathResourceHelper extends ResourceHelper {
                 basePath = null;
             }
         }
-            
+
         return result;
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -21,49 +21,48 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.el.ValueExpression;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.FlowCallNode;
-import javax.faces.flow.Parameter;
+
+import jakarta.el.ValueExpression;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.FlowCallNode;
+import jakarta.faces.flow.Parameter;
 
 public class FlowCallNodeImpl extends FlowCallNode implements Serializable {
     private static final long serialVersionUID = 543332738561754405L;
-    
+
     private final String id;
     private final ValueExpression calledFlowIdVE;
-    
+
     private final ValueExpression calledFlowDocumentIdVE;
-    
+
     private Map<String, Parameter> _outboundParameters;
     private Map<String, Parameter> outboundParameters;
 
-    public FlowCallNodeImpl(String id, 
-            String calledFlowDocumentId, 
-            String calledFlowId, 
-            List<Parameter> outboundParametersFromConfig) {
+    public FlowCallNodeImpl(String id, String calledFlowDocumentId, String calledFlowId, List<Parameter> outboundParametersFromConfig) {
         FacesContext context = FacesContext.getCurrentInstance();
         this.id = id;
-        
+
         if (null != calledFlowDocumentId) {
-            this.calledFlowDocumentIdVE = context.getApplication().getExpressionFactory().createValueExpression(context.getELContext(), calledFlowDocumentId, String.class);
+            calledFlowDocumentIdVE = context.getApplication().getExpressionFactory().createValueExpression(context.getELContext(), calledFlowDocumentId,
+                    String.class);
         } else {
-            this.calledFlowDocumentIdVE = null;
+            calledFlowDocumentIdVE = null;
         }
-        
+
         if (null != calledFlowId) {
-            this.calledFlowIdVE = context.getApplication().getExpressionFactory().createValueExpression(context.getELContext(), calledFlowId, String.class);
+            calledFlowIdVE = context.getApplication().getExpressionFactory().createValueExpression(context.getELContext(), calledFlowId, String.class);
         } else {
-            this.calledFlowIdVE = null;
+            calledFlowIdVE = null;
         }
-        
-        _outboundParameters = new ConcurrentHashMap<>();            
+
+        _outboundParameters = new ConcurrentHashMap<>();
         if (null != outboundParametersFromConfig) {
             for (Parameter cur : outboundParametersFromConfig) {
                 _outboundParameters.put(cur.getName(), cur);
             }
         }
         outboundParameters = Collections.unmodifiableMap(_outboundParameters);
-        
+
     }
 
     @Override
@@ -75,16 +74,18 @@ public class FlowCallNodeImpl extends FlowCallNode implements Serializable {
             return false;
         }
         final FlowCallNodeImpl other = (FlowCallNodeImpl) obj;
-        if ((this.id == null) ? (other.id != null) : !this.id.equals(other.id)) {
+        if (id == null ? other.id != null : !id.equals(other.id)) {
             return false;
         }
-        if (this.calledFlowIdVE != other.calledFlowIdVE && (this.calledFlowIdVE == null || !this.calledFlowIdVE.equals(other.calledFlowIdVE))) {
+        if (calledFlowIdVE != other.calledFlowIdVE && (calledFlowIdVE == null || !calledFlowIdVE.equals(other.calledFlowIdVE))) {
             return false;
         }
-        if (this.calledFlowDocumentIdVE != other.calledFlowDocumentIdVE && (this.calledFlowDocumentIdVE == null || !this.calledFlowDocumentIdVE.equals(other.calledFlowDocumentIdVE))) {
+        if (calledFlowDocumentIdVE != other.calledFlowDocumentIdVE
+                && (calledFlowDocumentIdVE == null || !calledFlowDocumentIdVE.equals(other.calledFlowDocumentIdVE))) {
             return false;
         }
-        if (this._outboundParameters != other._outboundParameters && (this._outboundParameters == null || !this._outboundParameters.equals(other._outboundParameters))) {
+        if (_outboundParameters != other._outboundParameters
+                && (_outboundParameters == null || !_outboundParameters.equals(other._outboundParameters))) {
             return false;
         }
         return true;
@@ -93,15 +94,12 @@ public class FlowCallNodeImpl extends FlowCallNode implements Serializable {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 59 * hash + (this.id != null ? this.id.hashCode() : 0);
-        hash = 59 * hash + (this.calledFlowIdVE != null ? this.calledFlowIdVE.hashCode() : 0);
-        hash = 59 * hash + (this.calledFlowDocumentIdVE != null ? this.calledFlowDocumentIdVE.hashCode() : 0);
-        hash = 59 * hash + (this._outboundParameters != null ? this._outboundParameters.hashCode() : 0);
+        hash = 59 * hash + (id != null ? id.hashCode() : 0);
+        hash = 59 * hash + (calledFlowIdVE != null ? calledFlowIdVE.hashCode() : 0);
+        hash = 59 * hash + (calledFlowDocumentIdVE != null ? calledFlowDocumentIdVE.hashCode() : 0);
+        hash = 59 * hash + (_outboundParameters != null ? _outboundParameters.hashCode() : 0);
         return hash;
     }
-    
-    
-    
 
     @Override
     public String getId() {
@@ -111,22 +109,22 @@ public class FlowCallNodeImpl extends FlowCallNode implements Serializable {
     @Override
     public String getCalledFlowDocumentId(FacesContext context) {
         String result = null;
-        
+
         if (null != calledFlowDocumentIdVE) {
             result = (String) calledFlowDocumentIdVE.getValue(context.getELContext());
         }
-        
+
         return result;
     }
 
     @Override
     public String getCalledFlowId(FacesContext context) {
         String result = null;
-        
+
         if (null != calledFlowIdVE) {
             result = (String) calledFlowIdVE.getValue(context.getELContext());
         }
-        
+
         return result;
     }
 

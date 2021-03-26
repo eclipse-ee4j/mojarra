@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -27,11 +27,10 @@ import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 class ZipDirectoryEntryScanner {
 
@@ -39,7 +38,6 @@ class ZipDirectoryEntryScanner {
     private static final String PREFIX = "META-INF/resources";
     private static final int PREFIX_LENGTH = PREFIX.length();
     Map<String, Boolean> resourceLibraries;
-
 
     ZipDirectoryEntryScanner() {
         ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
@@ -87,10 +85,9 @@ class ZipDirectoryEntryScanner {
     }
 
     boolean libraryExists(String libraryName, String localePrefix) {
-        String key = localePrefix != null? localePrefix + "/" + libraryName : libraryName;
-        
+        String key = localePrefix != null ? localePrefix + "/" + libraryName : libraryName;
+
         return resourceLibraries.containsKey(key);
     }
-
 
 }

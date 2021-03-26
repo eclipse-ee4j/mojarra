@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,29 +16,27 @@
 
 package com.sun.faces.renderkit.html_basic;
 
-import com.sun.faces.renderkit.AttributeManager;
+import java.io.IOException;
+
 import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
-import java.io.IOException;
-import javax.faces.application.NavigationCase;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
+
+import jakarta.faces.application.NavigationCase;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 
 public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
 
-    private static final Attribute[] ATTRIBUTES =
-        AttributeManager.getAttributes(AttributeManager.Key.COMMANDBUTTON);
-
+    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.COMMANDBUTTON);
 
     // --------------------------------------------------- Methods from Renderer
 
-
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component)
-    throws IOException {
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
         if (!shouldEncode(component)) {
@@ -46,7 +44,7 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert(writer != null);
+        assert writer != null;
 
         writer.startElement("input", component);
         writeIdAttributeIfNecessary(context, writer, component);
@@ -55,8 +53,7 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
         if (imageSrc != null) {
             writer.writeAttribute("type", "image", "type");
             writer.writeURIAttribute("src", RenderKitUtils.getImageSource(context, component, "image"), "image");
-        }
-        else {
+        } else {
             writer.writeAttribute("type", "button", "type");
         }
 
@@ -69,8 +66,7 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
                 // QUESTION should this only be added in development mode?
                 label += MessageUtils.getExceptionMessageString(MessageUtils.OUTCOME_TARGET_BUTTON_NO_MATCH);
                 writer.writeAttribute("disabled", "true", "disabled");
-            }
-            else {
+            } else {
                 String hrefVal = getEncodedTargetURL(context, component, navCase);
                 hrefVal += getFragment(component);
                 writer.writeAttribute("onclick", getOnclick(component, hrefVal), "onclick");
@@ -87,28 +83,24 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
 
         renderPassThruAttributes(context, writer, component, ATTRIBUTES, null);
 
-        if(component.getChildCount() == 0) {
+        if (component.getChildCount() == 0) {
             writer.endElement("input");
         }
 
     }
 
-
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component)
-    throws IOException {
+    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
-        if(component.getChildCount() > 0) {
+        if (component.getChildCount() > 0) {
             context.getResponseWriter().endElement("input");
         }
 
     }
 
-
     // ------------------------------------------------------- Protected Methods
-
 
     protected String getOnclick(UIComponent component, String targetURI) {
 
@@ -119,8 +111,7 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
             if (onclick.length() > 0 && !onclick.endsWith(";")) {
                 onclick += "; ";
             }
-        }
-        else {
+        } else {
             onclick = "";
         }
 
@@ -131,7 +122,7 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
         onclick += "return false;";
 
         return onclick;
-        
+
     }
 
 }

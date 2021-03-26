@@ -20,11 +20,11 @@ import com.sun.faces.test.servlet30.renderkit.SelectMany05Bean.HobbitBean;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.inject.Named;
-import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 
-@Named
+@ManagedBean
 @RequestScoped
 
 public class Bean {
@@ -32,16 +32,14 @@ public class Bean {
     public Bean() {
         passThroughAttrs = new ConcurrentHashMap<String, Object>();
         passThroughAttrs.put("literalName", "literalValue");
-        passThroughAttrs.put("elName", FacesContext.getCurrentInstance().getApplication().getExpressionFactory()
-                .createValueExpression(FacesContext.getCurrentInstance().getELContext(), "#{facesContext.viewRoot.viewId}", String.class));
-
+        passThroughAttrs.put("elName", FacesContext.getCurrentInstance().getApplication().getExpressionFactory().createValueExpression(FacesContext.getCurrentInstance().getELContext(), "#{facesContext.viewRoot.viewId}", String.class));
+        
         rendererSpecificAttrs = new ConcurrentHashMap<String, Object>();
         rendererSpecificAttrs.put("styleClass", "a b c");
-        rendererSpecificAttrs.put("size", FacesContext.getCurrentInstance().getApplication().getExpressionFactory()
-                .createValueExpression(FacesContext.getCurrentInstance().getELContext(), "#{bean.one}", Integer.class));
-
+        rendererSpecificAttrs.put("size", FacesContext.getCurrentInstance().getApplication().getExpressionFactory().createValueExpression(FacesContext.getCurrentInstance().getELContext(), "#{bean.one}", Integer.class));
+        
     }
-
+    
     private Map<String, Object> passThroughAttrs;
     private Map<String, Object> rendererSpecificAttrs;
 
@@ -62,11 +60,10 @@ public class Bean {
     public void setNullValue(String nullValue) {
         this.nullValue = nullValue;
     }
-
-    public Integer getOne() {
-        return 1;
-    }
-
+    
+    public Integer getOne() { return (Integer) 1; }
+    
+    
     private String fruitValue;
 
     public String getFruitValue() {
@@ -76,13 +73,13 @@ public class Bean {
     public void setFruitValue(String stringValue) {
         this.fruitValue = stringValue;
     }
-
+    
     private String nameValue;
 
     public String getNameValue() {
         return nameValue;
     }
-
+    
     List<String> nameValueList;
 
     public List<String> getNameValueList() {
@@ -96,7 +93,7 @@ public class Bean {
     public void setNameValue(String nameValue) {
         this.nameValue = nameValue;
     }
-
+    
     private HobbitBean hobbitBean;
 
     public HobbitBean getHobbitBean() {
@@ -106,7 +103,7 @@ public class Bean {
     public void setHobbitBean(HobbitBean hobbitBean) {
         this.hobbitBean = hobbitBean;
     }
-
+    
     private List<HobbitBean> hobbitBeanList;
 
     public List<HobbitBean> getHobbitBeanList() {
@@ -116,7 +113,9 @@ public class Bean {
     public void setHobbitBeanList(List<HobbitBean> hobbitBeanList) {
         this.hobbitBeanList = hobbitBeanList;
     }
-
+    
+    
+    
     private String groupedNameValue;
 
     public String getGroupedNameValue() {
@@ -126,7 +125,7 @@ public class Bean {
     public void setGroupedNameValue(String groupedNameValue) {
         this.groupedNameValue = groupedNameValue;
     }
-
+    
     private List<String> groupedNameValueList;
 
     public List<String> getGroupedNameValueList() {
@@ -136,5 +135,5 @@ public class Bean {
     public void setGroupedNameValueList(List<String> groupedNameValueList) {
         this.groupedNameValueList = groupedNameValueList;
     }
-
+    
 }

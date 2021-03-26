@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -24,32 +24,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import javax.faces.component.UICommand;
-import javax.faces.component.UIComponent;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.component.behavior.ClientBehaviorContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.event.ActionEvent;
-
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 
+import jakarta.faces.component.UICommand;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.ActionEvent;
 
 /**
- * <b>CommandLinkRenderer</b> is a class that renders the current value of
- * <code>UICommand<code> as a HyperLink that acts like a Button.
+ * <b>CommandLinkRenderer</b> is a class that renders the current value of <code>UICommand<code> as a HyperLink that
+ * acts like a Button.
  */
 
 public class CommandLinkRenderer extends LinkRenderer {
 
-    private static final Attribute[] ATTRIBUTES =
-          AttributeManager.getAttributes(AttributeManager.Key.COMMANDLINK);
-
+    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.COMMANDLINK);
 
     // ---------------------------------------------------------- Public Methods
-
 
     @Override
     public void decode(FacesContext context, UIComponent component) {
@@ -65,18 +61,15 @@ public class CommandLinkRenderer extends LinkRenderer {
         if (wasClicked(context, component, clientId)) {
             component.queueEvent(new ActionEvent(context, component));
             if (logger.isLoggable(Level.FINE)) {
-                logger.fine("This commandLink resulted in form submission " +
-                            " ActionEvent queued.");
+                logger.fine("This commandLink resulted in form submission " + " ActionEvent queued.");
 
             }
         }
 
     }
 
-
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -84,8 +77,7 @@ public class CommandLinkRenderer extends LinkRenderer {
             return;
         }
 
-        boolean componentDisabled =
-              Boolean.TRUE.equals(component.getAttributes().get("disabled"));
+        boolean componentDisabled = Boolean.TRUE.equals(component.getAttributes().get("disabled"));
 
         if (componentDisabled) {
             renderAsDisabled(context, component);
@@ -96,10 +88,8 @@ public class CommandLinkRenderer extends LinkRenderer {
 
     }
 
-
     @Override
-    public void encodeChildren(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -112,13 +102,11 @@ public class CommandLinkRenderer extends LinkRenderer {
                 encodeRecursive(context, kid);
             }
         }
-        
+
     }
 
-
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component)
-          throws IOException {
+    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -127,7 +115,7 @@ public class CommandLinkRenderer extends LinkRenderer {
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert(writer != null);
+        assert writer != null;
 
         if (Boolean.TRUE.equals(component.getAttributes().get("disabled"))) {
             writer.endElement("span");
@@ -135,7 +123,6 @@ public class CommandLinkRenderer extends LinkRenderer {
             writer.endElement("a");
         }
     }
-
 
     @Override
     public boolean getRendersChildren() {
@@ -146,35 +133,28 @@ public class CommandLinkRenderer extends LinkRenderer {
 
     // ------------------------------------------------------- Protected Methods
 
-
     @Override
     protected Object getValue(UIComponent component) {
 
-        return ((UICommand) component).getValue();       
+        return ((UICommand) component).getValue();
 
     }
 
     /*
-     * Render the necessary Javascript for the link.
-     * Note that much of this code is shared with CommandButtonRenderer.renderOnClick
-     * RELEASE_PENDING: Consolidate this code into a utility method, if possible.
+     * Render the necessary Javascript for the link. Note that much of this code is shared with
+     * CommandButtonRenderer.renderOnClick RELEASE_PENDING: Consolidate this code into a utility method, if possible.
      */
     @Override
-    protected void renderAsActive(FacesContext context, UIComponent command)
-          throws IOException {
+    protected void renderAsActive(FacesContext context, UIComponent command) throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
-        assert(writer != null);
+        assert writer != null;
 
-        //make link act as if it's a button using javascript        
+        // make link act as if it's a button using javascript
         writer.startElement("a", command);
         writeIdAttributeIfNecessary(context, writer, command);
         writer.writeAttribute("href", "#", "href");
-        RenderKitUtils.renderPassThruAttributes(context,
-                                                writer,
-                                                command,
-                                                ATTRIBUTES,
-                                                getNonOnClickBehaviors(command));
+        RenderKitUtils.renderPassThruAttributes(context, writer, command, ATTRIBUTES, getNonOnClickBehaviors(command));
 
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, command);
 
@@ -186,11 +166,7 @@ public class CommandLinkRenderer extends LinkRenderer {
         }
 
         Collection<ClientBehaviorContext.Parameter> params = getBehaviorParameters(command);
-        RenderKitUtils.renderOnclick(context, 
-                                     command,
-                                     params,
-                                     target,
-                                     true);
+        RenderKitUtils.renderOnclick(context, command, params, target, true);
 
         writeCommonLinkAttributes(writer, command);
 
@@ -202,12 +178,9 @@ public class CommandLinkRenderer extends LinkRenderer {
 
     // --------------------------------------------------------- Private Methods
 
-    private static boolean wasClicked(FacesContext context,
-                                      UIComponent component,
-                                      String clientId) {
+    private static boolean wasClicked(FacesContext context, UIComponent component, String clientId) {
 
-        Map<String,String> requestParamMap =
-              context.getExternalContext().getRequestParameterMap();
+        Map<String, String> requestParamMap = context.getExternalContext().getRequestParameterMap();
 
         if (clientId == null) {
             clientId = component.getClientId(context);
@@ -215,20 +188,18 @@ public class CommandLinkRenderer extends LinkRenderer {
 
         // Fire an action event if we've had a traditional (non-Ajax)
         // postback, or if we've had a partial or behavior-based postback.
-        return (requestParamMap.containsKey(clientId) ||
-                RenderKitUtils.isPartialOrBehaviorAction(context, clientId));
+        return requestParamMap.containsKey(clientId) || RenderKitUtils.isPartialOrBehaviorAction(context, clientId);
     }
 
     // Returns the Behaviors map, but only if it contains some entry other
-    // than those handled by renderOnclick().  This helps us optimize
+    // than those handled by renderOnclick(). This helps us optimize
     // renderPassThruAttributes() in the very common case where the
-    // link only contains an "action" (or "click") Behavior.  In that
+    // link only contains an "action" (or "click") Behavior. In that
     // we pass a null Behaviors map into renderPassThruAttributes(),
     // which allows us to take a more optimized code path.
     private static Map<String, List<ClientBehavior>> getNonOnClickBehaviors(UIComponent component) {
 
         return getPassThruBehaviors(component, "click", "action");
     }
-
 
 } // end of class CommandLinkRenderer

@@ -42,7 +42,7 @@ public class Issue3204IT {
     @Test
     public void testFacesConfig() throws Exception {
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
-        Page page = webClient.getPage(webUrl + "javax.faces.resource/WEB-INF/faces-config.xml.xhtml?ln=.\\..");
+        Page page = webClient.getPage(webUrl + "jakarta.faces.resource/WEB-INF/faces-config.xml.xhtml?ln=.\\..");
         assertEquals(404, page.getWebResponse().getStatusCode());
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,33 +18,36 @@ package com.sun.faces.push;
 
 import static com.sun.faces.cdi.CdiUtils.getBeanReference;
 import static com.sun.faces.push.WebsocketEndpoint.PARAM_CHANNEL;
+import static jakarta.websocket.CloseReason.CloseCodes.NORMAL_CLOSURE;
+import static java.lang.String.format;
 import static java.util.Collections.emptySet;
-import static javax.websocket.CloseReason.CloseCodes.NORMAL_CLOSURE;
+import static java.util.logging.Level.WARNING;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Logger;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.util.AnnotationLiteral;
-import javax.faces.context.FacesContext;
-import javax.faces.event.WebsocketEvent;
-import javax.faces.event.WebsocketEvent.Closed;
-import javax.faces.event.WebsocketEvent.Opened;
-import javax.faces.push.Push;
-import javax.inject.Inject;
-import javax.websocket.CloseReason;
-import javax.websocket.Session;
-
-import com.sun.faces.util.Json;
 import com.sun.faces.util.Util;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.util.AnnotationLiteral;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.WebsocketEvent;
+import jakarta.faces.event.WebsocketEvent.Closed;
+import jakarta.faces.event.WebsocketEvent.Opened;
+import jakarta.faces.push.Push;
+import jakarta.inject.Inject;
+import jakarta.websocket.CloseReason;
+import jakarta.websocket.Session;
 
 /**
  * <p class="changed_added_2_3">
@@ -59,6 +62,8 @@ public class WebsocketSessionManager {
 
     // Constants ------------------------------------------------------------------------------------------------------
 
+    private static final Logger logger = Logger.getLogger(WebsocketSessionManager.class.getName());
+
     private static final CloseReason REASON_EXPIRED = new CloseReason(NORMAL_CLOSURE, "Expired");
     private static final AnnotationLiteral<Opened> SESSION_OPENED = new AnnotationLiteral<Opened>() {
         private static final long serialVersionUID = 1L;
@@ -67,9 +72,18 @@ public class WebsocketSessionManager {
         private static final long serialVersionUID = 1L;
     };
 
-    private final ConcurrentMap<String, Collection<Session>> socketSessions = new ConcurrentHashMap<>();
+    private static final long TOMCAT_WEB_SOCKET_RETRY_TIMEOUT = 10; // Milliseconds.
+    private static final long TOMCAT_WEB_SOCKET_MAX_RETRIES = 100; // So, that's retrying for about 1 second.
+    private static final String WARNING_TOMCAT_WEB_SOCKET_BOMBED = "Tomcat cannot handle concurrent push messages."
+            + " A push message has been sent only after %s retries of " + TOMCAT_WEB_SOCKET_RETRY_TIMEOUT + "ms apart."
+            + " Consider rate limiting sending push messages. For example, once every 500ms.";
+    private static final String ERROR_TOMCAT_WEB_SOCKET_BOMBED = "Tomcat cannot handle concurrent push messages."
+            + " A push message could NOT be sent after %s retries of " + TOMCAT_WEB_SOCKET_RETRY_TIMEOUT + "ms apart."
+            + " Consider rate limiting sending push messages. For example, once every 500ms.";
 
     // Properties -----------------------------------------------------------------------------------------------------
+
+    private final ConcurrentMap<String, Collection<Session>> socketSessions = new ConcurrentHashMap<>();
 
     @Inject
     private WebsocketUserManager socketUsers;
@@ -78,6 +92,7 @@ public class WebsocketSessionManager {
 
     /**
      * Register given channel identifier.
+     *
      * @param channelId The channel identifier to register.
      */
     protected void register(String channelId) {
@@ -88,6 +103,7 @@ public class WebsocketSessionManager {
 
     /**
      * Register given channel identifiers.
+     *
      * @param channelIds The channel identifiers to register.
      */
     protected void register(Iterable<String> channelIds) {
@@ -100,6 +116,7 @@ public class WebsocketSessionManager {
      * On open, add given web socket session to the mapping associated with its channel identifier and returns
      * <code>true</code> if it's accepted (i.e. the channel identifier is known) and the same session hasn't been added
      * before, otherwise <code>false</code>.
+     *
      * @param session The opened web socket session.
      * @return <code>true</code> if given web socket session is accepted and is new, otherwise <code>false</code>.
      */
@@ -122,24 +139,24 @@ public class WebsocketSessionManager {
     }
 
     /**
-     * Encode the given message object as JSON and send it to all open web socket sessions associated with given web
-     * socket channel identifier.
+     * Encode the given message object as JSON and send it to all open web socket sessions associated with given web socket
+     * channel identifier.
+     *
      * @param channelId The web socket channel identifier.
-     * @param message The push message object.
-     * @return The results of the send operation. If it returns an empty set, then there was no open session associated
-     * with given channel identifier. The returned futures will return <code>null</code> on {@link Future#get()} if the
-     * message was successfully delivered and otherwise throw {@link ExecutionException}.
+     * @param message The push message string.
+     * @return The results of the send operation. If it returns an empty set, then there was no open session associated with
+     * given channel identifier. The returned futures will return <code>null</code> on {@link Future#get()} if the message
+     * was successfully delivered and otherwise throw {@link ExecutionException}.
      */
-    protected Set<Future<Void>> send(String channelId, Object message) {
-        Collection<Session> sessions = (channelId != null) ? socketSessions.get(channelId) : null;
+    protected Set<Future<Void>> send(String channelId, String message) {
+        Collection<Session> sessions = channelId != null ? socketSessions.get(channelId) : null;
 
         if (sessions != null && !sessions.isEmpty()) {
             Set<Future<Void>> results = new HashSet<>(sessions.size());
-            String json = Json.encode(message);
 
             for (Session session : sessions) {
                 if (session.isOpen()) {
-                    send(session, json, results);
+                    results.add(send(session, message, true));
                 }
             }
 
@@ -149,28 +166,61 @@ public class WebsocketSessionManager {
         return emptySet();
     }
 
-    private void send(Session session, String text, Set<Future<Void>> results) {
-        if (session.isOpen()) {
-            try {
-                results.add(session.getAsyncRemote().sendText(text));
-            }
-            catch (IllegalStateException e) {
-                // Awkward workaround for Tomcat not willing to queue/synchronize asyncRemote().
-                // https://bz.apache.org/bugzilla/show_bug.cgi?id=56026
-                if (session.getClass().getName().startsWith("org.apache.tomcat.websocket.") && e.getMessage().contains("[TEXT_FULL_WRITING]")) {
-                    synchronized (session) {
-                        send(session, text, results);
-                    }
+    private Future<Void> send(Session session, String text, boolean retrySendTomcatWebSocket) {
+        try {
+            return session.getAsyncRemote().sendText(text);
+        } catch (IllegalStateException e) {
+            // Awkward workaround for Tomcat not willing to queue/synchronize asyncRemote().
+            // https://bz.apache.org/bugzilla/show_bug.cgi?id=56026
+            if (session.getClass().getName().startsWith("org.apache.tomcat.websocket.") && e.getMessage().contains("[TEXT_FULL_WRITING]")) {
+                if (retrySendTomcatWebSocket) {
+                    return CompletableFuture.supplyAsync(() -> retrySendTomcatWebSocket(session, text));
+                } else {
+                    return null;
                 }
-                else {
-                    throw e;
-                }
+            } else {
+                throw e;
             }
         }
     }
 
+    private Void retrySendTomcatWebSocket(Session session, String text) {
+        int retries = 0;
+        Exception cause = null;
+
+        while (++retries < TOMCAT_WEB_SOCKET_MAX_RETRIES) {
+            try {
+                Thread.sleep(TOMCAT_WEB_SOCKET_RETRY_TIMEOUT);
+
+                if (!session.isOpen()) {
+                    cause = new IllegalStateException("Too bad, session is now closed");
+                    break;
+                }
+
+                Future<Void> result = send(session, text, false);
+
+                if (result == null) {
+                    continue;
+                }
+
+                if (logger.isLoggable(WARNING)) {
+                    logger.log(WARNING, format(WARNING_TOMCAT_WEB_SOCKET_BOMBED, retries));
+                }
+
+                return result.get();
+            } catch (InterruptedException | ExecutionException e) {
+                Thread.currentThread().interrupt();
+                cause = e;
+                break;
+            }
+        }
+
+        throw new UnsupportedOperationException(format(ERROR_TOMCAT_WEB_SOCKET_BOMBED, retries), cause);
+    }
+
     /**
      * On close, remove given web socket session from the mapping.
+     *
      * @param session The closed web socket session.
      * @param reason The close reason.
      */
@@ -184,19 +234,19 @@ public class WebsocketSessionManager {
 
     /**
      * Deregister given channel identifiers and explicitly close all open web socket sessions associated with it.
+     *
      * @param channelIds The channel identifiers to deregister.
      */
     protected void deregister(Iterable<String> channelIds) {
         for (String channelId : channelIds) {
-            Collection<Session> sessions = socketSessions.get(channelId);
+            Collection<Session> sessions = socketSessions.remove(channelId);
 
             if (sessions != null) {
                 for (Session session : sessions) {
                     if (session.isOpen()) {
                         try {
                             session.close(REASON_EXPIRED);
-                        }
-                        catch (IOException ignore) {
+                        } catch (IOException ignore) {
                             continue;
                         }
                     }
@@ -232,7 +282,8 @@ public class WebsocketSessionManager {
 
     private static void fireEvent(Session session, CloseReason reason, AnnotationLiteral<?> qualifier) {
         Serializable user = (Serializable) session.getUserProperties().get("user");
-        Util.getCdiBeanManager(FacesContext.getCurrentInstance()).fireEvent(new WebsocketEvent(getChannel(session), user, (reason != null) ? reason.getCloseCode() : null), qualifier);
+        Util.getCdiBeanManager(FacesContext.getCurrentInstance())
+                .fireEvent(new WebsocketEvent(getChannel(session), user, reason != null ? reason.getCloseCode() : null), qualifier);
     }
 
 }

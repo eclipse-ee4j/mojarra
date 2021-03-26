@@ -16,21 +16,20 @@
 
 package com.sun.faces.test.servlet30.composite;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import java.io.Serializable;
-
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by xinyuan.zhang on 5/5/17.
  */
-@Named("bean")
+@ManagedBean(name="bean")
 @SessionScoped
 public class Issue3978Bean implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    private boolean clicked;
+    private boolean clicked = false;
 
     public boolean isClicked() {
         return clicked;

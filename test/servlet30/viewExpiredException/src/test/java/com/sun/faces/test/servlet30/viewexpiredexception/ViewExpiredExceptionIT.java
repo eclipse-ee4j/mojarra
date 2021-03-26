@@ -16,15 +16,13 @@
 
 package com.sun.faces.test.servlet30.viewexpiredexception;
 
-import static org.junit.Assert.assertTrue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import org.junit.After;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ViewExpiredExceptionIT {
 
@@ -47,8 +45,8 @@ public class ViewExpiredExceptionIT {
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
         webClient.getOptions().setTimeout(0);
 
-        HtmlPage page = (HtmlPage) webClient.getPage(webUrl + "faces/test.xhtml");
-
+        HtmlPage page = (HtmlPage) webClient.getPage(webUrl + "faces/test.jsp");
+        
         if (!page.asXml().contains("Client-size State Saving: true")) {
             HtmlSubmitInput submit = (HtmlSubmitInput) page.getHtmlElementById("form:submit");
             Thread.sleep(65000);

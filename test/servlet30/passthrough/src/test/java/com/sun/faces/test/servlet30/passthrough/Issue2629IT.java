@@ -20,13 +20,14 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlFieldSet;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import org.junit.After;
 import org.junit.Before;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class Issue2629IT {
-
+    
     /**
      * Stores the web URL.
      */
@@ -60,7 +61,7 @@ public class Issue2629IT {
         webClient.getOptions().setJavaScriptEnabled(true);
         webClient.setJavaScriptTimeout(60000);
         HtmlPage page = webClient.getPage(webUrl + "/faces/fieldset.xhtml");
-        HtmlFieldSet fieldset = (HtmlFieldSet) page.getHtmlElementById("fieldset4");
+        HtmlFieldSet fieldset = (HtmlFieldSet)page.getHtmlElementById("fieldset4");
         page = fieldset.click();
         webClient.waitForBackgroundJavaScript(60000);
         assertTrue(page.asXml().contains("fieldset4 Event: begin"));
@@ -74,7 +75,7 @@ public class Issue2629IT {
         webClient.setJavaScriptTimeout(60000);
         HtmlPage page = webClient.getPage(webUrl + "/faces/label.xhtml");
         HtmlElement label = page.getHtmlElementById("label2");
-        page = (HtmlPage) label.mouseOver();
+        page = (HtmlPage)label.mouseOver();
         webClient.waitForBackgroundJavaScript(60000);
         assertTrue(page.asXml().contains("label2 Event: begin"));
         assertTrue(page.asXml().contains("label2 Event: complete"));

@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.faces.test.servlet30.renderkit;
+package com.sun.faces.test.servlet30.renderkit; 
 
 import static com.gargoylesoftware.htmlunit.BrowserVersion.FIREFOX_45;
 import static java.lang.System.getProperty;
@@ -29,7 +29,14 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public class Issue2503IT {
 
+    /**
+     * Stores the web URL.
+     */
     private String webUrl;
+    
+    /**
+     * Stores the web client.
+     */
     private WebClient webClient;
 
     @Before
@@ -43,19 +50,21 @@ public class Issue2503IT {
         webClient.close();
     }
 
+
     // ------------------------------------------------------------ Test Methods
 
     @Test
     public void testEscape() throws Exception {
 
-        String expected1 = "@import url(\"../resources/import1.css\");";
+        String expected1 = "@import url(\"resources/import1.css\");";
         String expected2 = "Tom &amp; Jerry";
 
         /*
-         * We don't want this to be simulated as an IE browser since IE does some automatic replacing.
+         * We don't want this to be simulated as an IE browser since IE
+         * does some automatic replacing.
          */
         webClient = new WebClient(FIREFOX_45);
-        HtmlPage page = webClient.getPage(webUrl + "faces/outputEscape1.xhtml");
+        HtmlPage page = webClient.getPage(webUrl+"faces/outputEscape1.xhtml");
         assertTrue(page.asXml().contains(expected1));
         assertTrue(page.asXml().contains(expected2));
     }

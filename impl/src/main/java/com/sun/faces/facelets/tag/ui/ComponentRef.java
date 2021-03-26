@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,13 +16,13 @@
 
 package com.sun.faces.facelets.tag.ui;
 
-import javax.faces.component.UIComponentBase;
+import jakarta.faces.component.UIComponentBase;
 
 public final class ComponentRef extends UIComponentBase {
 
     public final static String COMPONENT_TYPE = "facelets.ui.ComponentRef";
     public final static String COMPONENT_FAMILY = "facelets";
-    
+
     public ComponentRef() {
         super();
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2009, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,7 +16,6 @@
 
 package com.sun.faces.config;
 
-
 import static com.sun.faces.RIConstants.ANNOTATED_CLASSES;
 import static com.sun.faces.RIConstants.FACES_INITIALIZER_MAPPINGS_ADDED;
 import static com.sun.faces.util.Util.isEmpty;
@@ -27,93 +26,65 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Resource;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.CDI;
-import javax.faces.annotation.FacesConfig;
-import javax.faces.application.ResourceDependencies;
-import javax.faces.application.ResourceDependency;
-import javax.faces.bean.ManagedBean;
-import javax.faces.component.FacesComponent;
-import javax.faces.component.UIComponent;
-import javax.faces.component.behavior.FacesBehavior;
-import javax.faces.convert.Converter;
-import javax.faces.convert.FacesConverter;
-import javax.faces.event.ListenerFor;
-import javax.faces.event.ListenersFor;
-import javax.faces.event.NamedEvent;
-import javax.faces.event.PhaseListener;
-import javax.faces.render.FacesBehaviorRenderer;
-import javax.faces.render.Renderer;
-import javax.faces.validator.FacesValidator;
-import javax.faces.validator.Validator;
-import javax.faces.view.facelets.FaceletsResourceResolver;
-import javax.faces.webapp.FacesServlet;
-import javax.servlet.ServletContainerInitializer;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
-import javax.servlet.annotation.HandlesTypes;
-import javax.websocket.Endpoint;
-import javax.websocket.server.ServerApplicationConfig;
-import javax.websocket.server.ServerContainer;
-import javax.websocket.server.ServerEndpoint;
-
 import com.sun.faces.cdi.CdiExtension;
 
+import jakarta.annotation.Resource;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.faces.annotation.FacesConfig;
+import jakarta.faces.application.ResourceDependencies;
+import jakarta.faces.application.ResourceDependency;
+import jakarta.faces.component.FacesComponent;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.behavior.FacesBehavior;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.FacesConverter;
+import jakarta.faces.event.ListenerFor;
+import jakarta.faces.event.ListenersFor;
+import jakarta.faces.event.NamedEvent;
+import jakarta.faces.event.PhaseListener;
+import jakarta.faces.render.FacesBehaviorRenderer;
+import jakarta.faces.render.Renderer;
+import jakarta.faces.validator.FacesValidator;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.view.facelets.FaceletsResourceResolver;
+import jakarta.faces.webapp.FacesServlet;
+import jakarta.servlet.ServletContainerInitializer;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRegistration;
+import jakarta.servlet.annotation.HandlesTypes;
+import jakarta.websocket.Endpoint;
+import jakarta.websocket.server.ServerApplicationConfig;
+import jakarta.websocket.server.ServerContainer;
+import jakarta.websocket.server.ServerEndpoint;
+
 /**
- * Adds mappings <em>*.xhtml</em>, <em>/faces</em>, <em>*.jsf</em>, and <em>*.faces</em> for the
- * FacesServlet (if it hasn't already been mapped) if the following conditions
- * are met:
+ * Adds mappings <em>*.xhtml</em>, <em>/faces</em>, <em>*.jsf</em>, and <em>*.faces</em> for the FacesServlet (if it
+ * hasn't already been mapped) if the following conditions are met:
  *
  * <ul>
- *    <li>
- *       The <code>Set</code> of classes passed to this initializer is not
- *       empty, or
- *    </li>
- *    <li>
- *       /WEB-INF/faces-config.xml exists, or
- *    </li>
- *     <li>
- *       A CDI enabled bean with qualifier FacesConfig can be obtained
- *    </li>
+ * <li>The <code>Set</code> of classes passed to this initializer is not empty, or</li>
+ * <li>/WEB-INF/faces-config.xml exists, or</li>
+ * <li>A CDI enabled bean with qualifier FacesConfig can be obtained</li>
  * </ul>
  */
-@HandlesTypes({
-    Converter.class,
-    Endpoint.class,
-    FaceletsResourceResolver.class,
-    FacesBehavior.class,
-    FacesBehaviorRenderer.class,
-    FacesComponent.class,
-    FacesConverter.class,
-    FacesConfig.class, // Should actually be check for enabled bean, but difficult to guarantee, see SERVLET_SPEC-79
-    FacesValidator.class,
-    ListenerFor.class,
-    ListenersFor.class,
-    ManagedBean.class,
-    NamedEvent.class,
-    PhaseListener.class,
-    Renderer.class,
-    Resource.class,
-    ResourceDependencies.class,
-    ResourceDependency.class,
-    ServerApplicationConfig.class,
-    ServerEndpoint.class,
-    UIComponent.class,
-    Validator.class
-})
+@HandlesTypes({ Converter.class, Endpoint.class, FaceletsResourceResolver.class, FacesBehavior.class, FacesBehaviorRenderer.class, FacesComponent.class,
+        FacesConverter.class, FacesConfig.class, // Should actually be check for enabled bean, but difficult to guarantee, see SERVLET_SPEC-79
+        FacesValidator.class, ListenerFor.class, ListenersFor.class, NamedEvent.class, PhaseListener.class, Renderer.class, Resource.class,
+        ResourceDependencies.class, ResourceDependency.class, ServerApplicationConfig.class, ServerEndpoint.class, UIComponent.class, Validator.class })
 public class FacesInitializer implements ServletContainerInitializer {
 
-    private static final String FACES_SERVLET_CLASS = FacesServlet.class.getName();
+    // NOTE: Loggins should not be used with this class.
 
+    private static final String FACES_SERVLET_CLASS = FacesServlet.class.getName();
 
     // -------------------------------- Methods from ServletContainerInitializer
 
     @Override
     public void onStartup(Set<Class<?>> classes, ServletContext servletContext) throws ServletException {
 
-        Set<Class<?>> annotatedClasses = new HashSet<Class<?>>();
+        Set<Class<?>> annotatedClasses = new HashSet<>();
         if (classes != null) {
             annotatedClasses.addAll(classes);
         }
@@ -129,11 +100,10 @@ public class FacesInitializer implements ServletContainerInitializer {
                     // Only look at mapping concerns if there is JSF content
                     handleMappingConcerns(servletContext);
                 }
-
                 // Other concerns also handled if there is an existing Faces Servlet mapping
 
+                // The Configure listener will do the bulk of initializing (configuring) Faces in a later phase.
                 servletContext.addListener(ConfigureListener.class);
-
                 handleWebSocketConcerns(servletContext);
             } finally {
                 // Bug 20458755: The InitFacesContext was not being cleaned up, resulting in
@@ -145,16 +115,14 @@ public class FacesInitializer implements ServletContainerInitializer {
         }
     }
 
-
     // --------------------------------------------------------- Private Methods
 
     private boolean appMayHaveSomeJsfContent(Set<Class<?>> classes, ServletContext context) {
-
         if (!isEmpty(classes)) {
             return true;
         }
 
-        // No JSF specific classes found, check for a WEB-INF/faces-config.xml
+        // No Faces specific classes found, check for a WEB-INF/faces-config.xml
         try {
             if (context.getResource("/WEB-INF/faces-config.xml") != null) {
                 return true;
@@ -171,10 +139,8 @@ public class FacesInitializer implements ServletContainerInitializer {
                 cdi = CDI.current();
 
                 if (cdi != null) {
-
                     Instance<CdiExtension> extension = cdi.select(CdiExtension.class);
-
-                    if (!extension.isAmbiguous() && !extension.isUnsatisfied()) {
+                    if (extension.isResolvable()) {
                         return extension.get().isAddBeansForJSFImplicitObjects();
                     }
                 }
@@ -191,23 +157,25 @@ public class FacesInitializer implements ServletContainerInitializer {
     }
 
     private void handleMappingConcerns(ServletContext servletContext) throws ServletException {
-        if (getExistingFacesServletRegistration(servletContext) != null) {
+        ServletRegistration existingFacesServletRegistration = getExistingFacesServletRegistration(servletContext);
+        if (existingFacesServletRegistration != null) {
             // FacesServlet has already been defined, so we're not going to add additional mappings;
             return;
         }
 
-        ServletRegistration facesServletRegistration = servletContext.addServlet("FacesServlet", FacesServlet.class.getName());
-        facesServletRegistration.addMapping("/faces/*", "*.jsf", "*.faces");
+        ServletRegistration newFacesServletRegistration = servletContext.addServlet("FacesServlet", "jakarta.faces.webapp.FacesServlet");
 
-        if (!"true".equalsIgnoreCase(servletContext.getInitParameter("javax.faces.DISABLE_FACESSERVLET_TO_XHTML")) ) {
-            facesServletRegistration.addMapping("*.xhtml");
+        if ("true".equalsIgnoreCase(servletContext.getInitParameter("jakarta.faces.DISABLE_FACESSERVLET_TO_XHTML"))) {
+            newFacesServletRegistration.addMapping("/faces/*", "*.jsf", "*.faces");
+        } else {
+            newFacesServletRegistration.addMapping("/faces/*", "*.jsf", "*.faces", "*.xhtml");
         }
 
         servletContext.setAttribute(FACES_INITIALIZER_MAPPINGS_ADDED, TRUE);
     }
 
     private ServletRegistration getExistingFacesServletRegistration(ServletContext servletContext) {
-        Map<String,? extends ServletRegistration> existing = servletContext.getServletRegistrations();
+        Map<String, ? extends ServletRegistration> existing = servletContext.getServletRegistrations();
         for (ServletRegistration registration : existing.values()) {
             if (FACES_SERVLET_CLASS.equals(registration.getClassName())) {
                 return registration;
@@ -223,7 +191,7 @@ public class FacesInitializer implements ServletContainerInitializer {
             return;
         }
 
-        if (!Boolean.valueOf(ctx.getInitParameter("javax.faces.ENABLE_WEBSOCKET_ENDPOINT"))) {
+        if (!Boolean.valueOf(ctx.getInitParameter("jakarta.faces.ENABLE_WEBSOCKET_ENDPOINT"))) {
             // Register websocket endpoint is not enabled
             return;
         }
@@ -251,6 +219,7 @@ public class FacesInitializer implements ServletContainerInitializer {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             throw new ServletException(ex);
         }
+
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,14 +19,14 @@ package com.sun.faces.cdi;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import javax.enterprise.context.RequestScoped;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- * The ViewMapProducer is the CDI producer that allows injection of the view map
- * using @Inject and allows EL resolving of #{viewScope}
+ * The ViewMapProducer is the CDI producer that allows injection of the view map using @Inject and allows EL resolving
+ * of #{viewScope}
  * </p>
  *
  * @since 2.3
@@ -38,17 +38,11 @@ public class ViewMapProducer extends CdiProducer<Map<String, Object>> {
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
+
     public ViewMapProducer() {
-        super.name("viewScope")
-             .scope(RequestScoped.class)
-             .qualifiers(new ViewMapAnnotationLiteral())
-             .types(
-                 new ParameterizedTypeImpl(Map.class, new Type[]{String.class, Object.class}),
-                 Map.class,
-                 Object.class)
-             .beanClass(Map.class)
-             .create(e -> FacesContext.getCurrentInstance().getViewRoot().getViewMap());
+        super.name("viewScope").scope(RequestScoped.class).qualifiers(new ViewMapAnnotationLiteral())
+                .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, Object.class }), Map.class, Object.class).beanClass(Map.class)
+                .create(e -> FacesContext.getCurrentInstance().getViewRoot().getViewMap());
     }
 
 }

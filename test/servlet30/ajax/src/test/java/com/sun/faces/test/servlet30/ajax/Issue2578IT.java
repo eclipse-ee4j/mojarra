@@ -16,6 +16,7 @@
 
 package com.sun.faces.test.servlet30.ajax;
 
+import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
@@ -26,7 +27,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class Issue2578IT {
-
+    
     /**
      * Stores the web URL.
      */
@@ -62,7 +63,7 @@ public class Issue2578IT {
         HtmlPage page = webClient.getPage(webUrl + "/faces/issue2578.xhtml");
 
         assertTrue(page.getElementById("form:input").asXml().indexOf("hello") == -1);
-
+        
         HtmlTextInput input = (HtmlTextInput) page.getHtmlElementById("form:input");
         input.type("hello");
         webClient.waitForBackgroundJavaScript(60000);

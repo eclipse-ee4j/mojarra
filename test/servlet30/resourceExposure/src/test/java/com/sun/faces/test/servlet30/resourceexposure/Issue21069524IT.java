@@ -43,11 +43,11 @@ public class Issue21069524IT {
     @Test
     public void testBugDB21069524() throws Exception {
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
-        TextPage page = webClient.getPage(webUrl + "javax.faces.resource/issue21069579.xhtml/.faces?ln=showcase");
+        TextPage page = webClient.getPage(webUrl + "jakarta.faces.resource/issue21069579.xhtml/.faces?ln=showcase");
         String pageXml = page.getContent();
         assertTrue(!pageXml.contains("<h:form"));
         assertTrue(!pageXml.contains("<h:body"));
         int status = page.getWebResponse().getStatusCode();
-        assertNotEquals(200L, status);
+        assertNotEquals(200L, (long) status);
     }
 }

@@ -16,25 +16,21 @@
 
 package com.sun.faces.test.servlet30.composite;
 
-import static com.sun.faces.util.Util.checkIdUniqueness;
-import static javax.faces.event.PhaseId.RENDER_RESPONSE;
-
-import java.util.HashSet;
-
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
+import com.sun.faces.util.Util;
+
+import java.util.HashSet;
 
 public class Issue2320PhaseListener implements PhaseListener {
-
-    private static final long serialVersionUID = 1L;
 
     @Override
     public void afterPhase(PhaseEvent event) {
         if (event.getFacesContext().getViewRoot().getViewId().equals("/issue2320.xhtml")) {
             FacesContext context = FacesContext.getCurrentInstance();
-            checkIdUniqueness(context, context.getViewRoot(), new HashSet<>());
+            Util.checkIdUniqueness(context, context.getViewRoot(), new HashSet<String>());
         }
     }
 
@@ -44,6 +40,6 @@ public class Issue2320PhaseListener implements PhaseListener {
 
     @Override
     public PhaseId getPhaseId() {
-        return RENDER_RESPONSE;
+        return PhaseId.RENDER_RESPONSE;
     }
 }

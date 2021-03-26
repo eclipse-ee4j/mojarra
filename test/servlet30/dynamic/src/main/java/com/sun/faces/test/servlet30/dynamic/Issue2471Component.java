@@ -25,7 +25,7 @@ import javax.faces.context.FacesContext;
  * The component for issue #2471.
  */
 @FacesComponent("com.sun.faces.test.servlet30.dynamic.Issue2471Component")
-@ResourceDependency(target = "head", name = "issue2471.js")
+@ResourceDependency(target="head", name = "issue2471.js")
 public class Issue2471Component extends UIComponentBase {
 
     public Issue2471Component() {
@@ -36,12 +36,10 @@ public class Issue2471Component extends UIComponentBase {
         return "com.sun.faces.test.servlet30.dynamic.Issue2471Component";
     }
 
-    @Override
     public Object saveTransientState(FacesContext context) {
         return null;
     }
 
-    @Override
     public void restoreTransientState(FacesContext context, Object state) {
     }
 }

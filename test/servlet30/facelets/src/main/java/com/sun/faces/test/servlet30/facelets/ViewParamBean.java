@@ -16,13 +16,14 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-import javax.enterprise.context.RequestScoped;
+import java.io.Serializable;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
-import javax.inject.Named;
 
-@Named
+@ManagedBean
 @RequestScoped
-public class ViewParamBean {
+public class ViewParamBean implements Serializable {
 
     private String value;
 
@@ -35,6 +36,7 @@ public class ViewParamBean {
     }
 
     public String submit() {
-        return FacesContext.getCurrentInstance().getViewRoot().getViewId() + "?faces-redirect=true&amp;includeViewParams=true";
+        String viewId = FacesContext.getCurrentInstance().getViewRoot().getViewId();
+        return viewId + "?faces-redirect=true&amp;includeViewParams=true";
     }
 }

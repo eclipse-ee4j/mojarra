@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,32 +16,31 @@
 
 package com.sun.faces.application.applicationimpl;
 
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.JavaxFacesProjectStage;
+import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.JakartaFacesProjectStage;
+import static jakarta.faces.application.ProjectStage.Development;
+import static jakarta.faces.application.ProjectStage.Production;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.INFO;
-import static javax.faces.application.ProjectStage.Development;
-import static javax.faces.application.ProjectStage.Production;
 
 import java.util.logging.Logger;
-
-import javax.faces.application.Application;
-import javax.faces.application.ProjectStage;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PostAddToViewEvent;
 
 import com.sun.faces.application.ValidateComponentNesting;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PostAddToViewEvent;
+
 public class Stage {
-    
+
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
-    
+
     private ProjectStage projectStage;
-    
-    
+
     /**
-     * @see javax.faces.application.Application#getProjectStage()
+     * @see jakarta.faces.application.Application#getProjectStage()
      */
     public ProjectStage getProjectStage(Application application) {
 
@@ -57,12 +56,9 @@ public class Stage {
 
         return projectStage;
     }
-    
-    
-    
+
     // ----------------------------------------------------------- Private methods
 
-    
     private String fetchProjectStageFromConfig() {
         WebConfiguration webConfig = WebConfiguration.getInstance(FacesContext.getCurrentInstance().getExternalContext());
         String value = webConfig.getEnvironmentEntry(WebConfiguration.WebEnvironmentEntry.ProjectStage);
@@ -72,7 +68,7 @@ public class Stage {
                 LOGGER.log(FINE, "ProjectStage configured via JNDI: {0}", value);
             }
         } else {
-            value = webConfig.getOptionValue(JavaxFacesProjectStage);
+            value = webConfig.getOptionValue(JakartaFacesProjectStage);
             if (value != null && LOGGER.isLoggable(FINE)) {
                 LOGGER.log(FINE, "ProjectStage configured via servlet context init parameter: {0}", value);
             }
@@ -96,6 +92,5 @@ public class Stage {
             projectStage = defaultStage;
         }
     }
-    
 
 }

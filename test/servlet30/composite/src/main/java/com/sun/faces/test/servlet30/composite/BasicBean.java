@@ -16,19 +16,15 @@
 
 package com.sun.faces.test.servlet30.composite;
 
-import static javax.faces.component.UIComponent.getCurrentCompositeComponent;
-import static javax.faces.component.UIComponent.isCompositeComponent;
-
-import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.inject.Named;
 
 /**
  * @author Manfred Riem (manfred.riem@oracle.com)
  */
-
-@Named
+@ManagedBean(name = "basicBean")
 @RequestScoped
 public class BasicBean {
 
@@ -38,7 +34,7 @@ public class BasicBean {
      * @return true if we are, false otherwise.
      */
     public String getInsideCompositeComponent() {
-        UIComponent currentComposite = getCurrentCompositeComponent(FacesContext.getCurrentInstance());
-        return "" + (currentComposite != null ? isCompositeComponent(currentComposite) : false);
+        UIComponent currentComposite = UIComponent.getCurrentCompositeComponent(FacesContext.getCurrentInstance());
+        return "" + (currentComposite != null ? UIComponent.isCompositeComponent(currentComposite) : false);
     }
 }

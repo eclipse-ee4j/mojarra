@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
- * Copyright (c) 2018 Payara Services Limited.
- * All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -21,13 +19,12 @@ package com.sun.faces.test.servlet30.faceletsViewAction;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicLong;
+import jakarta.annotation.PostConstruct;
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Named;
 
-@Named
-@ApplicationScoped
+@ApplicationScoped @ManagedBean(eager = true)
 public class NewsIndex {
 
     private AtomicLong sequenceGenerator;
@@ -38,12 +35,8 @@ public class NewsIndex {
         sequenceGenerator = new AtomicLong();
         entries = new TreeMap<Long, NewsStory>();
 
-        entries.put(sequenceGenerator.incrementAndGet(), new NewsStory(sequenceGenerator.get(),
-                "Story 1 Headline: Glassfish V3 released",
-                "Story 1 Content: After much anticipation, Glassfish V3 has finally been released. And it's a really great piece of engineering."));
-        entries.put(sequenceGenerator.incrementAndGet(), new NewsStory(sequenceGenerator.get(),
-                "Story 2 Headline: ICEfaces evolves integration with NetBeans IDE and GlassFish",
-                "Story 2 Content: The most recent release of ICEfaces (v1.7.2SP1) enhances the migration of existing Project Woodstock applications to ICEfaces. With the latest ICEfaces NetBeans plugin, it's now possible to add the ICEfaces framework to an existing Woodstock project, and begin to develop ICEfaces pages along side existing Woodstock pages."));
+        entries.put(sequenceGenerator.incrementAndGet(), new NewsStory(sequenceGenerator.get(), "Story 1 Headline: Glassfish V3 released", "Story 1 Content: After much anticipation, Glassfish V3 has finally been released. And it's a really great piece of engineering."));
+        entries.put(sequenceGenerator.incrementAndGet(), new NewsStory(sequenceGenerator.get(), "Story 2 Headline: ICEfaces evolves integration with NetBeans IDE and GlassFish", "Story 2 Content: The most recent release of ICEfaces (v1.7.2SP1) enhances the migration of existing Project Woodstock applications to ICEfaces. With the latest ICEfaces NetBeans plugin, it's now possible to add the ICEfaces framework to an existing Woodstock project, and begin to develop ICEfaces pages along side existing Woodstock pages."));
     }
 
     public Map<Long, NewsStory> getEntries() {
@@ -54,7 +47,7 @@ public class NewsIndex {
         if (id == null) {
             return null;
         }
-
+        
         return entries.get(id);
     }
 

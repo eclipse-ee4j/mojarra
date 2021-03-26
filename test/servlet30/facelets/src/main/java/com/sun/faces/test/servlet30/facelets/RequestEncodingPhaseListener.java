@@ -16,10 +16,7 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-import static javax.faces.event.PhaseId.ANY_PHASE;
-
 import java.io.UnsupportedEncodingException;
-
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
@@ -27,12 +24,10 @@ import javax.faces.event.PhaseListener;
 
 public class RequestEncodingPhaseListener implements PhaseListener {
 
-    private static final long serialVersionUID = 1L;
-
     @Override
     public void afterPhase(PhaseEvent event) {
     }
-
+    
     @Override
     public void beforePhase(PhaseEvent event) {
         FacesContext context = event.getFacesContext();
@@ -46,6 +41,6 @@ public class RequestEncodingPhaseListener implements PhaseListener {
 
     @Override
     public PhaseId getPhaseId() {
-        return ANY_PHASE;
+        return PhaseId.ANY_PHASE;
     }
 }

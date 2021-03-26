@@ -18,18 +18,13 @@ package com.sun.faces.test.servlet30.navigation2;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
-
-@Named("navbean")
-@RequestScoped
 public class NavBean {
 
     private static AtomicInteger integer = new AtomicInteger(0);
 
     public NavBean() {
         integer.set(0);
-        System.out.println("NAVBEAN SET 0");
+System.out.println("NAVBEAN SET 0");
     }
 
     public int getIncrement() {

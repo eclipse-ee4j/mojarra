@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,31 +16,36 @@
 
 package com.sun.faces.facelets.el;
 
-import javax.el.*;
-import javax.faces.view.facelets.TagAttribute;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.MethodExpression;
+import jakarta.el.MethodInfo;
+import jakarta.el.MethodNotFoundException;
+import jakarta.el.PropertyNotFoundException;
+import jakarta.faces.view.facelets.TagAttribute;
+
 /**
- * 
- * 
+ *
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
-public final class TagMethodExpression extends MethodExpression implements
-        Externalizable {
-    
+public final class TagMethodExpression extends MethodExpression implements Externalizable {
+
     private static final long serialVersionUID = 1L;
-    
+
     private String attr;
     private MethodExpression orig;
 
     public TagMethodExpression() {
         super();
     }
-    
+
     public TagMethodExpression(TagAttribute attr, MethodExpression orig) {
         this.attr = attr.toString();
         this.orig = orig;
@@ -49,32 +54,32 @@ public final class TagMethodExpression extends MethodExpression implements
     @Override
     public MethodInfo getMethodInfo(ELContext context) {
         try {
-            return this.orig.getMethodInfo(context);
+            return orig.getMethodInfo(context);
         } catch (PropertyNotFoundException pnfe) {
-            throw new PropertyNotFoundException(this.attr + ": " + pnfe.getMessage(), pnfe.getCause());
+            throw new PropertyNotFoundException(attr + ": " + pnfe.getMessage(), pnfe.getCause());
         } catch (MethodNotFoundException mnfe) {
-            throw new MethodNotFoundException(this.attr + ": " + mnfe.getMessage(), mnfe.getCause());
+            throw new MethodNotFoundException(attr + ": " + mnfe.getMessage(), mnfe.getCause());
         } catch (ELException e) {
-            throw new ELException(this.attr + ": " + e.getMessage(), e.getCause());
+            throw new ELException(attr + ": " + e.getMessage(), e.getCause());
         }
     }
 
     @Override
     public Object invoke(ELContext context, Object[] params) {
         try {
-            return this.orig.invoke(context, params);
+            return orig.invoke(context, params);
         } catch (PropertyNotFoundException pnfe) {
-            throw new PropertyNotFoundException(this.attr + ": " + pnfe.getMessage(), pnfe.getCause());
+            throw new PropertyNotFoundException(attr + ": " + pnfe.getMessage(), pnfe.getCause());
         } catch (MethodNotFoundException mnfe) {
-            throw new MethodNotFoundException(this.attr + ": " + mnfe.getMessage(), mnfe.getCause());
+            throw new MethodNotFoundException(attr + ": " + mnfe.getMessage(), mnfe.getCause());
         } catch (ELException e) {
-            throw new ELException(this.attr + ": " + e.getMessage(), e.getCause());
+            throw new ELException(attr + ": " + e.getMessage(), e.getCause());
         }
     }
 
     @Override
     public String getExpressionString() {
-        return this.orig.getExpressionString();
+        return orig.getExpressionString();
     }
 
     @Override
@@ -107,24 +112,23 @@ public final class TagMethodExpression extends MethodExpression implements
 
     @Override
     public boolean isLiteralText() {
-        return this.orig.isLiteralText();
+        return orig.isLiteralText();
     }
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(this.orig);
-        out.writeUTF(this.attr);
+        out.writeObject(orig);
+        out.writeUTF(attr);
     }
 
     @Override
-    public void readExternal(ObjectInput in) throws IOException,
-            ClassNotFoundException {
-        this.orig = (MethodExpression) in.readObject();
-        this.attr = in.readUTF();
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        orig = (MethodExpression) in.readObject();
+        attr = in.readUTF();
     }
 
     @Override
     public String toString() {
-        return this.attr + ": " + this.orig;
+        return attr + ": " + orig;
     }
 }

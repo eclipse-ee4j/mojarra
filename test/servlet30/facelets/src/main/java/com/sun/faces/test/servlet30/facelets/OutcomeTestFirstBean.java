@@ -16,24 +16,27 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 
-@Named
+@ManagedBean
 @RequestScoped
-public class OutcomeTestFirstBean {
+public class OutcomeTestFirstBean
+{
+    private Long firstId = null;
 
-    private Long firstId;
-
-    public Long getFirstId() {
+    public Long getFirstId()
+    {
         return firstId;
     }
 
-    public void setFirstId(Long firstId) {
+    public void setFirstId(Long firstId)
+    {
         this.firstId = firstId;
     }
-
-    public String justAnAction() {
+    
+    public String justAnAction()
+    {
         return null;
     }
 }

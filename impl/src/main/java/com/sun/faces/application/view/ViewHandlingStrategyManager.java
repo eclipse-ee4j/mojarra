@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,70 +16,62 @@
 
 package com.sun.faces.application.view;
 
+import java.util.Arrays;
+
 /**
- * Interface for working with multiple {@link com.sun.faces.application.view.ViewHandlingStrategy}
- * implementations.
+ * Interface for working with multiple {@link com.sun.faces.application.view.ViewHandlingStrategy} implementations.
  */
 public class ViewHandlingStrategyManager {
 
     // The strategies associated with this instance
     private volatile ViewHandlingStrategy[] strategies;
-    
 
     // ------------------------------------------------------------- Constructor
 
-
     /**
-     * By default the strategies available (in order) will be {@link FaceletViewHandlingStrategy}.  
+     * By default the strategies available (in order) will be {@link FaceletViewHandlingStrategy}.
      */
     public ViewHandlingStrategyManager() {
         strategies = new ViewHandlingStrategy[] { new FaceletViewHandlingStrategy() };
     }
 
-
     // ---------------------------------------------------------- Public Methods
-
 
     /**
      * <p>
-     * Iterate through the available {@link com.sun.faces.application.view.ViewHandlingStrategy}
-     * implementations.  The first one to return true from {@link com.sun.faces.application.view.ViewHandlingStrategy#handlesViewId(String)}
-     * will be the {@link com.sun.faces.application.view.ViewHandlingStrategy} returned.
+     * Iterate through the available {@link com.sun.faces.application.view.ViewHandlingStrategy} implementations. The first
+     * one to return true from {@link com.sun.faces.application.view.ViewHandlingStrategy#handlesViewId(String)} will be the
+     * {@link com.sun.faces.application.view.ViewHandlingStrategy} returned.
      * <p>
      *
      * @param viewId the viewId to match a {@link com.sun.faces.application.view.ViewHandlingStrategy} to
      *
      * @throws ViewHandlingStrategyNotFoundException if no match is found.
      *
-     * @return a {@link com.sun.faces.application.view.ViewHandlingStrategy} for
-     *  the specifed <code>viewId</code>
+     * @return a {@link com.sun.faces.application.view.ViewHandlingStrategy} for the specifed <code>viewId</code>
      */
     public ViewHandlingStrategy getStrategy(String viewId) {
-
-        for (ViewHandlingStrategy strategy : strategies) {
-            if (strategy.handlesViewId(viewId)) {
-                return strategy;
-            }
-        }
-        
-        throw new ViewHandlingStrategyNotFoundException();
+        return Arrays.stream(strategies)
+                     .filter(strategy -> strategy.handlesViewId(viewId))
+                     .findFirst()
+                     .orElseThrow(ViewHandlingStrategyNotFoundException::new);
     }
 
     /**
-     * @return the currently registered {@link com.sun.faces.application.view.ViewHandlingStrategy}
-     *  implementations.
+     * @return the currently registered {@link com.sun.faces.application.view.ViewHandlingStrategy} implementations.
      */
     public ViewHandlingStrategy[] getViewHandlingStrategies() {
         return strategies.clone();
     }
 
     /**
-     * Update the {@link com.sun.faces.application.view.ViewHandlingStrategy} implementations
-     * to be applied when processing JSF requests.
+     * Update the {@link com.sun.faces.application.view.ViewHandlingStrategy} implementations to be applied when processing
+     * Faces requests.
+     *
      * @param stratagies the new view handling strategies
      */
     public synchronized void setViewHandlingStrategies(ViewHandlingStrategy[] stratagies) {
-        this.strategies = stratagies.clone();
+        strategies = stratagies.clone();
     }
 
 }

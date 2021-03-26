@@ -16,13 +16,8 @@
 
 package com.sun.faces.test.agnostic.vdl.facelets.only_faces_config_in_jar;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
-
-@Named("bean_in_jar")
-@RequestScoped
 public class Bean {
-
+    
     private String name = "MyBeanName";
 
     public String getName() {
@@ -32,5 +27,5 @@ public class Bean {
     public void setName(String name) {
         this.name = name;
     }
-
+    
 }

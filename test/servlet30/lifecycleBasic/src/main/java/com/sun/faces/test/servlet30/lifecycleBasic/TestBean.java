@@ -16,10 +16,10 @@
 
 package com.sun.faces.test.servlet30.lifecycleBasic;
 
-import javax.inject.Named;
-import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 
-@Named
+@ManagedBean
 @RequestScoped
 public class TestBean {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,7 +16,7 @@
 
 package com.sun.faces.config.configprovider;
 
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.JavaxFacesConfigFiles;
+import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.JakartaFacesConfigFiles;
 import static com.sun.faces.util.Util.split;
 import static java.util.Arrays.binarySearch;
 import static java.util.logging.Level.WARNING;
@@ -30,24 +30,22 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.servlet.ServletContext;
-
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
 import com.sun.faces.spi.ConfigurationResourceProvider;
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.faces.FacesException;
+import jakarta.servlet.ServletContext;
+
 /**
- * 
+ *
  */
 public abstract class BaseWebConfigResourceProvider implements ConfigurationResourceProvider {
 
     private static final Logger LOGGER = FacesLogger.CONFIG.getLogger();
 
-
     // ------------------------------ Methods from ConfigurationResourceProvider
-
 
     @Override
     public Collection<URI> getResources(ServletContext context) {
@@ -55,7 +53,7 @@ public abstract class BaseWebConfigResourceProvider implements ConfigurationReso
         WebConfiguration webConfig = WebConfiguration.getInstance(context);
         String paths = webConfig.getOptionValue(getParameter());
         Set<URI> urls = new LinkedHashSet<>(6);
-        
+
         if (paths != null) {
             for (String token : split(context, paths.trim(), getSeparatorRegex())) {
                 String path = token.trim();
@@ -65,9 +63,7 @@ public abstract class BaseWebConfigResourceProvider implements ConfigurationReso
                         urls.add(u);
                     } else {
                         if (LOGGER.isLoggable(WARNING)) {
-                            LOGGER.log(WARNING, 
-                                    "jsf.config.web_resource_not_found",
-                                    new Object[] { path, JavaxFacesConfigFiles.getQualifiedName() });
+                            LOGGER.log(WARNING, "jsf.config.web_resource_not_found", new Object[] { path, JakartaFacesConfigFiles.getQualifiedName() });
                         }
                     }
                 }
@@ -78,9 +74,7 @@ public abstract class BaseWebConfigResourceProvider implements ConfigurationReso
         return urls;
     }
 
-
     // ------------------------------------------------------- Protected Methods
-
 
     protected abstract WebContextInitParameter getParameter();
 
@@ -88,17 +82,16 @@ public abstract class BaseWebConfigResourceProvider implements ConfigurationReso
 
     protected abstract String getSeparatorRegex();
 
-
     protected URI getContextURLForPath(ServletContext context, String path) {
         try {
             URL url = context.getResource(path);
             if (url != null) {
-                return new URI(url.toExternalForm().replaceAll(" ", "%20"));            
+                return new URI(url.toExternalForm().replaceAll(" ", "%20"));
             }
         } catch (MalformedURLException | URISyntaxException mue) {
             throw new FacesException(mue);
         }
-        
+
         return null;
     }
 

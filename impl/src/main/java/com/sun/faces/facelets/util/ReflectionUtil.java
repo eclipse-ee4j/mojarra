@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,28 +16,27 @@
 
 package com.sun.faces.facelets.util;
 
-import com.sun.faces.config.ConfigurationException;
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
-import com.sun.faces.util.ReflectionUtils;
-import com.sun.faces.util.Util;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.Arrays;
 
+import com.sun.faces.config.ConfigurationException;
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
+import com.sun.faces.util.ReflectionUtils;
+import com.sun.faces.util.Util;
+
 public class ReflectionUtil {
 
-    private static final String[] PRIMITIVE_NAMES = new String[] { "boolean",
-            "byte", "char", "double", "float", "int", "long", "short", "void" };
+    private static final String[] PRIMITIVE_NAMES = new String[] { "boolean", "byte", "char", "double", "float", "int", "long", "short", "void" };
 
-    private static final Class[] PRIMITIVES = new Class[] { boolean.class,
-            byte.class, char.class, double.class, float.class, int.class,
-            long.class, short.class, Void.TYPE };
+    private static final Class[] PRIMITIVES = new Class[] { boolean.class, byte.class, char.class, double.class, float.class, int.class, long.class,
+            short.class, Void.TYPE };
 
     /**
-     * 
+     *
      */
     private ReflectionUtil() {
         super();
@@ -72,14 +71,15 @@ public class ReflectionUtil {
 
     /**
      * Converts an array of Class names to Class types
-     * 
+     *
      * @param s the array of class names.
      * @return the array of classes.
      * @throws ClassNotFoundException
      */
     public static Class[] toTypeArray(String[] s) throws ClassNotFoundException {
-        if (s == null)
+        if (s == null) {
             return null;
+        }
         Class[] c = new Class[s.length];
         for (int i = 0; i < s.length; i++) {
             c[i] = forName(s[i]);
@@ -89,13 +89,14 @@ public class ReflectionUtil {
 
     /**
      * Converts an array of Class types to Class names
-     * 
+     *
      * @param c the array of classes.
      * @return the array of class names.
      */
     public static String[] toTypeNameArray(Class[] c) {
-        if (c == null)
+        if (c == null) {
             return null;
+        }
         String[] s = new String[c.length];
         for (int i = 0; i < c.length; i++) {
             s[i] = c[i].getName();
@@ -156,20 +157,15 @@ public class ReflectionUtil {
         }
         return null;
     }
-    
-    public static Object decorateInstance(Class clazz,
-                                    Class rootType,
-                                    Object root) {
+
+    public static Object decorateInstance(Class clazz, Class rootType, Object root) {
         Object returnObject = null;
         try {
             if (returnObject == null) {
                 // Look for an adapter constructor if we've got
                 // an object to adapt
-                if ((rootType != null) && (root != null)) {
-                    Constructor construct =
-                            ReflectionUtils.lookupConstructor(
-                            clazz,
-                            rootType);
+                if (rootType != null && root != null) {
+                    Constructor construct = ReflectionUtils.lookupConstructor(clazz, rootType);
                     if (construct != null) {
                         returnObject = construct.newInstance(root);
                     }
@@ -178,20 +174,15 @@ public class ReflectionUtil {
             if (clazz != null && returnObject == null) {
                 returnObject = clazz.newInstance();
             }
-        }
-        catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             throw new ConfigurationException(
-                    buildMessage(MessageFormat.format("Unable to create a new instance of ''{0}'': {1}",
-                    clazz.getName(),
-                    e.toString())), e);
+                    buildMessage(MessageFormat.format("Unable to create a new instance of ''{0}'': {1}", clazz.getName(), e.toString())), e);
         }
         return returnObject;
 
     }
-    
-    public static Object decorateInstance(String className,
-                                    Class rootType,
-                                    Object root) {
+
+    public static Object decorateInstance(String className, Class rootType, Object root) {
         Class clazz;
         Object returnObject = null;
         if (className != null) {
@@ -202,59 +193,42 @@ public class ReflectionUtil {
                 }
 
             } catch (ClassNotFoundException cnfe) {
-                throw new ConfigurationException(
-                      buildMessage(MessageFormat.format("Unable to find class ''{0}''",
-                                                        className)));
+                throw new ConfigurationException(buildMessage(MessageFormat.format("Unable to find class ''{0}''", className)));
             } catch (NoClassDefFoundError ncdfe) {
                 throw new ConfigurationException(
-                      buildMessage(MessageFormat.format("Class ''{0}'' is missing a runtime dependency: {1}",
-                                                        className,
-                                                        ncdfe.toString())));
+                        buildMessage(MessageFormat.format("Class ''{0}'' is missing a runtime dependency: {1}", className, ncdfe.toString())));
             } catch (ClassCastException cce) {
-                throw new ConfigurationException(
-                      buildMessage(MessageFormat.format("Class ''{0}'' is not an instance of ''{1}''",
-                                                        className,
-                                                        rootType)));
+                throw new ConfigurationException(buildMessage(MessageFormat.format("Class ''{0}'' is not an instance of ''{1}''", className, rootType)));
             } catch (Exception e) {
-                throw new ConfigurationException(
-                      buildMessage(MessageFormat.format("Unable to create a new instance of ''{0}'': {1}",
-                                                        className,
-                                                        e.toString())), e);
+                throw new ConfigurationException(buildMessage(MessageFormat.format("Unable to create a new instance of ''{0}'': {1}", className, e.toString())),
+                        e);
             }
         }
 
         return returnObject;
-        
-    }
-    
-    // --------------------------------------------------------- Private Methods
 
+    }
+
+    // --------------------------------------------------------- Private Methods
 
     private static String buildMessage(String cause) {
 
-        return MessageFormat.format("\n  Source Document: {0}\n  Cause: {1}",
-                                    "web.xml",
-                                    cause);
+        return MessageFormat.format("\n  Source Document: {0}\n  Cause: {1}", "web.xml", cause);
 
     }
-    
-    
-    private static Class<?> loadClass(String className,
-                                 Object fallback,
-                                 Class<?> expectedType)
-    throws ClassNotFoundException {
+
+    private static Class<?> loadClass(String className, Object fallback, Class<?> expectedType) throws ClassNotFoundException {
 
         Class<?> clazz = Util.loadClass(className, fallback);
         if (expectedType != null && !expectedType.isAssignableFrom(clazz)) {
-                throw new ClassCastException();
+            throw new ClassCastException();
         }
         return clazz;
-        
+
     }
-    
+
     private static boolean isDevModeEnabled() {
         WebConfiguration webconfig = WebConfiguration.getInstance();
-        return (webconfig != null
-                  && "Development".equals(webconfig.getOptionValue(WebContextInitParameter.JavaxFacesProjectStage)));
+        return webconfig != null && "Development".equals(webconfig.getOptionValue(WebContextInitParameter.JakartaFacesProjectStage));
     }
 }

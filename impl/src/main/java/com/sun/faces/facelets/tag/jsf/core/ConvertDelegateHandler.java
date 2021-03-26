@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,17 +16,22 @@
 
 package com.sun.faces.facelets.tag.jsf.core;
 
-import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.convert.Converter;
-import javax.faces.view.facelets.*;
+import jakarta.el.ELException;
+import jakarta.faces.FacesException;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.view.facelets.ConverterConfig;
+import jakarta.faces.view.facelets.ConverterHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.TagAttribute;
 
 /**
- * Register a named Converter instance on the UIComponent associated with the
- * closest parent UIComponent custom action. <p/> See <a target="_new"
- * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/converter.html">tag
+ * Register a named Converter instance on the UIComponent associated with the closest parent UIComponent custom action.
+ * <p/>
+ * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/converter.html">tag
  * documentation</a>.
- * 
+ *
  * @author Jacob Hookom
  */
 public final class ConvertDelegateHandler extends ConverterHandler {
@@ -38,18 +43,16 @@ public final class ConvertDelegateHandler extends ConverterHandler {
      */
     public ConvertDelegateHandler(ConverterConfig config) {
         super(config);
-        this.converterId = this.getAttribute("converterId");
+        converterId = getAttribute("converterId");
     }
 
     /**
      * Uses the specified "converterId" to pull an instance from the Application
-     * 
-     * @see javax.faces.application.Application#createComponent(java.lang.String)
+     *
+     * @see jakarta.faces.application.Application#createComponent(java.lang.String)
      */
-    protected Converter createConverter(FaceletContext ctx)
-            throws FacesException, ELException, FaceletException {
-        return ctx.getFacesContext().getApplication().createConverter(
-                this.converterId.getValue(ctx));
+    protected Converter createConverter(FaceletContext ctx) throws FacesException, ELException, FaceletException {
+        return ctx.getFacesContext().getApplication().createConverter(converterId.getValue(ctx));
     }
 
     @Override

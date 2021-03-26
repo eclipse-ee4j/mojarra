@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,18 +16,23 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
+import java.io.IOException;
+
 import com.sun.faces.facelets.tag.MetaRulesetImpl;
 import com.sun.faces.util.Util;
 
-import javax.el.ValueExpression;
-import javax.faces.component.UIComponent;
-import javax.faces.component.ValueHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.view.AttachedObjectHandler;
-import javax.faces.view.facelets.*;
-import java.io.IOException;
-
+import jakarta.el.ValueExpression;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.ValueHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.view.AttachedObjectHandler;
+import jakarta.faces.view.facelets.ConverterHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagException;
+import jakarta.faces.view.facelets.TagHandlerDelegate;
 
 /**
  *
@@ -36,14 +41,13 @@ import java.io.IOException;
 public class ConverterTagHandlerDelegateImpl extends TagHandlerDelegate implements AttachedObjectHandler {
 
     private ConverterHandler owner;
-    
+
     public ConverterTagHandlerDelegateImpl(ConverterHandler owner) {
         this.owner = owner;
     }
-    
+
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException {
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         // only process if it's been created
         if (parent == null || !(parent.getParent() == null)) {
             return;
@@ -54,18 +58,16 @@ public class ConverterTagHandlerDelegateImpl extends TagHandlerDelegate implemen
         } else if (UIComponent.isCompositeComponent(parent)) {
             if (null == owner.getFor()) {
                 // PENDING(): I18N
-                throw new TagException(owner.getTag(),
-                        "converter tags nested within composite components must have a non-null \"for\" attribute");
+                throw new TagException(owner.getTag(), "converter tags nested within composite components must have a non-null \"for\" attribute");
             }
             // Allow the composite component to know about the target
             // component.
             CompositeComponentTagHandler.getAttachedObjectHandlers(parent).add(owner);
         } else {
-            throw new TagException(owner.getTag(),
-                    "Parent not an instance of ValueHolder: " + parent);
+            throw new TagException(owner.getTag(), "Parent not an instance of ValueHolder: " + parent);
         }
     }
-    
+
     @Override
     public MetaRuleset createMetaRuleset(Class type) {
         Util.notNull("type", type);
@@ -73,25 +75,25 @@ public class ConverterTagHandlerDelegateImpl extends TagHandlerDelegate implemen
 
         return m.ignore("binding").ignore("for");
     }
-    
+
     @Override
     public String getFor() {
         String result = null;
         TagAttribute attr = owner.getTagAttribute("for");
-        
+
         if (null != attr) {
             if (attr.isLiteral()) {
                 result = attr.getValue();
             } else {
                 FacesContext context = FacesContext.getCurrentInstance();
                 FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
-                result = (String)attr.getValueExpression(ctx, String.class).getValue(ctx);
+                result = (String) attr.getValueExpression(ctx, String.class).getValue(ctx);
             }
         }
         return result;
-        
+
     }
-    
+
     @Override
     public void applyAttachedObject(FacesContext context, UIComponent parent) {
         FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
@@ -104,7 +106,7 @@ public class ConverterTagHandlerDelegateImpl extends TagHandlerDelegate implemen
             c = (Converter) ve.getValue(ctx);
         }
         if (c == null) {
-            c = this.createConverter(ctx);
+            c = createConverter(ctx);
             if (ve != null) {
                 ve.setValue(ctx, c);
             }
@@ -123,20 +125,16 @@ public class ConverterTagHandlerDelegateImpl extends TagHandlerDelegate implemen
 
     /**
      * Create a Converter instance
-     * 
-     * @param ctx
-     *            FaceletContext to use
+     *
+     * @param ctx FaceletContext to use
      * @return Converter instance, cannot be null
      */
     private Converter createConverter(FaceletContext ctx) {
         if (owner.getConverterId(ctx) == null) {
-            throw new TagException(
-                    owner.getTag(),
+            throw new TagException(owner.getTag(),
                     "Default behavior invoked of requiring a converter-id passed in the constructor, must override ConvertHandler(ConverterConfig)");
         }
         return ctx.getFacesContext().getApplication().createConverter(owner.getConverterId(ctx));
     }
-
-    
 
 }

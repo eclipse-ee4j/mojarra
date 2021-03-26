@@ -23,7 +23,6 @@ import javax.faces.event.PhaseListener;
 
 public class TimerPhaseListener implements PhaseListener {
 
-    private static final long serialVersionUID = 1L;
     public static final String REQUEST_START = "REQUEST_START";
 
     @Override

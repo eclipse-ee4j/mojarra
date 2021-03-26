@@ -16,10 +16,13 @@
 
 package com.sun.faces.test.servlet30.configEmbed;
 
+
 import javax.faces.validator.LengthValidator;
+
 
 // Dummy converter that can be instantiated
 
 public class TestValidator extends LengthValidator {
+
 
 }

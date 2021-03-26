@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,17 +18,17 @@ package com.sun.faces.facelets.impl;
 
 import java.net.URL;
 
-import javax.faces.application.ResourceHandler;
-import javax.faces.application.ViewResource;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.ResourceResolver;
-
 import com.sun.faces.RIConstants;
 
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.application.ViewResource;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.ResourceResolver;
+
 public class DefaultResourceResolver extends ResourceResolver {
-    
+
     private ResourceHandler resourceHandler = null;
-    
+
     public static final String NON_DEFAULT_RESOURCE_RESOLVER_PARAM_NAME = RIConstants.FACES_PREFIX + "NDRRPN";
 
     public DefaultResourceResolver(ResourceHandler resourceHandler) {
@@ -42,7 +42,7 @@ public class DefaultResourceResolver extends ResourceResolver {
         if (faceletResource != null) {
             return faceletResource.getURL();
         }
-        
+
         return null;
     }
 

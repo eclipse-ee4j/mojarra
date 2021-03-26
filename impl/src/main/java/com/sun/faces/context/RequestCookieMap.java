@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,37 +16,33 @@
 
 package com.sun.faces.context;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.Collections;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.NoSuchElementException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Cookie;
+import java.util.Set;
 
 import com.sun.faces.util.Util;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+
 /**
- * @see javax.faces.context.ExternalContext#getRequestCookieMap()  
+ * @see jakarta.faces.context.ExternalContext#getRequestCookieMap()
  */
 public class RequestCookieMap extends BaseContextMap<Object> {
 
     private final HttpServletRequest request;
 
-
     // ------------------------------------------------------------ Constructors
 
-
     public RequestCookieMap(HttpServletRequest newRequest) {
-        this.request = newRequest;
+        request = newRequest;
     }
 
-
     // -------------------------------------------------------- Methods from Map
-
 
     @Override
     public Object get(Object key) {
@@ -69,70 +65,53 @@ public class RequestCookieMap extends BaseContextMap<Object> {
         return result;
     }
 
-
     @Override
-    public Set<Map.Entry<String,Object>> entrySet() {
+    public Set<Map.Entry<String, Object>> entrySet() {
         return Collections.unmodifiableSet(super.entrySet());
     }
-
 
     @Override
     public Set<String> keySet() {
         return Collections.unmodifiableSet(super.keySet());
     }
 
-
     @Override
     public Collection<Object> values() {
         return Collections.unmodifiableCollection(super.values());
     }
 
-
     @Override
     public boolean equals(Object obj) {
-        return !(obj == null ||
-                 !(obj.getClass()
-                   == ExternalContextImpl
-                       .theUnmodifiableMapClass)) && super.equals(obj);
+        return !(obj == null || !(obj.getClass() == ExternalContextImpl.theUnmodifiableMapClass)) && super.equals(obj);
     }
-
 
     @Override
     public int hashCode() {
         int hashCode = 7 * request.hashCode();
-        for (Iterator i = entrySet().iterator(); i.hasNext(); ) {
+        for (Iterator i = entrySet().iterator(); i.hasNext();) {
             hashCode += i.next().hashCode();
         }
         return hashCode;
     }
 
-
     // --------------------------------------------- Methods from BaseContextMap
 
-
     @Override
-    protected Iterator<Map.Entry<String,Object>> getEntryIterator() {
-        return new EntryIterator(
-                new CookieArrayEnumerator(request.getCookies()));
+    protected Iterator<Map.Entry<String, Object>> getEntryIterator() {
+        return new EntryIterator(new CookieArrayEnumerator(request.getCookies()));
     }
-
 
     @Override
     protected Iterator<String> getKeyIterator() {
-        return new KeyIterator(
-                new CookieArrayEnumerator(request.getCookies()));
+        return new KeyIterator(new CookieArrayEnumerator(request.getCookies()));
     }
-
 
     @Override
     protected Iterator<Object> getValueIterator() {
-        return new ValueIterator(
-            new CookieArrayEnumerator(request.getCookies()));
+        return new ValueIterator(new CookieArrayEnumerator(request.getCookies()));
     }
 
-
     // ----------------------------------------------------------- Inner Classes
-
 
     private static class CookieArrayEnumerator implements Enumeration {
 
@@ -142,12 +121,12 @@ public class RequestCookieMap extends BaseContextMap<Object> {
 
         public CookieArrayEnumerator(Cookie[] cookies) {
             this.cookies = cookies;
-            upperBound = ((this.cookies != null) ? this.cookies.length : -1);
+            upperBound = this.cookies != null ? this.cookies.length : -1;
         }
 
         @Override
         public boolean hasMoreElements() {
-            return (curIndex + 2 <= upperBound);
+            return curIndex + 2 <= upperBound;
         }
 
         @Override
@@ -159,7 +138,7 @@ public class RequestCookieMap extends BaseContextMap<Object> {
                 throw new NoSuchElementException();
             }
         }
-        
+
     }
 
 } // END RequestCookiesMap

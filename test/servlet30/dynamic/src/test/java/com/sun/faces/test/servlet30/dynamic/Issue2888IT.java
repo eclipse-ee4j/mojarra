@@ -16,15 +16,14 @@
 
 package com.sun.faces.test.servlet30.dynamic;
 
-import static org.junit.Assert.assertTrue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class Issue2888IT {
 
@@ -46,7 +45,7 @@ public class Issue2888IT {
     public void testMoveComponent() throws Exception {
 
         /*
-         * Make sure the moved component is contained within the outer component.
+         * Make sure the moved component is contained within the outer component. 
          */
         HtmlPage page = webClient.getPage(webUrl + "faces/moveComponent1.xhtml");
         String text = page.asText();

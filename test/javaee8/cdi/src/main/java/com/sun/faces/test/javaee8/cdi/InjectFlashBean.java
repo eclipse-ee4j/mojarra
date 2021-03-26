@@ -17,10 +17,11 @@
 package com.sun.faces.test.javaee8.cdi;
 
 import javax.enterprise.context.RequestScoped;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.Flash;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.Flash;
 
 @Named
 @RequestScoped

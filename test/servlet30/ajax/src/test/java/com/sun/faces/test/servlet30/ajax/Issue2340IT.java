@@ -14,12 +14,15 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.faces.test.servlet30.ajax;
+package com.sun.faces.test.servlet30.ajax; 
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlRadioButtonInput;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.*;
 import static org.junit.Assert.*;
@@ -46,20 +49,21 @@ public class Issue2340IT {
         webClient.close();
     }
 
+
     // ------------------------------------------------------------ Test Methods
 
     @Test
     public void testCommandLinkRadio() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "faces/commandLinkRadio.xhtml");
-        HtmlAnchor anchor = (HtmlAnchor) page.getElementById("testLink");
+        HtmlPage page = webClient.getPage(webUrl+"faces/commandLinkRadio.xhtml");
+        HtmlAnchor anchor = (HtmlAnchor)page.getElementById("testLink");
         // This will ensure JavaScript finishes before evaluating the page.
         webClient.waitForBackgroundJavaScript(60000);
         anchor.click();
         webClient.waitForBackgroundJavaScript(60000);
         assertTrue(page.asXml().contains("LINK ACTION"));
-        HtmlRadioButtonInput radio1 = (HtmlRadioButtonInput) page.getElementById("testRadio:0");
-        HtmlRadioButtonInput radio2 = (HtmlRadioButtonInput) page.getElementById("testRadio:1");
-        HtmlRadioButtonInput radio3 = (HtmlRadioButtonInput) page.getElementById("testRadio:2");
+        HtmlRadioButtonInput radio1 = (HtmlRadioButtonInput)page.getElementById("testRadio:0");
+        HtmlRadioButtonInput radio2 = (HtmlRadioButtonInput)page.getElementById("testRadio:1");
+        HtmlRadioButtonInput radio3 = (HtmlRadioButtonInput)page.getElementById("testRadio:2");
 
         page = radio1.click();
         webClient.waitForBackgroundJavaScript(60000);

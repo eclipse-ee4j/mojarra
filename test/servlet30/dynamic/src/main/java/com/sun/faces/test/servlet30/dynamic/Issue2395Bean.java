@@ -16,14 +16,14 @@
 
 package com.sun.faces.test.servlet30.dynamic;
 
-import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.component.html.HtmlPanelGroup;
 import javax.faces.event.ActionEvent;
-import javax.inject.Named;
 
-@Named
+@ManagedBean
 @RequestScoped
 public class Issue2395Bean {
 
@@ -41,14 +41,14 @@ public class Issue2395Bean {
         HtmlOutputText out = new HtmlOutputText();
         out.setValue("I was dynamically added");
         getPanelGroup().getChildren().add(out);
-    }
-
+        }
+    
     public void doAddRemove(ActionEvent event) {
         HtmlOutputText out = new HtmlOutputText();
         getPanelGroup().getChildren().add(out);
         out.setValue("I was dynamically added");
         getPanelGroup().getChildren().remove(out);
-    }
+        }
 
     public void doAddRemoveAdd(ActionEvent event) {
         HtmlOutputText out = new HtmlOutputText();
@@ -56,20 +56,20 @@ public class Issue2395Bean {
         getPanelGroup().getChildren().add(out);
         getPanelGroup().getChildren().remove(out);
         getPanelGroup().getChildren().add(out);
-    }
+        }
 
     public void doRemove(ActionEvent event) {
         getPanelGroup().getChildren().remove(0);
-    }
-
+        }
+    
     public void doRemoveAdd(ActionEvent event) {
         UIComponent component = getPanelGroup().getChildren().remove(0);
         getPanelGroup().getChildren().add(component);
-    }
-
+        }
+    
     public void doRemoveAddRemove(ActionEvent event) {
         UIComponent component = getPanelGroup().getChildren().remove(0);
         getPanelGroup().getChildren().add(component);
         getPanelGroup().getChildren().remove(component);
+        }
     }
-}

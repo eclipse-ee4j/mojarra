@@ -18,19 +18,16 @@
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:resourceDependency="http://javaserverfaces.java.net/resourceDependency">
-    
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:resourceDependency="http://javaserverfaces.java.net/resourceDependency">
     <h:head>
     </h:head>
-    
-    <h:body>
+    <h:body> 
         <h:form id="form">
-            <resourceDependency:hello binding="#{resourceDependencyBean.hello}" />
+            <resourceDependency:hello binding="#{resourceDependencyBean.hello}"/>
             <div>
                 <h:commandButton id="submit" value="Increment" action="#{resourceDependencyBean.add}" />
             </div>
-            
             <h:outputText value="#{resourceDependencyBean.counter}" />
         </h:form>
     </h:body>

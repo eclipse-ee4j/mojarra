@@ -44,7 +44,9 @@ public class FlashMessagesIT {
         webClient.close();
     }
 
+
     // ------------------------------------------------------------ Test Methods
+
 
     /**
      * Added for issue 1476.
@@ -58,6 +60,7 @@ public class FlashMessagesIT {
         String pageText = page.asText();
         assertTrue(pageText.contains("Mesage 1 survives redirect"));
         assertTrue(pageText.contains("Mesage 2 survives redirect"));
+
 
     }
 }

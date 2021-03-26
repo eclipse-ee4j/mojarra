@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,9 +19,10 @@ package com.sun.faces.spi;
 import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.Set;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * <p>
@@ -45,7 +46,7 @@ import javax.servlet.ServletContext;
  * <p>
  * The <code>AnnotationProvider</code> instance will be wrapped as a {@link java.util.concurrent.Future} and executed
  * during the environment initialization. The result of the future can be obtained by calling
- * {@link com.sun.faces.config.ConfigManager#getAnnotatedClasses(javax.faces.context.FacesContext)}.
+ * {@link com.sun.faces.config.ConfigManager#getAnnotatedClasses(jakarta.faces.context.FacesContext)}.
  * </p>
  *
  * <p>
@@ -68,7 +69,7 @@ import javax.servlet.ServletContext;
  * <p>
  * <code>public AnnotationProvider(ServletContext sc, AnnotationProvider parent)</code>
  * </p>
- * 
+ *
  * <p>
  * If decoration is not desired, then the custom provider must have a constructor that takes one paramer, a
  * <code>ServletContext</code>:
@@ -80,25 +81,24 @@ import javax.servlet.ServletContext;
  * <p>
  * All customer providers must extend this class.
  * </p>
- * 
+ *
  */
 public abstract class AnnotationProvider {
 
     protected ServletContext servletContext;
 
     /**
-     * The wrapped annotation provider. May be null if this class is not loaded via {@link ServiceLoader} (from a file
-     * named com.sun.faces.spi.AnnotationProvider) and is instead loaded via Mojarra's {@link ServiceFactory} (from a
-     * file named com.sun.faces.spi.annotationprovider).
+     * The wrapped annotation provider. May be null if this class is not loaded via {@link ServiceLoader} (from a file named
+     * com.sun.faces.spi.AnnotationProvider) and is instead loaded via Mojarra's {@link ServiceFactory} (from a file named
+     * com.sun.faces.spi.annotationprovider).
      */
     protected AnnotationProvider wrappedAnnotationProvider;
-    
+
     // ------------------------------------------------------------ Constructors
 
     public AnnotationProvider(ServletContext servletContext) {
         initialize(servletContext, null);
     }
-
 
     public AnnotationProvider() {
     }
@@ -119,12 +119,10 @@ public abstract class AnnotationProvider {
     // ---------------------------------------------------------- Public Methods
 
     /**
-     * @param urls
-     *            a <code>Set</code> of URLs that refer to specific faces-config.xml documents on the classpath. The
-     *            information returned by the map may return annotation information from sources outside of those defined by
-     *            the urls.
+     * @param urls a <code>Set</code> of URLs that refer to specific faces-config.xml documents on the classpath. The
+     * information returned by the map may return annotation information from sources outside of those defined by the urls.
      * @return a <code>Map</code> of classes mapped to a specific annotation type. If no annotations are present, this
-     *         method returns an empty <code>Map</code>.
+     * method returns an empty <code>Map</code>.
      */
     public abstract Map<Class<? extends Annotation>, Set<Class<?>>> getAnnotatedClasses(Set<URI> urls);
 

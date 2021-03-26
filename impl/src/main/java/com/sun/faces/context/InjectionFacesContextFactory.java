@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -21,22 +21,20 @@ import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.FacesContextFactory;
-import javax.faces.lifecycle.Lifecycle;
-import javax.servlet.ServletRequest;
-
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.FacesContextFactory;
+import jakarta.faces.lifecycle.Lifecycle;
+import jakarta.servlet.ServletRequest;
+
 /**
- * This {@link FacesContextFactory} is responsible for injecting the
- * default {@link FacesContext} instance into the top-level {@link FacesContext}
- * as configured by the runtime.  Doing this allows us to preserve backwards
- * compatibility as the API evolves without having the API rely on implementation
- * specific details.  
+ * This {@link FacesContextFactory} is responsible for injecting the default {@link FacesContext} instance into the
+ * top-level {@link FacesContext} as configured by the runtime. Doing this allows us to preserve backwards compatibility
+ * as the API evolves without having the API rely on implementation specific details.
  */
 public class InjectionFacesContextFactory extends FacesContextFactory {
 
@@ -44,22 +42,19 @@ public class InjectionFacesContextFactory extends FacesContextFactory {
     private Field defaultFacesContext;
     private Field defaultExternalContext;
 
-
-
     // ------------------------------------------------------------ Constructors
-
 
     public InjectionFacesContextFactory(FacesContextFactory delegate) {
         super(delegate);
 
         Util.notNull("facesContextFactory", delegate);
 
-         try {
+        try {
             defaultFacesContext = FacesContext.class.getDeclaredField("defaultFacesContext");
             defaultFacesContext.setAccessible(true);
         } catch (NoSuchFieldException nsfe) {
             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.log(Level.FINE, "Unable to find private field named 'defaultFacesContext' in javax.faces.context.FacesContext.");
+                LOGGER.log(Level.FINE, "Unable to find private field named 'defaultFacesContext' in jakarta.faces.context.FacesContext.");
             }
         } catch (SecurityException e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
@@ -72,7 +67,7 @@ public class InjectionFacesContextFactory extends FacesContextFactory {
             defaultExternalContext.setAccessible(true);
         } catch (NoSuchFieldException nsfe) {
             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.log(Level.FINE, "Unable to find private field named 'defaultExternalContext' in javax.faces.context.ExternalContext.");
+                LOGGER.log(Level.FINE, "Unable to find private field named 'defaultExternalContext' in jakarta.faces.context.ExternalContext.");
             }
         } catch (SecurityException e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
@@ -83,26 +78,16 @@ public class InjectionFacesContextFactory extends FacesContextFactory {
 
     }
 
-
     // ---------------------------------------- Methods from FacesContextFactory
 
-
     @Override
-    public FacesContext getFacesContext(Object context,
-                                        Object request,
-                                        Object response,
-                                        Lifecycle lifecycle)
-    throws FacesException {
+    public FacesContext getFacesContext(Object context, Object request, Object response, Lifecycle lifecycle) throws FacesException {
 
-        FacesContext ctx = getWrapped().getFacesContext(context,
-                                                    request,
-                                                    response,
-                                                    lifecycle);
+        FacesContext ctx = getWrapped().getFacesContext(context, request, response, lifecycle);
         if (ctx == null) {
             // No i18n here
-            String message = MessageFormat
-                  .format("Delegate FacesContextFactory, {0}, returned null when calling getFacesContext().",
-                          getWrapped().getClass().getName());
+            String message = MessageFormat.format("Delegate FacesContextFactory, {0}, returned null when calling getFacesContext().",
+                    getWrapped().getClass().getName());
             throw new IllegalStateException(message);
         }
         injectDefaults(ctx, request);
@@ -110,15 +95,12 @@ public class InjectionFacesContextFactory extends FacesContextFactory {
 
     }
 
-
     // --------------------------------------------------------- Private Methods
-
 
     private void injectDefaults(FacesContext target, Object request) {
 
         if (defaultFacesContext != null) {
-            FacesContext defaultFC =
-                  FacesContextImpl.getDefaultFacesContext();
+            FacesContext defaultFC = FacesContextImpl.getDefaultFacesContext();
             if (defaultFC != null) {
                 try {
                     defaultFacesContext.set(target, defaultFC);

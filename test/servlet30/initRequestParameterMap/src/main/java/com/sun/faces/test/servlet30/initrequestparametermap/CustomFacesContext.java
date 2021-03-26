@@ -39,7 +39,6 @@ public class CustomFacesContext extends FacesContextWrapper {
         return delegate;
     }
 
-    @Override
     public void addMessage(String clientId, FacesMessage message) {
         delegate.addMessage(clientId, message);
     }

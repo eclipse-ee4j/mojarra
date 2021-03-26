@@ -16,22 +16,20 @@
 
 package com.sun.faces.test.servlet30.facelets;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
+import java.io.Serializable;
+import javax.faces.bean.ManagedBean;
 
-@Named
-@RequestScoped
-public class RepeatValueBean {
+@ManagedBean(name = "repeatValueBean")
+public class RepeatValueBean implements Serializable {
 
     private String[] strList;
-    private int size = 5;
+    public int size = 5;
 
     public String[] getStrList() {
         strList = new String[10];
         for (int i = 0; i < 10; i++) {
             strList[i] = "str" + i;
         }
-
         return strList;
     }
 

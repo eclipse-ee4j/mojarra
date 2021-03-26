@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -25,7 +25,7 @@ import java.io.Serializable;
 public class IterationStatus implements Serializable {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
 
@@ -39,34 +39,19 @@ public class IterationStatus implements Serializable {
     private final Object current;
     private final int iterationCount;
 
-
     // ------------------------------------------------------------ Constructors
-
 
     /**
      * Constructor used for ui:repeat.
      */
-    public IterationStatus(boolean first,
-                           boolean last,
-                           int index,
-                           Integer begin,
-                           Integer end,
-                           Integer step) {
+    public IterationStatus(boolean first, boolean last, int index, Integer begin, Integer end, Integer step) {
         this(first, last, index, begin, end, step, null, 0);
     }
-
 
     /**
      * Constructor used for c:forEach varStatus
      */
-    public IterationStatus(boolean first,
-                           boolean last,
-                           int index,
-                           Integer begin,
-                           Integer end,
-                           Integer step,
-                           Object current,
-                           int iterationCount) {
+    public IterationStatus(boolean first, boolean last, int index, Integer begin, Integer end, Integer step, Object current, int iterationCount) {
         this.index = index;
         this.begin = begin;
         this.end = end;
@@ -74,22 +59,20 @@ public class IterationStatus implements Serializable {
         this.first = first;
         this.last = last;
         this.current = current;
-        int iBegin = ((begin != null) ? begin : 0);
-        int iStep = ((step != null) ? step : 1);
-        this.even = ((index - iBegin) / iStep) % 2 == 0;
+        int iBegin = begin != null ? begin : 0;
+        int iStep = step != null ? step : 1;
+        even = (index - iBegin) / iStep % 2 == 0;
         this.iterationCount = iterationCount;
     }
 
-
     // ---------------------------------------------- Methods from LoopTagStatus
 
-
     public boolean isFirst() {
-        return this.first;
+        return first;
     }
 
     public boolean isLast() {
-        return this.last;
+        return last;
     }
 
     public Integer getBegin() {
@@ -118,7 +101,6 @@ public class IterationStatus implements Serializable {
 
     // ---------------------------------------------------------- Public Methods
 
-
     public boolean isEven() {
         return even;
     }
@@ -129,16 +111,7 @@ public class IterationStatus implements Serializable {
 
     @Override
     public String toString() {
-        return "IterationStatus{" +
-               "index=" + index +
-               ", first=" + first +
-               ", last=" + last +
-               ", begin=" + begin +
-               ", end=" + end +
-               ", step=" + step +
-               ", even=" + even +
-               ", current=" + current +
-               ", iterationCount=" + iterationCount +
-               '}';
+        return "IterationStatus{" + "index=" + index + ", first=" + first + ", last=" + last + ", begin=" + begin + ", end=" + end + ", step=" + step
+                + ", even=" + even + ", current=" + current + ", iterationCount=" + iterationCount + '}';
     }
 }

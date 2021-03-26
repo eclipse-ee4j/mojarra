@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -27,8 +27,8 @@ import java.util.Set;
 import com.sun.faces.config.WebConfiguration;
 
 /**
- * This class maintains per-application information pertaining to partail or full state saving as a
- * whole or partial state saving with some views using full state saving.
+ * This class maintains per-application information pertaining to partail or full state saving as a whole or partial
+ * state saving with some views using full state saving.
  */
 public class ApplicationStateInfo {
 
@@ -55,8 +55,8 @@ public class ApplicationStateInfo {
     /**
      * @param viewId the view ID to check
      * @throws IllegalArgumentException if viewId is null
-     * @return <code>true</code> if partial state saving should be used for the specified view ID,
-     *         otherwise <code>false</code>
+     * @return <code>true</code> if partial state saving should be used for the specified view ID, otherwise
+     * <code>false</code>
      */
     public boolean usePartialStateSaving(String viewId) {
         notNullViewId(viewId);

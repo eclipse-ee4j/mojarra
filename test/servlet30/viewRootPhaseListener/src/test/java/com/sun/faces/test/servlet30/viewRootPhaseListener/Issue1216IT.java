@@ -39,7 +39,7 @@ public class Issue1216IT {
 
     /**
      * Setup before testing.
-     *
+     * 
      * @throws Exception when a serious error occurs.
      */
     @BeforeClass
@@ -48,7 +48,7 @@ public class Issue1216IT {
 
     /**
      * Cleanup after testing.
-     *
+     * 
      * @throws Exception when a serious error occurs.
      */
     @AfterClass
@@ -78,10 +78,10 @@ public class Issue1216IT {
 
         List<NameValuePair> headers = page.getWebResponse().getResponseHeaders();
         StringBuilder result = new StringBuilder();
-        headers.stream().filter(header -> header.getName().equals(MyExceptionHandler.KEY))
+        headers.stream()
+                .filter(header -> header.getName().equals(MyExceptionHandler.KEY))
                 .forEach(header -> result.append(header.getValue()).append(" "));
-        assertEquals(result.toString().trim(),
-                "Thrown from faces-config.xml PhaseListener Thrown from faces-config.xml PhaseListener Thrown from UIViewRoot PhaseListener");
-
+        assertEquals(result.toString().trim(), "Thrown from faces-config.xml PhaseListener Thrown from faces-config.xml PhaseListener Thrown from UIViewRoot PhaseListener");
+        
     }
 }

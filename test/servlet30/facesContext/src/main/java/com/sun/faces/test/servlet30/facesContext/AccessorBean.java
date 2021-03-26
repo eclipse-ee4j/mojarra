@@ -16,33 +16,27 @@
 
 package com.sun.faces.test.servlet30.facesContext;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.Writer;
 import java.util.Locale;
-
-import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseStream;
 import javax.faces.context.ResponseWriter;
-import javax.inject.Named;
+import static org.junit.Assert.*;
 
 /**
  * The managed bean for the accessor tests.
  *
  * @author Manfred Riem (manfred.riem@oracle.com)
  */
-@Named
+@ManagedBean(name = "accessorBean")
 @RequestScoped
 public class AccessorBean implements Serializable {
-
-    private static final long serialVersionUID = 1L;
 
     public String getAccessorResult1() {
         UIViewRoot oldRoot = FacesContext.getCurrentInstance().getViewRoot();
@@ -54,7 +48,6 @@ public class AccessorBean implements Serializable {
         assertNotNull(root);
         assertEquals(root, FacesContext.getCurrentInstance().getViewRoot());
         FacesContext.getCurrentInstance().setViewRoot(oldRoot);
-
         return "PASSED";
     }
 
@@ -62,7 +55,6 @@ public class AccessorBean implements Serializable {
         ResponseStream oldStream = FacesContext.getCurrentInstance().getResponseStream();
         ResponseStream responseStream = new ResponseStream() {
 
-            @Override
             public void write(int b) {
             }
         };
@@ -85,7 +77,6 @@ public class AccessorBean implements Serializable {
             }
 
             ;
-
             @Override
             public String getContentType() {
                 throw new UnsupportedOperationException("Not supported yet.");
@@ -171,7 +162,7 @@ public class AccessorBean implements Serializable {
             fail();
         } catch (Exception exception) {
         }
-
+        
         FacesContext.getCurrentInstance().setResponseWriter(oldWriter);
         return "PASSED";
     }

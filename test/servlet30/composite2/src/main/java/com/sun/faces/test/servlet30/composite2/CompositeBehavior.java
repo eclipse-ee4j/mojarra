@@ -16,10 +16,10 @@
 
 package com.sun.faces.test.servlet30.composite2;
 
-import javax.faces.component.UIOutput;
 import javax.faces.component.behavior.ClientBehaviorBase;
 import javax.faces.component.behavior.ClientBehaviorContext;
 import javax.faces.component.behavior.FacesBehavior;
+import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
 
 @FacesBehavior("compositeBehavior")
@@ -33,7 +33,8 @@ public class CompositeBehavior extends ClientBehaviorBase {
             result = "document.write(\"compositeBehavior script rendered\");";
         }
 
-        UIOutput comp = (UIOutput) FacesContext.getCurrentInstance().getViewRoot().findComponent("form:out");
+        FacesContext context = FacesContext.getCurrentInstance();
+        UIOutput comp = (UIOutput)context.getViewRoot().findComponent("form:out");
         comp.setValue(result);
 
         return result;

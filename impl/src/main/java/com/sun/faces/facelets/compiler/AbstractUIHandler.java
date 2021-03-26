@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,16 +18,14 @@ package com.sun.faces.facelets.compiler;
 
 import com.sun.faces.facelets.tag.jsf.ComponentSupport;
 
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletHandler;
-import javax.faces.view.facelets.TextHandler;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.TextHandler;
 
 public abstract class AbstractUIHandler implements FaceletHandler, TextHandler {
 
-    public void addComponent(FaceletContext ctx,
-                             UIComponent parent,
-                             UIComponent c) {
+    public void addComponent(FaceletContext ctx, UIComponent parent, UIComponent c) {
         ComponentSupport.addComponent(ctx, parent, c);
     }
 

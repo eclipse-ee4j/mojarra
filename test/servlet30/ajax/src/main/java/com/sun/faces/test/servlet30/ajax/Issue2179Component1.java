@@ -22,19 +22,17 @@ import javax.faces.component.FacesComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 
-@FacesComponent(value = "com.sun.faces.test.servlet30.ajax.Issue2179Component1")
+@FacesComponent( value = "com.sun.faces.test.servlet30.ajax.Issue2179Component1" )
 public class Issue2179Component1 extends UIInput {
 
     public Issue2179Component1() {
-        setRendererType("javax.faces.Text");
+        setRendererType("jakarta.faces.Text");
     }
 
-    @Override
     public String getFamily() {
-        return ("javax.faces.Input");
+        return ("jakarta.faces.Input");
     }
 
-    @Override
     public void encodeAll(FacesContext context) throws IOException {
         super.encodeAll(context);
         throw new IOException("IO EXCEPTION!!!!!");

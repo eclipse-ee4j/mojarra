@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,15 +16,15 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UISelectBoolean;
-import javax.faces.component.ValueHolder;
-import javax.faces.convert.Converter;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.MetaRule;
-import javax.faces.view.facelets.Metadata;
-import javax.faces.view.facelets.MetadataTarget;
-import javax.faces.view.facelets.TagAttribute;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UISelectBoolean;
+import jakarta.faces.component.ValueHolder;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRule;
+import jakarta.faces.view.facelets.Metadata;
+import jakarta.faces.view.facelets.MetadataTarget;
+import jakarta.faces.view.facelets.TagAttribute;
 
 /**
  *
@@ -43,8 +43,7 @@ final class ValueHolderRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((ValueHolder) instance).setConverter(ctx.getFacesContext()
-                    .getApplication().createConverter(this.converterId));
+            ((ValueHolder) instance).setConverter(ctx.getFacesContext().getApplication().createConverter(converterId));
         }
     }
 
@@ -58,8 +57,7 @@ final class ValueHolderRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((UIComponent) instance).setValueExpression("converter", attr
-                    .getValueExpression(ctx, Converter.class));
+            ((UIComponent) instance).setValueExpression("converter", attr.getValueExpression(ctx, Converter.class));
         }
     }
 
@@ -74,30 +72,28 @@ final class ValueHolderRule extends MetaRule {
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
             UIComponent c = (UIComponent) instance;
-            c.setValueExpression("value", attr.getValueExpression(ctx, ((c instanceof UISelectBoolean)
-                                                                        ? Boolean.class
-                                                                        : Object.class)));
+            c.setValueExpression("value", attr.getValueExpression(ctx, c instanceof UISelectBoolean ? Boolean.class : Object.class));
         }
     }
 
     public final static ValueHolderRule Instance = new ValueHolderRule();
 
     @Override
-    public Metadata applyRule(String name, TagAttribute attribute,
-            MetadataTarget meta) {
-        if (meta.isTargetInstanceOf(ValueHolder.class)) {
+    public Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta) {
+        if (!meta.isTargetInstanceOf(ValueHolder.class)) {
+            return null;
+        }
 
-            if ("converter".equals(name)) {
-                if (attribute.isLiteral()) {
-                    return new LiteralConverterMetadata(attribute.getValue());
-                } else {
-                    return new DynamicConverterMetadata2(attribute);
-                }
+        if ("converter".equals(name)) {
+            if (attribute.isLiteral()) {
+                return new LiteralConverterMetadata(attribute.getValue());
             }
 
-            if ("value".equals(name)) {
-                return new DynamicValueExpressionMetadata(attribute);
-            }
+            return new DynamicConverterMetadata2(attribute);
+        }
+
+        if ("value".equals(name)) {
+            return new DynamicValueExpressionMetadata(attribute);
         }
 
         return null;

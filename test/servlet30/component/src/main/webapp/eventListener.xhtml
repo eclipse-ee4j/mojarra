@@ -20,28 +20,22 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:eventListener="http://eventlistener">
-    
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:eventListener="http://eventlistener"
+      >
     <h:head>
         <title></title>
     </h:head>
-    
     <h:body>
         <h:form prependId="false">
             <eventListener:listenersComponent id="listenersComponent">
-                <f:validateLength minimum="3" />
+                <f:validateLength minimum="3"/>
             </eventListener:listenersComponent>
-            
             <eventListener:listenerComponent id="listenerComponent">
-                <f:validateLength minimum="3" />
+                <f:validateLength minimum="3"/>
             </eventListener:listenerComponent>
-            
-            <p>#{preRenderComponentEvent} #{preValidateEvent}
-                #{postValidateEvent}
-            </p>
-            
+            <p>#{preRenderComponentEvent} #{preValidateEvent} #{postValidateEvent}</p>
             <h:commandButton id="button" value="reload" />
         </h:form>
     </h:body>

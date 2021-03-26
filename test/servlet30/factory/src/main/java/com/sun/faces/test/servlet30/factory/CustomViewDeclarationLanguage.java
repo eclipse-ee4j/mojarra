@@ -27,7 +27,8 @@ import javax.faces.view.StateManagementStrategy;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewMetadata;
 
-public class CustomViewDeclarationLanguage extends ViewDeclarationLanguage implements FacesWrapper<ViewDeclarationLanguage> {
+public class CustomViewDeclarationLanguage extends ViewDeclarationLanguage
+        implements FacesWrapper<ViewDeclarationLanguage> {
 
     private final ViewDeclarationLanguage toWrap;
 

@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
- * Copyright (c) 2018 Payara Services Limited.
- * All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,16 +16,14 @@
 
 package com.sun.faces.test.servlet30.charactercombat;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import org.junit.After;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 
 public class CharacterCombatIT {
 
@@ -50,15 +46,15 @@ public class CharacterCombatIT {
     @Test
     public void test01() throws Exception {
 
-        HtmlPage page = webClient.getPage(webUrl + "/main.xhtml");
-        HtmlSubmitInput nextButton = (HtmlSubmitInput) page.getElementById("next");
+        HtmlPage page = webClient.getPage(webUrl + "/main.faces");
+        HtmlSubmitInput nextButton = (HtmlSubmitInput) page.getElementById("wizard-buttons:next");
         page = nextButton.click();
         String text = page.asText();
         assertTrue(text.contains("Gandalf"));
         assertTrue(text.contains("Frodo"));
         assertTrue(text.contains("Legolas"));
 
-        nextButton = (HtmlSubmitInput) page.getElementById("next");
+        nextButton = (HtmlSubmitInput) page.getElementById("wizard-buttons:next");
         page = nextButton.click();
 
         text = page.asXml();
@@ -66,7 +62,7 @@ public class CharacterCombatIT {
         assertTrue(text.contains("Frodo"));
         assertTrue(text.contains("Legolas"));
 
-        nextButton = (HtmlSubmitInput) page.getElementById("next");
+        nextButton = (HtmlSubmitInput) page.getElementById("wizard-buttons:next");
         page = nextButton.click();
 
         text = page.asText();

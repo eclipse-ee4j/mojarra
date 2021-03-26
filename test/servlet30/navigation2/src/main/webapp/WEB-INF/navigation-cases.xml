@@ -44,231 +44,231 @@
 
 <tests>
 
-  <!-- ============ Tests From /login.xhtml view Identifier ================= -->
+  <!-- ============ Tests From /login.jsp view Identifier ================= -->
 
 
   <!-- Positive tests that should match specific rules -->
 
-  <test fromViewId="/login.xhtml"
+  <test fromViewId="/login.jsp"
      fromAction="#{userBean.login}"
        fromOutcome="success"
-          toViewId="/home.xhtml"/>
+          toViewId="/home.jsp"/>
 
-  <test fromViewId="/login.xhtml"
+  <test fromViewId="/login.jsp"
      fromAction="#{userBean.register}"
        fromOutcome="success"
-          toViewId="/welcome.xhtml"/>
+          toViewId="/welcome.jsp"/>
 
-  <test fromViewId="/login.xhtml"
+  <test fromViewId="/login.jsp"
      fromAction="#{userBean.register}"
        fromOutcome="duplicateUserName"
-          toViewId="/try-another-name.xhtml"/>
+          toViewId="/try-another-name.jsp"/>
 
 
   <!-- Positive tests that should match application wide rules -->
 
   <!-- Matches the generic logout rule #1 -->
-  <test fromViewId="/login.xhtml"
+  <test fromViewId="/login.jsp"
      fromAction="#{userBean.logout}"
-          toViewId="/logout.xhtml"/>
+          toViewId="/logout.jsp"/>
 
   <!-- Matches the generic logout rule #2 -->
-  <test fromViewId="/login.xhtml"
+  <test fromViewId="/login.jsp"
      fromAction="#{userBean.logout}"
        fromOutcome="whatever"
-          toViewId="/logout.xhtml"/>
+          toViewId="/logout.jsp"/>
 
   <!-- Matches generic error outcome rule #1 -->
-  <test fromViewId="/login.xhtml"
+  <test fromViewId="/login.jsp"
        fromOutcome="loginRequired"
-          toViewId="/must-login-first.xhtml"/>
+          toViewId="/must-login-first.jsp"/>
 
   <!-- Matches generic error outcome rule #2 -->
-  <test fromViewId="/login.xhtml"
+  <test fromViewId="/login.jsp"
      fromAction="#{foo.bar}"
        fromOutcome="loginRequired"
-          toViewId="/must-login-first.xhtml"/>
+          toViewId="/must-login-first.jsp"/>
 
   <!-- Matches generic search results #1 -->
-  <test fromViewId="/login.xhtml"
+  <test fromViewId="/login.jsp"
      fromAction="#{searchForm.go}"
-          toViewId="/search-problem.xhtml"/>
+          toViewId="/search-problem.jsp"/>
 
   <!-- Matches generic search results #2 -->
-  <test fromViewId="/login.xhtml"
+  <test fromViewId="/login.jsp"
      fromAction="#{searchForm.go}"
        fromOutcome="success"
-          toViewId="/search-results.xhtml"/>
+          toViewId="/search-results.jsp"/>
 
 
   <!-- Negative tests that should not match any rules -->
 
 
   <!-- Mismatched fromAction -->
-  <test fromViewId="/login.xhtml"
+  <test fromViewId="/login.jsp"
      fromAction="#{foo.bar}"
        fromOutcome="success"
-          toViewId="/login.xhtml"/>
+          toViewId="/login.jsp"/>
 
   <!-- Mismatched fromOutcome -->
-  <test fromViewId="/login.xhtml"
+  <test fromViewId="/login.jsp"
      fromAction="#{userBean.login}"
        fromOutcome="foobar"
-          toViewId="/login.xhtml"/>
+          toViewId="/login.jsp"/>
 
   <!-- Mismatched fromAction -->
-  <test fromViewId="/login.xhtml"
+  <test fromViewId="/login.jsp"
      fromAction="*"
        fromOutcome="success"
-          toViewId="/login.xhtml"/>
+          toViewId="/login.jsp"/>
 
   <!-- Mismatched fromOutcome -->
-  <test fromViewId="/login.xhtml"
+  <test fromViewId="/login.jsp"
      fromAction="#{userBean.login}"
        fromOutcome="*"
-          toViewId="/login.xhtml"/>
+          toViewId="/login.jsp"/>
 
   <!-- Missing fromAction -->
-  <test fromViewId="/login.xhtml"
+  <test fromViewId="/login.jsp"
        fromOutcome="success"
-          toViewId="/login.xhtml"/>
+          toViewId="/login.jsp"/>
 
   <!-- Missing fromOutcome -->
-  <test fromViewId="/login.xhtml"
+  <test fromViewId="/login.jsp"
      fromAction="#{userBean.login}"
-          toViewId="/login.xhtml"/>
+          toViewId="/login.jsp"/>
 
 
-  <!-- ============ Tests From /other.xhtml view Identifier ================= -->
+  <!-- ============ Tests From /other.jsp view Identifier ================= -->
 
 
   <!-- Positive tests that should match application wide rules -->
 
 
   <!-- Matches the generic logout rule #1 -->
-  <test fromViewId="/other.xhtml"
+  <test fromViewId="/other.jsp"
      fromAction="#{userBean.logout}"
-          toViewId="/logout.xhtml"/>
+          toViewId="/logout.jsp"/>
 
   <!-- Matches the generic logout rule #2 -->
-  <test fromViewId="/other.xhtml"
+  <test fromViewId="/other.jsp"
      fromAction="#{userBean.logout}"
        fromOutcome="whatever"
-          toViewId="/logout.xhtml"/>
+          toViewId="/logout.jsp"/>
 
   <!-- Matches generic error outcome rule #1 -->
-  <test fromViewId="/other.xhtml"
+  <test fromViewId="/other.jsp"
        fromOutcome="loginRequired"
-          toViewId="/must-login-first.xhtml"/>
+          toViewId="/must-login-first.jsp"/>
 
   <!-- Matches generic error outcome rule #2 -->
-  <test fromViewId="/other.xhtml"
+  <test fromViewId="/other.jsp"
      fromAction="#{foo.bar}"
        fromOutcome="loginRequired"
-          toViewId="/must-login-first.xhtml"/>
+          toViewId="/must-login-first.jsp"/>
 
   <!-- Matches generic search results #1 -->
-  <test fromViewId="/other.xhtml"
+  <test fromViewId="/other.jsp"
      fromAction="#{searchForm.go}"
-          toViewId="/search-problem.xhtml"/>
+          toViewId="/search-problem.jsp"/>
 
   <!-- Matches generic search results #2 -->
-  <test fromViewId="/other.xhtml"
+  <test fromViewId="/other.jsp"
      fromAction="#{searchForm.go}"
        fromOutcome="success"
-          toViewId="/search-results.xhtml"/>
+          toViewId="/search-results.jsp"/>
 
 
   <!-- Negative tests that should not match any rules -->
 
 
   <!-- Mismatched fromAction -->
-  <test fromViewId="/other.xhtml"
+  <test fromViewId="/other.jsp"
      fromAction="#{foo.bar}"
        fromOutcome="success"
-          toViewId="/other.xhtml"/>
+          toViewId="/other.jsp"/>
 
   <!-- Mismatched fromOutcome -->
-  <test fromViewId="/other.xhtml"
+  <test fromViewId="/other.jsp"
      fromAction="#{userBean.login}"
        fromOutcome="foobar"
-          toViewId="/other.xhtml"/>
+          toViewId="/other.jsp"/>
 
   <!-- Missing fromAction -->
-  <test fromViewId="/other.xhtml"
+  <test fromViewId="/other.jsp"
        fromOutcome="success"
-          toViewId="/other.xhtml"/>
+          toViewId="/other.jsp"/>
 
   <!-- Missing fromOutcome -->
-  <test fromViewId="/other.xhtml"
+  <test fromViewId="/other.jsp"
      fromAction="#{userBean.login}"
-          toViewId="/other.xhtml"/>
+          toViewId="/other.jsp"/>
 
 
-  <!-- ========= Tests From /movies/index.xhtml View Identifier ============= -->
+  <!-- ========= Tests From /movies/index.jsp View Identifier ============= -->
 
 
   <!-- Positive tests that should match application wide rules -->
 
 
   <!-- Matches the generic logout rule #1 -->
-  <test fromViewId="/movies/index.xhtml"
+  <test fromViewId="/movies/index.jsp"
      fromAction="#{userBean.logout}"
-          toViewId="/logout.xhtml"/>
+          toViewId="/logout.jsp"/>
 
   <!-- Matches the generic logout rule #2 -->
-  <test fromViewId="/movies/index.xhtml"
+  <test fromViewId="/movies/index.jsp"
      fromAction="#{userBean.logout}"
        fromOutcome="whatever"
-          toViewId="/logout.xhtml"/>
+          toViewId="/logout.jsp"/>
 
   <!-- Matches generic error outcome rule #1 -->
-  <test fromViewId="/movies/index.xhtml"
+  <test fromViewId="/movies/index.jsp"
        fromOutcome="loginRequired"
-          toViewId="/must-login-first.xhtml"/>
+          toViewId="/must-login-first.jsp"/>
 
   <!-- Matches generic error outcome rule #2 -->
-  <test fromViewId="/movies/index.xhtml"
+  <test fromViewId="/movies/index.jsp"
      fromAction="#{foo.bar}"
        fromOutcome="loginRequired"
-          toViewId="/must-login-first.xhtml"/>
+          toViewId="/must-login-first.jsp"/>
 
   <!-- Matches special search results #1 -->
-  <test fromViewId="/movies/index.xhtml"
+  <test fromViewId="/movies/index.jsp"
      fromAction="#{searchForm.go}"
-          toViewId="/search-problem.xhtml"/>
+          toViewId="/search-problem.jsp"/>
 
   <!-- Matches special search results #2 -->
-  <test fromViewId="/movies/index.xhtml"
+  <test fromViewId="/movies/index.jsp"
      fromAction="#{searchForm.go}"
        fromOutcome="success"
-          toViewId="/movie-search-results.xhtml"/>
+          toViewId="/movie-search-results.jsp"/>
 
 
   <!-- Negative tests that should not match any rules -->
 
 
   <!-- Mismatched fromAction -->
-  <test fromViewId="/movies/index.xhtml"
+  <test fromViewId="/movies/index.jsp"
      fromAction="#{foo.bar}"
        fromOutcome="success"
-          toViewId="/movies/index.xhtml"/>
+          toViewId="/movies/index.jsp"/>
 
   <!-- Mismatched fromOutcome -->
-  <test fromViewId="/movies/index.xhtml"
+  <test fromViewId="/movies/index.jsp"
      fromAction="#{userBean.login}"
        fromOutcome="foobar"
-          toViewId="/movies/index.xhtml"/>
+          toViewId="/movies/index.jsp"/>
 
   <!-- Missing fromAction -->
-  <test fromViewId="/movies/index.xhtml"
+  <test fromViewId="/movies/index.jsp"
        fromOutcome="success"
-          toViewId="/movies/index.xhtml"/>
+          toViewId="/movies/index.jsp"/>
 
   <!-- Missing fromOutcome -->
-  <test fromViewId="/movies/index.xhtml"
+  <test fromViewId="/movies/index.jsp"
      fromAction="#{userBean.login}"
-          toViewId="/movies/index.xhtml"/>
+          toViewId="/movies/index.jsp"/>
 
 
 </tests>

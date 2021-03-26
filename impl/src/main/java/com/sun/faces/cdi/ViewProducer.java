@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,14 +16,13 @@
 
 package com.sun.faces.cdi;
 
-import javax.enterprise.context.RequestScoped;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p class="changed_added_2_3">
- *  The ViewProducer is the CDI producer that allows you to inject the 
- *  UIViewRoot and to do EL resolving of #{view}
+ * The ViewProducer is the CDI producer that allows you to inject the UIViewRoot and to do EL resolving of #{view}
  * </p>
  *
  * @since 2.3
@@ -35,13 +34,10 @@ public class ViewProducer extends CdiProducer<UIViewRoot> {
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
+
     public ViewProducer() {
-        super.name("view")
-             .scope(RequestScoped.class)
-             .types(UIViewRoot.class)
-             .beanClass(UIViewRoot.class)
-             .create(e -> FacesContext.getCurrentInstance().getViewRoot());
+        super.name("view").scope(RequestScoped.class).types(UIViewRoot.class).beanClass(UIViewRoot.class)
+                .create(e -> FacesContext.getCurrentInstance().getViewRoot());
     }
 
 }

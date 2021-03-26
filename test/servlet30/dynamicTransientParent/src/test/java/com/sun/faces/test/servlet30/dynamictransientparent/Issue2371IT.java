@@ -16,15 +16,12 @@
 
 package com.sun.faces.test.servlet30.dynamictransientparent;
 
-import static org.junit.Assert.assertTrue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+
+import org.junit.*;
+import static org.junit.Assert.*;
 
 public class Issue2371IT {
 
@@ -32,7 +29,6 @@ public class Issue2371IT {
      * Stores the web URL.
      */
     private String webUrl;
-
     /**
      * Stores the web client.
      */
@@ -49,15 +45,16 @@ public class Issue2371IT {
         webClient.close();
     }
 
+
     // ------------------------------------------------------------ Test Methods
 
     @Test
     public void testTransientParent() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "faces/transientParent.xhtml");
+
+        HtmlPage page = webClient.getPage(webUrl+"faces/transientParent.xhtml");
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("helloForm:button");
         page = button.click();
         assertTrue(page.asText().contains("After INVOKE_APPLICATION 5 Transient Subtree Exists"));
-
         page = button.click();
         assertTrue(page.asText().contains("After RESTORE_VIEW 1 Transient Subtree Does Not Exist"));
     }

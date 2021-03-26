@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,11 +17,17 @@
 package com.sun.faces.facelets.tag.jstl.fn;
 
 import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 /**
  * Implementations of JSTL Functions
- * 
+ *
  * @author Jacob Hookom
  */
 public final class JstlFunction {
@@ -94,7 +100,7 @@ public final class JstlFunction {
     }
 
     public static String join(String[] a, String delim) {
-        if (a == null|| a.length == 0) {
+        if (a == null || a.length == 0) {
             return "";
         }
         boolean skipDelim = false;
@@ -102,9 +108,9 @@ public final class JstlFunction {
             skipDelim = true;
         }
         StringBuilder sb = new StringBuilder();
-        for (int i = 0, len = a.length, delimCount = (len - 1); i < len; i++) {
+        for (int i = 0, len = a.length, delimCount = len - 1; i < len; i++) {
             sb.append(a[i]);
-            if (!skipDelim && (i < delimCount)) {
+            if (!skipDelim && i < delimCount) {
                 sb.append(delim);
             }
         }
@@ -145,10 +151,9 @@ public final class JstlFunction {
             }
             return count;
         }
-        throw new IllegalArgumentException("Object type not supported: "
-                + obj.getClass().getName());
+        throw new IllegalArgumentException("Object type not supported: " + obj.getClass().getName());
     }
-    
+
     public static String replace(String value, String before, String after) {
         if (value == null) {
             value = "";
@@ -168,13 +173,13 @@ public final class JstlFunction {
 
         return value.replaceAll(before, after);
     }
-    
+
     public static String[] split(String value, String d) {
         if (value == null) {
             value = "";
         }
         if (value.length() == 0) {
-            return new String[]{ "" };
+            return new String[] { "" };
         }
         if (d == null) {
             d = "";
@@ -184,13 +189,13 @@ public final class JstlFunction {
         }
 
         List<String> tokens = new ArrayList<>();
-        for (StringTokenizer st = new StringTokenizer(value, d); st.hasMoreTokens(); ) {
+        for (StringTokenizer st = new StringTokenizer(value, d); st.hasMoreTokens();) {
             tokens.add(st.nextToken());
         }
 
         return tokens.toArray(new String[tokens.size()]);
     }
-    
+
     public static boolean startsWith(String value, String p) {
         if (value == null) {
             value = "";
@@ -200,13 +205,13 @@ public final class JstlFunction {
         }
         return value.startsWith(p);
     }
-    
+
     public static String substring(String v, int s, int e) {
         if (v == null) {
             v = "";
         }
         if (s >= v.length()) {
-            return "";            
+            return "";
         }
         if (s < 0) {
             s = 0;
@@ -219,7 +224,7 @@ public final class JstlFunction {
         }
         return v.substring(s, e);
     }
-    
+
     public static String substringAfter(String v, String p) {
         if (v == null) {
             v = "";
@@ -234,9 +239,9 @@ public final class JstlFunction {
         if (i == -1) {
             return "";
         }
-        return v.substring(i+p.length());
+        return v.substring(i + p.length());
     }
-    
+
     public static String substringBefore(String v, String s) {
         if (v == null) {
             v = "";
@@ -253,21 +258,21 @@ public final class JstlFunction {
         }
         return v.substring(0, i);
     }
-    
+
     public static String toLowerCase(String v) {
         if (v == null || v.length() == 0) {
             return "";
         }
         return v.toLowerCase();
     }
-    
+
     public static String toUpperCase(String v) {
         if (v == null || v.length() == 0) {
             return "";
         }
         return v.toUpperCase();
     }
-    
+
     public static String trim(String v) {
         if (v == null || v.length() == 0) {
             return "";

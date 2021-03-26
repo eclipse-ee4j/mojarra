@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,21 +16,6 @@
 
 package com.sun.faces.config.processor;
 
-import com.sun.faces.config.Verifier;
-import com.sun.faces.config.manager.documents.DocumentInfo;
-import com.sun.faces.util.FacesLogger;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Document;
-
-import javax.faces.application.Application;
-import javax.faces.component.behavior.Behavior;
-import javax.faces.component.behavior.FacesBehavior;
-import javax.faces.context.FacesContext;
-import javax.servlet.ServletContext;
-import javax.xml.xpath.XPathExpressionException;
-
 import static java.text.MessageFormat.format;
 import static java.util.logging.Level.FINE;
 
@@ -38,10 +23,26 @@ import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.xpath.XPathExpressionException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import com.sun.faces.config.Verifier;
+import com.sun.faces.config.manager.documents.DocumentInfo;
+import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.application.Application;
+import jakarta.faces.component.behavior.Behavior;
+import jakarta.faces.component.behavior.FacesBehavior;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.ServletContext;
+
 /**
  * <p>
- * This <code>ConfigProcessor</code> handles all elements defined under
- * <code>/faces-config/behavior</code>.
+ * This <code>ConfigProcessor</code> handles all elements defined under <code>/faces-config/behavior</code>.
  * </p>
  */
 public class BehaviorConfigProcessor extends AbstractConfigProcessor {
@@ -72,7 +73,7 @@ public class BehaviorConfigProcessor extends AbstractConfigProcessor {
     // -------------------------------------------- Methods from ConfigProcessor
 
     /**
-     * @see ConfigProcessor#process(javax.servlet.ServletContext,com.sun.faces.config.manager.documents.DocumentInfo[])
+     * @see ConfigProcessor#process(jakarta.servlet.ServletContext,com.sun.faces.config.manager.documents.DocumentInfo[])
      */
     @Override
     public void process(ServletContext sc, FacesContext facesContext, DocumentInfo[] documentInfos) throws Exception {

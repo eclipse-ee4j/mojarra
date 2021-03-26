@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,29 +16,28 @@
 
 package com.sun.faces.renderkit.html_basic;
 
-
-import com.sun.faces.renderkit.Attribute;
-import com.sun.faces.renderkit.AttributeManager;
-import com.sun.faces.renderkit.RenderKitUtils;
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.render.Renderer;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.AttributeManager;
+import com.sun.faces.renderkit.RenderKitUtils;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.render.Renderer;
+
 public class PassthroughRenderer extends HtmlBasicRenderer {
 
-// We are purposely piggy backing off the PANELGROUP attributes since they are 
+// We are purposely piggy backing off the PANELGROUP attributes since they are
 // identical for this renderer.
-private static final Attribute[] ATTRIBUTES =
-          AttributeManager.getAttributes(AttributeManager.Key.PANELGROUP);
+    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.PANELGROUP);
 
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component)
-            throws IOException {
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
 
         rendererParamsNotNull(context, component);
 
@@ -57,14 +56,10 @@ private static final Attribute[] ATTRIBUTES =
         writer.startElement(localName, component);
 
         writeIdAttributeIfNecessary(context, writer, component);
-        
-        RenderKitUtils.renderPassThruAttributes(context,
-                                                writer,
-                                                component,
-                                                ATTRIBUTES);
+
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES);
 
     }
-
 
     @Override
     public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
@@ -82,7 +77,6 @@ private static final Attribute[] ATTRIBUTES =
 
     }
 
-
     @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
 
@@ -96,7 +90,6 @@ private static final Attribute[] ATTRIBUTES =
         String localName = (String) attrs.get(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY);
         context.getResponseWriter().endElement(localName);
     }
-
 
     @Override
     public boolean getRendersChildren() {

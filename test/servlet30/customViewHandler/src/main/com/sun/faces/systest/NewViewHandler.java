@@ -16,9 +16,9 @@
 
 package com.sun.faces.systest;
 
-import javax.faces.application.ViewHandler;
-import javax.faces.application.ViewHandlerWrapper;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.application.ViewHandlerWrapper;
+import jakarta.faces.context.FacesContext;
 import java.lang.Override;
 import java.lang.String;
 

@@ -152,23 +152,23 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     
     
     private void testAjaxIsAvailable(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
-        testRequest.setServletPath("/javax.faces.resource/jsf.js.faces");
+        testRequest.setServletPath("/jakarta.faces.resource/jsf.js.faces");
 
         response.getWriter().println(handler != null);
         response.getWriter().println(handler instanceof ResourceHandlerImpl);
-        response.getWriter().println(handler.createResource("jsf.js", "javax.faces") != null);
+        response.getWriter().println(handler.createResource("jsf.js", "jakarta.faces") != null);
     }
     
     private void testAjaxCompression(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
-        testRequest.setServletPath("/javax.faces.resource/jsf.js.faces");
+        testRequest.setServletPath("/jakarta.faces.resource/jsf.js.faces");
         
-        Resource resource = handler.createResource("jsf-uncompressed.js", "javax.faces");
+        Resource resource = handler.createResource("jsf-uncompressed.js", "jakarta.faces");
 
         InputStream stream = resource.getInputStream();
 
         int origSize = getBytes(stream).length;
 
-        resource = handler.createResource("jsf.js", "javax.faces");
+        resource = handler.createResource("jsf.js", "jakarta.faces");
 
         stream = resource.getInputStream();
 
@@ -179,7 +179,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     }
     
     private void testCreateResource(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
-        testRequest.setServletPath("/javax.faces.resource/jsf.js.faces");
+        testRequest.setServletPath("/jakarta.faces.resource/jsf.js.faces");
         
         response.getWriter().println(handler != null);
         response.getWriter().println(handler instanceof ResourceHandlerImpl);
@@ -217,20 +217,20 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     
     private void testIsResourceRequestPrefixMapped(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
         testRequest.setServletPath("/faces/");
-        testRequest.setPathInfo("/javax.faces.resource/duke-nv.gif");
+        testRequest.setPathInfo("/jakarta.faces.resource/duke-nv.gif");
         
         response.getWriter().println(handler.isResourceRequest(facesContext));
     }
     
     private void testIsResourceRequestExtensionMapped(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
-        testRequest.setServletPath("/javax.faces.resource/duke-nv.gif.faces");
+        testRequest.setServletPath("/jakarta.faces.resource/duke-nv.gif.faces");
 
         response.getWriter().println(handler.isResourceRequest(facesContext));
     }
     
     private void testHandleResourceRequestExcludesPrefixMapped1(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
         testRequest.setServletPath("/faces/");
-        testRequest.setPathInfo("/javax.faces.resource/test.jsp");
+        testRequest.setPathInfo("/jakarta.faces.resource/test.jsp");
         
         handler.handleResourceRequest(facesContext);
         
@@ -239,7 +239,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     
     private void testHandleResourceRequestExcludesPrefixMapped2(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
         testRequest.setServletPath("/faces/");
-        testRequest.setPathInfo("/javax.faces.resource/test.properties");
+        testRequest.setPathInfo("/jakarta.faces.resource/test.properties");
         
         handler.handleResourceRequest(facesContext);
         
@@ -248,7 +248,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     
     private void testHandleResourceRequestExcludesPrefixMapped3(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
         testRequest.setServletPath("/faces/");
-        testRequest.setPathInfo("/javax.faces.resource/test.xhtml");
+        testRequest.setPathInfo("/jakarta.faces.resource/test.xhtml");
         
         handler.handleResourceRequest(facesContext);
         
@@ -257,7 +257,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     
     private void testHandleResourceRequestExcludesPrefixMapped4(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
         testRequest.setServletPath("/faces/");
-        testRequest.setPathInfo("/javax.faces.resource/test.class");
+        testRequest.setPathInfo("/jakarta.faces.resource/test.class");
 
         facesContext.getApplication()
                     .getResourceHandler()
@@ -268,7 +268,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     
     private void testHandleResourceRequestExcludeExtensionMapped1(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
         testRequest.setServletPath("/faces/");
-        testRequest.setPathInfo("/javax.faces.resource/duke-nv.jsp.faces");
+        testRequest.setPathInfo("/jakarta.faces.resource/duke-nv.jsp.faces");
 
         facesContext.getApplication()
                     .getResourceHandler()
@@ -279,7 +279,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
 
     private void testHandleResourceRequestExcludeExtensionMapped2(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
         testRequest.setServletPath("/faces/");
-        testRequest.setPathInfo("/javax.faces.resource/duke-nv.properties.faces");
+        testRequest.setPathInfo("/jakarta.faces.resource/duke-nv.properties.faces");
 
         facesContext.getApplication()
                     .getResourceHandler()
@@ -290,7 +290,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     
     private void testHandleResourceRequestExcludeExtensionMapped3(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
         testRequest.setServletPath("/faces/");
-        testRequest.setPathInfo("/javax.faces.resource/duke-nv.xhtml.faces");
+        testRequest.setPathInfo("/jakarta.faces.resource/duke-nv.xhtml.faces");
 
         facesContext.getApplication()
                     .getResourceHandler()
@@ -301,7 +301,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     
     private void testHandleResourceRequestExcludeExtensionMapped4(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
         testRequest.setServletPath("/faces/");
-        testRequest.setPathInfo("/javax.faces.resource/duke-nv.class.faces");
+        testRequest.setPathInfo("/jakarta.faces.resource/duke-nv.class.faces");
 
         facesContext.getApplication()
                     .getResourceHandler()
@@ -320,7 +320,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     
     
     private void testUserSpecifiedResourceExclude1(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
-        testRequest.setServletPath("/javax.faces.resource/duke-nv.gif.faces");
+        testRequest.setServletPath("/jakarta.faces.resource/duke-nv.gif.faces");
 
         // documenting this once - this is hack in order to support dynamic init
         // parameters. Unfortunately, the config object (which one can obtain
@@ -350,7 +350,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     }
     
     private void testUserSpecifiedResourceExclude2(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
-        testRequest.setServletPath("/javax.faces.resource/com.sun.faces.application.ApplicationImpl.class.faces");
+        testRequest.setServletPath("/jakarta.faces.resource/com.sun.faces.application.ApplicationImpl.class.faces");
 
         WebConfiguration webconfig = WebConfiguration.getInstance(facesContext.getExternalContext());
         webconfig.overrideContextInitParameter(WebConfiguration.WebContextInitParameter.ResourceExcludes, ".gif");
@@ -367,7 +367,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     }
     
     private void testUserSpecifiedResourceExclude3(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
-        testRequest.setServletPath("/javax.faces.resource/com.sun.faces.LogStrings.properties.faces");
+        testRequest.setServletPath("/jakarta.faces.resource/com.sun.faces.LogStrings.properties.faces");
 
         WebConfiguration webconfig = WebConfiguration.getInstance(facesContext.getExternalContext());
         webconfig.overrideContextInitParameter(WebConfiguration.WebContextInitParameter.ResourceExcludes, ".gif");
@@ -383,7 +383,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     }
     
     private void testLibraryExistsNegative(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
-        testRequest.setServletPath("/javax.faces.resource/duke-nv.gif.faces");
+        testRequest.setServletPath("/jakarta.faces.resource/duke-nv.gif.faces");
 
         response.getWriter().println(!facesContext.getApplication().getResourceHandler().libraryExists("oeunhtnhtnhhnhh"));
     }
@@ -392,7 +392,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     // Validate a resource streamed from the docroot of a webapp
     //
     private void testHandleResourceRequest1(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
-        testRequest.setServletPath("/javax.faces.resource/duke-nv.gif.faces");
+        testRequest.setServletPath("/jakarta.faces.resource/duke-nv.gif.faces");
         
         byte[] control = getBytes(facesContext.getExternalContext().getResource("/resources/duke-nv.gif"));
         handler.handleResourceRequest(facesContext);
@@ -409,7 +409,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     // Validate a resource streamed from a JAR
     //
     private void testHandleResourceRequest2(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
-        testRequest.setServletPath("/javax.faces.resource/duke-nv.gif.faces");
+        testRequest.setServletPath("/jakarta.faces.resource/duke-nv.gif.faces");
         testRequest.getParameterMap().put("ln", new String[] { "nvLibrary-jar" });
         
         byte[] control = getBytes(getCurrentLoader(this).getResource("META-INF/resources/nvLibrary-jar/duke-nv.gif"));
@@ -428,7 +428,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     // request header and the resource hasn't changed on the server side.
     //
     private void testHandleResourceRequest3(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
-        testRequest.setServletPath("/javax.faces.resource/duke-nv.gif.faces");
+        testRequest.setServletPath("/jakarta.faces.resource/duke-nv.gif.faces");
 
         long currentTime = System.currentTimeMillis(), threeHoursAgo = currentTime - 10800000L;
 
@@ -476,7 +476,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     }
     
     private void testHandleResourceRequest4(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
-        testRequest.setServletPath("/javax.faces.resource/duke-v.gif.faces");
+        testRequest.setServletPath("/jakarta.faces.resource/duke-v.gif.faces");
         testRequest.getParameterMap().put("ln", new String[] { "nvLibrary" });
 
         facesContext.getApplication()
@@ -490,7 +490,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     // Validate a 404 is returned when a request for an excluded resource is made
     //
     private void testHandleResourceRequest5(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
-        testRequest.setServletPath("/javax.faces.resource/duke-nv.class.faces");
+        testRequest.setServletPath("/jakarta.faces.resource/duke-nv.class.faces");
         testRequest.getParameterMap().put("ln", new String[] { "nvLibrary" });
 
         facesContext.getApplication()
@@ -504,7 +504,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     // Validate a resource streamed from the docroot of a webapp is compressed
     //
     private void testHandleResourceRequest6(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
-        testRequest.setServletPath("/javax.faces.resource/duke-nv.gif.faces");
+        testRequest.setServletPath("/jakarta.faces.resource/duke-nv.gif.faces");
         testRequest.getHeadersMap().put("accept-encoding", new String[] { "deflate", "gzip" });
        
         byte[] control = getBytes(facesContext.getExternalContext().getResource("/resources/duke-nv.gif"), true);
@@ -523,7 +523,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     // Validate a resource streamed from a JAR is compressed
     //
     private void testHandleResourceRequest7(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
-        testRequest.setServletPath("/javax.faces.resource/duke-nv.gif.faces");
+        testRequest.setServletPath("/jakarta.faces.resource/duke-nv.gif.faces");
         testRequest.getParameterMap().put("ln", new String[] { "nvLibrary-jar" });
         testRequest.getHeadersMap().put("accept-encoding", new String[] { "gzip,deflate" });
 
@@ -544,7 +544,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     // when the client doesn't send the accept-encoding request header
     //
     private void testHandleResourceRequest8(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
-         testRequest.setServletPath("/javax.faces.resource/duke-nv.gif.faces");
+         testRequest.setServletPath("/jakarta.faces.resource/duke-nv.gif.faces");
          
          byte[] control = getBytes(facesContext.getExternalContext().getResource("/resources/duke-nv.gif"));
          handler.handleResourceRequest(facesContext);
@@ -559,7 +559,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     }
     
     private void testHandleResourceRequest9(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
-         testRequest.setServletPath("/javax.faces.resource/duke-nv.gif.faces");
+         testRequest.setServletPath("/jakarta.faces.resource/duke-nv.gif.faces");
          testRequest.getParameterMap().put("ln", new String[] {"nvLibrary-jar"});
          
          byte[] control = getBytes(facesContext.getExternalContext().getResource("/resources/nvLibrary/duke-nv.gif"));
@@ -580,7 +580,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     // is sent to the user-agent
     //
     private void testHandleResourceRequest10(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
-        testRequest.setServletPath("/javax.faces.resource/duke-nv.gif.faces");
+        testRequest.setServletPath("/jakarta.faces.resource/duke-nv.gif.faces");
         testRequest.getParameterMap().put("accept-encoding", new String[] {"gzip;q=0, deflate"});
         
         byte[] control = getBytes(facesContext.getExternalContext().getResource("/resources/duke-nv.gif"), false);
@@ -603,7 +603,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     // is sent to the user-agent
     //
     private void testHandleResourceRequest11(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
-        testRequest.setServletPath("/javax.faces.resource/duke-nv.gif.faces");
+        testRequest.setServletPath("/jakarta.faces.resource/duke-nv.gif.faces");
         testRequest.getParameterMap().put("accept-encoding", new String[] { "deflate", "*;q=0"});
         
         byte[] control = getBytes(facesContext.getExternalContext().getResource("/resources/duke-nv.gif"), false);
@@ -624,7 +624,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     // * will send compressed content
     //
     private void testHandleResourceRequest12(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
-        testRequest.setServletPath("/javax.faces.resource/duke-nv.gif.faces");
+        testRequest.setServletPath("/jakarta.faces.resource/duke-nv.gif.faces");
         testRequest.getHeadersMap().put("accept-encoding", new String[] { "identity;q=1.0", "*;q=0.5", "deflate;q=1.0"});
         
         byte[] control = getBytes(facesContext.getExternalContext().getResource("/resources/duke-nv.gif"), true);
@@ -640,7 +640,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     }
     
     private void testHandleResourceRequest13(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
-        testRequest.setServletPath("/javax.faces.resource/duke-nv.gif.faces");
+        testRequest.setServletPath("/jakarta.faces.resource/duke-nv.gif.faces");
         testRequest.getHeadersMap().put("accept-encoding", new String[] { "identity;q=0.5, deflate;q=1.0" });
         
         byte[] control = getBytes(facesContext.getExternalContext().getResource("/resources/duke-nv.gif"), false);
@@ -659,7 +659,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     // Validate the fix for issue 1162.
     //
     private void testHandleResourceRequest14(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
-        testRequest.setServletPath("/javax.faces.resource/web.xml.faces");
+        testRequest.setServletPath("/jakarta.faces.resource/web.xml.faces");
         testRequest.getParameterMap().put("ln", new String[] { "../WEB-INF" });
         
         facesContext.getApplication()
@@ -673,7 +673,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     // Validate the fix for issue 1162.
     //
     private void testHandleResourceRequest15(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
-        testRequest.setServletPath("/javax.faces.resource/web.xml.faces");
+        testRequest.setServletPath("/jakarta.faces.resource/web.xml.faces");
         testRequest.getParameterMap().put("ln", new String[] { "nvLibrary/../../WEB-INF" });
         
         facesContext.getApplication()
@@ -687,7 +687,7 @@ public class ResourceHandlerTestServlet extends HttpServlet {
     // Validate the fix for issue ????.
     //
     private void testHandleResourceRequest16(FacesContext facesContext, TestRequest testRequest, TestResponse wrapper, HttpServletResponse response, ResourceHandler handler) throws ServletException, IOException {
-        testRequest.setServletPath("/javax.faces.resource/duke-nv.gif.faces");
+        testRequest.setServletPath("/jakarta.faces.resource/duke-nv.gif.faces");
         testRequest.getHeadersMap().put("accept-encoding", new String[] { "gzip;q=0, deflate" });
         
         class TestInputStreamContainingZeroes extends InputStream {

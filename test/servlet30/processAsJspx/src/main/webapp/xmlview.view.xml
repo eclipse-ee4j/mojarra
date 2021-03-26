@@ -44,7 +44,7 @@
                     &amp;lt;context-param&amp;gt;
                     <br/>
                      
-&amp;nbsp;&amp;nbsp;&amp;lt;param-name&amp;gt;javax.faces.PARTIAL_STATE_SAVING 
+&amp;nbsp;&amp;nbsp;&amp;lt;param-name&amp;gt;jakarta.faces.PARTIAL_STATE_SAVING 
 
 &amp;lt;/param-name&amp;gt;
                     <br/>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,29 +16,25 @@
 
 package com.sun.faces.lifecycle;
 
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
-
-import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.sun.faces.util.FacesLogger;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseId;
+
 /**
- * ProcessValidationsPhase executes <code>processValidators</code> on each
- * component in the tree.
+ * ProcessValidationsPhase executes <code>processValidators</code> on each component in the tree.
  */
 public class ProcessValidationsPhase extends Phase {
-
 
     // Log instance for this class
     private static Logger LOGGER = FacesLogger.LIFECYCLE.getLogger();
 
-
     // ---------------------------------------------------------- Public Methods
-
 
     @Override
     public void execute(FacesContext facesContext) throws FacesException {
@@ -47,7 +43,7 @@ public class ProcessValidationsPhase extends Phase {
             LOGGER.fine("Entering ProcessValidationsPhase");
         }
         UIComponent component = facesContext.getViewRoot();
-        assert (null != component);
+        assert null != component;
 
         try {
             component.processValidators(facesContext);
@@ -66,14 +62,12 @@ public class ProcessValidationsPhase extends Phase {
 
     }
 
-
     @Override
     public PhaseId getId() {
 
         return PhaseId.PROCESS_VALIDATIONS;
 
     }
-
 
 // The testcase for this class is TestProcessValidationsPhase.java
 

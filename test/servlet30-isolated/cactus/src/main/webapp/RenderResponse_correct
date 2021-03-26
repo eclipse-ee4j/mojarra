@@ -14,8 +14,8 @@
 
 <form id="basicForm" name="basicForm" method="post" action="/test/faces/TestRenderResponsePhase.jsp;jsessionid=45707ec485aedd976d7b06553498" class="formClass" accept-charset="some-charset" accept="html,wml" enctype="application/x-www-form-urlencoded" target="_self" title="basicForm">
 <input type="hidden" name="basicForm" value="basicForm" />
-<input type="hidden" name="basicForm:javax.faces.Token" value="21e2dfc309b7059a09fbd11855664ca8" />
-<input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="j_id1:j_id2" autocomplete="off" />
+<input type="hidden" name="basicForm:jakarta.faces.Token" value="21e2dfc309b7059a09fbd11855664ca8" />
+<input type="hidden" name="jakarta.faces.ViewState" id="jakarta.faces.ViewState" value="j_id1:j_id2" autocomplete="off" />
 
 
   <TABLE BORDER="1">
@@ -70,7 +70,7 @@
 	<TD>
 
 	      
-<script type="text/javascript" src="/test/faces/javax.faces.resource/jsf.js?ln=javax.faces&amp;stage=UnitTest"></script>
+<script type="text/javascript" src="/test/faces/jakarta.faces.resource/jsf.js?ln=jakarta.faces&amp;stage=UnitTest"></script>
 <a id="basicForm:link" href="#" onclick="mojarra.jsfcljs(document.getElementById('basicForm'),{'basicForm:link':'basicForm:link'},'');return false" class="hyperlinkClass">link text with localized outputMessage with &euro;</a>
 
 	</TD>
@@ -712,8 +712,8 @@ see the <i>angle brackets</i> on this text
 </form>
 <form id="form2" name="form2" method="post" action="/test/faces/TestRenderResponsePhase.jsp;jsessionid=45707ec485aedd976d7b06553498" enctype="application/x-www-form-urlencoded">
 <input type="hidden" name="form2" value="form2" />
-<input type="hidden" name="form2:javax.faces.Token" value="21e2dfc309b7059a09fbd11855664ca8" />
-<input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="j_id1:j_id2" autocomplete="off" />
+<input type="hidden" name="form2:jakarta.faces.Token" value="21e2dfc309b7059a09fbd11855664ca8" />
+<input type="hidden" name="jakarta.faces.ViewState" id="jakarta.faces.ViewState" value="j_id1:j_id2" autocomplete="off" />
 <input type="submit" name="form2:j_id_id827" value="form2 button1" />
    <p />
   <input type="submit" name="form2:j_id_id830" value="form2 button2" /> <p />
@@ -721,8 +721,8 @@ see the <i>angle brackets</i> on this text
 </form>
 <form id="form3" name="form3" method="post" action="/test/faces/TestRenderResponsePhase.jsp;jsessionid=45707ec485aedd976d7b06553498" enctype="application/x-www-form-urlencoded">
 <input type="hidden" name="form3" value="form3" />
-<input type="hidden" name="form3:javax.faces.Token" value="21e2dfc309b7059a09fbd11855664ca8" />
-<input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="j_id1:j_id2" autocomplete="off" />
+<input type="hidden" name="form3:jakarta.faces.Token" value="21e2dfc309b7059a09fbd11855664ca8" />
+<input type="hidden" name="jakarta.faces.ViewState" id="jakarta.faces.ViewState" value="j_id1:j_id2" autocomplete="off" />
 <input type="submit" name="form3:j_id_id836" value="form3 button1" />
    <p />
   <a href="#" onclick="mojarra.jsfcljs(document.getElementById('form3'),{'form3:j_id_id839':'form3:j_id_id839'},'');return false">form3 link1</a> <p />
@@ -730,8 +730,8 @@ see the <i>angle brackets</i> on this text
 </form>
 <form id="form4" name="form4" method="post" action="/test/faces/TestRenderResponsePhase.jsp;jsessionid=45707ec485aedd976d7b06553498" enctype="application/x-www-form-urlencoded">
 <input type="hidden" name="form4" value="form4" />
-<input type="hidden" name="form4:javax.faces.Token" value="21e2dfc309b7059a09fbd11855664ca8" />
-<input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="j_id1:j_id2" autocomplete="off" />
+<input type="hidden" name="form4:jakarta.faces.Token" value="21e2dfc309b7059a09fbd11855664ca8" />
+<input type="hidden" name="jakarta.faces.ViewState" id="jakarta.faces.ViewState" value="j_id1:j_id2" autocomplete="off" />
 <a href="test.html;jsessionid=45707ec485aedd976d7b06553498">
       Link Enabled
   </a><span>

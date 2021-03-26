@@ -55,7 +55,7 @@ public class Issue2895IT {
         
         Page initialPage = webClient.getPage(webUrl + "faces/index.xhtml");
         if (initialPage.getWebResponse().getStatusCode() == 200) {
-            String cssUrl = webUrl + "faces/javax.faces.resource/styles.css";
+            String cssUrl = webUrl + "faces/jakarta.faces.resource/styles.css";
             Page cssPage = webClient.getPage(cssUrl);
             assertEquals(200, cssPage.getWebResponse().getStatusCode());
 

@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates.
- * Copyright (c) 2018 Payara Services Limited.
- * All rights reserved.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,11 +16,6 @@
 
 package com.sun.faces.test.servlet30.dynamictransientparent;
 
-import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
-import static javax.faces.event.PhaseId.ANY_PHASE;
-import static javax.faces.event.PhaseId.INVOKE_APPLICATION;
-import static javax.faces.event.PhaseId.RESTORE_VIEW;
-
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIForm;
 import javax.faces.component.UIPanel;
@@ -34,63 +27,59 @@ import javax.faces.event.PhaseListener;
 
 public class SimplePhaseListener implements PhaseListener {
 
-    private static final long serialVersionUID = 1L;
+    private boolean afterInvokeAppPhase = false;
 
-    private boolean afterInvokeAppPhase;
+    public SimplePhaseListener() {
+    }
 
-    @Override
     public void afterPhase(PhaseEvent event) {
         FacesContext context = event.getFacesContext();
-
         String msg = null;
-        if (event.getPhaseId() == INVOKE_APPLICATION) {
+        if (event.getPhaseId() == PhaseId.INVOKE_APPLICATION) {
             afterInvokeAppPhase = true;
             if (transientSubTreeExists(context)) {
-                msg = " After " + event.getPhaseId() + " Transient Subtree Exists";
-                context.addMessage("ia", new FacesMessage(SEVERITY_ERROR, msg, null));
+                msg = " After "+event.getPhaseId()+" Transient Subtree Exists";
+                context.addMessage("ia", new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, null));
             } else {
-                msg = " After " + event.getPhaseId() + " Transient Subtree Does Not Exist";
-                context.addMessage("ia", new FacesMessage(SEVERITY_ERROR, msg, null));
+                msg = " After "+event.getPhaseId()+" Transient Subtree Does Not Exist";
+                context.addMessage("ia", new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, null));
             }
         }
-
-        if (event.getPhaseId() == RESTORE_VIEW) {
+        if (event.getPhaseId() == PhaseId.RESTORE_VIEW) {
             if (afterInvokeAppPhase) {
                 if (transientSubTreeExists(event.getFacesContext())) {
-                    msg = " After " + event.getPhaseId() + " Transient Subtree Exists";
-                    context.addMessage("rv", new FacesMessage(SEVERITY_ERROR, msg, null));
+                    msg = " After "+event.getPhaseId()+" Transient Subtree Exists";
+                    context.addMessage("rv", new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, null));
                 } else {
-                    msg = " After " + event.getPhaseId() + " Transient Subtree Does Not Exist";
-                    context.addMessage("rv", new FacesMessage(SEVERITY_ERROR, msg, null));
+                    msg = " After "+event.getPhaseId()+" Transient Subtree Does Not Exist";
+                    context.addMessage("rv", new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, null));
                 }
                 afterInvokeAppPhase = false;
             }
         }
     }
 
-    @Override
     public void beforePhase(PhaseEvent event) {
     }
 
-    @Override
+
     public PhaseId getPhaseId() {
-        return ANY_PHASE;
+        return PhaseId.ANY_PHASE;
     }
 
     private boolean transientSubTreeExists(FacesContext context) {
         UIViewRoot root = context.getViewRoot();
-        UIForm form = (UIForm) root.findComponent("helloForm");
-        if (form == null) {
+        UIForm form = (UIForm)root.findComponent("helloForm");
+        if (null == form) {
             System.err.println("FORM IS NULL");
             return false;
         }
-
-        UIPanel panel = (UIPanel) form.findComponent("addto");
+        UIPanel panel = (UIPanel)form.findComponent("addto");
         if (panel.getChildren().size() > 0) {
             return true;
+        } else {
+            return false;
         }
-
-        return false;
     }
 
 }

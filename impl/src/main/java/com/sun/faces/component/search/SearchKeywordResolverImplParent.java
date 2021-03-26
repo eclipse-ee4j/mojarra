@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,10 +16,10 @@
 
 package com.sun.faces.component.search;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.search.SearchExpressionContext;
-import javax.faces.component.search.SearchKeywordContext;
-import javax.faces.component.search.SearchKeywordResolver;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.search.SearchExpressionContext;
+import jakarta.faces.component.search.SearchKeywordContext;
+import jakarta.faces.component.search.SearchKeywordResolver;
 
 public class SearchKeywordResolverImplParent extends SearchKeywordResolver {
 
@@ -32,5 +32,5 @@ public class SearchKeywordResolverImplParent extends SearchKeywordResolver {
     public boolean isResolverForKeyword(SearchExpressionContext searchExpressionContext, String keyword) {
         return "parent".equals(keyword);
     }
-    
+
 }

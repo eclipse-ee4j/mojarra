@@ -16,20 +16,21 @@
 
 package com.sun.faces.test.servlet30.ajax;
 
+
+import javax.faces.context.FacesContext;
 import javax.faces.component.behavior.ClientBehaviorBase;
 import javax.faces.component.behavior.ClientBehaviorContext;
 import javax.faces.component.behavior.FacesBehavior;
-import javax.faces.context.FacesContext;
+
 
 /**
- * <p>
- * A trivial Behavior implementation that shows a greeting to the user when invoked.
- * </p>
+ * <p>A trivial Behavior implementation that shows a greeting to the
+ * user when invoked.</p>
  */
-@FacesBehavior(value = "custom.behavior.Greet")
+@FacesBehavior(value="custom.behavior.Greet")
 public class GreetBehavior extends ClientBehaviorBase {
 
-    private String name;
+    public GreetBehavior() {}
 
     public String getName() {
         return name;
@@ -39,7 +40,6 @@ public class GreetBehavior extends ClientBehaviorBase {
         this.name = name;
     }
 
-    @Override
     public String getScript(ClientBehaviorContext behaviorContext) {
 
         String name = (this.name == null) ? "World" : this.name;
@@ -67,13 +67,15 @@ public class GreetBehavior extends ClientBehaviorBase {
             }
         } else {
             Object[] values = new Object[2];
-
+      
             values[0] = super.saveState(context);
             values[1] = name;
 
             return values;
         }
+
     }
+
 
     @Override
     public void restoreState(FacesContext context, Object state) {
@@ -88,9 +90,10 @@ public class GreetBehavior extends ClientBehaviorBase {
         Object[] values = (Object[]) state;
         super.restoreState(context, values[0]);
         if (values.length == 2) {
-            name = (String) values[1];
+            name = (String)values[1];
         }
+
     }
 
-
+    private String name;
 }

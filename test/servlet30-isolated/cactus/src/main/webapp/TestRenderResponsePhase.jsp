@@ -427,7 +427,7 @@
         </TD>
 
 	<TD><h:inputText value="3.1415" style="someStyle">
-                <f:converter converterId="javax.faces.Float"/>
+                <f:converter converterId="jakarta.faces.Float"/>
             </h:inputText>
 	</TD>
 

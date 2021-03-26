@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,81 +16,69 @@
 
 package com.sun.faces.context;
 
-import java.util.LinkedList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.logging.Logger;
+import java.util.LinkedList;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.application.ProjectStage;
-import javax.faces.component.UIComponent;
-import javax.faces.context.ExceptionHandler;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ExceptionQueuedEvent;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.ExceptionQueuedEventContext;
-import javax.faces.event.PhaseId;
-import javax.el.ELException;
-
-import com.sun.faces.util.FacesLogger;
 import com.sun.faces.renderkit.RenderKitUtils;
-import javax.faces.context.ExternalContext;
+import com.sun.faces.util.FacesLogger;
 
+import jakarta.el.ELException;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.ExceptionHandler;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ExceptionQueuedEvent;
+import jakarta.faces.event.ExceptionQueuedEventContext;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.event.SystemEvent;
 
 /**
  * <p>
- * The default implementation of {@link ExceptionHandler} for JSF 2.0.
+ * The default implementation of {@link ExceptionHandler} for Faces.
  * </p>
  *
  * <p>
- * As an implementation note, if changes going forward are required here,
- * review the <code>ExceptionHandler</code> implementation within
- * <code>javax.faces.webapp.PreJsf2ExceptionHandlerFactory</code>.  The code
- * is, in most cases, quite similar.
+ * As an implementation note, if changes going forward are required here, review the <code>ExceptionHandler</code>
+ * implementation within <code>jakarta.faces.webapp.PreJsf2ExceptionHandlerFactory</code>. The code is, in most cases,
+ * quite similar.
  * </p>
  *
  */
 public class ExceptionHandlerImpl extends ExceptionHandler {
 
     private static final Logger LOGGER = FacesLogger.CONTEXT.getLogger();
-    private static final String LOG_BEFORE_KEY =
-          "jsf.context.exception.handler.log_before";
-    private static final String LOG_AFTER_KEY =
-          "jsf.context.exception.handler.log_after";
-    private static final String LOG_KEY =
-          "jsf.context.exception.handler.log";
-    
-    
-   public static final java.util.logging.Level INCIDENT_ERROR =
-           Level.parse(Integer.toString(Level.SEVERE.intValue() + 100));
-    
+    private static final String LOG_BEFORE_KEY = "jsf.context.exception.handler.log_before";
+    private static final String LOG_AFTER_KEY = "jsf.context.exception.handler.log_after";
+    private static final String LOG_KEY = "jsf.context.exception.handler.log";
+
+    public static final java.util.logging.Level INCIDENT_ERROR = Level.parse(Integer.toString(Level.SEVERE.intValue() + 100));
+
     private LinkedList<ExceptionQueuedEvent> unhandledExceptions;
     private LinkedList<ExceptionQueuedEvent> handledExceptions;
     private ExceptionQueuedEvent handled;
     private boolean errorPagePresent;
 
-
     // ------------------------------------------------------------ Constructors
-
 
     public ExceptionHandlerImpl() {
 
-        this.errorPagePresent = true;
+        errorPagePresent = true;
 
     }
 
-    
     public ExceptionHandlerImpl(boolean errorPagePresent) {
 
         this.errorPagePresent = errorPagePresent;
-        
+
     }
 
-
     // ------------------------------------------- Methods from ExceptionHandler
-
 
     @Override
     public ExceptionQueuedEvent getHandledExceptionQueuedEvent() {
@@ -99,15 +87,14 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
 
     }
 
-
     /**
-     * @see javax.faces.context.ExceptionHandler#handle()
+     * @see jakarta.faces.context.ExceptionHandler#handle()
      */
-    @SuppressWarnings({"ThrowableInstanceNeverThrown"})
+    @SuppressWarnings({ "ThrowableInstanceNeverThrown" })
     @Override
     public void handle() throws FacesException {
 
-        for (Iterator<ExceptionQueuedEvent> i = getUnhandledExceptionQueuedEvents().iterator(); i.hasNext(); ) {
+        for (Iterator<ExceptionQueuedEvent> i = getUnhandledExceptionQueuedEvents().iterator(); i.hasNext();) {
             ExceptionQueuedEvent event = i.next();
             ExceptionQueuedEventContext context = (ExceptionQueuedEventContext) event.getSource();
             try {
@@ -116,20 +103,18 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
                     handled = event;
                     Throwable unwrapped = getRootCause(t);
                     if (unwrapped != null) {
-                        throwIt(context.getContext(),
-                                new FacesException(unwrapped.getMessage(), unwrapped));
+                        throwIt(context.getContext(), new FacesException(unwrapped.getMessage(), unwrapped));
                     } else {
                         if (t instanceof FacesException) {
                             throwIt(context.getContext(), (FacesException) t);
                         } else {
-                            throwIt(context.getContext(),
-                                    new FacesException(t.getMessage(), t));
+                            throwIt(context.getContext(), new FacesException(t.getMessage(), t));
                         }
                     }
                     if (LOGGER.isLoggable(INCIDENT_ERROR)) {
                         log(context);
                     }
-                    
+
                 } else {
                     log(context);
                 }
@@ -139,26 +124,24 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
                     handledExceptions = new LinkedList<>();
                 }
                 handledExceptions.add(event);
-                i.remove();               
+                i.remove();
             }
         }
 
     }
 
-
     /**
-     * @see javax.faces.context.ExceptionHandler#isListenerForSource(Object)
+     * @see jakarta.faces.context.ExceptionHandler#isListenerForSource(Object)
      */
     @Override
     public boolean isListenerForSource(Object source) {
 
-        return (source instanceof ExceptionQueuedEventContext);
+        return source instanceof ExceptionQueuedEventContext;
 
     }
 
-
     /**
-     * @see javax.faces.context.ExceptionHandler#processEvent(javax.faces.event.SystemEvent)
+     * @see jakarta.faces.context.ExceptionHandler#processEvent(jakarta.faces.event.SystemEvent)
      */
     @Override
     public void processEvent(SystemEvent event) throws AbortProcessingException {
@@ -171,7 +154,6 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
         }
 
     }
-
 
     /**
      * @see ExceptionHandler#getRootCause(Throwable)
@@ -196,38 +178,30 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
             }
         }
         return t;
-        
+
     }
 
-
     /**
-     * @see javax.faces.context.ExceptionHandler#getUnhandledExceptionQueuedEvents()
+     * @see jakarta.faces.context.ExceptionHandler#getUnhandledExceptionQueuedEvents()
      */
     @Override
     public Iterable<ExceptionQueuedEvent> getUnhandledExceptionQueuedEvents() {
 
-        return ((unhandledExceptions != null)
-                    ? unhandledExceptions
-                    : Collections.<ExceptionQueuedEvent>emptyList());
+        return unhandledExceptions != null ? unhandledExceptions : Collections.<ExceptionQueuedEvent>emptyList();
 
     }
 
-
     /**
-     * @see javax.faces.context.ExceptionHandler#getHandledExceptionQueuedEvents()
+     * @see jakarta.faces.context.ExceptionHandler#getHandledExceptionQueuedEvents()
      */
     @Override
     public Iterable<ExceptionQueuedEvent> getHandledExceptionQueuedEvents() {
 
-        return ((handledExceptions != null)
-                    ? handledExceptions
-                    : Collections.<ExceptionQueuedEvent>emptyList());
-        
+        return handledExceptions != null ? handledExceptions : Collections.<ExceptionQueuedEvent>emptyList();
+
     }
 
-
     // --------------------------------------------------------- Private Methods
-
 
     private void throwIt(FacesContext ctx, FacesException fe) {
 
@@ -243,14 +217,14 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
         }
         if (null != wrapped && wrapped instanceof FacesFileNotFoundException) {
             extContext.setResponseStatus(404);
-         } else {
+        } else {
             extContext.setResponseStatus(500);
-         }
+        }
 
         if (isDevelopment && !errorPagePresent) {
             // RELEASE_PENDING_2_1
             // thThe error page here will be text/html which means not all device
-            // types are going to render this properly.  This should be addressed
+            // types are going to render this properly. This should be addressed
             // in 2.1
             RenderKitUtils.renderHtmlErrorPage(ctx, fe);
         } else {
@@ -264,22 +238,19 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
         }
     }
 
-
     /**
      * @param c <code>Throwable</code> implementation class
-     * @return <code>true</code> if <code>c</code> is FacesException.class or
-     *  ELException.class
+     * @return <code>true</code> if <code>c</code> is FacesException.class or ELException.class
      */
     private boolean shouldUnwrap(Class<? extends Throwable> c) {
 
-        return (FacesException.class.equals(c) || ELException.class.equals(c));
+        return FacesException.class.equals(c) || ELException.class.equals(c);
 
     }
 
-    
     private boolean isRethrown(Throwable t) {
 
-        return (!(t instanceof AbortProcessingException));
+        return !(t instanceof AbortProcessingException);
 
     }
 
@@ -294,21 +265,17 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
         // If both SEVERE and INCIDENT_ERROR are loggable, just use
         // INCIDENT ERROR, otherwise just use SEVERE.
         Level level = LOGGER.isLoggable(INCIDENT_ERROR) && LOGGER.isLoggable(Level.SEVERE) ? INCIDENT_ERROR : Level.SEVERE;
-        
+
         if (LOGGER.isLoggable(level)) {
-            LOGGER.log(level,
-                       key,
-                       new Object[] { t.getClass().getName(),
-                                      phaseId.toString(),
-                                      ((c != null) ? c.getClientId(exceptionContext.getContext()) : ""),
-                                      t.getMessage()});
+            LOGGER.log(level, key, new Object[] { t.getClass().getName(), phaseId.toString(), c != null ? c.getClientId(exceptionContext.getContext()) : "",
+                    t.getMessage() });
             if (t.getMessage() != null) {
                 LOGGER.log(level, t.getMessage(), t);
             } else {
                 LOGGER.log(level, "No associated message", t);
             }
         }
-        
+
     }
 
     private String getLoggingKey(boolean beforePhase, boolean afterPhase) {

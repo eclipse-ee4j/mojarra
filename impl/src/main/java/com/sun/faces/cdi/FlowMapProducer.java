@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,15 +19,14 @@ package com.sun.faces.cdi;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import javax.faces.application.Application;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.FlowHandler;
-import javax.faces.flow.FlowScoped;
+import jakarta.faces.application.Application;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.FlowHandler;
+import jakarta.faces.flow.FlowScoped;
 
 /**
  * <p class="changed_added_2_3">
- * The Flow map producer is the CDI producer that allows injection of the flow
- * map using <code>@Inject</code>.
+ * The Flow map producer is the CDI producer that allows injection of the flow map using <code>@Inject</code>.
  * </p>
  *
  * @since 2.3
@@ -40,17 +39,11 @@ public class FlowMapProducer extends CdiProducer<Map<Object, Object>> {
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
-    
+
     public FlowMapProducer() {
-        super.name("flowScope")
-             .scope(FlowScoped.class)
-             .qualifiers(new FlowMapAnnotationLiteral())
-             .types(
-                 new ParameterizedTypeImpl(Map.class, new Type[]{Object.class, Object.class}),
-                 Map.class,
-                 Object.class)
-             .beanClass(Map.class)
-             .create(e -> FacesContext.getCurrentInstance().getApplication().getFlowHandler().getCurrentFlowScope());
+        super.name("flowScope").scope(FlowScoped.class).qualifiers(new FlowMapAnnotationLiteral())
+                .types(new ParameterizedTypeImpl(Map.class, new Type[] { Object.class, Object.class }), Map.class, Object.class).beanClass(Map.class)
+                .create(e -> FacesContext.getCurrentInstance().getApplication().getFlowHandler().getCurrentFlowScope());
     }
-    
+
 }
