@@ -21,4 +21,5 @@ package jakarta.faces.model;
  * JavaBean for data model tests.</p>
  */
 public class BeanTestImpl extends com.sun.faces.mock.model.BeanTestImpl {
+   
 }

@@ -23,10 +23,12 @@ import static java.util.logging.Level.INFO;
 import static java.util.logging.Level.WARNING;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.util.LRUMap;
 
@@ -93,6 +95,34 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
         WebConfiguration config = WebConfiguration.getInstance(context.getExternalContext());
         distributable = config.isOptionEnabled(EnableDistributable);
     }
+    
+    /**
+     * Static method that locates the ID for a view map in the active view maps
+     * stored in the session. It just performs a == over the view map because
+     * it should be the same object.
+     *
+     * @param facesContext The faces context
+     * @param viewMap The view to locate
+     * @return
+     */
+    protected static String locateViewMapId(FacesContext facesContext, Map<String, Object> viewMap) {
+        Object session = facesContext.getExternalContext().getSession(true);
+        
+        if (session != null) {
+            Map<String, Object> sessionMap = facesContext.getExternalContext().getSessionMap();
+            @SuppressWarnings("unchecked")
+            Map<String, Object> viewMaps = (Map<String, Object>) sessionMap.get(ACTIVE_VIEW_MAPS);
+            if (viewMaps != null) {
+                for (Map.Entry<String,Object> entry : viewMaps.entrySet()) {
+                    if (viewMap == entry.getValue()) {
+                        return entry.getKey();
+                    }
+                }
+            }
+        }
+        
+        return null;
+    }
 
     /**
      * Clear the current view map using the Faces context.
@@ -108,17 +138,60 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
     }
 
     /**
-     * Clear the given view map.
+     * Clear the given view map. Use the version with viewMapId.
      *
      * @param facesContext the Faces context.
      * @param viewMap the view map.
      */
+    @Deprecated
     public void clear(FacesContext facesContext, Map<String, Object> viewMap) {
+        String viewMapId = locateViewMapId(facesContext, viewMap);
+        if (viewMapId != null) {
+            this.clear(facesContext, viewMapId, viewMap);
+        } else {
+            LOGGER.log(WARNING, "Cannot locate the view map to clear in the active maps: {0}", viewMap);
+        }
+    }
+    
+    /**
+     * Clear the given view map.
+     *
+     * @param facesContext the Faces context.
+     * @param viewMapId The ID of the view map
+     * @param viewMap the view map.
+     */
+    public void clear(FacesContext facesContext, String viewMapId, Map<String, Object> viewMap) {
         LOGGER.log(FINEST, "Clearing @ViewScoped beans from view map: {0}", viewMap);
 
         if (contextManager != null) {
-            contextManager.clear(facesContext, viewMap);
+            contextManager.clear(facesContext, viewMapId, viewMap);
         }
+
+        destroyBeans(facesContext, viewMap);
+    }
+    
+    /**
+     * Destroy the managed beans from the given view map.
+     *
+     * @param facesContext the Faces Context.
+     * @param viewMap the view map.
+     */
+    public void destroyBeans(FacesContext facesContext, Map<String, Object> viewMap) {
+        LOGGER.log(FINEST, "Destroying @ViewScoped beans from view map: {0}", viewMap);
+        
+        ApplicationAssociate applicationAssociate = ApplicationAssociate.getInstance(facesContext.getExternalContext());
+        if (applicationAssociate != null) {
+            destroyBeans(applicationAssociate, viewMap);
+        }
+    }
+    
+    /**
+     * Destroy the managed beans from the given view map.
+     *
+     * @param applicationAssociate the application associate.
+     * @param viewMap the view map.
+     */
+    private void destroyBeans(ApplicationAssociate applicationAssociate, Map<String, Object> viewMap) {
     }
 
     /**
@@ -205,6 +278,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
                     sessionMap.put(ACTIVE_VIEW_MAPS, Collections.synchronizedMap(new LRUMap<String, Object>(size)));
                 }
 
+                @SuppressWarnings("unchecked")
                 Map<String, Object> viewMaps = (Map<String, Object>) sessionMap.get(ACTIVE_VIEW_MAPS);
                 synchronized (viewMaps) {
                     String viewMapId = UUID.randomUUID().toString();
@@ -214,8 +288,9 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
 
                     if (viewMaps.size() == size) {
                         String eldestViewMapId = viewMaps.keySet().iterator().next();
+                        @SuppressWarnings("unchecked")
                         Map<String, Object> eldestViewMap = (Map<String, Object>) viewMaps.remove(eldestViewMapId);
-                        removeEldestViewMap(facesContext, eldestViewMap);
+                        removeEldestViewMap(facesContext, eldestViewMapId, eldestViewMap);
                     }
 
                     viewMaps.put(viewMapId, viewMap);
@@ -242,20 +317,22 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
      * @param se the system event.
      */
     private void processPreDestroyViewMap(SystemEvent se) {
-        if (LOGGER.isLoggable(FINEST)) {
-            LOGGER.log(FINEST, "Handling PreDestroyViewMapEvent");
-        }
-
+        LOGGER.log(FINEST, "Handling PreDestroyViewMapEvent");
+        
         UIViewRoot viewRoot = (UIViewRoot) se.getSource();
         Map<String, Object> viewMap = viewRoot.getViewMap(false);
+        String viewMapId = (String) viewRoot.getTransientStateHelper().getTransient(VIEW_MAP_ID);
 
-        if (viewMap != null && !viewMap.isEmpty()) {
+        if (viewMap != null && viewMapId != null && !viewMap.isEmpty()) {
             FacesContext facesContext = FacesContext.getCurrentInstance();
 
             if (contextManager != null) {
-                contextManager.clear(facesContext, viewMap);
+                contextManager.clear(facesContext, viewMapId, viewMap);
                 contextManager.fireDestroyedEvent(facesContext, viewRoot);
             }
+
+            destroyBeans(facesContext, viewMap);
+
         }
     }
 
@@ -266,9 +343,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
      */
     @Override
     public void sessionCreated(HttpSessionEvent se) {
-        if (LOGGER.isLoggable(FINEST)) {
-            LOGGER.log(FINEST, "Creating session for @ViewScoped beans");
-        }
+        LOGGER.log(FINEST, "Creating session for @ViewScoped beans");
     }
 
     /**
@@ -278,17 +353,25 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
      */
     @Override
     public void sessionDestroyed(HttpSessionEvent httpSessionEvent) {
-        if (LOGGER.isLoggable(FINEST)) {
-            LOGGER.log(FINEST, "Cleaning up session for @ViewScoped beans");
-        }
+        LOGGER.log(FINEST, "Cleaning up session for @ViewScoped beans");
 
         if (contextManager != null) {
             contextManager.sessionDestroyed(httpSessionEvent);
         }
 
         HttpSession session = httpSessionEvent.getSession();
+        
+        @SuppressWarnings("unchecked")
         Map<String, Object> activeViewMaps = (Map<String, Object>) session.getAttribute(ACTIVE_VIEW_MAPS);
         if (activeViewMaps != null) {
+            Iterator<Object> activeViewMapsIterator = activeViewMaps.values().iterator();
+            ApplicationAssociate applicationAssociate = ApplicationAssociate.getInstance(httpSessionEvent.getSession().getServletContext());
+            while (activeViewMapsIterator.hasNext()) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> viewMap = (Map<String, Object>) activeViewMapsIterator.next();
+                destroyBeans(applicationAssociate, viewMap);
+            }
+
             activeViewMaps.clear();
             session.removeAttribute(ACTIVE_VIEW_MAPS);
             session.removeAttribute(ACTIVE_VIEW_MAPS_SIZE);
@@ -298,15 +381,17 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
     /**
      * Remove the eldest view map from the active view maps.
      *
+     * @param facesContext the context
+     * @param viewMapId the view map id
      * @param eldestViewMap the eldest view map.
      */
-    private void removeEldestViewMap(FacesContext facesContext, Map<String, Object> eldestViewMap) {
-        if (LOGGER.isLoggable(FINEST)) {
-            LOGGER.log(FINEST, "Removing eldest view map: {0}", eldestViewMap);
-        }
+    private void removeEldestViewMap(FacesContext facesContext, String viewMapId, Map<String, Object> eldestViewMap) {
+        LOGGER.log(FINEST, "Removing eldest view map: {0}", eldestViewMap);
 
         if (contextManager != null) {
-            contextManager.clear(facesContext, eldestViewMap);
+            contextManager.clear(facesContext, viewMapId, eldestViewMap);
         }
+
+        destroyBeans(facesContext, eldestViewMap);
     }
 }
