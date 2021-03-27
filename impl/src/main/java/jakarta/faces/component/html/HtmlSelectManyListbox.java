@@ -53,6 +53,10 @@ public class HtmlSelectManyListbox extends UISelectMany implements ClientBehavio
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlSelectManyListbox";
 
+    /**
+     * Properties used by this component
+     *
+     */
     protected enum PropertyKeys {
         accesskey, dir, disabled, disabledClass, enabledClass, label, lang, onblur, onchange, onclick, ondblclick, onfocus, onkeydown, onkeypress, onkeyup,
         onmousedown, onmousemove, onmouseout, onmouseover, onmouseup, readonly, role, size, style, styleClass, tabindex, title,;

@@ -174,6 +174,9 @@ public abstract class UIComponentBase extends UIComponent {
      */
     private boolean transientFlag;
 
+    /**
+     * Default constructor, populates the descriptor map.
+     */
     public UIComponentBase() {
         populateDescriptorsMapIfNecessary();
     }

@@ -52,6 +52,10 @@ public class HtmlPanelGrid extends UIPanel implements ClientBehaviorHolder {
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlPanelGrid";
 
+    /**
+     * Properties used by this component
+     *
+     */
     protected enum PropertyKeys {
         bgcolor, bodyrows, border, captionClass, captionStyle, cellpadding, cellspacing, columnClasses, columns, dir, footerClass, frame, headerClass, lang,
         onclick, ondblclick, onkeydown, onkeypress, onkeyup, onmousedown, onmousemove, onmouseout, onmouseover, onmouseup, role, rowClass, rowClasses, rules,

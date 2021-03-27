@@ -52,6 +52,10 @@ public class HtmlInputTextarea extends UIInput implements ClientBehaviorHolder {
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlInputTextarea";
 
+    /**
+     * Properties used by this component
+     *
+     */
     protected enum PropertyKeys {
         accesskey, cols, dir, disabled, label, lang, onblur, onchange, onclick, ondblclick, onfocus, onkeydown, onkeypress, onkeyup, onmousedown, onmousemove,
         onmouseout, onmouseover, onmouseup, onselect, readonly, role, rows, style, styleClass, tabindex, title,;

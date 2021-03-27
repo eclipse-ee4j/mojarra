@@ -25,24 +25,51 @@ import jakarta.faces.FacesException;
  *
  * @since 2.2
  */
-
 public class ProtectedViewException extends FacesException {
 
     private static final long serialVersionUID = -1906819977415598769L;
 
-    public ProtectedViewException(Throwable rootCause) {
-        super(rootCause);
+    /**
+     * <p>
+     * Construct a new exception with no detail message or root cause.
+     * </p>
+     */
+    public ProtectedViewException() {
     }
-
-    public ProtectedViewException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
+    
+    /**
+     * <p>
+     * Construct a new exception with the specified detail message and no root cause.
+     * </p>
+     *
+     * @param message The detail message for this exception
+     */
     public ProtectedViewException(String message) {
         super(message);
     }
+    
+    /**
+     * <p>
+     * Construct a new exception with the specified root cause. The detail message will be set to
+     * <code>(cause == null ? null :
+     * cause.toString()</code>
+     *
+     * @param cause The root cause for this exception
+     */
+    public ProtectedViewException(Throwable cause) {
+        super(cause);
+    }
 
-    public ProtectedViewException() {
+    /**
+     * <p>
+     * Construct a new exception with the specified detail message and root cause.
+     * </p>
+     *
+     * @param message The detail message for this exception
+     * @param cause The root cause for this exception
+     */
+    public ProtectedViewException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }

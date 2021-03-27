@@ -892,6 +892,7 @@ public class HtmlSelectOneRadio extends UISelectOne implements ClientBehaviorHol
     }
 
     private void handleAttribute(String name, Object value) {
+        @SuppressWarnings("unchecked")
         List<String> setAttributes = (List<String>) getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");
         if (setAttributes == null) {
             String cname = this.getClass().getName();

@@ -16,6 +16,9 @@
 
 package jakarta.faces.component.behavior;
 
+import static jakarta.faces.component.behavior.ClientBehaviorHint.SUBMITTING;
+import static java.util.Collections.unmodifiableSet;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -54,7 +57,6 @@ import jakarta.faces.event.AjaxBehaviorListener;
  *
  * @since 2.0
  */
-
 public class AjaxBehavior extends ClientBehaviorBase {
 
     /**
@@ -64,7 +66,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
      */
     public static final String BEHAVIOR_ID = "jakarta.faces.behavior.Ajax";
 
-    private static final Set<ClientBehaviorHint> HINTS = Collections.unmodifiableSet(EnumSet.of(ClientBehaviorHint.SUBMITTING));
+    private static final Set<ClientBehaviorHint> HINTS = unmodifiableSet(EnumSet.of(SUBMITTING));
 
     private String onerror;
     private String onevent;
@@ -77,6 +79,9 @@ public class AjaxBehavior extends ClientBehaviorBase {
 
     private Map<String, ValueExpression> bindings;
 
+    /**
+     * Default constructor that just creates this instance.
+     */
     public AjaxBehavior() {
 
     }
@@ -114,9 +119,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * @since 2.0
      */
     public String getOnerror() {
-
         return (String) eval(ONERROR, onerror);
-
     }
 
     /**
@@ -129,7 +132,6 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * @since 2.0
      */
     public void setOnerror(String onerror) {
-
         this.onerror = onerror;
 
         clearInitialState();
@@ -145,9 +147,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * @since 2.0
      */
     public String getOnevent() {
-
         return (String) eval(ONEVENT, onevent);
-
     }
 
     /**
@@ -160,7 +160,6 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * @since 2.0
      */
     public void setOnevent(String onevent) {
-
         this.onevent = onevent;
 
         clearInitialState();
@@ -181,9 +180,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * @since 2.0
      */
     public Collection<String> getExecute() {
-
         return getCollectionValue(EXECUTE, execute);
-
     }
 
     /**
@@ -197,7 +194,6 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * @since 2.0
      */
     public void setExecute(Collection<String> execute) {
-
         this.execute = copyToList(execute);
 
         clearInitialState();
@@ -248,9 +244,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * @since 2.0
      */
     public Collection<String> getRender() {
-
         return getCollectionValue(RENDER, render);
-
     }
 
     /**
@@ -264,7 +258,6 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * @since 2.0
      */
     public void setRender(Collection<String> render) {
-
         this.render = copyToList(render);
 
         clearInitialState();
@@ -311,7 +304,6 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * @since 2.0
      */
     public boolean isDisabled() {
-
         Boolean result = (Boolean) eval(DISABLED, disabled);
         return result != null ? result : false;
     }
@@ -326,7 +318,6 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * @since 2.0
      */
     public void setDisabled(boolean disabled) {
-
         this.disabled = disabled;
 
         clearInitialState();
@@ -356,7 +347,6 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * @since 2.0
      */
     public void setImmediate(boolean immediate) {
-
         this.immediate = immediate;
 
         clearInitialState();
@@ -404,7 +394,6 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * @throws NullPointerException if <code>name</code> is <code>null</code>
      */
     public ValueExpression getValueExpression(String name) {
-
         if (name == null) {
             throw new NullPointerException();
         }
@@ -424,7 +413,6 @@ public class AjaxBehavior extends ClientBehaviorBase {
      * @throws NullPointerException if <code>name</code> is <code>null</code>
      */
     public void setValueExpression(String name, ValueExpression binding) {
-
         if (name == null) {
             throw new NullPointerException();
         }
@@ -493,10 +481,10 @@ public class AjaxBehavior extends ClientBehaviorBase {
 
     @Override
     public Object saveState(FacesContext context) {
-
         if (context == null) {
             throw new NullPointerException();
         }
+        
         Object[] values;
 
         Object superState = super.saveState(context);
@@ -527,10 +515,10 @@ public class AjaxBehavior extends ClientBehaviorBase {
 
     @Override
     public void restoreState(FacesContext context, Object state) {
-
         if (context == null) {
             throw new NullPointerException();
         }
+        
         if (state != null) {
 
             Object[] values = (Object[]) state;
@@ -618,7 +606,6 @@ public class AjaxBehavior extends ClientBehaviorBase {
     // Restore the list from a String (single element) or a String[]
     // (multiple elements)
     private static List<String> restoreList(String propertyName, Object state) {
-
         if (state == null) {
             return null;
         }
@@ -635,7 +622,6 @@ public class AjaxBehavior extends ClientBehaviorBase {
     }
 
     private Object eval(String propertyName, Object value) {
-
         if (value != null) {
             return value;
         }
@@ -680,7 +666,6 @@ public class AjaxBehavior extends ClientBehaviorBase {
 
     // Sets a property, converting it from a literal
     private void setLiteralValue(String propertyName, ValueExpression expression) {
-
         assert expression.isLiteralText();
 
         Object value;
@@ -724,7 +709,6 @@ public class AjaxBehavior extends ClientBehaviorBase {
 
     // Converts the specified object to a List<String>
     private static List<String> toList(String propertyName, ValueExpression expression, Object value) {
-
         if (value instanceof String) {
 
             String strValue = (String) value;
@@ -781,7 +765,6 @@ public class AjaxBehavior extends ClientBehaviorBase {
     // Makes a defensive copy of the collection, converting to a List
     // (to make state saving a bit easier).
     private List<String> copyToList(Collection<String> collection) {
-
         if (collection == null || collection.isEmpty()) {
             return null;
         }

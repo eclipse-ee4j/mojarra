@@ -38,6 +38,9 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
 
     private static final String OPTIMIZED_PACKAGE = "jakarta.faces.component.";
 
+    /**
+     * Default constructor setting the renderer type.
+     */
     public HtmlBody() {
         super();
         setRendererType("jakarta.faces.Body");
@@ -50,6 +53,9 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.OutputBody";
 
+    /**
+     * The property keys.
+     */
     protected enum PropertyKeys {
         dir, lang, onclick, ondblclick, onkeydown, onkeypress, onkeyup, onload, onmousedown, onmousemove, onmouseout, onmouseover, onmouseup, onunload, role,
         style, styleClass, title, xmlns,;
