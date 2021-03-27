@@ -27,6 +27,7 @@ import jakarta.faces.application.FacesMessage;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.event.PhaseId;
+import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.render.RenderKit;
 
 /**
@@ -75,6 +76,19 @@ public abstract class FacesContextWrapper extends FacesContext implements FacesW
     }
 
     // ----------------------------------------------- Methods from FacesContext
+
+    /**
+     * <p class="changed_added_4_0">
+     * The default behavior of this method is to call {@link FacesContext#getLifecycle()} on the wrapped
+     * {@link FacesContext} object.
+     * </p>
+     *
+     * @see jakarta.faces.context.FacesContext#getLifecycle()
+     */
+    @Override
+    public Lifecycle getLifecycle() {
+        return getWrapped().getLifecycle();
+    }
 
     /**
      * <p>
