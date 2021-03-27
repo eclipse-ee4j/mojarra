@@ -54,6 +54,10 @@ public class HtmlInputSecret extends UIInput implements ClientBehaviorHolder {
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlInputSecret";
 
+    /**
+     * Properties used by this component
+     *
+     */
     protected enum PropertyKeys {
         accesskey, alt, autocomplete, dir, disabled, label, lang, maxlength, onblur, onchange, onclick, ondblclick, onfocus, onkeydown, onkeypress, onkeyup,
         onmousedown, onmousemove, onmouseout, onmouseover, onmouseup, onselect, readonly, redisplay, role, size, style, styleClass, tabindex, title,;

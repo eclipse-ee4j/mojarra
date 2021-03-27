@@ -53,6 +53,10 @@ public class HtmlCommandButton extends UICommand implements ClientBehaviorHolder
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlCommandButton";
 
+    /**
+     * Properties used by this component
+     *
+     */
     protected enum PropertyKeys {
         accesskey, alt, dir, disabled, image, label, lang, onblur, onchange, onclick, ondblclick, onfocus, onkeydown, onkeypress, onkeyup, onmousedown,
         onmousemove, onmouseout, onmouseover, onmouseup, onselect, readonly, role, style, styleClass, tabindex, title, type,;
@@ -81,8 +85,8 @@ public class HtmlCommandButton extends UICommand implements ClientBehaviorHolder
      * <p>
      * Contents: Access key that, when pressed, transfers focus to this element.
      */
-    public java.lang.String getAccesskey() {
-        return (java.lang.String) getStateHelper().eval(PropertyKeys.accesskey);
+    public String getAccesskey() {
+        return (String) getStateHelper().eval(PropertyKeys.accesskey);
 
     }
 
@@ -135,8 +139,8 @@ public class HtmlCommandButton extends UICommand implements ClientBehaviorHolder
      * and "RTL" (right-to-left). These attributes are case sensitive when rendering to XHTML, so care must be taken to have
      * the correct case.
      */
-    public java.lang.String getDir() {
-        return (java.lang.String) getStateHelper().eval(PropertyKeys.dir);
+    public String getDir() {
+        return (String) getStateHelper().eval(PropertyKeys.dir);
 
     }
 

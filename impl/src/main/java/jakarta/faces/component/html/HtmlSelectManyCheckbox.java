@@ -53,6 +53,10 @@ public class HtmlSelectManyCheckbox extends UISelectMany implements ClientBehavi
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlSelectManyCheckbox";
 
+    /**
+     * Properties used by this component
+     *
+     */
     protected enum PropertyKeys {
         accesskey, border, dir, disabled, disabledClass, enabledClass, label, lang, layout, onblur, onchange, onclick, ondblclick, onfocus, onkeydown,
         onkeypress, onkeyup, onmousedown, onmousemove, onmouseout, onmouseover, onmouseup, onselect, readonly, role, selectedClass, style, styleClass, tabindex,

@@ -36,6 +36,10 @@ import jakarta.inject.Qualifier;
 @Retention(RUNTIME)
 public @interface FacesConfig {
 
+    /**
+     * The Faces spec version 
+     *
+     */
     public static enum Version {
 
         /**

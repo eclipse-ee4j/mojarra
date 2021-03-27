@@ -495,7 +495,6 @@ public class UIViewParameter extends UIInput {
          * @return the UIViewParameter.
          * @since 2.0
          */
-
         public UIViewParameter getUIViewParameter(FacesContext context) {
             UIViewParameter result = null;
             UIViewRoot root = context.getViewRoot();

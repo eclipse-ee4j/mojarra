@@ -58,5 +58,9 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface ResourceDependencies {
 
+    /**
+     * The individual resource dependencies
+     * @return The individual resource dependencies
+     */
     ResourceDependency[] value();
 }

@@ -53,7 +53,6 @@ import jakarta.faces.FacesWrapper;
  *
  * @since 2.0
  */
-
 public abstract class ViewDeclarationLanguageFactory implements FacesWrapper<ViewDeclarationLanguageFactory> {
 
     private ViewDeclarationLanguageFactory wrapped;
@@ -109,6 +108,10 @@ public abstract class ViewDeclarationLanguageFactory implements FacesWrapper<Vie
      */
     public abstract ViewDeclarationLanguage getViewDeclarationLanguage(String viewId);
 
+    /**
+     * Gets the list of all view declaration languages supported by this runtime.
+     * @return the list of all view declaration languages supported by this runtime.
+     */
     public List<ViewDeclarationLanguage> getAllViewDeclarationLanguages() {
         return emptyList();
     }

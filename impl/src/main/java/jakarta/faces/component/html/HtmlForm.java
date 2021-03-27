@@ -54,6 +54,10 @@ public class HtmlForm extends UIForm implements ClientBehaviorHolder {
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlForm";
 
+    /**
+     * Properties used by this component
+     *
+     */
     protected enum PropertyKeys {
         accept, acceptcharset, dir, enctype, lang, onclick, ondblclick, onkeydown, onkeypress, onkeyup, onmousedown, onmousemove, onmouseout, onmouseover,
         onmouseup, onreset, onsubmit, role, style, styleClass, target, title,;

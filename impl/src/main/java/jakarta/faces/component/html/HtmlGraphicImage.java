@@ -52,6 +52,10 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlGraphicImage";
 
+    /**
+     * Properties used by this component
+     *
+     */
     protected enum PropertyKeys {
         alt, dir, height, ismap, lang, longdesc, onclick, ondblclick, onkeydown, onkeypress, onkeyup, onmousedown, onmousemove, onmouseout, onmouseover,
         onmouseup, role, style, styleClass, title, usemap, width,;

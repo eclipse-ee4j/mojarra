@@ -150,6 +150,11 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
         return (Boolean) getStateHelper().eval(PropertyKeys.prependId, true);
     }
 
+    /**
+     * Set whether the id should be prepended.
+     * 
+     * @param prependId <code>true</code> if it is, <code>false</code> otherwise.
+     */
     public void setPrependId(boolean prependId) {
         getStateHelper().put(PropertyKeys.prependId, prependId);
     }
@@ -198,7 +203,6 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
      */
     @Override
     public void processValidators(FacesContext context) {
-
         if (context == null) {
             throw new NullPointerException();
         }
@@ -231,7 +235,6 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
      */
     @Override
     public void processUpdates(FacesContext context) {
-
         if (context == null) {
             throw new NullPointerException();
         }

@@ -53,6 +53,10 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlPanelGroup";
 
+    /**
+     * Properties used by this component
+     *
+     */
     protected enum PropertyKeys {
         layout, onclick, ondblclick, onkeydown, onkeypress, onkeyup, onmousedown, onmousemove, onmouseout, onmouseover, onmouseup, style, styleClass,;
 

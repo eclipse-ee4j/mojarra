@@ -23,10 +23,15 @@ import java.util.Collections;
 import java.util.List;
 
 import jakarta.el.ValueExpression;
+import jakarta.faces.component.UIInput;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.context.FacesContext;
 
-public class HtmlInputFile extends jakarta.faces.component.UIInput implements ClientBehaviorHolder {
+/**
+ * Represents an HTML <code>input</code> element of type <code>file</code>.
+ *
+ */
+public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
 
     private static final String OPTIMIZED_PACKAGE = "jakarta.faces.component.";
 
@@ -42,6 +47,10 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput implements Cl
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlInputFile";
 
+    /**
+     * Properties used by this component
+     *
+     */
     protected enum PropertyKeys {
         accesskey, alt, autocomplete, dir, disabled, label, lang, maxlength, multiple, onblur, onchange, onclick, ondblclick, onfocus, onkeydown, onkeypress, onkeyup,
         onmousedown, onmousemove, onmouseout, onmouseover, onmouseup, onselect, readonly, role, size, style, styleClass, tabindex, title,;
