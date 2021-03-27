@@ -99,7 +99,7 @@ public class ButtonRenderer extends HtmlBasicRenderer {
 
         Collection<ClientBehaviorContext.Parameter> params = getBehaviorParameters(component);
         if (!params.isEmpty() && (type.equals("submit") || type.equals("button"))) {
-            RenderKitUtils.renderJsfJsIfNecessary(context);
+            RenderKitUtils.renderFacesJsIfNecessary(context);
         }
 
         String imageSrc = (String) component.getAttributes().get("image");

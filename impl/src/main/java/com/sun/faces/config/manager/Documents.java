@@ -155,7 +155,7 @@ public class Documents {
 
         List<DocumentInfo> mergedDocuments = new ArrayList<>(facesDocuments.length + programmaticDocuments.size());
 
-        // The first programmaticDocuments element represents jsf-ri-runtime,
+        // The first programmaticDocuments element represents the faces implementation,
         // and should be the first one in the merged list
         mergedDocuments.add(programmaticDocuments.get(0));
 

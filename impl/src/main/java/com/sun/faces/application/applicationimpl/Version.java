@@ -26,25 +26,25 @@ import jakarta.faces.context.FacesContext;
 
 public class Version {
 
-    private Boolean isJsf23;
+    private Boolean isFaces23;
 
     /**
      * Are we running in JSF 2.3+
      *
      * @return true if we are, false otherwise.
      */
-    public boolean isJsf23() {
-        if (isJsf23 == null) {
+    public boolean isFaces23() {
+        if (isFaces23 == null) {
             BeanManager beanManager = getCdiBeanManager(FacesContext.getCurrentInstance());
 
             if (beanManager == null) {
-                isJsf23 = false;
+                isFaces23 = false;
             } else {
-                isJsf23 = getBeanReference(beanManager, CdiExtension.class).isAddBeansForJSFImplicitObjects();
+                isFaces23 = getBeanReference(beanManager, CdiExtension.class).isAddBeansForJSFImplicitObjects();
             }
         }
 
-        return isJsf23;
+        return isFaces23;
     }
 
 }

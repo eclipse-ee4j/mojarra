@@ -315,7 +315,7 @@ public class ServerSideStateHelper extends StateHelper {
         } catch (NumberFormatException nfe) {
             String defaultValue = param.getDefaultValue();
             if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING, "jsf.state.server.cannot.parse.int.option", new Object[] { param.getQualifiedName(), defaultValue });
+                LOGGER.log(Level.WARNING, "faces.state.server.cannot.parse.int.option", new Object[] { param.getQualifiedName(), defaultValue });
             }
             try {
                 value = Integer.valueOf(defaultValue);

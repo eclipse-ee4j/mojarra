@@ -710,7 +710,7 @@ public class ExternalContextImpl extends ExternalContext {
 
         FacesContext ctx = FacesContext.getCurrentInstance();
         if (mimeType == null && LOGGER.isLoggable(Level.WARNING) && ctx.isProjectStage(ProjectStage.Development)) {
-            LOGGER.log(Level.WARNING, "jsf.externalcontext.no.mime.type.found", new Object[] { file });
+            LOGGER.log(Level.WARNING, "faces.externalcontext.no.mime.type.found", new Object[] { file });
         }
         return mimeType;
 

@@ -91,7 +91,7 @@ public class Events {
         // Log a warning that the types are incompatible and return.
         if (projectStage == Development && sourceBaseType != null && !sourceBaseType.isInstance(source)) {
             if (LOGGER.isLoggable(WARNING)) {
-                LOGGER.log(WARNING, "jsf.application.publish.event.base_type_mismatch", new Object[] { source.getClass().getName(), sourceBaseType.getName() });
+                LOGGER.log(WARNING, "faces.application.publish.event.base_type_mismatch", new Object[] { source.getClass().getName(), sourceBaseType.getName() });
             }
             return;
         }

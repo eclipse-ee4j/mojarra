@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.sun.faces.facelets.tag.jsf.ComponentSupport;
+import com.sun.faces.facelets.tag.faces.ComponentSupport;
 import com.sun.faces.util.RequestStateManager;
 
 import jakarta.faces.application.Application;

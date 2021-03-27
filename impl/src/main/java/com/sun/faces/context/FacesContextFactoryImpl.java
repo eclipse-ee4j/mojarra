@@ -90,7 +90,7 @@ public class FacesContextFactoryImpl extends FacesContextFactory {
         attrs.put(UIComponent.HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME, setCurrentComponent ? Boolean.TRUE : Boolean.FALSE);
         attrs.put(PartialStateSaving, webConfig.isOptionEnabled(PartialStateSaving) ? Boolean.TRUE : Boolean.FALSE);
         attrs.put(ForceAlwaysWriteFlashCookie, webConfig.isOptionEnabled(ForceAlwaysWriteFlashCookie) ? Boolean.TRUE : Boolean.FALSE);
-        // We must use getQualifiedName here because the consumer is in jsf-api
+        // We must use getQualifiedName here because the consumer is in faces-api
         // and thus cannot import the enum.
         attrs.put(ViewRootPhaseListenerQueuesException.getQualifiedName(),
                 webConfig.isOptionEnabled(ViewRootPhaseListenerQueuesException) ? Boolean.TRUE : Boolean.FALSE);

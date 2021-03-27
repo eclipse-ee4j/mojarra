@@ -499,7 +499,7 @@ public class WebConfiguration {
 
         if (!ALLOWABLE_BOOLEANS.matcher(value).matches()) {
             if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING, "jsf.config.webconfig.boolconfig.invalidvalue",
+                LOGGER.log(Level.WARNING, "faces.config.webconfig.boolconfig.invalidvalue",
                         new Object[] { value, param.getQualifiedName(), "true|false", "true|false", param.getDefaultValue() });
             }
             return false;
@@ -528,12 +528,12 @@ public class WebConfiguration {
                 BooleanWebContextInitParameter alternate = param.getAlternate();
                 if (LOGGER.isLoggable(Level.WARNING)) {
                     if (alternate != null) {
-                        queueLoggingAction(new DeferredBooleanParameterLoggingAction(param, Level.WARNING, "jsf.config.webconfig.param.deprecated",
+                        queueLoggingAction(new DeferredBooleanParameterLoggingAction(param, Level.WARNING, "faces.config.webconfig.param.deprecated",
                                 new Object[] { contextName, param.getQualifiedName(), alternate.getQualifiedName() }));
 
                     } else {
                         queueLoggingAction(new DeferredBooleanParameterLoggingAction(param, Level.WARNING,
-                                "jsf.config.webconfig.param.deprecated.no_replacement", new Object[] { contextName, param.getQualifiedName() }));
+                                "faces.config.webconfig.param.deprecated.no_replacement", new Object[] { contextName, param.getQualifiedName() }));
 
                     }
                 }
@@ -547,7 +547,7 @@ public class WebConfiguration {
 
                     if (LOGGER.isLoggable(Level.INFO) && alternate != null) {
                         queueLoggingAction(new DeferredBooleanParameterLoggingAction(param, Level.INFO,
-                                value ? "jsf.config.webconfig.configinfo.reset.enabled" : "jsf.config.webconfig.configinfo.reset.disabled",
+                                value ? "faces.config.webconfig.configinfo.reset.enabled" : "faces.config.webconfig.configinfo.reset.disabled",
                                 new Object[] { contextName, alternate.getQualifiedName() }));
                     }
 
@@ -574,7 +574,7 @@ public class WebConfiguration {
                 }
 
                 if (LOGGER.isLoggable(loggingLevel)) {
-                    LOGGER.log(loggingLevel, value ? "jsf.config.webconfig.boolconfiginfo.enabled" : "jsf.config.webconfig.boolconfiginfo.disabled",
+                    LOGGER.log(loggingLevel, value ? "faces.config.webconfig.boolconfiginfo.enabled" : "faces.config.webconfig.boolconfiginfo.disabled",
                             new Object[] { contextName, param.getQualifiedName() });
                 }
 
@@ -627,18 +627,18 @@ public class WebConfiguration {
                 if (strategy == null || strategy.shouldBeLogged(this)) {
                     if (LOGGER.isLoggable(Level.WARNING)) {
                         if (alternate != null) {
-                            queueLoggingAction(new DeferredParameterLoggingAction(param, Level.WARNING, "jsf.config.webconfig.param.deprecated",
+                            queueLoggingAction(new DeferredParameterLoggingAction(param, Level.WARNING, "faces.config.webconfig.param.deprecated",
                                     new Object[] { contextName, param.getQualifiedName(), alternate.getQualifiedName() }));
 
                         } else {
-                            queueLoggingAction(new DeferredParameterLoggingAction(param, Level.WARNING, "jsf.config.webconfig.param.deprecated.no_replacement",
+                            queueLoggingAction(new DeferredParameterLoggingAction(param, Level.WARNING, "faces.config.webconfig.param.deprecated.no_replacement",
                                     new Object[] { contextName, param.getQualifiedName() }));
                         }
                     }
                 }
 
                 if (alternate != null) {
-                    queueLoggingAction(new DeferredParameterLoggingAction(param, Level.INFO, "jsf.config.webconfig.configinfo.reset",
+                    queueLoggingAction(new DeferredParameterLoggingAction(param, Level.INFO, "faces.config.webconfig.configinfo.reset",
                             new Object[] { contextName, alternate.getQualifiedName(), value }));
 
                     contextParameters.put(alternate, value);
@@ -655,13 +655,13 @@ public class WebConfiguration {
 
             if (value.length() > 0) {
                 if (LOGGER.isLoggable(loggingLevel)) {
-                    LOGGER.log(loggingLevel, "jsf.config.webconfig.configinfo", new Object[] { contextName, param.getQualifiedName(), value });
+                    LOGGER.log(loggingLevel, "faces.config.webconfig.configinfo", new Object[] { contextName, param.getQualifiedName(), value });
 
                 }
                 contextParameters.put(param, value);
             } else {
                 if (LOGGER.isLoggable(loggingLevel)) {
-                    LOGGER.log(loggingLevel, "jsf.config.webconfig.option.notconfigured", new Object[] { contextName, param.getQualifiedName() });
+                    LOGGER.log(loggingLevel, "faces.config.webconfig.option.notconfigured", new Object[] { contextName, param.getQualifiedName() });
                 }
             }
 
@@ -703,7 +703,7 @@ public class WebConfiguration {
                 if (value != null) {
                     if (LOGGER.isLoggable(Level.INFO)) {
                         if (LOGGER.isLoggable(loggingLevel)) {
-                            LOGGER.log(loggingLevel, "jsf.config.webconfig.enventryinfo", new Object[] { contextName, entryName, value });
+                            LOGGER.log(loggingLevel, "faces.config.webconfig.enventryinfo", new Object[] { contextName, entryName, value });
                         }
                     }
                     envEntries.put(entry, value);

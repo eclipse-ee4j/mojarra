@@ -162,7 +162,7 @@ public final class ByteArrayGuardAESCTR {
 
         try {
             InitialContext context = new InitialContext();
-            String encodedKeyArray = (String) context.lookup("java:comp/env/jsf/FlashSecretKey");
+            String encodedKeyArray = (String) context.lookup("java:comp/env/faces/FlashSecretKey");
             if (null != encodedKeyArray) {
                 byte[] keyArray = Base64.getDecoder().decode(encodedKeyArray);
                 if (keyArray.length < 16) {

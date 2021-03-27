@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 
 import com.sun.faces.application.view.FaceletViewHandlingStrategy;
 import com.sun.faces.facelets.tag.TagHandlerImpl;
-import com.sun.faces.facelets.tag.jsf.ComponentSupport;
+import com.sun.faces.facelets.tag.faces.ComponentSupport;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 

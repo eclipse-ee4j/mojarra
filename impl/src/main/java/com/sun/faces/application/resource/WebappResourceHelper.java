@@ -225,7 +225,7 @@ public class WebappResourceHelper extends ResourceHelper {
             // ok, subdirectories exist, so find the latest 'version' directory
             VersionInfo version = getVersion(resourcePaths, true);
             if (version == null && LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING, "jsf.application.resource.unable_to_determine_resource_version.", resourceName);
+                LOGGER.log(Level.WARNING, "faces.application.resource.unable_to_determine_resource_version.", resourceName);
             }
             if (library != null) {
                 value = new ClientResourceInfo(library, outContract[0], resourceName, version, compressable,

@@ -217,7 +217,7 @@ public class NavigationConfigProcessor extends AbstractConfigProcessor {
                             fromViewId = t == null ? FROM_VIEW_ID_DEFAULT : t;
                             if (!fromViewId.equals(FROM_VIEW_ID_DEFAULT) && fromViewId.charAt(0) != '/') {
                                 if (LOGGER.isLoggable(Level.WARNING)) {
-                                    LOGGER.log(Level.WARNING, "jsf.config.navigation.from_view_id_leading_slash", new String[] { fromViewId });
+                                    LOGGER.log(Level.WARNING, "faces.config.navigation.from_view_id_leading_slash", new String[] { fromViewId });
                                 }
                                 fromViewId = '/' + fromViewId;
                             }
@@ -274,7 +274,7 @@ public class NavigationConfigProcessor extends AbstractConfigProcessor {
                                 condition = expression;
                             } else {
                                 if (LOGGER.isLoggable(Level.WARNING)) {
-                                    LOGGER.log(Level.WARNING, "jsf.config.navigation.if_invalid_expression", new String[] { expression, fromViewId });
+                                    LOGGER.log(Level.WARNING, "faces.config.navigation.if_invalid_expression", new String[] { expression, fromViewId });
                                 }
                             }
                             break;
@@ -282,7 +282,7 @@ public class NavigationConfigProcessor extends AbstractConfigProcessor {
                             String toViewIdString = getNodeText(n);
                             if (toViewIdString.charAt(0) != '/' && toViewIdString.charAt(0) != '#') {
                                 if (LOGGER.isLoggable(Level.WARNING)) {
-                                    LOGGER.log(Level.WARNING, "jsf.config.navigation.to_view_id_leading_slash", new String[] { toViewIdString, fromViewId });
+                                    LOGGER.log(Level.WARNING, "faces.config.navigation.to_view_id_leading_slash", new String[] { toViewIdString, fromViewId });
                                 }
                                 toViewId = '/' + toViewIdString;
                             } else {

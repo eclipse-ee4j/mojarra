@@ -296,7 +296,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
                     extContext.redirect(redirectUrl);
                 } catch (java.io.IOException ioe) {
                     if (LOGGER.isLoggable(FINE)) {
-                        LOGGER.log(FINE, "jsf.redirect_failed_error", redirectUrl);
+                        LOGGER.log(FINE, "faces.redirect_failed_error", redirectUrl);
                     }
 
                     throw new FacesException(ioe.getMessage(), ioe);
@@ -833,7 +833,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
             int viewIdLen = viewIdToTest.length();
             if (viewIdLen <= questionMark + 1) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE, "jsf.navigation_invalid_query_string", viewIdToTest);
+                    LOGGER.log(Level.SEVERE, "faces.navigation_invalid_query_string", viewIdToTest);
                 }
                 if (development) {
                     String key;
@@ -873,7 +873,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
                         String sanitized = null != rightHandSide && 2 < rightHandSide.length() ? rightHandSide.trim() : "";
                         if (sanitized.contains("#{") || sanitized.contains("${")) {
                             if (LOGGER.isLoggable(Level.INFO)) {
-                                LOGGER.log(Level.INFO, "jsf.navigation_invalid_query_string", rightHandSide);
+                                LOGGER.log(Level.INFO, "faces.navigation_invalid_query_string", rightHandSide);
                             }
                             rightHandSide = "";
                         }

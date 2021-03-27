@@ -33,7 +33,7 @@ import jakarta.faces.context.FacesContext;
 
 public class UIRepeatTest extends TestCase {
 
-	private FacesContext jsf;
+	private FacesContext ctx;
 
 	private FacesMessage.Severity maximumSeverity = FacesMessage.SEVERITY_WARN;
 
@@ -41,23 +41,23 @@ public class UIRepeatTest extends TestCase {
 
 	@Test
 	public void testHasErrorMessages() throws Exception {
-		jsf = EasyMock.createMock(FacesContext.class);
-		expect(jsf.getMaximumSeverity()).andAnswer(new IAnswer<Severity>() {
+		ctx = EasyMock.createMock(FacesContext.class);
+		expect(ctx.getMaximumSeverity()).andAnswer(new IAnswer<Severity>() {
 			@Override
 			public Severity answer() throws Throwable {
 				return maximumSeverity;
 			}
 		}).anyTimes();
-		replay(jsf);
+		replay(ctx);
 
 		maximumSeverity = FacesMessage.SEVERITY_WARN;
-		assertEquals(false, hasErrorMessages(jsf));
+		assertEquals(false, hasErrorMessages(ctx));
 		maximumSeverity = FacesMessage.SEVERITY_INFO;
-		assertEquals(false, hasErrorMessages(jsf));
+		assertEquals(false, hasErrorMessages(ctx));
 		maximumSeverity = FacesMessage.SEVERITY_ERROR;
-		assertEquals(true, hasErrorMessages(jsf));
+		assertEquals(true, hasErrorMessages(ctx));
 		maximumSeverity = FacesMessage.SEVERITY_FATAL;
-		assertEquals(true, hasErrorMessages(jsf));
+		assertEquals(true, hasErrorMessages(ctx));
 	}
 
 	private boolean hasErrorMessages(FacesContext context) throws Exception {

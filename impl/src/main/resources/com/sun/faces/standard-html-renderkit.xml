@@ -5460,7 +5460,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
             It's interpreted as a JavaScript instruction whether to open or close the websocket push connection.
             The <code>connected</code> and <code>rendered</code> attributes are implicitly re-evaluated on every ajax request by a <code>PreRenderViewEvent</code> listener on the <code>UIViewRoot</code>.
             If the value of <code>connected</code> or <code>rendered</code> attribute changes to <code>false</code> while the websocket is already opened, then the websocket will implicitly be closed.
-            You can also explicitly set <code>connected</code> attribute to <code>false</code> and then manually control in JavaScript by <code>jsf.push.open(clientId)</code> and <code>jsf.push.close(clientId)</code>.
+            You can also explicitly set <code>connected</code> attribute to <code>false</code> and then manually control in JavaScript by <code>faces.push.open(clientId)</code> and <code>faces.push.close(clientId)</code>.
         ]]></description>
       <icon/>
       <property-name>connected</property-name>
@@ -23284,7 +23284,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
        <li>renderer specific scripts</li>
        </ul>
        If any of the scripts in the chain returns <code>false</code>, subsequent script must not be executed.
-       The specification provides a utility function <code>jsf.util.chain</code> to handle this capability.  If there
+       The specification provides a utility function <code>faces.util.chain</code> to handle this capability.  If there
        are <code>UIParameter</code> children the parameter names and values must be passed into the client behavior
        getScript method via the <code>ClientBehaviorContext</code>.</p> 
          
@@ -24442,7 +24442,7 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
 
   <div class="changed_added_2_3">
                     <p>
-                        Render a JavaScript function that invokes <code>jsf.ajax.request()</code> function.
+                        Render a JavaScript function that invokes <code>faces.ajax.request()</code> function.
                     </p>
     
                     <h3>Encode Behavior</h3>
@@ -24450,18 +24450,18 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
                         Render an HTML <code>script</code> element. If the value of the "name" attribute does not contain a
                         period <code>.</code> indicating a namespaced function name, then render JavaScript <code>var</code>
                         keyword, followed by a space character. Render the value of the "name" attribute, followed by 
-                        JavaScript assignment operator. Render JavaScript function which invokes <code>jsf.ajax.request()</code>
+                        JavaScript assignment operator. Render JavaScript function which invokes <code>faces.ajax.request()</code>
                         with data provided by <code>execute</code>, <code>render</code>, <code>onbegin</code>,
                         <code>oncomplete</code>, <code>onsuccess</code> and <code>onerror</code> arguments, if any. 
                     </p>
                     <p>
                         If the component being rendered has any <code>UIParameter</code> children, each one of them must be
-                        encoded into <code>params</code> object of the <code>options</code> object of the <code>jsf.ajax.request()</code>
+                        encoded into <code>params</code> object of the <code>options</code> object of the <code>faces.ajax.request()</code>
                         function.
                     </p>
                     <p>
                         If the rendered JavaScript function is invoked with an object argument, each property must be
-                        encoded into <code>params</code> object of the <code>options</code> object of the <code>jsf.ajax.request()</code>
+                        encoded into <code>params</code> object of the <code>options</code> object of the <code>faces.ajax.request()</code>
                         function. This will override any property with the same key.
                     </p>
     
@@ -36151,13 +36151,13 @@ unmodified to the rendered output.</p>
             <description><![CDATA[
 <div class="changed_added_2_3">                       
     <p>
-        Render a JavaScript function that invokes <code>jsf.push.init()</code> function.
+        Render a JavaScript function that invokes <code>faces.push.init()</code> function.
     </p>
 
     <h3>Encode Behavior</h3>
     <p>
         Render an HTML <code>script</code> element with an "id" attribute.
-        Render JavaScript function which invokes <code>jsf.push.init()</code> function with data provided by
+        Render JavaScript function which invokes <code>faces.push.init()</code> function with data provided by
         <code>onopen</code>, <code>onmessage</code>, <code>onclose</code> and <code>connected</code>
         arguments, if any. 
     </p>

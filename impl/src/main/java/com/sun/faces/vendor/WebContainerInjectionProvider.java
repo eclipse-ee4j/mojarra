@@ -151,21 +151,21 @@ public class WebContainerInjectionProvider implements InjectionProvider {
                 // validate method
                 if (Modifier.isStatic(method.getModifiers())) {
                     if (LOGGER.isLoggable(WARNING)) {
-                        LOGGER.log(WARNING, "jsf.core.web.injection.method_not_static", new Object[] { method.toString(), annotation.getName() });
+                        LOGGER.log(WARNING, "faces.core.web.injection.method_not_static", new Object[] { method.toString(), annotation.getName() });
                     }
                     continue;
                 }
 
                 if (!Void.TYPE.equals(method.getReturnType())) {
                     if (LOGGER.isLoggable(WARNING)) {
-                        LOGGER.log(WARNING, "jsf.core.web.injection.method_return_not_void", new Object[] { method.toString(), annotation.getName() });
+                        LOGGER.log(WARNING, "faces.core.web.injection.method_return_not_void", new Object[] { method.toString(), annotation.getName() });
                     }
                     continue;
                 }
 
                 if (method.getParameterTypes().length != 0) {
                     if (LOGGER.isLoggable(WARNING)) {
-                        LOGGER.log(WARNING, "jsf.core.web.injection.method_no_params", new Object[] { method.toString(), annotation.getName() });
+                        LOGGER.log(WARNING, "faces.core.web.injection.method_no_params", new Object[] { method.toString(), annotation.getName() });
                     }
                     continue;
                 }
@@ -181,7 +181,7 @@ public class WebContainerInjectionProvider implements InjectionProvider {
                     }
                     if (hasChecked) {
                         if (LOGGER.isLoggable(WARNING)) {
-                            LOGGER.log(WARNING, "jsf.core.web.injection.method_no_checked_exceptions",
+                            LOGGER.log(WARNING, "faces.core.web.injection.method_no_checked_exceptions",
                                     new Object[] { method.toString(), annotation.getName() });
                         }
                         continue;

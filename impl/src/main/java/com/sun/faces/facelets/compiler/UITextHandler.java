@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 import com.sun.faces.facelets.el.ELText;
-import com.sun.faces.facelets.tag.jsf.ComponentSupport;
+import com.sun.faces.facelets.tag.faces.ComponentSupport;
 import com.sun.faces.facelets.util.FastWriter;
 
 import jakarta.el.ELException;

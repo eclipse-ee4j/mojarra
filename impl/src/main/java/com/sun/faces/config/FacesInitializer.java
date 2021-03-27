@@ -90,13 +90,13 @@ public class FacesInitializer implements ServletContainerInitializer {
         }
         servletContext.setAttribute(ANNOTATED_CLASSES, annotatedClasses);
 
-        boolean appHasSomeJsfContent = appMayHaveSomeJsfContent(classes, servletContext);
+        boolean appHasSomeFacesContent = appMayHaveSomeFacesContent(classes, servletContext);
         boolean appHasFacesServlet = getExistingFacesServletRegistration(servletContext) != null;
 
-        if (appHasSomeJsfContent || appHasFacesServlet) {
+        if (appHasSomeFacesContent || appHasFacesServlet) {
             InitFacesContext initFacesContext = new InitFacesContext(servletContext);
             try {
-                if (appHasSomeJsfContent) {
+                if (appHasSomeFacesContent) {
                     // Only look at mapping concerns if there is JSF content
                     handleMappingConcerns(servletContext);
                 }
@@ -117,7 +117,7 @@ public class FacesInitializer implements ServletContainerInitializer {
 
     // --------------------------------------------------------- Private Methods
 
-    private boolean appMayHaveSomeJsfContent(Set<Class<?>> classes, ServletContext context) {
+    private boolean appMayHaveSomeFacesContent(Set<Class<?>> classes, ServletContext context) {
         if (!isEmpty(classes)) {
             return true;
         }
