@@ -89,7 +89,7 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
     /**
      * Stylesheet to convert 1.0 and 1.1 based faces-config documents to our private 1.1 schema for validation.
      */
-    private static final String FACES_TO_1_1_PRIVATE_XSL = "/com/sun/faces/jsf1_0-1_1toSchema.xsl";
+    private static final String FACES_TO_1_1_PRIVATE_XSL = "/com/sun/faces/faces1_0-1_1toSchema.xsl";
 
     /**
      * Stylesheet to convert 1.0 facelet-taglib documents from 1.0 to 2.0 for schema validation purposes.

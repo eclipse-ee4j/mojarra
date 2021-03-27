@@ -195,7 +195,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         if (component instanceof UISelectMany) {
 
             // Need to set the 'TARGET_COMPONENT_ATTRIBUTE_NAME' request attr so the
-            // coerce-value call in the jsf-api UISelectMany.matchValue will work
+            // coerce-value call in the faces-api UISelectMany.matchValue will work
             // (need a better way to determine the currently processing UIComponent ...)
             RequestStateManager.set(context, TARGET_COMPONENT_ATTRIBUTE_NAME, component);
 

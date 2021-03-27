@@ -23,7 +23,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.sun.faces.facelets.tag.jsf.CompositeComponentTagHandler;
+import com.sun.faces.facelets.tag.faces.CompositeComponentTagHandler;
 
 import jakarta.el.ELException;
 import jakarta.faces.FacesException;

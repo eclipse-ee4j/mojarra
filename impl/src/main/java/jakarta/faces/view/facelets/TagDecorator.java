@@ -82,7 +82,7 @@ package jakarta.faces.view.facelets;
  *
  * <td>a</td>
  *
- * <td>jsf:action</td>
+ * <td>faces:action</td>
  *
  * <td>h:commandLink</td>
  *
@@ -92,7 +92,7 @@ package jakarta.faces.view.facelets;
  *
  * <td>a</td>
  *
- * <td>jsf:actionListener</td>
+ * <td>faces:actionListener</td>
  *
  * <td>h:commandLink</td>
  *
@@ -102,7 +102,7 @@ package jakarta.faces.view.facelets;
  *
  * <td>a</td>
  *
- * <td>jsf:value</td>
+ * <td>faces:value</td>
  *
  * <td>h:outputLink</td>
  *
@@ -112,7 +112,7 @@ package jakarta.faces.view.facelets;
  *
  * <td>a</td>
  *
- * <td>jsf:outcome</td>
+ * <td>faces:outcome</td>
  *
  * <td>h:link</td>
  *
@@ -142,7 +142,7 @@ package jakarta.faces.view.facelets;
  *
  * <td>button</td>
  *
- * <td>jsf:outcome</td>
+ * <td>faces:outcome</td>
  *
  * <td>h:button</td>
  *
@@ -421,13 +421,13 @@ package jakarta.faces.view.facelets;
  * In the case where there are multiple rows with the same <strong>localName</strong>, find a matching entry by using
  * the argument {@code tag}'s attributes and the value from the "selector attribute" column in the table in the given
  * order. A selector attribute value of <strong>*</strong> indicates any value. In the table, a selector attribute name
- * prefixed with <strong>jsf:</strong> means the tag is treated as if it were in the {@code
+ * prefixed with <strong>faces:</strong> means the tag is treated as if it were in the {@code
  * http://xmlns.jcp.org/jsf} namespace. In actual Facelet pages, the namespace is what matters, not the prefix.
  * </p>
  *
  *
  * <p>
- * If no matching entry is found, let {@code jsf:element} be the value of <strong>targetTag</strong>
+ * If no matching entry is found, let {@code faces:element} be the value of <strong>targetTag</strong>
  * </p>
  *
  * </li>
@@ -500,7 +500,7 @@ package jakarta.faces.view.facelets;
  *
  * <p>
  * namespace: if <strong>targetTag</strong>'s prefix is "h", {@code
- * http://xmlns.jcp.org/jsf/html}; if <strong>targetTag</strong>'s prefix is "jsf", {@code http://xmlns.jcp.org/jsf}.
+ * http://xmlns.jcp.org/jsf/html}; if <strong>targetTag</strong>'s prefix is "faces", {@code http://xmlns.jcp.org/jsf}.
  * </p>
  *
  * <p>

@@ -71,7 +71,7 @@ public class SerializationProviderFactory {
 
         if (provider.getClass() != JavaSerializationProvider.class) {
             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.log(Level.FINE, "jsf.spi.serialization.provider_configured", new Object[] { provider.getClass().getName() });
+                LOGGER.log(Level.FINE, "faces.spi.serialization.provider_configured", new Object[] { provider.getClass().getName() });
             }
         }
         return provider;
@@ -87,16 +87,16 @@ public class SerializationProviderFactory {
                     provider = (SerializationProvider) clazz.newInstance();
                 } else {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.log(Level.SEVERE, "jsf.spi.serialization.provider_not_implemented", new Object[] { className });
+                        LOGGER.log(Level.SEVERE, "faces.spi.serialization.provider_not_implemented", new Object[] { className });
                     }
                 }
             } catch (ClassNotFoundException cnfe) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE, "jsf.spi.serialization.provider_not_found", new Object[] { className });
+                    LOGGER.log(Level.SEVERE, "faces.spi.serialization.provider_not_found", new Object[] { className });
                 }
             } catch (InstantiationException | IllegalAccessException ie) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE, "jsf.spi.serialization.provider_cannot_instantiate", new Object[] { className });
+                    LOGGER.log(Level.SEVERE, "faces.spi.serialization.provider_cannot_instantiate", new Object[] { className });
                     LOGGER.log(Level.SEVERE, "", ie);
                 }
             }

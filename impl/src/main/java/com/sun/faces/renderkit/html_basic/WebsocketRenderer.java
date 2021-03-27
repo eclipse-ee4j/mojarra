@@ -42,7 +42,7 @@ import jakarta.faces.event.ListenerFor;
 import jakarta.faces.event.PostAddToViewEvent;
 
 /**
- * <b>WebsocketRenderer</b> is a class that renders the <code>jsf.push.init()</code> script and decodes any client
+ * <b>WebsocketRenderer</b> is a class that renders the <code>faces.push.init()</code> script and decodes any client
  * behaviors triggered by {@link UIWebsocket}.
  *
  * @author Bauke Scholtz
@@ -56,7 +56,7 @@ public class WebsocketRenderer extends HtmlBasicRenderer implements ComponentSys
 
     public static final String RENDERER_TYPE = "jakarta.faces.Websocket";
 
-    private static final String SCRIPT_INIT = "jsf.push.init('%s','%s','%s',%s,%s,%s);";
+    private static final String SCRIPT_INIT = "faces.push.init('%s','%s','%s',%s,%s,%s);";
 
     // Actions --------------------------------------------------------------------------------------------------------
 
@@ -77,7 +77,7 @@ public class WebsocketRenderer extends HtmlBasicRenderer implements ComponentSys
     }
 
     /**
-     * Render <code>jsf.push.init()</code> function if necessary.
+     * Render <code>faces.push.init()</code> function if necessary.
      */
     @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
@@ -93,7 +93,7 @@ public class WebsocketRenderer extends HtmlBasicRenderer implements ComponentSys
             String behaviors = getBehaviorScripts(context, websocket);
             boolean connected = websocket.isConnected();
 
-            RenderKitUtils.renderJsfJsIfNecessary(context);
+            RenderKitUtils.renderFacesJsIfNecessary(context);
 
             ResponseWriter writer = context.getResponseWriter();
             writer.startElement("script", component);

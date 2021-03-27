@@ -85,7 +85,7 @@ public final class UIDebug extends UIComponentBase {
             sb.append("id = day.getTime();");
             sb.append(
                     "eval(\"page\" + id + \" = window.open(URL, '\" + id + \"', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=800,height=600,left = 240,top = 212');\"); };");
-            sb.append("(function() { if (typeof jsfFaceletsDebug === 'undefined') { var jsfFaceletsDebug = false; } if (!jsfFaceletsDebug) {");
+            sb.append("(function() { if (typeof faceletsDebug === 'undefined') { var faceletsDebug = false; } if (!faceletsDebug) {");
             sb.append("var faceletsOrigKeyup = document.onkeyup;");
             sb.append("document.onkeyup = function(e) { if (window.event) e = window.event; if (String.fromCharCode(e.keyCode) == '" + getHotkey()
                     + "' & e.shiftKey & e.ctrlKey) faceletsDebug('");
@@ -94,7 +94,7 @@ public final class UIDebug extends UIComponentBase {
             sb.append(KEY);
             sb.append('=');
             sb.append(writeDebugOutput(facesContext));
-            sb.append("'); jsfFaceletsDebug = true; if (faceletsOrigKeyup) faceletsOrigKeyup(e); };\n");
+            sb.append("'); faceletsDebug = true; if (faceletsOrigKeyup) faceletsOrigKeyup(e); };\n");
             sb.append("}})();");
             sb.append("//]]>\n");
 

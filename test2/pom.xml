@@ -41,7 +41,7 @@
 
         <!-- Application Server versions (these are downloaded and installed
             in these versions by Maven for the CI profiles) -->
-        <glassfish.version>6.0.0-SNAPSHOT</glassfish.version>
+        <glassfish.version>6.0.0</glassfish.version>
         <tomcat.version>9.0.12</tomcat.version>
     </properties>
 

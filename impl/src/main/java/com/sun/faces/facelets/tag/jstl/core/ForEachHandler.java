@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import com.sun.faces.facelets.tag.TagHandlerImpl;
-import com.sun.faces.facelets.tag.jsf.IterationIdManager;
+import com.sun.faces.facelets.tag.faces.IterationIdManager;
 
 import jakarta.el.ValueExpression;
 import jakarta.el.VariableMapper;

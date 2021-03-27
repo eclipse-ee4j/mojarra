@@ -961,7 +961,7 @@ public class RenderKitUtils {
         return origIdentifier.replace("-", "$_");
     }
 
-    private static UIComponent createJsfJs() {
+    private static UIComponent createFacesJs() {
 
         UIOutput output = new UIOutput();
         output.setRendererType("jakarta.faces.resource.Script");
@@ -977,9 +977,9 @@ public class RenderKitUtils {
      *
      * @param context the <code>FacesContext</code> for the current request
      */
-    public static void installJsfJsIfNecessary(FacesContext context) {
+    public static void installFacesJsIfNecessary(FacesContext context) {
 
-        if (isJsfJsInstalled(context)) {
+        if (isFacesJsInstalled(context)) {
             return;
         }
 
@@ -988,7 +988,7 @@ public class RenderKitUtils {
             return;
         }
 
-        context.getViewRoot().addComponentResource(context, createJsfJs(), "head");
+        context.getViewRoot().addComponentResource(context, createFacesJs(), "head");
     }
 
     /**
@@ -999,9 +999,9 @@ public class RenderKitUtils {
      * @param context the <code>FacesContext</code> for the current request
      * @throws java.io.IOException if an error occurs writing to the response
      */
-    public static void renderJsfJsIfNecessary(FacesContext context) throws IOException {
+    public static void renderFacesJsIfNecessary(FacesContext context) throws IOException {
 
-        if (isJsfJsInstalled(context)) {
+        if (isFacesJsInstalled(context)) {
             return;
         }
 
@@ -1011,11 +1011,11 @@ public class RenderKitUtils {
         }
 
         // Since we've now determined that it's not in the page, we need to manually render it.
-        createJsfJs().encodeAll(context);
+        createFacesJs().encodeAll(context);
         resourceHandler.markResourceRendered(context, JSF_SCRIPT_RESOURCE_NAME, JSF_SCRIPT_LIBRARY_NAME);
     }
 
-    public static boolean isJsfJsInstalled(FacesContext context) {
+    public static boolean isFacesJsInstalled(FacesContext context) {
 
         if (RequestStateManager.containsKey(context, RequestStateManager.SCRIPT_STATE)) {
             return true;
@@ -1082,7 +1082,7 @@ public class RenderKitUtils {
                 }
                 if (messageCount > 0) {
                     if (LOGGER.isLoggable(Level.INFO)) {
-                        LOGGER.log(Level.INFO, "jsf.non_displayed_message", builder.toString());
+                        LOGGER.log(Level.INFO, "faces.non_displayed_message", builder.toString());
                     }
                 }
             }
@@ -1111,7 +1111,7 @@ public class RenderKitUtils {
             ctx.responseComplete();
         } else {
             if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING, "jsf.facelets.error.page.response.committed");
+                LOGGER.log(Level.WARNING, "faces.facelets.error.page.response.committed");
             }
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, fe.toString(), fe);
@@ -1121,7 +1121,7 @@ public class RenderKitUtils {
     }
 
     // Check the request parameters to see whether an action event has
-    // been triggered either via jsf.ajax.request() or via a submitting
+    // been triggered either via faces.ajax.request() or via a submitting
     // behavior.
     public static boolean isPartialOrBehaviorAction(FacesContext context, String clientId) {
         if (clientId == null || clientId.length() == 0) {
@@ -1139,7 +1139,7 @@ public class RenderKitUtils {
             return "action".equals(behaviorEvent);
         }
 
-        // Not a Behavior-related request. Check for jsf.ajax.request()
+        // Not a Behavior-related request. Check for faces.ajax.request()
         // request params.
         String partialEvent = PARTIAL_EVENT_PARAM.getValue(context);
 
@@ -1269,7 +1269,7 @@ public class RenderKitUtils {
 
     // --------------------------------------------------------- Private Methods
 
-    // Appends a script to a jsf.util.chain() call
+    // Appends a script to a faces.util.chain() call
     private static void appendScriptToChain(StringBuilder builder, String script) {
 
         if (script == null || script.length() == 0) {
@@ -1277,7 +1277,7 @@ public class RenderKitUtils {
         }
 
         if (builder.length() == 0) {
-            builder.append("jsf.util.chain(this,event,");
+            builder.append("faces.util.chain(this,event,");
         }
 
         if (builder.charAt(builder.length() - 1) != ',') {
@@ -1340,7 +1340,7 @@ public class RenderKitUtils {
         builder.append("'");
     }
 
-    // Appends one or more behavior scripts a jsf.util.chain() call
+    // Appends one or more behavior scripts a faces.util.chain() call
     private static boolean appendBehaviorsToChain(StringBuilder builder, FacesContext context, UIComponent component, List<ClientBehavior> behaviors,
             String behaviorEventName, Collection<ClientBehaviorContext.Parameter> params) {
 
@@ -1430,7 +1430,7 @@ public class RenderKitUtils {
     }
 
     // Returns a submit handler - ie. a script that calls
-    // mojara.jsfcljs()
+    // mojara.cljs()
     private static String getSubmitHandler(FacesContext context, UIComponent component, Collection<ClientBehaviorContext.Parameter> params, String submitTarget,
             boolean preventDefault) {
 
@@ -1439,7 +1439,7 @@ public class RenderKitUtils {
         String formClientId = getFormClientId(component, context);
         String componentClientId = component.getClientId(context);
 
-        builder.append("mojarra.jsfcljs(document.getElementById('");
+        builder.append("mojarra.cljs(document.getElementById('");
         builder.append(formClientId);
         builder.append("'),{");
 
@@ -1542,7 +1542,7 @@ public class RenderKitUtils {
 
     /**
      * Renders a handler script, which may require chaining together the user-specified event handler, any scripts required
-     * by attached Behaviors, and also possibly the mojarra.jsfcljs() "submit" script.
+     * by attached Behaviors, and also possibly the mojarra.cljs() "submit" script.
      *
      * @param context the FacesContext for this request.
      * @param component the UIComponent that we are rendering
@@ -1551,7 +1551,7 @@ public class RenderKitUtils {
      * @param handlerValue the user-specified value for the handler attribute
      * @param behaviorEventName the name of the behavior event that corresponds to this handler (eg. "action" or
      * "mouseover").
-     * @param needsSubmit indicates whether the mojarra.jsfcljs() "submit" script is required by the component. Most
+     * @param needsSubmit indicates whether the mojarra.cljs() "submit" script is required by the component. Most
      * components do not need this, either because they submit themselves (eg. commandButton), or because they do not
      * perform submits (eg. non-command components). This flag is mainly here for the commandLink case, where we need to
      * render the submit script to make the link submit.
@@ -1642,7 +1642,7 @@ public class RenderKitUtils {
         // Indicates that we only have a single behavior - no chaining
         SINGLE_BEHAVIOR_ONLY,
 
-        // Indicates that we only render the mojarra.jsfcljs() script
+        // Indicates that we only render the mojarra.cljs() script
         SUBMIT_ONLY,
 
         // Indicates that we've got a chain

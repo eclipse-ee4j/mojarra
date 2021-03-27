@@ -32,6 +32,7 @@ import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.event.PhaseId;
+import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.render.RenderKit;
 
 /**
@@ -269,6 +270,18 @@ public abstract class FacesContext {
         }
 
     }
+
+    /**
+     * <p>
+     * <span class="changed_added_4_0">Return</span> the {@link Lifecycle} instance for this
+     * <code>FacesContext</code> instance.
+     * </p>
+     *
+     * @return instance of <code>Lifecycle</code>
+     *
+     * @throws IllegalStateException if this method is called after this instance has been released
+     */
+    public abstract Lifecycle getLifecycle();
 
     /**
      * <p>

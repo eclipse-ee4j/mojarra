@@ -194,7 +194,7 @@ public class LifecycleImpl extends Lifecycle {
 
         if (listeners.contains(listener)) {
             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.log(Level.FINE, "jsf.lifecycle.duplicate_phase_listener_detected", listener.getClass().getName());
+                LOGGER.log(Level.FINE, "faces.lifecycle.duplicate_phase_listener_detected", listener.getClass().getName());
             }
         } else {
             if (LOGGER.isLoggable(Level.FINE)) {

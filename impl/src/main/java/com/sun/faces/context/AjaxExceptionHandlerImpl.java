@@ -17,8 +17,6 @@
 package com.sun.faces.context;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -52,9 +50,9 @@ import jakarta.faces.event.SystemEvent;
 public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
 
     private static final Logger LOGGER = FacesLogger.CONTEXT.getLogger();
-    private static final String LOG_BEFORE_KEY = "jsf.context.exception.handler.log_before";
-    private static final String LOG_AFTER_KEY = "jsf.context.exception.handler.log_after";
-    private static final String LOG_KEY = "jsf.context.exception.handler.log";
+    private static final String LOG_BEFORE_KEY = "faces.context.exception.handler.log_before";
+    private static final String LOG_AFTER_KEY = "faces.context.exception.handler.log_after";
+    private static final String LOG_KEY = "faces.context.exception.handler.log";
 
     private LinkedList<ExceptionQueuedEvent> unhandledExceptions;
     private LinkedList<ExceptionQueuedEvent> handledExceptions;
@@ -178,10 +176,7 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
             writer.endDocument();
 
             if (LOGGER.isLoggable(Level.SEVERE)) {
-                StringWriter sw = new StringWriter();
-                PrintWriter pw = new PrintWriter(sw);
-                t.printStackTrace(pw);
-                LOGGER.log(Level.SEVERE, sw.toString());
+                LOGGER.log(Level.SEVERE, t.toString(), t);
             }
 
             context.responseComplete();

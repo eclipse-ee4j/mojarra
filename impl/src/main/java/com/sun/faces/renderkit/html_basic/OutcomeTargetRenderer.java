@@ -101,7 +101,7 @@ public abstract class OutcomeTargetRenderer extends HtmlBasicRenderer {
         NavigationHandler navHandler = context.getApplication().getNavigationHandler();
         if (!(navHandler instanceof ConfigurableNavigationHandler)) {
             if (logger.isLoggable(Level.WARNING)) {
-                logger.log(Level.WARNING, "jsf.outcome.target.invalid.navigationhandler.type", component.getId());
+                logger.log(Level.WARNING, "faces.outcome.target.invalid.navigationhandler.type", component.getId());
             }
             return null;
         }
@@ -127,7 +127,7 @@ public abstract class OutcomeTargetRenderer extends HtmlBasicRenderer {
         }
 
         if (navCase == null && logger.isLoggable(Level.WARNING)) {
-            logger.log(Level.WARNING, "jsf.outcometarget.navigation.case.not.resolved", component.getId());
+            logger.log(Level.WARNING, "faces.outcometarget.navigation.case.not.resolved", component.getId());
         }
         return navCase;
     }

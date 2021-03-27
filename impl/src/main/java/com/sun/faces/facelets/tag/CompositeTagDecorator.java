@@ -46,11 +46,11 @@ public final class CompositeTagDecorator implements TagDecorator {
      */
     @Override
     public Tag decorate(Tag tag) {
-        // eliminate the jsf: attributes
-        Tag noJsfAttributes = defaultTagDecorator.decorate(tag);
-        if (noJsfAttributes != null) {
+        // eliminate the faces: attributes
+        Tag noFacesAttributes = defaultTagDecorator.decorate(tag);
+        if (noFacesAttributes != null) {
             // pass the converted tag to the other decorators
-            tag = noJsfAttributes;
+            tag = noFacesAttributes;
         }
 
         Tag t = null;

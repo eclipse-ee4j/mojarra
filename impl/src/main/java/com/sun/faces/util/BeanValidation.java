@@ -39,8 +39,8 @@ public class BeanValidation {
         ValidatorFactory validatorFactory = getValidatorFactory(context);
 
         ValidatorContext validatorContext = validatorFactory.usingContext();
-        MessageInterpolator jsfMessageInterpolator = new JsfAwareMessageInterpolator(context, validatorFactory.getMessageInterpolator());
-        validatorContext.messageInterpolator(jsfMessageInterpolator);
+        MessageInterpolator facesMessageInterpolator = new FacesAwareMessageInterpolator(context, validatorFactory.getMessageInterpolator());
+        validatorContext.messageInterpolator(facesMessageInterpolator);
 
         return validatorContext.getValidator();
     }
@@ -65,12 +65,12 @@ public class BeanValidation {
         return validatorFactory;
     }
 
-    private static class JsfAwareMessageInterpolator implements MessageInterpolator {
+    private static class FacesAwareMessageInterpolator implements MessageInterpolator {
 
         private final FacesContext context;
         private final MessageInterpolator delegate;
 
-        public JsfAwareMessageInterpolator(FacesContext context, MessageInterpolator delegate) {
+        public FacesAwareMessageInterpolator(FacesContext context, MessageInterpolator delegate) {
             this.context = context;
             this.delegate = delegate;
         }

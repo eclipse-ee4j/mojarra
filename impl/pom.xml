@@ -166,7 +166,7 @@
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
-            <version>1.8.3</version>
+            <version>1.9.4</version>
             <scope>test</scope>
         </dependency>
         
@@ -205,14 +205,14 @@
     
         <plugins>
         
-            <!-- ###  C O M P R E S S  /  M I N I F Y   JSF.JS  ###   -->
+            <!-- ###  C O M P R E S S  /  M I N I F Y   faces.js  ###   -->
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>yuicompressor-maven-plugin</artifactId>
                 <version>1.5.1</version>
                 <executions>
                     <execution>
-                        <id>minify-jsf-js</id>
+                        <id>minify-faces-js</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>compress</goal>
@@ -223,9 +223,9 @@
                             <aggregations>
                                 <aggregation>
                                     <includes>
-                                        <include>${project.basedir}/src/main/resources/META-INF/resources/jakarta.faces/jsf-uncompressed.js</include>
+                                        <include>${project.basedir}/src/main/resources/META-INF/resources/jakarta.faces/faces-uncompressed.js</include>
                                     </includes>
-                                    <output>${project.build.directory}/generated-resources/yui/jsf.js</output>
+                                    <output>${project.build.directory}/generated-resources/yui/faces.js</output>
                                 </aggregation>
                             </aggregations>
                             <includes>

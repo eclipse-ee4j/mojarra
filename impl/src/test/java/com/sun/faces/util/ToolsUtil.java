@@ -16,9 +16,9 @@
 
 package com.sun.faces.util;
 
-import java.util.ResourceBundle;
-import java.util.Locale;
 import java.text.MessageFormat;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 /**
@@ -26,7 +26,7 @@ import java.util.logging.Logger;
  */
 public class ToolsUtil {
 
-    public static final String FACES_LOGGER = "jakarta.enterprise.resource.webcontainer.jsf";
+    public static final String FACES_LOGGER = "jakarta.enterprise.resource.webcontainer.faces";
 
     public static final String CONFIG_LOGGER = ".config";
 

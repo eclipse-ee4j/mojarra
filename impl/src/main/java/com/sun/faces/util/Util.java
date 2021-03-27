@@ -994,7 +994,7 @@ public class Util {
 
             mapping = getMappingForRequest(externalContext, servletPath, pathInfo);
             if (mapping == null && LOGGER.isLoggable(FINE)) {
-                LOGGER.log(FINE, "jsf.faces_servlet_mapping_cannot_be_determined_error", new Object[] { servletPath });
+                LOGGER.log(FINE, "faces.faces_servlet_mapping_cannot_be_determined_error", new Object[] { servletPath });
             }
 
             if (mapping != null) {
@@ -1204,7 +1204,7 @@ public class Util {
                     checkIdUniqueness(context, kid, componentIds);
                 } else {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.log(Level.SEVERE, "jsf.duplicate_component_id_error", id);
+                        LOGGER.log(Level.SEVERE, "faces.duplicate_component_id_error", id);
 
                         FastStringWriter writer = new FastStringWriter(128);
                         DebugUtil.simplePrintTree(context.getViewRoot(), id, writer);

@@ -47,7 +47,7 @@ import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import com.sun.faces.config.configpopulator.JsfRIRuntimePopulator;
+import com.sun.faces.config.configpopulator.MojarraRuntimePopulator;
 import com.sun.faces.config.configprovider.MetaInfFaceletTaglibraryConfigProvider;
 import com.sun.faces.config.configprovider.MetaInfFacesConfigResourceProvider;
 import com.sun.faces.config.configprovider.WebAppFlowConfigResourceProvider;
@@ -398,7 +398,7 @@ public class ConfigManager {
     private List<ApplicationConfigurationPopulator> getConfigPopulators() {
         List<ApplicationConfigurationPopulator> configPopulators = new ArrayList<>();
 
-        configPopulators.add(new JsfRIRuntimePopulator());
+        configPopulators.add(new MojarraRuntimePopulator());
 
         ServiceLoader.load(ApplicationConfigurationPopulator.class).forEach(e -> configPopulators.add(e));
 

@@ -16,8 +16,8 @@
 
 package com.sun.faces;
 
-import com.sun.faces.facelets.tag.jsf.core.CoreLibrary;
-import com.sun.faces.facelets.tag.jsf.html.HtmlLibrary;
+import com.sun.faces.facelets.tag.faces.core.CoreLibrary;
+import com.sun.faces.facelets.tag.faces.html.HtmlLibrary;
 import com.sun.faces.facelets.tag.ui.UILibrary;
 
 import jakarta.faces.render.RenderKitFactory;

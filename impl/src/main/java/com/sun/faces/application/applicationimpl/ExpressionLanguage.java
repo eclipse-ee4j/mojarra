@@ -105,7 +105,7 @@ public class ExpressionLanguage {
         }
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        if (version.isJsf23()) {
+        if (version.isFaces23()) {
 
             BeanManager cdiBeanManager = getCdiBeanManager(facesContext);
 

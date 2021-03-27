@@ -20,9 +20,9 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import com.sun.faces.facelets.compiler.CompilationMessageHolder;
-import com.sun.faces.facelets.tag.jsf.CompositeComponentTagLibrary;
-import com.sun.faces.facelets.tag.jsf.FacesComponentTagLibrary;
-import com.sun.faces.facelets.tag.jsf.LazyTagLibrary;
+import com.sun.faces.facelets.tag.faces.CompositeComponentTagLibrary;
+import com.sun.faces.facelets.tag.faces.FacesComponentTagLibrary;
+import com.sun.faces.facelets.tag.faces.LazyTagLibrary;
 import com.sun.faces.util.Util;
 
 import jakarta.faces.FacesException;

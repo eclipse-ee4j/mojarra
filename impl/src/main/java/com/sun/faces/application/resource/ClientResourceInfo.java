@@ -36,7 +36,7 @@ import jakarta.faces.context.FacesContext;
 public class ClientResourceInfo extends ResourceInfo {
 
     private static final Logger LOGGER = FacesLogger.RESOURCE.getLogger();
-    private static final String COMPRESSED_CONTENT_DIRECTORY = "jsf-compressed";
+    private static final String COMPRESSED_CONTENT_DIRECTORY = "faces-compressed";
     boolean cacheTimestamp;
     boolean isDevStage;
     String compressedPath;
@@ -206,7 +206,7 @@ public class ClientResourceInfo extends ResourceInfo {
         }
         // Specialcasing for handling JSF script in uncompressed state
         if (isDevStage && JSF_SCRIPT_LIBRARY_NAME.equals(libraryName) && JSF_SCRIPT_RESOURCE_NAME.equals(name)) {
-            sb.append('/').append("jsf-uncompressed.js");
+            sb.append('/').append("faces-uncompressed.js");
         } else {
             sb.append('/').append(name);
         }
@@ -240,7 +240,7 @@ public class ClientResourceInfo extends ResourceInfo {
                         } else {
                             compressible = false;
                             if (LOGGER.isLoggable(Level.WARNING)) {
-                                LOGGER.log(Level.WARNING, "jsf.application.resource.unable_to_create_compression_directory", newDir.getCanonicalPath());
+                                LOGGER.log(Level.WARNING, "faces.application.resource.unable_to_create_compression_directory", newDir.getCanonicalPath());
                             }
                         }
                     } else {

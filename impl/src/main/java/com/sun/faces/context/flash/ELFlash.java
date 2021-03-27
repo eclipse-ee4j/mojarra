@@ -372,8 +372,9 @@ public class ELFlash extends Flash {
         }
         if (distributable && context.getExternalContext().getSession(false) != null) {
             SessionHelper sessionHelper = SessionHelper.getInstance(context.getExternalContext());
-            assert null != sessionHelper;
-            sessionHelper.update(context.getExternalContext(), this);
+            if (sessionHelper != null) {
+                sessionHelper.update(context.getExternalContext(), this);
+            }
         }
 
         if (LOGGER.isLoggable(Level.FINEST)) {
@@ -584,7 +585,7 @@ public class ELFlash extends Flash {
                 setCookie(context, flashManager, cookie, true);
             } else {
                 if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.log(Level.WARNING, "jsf.externalcontext.flash.force.write.cookie.failed");
+                    LOGGER.log(Level.WARNING, "faces.externalcontext.flash.force.write.cookie.failed");
                 }
             }
         }
@@ -975,7 +976,13 @@ public class ELFlash extends Flash {
         if (forceWrite || null != nextFlash && !nextFlash.getFlashMap().isEmpty() || null != prevFlash && !prevFlash.getFlashMap().isEmpty()) {
             if (extContext.isResponseCommitted()) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.log(Level.WARNING, "jsf.externalcontext.flash.response.already.committed");
+                    LOGGER.log(Level.WARNING, "faces.externalcontext.flash.response.already.committed");
+                }
+                if (nextFlash != null) {
+                    flashManager.expireNext();
+                }
+                if (prevFlash != null) {
+                    flashManager.expirePrevious();
                 }
             } else {
                 Map<String, Object> properties = new HashMap();
@@ -1129,7 +1136,7 @@ public class ELFlash extends Flash {
                 contextMap.put(CONSTANTS.ForceSetMaxAgeZero, Boolean.TRUE);
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     result = getCurrentFlashManager(contextMap, true);
-                    LOGGER.log(Level.SEVERE, "jsf.externalcontext.flash.bad.cookie", new Object[] { ike.getMessage() });
+                    LOGGER.log(Level.SEVERE, "faces.externalcontext.flash.bad.cookie", new Object[] { ike.getMessage() });
                 }
 
             }
@@ -1368,7 +1375,7 @@ public class ELFlash extends Flash {
             } catch (Throwable t) {
                 context.getAttributes().put(CONSTANTS.ForceSetMaxAgeZero, Boolean.TRUE);
                 if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE, "jsf.externalcontext.flash.bad.cookie", new Object[] { value });
+                    LOGGER.log(Level.SEVERE, "faces.externalcontext.flash.bad.cookie", new Object[] { value });
                 }
             }
 

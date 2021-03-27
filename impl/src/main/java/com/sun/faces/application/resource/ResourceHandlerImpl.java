@@ -437,14 +437,14 @@ public class ResourceHandlerImpl extends ResourceHandler {
 
         if (libraryName != null) {
             if (LOGGER.isLoggable(level)) {
-                LOGGER.log(level, "jsf.application.resource.unable_to_serve_from_library", new Object[] { resourceName, libraryName });
+                LOGGER.log(level, "faces.application.resource.unable_to_serve_from_library", new Object[] { resourceName, libraryName });
                 if (t != null) {
                     LOGGER.log(level, "", t);
                 }
             }
         } else {
             if (LOGGER.isLoggable(level)) {
-                LOGGER.log(level, "jsf.application.resource.unable_to_serve", new Object[] { resourceName });
+                LOGGER.log(level, "faces.application.resource.unable_to_serve", new Object[] { resourceName });
                 if (t != null) {
                     LOGGER.log(level, "", t);
                 }
@@ -472,7 +472,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
         }
 
         if (LOGGER.isLoggable(level)) {
-            LOGGER.log(level, "jsf.application.resource.unable_to_serve", new Object[] { resourceId });
+            LOGGER.log(level, "faces.application.resource.unable_to_serve", new Object[] { resourceId });
             if (t != null) {
                 LOGGER.log(level, "", t);
             }
@@ -569,7 +569,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
             size = Integer.parseInt(webconfig.getOptionValue(ResourceBufferSize));
         } catch (NumberFormatException nfe) {
             if (LOGGER.isLoggable(WARNING)) {
-                LOGGER.log(WARNING, "jsf.application.resource.invalid_resource_buffer_size", new Object[] { webconfig.getOptionValue(ResourceBufferSize),
+                LOGGER.log(WARNING, "faces.application.resource.invalid_resource_buffer_size", new Object[] { webconfig.getOptionValue(ResourceBufferSize),
                         ResourceBufferSize.getQualifiedName(), ResourceBufferSize.getDefaultValue() });
             }
             size = Integer.parseInt(ResourceBufferSize.getDefaultValue());
