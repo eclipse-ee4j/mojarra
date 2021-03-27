@@ -59,8 +59,10 @@ public class HtmlInputSecret extends UIInput implements ClientBehaviorHolder {
      *
      */
     protected enum PropertyKeys {
-        accesskey, @Deprecated alt, autocomplete, dir, disabled, label, lang, maxlength, onblur, onchange, onclick, ondblclick, onfocus, onkeydown, onkeypress, onkeyup,
-        onmousedown, onmousemove, onmouseout, onmouseover, onmouseup, onselect, readonly, redisplay, role, size, style, styleClass, tabindex, title,;
+        accesskey, autocomplete, dir, disabled, label, lang, maxlength, onblur, onchange, onclick, ondblclick, onfocus, onkeydown, onkeypress, onkeyup,
+        onmousedown, onmousemove, onmouseout, onmouseover, onmouseup, onselect, readonly, redisplay, role, size, style, styleClass, tabindex, title,
+        @Deprecated(since = "4.0", forRemoval = true) alt,
+        ;
 
         String toString;
 
@@ -114,7 +116,7 @@ public class HtmlInputSecret extends UIInput implements ClientBehaviorHolder {
      *
      * @deprecated This attribute is actually not specified in HTML. Do not use it on this component.
      */
-    @Deprecated
+    @Deprecated(since = "4.0", forRemoval = true)
     public java.lang.String getAlt() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.alt);
 
@@ -128,7 +130,7 @@ public class HtmlInputSecret extends UIInput implements ClientBehaviorHolder {
      * @param alt the new property value
      * @deprecated This attribute is actually not specified in HTML. Do not use it on this component.
      */
-    @Deprecated
+    @Deprecated(since = "4.0", forRemoval = true)
     public void setAlt(java.lang.String alt) {
         getStateHelper().put(PropertyKeys.alt, alt);
         handleAttribute("alt", alt);
