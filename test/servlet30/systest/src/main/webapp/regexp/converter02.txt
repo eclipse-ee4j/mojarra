@@ -1,1 +1,0 @@
-(?s).*<html>\s*<head/>\s*<body>\s*<span\s*id="id1">\s*\$123\.45\s*</span>\s*</body>\s*</html>.*
