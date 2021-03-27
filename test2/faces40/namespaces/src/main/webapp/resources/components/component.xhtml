@@ -1,0 +1,13 @@
+<ui:component
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="jakarta.faces.facelets"
+    xmlns:h="jakarta.faces.html"
+    xmlns:cc="jakarta.faces.composite"
+>
+    <cc:interface>
+        <cc:attribute name="value" />
+    </cc:interface>
+    <cc:implementation>
+        <h:outputText value="#{cc.attrs.value}" />
+    </cc:implementation>
+</ui:component>

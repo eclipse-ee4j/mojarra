@@ -16,8 +16,8 @@
 
 package com.sun.faces.facelets.compiler;
 
-import com.sun.faces.RIConstants;
 import com.sun.faces.facelets.tag.TagLibrary;
+import com.sun.faces.facelets.tag.ui.UILibrary;
 
 import jakarta.faces.view.facelets.FaceletException;
 import jakarta.faces.view.facelets.FaceletHandler;
@@ -56,7 +56,7 @@ class TagUnit extends CompilationUnit implements TagConfig {
 
     @Override
     protected void startNotify(CompilationManager manager) {
-        if (name.equals("composition") && (namespace.equals(RIConstants.FACELET_NAMESPACE) || namespace.equals(RIConstants.FACELET_NAMESPACE))) {
+        if (name.equals("composition") && UILibrary.NAMESPACES.contains(namespace)) {
             CompilerPackageCompilationMessageHolder messageHolder = (CompilerPackageCompilationMessageHolder) manager.getCompilationMessageHolder();
             CompilationManager compositeComponentCompilationManager = messageHolder.getCurrentCompositeComponentCompilationManager();
             if (manager.equals(compositeComponentCompilationManager)) {

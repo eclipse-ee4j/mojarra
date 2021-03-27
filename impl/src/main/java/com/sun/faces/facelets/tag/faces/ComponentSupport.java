@@ -507,13 +507,15 @@ public final class ComponentSupport {
             return;
         }
 
-        TagAttribute[] passthroughAttrs = t.getAttributes().getAll(PassThroughAttributeLibrary.Namespace);
-        if (null != passthroughAttrs && 0 < passthroughAttrs.length) {
-            Map<String, Object> componentPassthroughAttrs = c.getPassThroughAttributes(true);
-            Object attrValue = null;
-            for (TagAttribute cur : passthroughAttrs) {
-                attrValue = cur.isLiteral() ? cur.getValue(ctx) : cur.getValueExpression(ctx, Object.class);
-                componentPassthroughAttrs.put(cur.getLocalName(), attrValue);
+        for (String namespace : PassThroughAttributeLibrary.NAMESPACES) {
+            TagAttribute[] passthroughAttrs = t.getAttributes().getAll(namespace);
+            if (null != passthroughAttrs && 0 < passthroughAttrs.length) {
+                Map<String, Object> componentPassthroughAttrs = c.getPassThroughAttributes(true);
+                Object attrValue = null;
+                for (TagAttribute cur : passthroughAttrs) {
+                    attrValue = cur.isLiteral() ? cur.getValue(ctx) : cur.getValueExpression(ctx, Object.class);
+                    componentPassthroughAttrs.put(cur.getLocalName(), attrValue);
+                }
             }
         }
     }

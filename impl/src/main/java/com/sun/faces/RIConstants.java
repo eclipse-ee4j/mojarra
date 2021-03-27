@@ -16,10 +16,6 @@
 
 package com.sun.faces;
 
-import com.sun.faces.facelets.tag.faces.core.CoreLibrary;
-import com.sun.faces.facelets.tag.faces.html.HtmlLibrary;
-import com.sun.faces.facelets.tag.ui.UILibrary;
-
 import jakarta.faces.render.RenderKitFactory;
 
 /**
@@ -45,15 +41,6 @@ public class RIConstants {
     public static final String TLV_RESOURCE_LOCATION = FACES_PREFIX + "resources.Resources";
 
     public static final String NO_VALUE = "";
-
-    public static final String CORE_NAMESPACE = CoreLibrary.Namespace;
-    public static final String HTML_NAMESPACE = HtmlLibrary.Namespace;
-
-    public static final String CORE_NAMESPACE_NEW = CoreLibrary.XMLNSNamespace;
-    public static final String HTML_NAMESPACE_NEW = HtmlLibrary.XMLNSNamespace;
-
-    public static final String FACELET_NAMESPACE = UILibrary.Namespace;
-    public static final String FACELET_NAMESPACE_NEW = UILibrary.XMLNSNamespace;
 
     public static final Class[] EMPTY_CLASS_ARGS = new Class[0];
     public static final Object[] EMPTY_METH_ARGS = new Object[0];

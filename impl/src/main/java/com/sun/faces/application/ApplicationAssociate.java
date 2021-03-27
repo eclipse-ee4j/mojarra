@@ -739,31 +739,19 @@ public class ApplicationAssociate {
     }
 
     protected void addTagLibraries(Compiler newCompiler) {
-        newCompiler.addTagLibrary(new CoreLibrary());
-        newCompiler.addTagLibrary(new CoreLibrary(CoreLibrary.XMLNSNamespace));
+        CoreLibrary.NAMESPACES.forEach(namespace -> newCompiler.addTagLibrary(new CoreLibrary(namespace)));
+        HtmlLibrary.NAMESPACES.forEach(namespace -> newCompiler.addTagLibrary(new HtmlLibrary(namespace)));
+        UILibrary.NAMESPACES.forEach(namespace -> newCompiler.addTagLibrary(new UILibrary(namespace)));
+        JstlCoreLibrary.NAMESPACES.forEach(namespace -> newCompiler.addTagLibrary(new JstlCoreLibrary(namespace)));
+        PassThroughAttributeLibrary.NAMESPACES.forEach(namespace -> newCompiler.addTagLibrary(new PassThroughAttributeLibrary(namespace)));
+        PassThroughElementLibrary.NAMESPACES.forEach(namespace -> newCompiler.addTagLibrary(new PassThroughElementLibrary(namespace)));
+        FunctionLibrary.NAMESPACES.forEach(namespace -> newCompiler.addTagLibrary(new FunctionLibrary(JstlFunction.class, namespace)));
 
-        newCompiler.addTagLibrary(new HtmlLibrary());
-        newCompiler.addTagLibrary(new HtmlLibrary(HtmlLibrary.XMLNSNamespace));
-
-        newCompiler.addTagLibrary(new UILibrary());
-        newCompiler.addTagLibrary(new UILibrary(UILibrary.XMLNSNamespace));
-
-        newCompiler.addTagLibrary(new JstlCoreLibrary());
-        newCompiler.addTagLibrary(new JstlCoreLibrary(JstlCoreLibrary.IncorrectNamespace));
-        newCompiler.addTagLibrary(new JstlCoreLibrary(JstlCoreLibrary.XMLNSNamespace));
-
-        newCompiler.addTagLibrary(new PassThroughAttributeLibrary());
-        newCompiler.addTagLibrary(new PassThroughElementLibrary());
-
-        newCompiler.addTagLibrary(new FunctionLibrary(JstlFunction.class, FunctionLibrary.Namespace));
-        newCompiler.addTagLibrary(new FunctionLibrary(JstlFunction.class, FunctionLibrary.XMLNSNamespace));
         if (isDevModeEnabled()) {
-            newCompiler.addTagLibrary(new FunctionLibrary(DevTools.class, DevTools.Namespace));
-            newCompiler.addTagLibrary(new FunctionLibrary(DevTools.class, DevTools.NewNamespace));
+            DevTools.NAMESPACES.forEach(namespace -> newCompiler.addTagLibrary(new FunctionLibrary(DevTools.class, namespace)));
         }
 
-        newCompiler.addTagLibrary(new CompositeLibrary());
-        newCompiler.addTagLibrary(new CompositeLibrary(CompositeLibrary.XMLNSNamespace));
+        CompositeLibrary.NAMESPACES.forEach(namespace -> newCompiler.addTagLibrary(new CompositeLibrary(namespace)));
     }
 
 }

@@ -73,7 +73,7 @@
         class="st0">&quot;http://www.w3.org/1999/xhtml&quot;</span></div></li>
         <li class="li1"><div class="de1">&nbsp; &nbsp; &nbsp;
         &nbsp; &nbsp; &nbsp; xmlns:<span class="re0">ui</span>=<span
-        class="st0">&quot;http://xmlns.jcp.org/jsf/facelets&quot;</span></div></li>
+        class="st0">&quot;jakarta.faces.facelets&quot;</span></div></li>
 
         <li class="li1"><div class="de1">&nbsp; &nbsp; <span
         class="sc3"><span class="re1">&lt;head<span class="re2">&gt;</span></span></span></div></li>
@@ -164,7 +164,7 @@
         class="re1">&lt;html</span> <span class="re0">xmlns</span>=<span
         class="st0">&quot;http://www.w3.org/1999/xhtml&quot;</span></div></li>
         <li class="li1"><div class="de1">&nbsp; &nbsp;xmlns:<span
-        class="re0">ui</span>=<span class="st0">&quot;http://xmlns.jcp.org/jsf/facelets&quot;</span><span
+        class="re0">ui</span>=<span class="st0">&quot;jakarta.faces.facelets&quot;</span><span
         class="re2">&gt;</span></span></div></li>
 
         <li class="li2"><div class="de2">&nbsp;</div></li>
@@ -249,7 +249,7 @@
         class="re1">&lt;html</span> <span class="re0">xmlns</span>=<span
         class="st0">&quot;http://www.w3.org/1999/xhtml&quot;</span></div></li>
         <li class="li1"><div class="de1">&nbsp; &nbsp; &nbsp;
-        xmlns:<span class="re0">ui</span>=<span class="st0">&quot;http://xmlns.jcp.org/jsf/facelets&quot;</span><span
+        xmlns:<span class="re0">ui</span>=<span class="st0">&quot;jakarta.faces.facelets&quot;</span><span
         class="re2">&gt;</span></span></div></li>
 
         <li class="li2"><div class="de2">&nbsp;</div></li>
@@ -314,7 +314,7 @@
         <pre>
 
 ]]></description>
-    <namespace>http://xmlns.jcp.org/jsf/facelets</namespace>
+    <namespace>jakarta.faces.facelets</namespace>
     <tag>
         <description><![CDATA[
 
@@ -411,7 +411,7 @@ or a browser, without including extraneous elements such as
 <li class="li2"><div class="de2">&nbsp; &nbsp; &nbsp; &nbsp; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;</span></div></li>
 <li class="li1"><div class="de1">&nbsp;</div></li>
 <li class="li2"><div class="de2"><span class="sc3"><span class="re1">&lt;html</span> <span class="re0">xmlns</span>=<span class="st0">&quot;http://www.w3.org/1999/xhtml&quot;</span></div></li>
-<li class="li1"><div class="de1">&nbsp; &nbsp;xmlns:<span class="re0">ui</span>=<span class="st0">&quot;http://xmlns.jcp.org/jsf/facelets&quot;</span><span class="re2">&gt;</span></span></div></li>
+<li class="li1"><div class="de1">&nbsp; &nbsp;xmlns:<span class="re0">ui</span>=<span class="st0">&quot;jakarta.faces.facelets&quot;</span><span class="re2">&gt;</span></span></div></li>
 
 <li class="li2"><div class="de2">&nbsp;</div></li>
 <li class="li1"><div class="de1">&nbsp; <span class="sc3"><span class="re1">&lt;body<span class="re2">&gt;</span></span></span></div></li>

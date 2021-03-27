@@ -61,7 +61,7 @@ public @interface FacesComponent {
      * namespace attribute is omitted.
      * </p>
      */
-    public static final String NAMESPACE = "http://xmlns.jcp.org/jsf/component";
+    public static final String NAMESPACE = "jakarta.faces.component";
 
     /**
      * <p class="changed_added_2_0">

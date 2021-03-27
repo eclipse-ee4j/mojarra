@@ -41,7 +41,7 @@
 
     
     ]]></description>
-    <namespace>http://xmlns.jcp.org/jsf</namespace>
+    <namespace>jakarta.faces</namespace>
     <tag>
         <description><![CDATA[
 
@@ -66,7 +66,7 @@
           <description><![CDATA[
 
          <p class="changed_added_2_2">This attribute must be in the
-         <code>http://xmlns.jcp.org/jsf/passthrough</code> namespace and
+         <code>jakarta.faces.passthrough</code> namespace and
          its value must be set into the component's pass through
          attributes map under the key given by the value of the symbolic
          constant

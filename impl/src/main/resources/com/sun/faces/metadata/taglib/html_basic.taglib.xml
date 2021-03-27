@@ -26,7 +26,7 @@
         UIComponent + HTML RenderKit Renderer combinations defined in the
         JavaServer Faces Specification.
     ]]></description>
-    <namespace>http://xmlns.jcp.org/jsf/html</namespace>
+    <namespace>jakarta.faces.html</namespace>
     <tag>
         <description>
             <![CDATA[<div class="changed_added_2_0">Render an HTML "input" element of type "button".

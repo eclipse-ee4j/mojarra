@@ -16,6 +16,10 @@
 
 package com.sun.faces.facelets.tag.ui;
 
+import static com.sun.faces.util.Util.unmodifiableSet;
+
+import java.util.Set;
+
 import com.sun.faces.facelets.component.UIRepeat;
 import com.sun.faces.facelets.tag.AbstractTagLibrary;
 
@@ -24,14 +28,12 @@ import com.sun.faces.facelets.tag.AbstractTagLibrary;
  */
 public final class UILibrary extends AbstractTagLibrary {
 
-    public final static String Namespace = "http://java.sun.com/jsf/facelets";
-    public final static String XMLNSNamespace = "http://xmlns.jcp.org/jsf/facelets";
+    private final static String SunNamespace = "http://java.sun.com/jsf/facelets";
+    private final static String JcpNamespace = "http://xmlns.jcp.org/jsf/facelets";
+    private final static String JakartaNamespace = "jakarta.faces.facelets";
 
-    public final static UILibrary Instance = new UILibrary();
-
-    public UILibrary() {
-        this(Namespace);
-    }
+    public final static Set<String> NAMESPACES = unmodifiableSet(JakartaNamespace, JcpNamespace, SunNamespace);
+    public final static String DEFAULT_NAMESPACE = JakartaNamespace;
 
     public UILibrary(String namespace) {
         super(namespace);

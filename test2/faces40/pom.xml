@@ -34,5 +34,6 @@
     <modules>
         <module>selectItemGroups</module>
         <module>inputFile</module>
+        <module>namespaces</module>
     </modules>
 </project>
