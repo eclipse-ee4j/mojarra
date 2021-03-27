@@ -59,6 +59,7 @@
         <module>test</module>
         -->
         <module>util</module>
+        <module>rest</module>
     </modules>
     
 </project>
