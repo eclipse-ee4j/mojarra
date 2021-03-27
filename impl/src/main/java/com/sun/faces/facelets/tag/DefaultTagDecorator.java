@@ -120,7 +120,7 @@ class DefaultTagDecorator implements TagDecorator {
 
     private boolean hasFacesAttribute(Tag tag) {
         for (String ns : tag.getAttributes().getNamespaces()) {
-            if (Namespace.faces.uri.equals(ns)) {
+            if (PassThroughElementLibrary.NAMESPACES.contains(ns)) {
                 return true;
             }
         }
@@ -242,7 +242,7 @@ class DefaultTagDecorator implements TagDecorator {
             String qName;
             String value = attribute.getValue();
 
-            if (Namespace.faces.uri.equals(attribute.getNamespace())) {
+            if (PassThroughElementLibrary.NAMESPACES.contains(attribute.getNamespace())) {
                 // make this a component attribute
                 qName = myLocalName;
                 ns = "";
