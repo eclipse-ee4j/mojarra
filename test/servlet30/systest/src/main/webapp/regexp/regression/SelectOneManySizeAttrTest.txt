@@ -1,1 +1,0 @@
-(?s).*<html>\s*<head>\s*<title>\s*Select.One,Many.ListBox\s*Size\s*Attribute\s*Test\s*</title>\s*</head>\s*<body>\s*<select\s*name=".*"\s*size="5">\s*<option\s*value="val1">\s*val1\s*</option>\s*</select>\s*<select\s*name=".*"\s*multiple="multiple"\s*size="5">\s*<option\s*value="val1">\s*val1\s*</option>\s*</select>\s*</body>\s*</html>.*
