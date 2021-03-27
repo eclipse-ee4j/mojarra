@@ -26,9 +26,15 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseStream;
 import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.render.RenderKit;
 
 public abstract class NoOpFacesContext extends FacesContext {
+
+    @Override
+    public Lifecycle getLifecycle() {
+        return null;
+    }
 
     @Override
     public Iterator<String> getClientIdsWithMessages() {
