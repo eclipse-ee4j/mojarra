@@ -86,7 +86,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
     }
 
     /**
-     * <p>
+     * <p class="changed_added_4_0">
      * Set the value of the <code>accesskey</code> property.
      * </p>
      *
@@ -99,7 +99,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
     }
 
     /**
-     * <p>
+     * <p class="changed_added_4_0">
      * Return the value of the <code>accept</code> property.
      * </p>
      * <p>
