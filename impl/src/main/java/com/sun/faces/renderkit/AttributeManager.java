@@ -30,156 +30,156 @@ import com.sun.faces.util.CollectionsUtils;
  */
 public class AttributeManager {
 
-    private static Map<String, Attribute[]> ATTRIBUTE_LOOKUP = CollectionsUtils.<String, Attribute[]>map().add("CommandButton",
-            ar(attr("accesskey"), attr("alt"), attr("dir"), attr("lang"), attr("onblur", "blur"), attr("onchange", "change"), attr("ondblclick", "dblclick"),
-                    attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"), attr("onkeyup", "keyup"),
-                    attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"), attr("onmouseover", "mouseover"),
-                    attr("onmouseup", "mouseup"), attr("onselect", "select"), attr("role"), attr("style"), attr("tabindex"), attr("title")))
-            .add("CommandLink",
+    public enum Key {
+        COMMANDBUTTON, COMMANDLINK, DATATABLE, FORMFORM, GRAPHICIMAGE,
+        INPUTFILE, INPUTSECRET, INPUTTEXT, INPUTTEXTAREA, MESSAGEMESSAGE,
+        MESSAGESMESSAGES, OUTCOMETARGETBUTTON, OUTCOMETARGETLINK, OUTPUTFORMAT,
+        OUTPUTLABEL, OUTPUTLINK, OUTPUTTEXT, PANELGRID, PANELGROUP,
+        SELECTBOOLEANCHECKBOX, SELECTMANYCHECKBOX, SELECTMANYLISTBOX,
+        SELECTMANYMENU, SELECTONELISTBOX, SELECTONEMENU, SELECTONERADIO,
+        OUTPUTBODY, OUTPUTDOCTYPE, OUTPUTHEAD;
+    }
+
+    private static Map<Key, Attribute[]> ATTRIBUTE_LOOKUP = CollectionsUtils.<Key, Attribute[]>map()
+            .add(Key.COMMANDBUTTON,
+                    ar(attr("accesskey"), attr("alt"), attr("dir"), attr("lang"), attr("onblur", "blur"), attr("onchange", "change"), attr("ondblclick", "dblclick"),
+                        attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"), attr("onkeyup", "keyup"),
+                        attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"), attr("onmouseover", "mouseover"),
+                        attr("onmouseup", "mouseup"), attr("onselect", "select"), attr("role"), attr("style"), attr("tabindex"), attr("title")))
+            .add(Key.COMMANDLINK,
                     ar(attr("accesskey"), attr("charset"), attr("coords"), attr("dir"), attr("hreflang"), attr("lang"), attr("onblur", "blur"),
                             attr("ondblclick", "dblclick"), attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"),
                             attr("onkeyup", "keyup"), attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"),
                             attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("rel"), attr("rev"), attr("role"), attr("shape"),
                             attr("style"), attr("tabindex"), attr("title"), attr("type")))
-            .add("DataTable",
+            .add(Key.DATATABLE,
                     ar(attr("bgcolor"), attr("border"), attr("cellpadding"), attr("cellspacing"), attr("dir"), attr("frame"), attr("lang"),
                             attr("onclick", "click"), attr("ondblclick", "dblclick"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"),
                             attr("onkeyup", "keyup"), attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"),
                             attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("role"), attr("rules"), attr("style"), attr("summary"),
                             attr("title"), attr("width")))
-            .add("FormForm",
+            .add(Key.FORMFORM,
                     ar(attr("accept"), attr("dir"), attr("enctype"), attr("lang"), attr("onclick", "click"), attr("ondblclick", "dblclick"),
                             attr("onkeydown", "keydown"), attr("onkeypress", "keypress"), attr("onkeyup", "keyup"), attr("onmousedown", "mousedown"),
                             attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"), attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"),
                             attr("onreset"), attr("onsubmit"), attr("role"), attr("style"), attr("target"), attr("title")))
-            .add("GraphicImage",
+            .add(Key.GRAPHICIMAGE,
                     ar(attr("alt"), attr("dir"), attr("height"), attr("lang"), attr("longdesc"), attr("onclick", "click"), attr("ondblclick", "dblclick"),
                             attr("onkeydown", "keydown"), attr("onkeypress", "keypress"), attr("onkeyup", "keyup"), attr("onmousedown", "mousedown"),
                             attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"), attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"),
                             attr("role"), attr("style"), attr("title"), attr("usemap"), attr("width")))
-            .add("InputFile",
+            .add(Key.INPUTFILE,
                     ar(attr("accesskey"), attr("alt"), attr("dir"), attr("lang"), attr("maxlength"), attr("onblur", "blur"), attr("onclick", "click"),
                             attr("ondblclick", "dblclick"), attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"),
                             attr("onkeyup", "keyup"), attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"),
                             attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("onselect", "select"), attr("role"), attr("size"),
                             attr("style"), attr("tabindex"), attr("title")))
-            .add("InputSecret",
+            .add(Key.INPUTSECRET,
                     ar(attr("accesskey"), attr("alt"), attr("dir"), attr("lang"), attr("maxlength"), attr("onblur", "blur"), attr("onclick", "click"),
                             attr("ondblclick", "dblclick"), attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"),
                             attr("onkeyup", "keyup"), attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"),
                             attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("onselect", "select"), attr("role"), attr("size"),
                             attr("style"), attr("tabindex"), attr("title")))
-            .add("InputText",
+            .add(Key.INPUTTEXT,
                     ar(attr("accesskey"), attr("alt"), attr("dir"), attr("lang"), attr("maxlength"), attr("onblur", "blur"), attr("onclick", "click"),
                             attr("ondblclick", "dblclick"), attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"),
                             attr("onkeyup", "keyup"), attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"),
                             attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("onselect", "select"), attr("role"), attr("size"),
                             attr("style"), attr("tabindex"), attr("title")))
-            .add("InputTextarea",
+            .add(Key.INPUTTEXTAREA,
                     ar(attr("accesskey"), attr("cols"), attr("dir"), attr("lang"), attr("onblur", "blur"), attr("onclick", "click"),
                             attr("ondblclick", "dblclick"), attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"),
                             attr("onkeyup", "keyup"), attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"),
                             attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("onselect", "select"), attr("role"), attr("rows"),
                             attr("style"), attr("tabindex"), attr("title")))
-            .add("MessageMessage", ar(attr("dir"), attr("lang"), attr("role"), attr("style"), attr("title")))
-            .add("MessagesMessages", ar(attr("dir"), attr("lang"), attr("role"), attr("style"), attr("title")))
-            .add("OutcomeTargetButton",
+            .add(Key.MESSAGEMESSAGE,
+                    ar(attr("dir"), attr("lang"), attr("role"), attr("style"), attr("title")))
+            .add(Key.MESSAGESMESSAGES,
+                    ar(attr("dir"), attr("lang"), attr("role"), attr("style"), attr("title")))
+            .add(Key.OUTCOMETARGETBUTTON,
                     ar(attr("accesskey"), attr("alt"), attr("dir"), attr("lang"), attr("onblur", "blur"), attr("onclick", "click"),
                             attr("ondblclick", "dblclick"), attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"),
                             attr("onkeyup", "keyup"), attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"),
                             attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("role"), attr("style"), attr("tabindex"), attr("title")))
-            .add("OutcomeTargetLink",
+            .add(Key.OUTCOMETARGETLINK,
                     ar(attr("accesskey"), attr("charset"), attr("coords"), attr("dir"), attr("hreflang"), attr("lang"), attr("onblur", "blur"),
                             attr("ondblclick", "dblclick"), attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"),
                             attr("onkeyup", "keyup"), attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"),
                             attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("rel"), attr("rev"), attr("role"), attr("shape"),
                             attr("style"), attr("tabindex"), attr("title"), attr("type")))
-            .add("OutputFormat", ar(attr("dir"), attr("lang"), attr("role"), attr("style"), attr("title")))
-            .add("OutputLabel",
+            .add(Key.OUTPUTFORMAT,
+                    ar(attr("dir"), attr("lang"), attr("role"), attr("style"), attr("title")))
+            .add(Key.OUTPUTLABEL,
                     ar(attr("accesskey"), attr("dir"), attr("lang"), attr("onblur", "blur"), attr("onclick", "click"), attr("ondblclick", "dblclick"),
                             attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"), attr("onkeyup", "keyup"),
                             attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"),
                             attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("role"), attr("style"), attr("tabindex"), attr("title")))
-            .add("OutputLink",
+            .add(Key.OUTPUTLINK,
                     ar(attr("accesskey"), attr("charset"), attr("coords"), attr("dir"), attr("hreflang"), attr("lang"), attr("onblur", "blur"),
                             attr("onclick", "click", "action"), attr("ondblclick", "dblclick"), attr("onfocus", "focus"), attr("onkeydown", "keydown"),
                             attr("onkeypress", "keypress"), attr("onkeyup", "keyup"), attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"),
                             attr("onmouseout", "mouseout"), attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("rel"), attr("rev"),
                             attr("role"), attr("shape"), attr("style"), attr("tabindex"), attr("title"), attr("type")))
-            .add("OutputText", ar(attr("dir"), attr("lang"), attr("role"), attr("style"), attr("title")))
-            .add("PanelGrid",
+            .add(Key.OUTPUTTEXT,
+                    ar(attr("dir"), attr("lang"), attr("role"), attr("style"), attr("title")))
+            .add(Key.PANELGRID,
                     ar(attr("bgcolor"), attr("border"), attr("cellpadding"), attr("cellspacing"), attr("dir"), attr("frame"), attr("lang"),
                             attr("onclick", "click"), attr("ondblclick", "dblclick"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"),
                             attr("onkeyup", "keyup"), attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"),
                             attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("role"), attr("rules"), attr("style"), attr("summary"),
                             attr("title"), attr("width")))
-            .add("PanelGroup",
+            .add(Key.PANELGROUP,
                     ar(attr("onclick", "click"), attr("ondblclick", "dblclick"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"),
                             attr("onkeyup", "keyup"), attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"),
                             attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("style")))
-            .add("SelectBooleanCheckbox",
+            .add(Key.SELECTBOOLEANCHECKBOX,
                     ar(attr("accesskey"), attr("dir"), attr("lang"), attr("onblur", "blur"), attr("onchange", "change"), attr("ondblclick", "dblclick"),
                             attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"), attr("onkeyup", "keyup"),
                             attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"),
                             attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("onselect", "select"), attr("role"), attr("style"),
                             attr("tabindex"), attr("title")))
-            .add("SelectManyCheckbox", ar(attr("accesskey"), attr("dir"), attr("lang"), attr("onblur", "blur"), attr("onchange", "change"),
-                    attr("ondblclick", "dblclick"), attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"),
-                    attr("onkeyup", "keyup"), attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"),
-                    attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("onselect", "select"), attr("role"), attr("tabindex"), attr("title")))
-            .add("SelectManyListbox",
+            .add(Key.SELECTMANYCHECKBOX,
+                    ar(attr("accesskey"), attr("dir"), attr("lang"), attr("onblur", "blur"), attr("onchange", "change"),
+                        attr("ondblclick", "dblclick"), attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"),
+                        attr("onkeyup", "keyup"), attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"),
+                        attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("onselect", "select"), attr("role"), attr("tabindex"), attr("title")))
+            .add(Key.SELECTMANYLISTBOX,
                     ar(attr("accesskey"), attr("dir"), attr("lang"), attr("onblur", "blur"), attr("onclick", "click"), attr("ondblclick", "dblclick"),
                             attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"), attr("onkeyup", "keyup"),
                             attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"),
                             attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("role"), attr("style"), attr("tabindex"), attr("title")))
-            .add("SelectManyMenu",
+            .add(Key.SELECTMANYMENU,
                     ar(attr("accesskey"), attr("dir"), attr("lang"), attr("onblur", "blur"), attr("onclick", "click"), attr("ondblclick", "dblclick"),
                             attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"), attr("onkeyup", "keyup"),
                             attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"),
                             attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("role"), attr("style"), attr("tabindex"), attr("title")))
-            .add("SelectOneListbox",
+            .add(Key.SELECTONELISTBOX,
                     ar(attr("accesskey"), attr("dir"), attr("lang"), attr("onblur", "blur"), attr("onclick", "click"), attr("ondblclick", "dblclick"),
                             attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"), attr("onkeyup", "keyup"),
                             attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"),
                             attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("role"), attr("style"), attr("tabindex"), attr("title")))
-            .add("SelectOneMenu",
+            .add(Key.SELECTONEMENU,
                     ar(attr("accesskey"), attr("dir"), attr("lang"), attr("onblur", "blur"), attr("onclick", "click"), attr("ondblclick", "dblclick"),
                             attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"), attr("onkeyup", "keyup"),
                             attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"),
                             attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("role"), attr("style"), attr("tabindex"), attr("title")))
-            .add("SelectOneRadio", ar(attr("accesskey"), attr("dir"), attr("lang"), attr("onblur", "blur"), attr("onchange", "change"),
-                    attr("ondblclick", "dblclick"), attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"),
-                    attr("onkeyup", "keyup"), attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"),
-                    attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("onselect", "select"), attr("role"), attr("tabindex"), attr("title")))
-            .add("OutputBody",
+            .add(Key.SELECTONERADIO,
+                    ar(attr("accesskey"), attr("dir"), attr("lang"), attr("onblur", "blur"), attr("onchange", "change"),
+                        attr("ondblclick", "dblclick"), attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"),
+                        attr("onkeyup", "keyup"), attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"),
+                        attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("onselect", "select"), attr("role"), attr("tabindex"), attr("title")))
+            .add(Key.OUTPUTBODY,
                     ar(attr("dir"), attr("lang"), attr("onclick", "click"), attr("ondblclick", "dblclick"), attr("onkeydown", "keydown"),
                             attr("onkeypress", "keypress"), attr("onkeyup", "keyup"), attr("onload", "load"), attr("onmousedown", "mousedown"),
                             attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"), attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"),
                             attr("onunload", "unload"), attr("role"), attr("style"), attr("title"), attr("xmlns")))
-            .add("OutputDoctype", ar(attr("public"), attr("rootElement"), attr("system"))).add("OutputHead", ar(attr("dir"), attr("lang"), attr("xmlns")))
+            .add(Key.OUTPUTDOCTYPE,
+                    ar(attr("public"), attr("rootElement"), attr("system")))
+            .add(Key.OUTPUTHEAD,
+                    ar(attr("dir"), attr("lang"), attr("xmlns")))
             .fix();
 
-    public enum Key {
-        COMMANDBUTTON("CommandButton"), COMMANDLINK("CommandLink"), DATATABLE("DataTable"), FORMFORM("FormForm"), GRAPHICIMAGE("GraphicImage"),
-        INPUTFILE("InputFile"), INPUTSECRET("InputSecret"), INPUTTEXT("InputText"), INPUTTEXTAREA("InputTextarea"), MESSAGEMESSAGE("MessageMessage"),
-        MESSAGESMESSAGES("MessagesMessages"), OUTCOMETARGETBUTTON("OutcomeTargetButton"), OUTCOMETARGETLINK("OutcomeTargetLink"), OUTPUTFORMAT("OutputFormat"),
-        OUTPUTLABEL("OutputLabel"), OUTPUTLINK("OutputLink"), OUTPUTTEXT("OutputText"), PANELGRID("PanelGrid"), PANELGROUP("PanelGroup"),
-        SELECTBOOLEANCHECKBOX("SelectBooleanCheckbox"), SELECTMANYCHECKBOX("SelectManyCheckbox"), SELECTMANYLISTBOX("SelectManyListbox"),
-        SELECTMANYMENU("SelectManyMenu"), SELECTONELISTBOX("SelectOneListbox"), SELECTONEMENU("SelectOneMenu"), SELECTONERADIO("SelectOneRadio"),
-        OUTPUTBODY("OutputBody"), OUTPUTDOCTYPE("OutputDoctype"), OUTPUTHEAD("OutputHead");
-
-        private String key;
-
-        Key(String key) {
-            this.key = key;
-        }
-
-        public String value() {
-            return key;
-        }
-    }
-
     public static Attribute[] getAttributes(Key key) {
-        return ATTRIBUTE_LOOKUP.get(key.value());
+        return ATTRIBUTE_LOOKUP.get(key);
     }
 }

@@ -39,7 +39,8 @@ import jakarta.faces.context.ResponseWriter;
  */
 public class TextRenderer extends HtmlBasicInputRenderer {
 
-    private static final Attribute[] INPUT_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.INPUTTEXT);
+    private static final Attribute[] INPUTTEXT_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.INPUTTEXT);
+    private static final Attribute[] INPUTFILE_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.INPUTFILE);
     private static final Attribute[] OUTPUT_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTPUTTEXT);
 
     // ---------------------------------------------------------- Public Methods
@@ -99,8 +100,9 @@ public class TextRenderer extends HtmlBasicInputRenderer {
                 writer.writeAttribute("class", styleClass, "styleClass");
             }
 
-            // style is rendered as a passthur attribute
-            RenderKitUtils.renderPassThruAttributes(context, writer, component, INPUT_ATTRIBUTES, getNonOnChangeBehaviors(component));
+            // style is rendered as a passthru attribute
+            Attribute[] attributes = component instanceof HtmlInputFile ? INPUTFILE_ATTRIBUTES : INPUTTEXT_ATTRIBUTES;
+            RenderKitUtils.renderPassThruAttributes(context, writer, component, attributes, getNonOnChangeBehaviors(component));
             RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
             RenderKitUtils.renderOnchange(context, component, false);
