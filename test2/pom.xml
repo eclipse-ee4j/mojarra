@@ -41,9 +41,17 @@
 
         <!-- Application Server versions (these are downloaded and installed
             in these versions by Maven for the CI profiles) -->
-        <glassfish.version>6.0.0</glassfish.version>
+        <glassfish.version>6.1.0-M1</glassfish.version>
         <tomcat.version>9.0.12</tomcat.version>
     </properties>
+    
+    <repositories>
+        <repository>
+            <id>jakarta-staging</id>
+            <snapshots />
+            <url>https://jakarta.oss.sonatype.org/content/repositories/staging</url>
+        </repository>
+    </repositories>
 
     <dependencyManagement>
         <dependencies>
