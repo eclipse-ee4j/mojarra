@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import com.sun.faces.RIConstants;
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
@@ -114,6 +115,9 @@ public class ButtonRenderer extends HtmlBasicRenderer {
             String alt = (String) component.getAttributes().get("alt");
             if (alt != null) {
                 writer.writeAttribute("alt", alt, "alt");
+            }
+            else if (writer.getContentType().equals(RIConstants.XHTML_CONTENT_TYPE)) {
+                writer.writeAttribute("alt", "", "alt"); // write out an empty alt as it is required by HTML spec.
             }
         } else {
             writer.writeAttribute("type", type, "type");
