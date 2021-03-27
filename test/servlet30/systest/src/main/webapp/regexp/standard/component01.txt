@@ -1,1 +1,0 @@
-(?s).*<html>\s*<head>\s*<title>\s*component01.jsp\s*</title>\s*</head>\s*<body>\s*<input\s*id="username"\s*type="text"\s*name="username"\s*maxlength="32"\s*onkeypress="attrValue"\s*size="20"/>\s*</body>\s*</html>.*
