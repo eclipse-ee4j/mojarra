@@ -11203,15 +11203,20 @@
             <code>jakarta.servlet.http.HttpServletRequest</code>.  Call
             <code>getParts()</code> on the httpServletRequest. Iterate over
             the parts.  If the "name" property of the current part is equal to
-            the "clientId", pass the current part to the
+            the "clientId", <span class="changed_modified_4_0">then collect the part.
+            After the iteration, if the <code>multiple</code> attribute is set to <code>true</code>,
+            then pass <code>java.util.Collection&lt;jakarta.servlet.http.Part&gt;</code> to the <code>setSubmittedValue()</code> method of the component,
+            else pass the first item, if any, as <code>jakarta.servlet.http.Part</code> to the</span>
             <code>setSubmittedValue()</code> method of the component.  If an
             exception is thrown during the iteration, log the exception and
             continue.</p>
             
             <p>The standard implementation must override the
-            <code>getConvertedValue()</code> so that it simply returns the
-            <code>submittedValue</code> argument.</p>
-            
+            <code>getConvertedValue()</code> so that it <span class="changed_modified_4_0">filters out from the
+            <code>submittedValue</code> any parts which return
+            <code>null</code> or an empty string on <code>getSubmittedFileName()</code>,
+            or return <code>0</code> or less on <code>getSize()</code></span>.</p>
+
             <p>Any exception thrown when interacting with the underlying
             multi-part API must be wrapped in a <code>FacesException</code>
             and allowed to reach the <code>ExceptionHandler</code>.</p>
@@ -11330,7 +11335,10 @@
         </attribute>
         <attribute>
             <description>
-                <![CDATA[The current value of this component.]]>
+                <![CDATA[The current value of this component.
+                <span class="changed_modified_4_0">If the <code>multiple</code> attribute is set to <code>true</code>,
+                then this must be assignable to <code>java.util.Collection&lt;jakarta.servlet.http.Part&gt;</code>,
+                else this must be assignable to <code>jakarta.servlet.http.Part</code>.</span>]]>
             </description>
             <name>value</name>
             <required>false</required>
@@ -11426,6 +11434,16 @@
             <name>maxlength</name>
             <required>false</required>
             <type>int</type>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[<span class="changed_added_4_0">Flag indicating that this element must allow multiple file selection. A value
+                of false causes no attribute to be rendered, while a value of true causes the attribute to be rendered as
+                multiple="multiple".</span>]]>
+            </description>
+            <name>multiple</name>
+            <required>false</required>
+            <type>boolean</type>
         </attribute>
         <attribute>
             <description>

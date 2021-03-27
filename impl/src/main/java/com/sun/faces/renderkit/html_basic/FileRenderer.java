@@ -19,8 +19,11 @@
 package com.sun.faces.renderkit.html_basic;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.sun.faces.renderkit.RenderKitUtils;
 
@@ -29,6 +32,7 @@ import jakarta.faces.application.FacesMessage;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIForm;
+import jakarta.faces.component.html.HtmlInputFile;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.ConverterException;
@@ -66,14 +70,20 @@ public class FileRenderer extends TextRenderer {
         HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
         try {
             Collection<Part> parts = request.getParts();
+            Collection<Part> submittedValues = new ArrayList<>();
             for (Part cur : parts) {
                 if (clientId.equals(cur.getName())) {
                     // The cause of 3404 is here: the component should not be
                     // transient, rather, the value should not saved as part of
                     // the state
                     // component.setTransient(true);
-                    setSubmittedValue(component, cur);
+                    submittedValues.add(cur);
                 }
+            }
+            if (((HtmlInputFile) component).isMultiple()) {
+                setSubmittedValue(component, submittedValues);
+            } else if (!submittedValues.isEmpty()) {
+                setSubmittedValue(component, submittedValues.iterator().next());
             }
         } catch (IOException | ServletException ioe) {
             throw new FacesException(ioe);
@@ -108,15 +118,29 @@ public class FileRenderer extends TextRenderer {
         super.encodeBegin(context, component);
     }
 
+    // "Encode behavior" section of html_basic.taglib.xml says "Do not render the "value" attribute.".
+    // So we override currentValue with null.
+    @Override
+    protected void getEndTextToRender(FacesContext context, UIComponent component, String currentValue) throws IOException {
+        super.getEndTextToRender(context, component, null);
+    }
+
     @Override
     public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue) throws ConverterException {
         if (submittedValue instanceof Part) {
             Part part = (Part) submittedValue;
-            if ((part.getHeader("content-disposition") == null || part.getHeader("content-disposition").endsWith("filename=\"\"")) && part.getSize() <= 0) {
+            if (isEmpty(part)) {
                 return null;
             }
+        } else if (submittedValue instanceof Collection) {
+            Collection<Part> parts = (Collection<Part>) submittedValue;
+            return Collections.unmodifiableList(parts.stream().filter(part -> !isEmpty(part)).collect(Collectors.toList()));
         }
         return submittedValue;
+    }
+
+    private static boolean isEmpty(Part part) {
+        return part.getSubmittedFileName() == null || part.getSubmittedFileName().isEmpty() || part.getSize() <= 0;
     }
 
 }
