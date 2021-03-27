@@ -11367,6 +11367,17 @@
         </attribute>
         <attribute>
             <description>
+                <![CDATA[<span class="changed_added_4_0">
+                    Comma separated string of mime types of files to filter in client side file browse dialog.
+                    Note: this is not validated in server side.
+                </span>]]>
+            </description>
+            <name>accept</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
                 <![CDATA[Alternate textual description of the
                 element rendered by this component.]]>
             </description>

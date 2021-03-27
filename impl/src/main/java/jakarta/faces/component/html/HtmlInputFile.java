@@ -52,7 +52,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
      *
      */
     protected enum PropertyKeys {
-        accesskey, alt, autocomplete, dir, disabled, label, lang, maxlength, multiple, onblur, onchange, onclick, ondblclick, onfocus, onkeydown, onkeypress, onkeyup,
+        accept, accesskey, alt, autocomplete, dir, disabled, label, lang, maxlength, multiple, onblur, onchange, onclick, ondblclick, onfocus, onkeydown, onkeypress, onkeyup,
         onmousedown, onmousemove, onmouseout, onmouseover, onmouseup, onselect, readonly, role, size, style, styleClass, tabindex, title,;
 
         String toString;
@@ -96,6 +96,37 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
     public void setAccesskey(java.lang.String accesskey) {
         getStateHelper().put(PropertyKeys.accesskey, accesskey);
         handleAttribute("accesskey", accesskey);
+    }
+
+    /**
+     * <p class="changed_added_4_0">
+     * Return the value of the <code>accept</code> property.
+     * </p>
+     * <p>
+     * Contents: Comma separated string of mime types of files to filter in client side file browse dialog.
+     * </p>
+     * <p>
+     * Note: This is not validated in server side.
+     *
+     * @return the value of the property
+     *
+     */
+    public java.lang.String getAccept() {
+        return (java.lang.String) getStateHelper().eval(PropertyKeys.accept);
+
+    }
+
+    /**
+     * <p class="changed_added_4_0">
+     * Set the value of the <code>accept</code> property.
+     * </p>
+     *
+     * @param accept the new property value
+     *
+     */
+    public void setAccept(java.lang.String accept) {
+        getStateHelper().put(PropertyKeys.accept, accept);
+        handleAttribute("accept", accept);
     }
 
     /**
