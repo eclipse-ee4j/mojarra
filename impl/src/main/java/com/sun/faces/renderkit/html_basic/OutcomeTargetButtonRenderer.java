@@ -31,7 +31,7 @@ import jakarta.faces.context.ResponseWriter;
 
 public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.COMMANDBUTTON);
+    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTCOMETARGETBUTTON);
 
     // --------------------------------------------------- Methods from Renderer
 
@@ -53,6 +53,11 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
         if (imageSrc != null) {
             writer.writeAttribute("type", "image", "type");
             writer.writeURIAttribute("src", RenderKitUtils.getImageSource(context, component, "image"), "image");
+
+            String alt = (String) component.getAttributes().get("alt");
+            if (alt != null) {
+                writer.writeAttribute("alt", alt, "alt");
+            }
         } else {
             writer.writeAttribute("type", "button", "type");
         }

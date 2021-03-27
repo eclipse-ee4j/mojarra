@@ -110,6 +110,11 @@ public class ButtonRenderer extends HtmlBasicRenderer {
             writer.writeAttribute("type", "image", "type");
             writer.writeURIAttribute("src", RenderKitUtils.getImageSource(context, component, "image"), "image");
             writer.writeAttribute("name", clientId, "clientId");
+
+            String alt = (String) component.getAttributes().get("alt");
+            if (alt != null) {
+                writer.writeAttribute("alt", alt, "alt");
+            }
         } else {
             writer.writeAttribute("type", type, "type");
             writer.writeAttribute("name", clientId, "clientId");

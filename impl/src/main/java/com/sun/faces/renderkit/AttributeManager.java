@@ -42,7 +42,7 @@ public class AttributeManager {
 
     private static Map<Key, Attribute[]> ATTRIBUTE_LOOKUP = CollectionsUtils.<Key, Attribute[]>map()
             .add(Key.COMMANDBUTTON,
-                    ar(attr("accesskey"), attr("alt"), attr("dir"), attr("lang"), attr("onblur", "blur"), attr("onchange", "change"), attr("ondblclick", "dblclick"),
+                    ar(attr("accesskey"), attr("dir"), attr("lang"), attr("onblur", "blur"), attr("onchange", "change"), attr("ondblclick", "dblclick"),
                         attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"), attr("onkeyup", "keyup"),
                         attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"), attr("onmouseover", "mouseover"),
                         attr("onmouseup", "mouseup"), attr("onselect", "select"), attr("role"), attr("style"), attr("tabindex"), attr("title")))
@@ -97,7 +97,7 @@ public class AttributeManager {
             .add(Key.MESSAGESMESSAGES,
                     ar(attr("dir"), attr("lang"), attr("role"), attr("style"), attr("title")))
             .add(Key.OUTCOMETARGETBUTTON,
-                    ar(attr("accesskey"), attr("alt"), attr("dir"), attr("lang"), attr("onblur", "blur"), attr("onclick", "click"),
+                    ar(attr("accesskey"), attr("dir"), attr("lang"), attr("onblur", "blur"), attr("onclick", "click"),
                             attr("ondblclick", "dblclick"), attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"),
                             attr("onkeyup", "keyup"), attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"),
                             attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("role"), attr("style"), attr("tabindex"), attr("title")))

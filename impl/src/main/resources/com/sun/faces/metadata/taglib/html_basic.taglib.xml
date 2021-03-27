@@ -188,7 +188,8 @@
         <attribute>
             <description>
                 <![CDATA[Alternate textual description of the
-                element rendered by this component.]]>
+                element rendered by this component.
+                <span class="changed_modified_4_0">This attribute is ignored when the <code>image</code> attribute is not specified.</span>]]>
             </description>
             <name>
                 alt
@@ -1760,10 +1761,11 @@
             <type>java.lang.String</type>
         </attribute>
         <attribute>
-            <description>
+            <description><![CDATA[
                 Alternate textual description of the
                 element rendered by this component.
-            </description>
+                <span class="changed_modified_4_0">This attribute is ignored when the <code>image</code> attribute is not specified.</span>
+            ]]></description>
             <name>alt</name>
             <required>false</required>
             <type>java.lang.String</type>
