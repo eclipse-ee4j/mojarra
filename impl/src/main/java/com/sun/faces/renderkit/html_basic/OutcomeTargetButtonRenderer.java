@@ -18,6 +18,7 @@ package com.sun.faces.renderkit.html_basic;
 
 import java.io.IOException;
 
+import com.sun.faces.RIConstants;
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
@@ -31,7 +32,7 @@ import jakarta.faces.context.ResponseWriter;
 
 public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
 
-    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.COMMANDBUTTON);
+    private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTCOMETARGETBUTTON);
 
     // --------------------------------------------------- Methods from Renderer
 
@@ -53,6 +54,14 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
         if (imageSrc != null) {
             writer.writeAttribute("type", "image", "type");
             writer.writeURIAttribute("src", RenderKitUtils.getImageSource(context, component, "image"), "image");
+
+            String alt = (String) component.getAttributes().get("alt");
+            if (alt == null) {
+                writer.writeAttribute("alt", alt, "alt");
+            }
+            else if (writer.getContentType().equals(RIConstants.XHTML_CONTENT_TYPE)) {
+                writer.writeAttribute("alt", "", "alt"); // write out an empty alt as it is required by HTML spec.
+            }
         } else {
             writer.writeAttribute("type", "button", "type");
         }

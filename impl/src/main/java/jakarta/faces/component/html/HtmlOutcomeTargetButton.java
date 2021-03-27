@@ -105,6 +105,7 @@ public class HtmlOutcomeTargetButton extends UIOutcomeTarget implements ClientBe
     /**
      * <p>
      * Return the value of the <code>alt</code> property.
+     * <span class="changed_modified_4_0">This attribute is ignored when the <code>image</code> attribute is not specified.</span>
      * </p>
      *
      * @return the property value
