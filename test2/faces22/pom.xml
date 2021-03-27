@@ -35,7 +35,7 @@
     <modules>
         <module>cdiBeanValidator</module>
         <module>cdiInitDestroyEvent</module>
-        <module>viewscope</module>
+        <module>viewScope</module>
         <module>viewActionCdiViewScoped</module>
         <module>viewExpired</module>
         <module>viewParamNullValueAjax</module>
