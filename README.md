@@ -16,12 +16,12 @@
 
 # Mojarra 4.0 WIP
 
-Eclipse's implementation of the Jakarta Faces specification 
+Eclipse's implementation of the upcoming Jakarta Faces 4.0 specification 
 
 
 ## Minimum Requirements
 
-- Java 1.8
+- Java 11
 - Jakarta Servlet 5.0
 - Jakarta Expression Language 4.0
 - CDI 3.0
