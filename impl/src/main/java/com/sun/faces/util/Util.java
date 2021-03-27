@@ -41,6 +41,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -51,6 +52,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -1567,6 +1570,29 @@ public class Util {
         }
 
         return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Stream<T> stream(Object object) {
+        if (object == null) {
+            return Stream.empty();
+        } else if (object instanceof Stream) {
+            return (Stream<T>) object;
+        } else if (object instanceof Iterable) {
+            return (Stream<T>) StreamSupport.stream(((Iterable<?>) object).spliterator(), false);
+        } else if (object instanceof Map) {
+            return (Stream<T>) ((Map<?, ?>) object).entrySet().stream();
+        } else if (object instanceof int[]) {
+            return (Stream<T>) Arrays.stream((int[]) object).boxed();
+        } else if (object instanceof long[]) {
+            return (Stream<T>) Arrays.stream((long[]) object).boxed();
+        } else if (object instanceof double[]) {
+            return (Stream<T>) Arrays.stream((double[]) object).boxed();
+        } else if (object instanceof Object[]) {
+            return (Stream<T>) Arrays.stream((Object[]) object);
+        } else {
+            return (Stream<T>) Stream.of(object);
+        }
     }
 
 }

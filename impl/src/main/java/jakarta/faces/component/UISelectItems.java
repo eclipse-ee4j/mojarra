@@ -16,6 +16,7 @@
 
 package jakarta.faces.component;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.model.SelectItem;
 
 /**
@@ -73,6 +74,27 @@ public class UISelectItems extends UIComponentBase {
         super();
         setRendererType(null);
 
+    }
+
+    // ---------------------------------------------------------------- Bindings
+
+    /**
+     * <p class="changed_added_4_0">
+     * Set the {@link ValueExpression} used to calculate the value for the specified attribute or property name, if any.
+     * In addition, if a {@link ValueExpression} is set for the <code>var</code> property, regardless of the value, throw an illegal argument exception.
+     * </p>
+     *
+     * @throws IllegalArgumentException If <code>name</code> is one of <code>id</code>, <code>parent</code>, or <code>var</code>.
+     * @throws NullPointerException {@inheritDoc}
+     */
+    @Override
+    public void setValueExpression(String name, ValueExpression binding) {
+
+        if ("var".equals(name)) {
+            throw new IllegalArgumentException();
+        }
+
+        super.setValueExpression(name, binding);
     }
 
     // -------------------------------------------------------------- Properties
