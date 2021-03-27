@@ -65,6 +65,8 @@ public class Spec1553IT {
     public void test() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "spec1553IT.xhtml");
 
+        assertEquals("jakarta.faces.html h:head works", "Spec1553IT", page.getTitleText());
+
         assertEquals("http://java.sun.com/jsf/facelets works", "value", getValue(page.getElementById("ui_sun")));
         assertEquals("http://java.sun.com/jsf/core works", "value", getValue(page.getElementById("f_sun")));
         assertEquals("http://java.sun.com/jsf/html works", "value", getValue(page.getElementById("h_sun")));
