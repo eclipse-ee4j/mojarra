@@ -92,7 +92,7 @@ public class RenderKitUtils {
      * <p>
      * <code>Boolean</code> attributes to be rendered using <code>XHMTL</code> semantics.
      */
-    private static final String[] BOOLEAN_ATTRIBUTES = { "disabled", "ismap", "readonly" };
+    private static final String[] BOOLEAN_ATTRIBUTES = { "disabled", "ismap", "readonly", "multiple" };
 
     /**
      * <p>
