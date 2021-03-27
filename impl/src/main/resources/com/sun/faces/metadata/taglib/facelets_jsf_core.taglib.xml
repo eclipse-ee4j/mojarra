@@ -2557,19 +2557,19 @@ public class BackingBean implements PasswordHolder, Cloneable {
     </tag>
 
     <tag>
-        <description>
+        <description><![CDATA[
             <p class="changed_added_2_2">This action component specifies
             an application-specific command (or action), using an EL
             method expression, to be invoked during one of the Faces
             lifecycle phases, by default <em>Invoke Application</em>.</p>
 
-        </description>
+        ]]></description>
         <tag-name>viewAction</tag-name>
         <component>
             <component-type>jakarta.faces.ViewAction</component-type>
         </component>
         <attribute>
-            <description>
+            <description><![CDATA[
 
                 <p>MethodExpression representing the application action
             to invoke when this component is activated by the user. The
@@ -2578,7 +2578,7 @@ public class BackingBean implements PasswordHolder, Cloneable {
             is called to derive the logical outcome) which is passed to
             the NavigationHandler for this application.</p>
 
-            </description>
+            ]]></description>
             <name>action</name>
             <required>true</required>
             <method-signature>public 
@@ -2609,43 +2609,43 @@ public class BackingBean implements PasswordHolder, Cloneable {
             </method-signature>
         </attribute>
         <attribute>
-            <description>
+            <description><![CDATA[
                 <p>Flag indicating that, if this component is activated
                 by the user, notifications should be delivered to
                 interested listeners and actions immediately (that is,
                 during Apply Request Values phase) rather than waiting
                 until Invoke Application phase.</p>
-            </description>
+            ]]></description>
             <name>immediate</name>
             <required>false</required>
             <type>java.lang.Boolean</type>
         </attribute>
         <attribute>
-            <description>
+            <description><![CDATA[
                 <p>View actions are most commonly used on the initial
             view request.  Therefore, view actions do not operate on
             postback, by default.  This attribute enables a view action
             to operate on postback.</p>
-            </description>
+            ]]></description>
             <name>onPostback</name>
             <required>false</required>
             <type>java.lang.Boolean</type>
         </attribute>
         <attribute>
-            <description>
+            <description><![CDATA[
                 <p>Specifies the phase in which the action invocation
                 should occur using the name of the phase constant in the
                 PhaseId class (the case does not matter). The value must
                 be one of APPLY_REQUEST_VALUES, PROCESS_VALIDATIONS,
                 UPDATE_MODEL_VALUES, or INVOKE_APPLICATION. The default
                 is INVOKE_APPLICATION.</p>
-            </description>
+            ]]></description>
             <name>phase</name>
             <required>false</required>
             <type>java.lang.String</type>
         </attribute>
         <attribute>
-            <description>
+            <description><![CDATA[
                 <p>Like all children of <code>&lt;f:metadata&gt;</code>,
             a view action has no visual representation in the view.
             This attribute has exactly the same effect on a view action
@@ -2653,7 +2653,7 @@ public class BackingBean implements PasswordHolder, Cloneable {
             component.  Specifically, if the value of this attribute
             evaluates to <code>false</code> the component has no
             effect.</p>
-            </description>
+            ]]></description>
             <name>rendered</name>
             <required>false</required>
             <type>java.lang.Boolean</type>
