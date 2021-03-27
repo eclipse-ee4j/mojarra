@@ -53,6 +53,10 @@ public class HtmlSelectOneMenu extends UISelectOne implements ClientBehaviorHold
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlSelectOneMenu";
 
+    /**
+     * Properties used by this component
+     *
+     */
     protected enum PropertyKeys {
         accesskey, dir, disabled, disabledClass, enabledClass, label, lang, onblur, onchange, onclick, ondblclick, onfocus, onkeydown, onkeypress, onkeyup,
         onmousedown, onmousemove, onmouseout, onmouseover, onmouseup, readonly, role, style, styleClass, tabindex, title,;

@@ -46,6 +46,10 @@ public class HtmlMessage extends UIMessage {
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlMessage";
 
+    /**
+     * Properties used by this component
+     *
+     */
     protected enum PropertyKeys {
         dir, errorClass, errorStyle, fatalClass, fatalStyle, infoClass, infoStyle, lang, role, style, styleClass, title, tooltip, warnClass, warnStyle,;
 

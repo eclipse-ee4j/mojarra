@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,10 +16,11 @@
 
 package jakarta.faces.component.behavior;
 
-import java.lang.annotation.ElementType;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import jakarta.inject.Qualifier;
@@ -34,11 +35,17 @@ import jakarta.inject.Qualifier;
  *
  * @since 2.0
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Retention(RUNTIME)
+@Target(TYPE)
 @Inherited
 @Qualifier
 public @interface FacesBehavior {
+    
+    /**
+     * The value of this annotation attribute is taken to be the <em>behavior-id</em> with which instances of this class of
+     * behavior can be instantiated. 
+     * @return the <em>behavior-id</em>
+     */
     String value();
 
     /**

@@ -34,9 +34,7 @@ public class FacesException extends RuntimeException {
      * </p>
      */
     public FacesException() {
-
         super();
-
     }
 
     /**
@@ -47,9 +45,7 @@ public class FacesException extends RuntimeException {
      * @param message The detail message for this exception
      */
     public FacesException(String message) {
-
         super(message);
-
     }
 
     /**
@@ -61,10 +57,8 @@ public class FacesException extends RuntimeException {
      * @param cause The root cause for this exception
      */
     public FacesException(Throwable cause) {
-
         super(cause == null ? null : cause.toString());
         this.cause = cause;
-
     }
 
     /**
@@ -76,10 +70,8 @@ public class FacesException extends RuntimeException {
      * @param cause The root cause for this exception
      */
     public FacesException(String message, Throwable cause) {
-
         super(message);
         this.cause = cause;
-
     }
 
     // ----------------------------------------------------- Instance Variables

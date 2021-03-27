@@ -166,6 +166,10 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
 
     // ------------------------------------------------------ Manifest Constants
 
+    /**
+     * The key in the facet collection that contains the meta data of the view root.
+     * For example, the <code>UIViewParameter</code>s are stored here. 
+     */
     public static final String METADATA_FACET_NAME = "jakarta_faces_metadata";
 
     /**
