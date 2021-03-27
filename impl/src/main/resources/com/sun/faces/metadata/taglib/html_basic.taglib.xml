@@ -4179,15 +4179,6 @@
         </attribute>
         <attribute>
             <description>
-                Alternate textual description of the
-                element rendered by this component.
-            </description>
-            <name>alt</name>
-            <required>false</required>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>
                 If the value of this attribute is "off", render "off" as the
                 value
                 of the attribute. This indicates that the browser should
