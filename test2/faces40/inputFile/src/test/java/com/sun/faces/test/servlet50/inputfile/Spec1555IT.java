@@ -121,8 +121,8 @@ public class Spec1555IT {
         File file2 = generateTempFile("file2", "bin", 234);
         File file3 = generateTempFile("file3", "bin", 345);
         input.setValueAttribute(file1.getAbsolutePath());
-        clone(input).setValueAttribute(file2.getAbsolutePath());
-        clone(input).setValueAttribute(file3.getAbsolutePath());
+        addValueAttribute(input, file2.getAbsolutePath());
+        addValueAttribute(input, file3.getAbsolutePath());
         page = page.getHtmlElementById(form + ":submit").click();
 
         assertEquals("Value attribute is NOT set", "", page.getHtmlElementById(form + ":input").getAttribute("value"));
@@ -152,13 +152,13 @@ public class Spec1555IT {
      * HtmlUnit's HtmlFileInput doesn't support submitting multiple values.
      * The below is a work-around, found on https://stackoverflow.com/a/19654060
      */
-    private static HtmlFileInput clone(HtmlFileInput input) {
+    private static void addValueAttribute(HtmlFileInput input, String valueAttribute) {
         AttributesImpl attributes = new AttributesImpl();
         attributes.addAttribute(null, null, "type", null, "file");
         attributes.addAttribute(null, null, "name", null, input.getNameAttribute());
         HtmlFileInput cloned = (HtmlFileInput) new HtmlUnitNekoHtmlParser().getFactory("input").createElementNS(input.getPage(), null, "input", attributes);
         input.getParentNode().appendChild(cloned);
-        return cloned;
+        cloned.setValueAttribute(valueAttribute);
     }
 
 }
