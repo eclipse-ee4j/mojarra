@@ -35,7 +35,7 @@ package jakarta.faces.view.facelets;
  * <li>
  * <p>
  * Inspect the attributes of the {@code tag} argument. If none of the attributes are declared to be in the {@code
- * http://xmlns.jcp.org/jsf} namespace, iterate through the list of {@code TagDecorator} instances created from the
+ * jakarta.faces} namespace, iterate through the list of {@code TagDecorator} instances created from the
  * values in the {@link jakarta.faces.application.ViewHandler#FACELETS_DECORATORS_PARAM_NAME} {@code context-param}, if
  * any. For each entry, call its {@link #decorate} method, passing the argument {@code tag}. The first such entry that
  * returns non-{@code null} from its {@link #decorate} method must cause the iteration to stop.
@@ -44,7 +44,7 @@ package jakarta.faces.view.facelets;
  *
  * <li>
  * <p>
- * If one or more of the attributes of the {@code tag} argument are in the {@code http://xmlns.jcp.org/jsf} namespace,
+ * If one or more of the attributes of the {@code tag} argument are in the {@code jakarta.faces} namespace,
  * obtain a reference to <strong>decoratedTag</strong> as described in the following steps and iterate through the list
  * of {@link TagDecorator} instances as described in the preceding step, but pass <strong>decoratedTag</strong> to each
  * call to {@link #decorate}.
@@ -422,7 +422,7 @@ package jakarta.faces.view.facelets;
  * the argument {@code tag}'s attributes and the value from the "selector attribute" column in the table in the given
  * order. A selector attribute value of <strong>*</strong> indicates any value. In the table, a selector attribute name
  * prefixed with <strong>faces:</strong> means the tag is treated as if it were in the {@code
- * http://xmlns.jcp.org/jsf} namespace. In actual Facelet pages, the namespace is what matters, not the prefix.
+ * jakarta.faces} namespace. In actual Facelet pages, the namespace is what matters, not the prefix.
  * </p>
  *
  *
@@ -437,7 +437,7 @@ package jakarta.faces.view.facelets;
  * Convert all the attributes of the argument {@code tag} as follows. First, create a new instance of
  * {@link TagAttribute} with the following characteristics: location: from the argument {@code
  * tag}'s location, namespace: {@code
- * http://xmlns.jcp.org/jsf/passthrough}, local name: value of
+ * jakarta.faces.passthrough}, local name: value of
  * {@link jakarta.faces.render.Renderer#PASSTHROUGH_RENDERER_LOCALNAME_KEY}, qualified name: same as local name with the
  * "p:" prefix, value: from the argument {@code tag}'s local name. Let this {@code TagAttribute} be
  * <strong>elementNameTagAttribute</strong>.
@@ -459,7 +459,7 @@ package jakarta.faces.view.facelets;
  * <li>
  * <p>
  * If the current attribute's namespace is {@code
- * http://xmlns.jcp.org/jsf}, <strong>convertedTagAttribute</strong>'s qualified name must be the current attribute's
+ * jakarta.faces}, <strong>convertedTagAttribute</strong>'s qualified name must be the current attribute's
  * local name and <strong>convertedTagAttribute</strong>'s namespace must be the empty string. This will have the effect
  * of setting the current attribute as a proper property on the {@code UIComponent} instance represented by this
  * markup.</li>
@@ -474,9 +474,9 @@ package jakarta.faces.view.facelets;
  * <li>
  * <p>
  * Otherwise, assume the current attribute's namespace is {@code
- * http://xmlns.jcp.org/jsf/passthrough}. <strong>ConvertedTagAttribute</strong>'s qualified name is the current
+ * jakarta.faces.passthrough}. <strong>ConvertedTagAttribute</strong>'s qualified name is the current
  * attribute's local name prefixed by "p:". <strong>convertedTagAttribute</strong>'s namespace must be {@code
- * http://xmlns.jcp.org/jsf/passthrough}.
+ * jakarta.faces.passthrough}.
  * </p>
  * </li>
  *
@@ -500,7 +500,7 @@ package jakarta.faces.view.facelets;
  *
  * <p>
  * namespace: if <strong>targetTag</strong>'s prefix is "h", {@code
- * http://xmlns.jcp.org/jsf/html}; if <strong>targetTag</strong>'s prefix is "faces", {@code http://xmlns.jcp.org/jsf}.
+ * jakarta.faces.html}; if <strong>targetTag</strong>'s prefix is "faces", {@code jakarta.faces}.
  * </p>
  *
  * <p>

@@ -16,6 +16,10 @@
 
 package com.sun.faces.facelets.tag.jstl.core;
 
+import static com.sun.faces.util.Util.unmodifiableSet;
+
+import java.util.Set;
+
 import com.sun.faces.facelets.tag.AbstractTagLibrary;
 
 /**
@@ -25,26 +29,13 @@ import com.sun.faces.facelets.tag.AbstractTagLibrary;
  */
 public final class JstlCoreLibrary extends AbstractTagLibrary {
 
-    /**
-     * Stores the default namespace.
-     */
-    public final static String Namespace = "http://java.sun.com/jsp/jstl/core";
-    public final static String IncorrectNamespace = "http://java.sun.com/jstl/core";
-    public final static String XMLNSNamespace = "http://xmlns.jcp.org/jsp/jstl/core";
+    private final static String SunNamespace = "http://java.sun.com/jsp/jstl/core";
+    private final static String FaceletsNamespace = "http://java.sun.com/jstl/core";
+    private final static String JcpNamespace = "http://xmlns.jcp.org/jsp/jstl/core";
+    private final static String JakartaNamespace = "jakarta.tags.core";
 
-    /**
-     * Default constructor.
-     */
-    public JstlCoreLibrary() {
-        super(Namespace);
-        addTagHandler("if", IfHandler.class);
-        addTagHandler("forEach", ForEachHandler.class);
-        addTagHandler("catch", CatchHandler.class);
-        addTagHandler("choose", ChooseHandler.class);
-        addTagHandler("when", ChooseWhenHandler.class);
-        addTagHandler("otherwise", ChooseOtherwiseHandler.class);
-        addTagHandler("set", SetHandler.class);
-    }
+    public final static Set<String> NAMESPACES = unmodifiableSet(JakartaNamespace, JcpNamespace, FaceletsNamespace, SunNamespace);
+    public final static String DEFAULT_NAMESPACE = JakartaNamespace;
 
     /**
      * Constructor.

@@ -85,7 +85,7 @@ class DefaultTagDecorator implements TagDecorator {
     }
 
     private enum Namespace {
-        p(PassThroughAttributeLibrary.Namespace), faces(PassThroughElementLibrary.Namespace), h(HtmlLibrary.Namespace);
+        p(PassThroughAttributeLibrary.DEFAULT_NAMESPACE), faces(PassThroughElementLibrary.DEFAULT_NAMESPACE), h(HtmlLibrary.DEFAULT_NAMESPACE);
 
         private String uri;
 

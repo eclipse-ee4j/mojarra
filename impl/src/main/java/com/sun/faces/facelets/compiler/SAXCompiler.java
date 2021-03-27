@@ -44,6 +44,7 @@ import com.sun.faces.config.FaceletsConfiguration;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.facelets.tag.TagAttributeImpl;
 import com.sun.faces.facelets.tag.TagAttributesImpl;
+import com.sun.faces.facelets.tag.faces.core.CoreLibrary;
 import com.sun.faces.util.Util;
 
 import jakarta.faces.context.ExternalContext;
@@ -341,7 +342,7 @@ public final class SAXCompiler extends Compiler {
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 
             if (!metadataProcessed) {
-                if (!processingMetadata && (RIConstants.CORE_NAMESPACE.equals(uri) || RIConstants.CORE_NAMESPACE_NEW.equals(uri))) {
+                if (!processingMetadata && CoreLibrary.NAMESPACES.contains(uri)) {
                     if (METADATA_HANDLER.equals(localName)) {
                         processingMetadata = true;
                     }
@@ -350,7 +351,7 @@ public final class SAXCompiler extends Compiler {
                     super.startElement(uri, localName, qName, attributes);
                 }
             }
-            if (localName.equals("view") && (RIConstants.CORE_NAMESPACE.equals(uri) || RIConstants.CORE_NAMESPACE_NEW.equals(uri))) {
+            if (localName.equals("view") && CoreLibrary.NAMESPACES.contains(uri)) {
                 super.startElement(uri, localName, qName, attributes);
             }
         }
@@ -362,14 +363,14 @@ public final class SAXCompiler extends Compiler {
                 if (processingMetadata) {
                     super.endElement(uri, localName, qName);
                 }
-                if (processingMetadata && (RIConstants.CORE_NAMESPACE.equals(uri) || RIConstants.CORE_NAMESPACE_NEW.equals(uri))) {
+                if (processingMetadata && CoreLibrary.NAMESPACES.contains(uri)) {
                     if (METADATA_HANDLER.equals(localName)) {
                         processingMetadata = false;
                         metadataProcessed = true;
                     }
                 }
             }
-            if (localName.equals("view") && (RIConstants.CORE_NAMESPACE.equals(uri) || RIConstants.CORE_NAMESPACE_NEW.equals(uri))) {
+            if (localName.equals("view") && CoreLibrary.NAMESPACES.contains(uri)) {
                 super.endElement(uri, localName, qName);
             }
         }

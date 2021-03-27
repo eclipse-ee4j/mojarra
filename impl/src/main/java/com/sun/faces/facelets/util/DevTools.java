@@ -16,6 +16,8 @@
 
 package com.sun.faces.facelets.util;
 
+import static com.sun.faces.util.Util.unmodifiableSet;
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -36,6 +38,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -55,14 +58,18 @@ import jakarta.faces.context.Flash;
  *
  * <p>
  * The public static methods of this class are exposed as EL functions under the namespace
- * <code>http://java.sun.com/mojarra/private/functions</code>
+ * <code>mojarra.private.functions</code>
  * </p>
  *
  */
 public final class DevTools {
 
-    public final static String Namespace = "http://java.sun.com/mojarra/private/functions";
-    public final static String NewNamespace = "http://xmlns.jcp.org/mojarra/private/functions";
+    private final static String SunNamespace = "http://java.sun.com/mojarra/private/functions";
+    private final static String JcpNamespace = "http://xmlns.jcp.org/mojarra/private/functions";
+    private final static String JakartaNamespace = "mojarra.private.functions";
+
+    public final static Set<String> NAMESPACES = unmodifiableSet(JakartaNamespace, JcpNamespace, SunNamespace);
+    public final static String DEFAULT_NAMESPACE = JakartaNamespace;
 
     private static final Logger LOGGER = Logger.getLogger(DevTools.class.getPackage().getName());
 
