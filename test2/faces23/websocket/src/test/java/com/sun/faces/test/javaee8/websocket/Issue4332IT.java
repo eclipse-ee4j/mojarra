@@ -15,6 +15,8 @@
  */
 package com.sun.faces.test.javaee8.websocket;
 
+import static com.sun.faces.test.javaee8.websocket.Spec1396IT.waitUntilWebsocketIsOpened;
+import static com.sun.faces.test.javaee8.websocket.Spec1396IT.waitUntilWebsocketIsPushed;
 import static java.lang.System.getProperty;
 import static org.jboss.shrinkwrap.api.ShrinkWrap.create;
 import static org.junit.Assert.assertTrue;
@@ -53,46 +55,31 @@ public class Issue4332IT {
     @Before
     public void setUp() {
         webClient = new WebClient();
-        webClient.getOptions().setJavaScriptEnabled(true);
-        webClient.setJavaScriptTimeout(120000);
     }
 
     @Test
-    public void test() throws Exception {
-        webClient.setIncorrectnessListener((o, i) -> {});
-
-        testWebsocketAfterPostback();
-    }
-
     public void testWebsocketAfterPostback() throws Exception {
+        webClient.setIncorrectnessListener((o, i) -> {}); // Suppress false JS errors on websocket URL.
         HtmlPage page = webClient.getPage(webUrl + "issue4332.xhtml");
 
-        HtmlSubmitInput postback = (HtmlSubmitInput) page.getHtmlElementById("form:postback");
-        page = postback.click();
-        webClient.waitForBackgroundJavaScript(60000);
-        
         String pageSource = page.getWebResponse().getContentAsString();
         assertTrue(pageSource.contains("/jakarta.faces.push/push?"));
 
+        waitUntilWebsocketIsOpened(page);
+
+        HtmlSubmitInput postback = (HtmlSubmitInput) page.getHtmlElementById("form:postback");
+        page = postback.click();
+
+        pageSource = page.getWebResponse().getContentAsString();
+        assertTrue(pageSource.contains("/jakarta.faces.push/push?"));
+
+        waitUntilWebsocketIsOpened(page);
+
         HtmlSubmitInput button = (HtmlSubmitInput) page.getHtmlElementById("form:button");
-        assertTrue(button.asText().equals("push"));
-
         page = button.click();
-        webClient.waitForBackgroundJavaScript(60000);
-       
-        for (int i=0; i<6; i++) {
-            try {
-                System.out.println("Wait until WS push - iteration #" + i);
-                Thread.sleep(1000); // waitForBackgroundJavaScript doesn't wait until the WS push is arrived.
 
-                assertTrue(page.getHtmlElementById("form:button").asText().equals("pushed!"));
-                
-                break;
-            } catch (Error e) {
-                e.printStackTrace();
-            }
-        }
-        
+        waitUntilWebsocketIsPushed(page);
+        webClient.close(); // This will explicitly close websocket as well. HtmlUnit doesn't seem to like to leave it open before loading next page.
     }
 
     @After

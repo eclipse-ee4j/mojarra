@@ -18,9 +18,11 @@ package com.sun.faces.test.javaee8.websocket;
 import static java.lang.System.getProperty;
 import static org.jboss.shrinkwrap.api.ShrinkWrap.create;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.net.URL;
+import java.util.function.Predicate;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -53,54 +55,98 @@ public class Spec1396IT {
     @Before
     public void setUp() {
         webClient = new WebClient();
-        webClient.getOptions().setJavaScriptEnabled(true);
-        webClient.setJavaScriptTimeout(120000);
     }
 
     @Test
-    public void test() throws Exception {
-        webClient.setIncorrectnessListener((o, i) -> {});
-
-        testEnableWebsocketEndpoint();
-        testWebsocket();
-    }
-
     public void testEnableWebsocketEndpoint() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "spec1396EnableWebsocketEndpoint.xhtml");
         assertTrue(page.getHtmlElementById("param").asText().equals("true"));
     }
 
-    public void testWebsocket() throws Exception {
-        HtmlPage page = webClient.getPage(webUrl + "spec1396.xhtml");
+    @Test
+    public void testDefaultWebsocket() throws Exception {
+        webClient.setIncorrectnessListener((o, i) -> {}); // Suppress false JS errors on websocket URL.
+        HtmlPage page = webClient.getPage(webUrl + "spec1396DefaultWebsocket.xhtml");
+
         String pageSource = page.getWebResponse().getContentAsString();
         assertTrue(pageSource.contains(">faces.push.init("));
         assertTrue(pageSource.contains("/jakarta.faces.push/push?"));
-        assertTrue(pageSource.contains("/jakarta.faces.push/user?"));
-        assertTrue(pageSource.contains("/jakarta.faces.push/view?"));
+
+        waitUntilWebsocketIsOpened(page);
 
         HtmlSubmitInput button = (HtmlSubmitInput) page.getHtmlElementById("form:button");
-        assertTrue(button.asText().equals("push"));
-
         page = button.click();
-        webClient.waitForBackgroundJavaScript(60000);
-       
-        for (int i=0; i<10; i++) {
-            try {
-                System.out.println("Wait until WS push - iteration #" + i);
-                Thread.sleep(1000); // waitForBackgroundJavaScript doesn't wait until the WS push is arrived.
 
-                assertTrue(page.getHtmlElementById("form:button").asText().equals("pushed!"));
-                assertTrue(page.getHtmlElementById("user").asText().equals("pushed!"));
-                assertTrue(page.getHtmlElementById("ajaxOutput").asText().equals("pushed!"));
-                
-                return;
-            } catch (Error e) {
-                e.printStackTrace();
-            }
+        waitUntilWebsocketIsPushed(page);
+        webClient.close(); // This will explicitly close websocket as well. HtmlUnit doesn't seem to like to leave it open before loading next page.
+    }
+
+    @Test
+    public void testUserScopedWebsocket() throws Exception {
+        webClient.setIncorrectnessListener((o, i) -> {}); // Suppress false JS errors on websocket URL.
+        HtmlPage page = webClient.getPage(webUrl + "spec1396UserScopedWebsocket.xhtml");
+
+        String pageSource = page.getWebResponse().getContentAsString();
+        assertTrue(pageSource.contains(">faces.push.init("));
+        assertTrue(pageSource.contains("/jakarta.faces.push/user?"));
+
+        waitUntilWebsocketIsOpened(page);
+
+        HtmlSubmitInput button = (HtmlSubmitInput) page.getHtmlElementById("form:button");
+        page = button.click();
+
+        waitUntilWebsocketIsPushed(page);
+        webClient.close(); // This will explicitly close websocket as well. HtmlUnit doesn't seem to like to leave it open before loading next page.
+    }
+
+    @Test
+    public void testViewScopedWebsocket() throws Exception {
+        webClient.setIncorrectnessListener((o, i) -> {}); // Suppress false JS errors on websocket URL.
+        HtmlPage page = webClient.getPage(webUrl + "spec1396ViewScopedWebsocket.xhtml");
+
+        String pageSource = page.getWebResponse().getContentAsString();
+        assertTrue(pageSource.contains(">faces.push.init("));
+        assertTrue(pageSource.contains("/jakarta.faces.push/view?"));
+
+        waitUntilWebsocketIsOpened(page);
+
+        HtmlSubmitInput button = (HtmlSubmitInput) page.getHtmlElementById("form:button");
+        page = button.click();
+
+        waitUntilWebsocketIsPushed(page);
+        webClient.close(); // This will explicitly close websocket as well. HtmlUnit doesn't seem to like to leave it open before loading next page.
+    }
+
+    /**
+     * HtmlUnit is not capable of waiting until WS is opened. Hence this work around.
+     */
+    static void waitUntilWebsocketIsOpened(HtmlPage page) throws Exception {
+        Predicate<HtmlPage> isWebsocketOpened = p -> "yes".equals(page.getElementById("opened").asText());
+        int retries = 10;
+
+        while (!isWebsocketOpened.test(page) && retries --> 0) {
+            Thread.sleep(300);
         }
-        
-        assertTrue("Failed to establish connection with websocket with 10 seconds.", false);
-        
+
+        if (!isWebsocketOpened.test(page)) {
+            fail("Failed to establish connection with websocket within 3 seconds.");
+        }
+    }
+
+    /**
+     * HtmlUnit is not capable of waiting until WS is pushed. Hence this work around.
+     */
+    static void waitUntilWebsocketIsPushed(HtmlPage page) throws Exception {
+        Predicate<HtmlPage> isWebsocketPushed = p -> "yes".equals(page.getElementById("opened").asText());
+        int retries = 10;
+
+        while (!isWebsocketPushed.test(page) && retries --> 0) {
+            Thread.sleep(300);
+        }
+
+        if (!isWebsocketPushed.test(page)) {
+            fail("Failed to retrieve push message from websocket within 3 seconds.");
+        }
     }
 
     @After

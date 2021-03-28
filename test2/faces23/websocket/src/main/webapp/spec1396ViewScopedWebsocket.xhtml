@@ -20,28 +20,23 @@
 <html lang="en"
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:h="http://xmlns.jcp.org/jsf/html"
->
+    xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+
+
     <h:head>
-        <title>Issue4332IT - websocket with sync post</title>
+        <title>Spec1396IT - websocket - view scoped</title>
     </h:head>
     <h:body>
         <h:form id="form">
-            <h:commandButton id="postback" value="postback" />
-            <h:commandButton id="button" value="push" action="#{issue4332.send}"><f:ajax /></h:commandButton>
+            <h:commandButton id="button" value="push" action="#{spec1396.send}"><f:ajax /></h:commandButton>
         </h:form>
 
-        <script>
-            function onmessageFunction(message) {
-                document.getElementById("message").value = message;
-            }
-        </script>
-
         <div id="opened" />
-        <div id="message" />
+        <div id="message"><h:outputText id="ajaxOutput" value="#{spec1396.ajaxOutput}" /></div>
 
-        <f:websocket channel="push"
-            onopen="function(){document.getElementById('opened').innerHTML='yes';}"
-            onmessage="onmessageFunction" />
+        <f:websocket channel="view" scope="view" onopen="function(){document.getElementById('opened').innerHTML='yes';}">
+            <f:ajax event="renderAjaxOutput" render="ajaxOutput" />
+        </f:websocket>
     </h:body>
 </html>
