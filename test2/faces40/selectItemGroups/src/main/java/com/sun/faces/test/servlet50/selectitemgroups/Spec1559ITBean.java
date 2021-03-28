@@ -33,7 +33,7 @@ public class Spec1559ITBean {
     @PostConstruct
     public void init() {
         categories.add(new Category("Animals", new Product(1L, "Dog"), new Product(2L, "Cat"), new Product(3L, "Fish")));
-        categories.add(new Category("Cars", new Product(4L, "Alfa"), new Product(5L, "Audi"), new Product(6L, "BMW")));
+        categories.add(new Category("Cars", new Product(4L, "Alfa Romeo"), new Product(5L, "Audi"), new Product(6L, "BMW")));
     }
 
     public List<Category> getCategories() {

@@ -80,6 +80,14 @@ public class Spec1559IT {
         assertValidMarkup(select);
         assertEquals("messages is still empty after submit", "", page.getHtmlElementById("form:messages").asText());
         assertEquals("output is '5' after submit", "5", page.getHtmlElementById("form:output").asText());
+
+        select = page.getHtmlElementById("form:input");
+        select.setSelectedAttribute(select.getOptionByValue("2"), true);
+        page = page.getHtmlElementById("form:submit").click();
+
+        assertValidMarkup(select);
+        assertEquals("messages is still empty after submit", "", page.getHtmlElementById("form:messages").asText());
+        assertEquals("output is '2' after submit", "2", page.getHtmlElementById("form:output").asText());
     }
 
     private static void assertValidMarkup(HtmlSelect select) {
@@ -95,7 +103,11 @@ public class Spec1559IT {
         }
 
         assertEquals("select element has 6 options", 6, select.getOptions().size());
-        HtmlOption option = select.getOptionByValue("5");
-        assertEquals("5th option is 'Audi'", "Audi", option.getText());
+
+        HtmlOption option2 = select.getOptionByValue("2");
+        assertEquals("2nd option is 'Cat'", "Cat", option2.getText());
+
+        HtmlOption option5 = select.getOptionByValue("5");
+        assertEquals("5th option is 'Audi'", "Audi", option5.getText());
     }
 }
