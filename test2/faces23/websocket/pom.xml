@@ -30,8 +30,4 @@
     <packaging>war</packaging>
 
     <name>Mojarra ${project.version} - Test - Faces 2.3 - websocket</name>
-
-    <build>
-        <finalName>test-faces23-getviews</finalName>
-    </build>
 </project>
