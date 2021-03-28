@@ -117,7 +117,7 @@ public final class CompositeTagLibrary implements TagLibrary {
                 result = result.substring(0, i);
             }
         }
-        return result;
+        return null;
     }
 
     /*
