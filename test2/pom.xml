@@ -362,7 +362,7 @@
                 <dependency>
                     <groupId>cloud.piranha.arquillian</groupId>
                     <artifactId>piranha-arquillian-server</artifactId>
-                    <version>20.10.0-SNAPSHOT</version>
+                    <version>21.4.0-SNAPSHOT</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
