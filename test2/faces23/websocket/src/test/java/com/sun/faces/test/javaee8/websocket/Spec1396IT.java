@@ -73,7 +73,7 @@ public class Spec1396IT {
     public void testWebsocket() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "spec1396.xhtml");
         String pageSource = page.getWebResponse().getContentAsString();
-        assertTrue(pageSource.contains(">jsf.push.init("));
+        assertTrue(pageSource.contains(">faces.push.init("));
         assertTrue(pageSource.contains("/jakarta.faces.push/push?"));
         assertTrue(pageSource.contains("/jakarta.faces.push/user?"));
         assertTrue(pageSource.contains("/jakarta.faces.push/view?"));
