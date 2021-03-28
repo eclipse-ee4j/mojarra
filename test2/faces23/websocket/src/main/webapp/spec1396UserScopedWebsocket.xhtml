@@ -25,21 +25,18 @@
 
 
     <h:head>
-        <title>Spec1396IT - websocket</title>
+        <title>Spec1396IT - websocket - user scoped</title>
     </h:head>
     <h:body>
         <h:form id="form">
             <h:commandButton id="button" value="push" action="#{spec1396.send}"><f:ajax /></h:commandButton>
         </h:form>
 
-        <f:websocket channel="push" onmessage="function(message){document.getElementById('form:button').value=message;}" />
-        
-        <div id="user" />
-        <f:websocket channel="user" user="user" onmessage="function(message){document.getElementById('user').innerHTML=message;}" />
+        <div id="opened" />
+        <div id="message" />
 
-        <h:outputText id="ajaxOutput" value="#{spec1396.ajaxOutput}" />
-        <f:websocket channel="view" scope="view">
-            <f:ajax event="renderAjaxOutput" render="ajaxOutput" />
-        </f:websocket>
+        <f:websocket channel="user" user="user" 
+            onopen="function(){document.getElementById('opened').innerHTML='yes';}"
+            onmessage="function(message){document.getElementById('message').innerHTML=message;}" />
     </h:body>
 </html>
