@@ -16,11 +16,8 @@
 
 package com.sun.faces.facelets.tag;
 
-import com.sun.faces.facelets.compiler.CompilationMessageHolder;
-import com.sun.faces.facelets.tag.jsf.CompositeComponentTagLibrary;
-import com.sun.faces.facelets.tag.jsf.FacesComponentTagLibrary;
-import com.sun.faces.facelets.tag.jsf.LazyTagLibrary;
-import com.sun.faces.util.Util;
+import java.lang.reflect.Method;
+import java.util.List;
 
 import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
@@ -29,14 +26,18 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.Tag;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
-import java.lang.reflect.Method;
-import java.util.List;
+
+import com.sun.faces.facelets.compiler.CompilationMessageHolder;
+import com.sun.faces.facelets.tag.jsf.CompositeComponentTagLibrary;
+import com.sun.faces.facelets.tag.jsf.FacesComponentTagLibrary;
+import com.sun.faces.facelets.tag.jsf.LazyTagLibrary;
+import com.sun.faces.util.Util;
 
 /**
  * A TagLibrary that is composed of 1 or more TagLibrary children. Uses the
  * chain of responsibility pattern to stop searching as soon as one of the
  * children handles the requested method.
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -54,10 +55,10 @@ public final class CompositeTagLibrary implements TagLibrary {
     public CompositeTagLibrary(TagLibrary[] libraries) {
         this(libraries, null);
     }
-    
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.facelets.tag.TagLibrary#containsNamespace(java.lang.String)
      */
     @Override
@@ -81,7 +82,7 @@ public final class CompositeTagLibrary implements TagLibrary {
         }
         if (null != toTest) {
             TagLibrary [] librariesPlusOne = new TagLibrary[libraries.length+1];
-            System.arraycopy(this.libraries, 0, librariesPlusOne, 
+            System.arraycopy(this.libraries, 0, librariesPlusOne,
                     0, libraries.length);
             librariesPlusOne[libraries.length] = toTest;
             for (int i = 0; i < this.libraries.length; i++) {
@@ -95,7 +96,7 @@ public final class CompositeTagLibrary implements TagLibrary {
             if (context.isProjectStage(ProjectStage.Development)) {
                 if (null != t &&
                     !ns.equals("http://www.w3.org/1999/xhtml")) {
-                    // messageHolder will only be null in the case of the private 
+                    // messageHolder will only be null in the case of the private
                     // EMPTY_LIBRARY class variable of the Compiler class.
                     // This code will never be called on that CompositeTagLibrary
                     // instance.
@@ -105,7 +106,7 @@ public final class CompositeTagLibrary implements TagLibrary {
                         List<FacesMessage> prefixMessages = this.messageHolder.getNamespacePrefixMessages(context, prefix);
                         prefixMessages.add(new FacesMessage(FacesMessage.SEVERITY_WARN,
                                 "Warning: This page calls for XML namespace " + ns +
-                                " declared with prefix " + prefix + 
+                                " declared with prefix " + prefix +
                                 " but no taglibrary exists for that namespace.", ""));
                     }
                 }
@@ -113,21 +114,21 @@ public final class CompositeTagLibrary implements TagLibrary {
         }
         return false;
     }
-    
+
     private String getPrefixFromTag(Tag t) {
         String result = t.getQName();
         if (null != result) {
             int i;
             if (-1 != (i = result.indexOf(":"))) {
-                result = result.substring(0, i);
+                return result.substring(0, i);
             }
         }
-        return result;
+        return null;
     }
-    
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.facelets.tag.TagLibrary#containsTagHandler(java.lang.String,
      *      java.lang.String)
      */
@@ -143,7 +144,7 @@ public final class CompositeTagLibrary implements TagLibrary {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.facelets.tag.TagLibrary#createTagHandler(java.lang.String,
      *      java.lang.String, com.sun.facelets.tag.TagConfig)
      */
@@ -160,7 +161,7 @@ public final class CompositeTagLibrary implements TagLibrary {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.facelets.tag.TagLibrary#containsFunction(java.lang.String,
      *      java.lang.String)
      */
@@ -176,7 +177,7 @@ public final class CompositeTagLibrary implements TagLibrary {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sun.facelets.tag.TagLibrary#createFunction(java.lang.String,
      *      java.lang.String)
      */
