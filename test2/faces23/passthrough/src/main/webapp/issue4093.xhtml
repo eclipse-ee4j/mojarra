@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<html xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+
+	<h:head id="head">
+		<title><h:outputText value="JSF 2.2 Validation + HTML5" /></title>
+	</h:head>
+	
+	<h:body>
+		<h1>
+			<h:outputText value="required=&quot;true&quot;" />
+		</h1>
+		
+		<h:form id="requiredwithoutpassthrough">
+			<h:inputText id="value" required="true" />
+			<h:commandButton id="submit" value="Without passthrough" />
+			<h:message id="message" for="value" />
+		</h:form>
+		
+		<h:form id="requiredwithpassthrough">
+			<h:inputText id="value" p:required="required" />
+			<h:commandButton id="submit" value="With passthrough" />
+			<h:message id="message" for="value" />
+		</h:form>
+
+		<form>
+			<input type="text" required="true" id="htmltext" />
+	
+			<button type="submit" value="Without passthrough">Test HTML</button>
+		</form>
+		
+		<h:commandButton id="removerequired"
+			onclick="document.getElementById('requiredwithpassthrough:value').removeAttribute('required');"
+			value="Remove required-attribute" />
+	
+		<h1>
+			<h:outputText value="f:validateRequired" />
+		</h1>
+		
+		<h:form id="validatewithoutpassthrough">
+			<h:inputText id="value">
+				<f:validateRequired />
+			</h:inputText>
+			<h:commandButton id="submit" value="Without passthrough" />
+			<h:message for="value" />
+		</h:form>
+		
+		<h:form id="validatewithpassthrough">
+			<h:inputText id="value" p:required="true">
+				<f:validateRequired />
+			</h:inputText>
+			<h:commandButton id="submit" value="With passthrough" />
+			<h:message for="value" />
+		</h:form>
+	
+		<h:commandButton id="removevalidate"
+			onclick="document.getElementById('validatewithpassthrough:value').removeAttribute('required');"
+			value="Remove required-attribute" />
+	</h:body>
+</html>
