@@ -1451,6 +1451,26 @@ of POJOs.
             <name>var</name>
             <type>java.lang.String</type>
         </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_4_0">
+                    Label to be displayed to the user for this option group.
+                </p>
+            ]]></description>
+            <name>itemLabel</name>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_4_0">
+                    Flag indicating whether the option group created by this component is disabled.
+                    Expressions must evaluate to a <code>boolean</code>.
+                    Default value is <code>false</code>.
+                </p>
+            ]]></description>
+            <name>itemDisabled</name>
+            <type>java.lang.Boolean</type>
+        </attribute>
     </tag>
 
     <tag>
