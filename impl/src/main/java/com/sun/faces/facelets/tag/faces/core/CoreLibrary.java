@@ -27,6 +27,7 @@ import com.sun.faces.renderkit.html_basic.WebsocketRenderer;
 import jakarta.faces.component.UIImportConstants;
 import jakarta.faces.component.UIParameter;
 import jakarta.faces.component.UISelectItem;
+import jakarta.faces.component.UISelectItemGroup;
 import jakarta.faces.component.UISelectItemGroups;
 import jakarta.faces.component.UISelectItems;
 import jakarta.faces.component.UIViewAction;
@@ -102,6 +103,8 @@ public final class CoreLibrary extends AbstractTagLibrary {
         this.addComponent("selectItem", UISelectItem.COMPONENT_TYPE, null);
 
         this.addComponent("selectItems", UISelectItems.COMPONENT_TYPE, null);
+
+        this.addComponent("selectItemGroup", UISelectItemGroup.COMPONENT_TYPE, null);
 
         this.addComponent("selectItemGroups", UISelectItemGroups.COMPONENT_TYPE, null);
 

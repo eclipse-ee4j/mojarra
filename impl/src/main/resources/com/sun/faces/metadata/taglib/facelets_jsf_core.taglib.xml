@@ -1403,6 +1403,48 @@ of POJOs.
     <tag>
         <description><![CDATA[
             <p class="changed_added_4_0">
+                <strong>UISelectItemGroup</strong> is a component that may be nested inside a <code>UISelectMany</code> or <code>UISelectOne</code> component,
+                and causes the addition of one <code>SelectItemGroup</code> of one or more <code>SelectItem</code> instances to the list of available options in the parent component.
+                This component accepts only children of type <code>UISelectItems</code> or <code>UISelectItem</code>.
+            </p>
+        ]]></description>
+        <tag-name>selectItemGroup</tag-name>
+        <component>
+            <component-type>jakarta.faces.SelectItemGroup</component-type>
+            <renderer-type/>
+        </component>
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_4_0">
+                    Component identifier of the <code>UISelectItemGroup</code> component to be created.
+                </p>
+            ]]></description>
+            <name>id</name>
+            <type>java.lang.String</type>
+        </attribute> 
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_4_0">
+                    Value binding expression to a backing bean property bound to the component instance for the <code>UIComponent</code> created by this custom action.
+                </p>
+            ]]></description>
+            <name>binding</name>
+            <type>jakarta.faces.component.UIComponent</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_4_0">
+                    Label to be displayed to the user for this option group.
+                </p>
+            ]]></description>
+            <name>itemLabel</name>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description><![CDATA[
+            <p class="changed_added_4_0">
                 <strong>UISelectItemGroups</strong> is a component that may be nested inside a <code>UISelectMany</code> or <code>UISelectOne</code> component,
                 and causes the addition of one or more <code>SelectItemGroup</code> of one or more <code>SelectItem</code> instances to the list of available options in the parent component.
                 This component accepts only children of type <code>UISelectItems</code> or <code>UISelectItem</code>.
