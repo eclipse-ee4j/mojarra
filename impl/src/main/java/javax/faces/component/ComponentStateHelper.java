@@ -204,7 +204,9 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
             defaultMap.put(key, items);
         }
         
-        items.add(value);
+        if (value != null) {
+            items.add(value);
+        }
     }
 
     /**
@@ -291,15 +293,27 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
             }
             
             if (value instanceof Map) {
-                for (Map.Entry<String, Object> entry : ((Map<String, Object>) value).entrySet()) {
-                    put(serializable, entry.getKey(), entry.getValue());
+                Map<?,?> values = (Map<?,?>)value;
+
+                if (values.size() > 0) {
+                    for (Map.Entry<String, Object> entry : ((Map<String, Object>) value).entrySet()) {
+                        put(serializable, entry.getKey(), entry.getValue());
+                    }
+                }
+                else {
+                    put(serializable, null, null); // TODO - WIP
                 }
             } else if (value instanceof List) {
                 defaultMap.remove(serializable);
                 deltaMap.remove(serializable);
-                
+
                 List<?> values = (List<?>) value;
-                values.stream().forEach(o -> add(serializable, o));
+                if (values.size() > 0) {
+                    values.stream().forEach(o -> add(serializable, o));
+                }
+                else {
+                    add(serializable, null); // TODO - WIP
+                }
             } else {
                 put(serializable, value);
                 handleAttribute(serializable.toString(), value);
