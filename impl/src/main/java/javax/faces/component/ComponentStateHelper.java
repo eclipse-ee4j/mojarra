@@ -114,6 +114,8 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
      */
     @Override
     public Object put(Serializable key, String mapKey, Object value) {
+        initMap(key);
+
         if (MARK_CREATED.equals(mapKey)) {
             if (PropertyKeys.attributes.equals(key)) {
                 UIComponent parent = component.getParent();
@@ -127,25 +129,33 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
         Object ret = null;
         if (component.initialStateMarked()) {
             Map<String, Object> dMap = (Map<String, Object>) deltaMap.get(key);
-            if (dMap == null) {
-                dMap = new HashMap<>(5);
-                deltaMap.put(key, dMap);
-            }
             ret = dMap.put(mapKey, value);
         }
         
         Map<String, Object> map = (Map<String, Object>) get(key);
-        if (map == null) {
-            map = new HashMap<>(8);
-            defaultMap.put(key, map);
-        }
-        
+
         if (ret == null) {
             return map.put(mapKey, value);
         } 
         
         map.put(mapKey, value);
         return ret;
+    }
+
+    private void initMap(Serializable key) {
+        if (component.initialStateMarked()) {
+            Map<String, Object> dMap = (Map<String, Object>) deltaMap.get(key);
+            if (dMap == null) {
+                dMap = new HashMap<>(5);
+                deltaMap.put(key, dMap);
+            }
+        }
+
+        Map<String, Object> map = (Map<String, Object>) get(key);
+        if (map == null) {
+            map = new HashMap<>(8);
+            defaultMap.put(key, map);
+        }
     }
 
     /**
@@ -305,7 +315,12 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
                     }
                 }
                 else {
-                    // TODO - how to handle maps without entries?
+                    /*
+                     * https://github.com/eclipse-ee4j/mojarra/issues/4881
+                     * Empty lists must not be discarded during state-saving.
+                     * Plan B would be to do something like _AttachedStateWrapper used by MyFaces.
+                     */
+                    initMap(serializable);
                 }
             } else if (value instanceof List) {
                 defaultMap.remove(serializable);
