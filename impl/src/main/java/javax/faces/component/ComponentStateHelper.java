@@ -114,6 +114,8 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
      */
     @Override
     public Object put(Serializable key, String mapKey, Object value) {
+        initMap(key);
+
         if (MARK_CREATED.equals(mapKey)) {
             if (PropertyKeys.attributes.equals(key)) {
                 UIComponent parent = component.getParent();
@@ -127,25 +129,33 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
         Object ret = null;
         if (component.initialStateMarked()) {
             Map<String, Object> dMap = (Map<String, Object>) deltaMap.get(key);
-            if (dMap == null) {
-                dMap = new HashMap<>(5);
-                deltaMap.put(key, dMap);
-            }
             ret = dMap.put(mapKey, value);
         }
         
         Map<String, Object> map = (Map<String, Object>) get(key);
-        if (map == null) {
-            map = new HashMap<>(8);
-            defaultMap.put(key, map);
-        }
-        
+
         if (ret == null) {
             return map.put(mapKey, value);
         } 
         
         map.put(mapKey, value);
         return ret;
+    }
+
+    private void initMap(Serializable key) {
+        if (component.initialStateMarked()) {
+            Map<String, Object> dMap = (Map<String, Object>) deltaMap.get(key);
+            if (dMap == null) {
+                dMap = new HashMap<>(5);
+                deltaMap.put(key, dMap);
+            }
+        }
+
+        Map<String, Object> map = (Map<String, Object>) get(key);
+        if (map == null) {
+            map = new HashMap<>(8);
+            defaultMap.put(key, map);
+        }
     }
 
     /**
@@ -192,19 +202,25 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
     @Override
     public void add(Serializable key, Object value) {
 
+        initList(key);
+
         if (component.initialStateMarked()) {
-            ((List<Object>) 
-            deltaMap.computeIfAbsent(key, e -> new ArrayList<>(4)))
-                    .add(value);
+            ((List<Object>) deltaMap.get(key)).add(value);
         }
         
         List<Object> items = (List<Object>) get(key);
-        if (items == null) {
-            items = new ArrayList<>(4);
+        items.add(value);
+    }
+
+    private void initList(Serializable key) {
+        if (component.initialStateMarked()) {
+            deltaMap.computeIfAbsent(key, e -> new ArrayList<>(4));
+        }
+
+        if (get(key) == null) {
+            List<Object> items = new ArrayList<>(4);
             defaultMap.put(key, items);
         }
-        
-        items.add(value);
     }
 
     /**
@@ -291,15 +307,37 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
             }
             
             if (value instanceof Map) {
-                for (Map.Entry<String, Object> entry : ((Map<String, Object>) value).entrySet()) {
-                    put(serializable, entry.getKey(), entry.getValue());
+                Map<?,?> values = (Map<?,?>)value;
+
+                if (values.size() > 0) {
+                    for (Map.Entry<String, Object> entry : ((Map<String, Object>) value).entrySet()) {
+                        put(serializable, entry.getKey(), entry.getValue());
+                    }
+                }
+                else {
+                    /*
+                     * https://github.com/eclipse-ee4j/mojarra/issues/4881
+                     * Empty lists must not be discarded during state-saving.
+                     * Plan B would be to do something like _AttachedStateWrapper used by MyFaces.
+                     */
+                    initMap(serializable);
                 }
             } else if (value instanceof List) {
                 defaultMap.remove(serializable);
                 deltaMap.remove(serializable);
-                
+
                 List<?> values = (List<?>) value;
-                values.stream().forEach(o -> add(serializable, o));
+                if (values.size() > 0) {
+                    values.stream().forEach(o -> add(serializable, o));
+                }
+                else {
+                    /*
+                     * https://github.com/eclipse-ee4j/mojarra/issues/4881
+                     * Empty lists must not be discarded during state-saving.
+                     * Plan B would be to do something like _AttachedListStateWrapper used by MyFaces.
+                     */
+                    initList(serializable);
+                }
             } else {
                 put(serializable, value);
                 handleAttribute(serializable.toString(), value);
