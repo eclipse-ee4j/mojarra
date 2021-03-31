@@ -305,7 +305,7 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
                     }
                 }
                 else {
-                    put(serializable, null, null); // TODO - WIP
+                    // TODO - how to handle maps without entries?
                 }
             } else if (value instanceof List) {
                 defaultMap.remove(serializable);
