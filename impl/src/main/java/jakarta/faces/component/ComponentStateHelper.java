@@ -109,15 +109,30 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
      */
     @Override
     public Object put(Serializable key, String mapKey, Object value) {
+        initMap(key);
 
         Object ret = null;
+        if (component.initialStateMarked()) {
+            Map<String, Object> dMap = (Map<String, Object>) deltaMap.get(key);
+            ret = dMap.put(mapKey, value);
+        }
+
+        Map<String, Object> map = (Map<String, Object>) get(key);
+        if (ret == null) {
+            return map.put(mapKey, value);
+        }
+
+        map.put(mapKey, value);
+        return ret;
+    }
+
+    private void initMap(Serializable key) {
         if (component.initialStateMarked()) {
             Map<String, Object> dMap = (Map<String, Object>) deltaMap.get(key);
             if (dMap == null) {
                 dMap = new HashMap<>(5);
                 deltaMap.put(key, dMap);
             }
-            ret = dMap.put(mapKey, value);
         }
 
         Map<String, Object> map = (Map<String, Object>) get(key);
@@ -125,13 +140,6 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
             map = new HashMap<>(8);
             defaultMap.put(key, map);
         }
-
-        if (ret == null) {
-            return map.put(mapKey, value);
-        }
-
-        map.put(mapKey, value);
-        return ret;
     }
 
     /**
@@ -178,17 +186,25 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
     @Override
     public void add(Serializable key, Object value) {
 
+        initList(key);
+
         if (component.initialStateMarked()) {
-            ((List<Object>) deltaMap.computeIfAbsent(key, e -> new ArrayList<>(4))).add(value);
+            ((List<Object>) deltaMap.get(key)).add(value);
         }
 
         List<Object> items = (List<Object>) get(key);
-        if (items == null) {
-            items = new ArrayList<>(4);
-            defaultMap.put(key, items);
+        items.add(value);
+    }
+
+    private void initList(Serializable key) {
+        if (component.initialStateMarked()) {
+            deltaMap.computeIfAbsent(key, e -> new ArrayList<>(4));
         }
 
-        items.add(value);
+        if (get(key) == null) {
+            List<Object> items = new ArrayList<>(4);
+            defaultMap.put(key, items);
+        }
     }
 
     /**
