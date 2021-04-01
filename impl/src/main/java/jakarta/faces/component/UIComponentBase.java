@@ -1304,15 +1304,12 @@ public abstract class UIComponentBase extends UIComponent {
 
         if (newWillSucceed && attachedObject instanceof Collection) {
             Collection attachedCollection = (Collection) attachedObject;
-            List<StateHolderSaver> resultList = null;
+            List<StateHolderSaver> resultList = new ArrayList<>(attachedCollection.size() + 1);
+            resultList.add(new StateHolderSaver(context, mapOrCollectionClass));
             for (Object item : attachedCollection) {
                 if (item != null) {
                     if (item instanceof StateHolder && ((StateHolder) item).isTransient()) {
                         continue;
-                    }
-                    if (resultList == null) {
-                        resultList = new ArrayList<>(attachedCollection.size() + 1);
-                        resultList.add(new StateHolderSaver(context, mapOrCollectionClass));
                     }
                     resultList.add(new StateHolderSaver(context, item));
                 }
@@ -1320,7 +1317,8 @@ public abstract class UIComponentBase extends UIComponent {
             result = resultList;
         } else if (newWillSucceed && attachedObject instanceof Map) {
             Map<Object, Object> attachedMap = (Map<Object, Object>) attachedObject;
-            List<StateHolderSaver> resultList = null;
+            List<StateHolderSaver> resultList = new ArrayList<>(attachedMap.size() * 2 + 1);
+            resultList.add(new StateHolderSaver(context, mapOrCollectionClass));
             Object key, value;
             for (Map.Entry<Object, Object> entry : attachedMap.entrySet()) {
                 key = entry.getKey();
@@ -1330,10 +1328,6 @@ public abstract class UIComponentBase extends UIComponent {
                 value = entry.getValue();
                 if (value instanceof StateHolder && ((StateHolder) value).isTransient()) {
                     continue;
-                }
-                if (resultList == null) {
-                    resultList = new ArrayList<>(attachedMap.size() * 2 + 1);
-                    resultList.add(new StateHolderSaver(context, mapOrCollectionClass));
                 }
                 resultList.add(new StateHolderSaver(context, key));
                 resultList.add(new StateHolderSaver(context, value));
