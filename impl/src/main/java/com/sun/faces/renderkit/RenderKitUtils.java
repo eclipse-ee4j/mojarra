@@ -37,6 +37,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.faces.RIConstants;
+import com.sun.faces.config.FaceletsConfiguration;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.el.ELUtils;
 import com.sun.faces.facelets.util.DevTools;
@@ -140,6 +141,12 @@ public class RenderKitUtils {
      * Hopefully Faces X will remove the need for this.
      */
     private static final String ATTRIBUTES_THAT_ARE_SET_KEY = UIComponentBase.class.getName() + ".attributesThatAreSet";
+
+    /**
+     * UIViewRoot attribute key of a boolean value which remembers whether the view will be rendered with a HTML5 doctype.
+     */
+    private static final String VIEW_ROOT_ATTRIBUTES_DOCTYPE_KEY = RenderKitUtils.class.getName() + ".isOutputHtml5Doctype";
+
 
     protected static final Logger LOGGER = FacesLogger.RENDERKIT.getLogger();
 
@@ -1265,6 +1272,38 @@ public class RenderKitUtils {
      */
     public static String getParameterName(FacesContext context, String name) {
         return Util.getNamingContainerPrefix(context) + name;
+    }
+
+    /**
+     * Returns <code>true</code> if the view root associated with the given faces context will be rendered with a HTML5 doctype.
+     * @param context Involved faces context.
+     * @return <code>true</code> if the view root associated with the given faces context will be rendered with a HTML5 doctype.
+     */
+    public static boolean isOutputHtml5Doctype(FacesContext context) {
+        UIViewRoot viewRoot = context.getViewRoot();
+
+        if (viewRoot == null) {
+            return false;
+        }
+
+        Map<String, Object> attributes = viewRoot.getAttributes();
+        Boolean outputHtml5Doctype = (Boolean) attributes.get(VIEW_ROOT_ATTRIBUTES_DOCTYPE_KEY);
+
+        if (outputHtml5Doctype != null) {
+            return outputHtml5Doctype;
+        }
+
+        String doctype = Util.getDOCTYPEFromFacesContextAttributes(context);
+
+        if (doctype == null) {
+            WebConfiguration webConfig = WebConfiguration.getInstance(context.getExternalContext());
+            FaceletsConfiguration faceletsConfig = webConfig.getFaceletsConfiguration();
+            return faceletsConfig.isOutputHtml5Doctype(viewRoot.getViewId());
+        }
+
+        outputHtml5Doctype = "<!DOCTYPE html>".equals(doctype.trim());
+        attributes.put(VIEW_ROOT_ATTRIBUTES_DOCTYPE_KEY, outputHtml5Doctype);
+        return outputHtml5Doctype;
     }
 
     // --------------------------------------------------------- Private Methods

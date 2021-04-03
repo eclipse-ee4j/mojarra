@@ -584,13 +584,10 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
             while (!!initialnodes && initialnodes.length > 0) {
                 var scriptStr = [];
                 scriptStr = initialnodes.shift().match(findscript);
-                // check the type - skip if it not javascript type
-                var type = [];
-                type = scriptStr[1].match(findtype);
-                if ( !!type && type[1]) {
-                    if (type[1] !== "text/javascript") {
-                        continue;
-                    }
+                // check the type - skip if specified but not text/javascript
+                var type = scriptStr[1].match(findtype);
+                if (!!type && type[1] !== "text/javascript") {
+                    continue;
                 }
                 scripts.push(scriptStr);
             }
@@ -714,9 +711,9 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
             var initialnodes = str.match(findlinks);
             while (!!initialnodes && initialnodes.length > 0) {
                 var linkStr = initialnodes.shift().match(findlink);
-                // check the type - skip if it not css type
+                // check the type - skip if specified but not text/css
                 var type = linkStr[1].match(findtype);
-                if (!type || type[1] !== "text/css") {
+                if (!!type && type[1] !== "text/css") {
                     continue;
                 }
                 var href = linkStr[1].match(findhref);
@@ -727,8 +724,8 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
 
                         for (var i = 0; i < loadedLinks.length; i++) {
                             var linkNode = loadedLinks[i];
-                            
-                            if (linkNode.getAttribute("type") === "text/css") {
+                            var linkNodeType = linkNode.getAttribute("type");
+                            if (!linkNodeType || linkNodeType === "text/css") {
                                 var url = linkNode.getAttribute("href");
 
                                 if (url) {

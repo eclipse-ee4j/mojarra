@@ -18,7 +18,10 @@ package com.sun.faces.renderkit.html_basic;
 
 import java.io.IOException;
 
+import com.sun.faces.renderkit.RenderKitUtils;
+
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
 /**
@@ -28,10 +31,15 @@ import jakarta.faces.context.ResponseWriter;
  */
 public class ScriptRenderer extends ScriptStyleBaseRenderer {
 
+    public static final String DEFAULT_CONTENT_TYPE = "text/javascript";
+    
     @Override
-    protected void startInlineElement(ResponseWriter writer, UIComponent component) throws IOException {
+    protected void startInlineElement(FacesContext context, ResponseWriter writer, UIComponent component) throws IOException {
         writer.startElement("script", component);
-        writer.writeAttribute("type", "text/javascript", "type");
+
+        if (!RenderKitUtils.isOutputHtml5Doctype(context)) {
+            writer.writeAttribute("type", DEFAULT_CONTENT_TYPE, "type");
+        }
     }
 
     @Override
@@ -40,8 +48,8 @@ public class ScriptRenderer extends ScriptStyleBaseRenderer {
     }
 
     @Override
-    protected void startExternalElement(ResponseWriter writer, UIComponent component) throws IOException {
-        startInlineElement(writer, component);
+    protected void startExternalElement(FacesContext context, ResponseWriter writer, UIComponent component) throws IOException {
+        startInlineElement(context, writer, component);
     }
 
     @Override

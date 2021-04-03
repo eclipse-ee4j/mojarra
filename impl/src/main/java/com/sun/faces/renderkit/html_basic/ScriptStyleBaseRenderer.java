@@ -154,7 +154,7 @@ public abstract class ScriptStyleBaseRenderer extends Renderer implements Compon
 
         if (renderChildren) {
             ResponseWriter writer = context.getResponseWriter();
-            startInlineElement(writer, component);
+            startInlineElement(context, writer, component);
             super.encodeChildren(context, component);
             endInlineElement(writer, component);
         }
@@ -192,7 +192,7 @@ public abstract class ScriptStyleBaseRenderer extends Renderer implements Compon
         String resourceUrl = "RES_NOT_FOUND";
 
         ResponseWriter writer = context.getResponseWriter();
-        startExternalElement(writer, component);
+        startExternalElement(context, writer, component);
 
         WebConfiguration webConfig = WebConfiguration.getInstance();
 
@@ -264,7 +264,7 @@ public abstract class ScriptStyleBaseRenderer extends Renderer implements Compon
      * Allow the subclass to customize the start inline element content.
      * </p>
      */
-    protected abstract void startInlineElement(ResponseWriter writer, UIComponent component) throws IOException;
+    protected abstract void startInlineElement(FacesContext context, ResponseWriter writer, UIComponent component) throws IOException;
 
     /**
      * <p>
@@ -278,7 +278,7 @@ public abstract class ScriptStyleBaseRenderer extends Renderer implements Compon
      * Allow the subclass to customize the start external element content.
      * </p>
      */
-    protected abstract void startExternalElement(ResponseWriter writer, UIComponent component) throws IOException;
+    protected abstract void startExternalElement(FacesContext context, ResponseWriter writer, UIComponent component) throws IOException;
 
     /**
      * <p>
