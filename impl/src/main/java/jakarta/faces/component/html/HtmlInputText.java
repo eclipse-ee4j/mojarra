@@ -57,7 +57,7 @@ public class HtmlInputText extends UIInput implements ClientBehaviorHolder {
      */
     protected enum PropertyKeys {
         accesskey, alt, autocomplete, dir, disabled, label, lang, maxlength, onblur, onchange, onclick, ondblclick, onfocus, onkeydown, onkeypress, onkeyup,
-        onmousedown, onmousemove, onmouseout, onmouseover, onmouseup, onselect, readonly, role, size, style, styleClass, tabindex, title,;
+        onmousedown, onmousemove, onmouseout, onmouseover, onmouseup, onselect, readonly, role, size, style, styleClass, tabindex, title, type;
 
         String toString;
 
@@ -843,6 +843,36 @@ public class HtmlInputText extends UIInput implements ClientBehaviorHolder {
     public void setTitle(java.lang.String title) {
         getStateHelper().put(PropertyKeys.title, title);
         handleAttribute("title", title);
+    }
+
+    /**
+     * <p class="changed_added_4_0">
+     * Return the value of the <code>type</code> property.
+     * </p>
+     *
+     * @return the property value
+     * <p>
+     * Contents: Controls the data type and associated control of the element. Default value is <code>text</code>.
+     * <p>
+     * If a value is specified for which already a more specific component exist, such as
+     * <code>hidden</code>, <code>password</code>, <code>checkbox</code>, <code>radio</code>, <code>file</code>, <code>submit</code>, <code>image</code>, <code>reset</code> and <code>button</code>,
+     * and the ProjectStage is set to Development, then the renderer must add a warning message stating that the more specific component should be preferred.
+     */
+    public String getType() {
+        return (String) getStateHelper().eval(PropertyKeys.type, "text");
+
+    }
+
+    /**
+     * <p class="changed_added_4_0">
+     * Set the value of the <code>type</code> property.
+     * </p>
+     *
+     * @param type the new property value
+     */
+    public void setType(String type) {
+        getStateHelper().put(PropertyKeys.type, type);
+        handleAttribute("type", type);
     }
 
     private static final Collection<String> EVENT_NAMES = Collections.unmodifiableCollection(Arrays.asList("blur", "change", "valueChange", "click", "dblclick",
