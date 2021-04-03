@@ -6700,9 +6700,10 @@
             
             <p>Output a <code>&lt;link&gt;</code> element.  Use the result from
             calling <code>resource.getRequestPath()</code> as the value of the
-            "href" attribute, the result from calling
+            "href" attribute. Use the result from calling
             <code>resource.getContentType()</code> as the value of the "type"
-            attribute, the literal string "stylesheet" as the value of the "rel"
+            attribute<span class="changed_modified_4_0">, unless the value equals <code>text/css</code> and the current doctype is a HTML5 doctype.</span>.
+            Use the literal string "stylesheet" as the value of the "rel"
             attribute, and the literal string "screen" as the value of the "media"
             attribute.</p>
             
@@ -7128,9 +7129,9 @@
             
             <p>Render a script element.  Use the result from calling
             <code>resource.getRequestPath()</code> as the value of the "src"
-            attribue and the result from calling
+            attribue. Use the result from calling
             <code>resource.getContentType()</code> as the value of the "type"
-            attribute.</p>
+            attribute<span class="changed_modified_4_0">, unless the value equals <code>text/javascript</code> and the current doctype is a HTML5 doctype</span>.</p>
             
             </p>
             
