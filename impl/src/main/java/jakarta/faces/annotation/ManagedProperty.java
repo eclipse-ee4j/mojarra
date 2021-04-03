@@ -23,12 +23,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import jakarta.enterprise.util.Nonbinding;
+import jakarta.faces.application.Application;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Qualifier;
 
 /**
  * <p class="changed_added_2_3">
  * The presence of this annotation (along with {@code @Inject}) on a field of any type causes the value returned from
  * evaluating an expression language expression to be injected as the value of that field.
+ * <span class="changed_modified_4_0">
+ * This expression will be evaluated using {@link Application#evaluateExpressionGet(jakarta.faces.context.FacesContext, String, Class)},
+ * which in turn implies that the {@link FacesContext#getCurrentInstance()} must be available at the moment of the evaluation.
+ * </span>
  * </p>
  */
 
