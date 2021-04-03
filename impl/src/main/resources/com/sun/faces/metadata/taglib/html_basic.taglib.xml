@@ -93,7 +93,7 @@
             </description>
             <name>role</name>
             <required>false</required>
-            <type>javal.lang.String</type>
+            <type>java.lang.String</type>
         </attribute>
 
         <attribute>
