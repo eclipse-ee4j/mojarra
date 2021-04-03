@@ -4595,6 +4595,20 @@
         </attribute>
         <attribute>
             <description>
+                <![CDATA[<span class="changed_added_4_0">
+                    Controls the data type and associated control of the element.
+                    Default value is <code>text</code>.
+                    If a value is specified for which already a more specific component exist, such as
+                    <code>hidden</code>, <code>password</code>, <code>checkbox</code>, <code>radio</code>, <code>file</code>, <code>submit</code>, <code>image</code>, <code>reset</code> and <code>button</code>,
+                    and the ProjectStage is set to Development, then the renderer must add a warning message stating that the more specific component should be preferred.
+                </span>]]>
+            </description>
+            <name>type</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
                 The current value of this component.
             </description>
             <name>value</name>
