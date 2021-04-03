@@ -128,8 +128,6 @@ public class Spec790WithNamespacedViewIT {
 
         HtmlPage page = webClient.getPage(webUrl + "spec790WithNamespacedViewAjaxNavigation.xhtml");
         
-        System.out.println(page.asXml());
-        
         String namingContainerPrefix = page.getHead().getId().split("(?<=:)", 2)[0];
         HtmlForm form = (HtmlForm) page.getHtmlElementById(namingContainerPrefix + "form");
         HtmlInput formViewState = (HtmlInput) form.getInputByName(namingContainerPrefix + "jakarta.faces.ViewState");
@@ -138,9 +136,6 @@ public class Spec790WithNamespacedViewIT {
         HtmlSubmitInput button = (HtmlSubmitInput) page.getHtmlElementById(namingContainerPrefix + "form:button");
         page = button.click();
         webClient.waitForBackgroundJavaScript(60000);
-        
-        
-        System.out.println(page.asXml());
         
         namingContainerPrefix = page.getHead().getId().split("(?<=:)", 2)[0];
         HtmlForm form1 = (HtmlForm) page.getHtmlElementById(namingContainerPrefix + "form1");

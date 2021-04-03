@@ -79,13 +79,11 @@ public class Issue2948IT {
     public void testFlowLogging() throws Exception {
         // index.xhtml
         HtmlPage page = webClient.getPage(webUrl);
-        System.out.println(page.asXml());
 
         HtmlSubmitInput enterFlow = (HtmlSubmitInput) page.getElementById("enterFlow");
 
         // 01_simplest/01_simplest.xhtml
         page = enterFlow.click();
-        System.out.println(page.asXml());
 
         HtmlElement e = (HtmlElement) page.getElementById("initMessage");
         long flowInitTime = Long.valueOf(e.asText());
@@ -93,14 +91,12 @@ public class Issue2948IT {
 
         // 01_simplest/a.xhtml
         page = next.click();
-        System.out.println(page.asXml());
 
         HtmlSubmitInput returnButton = (HtmlSubmitInput) page.getElementById("return");
 
         // 01_simplest/a.xhtml
         page = returnButton.click();
 
-        System.out.println(page.asXml());
 
         // Should work, but doesn't: the action
 
