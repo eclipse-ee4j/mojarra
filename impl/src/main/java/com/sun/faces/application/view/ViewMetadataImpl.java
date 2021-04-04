@@ -134,7 +134,6 @@ public class ViewMetadataImpl extends ViewMetadata {
             throw new FacesException(ioe);
         } finally {
             context.getAttributes().remove(RIConstants.VIEWID_KEY_NAME);
-            context.setProcessingEvents(true);
             if (null != currentViewRoot) {
                 context.setViewRoot(currentViewRoot);
                 if (!currentViewMapShallowCopy.isEmpty()) {
@@ -142,7 +141,7 @@ public class ViewMetadataImpl extends ViewMetadata {
                     currentViewMapShallowCopy.clear();
                 }
             }
-            
+            context.setProcessingEvents(true);
         }
 
         return result;
