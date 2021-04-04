@@ -115,6 +115,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
      *
      * @return the value of the property
      *
+     * @since 4.0
      */
     public java.lang.String getAccept() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.accept);
@@ -128,6 +129,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
      *
      * @param accept the new property value
      *
+     * @since 4.0
      */
     public void setAccept(java.lang.String accept) {
         getStateHelper().put(PropertyKeys.accept, accept);
@@ -320,6 +322,8 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
      * multiple="multiple".
      *
      * @return the value of the property
+     *
+     * @since 4.0
      */
     public boolean isMultiple() {
         return (java.lang.Boolean) getStateHelper().eval(PropertyKeys.multiple, false);
@@ -333,6 +337,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
      *
      * @param multiple the new property value
      *
+     * @since 4.0
      */
     public void setMultiple(boolean multiple) {
         getStateHelper().put(PropertyKeys.multiple, multiple);

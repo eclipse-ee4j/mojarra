@@ -105,6 +105,8 @@ public class SelectItemGroup extends SelectItem {
      * @param selectItems Collection of {@link SelectItem} describing the items available in this group
      *
      * @throws NullPointerException if <code>label</code> or <code>selectItems</code> is <code>false</code>
+     * 
+     * @since 4.0
      */
     public SelectItemGroup(String label, String description, boolean disabled, Collection<? extends SelectItem> selectItems) {
 
@@ -158,6 +160,8 @@ public class SelectItemGroup extends SelectItem {
      * @param selectItems The new set of subordinate items as a collection.
      *
      * @throws NullPointerException if <code>selectItems</code> is <code>null</code>
+     * 
+     * @since 4.0
      */
     public void setSelectItems(Collection<? extends SelectItem> selectItems) {
 
