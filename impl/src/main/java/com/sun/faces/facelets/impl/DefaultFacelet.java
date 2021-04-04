@@ -35,9 +35,11 @@ import com.sun.faces.facelets.tag.faces.ComponentSupport;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
+import jakarta.el.ELException;
 import jakarta.el.ExpressionFactory;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.Doctype;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.Facelet;
@@ -74,7 +76,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
 
     private IdMapper mapper;
 
-    private String savedDoctype;
+    private Doctype savedDoctype;
 
     private String savedXMLDecl;
 
@@ -89,10 +91,10 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
         createTime = System.currentTimeMillis();
         refreshPeriod = this.factory.getRefreshPeriod();
 
-        String DOCTYPE = Util.getDOCTYPEFromFacesContextAttributes(FacesContext.getCurrentInstance());
-        if (null != DOCTYPE) {
+        Doctype doctype = Util.getDOCTYPEFromFacesContextAttributes(FacesContext.getCurrentInstance());
+        if (null != doctype) {
             // This will happen on the request that causes the facelets to be compiled
-            setSavedDoctype(DOCTYPE);
+            setSavedDoctype(doctype);
         }
 
         String XMLDECL = Util.getXMLDECLFromFacesContextAttributes(FacesContext.getCurrentInstance());
@@ -340,12 +342,12 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     // ---------------------------------------------------------- Helper Methods
 
     @Override
-    public String getSavedDoctype() {
+    public Doctype getSavedDoctype() {
         return savedDoctype;
     }
 
     @Override
-    public void setSavedDoctype(String savedDoctype) {
+    public void setSavedDoctype(Doctype savedDoctype) {
         this.savedDoctype = savedDoctype;
     }
 

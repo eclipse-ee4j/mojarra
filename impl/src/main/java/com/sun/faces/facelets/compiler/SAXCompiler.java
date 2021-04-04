@@ -47,6 +47,7 @@ import com.sun.faces.facelets.tag.TagAttributesImpl;
 import com.sun.faces.facelets.tag.faces.core.CoreLibrary;
 import com.sun.faces.util.Util;
 
+import jakarta.faces.component.html.HtmlDoctype;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.Location;
@@ -204,28 +205,20 @@ public final class SAXCompiler extends Compiler {
             // the PI to be written if its value is xhtml
             FaceletsConfiguration facelets = unit.getWebConfiguration().getFaceletsConfiguration();
             boolean processAsXhtml = facelets.isProcessCurrentDocumentAsFaceletsXhtml(alias);
+            boolean outputAsHtml5 = facelets.isOutputHtml5Doctype(alias);
 
-            if (inDocument && (processAsXhtml || facelets.isOutputHtml5Doctype(alias))) {
-                boolean isHtml5 = facelets.isOutputHtml5Doctype(alias);
-                // If we're in an ajax request, this is unnecessary and bugged
-                // RELEASE_PENDING - this is a hack, and should probably not be here -
-                // but the alternative is to somehow figure out how *not* to escape the "<!"
-                // within the cdata of the ajax response. Putting the PENDING in here to
-                // remind me to have rlubke take a look. But I'm stumped.
-                StringBuffer sb = new StringBuffer(64);
-                sb.append("<!DOCTYPE ").append(name);
-                if (!isHtml5 && publicId != null) {
-                    sb.append(" PUBLIC \"").append(publicId).append("\"");
-                    if (systemId != null) {
-                        sb.append(" \"").append(systemId).append("\"");
-                    }
-                } else if (!isHtml5 && systemId != null) {
-                    sb.append(" SYSTEM \"").append(systemId).append("\"");
+            if (inDocument && (processAsXhtml || outputAsHtml5)) {
+                HtmlDoctype doctype = new HtmlDoctype();
+                doctype.setRootElement(name);
+
+                if (!outputAsHtml5) {
+                    doctype.setPublic(publicId);
+                    doctype.setSystem(systemId);
                 }
-                sb.append(">\n");
+
                 // It is essential to save the doctype here because this is the
                 // *only* time we will have access to it.
-                Util.saveDOCTYPEToFacesContextAttributes(sb.toString());
+                Util.saveDOCTYPEToFacesContextAttributes(doctype);
             }
             inDocument = false;
         }

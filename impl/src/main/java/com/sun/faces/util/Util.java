@@ -82,6 +82,7 @@ import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.Doctype;
 import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UINamingContainer;
@@ -1304,22 +1305,21 @@ public class Util {
 
     private static final String FACES_CONTEXT_ATTRIBUTES_DOCTYPE_KEY = Util.class.getName() + "_FACES_CONTEXT_ATTRS_DOCTYPE_KEY";
 
-    public static void saveDOCTYPEToFacesContextAttributes(String DOCTYPE) {
+    public static void saveDOCTYPEToFacesContextAttributes(Doctype doctype) {
         FacesContext context = FacesContext.getCurrentInstance();
         if (null == context) {
             return;
         }
         Map<Object, Object> attrs = context.getAttributes();
-        attrs.put(FACES_CONTEXT_ATTRIBUTES_DOCTYPE_KEY, DOCTYPE);
-
+        attrs.put(FACES_CONTEXT_ATTRIBUTES_DOCTYPE_KEY, doctype);
     }
 
-    public static String getDOCTYPEFromFacesContextAttributes(FacesContext context) {
+    public static Doctype getDOCTYPEFromFacesContextAttributes(FacesContext context) {
         if (null == context) {
             return null;
         }
         Map<Object, Object> attrs = context.getAttributes();
-        return (String) attrs.get(FACES_CONTEXT_ATTRIBUTES_DOCTYPE_KEY);
+        return (Doctype) attrs.get(FACES_CONTEXT_ATTRIBUTES_DOCTYPE_KEY);
     }
 
     private static final String FACES_CONTEXT_ATTRIBUTES_XMLDECL_KEY = Util.class.getName() + "_FACES_CONTEXT_ATTRS_XMLDECL_KEY";
