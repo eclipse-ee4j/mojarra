@@ -73,11 +73,6 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
      * Stores the skip hint.
      */
     private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
-    
-    /** 
-     * Stores the skip strict flag
-     */
-    private static final String SKIP_ITERATION_STRICT = "com.sun.faces.SKIP_ITERATION_STRICT";
 
     /**
      * Constructor.
@@ -110,9 +105,8 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
 
         try {
             context.getAttributes().put(SKIP_ITERATION_HINT, true);
-            context.getAttributes().put(SKIP_ITERATION_STRICT, true);
-            Set<VisitHint> hints = EnumSet.of(SKIP_ITERATION);
-            
+            Set<VisitHint> hints = EnumSet.of(SKIP_ITERATION, VisitHint.SKIP_ITERATION_STRICT);
+
             VisitContext visitContext = VisitContext.createVisitContext(context, null, hints);
             subTree.visitTree(visitContext, new VisitCallback() {
 
@@ -152,7 +146,6 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
             });
         } finally {
             context.getAttributes().remove(SKIP_ITERATION_HINT);
-            context.getAttributes().remove(SKIP_ITERATION_STRICT);
         }
 
         if (!found.isEmpty()) {
@@ -364,8 +357,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
                 stateContext.setTrackViewModifications(false);
 
                 context.getAttributes().put(SKIP_ITERATION_HINT, true);
-                context.getAttributes().put(SKIP_ITERATION_STRICT, true);
-                Set<VisitHint> hints = EnumSet.of(VisitHint.SKIP_ITERATION, VisitHint.EXECUTE_LIFECYCLE);
+                Set<VisitHint> hints = EnumSet.of(VisitHint.SKIP_ITERATION, VisitHint.EXECUTE_LIFECYCLE, VisitHint.SKIP_ITERATION_STRICT);
                 VisitContext visitContext = VisitContext.createVisitContext(context, null, hints);
                 viewRoot.visitTree(visitContext, new VisitCallback() {
 
@@ -400,7 +392,6 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
             } finally {
                 stateContext.setTrackViewModifications(true);
                 context.getAttributes().remove(SKIP_ITERATION_HINT);
-                context.getAttributes().remove(SKIP_ITERATION_STRICT);
             }
         } else {
             viewRoot = null;
@@ -469,8 +460,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
         final StateContext stateContext = StateContext.getStateContext(context);
 
         context.getAttributes().put(SKIP_ITERATION_HINT, true);
-        context.getAttributes().put(SKIP_ITERATION_STRICT,true);
-        Set<VisitHint> hints = EnumSet.of(VisitHint.SKIP_ITERATION);
+        Set<VisitHint> hints = EnumSet.of(VisitHint.SKIP_ITERATION, VisitHint.SKIP_ITERATION_STRICT);
         VisitContext visitContext = VisitContext.createVisitContext(context, null, hints);
         final FacesContext finalContext = context;
 
@@ -499,7 +489,6 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
             });
         } finally {
             context.getAttributes().remove(SKIP_ITERATION_HINT);
-            context.getAttributes().remove(SKIP_ITERATION_STRICT);
         }
 
         saveDynamicActions(context, stateContext, stateMap);

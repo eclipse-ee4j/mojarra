@@ -731,8 +731,8 @@ public class UIRepeat extends UINamingContainer {
 
     private boolean requiresRowIteration(VisitContext ctx) {
         boolean shouldIterate = !ctx.getHints().contains(VisitHint.SKIP_ITERATION); 
-        if (!shouldIterate && !ctx.getFacesContext().getAttributes().containsKey("com.sun.faces.SKIP_ITERATION_STRICT")) {
-        	FacesContext faces = ctx.getFacesContext();  
+        if (!shouldIterate && !ctx.getHints().contains(VisitHint.SKIP_ITERATION_STRICT)) {
+            FacesContext faces = ctx.getFacesContext();  
             String sourceId = BEHAVIOR_SOURCE_PARAM.getValue(faces);  
             boolean containsSource = sourceId != null ? sourceId.startsWith(super.getClientId(faces) + getSeparatorChar(faces)): false;  
             return containsSource;
