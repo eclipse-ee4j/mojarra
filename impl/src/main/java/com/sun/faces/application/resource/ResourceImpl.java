@@ -93,6 +93,12 @@ public class ResourceImpl extends Resource implements Externalizable {
      */
     private long maxAge;
 
+    /**
+     * The URL of this {@link ResourceImpl} object is valid exactly as long as this {@link ResourceImpl} object itself is valid.
+     * Therefore, resolve the URL only once and re-use the already resolved URL value for subsequent calls to {@link ResourceImpl#getURL()}.
+     */
+    private URL resolvedUrl = null;
+
     // ------------------------------------------------------------ Constructors
 
     /**
@@ -151,7 +157,17 @@ public class ResourceImpl extends Resource implements Externalizable {
      */
     @Override
     public URL getURL() {
-        return resourceInfo.getHelper().getURL(resourceInfo, FacesContext.getCurrentInstance());
+        if (resolvedUrl != null) {
+            // fast path - re-use the already resolved url
+            return resolvedUrl;
+        }
+
+        URL url = resourceInfo.getHelper().getURL(resourceInfo, FacesContext.getCurrentInstance());
+
+        // remember this url for subsequent calls to this method
+        resolvedUrl = url;
+
+        return url;
     }
 
     /**
