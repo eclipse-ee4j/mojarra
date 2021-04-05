@@ -30,10 +30,7 @@ import static com.sun.faces.util.Util.getWebXmlVersion;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import com.sun.faces.application.ApplicationAssociate;
@@ -70,6 +67,31 @@ import jakarta.servlet.jsp.JspFactory;
  * </p>
  */
 public class ELUtils {
+
+    /**
+     * Private cache for storing evaluation results for composite components checks.
+     */
+    private static final HashMap<String, Boolean> compositeComponentEvaluationCache = new HashMap<String, Boolean>();
+
+    /**
+     * The maximum size of the <code>compositeComponentEvaluationCache</code>.
+     */
+    private static final int compositeComponentEvaluationCacheMaxSize = 1000;
+
+    /**
+     * FIFO queue, holding access information about the <code>compositeComponentEvaluationCache</code>.
+     */
+    private static final LinkedList<String> evaluationCacheFifoQueue = new LinkedList<String>();
+
+    /**
+     * Class member, indicating a <I>positive</I> evaluation result.
+     */
+    private static final Boolean IS_COMPOSITE_COMPONENT = Boolean.TRUE;
+
+    /**
+     * Class member, indicating a <I>negative</I> evaluation result.
+     */
+    private static final Boolean IS_NOT_A_COMPOSITE_COMPONENT = Boolean.FALSE;
 
     /**
      * Helps to determine if a EL expression represents a composite component EL expression.
@@ -161,9 +183,23 @@ public class ELUtils {
     // ---------------------------------------------------------- Public Methods
 
     public static boolean isCompositeComponentExpr(String expression) {
+        Boolean evaluationResult = compositeComponentEvaluationCache.get(expression);
+
+        if (evaluationResult != null) {
+            // fast path - this expression has already been evaluated, therefore return its evaluation result
+            return evaluationResult.booleanValue();
+        }
+
         // TODO we should be trying to re-use the Matcher by calling
         // m.reset(expression);
-        return COMPOSITE_COMPONENT_EXPRESSION.matcher(expression).find();
+        boolean returnValue = COMPOSITE_COMPONENT_EXPRESSION
+                .matcher(expression)
+                .find();
+
+        // remember the evaluation result for this expression
+        rememberEvaluationResult(expression, returnValue);
+
+        return returnValue;
     }
 
     public static boolean isCompositeComponentMethodExprLookup(String expression) {
@@ -524,6 +560,37 @@ public class ELUtils {
     }
 
     // --------------------------------------------------------- Private Methods
+
+    /**
+     * Adds the specified <code>expression</code> with its evaluation result <code>isCompositeComponent</code> to the <code>compositeComponentEvaluationCache</code>,
+     * taking into account the maximum cache size.
+     */
+    private static void rememberEvaluationResult(String expression, boolean isCompositeComponent) {
+        // validity check
+        if (compositeComponentEvaluationCacheMaxSize <= 0) {
+            return;
+        }
+
+        synchronized (compositeComponentEvaluationCache) {
+            if (compositeComponentEvaluationCache.size() >= compositeComponentEvaluationCacheMaxSize) {
+                // obtain the oldest cached element
+                String oldestExpression = evaluationCacheFifoQueue.removeFirst();
+
+                // remove the mapping for this element
+                compositeComponentEvaluationCache.remove(oldestExpression);
+            }
+
+            // add the mapping to the cache
+            if (isCompositeComponent) {
+                compositeComponentEvaluationCache.put(expression, IS_COMPOSITE_COMPONENT);
+            } else {
+                compositeComponentEvaluationCache.put(expression, IS_NOT_A_COMPOSITE_COMPONENT);
+            }
+
+            // remember the sequence of the hash map "put" operations
+            evaluationCacheFifoQueue.add(expression);
+        }
+    }
 
     /**
      * <p>
