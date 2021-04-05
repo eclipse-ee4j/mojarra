@@ -26,9 +26,15 @@
     <body>
         <h1>test</h1>
         <f:view>
+            <input type="button" id="expire" value="Click me first to expire the session" onclick="
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', '${pageContext.request.contextPath}/expire?' + new Date().getTime());
+                xhr.send();
+            " />
+
             <h:form id="form">
-                Client-size State Saving: <h:outputText value="#{facesContext.application.stateManager.isSavingStateInClient(facesContext)}"/> <br/>
-                <h:commandButton id="submit" value="Click me in about 1 minute"/>
+                Client-side State Saving: <h:outputText value="#{facesContext.application.stateManager.isSavingStateInClient(facesContext)}"/> <br/>
+                <h:commandButton id="submit" value="Then click me"/>
             </h:form>
         </f:view>
         <hr>
