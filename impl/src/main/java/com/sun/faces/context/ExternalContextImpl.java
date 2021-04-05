@@ -16,23 +16,12 @@
 
 package com.sun.faces.context;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.context.flash.ELFlash;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.MessageUtils;
-
 import static com.sun.faces.RIConstants.FACES_PREFIX;
 import static com.sun.faces.RIConstants.PUSH_RESOURCE_URLS_KEY_NAME;
 import static com.sun.faces.context.ContextParam.SendPoweredByHeader;
 import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.Util.isEmpty;
-
-import com.sun.faces.util.TypedCollections;
-import com.sun.faces.util.Util;
-import java.util.HashSet;
-
 import static java.lang.Boolean.FALSE;
 
 import java.io.IOException;
@@ -45,6 +34,7 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -52,6 +42,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
 import javax.faces.application.ProjectStage;
@@ -72,7 +63,14 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.swing.text.Utilities;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.context.flash.ELFlash;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.MessageUtils;
+import com.sun.faces.util.TypedCollections;
+import com.sun.faces.util.Util;
 
 /**
  * <p>This implementation of {@link ExternalContext} is specific to the
@@ -81,7 +79,7 @@ import javax.swing.text.Utilities;
 public class ExternalContextImpl extends ExternalContext {
 
     private static final Logger LOGGER = FacesLogger.CONTEXT.getLogger();
-    
+
     private static final String PUSH_SUPPORTED_ATTRIBUTE_NAME = FACES_PREFIX + "ExternalContextImpl.PUSH_SUPPORTED";
 
     private ServletContext servletContext = null;
@@ -101,7 +99,7 @@ public class ExternalContextImpl extends ExternalContext {
     private Map<String,String> fallbackContentTypeMap = null;
     private Flash flash;
     private boolean distributable;
-   
+
 
     private enum ALLOWABLE_COOKIE_PROPERTIES {
         domain,
@@ -117,7 +115,7 @@ public class ExternalContextImpl extends ExternalContext {
 
     // ------------------------------------------------------------ Constructors
 
-    
+
     public ExternalContextImpl(ServletContext sc,
                                ServletRequest request,
                                ServletResponse response) {
@@ -129,7 +127,7 @@ public class ExternalContextImpl extends ExternalContext {
 
         // Save references to our context, request, and response
         this.servletContext = sc;
-        this.request = request;        
+        this.request = request;
         this.response = response;
 
         boolean enabled = ContextParamUtils.getValue(servletContext, SendPoweredByHeader, Boolean.class);
@@ -143,7 +141,7 @@ public class ExternalContextImpl extends ExternalContext {
         fallbackContentTypeMap.put("js", "text/javascript");
         fallbackContentTypeMap.put("css", "text/css");
         fallbackContentTypeMap.put("properties", "text/plain");
-        
+
     }
 
     // -------------------------------------------- Methods from ExternalContext
@@ -161,12 +159,12 @@ public class ExternalContextImpl extends ExternalContext {
     public String getSessionId(boolean create) {
         HttpSession session = null;
         String id = null;
-        
+
         session = (HttpSession)getSession(create);
         if (session != null) {
             id = session.getId();
         }
-        
+
         return id;
     }
 
@@ -193,7 +191,7 @@ public class ExternalContextImpl extends ExternalContext {
             // for servlet 2.4 support
             return servletContext.getServletContextName();
         }
-        
+
     }
 
 
@@ -204,7 +202,7 @@ public class ExternalContextImpl extends ExternalContext {
     public Object getRequest() {
         return this.request;
     }
-    
+
     /**
      * @see ExternalContext#setRequest(Object)
      */
@@ -284,7 +282,7 @@ public class ExternalContextImpl extends ExternalContext {
     public String getApplicationContextPath() {
         return this.servletContext.getContextPath();
     }
-    
+
     /**
      * @see javax.faces.context.ExternalContext#getSessionMap()
      */
@@ -323,7 +321,7 @@ public class ExternalContextImpl extends ExternalContext {
     @Override
     public Map<String,String> getRequestHeaderMap() {
         if (null == requestHeaderMap) {
-            requestHeaderMap = 
+            requestHeaderMap =
                 Collections.unmodifiableMap(
                     new RequestHeaderMap((HttpServletRequest) request));
         }
@@ -337,7 +335,7 @@ public class ExternalContextImpl extends ExternalContext {
     @Override
     public Map<String,String[]> getRequestHeaderValuesMap() {
         if (null == requestHeaderValuesMap) {
-            requestHeaderValuesMap = 
+            requestHeaderValuesMap =
                 Collections.unmodifiableMap(
                     new RequestHeaderValuesMap((HttpServletRequest) request));
         }
@@ -365,7 +363,7 @@ public class ExternalContextImpl extends ExternalContext {
     @Override
     public Map<String,String> getInitParameterMap() {
         if (null == initParameterMap) {
-            initParameterMap = 
+            initParameterMap =
                 Collections.unmodifiableMap(
                     new InitParameterMap(servletContext));
         }
@@ -379,7 +377,7 @@ public class ExternalContextImpl extends ExternalContext {
     @Override
     public Map<String,String> getRequestParameterMap() {
         if (null == requestParameterMap) {
-            requestParameterMap = 
+            requestParameterMap =
                 Collections.unmodifiableMap(
                     new RequestParameterMap(request));
         }
@@ -393,7 +391,7 @@ public class ExternalContextImpl extends ExternalContext {
     @Override
     public Map<String,String[]> getRequestParameterValuesMap() {
         if (null == requestParameterValuesMap) {
-            requestParameterValuesMap = 
+            requestParameterValuesMap =
                 Collections.unmodifiableMap(
                     new RequestParameterValuesMap(request));
         }
@@ -611,14 +609,14 @@ public class ExternalContextImpl extends ExternalContext {
                     builder.append(UrlBuilder.PARAMETER_PAIR_SEPARATOR);
                 }
                 builder.append(ResponseStateManager.CLIENT_WINDOW_URL_PARAM).append(UrlBuilder.PARAMETER_NAME_VALUE_SEPARATOR).append(clientWindowId);
-    
+
                 Map<String, String> additionalParams = cw.getQueryURLParameters(context);
                 if (null != additionalParams) {
                     for (Map.Entry<String, String> cur : additionalParams.entrySet()) {
                         builder.append(UrlBuilder.PARAMETER_NAME_VALUE_SEPARATOR);
                         builder.append(cur.getKey()).
                                 append(UrlBuilder.PARAMETER_NAME_VALUE_SEPARATOR).
-                                append(cur.getValue());                        
+                                append(cur.getValue());
                     }
                 }
                 url = builder.toString();
@@ -642,10 +640,10 @@ public class ExternalContextImpl extends ExternalContext {
 
         String result = ((HttpServletResponse) response).encodeURL(url);
         pushIfPossibleAndNecessary(result);
-        
+
         return result;
     }
-    
+
 
     /**
      * @see ExternalContext#encodeWebsocketURL(String)
@@ -714,7 +712,7 @@ public class ExternalContextImpl extends ExternalContext {
         doLastPhaseActions(ctx, true);
 
         if (ctx.getPartialViewContext().isPartialRequest()) {
-            if (getSession(true) instanceof HttpSession &&
+            if (response instanceof HttpServletResponse &&
                 ctx.getResponseComplete()) {
                 throw new IllegalStateException();
             }
@@ -732,11 +730,13 @@ public class ExternalContextImpl extends ExternalContext {
             pwriter.startDocument();
             pwriter.redirect(requestURI);
             pwriter.endDocument();
-        } else {
+        } else if (response instanceof HttpServletResponse) {
             ((HttpServletResponse) response).sendRedirect(requestURI);
+        } else {
+            throw new IllegalStateException();
         }
         ctx.responseComplete();
-        
+
     }
 
 
@@ -791,16 +791,16 @@ public class ExternalContextImpl extends ExternalContext {
         if (mimeType == null) {
             mimeType = getFallbackMimeType(file);
         }
-        
+
         FacesContext ctx = FacesContext.getCurrentInstance();
-        if (mimeType == null && LOGGER.isLoggable(Level.WARNING) 
+        if (mimeType == null && LOGGER.isLoggable(Level.WARNING)
             && ctx.isProjectStage(ProjectStage.Development) ) {
             LOGGER.log(Level.WARNING,
                        "jsf.externalcontext.no.mime.type.found",
                        new Object[] { file });
         }
         return mimeType;
-        
+
     }
 
 
@@ -1014,7 +1014,7 @@ public class ExternalContextImpl extends ExternalContext {
         ((HttpServletResponse) response).setStatus(statusCode);
     }
 
-    
+
     /**
      * @see javax.faces.context.ExternalContext#responseFlushBuffer()
      */
@@ -1084,7 +1084,7 @@ public class ExternalContextImpl extends ExternalContext {
             encodingFromContext = (String) context.getViewRoot().getAttributes().
                     get(RIConstants.FACELETS_ENCODING_KEY);
         }
-        
+
         String currentResponseEncoding = (null != encodingFromContext) ? encodingFromContext : getResponseCharacterEncoding();
 
         UrlBuilder builder = new UrlBuilder(baseUrl, currentResponseEncoding);
@@ -1103,13 +1103,13 @@ public class ExternalContextImpl extends ExternalContext {
             encodingFromContext = (String) context.getViewRoot().getAttributes().
                     get(RIConstants.FACELETS_ENCODING_KEY);
         }
-        
+
         String currentResponseEncoding = (null != encodingFromContext) ? encodingFromContext : getResponseCharacterEncoding();
 
         UrlBuilder builder = new UrlBuilder(baseUrl, currentResponseEncoding);
         builder.addParameters(parameters);
         return builder.createUrl();
-        
+
     }
 
     /**
@@ -1129,9 +1129,9 @@ public class ExternalContextImpl extends ExternalContext {
             encodingFromContext = (String) context.getViewRoot().getAttributes().
                     get(RIConstants.FACELETS_ENCODING_KEY);
         }
-        
+
         String currentResponseEncoding = (null != encodingFromContext) ? encodingFromContext : getResponseCharacterEncoding();
-        
+
         UrlBuilder builder = new UrlBuilder(url, currentResponseEncoding);
         return ((HttpServletResponse) response).encodeURL(builder.createUrl());
     }
@@ -1144,20 +1144,20 @@ public class ExternalContextImpl extends ExternalContext {
         }
         return flash;
     }
-    
+
     private void pushIfPossibleAndNecessary(String result) {
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext extContext = context.getExternalContext();
         Map<Object, Object> attrs = context.getAttributes();
         Object val;
-        
+
         // 1. check the request cache
         if (null != (val = attrs.get(PUSH_SUPPORTED_ATTRIBUTE_NAME))) {
             if (!(Boolean) val) {
                 return;
             }
         }
-        
+
         // 2. Not in the request cache, see if PushBuilder is available in the container
         ApplicationAssociate associate = ApplicationAssociate.getInstance(extContext);
         if (!associate.isPushBuilderSupported()) {
@@ -1165,20 +1165,20 @@ public class ExternalContextImpl extends ExternalContext {
             attrs.putIfAbsent(PUSH_SUPPORTED_ATTRIBUTE_NAME, FALSE);
             return;
         }
-        
+
         // 3. Don't bother trying to push if we've already pushed this URL for this request
         @SuppressWarnings("unchecked")
         Set<String> resourceUrls = (Set<String>)
              FacesContext.getCurrentInstance()
                          .getAttributes()
                          .computeIfAbsent(PUSH_RESOURCE_URLS_KEY_NAME, k -> new HashSet<>());
-        
+
         if (resourceUrls.contains(result)) {
             return;
         }
         resourceUrls.add(result);
-        
-        // 4. At this point we know 
+
+        // 4. At this point we know
         // a) the container has PushBuilder
         // b) we haven't pushed this URL for this request before
         Object pbObj = getPushBuilder(context, extContext);
@@ -1186,39 +1186,39 @@ public class ExternalContextImpl extends ExternalContext {
             // and now we also know c) there was no If-Modified-Since header
             ((javax.servlet.http.PushBuilder)pbObj).path(result).push();
         }
-        
+
     }
-    
+
     private Object getPushBuilder(FacesContext context, ExternalContext extContext) {
         javax.servlet.http.PushBuilder result = null;
-        
+
         Object requestObj = extContext.getRequest();
         if (requestObj instanceof HttpServletRequest) {
             Map<Object, Object> attrs = context.getAttributes();
             HttpServletRequest hreq = (HttpServletRequest) requestObj;
             Object val;
             boolean isPushSupported = false;
-            
+
             // Try to pull value from the request cache
             if ((val = attrs.get(PUSH_SUPPORTED_ATTRIBUTE_NAME)) != null) {
                 isPushSupported = (Boolean) val;
             } else {
-                // If the request has an If-Modified-Since header, do not push, since it's 
+                // If the request has an If-Modified-Since header, do not push, since it's
                 // possible the resources are already in the cache.
                 isPushSupported = isEmpty(extContext.getRequestHeaderMap().get("If-Modified-Since"));
             }
-            
+
             if (isPushSupported) {
                 isPushSupported = (result = hreq.newPushBuilder()) != null;
             }
             attrs.putIfAbsent(PUSH_SUPPORTED_ATTRIBUTE_NAME, isPushSupported);
         }
-        
+
         return result;
     }
 
 
-    private void doLastPhaseActions(FacesContext context, 
+    private void doLastPhaseActions(FacesContext context,
             boolean outgoingResponseIsRedirect) {
         Map<Object, Object> attrs = context.getAttributes();
         try {
