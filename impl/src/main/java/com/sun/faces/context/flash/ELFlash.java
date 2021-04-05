@@ -372,8 +372,9 @@ public class ELFlash extends Flash {
         }
         if (distributable && context.getExternalContext().getSession(false) != null) {
             SessionHelper sessionHelper = SessionHelper.getInstance(context.getExternalContext());
-            assert null != sessionHelper;
-            sessionHelper.update(context.getExternalContext(), this);
+            if (sessionHelper != null) {
+                sessionHelper.update(context.getExternalContext(), this);
+            }
         }
 
         if (LOGGER.isLoggable(Level.FINEST)) {

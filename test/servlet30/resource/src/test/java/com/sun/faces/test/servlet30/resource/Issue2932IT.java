@@ -45,6 +45,6 @@ public class Issue2932IT {
         assertEquals(200, page.getWebResponse().getStatusCode());
         assertNotNull(page.getWebResponse().getResponseHeaderValue("Last-Modified"));
         assertNotNull(page.getWebResponse().getResponseHeaderValue("ETag"));
-        assertNotNull(page.getWebResponse().getResponseHeaderValue("Expires"));
+        assertNotNull(page.getWebResponse().getResponseHeaderValue("Cache-Control"));
     }
 }

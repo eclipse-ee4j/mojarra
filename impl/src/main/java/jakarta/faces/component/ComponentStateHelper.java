@@ -16,6 +16,7 @@
 
 package jakarta.faces.component;
 
+import static com.sun.faces.facelets.tag.jsf.ComponentSupport.MARK_CREATED;
 import static com.sun.faces.util.Util.coalesce;
 import static com.sun.faces.util.Util.isEmpty;
 import static jakarta.faces.component.UIComponentBase.restoreAttachedState;
@@ -29,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import jakarta.el.ValueExpression;
+import jakarta.faces.component.UIComponent.PropertyKeys;
 import jakarta.faces.context.FacesContext;
 
 /**
@@ -110,6 +112,16 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
     @Override
     public Object put(Serializable key, String mapKey, Object value) {
         initMap(key);
+
+        if (MARK_CREATED.equals(mapKey)) {
+            if (PropertyKeys.attributes.equals(key)) {
+                UIComponent parent = component.getParent();
+                if (parent != null) {
+                    // remember this component by its mark id
+                    parent.addToDescendantMarkIdCache(component);
+                }
+            }
+        }
 
         Object ret = null;
         if (component.initialStateMarked()) {
