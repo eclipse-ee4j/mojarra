@@ -204,16 +204,11 @@ public class ResourceImpl extends Resource implements Externalizable {
                 responseHeaders = new HashMap<>(6, 1.0f);
             }
 
-            long expiresTime;
             if (FacesContext.getCurrentInstance().isProjectStage(Development)) {
-                expiresTime = new Date().getTime();
+                responseHeaders.put("Cache-Control", "no-store, must-revalidate");
             } else {
-                expiresTime = new Date().getTime() + maxAge;
+                responseHeaders.put("Cache-Control", "max-age=" + (maxAge/1000));
             }
-            
-            SimpleDateFormat format = new SimpleDateFormat(RFC1123_DATE_PATTERN, US);
-            format.setTimeZone(GMT);
-            responseHeaders.put("Expires", format.format(new Date(expiresTime)));
 
             URL url = getURL();
             InputStream in = null;
@@ -227,6 +222,8 @@ public class ResourceImpl extends Resource implements Externalizable {
                 if (lastModified == 0) {
                     lastModified = initialTime;
                 }
+                SimpleDateFormat format = new SimpleDateFormat(RFC1123_DATE_PATTERN, US);
+                format.setTimeZone(GMT);
                 responseHeaders.put("Last-Modified", format.format(new Date(lastModified)));
                 if (lastModified != 0 && contentLength != -1) {
                     responseHeaders.put("ETag", "W/\""
