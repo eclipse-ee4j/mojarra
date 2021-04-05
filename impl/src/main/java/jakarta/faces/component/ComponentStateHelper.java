@@ -16,6 +16,7 @@
 
 package jakarta.faces.component;
 
+import static com.sun.faces.facelets.tag.faces.ComponentSupport.MARK_CREATED;
 import static com.sun.faces.util.Util.coalesce;
 import static com.sun.faces.util.Util.isEmpty;
 import static jakarta.faces.component.UIComponentBase.restoreAttachedState;
@@ -27,10 +28,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import jakarta.el.ValueExpression;
+import jakarta.faces.component.UIComponent.PropertyKeys;
 import jakarta.faces.context.FacesContext;
-import java.util.function.Supplier;
 
 /**
  * A base implementation for maps which implement the PartialStateHolder and TransientStateHolder interfaces.
@@ -112,6 +114,16 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
     public Object put(Serializable key, String mapKey, Object value) {
         initMap(key);
 
+        if (MARK_CREATED.equals(mapKey)) {
+            if (PropertyKeys.attributes.equals(key)) {
+                UIComponent parent = component.getParent();
+                if (parent != null) {
+                    // remember this component by its mark id
+                    parent.addToDescendantMarkIdCache(component);
+                }
+            }
+        }
+
         Object ret = null;
         if (component.initialStateMarked()) {
             Map<String, Object> dMap = (Map<String, Object>) deltaMap.get(key);
@@ -180,7 +192,7 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
 
         return coalesce(retVal, defaultValue);
     }
-    
+
     /**
      * @see StateHelper#eval(java.io.Serializable, Supplier)
      */
