@@ -41,6 +41,9 @@
             </p>
             <p>
                 <h:outputText value="This text has a listener attached to it that deletes the button with id cbutton">
+                <f:facet name="delete">
+                	
+                </f:facet>
                     <f:event type="preRenderComponent" listener="#{removeComponentBean.removePreRenderComponent}"/>
                 </h:outputText>
             </p>

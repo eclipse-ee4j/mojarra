@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<html lang="en"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:issue4664="http://java.sun.com/jsf/issues/issue4664">
+
+
+
+    <f:view>
+        <h:head>
+            <title>Issue #4664</title>
+            <h2>when removing facet without adding it back to the component tree. remove dynamic action will be reapplied on submit.</h2>
+        </h:head>
+        <h:body>
+            <issue4664:issue4664Component id="issue">
+            	<f:facet name="remove">
+            		<h:outputText value="text from facet" />
+            	</f:facet>
+            </issue4664:issue4664Component>
+            <f:event type="preRenderView" listener="#{issue4664Bean.removeFacet}"/>
+            <h:form id="form">
+                <h:commandButton id="submit" value="submit"/>
+            </h:form>
+        </h:body>
+    </f:view>
+</html>
