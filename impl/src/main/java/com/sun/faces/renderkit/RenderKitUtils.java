@@ -1288,6 +1288,10 @@ public class RenderKitUtils {
 
         Doctype doctype = viewRoot.getDoctype();
 
+        if (doctype == null) {
+            return false;
+        }
+
         return "html".equalsIgnoreCase(doctype.getRootElement())
             && doctype.getPublic() == null
             && doctype.getSystem() == null;
