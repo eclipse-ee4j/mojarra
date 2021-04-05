@@ -706,9 +706,6 @@ public class UIRepeat extends UINamingContainer {
             popComponentFromEL(facesContext);
             if (visitRows) {
                 setIndex(facesContext, oldRowIndex);
-                if (oldRowIndex == -1) {
-                    resetClientIds(this);
-                }
             }
             clearValue(facesContext);
         }
@@ -731,7 +728,7 @@ public class UIRepeat extends UINamingContainer {
 
     private boolean requiresRowIteration(VisitContext ctx) {
         boolean shouldIterate = !ctx.getHints().contains(VisitHint.SKIP_ITERATION); 
-        if (!shouldIterate && !ctx.getHints().contains(VisitHint.SKIP_ITERATION_STRICT)) {
+        if (!shouldIterate) {
             FacesContext faces = ctx.getFacesContext();  
             String sourceId = BEHAVIOR_SOURCE_PARAM.getValue(faces);  
             boolean containsSource = sourceId != null ? sourceId.startsWith(super.getClientId(faces) + getSeparatorChar(faces)): false;  
