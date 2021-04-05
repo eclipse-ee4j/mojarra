@@ -24,6 +24,8 @@ import java.util.Map;
 
 import com.sun.faces.facelets.util.DevTools;
 import com.sun.faces.facelets.util.FastWriter;
+import com.sun.faces.renderkit.RenderKitUtils;
+import com.sun.faces.renderkit.html_basic.ScriptRenderer;
 
 import jakarta.faces.component.UIComponentBase;
 import jakarta.faces.context.FacesContext;
@@ -102,8 +104,11 @@ public final class UIDebug extends UIComponentBase {
             writer.startElement("span", this);
             writer.writeAttribute("id", getClientId(facesContext), "id");
             writer.startElement("script", this);
-            writer.writeAttribute("language", "javascript", "language");
-            writer.writeAttribute("type", "text/javascript", "type");
+
+            if (!RenderKitUtils.isOutputHtml5Doctype(facesContext)) {
+                writer.writeAttribute("type", ScriptRenderer.DEFAULT_CONTENT_TYPE, "type");
+            }
+
             writer.writeText(sb.toString(), this, null);
             writer.endElement("script");
             writer.endElement("span");

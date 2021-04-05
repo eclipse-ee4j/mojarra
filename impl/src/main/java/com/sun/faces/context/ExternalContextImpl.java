@@ -46,6 +46,8 @@ import java.util.logging.Logger;
 import com.sun.faces.RIConstants;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.context.flash.ELFlash;
+import com.sun.faces.renderkit.html_basic.ScriptRenderer;
+import com.sun.faces.renderkit.html_basic.StylesheetRenderer;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.TypedCollections;
@@ -128,8 +130,8 @@ public class ExternalContextImpl extends ExternalContext {
         distributable = ContextParamUtils.getValue(servletContext, ContextParam.EnableDistributable, Boolean.class);
 
         fallbackContentTypeMap = new HashMap<>(3, 1.0f);
-        fallbackContentTypeMap.put("js", "text/javascript");
-        fallbackContentTypeMap.put("css", "text/css");
+        fallbackContentTypeMap.put("js", ScriptRenderer.DEFAULT_CONTENT_TYPE);
+        fallbackContentTypeMap.put("css", StylesheetRenderer.DEFAULT_CONTENT_TYPE);
         fallbackContentTypeMap.put("properties", "text/plain");
 
     }
@@ -1029,7 +1031,7 @@ public class ExternalContextImpl extends ExternalContext {
         }
         return flash;
     }
-    
+
     @Override
     public void release() {
         servletContext = null;

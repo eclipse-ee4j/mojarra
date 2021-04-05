@@ -18,7 +18,10 @@ package com.sun.faces.renderkit.html_basic;
 
 import java.io.IOException;
 
+import com.sun.faces.renderkit.RenderKitUtils;
+
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
 /**
@@ -28,10 +31,18 @@ import jakarta.faces.context.ResponseWriter;
  */
 public class StylesheetRenderer extends ScriptStyleBaseRenderer {
 
+    public static final String DEFAULT_CONTENT_TYPE = "text/css";
+
     @Override
-    protected void startInlineElement(ResponseWriter writer, UIComponent component) throws IOException {
+    protected void startInlineElement(FacesContext context, ResponseWriter writer, UIComponent component) throws IOException {
         writer.startElement("style", component);
-        writer.writeAttribute("type", "text/css", "type");
+        writeTypeAttributeIfNecessary(context, writer);
+    }
+
+    private void writeTypeAttributeIfNecessary(FacesContext context, ResponseWriter writer) throws IOException {
+        if (!RenderKitUtils.isOutputHtml5Doctype(context)) {
+            writer.writeAttribute("type", DEFAULT_CONTENT_TYPE, "type");
+        }
     }
 
     @Override
@@ -40,10 +51,10 @@ public class StylesheetRenderer extends ScriptStyleBaseRenderer {
     }
 
     @Override
-    protected void startExternalElement(ResponseWriter writer, UIComponent component) throws IOException {
+    protected void startExternalElement(FacesContext context, ResponseWriter writer, UIComponent component) throws IOException {
         writer.startElement("link", component);
-        writer.writeAttribute("type", "text/css", "type");
         writer.writeAttribute("rel", "stylesheet", "rel");
+        writeTypeAttributeIfNecessary(context, writer);
     }
 
     @Override

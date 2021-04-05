@@ -54,6 +54,7 @@ import jakarta.faces.application.Resource;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.component.ActionSource;
 import jakarta.faces.component.ActionSource2;
+import jakarta.faces.component.Doctype;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIComponentBase;
 import jakarta.faces.component.UIForm;
@@ -140,6 +141,12 @@ public class RenderKitUtils {
      * Hopefully Faces X will remove the need for this.
      */
     private static final String ATTRIBUTES_THAT_ARE_SET_KEY = UIComponentBase.class.getName() + ".attributesThatAreSet";
+
+    /**
+     * UIViewRoot attribute key of a boolean value which remembers whether the view will be rendered with a HTML5 doctype.
+     */
+    private static final String VIEW_ROOT_ATTRIBUTES_DOCTYPE_KEY = RenderKitUtils.class.getName() + ".isOutputHtml5Doctype";
+
 
     protected static final Logger LOGGER = FacesLogger.RENDERKIT.getLogger();
 
@@ -1265,6 +1272,29 @@ public class RenderKitUtils {
      */
     public static String getParameterName(FacesContext context, String name) {
         return Util.getNamingContainerPrefix(context) + name;
+    }
+
+    /**
+     * Returns <code>true</code> if the view root associated with the given faces context will be rendered with a HTML5 doctype.
+     * @param context Involved faces context.
+     * @return <code>true</code> if the view root associated with the given faces context will be rendered with a HTML5 doctype.
+     */
+    public static boolean isOutputHtml5Doctype(FacesContext context) {
+        UIViewRoot viewRoot = context.getViewRoot();
+
+        if (viewRoot == null) {
+            return false;
+        }
+
+        Doctype doctype = viewRoot.getDoctype();
+
+        if (doctype == null) {
+            return false;
+        }
+
+        return "html".equalsIgnoreCase(doctype.getRootElement())
+            && doctype.getPublic() == null
+            && doctype.getSystem() == null;
     }
 
     // --------------------------------------------------------- Private Methods

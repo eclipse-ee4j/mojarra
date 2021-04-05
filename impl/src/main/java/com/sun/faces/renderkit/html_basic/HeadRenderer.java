@@ -18,8 +18,6 @@ package com.sun.faces.renderkit.html_basic;
 
 import java.io.IOException;
 
-import com.sun.faces.config.FaceletsConfiguration;
-import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
@@ -51,9 +49,8 @@ public class HeadRenderer extends Renderer {
         ResponseWriter writer = context.getResponseWriter();
         writer.startElement("head", component);
         RenderKitUtils.renderPassThruAttributes(context, writer, component, HEAD_ATTRIBUTES);
-        WebConfiguration webConfig = WebConfiguration.getInstance(context.getExternalContext());
-        FaceletsConfiguration faceletsConfig = webConfig.getFaceletsConfiguration();
-        if (faceletsConfig.isOutputHtml5Doctype(context.getViewRoot().getViewId())) {
+
+        if (RenderKitUtils.isOutputHtml5Doctype(context)) {
             String clientId = component.getClientId(context);
             writer.writeAttribute("id", clientId, "clientId");
         }
