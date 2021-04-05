@@ -88,6 +88,7 @@ import com.sun.faces.facelets.tag.composite.CompositeComponentBeanInfo;
 import com.sun.faces.facelets.tag.faces.CompositeComponentTagHandler;
 import com.sun.faces.facelets.tag.ui.UIDebug;
 import com.sun.faces.renderkit.RenderKitUtils;
+import com.sun.faces.renderkit.html_basic.DoctypeRenderer;
 import com.sun.faces.util.Cache;
 import com.sun.faces.util.ComponentStruct;
 import com.sun.faces.util.FacesLogger;
@@ -105,6 +106,7 @@ import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Resource;
 import jakarta.faces.application.ViewVisitOption;
 import jakarta.faces.component.ActionSource2;
+import jakarta.faces.component.Doctype;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIPanel;
@@ -328,15 +330,20 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             if (facelet instanceof XMLFrontMatterSaver) {
                 XMLFrontMatterSaver frontMatterSaver = (XMLFrontMatterSaver) facelet;
 
-                String docType = frontMatterSaver.getSavedDoctype();
-                if (docType != null) {
-                    saveDOCTYPEToFacesContextAttributes(docType);
+                Doctype doctype = frontMatterSaver.getSavedDoctype();
+                if (doctype != null) {
+                    saveDOCTYPEToFacesContextAttributes(doctype);
                 }
 
                 String XMLDECL = frontMatterSaver.getSavedXMLDecl();
                 if (XMLDECL != null) {
                     saveXMLDECLToFacesContextAttributes(XMLDECL);
                 }
+            }
+
+            Doctype doctype = getDOCTYPEFromFacesContextAttributes(ctx);
+            if (doctype != null) {
+                view.setDoctype(doctype);
             }
 
             if (!stateCtx.isPartialStateSaving(ctx, view.getViewId())) {
@@ -417,18 +424,26 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                     FormOmittedChecker.check(ctx);
                 }
 
-                // render the view to the response
+                // render the XML declaration to the response
                 String xmlDecl = getXMLDECLFromFacesContextAttributes(ctx);
                 if (null != xmlDecl) {
                     // Do not escape.
                     writer.writePreamble(xmlDecl);
                 }
 
-                String docType = getDOCTYPEFromFacesContextAttributes(ctx);
-                if (null != docType) {
-                    // Do not escape.
-                    writer.writeDoctype(docType);
+                // render the DOCTYPE declaration to the response
+                Doctype doctype = viewToRender.getDoctype();
+                if (null != doctype) {
+                    if (doctype instanceof UIComponent) {
+                        ((UIComponent) doctype).encodeAll(ctx); // E.g. HtmlDoctype + DoctypeRenderer
+                    } else {
+                        // Do not escape.
+                        writer.writeDoctype(DoctypeRenderer.toString(doctype));
+                    }
+                    writer.append('\n');
                 }
+
+                // render the view to the response
                 writer.startDocument();
                 viewToRender.encodeAll(ctx);
                 try {

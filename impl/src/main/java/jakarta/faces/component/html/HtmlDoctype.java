@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.el.ValueExpression;
+import jakarta.faces.component.Doctype;
 import jakarta.faces.component.UIOutput;
 
 /**
@@ -30,7 +31,7 @@ import jakarta.faces.component.UIOutput;
  * can be changed by calling the <code>setRendererType()</code> method.
  * </p>
  */
-public class HtmlDoctype extends UIOutput {
+public class HtmlDoctype extends UIOutput implements Doctype {
 
     private static final String OPTIMIZED_PACKAGE = "jakarta.faces.component.";
 
@@ -76,6 +77,7 @@ public class HtmlDoctype extends UIOutput {
      * <p>
      * Contents: <div class="changed_added_2_1"> Will be output as the public part of the DOCTYPE </div>
      */
+    @Override
     public java.lang.String getPublic() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.publicVal);
 
@@ -102,6 +104,7 @@ public class HtmlDoctype extends UIOutput {
      * <p>
      * Contents: <div class="changed_added_2_1"> The root XML element </div>
      */
+    @Override
     public java.lang.String getRootElement() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.rootElement);
 
@@ -128,6 +131,7 @@ public class HtmlDoctype extends UIOutput {
      * <p>
      * Contents: <div class="changed_added_2_1"> Will be output as the system part of the DOCTYPE </div>
      */
+    @Override
     public java.lang.String getSystem() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.system);
 

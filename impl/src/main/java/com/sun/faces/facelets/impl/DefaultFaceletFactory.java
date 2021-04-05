@@ -48,6 +48,7 @@ import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
+import jakarta.faces.component.Doctype;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -227,9 +228,9 @@ public class DefaultFaceletFactory {
         DefaultFacelet _facelet = null;
         if (result instanceof DefaultFacelet) {
             _facelet = (DefaultFacelet) result;
-            String docType = _facelet.getSavedDoctype();
-            if (null != docType) {
-                Util.saveDOCTYPEToFacesContextAttributes(docType);
+            Doctype doctype = _facelet.getSavedDoctype();
+            if (null != doctype) {
+                Util.saveDOCTYPEToFacesContextAttributes(doctype);
             }
 
             String xmlDecl = _facelet.getSavedXMLDecl();
