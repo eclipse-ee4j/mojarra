@@ -21,7 +21,6 @@ import static com.sun.faces.util.Util.getContextClassLoader2;
 import static com.sun.faces.util.Util.isAnyNull;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.System.identityHashCode;
-import static java.util.logging.Level.WARNING;
 
 import java.util.Map;
 import java.util.Set;
@@ -239,8 +238,6 @@ final class CurrentThreadToServletContext {
                     if (matchingClassLoader != null) {
                         // If the match was found on a previous iteration...
                         if (matchingKey != null) {
-                            LOGGER.log(WARNING,
-                                    "Multiple Jakarta Server Faces Applications found on same ClassLoader.  Unable to safely determine which FactoryFinder instance to use. Defaulting to first match.");
                             break;
                         }
                         matchingKey = currentKey;
