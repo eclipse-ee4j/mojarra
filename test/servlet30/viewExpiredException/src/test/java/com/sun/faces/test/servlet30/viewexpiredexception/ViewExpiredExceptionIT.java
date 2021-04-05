@@ -17,6 +17,7 @@
 package com.sun.faces.test.servlet30.viewexpiredexception;
 
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlButtonInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import org.junit.After;
@@ -47,9 +48,12 @@ public class ViewExpiredExceptionIT {
 
         HtmlPage page = (HtmlPage) webClient.getPage(webUrl + "faces/test.jsp");
         
-        if (!page.asXml().contains("Client-size State Saving: true")) {
+        if (!page.asXml().contains("Client-side State Saving: true")) {
+            HtmlButtonInput expireButton = (HtmlButtonInput) page.getHtmlElementById("expire");
+            expireButton.click();
+            webClient.waitForBackgroundJavaScript(60000);
+
             HtmlSubmitInput submit = (HtmlSubmitInput) page.getHtmlElementById("form:submit");
-            Thread.sleep(65000);
             HtmlPage errorPage = (HtmlPage) submit.click();
             assertTrue(errorPage.asText().indexOf("Error page invoked") >= 0);
         }
