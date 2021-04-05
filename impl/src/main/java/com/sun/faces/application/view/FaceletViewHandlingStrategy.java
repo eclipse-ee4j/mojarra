@@ -1807,7 +1807,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * @param clientId the client id of the component to find.
      */
     private UIComponent locateComponentByClientId(final FacesContext context, final UIComponent parent, final String clientId) {
-        final List<UIComponent> found = new ArrayList<>();
+        final List<UIComponent> found = new ArrayList<>(1);
         UIComponent result = null;
 
         parent.invokeOnComponent(context, clientId, (context1, target) -> found.add(target));
@@ -1912,7 +1912,11 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             StateContext stateContext = StateContext.getStateContext(context);
             stateContext.getDynamicComponents().put(struct.getClientId(), child);
             UIComponent parent = child.getParent();
-            parent.getChildren().remove(child);
+            if (struct.getFacetName() != null) {
+            	parent.getFacets().remove(struct.getFacetName());
+            } else {
+            	parent.getChildren().remove(child);
+            }
         }
     }
 
