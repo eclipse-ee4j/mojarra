@@ -16,30 +16,17 @@
 
 package com.sun.faces.facelets.impl;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.context.FacesFileNotFoundException;
-import java.net.MalformedURLException;
-import javax.faces.FactoryFinder;
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.Facelet;
-import javax.faces.view.facelets.FaceletCache;
-import com.sun.faces.facelets.compiler.Compiler;
-import com.sun.faces.util.Cache;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.UseFaceletsID;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import javax.faces.view.facelets.FaceletCacheFactory;
-import javax.faces.view.facelets.FaceletHandler;
-import javax.faces.view.facelets.ResourceResolver;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URL;
-
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,12 +34,28 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+
 import javax.el.ELException;
 import javax.faces.FacesException;
+import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
+import javax.faces.component.UIComponent;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.view.facelets.Facelet;
+import javax.faces.view.facelets.FaceletCache;
+import javax.faces.view.facelets.FaceletCacheFactory;
 import javax.faces.view.facelets.FaceletException;
+import javax.faces.view.facelets.FaceletHandler;
+import javax.faces.view.facelets.ResourceResolver;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.context.FacesFileNotFoundException;
+import com.sun.faces.facelets.compiler.Compiler;
+import com.sun.faces.util.Cache;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
 
 
 /**
@@ -74,7 +77,7 @@ public class DefaultFaceletFactory {
     private ResourceResolver resolver;
 
     private  URL baseUrl;
-    
+
     private long refreshPeriod;
 
     private FaceletCache<DefaultFacelet> cache;
@@ -82,7 +85,7 @@ public class DefaultFaceletFactory {
     private ConcurrentMap<String, FaceletCache<DefaultFacelet>> cachePerContract;
 
     Cache<String,IdMapper> idMappers;
-    
+
 
 
     // ------------------------------------------------------------ Constructors
@@ -94,8 +97,8 @@ public class DefaultFaceletFactory {
         this.cache = null;
         this.baseUrl = null;
     }
-    
-    
+
+
     public DefaultFaceletFactory(Compiler compiler, ResourceResolver resolver)
     throws IOException {
 
@@ -116,18 +119,26 @@ public class DefaultFaceletFactory {
                                  FaceletCache cache) {
         this.init(compiler, resolver, refreshPeriod, cache);
     }
-    
+
     public final void init(Compiler compiler,
             ResourceResolver resolver,
             long refreshPeriod,
             FaceletCache cache) {
         Util.notNull("compiler", compiler);
         Util.notNull("resolver", resolver);
+
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext == null) {
+            throw new IllegalStateException("DefaultFaceletFactory cannot locate the faces context");
+        }
+        ExternalContext externalContext = facesContext.getExternalContext();
+        WebConfiguration config = WebConfiguration.getInstance(externalContext);
+
         this.compiler = compiler;
         this.cachePerContract = new ConcurrentHashMap<>();
         this.resolver = resolver;
         this.baseUrl = resolver.resolveUrl("/");
-        this.idMappers = new Cache<>(new IdMapperFactory());
+        this.idMappers = config.isOptionEnabled(UseFaceletsID) ? null : new Cache<>(new IdMapperFactory());
         // this.location = url;
         refreshPeriod = (refreshPeriod >= 0) ? refreshPeriod * 1000 : -1;
         this.refreshPeriod = refreshPeriod;
@@ -135,11 +146,11 @@ public class DefaultFaceletFactory {
             log.log(Level.FINE, "Using ResourceResolver: {0}", resolver);
             log.log(Level.FINE, "Using Refresh Period: {0}", refreshPeriod);
         }
-        
+
         // We can cast to the FaceletCache<DefaultFacelet> here because we know
         // that the Generics information is only used at compile time, and all cache
         // implementations will be using instance factories provided by us and returning DefaultFacelet
-        this.cache = initCache((FaceletCache<DefaultFacelet>)cache);
+        this.cache = initCache(cache);
     }
 
     private FaceletCache<DefaultFacelet> initCache(FaceletCache<DefaultFacelet> cache) {
@@ -166,7 +177,7 @@ public class DefaultFaceletFactory {
                     return createMetadataFacelet(key);
                 }
             };
-        
+
         cache.setCacheFactories(faceletFactory, metadataFaceletFactory);
         return cache;
     }
@@ -180,7 +191,7 @@ public class DefaultFaceletFactory {
         return resolver;
     }
 
-    
+
     /*
       * (non-Javadoc)
       *
@@ -243,7 +254,7 @@ public class DefaultFaceletFactory {
      * @throws ELException
      */
     public Facelet getFacelet(FacesContext context, URL url) throws IOException {
-        
+
         Facelet result = getCache(context).getFacelet(url);
 
         DefaultFacelet _facelet = null;
@@ -253,7 +264,7 @@ public class DefaultFaceletFactory {
             if (null != docType) {
                 Util.saveDOCTYPEToFacesContextAttributes(docType);
             }
-            
+
             String xmlDecl = _facelet.getSavedXMLDecl();
             if (null != xmlDecl) {
                 Util.saveXMLDECLToFacesContextAttributes(xmlDecl);
@@ -261,7 +272,7 @@ public class DefaultFaceletFactory {
         }
 
         return result;
-        
+
     }
 
     public Facelet getMetadataFacelet(FacesContext context, URL url) throws IOException {
@@ -317,7 +328,7 @@ public class DefaultFaceletFactory {
         return url;
     }
 
-    public UIComponent _createComponent(FacesContext context, String taglibURI, String tagName, 
+    public UIComponent _createComponent(FacesContext context, String taglibURI, String tagName,
     Map<String, Object> attributes) {
         // PENDING(FCAPUTO) does this work for resource library contracts? I think so.
         UIComponent result = null;
@@ -327,7 +338,7 @@ public class DefaultFaceletFactory {
         File tempFile = null;
         OutputStreamWriter osw = null;
         try {
-            
+
             // create a temporary file in that directory
             tempFile = File.createTempFile("mojarra", ".tmp", tmpDir);
             osw = new OutputStreamWriter(new FileOutputStream(tempFile), RIConstants.CHAR_ENCODING);
@@ -354,17 +365,16 @@ public class DefaultFaceletFactory {
                     log.log(Level.FINEST, "Flushing and closing stream", ex);
                 }
             }
-                  
+
             URL fabricatedFaceletPage = tempFile.toURI().toURL();
             Facelet f = createFacelet(fabricatedFaceletPage);
-            UIComponent tmp = (UIComponent)
-                    app.createComponent("javax.faces.NamingContainer");
+            UIComponent tmp = app.createComponent("javax.faces.NamingContainer");
             tmp.setId(context.getViewRoot().createUniqueId());
             f.apply(context, tmp);
                 result = tmp.findComponent(tempId);
             tmp.getChildren().clear();
             osw = null;
-            
+
         } catch (MalformedURLException mue) {
             if (log.isLoggable(Level.FINEST)) {
                 log.log(Level.FINEST, "Invalid URL", mue);
@@ -390,7 +400,7 @@ public class DefaultFaceletFactory {
                 }
             }
         }
-        
+
         try {
             byte [] faceletPage = "facelet".getBytes(RIConstants.CHAR_ENCODING);
             ByteArrayInputStream bais = new ByteArrayInputStream(faceletPage);
@@ -400,14 +410,14 @@ public class DefaultFaceletFactory {
                         uee);
             }
         }
-              
+
         if (null != result) {
-            result.setId(null);        
+            result.setId(null);
         }
         return result;
     }
-    
-    
+
+
 
 
     /**
@@ -489,6 +499,6 @@ public class DefaultFaceletFactory {
 
         }
 
-    }    
-    
+    }
+
 }

@@ -188,7 +188,7 @@ public class WebConfiguration {
             webConfig = new WebConfiguration(servletContext);
             servletContext.setAttribute(WEB_CONFIG_KEY, webConfig);
         }
-        
+
         return webConfig;
     }
 
@@ -257,7 +257,7 @@ public class WebConfiguration {
         if (faceletsConfig == null) {
             faceletsConfig = new FaceletsConfiguration(this);
         }
-        
+
         return faceletsConfig;
     }
 
@@ -286,7 +286,7 @@ public class WebConfiguration {
         String [] result;
 
         assert(cachedListParams != null);
-        
+
         if ((result = cachedListParams.get(param)) == null) {
             String value = getOptionValue(param);
             if (value == null) {
@@ -335,8 +335,8 @@ public class WebConfiguration {
 
         if (servletContext.getMajorVersion() == 2 && servletContext.getMinorVersion() <= 4) {
             return servletContext.getServletContextName();
-        } 
-            
+        }
+
         return servletContext.getContextPath();
     }
 
@@ -346,7 +346,7 @@ public class WebConfiguration {
         if (param == null) {
             return;
         }
-        
+
         boolean oldVal = booleanContextParameters.put(param, value);
         if (LOGGER.isLoggable(FINE) && oldVal != value) {
             LOGGER.log(FINE,
@@ -375,7 +375,7 @@ public class WebConfiguration {
         if (param == null || value == null || value.length() == 0) {
             return;
         }
-        
+
         value = value.trim();
         String oldVal = contextParameters.put(param, value);
         cachedListParams.remove(param);
@@ -1354,6 +1354,10 @@ public class WebConfiguration {
         ),
         EnableDistributable(
               "com.sun.faces.enableDistributable",
+              false
+        ),
+        UseFaceletsID(
+              "com.sun.faces.useFaceletsID",
               false
         ),
         EnableFaceletsResourceResolverResolveCompositeComponents(

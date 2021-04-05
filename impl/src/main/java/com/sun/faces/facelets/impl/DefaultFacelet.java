@@ -16,17 +16,6 @@
 
 package com.sun.faces.facelets.impl;
 
-import javax.faces.view.facelets.Facelet;
-import com.sun.faces.facelets.tag.jsf.ComponentSupport;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
-
-import javax.el.ExpressionFactory;
-import javax.faces.application.ProjectStage;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletHandler;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -34,13 +23,31 @@ import java.io.ObjectOutput;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.el.ExpressionFactory;
+import javax.faces.FacesException;
+import javax.faces.application.ProjectStage;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.view.facelets.Facelet;
+import javax.faces.view.facelets.FaceletContext;
+import javax.faces.view.facelets.FaceletException;
+import javax.faces.view.facelets.FaceletHandler;
+
+import com.sun.faces.facelets.tag.jsf.ComponentSupport;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
+
 /**
  * Default Facelet implementation.
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -66,9 +73,9 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     private final URL src;
 
     private IdMapper mapper;
-    
+
     private String savedDoctype;
-    
+
     private String savedXMLDecl;
 
     public DefaultFacelet(DefaultFaceletFactory factory,
@@ -82,7 +89,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
         this.src = src;
         this.root = root;
         this.alias = alias;
-        this.mapper = factory.idMappers.get(alias);
+        this.mapper = factory.idMappers != null ? factory.idMappers.get(alias) : null;
         this.createTime = System.currentTimeMillis();
         this.refreshPeriod = this.factory.getRefreshPeriod();
 
@@ -90,14 +97,14 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
         if (null != DOCTYPE) {
             // This will happen on the request that causes the facelets to be compiled
             this.setSavedDoctype(DOCTYPE);
-        }        
+        }
 
         String XMLDECL = Util.getXMLDECLFromFacesContextAttributes(FacesContext.getCurrentInstance());
         if (null != XMLDECL) {
             // This will happen on the request that causes the facelets to be compiled
             this.setSavedXMLDecl(XMLDECL);
-        }        
-        
+        }
+
     }
 
     /**
@@ -109,11 +116,11 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
 
         IdMapper idMapper = IdMapper.getMapper(facesContext);
         boolean mapperSet = false;
-        if (idMapper == null) {
+        if (idMapper == null && this.mapper != null) {
             IdMapper.setMapper(facesContext, this.mapper);
             mapperSet = true;
         }
-        
+
         DefaultFaceletContext ctx = new DefaultFaceletContext(facesContext, this);
         this.refresh(parent);
         ComponentSupport.markForDeletion(parent);
@@ -203,7 +210,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
 
     /**
      * Return the alias name for error messages and logging
-     * 
+     *
      * @return alias name
      */
     public String getAlias() {
@@ -212,7 +219,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
 
     /**
      * Return this Facelet's ExpressionFactory instance
-     * 
+     *
      * @return internal ExpressionFactory instance
      */
     public ExpressionFactory getExpressionFactory() {
@@ -221,7 +228,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
 
     /**
      * The time when this Facelet was created, NOT the URL source code
-     * 
+     *
      * @return final timestamp of when this Facelet was created
      */
     public long getCreateTime() {
@@ -231,7 +238,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     /**
      * Delegates resolution to DefaultFaceletFactory reference. Also, caches
      * URLs for relative paths.
-     * 
+     *
      * @param path
      *            a relative url path
      * @return URL pointing to destination
@@ -244,7 +251,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
 
     /**
      * The URL this Facelet was created from.
-     * 
+     *
      * @return the URL this Facelet was created from
      */
     public URL getSource() {
@@ -254,7 +261,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     /**
      * Given the passed FaceletContext, apply our child FaceletHandlers to the
      * passed parent
-     * 
+     *
      * @see FaceletHandler#apply(FaceletContext, UIComponent)
      * @param ctx
      *            the FaceletContext to use for applying our FaceletHandlers
@@ -277,7 +284,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
      * from {@link #getRelativePath(String) getRelativePath(String)}, then
      * calls
      * {@link #include(DefaultFaceletContext, javax.faces.component.UIComponent, String)}.
-     * 
+     *
      * @see FaceletContext#includeFacelet(UIComponent, String)
      * @param ctx
      *            FaceletContext to pass to the included Facelet
@@ -311,7 +318,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
 
     /**
      * Grabs a DefaultFacelet from referenced DefaultFaceletFacotry
-     * 
+     *
      * @see DefaultFaceletFactory#getFacelet(URL)
      * @param ctx
      *            FaceletContext to pass to the included Facelet
@@ -361,7 +368,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     public String toString() {
         return this.alias;
     }
-    
+
     // ---------------------------------------------------------- Helper Methods
 
     @Override
@@ -383,9 +390,9 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     public void setSavedXMLDecl(String savedXMLDecl) {
         this.savedXMLDecl = savedXMLDecl;
     }
-    
-    
-    
+
+
+
     // --------------------------------------------------------- Private Methods
 
 
