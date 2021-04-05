@@ -16,11 +16,13 @@
 
 package com.sun.faces.facelets.impl;
 
+import jakarta.faces.component.Doctype;
+
 public interface XMLFrontMatterSaver {
 
-    String getSavedDoctype();
+    Doctype getSavedDoctype();
 
-    void setSavedDoctype(String savedDoctype);
+    void setSavedDoctype(Doctype savedDoctype);
 
     String getSavedXMLDecl();
 

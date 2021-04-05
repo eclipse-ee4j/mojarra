@@ -79,7 +79,7 @@ public class UISelectItems extends UIComponentBase {
     // ---------------------------------------------------------------- Bindings
 
     /**
-     * <p class="changed_added_4_0">
+     * <p class="changed_modified_4_0">
      * Set the {@link ValueExpression} used to calculate the value for the specified attribute or property name, if any.
      * In addition, if a {@link ValueExpression} is set for the <code>var</code> property, regardless of the value, throw an illegal argument exception.
      * </p>

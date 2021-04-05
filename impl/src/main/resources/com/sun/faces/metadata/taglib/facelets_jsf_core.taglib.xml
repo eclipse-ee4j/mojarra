@@ -1415,27 +1415,21 @@ of POJOs.
         </component>
         <attribute>
             <description><![CDATA[
-                <p class="changed_added_4_0">
-                    Component identifier of the <code>UISelectItemGroup</code> component to be created.
-                </p>
+                Component identifier of the <code>UISelectItemGroup</code> component to be created.
             ]]></description>
             <name>id</name>
             <type>java.lang.String</type>
         </attribute> 
         <attribute>
             <description><![CDATA[
-                <p class="changed_added_4_0">
-                    Value binding expression to a backing bean property bound to the component instance for the <code>UIComponent</code> created by this custom action.
-                </p>
+                Value binding expression to a backing bean property bound to the component instance for the <code>UIComponent</code> created by this custom action.
             ]]></description>
             <name>binding</name>
             <type>jakarta.faces.component.UIComponent</type>
         </attribute>
         <attribute>
             <description><![CDATA[
-                <p class="changed_added_4_0">
-                    Label to be displayed to the user for this option group.
-                </p>
+                Label to be displayed to the user for this option group.
             ]]></description>
             <name>itemLabel</name>
             <type>java.lang.String</type>
@@ -1457,58 +1451,46 @@ of POJOs.
         </component>
         <attribute>
             <description><![CDATA[
-                <p class="changed_added_4_0">
-                    Component identifier of the <code>UISelectItemGroups</code> component to be created.
-                </p>
+                Component identifier of the <code>UISelectItemGroups</code> component to be created.
             ]]></description>
             <name>id</name>
             <type>java.lang.String</type>
         </attribute> 
         <attribute>
             <description><![CDATA[
-                <p class="changed_added_4_0">
-                    Value binding expression to a backing bean property bound to the component instance for the <code>UIComponent</code> created by this custom action.
-                </p>
+                Value binding expression to a backing bean property bound to the component instance for the <code>UIComponent</code> created by this custom action.
             ]]></description>
             <name>binding</name>
             <type>jakarta.faces.component.UIComponent</type>
         </attribute>
         <attribute>
             <description><![CDATA[
-                <p class="changed_added_4_0">
-                    Value expression pointing at any array or <code>Iterable</code>.
-                    The member elements may be instances of any type which is acceptable by the <code>value</code> attribute of any nested <code>UISelectItems</code> or <code>UISelectItem</code> component.
-                </p>
+                Value expression pointing at any array or <code>Iterable</code>.
+                The member elements may be instances of any type which is acceptable by the <code>value</code> attribute of any nested <code>UISelectItems</code> or <code>UISelectItem</code> component.
             ]]></description>
             <name>value</name>
             <type>java.lang.Object</type>
         </attribute>
         <attribute>
             <description><![CDATA[
-                <p class="changed_added_4_0">
-                    Expose the currently iterated member element from the <code>value</code> attribute under this request scoped key,
-                    so that it may be referred to in EL for the value of other attributes of any nested component.
-                </p>
+                Expose the currently iterated member element from the <code>value</code> attribute under this request scoped key,
+                so that it may be referred to in EL for the value of other attributes of any nested component.
             ]]></description>
             <name>var</name>
             <type>java.lang.String</type>
         </attribute>
         <attribute>
             <description><![CDATA[
-                <p class="changed_added_4_0">
-                    Label to be displayed to the user for this option group.
-                </p>
+                Label to be displayed to the user for this option group.
             ]]></description>
             <name>itemLabel</name>
             <type>java.lang.String</type>
         </attribute>
         <attribute>
             <description><![CDATA[
-                <p class="changed_added_4_0">
-                    Flag indicating whether the option group created by this component is disabled.
-                    Expressions must evaluate to a <code>boolean</code>.
-                    Default value is <code>false</code>.
-                </p>
+                Flag indicating whether the option group created by this component is disabled.
+                Expressions must evaluate to a <code>boolean</code>.
+                Default value is <code>false</code>.
             ]]></description>
             <name>itemDisabled</name>
             <type>java.lang.Boolean</type>

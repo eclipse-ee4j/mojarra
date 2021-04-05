@@ -18,6 +18,7 @@
 
 package com.sun.faces.util;
 
+import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
 import static com.sun.faces.util.MessageUtils.ILLEGAL_ATTEMPT_SETTING_APPLICATION_ARTIFACT_ID;
 import static com.sun.faces.util.MessageUtils.NAMED_OBJECT_NOT_FOUND_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
@@ -82,6 +83,7 @@ import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.Doctype;
 import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UINamingContainer;
@@ -151,6 +153,13 @@ public class Util {
     }
 
     private static Collection<String> getFacesServletMappings(ServletContext servletContext) {
+        // check servlet context during initialization to avoid ConfigureListener to call the servlet registration
+        @SuppressWarnings("unchecked")
+        Collection<String> mappings = (Collection<String>) servletContext.getAttribute(FACES_SERVLET_MAPPINGS);
+        if (mappings != null) {
+            return mappings;
+        }
+
         ServletRegistration facesRegistration = getExistingFacesServletRegistration(servletContext);
 
         if (facesRegistration != null) {
@@ -1304,22 +1313,21 @@ public class Util {
 
     private static final String FACES_CONTEXT_ATTRIBUTES_DOCTYPE_KEY = Util.class.getName() + "_FACES_CONTEXT_ATTRS_DOCTYPE_KEY";
 
-    public static void saveDOCTYPEToFacesContextAttributes(String DOCTYPE) {
+    public static void saveDOCTYPEToFacesContextAttributes(Doctype doctype) {
         FacesContext context = FacesContext.getCurrentInstance();
         if (null == context) {
             return;
         }
         Map<Object, Object> attrs = context.getAttributes();
-        attrs.put(FACES_CONTEXT_ATTRIBUTES_DOCTYPE_KEY, DOCTYPE);
-
+        attrs.put(FACES_CONTEXT_ATTRIBUTES_DOCTYPE_KEY, doctype);
     }
 
-    public static String getDOCTYPEFromFacesContextAttributes(FacesContext context) {
+    public static Doctype getDOCTYPEFromFacesContextAttributes(FacesContext context) {
         if (null == context) {
             return null;
         }
         Map<Object, Object> attrs = context.getAttributes();
-        return (String) attrs.get(FACES_CONTEXT_ATTRIBUTES_DOCTYPE_KEY);
+        return (Doctype) attrs.get(FACES_CONTEXT_ATTRIBUTES_DOCTYPE_KEY);
     }
 
     private static final String FACES_CONTEXT_ATTRIBUTES_XMLDECL_KEY = Util.class.getName() + "_FACES_CONTEXT_ATTRS_XMLDECL_KEY";

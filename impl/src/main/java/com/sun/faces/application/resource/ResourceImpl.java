@@ -93,6 +93,12 @@ public class ResourceImpl extends Resource implements Externalizable {
      */
     private long maxAge;
 
+    /**
+     * The URL of this {@link ResourceImpl} object is valid exactly as long as this {@link ResourceImpl} object itself is valid.
+     * Therefore, resolve the URL only once and re-use the already resolved URL value for subsequent calls to {@link ResourceImpl#getURL()}.
+     */
+    private URL resolvedUrl = null;
+
     // ------------------------------------------------------------ Constructors
 
     /**
@@ -151,7 +157,17 @@ public class ResourceImpl extends Resource implements Externalizable {
      */
     @Override
     public URL getURL() {
-        return resourceInfo.getHelper().getURL(resourceInfo, FacesContext.getCurrentInstance());
+        if (resolvedUrl != null) {
+            // fast path - re-use the already resolved url
+            return resolvedUrl;
+        }
+
+        URL url = resourceInfo.getHelper().getURL(resourceInfo, FacesContext.getCurrentInstance());
+
+        // remember this url for subsequent calls to this method
+        resolvedUrl = url;
+
+        return url;
     }
 
     /**
@@ -172,16 +188,11 @@ public class ResourceImpl extends Resource implements Externalizable {
                 responseHeaders = new HashMap<>(6, 1.0f);
             }
 
-            long expiresTime;
             if (FacesContext.getCurrentInstance().isProjectStage(Development)) {
-                expiresTime = new Date().getTime();
+                responseHeaders.put("Cache-Control", "no-store, must-revalidate");
             } else {
-                expiresTime = new Date().getTime() + maxAge;
+                responseHeaders.put("Cache-Control", "max-age=" + (maxAge/1000));
             }
-
-            SimpleDateFormat format = new SimpleDateFormat(RFC1123_DATE_PATTERN, US);
-            format.setTimeZone(GMT);
-            responseHeaders.put("Expires", format.format(new Date(expiresTime)));
 
             URL url = getURL();
             InputStream in = null;
@@ -195,6 +206,8 @@ public class ResourceImpl extends Resource implements Externalizable {
                 if (lastModified == 0) {
                     lastModified = initialTime;
                 }
+                SimpleDateFormat format = new SimpleDateFormat(RFC1123_DATE_PATTERN, US);
+                format.setTimeZone(GMT);
                 responseHeaders.put("Last-Modified", format.format(new Date(lastModified)));
                 if (lastModified != 0 && contentLength != -1) {
                     responseHeaders.put("ETag", "W/\"" + contentLength + '-' + lastModified + '"');

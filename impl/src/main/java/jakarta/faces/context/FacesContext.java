@@ -285,6 +285,8 @@ public abstract class FacesContext {
      * @return instance of <code>Lifecycle</code>
      *
      * @throws IllegalStateException if this method is called after this instance has been released
+     *
+     * @since 4.0
      */
     public abstract Lifecycle getLifecycle();
 

@@ -639,7 +639,7 @@ public class ExternalContextImpl extends ExternalContext {
         doLastPhaseActions(ctx, true);
 
         if (ctx.getPartialViewContext().isPartialRequest()) {
-            if (getSession(true) instanceof HttpSession && ctx.getResponseComplete()) {
+            if (response instanceof HttpServletResponse && ctx.getResponseComplete()) {
                 throw new IllegalStateException();
             }
             PartialResponseWriter pwriter;
@@ -656,8 +656,10 @@ public class ExternalContextImpl extends ExternalContext {
             pwriter.startDocument();
             pwriter.redirect(requestURI);
             pwriter.endDocument();
-        } else {
+        } else if (response instanceof HttpServletResponse) {
             ((HttpServletResponse) response).sendRedirect(requestURI);
+        } else {
+            throw new IllegalStateException();
         }
         ctx.responseComplete();
 

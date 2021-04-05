@@ -857,6 +857,8 @@ public class HtmlInputText extends UIInput implements ClientBehaviorHolder {
      * If a value is specified for which already a more specific component exist, such as
      * <code>hidden</code>, <code>password</code>, <code>checkbox</code>, <code>radio</code>, <code>file</code>, <code>submit</code>, <code>image</code>, <code>reset</code> and <code>button</code>,
      * and the ProjectStage is set to Development, then the renderer must add a warning message stating that the more specific component should be preferred.
+     * 
+     * @since 4.0
      */
     public String getType() {
         return (String) getStateHelper().eval(PropertyKeys.type, "text");
@@ -869,6 +871,8 @@ public class HtmlInputText extends UIInput implements ClientBehaviorHolder {
      * </p>
      *
      * @param type the new property value
+     * 
+     * @since 4.0
      */
     public void setType(String type) {
         getStateHelper().put(PropertyKeys.type, type);
