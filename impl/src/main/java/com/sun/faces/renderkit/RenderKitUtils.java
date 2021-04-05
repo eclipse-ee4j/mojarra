@@ -37,7 +37,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.faces.RIConstants;
-import com.sun.faces.config.FaceletsConfiguration;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.el.ELUtils;
 import com.sun.faces.facelets.util.DevTools;
@@ -55,6 +54,7 @@ import jakarta.faces.application.Resource;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.component.ActionSource;
 import jakarta.faces.component.ActionSource2;
+import jakarta.faces.component.Doctype;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIComponentBase;
 import jakarta.faces.component.UIForm;
@@ -1286,24 +1286,11 @@ public class RenderKitUtils {
             return false;
         }
 
-        Map<String, Object> attributes = viewRoot.getAttributes();
-        Boolean outputHtml5Doctype = (Boolean) attributes.get(VIEW_ROOT_ATTRIBUTES_DOCTYPE_KEY);
+        Doctype doctype = viewRoot.getDoctype();
 
-        if (outputHtml5Doctype != null) {
-            return outputHtml5Doctype;
-        }
-
-        String doctype = Util.getDOCTYPEFromFacesContextAttributes(context);
-
-        if (doctype == null) {
-            WebConfiguration webConfig = WebConfiguration.getInstance(context.getExternalContext());
-            FaceletsConfiguration faceletsConfig = webConfig.getFaceletsConfiguration();
-            return faceletsConfig.isOutputHtml5Doctype(viewRoot.getViewId());
-        }
-
-        outputHtml5Doctype = "<!DOCTYPE html>".equals(doctype.trim());
-        attributes.put(VIEW_ROOT_ATTRIBUTES_DOCTYPE_KEY, outputHtml5Doctype);
-        return outputHtml5Doctype;
+        return "html".equalsIgnoreCase(doctype.getRootElement())
+            && doctype.getPublic() == null
+            && doctype.getSystem() == null;
     }
 
     // --------------------------------------------------------- Private Methods
