@@ -224,7 +224,7 @@ Start the server and open it by `http://localhost:8080/contextname/hello.xhtml`.
 
 ## Activating CDI in Jakarta Faces 4.0
 
-CDI is activated by default in Jakarta Faces 4.0 and can´t be deactivated. It´s not required anymore to add @FacesConfig to a CDI managed bean.
+CDI is activated by default in Jakarta Faces 4.0 and can´t be deactivated. It´s not required anymore to add `@FacesConfig` to a CDI managed bean.
 
 ## Building
 
