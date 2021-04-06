@@ -16,8 +16,10 @@
 
 # Mojarra 4.0 WIP
 
-Eclipse's implementation of the upcoming Jakarta Faces 4.0 specification 
+Eclipse's implementation of the upcoming Jakarta Faces 4.0 specification
 
+For Mojarra / JSF 2.3 please have a look at https://github.com/eclipse-ee4j/mojarra/blob/2.3/README.md. <br/>
+For Mojarra / JSF 3.0 please have a look at https://github.com/eclipse-ee4j/mojarra/blob/3.0/README.md.
 
 ## Minimum Requirements
 
@@ -48,7 +50,7 @@ In case you're manually carrying around JARs:
 
     Add below JARs to `/WEB-INF/lib`:
 
-    - [`jakarta.faces.3.0.x.jar`][9]
+    - [`jakarta.faces.4.0.x.jar`][9]
     - [`weld-servlet-shaded-4.0.0.Final.jar`][10]
     - [`jstl-2.0.jar`][11]
     - [`jakarta.json-api-2.0.jar`][12] (optional, only when `<f:websocket>` is used)
@@ -56,7 +58,7 @@ In case you're manually carrying around JARs:
     - [`validation-api-3.0.0.Final.jar`][13] (optional, only when `<f:validateBean|validateWholeBean>` is used)
     - [`hibernate-validator-7.0.z.Final.jar`][14] (optional, only when `<f:validateBean|validateWholeBean>` is used)
 
-    Substitute `x` with latest 3.0.x version number.
+    Substitute `x` with latest 4.0.x version number.
 
 ### Maven
 
@@ -81,7 +83,7 @@ In case of WildFly/JBoss EAP, [you need to manually package `jsf-api.jar` and `j
     <dependency>
         <groupId>org.glassfish</groupId>
         <artifactId>jakarta.faces</artifactId>
-        <version><!-- Use latest 3.0.x version. --></version>
+        <version><!-- Use latest 4.0.x version. --></version>
     </dependency>
     <dependency>
         <groupId>org.jboss.weld.servlet</groupId>
@@ -105,7 +107,7 @@ In case of WildFly/JBoss EAP, [you need to manually package `jsf-api.jar` and `j
     </dependency>
     ```
 
-    You can check [`org.glassfish:jakarta.faces`][16] repository to find the latest Mojarra 3.0.x version.
+    You can check [`org.glassfish:jakarta.faces`][16] repository to find the latest Mojarra 4.0.x version.
 
 
 ## Hello World Example
@@ -137,7 +139,7 @@ Optionally, register the `FacesServlet` in a Servlet 5.0+ compatible deployment 
 
 Noted should be that Jakarta Faces 3.0+ is already "implicitly" registered and mapped on `*.jsf`, `*.faces` and `/faces/*` when running on a Jakarta Servlet 5.0+ container. This will be overridden altogether when explicitly registering as above. [The `*.xhtml` URL pattern is preferred over above for security and clarity reasons][17]. Jakarta Faces 2.3+ adds `*.xhtml` to set of default patterns, hence the `FacesServlet` registration being optional. But when you don't explicitly map it on `*.xhtml`, then people can still access JSF pages using `*.jsf`, `*.faces` or `/faces/*` URL patterns. This is not nice for SEO as JSF by design doesn't 301-redirect them to a single mapping.
 
-The Faces deployment descriptor file `/WEB-INF/faces-config.xml` is fully optional, but if any it must be Jakarta Faces 3.0 compatible, otherwise Jakarta Faces 3.0 will run in a fallback modus matching the exact `version` as declared in `<faces-config>` root element.
+The Faces deployment descriptor file `/WEB-INF/faces-config.xml` is fully optional, but if any it must be Jakarta Faces 3.0+ compatible, otherwise Jakarta Faces 4.0 will run in a fallback modus matching the exact `version` as declared in `<faces-config>` root element.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -220,9 +222,9 @@ Finally create a [Facelets][20] file `/hello.xhtml` as below:
 
 Start the server and open it by `http://localhost:8080/contextname/hello.xhtml`.
 
-## Activating CDI in Jakarta Faces 3.0
+## Activating CDI in Jakarta Faces 4.0
 
-By default, Jakarta Faces 3.0 will run in Jakarta Faces 2.2 modus as to CDI support. Even when you use a Jakarta Faces 2.3 or 3.0 compatible `faces-config.xml`. In other words, the Jakarta Faces 2.3+ feature of injection and EL resolving of Jakarta Faces artifacts ([spec issue 1316](https://github.com/javaee/javaserverfaces-spec/issues/1316)) won't work until you explicitly activate this. In other words, `@Inject FacesContext` doesn't work by default. This was necessary in order for Jakarta Faces 2.3 to stay compatible with 2.2, and this carried over to 3.0.
+By default, Jakarta Faces 4.0 will run in Jakarta Faces 2.2 modus as to CDI support. Even when you use a Jakarta Faces 2.3 or 3.0 compatible `faces-config.xml`. In other words, the Jakarta Faces 2.3+ feature of injection and EL resolving of Jakarta Faces artifacts ([spec issue 1316](https://github.com/javaee/javaserverfaces-spec/issues/1316)) won't work until you explicitly activate this. In other words, `@Inject FacesContext` doesn't work by default. This was necessary in order for Jakarta Faces 2.3 to stay compatible with 2.2, and this carried over to 3.0.
 
 There is currently only one way to activate CDI in Jakarta Faces 2.3 and 3.0 and herewith make Jakarta Faces 2.3 and 3.0 to run in full Jakarta Faces 2.3/3.0 modus. Put the `@FacesConfig` annotation on an arbitrary CDI managed bean. For example, a general startup/configuration bean.
 
@@ -254,7 +256,7 @@ In case you want to checkout this repository and manually build from source your
 ### Jakarta Faces 3.0
 
 1. Make sure that you have JDK 1.8, Ant and Maven installed.
-2. Checkout branch [`3.0`][28].
+2. Checkout branch [`3.0`][29].
 3. Run the following commands from the root directory of the project:
 
     ```bash
@@ -267,7 +269,7 @@ In case you want to checkout this repository and manually build from source your
 ### Jakarta Faces 2.3
 
 1. Make sure that you have JDK 1.8, Ant and Maven installed.
-2. Checkout branch [`2.3`][29].
+2. Checkout branch [`2.3`][30].
 3. Run the following commands from the root directory of the project:
 
     ```bash
@@ -289,24 +291,22 @@ In case you want to checkout to edit the source code of Mojarra with full IDE su
 
 #### Jakarta Faces 3.0
 
-1. Checkout branch [`3.0`][28] using File -> import -> Git
+1. Checkout branch [`3.0`][29] using File -> import -> Git
 2. Right click the Mojarra project after checkout, choose Configure -> Convert to Maven Project
 
 #### Jakarta Faces 2.3
 
-1. Checkout branch [`master`][28] using File -> import -> Git
-2. Switch to 2.3 rolling branch using Team -> Switch to -> Other -> Remote Tracking -> origin/2.3 -> New Branch
-3. Go to the commandline and cd into the directory where Mojarra was checked-out.
-4. Follow the instructions for build JSF **2.2** from the build instructions above from step 3 (copy/edit properties, run ant)
-5. Go back to Eclipse and refresh the Eclipse project
+1. Checkout branch [`2.3`][30] using File -> import -> Git
+2. Right click the Mojarra project after checkout, choose Configure -> Convert to Maven Project
 
 
 ## Pull Requests
 
 Pull requests are accepted on following branches:
 
-- [`3.0`][28] (3.0.x)
-- [`2.3`][29] (2.3.x)
+- [`master`][28] (4.0.x)
+- [`3.0`][29] (3.0.x)
+- [`2.3`][30] (2.3.x)
 
 Note that it's okay to send a PR to the master branch, but this one is for JSF.next and not the current 2.3.x or 3.0.x version.
 
@@ -350,6 +350,6 @@ Note that it's okay to send a PR to the master branch, but this one is for JSF.n
   [25]: http://docs.oracle.com/javaee/7/tutorial/jsf-intro.htm
   [26]: http://arjan-tijms.omnifaces.org/p/jsf-23.html
   [27]: https://github.com/javaeekickoff/java-ee-kickoff-app
-  [28]: https://github.com/javaserverfaces/mojarra
-  [29]: https://github.com/javaserverfaces/mojarra/tree/MOJARRA_2_3X_ROLLING
-  [30]: https://github.com/javaserverfaces/mojarra/tree/MOJARRA_2_2X_ROLLING
+  [28]: https://github.com/eclipse-ee4j/mojarra
+  [29]: https://github.com/eclipse-ee4j/mojarra/tree/3.0
+  [30]: https://github.com/eclipse-ee4j/mojarra/tree/2.3
