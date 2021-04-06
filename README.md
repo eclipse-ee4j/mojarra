@@ -18,7 +18,7 @@
 
 Eclipse's implementation of the upcoming Jakarta Faces 4.0 specification
 
-For Mojarra / JSF 2.3 please have a look at https://github.com/eclipse-ee4j/mojarra/blob/2.3/README.md. <br/>
+For Mojarra / JSF 2.3 please have a look at https://github.com/eclipse-ee4j/mojarra/blob/2.3/README.md.  
 For Mojarra / JSF 3.0 please have a look at https://github.com/eclipse-ee4j/mojarra/blob/3.0/README.md.
 
 ## Minimum Requirements
@@ -139,7 +139,7 @@ Optionally, register the `FacesServlet` in a Servlet 5.0+ compatible deployment 
 
 Noted should be that Jakarta Faces 3.0+ is already "implicitly" registered and mapped on `*.jsf`, `*.faces` and `/faces/*` when running on a Jakarta Servlet 5.0+ container. This will be overridden altogether when explicitly registering as above. [The `*.xhtml` URL pattern is preferred over above for security and clarity reasons][17]. Jakarta Faces 2.3+ adds `*.xhtml` to set of default patterns, hence the `FacesServlet` registration being optional. But when you don't explicitly map it on `*.xhtml`, then people can still access JSF pages using `*.jsf`, `*.faces` or `/faces/*` URL patterns. This is not nice for SEO as JSF by design doesn't 301-redirect them to a single mapping.
 
-The Faces deployment descriptor file `/WEB-INF/faces-config.xml` is fully optional, but if any it must be Jakarta Faces 3.0+ compatible, otherwise Jakarta Faces 4.0 will run in a fallback modus matching the exact `version` as declared in `<faces-config>` root element.
+The Faces deployment descriptor file `/WEB-INF/faces-config.xml` is fully optional, but if any it must be Jakarta Faces 4.0 compatible, otherwise Jakarta Faces 4.0 will run in a fallback modus matching the exact `version` as declared in `<faces-config>` root element.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -147,7 +147,7 @@ The Faces deployment descriptor file `/WEB-INF/faces-config.xml` is fully option
     xmlns="https://jakarta.ee/xml/ns/jakartaee"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_3_0.xsd"
-    version="3.0"
+    version="4.0"
 >
     <!-- Put any faces config here. -->
 </faces-config>
@@ -224,7 +224,9 @@ Start the server and open it by `http://localhost:8080/contextname/hello.xhtml`.
 
 ## Activating CDI in Jakarta Faces 4.0
 
-CDI is activated by default in Jakarta Faces 4.0 and can´t be deactivated. It´s not required anymore to add `@FacesConfig` to a CDI managed bean.
+CDI is activated by default in Jakarta Faces 4.0 and can´t be deactivated.  
+It´s not required anymore to add `@FacesConfig` to a CDI managed bean to accomplish this.
+As of Jakarta Faces 4.0 `@FacesConfig` still removes the need to explicitly add a FacesServlet entry to web.xml.
 
 ## Building
 
