@@ -55,6 +55,7 @@ public final class ComponentSupport {
 
     private final static String MARK_DELETED = "com.sun.faces.facelets.MARK_DELETED";
     public final static String MARK_CREATED = "com.sun.faces.facelets.MARK_ID";
+    private final static String MARK_ID_CACHE = "com.sun.faces.facelets.MARK_ID_CACHE";
 
     // Expando boolean attribute used to identify parent components that have had
     // a dynamic child addition or removal.
@@ -243,11 +244,11 @@ public final class ComponentSupport {
     
     @SuppressWarnings("unchecked")
     private static Map<String, UIComponent> getDescendantMarkIdCache(UIComponent component) {
-        Map<String, UIComponent> descendantMarkIdCache = (Map<String, UIComponent>) component.getTransientStateHelper().getTransient("descendantMarkIdCache");
+        Map<String, UIComponent> descendantMarkIdCache = (Map<String, UIComponent>) component.getTransientStateHelper().getTransient(MARK_ID_CACHE);
 
         if (descendantMarkIdCache == null) {
             descendantMarkIdCache = new HashMap<String, UIComponent>();
-            component.getTransientStateHelper().putTransient("descendantMarkIdCache", descendantMarkIdCache);
+            component.getTransientStateHelper().putTransient(MARK_ID_CACHE, descendantMarkIdCache);
         }
 
         return descendantMarkIdCache;
