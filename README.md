@@ -224,17 +224,7 @@ Start the server and open it by `http://localhost:8080/contextname/hello.xhtml`.
 
 ## Activating CDI in Jakarta Faces 4.0
 
-By default, Jakarta Faces 4.0 will run in Jakarta Faces 2.2 modus as to CDI support. Even when you use a Jakarta Faces 2.3 or 3.0 compatible `faces-config.xml`. In other words, the Jakarta Faces 2.3+ feature of injection and EL resolving of Jakarta Faces artifacts ([spec issue 1316](https://github.com/javaee/javaserverfaces-spec/issues/1316)) won't work until you explicitly activate this. In other words, `@Inject FacesContext` doesn't work by default. This was necessary in order for Jakarta Faces 2.3 to stay compatible with 2.2, and this carried over to 3.0.
-
-There is currently only one way to activate CDI in Jakarta Faces 2.3 and 3.0 and herewith make Jakarta Faces 2.3 and 3.0 to run in full Jakarta Faces 2.3/3.0 modus. Put the `@FacesConfig` annotation on an arbitrary CDI managed bean. For example, a general startup/configuration bean.
-
-```
-@FacesConfig
-@ApplicationScoped
-public class YourApplicationConfig {
-    // ...
-}
-```
+CDI is activated by default in Jakarta Faces 4.0 and can´t be deactivated. It´s not required anymore to add @FacesConfig to a CDI managed bean.
 
 ## Building
 
