@@ -118,9 +118,6 @@ public class CompositeComponentTagLibrary extends LazyTagLibrary {
         return result;
     }
 
-    private static final String NS_COMPOSITE_COMPONENT_PREFIX = CompositeLibrary.Namespace + "/";
-    private static final String XMLNS_COMPOSITE_COMPONENT_PREFIX = CompositeLibrary.XMLNSNamespace + "/";
-
     @Override
     public boolean tagLibraryForNSExists(String toTest) {
         boolean result = false;
@@ -175,16 +172,14 @@ public class CompositeComponentTagLibrary extends LazyTagLibrary {
             resourceId = compositeLibraryName;
         } else {
             int resourceIdIndex;
-            if (-1 != (resourceIdIndex = toTest.indexOf(NS_COMPOSITE_COMPONENT_PREFIX))) {
-                resourceIdIndex += NS_COMPOSITE_COMPONENT_PREFIX.length();
-                if (resourceIdIndex < toTest.length()) {
-                    resourceId = toTest.substring(resourceIdIndex);
-                }
-            }
-            if (-1 != (resourceIdIndex = toTest.indexOf(XMLNS_COMPOSITE_COMPONENT_PREFIX))) {
-                resourceIdIndex += XMLNS_COMPOSITE_COMPONENT_PREFIX.length();
-                if (resourceIdIndex < toTest.length()) {
-                    resourceId = toTest.substring(resourceIdIndex);
+            for (String namespace : CompositeLibrary.NAMESPACES) {
+                String prefix = namespace + "/";
+                if (-1 != (resourceIdIndex = toTest.indexOf(prefix))) {
+                    resourceIdIndex += prefix.length();
+                    if (resourceIdIndex < toTest.length()) {
+                        resourceId = toTest.substring(resourceIdIndex);
+                        break;
+                    }
                 }
             }
         }

@@ -33,12 +33,18 @@
     <name>Mojarra ${project.version} - Test - Faces 2.3</name>
 
     <modules>
+        <module>commandScript</module>
         <module>el</module>
         <module>exactMapping</module>
         <module>faceletCacheFactory</module>
         <module>facelets</module>
         <module>getViews</module>
         <module>systemEvent</module>
+        <module>searchExpression</module>
+        <module>namespacedView</module>
+        <module>passthrough</module>
         <module>validateWholeBean</module>
+        <module>websocket</module>
+        <module>xhtmlMappingToFaceletByDefault</module>
   </modules>
 </project>

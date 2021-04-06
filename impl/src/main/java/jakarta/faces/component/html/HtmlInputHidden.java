@@ -48,6 +48,10 @@ public class HtmlInputHidden extends UIInput {
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.HtmlInputHidden";
 
+    /**
+     * Properties used by this component
+     *
+     */
     protected enum PropertyKeys {
         ;
         String toString;

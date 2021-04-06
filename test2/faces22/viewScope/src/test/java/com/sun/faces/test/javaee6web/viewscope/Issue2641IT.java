@@ -117,7 +117,6 @@ public class Issue2641IT {
     @Test
     public void testInvalidatedSession() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/invalidatedSession.xhtml");
-        System.out.println(page.asXml());
 
         assertTrue(page.asXml().contains("This is from the @PostConstruct"));
         webClient.getPage(webUrl + "faces/invalidatedPerform.xhtml");

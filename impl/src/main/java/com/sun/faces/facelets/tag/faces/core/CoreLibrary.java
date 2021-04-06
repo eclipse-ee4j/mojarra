@@ -16,6 +16,10 @@
 
 package com.sun.faces.facelets.tag.faces.core;
 
+import static com.sun.faces.util.Util.unmodifiableSet;
+
+import java.util.Set;
+
 import com.sun.faces.ext.component.UIValidateWholeBean;
 import com.sun.faces.facelets.tag.AbstractTagLibrary;
 import com.sun.faces.renderkit.html_basic.WebsocketRenderer;
@@ -23,6 +27,8 @@ import com.sun.faces.renderkit.html_basic.WebsocketRenderer;
 import jakarta.faces.component.UIImportConstants;
 import jakarta.faces.component.UIParameter;
 import jakarta.faces.component.UISelectItem;
+import jakarta.faces.component.UISelectItemGroup;
+import jakarta.faces.component.UISelectItemGroups;
 import jakarta.faces.component.UISelectItems;
 import jakarta.faces.component.UIViewAction;
 import jakarta.faces.component.UIViewParameter;
@@ -46,14 +52,12 @@ import jakarta.faces.validator.RequiredValidator;
  */
 public final class CoreLibrary extends AbstractTagLibrary {
 
-    public final static String Namespace = "http://java.sun.com/jsf/core";
-    public final static String XMLNSNamespace = "http://xmlns.jcp.org/jsf/core";
+    private final static String SunNamespace = "http://java.sun.com/jsf/core";
+    private final static String JcpNamespace = "http://xmlns.jcp.org/jsf/core";
+    private final static String JakartaNamespace = "jakarta.faces.core";
 
-    public final static CoreLibrary Instance = new CoreLibrary();
-
-    public CoreLibrary() {
-        this(Namespace);
-    }
+    public final static Set<String> NAMESPACES = unmodifiableSet(JakartaNamespace, JcpNamespace, SunNamespace);
+    public final static String DEFAULT_NAMESPACE = JakartaNamespace;
 
     public CoreLibrary(String namespace) {
         super(namespace);
@@ -99,6 +103,10 @@ public final class CoreLibrary extends AbstractTagLibrary {
         this.addComponent("selectItem", UISelectItem.COMPONENT_TYPE, null);
 
         this.addComponent("selectItems", UISelectItems.COMPONENT_TYPE, null);
+
+        this.addComponent("selectItemGroup", UISelectItemGroup.COMPONENT_TYPE, null);
+
+        this.addComponent("selectItemGroups", UISelectItemGroups.COMPONENT_TYPE, null);
 
         addTagHandler("setPropertyActionListener", SetPropertyActionListenerHandler.class);
 

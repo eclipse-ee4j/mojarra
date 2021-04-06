@@ -27,7 +27,7 @@
         <navigation-rule>
             <from-view-id>*</from-view-id>
             <navigation-case>
-                <from-action>issue2997PageInFacesConfig</from-action>
+                <from-outcome>issue2997PageInFacesConfig</from-outcome>
                 <to-view-id>/issue2997PageInFacesConfig.xhtml</to-view-id>
             </navigation-case>
         </navigation-rule>

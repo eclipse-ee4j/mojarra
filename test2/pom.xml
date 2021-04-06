@@ -29,6 +29,7 @@
     <modules>
         <module>faces22</module>
         <module>faces23</module>
+        <module>faces40</module>
     </modules>
 
     <properties>
@@ -41,9 +42,17 @@
 
         <!-- Application Server versions (these are downloaded and installed
             in these versions by Maven for the CI profiles) -->
-        <glassfish.version>6.0.0</glassfish.version>
+        <glassfish.version>6.1.0-M1</glassfish.version>
         <tomcat.version>9.0.12</tomcat.version>
     </properties>
+    
+    <repositories>
+        <repository>
+            <id>jakarta-staging</id>
+            <snapshots />
+            <url>https://jakarta.oss.sonatype.org/content/repositories/staging</url>
+        </repository>
+    </repositories>
 
     <dependencyManagement>
         <dependencies>
@@ -141,7 +150,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.1</version>
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -353,7 +362,7 @@
                 <dependency>
                     <groupId>cloud.piranha.arquillian</groupId>
                     <artifactId>piranha-arquillian-server</artifactId>
-                    <version>20.10.0-SNAPSHOT</version>
+                    <version>21.4.0-SNAPSHOT</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>

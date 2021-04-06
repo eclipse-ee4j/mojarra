@@ -35,7 +35,14 @@
     <modules>
         <module>cdiBeanValidator</module>
         <module>cdiInitDestroyEvent</module>
-        <module>viewscope</module>
+        <module>cdiMethodValidation</module>
+        <module>cdiMultiTenantSetsTccl</module>
+        <module>cdiNoBeansXml</module>
+        <module>expressionLanguageLambda</module>
+        <module>faceletsTemplate</module>
+        <module>multiFieldValidation</module>
+        <module>protectedView</module>
+        <module>viewScope</module>
         <module>viewActionCdiViewScoped</module>
         <module>viewExpired</module>
         <module>viewParamNullValueAjax</module>

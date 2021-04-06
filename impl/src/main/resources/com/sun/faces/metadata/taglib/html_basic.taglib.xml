@@ -26,7 +26,7 @@
         UIComponent + HTML RenderKit Renderer combinations defined in the
         JavaServer Faces Specification.
     ]]></description>
-    <namespace>http://xmlns.jcp.org/jsf/html</namespace>
+    <namespace>jakarta.faces.html</namespace>
     <tag>
         <description>
             <![CDATA[<div class="changed_added_2_0">Render an HTML "input" element of type "button".
@@ -93,7 +93,7 @@
             </description>
             <name>role</name>
             <required>false</required>
-            <type>javal.lang.String</type>
+            <type>java.lang.String</type>
         </attribute>
 
         <attribute>
@@ -188,7 +188,8 @@
         <attribute>
             <description>
                 <![CDATA[Alternate textual description of the
-                element rendered by this component.]]>
+                element rendered by this component.
+                <span class="changed_modified_4_0">This attribute is ignored when the <code>image</code> attribute is not specified.</span>]]>
             </description>
             <name>
                 alt
@@ -1760,10 +1761,11 @@
             <type>java.lang.String</type>
         </attribute>
         <attribute>
-            <description>
+            <description><![CDATA[
                 Alternate textual description of the
                 element rendered by this component.
-            </description>
+                <span class="changed_modified_4_0">This attribute is ignored when the <code>image</code> attribute is not specified.</span>
+            ]]></description>
             <name>alt</name>
             <required>false</required>
             <type>java.lang.String</type>
@@ -2676,10 +2678,10 @@
             <type>java.lang.Boolean</type>
         </attribute>
         <attribute>
-            <description>
+            <description><![CDATA[
                 Flag indicating whether or not this component should be rendered (during Render Response Phase),
                 or processed on any subsequent form submit. Defaults to <code>true</code>.
-            </description>
+            ]]></description>
             <name>rendered</name>
             <required>false</required>
             <type>java.lang.Boolean</type>
@@ -4179,15 +4181,6 @@
         </attribute>
         <attribute>
             <description>
-                Alternate textual description of the
-                element rendered by this component.
-            </description>
-            <name>alt</name>
-            <required>false</required>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>
                 If the value of this attribute is "off", render "off" as the
                 value
                 of the attribute. This indicates that the browser should
@@ -4597,6 +4590,20 @@
                 message that comes from the validator.
             </description>
             <name>validatorMessage</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[<span class="changed_added_4_0">
+                    Controls the data type and associated control of the element.
+                    Default value is <code>text</code>.
+                    If a value is specified for which already a more specific component exist, such as
+                    <code>hidden</code>, <code>password</code>, <code>checkbox</code>, <code>radio</code>, <code>file</code>, <code>submit</code>, <code>image</code>, <code>reset</code> and <code>button</code>,
+                    and the ProjectStage is set to Development, then the renderer must add a warning message stating that the more specific component should be preferred.
+                </span>]]>
+            </description>
+            <name>type</name>
             <required>false</required>
             <type>java.lang.String</type>
         </attribute>
@@ -6693,9 +6700,10 @@
             
             <p>Output a <code>&lt;link&gt;</code> element.  Use the result from
             calling <code>resource.getRequestPath()</code> as the value of the
-            "href" attribute, the result from calling
+            "href" attribute. Use the result from calling
             <code>resource.getContentType()</code> as the value of the "type"
-            attribute, the literal string "stylesheet" as the value of the "rel"
+            attribute<span class="changed_modified_4_0">, unless the value equals <code>text/css</code> and the current doctype is a HTML5 doctype.</span>.
+            Use the literal string "stylesheet" as the value of the "rel"
             attribute, and the literal string "screen" as the value of the "media"
             attribute.</p>
             
@@ -7121,9 +7129,9 @@
             
             <p>Render a script element.  Use the result from calling
             <code>resource.getRequestPath()</code> as the value of the "src"
-            attribue and the result from calling
+            attribue. Use the result from calling
             <code>resource.getContentType()</code> as the value of the "type"
-            attribute.</p>
+            attribute<span class="changed_modified_4_0">, unless the value equals <code>text/javascript</code> and the current doctype is a HTML5 doctype</span>.</p>
             
             </p>
             
@@ -11367,23 +11375,12 @@
         </attribute>
         <attribute>
             <description>
-                <![CDATA[Alternate textual description of the
-                element rendered by this component.]]>
+                <![CDATA[<span class="changed_added_4_0">
+                    Comma separated string of mime types of files to filter in client side file browse dialog.
+                    Note: this is not validated in server side.
+                </span>]]>
             </description>
-            <name>alt</name>
-            <required>false</required>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>
-                <![CDATA[If the value of this attribute is "off", render "off" as the value
-                of the attribute. This indicates that the  browser should
-                disable its autocomplete feature for this component.  This is
-                useful for components that perform autocompletion and do not
-                want the browser interfering.  If this attribute is not set or the value
-                is "on", render nothing.]]>
-            </description>
-            <name>autocomplete</name>
+            <name>accept</name>
             <required>false</required>
             <type>java.lang.String</type>
         </attribute>
@@ -11425,15 +11422,6 @@
             <name>lang</name>
             <required>false</required>
             <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>
-                <![CDATA[The maximum number of characters that may
-                be entered in this field.]]>
-            </description>
-            <name>maxlength</name>
-            <required>false</required>
-            <type>int</type>
         </attribute>
         <attribute>
             <description>
@@ -11571,18 +11559,6 @@
         </attribute>
         <attribute>
             <description>
-                <![CDATA[Flag indicating that this component will prohibit changes by
-                the user.  The element may receive focus unless it has also
-                been disabled.  A value of false causes
-                no attribute to be rendered, while a value of true causes the
-                attribute to be rendered as readonly="readonly".]]>
-            </description>
-            <name>readonly</name>
-            <required>false</required>
-            <type>java.lang.Boolean</type>
-        </attribute>
-        <attribute>
-            <description>
                 <![CDATA[<p class="changed_added_2_2">Per the WAI-ARIA spec and its
                 relationship to HTML5 (Section title ARIA Role Attriubute),
                 every HTML element may have a "role" attribute whose value
@@ -11601,15 +11577,6 @@
             <name>role</name>
             <required>false</required>
             <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>
-                <![CDATA[The number of characters used to determine
-                the width of this field.]]>
-            </description>
-            <name>size</name>
-            <required>false</required>
-            <type>int</type>
         </attribute>
         <attribute>
             <description>

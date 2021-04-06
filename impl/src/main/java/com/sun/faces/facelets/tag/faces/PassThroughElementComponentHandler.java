@@ -34,11 +34,15 @@ public class PassThroughElementComponentHandler extends ComponentHandler {
     private final TagAttribute elementName;
 
     protected final TagAttribute getRequiredPassthroughAttribute(String localName) throws TagException {
-        TagAttribute attr = tag.getAttributes().get(PassThroughAttributeLibrary.Namespace, localName);
-        if (attr == null) {
-            throw new TagException(tag, "Attribute '" + localName + "' is required");
+        for (String namespace : PassThroughAttributeLibrary.NAMESPACES) {
+            TagAttribute attr = tag.getAttributes().get(namespace, localName);
+
+            if (attr != null) {
+                return attr;
+            }
         }
-        return attr;
+
+        throw new TagException(tag, "Attribute '" + localName + "' is required");
     }
 
     public PassThroughElementComponentHandler(ComponentConfig config) {

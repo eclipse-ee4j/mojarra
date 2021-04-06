@@ -18,6 +18,7 @@
 
 package com.sun.faces.util;
 
+import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
 import static com.sun.faces.util.MessageUtils.ILLEGAL_ATTEMPT_SETTING_APPLICATION_ARTIFACT_ID;
 import static com.sun.faces.util.MessageUtils.NAMED_OBJECT_NOT_FOUND_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
@@ -41,8 +42,11 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -51,6 +55,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -77,6 +83,7 @@ import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.Doctype;
 import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UINamingContainer;
@@ -146,6 +153,13 @@ public class Util {
     }
 
     private static Collection<String> getFacesServletMappings(ServletContext servletContext) {
+        // check servlet context during initialization to avoid ConfigureListener to call the servlet registration
+        @SuppressWarnings("unchecked")
+        Collection<String> mappings = (Collection<String>) servletContext.getAttribute(FACES_SERVLET_MAPPINGS);
+        if (mappings != null) {
+            return mappings;
+        }
+
         ServletRegistration facesRegistration = getExistingFacesServletRegistration(servletContext);
 
         if (facesRegistration != null) {
@@ -1299,22 +1313,21 @@ public class Util {
 
     private static final String FACES_CONTEXT_ATTRIBUTES_DOCTYPE_KEY = Util.class.getName() + "_FACES_CONTEXT_ATTRS_DOCTYPE_KEY";
 
-    public static void saveDOCTYPEToFacesContextAttributes(String DOCTYPE) {
+    public static void saveDOCTYPEToFacesContextAttributes(Doctype doctype) {
         FacesContext context = FacesContext.getCurrentInstance();
         if (null == context) {
             return;
         }
         Map<Object, Object> attrs = context.getAttributes();
-        attrs.put(FACES_CONTEXT_ATTRIBUTES_DOCTYPE_KEY, DOCTYPE);
-
+        attrs.put(FACES_CONTEXT_ATTRIBUTES_DOCTYPE_KEY, doctype);
     }
 
-    public static String getDOCTYPEFromFacesContextAttributes(FacesContext context) {
+    public static Doctype getDOCTYPEFromFacesContextAttributes(FacesContext context) {
         if (null == context) {
             return null;
         }
         Map<Object, Object> attrs = context.getAttributes();
-        return (String) attrs.get(FACES_CONTEXT_ATTRIBUTES_DOCTYPE_KEY);
+        return (Doctype) attrs.get(FACES_CONTEXT_ATTRIBUTES_DOCTYPE_KEY);
     }
 
     private static final String FACES_CONTEXT_ATTRIBUTES_XMLDECL_KEY = Util.class.getName() + "_FACES_CONTEXT_ATTRS_XMLDECL_KEY";
@@ -1567,6 +1580,34 @@ public class Util {
         }
 
         return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Stream<T> stream(Object object) {
+        if (object == null) {
+            return Stream.empty();
+        } else if (object instanceof Stream) {
+            return (Stream<T>) object;
+        } else if (object instanceof Iterable) {
+            return (Stream<T>) StreamSupport.stream(((Iterable<?>) object).spliterator(), false);
+        } else if (object instanceof Map) {
+            return (Stream<T>) ((Map<?, ?>) object).entrySet().stream();
+        } else if (object instanceof int[]) {
+            return (Stream<T>) Arrays.stream((int[]) object).boxed();
+        } else if (object instanceof long[]) {
+            return (Stream<T>) Arrays.stream((long[]) object).boxed();
+        } else if (object instanceof double[]) {
+            return (Stream<T>) Arrays.stream((double[]) object).boxed();
+        } else if (object instanceof Object[]) {
+            return (Stream<T>) Arrays.stream((Object[]) object);
+        } else {
+            return (Stream<T>) Stream.of(object);
+        }
+    }
+
+    @SafeVarargs
+    public static <E> Set<E> unmodifiableSet(E... elements) {
+        return Collections.unmodifiableSet(new LinkedHashSet<>(Arrays.asList(elements)));
     }
 
 }

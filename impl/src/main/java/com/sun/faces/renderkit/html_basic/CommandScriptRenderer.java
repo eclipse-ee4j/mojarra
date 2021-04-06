@@ -93,7 +93,10 @@ public class CommandScriptRenderer extends HtmlBasicRenderer {
         writer.startElement("span", commandScript);
         writer.writeAttribute("id", clientId, "id");
         writer.startElement("script", commandScript);
-        writer.writeAttribute("type", "text/javascript", "type");
+        
+        if (!RenderKitUtils.isOutputHtml5Doctype(context)) {
+            writer.writeAttribute("type", ScriptRenderer.DEFAULT_CONTENT_TYPE, "type");
+        }
 
         RenderKitUtils.renderFunction(context, component, getBehaviorParameters(commandScript), clientId);
     }

@@ -586,9 +586,11 @@ public class StateContext {
         protected void handleRemove(FacesContext context, UIComponent component) {
             if (component.isInView()) {
                 decrementDynamicChildCount(context, component.getParent());
-
-                handleAddRemoveWithAutoPrune(component, new ComponentStruct(REMOVE, component.getClientId(context), component.getId()));
-            }
+                handleAddRemoveWithAutoPrune(
+                    component, 
+                    new ComponentStruct(REMOVE, findFacetNameForComponent(component), component.getClientId(context), component.getId())
+                );
+           }
         }
 
         /**

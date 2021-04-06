@@ -5,44 +5,11 @@ before_install:
   - export M2_HOME=$PWD/apache-maven-3.5.4
   - export PATH=$M2_HOME/bin:$PATH
 jdk:
-  - openjdk8
-env:
-# - TEST_FOLDER=test/glassfish
-  - TEST_FOLDER=test/htmlunitaware
-  - TEST_FOLDER=test/javaee6
-  - TEST_FOLDER=test/javaee6web
-  - TEST_FOLDER=test/javaee7
-  - TEST_FOLDER=test/javaee8
-#  - TEST_FOLDER=test/protocolaware
-#  - TEST_FOLDER=test/servlet30
-#  - TEST_FOLDER=test/servlet30-isolated
-  - TEST_FOLDER=test/servlet31
-  - TEST_FOLDER=test/servlet40
+  - openjdk11
 install:
   - echo "Overriding default install"
 before_script:
   - export MAVEN_SKIP_RC=true
 script:
-  - export BASE_DIR=`pwd`
-  - export GF_VERSION=5.1.0
-  - wget "https://www.eclipse.org/downloads/download.php?file=/glassfish/glassfish-${GF_VERSION}.zip&mirror_id=1" -O glassfish-${GF_VERSION}.zip
-  - unzip -q glassfish-${GF_VERSION}.zip
-  - echo "Glassfish ${GF_VERSION} is installed in " $BASE_DIR/glassfish5
   - export MAVEN_OPTS="-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=off"
   - mvn -B clean install
-  - cd $BASE_DIR/test
-  - echo "Patching Mojarra JAR"
-  - mvn -B -Dglassfish.patch.home=$BASE_DIR/glassfish5 -P glassfish-patch -N validate
-  - echo "Starting Glassfish ${GF_VERSION}"
-  - mvn -B -Dglassfish.cargo.home=$BASE_DIR/glassfish5 -P glassfish-cargo -N cargo:start
-  - cd $BASE_DIR/$TEST_FOLDER
-  - echo "Deploying applications"
-  - mvn -B -Dglassfish.cargo.home=$BASE_DIR/glassfish5 -P glassfish-cargo cargo:redeploy
-  - echo "Running tests"
-  - mvn -B -P integration verify
-  - echo "Shutting down Glassfish ${GF_VERSION}"
-  - mvn -B -Dglassfish.cargo.home=$BASE_DIR/glassfish5 -P glassfish-cargo -N cargo:stop
-addons:
-  apt:
-    packages:
-    - libxml2-utils

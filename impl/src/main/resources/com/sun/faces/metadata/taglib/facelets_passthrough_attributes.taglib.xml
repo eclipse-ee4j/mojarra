@@ -40,7 +40,7 @@
         </div>
     
     ]]></description>
-    <namespace>http://xmlns.jcp.org/jsf/passthrough</namespace>
+    <namespace>jakarta.faces.passthrough</namespace>
     <tag>
         <description><![CDATA[
 

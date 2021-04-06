@@ -17,21 +17,21 @@
 package com.sun.faces.mock;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.Collections;
 
-import jakarta.el.ELContext;
 import com.sun.faces.renderkit.RenderKitUtils;
 
+import jakarta.el.ELContext;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
-import jakarta.faces.application.ViewHandler;
 import jakarta.faces.application.FacesMessage.Severity;
+import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExceptionHandler;
 import jakarta.faces.context.ExternalContext;
@@ -76,6 +76,12 @@ public class MockFacesContext extends FacesContext {
     }
 
     // -------------------------------------------------------------- Properties
+
+    @Override
+    public Lifecycle getLifecycle() {
+        return null;
+    }
+
     // application
     private Application application = null;
 
@@ -177,7 +183,7 @@ public class MockFacesContext extends FacesContext {
         Iterator clientIds = messages.keySet().iterator();
         while (clientIds.hasNext()) {
             String clientId = (String) clientIds.next();
-            results.addAll((List<FacesMessage>) messages.get(clientId));
+            results.addAll(messages.get(clientId));
         }
         return results;
     }
@@ -322,7 +328,7 @@ public class MockFacesContext extends FacesContext {
                 maxSeverity = sev;
             }
         }
-        List list = (List) messages.get(clientId);
+        List list = messages.get(clientId);
         if (list == null) {
             list = new ArrayList();
             messages.put(clientId, list);

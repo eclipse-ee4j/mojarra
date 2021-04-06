@@ -114,10 +114,10 @@ public final class CompositeTagLibrary implements TagLibrary {
         if (null != result) {
             int i;
             if (-1 != (i = result.indexOf(":"))) {
-                result = result.substring(0, i);
+                return result.substring(0, i);
             }
         }
-        return result;
+        return null;
     }
 
     /*

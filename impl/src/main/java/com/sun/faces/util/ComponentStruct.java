@@ -43,8 +43,9 @@ public class ComponentStruct implements StateHolder {
     public ComponentStruct() {
     }
 
-    public ComponentStruct(String action, String clientId, String id) {
+    public ComponentStruct(String action, String facetName, String clientId, String id) {
         this.action = action;
+        this.facetName = facetName;
         this.clientId = clientId;
         this.id = id;
     }

@@ -19,6 +19,8 @@
 package com.sun.faces.renderkit.html_basic;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.sun.faces.config.WebConfiguration;
@@ -26,10 +28,13 @@ import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.component.UIOutput;
 import jakarta.faces.component.html.HtmlInputFile;
+import jakarta.faces.component.html.HtmlInputText;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
@@ -39,8 +44,25 @@ import jakarta.faces.context.ResponseWriter;
  */
 public class TextRenderer extends HtmlBasicInputRenderer {
 
-    private static final Attribute[] INPUT_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.INPUTTEXT);
+    private static final Attribute[] INPUTTEXT_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.INPUTTEXT);
+    private static final Attribute[] INPUTFILE_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.INPUTFILE);
     private static final Attribute[] OUTPUT_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTPUTTEXT);
+
+    private static final Map<String, String> RECOMMENDED_COMPONENTS_BY_DISCOMMENDED_TYPES = mapRecommendedComponentsByDiscommendedTypes();
+
+    private static Map<String, String> mapRecommendedComponentsByDiscommendedTypes() {
+        Map<String, String> map = new HashMap<>(9);
+        map.put("hidden", "<h:inputHidden>");
+        map.put("password", "<h:inputSecret>");
+        map.put("checkbox", "<h:selectBooleanCheckbox> or <h:selectManyCheckbox>");
+        map.put("radio", "<h:selectOneRadio>");
+        map.put("file", "<h:inputFile>");
+        map.put("submit", "<h:commandButton>");
+        map.put("image", "<h:commandButton type=\"image\">");
+        map.put("reset", "<h:commandButton type=\"reset\">");
+        map.put("button", "<h:commandButton type=\"button\"> or <h:button>");
+        return Collections.unmodifiableMap(map);
+    }
 
     // ---------------------------------------------------------- Public Methods
 
@@ -74,6 +96,24 @@ public class TextRenderer extends HtmlBasicInputRenderer {
 
             if (component instanceof HtmlInputFile) {
                 writer.writeAttribute("type", "file", null);
+                String accept = ((HtmlInputFile) component).getAccept();
+
+                if (accept != null) {
+                    writer.writeAttribute("accept", accept, "accept");
+                }
+            } else if (component instanceof HtmlInputText) {
+                String type = ((HtmlInputText) component).getType();
+
+                if (context.isProjectStage(ProjectStage.Development)) {
+                    String recommendedComponent = RECOMMENDED_COMPONENTS_BY_DISCOMMENDED_TYPES.get(type.trim().toLowerCase());
+
+                    if (recommendedComponent != null) {
+                        String message = "<h:inputText type=\"" + type + "\"> is discommended, you should instead use " + recommendedComponent;
+                        context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_WARN, message, message));
+                    }
+                }
+
+                writer.writeAttribute("type", type, null);
             } else {
                 writer.writeAttribute("type", "text", null);
             }
@@ -94,8 +134,9 @@ public class TextRenderer extends HtmlBasicInputRenderer {
                 writer.writeAttribute("class", styleClass, "styleClass");
             }
 
-            // style is rendered as a passthur attribute
-            RenderKitUtils.renderPassThruAttributes(context, writer, component, INPUT_ATTRIBUTES, getNonOnChangeBehaviors(component));
+            // style is rendered as a passthru attribute
+            Attribute[] attributes = component instanceof HtmlInputFile ? INPUTFILE_ATTRIBUTES : INPUTTEXT_ATTRIBUTES;
+            RenderKitUtils.renderPassThruAttributes(context, writer, component, attributes, getNonOnChangeBehaviors(component));
             RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
             RenderKitUtils.renderOnchange(context, component, false);

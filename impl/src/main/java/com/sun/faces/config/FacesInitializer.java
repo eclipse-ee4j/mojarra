@@ -18,6 +18,7 @@ package com.sun.faces.config;
 
 import static com.sun.faces.RIConstants.ANNOTATED_CLASSES;
 import static com.sun.faces.RIConstants.FACES_INITIALIZER_MAPPINGS_ADDED;
+import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
 import static com.sun.faces.util.Util.isEmpty;
 import static java.lang.Boolean.TRUE;
 
@@ -172,6 +173,7 @@ public class FacesInitializer implements ServletContainerInitializer {
         }
 
         servletContext.setAttribute(FACES_INITIALIZER_MAPPINGS_ADDED, TRUE);
+        servletContext.setAttribute(FACES_SERVLET_MAPPINGS, newFacesServletRegistration.getMappings());
     }
 
     private ServletRegistration getExistingFacesServletRegistration(ServletContext servletContext) {

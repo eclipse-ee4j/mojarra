@@ -166,6 +166,10 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
 
     // ------------------------------------------------------ Manifest Constants
 
+    /**
+     * The key in the facet collection that contains the meta data of the view root.
+     * For example, the <code>UIViewParameter</code>s are stored here.
+     */
     public static final String METADATA_FACET_NAME = "jakarta_faces_metadata";
 
     /**
@@ -252,6 +256,12 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
     }
 
     // ------------------------------------------------------ Instance Variables
+
+    /**
+     * <p>
+     * Set during view build time.
+     */
+    private Doctype doctype;
 
     /**
      * <p>
@@ -370,6 +380,34 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
 
         getStateHelper().put(PropertyKeys.viewId, viewId);
 
+    }
+
+    /**
+     * <p>
+     * Return the doctype of this view.
+     * </p>
+     *
+     * @return the doctype of this view.
+     *
+     * @since 4.0
+     */
+    public Doctype getDoctype() {
+
+        return doctype;
+    }
+
+    /**
+     * <p>
+     * Set the doctype of this view.
+     * </p>
+     *
+     * @param doctype The doctype.
+     *
+     * @since 4.0
+     */
+    public void setDoctype(Doctype doctype) {
+
+        this.doctype = doctype;
     }
 
     // ------------------------------------------------ Event Management Methods

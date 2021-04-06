@@ -16,10 +16,6 @@
 
 package com.sun.faces;
 
-import com.sun.faces.facelets.tag.faces.core.CoreLibrary;
-import com.sun.faces.facelets.tag.faces.html.HtmlLibrary;
-import com.sun.faces.facelets.tag.ui.UILibrary;
-
 import jakarta.faces.render.RenderKitFactory;
 
 /**
@@ -45,15 +41,6 @@ public class RIConstants {
     public static final String TLV_RESOURCE_LOCATION = FACES_PREFIX + "resources.Resources";
 
     public static final String NO_VALUE = "";
-
-    public static final String CORE_NAMESPACE = CoreLibrary.Namespace;
-    public static final String HTML_NAMESPACE = HtmlLibrary.Namespace;
-
-    public static final String CORE_NAMESPACE_NEW = CoreLibrary.XMLNSNamespace;
-    public static final String HTML_NAMESPACE_NEW = HtmlLibrary.XMLNSNamespace;
-
-    public static final String FACELET_NAMESPACE = UILibrary.Namespace;
-    public static final String FACELET_NAMESPACE_NEW = UILibrary.XMLNSNamespace;
 
     public static final Class[] EMPTY_CLASS_ARGS = new Class[0];
     public static final Object[] EMPTY_METH_ARGS = new Object[0];
@@ -132,6 +119,13 @@ public class RIConstants {
      * Convenience key to temporarily store the set of annotated classes in the servlet context.
      */
     public static final String ANNOTATED_CLASSES = FACES_PREFIX + "AnnotatedClasses";
+
+    /**
+     * Key to annotate the mappings for the FacesServlet. Since servlet 3.0 the ConfigureListener
+     * cannot access the servlet mappings because it is initialized by a TLD and it is programmatic.
+     * So this key will store the mappings during the initialization.
+     */
+    public static final String FACES_SERVLET_MAPPINGS = FACES_PREFIX + "FacesServletMappings";
 
     private RIConstants() {
         throw new IllegalStateException();

@@ -46,7 +46,7 @@ import jakarta.websocket.CloseReason.CloseCodes;
  * </pre>
  *
  *
- * <h3 id="configuration"><a href="#configuration">Configuration</a></h3>
+ * <h2 id="configuration"><a href="#configuration">Configuration</a></h2>
  * <p>
  * First enable the web socket endpoint by below boolean context parameter in <code>web.xml</code>.
  *
@@ -58,7 +58,7 @@ import jakarta.websocket.CloseReason.CloseCodes;
  * </pre>
  *
  *
- * <h3 id="usage-client"><a href="#usage-client">Usage (client)</a></h3>
+ * <h2 id="usage-client"><a href="#usage-client">Usage (client)</a></h2>
  * <p>
  * Declare <strong><code>&lt;f:websocket&gt;</code></strong> tag in the Jakarta Server Faces view with at least a
  * <strong><code>channel</code></strong> name and an <strong><code>onmessage</code></strong> JavaScript listener
@@ -108,7 +108,7 @@ import jakarta.websocket.CloseReason.CloseCodes;
  * be implicitly closed once the document is unloaded.
  *
  *
- * <h3 id="usage-server"><a href="#usage-server">Usage (server)</a></h3>
+ * <h2 id="usage-server"><a href="#usage-server">Usage (server)</a></h2>
  * <p>
  * In WAR side, you can inject <strong>{@link PushContext}</strong> via <strong><code>&#64;</code>{@link Push}</strong>
  * annotation on the given channel name in any CDI/container managed artifact such as <code>@Named</code>,
@@ -145,7 +145,7 @@ import jakarta.websocket.CloseReason.CloseCodes;
  * view state, the HTTP session and, importantly, all security constraints on business service methods.
  *
  *
- * <h3 id="scopes-and-users"><a href="#scopes-and-users">Scopes and users</a></h3>
+ * <h2 id="scopes-and-users"><a href="#scopes-and-users">Scopes and users</a></h2>
  * <p>
  * By default the web socket is <code>application</code> scoped, i.e. any view/session throughout the web application
  * having the same web socket channel open will receive the same push message. The push message can be sent by all users
@@ -218,7 +218,7 @@ import jakarta.websocket.CloseReason.CloseCodes;
  * </pre>
  *
  *
- * <h3 id="connecting"><a href="#connecting">Conditionally connecting</a></h3>
+ * <h2 id="connecting"><a href="#connecting">Conditionally connecting</a></h2>
  * <p>
  * You can use the optional <strong><code>connected</code></strong> attribute to control whether to auto-connect the web
  * socket or not.
@@ -254,7 +254,7 @@ import jakarta.websocket.CloseReason.CloseCodes;
  * </pre>
  *
  *
- * <h3 id="events-client"><a href="#events-client">Events (client)</a></h3>
+ * <h2 id="events-client"><a href="#events-client">Events (client)</a></h2>
  * <p>
  * The optional <strong><code>onopen</code></strong> JavaScript listener function can be used to listen on open of a web
  * socket in client side. This will be invoked on the very first connection attempt, regardless of whether it will be
@@ -315,7 +315,7 @@ import jakarta.websocket.CloseReason.CloseCodes;
  * view has expired.
  *
  *
- * <h3 id="events-server"><a href="#events-server">Events (server)</a></h3>
+ * <h2 id="events-server"><a href="#events-server">Events (server)</a></h2>
  * <p>
  * When a web socket has been opened, a new CDI <strong>{@link WebsocketEvent}</strong> will be fired with
  * <strong><code>&#64;</code>{@link Opened}</strong> qualifier. When a web socket has been closed, a new CDI
@@ -343,7 +343,7 @@ import jakarta.websocket.CloseReason.CloseCodes;
  * </pre>
  *
  *
- * <h3 id="security"><a href="#security">Security considerations</a></h3>
+ * <h2 id="security"><a href="#security">Security considerations</a></h2>
  * <p>
  * If the socket is declared in a page which is only restricted to logged-in users with a specific role, then you may
  * want to add the URL of the push handshake request URL to the set of restricted URLs.
@@ -393,7 +393,7 @@ import jakarta.websocket.CloseReason.CloseCodes;
  * reachable from server end even when the session or view associated with the page in client side is expired.
  *
  *
- * <h3 id="ui"><a href="#ui">Ajax support</a></h3>
+ * <h2 id="ui"><a href="#ui">Ajax support</a></h2>
  * <p>
  * In case you'd like to perform complex UI updates depending on the received push message, then you can nest
  * <code>&lt;f:ajax&gt;</code> inside <code>&lt;f:websocket&gt;</code>. Here's an example:

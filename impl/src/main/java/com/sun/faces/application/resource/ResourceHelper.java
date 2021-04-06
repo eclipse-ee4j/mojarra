@@ -42,6 +42,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPOutputStream;
 
+import com.sun.faces.renderkit.html_basic.StylesheetRenderer;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
@@ -82,7 +83,7 @@ public abstract class ResourceHelper {
      */
     private static final String COMPRESSED_CONTENT_FILENAME = "compressed-content";
 
-    private static final String[] EL_CONTENT_TYPES = { "text/css", };
+    private static final String[] EL_CONTENT_TYPES = { StylesheetRenderer.DEFAULT_CONTENT_TYPE, };
 
     static {
         Arrays.sort(EL_CONTENT_TYPES);

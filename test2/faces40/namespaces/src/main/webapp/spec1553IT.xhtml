@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) 2021 Contributors to Eclipse Foundation.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+
+    xmlns:ui_sun="http://java.sun.com/jsf/facelets"
+    xmlns:f_sun="http://java.sun.com/jsf/core"
+    xmlns:h_sun="http://java.sun.com/jsf/html"
+    xmlns:cc_sun="http://java.sun.com/jsf/composite/components"
+    xmlns:c_sun="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn_sun="http://java.sun.com/jsp/jstl/functions"
+
+    xmlns:jsf_jcp="http://xmlns.jcp.org/jsf"
+    xmlns:ui_jcp="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f_jcp="http://xmlns.jcp.org/jsf/core"
+    xmlns:h_jcp="http://xmlns.jcp.org/jsf/html"
+    xmlns:p_jcp="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:cc_jcp="http://xmlns.jcp.org/jsf/composite/components"
+    xmlns:c_jcp="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:fn_jcp="http://xmlns.jcp.org/jsp/jstl/functions"
+
+    xmlns:faces_jakarta="jakarta.faces"
+    xmlns:ui_jakarta="jakarta.faces.facelets"
+    xmlns:f_jakarta="jakarta.faces.core"
+    xmlns:h_jakarta="jakarta.faces.html"
+    xmlns:p_jakarta="jakarta.faces.passthrough"
+    xmlns:cc_jakarta="jakarta.faces.composite/components"
+    xmlns:comp_jakarta="jakarta.faces.component"
+    xmlns:c_jakarta="jakarta.tags.core"
+    xmlns:fn_jakarta="jakarta.tags.functions"
+>
+    <h_jakarta:head>
+        <title>Spec1553IT</title>
+    </h_jakarta:head>
+    
+    <h_jakarta:body>
+        <div id="ui_sun"><ui_sun:repeat value="#{['v','a','l','u','e']}" var="v">#{v}</ui_sun:repeat></div>
+        <div id="f_sun"><f_sun:verbatim>value</f_sun:verbatim></div>
+        <div id="h_sun"><h_sun:outputText value="value" /></div>
+        <div id="cc_sun"><cc_sun:component value="value" /></div>
+        <div id="c_sun"><c_sun:if test="#{true}">value</c_sun:if></div>
+        <div id="fn_sun">#{fn_sun:substring('_value_', 1, 6)}</div>
+
+        <div id="jsf_jcp"><main jsf_jcp:id="id_jcp" /></div>
+        <div id="ui_jcp"><ui_jcp:repeat value="#{['v','a','l','u','e']}" var="v">#{v}</ui_jcp:repeat></div>
+        <div id="f_jcp"><f_jcp:verbatim>value</f_jcp:verbatim></div>
+        <div id="h_jcp"><h_jcp:outputText value="value" /></div>
+        <div id="p_jcp"><h_jcp:inputText p_jcp:type="email" /></div>
+        <div id="cc_jcp"><cc_jcp:component value="value" /></div>   
+        <div id="c_jcp"><c_jcp:if test="#{true}">value</c_jcp:if></div>
+        <div id="fn_jcp">#{fn_jcp:substring('_value_', 1, 6)}</div>
+
+        <div id="faces_jakarta"><main faces_jakarta:id="id_jakarta" /></div>
+        <div id="ui_jakarta"><ui_jakarta:repeat value="#{['v','a','l','u','e']}" var="v">#{v}</ui_jakarta:repeat></div>
+        <div id="f_jakarta"><f_jakarta:verbatim>value</f_jakarta:verbatim></div>
+        <div id="h_jakarta"><h_jakarta:outputText value="value" /></div>
+        <div id="p_jakarta"><h_jakarta:inputText p_jakarta:type="email" /></div>
+        <div id="cc_jakarta"><cc_jakarta:component value="value" /></div>
+        <div id="comp_jakarta"><comp_jakarta:customComponent value="value" /></div>
+        <div id="c_jakarta"><c_jakarta:if test="#{true}">value</c_jakarta:if></div>
+        <div id="fn_jakarta">#{fn_jakarta:substring('_value_', 1, 6)}</div>
+    </h_jakarta:body>
+</html>

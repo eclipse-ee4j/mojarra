@@ -28,7 +28,7 @@
     RenderKit.</p>
     
     ]]></description>
-    <namespace>http://xmlns.jcp.org/jsf/core</namespace>
+    <namespace>jakarta.faces.core</namespace>
     <tag>
         <description><![CDATA[
 
@@ -926,9 +926,9 @@ for <code>@NamedEvent</code>.</p>
             class="li1"><div class="de1"><span class="sc2"><span
             class="kw2">&lt;html</span> xmlns=<span class="st0">&quot;http://www.w3.org/1999/xhtml&quot;</span></div></li>
             <li class="li2"><div class="de2">&nbsp; &nbsp;
-            &nbsp; xmlns:ui=<span class="st0">&quot;http://xmlns.jcp.org/jsf/facelets&quot;</span></div></li>
+            &nbsp; xmlns:ui=<span class="st0">&quot;jakarta.faces.facelets&quot;</span></div></li>
             <li class="li1"><div class="de1">&nbsp; &nbsp;
-            &nbsp; xmlns:f=<span class="st0">&quot;http://xmlns.jcp.org/jsf/core&quot;</span></div></li>
+            &nbsp; xmlns:f=<span class="st0">&quot;jakarta.faces.core&quot;</span></div></li>
             <li class="li2"><div class="de2">&nbsp; &nbsp;
             &nbsp; xml:<span class="kw3">lang</span>=<span
             class="st0">&quot;en&quot;</span> <span
@@ -1397,6 +1397,103 @@ of POJOs.
             <name>var</name>
             <required>false</required>
             <type>java.lang.String</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description><![CDATA[
+            <p class="changed_added_4_0">
+                <strong>UISelectItemGroup</strong> is a component that may be nested inside a <code>UISelectMany</code> or <code>UISelectOne</code> component,
+                and causes the addition of one <code>SelectItemGroup</code> of one or more <code>SelectItem</code> instances to the list of available options in the parent component.
+                This component accepts only children of type <code>UISelectItems</code> or <code>UISelectItem</code>.
+            </p>
+        ]]></description>
+        <tag-name>selectItemGroup</tag-name>
+        <component>
+            <component-type>jakarta.faces.SelectItemGroup</component-type>
+            <renderer-type/>
+        </component>
+        <attribute>
+            <description><![CDATA[
+                Component identifier of the <code>UISelectItemGroup</code> component to be created.
+            ]]></description>
+            <name>id</name>
+            <type>java.lang.String</type>
+        </attribute> 
+        <attribute>
+            <description><![CDATA[
+                Value binding expression to a backing bean property bound to the component instance for the <code>UIComponent</code> created by this custom action.
+            ]]></description>
+            <name>binding</name>
+            <type>jakarta.faces.component.UIComponent</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                Label to be displayed to the user for this option group.
+            ]]></description>
+            <name>itemLabel</name>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description><![CDATA[
+            <p class="changed_added_4_0">
+                <strong>UISelectItemGroups</strong> is a component that may be nested inside a <code>UISelectMany</code> or <code>UISelectOne</code> component,
+                and causes the addition of one or more <code>SelectItemGroup</code> of one or more <code>SelectItem</code> instances to the list of available options in the parent component.
+                This component accepts only children of type <code>UISelectItems</code> or <code>UISelectItem</code>.
+            </p>
+        ]]></description>
+        <tag-name>selectItemGroups</tag-name>
+        <component>
+            <component-type>jakarta.faces.SelectItemGroups</component-type>
+            <renderer-type/>
+        </component>
+        <attribute>
+            <description><![CDATA[
+                Component identifier of the <code>UISelectItemGroups</code> component to be created.
+            ]]></description>
+            <name>id</name>
+            <type>java.lang.String</type>
+        </attribute> 
+        <attribute>
+            <description><![CDATA[
+                Value binding expression to a backing bean property bound to the component instance for the <code>UIComponent</code> created by this custom action.
+            ]]></description>
+            <name>binding</name>
+            <type>jakarta.faces.component.UIComponent</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                Value expression pointing at any array or <code>Iterable</code>.
+                The member elements may be instances of any type which is acceptable by the <code>value</code> attribute of any nested <code>UISelectItems</code> or <code>UISelectItem</code> component.
+            ]]></description>
+            <name>value</name>
+            <type>java.lang.Object</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                Expose the currently iterated member element from the <code>value</code> attribute under this request scoped key,
+                so that it may be referred to in EL for the value of other attributes of any nested component.
+            ]]></description>
+            <name>var</name>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                Label to be displayed to the user for this option group.
+            ]]></description>
+            <name>itemLabel</name>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                Flag indicating whether the option group created by this component is disabled.
+                Expressions must evaluate to a <code>boolean</code>.
+                Default value is <code>false</code>.
+            ]]></description>
+            <name>itemDisabled</name>
+            <type>java.lang.Boolean</type>
         </attribute>
     </tag>
 
@@ -2504,19 +2601,19 @@ public class BackingBean implements PasswordHolder, Cloneable {
     </tag>
 
     <tag>
-        <description>
+        <description><![CDATA[
             <p class="changed_added_2_2">This action component specifies
             an application-specific command (or action), using an EL
             method expression, to be invoked during one of the Faces
             lifecycle phases, by default <em>Invoke Application</em>.</p>
 
-        </description>
+        ]]></description>
         <tag-name>viewAction</tag-name>
         <component>
             <component-type>jakarta.faces.ViewAction</component-type>
         </component>
         <attribute>
-            <description>
+            <description><![CDATA[
 
                 <p>MethodExpression representing the application action
             to invoke when this component is activated by the user. The
@@ -2525,7 +2622,7 @@ public class BackingBean implements PasswordHolder, Cloneable {
             is called to derive the logical outcome) which is passed to
             the NavigationHandler for this application.</p>
 
-            </description>
+            ]]></description>
             <name>action</name>
             <required>true</required>
             <method-signature>public 
@@ -2556,43 +2653,43 @@ public class BackingBean implements PasswordHolder, Cloneable {
             </method-signature>
         </attribute>
         <attribute>
-            <description>
+            <description><![CDATA[
                 <p>Flag indicating that, if this component is activated
                 by the user, notifications should be delivered to
                 interested listeners and actions immediately (that is,
                 during Apply Request Values phase) rather than waiting
                 until Invoke Application phase.</p>
-            </description>
+            ]]></description>
             <name>immediate</name>
             <required>false</required>
             <type>java.lang.Boolean</type>
         </attribute>
         <attribute>
-            <description>
+            <description><![CDATA[
                 <p>View actions are most commonly used on the initial
             view request.  Therefore, view actions do not operate on
             postback, by default.  This attribute enables a view action
             to operate on postback.</p>
-            </description>
+            ]]></description>
             <name>onPostback</name>
             <required>false</required>
             <type>java.lang.Boolean</type>
         </attribute>
         <attribute>
-            <description>
+            <description><![CDATA[
                 <p>Specifies the phase in which the action invocation
                 should occur using the name of the phase constant in the
                 PhaseId class (the case does not matter). The value must
                 be one of APPLY_REQUEST_VALUES, PROCESS_VALIDATIONS,
                 UPDATE_MODEL_VALUES, or INVOKE_APPLICATION. The default
                 is INVOKE_APPLICATION.</p>
-            </description>
+            ]]></description>
             <name>phase</name>
             <required>false</required>
             <type>java.lang.String</type>
         </attribute>
         <attribute>
-            <description>
+            <description><![CDATA[
                 <p>Like all children of <code>&lt;f:metadata&gt;</code>,
             a view action has no visual representation in the view.
             This attribute has exactly the same effect on a view action
@@ -2600,7 +2697,7 @@ public class BackingBean implements PasswordHolder, Cloneable {
             component.  Specifically, if the value of this attribute
             evaluates to <code>false</code> the component has no
             effect.</p>
-            </description>
+            ]]></description>
             <name>rendered</name>
             <required>false</required>
             <type>java.lang.Boolean</type>

@@ -19,6 +19,7 @@ package com.sun.faces.config;
 import static com.sun.faces.RIConstants.ANNOTATED_CLASSES;
 import static com.sun.faces.RIConstants.ERROR_PAGE_PRESENT_KEY_NAME;
 import static com.sun.faces.RIConstants.FACES_INITIALIZER_MAPPINGS_ADDED;
+import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableLazyBeanValidation;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableThreading;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableWebsocketEndpoint;
@@ -231,6 +232,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
         } finally {
             servletContextEvent.getServletContext().removeAttribute(ANNOTATED_CLASSES);
+            servletContextEvent.getServletContext().removeAttribute(FACES_SERVLET_MAPPINGS);
 
             Verifier.setCurrentInstance(null);
 
@@ -310,11 +312,8 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
             if (configManager != null) {
                 configManager.destroy(context, initContext);
                 ConfigManager.removeInstance(context);
-            } else {
-                if (LOGGER.isLoggable(WARNING)) {
-                    LOGGER.log(WARNING,
-                            "Unexpected state during contextDestroyed: no ConfigManager instance in current ServletContext but one is expected to exist.");
-                }
+            } else if (WebConfiguration.getInstanceWithoutCreating(context) != null && LOGGER.isLoggable(WARNING)) {
+                LOGGER.log(WARNING, "Unexpected state during contextDestroyed: no ConfigManager instance in current ServletContext but one is expected to exist.");
             }
             FactoryFinder.releaseFactories();
             ReflectionUtils.clearCache(Thread.currentThread().getContextClassLoader());

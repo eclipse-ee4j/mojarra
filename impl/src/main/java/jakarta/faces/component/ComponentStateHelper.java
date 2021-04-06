@@ -16,6 +16,7 @@
 
 package jakarta.faces.component;
 
+import static com.sun.faces.facelets.tag.faces.ComponentSupport.MARK_CREATED;
 import static com.sun.faces.util.Util.coalesce;
 import static com.sun.faces.util.Util.isEmpty;
 import static jakarta.faces.component.UIComponentBase.restoreAttachedState;
@@ -27,10 +28,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import jakarta.el.ValueExpression;
+import jakarta.faces.component.UIComponent.PropertyKeys;
 import jakarta.faces.context.FacesContext;
-import java.util.function.Supplier;
 
 /**
  * A base implementation for maps which implement the PartialStateHolder and TransientStateHolder interfaces.
@@ -110,15 +112,40 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
      */
     @Override
     public Object put(Serializable key, String mapKey, Object value) {
+        initMap(key);
+
+        if (MARK_CREATED.equals(mapKey)) {
+            if (PropertyKeys.attributes.equals(key)) {
+                UIComponent parent = component.getParent();
+                if (parent != null) {
+                    // remember this component by its mark id
+                    parent.addToDescendantMarkIdCache(component);
+                }
+            }
+        }
 
         Object ret = null;
+        if (component.initialStateMarked()) {
+            Map<String, Object> dMap = (Map<String, Object>) deltaMap.get(key);
+            ret = dMap.put(mapKey, value);
+        }
+
+        Map<String, Object> map = (Map<String, Object>) get(key);
+        if (ret == null) {
+            return map.put(mapKey, value);
+        }
+
+        map.put(mapKey, value);
+        return ret;
+    }
+
+    private void initMap(Serializable key) {
         if (component.initialStateMarked()) {
             Map<String, Object> dMap = (Map<String, Object>) deltaMap.get(key);
             if (dMap == null) {
                 dMap = new HashMap<>(5);
                 deltaMap.put(key, dMap);
             }
-            ret = dMap.put(mapKey, value);
         }
 
         Map<String, Object> map = (Map<String, Object>) get(key);
@@ -126,13 +153,6 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
             map = new HashMap<>(8);
             defaultMap.put(key, map);
         }
-
-        if (ret == null) {
-            return map.put(mapKey, value);
-        }
-
-        map.put(mapKey, value);
-        return ret;
     }
 
     /**
@@ -172,7 +192,7 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
 
         return coalesce(retVal, defaultValue);
     }
-    
+
     /**
      * @see StateHelper#eval(java.io.Serializable, Supplier)
      */
@@ -201,17 +221,25 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
     @Override
     public void add(Serializable key, Object value) {
 
+        initList(key);
+
         if (component.initialStateMarked()) {
-            ((List<Object>) deltaMap.computeIfAbsent(key, e -> new ArrayList<>(4))).add(value);
+            ((List<Object>) deltaMap.get(key)).add(value);
         }
 
         List<Object> items = (List<Object>) get(key);
-        if (items == null) {
-            items = new ArrayList<>(4);
-            defaultMap.put(key, items);
+        items.add(value);
+    }
+
+    private void initList(Serializable key) {
+        if (component.initialStateMarked()) {
+            deltaMap.computeIfAbsent(key, e -> new ArrayList<>(4));
         }
 
-        items.add(value);
+        if (get(key) == null) {
+            List<Object> items = new ArrayList<>(4);
+            defaultMap.put(key, items);
+        }
     }
 
     /**

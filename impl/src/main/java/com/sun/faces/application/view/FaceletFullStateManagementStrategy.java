@@ -464,7 +464,11 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
             StateContext stateContext = StateContext.getStateContext(context);
             stateContext.getDynamicComponents().put(struct.getClientId(), child);
             UIComponent parent = child.getParent();
-            parent.getChildren().remove(child);
+            if (struct.getFacetName() != null) {
+            	parent.getFacets().remove(struct.getFacetName());
+            } else {
+            	parent.getChildren().remove(child);
+            }
         }
     }
 

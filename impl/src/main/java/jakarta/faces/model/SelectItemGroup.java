@@ -16,6 +16,8 @@
 
 package jakarta.faces.model;
 
+import java.util.Collection;
+
 import jakarta.faces.component.UISelectMany;
 import jakarta.faces.component.UISelectOne;
 
@@ -80,11 +82,33 @@ public class SelectItemGroup extends SelectItem {
      * @param label Label to be rendered for this group in the response
      * @param description Description of this group, for use in tools
      * @param disabled Flag indicating that this group is disabled
-     * @param selectItems Array of {@link SelectItem} describing the items available in this group
+     * @param selectItems <span class="changed_modified_4_0">Variable array</span> of {@link SelectItem} describing the items available in this group
      *
      * @throws NullPointerException if <code>label</code> or <code>selectItems</code> is <code>false</code>
      */
-    public SelectItemGroup(String label, String description, boolean disabled, SelectItem selectItems[]) {
+    public SelectItemGroup(String label, String description, boolean disabled, SelectItem... selectItems) {
+
+        super("", label, description, disabled);
+        setSelectItems(selectItems);
+
+    }
+
+    /**
+     * <p class="changed_added_4_0">
+     * Construct a <code>SelectItemGroup</code> with the specified properties. The <code>value</code> property will be set
+     * to a zero-length String.
+     * </p>
+     *
+     * @param label Label to be rendered for this group in the response
+     * @param description Description of this group, for use in tools
+     * @param disabled Flag indicating that this group is disabled
+     * @param selectItems Collection of {@link SelectItem} describing the items available in this group
+     *
+     * @throws NullPointerException if <code>label</code> or <code>selectItems</code> is <code>false</code>
+     * 
+     * @since 4.0
+     */
+    public SelectItemGroup(String label, String description, boolean disabled, Collection<? extends SelectItem> selectItems) {
 
         super("", label, description, disabled);
         setSelectItems(selectItems);
@@ -112,19 +136,39 @@ public class SelectItemGroup extends SelectItem {
 
     /**
      * <p>
-     * Set the set of subordinate {@link SelectItem}s for this group.
+     * Set the set of subordinate {@link SelectItem}s for this group <span class="changed_modified_4_0">as a variable array</span>.
      * </p>
      *
-     * @param selectItems The new set of subordinate items
+     * @param selectItems The new set of subordinate items <span class="changed_modified_4_0">as a variable array</span>
      *
      * @throws NullPointerException if <code>selectItems</code> is <code>null</code>
      */
-    public void setSelectItems(SelectItem selectItems[]) {
+    public void setSelectItems(SelectItem... selectItems) {
 
         if (selectItems == null) {
             throw new NullPointerException();
         }
         this.selectItems = selectItems;
+
+    }
+
+    /**
+     * <p class="changed_added_4_0">
+     * Set the set of subordinate {@link SelectItem}s for this group as a collection.
+     * </p>
+     *
+     * @param selectItems The new set of subordinate items as a collection.
+     *
+     * @throws NullPointerException if <code>selectItems</code> is <code>null</code>
+     * 
+     * @since 4.0
+     */
+    public void setSelectItems(Collection<? extends SelectItem> selectItems) {
+
+        if (selectItems == null) {
+            throw new NullPointerException();
+        }
+        setSelectItems(selectItems.toArray(new SelectItem[selectItems.size()]));
 
     }
 

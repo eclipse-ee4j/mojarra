@@ -16,6 +16,10 @@
 
 package com.sun.faces.facelets.tag.composite;
 
+import static com.sun.faces.util.Util.unmodifiableSet;
+
+import java.util.Set;
+
 import com.sun.faces.facelets.tag.AbstractTagLibrary;
 
 /**
@@ -24,14 +28,12 @@ import com.sun.faces.facelets.tag.AbstractTagLibrary;
  */
 public final class CompositeLibrary extends AbstractTagLibrary {
 
-    public final static String Namespace = "http://java.sun.com/jsf/composite";
-    public final static String XMLNSNamespace = "http://xmlns.jcp.org/jsf/composite";
+    private final static String SunNamespace = "http://java.sun.com/jsf/composite";
+    private final static String JcpNamespace = "http://xmlns.jcp.org/jsf/composite";
+    private final static String JakartaNamespace = "jakarta.faces.composite";
 
-    public final static CompositeLibrary Instance = new CompositeLibrary();
-
-    public CompositeLibrary() {
-        this(Namespace);
-    }
+    public final static Set<String> NAMESPACES = unmodifiableSet(JakartaNamespace, JcpNamespace, SunNamespace);
+    public final static String DEFAULT_NAMESPACE = JakartaNamespace;
 
     public CompositeLibrary(String namespace) {
         super(namespace);

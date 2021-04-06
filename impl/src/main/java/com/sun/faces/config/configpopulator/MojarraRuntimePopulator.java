@@ -988,6 +988,34 @@ public final class MojarraRuntimePopulator extends ApplicationConfigurationPopul
             Element componentElement = toPopulate.createElementNS(ns, "component");
             {
                 Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectItemGroup"));
+                componentElement.appendChild(component_typeElement);
+            }
+            {
+                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UISelectItemGroup"));
+                componentElement.appendChild(component_classElement);
+            }
+            faces_configElement.appendChild(componentElement);
+        }
+        {
+            Element componentElement = toPopulate.createElementNS(ns, "component");
+            {
+                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
+                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectItemGroups"));
+                componentElement.appendChild(component_typeElement);
+            }
+            {
+                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
+                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UISelectItemGroups"));
+                componentElement.appendChild(component_classElement);
+            }
+            faces_configElement.appendChild(componentElement);
+        }
+        {
+            Element componentElement = toPopulate.createElementNS(ns, "component");
+            {
+                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
                 component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectMany"));
                 componentElement.appendChild(component_typeElement);
             }

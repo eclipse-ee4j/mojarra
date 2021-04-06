@@ -16,10 +16,13 @@
 
 package com.sun.faces.facelets.util;
 
+import static com.sun.faces.util.Util.unmodifiableSet;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.sun.faces.facelets.tag.TagLibrary;
 import com.sun.faces.util.Util;
@@ -37,8 +40,12 @@ import jakarta.faces.view.facelets.TagHandler;
  */
 public class FunctionLibrary implements TagLibrary {
 
-    public final static String Namespace = "http://java.sun.com/jsp/jstl/functions";
-    public final static String XMLNSNamespace = "http://xmlns.jcp.org/jsp/jstl/functions";
+    private final static String SunNamespace = "http://java.sun.com/jsp/jstl/functions";
+    private final static String JcpNamespace = "http://xmlns.jcp.org/jsp/jstl/functions";
+    private final static String JakartaNamespace = "jakarta.tags.functions";
+
+    public final static Set<String> NAMESPACES = unmodifiableSet(JakartaNamespace, JcpNamespace, SunNamespace);
+    public final static String DEFAULT_NAMESPACE = JakartaNamespace;
 
     private String _namespace;
     private Map<String, Method> functions;

@@ -49,10 +49,10 @@ public final class HtmlDecorator implements TagDecorator {
         if (XhtmlNamespace.equals(tag.getNamespace())) {
             String n = tag.getLocalName();
             if ("a".equals(n)) {
-                return new Tag(tag.getLocation(), HtmlLibrary.Namespace, "commandLink", tag.getQName(), tag.getAttributes());
+                return new Tag(tag.getLocation(), HtmlLibrary.DEFAULT_NAMESPACE, "commandLink", tag.getQName(), tag.getAttributes());
             }
             if ("form".equals(n)) {
-                return new Tag(tag.getLocation(), HtmlLibrary.Namespace, "form", tag.getQName(), tag.getAttributes());
+                return new Tag(tag.getLocation(), HtmlLibrary.DEFAULT_NAMESPACE, "form", tag.getQName(), tag.getAttributes());
             }
             if ("input".equals(n)) {
                 TagAttribute attr = tag.getAttributes().get("type");
@@ -60,19 +60,19 @@ public final class HtmlDecorator implements TagDecorator {
                     String t = attr.getValue();
                     TagAttributes na = removeType(tag.getAttributes());
                     if ("text".equals(t)) {
-                        return new Tag(tag.getLocation(), HtmlLibrary.Namespace, "inputText", tag.getQName(), na);
+                        return new Tag(tag.getLocation(), HtmlLibrary.DEFAULT_NAMESPACE, "inputText", tag.getQName(), na);
                     }
                     if ("password".equals(t)) {
-                        return new Tag(tag.getLocation(), HtmlLibrary.Namespace, "inputSecret", tag.getQName(), na);
+                        return new Tag(tag.getLocation(), HtmlLibrary.DEFAULT_NAMESPACE, "inputSecret", tag.getQName(), na);
                     }
                     if ("hidden".equals(t)) {
-                        return new Tag(tag.getLocation(), HtmlLibrary.Namespace, "inputHidden", tag.getQName(), na);
+                        return new Tag(tag.getLocation(), HtmlLibrary.DEFAULT_NAMESPACE, "inputHidden", tag.getQName(), na);
                     }
                     if ("submit".equals(t)) {
-                        return new Tag(tag.getLocation(), HtmlLibrary.Namespace, "commandButton", tag.getQName(), na);
+                        return new Tag(tag.getLocation(), HtmlLibrary.DEFAULT_NAMESPACE, "commandButton", tag.getQName(), na);
                     }
                     if ("file".equals(t)) {
-                        return new Tag(tag.getLocation(), HtmlLibrary.Namespace, "inputFile", tag.getQName(), na);
+                        return new Tag(tag.getLocation(), HtmlLibrary.DEFAULT_NAMESPACE, "inputFile", tag.getQName(), na);
                     }
                 }
             }

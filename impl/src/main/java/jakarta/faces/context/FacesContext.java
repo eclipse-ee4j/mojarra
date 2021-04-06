@@ -56,7 +56,6 @@ import jakarta.faces.render.RenderKit;
  * A FacesContext can be injected into a request scoped bean using <code>@Inject FacesContext facesContext;</code>
  * </p>
  */
-
 public abstract class FacesContext {
 
     private FacesContext defaultFacesContext;
@@ -66,6 +65,12 @@ public abstract class FacesContext {
     private static ConcurrentHashMap threadInitContext = new ConcurrentHashMap(2);
     private static ConcurrentHashMap initContextServletContext = new ConcurrentHashMap(2);
 
+    /**
+     * Default constructor.
+     * <p>
+     * This looks at the callstack to see if we're created from a factory.
+     * </p>
+     */
     public FacesContext() {
         Thread curThread = Thread.currentThread();
         StackTraceElement[] callstack = curThread.getStackTrace();
@@ -280,6 +285,8 @@ public abstract class FacesContext {
      * @return instance of <code>Lifecycle</code>
      *
      * @throws IllegalStateException if this method is called after this instance has been released
+     *
+     * @since 4.0
      */
     public abstract Lifecycle getLifecycle();
 

@@ -30,11 +30,9 @@ public class TestView implements Serializable {
 
     public void onView() {
         testString = "Test Rhuan";
-        System.out.println("initializing: " + testString);
     }
 
     public void someMethod() {
-        System.out.println(testString);
     }
 
     public String getTestString() {
@@ -42,7 +40,6 @@ public class TestView implements Serializable {
     }
 
     public void setTestString(String testString) {
-        System.out.println("Setting value: " + testString);
         this.testString = testString;
     }
 }

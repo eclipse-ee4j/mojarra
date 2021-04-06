@@ -16,6 +16,9 @@
 
 package com.sun.faces.facelets.impl;
 
+
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.UseFaceletsID;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,6 +37,7 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import com.sun.faces.RIConstants;
+import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.context.FacesFileNotFoundException;
 import com.sun.faces.facelets.compiler.Compiler;
 import com.sun.faces.util.Cache;
@@ -44,6 +48,7 @@ import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
+import jakarta.faces.component.Doctype;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -108,11 +113,19 @@ public class DefaultFaceletFactory {
     public final void init(Compiler compiler, ResourceResolver resolver, long refreshPeriod, FaceletCache cache) {
         Util.notNull("compiler", compiler);
         Util.notNull("resolver", resolver);
+
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext == null) {
+            throw new IllegalStateException("DefaultFaceletFactory cannot locate the faces context");
+        }
+        ExternalContext externalContext = facesContext.getExternalContext();
+        WebConfiguration config = WebConfiguration.getInstance(externalContext);
+
         this.compiler = compiler;
         cachePerContract = new ConcurrentHashMap<>();
         this.resolver = resolver;
         baseUrl = resolver.resolveUrl("/");
-        idMappers = new Cache<>(new IdMapperFactory());
+        this.idMappers = config.isOptionEnabled(UseFaceletsID) ? null : new Cache<>(new IdMapperFactory());
         // this.location = url;
         refreshPeriod = refreshPeriod >= 0 ? refreshPeriod * 1000 : -1;
         this.refreshPeriod = refreshPeriod;
@@ -215,9 +228,9 @@ public class DefaultFaceletFactory {
         DefaultFacelet _facelet = null;
         if (result instanceof DefaultFacelet) {
             _facelet = (DefaultFacelet) result;
-            String docType = _facelet.getSavedDoctype();
-            if (null != docType) {
-                Util.saveDOCTYPEToFacesContextAttributes(docType);
+            Doctype doctype = _facelet.getSavedDoctype();
+            if (null != doctype) {
+                Util.saveDOCTYPEToFacesContextAttributes(doctype);
             }
 
             String xmlDecl = _facelet.getSavedXMLDecl();

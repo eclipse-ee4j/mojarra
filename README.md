@@ -16,12 +16,12 @@
 
 # Mojarra 4.0 WIP
 
-Eclipse's implementation of the Jakarta Faces specification 
+Eclipse's implementation of the upcoming Jakarta Faces 4.0 specification 
 
 
 ## Minimum Requirements
 
-- Java 1.8
+- Java 11
 - Jakarta Servlet 5.0
 - Jakarta Expression Language 4.0
 - CDI 3.0
@@ -197,8 +197,8 @@ Finally create a [Facelets][20] file `/hello.xhtml` as below:
 <!DOCTYPE html>
 <html lang="en"
     xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:h="http://xmlns.jcp.org/jsf/html">
+    xmlns:f="jakarta.faces.core"
+    xmlns:h="jakarta.faces.html">
     <h:head>
         <title>Hello, World!</title>
     </h:head>

@@ -225,9 +225,7 @@ class UrlBuilder {
                 if (null != additionalParams) {
                     for (Map.Entry<String, String> cur : additionalParams.entrySet()) {
                         url.append(PARAMETER_PAIR_SEPARATOR);
-                        url.append(cur.getKey()).
-                                append(UrlBuilder.PARAMETER_NAME_VALUE_SEPARATOR).
-                                append(cur.getValue());
+                        url.append(cur.getKey()).append(UrlBuilder.PARAMETER_NAME_VALUE_SEPARATOR).append(cur.getValue());
                     }
                 }
             }
