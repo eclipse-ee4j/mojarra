@@ -16,28 +16,9 @@
 
 package com.sun.faces.facelets.tag.jsf;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.context.StateContext;
-import com.sun.faces.facelets.tag.jsf.core.FacetHandler;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.PartialStateSaving;
-import com.sun.faces.util.Util;
-
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIPanel;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.ComponentConfig;
-import javax.faces.view.facelets.ComponentHandler;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagAttributeException;
-import javax.faces.view.facelets.Tag;
-import javax.faces.event.PhaseId;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -46,8 +27,26 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.faces.FacesException;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIPanel;
+import javax.faces.component.UIViewRoot;
+import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseId;
+import javax.faces.view.facelets.ComponentConfig;
+import javax.faces.view.facelets.ComponentHandler;
+import javax.faces.view.facelets.FaceletContext;
+import javax.faces.view.facelets.Tag;
+import javax.faces.view.facelets.TagAttribute;
+import javax.faces.view.facelets.TagAttributeException;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.context.StateContext;
+import com.sun.faces.facelets.tag.jsf.core.FacetHandler;
+import com.sun.faces.util.Util;
+
 /**
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -59,7 +58,7 @@ public final class ComponentSupport {
     // Expando boolean attribute used to identify parent components that have had
     // a dynamic child addition or removal.
     public final static String MARK_CHILDREN_MODIFIED = "com.sun.faces.facelets.MARK_CHILDREN_MODIFIED";
-    
+
     // Expando Collection<String> attribute used to identify tagIds of child components that
     // have been removed from a parent component.
     public final static String REMOVED_CHILDREN = "com.sun.faces.facelets.REMOVED_CHILDREN";
@@ -67,38 +66,38 @@ public final class ComponentSupport {
     // Expando attribute used to mark dynamic UIComponents that have had their
     // ComponentSupport.MARK_CREATED expando removed.
     public static final String MARK_CREATED_REMOVED =  StateContext.class.getName() + "_MARK_CREATED_REMOVED";
-    
+
     private final static String IMPLICIT_PANEL = "com.sun.faces.facelets.IMPLICIT_PANEL";
-    
+
     /**
      * Key to a FacesContext scoped Map where the keys are UIComponent instances and the
      * values are Tag instances.
      */
     public static final String COMPONENT_TO_TAG_MAP_NAME = "com.sun.faces.facelets.COMPONENT_TO_LOCATION_MAP";
-    
+
     public static boolean handlerIsResourceRelated(ComponentHandler handler){
       ComponentConfig config = handler.getComponentConfig();
       if ( !"javax.faces.Output".equals(config.getComponentType()) ) {
         return false;
       }
- 
+
       String rendererType = config.getRendererType();
       return ("javax.faces.resource.Script".equals(rendererType) ||
                                "javax.faces.resource.Stylesheet".equals(rendererType));
     }
-    
+
     public static boolean isBuildingNewComponentTree(FacesContext context){
       return !context.isPostback() || context.getCurrentPhaseId().equals(PhaseId.RESTORE_VIEW);
     }
- 
+
     public static boolean isImplicitPanel(UIComponent component){
       return component.getAttributes().containsKey(IMPLICIT_PANEL);
     }
-    
+
     /**
      * Used in conjunction with markForDeletion where any UIComponent marked
      * will be removed.
-     * 
+     *
      * @param c
      *            UIComponent to finalize
      */
@@ -158,7 +157,7 @@ public final class ComponentSupport {
             componentToTagMap = new HashMap<>();
             contextMap.put(COMPONENT_TO_TAG_MAP_NAME, componentToTagMap);
         }
-        return componentToTagMap.put((Integer) System.identityHashCode(c), t);
+        return componentToTagMap.put(System.identityHashCode(c), t);
     }
 
     public static Tag getTagForComponent(FacesContext context, UIComponent c) {
@@ -168,16 +167,16 @@ public final class ComponentSupport {
         componentToTagMap = (Map<Integer, Tag>)
                 contextMap.get(COMPONENT_TO_TAG_MAP_NAME);
         if (null != componentToTagMap) {
-            result = componentToTagMap.get((Integer) System.identityHashCode(c));
+            result = componentToTagMap.get(System.identityHashCode(c));
         }
 
         return result;
     }
-    
+
 
     /**
      * A lighter-weight version of UIComponent's findChild.
-     * 
+     *
      * @param parent
      *            parent to start searching from
      * @param id
@@ -198,21 +197,21 @@ public final class ComponentSupport {
         }
         return null;
     }
-    
+
     // Obvious performance optimization.  First, assume this method
     // is only called from UIInstructionHandler.apply().  With that assumption
     // in place a few optimizations can be had on the cheap.
-    
-    // If this method is called on an initial page 
-    // render it will always return null, so we can just return 
-    // null in that case without any iteration.  
-    
+
+    // If this method is called on an initial page
+    // render it will always return null, so we can just return
+    // null in that case without any iteration.
+
     // If this method is called during RestoreView, it will always return null
-    // so we can just return null in that case without any iteration.  
-    
+    // so we can just return null in that case without any iteration.
+
     // If PartialStateSaving is false, the UIInstruction components will
     // never be in the tree at this point, so we can return null and skip iterating.
-    
+
     public static UIComponent findUIInstructionChildByTagId(FacesContext context, UIComponent parent, String id) {
         UIComponent result = null;
         if (isBuildingNewComponentTree(context)) {
@@ -225,26 +224,120 @@ public final class ComponentSupport {
             }
         }
 
-        
+
         return result;
     }
-    
+
     /**
      * By TagId, find Child
-     * 
+     *
      * @param parent the parent UI component
      * @param id the id
      * @return the UI component
      */
     public static UIComponent findChildByTagId(FacesContext context, UIComponent parent, String id) {
         // fast path - get the child from the descendant mark id cache
-        return parent.getDescendantMarkIdCache().get(id);
+        return getDescendantMarkIdCache(parent).get(id);
     }
-    
+
+    @SuppressWarnings("unchecked")
+    private static Map<String, UIComponent> getDescendantMarkIdCache(UIComponent component) {
+        Map<String, UIComponent> descendantMarkIdCache = (Map<String, UIComponent>) component.getTransientStateHelper().getTransient("descendantMarkIdCache");
+
+        if (descendantMarkIdCache == null) {
+            descendantMarkIdCache = new HashMap<String, UIComponent>();
+            component.getTransientStateHelper().putTransient("descendantMarkIdCache", descendantMarkIdCache);
+        }
+
+        return descendantMarkIdCache;
+    }
+
+    /**
+     * Adds the mark id of the specified {@link UIComponent} <code>otherComponent</code> to the mark id cache of this component,
+     * including all its descendant mark ids. Changes are propagated up the component tree.
+     */
+    public static void addToDescendantMarkIdCache(UIComponent component, UIComponent otherComponent) {
+        String markId = (String) otherComponent.getAttributes().get(MARK_CREATED);
+        if (markId != null) {
+            addSingleDescendantMarkId(component, markId, otherComponent);
+        }
+        Map<String, UIComponent> otherMarkIds = getDescendantMarkIdCache(otherComponent);
+        if (!otherMarkIds.isEmpty()) {
+            addAllDescendantMarkIds(component, otherMarkIds);
+        }
+    }
+
+    /**
+     * Adds the specified <code>markId</code> and its corresponding {@link UIComponent} <code>otherComponent</code>
+     * to the mark id cache of this component. Changes are propagated up the component tree.
+     */
+    private static void addSingleDescendantMarkId(UIComponent component, String markId, UIComponent otherComponent) {
+        getDescendantMarkIdCache(component).put(markId, otherComponent);
+        UIComponent parent = component.getParent();
+        if (parent != null) {
+            addSingleDescendantMarkId(parent, markId, otherComponent);
+        }
+    }
+
+    /**
+     * Adds all specified <code>otherMarkIds</code> to the mark id cache of this component.
+     * Changes are propagated up the component tree.
+     */
+    private static void addAllDescendantMarkIds(UIComponent component, Map<String, UIComponent> otherMarkIds) {
+        getDescendantMarkIdCache(component).putAll(otherMarkIds);
+        UIComponent parent = component.getParent();
+        if (parent != null) {
+            addAllDescendantMarkIds(parent, otherMarkIds);
+        }
+    }
+
+    /**
+     * Removes the mark id of the specified {@link UIComponent} <code>otherComponent</code> from the mark id cache of this component,
+     * including all its descendant mark ids. Changes are propagated up the component tree.
+     */
+    public static void removeFromDescendantMarkIdCache(UIComponent component, UIComponent otherComponent) {
+        String markId = (String) otherComponent.getAttributes().get(MARK_CREATED);
+        if (markId != null) {
+            removeSingleDescendantMarkId(component, markId);
+        }
+        Map<String, UIComponent> otherMarkIds = getDescendantMarkIdCache(otherComponent);
+        if (!otherMarkIds.isEmpty()) {
+            removeAllDescendantMarkIds(component, otherMarkIds);
+        }
+    }
+
+    /**
+     * Removes the specified <code>markId</code> from the mark id cache of this component.
+     * Changes are propagated up the component tree.
+     */
+    private static void removeSingleDescendantMarkId(UIComponent component, String markId) {
+        getDescendantMarkIdCache(component).remove(markId);
+        UIComponent parent = component.getParent();
+        if (parent != null) {
+            removeSingleDescendantMarkId(parent, markId);
+        }
+    }
+
+    /**
+     * Removes all specified <code>otherMarkIds</code> from the mark id cache of this component.
+     * Changes are propagated up the component tree.
+     */
+    private static void removeAllDescendantMarkIds(UIComponent component, Map<String, UIComponent> otherMarkIds) {
+        Map<String, UIComponent> descendantMarkIdCache = getDescendantMarkIdCache(component);
+        Iterator<String> iterator = otherMarkIds.keySet().iterator();
+        while (iterator.hasNext()) {
+            descendantMarkIdCache.remove(iterator.next());
+        }
+        UIComponent parent = component.getParent();
+        if (parent != null) {
+            removeAllDescendantMarkIds(parent, otherMarkIds);
+        }
+    }
+
     /**
      * According to JSF 1.2 tag specs, this helper method will use the
      * TagAttribute passed in determining the Locale intended.
-     * 
+     *
      * @param ctx
      *            FaceletContext to evaluate from
      * @param attr
@@ -276,7 +369,7 @@ public final class ComponentSupport {
     /**
      * Tries to walk up the parent to find the UIViewRoot, if not found, then go
      * to FaceletContext's FacesContext for the view root.
-     * 
+     *
      * @param ctx
      *            FaceletContext
      * @param parent
@@ -298,7 +391,7 @@ public final class ComponentSupport {
 
     /**
      * Marks all direct children and Facets with an attribute for deletion.
-     * 
+     *
      * @see #finalizeForDeletion(UIComponent)
      * @param c
      *            UIComponent to mark
@@ -355,7 +448,7 @@ public final class ComponentSupport {
             }
         }
     }
-    
+
     public static void encodeRecursive(FacesContext context,
             UIComponent viewToRender) throws IOException, FacesException {
         if (viewToRender.isRendered()) {
@@ -372,7 +465,7 @@ public final class ComponentSupport {
             viewToRender.encodeEnd(context);
         }
     }
-    
+
     public static void removeTransient(UIComponent c) {
         UIComponent d, e;
         if (c.getChildCount() > 0) {
@@ -425,7 +518,7 @@ public final class ComponentSupport {
                     parent.getChildren().add(child);
                 } else {
                     parent.getChildren().add(childIndex, child);
-                }                
+                }
             } else {
                 parent.getChildren().add(child);
             }
@@ -472,13 +565,13 @@ public final class ComponentSupport {
         return false;
 
     }
-    
+
     public static void copyPassthroughAttributes(FaceletContext ctx, UIComponent c, Tag t) {
-        
+
         if (null == c || null == t) {
             return;
         }
-        
+
         TagAttribute[] passthroughAttrs = t.getAttributes().getAll(PassThroughAttributeLibrary.Namespace);
         if (null != passthroughAttrs && 0 < passthroughAttrs.length) {
             Map<String, Object> componentPassthroughAttrs = c.getPassThroughAttributes(true);
