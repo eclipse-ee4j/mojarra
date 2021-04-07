@@ -116,7 +116,7 @@ import jakarta.faces.event.PostPutFlashValueEvent;
  * <pre>
  * <code>
 &lt;html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="jakarta.faces/html"&gt;
+      xmlns:h="jakarta.faces.html"&gt;
 &lt;!-- extra code removed --&gt;
   &lt;h:outputText value="#{flash.foo}" /&gt; will be "fooValue"
   without the quotes.
@@ -157,8 +157,8 @@ import jakarta.faces.event.PostPutFlashValueEvent;
  * <pre>
  * <code>
 &lt;html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:f="jakarta.faces/core"
-      xmlns:h="jakarta.faces/html"&gt;
+      xmlns:f="jakarta.faces.core"
+      xmlns:h="jakarta.faces.html"&gt;
 &lt;f:metadata&gt;
   &lt;f:viewParam name="foo" id="foo" value="#{flash.now.foo}" /&gt;
 &lt;/f:metadata&gt;
@@ -231,7 +231,7 @@ public abstract class Flash implements Map<String, Object> {
      * <pre>
      * <code>
     &lt;html xmlns="http://www.w3.org/1999/xhtml"
-          xmlns:h="jakarta.faces/html"&gt;
+          xmlns:h="jakarta.faces.html"&gt;
     &lt;!-- extra code removed --&gt;
       &lt;h:messages /&gt; Any messages present on the first page must be displayed on
       this page.
