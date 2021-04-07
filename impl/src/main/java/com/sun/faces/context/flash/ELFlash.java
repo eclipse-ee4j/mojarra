@@ -1056,6 +1056,12 @@ public class ELFlash extends Flash {
                     LOGGER.log(Level.WARNING,
                             "jsf.externalcontext.flash.response.already.committed");
                 }
+                if (nextFlash != null) {
+                    flashManager.expireNext();
+                }
+                if (prevFlash != null) {
+                    flashManager.expirePrevious();
+                }
             } else {
                 Map<String, Object> properties = new HashMap();
                 Object val;
