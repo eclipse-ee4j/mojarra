@@ -36,7 +36,9 @@ CDI is explicitly required because since Jakarta Faces 2.3 the `javax.faces.bean
 
 ## Installation
 
-Depending on the server used, Jakarta Faces may already be built-in (full fledged Jakarta EE containers such as [WildFly][1], [JBoss EAP][2], [TomEE][3], [Payara][4], [GlassFish][5], [Liberty][6], etc.), or not (barebones Jakarta Server Pages/Jakarta Servlet containers such as [Tomcat][7], [Jetty][8], etc.). If the server doesn't ship with Jakarta Faces built-in, then you need to manually install Jakarta Faces 3.0 along with CDI 3.0+, Jakarta JSON Processing 2.0+ and Jakarta Standard Tag Library 2.0+ as those Jakarta Servlet containers usually also don't even ship with those Jakarta Faces dependencies.
+Depending on the server used, Jakarta Faces may already be built-in (full fledged Jakarta EE containers such as [WildFly][1], [JBoss EAP][2], [TomEE][3], [Payara][4], [GlassFish][5], [Liberty][6], etc.), or not (barebones Jakarta Server Pages/Jakarta Servlet containers such as [Tomcat][7], [Jetty][8], etc.). If the server doesn't ship with Jakarta Faces built-in, then you need to manually install Jakarta Faces 4.0 along with CDI 3.0+, Jakarta JSON Processing 2.0+ and Jakarta Standard Tag Library 2.0+ as those Jakarta Servlet containers usually also don't even ship with those Jakarta Faces dependencies.
+
+Note that as Mojarra 4.0 is WIP, there's no current Jakarta EE server or runtime shipping with a Mojarra 4.0 snapshot or milestone. The first milestone version of GlassFish 7.0.0 may contain this. A GlassFish 7.0.0 milestone may be released in Q2 2021.
 
 ### Non-Maven
 
@@ -139,7 +141,7 @@ Optionally, register the `FacesServlet` in a Servlet 5.0+ compatible deployment 
 
 Noted should be that Jakarta Faces 3.0+ is already "implicitly" registered and mapped on `*.jsf`, `*.faces` and `/faces/*` when running on a Jakarta Servlet 5.0+ container. This will be overridden altogether when explicitly registering as above. [The `*.xhtml` URL pattern is preferred over above for security and clarity reasons][17]. Jakarta Faces 2.3+ adds `*.xhtml` to set of default patterns, hence the `FacesServlet` registration being optional. But when you don't explicitly map it on `*.xhtml`, then people can still access JSF pages using `*.jsf`, `*.faces` or `/faces/*` URL patterns. This is not nice for SEO as JSF by design doesn't 301-redirect them to a single mapping.
 
-The Faces deployment descriptor file `/WEB-INF/faces-config.xml` is fully optional, but if any it must be Jakarta Faces 4.0 compatible, otherwise Jakarta Faces 4.0 will run in a fallback modus matching the exact `version` as declared in `<faces-config>` root element.
+The Faces deployment descriptor file `/WEB-INF/faces-config.xml` is fully optional.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -234,7 +236,7 @@ In case you want to checkout this repository and manually build from source your
 
 ### Jakarta Faces 4.0
 
-1. Make sure that you have JDK 1.8, Ant and Maven installed.
+1. Make sure that you have JDK 11, Ant and Maven installed.
 2. Checkout branch [`master`][28].
 3. Run the following commands from the root directory of the project:
 
