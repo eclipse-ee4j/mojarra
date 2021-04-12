@@ -24,8 +24,8 @@ import static com.sun.faces.util.Util.isPrefixMapped;
 import static com.sun.faces.util.Util.isResourceExactMappedToFacesServlet;
 import static jakarta.faces.application.ProjectStage.Development;
 import static jakarta.faces.application.ProjectStage.Production;
-import static jakarta.faces.application.ResourceHandler.JSF_SCRIPT_LIBRARY_NAME;
-import static jakarta.faces.application.ResourceHandler.JSF_SCRIPT_RESOURCE_NAME;
+import static jakarta.faces.application.ResourceHandler.FACES_SCRIPT_LIBRARY_NAME;
+import static jakarta.faces.application.ResourceHandler.FACES_SCRIPT_RESOURCE_NAME;
 import static jakarta.faces.application.ResourceHandler.RESOURCE_IDENTIFIER;
 import static java.util.Collections.emptyMap;
 import static java.util.Locale.US;
@@ -308,7 +308,7 @@ public class ResourceImpl extends Resource implements Externalizable {
             queryStarted = true;
         }
 
-        if (JSF_SCRIPT_RESOURCE_NAME.equals(getResourceName()) && JSF_SCRIPT_LIBRARY_NAME.equals(getLibraryName())) {
+        if (FACES_SCRIPT_RESOURCE_NAME.equals(getResourceName()) && FACES_SCRIPT_LIBRARY_NAME.equals(getLibraryName())) {
             ProjectStage stage = context.getApplication().getProjectStage();
             switch (stage) {
             case Development:
