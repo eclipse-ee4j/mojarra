@@ -43,12 +43,6 @@ import jakarta.faces.event.SystemEvent;
  * The default implementation of {@link ExceptionHandler} for Faces.
  * </p>
  *
- * <p>
- * As an implementation note, if changes going forward are required here, review the <code>ExceptionHandler</code>
- * implementation within <code>jakarta.faces.webapp.PreJsf2ExceptionHandlerFactory</code>. The code is, in most cases,
- * quite similar.
- * </p>
- *
  */
 public class ExceptionHandlerImpl extends ExceptionHandler {
 

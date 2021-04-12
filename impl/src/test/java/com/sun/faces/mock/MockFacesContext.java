@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.sun.faces.context.ExceptionHandlerFactoryImpl;
 import com.sun.faces.renderkit.RenderKitUtils;
 
 import jakarta.el.ELContext;
@@ -43,7 +44,6 @@ import jakarta.faces.event.PhaseId;
 import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
-import jakarta.faces.webapp.PreJsf2ExceptionHandlerFactory;
 
 // Mock Object for FacesContext
 public class MockFacesContext extends FacesContext {
@@ -302,7 +302,7 @@ public class MockFacesContext extends FacesContext {
     }
 
     private ExceptionHandler exceptionHandler
-            = new PreJsf2ExceptionHandlerFactory().getExceptionHandler();
+            = new ExceptionHandlerFactoryImpl().getExceptionHandler();
 
     @Override
     public ExceptionHandler getExceptionHandler() {
