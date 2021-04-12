@@ -16,6 +16,8 @@
 
 package jakarta.faces.component;
 
+import static com.sun.faces.facelets.tag.jsf.ComponentSupport.addToDescendantMarkIdCache;
+import static com.sun.faces.facelets.tag.jsf.ComponentSupport.removeFromDescendantMarkIdCache;
 import static com.sun.faces.util.Util.isAllNull;
 import static com.sun.faces.util.Util.isAnyNull;
 import static com.sun.faces.util.Util.isEmpty;
@@ -2227,7 +2229,7 @@ public abstract class UIComponentBase extends UIComponent {
             } else if (index < 0 || index > size()) {
                 throw new IndexOutOfBoundsException();
             } else {
-                component.addToDescendantMarkIdCache(element);
+                addToDescendantMarkIdCache(component, element);
                 eraseParent(element);
                 super.add(index, element);
                 element.setParent(component);
@@ -2240,7 +2242,7 @@ public abstract class UIComponentBase extends UIComponent {
             if (element == null) {
                 throw new NullPointerException();
             } else {
-                component.addToDescendantMarkIdCache(element);
+                addToDescendantMarkIdCache(component, element);
                 eraseParent(element);
                 boolean result = super.add(element);
                 element.setParent(component);
@@ -2289,7 +2291,7 @@ public abstract class UIComponentBase extends UIComponent {
             for (int i = 0; i < n; i++) {
                 UIComponent child = get(i);
                 if (!context.isReleased() && !context.getCurrentPhaseId().equals(PhaseId.RENDER_RESPONSE)) {
-                    component.removeFromDescendantMarkIdCache(child);
+                    removeFromDescendantMarkIdCache(component, child);
                 }
                 child.setParent(null);
             }
@@ -2315,7 +2317,7 @@ public abstract class UIComponentBase extends UIComponent {
         public UIComponent remove(int index) {
             UIComponent child = get(index);
             if (!context.isReleased() && !context.getCurrentPhaseId().equals(PhaseId.RENDER_RESPONSE)) {
-                component.removeFromDescendantMarkIdCache(child);
+                removeFromDescendantMarkIdCache(component, child);
             }
             child.setParent(null);
             super.remove(index);
@@ -2329,7 +2331,7 @@ public abstract class UIComponentBase extends UIComponent {
                 throw new NullPointerException();
             }
             if (!context.isReleased() && !context.getCurrentPhaseId().equals(PhaseId.RENDER_RESPONSE)) {
-                component.removeFromDescendantMarkIdCache(element);
+                removeFromDescendantMarkIdCache(component, element);
             }
             if (super.indexOf(element) != -1) {
                 element.setParent(null);
@@ -2372,10 +2374,10 @@ public abstract class UIComponentBase extends UIComponent {
             } else if (index < 0 || index >= size()) {
                 throw new IndexOutOfBoundsException();
             } else {
-                component.addToDescendantMarkIdCache(element);
+                addToDescendantMarkIdCache(component, element);
                 eraseParent(element);
                 UIComponent previous = get(index);
-                component.removeFromDescendantMarkIdCache(previous);
+                removeFromDescendantMarkIdCache(component, previous);
                 super.set(index, element);
                 previous.setParent(null);
                 element.setParent(component);
@@ -2578,10 +2580,10 @@ public abstract class UIComponentBase extends UIComponent {
             }
             UIComponent previous = super.get(key);
             if (previous != null) {
-                component.removeFromDescendantMarkIdCache(previous);
+                removeFromDescendantMarkIdCache(component, previous);
                 previous.setParent(null);
             }
-            component.addToDescendantMarkIdCache(value);
+            addToDescendantMarkIdCache(component, value);
             eraseParent(value);
             UIComponent result = super.put(key, value);
             value.setParent(component);
@@ -2604,7 +2606,7 @@ public abstract class UIComponentBase extends UIComponent {
             UIComponent previous = get(key);
             if (previous != null) {
                 if (!context.isReleased() && !context.getCurrentPhaseId().equals(PhaseId.RENDER_RESPONSE)) {
-                    component.removeFromDescendantMarkIdCache(previous);
+                    removeFromDescendantMarkIdCache(component, previous);
                 }
                 previous.setParent(null);
             }
