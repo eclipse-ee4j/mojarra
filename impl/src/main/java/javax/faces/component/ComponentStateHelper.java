@@ -17,6 +17,7 @@
 package javax.faces.component;
 
 import static com.sun.faces.facelets.tag.jsf.ComponentSupport.MARK_CREATED;
+import static com.sun.faces.facelets.tag.jsf.ComponentSupport.addToDescendantMarkIdCache;
 import static com.sun.faces.util.Util.coalesce;
 import static com.sun.faces.util.Util.isEmpty;
 import static javax.faces.component.UIComponent.PropertyKeys;
@@ -32,6 +33,8 @@ import java.util.Map;
 
 import javax.el.ValueExpression;
 import javax.faces.context.FacesContext;
+
+import com.sun.faces.facelets.tag.jsf.ComponentSupport;
 
 /**
  * A base implementation for maps which implement the PartialStateHolder and TransientStateHolder
@@ -121,7 +124,7 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
                 UIComponent parent = component.getParent();
                 if (parent != null) {
                     // remember this component by its mark id
-                    parent.addToDescendantMarkIdCache(component);
+                    addToDescendantMarkIdCache(parent, component);
                 }
             }
         }

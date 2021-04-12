@@ -1256,100 +1256,6 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
         return found;
     }
 
-    /**
-     * Private hash map, storing the mark ids - see {@link com.sun.faces.facelets.tag.jsf.ComponentSupport#MARK_CREATED} -
-     * of <b>all</b> tree descendants of this component together with their corresponding {@link UIComponent}s.
-     */
-    private Map<String, UIComponent> descendantMarkIdCache = new HashMap<String, UIComponent>();
-
-    /**
-     * Adds the mark id of the specified {@link UIComponent} <code>otherComponent</code> to the mark id cache of this component,
-     * including all its descendant mark ids. Changes are propagated up the component tree.
-     */
-    public void addToDescendantMarkIdCache(UIComponent otherComponent) {
-        String markId = (String) otherComponent.getAttributes().get(MARK_CREATED);
-        if (markId != null) {
-            addSingleDescendantMarkId(markId, otherComponent);
-        }
-        Map<String, UIComponent> otherMarkIds = otherComponent.getDescendantMarkIdCache();
-        if (!otherMarkIds.isEmpty()) {
-            addAllDescendantMarkIds(otherMarkIds);
-        }
-    }
-
-    /**
-     * Adds the specified <code>markId</code> and its corresponding {@link UIComponent} <code>otherComponent</code>
-     * to the mark id cache of this component. Changes are propagated up the component tree.
-     */
-    private void addSingleDescendantMarkId(String markId, UIComponent otherComponent) {
-        descendantMarkIdCache.put(markId, otherComponent);
-        UIComponent parent = getParent();
-        if (parent != null) {
-            parent.addSingleDescendantMarkId(markId, otherComponent);
-        }
-    }
-
-    /**
-     * Adds all specified <code>otherMarkIds</code> to the mark id cache of this component.
-     * Changes are propagated up the component tree.
-     */
-    private void addAllDescendantMarkIds(Map<String, UIComponent> otherMarkIds) {
-        descendantMarkIdCache.putAll(otherMarkIds);
-        UIComponent parent = getParent();
-        if (parent != null) {
-            parent.addAllDescendantMarkIds(otherMarkIds);
-        }
-    }
-
-    /**
-     * Removes the mark id of the specified {@link UIComponent} <code>otherComponent</code> from the mark id cache of this component,
-     * including all its descendant mark ids. Changes are propagated up the component tree.
-     */
-    public void removeFromDescendantMarkIdCache(UIComponent otherComponent) {
-        String markId = (String) otherComponent.getAttributes().get(MARK_CREATED);
-        if (markId != null) {
-            removeSingleDescendantMarkId(markId);
-        }
-        Map<String, UIComponent> otherMarkIds = otherComponent.getDescendantMarkIdCache();
-        if (!otherMarkIds.isEmpty()) {
-            removeAllDescendantMarkIds(otherMarkIds);
-        }
-    }
-
-    /**
-     * Removes the specified <code>markId</code> from the mark id cache of this component.
-     * Changes are propagated up the component tree.
-     */
-    private void removeSingleDescendantMarkId(String markId) {
-        descendantMarkIdCache.remove(markId);
-        UIComponent parent = getParent();
-        if (parent != null) {
-            parent.removeSingleDescendantMarkId(markId);
-        }
-    }
-
-    /**
-     * Removes all specified <code>otherMarkIds</code> from the mark id cache of this component.
-     * Changes are propagated up the component tree.
-     */
-    private void removeAllDescendantMarkIds(Map<String, UIComponent> otherMarkIds) {
-        Iterator<String> iterator = otherMarkIds.keySet().iterator();
-        while (iterator.hasNext()) {
-            descendantMarkIdCache.remove(iterator.next());
-        }
-        UIComponent parent = getParent();
-        if (parent != null) {
-            parent.removeAllDescendantMarkIds(otherMarkIds);
-        }
-    }
-
-    /**
-     * Returns the mark id cache of this component.
-     */
-    public Map<String, UIComponent> getDescendantMarkIdCache() {
-        return descendantMarkIdCache;
-    }
-    
 
     // ------------------------------------------------ Facet Management Methods
 
@@ -1881,9 +1787,9 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
         //
         // detect case where push was never called. In that case, pop should be a no-op
         if (_isPushedAsCurrentRefCount < 1) {
-        	if (componentELStack.peek() != this) {
-        		return;
-        	}
+            if (componentELStack.peek() != this) {
+                return;
+            }
             LOGGER.log(Level.SEVERE, "the component(" + this + 
                 ") is the head component of the stack, but it's _isPushedAsCurrentRefCount < 1");
         }

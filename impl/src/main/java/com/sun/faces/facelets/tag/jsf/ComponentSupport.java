@@ -55,6 +55,7 @@ public final class ComponentSupport {
 
     private final static String MARK_DELETED = "com.sun.faces.facelets.MARK_DELETED";
     public final static String MARK_CREATED = "com.sun.faces.facelets.MARK_ID";
+    private final static String MARK_ID_CACHE = "com.sun.faces.facelets.MARK_ID_CACHE";
 
     // Expando boolean attribute used to identify parent components that have had
     // a dynamic child addition or removal.
@@ -238,9 +239,103 @@ public final class ComponentSupport {
      */
     public static UIComponent findChildByTagId(FacesContext context, UIComponent parent, String id) {
         // fast path - get the child from the descendant mark id cache
-        return parent.getDescendantMarkIdCache().get(id);
+        return getDescendantMarkIdCache(parent).get(id);
     }
     
+    @SuppressWarnings("unchecked")
+    private static Map<String, UIComponent> getDescendantMarkIdCache(UIComponent component) {
+        Map<String, UIComponent> descendantMarkIdCache = (Map<String, UIComponent>) component.getTransientStateHelper().getTransient(MARK_ID_CACHE);
+
+        if (descendantMarkIdCache == null) {
+            descendantMarkIdCache = new HashMap<String, UIComponent>();
+            component.getTransientStateHelper().putTransient(MARK_ID_CACHE, descendantMarkIdCache);
+        }
+
+        return descendantMarkIdCache;
+    }
+
+    /**
+     * Adds the mark id of the specified {@link UIComponent} <code>otherComponent</code> to the mark id cache of this component,
+     * including all its descendant mark ids. Changes are propagated up the component tree.
+     */
+    public static void addToDescendantMarkIdCache(UIComponent component, UIComponent otherComponent) {
+        String markId = (String) otherComponent.getAttributes().get(MARK_CREATED);
+        if (markId != null) {
+            addSingleDescendantMarkId(component, markId, otherComponent);
+        }
+        Map<String, UIComponent> otherMarkIds = getDescendantMarkIdCache(otherComponent);
+        if (!otherMarkIds.isEmpty()) {
+            addAllDescendantMarkIds(component, otherMarkIds);
+        }
+    }
+
+    /**
+     * Adds the specified <code>markId</code> and its corresponding {@link UIComponent} <code>otherComponent</code>
+     * to the mark id cache of this component. Changes are propagated up the component tree.
+     */
+    private static void addSingleDescendantMarkId(UIComponent component, String markId, UIComponent otherComponent) {
+        getDescendantMarkIdCache(component).put(markId, otherComponent);
+        UIComponent parent = component.getParent();
+        if (parent != null) {
+            addSingleDescendantMarkId(parent, markId, otherComponent);
+        }
+    }
+
+    /**
+     * Adds all specified <code>otherMarkIds</code> to the mark id cache of this component.
+     * Changes are propagated up the component tree.
+     */
+    private static void addAllDescendantMarkIds(UIComponent component, Map<String, UIComponent> otherMarkIds) {
+        getDescendantMarkIdCache(component).putAll(otherMarkIds);
+        UIComponent parent = component.getParent();
+        if (parent != null) {
+            addAllDescendantMarkIds(parent, otherMarkIds);
+        }
+    }
+
+    /**
+     * Removes the mark id of the specified {@link UIComponent} <code>otherComponent</code> from the mark id cache of this component,
+     * including all its descendant mark ids. Changes are propagated up the component tree.
+     */
+    public static void removeFromDescendantMarkIdCache(UIComponent component, UIComponent otherComponent) {
+        String markId = (String) otherComponent.getAttributes().get(MARK_CREATED);
+        if (markId != null) {
+            removeSingleDescendantMarkId(component, markId);
+        }
+        Map<String, UIComponent> otherMarkIds = getDescendantMarkIdCache(otherComponent);
+        if (!otherMarkIds.isEmpty()) {
+            removeAllDescendantMarkIds(component, otherMarkIds);
+        }
+    }
+
+    /**
+     * Removes the specified <code>markId</code> from the mark id cache of this component.
+     * Changes are propagated up the component tree.
+     */
+    private static void removeSingleDescendantMarkId(UIComponent component, String markId) {
+        getDescendantMarkIdCache(component).remove(markId);
+        UIComponent parent = component.getParent();
+        if (parent != null) {
+            removeSingleDescendantMarkId(parent, markId);
+        }
+    }
+
+    /**
+     * Removes all specified <code>otherMarkIds</code> from the mark id cache of this component.
+     * Changes are propagated up the component tree.
+     */
+    private static void removeAllDescendantMarkIds(UIComponent component, Map<String, UIComponent> otherMarkIds) {
+        Map<String, UIComponent> descendantMarkIdCache = getDescendantMarkIdCache(component);
+        Iterator<String> iterator = otherMarkIds.keySet().iterator();
+        while (iterator.hasNext()) {
+            descendantMarkIdCache.remove(iterator.next());
+        }
+        UIComponent parent = component.getParent();
+        if (parent != null) {
+            removeAllDescendantMarkIds(parent, otherMarkIds);
+        }
+    }
+
     /**
      * According to JSF 1.2 tag specs, this helper method will use the
      * TagAttribute passed in determining the Locale intended.
