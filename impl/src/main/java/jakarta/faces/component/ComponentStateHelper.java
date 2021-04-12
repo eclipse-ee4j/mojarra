@@ -17,6 +17,7 @@
 package jakarta.faces.component;
 
 import static com.sun.faces.facelets.tag.faces.ComponentSupport.MARK_CREATED;
+import static com.sun.faces.facelets.tag.faces.ComponentSupport.addToDescendantMarkIdCache;
 import static com.sun.faces.util.Util.coalesce;
 import static com.sun.faces.util.Util.isEmpty;
 import static jakarta.faces.component.UIComponentBase.restoreAttachedState;
@@ -119,7 +120,7 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
                 UIComponent parent = component.getParent();
                 if (parent != null) {
                     // remember this component by its mark id
-                    parent.addToDescendantMarkIdCache(component);
+                    addToDescendantMarkIdCache(parent, component);
                 }
             }
         }
