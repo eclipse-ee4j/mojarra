@@ -55,7 +55,7 @@ public class ExceptionHandlerFactoryImpl extends ExceptionHandlerFactory {
 
         if (associate == null) {
             associate = ApplicationAssociate.getCurrentInstance();
-            if (associate == null) {
+            if (associate == null && ctx != null) {
                 associate = ApplicationAssociate.getInstance(ctx.getExternalContext());
             }
         }
