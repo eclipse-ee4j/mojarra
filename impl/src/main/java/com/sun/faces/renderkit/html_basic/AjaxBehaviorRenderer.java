@@ -16,6 +16,8 @@
 
 package com.sun.faces.renderkit.html_basic;
 
+import static jakarta.faces.component.UINamingContainer.getSeparatorChar;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -291,8 +293,13 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer {
 
         boolean first = true;
 
+        UIComponent composite = UIComponent.getCompositeComponentParent(component);
+        String separatorChar = String.valueOf(getSeparatorChar(facesContext));
+
         for (String id : ids) {
-            if (id.trim().length() == 0) {
+            String expression = id.trim();
+
+            if (expression.length() == 0) {
                 continue;
             }
             if (!first) {
@@ -301,8 +308,17 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer {
                 first = false;
             }
 
-            if (id.equals("@all") || id.equals("@none") || id.equals("@form") || id.equals("@this")) {
-                builder.append(id);
+            if (composite != null) {
+                if (expression.startsWith("@this")) {
+                    expression = expression.replaceFirst("@this", separatorChar + composite.getClientId(facesContext));
+                }
+                else if (composite.getParent() != null && !expression.startsWith(separatorChar)) {
+                    expression = composite.getParent().getClientId(facesContext) + separatorChar + expression;
+                }
+            }
+
+            if (expression.equals("@all") || expression.equals("@none") || expression.equals("@form") || expression.equals("@this")) {
+                builder.append(expression);
             } else {
                 if (searchExpressionContext == null) {
                     searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(facesContext, component, EXPRESSION_HINTS, null);
@@ -312,9 +328,9 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer {
                 }
                 String resolvedClientId = null;
                 try {
-                    resolvedClientId = handler.resolveClientId(searchExpressionContext, id);
+                    resolvedClientId = handler.resolveClientId(searchExpressionContext, expression);
                 } catch (ComponentNotFoundException cnfe) {
-                    resolvedClientId = getResolvedId(component, id);
+                    resolvedClientId = getResolvedId(component, expression);
                 }
                 builder.append(resolvedClientId);
             }
