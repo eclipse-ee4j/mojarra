@@ -87,22 +87,10 @@ public class BehaviorHolderAttachedObjectTargetImpl extends AttachedObjectTarget
     public List<UIComponent> getTargets(UIComponent topLevelComponent) {
         List<UIComponent> targets = super.getTargets(topLevelComponent);
         List<UIComponent> wrappedTargets = new ArrayList<>(targets.size());
-        Collection<String> targetClientIds = getAbsoluteClientIds(targets);
         for (UIComponent component : targets) {
-            wrappedTargets.add(new BehaviorHolderWrapper(component, getName(), getEvent(), targetClientIds));
+            wrappedTargets.add(new BehaviorHolderWrapper(component, getName(), getEvent(), super.getTargetsList()));
         }
         return wrappedTargets;
-    }
-
-    private static Collection<String> getAbsoluteClientIds(List<UIComponent> components) {
-        if (components.isEmpty()) {
-            return emptyList();
-        }
-        
-        FacesContext context = FacesContext.getCurrentInstance();
-        String separatorChar = String.valueOf(UINamingContainer.getSeparatorChar(context));
-
-        return components.stream().map(component -> (separatorChar + component.getClientId(context))).collect(toUnmodifiableList());
     }
     
 }

@@ -21,6 +21,7 @@ import java.beans.BeanInfo;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -35,6 +36,7 @@ import com.sun.faces.renderkit.RenderKitUtils;
 import jakarta.el.ELContext;
 import jakarta.el.MethodExpression;
 import jakarta.el.MethodNotFoundException;
+import jakarta.el.ValueExpression;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.component.UIComponent;
@@ -298,15 +300,19 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
         setBehaviorAttribute(ctx, behavior, delay, String.class);
 
         if (parent instanceof BehaviorHolderWrapper) {
-            Collection<String> targetClientIds = ((BehaviorHolderWrapper) parent).getTargets();
+            ValueExpression targets = ((BehaviorHolderWrapper) parent).getTargets();
             
-            if (!targetClientIds.isEmpty()) {
-                Collection<String> executeClientIds = new ArrayList<>(behavior.getExecute());
-
-                if (executeClientIds.isEmpty() || executeClientIds.contains("@this")) {
-                    executeClientIds.remove("@this");
-                    executeClientIds.addAll(targetClientIds);
-                    behavior.setExecute(executeClientIds);
+            if (targets != null) {
+                String targetClientIds = (String) targets.getValue(ctx);
+                
+                if (targetClientIds != null) {
+                    Collection<String> executeClientIds = new ArrayList<>(behavior.getExecute());
+                    
+                    if (executeClientIds.isEmpty() || executeClientIds.contains("@this")) {
+                        executeClientIds.remove("@this");
+                        executeClientIds.addAll(Arrays.asList(targetClientIds.split(" ")));
+                        behavior.setExecute(executeClientIds);
+                    }
                 }
             }
         }
