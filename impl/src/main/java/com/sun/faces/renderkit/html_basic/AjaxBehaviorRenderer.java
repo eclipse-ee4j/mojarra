@@ -308,16 +308,18 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer {
                 first = false;
             }
 
+            boolean clientResolveableExpression = expression.equals("@all") || expression.equals("@none") || expression.equals("@form") || expression.equals("@this");
+
             if (composite != null) {
                 if (expression.startsWith("@this")) {
                     expression = expression.replaceFirst("@this", separatorChar + composite.getClientId(facesContext));
-                }
-                else if (composite.getParent() != null && !expression.startsWith(separatorChar)) {
+                    clientResolveableExpression = false;
+                } else if (!clientResolveableExpression && composite.getParent() != null && !expression.startsWith(separatorChar)) {
                     expression = composite.getParent().getClientId(facesContext) + separatorChar + expression;
                 }
             }
 
-            if (expression.equals("@all") || expression.equals("@none") || expression.equals("@form") || expression.equals("@this")) {
+            if (clientResolveableExpression) {
                 builder.append(expression);
             } else {
                 if (searchExpressionContext == null) {
