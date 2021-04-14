@@ -66,20 +66,20 @@ public class Spec1567IT {
     public void testAjaxExecute() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "spec1567IT.xhtml");
 
-        validateRenderedMarkupOfExecuteAttribute(page, "form1", "0");
-        validateRenderedMarkupOfExecuteAttribute(page, "form2", "0");
-        validateRenderedMarkupOfExecuteAttribute(page, "form3", "'@this'");
+        validateRenderedMarkup(page, "form1", "form1:messages");
+        validateRenderedMarkup(page, "form2", "form2:messages");
+        validateRenderedMarkup(page, "form3", "form3:inputs form3:messages");
     }
 
-    private void validateRenderedMarkupOfExecuteAttribute(HtmlPage page, String formId, String render) {
+    private void validateRenderedMarkup(HtmlPage page, String formId, String render) {
         HtmlTextInput input1 = (HtmlTextInput) page.getElementById(formId + ":inputs:input1");
-        assertEquals("input1 and input2 are implied as @this", "mojarra.ab(this,event,'change','" + formId + ":inputs:input1 " + formId + ":inputs:input2'," + render + ")", input1.getOnChangeAttribute());
+        assertEquals("input1 and input2 are implied as @this", "mojarra.ab(this,event,'change','" + formId + ":inputs:input1 " + formId + ":inputs:input2','" + render + "')", input1.getOnChangeAttribute());
 
         HtmlTextInput input2 = (HtmlTextInput) page.getElementById(formId + ":inputs:input2");
-        assertEquals("input1 and input2 are implied as @this", "mojarra.ab(this,event,'change','" + formId + ":inputs:input1 " + formId + ":inputs:input2'," + render + ")", input2.getOnChangeAttribute());
+        assertEquals("input1 and input2 are implied as @this", "mojarra.ab(this,event,'change','" + formId + ":inputs:input1 " + formId + ":inputs:input2','" + render + "')", input2.getOnChangeAttribute());
 
         HtmlTextInput input3 = (HtmlTextInput) page.getElementById(formId + ":inputs:input3");
-        assertEquals("input3 has still its own f:ajax", "mojarra.ab(this,event,'valueChange',0,0)", input3.getOnChangeAttribute());
+        assertEquals("input3 has still its own f:ajax", "mojarra.ab(this,event,'valueChange',0,'" + formId + ":@form')", input3.getOnChangeAttribute());
     }
 
 }

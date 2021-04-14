@@ -27,19 +27,19 @@
     <h:body>
         <h:form id="form1">
             <my:component id="inputs" input1="#{spec1567ITBean.form1input1}" input2="#{spec1567ITBean.form1input2}" input3="#{spec1567ITBean.form1input3}">
-                <f:ajax />
+                <f:ajax render="messages" />
             </my:component>
             <h:messages id="messages" for="form1" />
         </h:form>
         <h:form id="form2">
             <my:component id="inputs" input1="#{spec1567ITBean.form2input1}" input2="#{spec1567ITBean.form2input2}" input3="#{spec1567ITBean.form2input3}">
-                <f:ajax execute="@this" />
+                <f:ajax execute="@this" render="messages" />
             </my:component>
             <h:messages id="messages" for="form2" />
         </h:form>
         <h:form id="form3">
             <my:component id="inputs" input1="#{spec1567ITBean.form3input1}" input2="#{spec1567ITBean.form3input2}" input3="#{spec1567ITBean.form3input3}">
-                <f:ajax render="@this" />
+                <f:ajax render="@this messages" />
             </my:component>
             <h:messages id="messages" for="form3" />
         </h:form>

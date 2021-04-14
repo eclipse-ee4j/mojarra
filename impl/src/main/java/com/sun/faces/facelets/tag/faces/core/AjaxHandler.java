@@ -16,12 +16,13 @@
 
 package com.sun.faces.facelets.tag.faces.core;
 
+import static java.util.Arrays.stream;
+
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -307,10 +308,10 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
                 
                 if (targetClientIds != null) {
                     Collection<String> executeClientIds = new ArrayList<>(behavior.getExecute());
-                    
+
                     if (executeClientIds.isEmpty() || executeClientIds.contains("@this")) {
                         executeClientIds.remove("@this");
-                        executeClientIds.addAll(Arrays.asList(targetClientIds.split(" ")));
+                        stream(targetClientIds.trim().split(" +")).map(id -> "@this:" + id).forEach(executeClientIds::add);
                         behavior.setExecute(executeClientIds);
                     }
                 }

@@ -11,10 +11,10 @@
         <cc:clientBehavior name="change" default="true" targets="input1 input2" event="change" />
     </cc:interface>
     <cc:implementation>
-        <div>
+        <div id="#{cc.clientId}">
             <h:inputText id="input1" value="#{cc.attrs.input1}" />
             <h:inputText id="input2" value="#{cc.attrs.input2}" />
-            <h:inputText id="input3" value="#{cc.attrs.input3}"><f:ajax /></h:inputText>
+            <h:inputText id="input3" value="#{cc.attrs.input3}"><f:ajax render="@form" /></h:inputText>
         </div>
     </cc:implementation>
 </ui:component>
