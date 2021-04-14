@@ -50,11 +50,13 @@ public class BehaviorHolderWrapper extends UIComponent implements ClientBehavior
     private final UIComponent parent;
     private final String virtualEvent;
     private final String event;
+    private final Collection<String> targets;
 
-    public BehaviorHolderWrapper(UIComponent parent, String virtualEvent, String event) {
+    public BehaviorHolderWrapper(UIComponent parent, String virtualEvent, String event, Collection<String> targets) {
         this.parent = parent;
         this.virtualEvent = virtualEvent;
         this.event = event;
+        this.targets = targets;
     }
 
     /**
@@ -455,6 +457,10 @@ public class BehaviorHolderWrapper extends UIComponent implements ClientBehavior
     @Override
     public Collection<String> getEventNames() {
         return Collections.singleton(virtualEvent);
+    }
+    
+    public Collection<String> getTargets() {
+        return targets;
     }
 
 }

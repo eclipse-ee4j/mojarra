@@ -16,10 +16,16 @@
 
 package com.sun.faces.facelets.tag.composite;
 
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toUnmodifiableList;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.BehaviorHolderAttachedObjectTarget;
 
 public class BehaviorHolderAttachedObjectTargetImpl extends AttachedObjectTargetImpl implements BehaviorHolderAttachedObjectTarget {
@@ -81,10 +87,22 @@ public class BehaviorHolderAttachedObjectTargetImpl extends AttachedObjectTarget
     public List<UIComponent> getTargets(UIComponent topLevelComponent) {
         List<UIComponent> targets = super.getTargets(topLevelComponent);
         List<UIComponent> wrappedTargets = new ArrayList<>(targets.size());
+        Collection<String> targetClientIds = getAbsoluteClientIds(targets);
         for (UIComponent component : targets) {
-            wrappedTargets.add(new BehaviorHolderWrapper(component, getName(), getEvent()));
+            wrappedTargets.add(new BehaviorHolderWrapper(component, getName(), getEvent(), targetClientIds));
         }
         return wrappedTargets;
     }
 
+    private static Collection<String> getAbsoluteClientIds(List<UIComponent> components) {
+        if (components.isEmpty()) {
+            return emptyList();
+        }
+        
+        FacesContext context = FacesContext.getCurrentInstance();
+        String separatorChar = String.valueOf(UINamingContainer.getSeparatorChar(context));
+
+        return components.stream().map(component -> (separatorChar + component.getClientId(context))).collect(toUnmodifiableList());
+    }
+    
 }

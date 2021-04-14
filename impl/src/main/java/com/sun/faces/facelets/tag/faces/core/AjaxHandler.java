@@ -20,6 +20,7 @@ import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +28,7 @@ import java.util.TreeSet;
 
 import com.sun.faces.component.behavior.AjaxBehaviors;
 import com.sun.faces.facelets.tag.TagHandlerImpl;
+import com.sun.faces.facelets.tag.composite.BehaviorHolderWrapper;
 import com.sun.faces.facelets.tag.faces.CompositeComponentTagHandler;
 import com.sun.faces.renderkit.RenderKitUtils;
 
@@ -186,7 +188,7 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
         // is going to be Ajax enabled and install the Ajax resource.
         RenderKitUtils.installFacesJsIfNecessary(ctx.getFacesContext());
 
-        AjaxBehavior ajaxBehavior = createAjaxBehavior(ctx, eventName);
+        AjaxBehavior ajaxBehavior = createAjaxBehavior(ctx, parent, eventName);
 
         // We leverage AjaxBehaviors to support the wrapping case. We
         // push/pop the AjaxBehavior instance on AjaxBehaviors so that
@@ -276,13 +278,13 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
             }
         }
 
-        AjaxBehavior ajaxBehavior = createAjaxBehavior(ctx, eventName);
+        AjaxBehavior ajaxBehavior = createAjaxBehavior(ctx, parent, eventName);
         bHolder.addClientBehavior(eventName, ajaxBehavior);
         RenderKitUtils.installFacesJsIfNecessary(ctx.getFacesContext());
     }
 
     // Construct our AjaxBehavior from tag parameters.
-    private AjaxBehavior createAjaxBehavior(FaceletContext ctx, String eventName) {
+    private AjaxBehavior createAjaxBehavior(FaceletContext ctx, UIComponent parent, String eventName) {
         Application application = ctx.getFacesContext().getApplication();
         AjaxBehavior behavior = (AjaxBehavior) application.createBehavior(AjaxBehavior.BEHAVIOR_ID);
 
@@ -294,6 +296,20 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
         setBehaviorAttribute(ctx, behavior, execute, Object.class);
         setBehaviorAttribute(ctx, behavior, render, Object.class);
         setBehaviorAttribute(ctx, behavior, delay, String.class);
+
+        if (parent instanceof BehaviorHolderWrapper) {
+            Collection<String> targetClientIds = ((BehaviorHolderWrapper) parent).getTargets();
+            
+            if (!targetClientIds.isEmpty()) {
+                Collection<String> executeClientIds = new ArrayList<>(behavior.getExecute());
+
+                if (executeClientIds.isEmpty() || executeClientIds.contains("@this")) {
+                    executeClientIds.remove("@this");
+                    executeClientIds.addAll(targetClientIds);
+                    behavior.setExecute(executeClientIds);
+                }
+            }
+        }
 
         if (null != listener) {
             behavior.addAjaxBehaviorListener(
