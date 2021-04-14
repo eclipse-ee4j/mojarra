@@ -16,8 +16,8 @@
 
 package com.sun.faces.application.resource;
 
-import static jakarta.faces.application.ResourceHandler.JSF_SCRIPT_LIBRARY_NAME;
-import static jakarta.faces.application.ResourceHandler.JSF_SCRIPT_RESOURCE_NAME;
+import static jakarta.faces.application.ResourceHandler.FACES_SCRIPT_LIBRARY_NAME;
+import static jakarta.faces.application.ResourceHandler.FACES_SCRIPT_RESOURCE_NAME;
 
 import java.io.File;
 import java.util.logging.Level;
@@ -205,7 +205,7 @@ public class ClientResourceInfo extends ResourceInfo {
             sb.append('/').append(localePrefix);
         }
         // Specialcasing for handling JSF script in uncompressed state
-        if (isDevStage && JSF_SCRIPT_LIBRARY_NAME.equals(libraryName) && JSF_SCRIPT_RESOURCE_NAME.equals(name)) {
+        if (isDevStage && FACES_SCRIPT_LIBRARY_NAME.equals(libraryName) && FACES_SCRIPT_RESOURCE_NAME.equals(name)) {
             sb.append('/').append("faces-uncompressed.js");
         } else {
             sb.append('/').append(name);

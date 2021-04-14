@@ -19,8 +19,8 @@ package com.sun.faces.renderkit;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.BEHAVIOR_EVENT_PARAM;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.BEHAVIOR_SOURCE_PARAM;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_EVENT_PARAM;
-import static jakarta.faces.application.ResourceHandler.JSF_SCRIPT_LIBRARY_NAME;
-import static jakarta.faces.application.ResourceHandler.JSF_SCRIPT_RESOURCE_NAME;
+import static jakarta.faces.application.ResourceHandler.FACES_SCRIPT_LIBRARY_NAME;
+import static jakarta.faces.application.ResourceHandler.FACES_SCRIPT_RESOURCE_NAME;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -972,8 +972,8 @@ public class RenderKitUtils {
 
         UIOutput output = new UIOutput();
         output.setRendererType("jakarta.faces.resource.Script");
-        output.getAttributes().put("name", JSF_SCRIPT_RESOURCE_NAME);
-        output.getAttributes().put("library", JSF_SCRIPT_LIBRARY_NAME);
+        output.getAttributes().put("name", FACES_SCRIPT_RESOURCE_NAME);
+        output.getAttributes().put("library", FACES_SCRIPT_LIBRARY_NAME);
         return output;
     }
 
@@ -991,7 +991,7 @@ public class RenderKitUtils {
         }
 
         ResourceHandler resourceHandler = context.getApplication().getResourceHandler();
-        if (resourceHandler.isResourceRendered(context, JSF_SCRIPT_RESOURCE_NAME, JSF_SCRIPT_LIBRARY_NAME)) {
+        if (resourceHandler.isResourceRendered(context, FACES_SCRIPT_RESOURCE_NAME, FACES_SCRIPT_LIBRARY_NAME)) {
             return;
         }
 
@@ -1013,13 +1013,13 @@ public class RenderKitUtils {
         }
 
         ResourceHandler resourceHandler = context.getApplication().getResourceHandler();
-        if (resourceHandler.isResourceRendered(context, JSF_SCRIPT_RESOURCE_NAME, JSF_SCRIPT_LIBRARY_NAME)) {
+        if (resourceHandler.isResourceRendered(context, FACES_SCRIPT_RESOURCE_NAME, FACES_SCRIPT_LIBRARY_NAME)) {
             return;
         }
 
         // Since we've now determined that it's not in the page, we need to manually render it.
         createFacesJs().encodeAll(context);
-        resourceHandler.markResourceRendered(context, JSF_SCRIPT_RESOURCE_NAME, JSF_SCRIPT_LIBRARY_NAME);
+        resourceHandler.markResourceRendered(context, FACES_SCRIPT_RESOURCE_NAME, FACES_SCRIPT_LIBRARY_NAME);
     }
 
     public static boolean isFacesJsInstalled(FacesContext context) {
@@ -1034,7 +1034,7 @@ public class RenderKitUtils {
             Object name = resource.getAttributes().get("name");
             Object library = resource.getAttributes().get("library");
 
-            if (JSF_SCRIPT_RESOURCE_NAME.equals(name) && JSF_SCRIPT_LIBRARY_NAME.equals(library)) {
+            if (FACES_SCRIPT_RESOURCE_NAME.equals(name) && FACES_SCRIPT_LIBRARY_NAME.equals(library)) {
                 RequestStateManager.set(context, RequestStateManager.SCRIPT_STATE, true);
                 return true;
             }

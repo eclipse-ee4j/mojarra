@@ -16,8 +16,8 @@
 
 package com.sun.faces.application.resource;
 
-import static jakarta.faces.application.ResourceHandler.JSF_SCRIPT_LIBRARY_NAME;
-import static jakarta.faces.application.ResourceHandler.JSF_SCRIPT_RESOURCE_NAME;
+import static jakarta.faces.application.ResourceHandler.FACES_SCRIPT_LIBRARY_NAME;
+import static jakarta.faces.application.ResourceHandler.FACES_SCRIPT_RESOURCE_NAME;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -467,7 +467,7 @@ public abstract class ResourceHelper {
         ExternalContext extContext = ctx.getExternalContext();
         String contentType = extContext.getMimeType(resourceName);
         boolean result = contentType != null && Arrays.binarySearch(EL_CONTENT_TYPES, contentType) >= 0 || null != resourceName && null != libraryName
-                && JSF_SCRIPT_LIBRARY_NAME.equals(libraryName) && JSF_SCRIPT_RESOURCE_NAME.equals(resourceName);
+                && FACES_SCRIPT_LIBRARY_NAME.equals(libraryName) && FACES_SCRIPT_RESOURCE_NAME.equals(resourceName);
         return result;
 
     }
