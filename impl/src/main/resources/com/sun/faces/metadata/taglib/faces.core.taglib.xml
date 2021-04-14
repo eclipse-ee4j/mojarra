@@ -175,6 +175,10 @@
          not specified, the default value of "@this" is assumed.  For
          example, <code>@this clientIdOne clientIdTwo</code>.</span></p>
 
+        <p class="changed_modified_4_0">When nested within a composite component,
+        and the value contains or implies the keyword <code>@this</code>,
+        then the keyword must be remapped to the <code>targets</code> attribute of the associated <code>&lt;composite:clientBehavior&gt;</code> declaration, if any.</p>
+
          ]]></description>
             <name>execute</name>
             <required>false</required>
@@ -243,6 +247,10 @@
          default value of "@none" is assumed.  For example, <code>@this
          clientIdOne clientIdTwo</code>.</span></p>
          
+        <p class="changed_modified_4_0">When nested within a composite component,
+        and the value contains or implies the keyword <code>@this</code>,
+        then the keyword must be remapped to the client ID of the associated <code>&lt;composite:implementation&gt;</code>.</p>
+
             ]]></description>
             <name>render</name>
             <required>false</required>
