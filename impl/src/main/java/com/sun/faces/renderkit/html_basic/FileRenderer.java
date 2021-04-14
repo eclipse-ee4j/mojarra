@@ -118,7 +118,7 @@ public class FileRenderer extends TextRenderer {
         super.encodeBegin(context, component);
     }
 
-    // "Encode behavior" section of html_basic.taglib.xml says "Do not render the "value" attribute.".
+    // "Encode behavior" section of faces.html.taglib.xml says "Do not render the "value" attribute.".
     // So we override currentValue with null.
     @Override
     protected void getEndTextToRender(FacesContext context, UIComponent component, String currentValue) throws IOException {

@@ -33,7 +33,7 @@ public class SchemaCompliantRemoveHandler extends TagHandler {
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         throw new FaceletException(
-                "Error: The Facelet parser is responsible for handling the <ui:remove> element.  This TagHandler implementation is only provided to allow the ui.taglib.xml file to be compliant with web-facelettaglibrary_2_2.xsd.  If you are seeing this exception, there is something wrong with how the JSF runtime is configuring its Facelets compiler.");
+                "Error: The Facelet parser is responsible for handling the <ui:remove> element.  This TagHandler implementation is only provided to allow the faces.facelets.taglib.xml file to be compliant with web-facelettaglibrary_2_2.xsd.  If you are seeing this exception, there is something wrong with how the JSF runtime is configuring its Facelets compiler.");
     }
 
 }
