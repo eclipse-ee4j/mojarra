@@ -177,7 +177,8 @@
 
         <p class="changed_modified_4_0">When nested within a composite component,
         and the value contains or implies the keyword <code>@this</code>,
-        then the keyword must be remapped to the <code>targets</code> attribute of the associated <code>&lt;composite:clientBehavior&gt;</code> declaration, if any.</p>
+        then the keyword must be remapped to the <code>targets</code> attribute of the associated <code>&lt;composite:clientBehavior&gt;</code> declaration,
+        if any, else to the client ID of the associated <code>&lt;composite:implementation&gt;</code>.</p>
 
          ]]></description>
             <name>execute</name>
