@@ -178,7 +178,8 @@
         <p class="changed_modified_4_0">When nested within a composite component,
         and the value contains or implies the keyword <code>@this</code>,
         then the keyword must be remapped to the <code>targets</code> attribute of the associated <code>&lt;composite:clientBehavior&gt;</code> declaration, if any,
-        else the value must be correctly reinterpreted relative to the location of the <code>&lt;f:ajax&gt;</code> declaration.</p>
+        else if the value is not an absolute search expression,
+        then it must be reinterpreted relative to the location of the <code>&lt;f:ajax&gt;</code> declaration.</p>
 
          ]]></description>
             <name>execute</name>
@@ -251,7 +252,8 @@
         <p class="changed_modified_4_0">When nested within a composite component,
         and the value contains or implies the keyword <code>@this</code>,
         then the keyword must be remapped to the client ID of the associated <code>&lt;composite:implementation&gt;</code>,
-        else the value must be correctly reinterpreted relative to the location of the <code>&lt;f:ajax&gt;</code> declaration.</p>
+        else if the value is not an absolute search expression,
+        then it must be reinterpreted relative to the location of the <code>&lt;f:ajax&gt;</code> declaration.</p>
 
             ]]></description>
             <name>render</name>
