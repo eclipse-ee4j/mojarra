@@ -17,10 +17,11 @@
 
 package com.sun.faces.application.view;
 
+import com.sun.faces.config.WebConfiguration;
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -51,11 +52,10 @@ public class ViewScopeContextManager {
      * Stores the constant to keep track of all the active view scope contexts.
      */
     private static final String ACTIVE_VIEW_CONTEXTS = "com.sun.faces.application.view.activeViewContexts";
-    /**
-     * Stores the constants to keep track of the active view maps.
-     */
-    private static final String ACTIVE_VIEW_MAPS = "com.sun.faces.application.view.activeViewMaps";
+
     private final BeanManager beanManager;
+
+    private final boolean distributable;
 
     public ViewScopeContextManager() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -68,6 +68,8 @@ public class ViewScopeContextManager {
             }
         }
         beanManager = (BeanManager) Util.getCdiBeanManager(facesContext);
+        WebConfiguration config = WebConfiguration.getInstance(facesContext.getExternalContext());
+        distributable = config.isOptionEnabled(EnableDistributable);
     }
 
     /**
@@ -87,16 +89,33 @@ public class ViewScopeContextManager {
     }
 
     /**
-     * Clear the given view map.
+     * Clear the given view map. Use the version with the viewMapId.
      *
      * @param facesContext the Faces context.
      * @param viewMap the given view map.
      */
+    @Deprecated
     public void clear(FacesContext facesContext, Map<String, Object> viewMap) {
+        String viewMapId = ViewScopeManager.locateViewMapId(facesContext, viewMap);
+        if (viewMapId != null) {
+            this.clear(facesContext, viewMapId, viewMap);
+        } else {
+            LOGGER.log(Level.WARNING, "Cannot locate the view map to clear in the active maps: {0}", viewMap);
+        }
+    }
+
+    /**
+     * Clear the given view map.
+     *
+     * @param facesContext the Faces context.
+     * @param viewMapId The ID of the view map
+     * @param viewMap the given view map.
+     */
+    public void clear(FacesContext facesContext, String viewMapId, Map<String, Object> viewMap) {
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.log(Level.FINEST, "Clearing @ViewScoped CDI beans for given view map: {0}");
         }
-        Map<String, ViewScopeContextObject> contextMap = getContextMap(facesContext, viewMap);
+        Map<String, ViewScopeContextObject> contextMap = getContextMap(facesContext, viewMapId);
         if (contextMap != null) {
             destroyBeans(viewMap, contextMap);
         }
@@ -236,6 +255,7 @@ public class ViewScopeContextManager {
                 Map<Object, Map<String, ViewScopeContextObject>> activeViewScopeContexts =
                         (Map<Object, Map<String, ViewScopeContextObject>>) sessionMap.get(ACTIVE_VIEW_CONTEXTS);
                 Map<String, Object> viewMap = facesContext.getViewRoot().getViewMap(false);
+                String viewMapId = (String) facesContext.getViewRoot().getTransientStateHelper().getTransient(ViewScopeManager.VIEW_MAP_ID);
 
                 if (activeViewScopeContexts == null && create) {
                     synchronized (session) {
@@ -244,71 +264,38 @@ public class ViewScopeContextManager {
                     }
                 }
 
-                if (activeViewScopeContexts != null && create) {
+                if (activeViewScopeContexts != null && viewMapId != null && create) {
                     synchronized (activeViewScopeContexts) {
-                        if (!activeViewScopeContexts.containsKey(System.identityHashCode(viewMap)) && create) {
-                            // since viewMap identity may have changed, copy view scope contexts from the session
-                            copyViewScopeContextsFromSession(activeViewScopeContexts, viewMap);
-                            // If we are distributable, this will result in a dirtying of the
-                            // session data, forcing replication.  If we are not distributable,
-                            // this is a no-op.
-                            sessionMap.put(ACTIVE_VIEW_CONTEXTS, activeViewScopeContexts);
-
+                        if (!activeViewScopeContexts.containsKey(viewMapId)) {
+                            activeViewScopeContexts.put(viewMapId,
+                                    new ConcurrentHashMap<String, ViewScopeContextObject>());
+                            if (distributable) {
+                                // If we are distributable, this will result in a dirtying of the
+                                // session data, forcing replication. If we are not distributable,
+                                // this is a no-op.
+                                sessionMap.put(ACTIVE_VIEW_CONTEXTS, activeViewScopeContexts);
+                            }
                         }
                     }
                 }
 
-                if (activeViewScopeContexts != null) {
-                    result = activeViewScopeContexts.get(System.identityHashCode(viewMap));
+                if (activeViewScopeContexts != null && viewMapId != null) {
+                    result = activeViewScopeContexts.get(viewMapId);
                 }
             }
         }
 
         return result;
     }
-    
-    /**
-     * Copies view-scope context from the session, in case the view map identity has changed,
-     * which is the case when cluster failover or a session-saving reload occurs
-     */
-    private void copyViewScopeContextsFromSession(Map<Object, Map<String, ViewScopeContextObject>> contexts,
-            Map<String, Object> viewMap) {
-        if(viewMap == null) {
-            return;
-        }
-        Set<Object> toReplace = new HashSet<>();
-        Map<String, ViewScopeContextObject> resultMap = new ConcurrentHashMap<>();
-        // try to copy a view map from the session, in case of a failover or a restart
-        for(Map.Entry<Object, Map<String, ViewScopeContextObject>> contextEntry : contexts.entrySet()) {
-            Set<String> beanNames = new HashSet<>();
-            // gather all bean names from the session's context
-            for(ViewScopeContextObject viewObject : contextEntry.getValue().values()) {
-                beanNames.add(viewObject.getName());
-            }
-            for(String name : beanNames) {
-                // mark all contexts that are in the view map for copying
-                if(viewMap.keySet().contains(name)) {                    
-                    toReplace.add(contextEntry.getKey());
-                    break;
-                }
-            }
-        }
-        for(Object key : toReplace) {  
-            Map<String, ViewScopeContextObject> contextObject = contexts.get(key);
-            contexts.remove(key);
-            resultMap.putAll(contextObject);
-        }
-        contexts.put(System.identityHashCode(viewMap), resultMap);
-    }
 
     /**
      * Get the context map.
      *
      * @param facesContext the Faces context.
-     * @param create flag to indicate if we are creating the context map.
+     * @param viewMapId The viewMapId of the map.
      * @return the context map.
      */
-    private Map<String, ViewScopeContextObject> getContextMap(FacesContext facesContext, Map<String, Object> viewMap) {
+    private Map<String, ViewScopeContextObject> getContextMap(FacesContext facesContext, String viewMapId) {
         Map<String, ViewScopeContextObject> result = null;
 
         ExternalContext externalContext = facesContext.getExternalContext();
@@ -318,7 +305,7 @@ public class ViewScopeContextManager {
                     (Map<Object, Map<String, ViewScopeContextObject>>) sessionMap.get(ACTIVE_VIEW_CONTEXTS);
 
             if (activeViewScopeContexts != null) {
-                result = activeViewScopeContexts.get(System.identityHashCode(viewMap));
+                result = activeViewScopeContexts.get(viewMapId);
             }
         }
 
@@ -356,16 +343,13 @@ public class ViewScopeContextManager {
 
         Map<Object, Map<String, ViewScopeContextObject>> activeViewScopeContexts =
                 (Map<Object, Map<String, ViewScopeContextObject>>) session.getAttribute(ACTIVE_VIEW_CONTEXTS);
-
         if (activeViewScopeContexts != null) {
-            Map<String, Object> activeViewMaps = (Map<String, Object>) session.getAttribute(ACTIVE_VIEW_MAPS);
+            Map<String, Object> activeViewMaps = (Map<String, Object>) session.getAttribute(ViewScopeManager.ACTIVE_VIEW_MAPS);
             if (activeViewMaps != null) {
-                Iterator<Object> activeViewMapsIterator = activeViewMaps.values().iterator();
-                while (activeViewMapsIterator.hasNext()) {
-                    Map<String, Object> instanceMap = (Map<String, Object>) activeViewMapsIterator.next();
+                for (Map.Entry<String, Object> viewMapEntry: activeViewMaps.entrySet()) {
                     Map<String, ViewScopeContextObject> contextMap =
-                            activeViewScopeContexts.get(System.identityHashCode(instanceMap));
-                    destroyBeans(instanceMap, contextMap);
+                            activeViewScopeContexts.get(viewMapEntry.getKey());
+                    destroyBeans((Map<String, Object>) viewMapEntry.getValue(), contextMap);
                 }
             }
 
