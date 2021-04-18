@@ -16,6 +16,8 @@
 
 package com.sun.faces.renderkit.html_basic;
 
+import static javax.faces.component.UINamingContainer.getSeparatorChar;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -315,8 +317,13 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer  {
 
         boolean first = true;
 
+        UIComponent composite = UIComponent.getCompositeComponentParent(component);
+        String separatorChar = String.valueOf(getSeparatorChar(facesContext));
+
         for (String id : ids) {
-            if (id.trim().length() == 0) {
+            String expression = id.trim();
+
+            if (expression.length() == 0) {
                 continue;
             }
             if (!first) {
@@ -325,9 +332,15 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer  {
                 first = false;
             }
 
-            if (id.equals("@all") || id.equals("@none") ||
-                id.equals("@form") || id.equals("@this")) {
-                builder.append(id);
+            boolean clientResolveableExpression = expression.equals("@all") || expression.equals("@none") || expression.equals("@form") || expression.equals("@this");
+
+            if (composite != null && expression.startsWith("@this" + separatorChar)) {
+                expression = expression.replaceFirst("@this", separatorChar + composite.getClientId(facesContext));
+                clientResolveableExpression = false;
+            }
+
+            if (clientResolveableExpression) {
+                builder.append(expression);
             } else {
                 if (searchExpressionContext == null)  {
                     searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(
@@ -338,9 +351,19 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer  {
                 }
                 String resolvedClientId = null;
                 try {
-                    resolvedClientId = handler.resolveClientId(searchExpressionContext, id);
+                    resolvedClientId = handler.resolveClientId(searchExpressionContext, expression);
                 } catch (ComponentNotFoundException cnfe) {
-                    resolvedClientId = getResolvedId(component, id);
+                    if (composite != null && !expression.startsWith(separatorChar) && composite.getParent() != null && composite.getParent().getNamingContainer() != null) {
+                        expression = composite.getParent().getNamingContainer().getClientId(facesContext) + separatorChar + expression;
+
+                        try {
+                            resolvedClientId = handler.resolveClientId(searchExpressionContext, expression);
+                        } catch (ComponentNotFoundException ignore) {
+                            resolvedClientId = getResolvedId(component, expression);
+                        }
+                    } else {
+                        resolvedClientId = getResolvedId(component, expression);
+                    }
                 }
                 builder.append(resolvedClientId);
             }
