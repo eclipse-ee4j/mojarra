@@ -310,13 +310,9 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer {
 
             boolean clientResolveableExpression = expression.equals("@all") || expression.equals("@none") || expression.equals("@form") || expression.equals("@this");
 
-            if (composite != null) {
-                if (expression.startsWith("@this")) {
-                    expression = expression.replaceFirst("@this", separatorChar + composite.getClientId(facesContext));
-                    clientResolveableExpression = false;
-                } else if (!clientResolveableExpression && composite.getParent() != null && !expression.startsWith(separatorChar)) {
-                    expression = composite.getParent().getClientId(facesContext) + separatorChar + expression;
-                }
+            if (composite != null && expression.equals("@this") || expression.startsWith("@this" + separatorChar)) {
+                expression = expression.replaceFirst("@this", separatorChar + composite.getClientId(facesContext));
+                clientResolveableExpression = false;
             }
 
             if (clientResolveableExpression) {
@@ -332,7 +328,17 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer {
                 try {
                     resolvedClientId = handler.resolveClientId(searchExpressionContext, expression);
                 } catch (ComponentNotFoundException cnfe) {
-                    resolvedClientId = getResolvedId(component, expression);
+                    if (composite != null && !expression.startsWith(separatorChar) && composite.getParent() != null && composite.getParent().getNamingContainer() != null) {
+                        expression = composite.getParent().getNamingContainer().getClientId(facesContext) + separatorChar + expression;
+
+                        try {
+                            resolvedClientId = handler.resolveClientId(searchExpressionContext, expression);
+                        } catch (ComponentNotFoundException ignore) {
+                            resolvedClientId = getResolvedId(component, expression);
+                        }
+                    } else {
+                        resolvedClientId = getResolvedId(component, expression);
+                    }
                 }
                 builder.append(resolvedClientId);
             }

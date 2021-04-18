@@ -16,6 +16,7 @@
 
 package com.sun.faces.facelets.tag.faces.core;
 
+import static jakarta.faces.component.UINamingContainer.getSeparatorChar;
 import static java.util.Arrays.stream;
 
 import java.beans.BeanDescriptor;
@@ -41,6 +42,7 @@ import jakarta.el.ValueExpression;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.behavior.AjaxBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.context.FacesContext;
@@ -310,8 +312,9 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
                     Collection<String> executeClientIds = new ArrayList<>(behavior.getExecute());
 
                     if (executeClientIds.isEmpty() || executeClientIds.contains("@this")) {
+                        String separatorChar = String.valueOf(getSeparatorChar(ctx.getFacesContext()));
                         executeClientIds.remove("@this");
-                        stream(targetClientIds.trim().split(" +")).map(id -> "@this:" + id).forEach(executeClientIds::add);
+                        stream(targetClientIds.trim().split(" +")).map(id -> "@this" + separatorChar + id).forEach(executeClientIds::add);
                         behavior.setExecute(executeClientIds);
                     }
                 }
