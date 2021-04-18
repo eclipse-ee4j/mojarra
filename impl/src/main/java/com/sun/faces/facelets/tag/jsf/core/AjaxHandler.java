@@ -16,10 +16,14 @@
 
 package com.sun.faces.facelets.tag.jsf.core;
 
+import static java.util.Arrays.stream;
+import static javax.faces.component.UINamingContainer.getSeparatorChar;
+
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -28,6 +32,7 @@ import java.util.TreeSet;
 import javax.el.ELContext;
 import javax.el.MethodExpression;
 import javax.el.MethodNotFoundException;
+import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.application.ResourceHandler;
 import javax.faces.component.UIComponent;
@@ -50,6 +55,7 @@ import javax.faces.view.facelets.TagHandler;
 
 import com.sun.faces.component.behavior.AjaxBehaviors;
 import com.sun.faces.facelets.tag.TagHandlerImpl;
+import com.sun.faces.facelets.tag.composite.BehaviorHolderWrapper;
 import com.sun.faces.facelets.tag.jsf.CompositeComponentTagHandler;
 import com.sun.faces.renderkit.RenderKitUtils;
 
@@ -195,7 +201,7 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
         // is going to be Ajax enabled and install the Ajax resource.
         RenderKitUtils.installJsfJsIfNecessary(ctx.getFacesContext());
 
-        AjaxBehavior ajaxBehavior = createAjaxBehavior(ctx, eventName);
+        AjaxBehavior ajaxBehavior = createAjaxBehavior(ctx, parent, eventName);
 
         // We leverage AjaxBehaviors to support the wrapping case.  We
         // push/pop the AjaxBehavior instance on AjaxBehaviors so that
@@ -305,13 +311,13 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
             }
         }
 
-        AjaxBehavior ajaxBehavior = createAjaxBehavior(ctx, eventName);
+        AjaxBehavior ajaxBehavior = createAjaxBehavior(ctx, parent, eventName);
         bHolder.addClientBehavior(eventName, ajaxBehavior);
         RenderKitUtils.installJsfJsIfNecessary(ctx.getFacesContext());
     }
 
     // Construct our AjaxBehavior from tag parameters.
-    private AjaxBehavior createAjaxBehavior(FaceletContext ctx, String eventName) {
+    private AjaxBehavior createAjaxBehavior(FaceletContext ctx, UIComponent parent, String eventName) {
         Application application = ctx.getFacesContext().getApplication();
         AjaxBehavior behavior = (AjaxBehavior)application.createBehavior(
                                                   AjaxBehavior.BEHAVIOR_ID);
@@ -324,6 +330,25 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
         setBehaviorAttribute(ctx, behavior, this.execute, Object.class);
         setBehaviorAttribute(ctx, behavior, this.render, Object.class);
         setBehaviorAttribute(ctx, behavior, this.delay, String.class);
+
+        if (parent instanceof BehaviorHolderWrapper) {
+            ValueExpression targets = ((BehaviorHolderWrapper) parent).getTargets();
+
+            if (targets != null) {
+                String targetClientIds = (String) targets.getValue(ctx);
+
+                if (targetClientIds != null) {
+                    Collection<String> executeClientIds = new ArrayList<>(behavior.getExecute());
+
+                    if (executeClientIds.isEmpty() || executeClientIds.contains("@this")) {
+                        String separatorChar = String.valueOf(getSeparatorChar(ctx.getFacesContext()));
+                        executeClientIds.remove("@this");
+                        stream(targetClientIds.trim().split(" +")).map(id -> "@this" + separatorChar + id).forEach(executeClientIds::add);
+                        behavior.setExecute(executeClientIds);
+                    }
+                }
+            }
+        }
 
         if (null != listener) {
             behavior.addAjaxBehaviorListener(new AjaxBehaviorListenerImpl(

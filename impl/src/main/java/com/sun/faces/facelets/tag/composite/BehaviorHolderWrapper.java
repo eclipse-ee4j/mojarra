@@ -40,11 +40,13 @@ public class BehaviorHolderWrapper extends UIComponent implements
     private final UIComponent parent;
     private final String virtualEvent;
     private final String event;
+    private final ValueExpression targets;
 
-    public BehaviorHolderWrapper(UIComponent parent, String virtualEvent, String event) {
+    public BehaviorHolderWrapper(UIComponent parent, String virtualEvent, String event, ValueExpression targets) {
         this.parent = parent;
         this.virtualEvent = virtualEvent;
         this.event = event;
+        this.targets = targets;
     }
 
     /**
@@ -475,5 +477,8 @@ public class BehaviorHolderWrapper extends UIComponent implements
         return Collections.singleton(virtualEvent);
     }
 
+    public ValueExpression getTargets() {
+        return targets;
+    }
 
 }

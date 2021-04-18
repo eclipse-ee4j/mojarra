@@ -77,6 +77,10 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget {
     void setTargetsList(ValueExpression targetsList) {
         this.targetsList = targetsList;
     }
+    
+    ValueExpression getTargetsList() {
+        return targetsList;
+    }
 
 
     // if the current composite component ID is the same as the target ID,
