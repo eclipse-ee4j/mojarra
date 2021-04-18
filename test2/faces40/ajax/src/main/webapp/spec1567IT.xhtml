@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) 2021 Contributors to Eclipse Foundation.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<html
+    xmlns:f="jakarta.faces.core"
+    xmlns:h="jakarta.faces.html"
+    xmlns:my="jakarta.faces.composite/components"
+>
+    <h:head>
+        <title>Spec1567IT</title>
+    </h:head>
+    <h:body>
+        <h:form id="form1">
+            <my:component id="inputs" input1="#{spec1567ITBean.form1input1}" input2="#{spec1567ITBean.form1input2}" input3="#{spec1567ITBean.form1input3}">
+                <f:ajax render="messages" />
+            </my:component>
+            <h:messages id="messages" for="form1" />
+        </h:form>
+        <h:form id="form2">
+            <my:component id="inputs" input1="#{spec1567ITBean.form2input1}" input2="#{spec1567ITBean.form2input2}" input3="#{spec1567ITBean.form2input3}">
+                <f:ajax execute="@this" render="messages" />
+            </my:component>
+            <h:messages id="messages" for="form2" />
+        </h:form>
+        <h:form id="form3">
+            <my:component id="inputs" input1="#{spec1567ITBean.form3input1}" input2="#{spec1567ITBean.form3input2}" input3="#{spec1567ITBean.form3input3}">
+                <f:ajax render="@this messages" />
+            </my:component>
+            <h:messages id="messages" for="form3" />
+        </h:form>
+    </h:body>
+</html>
