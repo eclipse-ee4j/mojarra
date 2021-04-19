@@ -2439,42 +2439,6 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
         return resourceBundle != null ? result : null;
     }
 
-    /**
-     * <p class="changed_added_2_0">
-     * <span class="changed_deleted_2_2">The</span> key to which the
-     * <code>UIComponent</code> currently being processed will be associated with within
-     * the {@link FacesContext} attributes map. <span class="changed_deleted_2_2">The use
-     * of this constant is deprecated. Please see
-     * {@link #HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME} to enable its use.</span>
-     * </p>
-     *
-     * @see jakarta.faces.context.FacesContext#getAttributes()
-     *
-     * @since 2.0
-     *
-     * @deprecated
-     */
-    @Deprecated
-    public static final String CURRENT_COMPONENT = "javax.faces.component.CURRENT_COMPONENT";
-
-    /**
-     * <p class="changed_added_2_0">
-     * <span class="changed_deleted_2_2">The</span> key to which the <em>composite</em>
-     * <code>UIComponent</code> currently being processed will be associated with within
-     * the {@link FacesContext} attributes map. <span class="changed_deleted_2_2">The use
-     * of this constant is deprecated. Please see
-     * {@link #HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME} to enable its use.</span>
-     * </p>
-     *
-     * @see jakarta.faces.context.FacesContext#getAttributes()
-     *
-     * @since 2.0
-     *
-     * @deprecated
-     */
-    @Deprecated
-    public static final String CURRENT_COMPOSITE_COMPONENT = "javax.faces.component.CURRENT_COMPOSITE_COMPONENT";
-
     // The set of ValueExpressions for this component, keyed by property
     // name This collection is lazily instantiated
     // The set of ValueExpressions for this component, keyed by property
