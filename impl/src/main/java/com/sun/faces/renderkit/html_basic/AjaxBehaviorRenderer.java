@@ -310,7 +310,7 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer {
 
             boolean clientResolveableExpression = expression.equals("@all") || expression.equals("@none") || expression.equals("@form") || expression.equals("@this");
 
-            if (composite != null && expression.equals("@this") || expression.startsWith("@this" + separatorChar)) {
+            if (composite != null && (expression.equals("@this") || expression.startsWith("@this" + separatorChar))) {
                 expression = expression.replaceFirst("@this", separatorChar + composite.getClientId(facesContext));
                 clientResolveableExpression = false;
             }
