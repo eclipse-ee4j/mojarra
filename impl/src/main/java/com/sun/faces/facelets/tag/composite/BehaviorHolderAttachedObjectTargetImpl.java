@@ -82,7 +82,7 @@ public class BehaviorHolderAttachedObjectTargetImpl extends AttachedObjectTarget
         List<UIComponent> targets = super.getTargets(topLevelComponent);
         List<UIComponent> wrappedTargets = new ArrayList<>(targets.size());
         for (UIComponent component : targets) {
-            wrappedTargets.add(new BehaviorHolderWrapper(component, getName(), getEvent()));
+            wrappedTargets.add(new BehaviorHolderWrapper(component, getName(), getEvent(), super.getTargetsList()));
         }
         return wrappedTargets;
     }

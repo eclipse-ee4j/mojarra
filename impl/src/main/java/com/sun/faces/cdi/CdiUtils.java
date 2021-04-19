@@ -29,6 +29,7 @@ import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
@@ -83,6 +84,9 @@ public final class CdiUtils {
         Converter<?> managedConverter = createConverter(beanManager, new FacesConverterAnnotationLiteral(value, Object.class));
 
         if (managedConverter != null) {
+            ApplicationAssociate associate = ApplicationAssociate.getCurrentInstance();
+            associate.getAnnotationManager().applyConverterAnnotations(FacesContext.getCurrentInstance(), managedConverter); // #4913
+
             return new CdiConverter(value, Object.class, managedConverter);
         }
 
@@ -105,6 +109,9 @@ public final class CdiUtils {
         }
 
         if (managedConverter != null) {
+            ApplicationAssociate associate = ApplicationAssociate.getCurrentInstance();
+            associate.getAnnotationManager().applyConverterAnnotations(FacesContext.getCurrentInstance(), managedConverter); // #4913
+
             return new CdiConverter("", forClass, managedConverter);
         }
 
