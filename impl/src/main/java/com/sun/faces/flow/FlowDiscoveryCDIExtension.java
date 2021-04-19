@@ -16,6 +16,8 @@
 
 package com.sun.faces.flow;
 
+import static com.sun.faces.cdi.CdiUtils.addAnnotatedTypes;
+
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
@@ -24,7 +26,6 @@ import java.util.logging.Logger;
 import com.sun.faces.util.FacesLogger;
 
 import jakarta.enterprise.event.Observes;
-import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
@@ -73,9 +74,7 @@ public class FlowDiscoveryCDIExtension implements Extension {
     }
 
     void beforeBeanDiscovery(@Observes final BeforeBeanDiscovery event, BeanManager beanManager) {
-        AnnotatedType flowDiscoveryHelper = beanManager.createAnnotatedType(FlowDiscoveryCDIHelper.class);
-        event.addAnnotatedType(flowDiscoveryHelper);
-
+        addAnnotatedTypes(event, beanManager, FlowDiscoveryCDIHelper.class);
     }
 
     <T> void findFlowDefiners(@Observes ProcessProducer<T, Flow> pp) {

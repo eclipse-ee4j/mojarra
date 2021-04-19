@@ -16,7 +16,6 @@
 
 package com.sun.faces.facelets.impl;
 
-
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.UseFaceletsID;
 
 import java.io.ByteArrayInputStream;
@@ -397,11 +396,15 @@ public class DefaultFaceletFactory {
      * @throws ELException
      */
     private DefaultFacelet createFacelet(URL url) throws IOException {
+        String escapedBaseURL = Pattern.quote(this.baseUrl.getFile());
+        String alias = '/' + url.getFile().replaceFirst(escapedBaseURL, "");
+        return createFacelet(url, alias);
+    }
+
+    private DefaultFacelet createFacelet(URL url, String alias) throws IOException {
         if (log.isLoggable(Level.FINE)) {
             log.fine("Creating Facelet for: " + url);
         }
-        String escapedBaseURL = Pattern.quote(baseUrl.getFile());
-        String alias = '/' + url.getFile().replaceFirst(escapedBaseURL, "");
         try {
             FaceletHandler h = compiler.compile(url, alias);
             return new DefaultFacelet(this, compiler.createExpressionFactory(), url, alias, h);
