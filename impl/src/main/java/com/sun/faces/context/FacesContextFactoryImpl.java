@@ -31,7 +31,6 @@ import com.sun.faces.util.Util;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
-import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.context.ExceptionHandlerFactory;
 import jakarta.faces.context.ExternalContext;
@@ -82,12 +81,9 @@ public class FacesContextFactoryImpl extends FacesContextFactory {
     private void savePerRequestInitParams(FacesContext context, WebConfiguration webConfig) {
         ExternalContext extContext = context.getExternalContext();
         Map<String, Object> appMap = extContext.getApplicationMap();
-        String val = extContext.getInitParameter(UIComponent.HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME);
-        boolean setCurrentComponent = Boolean.valueOf(val);
         Map<Object, Object> attrs = context.getAttributes();
         attrs.put(UIInput.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE,
                 webConfig.isOptionEnabled(AlwaysPerformValidationWhenRequiredTrue) ? Boolean.TRUE : Boolean.FALSE);
-        attrs.put(UIComponent.HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME, setCurrentComponent ? Boolean.TRUE : Boolean.FALSE);
         attrs.put(PartialStateSaving, webConfig.isOptionEnabled(PartialStateSaving) ? Boolean.TRUE : Boolean.FALSE);
         attrs.put(ForceAlwaysWriteFlashCookie, webConfig.isOptionEnabled(ForceAlwaysWriteFlashCookie) ? Boolean.TRUE : Boolean.FALSE);
         // We must use getQualifiedName here because the consumer is in faces-api
