@@ -98,20 +98,6 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
     private static Logger LOGGER = Logger.getLogger("jakarta.faces.component", "jakarta.faces.LogStrings");
 
     /**
-     * <p class="changed_added_2_1">
-     * The <code>ServletContext</code> init parameter consulted by the <code>UIComponent</code> to tell whether or not the
-     * {@link #CURRENT_COMPONENT} and {@link #CURRENT_COMPOSITE_COMPONENT} attribute keys should be honored as specified.
-     * </p>
-     *
-     * <p>
-     * If this parameter is not specified, or is set to false, the contract specified by the {@link #CURRENT_COMPONENT} and
-     * {@link #CURRENT_COMPOSITE_COMPONENT} method is not honored. If this parameter is set to true, the contract is
-     * honored.
-     * </p>
-     */
-    public static final String HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME = "jakarta.faces.HONOR_CURRENT_COMPONENT_ATTRIBUTES";
-
-    /**
      * <p class="changed_added_2_0">
      * The value of this constant is used as the key in the component attribute map, the value for which is a
      * <code>java.beans.BeanInfo</code> implementation describing the composite component. This <code>BeanInfo</code> is
@@ -212,8 +198,6 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
     UIComponent compositeParent;
     private boolean isInView;
     private Map<String, String> resourceBundleMap;
-
-    private transient Boolean isSetCurrentComponent;
 
     // It is safe to cache this because components never go from being
     // composite to non-composite.
@@ -1463,31 +1447,10 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
         return (ArrayDeque<UIComponent>) contextAttributes.computeIfAbsent(keyName, e -> new ArrayDeque<>());
     }
 
-    // bugdb 18090503
-
-    /*
-     * Respecting the fact that someone may have decorated FacesContextFactory and thus skipped our saving of this init
-     * param, look for the init param and return its value. The return is saved in a transient ivar to provide performance
-     * while not perturbing state saving.
-     */
-
-    private boolean isSetCurrentComponent(FacesContext context) {
-        if (isSetCurrentComponent != null) {
-            return isSetCurrentComponent;
-        }
-
-        Boolean honorComponentAttribute = (Boolean) context.getAttributes().get(HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME);
-        if (honorComponentAttribute != null) {
-            return honorComponentAttribute;
-        }
-
-        return Boolean.valueOf(context.getExternalContext().getInitParameter(HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME));
-    }
-
     /**
      * <p class="changed_added_2_0">
-     * Push the current <code>UIComponent</code> <code>this</code> to the {@link FacesContext} attribute map using the key
-     * {@link #CURRENT_COMPONENT} saving the previous <code>UIComponent</code> associated with {@link #CURRENT_COMPONENT}
+     * Push the current <code>UIComponent</code> <code>this</code> to the {@link FacesContext} attribute map
+     * saving the previous <code>UIComponent</code> 
      * for a subsequent call to {@link #popComponentFromEL}.
      * </p>
      *
@@ -1528,21 +1491,10 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
         componentELStack.push(component);
         component._isPushedAsCurrentRefCount++;
 
-        // We only do this because of the spec
-        boolean setCurrentComponent = isSetCurrentComponent(context);
-        if (setCurrentComponent) {
-            contextAttributes.put(CURRENT_COMPONENT, component);
-        }
-
         // If the pushed component is a composite component, we need to update that
         // stack as well
         if (UIComponent.isCompositeComponent(component)) {
             _getComponentELStack(_CURRENT_COMPOSITE_COMPONENT_STACK_KEY, contextAttributes).push(component);
-
-            // We only do this because of the spec
-            if (setCurrentComponent) {
-                contextAttributes.put(CURRENT_COMPOSITE_COMPONENT, component);
-            }
         }
     }
 
@@ -1594,26 +1546,12 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
         componentELStack.pop();
         _isPushedAsCurrentRefCount--;
 
-        boolean setCurrentComponent = isSetCurrentComponent(context);
-
-        // Update the current component with the new top of stack. We only do this because
-        // of the spec
-        if (setCurrentComponent) {
-            contextAttributes.put(CURRENT_COMPONENT, componentELStack.peek());
-        }
-
         // If we're a composite component, we also have to pop ourselves off of the
         // composite stack
         if (UIComponent.isCompositeComponent(this)) {
             ArrayDeque<UIComponent> compositeELStack = _getComponentELStack(_CURRENT_COMPOSITE_COMPONENT_STACK_KEY, contextAttributes);
             if (!compositeELStack.isEmpty()) {
                 compositeELStack.pop();
-            }
-
-            // Update the current composite component with the new top of stack.
-            // We only do this because of the spec
-            if (setCurrentComponent) {
-                contextAttributes.put(CURRENT_COMPOSITE_COMPONENT, compositeELStack.peek());
             }
         }
     }
@@ -2438,42 +2376,6 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
 
         return resourceBundle != null ? result : null;
     }
-
-    /**
-     * <p class="changed_added_2_0">
-     * <span class="changed_deleted_2_2">The</span> key to which the
-     * <code>UIComponent</code> currently being processed will be associated with within
-     * the {@link FacesContext} attributes map. <span class="changed_deleted_2_2">The use
-     * of this constant is deprecated. Please see
-     * {@link #HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME} to enable its use.</span>
-     * </p>
-     *
-     * @see jakarta.faces.context.FacesContext#getAttributes()
-     *
-     * @since 2.0
-     *
-     * @deprecated
-     */
-    @Deprecated
-    public static final String CURRENT_COMPONENT = "javax.faces.component.CURRENT_COMPONENT";
-
-    /**
-     * <p class="changed_added_2_0">
-     * <span class="changed_deleted_2_2">The</span> key to which the <em>composite</em>
-     * <code>UIComponent</code> currently being processed will be associated with within
-     * the {@link FacesContext} attributes map. <span class="changed_deleted_2_2">The use
-     * of this constant is deprecated. Please see
-     * {@link #HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME} to enable its use.</span>
-     * </p>
-     *
-     * @see jakarta.faces.context.FacesContext#getAttributes()
-     *
-     * @since 2.0
-     *
-     * @deprecated
-     */
-    @Deprecated
-    public static final String CURRENT_COMPOSITE_COMPONENT = "javax.faces.component.CURRENT_COMPOSITE_COMPONENT";
 
     // The set of ValueExpressions for this component, keyed by property
     // name This collection is lazily instantiated

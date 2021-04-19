@@ -94,36 +94,8 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
 
     }
 
-    public void testComponentToFromELBackwardCompatible() {
-
-        final String key = UIComponent.CURRENT_COMPONENT;
-        ((MockExternalContext) this.facesContext.getExternalContext()).addInitParameter(UIComponent.HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME, "true");
-        ComponentTestImpl c = new ComponentTestImpl();
-        facesContext.getAttributes().clear();
-        assertNull(facesContext.getAttributes().get(key));
-        c.pushComponentToEL(facesContext, null);
-        assertTrue(facesContext.getAttributes().get(key) == c);
-        c.popComponentFromEL(facesContext);
-        assertNull(facesContext.getAttributes().get(key));
-
-    }
-
-    public void testComponentToFromEL() {
-
-        final String key = UIComponent.CURRENT_COMPONENT;
-        ComponentTestImpl c = new ComponentTestImpl();
-        facesContext.getAttributes().clear();
-        assertNull(facesContext.getAttributes().get(key));
-        c.pushComponentToEL(facesContext, null);
-        assertFalse(facesContext.getAttributes().get(key) == c);
-        c.popComponentFromEL(facesContext);
-        assertNull(facesContext.getAttributes().get(key));
-
-    }
-
     public void testComponentToFromEL2() throws Exception {
 
-        final String key = UIComponent.CURRENT_COMPONENT;
         final FacesContext ctx = facesContext;
         ComponentTestImpl c = new ComponentTestImpl();
         ComponentTestImpl c2 = new ComponentTestImpl();
