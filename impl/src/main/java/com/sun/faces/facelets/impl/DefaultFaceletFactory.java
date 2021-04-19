@@ -367,7 +367,8 @@ public class DefaultFaceletFactory {
             }
 
             URL fabricatedFaceletPage = tempFile.toURI().toURL();
-            Facelet f = createFacelet(fabricatedFaceletPage);
+            String alias = taglibURI + ":" + tagName;
+            Facelet f = createFacelet(fabricatedFaceletPage, alias);
             UIComponent tmp = app.createComponent("javax.faces.NamingContainer");
             tmp.setId(context.getViewRoot().createUniqueId());
             f.apply(context, tmp);
@@ -434,11 +435,15 @@ public class DefaultFaceletFactory {
      * @throws ELException
      */
     private DefaultFacelet createFacelet(URL url) throws IOException {
+        String escapedBaseURL = Pattern.quote(this.baseUrl.getFile());
+        String alias = '/' + url.getFile().replaceFirst(escapedBaseURL, "");
+        return createFacelet(url, alias);
+    }
+
+    private DefaultFacelet createFacelet(URL url, String alias) throws IOException {
         if (log.isLoggable(Level.FINE)) {
             log.fine("Creating Facelet for: " + url);
         }
-        String escapedBaseURL = Pattern.quote(this.baseUrl.getFile());
-        String alias = '/' + url.getFile().replaceFirst(escapedBaseURL, "");
         try {
             FaceletHandler h = this.compiler.compile(url, alias);
             return new DefaultFacelet(this,
