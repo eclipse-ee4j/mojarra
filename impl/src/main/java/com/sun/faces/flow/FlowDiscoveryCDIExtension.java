@@ -16,14 +16,14 @@
 
 package com.sun.faces.flow;
 
-import com.sun.faces.util.FacesLogger;
+import static com.sun.faces.cdi.CdiUtils.addAnnotatedTypes;
+
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
@@ -31,6 +31,8 @@ import javax.enterprise.inject.spi.ProcessProducer;
 import javax.enterprise.inject.spi.Producer;
 import javax.faces.flow.Flow;
 import javax.faces.flow.builder.FlowDefinition;
+
+import com.sun.faces.util.FacesLogger;
 
 /*
  *  This is the hook into the bootstrapping of the entire feature.  
@@ -74,9 +76,7 @@ public class FlowDiscoveryCDIExtension implements Extension {
     }
     
     void beforeBeanDiscovery(@Observes final BeforeBeanDiscovery event, BeanManager beanManager) {
-        AnnotatedType flowDiscoveryHelper = beanManager.createAnnotatedType(FlowDiscoveryCDIHelper.class);
-        event.addAnnotatedType(flowDiscoveryHelper);
-        
+        addAnnotatedTypes(event, beanManager, FlowDiscoveryCDIHelper.class);
     }
     
     <T> void findFlowDefiners(@Observes ProcessProducer<T, Flow> pp) {
