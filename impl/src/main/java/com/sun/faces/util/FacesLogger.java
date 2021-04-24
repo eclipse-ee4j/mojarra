@@ -16,14 +16,14 @@
 
 package com.sun.faces.util;
 
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
-
-import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.context.FacesContext;
 
 /**
  * <p/>
@@ -36,7 +36,7 @@ public enum FacesLogger {
     FACELETS_COMPILER("facelets.compiler"), FACELETS_COMPONENT("facelets.tag.component"), FACELETS_EL("facelets.el"), FACELETS_META("facelets.tag.meta"),
     FACELETS_COMPOSITION("facelets.tag.ui.composition"), FACELETS_DECORATE("facelets.tag.ui.decorate"), FACELETS_INCLUDE("facelets.tag.ui.include"),
     FACELETS_FACELET("faclets.facelet"), FACELETS_FACTORY("facelets.factory"), FLOW("flow"), LIFECYCLE("lifecycle"), MANAGEDBEAN("managedbean"),
-    RENDERKIT("renderkit"), TAGLIB("taglib"), TIMING("timing"), UTIL("util"), FLASH("flash");
+    RENDERKIT("renderkit"), TAGLIB("taglib"), TIMING("timing"), UTIL("util"), FLASH("flash"), CLIENTWINDOW("clientwindow");
 
     private static final String LOGGER_RESOURCES = "com.sun.faces.LogStrings";
     public static final String FACES_LOGGER_NAME_PREFIX = "jakarta.enterprise.resource.webcontainer.faces.";

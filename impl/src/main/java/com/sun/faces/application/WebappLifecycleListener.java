@@ -18,6 +18,7 @@ package com.sun.faces.application;
 
 import static com.sun.faces.application.view.ViewScopeManager.ACTIVE_VIEW_MAPS;
 import static com.sun.faces.application.view.ViewScopeManager.VIEW_SCOPE_MANAGER;
+import static com.sun.faces.cdi.clientwindow.ClientWindowScopeManager.CLIENT_WINDOW_SCOPE_MANAGER;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.sun.faces.application.view.ViewScopeManager;
+import com.sun.faces.cdi.clientwindow.ClientWindowScopeManager;
 import com.sun.faces.config.InitFacesContext;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.flow.FlowCDIContext;
@@ -141,9 +143,15 @@ public class WebappLifecycleListener {
             FlowCDIContext.sessionDestroyed(event);
         }
 
-        ViewScopeManager manager = (ViewScopeManager) servletContext.getAttribute(VIEW_SCOPE_MANAGER);
-        if (manager != null) {
-            manager.sessionDestroyed(event);
+        ViewScopeManager viewScopeManager = (ViewScopeManager) servletContext.getAttribute(VIEW_SCOPE_MANAGER);
+        if (viewScopeManager != null) {
+            viewScopeManager.sessionDestroyed(event);
+        }
+
+
+        ClientWindowScopeManager clientWindowScopeManager = (ClientWindowScopeManager) servletContext.getAttribute(CLIENT_WINDOW_SCOPE_MANAGER);
+        if (clientWindowScopeManager != null) {
+            clientWindowScopeManager.sessionDestroyed(event);
         }
     }
 
