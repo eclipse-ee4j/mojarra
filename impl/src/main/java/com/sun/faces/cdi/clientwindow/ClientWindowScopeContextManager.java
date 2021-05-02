@@ -19,15 +19,18 @@ package com.sun.faces.cdi.clientwindow;
 
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.LRUMap;
 import jakarta.enterprise.context.spi.Contextual;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.PassivationCapable;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpSessionEvent;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
@@ -43,9 +46,6 @@ public class ClientWindowScopeContextManager {
 
     private static final Logger LOGGER = FacesLogger.CLIENTWINDOW.getLogger();
 
-    /**
-     * Stores the constant to keep track of all the active clientWindow scope contexts.
-     */
     private static final String CLIENT_WINDOW_CONTEXTS = "com.sun.faces.cdi.clientwindow.clientWindowContexts";
 
     private final BeanManager beanManager;
@@ -146,16 +146,17 @@ public class ClientWindowScopeContextManager {
 
                 if (clientWindowScopeContexts == null && create) {
                     synchronized (session) {
-                        clientWindowScopeContexts = new ConcurrentHashMap<>();
-                        sessionMap.put(CLIENT_WINDOW_CONTEXTS, clientWindowScopeContexts);
+                        Integer size = (Integer) sessionMap.get(ClientWindow.NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME);
+                        if (size == null) {
+                            size = 10;
+                        }
+                        sessionMap.put(CLIENT_WINDOW_CONTEXTS, Collections.synchronizedMap(new LRUMap<String, Object>(size)));
                     }
                 }
 
                 if (clientWindowScopeContexts != null && clientWindowId != null && create) {
                     synchronized (clientWindowScopeContexts) {
                         if (!clientWindowScopeContexts.containsKey(clientWindowId)) {
-                            // TODO: limit the amount of client-windows (eg throw out the oldest ones after some (configureable) limit is exceeded)
-
                             clientWindowScopeContexts.put(clientWindowId,
                                     new ConcurrentHashMap<String, ClientWindowScopeContextObject>());
                             if (distributable) {

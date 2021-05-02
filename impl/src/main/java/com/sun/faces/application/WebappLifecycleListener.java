@@ -148,7 +148,6 @@ public class WebappLifecycleListener {
             viewScopeManager.sessionDestroyed(event);
         }
 
-
         ClientWindowScopeManager clientWindowScopeManager = (ClientWindowScopeManager) servletContext.getAttribute(CLIENT_WINDOW_SCOPE_MANAGER);
         if (clientWindowScopeManager != null) {
             clientWindowScopeManager.sessionDestroyed(event);
