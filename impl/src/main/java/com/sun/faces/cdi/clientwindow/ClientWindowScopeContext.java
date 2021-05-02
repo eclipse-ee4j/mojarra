@@ -57,7 +57,7 @@ public class ClientWindowScopeContext implements Context, Serializable
     /**
      * Assert the context is active, otherwise throw ContextNotActiveException.
      */
-    private final void assertNotReleased() {
+    private void assertNotReleased() {
         if (!isActive()) {
             LOGGER.log(SEVERE, "Trying to access ClientWindowScope CDI context while it is not active");
             throw new ContextNotActiveException();

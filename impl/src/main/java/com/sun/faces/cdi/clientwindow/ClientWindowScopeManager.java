@@ -46,13 +46,7 @@ public class ClientWindowScopeManager implements HttpSessionListener {
      * Constructor.
      */
     public ClientWindowScopeManager() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        try {
-            contextManager = new ClientWindowScopeContextManager();
-        } catch (Throwable throwable) {
-            LOGGER.log(INFO, "CDI @ClientWindowScoped bean functionality unavailable");
-            LOGGER.log(FINE, "CDI @ClientWindowScoped manager unavailable", throwable);
-        }
+        contextManager = new ClientWindowScopeContextManager();
     }
 
     /**

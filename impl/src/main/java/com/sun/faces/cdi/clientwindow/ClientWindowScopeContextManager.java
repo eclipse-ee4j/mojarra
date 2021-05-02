@@ -48,12 +48,10 @@ public class ClientWindowScopeContextManager {
 
     private static final String CLIENT_WINDOW_CONTEXTS = "com.sun.faces.cdi.clientwindow.clientWindowContexts";
 
-    private final BeanManager beanManager;
     private final boolean distributable;
 
     public ClientWindowScopeContextManager() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        beanManager = getCdiBeanManager(facesContext);
         distributable = WebConfiguration.getInstance(facesContext.getExternalContext())
                                         .isOptionEnabled(EnableDistributable);
     }
