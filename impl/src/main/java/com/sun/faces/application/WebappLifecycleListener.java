@@ -28,8 +28,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.sun.faces.application.view.ViewScopeManager;
-import com.sun.faces.cdi.clientwindow.ClientWindowScopeManager;
 import com.sun.faces.config.InitFacesContext;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.flow.FlowCDIContext;
