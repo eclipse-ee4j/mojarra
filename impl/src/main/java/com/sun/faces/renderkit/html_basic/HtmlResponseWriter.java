@@ -19,13 +19,18 @@ package com.sun.faces.renderkit.html_basic;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
+import javax.faces.render.Renderer;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.WebConfiguration;
@@ -33,11 +38,6 @@ import com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter;
 import com.sun.faces.io.FastStringWriter;
 import com.sun.faces.util.HtmlUtils;
 import com.sun.faces.util.MessageUtils;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import javax.el.ValueExpression;
-import javax.faces.context.ExternalContext;
-import javax.faces.render.Renderer;
 
 
 /**
@@ -162,8 +162,8 @@ public class HtmlResponseWriter extends ResponseWriter {
     private static final char[] ESCAPEDSTART= ("&lt;"+BREAKCDATA+"![").toCharArray();
     private static final char[] ESCAPEDEND= ("]"+BREAKCDATA+"]>").toCharArray();
 
-    private static final int CLOSEBRACKET = (int)']';
-    private static final int LT = (int)'<';
+    private static final int CLOSEBRACKET = ']';
+    private static final int LT = '<';
 
     static final Pattern CDATA_START_SLASH_SLASH;
 
@@ -957,7 +957,7 @@ public class HtmlResponseWriter extends ResponseWriter {
         String textStr = text.toString();
 
         if (dontEscape) {
-            if (writingCdata) {
+            if (writingCdata && !textStr.isEmpty()) {
                 writeUnescapedCData(textStr.toCharArray(), 0, textStr.length());
             } else {
                 writer.write(textStr);
@@ -1432,6 +1432,11 @@ private void flushBuffer() throws IOException {
      * When writing un-escaped CDATA, "]]>" sequence still has to be escaped by breaking CDATA block.
      */
     private void writeUnescapedCData(char[] cbuf, int offset, int length) throws IOException {
+        // zero char case
+        if (length == 0) {
+            return;
+        }
+        
         // single char case
         if (length == 1) {
             if (cbuf[offset] == ']') {
