@@ -28,10 +28,10 @@
            <!-- To reproduce 4925, we need unescaped cdata, which is what the script below will 
                 produce when updated via AJAX  
            -->
-	       <script>
+           <script>
                 var somevar = "foo";
-			    var someothervar = "#{issue4925.nullString}";
-			    var yetsomeother = 'bla';
+                var someothervar = "#{issue4925.nullString}";
+                var yetsomeother = 'bla';
            </script>
             
            <h:commandButton id="button"><f:ajax render="@form" /></h:commandButton>
