@@ -16,6 +16,7 @@
 
 package javax.faces.component;
 
+import static com.sun.faces.facelets.tag.jsf.ComponentSupport.MARK_CREATED;
 import static com.sun.faces.util.Util.isAnyNull;
 import static com.sun.faces.util.Util.isOneOf;
 import static java.util.Collections.emptyMap;
