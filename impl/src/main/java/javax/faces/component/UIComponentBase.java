@@ -2264,9 +2264,9 @@ public abstract class UIComponentBase extends UIComponent {
             this.context = component.getFacesContext();
         }
         
-        private boolean isRenderResponsePhase() {
+        private boolean isNotRenderResponsePhase() {
             // NOTE: the context is null during the TCK test on component tree building, hence the apparent unnecessary nullcheck. See #4924.
-            return context != null && !context.isReleased() && !context.getCurrentPhaseId().equals(PhaseId.RENDER_RESPONSE);
+            return context == null || (!context.isReleased() && !context.getCurrentPhaseId().equals(PhaseId.RENDER_RESPONSE));
         }
 
         @Override
@@ -2337,7 +2337,7 @@ public abstract class UIComponentBase extends UIComponent {
             }
             for (int i = 0; i < n; i++) {
                 UIComponent child = get(i);
-                if (!isRenderResponsePhase()) {
+                if (isNotRenderResponsePhase()) {
                     removeFromDescendantMarkIdCache(component, child);
                 }
                 child.setParent(null);
@@ -2363,7 +2363,7 @@ public abstract class UIComponentBase extends UIComponent {
         @Override
         public UIComponent remove(int index) {
             UIComponent child = get(index);
-            if (!isRenderResponsePhase()) {
+            if (isNotRenderResponsePhase()) {
                 removeFromDescendantMarkIdCache(component, child);
             }
             child.setParent(null);
@@ -2377,7 +2377,7 @@ public abstract class UIComponentBase extends UIComponent {
             if (element == null) {
                 throw new NullPointerException();
             }
-            if (!isRenderResponsePhase()) {
+            if (isNotRenderResponsePhase()) {
                 removeFromDescendantMarkIdCache(component, element);
             }
             if (super.indexOf(element) != -1) {
@@ -2593,9 +2593,9 @@ public abstract class UIComponentBase extends UIComponent {
             this.context = component.getFacesContext();
         }
 
-        private boolean isRenderResponsePhase() {
+        private boolean isNotRenderResponsePhase() {
             // NOTE: the context is null during the TCK test on component tree building, hence the apparent unnecessary nullcheck. See #4924.
-            return context != null && !context.isReleased() && !context.getCurrentPhaseId().equals(PhaseId.RENDER_RESPONSE);
+            return context == null || (!context.isReleased() && !context.getCurrentPhaseId().equals(PhaseId.RENDER_RESPONSE));
         }
 
         @Override
@@ -2653,7 +2653,7 @@ public abstract class UIComponentBase extends UIComponent {
         public UIComponent remove(Object key) {
             UIComponent previous = get(key);
             if (previous != null) {
-                if (!isRenderResponsePhase()) {
+                if (isNotRenderResponsePhase()) {
                     removeFromDescendantMarkIdCache(component, previous);
                 }
                 previous.setParent(null);
