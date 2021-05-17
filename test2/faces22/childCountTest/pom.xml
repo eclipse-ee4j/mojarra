@@ -2,7 +2,6 @@
 <!--
 
     Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
-    Copyright (c) 2020 Contributors to Eclipse Foundation.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,33 +18,15 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
+    
     <parent>
-        <groupId>org.glassfish.mojarra.test2</groupId>
+        <groupId>org.glassfish.mojarra.faces22</groupId>
         <artifactId>pom</artifactId>
         <version>4.0.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.glassfish.mojarra.faces22</groupId>
-    <artifactId>pom</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>childCountTest</artifactId>
+    <packaging>war</packaging>
+    <name>Mojarra ${project.version} - Test - Faces 2.2 - childCountTest</name>
 
-    <name>Mojarra ${project.version} - Test - Faces 2.2</name>
-
-    <modules>
-        <module>cdiBeanValidator</module>
-        <module>cdiInitDestroyEvent</module>
-        <module>cdiMethodValidation</module>
-        <module>cdiMultiTenantSetsTccl</module>
-        <module>cdiNoBeansXml</module>
-        <module>childCountTest</module>
-        <module>expressionLanguageLambda</module>
-        <module>faceletsTemplate</module>
-        <module>multiFieldValidation</module>
-        <module>protectedView</module>
-        <module>viewScope</module>
-        <module>viewActionCdiViewScoped</module>
-        <module>viewExpired</module>
-        <module>viewParamNullValueAjax</module>
-  </modules>
 </project>
