@@ -42,7 +42,7 @@
 
         <!-- Application Server versions (these are downloaded and installed
             in these versions by Maven for the CI profiles) -->
-        <glassfish.version>6.1.0-M1</glassfish.version>
+        <glassfish.version>6.1.0-RC1</glassfish.version>
         <tomcat.version>9.0.12</tomcat.version>
     </properties>
     
@@ -362,7 +362,7 @@
                 <dependency>
                     <groupId>cloud.piranha.arquillian</groupId>
                     <artifactId>piranha-arquillian-server</artifactId>
-                    <version>21.4.0-SNAPSHOT</version>
+                    <version>21.6.0-SNAPSHOT</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
@@ -396,6 +396,10 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+            
+            <properties>
+                <root>${maven.multiModuleProjectDirectory}</root>
+            </properties>
 
             <dependencies>
                 <!-- The actual Arquillian connector -->
@@ -420,8 +424,8 @@
                                     <goal>unpack</goal>
                                 </goals>
                                 <configuration>
-                                    <outputDirectory>${session.executionRootDirectory}/target</outputDirectory>
-                                    <markersDirectory>${session.executionRootDirectory}/target/dependency-maven-plugin-markers</markersDirectory>
+                                    <outputDirectory>${root}/target</outputDirectory>
+                                    <markersDirectory>${root}/target/dependency-maven-plugin-markers</markersDirectory>
                                     <artifactItems>
                                         <artifactItem>
                                             <groupId>org.glassfish.main.distributions</groupId>
@@ -429,7 +433,7 @@
                                             <version>${glassfish.version}</version>
                                             <type>zip</type>
                                             <overWrite>false</overWrite>
-                                            <outputDirectory>${session.executionRootDirectory}/target</outputDirectory>
+                                            <outputDirectory>${root}/target</outputDirectory>
                                         </artifactItem>
                                     </artifactItems>
                                 </configuration>
@@ -448,10 +452,67 @@
                                             <version>${jsf.version}</version>
                                             <type>jar</type>
                                             <overWrite>true</overWrite>                                     
-                                            <outputDirectory>${session.executionRootDirectory}/target/glassfish6/glassfish/modules</outputDirectory>
+                                            <outputDirectory>${root}/target/glassfish6/glassfish/modules</outputDirectory>
                                             <destFileName>jakarta.faces.jar</destFileName>
                                         </artifactItem>
                                     </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>3.0.0</version>
+                        <executions>
+                            <execution>
+                                <id>info-suspend</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <echo level="info">Suspend = ${suspend}</echo>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>set-suspend</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                     <target if="suspend">
+                                        <property name="antProperty" value="${foo}/target/glassfish6/glassfish/domains/domain1/config/domain.xml"/>
+                                        <echo level="info">Suspending: Replacing in ${root}</echo>
+                                        <replace token="-Djava.awt.headless=true" value="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=9009" dir="${root}/target/glassfish6/glassfish/domains/domain1/config/" summary="yes">                                 
+                                            <include name="domain.xml"/>
+                                        </replace>
+                                        <replace token="# Framework config properties." value="org.osgi.framework.storage.clean=onFirstInit" dir="${root}/target/glassfish6/glassfish/config/" summary="yes">                                 
+                                            <include name="osgi.properties"/>
+                                        </replace>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>unset-suspend</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target unless="suspend">
+                                        <property name="antProperty" value="${foo}/target/glassfish6/glassfish/domains/domain1/config/domain.xml"/>
+                                        <echo level="info">Not suspending: Replacing in ${root}</echo>
+                                        <replace token="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=9009" value="-Djava.awt.headless=true" dir="${root}/target/glassfish6/glassfish/domains/domain1/config/" summary="yes">                                 
+                                            <include name="domain.xml"/>
+                                        </replace>
+                                        <replace token="org.osgi.framework.storage.clean=onFirstInit" value="# Framework config properties." dir="${root}/target/glassfish6/glassfish/config/" summary="yes">                                 
+                                            <include name="osgi.properties"/>
+                                        </replace>
+                                    </target>
                                 </configuration>
                             </execution>
                         </executions>
