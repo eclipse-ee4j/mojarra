@@ -337,6 +337,14 @@ public final class ComponentSupport {
     }
 
     /**
+     * Returns <code>true</code> if the given faces context is <strong>not</strong> {@link FacesContext#isReleased()},
+     * and its current phase ID is <strong>not</strong> {@link PhaseId#RENDER_RESPONSE}.
+     */
+    public static boolean isNotRenderingResponse(FacesContext context) {
+        return !context.isReleased() && context.getCurrentPhaseId() != PhaseId.RENDER_RESPONSE;
+    }
+
+    /**
      * According to JSF 1.2 tag specs, this helper method will use the
      * TagAttribute passed in determining the Locale intended.
      * 
