@@ -54,6 +54,7 @@ import java.util.regex.Pattern;
 import javax.el.ELResolver;
 import javax.el.ValueExpression;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.CDI;
 import javax.faces.FacesException;
 import javax.faces.application.Application;
 import javax.faces.application.ProjectStage;
@@ -1558,15 +1559,21 @@ public class Util {
             result = (BeanManager) facesContext.getExternalContext().getApplicationMap().get(RIConstants.CDI_BEAN_MANAGER);
         } else {
             try {
-                InitialContext initialContext = new InitialContext();
-                result = (BeanManager) initialContext.lookup("java:comp/BeanManager");
+                CDI<Object> cdi = CDI.current();
+                result = cdi.getBeanManager();
             }
-            catch (NamingException ne) {
+            catch (Exception | LinkageError e) {
                 try {
                     InitialContext initialContext = new InitialContext();
-                    result = (BeanManager) initialContext.lookup("java:comp/env/BeanManager");
+                    result = (BeanManager) initialContext.lookup("java:comp/BeanManager");
                 }
-                catch (NamingException ne2) {
+                catch (NamingException ne) {
+                    try {
+                        InitialContext initialContext = new InitialContext();
+                        result = (BeanManager) initialContext.lookup("java:comp/env/BeanManager");
+                    }
+                    catch (NamingException ne2) {
+                    }
                 }
             }
             
