@@ -1559,20 +1559,20 @@ public class Util {
             result = (BeanManager) facesContext.getExternalContext().getApplicationMap().get(RIConstants.CDI_BEAN_MANAGER);
         } else {
             try {
-                CDI<Object> cdi = CDI.current();
-                result = cdi.getBeanManager();
+                InitialContext initialContext = new InitialContext();
+                result = (BeanManager) initialContext.lookup("java:comp/BeanManager");
             }
-            catch (Exception | LinkageError e) {
+            catch (NamingException ne) {
                 try {
                     InitialContext initialContext = new InitialContext();
-                    result = (BeanManager) initialContext.lookup("java:comp/BeanManager");
+                    result = (BeanManager) initialContext.lookup("java:comp/env/BeanManager");
                 }
-                catch (NamingException ne) {
+                catch (NamingException ne2) {
                     try {
-                        InitialContext initialContext = new InitialContext();
-                        result = (BeanManager) initialContext.lookup("java:comp/env/BeanManager");
+                        CDI<Object> cdi = CDI.current();
+                        result = cdi.getBeanManager();
                     }
-                    catch (NamingException ne2) {
+                    catch (Exception | LinkageError e) {
                     }
                 }
             }
