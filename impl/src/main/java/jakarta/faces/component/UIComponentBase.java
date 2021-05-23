@@ -3390,6 +3390,10 @@ public abstract class UIComponentBase extends UIComponent {
                     continue;
                 }
 
+                if (i >= childState.length) {
+                    continue;
+                }
+
                 Object currentState = childState[i++];
 
                 if (currentState == null) {
@@ -3410,6 +3414,10 @@ public abstract class UIComponentBase extends UIComponent {
             int facetsSize = getFacets().size();
 
             while (j < facetsSize) {
+
+                if (i >= childState.length) {
+                    break;
+                }
 
                 Object[] facetSaveState = (Object[]) childState[i++];
 
