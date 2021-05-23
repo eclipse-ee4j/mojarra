@@ -935,6 +935,7 @@ public class WebConfiguration {
         WriteStateAtFormEnd("com.sun.faces.writeStateAtFormEnd", true),
         EnableLazyBeanValidation("com.sun.faces.enableLazyBeanValidation", true),
         EnableLoadBundle11Compatibility("com.sun.faces.enabledLoadBundle11Compatibility", false),
+        @Deprecated // Since 2.3.17, without replacement; correct approach is to use transient views or client side state saving or to simply correctly deal with ViewExpiredException.
         EnableRestoreView11Compatibility("com.sun.faces.enableRestoreView11Compatibility", false),
         SerializeServerState(StateManager.SERIALIZE_SERVER_STATE_PARAM_NAME, false),
         SerializeServerStateDeprecated("com.sun.faces.serializeServerState", false, true, SerializeServerState),

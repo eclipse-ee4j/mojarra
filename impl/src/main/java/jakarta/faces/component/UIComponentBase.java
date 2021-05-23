@@ -17,6 +17,7 @@
 package jakarta.faces.component;
 
 import static com.sun.faces.facelets.tag.jsf.ComponentSupport.addToDescendantMarkIdCache;
+import static com.sun.faces.facelets.tag.jsf.ComponentSupport.isNotRenderingResponse;
 import static com.sun.faces.facelets.tag.jsf.ComponentSupport.removeFromDescendantMarkIdCache;
 import static com.sun.faces.util.Util.isAllNull;
 import static com.sun.faces.util.Util.isAnyNull;
@@ -2290,7 +2291,7 @@ public abstract class UIComponentBase extends UIComponent {
             }
             for (int i = 0; i < n; i++) {
                 UIComponent child = get(i);
-                if (!context.isReleased() && !context.getCurrentPhaseId().equals(PhaseId.RENDER_RESPONSE)) {
+                if (isNotRenderingResponse(context)) {
                     removeFromDescendantMarkIdCache(component, child);
                 }
                 child.setParent(null);
@@ -2316,7 +2317,7 @@ public abstract class UIComponentBase extends UIComponent {
         @Override
         public UIComponent remove(int index) {
             UIComponent child = get(index);
-            if (!context.isReleased() && !context.getCurrentPhaseId().equals(PhaseId.RENDER_RESPONSE)) {
+            if (isNotRenderingResponse(context)) {
                 removeFromDescendantMarkIdCache(component, child);
             }
             child.setParent(null);
@@ -2330,7 +2331,7 @@ public abstract class UIComponentBase extends UIComponent {
             if (element == null) {
                 throw new NullPointerException();
             }
-            if (!context.isReleased() && !context.getCurrentPhaseId().equals(PhaseId.RENDER_RESPONSE)) {
+            if (isNotRenderingResponse(context)) {
                 removeFromDescendantMarkIdCache(component, element);
             }
             if (super.indexOf(element) != -1) {
@@ -2605,7 +2606,7 @@ public abstract class UIComponentBase extends UIComponent {
         public UIComponent remove(Object key) {
             UIComponent previous = get(key);
             if (previous != null) {
-                if (!context.isReleased() && !context.getCurrentPhaseId().equals(PhaseId.RENDER_RESPONSE)) {
+                if (isNotRenderingResponse(context)) {
                     removeFromDescendantMarkIdCache(component, previous);
                 }
                 previous.setParent(null);
