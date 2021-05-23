@@ -8203,17 +8203,20 @@
             &lt;/ul&gt;
             &lt;p&gt;Encode Behavior&lt;/p&gt;
             &lt;ul&gt;
-            &lt;p&gt;Render a "table" element. If the "styleClass" is specified,
+            &lt;p&gt;&lt;span class="changed_added_4_0"&gt;If the "layout"
+            attribute is specified, and its value is "list", render a "ul"
+            element as root element, otherwise&lt;/span&gt;
+            render a "table" element. If the "styleClass" is specified,
             render the value of the "styleClass" attribute as the value of the
-            "class" attribute on the "table" element. If the "style", or
+            "class" attribute on the &lt;span class="changed_modified_4_0"&gt;root&lt;/span&gt; element. If the "style", or
             "border" attributes are specified, pass them thru &lt;span
             class="changed_added_2_0"&gt;and render their values as the "style"
-            and "border" attributes on the "table", respectively.&lt;/span&gt;
+            and "border" attributes on the &lt;span class="changed_modified_4_0"&gt;root element&lt;/span&gt;, respectively.&lt;/span&gt;
             If
             the "layout" attribute is specified, and its value is
             "pageDirection", render the children elements vertically,
-            otherwise horizontally, in the table. If any of the children are
-            an instance of SelectItemGroup, render them as a nested table.
+            otherwise horizontally, in the &lt;span class="changed_modified_4_0"&gt;root element&lt;/span&gt;. If any of the children are
+            an instance of SelectItemGroup, render them as a nested &lt;span class="changed_modified_4_0"&gt;root element&lt;/span&gt;.
             Each of the children are ultimately rendererd as follows. Render
             an "input" element of "type" "checkbox" for each child component.
             Render the "name" attribute on the "input" element with the value
@@ -8403,6 +8406,7 @@
             <description>
                 Width (in pixels) of the border to be drawn
                 around the table containing the options list.
+                &lt;p class="changed_added_4_0"&gt;This attribute is ignored when the "layout" attribute equals to "list".&lt;span&gt; 
             </description>
             <name>border</name>
             <required>false</required>
@@ -10638,12 +10642,12 @@
             <ul>
                 <li><span class="changed_modified_2_3">If the "group" attribute is not specified,</span> render as follows.
                     <ul>
-                        <li>Render a "table" element.</li>
-                        <li>As an exception to the general rules about how to handle the "id" attribute, render it as an attribute on the outer "table" element, the value of which is the <code>clientId</code> of the component per the rules at the beginning of this specification.</li>
-                        <li>If the "styleClass" attribute is specified, render the value of the "styleClass" attribute as the value of the "class" attribute on the "table" element.</li>
-                        <li>If the "style", "border" attributes are specified, pass them thru <span class="changed_added_2_0">and render their values as the "style" and "border" attributes on the "table", respectively.</span>.</li>
-                        <li>If the "layout" attribute is specified, and its value is "pageDirection", render the children elements vertically, otherwise horizontally, in the table.</li>
-                        <li>If any of the children are an instance of <code>SelectItemGroup</code>, render them as a nested table.</li>
+                        <li class="changed_modified_4_0">If the "layout" attribute is specified, and its value is "list", render a "ul" element as root element, otherwise render a "table" element.</li>
+                        <li>As an exception to the general rules about how to handle the "id" attribute, render it as an attribute on the outer <span class="changed_modified_4_0">root</span> element, the value of which is the <code>clientId</code> of the component per the rules at the beginning of this specification.</li>
+                        <li>If the "styleClass" attribute is specified, render the value of the "styleClass" attribute as the value of the "class" attribute on the <span class="changed_modified_4_0">root</span> element.</li>
+                        <li>If the "style", "border" attributes are specified, pass them thru <span class="changed_added_2_0">and render their values as the "style" and "border" attributes on the <span class="changed_modified_4_0">root element</span>, respectively.</span>.</li>
+                        <li>If the "layout" attribute is specified, and its value is "pageDirection", render the children elements vertically, otherwise horizontally, in the <span class="changed_modified_4_0">root element</span>.</li>
+                        <li>If any of the children are an instance of <code>SelectItemGroup</code>, render them as a nested <span class="changed_modified_4_0">root element</span>.</li>
                     </ul>
                 </li>
                 <li>Each of the <code>SelectItem</code> children are ultimately rendered as follows.
@@ -10829,6 +10833,7 @@
             <description>
                 Width (in pixels) of the border to be drawn
                 around the table containing the options list.
+                &lt;p class="changed_added_4_0"&gt;This attribute is ignored when the "layout" attribute equals to "list".&lt;span&gt;
             </description>
             <name>border</name>
             <required>false</required>
