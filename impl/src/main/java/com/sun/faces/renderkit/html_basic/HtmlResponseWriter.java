@@ -889,7 +889,7 @@ public class HtmlResponseWriter extends ResponseWriter {
         if (textStr.length() == 0) return;
 
         if (dontEscape) {
-            if (writingCdata) {
+            if (writingCdata && !textStr.isEmpty()) {
                 writeUnescapedCData(textStr.toCharArray(), 0, textStr.length());
             } else {
                 writer.write(textStr);
