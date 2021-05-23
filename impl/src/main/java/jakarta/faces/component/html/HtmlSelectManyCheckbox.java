@@ -293,8 +293,8 @@ public class HtmlSelectManyCheckbox extends UISelectMany implements ClientBehavi
      * @return the property value
      * <p>
      * Contents: Orientation of the options list to be created. Valid values are "pageDirection" (list is laid out
-     * vertically), or "lineDirection" (list is laid out horizontally). If not specified, the default value is
-     * "lineDirection".
+     * vertically), or "lineDirection" (list is laid out horizontally)<span class="changed_added_4_0">, or "list" (list is laid out in list format)</span>.
+     * If not specified, the default value is "lineDirection".
      */
     public java.lang.String getLayout() {
         return (java.lang.String) getStateHelper().eval(PropertyKeys.layout);

@@ -18,6 +18,8 @@
 
 package com.sun.faces.renderkit.html_basic;
 
+import static java.lang.Boolean.TRUE;
+
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -229,7 +231,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
 
     @Override
     protected void renderOption(FacesContext context, UIComponent component, Converter converter, SelectItem curItem, Object currentSelections,
-            Object[] submittedValues, boolean alignVertical, int itemNumber, OptionComponentInfo optionInfo) throws IOException {
+            Object[] submittedValues, Boolean newTableRow, int itemNumber, OptionComponentInfo optionInfo) throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
@@ -242,13 +244,13 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
             return;
         }
 
-        if (alignVertical) {
+        if (newTableRow == TRUE) {
             writer.writeText("\t", component, null);
             writer.startElement("tr", component);
             writer.writeText("\n", component, null);
         }
 
-        writer.startElement("td", component);
+        writer.startElement(newTableRow != null ? "td" : "li", component);
         writer.writeText("\n", component, null);
 
         String clientId = component.getClientId(context) + UINamingContainer.getSeparatorChar(context) + Integer.toString(itemNumber);
@@ -259,9 +261,9 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
         renderInput(context, writer, component, clientId, curValue, converter, checked, disabled, null);
         renderLabel(writer, component, clientId, curItem, optionInfo);
 
-        writer.endElement("td");
+        writer.endElement(newTableRow != null ? "td" : "li");
         writer.writeText("\n", component, null);
-        if (alignVertical) {
+        if (newTableRow == TRUE) {
             writer.writeText("\t", component, null);
             writer.endElement("tr");
             writer.writeText("\n", component, null);

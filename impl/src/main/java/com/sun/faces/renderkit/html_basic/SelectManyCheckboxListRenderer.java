@@ -18,6 +18,9 @@
 
 package com.sun.faces.renderkit.html_basic;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -60,11 +63,16 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
 
         String alignStr;
         Object borderObj;
-        boolean alignVertical = false;
+        Boolean newTableRow = false;
         int border = 0;
 
         if (null != (alignStr = (String) component.getAttributes().get("layout"))) {
-            alignVertical = alignStr.equalsIgnoreCase("pageDirection");
+            if (alignStr.equalsIgnoreCase("list")) {
+                newTableRow = null;
+            }
+            else {
+                newTableRow = alignStr.equalsIgnoreCase("pageDirection");
+            }
         }
         if (null != (borderObj = component.getAttributes().get("border"))) {
             border = (Integer) borderObj;
@@ -75,7 +83,7 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
             converter = ((ValueHolder) component).getConverter();
         }
 
-        renderBeginText(component, border, alignVertical, context, true);
+        renderBeginText(component, border, newTableRow, context, true);
 
         Iterator<SelectItem> items = RenderKitUtils.getSelectItems(context, component);
 
@@ -91,40 +99,44 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
             if (curItem instanceof SelectItemGroup) {
                 // write out the label for the group.
                 if (curItem.getLabel() != null) {
-                    if (alignVertical) {
+                    if (newTableRow == TRUE) {
                         writer.startElement("tr", component);
                     }
-                    writer.startElement("td", component);
+                    writer.startElement(newTableRow != null ? "td" : "li", component);
                     writer.writeText(curItem.getLabel(), component, "label");
-                    writer.endElement("td");
-                    if (alignVertical) {
-                        writer.endElement("tr");
+                    if (newTableRow != null) {
+                        writer.endElement("td");
+                        if (newTableRow) {
+                            writer.endElement("tr");
+                        }
                     }
 
                 }
-                if (alignVertical) {
-                    writer.startElement("tr", component);
+                if (newTableRow != null) {
+                    if (newTableRow) {
+                        writer.startElement("tr", component);
+                    }
+                    writer.startElement("td", component);
                 }
-                writer.startElement("td", component);
                 writer.writeText("\n", component, null);
-                renderBeginText(component, 0, alignVertical, context, false);
+                renderBeginText(component, 0, newTableRow, context, false);
                 // render options of this group.
                 SelectItem[] itemsArray = ((SelectItemGroup) curItem).getSelectItems();
                 for (SelectItem element : itemsArray) {
-                    renderOption(context, component, converter, element, currentSelections, submittedValues, alignVertical, idx++, optionInfo);
+                    renderOption(context, component, converter, element, currentSelections, submittedValues, newTableRow, idx++, optionInfo);
                 }
-                renderEndText(component, alignVertical, context);
-                writer.endElement("td");
-                if (alignVertical) {
+                renderEndText(component, newTableRow, context);
+                writer.endElement(newTableRow != null ? "td" : "li");
+                if (newTableRow == TRUE) {
                     writer.endElement("tr");
                     writer.writeText("\n", component, null);
                 }
             } else {
-                renderOption(context, component, converter, curItem, currentSelections, submittedValues, alignVertical, idx, optionInfo);
+                renderOption(context, component, converter, curItem, currentSelections, submittedValues, newTableRow, idx, optionInfo);
             }
         }
 
-        renderEndText(component, alignVertical, context);
+        renderEndText(component, newTableRow, context);
 
     }
 
@@ -153,19 +165,19 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
 
     }
 
-    protected void renderBeginText(UIComponent component, int border, boolean alignVertical, FacesContext context, boolean outerTable) throws IOException {
+    protected void renderBeginText(UIComponent component, int border, Boolean newTableRow, FacesContext context, boolean outerElement) throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
 
-        writer.startElement("table", component);
-        if (border != Integer.MIN_VALUE) {
+        writer.startElement(newTableRow != null ? "table" : "ul", component);
+        if (newTableRow != null && border != Integer.MIN_VALUE) {
             writer.writeAttribute("border", border, "border");
         }
 
-        // render style and styleclass attribute on the outer table instead of
+        // render style and styleclass attribute on the outer element instead of
         // rendering it as pass through attribute on every option in the list.
-        if (outerTable) {
+        if (outerElement) {
             // render "id" only for outerTable.
             if (shouldWriteIdAttribute(component)) {
                 writeIdAttributeIfNecessary(context, writer, component);
@@ -181,7 +193,7 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
         }
         writer.writeText("\n", component, null);
 
-        if (!alignVertical) {
+        if (newTableRow == FALSE) {
             writer.writeText("\t", component, null);
             writer.startElement("tr", component);
             writer.writeText("\n", component, null);
@@ -189,22 +201,22 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
 
     }
 
-    protected void renderEndText(UIComponent component, boolean alignVertical, FacesContext context) throws IOException {
+    protected void renderEndText(UIComponent component, Boolean newTableRow, FacesContext context) throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
 
-        if (!alignVertical) {
+        if (newTableRow == FALSE) {
             writer.writeText("\t", component, null);
             writer.endElement("tr");
             writer.writeText("\n", component, null);
         }
-        writer.endElement("table");
+        writer.endElement(newTableRow != null ? "table" : "ul");
 
     }
 
     protected void renderOption(FacesContext context, UIComponent component, Converter converter, SelectItem curItem, Object currentSelections,
-            Object[] submittedValues, boolean alignVertical, int itemNumber, OptionComponentInfo optionInfo) throws IOException {
+            Object[] submittedValues, Boolean newTableRow, int itemNumber, OptionComponentInfo optionInfo) throws IOException {
 
         String valueString = getFormattedValue(context, component, curItem.getValue(), converter);
 
@@ -228,12 +240,12 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
 
-        if (alignVertical) {
+        if (newTableRow == TRUE) {
             writer.writeText("\t", component, null);
             writer.startElement("tr", component);
             writer.writeText("\n", component, null);
         }
-        writer.startElement("td", component);
+        writer.startElement(newTableRow != null ? "td" : "li", component);
         writer.writeText("\n", component, null);
 
         writer.startElement("input", component);
@@ -308,15 +320,11 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
         } else {
             writer.writeText(itemLabel, component, "label");
         }
-//        if (isSelected(context, component, itemValue, valuesArray, converter)) {
-//
-//        } else { // not selected
-//
-//        }
+
         writer.endElement("label");
-        writer.endElement("td");
+        writer.endElement(newTableRow != null ? "td" : "li");
         writer.writeText("\n", component, null);
-        if (alignVertical) {
+        if (newTableRow == TRUE) {
             writer.writeText("\t", component, null);
             writer.endElement("tr");
             writer.writeText("\n", component, null);

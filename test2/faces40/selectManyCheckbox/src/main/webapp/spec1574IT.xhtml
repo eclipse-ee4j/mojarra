@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) 2021 Contributors to Eclipse Foundation.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<html
+    xmlns:f="jakarta.faces.core"
+    xmlns:h="jakarta.faces.html"
+    xmlns:c="jakarta.tags.core"
+>
+    <h:body>
+        <h:form id="form">
+            <c:if test="#{not param.radio}">
+                <h:selectManyCheckbox id="input" layout="#{param.layout}">
+                    <f:selectItemGroups value="#{spec1574ITBean.categories}" var="category" itemLabel="#{category.name}">
+                        <f:selectItems value="#{category.products}" var="product" itemValue="#{product.id}" itemLabel="#{product.name}" />
+                    </f:selectItemGroups>
+                </h:selectManyCheckbox>
+            </c:if>
+
+            <c:if test="#{param.radio}">
+                <h:selectOneRadio id="input" layout="#{param.layout}">
+                    <f:selectItemGroups value="#{spec1574ITBean.categories}" var="category" itemLabel="#{category.name}">
+                        <f:selectItems value="#{category.products}" var="product" itemValue="#{product.id}" itemLabel="#{product.name}" />
+                    </f:selectItemGroups>
+                </h:selectOneRadio>
+            </c:if>
+        </h:form>
+    </h:body>
+</html>
