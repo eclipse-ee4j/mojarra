@@ -26,7 +26,7 @@
     <parent>
         <groupId>com.sun.faces.test.servlet40</groupId>
         <artifactId>pom</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>3.0.1-SNAPSHOT-SNAPSHOT</version>
     </parent>
     <artifactId>exactMapping</artifactId>
     <packaging>war</packaging>	
