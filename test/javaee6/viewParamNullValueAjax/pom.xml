@@ -21,7 +21,7 @@
   <parent>
     <artifactId>pom</artifactId>
     <groupId>com.sun.faces.test.javaee6</groupId>
-    <version>3.0.0-m01-SNAPSHOT</version>
+    <version>3.0.1-SNAPSHOT-m01-SNAPSHOT</version>
   </parent>
   
   <artifactId>viewParamNullValueAjax</artifactId>
