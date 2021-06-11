@@ -127,7 +127,6 @@ public class CDIUtilImpl implements Serializable, CDIUtil {
             return false;
         }
 
-        @Override
         public boolean isNullable() {
             return false;
         }
