@@ -282,8 +282,8 @@ public class WebsocketSessionManager {
 
     private static void fireEvent(Session session, CloseReason reason, AnnotationLiteral<?> qualifier) {
         Serializable user = (Serializable) session.getUserProperties().get("user");
-        Util.getCdiBeanManager(FacesContext.getCurrentInstance())
-                .fireEvent(new WebsocketEvent(getChannel(session), user, reason != null ? reason.getCloseCode() : null), qualifier);
+        Util.getCdiBeanManager(FacesContext.getCurrentInstance()).getEvent().select(WebsocketEvent.class, qualifier)
+                .fire(new WebsocketEvent(getChannel(session), user, reason != null ? reason.getCloseCode() : null));
     }
 
 }

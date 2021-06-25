@@ -148,12 +148,7 @@ abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializab
         return false;
     }
 
-    /**
-     * Is this nullable.
-     *
-     * @return false.
-     */
-    @Override
+    // TODO to be removed once using CDI API 4.x
     public boolean isNullable() {
         return false;
     }
