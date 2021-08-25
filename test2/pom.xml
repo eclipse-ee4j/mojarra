@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2020 Contributors to Eclipse Foundation. All rights reserved.
+    Copyright (c) 2020, 2021 Contributors to Eclipse Foundation. All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License v. 2.0, which is available at
@@ -27,6 +27,7 @@
     <name>Mojarra ${project.version} - Test2</name>
 
     <modules>
+        <module>util</module>
         <module>faces22</module>
         <module>faces23</module>
         <module>faces40</module>
@@ -40,12 +41,11 @@
         <maven.test.skip>false</maven.test.skip>
         <skipTests>false</skipTests>
 
-        <!-- Application Server versions (these are downloaded and installed
-            in these versions by Maven for the CI profiles) -->
-        <glassfish.version>6.1.0-RC1</glassfish.version>
+        <!-- Application Server versions (these are downloaded and installed in these versions by Maven for the CI profiles) -->
+        <glassfish.version>6.2.0</glassfish.version>
         <tomcat.version>9.0.12</tomcat.version>
     </properties>
-    
+
     <repositories>
         <repository>
             <id>jakarta-staging</id>
@@ -81,7 +81,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    
+
     <dependencies>
         <dependency>
             <groupId>jakarta.faces</groupId>
@@ -89,7 +89,7 @@
             <version>3.0.0</version>
             <scope>provided</scope>
         </dependency>
-    
+
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
@@ -97,7 +97,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>    
+        <dependency>
             <groupId>jakarta.websocket</groupId>
             <artifactId>jakarta.websocket-api</artifactId>
             <version>2.0.0</version>
@@ -110,7 +110,7 @@
             <version>4.0.0</version>
             <scope>provided</scope>
         </dependency>
-    
+
         <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>jakarta.enterprise.cdi-api</artifactId>
@@ -124,11 +124,10 @@
             <version>3.0.0</version>
             <scope>provided</scope>
         </dependency>
-        
+
 
         <!-- Test dependencies which can be used in sub-modules -->
-        
-         <dependency>
+        <dependency>
             <groupId>javax.annotation</groupId>
             <artifactId>javax.annotation-api</artifactId>
             <version>1.3.2</version>
@@ -214,7 +213,7 @@
                 <filtering>true</filtering>
             </testResource>
         </testResources>
-        
+
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -229,9 +228,9 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-        
+
         <plugins>
-           <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <version>3.0.0-M3</version>
@@ -341,16 +340,16 @@
 
 
     <!-- Profiles for the application servers against which the tests are run -->
-    
-    
+
+
     <profiles>
         <!-- ### PIRANHA ### -->
-    
+
         <profile>
             <id>piranha-embedded-micro</id>
-            
-             
-    
+
+
+
             <dependencies>
                 <!-- Java EE based client dependencies to contact a server via WebSocket or REST -->
                 <dependency>
@@ -358,7 +357,7 @@
                     <artifactId>payara-client-ee8</artifactId>
                     <scope>test</scope>
                 </dependency>
-    
+
                 <dependency>
                     <groupId>cloud.piranha.arquillian</groupId>
                     <artifactId>piranha-arquillian-server</artifactId>
@@ -366,7 +365,7 @@
                     <scope>test</scope>
                 </dependency>
             </dependencies>
-    
+
             <build>
                 <plugins>
                     <plugin>
@@ -383,8 +382,8 @@
                 </plugins>
             </build>
         </profile>
-    
-    
+
+
 
 
         <!-- ### GlassFish ### -->
@@ -392,11 +391,11 @@
 
         <profile>
             <id>glassfish-ci-managed</id>
-            
+
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            
+
             <properties>
                 <root>${maven.multiModuleProjectDirectory}</root>
             </properties>
@@ -439,7 +438,7 @@
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>copy</id>                         
+                                <id>copy</id>
                                 <phase>process-test-classes</phase>
                                 <goals>
                                     <goal>copy</goal>
@@ -451,7 +450,7 @@
                                             <artifactId>jakarta.faces</artifactId>
                                             <version>${jsf.version}</version>
                                             <type>jar</type>
-                                            <overWrite>true</overWrite>                                     
+                                            <overWrite>true</overWrite>
                                             <outputDirectory>${root}/target/glassfish6/glassfish/modules</outputDirectory>
                                             <destFileName>jakarta.faces.jar</destFileName>
                                         </artifactItem>
@@ -484,14 +483,20 @@
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
-                                     <target if="suspend">
-                                        <property name="antProperty" value="${foo}/target/glassfish6/glassfish/domains/domain1/config/domain.xml"/>
+                                    <target if="suspend">
+                                        <property name="antProperty"
+                                            value="${foo}/target/glassfish6/glassfish/domains/domain1/config/domain.xml" />
                                         <echo level="info">Suspending: Replacing in ${root}</echo>
-                                        <replace token="-Djava.awt.headless=true" value="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=9009" dir="${root}/target/glassfish6/glassfish/domains/domain1/config/" summary="yes">                                 
-                                            <include name="domain.xml"/>
+                                        <replace token="-Djava.awt.headless=true"
+                                            value="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=9009"
+                                            dir="${root}/target/glassfish6/glassfish/domains/domain1/config/"
+                                            summary="yes">
+                                            <include name="domain.xml" />
                                         </replace>
-                                        <replace token="# Framework config properties." value="org.osgi.framework.storage.clean=onFirstInit" dir="${root}/target/glassfish6/glassfish/config/" summary="yes">                                 
-                                            <include name="osgi.properties"/>
+                                        <replace token="# Framework config properties."
+                                            value="org.osgi.framework.storage.clean=onFirstInit"
+                                            dir="${root}/target/glassfish6/glassfish/config/" summary="yes">
+                                            <include name="osgi.properties" />
                                         </replace>
                                     </target>
                                 </configuration>
@@ -504,13 +509,20 @@
                                 </goals>
                                 <configuration>
                                     <target unless="suspend">
-                                        <property name="antProperty" value="${foo}/target/glassfish6/glassfish/domains/domain1/config/domain.xml"/>
+                                        <property name="antProperty"
+                                            value="${foo}/target/glassfish6/glassfish/domains/domain1/config/domain.xml" />
                                         <echo level="info">Not suspending: Replacing in ${root}</echo>
-                                        <replace token="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=9009" value="-Djava.awt.headless=true" dir="${root}/target/glassfish6/glassfish/domains/domain1/config/" summary="yes">                                 
-                                            <include name="domain.xml"/>
+                                        <replace
+                                            token="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=9009"
+                                            value="-Djava.awt.headless=true"
+                                            dir="${root}/target/glassfish6/glassfish/domains/domain1/config/"
+                                            summary="yes">
+                                            <include name="domain.xml" />
                                         </replace>
-                                        <replace token="org.osgi.framework.storage.clean=onFirstInit" value="# Framework config properties." dir="${root}/target/glassfish6/glassfish/config/" summary="yes">                                 
-                                            <include name="osgi.properties"/>
+                                        <replace token="org.osgi.framework.storage.clean=onFirstInit"
+                                            value="# Framework config properties."
+                                            dir="${root}/target/glassfish6/glassfish/config/" summary="yes">
+                                            <include name="osgi.properties" />
                                         </replace>
                                     </target>
                                 </configuration>
@@ -529,9 +541,9 @@
                 </plugins>
             </build>
         </profile>
-       
 
-       
+
+
 
 
 
