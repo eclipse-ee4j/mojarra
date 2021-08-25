@@ -17,7 +17,8 @@
     SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -33,6 +34,7 @@
     <name>Mojarra ${project.version} - Test - Faces 2.3</name>
 
     <modules>
+        <module>ajax</module>
         <module>commandScript</module>
         <module>el</module>
         <module>exactMapping</module>
@@ -47,5 +49,14 @@
         <module>validateWholeBean</module>
         <module>websocket</module>
         <module>xhtmlMappingToFaceletByDefault</module>
-  </modules>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.glassfish.mojarra.test</groupId>
+            <artifactId>util</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>
