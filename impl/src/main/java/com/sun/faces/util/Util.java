@@ -73,6 +73,7 @@ import com.sun.faces.io.FastStringWriter;
 import jakarta.el.ELResolver;
 import jakarta.el.ValueExpression;
 import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
@@ -1512,6 +1513,12 @@ public class Util {
                     InitialContext initialContext = new InitialContext();
                     result = (BeanManager) initialContext.lookup("java:comp/env/BeanManager");
                 } catch (NamingException ne2) {
+                    try {
+                        CDI<Object> cdi = CDI.current();
+                        result = cdi.getBeanManager();
+                    }
+                    catch (Exception | LinkageError e) {
+                    }
                 }
             }
 
