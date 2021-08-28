@@ -127,6 +127,8 @@ public class ApplicationAssociate {
 
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
+    private final static String FacesComponentJcpNamespace = "http://xmlns.jcp.org/jsf/component";
+
     private ApplicationImpl applicationImpl;
 
     /**
@@ -513,6 +515,7 @@ public class ApplicationAssociate {
         }
 
         facesComponentsByNamespace.computeIfAbsent(facesComponentUsage.getAnnotation().namespace(), k -> new ArrayList<>()).add(facesComponentUsage);
+        facesComponentsByNamespace.computeIfAbsent(FacesComponentJcpNamespace, k -> new ArrayList<>()).add(facesComponentUsage);
     }
 
     public List<FacesComponentUsage> getComponentsForNamespace(String namespace) {
