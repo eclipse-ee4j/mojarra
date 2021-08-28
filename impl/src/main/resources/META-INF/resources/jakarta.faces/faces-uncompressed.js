@@ -3315,10 +3315,11 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * @param {string} channel The channel name of the websocket.
          * @param {function} onopen The function to be invoked when the websocket is opened.
          * @param {function} onmessage The function to be invoked when a message is received.
-         * @param {function} onclose The function to be invoked when the websocket is closed.
+         * @param {function} onerror The function to be invoked when a connection error has occurred and the web socket will attempt to reconnect.
+         * @param {function} onclose The function to be invoked when the web socket is closed and will not anymore attempt to reconnect.
          * @param {Object} behaviors Client behavior functions to be invoked when specific message is received.
          */
-        function ReconnectingWebsocket(url, channel, onopen, onmessage, onclose, behaviors) {
+        function ReconnectingWebsocket(url, channel, onopen, onmessage, onerror, onclose, behaviors) {
 
             // Private fields -----------------------------------------------------------------------------------------
 
@@ -3368,6 +3369,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                         onclose(event.code, channel, event);
                     }
                     else {
+                        onerror(event.code, channel, event);
                         setTimeout(self.open, RECONNECT_INTERVAL * reconnectAttempts++);
                     }
                 }
@@ -3402,19 +3404,24 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * @param {function} onmessage The JavaScript event handler function that is invoked when a message is received from
          * the server. The function will be invoked with three arguments: the push message, the client identifier and
          * the raw <code>MessageEvent</code> itself.
-         * @param {function} onclose The JavaScript event handler function that is invoked when the websocket is closed.
-         * The function will be invoked with three arguments: the close reason code, the client identifier and the raw
-         * <code>CloseEvent</code> itself. Note that this will also be invoked on errors and that you can inspect the
-         * close reason code if an error occurred and which one (i.e. when the code is not 1000). See also
-         * <a href="http://tools.ietf.org/html/rfc6455#section-7.4.1">RFC 6455 section 7.4.1</a> and
-         * <a href="https://jakarta.ee/specifications/websocket/2.0/apidocs/jakarta/websocket/CloseReason.CloseCodes.html">CloseCodes</a> API
-         * for an elaborate list.
+         * @param {function} onerror The JavaScript event handler function that is invoked when a connection error has
+         * occurred and the web socket will attempt to reconnect. The function will be invoked with three arguments: the
+         * error reason code, the channel name and the raw <code>CloseEvent</code> itself. Note that this will not be
+         * invoked on final close of the web socket, even when the final close is caused by an error. See also
+         * <a href="http://tools.ietf.org/html/rfc6455#section-7.4.1">RFC 6455 section 7.4.1</a> and {@link CloseCodes} API
+         * for an elaborate list of all close codes.
+         * @param {function} onclose The function to be invoked when the web socket is closed and will not anymore attempt
+         * to reconnect. The function will be invoked with three arguments: the close reason code, the channel name
+         * and the raw <code>CloseEvent</code> itself. Note that this will also be invoked when the close is caused by an
+         * error and that you can inspect the close reason code if an actual connection error occurred and which one (i.e.
+         * when the code is not 1000 or 1008). See also <a href="http://tools.ietf.org/html/rfc6455#section-7.4.1">RFC 6455
+         * section 7.4.1</a> and {@link CloseCodes} API for an elaborate list of all close codes.
          * @param {Object} behaviors Client behavior functions to be invoked when specific message is received.
          * @param {boolean} autoconnect Whether or not to automatically connect the socket. Defaults to <code>false</code>.
          * @member faces.push
          * @function faces.push.init
          */
-        self.init = function(clientId, url, channel, onopen, onmessage, onclose, behaviors, autoconnect) {
+        self.init = function(clientId, url, channel, onopen, onmessage, onerror, onclose, behaviors, autoconnect) {
             onclose = resolveFunction(onclose);
 
             if (!window.WebSocket) { // IE6-9.
@@ -3423,7 +3430,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
             }
 
             if (!sockets[clientId]) {
-                sockets[clientId] = new ReconnectingWebsocket(url, channel, resolveFunction(onopen), resolveFunction(onmessage), onclose, behaviors);
+                sockets[clientId] = new ReconnectingWebsocket(url, channel, resolveFunction(onopen), resolveFunction(onmessage), resolveFunction(onerror), onclose, behaviors);
             }
 
             if (autoconnect) {

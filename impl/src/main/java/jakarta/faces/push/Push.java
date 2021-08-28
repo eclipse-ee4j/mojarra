@@ -48,7 +48,7 @@ import jakarta.websocket.CloseReason.CloseCodes;
  *
  * <h2 id="configuration"><a href="#configuration">Configuration</a></h2>
  * <p>
- * First enable the web socket endpoint by below boolean context parameter in <code>web.xml</code>.
+ * First enable the websocket endpoint by below boolean context parameter in <code>web.xml</code>.
  *
  * <pre>
  * &lt;context-param&gt;
@@ -102,9 +102,9 @@ import jakarta.websocket.CloseReason.CloseCodes;
  * &lt;/context-param&gt;
  * </pre>
  * <p>
- * When successfully connected, the web socket is by default open as long as the document is open, and it will
+ * When successfully connected, the websocket is by default open as long as the document is open, and it will
  * auto-reconnect at increasing intervals when the connection is closed/aborted as result of e.g. a network error or
- * server restart. It will not auto-reconnect when the very first connection attempt already fails. The web socket will
+ * server restart. It will not auto-reconnect when the very first connection attempt already fails. The websocket will
  * be implicitly closed once the document is unloaded.
  *
  *
@@ -139,7 +139,7 @@ import jakarta.websocket.CloseReason.CloseCodes;
  * <code>onmessage</code> JavaScript listener function associated with the <code>channel</code> name. It can be a plain
  * vanilla <code>String</code>, but it can also be a collection, map and even a javabean.
  * <p>
- * Although web sockets support two-way communication, the <code>&lt;f:websocket&gt;</code> push is designed for one-way
+ * Although websockets support two-way communication, the <code>&lt;f:websocket&gt;</code> push is designed for one-way
  * communication, from server to client. In case you intend to send some data from client to server, continue using
  * Jakarta Server Faces ajax the usual way. This has among others the advantage of maintaining the Jakarta Server Faces
  * view state, the HTTP session and, importantly, all security constraints on business service methods.
@@ -147,8 +147,8 @@ import jakarta.websocket.CloseReason.CloseCodes;
  *
  * <h2 id="scopes-and-users"><a href="#scopes-and-users">Scopes and users</a></h2>
  * <p>
- * By default the web socket is <code>application</code> scoped, i.e. any view/session throughout the web application
- * having the same web socket channel open will receive the same push message. The push message can be sent by all users
+ * By default the websocket is <code>application</code> scoped, i.e. any view/session throughout the web application
+ * having the same websocket channel open will receive the same push message. The push message can be sent by all users
  * and the application itself.
  * <p>
  * The optional <strong><code>scope</code></strong> attribute can be set to <code>session</code> to restrict the push
@@ -220,15 +220,15 @@ import jakarta.websocket.CloseReason.CloseCodes;
  *
  * <h2 id="connecting"><a href="#connecting">Conditionally connecting</a></h2>
  * <p>
- * You can use the optional <strong><code>connected</code></strong> attribute to control whether to auto-connect the web
- * socket or not.
+ * You can use the optional <strong><code>connected</code></strong> attribute to control whether to auto-connect the
+ * websocket or not.
  *
  * <pre>
  * &lt;f:websocket ... connected="#{bean.pushable}" /&gt;
  * </pre>
  * <p>
  * It defaults to <code>true</code> and it's under the covers interpreted as a JavaScript instruction whether to open or
- * close the web socket push connection. If the value is a Jakarta Expression Language expression and it becomes
+ * close the websocket push connection. If the value is a Jakarta Expression Language expression and it becomes
  * <code>false</code> during an ajax request, then the push connection will explicitly be closed during oncomplete of
  * that ajax request.
  * <p>
@@ -256,9 +256,9 @@ import jakarta.websocket.CloseReason.CloseCodes;
  *
  * <h2 id="events-client"><a href="#events-client">Events (client)</a></h2>
  * <p>
- * The optional <strong><code>onopen</code></strong> JavaScript listener function can be used to listen on open of a web
- * socket in client side. This will be invoked on the very first connection attempt, regardless of whether it will be
- * successful or not. This will not be invoked when the web socket auto-reconnects a broken connection after the first
+ * The optional <strong><code>onopen</code></strong> JavaScript listener function can be used to listen on open of a
+ * websocket in client side. This will be invoked on the very first connection attempt, regardless of whether it will be
+ * successful or not. This will not be invoked when the websocket auto-reconnects a broken connection after the first
  * successful connection.
  *
  * <pre>
@@ -275,12 +275,46 @@ import jakarta.websocket.CloseReason.CloseCodes;
  * <ul>
  * <li><code>channel</code>: the channel name, useful in case you intend to have a global listener.</li>
  * </ul>
+ * <p class="changed_added_4_0">
+ * The optional <strong><code>onerror</code></strong> JavaScript listener function can be used to listen on a connection
+ * error whereby the websocket will attempt to reconnect. This will be invoked when the websocket can make an
+ * auto-reconnect attempt on a broken connection after the first successful connection. This will be <em>not</em>
+ * invoked when the very first connection attempt fails, or the server has returned close reason code <code>1000</code>
+ * (normal closure) or <code>1008</code> (policy violated), or the maximum reconnect attempts has exceeded. Instead,
+ * the <code>onclose</code> will be invoked.
+ * <pre>
+ * &lt;o:socket ... onerror="websocketErrorListener" /&gt;
+ * </pre>
+ * <pre>
+ * function websocketErrorListener(code, channel, event) {
+ *     if (code == 1001) {
+ *         // Server has returned an unexpected response code. E.g. 503, because it's shutting down.
+ *     } else if (code == 1006) {
+ *         // Server is not reachable anymore. I.e. it's not anymore listening on TCP/IP requests.
+ *     } else {
+ *         // Any other reason which is usually not -1, 1000 or 1008, as the onclose will be invoked instead.
+ *     }
+ *
+ *     // In any case, the websocket will attempt to reconnect. This function will be invoked again.
+ *     // Once the websocket gives up reconnecting, the onclose will finally be invoked.
+ * }
+ * </pre>
  * <p>
+ * The <code>onerror</code> JavaScript listener function will be invoked with three arguments:
+ * <ul>
+ * <li><code>code</code>: the close reason code as integer. See also
+ * <a href="http://tools.ietf.org/html/rfc6455#section-7.4.1">RFC 6455 section 7.4.1</a> and {@link CloseCodes} API for
+ * an elaborate list of all close codes.</li>
+ * <li><code>channel</code>: the channel name, useful in case you intend to have a global listener.</li>
+ * <li><code>event</code>: the raw <a href="https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent"><code>
+ * CloseEvent</code></a> instance, useful in case you intend to inspect it.</li>
+ * </ul>
+ * <p class="changed_modified_4_0">
  * The optional <strong><code>onclose</code></strong> JavaScript listener function can be used to listen on (ab)normal
- * close of a web socket. This will be invoked when the very first connection attempt fails, or the server has returned
+ * close of a websocket. This will be invoked when the very first connection attempt fails, or the server has returned
  * close reason code <code>1000</code> (normal closure) or <code>1008</code> (policy violated), or the maximum reconnect
- * attempts has exceeded. This will not be invoked when the web socket can make an auto-reconnect attempt on a broken
- * connection after the first successful connection.
+ * attempts has exceeded. This will <em>not</em> be invoked when the websocket can make an auto-reconnect attempt on a
+ * broken connection after the first successful connection. Instead, the <code>onerror</code> will be invoked.
  *
  * <pre>
  * &lt;f:websocket ... onclose="websocketCloseListener" /&gt;
@@ -289,7 +323,7 @@ import jakarta.websocket.CloseReason.CloseCodes;
  * <pre>
  * function websocketCloseListener(code, channel, event) {
  *     if (code == -1) {
- *         // Web sockets not supported by client.
+ *         // websockets not supported by client.
  *     } else if (code == 1000) {
  *         // Normal close (as result of expired session or view).
  *     } else {
@@ -300,25 +334,25 @@ import jakarta.websocket.CloseReason.CloseCodes;
  * <p>
  * The <code>onclose</code> JavaScript listener function will be invoked with three arguments:
  * <ul>
- * <li><code>code</code>: the close reason code as integer. If this is <code>-1</code>, then the web socket is simply
+ * <li><code>code</code>: the close reason code as integer. If this is <code>-1</code>, then the websocket is simply
  * not <a href="http://caniuse.com/websockets">supported</a> by the client. If this is <code>1000</code>, then it was
- * normally closed. Else if this is not <code>1000</code>, then there may be an error. See also
- * <a href="http://tools.ietf.org/html/rfc6455#section-7.4.1">RFC 6455 section 7.4.1</a> and {@link CloseCodes} API for
- * an elaborate list of all close codes.</li>
+ * normally closed due to an expired session or view. Else if this is not <code>1000</code>, then there may be an error.
+ * See also <a href="http://tools.ietf.org/html/rfc6455#section-7.4.1">RFC 6455 section 7.4.1</a> and {@link CloseCodes}
+ * API for an elaborate list of all close codes.</li>
  * <li><code>channel</code>: the channel name.</li>
  * <li><code>event</code>: the raw <a href="https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent"><code>
  * CloseEvent</code></a> instance.</li>
  * </ul>
  * <p>
- * When a session or view scoped socket is automatically closed with close reason code <code>1000</code> by the server
+ * When a session or view scoped websocket is automatically closed with close reason code <code>1000</code> by the server
  * (and thus not manually by the client via <code>faces.push.close(clientId)</code>), then it means that the session or
  * view has expired.
  *
  *
  * <h2 id="events-server"><a href="#events-server">Events (server)</a></h2>
  * <p>
- * When a web socket has been opened, a new CDI <strong>{@link WebsocketEvent}</strong> will be fired with
- * <strong><code>&#64;</code>{@link Opened}</strong> qualifier. When a web socket has been closed, a new CDI
+ * When a websocket has been opened, a new CDI <strong>{@link WebsocketEvent}</strong> will be fired with
+ * <strong><code>&#64;</code>{@link Opened}</strong> qualifier. When a websocket has been closed, a new CDI
  * {@link WebsocketEvent} will be fired with <strong><code>&#64;</code>{@link Closed}</strong> qualifier. They can only
  * be observed and collected in an application scoped CDI bean as below.
  *
@@ -345,7 +379,7 @@ import jakarta.websocket.CloseReason.CloseCodes;
  *
  * <h2 id="security"><a href="#security">Security considerations</a></h2>
  * <p>
- * If the socket is declared in a page which is only restricted to logged-in users with a specific role, then you may
+ * If the websocket is declared in a page which is only restricted to logged-in users with a specific role, then you may
  * want to add the URL of the push handshake request URL to the set of restricted URLs.
  * <p>
  * The push handshake request URL is composed of the URI prefix <strong><code>/jakarta.faces.push/</code></strong>,
@@ -384,12 +418,12 @@ import jakarta.websocket.CloseReason.CloseCodes;
  * <p>
  * As extra security, particularly for those public channels which can't be restricted by security constraints, the
  * <code>&lt;f:websocket&gt;</code> will register all so far declared channels in the current HTTP session, and any
- * incoming web socket open request will be checked whether they match the so far registered channels in the current
+ * incoming websocket open request will be checked whether they match the so far registered channels in the current
  * HTTP session. In case the channel is unknown (e.g. randomly guessed or spoofed by endusers or manually reconnected
- * after the session is expired), then the web socket will immediately be closed with close reason code
+ * after the session is expired), then the websocket will immediately be closed with close reason code
  * {@link CloseCodes#VIOLATED_POLICY} (<code>1008</code>). Also, when the HTTP session gets destroyed, all session and
  * view scoped channels which are still open will explicitly be closed from server side with close reason code
- * {@link CloseCodes#NORMAL_CLOSURE} (<code>1000</code>). Only application scoped sockets remain open and are still
+ * {@link CloseCodes#NORMAL_CLOSURE} (<code>1000</code>). Only application scoped websockets remain open and are still
  * reachable from server end even when the session or view associated with the page in client side is expired.
  *
  *

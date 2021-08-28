@@ -75,7 +75,7 @@ public class UIWebsocket extends UIComponentBase implements ClientBehaviorHolder
      * </p>
      */
     enum PropertyKeys {
-        channel, scope, user, onopen, onmessage, onclose, connected;
+        channel, scope, user, onopen, onmessage, onerror, onclose, connected;
     }
 
     private static final Pattern PATTERN_CHANNEL_NAME = Pattern.compile("[\\w.-]+");
@@ -280,19 +280,56 @@ public class UIWebsocket extends UIComponentBase implements ClientBehaviorHolder
     }
 
     /**
-     * Returns the JavaScript event handler function that is invoked when the websocket is closed.
+     * <span class="changed_added_4_0">
+     * Returns the JavaScript event handler function that is invoked when a connection error has occurred and the websocket
+     * will attempt to reconnect.
+     * </span>
+     * 
+     * @return The JavaScript event handler function that is invoked when a connection error has occurred and the websocket
+     * will attempt to reconnect.
+     * 
+     * @since 4.0
+     */
+    public String getOnerror() {
+        return (String) getStateHelper().get(PropertyKeys.onerror);
+    }
+
+    /**
+     * <span class="changed_added_4_0">
+     * Sets the JavaScript event handler function that is invoked when a connection error has occurred and the websocket
+     * will attempt to reconnect. The function will be invoked with three arguments: the error reason code, the
+     * channel name and the raw <code>CloseEvent</code> itself. Note that this will not be invoked on final close of the
+     * websocket, even when the final close is caused by an error. See also
+     * <a href="http://tools.ietf.org/html/rfc6455#section-7.4.1">RFC 6455 section 7.4.1</a> and {@link CloseCodes} API
+     * for an elaborate list of all close codes.
+     * </span>
      *
-     * @return The JavaScript event handler function that is invoked when the websocket is closed.
+     * @param onerror The JavaScript event handler function that is invoked when a reconnection error has occurred.
+     * 
+     * @since 4.0
+     */
+    public void setOnerror(String onerror) {
+        getStateHelper().put(PropertyKeys.onerror, onerror);
+    }
+
+    /**
+     * Returns the JavaScript event handler function that is invoked when the websocket is closed
+     * <span class="changed_modified_4_0">and will not anymore attempt to reconnect</span>.
+     *
+     * @return The JavaScript event handler function that is invoked when the websocket is closed and will not anymore
+     * attempt to reconnect.
      */
     public String getOnclose() {
         return (String) getStateHelper().eval(PropertyKeys.onclose);
     }
 
     /**
-     * Sets the JavaScript event handler function that is invoked when the websocket is closed. The function will be invoked
-     * with three arguments: the close reason code, the channel name and the raw <code>CloseEvent</code> itself. Note that
-     * this will also be invoked on errors and that you can inspect the close reason code if an error occurred and which one
-     * (i.e. when the code is not 1000). See also <a href="http://tools.ietf.org/html/rfc6455#section-7.4.1">RFC 6455
+     * Sets the JavaScript event handler function that is invoked when the websocket is closed
+     * <span class="changed_modified_4_0">and will not anymore attempt to reconnect</span>. The function will be invoked
+     * with three arguments: the close reason code, the channel name and the raw <code>CloseEvent</code> itself.
+     * <span class="changed_modified_4_0">Note that this will also be invoked when the close is caused by an
+     * error and that you can inspect the close reason code if an actual connection error occurred and which one (i.e.
+     * when the code is not 1000 or 1008)</span>. See also <a href="http://tools.ietf.org/html/rfc6455#section-7.4.1">RFC 6455
      * section 7.4.1</a> and {@link CloseCodes} API for an elaborate list of all close codes.
      *
      * @param onclose The JavaScript event handler function that is invoked when the websocket is closed.
@@ -314,7 +351,8 @@ public class UIWebsocket extends UIComponentBase implements ClientBehaviorHolder
      * Sets whether to (auto)connect the websocket or not. Defaults to <code>true</code>. It's interpreted as a JavaScript
      * instruction whether to open or close the websocket push connection. Note that this attribute is re-evaluated on every
      * ajax request. You can also explicitly set it to <code>false</code> and then manually control in JavaScript by
-     * <code>OmniFaces.Push.open("channelName")</code> and <code>OmniFaces.Push.close("channelName")</code>.
+     * <span class="changed_modified_4_0">
+     * <code>faces.push.open("channelName")</code> and <code>faces.push.close("channelName")</code></span>.
      *
      * @param connected Whether to (auto)connect the websocket or not.
      */

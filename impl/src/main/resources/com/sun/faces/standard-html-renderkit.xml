@@ -5599,9 +5599,26 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
     </property>
     <property>
       <description><![CDATA[
-            The JavaScript event handler function that is invoked when the websocket is closed.
+            <span class="changed_added_4_0">
+            The JavaScript event handler function that is invoked when a connection error has occurred and the websocket will attempt to reconnect.
+            The function will be invoked with three arguments: the error reason code, the channel name and the raw <code>CloseEvent</code> itself.
+            Note that this will not be invoked on final close of the websocket, even when the final close is caused by an error.
+            See also 
+            <a href="http://tools.ietf.org/html/rfc6455#section-7.4.1">RFC 6455 section 7.4.1</a> 
+            and
+            <a href="https://jakarta.ee/specifications/websocket/2.0/apidocs/jakarta/websocket/CloseReason.CloseCodes.html">CloseCodes</a>
+            API for an elaborate list of all close codes.
+            </span>
+        ]]></description>
+      <icon/>
+      <property-name>onerror</property-name>
+      <property-class>java.lang.String</property-class>
+    </property>
+    <property>
+      <description><![CDATA[
+            The JavaScript event handler function that is invoked when the websocket is closed <span class="changed_modified_4_0">and will not anymore attempt to reconnect</span>.
             The function will be invoked with three arguments: the close reason code, the channel name and the raw <code>CloseEvent</code> itself.
-            Note that this will also be invoked on errors and that you can inspect the close reason code if an error occurred and which one (i.e. when the code is not 1000).
+            <span class="changed_modified_4_0">Note that this will also be invoked when the close is caused by an error and that you can inspect the close reason code if an actual connection error occurred and which one (i.e. when the code is not 1000 or 1008)</span>.
             See also 
             <a href="http://tools.ietf.org/html/rfc6455#section-7.4.1">RFC 6455 section 7.4.1</a> 
             and
@@ -36317,7 +36334,7 @@ unmodified to the rendered output.</p>
     <p>
         Render an HTML <code>script</code> element with an "id" attribute.
         Render JavaScript function which invokes <code>faces.push.init()</code> function with data provided by
-        <code>onopen</code>, <code>onmessage</code>, <code>onclose</code> and <code>connected</code>
+        <code>onopen</code>, <code>onmessage</code>, <code class="changed_added_4_0">onerror</code>, <code>onclose</code> and <code>connected</code>
         arguments, if any. 
     </p>
 </div>                    
