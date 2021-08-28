@@ -32,6 +32,7 @@
     xmlns:h_jcp="http://xmlns.jcp.org/jsf/html"
     xmlns:p_jcp="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:cc_jcp="http://xmlns.jcp.org/jsf/composite/components"
+    xmlns:comp_jcp="http://xmlns.jcp.org/jsf/component"
     xmlns:c_jcp="http://xmlns.jcp.org/jsp/jstl/core"
     xmlns:fn_jcp="http://xmlns.jcp.org/jsp/jstl/functions"
 
@@ -63,6 +64,7 @@
         <div id="h_jcp"><h_jcp:outputText value="value" /></div>
         <div id="p_jcp"><h_jcp:inputText p_jcp:type="email" /></div>
         <div id="cc_jcp"><cc_jcp:component value="value" /></div>   
+        <div id="comp_jcp"><comp_jcp:customComponent value="value" /></div>
         <div id="c_jcp"><c_jcp:if test="#{true}">value</c_jcp:if></div>
         <div id="fn_jcp">#{fn_jcp:substring('_value_', 1, 6)}</div>
 
