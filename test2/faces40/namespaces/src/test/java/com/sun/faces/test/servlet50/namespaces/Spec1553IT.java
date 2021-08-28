@@ -80,6 +80,7 @@ public class Spec1553IT {
         assertEquals("http://xmlns.jcp.org/jsf/html works", "value", getValue(page.getElementById("h_jcp")));
         assertEquals("http://xmlns.jcp.org/jsf/passthrough works", "email", page.getElementById("p_jcp").getChildElements().iterator().next().getAttribute("type"));
         assertEquals("http://xmlns.jcp.org/jsf/composite works", "value", getValue(page.getElementById("cc_jcp")));
+        assertEquals("http://xmlns.jcp.org/jsf/component works", "value", getValue(page.getElementById("comp_jcp")));
         assertEquals("http://xmlns.jcp.org/jsp/jstl/core works", "value", getValue(page.getElementById("c_jcp")));
         assertEquals("http://xmlns.jcp.org/jsp/jstl/functions works", "value", getValue(page.getElementById("fn_jcp")));
 
