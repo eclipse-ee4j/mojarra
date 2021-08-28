@@ -89,7 +89,7 @@ public class WebsocketRenderer extends HtmlBasicRenderer implements ComponentSys
             String clientId = websocket.getClientId(context);
             String channel = websocket.getChannel();
             String url = websocketChannelManager.register(context, channel, websocket.getScope(), websocket.getUser());
-            String functions = websocket.getOnopen() + "," + websocket.getOnmessage() + "," + websocket.getOnclose();
+            String functions = websocket.getOnopen() + "," + websocket.getOnmessage() + "," + websocket.getOnerror() + "," + websocket.getOnclose();
             String behaviors = getBehaviorScripts(context, websocket);
             boolean connected = websocket.isConnected();
 

@@ -3000,10 +3000,28 @@ public class BackingBean implements PasswordHolder, Cloneable {
 
         <attribute>
             <description><![CDATA[
+                <p class="changed_added_4_0">
+                    The JavaScript event handler function that is invoked when a connection error has occurred and the websocket will attempt to reconnect.
+                    The function will be invoked with three arguments: the error reason code, the channel name and the raw <code>CloseEvent</code> itself.
+                    Note that this will not be invoked on final close of the websocket, even when the final close is caused by an error.
+                    See also 
+                    <a href="http://tools.ietf.org/html/rfc6455#section-7.4.1">RFC 6455 section 7.4.1</a> 
+                    and
+                    <a href="https://jakarta.ee/specifications/websocket/2.0/apidocs/jakarta/websocket/CloseReason.CloseCodes.html">CloseCodes</a>
+                    API for an elaborate list of all close codes.
+                </p>
+            ]]></description>
+            <name>onerror</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+
+        <attribute>
+            <description><![CDATA[
                 <p class="changed_added_2_3">
-                    The JavaScript event handler function that is invoked when the websocket is closed.
+                    The JavaScript event handler function that is invoked when the websocket is closed <span class="changed_modified_4_0">and will not anymore attempt to reconnect</span>.
                     The function will be invoked with three arguments: the close reason code, the channel name and the raw <code>CloseEvent</code> itself.
-                    Note that this will also be invoked on errors and that you can inspect the close reason code if an error occurred and which one (i.e. when the code is not 1000).
+                    <span class="changed_modified_4_0">Note that this will also be invoked when the close is caused by an error and that you can inspect the close reason code if an actual connection error occurred and which one (i.e. when the code is not 1000 or 1008)</span>.
                     See also 
                     <a href="http://tools.ietf.org/html/rfc6455#section-7.4.1">RFC 6455 section 7.4.1</a> 
                     and
