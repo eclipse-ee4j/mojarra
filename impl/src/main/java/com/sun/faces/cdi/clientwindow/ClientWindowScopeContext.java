@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021 Contributors to Eclipse Foundation.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -13,44 +13,45 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
-
-package com.sun.faces.application.view;
-
-import static java.util.logging.Level.FINEST;
-import static java.util.logging.Level.SEVERE;
-
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.util.logging.Logger;
+package com.sun.faces.cdi.clientwindow;
 
 import jakarta.enterprise.context.ContextNotActiveException;
 import jakarta.enterprise.context.spi.Context;
 import jakarta.enterprise.context.spi.Contextual;
 import jakarta.enterprise.context.spi.CreationalContext;
-import jakarta.faces.component.UIViewRoot;
+import jakarta.enterprise.inject.Typed;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.view.ViewScoped;
+import jakarta.faces.lifecycle.ClientWindowScoped;
+
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.util.logging.Logger;
+
+import static java.util.logging.Level.FINEST;
+import static java.util.logging.Level.SEVERE;
 
 /**
- * The CDI context for CDI ViewScoped beans.
+ * The CDI context for CDI ClientWindowScoped beans.
  */
-public class ViewScopeContext implements Context, Serializable {
+@Typed()
+public class ClientWindowScopeContext implements Context, Serializable
+{
 
     /**
      * Stores the logger.
      */
-    private static final Logger LOGGER = Logger.getLogger(ViewScopeContext.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ClientWindowScopeContext.class.getName());
 
     /**
      * Stores the serial version UID.
      */
-    private static final long serialVersionUID = -6245899073989073951L;
+    private static final long serialVersionUID = -6559364724281899428L;
 
     /**
      * Constructor.
      */
-    public ViewScopeContext() {
-        LOGGER.log(FINEST, "Creating ViewScope CDI context");
+    public ClientWindowScopeContext() {
+        LOGGER.log(FINEST, "Creating ClientWindowScope CDI context");
     }
 
     /**
@@ -58,17 +59,17 @@ public class ViewScopeContext implements Context, Serializable {
      */
     private void assertNotReleased() {
         if (!isActive()) {
-            LOGGER.log(SEVERE, "Trying to access ViewScope CDI context while it is not active");
+            LOGGER.log(SEVERE, "Trying to access ClientWindowScope CDI context while it is not active");
             throw new ContextNotActiveException();
         }
     }
 
     /**
-     * Get the ViewScoped bean for the given contextual.
+     * Get the ClientWindowScoped bean for the given contextual.
      *
      * @param <T> the type.
      * @param contextual the contextual.
-     * @return the view scoped bean, or null if not found.
+     * @return the client window scoped bean, or null if not found.
      */
     @Override
     public <T> T get(Contextual<T> contextual) {
@@ -78,7 +79,7 @@ public class ViewScopeContext implements Context, Serializable {
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (facesContext != null) {
-            ViewScopeManager manager = ViewScopeManager.getInstance(facesContext);
+            ClientWindowScopeManager manager = ClientWindowScopeManager.getInstance(facesContext);
             if (manager != null) {
                 result = manager.getContextManager().getBean(facesContext, contextual);
             }
@@ -88,7 +89,7 @@ public class ViewScopeContext implements Context, Serializable {
     }
 
     /**
-     * Get the existing instance of the ViewScoped bean for the given contextual or create a new one.
+     * Get the existing instance of the ClientWindowScoped bean for the given contextual or create a new one.
      *
      * @param <T> the type.
      * @param contextual the contextual.
@@ -105,7 +106,7 @@ public class ViewScopeContext implements Context, Serializable {
         if (result == null) {
             FacesContext facesContext = FacesContext.getCurrentInstance();
             if (facesContext != null) {
-                ViewScopeManager manager = ViewScopeManager.getInstance(facesContext);
+                ClientWindowScopeManager manager = ClientWindowScopeManager.getInstance(facesContext);
                 result = manager.getContextManager().getBean(facesContext, contextual);
                 if (result == null) {
                     result = manager.getContextManager().createBean(facesContext, contextual, creational);
@@ -123,26 +124,19 @@ public class ViewScopeContext implements Context, Serializable {
      */
     @Override
     public Class<? extends Annotation> getScope() {
-        return ViewScoped.class;
+        return ClientWindowScoped.class;
     }
 
-    /**
-     * Determine if the context is active.
-     *
-     * @return true if there is a view root, false otherwise.
-     */
     @Override
     public boolean isActive() {
         boolean result = false;
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (facesContext != null) {
-            UIViewRoot viewRoot = facesContext.getViewRoot();
-            if (viewRoot != null) {
-                result = true;
-            }
+            result = (facesContext.getExternalContext().getClientWindow() != null);
         }
 
         return result;
     }
+
 }

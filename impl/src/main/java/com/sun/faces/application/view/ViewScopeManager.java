@@ -86,12 +86,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
      */
     public ViewScopeManager() {
         FacesContext context = FacesContext.getCurrentInstance();
-        try {
-            contextManager = new ViewScopeContextManager();
-        } catch (Throwable throwable) {
-            LOGGER.log(INFO, "CDI @ViewScoped bean functionality unavailable");
-            LOGGER.log(FINE, "CDI @ViewScoped manager unavailable", throwable);
-        }
+        contextManager = new ViewScopeContextManager();
         WebConfiguration config = WebConfiguration.getInstance(context.getExternalContext());
         distributable = config.isOptionEnabled(EnableDistributable);
     }
