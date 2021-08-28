@@ -1,0 +1,18 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>JAVASERVERFACES-4551 - Integration Test</title>
+    </h:head>
+
+    <h:body>
+        <h:form id="form">
+            <h:inputText id="inputText" value="#{customBean.value}">
+                <f:validator validatorId="validator.CustomValidator1" />
+				<f:validator validatorId="validator.CustomValidator2" />
+            </h:inputText>
+            <h:commandButton id="submit" action="#{customBean.submit}" value="Submit"/>
+            <h:messages/>
+        </h:form>
+    </h:body>
+</html>

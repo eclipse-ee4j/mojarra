@@ -35,6 +35,7 @@
 
     <modules>
         <module>ajax</module>
+        <module>cdi</module>
         <module>commandScript</module>
         <module>el</module>
         <module>exactMapping</module>
