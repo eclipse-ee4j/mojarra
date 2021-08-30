@@ -16,6 +16,9 @@
 
 package jakarta.faces.convert;
 
+import static jakarta.faces.convert.MessageFactory.getLabel;
+import static jakarta.faces.convert.MessageFactory.getMessage;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -49,57 +52,55 @@ import jakarta.faces.context.FacesContext;
  * algorithm:
  * </p>
  * <ul>
- * <li>If the specified String is null, return a <code>null</code>. Otherwise, trim leading and trailing whitespace
- * before proceeding.</li>
+ * <li>If the specified String is null, return a <code>null</code>. Otherwise, trim leading and trailing whitespace before
+ * proceeding.</li>
  * <li>If the specified String - after trimming - has a zero length, return <code>null</code>.</li>
- * <li>If the <code>locale</code> property is not null, use that <code>Locale</code> for managing parsing. Otherwise,
- * use the <code>Locale</code> from the <code>UIViewRoot</code>.</li>
+ * <li>If the <code>locale</code> property is not null, use that <code>Locale</code> for managing parsing. Otherwise, use the
+ * <code>Locale</code> from the <code>UIViewRoot</code>.</li>
  *
  * <li>If a <code>pattern</code> has been specified, its syntax must conform the rules specified by
  * <code>java.text.SimpleDateFormat</code> <span class="changed_added_2_3">or {@code
- * java.time.format.DateTimeFormatter}. Which of these two formatters is used depends on the value of
- * {@code type}.</span> Such a pattern will be used to parse, and the <code>type</code>, <code>dateStyle</code>, and
- * <code>timeStyle</code> properties will be ignored, <span class="changed_added_2_3">unless the value of {@code
+ * java.time.format.DateTimeFormatter}. Which of these two formatters is used depends on the value of {@code type}.</span> Such a
+ * pattern will be used to parse, and the <code>type</code>, <code>dateStyle</code>, and <code>timeStyle</code> properties will
+ * be ignored, <span class="changed_added_2_3">unless the value of {@code
  * type} is one of the {@code java.time} specific values listed in {@link #setType}. In this case,
- * {@code DateTimeFormatter.ofPattern(String, Locale)} must be called, passing the value of {@code pattern} as the first
- * argument and the current {@code Locale} as the second argument, and this formatter must be used to parse the incoming
+ * {@code DateTimeFormatter.ofPattern(String, Locale)} must be called, passing the value of {@code pattern} as the first argument
+ * and the current {@code Locale} as the second argument, and this formatter must be used to parse the incoming
  * value.</span></li>
  *
- * <li>If a <code>pattern</code> has not been specified, parsing will be based on the <code>type</code> property, which
- * expects a date value, a time value, both, <span class="changed_added_2_3">or one of several values specific to
- * classes in {@code java.time} as listed in {@link #setType}.</span> Any date and time values included will be parsed
- * in accordance to the styles specified by <code>dateStyle</code> and <code>timeStyle</code>, respectively.</li>
- * <li>If a <code>timezone</code> has been specified, it must be passed to the underlying <code>DateFormat</code>
- * instance. Otherwise the "GMT" timezone is used.</li>
+ * <li>If a <code>pattern</code> has not been specified, parsing will be based on the <code>type</code> property, which expects a
+ * date value, a time value, both, <span class="changed_added_2_3">or one of several values specific to classes in
+ * {@code java.time} as listed in {@link #setType}.</span> Any date and time values included will be parsed in accordance to the
+ * styles specified by <code>dateStyle</code> and <code>timeStyle</code>, respectively.</li>
+ * <li>If a <code>timezone</code> has been specified, it must be passed to the underlying <code>DateFormat</code> instance.
+ * Otherwise the "GMT" timezone is used.</li>
  * <li>In all cases, parsing must be non-lenient; the given string must strictly adhere to the parsing format.</li>
  * </ul>
  *
  * <p>
- * The <code>getAsString()</code> method expects a value of type <code>java.util.Date</code> (or a subclass), and
- * creates a formatted String according to the following algorithm:
+ * The <code>getAsString()</code> method expects a value of type <code>java.util.Date</code> (or a subclass), and creates a
+ * formatted String according to the following algorithm:
  * </p>
  * <ul>
  * <li>If the specified value is null, return a zero-length String.</li>
  * <li>If the specified value is a String, return it unmodified.</li>
- * <li>If the <code>locale</code> property is not null, use that <code>Locale</code> for managing formatting. Otherwise,
- * use the <code>Locale</code> from the <code>UIViewRoot</code>.</li>
- * <li>If a <code>timezone</code> has been specified, it must be passed to the underlying <code>DateFormat</code>
- * instance. Otherwise the "GMT" timezone is used.</li>
+ * <li>If the <code>locale</code> property is not null, use that <code>Locale</code> for managing formatting. Otherwise, use the
+ * <code>Locale</code> from the <code>UIViewRoot</code>.</li>
+ * <li>If a <code>timezone</code> has been specified, it must be passed to the underlying <code>DateFormat</code> instance.
+ * Otherwise the "GMT" timezone is used.</li>
  *
  * <li>If a <code>pattern</code> has been specified, its syntax must conform the rules specified by
  * <code>java.text.SimpleDateFormat</code> <span class="changed_added_2_3">or {@code
- * java.time.format.DateTimeFormatter}. Which of these two formatters is used depends on the value of
- * {@code type}.</span> Such a pattern will be used to format, and the <code>type</code>, <code>dateStyle</code>, and
- * <code>timeStyle</code> properties will be ignored, <span class="changed_added_2_3">unless the value of {@code
+ * java.time.format.DateTimeFormatter}. Which of these two formatters is used depends on the value of {@code type}.</span> Such a
+ * pattern will be used to format, and the <code>type</code>, <code>dateStyle</code>, and <code>timeStyle</code> properties will
+ * be ignored, <span class="changed_added_2_3">unless the value of {@code
  * type} is one of the {@code java.time} specific values listed in {@link #setType}. In this case, {@code
- * DateTimeFormatter.ofPattern(String, Locale)} must be called, passing the value of {@code pattern} as the first
- * argument and the current {@code Locale} as the second argument, and this formatter must be used to format the
- * outgoing value.</span></li>
+ * DateTimeFormatter.ofPattern(String, Locale)} must be called, passing the value of {@code pattern} as the first argument and
+ * the current {@code Locale} as the second argument, and this formatter must be used to format the outgoing value.</span></li>
  *
- * <li>If a <code>pattern</code> has not been specified, formatting will be based on the <code>type</code> property,
- * which includes a date value, a time value, both or into the formatted String. Any date and time values included will
- * be formatted in accordance to the styles specified by <code>dateStyle</code> and <code>timeStyle</code>,
- * respectively.</li>
+ * <li>If a <code>pattern</code> has not been specified, formatting will be based on the <code>type</code> property, which
+ * includes a date value, a time value, both or into the formatted String. Any date and time values included will be formatted in
+ * accordance to the styles specified by <code>dateStyle</code> and <code>timeStyle</code>, respectively.</li>
  * </ul>
  */
 
@@ -117,13 +118,12 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
     /**
      * <p>
      * The message identifier of the {@link jakarta.faces.application.FacesMessage} to be created if the conversion to
-     * <code>Date</code> fails. The message format string for this message may optionally include the following
-     * placeholders:
+     * <code>Date</code> fails. The message format string for this message may optionally include the following placeholders:
      * <ul>
      * <li><code>{0}</code> replaced by the unconverted value.</li>
      * <li><code>{1}</code> replaced by an example value.</li>
-     * <li><code>{2}</code> replaced by a <code>String</code> whose value is the label of the input component that produced
-     * this message.</li>
+     * <li><code>{2}</code> replaced by a <code>String</code> whose value is the label of the input component that produced this
+     * message.</li>
      * </ul>
      */
     public static final String DATE_ID = "jakarta.faces.converter.DateTimeConverter.DATE";
@@ -131,13 +131,12 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
     /**
      * <p>
      * The message identifier of the {@link jakarta.faces.application.FacesMessage} to be created if the conversion to
-     * <code>Time</code> fails. The message format string for this message may optionally include the following
-     * placeholders:
+     * <code>Time</code> fails. The message format string for this message may optionally include the following placeholders:
      * <ul>
      * <li><code>{0}</code> replaced by the unconverted value.</li>
      * <li><code>{1}</code> replaced by an example value.</li>
-     * <li><code>{2}</code> replaced by a <code>String</code> whose value is the label of the input component that produced
-     * this message.</li>
+     * <li><code>{2}</code> replaced by a <code>String</code> whose value is the label of the input component that produced this
+     * message.</li>
      * </ul>
      */
     public static final String TIME_ID = "jakarta.faces.converter.DateTimeConverter.TIME";
@@ -145,13 +144,12 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
     /**
      * <p>
      * The message identifier of the {@link jakarta.faces.application.FacesMessage} to be created if the conversion to
-     * <code>DateTime</code> fails. The message format string for this message may optionally include the following
-     * placeholders:
+     * <code>DateTime</code> fails. The message format string for this message may optionally include the following placeholders:
      * <ul>
      * <li><code>{0}</code> replaced by the unconverted value.</li>
      * <li><code>{1}</code> replaced by an example value.</li>
-     * <li><code>{2}</code> replaced by a <code>String</code> whose value is the label of the input component that produced
-     * this message.</li>
+     * <li><code>{2}</code> replaced by a <code>String</code> whose value is the label of the input component that produced this
+     * message.</li>
      * </ul>
      */
     public static final String DATETIME_ID = "jakarta.faces.converter.DateTimeConverter.DATETIME";
@@ -159,12 +157,12 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
     /**
      * <p>
      * The message identifier of the {@link jakarta.faces.application.FacesMessage} to be created if the conversion of the
-     * <code>DateTime</code> value to <code>String</code> fails. The message format string for this message may optionally
-     * include the following placeholders:
+     * <code>DateTime</code> value to <code>String</code> fails. The message format string for this message may optionally include
+     * the following placeholders:
      * <ul>
      * <li><code>{0}</code> relaced by the unconverted value.</li>
-     * <li><code>{1}</code> replaced by a <code>String</code> whose value is the label of the input component that produced
-     * this message.</li>
+     * <li><code>{1}</code> replaced by a <code>String</code> whose value is the label of the input component that produced this
+     * message.</li>
      * </ul>
      */
     public static final String STRING_ID = "jakarta.faces.converter.STRING";
@@ -174,8 +172,8 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
     // ------------------------------------------------------ Instance Variables
 
     private String dateStyle = "default";
-    private Locale locale = null;
-    private String pattern = null;
+    private Locale locale;
+    private String pattern;
     private String timeStyle = "default";
     private TimeZone timeZone = DEFAULT_TIME_ZONE;
     private String type = "date";
@@ -184,32 +182,27 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
 
     /**
      * <p>
-     * Return the style to be used to format or parse dates. If not set, the default value, <code>default</code>, is
-     * returned.
+     * Return the style to be used to format or parse dates. If not set, the default value, <code>default</code>, is returned.
      * </p>
      *
      * @return the style
      */
     public String getDateStyle() {
-
         return dateStyle;
-
     }
 
     /**
      * <p>
      * Set the style to be used to format or parse dates. Valid values are <code>default</code>, <code>short</code>,
-     * <code>medium</code>, <code>long</code>, and <code>full</code>. An invalid value will cause a
-     * {@link ConverterException} when <code>getAsObject()</code> or <code>getAsString()</code> is called.
+     * <code>medium</code>, <code>long</code>, and <code>full</code>. An invalid value will cause a {@link ConverterException} when
+     * <code>getAsObject()</code> or <code>getAsString()</code> is called.
      * </p>
      *
      * @param dateStyle The new style code
      */
     public void setDateStyle(String dateStyle) {
-
         clearInitialState();
         this.dateStyle = dateStyle;
-
     }
 
     /**
@@ -221,25 +214,22 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
      * @return the {@code Locale}
      */
     public Locale getLocale() {
-
         if (locale == null) {
             locale = getLocale(FacesContext.getCurrentInstance());
         }
-        return locale;
 
+        return locale;
     }
 
     /**
      * <p>
      * Set the <code>Locale</code> to be used when parsing or formatting dates and times. If set to <code>null</code>, the
-     * <code>Locale</code> stored in the {@link jakarta.faces.component.UIViewRoot} for the current request will be
-     * utilized.
+     * <code>Locale</code> stored in the {@link jakarta.faces.component.UIViewRoot} for the current request will be utilized.
      * </p>
      *
      * @param locale The new <code>Locale</code> (or <code>null</code>)
      */
     public void setLocale(Locale locale) {
-
         clearInitialState();
         this.locale = locale;
 
@@ -253,9 +243,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
      * @return the pattern
      */
     public String getPattern() {
-
         return pattern;
-
     }
 
     /**
@@ -268,7 +256,6 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
      * @param pattern The new format pattern
      */
     public void setPattern(String pattern) {
-
         clearInitialState();
         this.pattern = pattern;
 
@@ -276,32 +263,27 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
 
     /**
      * <p>
-     * Return the style to be used to format or parse times. If not set, the default value, <code>default</code>, is
-     * returned.
+     * Return the style to be used to format or parse times. If not set, the default value, <code>default</code>, is returned.
      * </p>
      *
      * @return the time style
      */
     public String getTimeStyle() {
-
         return timeStyle;
-
     }
 
     /**
      * <p>
      * Set the style to be used to format or parse times. Valid values are <code>default</code>, <code>short</code>,
-     * <code>medium</code>, <code>long</code>, and <code>full</code>. An invalid value will cause a
-     * {@link ConverterException} when <code>getAsObject()</code> or <code>getAsString()</code> is called.
+     * <code>medium</code>, <code>long</code>, and <code>full</code>. An invalid value will cause a {@link ConverterException} when
+     * <code>getAsObject()</code> or <code>getAsString()</code> is called.
      * </p>
      *
      * @param timeStyle The new style code
      */
     public void setTimeStyle(String timeStyle) {
-
         clearInitialState();
         this.timeStyle = timeStyle;
-
     }
 
     /**
@@ -313,9 +295,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
      * @return the {@code TimeZone}
      */
     public TimeZone getTimeZone() {
-
         return timeZone;
-
     }
 
     /**
@@ -326,44 +306,37 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
      * @param timeZone The new time zone
      */
     public void setTimeZone(TimeZone timeZone) {
-
         clearInitialState();
         this.timeZone = timeZone;
-
     }
 
     /**
      * <p>
-     * Return the type of value to be formatted or parsed. If not explicitly set, the default type, <code>date</code> is
-     * returned.
+     * Return the type of value to be formatted or parsed. If not explicitly set, the default type, <code>date</code> is returned.
      * </p>
      *
      * @return the type
      */
     public String getType() {
-
         return type;
-
     }
 
     /**
      * <p>
-     * <span class="changed_modified_2_3">Set</span> the type of value to be formatted or parsed. Valid values are
-     * <code>both</code>, <code>date</code>, <code>time</code> <span class="changed_added_2_3">{@code localDate}, {@code
+     * <span class="changed_modified_2_3">Set</span> the type of value to be formatted or parsed. Valid values are <code>both</code>,
+     * <code>date</code>, <code>time</code> <span class="changed_added_2_3">{@code localDate}, {@code
      * localDateTime}, {@code localTime}, {@code offsetTime}, {@code
-     * offsetDateTime}, or {@code zonedDateTime}. The values starting with "local", "offset" and "zoned" correspond to Java
-     * SE 8 Date Time API classes in package <code>java.time</code> with the name derived by upper casing the first letter.
-     * For example, <code>java.time.LocalDate</code> for the value <code>"localDate"</code>.</span> An invalid value will
-     * cause a {@link ConverterException} when <code>getAsObject()</code> or <code>getAsString()</code> is called.
+     * offsetDateTime}, or {@code zonedDateTime}. The values starting with "local", "offset" and "zoned" correspond to Java SE 8 Date
+     * Time API classes in package <code>java.time</code> with the name derived by upper casing the first letter. For example,
+     * <code>java.time.LocalDate</code> for the value <code>"localDate"</code>.</span> An invalid value will cause a
+     * {@link ConverterException} when <code>getAsObject()</code> or <code>getAsString()</code> is called.
      * </p>
      *
      * @param type The new date style
      */
     public void setType(String type) {
-
         clearInitialState();
         this.type = type;
-
     }
 
     // ------------------------------------------------------- Converter Methods
@@ -374,7 +347,6 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
      */
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
-
         if (context == null || component == null) {
             throw new NullPointerException();
         }
@@ -388,6 +360,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
             if (value == null) {
                 return null;
             }
+
             value = value.trim();
             if (value.length() < 1) {
                 return null;
@@ -398,73 +371,74 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
 
             // Create and configure the parser to be used
             parser = getDateFormat(locale);
-            if (null != timeZone) {
+            if (timeZone != null) {
                 parser.setTimeZone(timeZone);
             }
 
             // Perform the requested parsing
             returnValue = parser.parse(value);
         } catch (ParseException | DateTimeParseException e) {
-            if (null != type) {
+            if (type != null) {
                 switch (type) {
                 case "date":
                 case "localDate":
                     throw new ConverterException(
-                            MessageFactory.getMessage(context, DATE_ID, value, parser.formatNow(), MessageFactory.getLabel(context, component)), e);
+                        getMessage(context, DATE_ID, value, parser.formatNow(), getLabel(context, component)),
+                        e);
                 case "time":
                 case "localTime":
                 case "offsetTime":
                     throw new ConverterException(
-                            MessageFactory.getMessage(context, TIME_ID, value, parser.formatNow(), MessageFactory.getLabel(context, component)), e);
+                        getMessage(context, TIME_ID, value, parser.formatNow(), getLabel(context, component)),
+                        e);
                 case "both":
                 case "localDateTime":
                 case "offsetDateTime":
                 case "zonedDateTime":
-                    throw new ConverterException(
-                            MessageFactory.getMessage(context, DATETIME_ID, value, parser.formatNow(), MessageFactory.getLabel(context, component)), e);
+                    throw new ConverterException(getMessage(context, DATETIME_ID, value, parser.formatNow(),
+                        getLabel(context, component)), e);
                 }
             }
         } catch (Exception e) {
             throw new ConverterException(e);
         }
+
         return returnValue;
     }
 
     private static class FormatWrapper {
 
-        private final DateFormat df;
-        private final DateTimeFormatter dtf;
-        private final TemporalQuery from;
+        private final DateFormat dateFormat;
+        private final DateTimeFormatter dateTimeFormatter;
+        private final TemporalQuery<Object> from;
 
-        private FormatWrapper(DateFormat wrapped) {
-            df = wrapped;
-            dtf = null;
+        private FormatWrapper(DateFormat dataFormat) {
+            this.dateFormat = dataFormat;
+            dateTimeFormatter = null;
             from = null;
         }
 
-        private FormatWrapper(DateTimeFormatter dtf, TemporalQuery from) {
-            df = null;
-            this.dtf = dtf;
+        private FormatWrapper(DateTimeFormatter dateTimeFormatter, TemporalQuery<Object> from) {
+            dateFormat = null;
+            this.dateTimeFormatter = dateTimeFormatter;
             this.from = from;
         }
 
         private Object parse(CharSequence text) throws ParseException {
-            Object result = null != df ? df.parse((String) text) : dtf.parse(text, from);
-
-            return result;
+            return dateFormat != null ? dateFormat.parse((String) text) : dateTimeFormatter.parse(text, from);
         }
 
         private String format(Object obj) {
-            return null != df ? df.format(obj) : dtf.format((TemporalAccessor) obj);
+            return dateFormat != null ? dateFormat.format(obj) : dateTimeFormatter.format((TemporalAccessor) obj);
         }
 
         private String formatNow() {
-            return null != df ? df.format(new Date()) : dtf.format(ZonedDateTime.now());
+            return dateFormat != null ? dateFormat.format(new Date()) : dateTimeFormatter.format(ZonedDateTime.now());
         }
 
         private void setTimeZone(TimeZone zone) {
-            if (null != df) {
-                df.setTimeZone(zone);
+            if (dateFormat != null) {
+                dateFormat.setTimeZone(zone);
             }
         }
     }
@@ -506,9 +480,11 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
             return formatter.format(value);
 
         } catch (ConverterException e) {
-            throw new ConverterException(MessageFactory.getMessage(context, STRING_ID, value, MessageFactory.getLabel(context, component)), e);
+            throw new ConverterException(getMessage(context, STRING_ID, value, getLabel(context, component)),
+                e);
         } catch (Exception e) {
-            throw new ConverterException(MessageFactory.getMessage(context, STRING_ID, value, MessageFactory.getLabel(context, component)), e);
+            throw new ConverterException(getMessage(context, STRING_ID, value, getLabel(context, component)),
+                e);
         }
     }
 

@@ -37,6 +37,7 @@
         <module>ajax</module>
         <module>cdi</module>
         <module>commandScript</module>
+        <module>converter</module>
         <module>el</module>
         <module>exactMapping</module>
         <module>faceletCacheFactory</module>
