@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    
+    <h:body>
+        <h:form prependId="false" id="form">
+            <h:panelGrid border="1" columns="3">
+    
+                <h:outputText value="localDateTime1" />
+    
+                <h:inputText id="localDateTime1" value="#{backingBean.localDateTime1}">
+                    <f:convertDateTime type="localDateTime" />
+                </h:inputText>
+    
+                <h:outputText id="localDateTimeValue1" value="#{backingBean.localDateTime1}">
+                    <f:convertDateTime type="localDateTime" dateStyle="medium"
+                        timeStyle="short" />
+                </h:outputText>
+    
+    
+                <h:outputText value="localDateTime2" />
+    
+                <h:inputText id="localDateTime2" value="#{backingBean.localDateTime2}">
+                    <f:convertDateTime type="localDateTime" />
+                </h:inputText>
+    
+                <h:outputText id="localDateTimeValue2" value="#{backingBean.localDateTime2}">
+                    <f:convertDateTime type="localDateTime" timeStyle="short" />
+                </h:outputText>
+    
+                <h:outputText value="localTime1" />
+    
+                <h:inputText id="localTime1" value="#{backingBean.localTime1}">
+                    <f:convertDateTime type="localTime" />
+                </h:inputText>
+    
+                <h:outputText id="localTimeValue1" value="#{backingBean.localTime1}">
+                    <f:convertDateTime type="localTime" />
+                </h:outputText>
+    
+                <h:outputText value="localTime2" />
+    
+                <h:inputText id="localTime2" value="#{backingBean.localTime2}">
+                    <f:convertDateTime type="localTime" />
+                </h:inputText>
+    
+                <h:outputText id="localTimeValue2" value="#{backingBean.localTime2}">
+                    <f:convertDateTime type="localTime" timeStyle="short" />
+                </h:outputText>
+    
+            </h:panelGrid>
+            
+            <p><h:messages id="messages" showDetail="true" showSummary="false"/></p>
+    
+            <h:commandButton id="submit" value="submit" />
+    
+        </h:form>
+    </h:body>
+</html>

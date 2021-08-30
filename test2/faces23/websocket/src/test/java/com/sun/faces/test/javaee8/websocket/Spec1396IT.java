@@ -122,10 +122,10 @@ public class Spec1396IT {
      */
     static void waitUntilWebsocketIsOpened(HtmlPage page) throws Exception {
         Predicate<HtmlPage> isWebsocketOpened = p -> "yes".equals(page.getElementById("opened").asText());
-        int retries = 10;
+        int retries = 20;
 
         while (!isWebsocketOpened.test(page) && retries --> 0) {
-            Thread.sleep(300);
+            Thread.sleep(3000);
         }
 
         if (!isWebsocketOpened.test(page)) {
