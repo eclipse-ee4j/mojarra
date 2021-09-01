@@ -39,11 +39,11 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 
 @RunWith(Arquillian.class)
 public class Bug22995287IT {
-    
+
     @ArquillianResource
     private URL webUrl;
     private WebClient webClient;
-    
+
     @Deployment(testable = false)
     public static WebArchive createDeployment() {
         return create(ZipImporter.class, getProperty("finalName") + ".war")
@@ -106,11 +106,17 @@ public class Bug22995287IT {
     @Test
     public void testPage3CanBeDisplayed1() throws Exception {
         HtmlPage page = webClient.getPage(webUrl);
-        HtmlAnchor link = page.getHtmlElementById("page3_get_parameter_fparam");
-        page = link.click();
+        try {
+            HtmlAnchor link = page.getHtmlElementById("page3_get_parameter_fparam");
+            page = link.click();
 
-        String pageXml = page.getBody().asXml();
-        assertTrue(pageXml.contains("foo bar"));
+            String pageXml = page.getBody().asXml();
+            assertTrue(pageXml.contains("foo bar"));
+        } catch (AssertionError e) {
+            System.out.println(page.asXml());
+
+            throw e;
+        }
     }
 
     @Test

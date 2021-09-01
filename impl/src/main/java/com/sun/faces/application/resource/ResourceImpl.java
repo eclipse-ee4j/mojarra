@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,14 +19,14 @@ package com.sun.faces.application.resource;
 import static com.sun.faces.util.Util.getFacesMapping;
 import static com.sun.faces.util.Util.getFirstWildCardMappingToFacesServlet;
 import static com.sun.faces.util.Util.getLastModified;
-import static com.sun.faces.util.Util.isExactMapped;
-import static com.sun.faces.util.Util.isPrefixMapped;
 import static com.sun.faces.util.Util.isResourceExactMappedToFacesServlet;
 import static jakarta.faces.application.ProjectStage.Development;
 import static jakarta.faces.application.ProjectStage.Production;
 import static jakarta.faces.application.ResourceHandler.FACES_SCRIPT_LIBRARY_NAME;
 import static jakarta.faces.application.ResourceHandler.FACES_SCRIPT_RESOURCE_NAME;
 import static jakarta.faces.application.ResourceHandler.RESOURCE_IDENTIFIER;
+import static jakarta.servlet.http.MappingMatch.EXACT;
+import static jakarta.servlet.http.MappingMatch.PATH;
 import static java.util.Collections.emptyMap;
 import static java.util.Locale.US;
 import static java.util.logging.Level.FINEST;
@@ -56,6 +56,7 @@ import jakarta.faces.application.Resource;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+import jakarta.servlet.http.HttpServletMapping;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
@@ -238,22 +239,21 @@ public class ResourceImpl extends Resource implements Externalizable {
      */
     @Override
     public String getRequestPath() {
-
         FacesContext context = FacesContext.getCurrentInstance();
-        String facesServletMapping = getFacesMapping(context);
+        HttpServletMapping mapping = getFacesMapping(context);
 
         String uri = null;
 
         // Check for exact mapping first
-        if (isExactMapped(facesServletMapping)) {
+        if (mapping.getMappingMatch() == EXACT) {
             String resource = RESOURCE_IDENTIFIER + '/' + getResourceName();
             // Check if the FacesServlet is exact mapped to the resource
             if (isResourceExactMappedToFacesServlet(context.getExternalContext(), resource)) {
-                uri = facesServletMapping + resource;
+                uri = resource;
             } else {
                 // No exact mapping for the requested resource, see if Facelets servlet is mapped to
                 // e.g. /faces/* or *.xhtml and take that mapping
-                String mapping = getFirstWildCardMappingToFacesServlet(context.getExternalContext());
+                mapping = getFirstWildCardMappingToFacesServlet(context.getExternalContext());
 
                 if (mapping == null) {
 
@@ -263,16 +263,16 @@ public class ResourceImpl extends Resource implements Externalizable {
                     throw new IllegalStateException("No suitable mapping for FacesServlet found. To serve resources "
                             + "FacesServlet should have at least one prefix or suffix mapping.");
                 }
-                facesServletMapping = mapping.replace("*", "");
             }
         }
 
         if (uri == null) {
-            // If it is extension mapped
-            if (isPrefixMapped(facesServletMapping)) {
-                uri = facesServletMapping + RESOURCE_IDENTIFIER + '/' + getResourceName();
+            if (mapping.getMappingMatch() == PATH) {
+                // If it is prefix/path mapped, e.g /faces/* -> /faces/jakarta.faces.resource/name
+                uri = mapping.getPattern().replace("/*", RESOURCE_IDENTIFIER) + '/' + getResourceName();
             } else {
-                uri = RESOURCE_IDENTIFIER + '/' + getResourceName() + facesServletMapping;
+                // If it is prefix/path mapped, e.g *.xhtml -> /jakarta.faces.resource/name.xhtml
+                uri = RESOURCE_IDENTIFIER + '/' + mapping.getPattern().replace("*", getResourceName());
             }
         }
 
@@ -325,9 +325,7 @@ public class ResourceImpl extends Resource implements Externalizable {
             }
         }
 
-        uri = context.getApplication().getViewHandler().getResourceURL(context, uri);
-
-        return uri;
+        return context.getApplication().getViewHandler().getResourceURL(context, uri);
     }
 
     /**
