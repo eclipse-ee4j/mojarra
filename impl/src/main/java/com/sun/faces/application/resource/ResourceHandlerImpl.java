@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -21,13 +21,13 @@ import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.Reso
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.ResourceExcludes;
 import static com.sun.faces.util.RequestStateManager.RESOURCE_REQUEST;
 import static com.sun.faces.util.Util.getFacesMapping;
-import static com.sun.faces.util.Util.isPrefixMapped;
 import static com.sun.faces.util.Util.notNegative;
 import static com.sun.faces.util.Util.notNull;
 import static jakarta.faces.application.ProjectStage.Development;
 import static jakarta.faces.application.ProjectStage.Production;
 import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static jakarta.servlet.http.HttpServletResponse.SC_NOT_MODIFIED;
+import static jakarta.servlet.http.MappingMatch.EXTENSION;
 import static java.lang.Boolean.FALSE;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.WARNING;
@@ -78,7 +78,6 @@ public class ResourceHandlerImpl extends ResourceHandler {
      * Creates a new instance of ResourceHandlerImpl
      */
     public ResourceHandlerImpl() {
-
         creationTime = System.currentTimeMillis();
         webconfig = WebConfiguration.getInstance();
         ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
@@ -110,7 +109,6 @@ public class ResourceHandlerImpl extends ResourceHandler {
      */
     @Override
     public Resource createResource(String resourceName, String libraryName, String contentType) {
-
         notNull("resourceName", resourceName);
 
         FacesContext ctx = FacesContext.getCurrentInstance();
@@ -127,7 +125,6 @@ public class ResourceHandlerImpl extends ResourceHandler {
 
     @Override
     public Resource createViewResource(FacesContext facesContext, String resourceName) {
-
         notNull("resourceName", resourceName);
 
         String contentType = getContentType(facesContext, resourceName);
@@ -145,7 +142,6 @@ public class ResourceHandlerImpl extends ResourceHandler {
      */
     @Override
     public Stream<String> getViewResources(FacesContext facesContext, String path, ResourceVisitOption... options) {
-
         notNull("path", path);
 
         return manager.getViewResources(facesContext, path, Integer.MAX_VALUE, options);
@@ -156,7 +152,6 @@ public class ResourceHandlerImpl extends ResourceHandler {
      */
     @Override
     public Stream<String> getViewResources(FacesContext facesContext, String path, int maxDepth, ResourceVisitOption... options) {
-
         notNull("path", path);
         notNegative("maxDepth", maxDepth);
 
@@ -240,10 +235,9 @@ public class ResourceHandlerImpl extends ResourceHandler {
      */
     @Override
     public void handleResourceRequest(FacesContext context) throws IOException {
-
         String resourceId = normalizeResourceRequest(context);
-        // handleResourceRequest called for a non-resource request, bail out.
         if (resourceId == null) {
+            // handleResourceRequest called for a non-resource request, bail out.
             return;
         }
 
@@ -463,7 +457,6 @@ public class ResourceHandlerImpl extends ResourceHandler {
      * @param t the exception caught when attempting to find the resource
      */
     private void logMissingResource(FacesContext ctx, String resourceId, Throwable t) {
-
         Level level;
         if (!ctx.isProjectStage(Production)) {
             level = WARNING;
@@ -490,31 +483,29 @@ public class ResourceHandlerImpl extends ResourceHandler {
     }
 
     /**
-     * Normalize the request path to exclude JSF invocation information. If the FacesServlet servicing this request was
-     * prefix mapped, then the path to the FacesServlet will be removed. If the FacesServlet servicing this request was
+     * Normalize the request path to exclude Faces invocation information.
+     *
+     * <P>
+     * If the FacesServlet servicing this request was
      * extension mapped, then the extension will be trimmed off.
      *
+     * <p>
+     * If the FacesServlet servicing this request was
+     * prefix mapped, then the path to the FacesServlet will be removed.
+     *
      * @param context the <code>FacesContext</code> for the current request
-     * @return the request path without JSF invocation information
+     * @return the request path without Faces invocation information
      */
     private String normalizeResourceRequest(FacesContext context) {
 
-        String path;
-        String facesServletMapping = getFacesMapping(context);
-
         // If it is extension mapped
-        if (!isPrefixMapped(facesServletMapping)) {
-            path = context.getExternalContext().getRequestServletPath();
+        if (getFacesMapping(context).getMappingMatch() == EXTENSION) {
+            String path = context.getExternalContext().getRequestServletPath();
             // strip off the extension
-            int i = path.lastIndexOf(".");
-            if (0 < i) {
-                path = path.substring(0, i);
-            }
-        } else {
-            path = context.getExternalContext().getRequestPathInfo();
+            return path.substring(0, path.lastIndexOf("."));
         }
 
-        return path;
+        return context.getExternalContext().getRequestPathInfo();
     }
 
     /**
@@ -528,6 +519,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -541,9 +533,9 @@ public class ResourceHandlerImpl extends ResourceHandler {
      * will be used.
      */
     private void initExclusions(Map<String, Object> appMap) {
-
         String excludesParam = webconfig.getOptionValue(ResourceExcludes);
         String[] patterns = Util.split(appMap, excludesParam, " ");
+
         excludePatterns = new ArrayList<>(patterns.length);
         for (String pattern : patterns) {
             excludePatterns.add(Pattern.compile(".*\\" + pattern));
@@ -555,7 +547,6 @@ public class ResourceHandlerImpl extends ResourceHandler {
     }
 
     private void handleHeaders(FacesContext ctx, Resource resource) {
-
         ExternalContext extContext = ctx.getExternalContext();
         for (Map.Entry<String, String> cur : resource.getResponseHeaders().entrySet()) {
             extContext.setResponseHeader(cur.getKey(), cur.getValue());
@@ -563,7 +554,6 @@ public class ResourceHandlerImpl extends ResourceHandler {
     }
 
     private ByteBuffer allocateByteBuffer() {
-
         int size;
         try {
             size = Integer.parseInt(webconfig.getOptionValue(ResourceBufferSize));

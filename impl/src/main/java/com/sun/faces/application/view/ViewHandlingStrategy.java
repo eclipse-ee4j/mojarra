@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,9 +18,9 @@ package com.sun.faces.application.view;
 
 import static com.sun.faces.util.Util.getFacesMapping;
 import static com.sun.faces.util.Util.getStateManager;
-import static com.sun.faces.util.Util.isPrefixMapped;
 import static com.sun.faces.util.Util.notNull;
 import static jakarta.faces.component.UIViewRoot.COMPONENT_TYPE;
+import static jakarta.servlet.http.MappingMatch.PATH;
 import static java.util.logging.Level.FINE;
 
 import java.io.IOException;
@@ -32,7 +32,6 @@ import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.util.FacesLogger;
 
 import jakarta.faces.FacesException;
-import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -65,36 +64,28 @@ public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
      */
     @Override
     public UIViewRoot restoreView(FacesContext ctx, String viewId) {
-
         ExternalContext extContext = ctx.getExternalContext();
 
-        String mapping = getFacesMapping(ctx);
-        UIViewRoot viewRoot = null;
-
-        // Mapping could be null if a non-faces request triggered this response.
-        if (extContext.getRequestPathInfo() == null && mapping != null && isPrefixMapped(mapping)) {
+        if (extContext.getRequestPathInfo() == null && getFacesMapping(ctx).getMappingMatch() == PATH) {
             // This was probably an initial request.
             // Send them off to the root of the web application.
             try {
                 ctx.responseComplete();
-                if (logger.isLoggable(FINE)) {
-                    logger.log(FINE, "Response Complete for" + viewId);
-                }
+                logger.log(FINE, () -> "Response Complete for" + viewId);
                 if (!extContext.isResponseCommitted()) {
                     extContext.redirect(extContext.getRequestContextPath());
                 }
             } catch (IOException ioe) {
                 throw new FacesException(ioe);
             }
-        } else {
-            // this is necessary to allow decorated impls.
-            ViewHandler outerViewHandler = ctx.getApplication().getViewHandler();
-            String renderKitId = outerViewHandler.calculateRenderKitId(ctx);
 
-            viewRoot = getStateManager(ctx).restoreView(ctx, viewId, renderKitId);
+            return null;
         }
 
-        return viewRoot;
+        // This is necessary to allow decorated implementations.
+        String renderKitId = ctx.getApplication().getViewHandler().calculateRenderKitId(ctx);
+
+        return getStateManager(ctx).restoreView(ctx, viewId, renderKitId);
     }
 
     /**
@@ -102,7 +93,6 @@ public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
      */
     @Override
     public UIViewRoot createView(FacesContext ctx, String viewId) {
-
         notNull("context", ctx);
 
         UIViewRoot result = (UIViewRoot) ctx.getApplication().createComponent(COMPONENT_TYPE);

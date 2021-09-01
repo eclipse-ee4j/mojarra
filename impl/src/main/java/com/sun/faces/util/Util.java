@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -24,9 +24,7 @@ import static com.sun.faces.util.MessageUtils.NAMED_OBJECT_NOT_FOUND_ERROR_MESSA
 import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.NULL_VIEW_ID_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
-import static com.sun.faces.util.RequestStateManager.INVOCATION_PATH;
 import static java.util.Collections.emptyList;
-import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
 
 import java.beans.FeatureDescriptor;
@@ -97,6 +95,9 @@ import jakarta.faces.render.ResponseStateManager;
 import jakarta.faces.webapp.FacesServlet;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletRegistration;
+import jakarta.servlet.http.HttpServletMapping;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.MappingMatch;
 
 /**
  * <B>Util</B> is a class ...
@@ -105,7 +106,6 @@ import jakarta.servlet.ServletRegistration;
  * <P>
  *
  */
-
 public class Util {
 
     // Log instance for this class
@@ -116,7 +116,7 @@ public class Util {
     // parameters to test/com/sun/faces/util/TestUtil_messages (see comment there).
 
     /**
-     * Flag that, when true, enables special behavior in the RI to enable unit testing.
+     * Flag that, when true, enables special behavior in Mojarra to enable unit testing.
      */
     private static boolean unitTestModeEnabled = false;
 
@@ -977,9 +977,6 @@ public class Util {
      * {@link jakarta.faces.webapp.FacesServlet}.
      * <p>
      *
-     * <b>NOTE:</b> This method was supposed to be replaced with the "mapping API" from Servlet 4, but this has not been
-     * implemented in time for JSF 2.3 to depend on.
-     *
      * @param context the {@link FacesContext} of the current request
      *
      * @return the URL pattern of the {@link jakarta.faces.webapp.FacesServlet} or <code>null</code> if no mapping can be
@@ -987,97 +984,10 @@ public class Util {
      *
      * @throws NullPointerException if <code>context</code> is null
      */
-    public static String getFacesMapping(FacesContext context) {
+    public static HttpServletMapping getFacesMapping(FacesContext context) {
+       notNull("context", context);
 
-        notNull("context", context);
-
-        // Check for a previously stored mapping
-        String mapping = (String) RequestStateManager.get(context, INVOCATION_PATH);
-
-        if (mapping == null) {
-
-            // First check for jakarta.servlet.forward.servlet_path
-            // and jakarta.servlet.forward.path_info for non-null
-            // values. If either is non-null, use this
-            // information to generate determine the mapping.
-            ExternalContext externalContext = context.getExternalContext();
-            String servletPath = externalContext.getRequestServletPath();
-            String pathInfo = externalContext.getRequestPathInfo();
-
-            mapping = getMappingForRequest(externalContext, servletPath, pathInfo);
-            if (mapping == null && LOGGER.isLoggable(FINE)) {
-                LOGGER.log(FINE, "faces.faces_servlet_mapping_cannot_be_determined_error", new Object[] { servletPath });
-            }
-
-            if (mapping != null) {
-                RequestStateManager.set(context, INVOCATION_PATH, mapping);
-            }
-        }
-
-        if (LOGGER.isLoggable(FINE)) {
-            LOGGER.log(FINE, "URL pattern of the FacesServlet executing the current request " + mapping);
-        }
-
-        return mapping;
-    }
-
-    /**
-     * <p>
-     * Return the appropriate {@link jakarta.faces.webapp.FacesServlet} mapping based on the servlet path of the current
-     * request.
-     * </p>
-     *
-     * @param externalContext the external context of the request
-     * @param servletPath the servlet path of the request
-     * @param pathInfo the path info of the request
-     *
-     * @return the appropriate mapping based on the current request
-     *
-     * @see jakarta.servlet.http.HttpServletRequest#getServletPath()
-     */
-    private static String getMappingForRequest(ExternalContext externalContext, String servletPath, String pathInfo) {
-
-        if (servletPath == null) {
-            return null;
-        }
-
-        if (LOGGER.isLoggable(FINE)) {
-            LOGGER.log(FINE, "servletPath " + servletPath);
-            LOGGER.log(FINE, "pathInfo " + pathInfo);
-        }
-
-        // If the path returned by HttpServletRequest.getServletPath()
-        // returns a zero-length String, then the FacesServlet has
-        // been mapped to '/*'.
-        if (servletPath.length() == 0) {
-            return "/*";
-        }
-
-        // Presence of path info means we were invoked using a prefix path mapping
-        if (pathInfo != null) {
-            return servletPath;
-        } else if (servletPath.indexOf('.') < 0) {
-            // If pathInfo is null and no '.' is present, the FacesServlet
-            // could be invoked using prefix path but without any pathInfo -
-            // i.e. GET /contextroot/faces or GET /contextroot/faces/
-            //
-            // It could also be that the FacesServlet is invoked using an
-            // exact mapping, i.e. GET /contextroot/foo
-            // Look at the Servlet mappings to see which case we have here:
-
-            Object context = externalContext.getContext();
-            if (context instanceof ServletContext) {
-                Collection<String> servletMappings = getFacesServletMappings((ServletContext) context);
-                if (servletMappings.contains(servletPath)) {
-                    return addExactMappedMarker(servletPath); // It's not ideal, to be replaced by Servlet 4 mapping API types
-                }
-            }
-
-            return servletPath;
-        } else {
-            // Servlet invoked using extension mapping
-            return servletPath.substring(servletPath.lastIndexOf('.'));
-        }
+       return ((HttpServletRequest) context.getExternalContext().getRequest()).getHttpServletMapping();
     }
 
     /**
@@ -1085,8 +995,6 @@ public class Util {
      * <p>
      * Not to be confused with {@link Util#isExactMapped(String)}, which checks if a string representing a mapping, not a
      * resource, is an exact mapping.
-     * <p>
-     * This should be replaced by the Servlet 4 mapping API when/if that becomes available and Faces/Mojarra can depend on it.
      *
      * @param viewId the view id to test
      * @return true if the FacesServlet is exact mapped to the given viewId, false otherwise
@@ -1100,8 +1008,6 @@ public class Util {
      * <p>
      * Not to be confused with {@link Util#isExactMapped(String)}, which checks if a string representing a mapping, not a
      * resource, is an exact mapping.
-     * <p>
-     * This should be replaced by the Servlet 4 mapping API when/if that becomes available and Faces/Mojarra can depend on it.
      *
      * @param externalContext the external context for this request
      * @param resource the resource to test
@@ -1116,36 +1022,39 @@ public class Util {
         return false;
     }
 
-    public static String getFirstWildCardMappingToFacesServlet(ExternalContext externalContext) {
+    public static HttpServletMapping getFirstWildCardMappingToFacesServlet(ExternalContext externalContext) {
         // If needed, cache this after initialization of Faces
         Object context = externalContext.getContext();
         if (context instanceof ServletContext) {
-            return getFacesServletMappings((ServletContext) context).stream().filter(mapping -> mapping.contains("*")).findFirst().orElse(null);
+            return getFacesServletMappings((ServletContext) context).stream()
+                    .filter(mapping -> mapping.contains("*"))
+                    .map(mapping -> new HttpServletMapping() {
+
+                        @Override
+                        public String getServletName() {
+                            return "";
+                        }
+
+                        @Override
+                        public String getPattern() {
+                            return mapping;
+                        }
+
+                        @Override
+                        public String getMatchValue() {
+                            return null;
+                        }
+
+                        @Override
+                        public MappingMatch getMappingMatch() {
+                            return isPrefixMapped(mapping)? MappingMatch.PATH : MappingMatch.EXTENSION;
+                        }
+                    })
+                    .findFirst()
+                    .orElse(null);
         }
 
         return null;
-    }
-
-    private static final String EXACT_MARKER = "* *";
-
-    public static String addExactMappedMarker(String mapping) {
-        return EXACT_MARKER + mapping;
-    }
-
-    public static String removeExactMappedMarker(String mapping) {
-        return mapping.substring(EXACT_MARKER.length());
-    }
-
-    /**
-     * <p>
-     * Returns true if the provided <code>url-mapping</code> is an exact mapping (starts with {@link Util#EXACT_MARKER}).
-     * </p>
-     *
-     * @param mapping a <code>url-pattern</code>
-     * @return true if the mapping starts with <code>/</code>
-     */
-    public static boolean isExactMapped(String mapping) {
-        return mapping.startsWith("* *");
     }
 
     /**
