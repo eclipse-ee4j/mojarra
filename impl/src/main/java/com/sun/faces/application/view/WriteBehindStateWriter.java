@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,8 +16,12 @@
 
 package com.sun.faces.application.view;
 
+import static jakarta.faces.application.StateManager.IS_SAVING_STATE;
+import static java.lang.Boolean.TRUE;
+
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Map;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.io.FastStringWriter;
@@ -26,6 +30,7 @@ import com.sun.faces.util.Util;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.view.ViewDeclarationLanguage;
 
 /**
  * Custom {@link Writer} to efficiently handle the state manager replacement marker written out by
@@ -62,7 +67,6 @@ final class WriteBehindStateWriter extends Writer {
         this.bufSize = bufSize;
         buf = new char[bufSize];
         CUR_WRITER.set(this);
-
     }
 
     // ------------------------------------------------- Methods from Writer
@@ -183,7 +187,8 @@ final class WriteBehindStateWriter extends Writer {
         ResponseWriter origWriter = context.getResponseWriter();
         StringBuilder stateBuilder = getState(stateManager, origWriter);
         StringBuilder builder = fWriter.getBuffer();
-        // begin writing...
+
+        // Begin writing...
         int totalLen = builder.length();
         int stateLen = stateBuilder.length();
         int pos = 0;
@@ -191,17 +196,17 @@ final class WriteBehindStateWriter extends Writer {
         while (pos < totalLen) {
             if (tildeIdx != -1) {
                 if (tildeIdx > pos && tildeIdx - pos > bufSize) {
-                    // there's enough content before the first ~
+                    // There's enough content before the first ~
                     // to fill the entire buffer
                     builder.getChars(pos, pos + bufSize, buf, 0);
                     orig.write(buf);
                     pos += bufSize;
                 } else {
-                    // write all content up to the first '~'
+                    // Write all content up to the first '~'
                     builder.getChars(pos, tildeIdx, buf, 0);
                     int len = tildeIdx - pos;
                     orig.write(buf, 0, len);
-                    // now check to see if the state saving string is
+                    // Now check to see if the state saving string is
                     // at the begining of pos, if so, write our
                     // state out.
                     if (builder.indexOf(RIConstants.SAVESTATE_FIELD_MARKER, pos) == tildeIdx) {
@@ -221,7 +226,7 @@ final class WriteBehindStateWriter extends Writer {
                             }
 
                         }
-                        // push us past the last '~' at the end of the marker
+                        // Push us past the last '~' at the end of the marker
                         pos += len + STATE_MARKER_LEN;
                         tildeIdx = getNextDelimiterIndex(builder, pos);
 
@@ -233,15 +238,15 @@ final class WriteBehindStateWriter extends Writer {
                     }
                 }
             } else {
-                // we've written all of the state field markers.
+                // We've written all of the state field markers.
                 // finish writing content
                 if (totalLen - pos > bufSize) {
-                    // there's enough content to fill the buffer
+                    // There's enough content to fill the buffer
                     builder.getChars(pos, pos + bufSize, buf, 0);
                     orig.write(buf);
                     pos += bufSize;
                 } else {
-                    // we're near the end of the response
+                    // We're near the end of the response
                     builder.getChars(pos, totalLen, buf, 0);
                     int len = totalLen - pos;
                     orig.write(buf, 0, len);
@@ -254,14 +259,13 @@ final class WriteBehindStateWriter extends Writer {
         // response so that all subsequent writes will make it to the
         // browser.
         out = orig;
-
     }
 
     /**
      * Get the state.
      *
      * <p>
-     * In JSF 2.2 it is required by the specification that the view state hidden input in each h:form has a unique id. So we
+     * In Faces it is required by the specification that the view state hidden input in each h:form has a unique id. So we
      * have to call this method multiple times as each h:form needs to generate the element id for itself.
      * </p>
      *
@@ -274,12 +278,25 @@ final class WriteBehindStateWriter extends Writer {
         FastStringWriter stateWriter = new FastStringWriter(stateManager.isSavingStateInClient(context) ? bufSize : 128);
         context.setResponseWriter(origWriter.cloneWithWriter(stateWriter));
         if (state == null) {
-            state = stateManager.saveView(context);
+            String viewId = context.getViewRoot().getViewId();
+
+            ViewDeclarationLanguage vdl = context.getApplication().getViewHandler().getViewDeclarationLanguage(context, viewId);
+            if (vdl != null) {
+                Map<Object, Object> contextAttributes = context.getAttributes();
+                try {
+                    contextAttributes.put(IS_SAVING_STATE, TRUE);
+
+                    state = vdl.getStateManagementStrategy(context, viewId)
+                                      .saveView(context);
+                } finally {
+                    contextAttributes.remove(IS_SAVING_STATE);
+                }
+            }
         }
         stateManager.writeState(context, state);
         context.setResponseWriter(origWriter);
-        StringBuilder stateBuilder = stateWriter.getBuffer();
-        return stateBuilder;
+
+        return stateWriter.getBuffer();
     }
 
     /**
@@ -288,9 +305,7 @@ final class WriteBehindStateWriter extends Writer {
      * @return the index of the next delimiter, if any
      */
     private static int getNextDelimiterIndex(StringBuilder builder, int offset) {
-
         return builder.indexOf(RIConstants.SAVESTATE_FIELD_DELIMITER, offset);
-
     }
 
 }

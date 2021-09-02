@@ -17,7 +17,6 @@
 package com.sun.faces.application.view;
 
 import static com.sun.faces.util.Util.getFacesMapping;
-import static com.sun.faces.util.Util.getStateManager;
 import static com.sun.faces.util.Util.notNull;
 import static jakarta.faces.component.UIViewRoot.COMPONENT_TYPE;
 import static jakarta.servlet.http.MappingMatch.PATH;
@@ -32,6 +31,7 @@ import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.util.FacesLogger;
 
 import jakarta.faces.FacesException;
+import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -82,10 +82,12 @@ public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
             return null;
         }
 
-        // This is necessary to allow decorated implementations.
-        String renderKitId = ctx.getApplication().getViewHandler().calculateRenderKitId(ctx);
+        ViewHandler viewHandler = ctx.getApplication().getViewHandler();
 
-        return getStateManager(ctx).restoreView(ctx, viewId, renderKitId);
+        // This is necessary to allow decorated implementations.
+        return viewHandler.getViewDeclarationLanguage(ctx, viewId)
+                          .getStateManagementStrategy(ctx, viewId)
+                          .restoreView(ctx, viewId, viewHandler.calculateRenderKitId(ctx));
     }
 
     /**

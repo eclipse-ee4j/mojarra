@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,9 +22,7 @@ import jakarta.faces.context.FacesContext;
 /**
  * <p class="changed_added_2_0">
  * <span class="changed_modified_2_2">Encapsulate</span> the saving and restoring of the view to enable the VDL to take
- * over the responsibility for handling this feature. Because {@link ViewDeclarationLanguage#getStateManagementStrategy}
- * is required to return <code>null</code> for Jakarta Server Pages views and non-<code>null</code> for views authored
- * in Facelets for Jakarta Server Faces 2, this specification only applies to Facelets for Jakarta Server Faces 2.
+ * over the responsibility for handling this feature.
  * </p>
  *
  * <p class="changed_added_2_2">
@@ -93,7 +91,6 @@ public abstract class StateManagementStrategy {
      *
      * @return the saved view state
      */
-
     public abstract Object saveView(FacesContext context);
 
     /**
@@ -173,7 +170,6 @@ public abstract class StateManagementStrategy {
      *
      * @return the root of the restored view
      */
-
     public abstract UIViewRoot restoreView(FacesContext context, String viewId, String renderKitId);
 
 }

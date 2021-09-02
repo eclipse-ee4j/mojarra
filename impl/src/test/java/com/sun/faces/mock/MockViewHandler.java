@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -30,14 +30,17 @@ public class MockViewHandler extends ViewHandler {
 
     protected StateManager stateManager = null;
 
+    @Override
     public void renderView(FacesContext context, UIViewRoot viewToRender)
             throws IOException, FacesException {
     }
 
+    @Override
     public UIViewRoot restoreView(FacesContext context, String viewId) {
         return null;
     }
 
+    @Override
     public UIViewRoot createView(FacesContext context, String viewId) {
         UIViewRoot result = new UIViewRoot();
         result.setViewId(viewId);
@@ -45,6 +48,7 @@ public class MockViewHandler extends ViewHandler {
         return result;
     }
 
+    @Override
     public void writeState(FacesContext context) {
     }
 
@@ -63,14 +67,6 @@ public class MockViewHandler extends ViewHandler {
                     return null;
                 }
 
-                public SerializedView saveSerializedView(FacesContext context) {
-                    return null;
-                }
-
-                public void writeState(FacesContext context,
-                        SerializedView state) throws IOException {
-                }
-
                 protected UIViewRoot restoreTreeStructure(FacesContext context,
                         String viewId, String renderKitId) {
                     return null;
@@ -83,10 +79,12 @@ public class MockViewHandler extends ViewHandler {
         return stateManager;
     }
 
+    @Override
     public String getActionURL(FacesContext context, String viewId) {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public String getResourceURL(FacesContext context, String path) {
         if (path.startsWith("/")) {
             return context.getExternalContext().getRequestContextPath() + path;
@@ -95,14 +93,17 @@ public class MockViewHandler extends ViewHandler {
         }
     }
 
+    @Override
     public String getWebsocketURL(FacesContext context, String channel) {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public Locale calculateLocale(FacesContext context) {
         return Locale.getDefault();
     }
 
+    @Override
     public String calculateRenderKitId(FacesContext context) {
         return RenderKitFactory.HTML_BASIC_RENDER_KIT;
     }
