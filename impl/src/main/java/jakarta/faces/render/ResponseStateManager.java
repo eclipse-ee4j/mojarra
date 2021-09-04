@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,11 +17,7 @@
 package jakarta.faces.render;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import jakarta.faces.application.StateManager;
-import jakarta.faces.application.StateManager.SerializedView;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
@@ -33,10 +29,7 @@ import jakarta.faces.context.ResponseWriter;
  * saving state, whether it be in hidden fields, session, or some combination of the two.
  * </p>
  */
-
 public abstract class ResponseStateManager {
-
-    private static Logger log = Logger.getLogger("jakarta.faces.render");
 
     /**
      * <p>
@@ -64,7 +57,6 @@ public abstract class ResponseStateManager {
      *
      * @since 1.2
      */
-
     public static final String VIEW_STATE_PARAM = "jakarta.faces.ViewState";
 
     /**
@@ -81,7 +73,6 @@ public abstract class ResponseStateManager {
      * @since 2.2
      *
      */
-
     public static final String CLIENT_WINDOW_PARAM = "jakarta.faces.ClientWindow";
 
     /**
@@ -94,7 +85,6 @@ public abstract class ResponseStateManager {
      *
      * @since 2.2
      */
-
     public static final String CLIENT_WINDOW_URL_PARAM = "jfwid";
 
     /**
@@ -106,7 +96,6 @@ public abstract class ResponseStateManager {
      *
      * @since 2.2
      */
-
     public static final String NON_POSTBACK_VIEW_TOKEN_PARAM = "jakarta.faces.Token";
 
     /**
@@ -152,16 +141,6 @@ public abstract class ResponseStateManager {
      * and {@link jakarta.faces.application.Application#getDefaultRenderKitId()} returns <code>null</code>.</li>
      * </ul>
      *
-     * <p>
-     * For backwards compatability with existing <code>ResponseStateManager</code> implementations, the default
-     * implementation of this method checks if the argument is an instance of <code>SerializedView</code>. If so, it calls
-     * through to
-     * {@link #writeState(jakarta.faces.context.FacesContext,jakarta.faces.application.StateManager.SerializedView)}. If
-     * not, it expects the state to be a two element Object array. It creates an instance of <code>SerializedView</code> and
-     * stores the state as the treeStructure, and passes it to
-     * {@link #writeState(jakarta.faces.context.FacesContext,jakarta.faces.application.StateManager.SerializedView)}.
-     * </p>
-     *
      * <p class="changed_added_2_2">
      * The {@link jakarta.faces.lifecycle.ClientWindow} must be written using these steps. Call
      * {@link jakarta.faces.context.ExternalContext#getClientWindow}. If the result is <code>null</code>, take no further
@@ -184,72 +163,6 @@ public abstract class ResponseStateManager {
      *
      */
     public void writeState(FacesContext context, Object state) throws IOException {
-
-        SerializedView view;
-        if (state instanceof SerializedView) {
-            view = (SerializedView) state;
-        } else {
-            if (state instanceof Object[]) {
-                Object[] stateArray = (Object[]) state;
-                if (2 == stateArray.length) {
-                    StateManager stateManager = context.getApplication().getStateManager();
-                    view = stateManager.new SerializedView(stateArray[0], stateArray[1]);
-                } else {
-                    // PENDING - I18N
-                    if (log.isLoggable(Level.SEVERE)) {
-                        log.log(Level.SEVERE, "State is not an expected array of length 2.");
-                    }
-                    throw new IOException("State is not an expected array of length 2.");
-                }
-            } else {
-                // PENDING - I18N
-                if (log.isLoggable(Level.SEVERE)) {
-                    log.log(Level.SEVERE, "State is not an expected array of length 2.");
-                }
-                throw new IOException("State is not an expected array of length 2.");
-            }
-        }
-        writeState(context, view);
-    }
-
-    /**
-     * <p>
-     * Take the argument <code>state</code> and write it into the output using the current {@link ResponseWriter}, which
-     * must be correctly positioned already.
-     * </p>
-     *
-     * <p>
-     * If the {@link jakarta.faces.application.StateManager.SerializedView} is to be written out to hidden fields, the
-     * implementation must take care to make all necessary character replacements to make the Strings suitable for inclusion
-     * as an HTTP request paramater.
-     * </p>
-     *
-     * <p>
-     * If the state saving method for this application is
-     * {@link jakarta.faces.application.StateManager#STATE_SAVING_METHOD_CLIENT}, the implementation may encrypt the state
-     * to be saved to the client. We recommend that the state be unreadable by the client, and also be tamper evident. The
-     * reference implementation follows these recommendations.
-     * </p>
-     *
-     * @deprecated This method has been replaced by
-     * {@link #writeState(jakarta.faces.context.FacesContext,java.lang.Object)}. The default implementation creates a two
-     * element <code>Object</code> array with the first element being the return from calling
-     * {@link SerializedView#getStructure}, and the second being the return from {@link SerializedView#getState}. It then
-     * passes this <code>Object</code> array to {@link #writeState}.
-     *
-     * @param context The {@link FacesContext} instance for the current request
-     * @param state The serialized state information previously saved
-     *
-     * @throws IOException if the state cannot be written for any reason
-     *
-     */
-    @Deprecated
-    public void writeState(FacesContext context, SerializedView state) throws IOException {
-
-        if (state != null) {
-            writeState(context, new Object[] { state.getStructure(), state.getState() });
-        }
-
     }
 
     /**
@@ -281,7 +194,6 @@ public abstract class ResponseStateManager {
      * @return the value of the statelessness of this run through the lifecycle.
      *
      */
-
     public boolean isStateless(FacesContext context, String viewId) {
         return false;
     }
@@ -300,13 +212,6 @@ public abstract class ResponseStateManager {
      * tampering, a {@link jakarta.faces.application.ProtectedViewException} must be thrown.
      * </p>
      *
-     * <p>
-     * For backwards compatability with existing <code>ResponseStateManager</code> implementations, the default
-     * implementation of this method calls {@link #getTreeStructureToRestore} and {@link #getComponentStateToRestore} and
-     * creates and returns a two element <code>Object</code> array with element zero containing the <code>structure</code>
-     * property and element one containing the <code>state</code> property of the <code>SerializedView</code>.
-     * </p>
-     *
      * @since 1.2
      *
      * @param context The {@link FacesContext} instance for the current request
@@ -315,45 +220,7 @@ public abstract class ResponseStateManager {
      * @return the tree structure and component state Object passed in to <code>writeState</code>. If this is an initial
      * request, this method returns <code>null</code>.
      */
-
     public Object getState(FacesContext context, String viewId) {
-        Object stateArray[] = { getTreeStructureToRestore(context, viewId), getComponentStateToRestore(context) };
-        return stateArray;
-    }
-
-    /**
-     * <p>
-     * The implementation must inspect the current request and return the tree structure Object passed to it on a previous
-     * invocation of <code>writeState()</code>.
-     * </p>
-     *
-     * @deprecated This method has been replaced by {@link #getState}. The default implementation returns <code>null</code>.
-     *
-     * @param context The {@link FacesContext} instance for the current request
-     * @param viewId View identifier of the view to be restored
-     *
-     * @return the tree structure portion of the state
-     */
-    @Deprecated
-    public Object getTreeStructureToRestore(FacesContext context, String viewId) {
-        return null;
-    }
-
-    /**
-     * <p>
-     * The implementation must inspect the current request and return the component state Object passed to it on a previous
-     * invocation of <code>writeState()</code>.
-     * </p>
-     *
-     * @deprecated This method has been replaced by {@link #getState}. The default implementation returns <code>null</code>.
-     *
-     * @param context The {@link FacesContext} instance for the current request
-     *
-     * @return the component state portion of the state
-     *
-     */
-    @Deprecated
-    public Object getComponentStateToRestore(FacesContext context) {
         return null;
     }
 
@@ -384,7 +251,6 @@ public abstract class ResponseStateManager {
      *
      * @since 1.2
      */
-
     public boolean isPostback(FacesContext context) {
         return !context.getExternalContext().getRequestParameterMap().isEmpty();
     }
@@ -408,7 +274,7 @@ public abstract class ResponseStateManager {
     /**
      * <p class="changed_added_2_2">
      * Compliant implementations must return a cryptographically strong token for use to protect views in this application.
-     * For backwards compatability with earlier revisions, a default implementation is provided that simply returns
+     * For backwards compatibility with earlier revisions, a default implementation is provided that simply returns
      * <code>null</code>.
      * </p>
      *

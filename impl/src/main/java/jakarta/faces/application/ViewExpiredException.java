@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,16 +17,17 @@
 package jakarta.faces.application;
 
 import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.StateManagementStrategy;
 
 /**
  * <p>
  * Implementations must throw this {@link FacesException} when attempting to restore the view
- * {@link StateManager#restoreView(jakarta.faces.context.FacesContext, String, String)} results in failure on postback.
+ * {@link StateManagementStrategy#restoreView(FacesContext, String, String)} results in failure on postback.
  * </p>
  *
  * @since 1.2
  */
-
 public class ViewExpiredException extends FacesException {
 
     private static final long serialVersionUID = 5175808310270035833L;

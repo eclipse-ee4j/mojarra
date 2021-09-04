@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,7 +19,6 @@ package jakarta.faces.application;
 import java.io.IOException;
 
 import jakarta.faces.FacesWrapper;
-import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 
 /**
@@ -39,14 +38,6 @@ import jakarta.faces.context.FacesContext;
 public abstract class StateManagerWrapper extends StateManager implements FacesWrapper<StateManager> {
 
     private StateManager wrapped;
-
-    /**
-     * @deprecated Use the other constructor taking the implementation being wrapped.
-     */
-    @Deprecated
-    public StateManagerWrapper() {
-
-    }
 
     /**
      * <p class="changed_added_2_3">
@@ -71,65 +62,6 @@ public abstract class StateManagerWrapper extends StateManager implements FacesW
     /**
      * <p>
      * The default behavior of this method is to call
-     * {@link StateManager#saveSerializedView(jakarta.faces.context.FacesContext)} on the wrapped {@link StateManager}
-     * object.
-     * </p>
-     *
-     * @see StateManager#saveSerializedView(jakarta.faces.context.FacesContext)
-     * @since 1.2
-     */
-    @Override
-    public SerializedView saveSerializedView(FacesContext context) {
-        return getWrapped().saveSerializedView(context);
-    }
-
-    /**
-     * <p>
-     * The default behavior of this method is to call {@link StateManager#saveView(jakarta.faces.context.FacesContext)} on
-     * the wrapped {@link StateManager} object.
-     * </p>
-     *
-     * @see StateManager#saveView(jakarta.faces.context.FacesContext)
-     * @since 1.2
-     */
-    @Override
-    public Object saveView(FacesContext context) {
-        return getWrapped().saveView(context);
-    }
-
-    /**
-     * <p>
-     * The default behavior of this method is to call
-     * {@link StateManager#getTreeStructureToSave(jakarta.faces.context.FacesContext)} on the wrapped {@link StateManager}
-     * object.
-     * </p>
-     *
-     * @see StateManager#getTreeStructureToSave(jakarta.faces.context.FacesContext)
-     * @since 1.2
-     */
-    @Override
-    protected Object getTreeStructureToSave(FacesContext context) {
-        return getWrapped().getTreeStructureToSave(context);
-    }
-
-    /**
-     * <p>
-     * The default behavior of this method is to call
-     * {@link StateManager#getComponentStateToSave(jakarta.faces.context.FacesContext)} on the wrapped {@link StateManager}
-     * object.
-     * </p>
-     *
-     * @see StateManager#getComponentStateToSave(jakarta.faces.context.FacesContext)
-     * @since 1.2
-     */
-    @Override
-    protected Object getComponentStateToSave(FacesContext context) {
-        return getWrapped().getComponentStateToSave(context);
-    }
-
-    /**
-     * <p>
-     * The default behavior of this method is to call
      * {@link StateManager#writeState(jakarta.faces.context.FacesContext, java.lang.Object)} on the wrapped
      * {@link StateManager} object.
      * </p>
@@ -140,68 +72,6 @@ public abstract class StateManagerWrapper extends StateManager implements FacesW
     @Override
     public void writeState(FacesContext context, Object state) throws IOException {
         getWrapped().writeState(context, state);
-    }
-
-    /**
-     * <p>
-     * The default behavior of this method is to call
-     * {@link StateManager#writeState(jakarta.faces.context.FacesContext, jakarta.faces.application.StateManager.SerializedView)}
-     * on the wrapped {@link StateManager} object.
-     * </p>
-     *
-     * @see StateManager#writeState(jakarta.faces.context.FacesContext,
-     * jakarta.faces.application.StateManager.SerializedView)
-     * @since 1.2
-     */
-    @Override
-    public void writeState(FacesContext context, SerializedView state) throws IOException {
-        getWrapped().writeState(context, state);
-    }
-
-    /**
-     * <p>
-     * The default behavior of this method is to call
-     * {@link StateManager#restoreView(jakarta.faces.context.FacesContext, String, String)} on the wrapped
-     * {@link StateManager} object.
-     * </p>
-     *
-     * @see StateManager#restoreView(jakarta.faces.context.FacesContext, String, String)
-     * @since 1.2
-     */
-    @Override
-    public UIViewRoot restoreView(FacesContext context, String viewId, String renderKitId) {
-        return getWrapped().restoreView(context, viewId, renderKitId);
-    }
-
-    /**
-     * <p>
-     * The default behavior of this method is to call
-     * {@link StateManager#restoreTreeStructure(jakarta.faces.context.FacesContext, String, String)} on the wrapped
-     * {@link StateManager} object.
-     * </p>
-     *
-     * @see StateManager#restoreTreeStructure(jakarta.faces.context.FacesContext, String, String)
-     * @since 1.2
-     */
-    @Override
-    protected UIViewRoot restoreTreeStructure(FacesContext context, String viewId, String renderKitId) {
-        return getWrapped().restoreTreeStructure(context, viewId, renderKitId);
-    }
-
-    /**
-     * <p>
-     * The default behavior of this method is to call
-     * {@link StateManager#restoreComponentState(jakarta.faces.context.FacesContext, jakarta.faces.component.UIViewRoot, String)}
-     * on the wrapped {@link StateManager} object.
-     * </p>
-     *
-     * @see StateManager#restoreComponentState(jakarta.faces.context.FacesContext, jakarta.faces.component.UIViewRoot,
-     * String)
-     * @since 1.2
-     */
-    @Override
-    protected void restoreComponentState(FacesContext context, UIViewRoot viewRoot, String renderKitId) {
-        getWrapped().restoreComponentState(context, viewRoot, renderKitId);
     }
 
     /**
