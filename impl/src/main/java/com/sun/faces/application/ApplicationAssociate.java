@@ -636,7 +636,7 @@ public class ApplicationAssociate {
         definingDocumentIdsToTruncatedJarUrls.put(definingDocumentId, candidate);
     }
 
-    protected DefaultFaceletFactory createFaceletFactory(FacesContext ctx, Compiler compiler, WebConfiguration webConfig) {
+    protected DefaultFaceletFactory createFaceletFactory(FacesContext context, Compiler compiler, WebConfiguration webConfig) {
 
         // refresh period
         boolean isProduction = applicationImpl.getProjectStage() == Production;
@@ -660,7 +660,7 @@ public class ApplicationAssociate {
             resolver = (ResourceResolver) ReflectionUtil.decorateInstance(resolverName, ResourceResolver.class, resolver);
         } else {
 
-            Set<? extends Class<?>> resourceResolvers = getAnnotatedClasses(ctx).get(FaceletsResourceResolver.class);
+            Set<? extends Class<?>> resourceResolvers = getAnnotatedClasses(context).get(FaceletsResourceResolver.class);
             if (null != resourceResolvers && !resourceResolvers.isEmpty()) {
                 Class<?> resolverClass = resourceResolvers.iterator().next();
                 if (resourceResolvers.size() > 1 && LOGGER.isLoggable(SEVERE)) {
@@ -675,7 +675,7 @@ public class ApplicationAssociate {
         // and the use of this ResousrecResolver for Composite Components
         // is acceptable.
         if (resolver != defaultResourceResolver && webConfig.isOptionEnabled(EnableFaceletsResourceResolverResolveCompositeComponents)) {
-            ctx.getExternalContext().getApplicationMap().put(NON_DEFAULT_RESOURCE_RESOLVER_PARAM_NAME, resolver);
+            context.getExternalContext().getApplicationMap().put(NON_DEFAULT_RESOURCE_RESOLVER_PARAM_NAME, resolver);
         }
 
         FaceletCache cache = null;
@@ -703,7 +703,7 @@ public class ApplicationAssociate {
         }
 
         DefaultFaceletFactory toReturn = new DefaultFaceletFactory();
-        toReturn.init(compiler, resolver, period, cache);
+        toReturn.init(context, compiler, resolver, period, cache);
 
         return toReturn;
     }

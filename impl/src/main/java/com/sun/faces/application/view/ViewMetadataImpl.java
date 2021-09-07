@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,9 +16,12 @@
 
 package com.sun.faces.application.view;
 
+import static com.sun.faces.RIConstants.VIEWID_KEY_NAME;
+import static com.sun.faces.util.Util.isEmpty;
 import static java.lang.reflect.Modifier.isFinal;
 import static java.lang.reflect.Modifier.isPublic;
 import static java.lang.reflect.Modifier.isStatic;
+import static java.util.Collections.emptyMap;
 import static java.util.Collections.unmodifiableMap;
 
 import java.io.IOException;
@@ -34,12 +37,10 @@ import com.sun.faces.context.FacesFileNotFoundException;
 import com.sun.faces.facelets.impl.DefaultFaceletFactory;
 
 import jakarta.faces.FacesException;
-import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIImportConstants;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewMetadata;
-import jakarta.faces.view.facelets.Facelet;
 
 /**
  * @see jakarta.faces.view.ViewMetadata
@@ -52,9 +53,7 @@ public class ViewMetadataImpl extends ViewMetadata {
     // ---------------------------------------------------------------------------------------------------- Constructors
 
     public ViewMetadataImpl(String viewId) {
-
         this.viewId = viewId;
-
     }
 
     // --------------------------------------------------------------------------------------- Methods from ViewMetadata
@@ -64,9 +63,7 @@ public class ViewMetadataImpl extends ViewMetadata {
      */
     @Override
     public String getViewId() {
-
         return viewId;
-
     }
 
     /**
@@ -74,50 +71,48 @@ public class ViewMetadataImpl extends ViewMetadata {
      */
     @Override
     public UIViewRoot createMetadataView(FacesContext context) {
-
-        UIViewRoot result = null;
+        UIViewRoot metadataView = null;
         UIViewRoot currentViewRoot = context.getViewRoot();
-        Map<String, Object> currentViewMapShallowCopy = Collections.emptyMap();
+        Map<String, Object> currentViewMapShallowCopy = emptyMap();
 
         try {
             context.setProcessingEvents(false);
             if (faceletFactory == null) {
-                ApplicationAssociate associate = ApplicationAssociate.getInstance(context.getExternalContext());
-                faceletFactory = associate.getFaceletFactory();
-                assert faceletFactory != null;
+                faceletFactory = ApplicationAssociate.getInstance(context.getExternalContext())
+                                                     .getFaceletFactory();
             }
-            ViewHandler vh = context.getApplication().getViewHandler();
-            result = vh.createView(context, viewId);
+
+            metadataView = context.getApplication()
+                                  .getViewHandler()
+                                  .createView(context, viewId);
 
             // Stash away view id before invoking handlers so that
             // StateContext.partialStateSaving() can determine the current
             // view.
             context.getAttributes().put(RIConstants.VIEWID_KEY_NAME, viewId);
+
             // If the currentViewRoot has a viewMap, make sure the entries are
             // copied to the temporary UIViewRoot before invoking handlers.
-            if (null != currentViewRoot) {
+            if (currentViewRoot != null) {
                 Map<String, Object> currentViewMap = currentViewRoot.getViewMap(false);
 
-                if (null != currentViewMap && !currentViewMap.isEmpty()) {
-                    currentViewMapShallowCopy = new HashMap<>(currentViewMap);
-                    Map<String, Object> resultViewMap = result.getViewMap(true);
-                    resultViewMap.putAll(currentViewMapShallowCopy);
+                if (!isEmpty(currentViewMap)) {
+                    metadataView.getViewMap(true)
+                                .putAll(new HashMap<>(currentViewMap));
                 }
             }
 
-            // Only replace the current context's UIViewRoot if there is
-            // one to replace.
-            if (null != currentViewRoot) {
-                // This clear's the ViewMap of the current UIViewRoot before
+            // Only replace the current context's UIViewRoot if there is one to replace.
+            if (currentViewRoot != null) {
+                // This clears the ViewMap of the current UIViewRoot before
                 // setting the argument as the new UIViewRoot.
-                context.setViewRoot(result);
+                context.setViewRoot(metadataView);
             }
 
-            Facelet f = faceletFactory.getMetadataFacelet(context, result.getViewId());
+            faceletFactory.getMetadataFacelet(context, metadataView.getViewId())
+                          .apply(context, metadataView);
 
-            f.apply(context, result);
-
-            importConstantsIfNecessary(context, result);
+            importConstantsIfNecessary(context, metadataView);
 
         } catch (FacesFileNotFoundException ffnfe) {
             try {
@@ -128,8 +123,8 @@ public class ViewMetadataImpl extends ViewMetadata {
         } catch (IOException ioe) {
             throw new FacesException(ioe);
         } finally {
-            context.getAttributes().remove(RIConstants.VIEWID_KEY_NAME);
-            if (null != currentViewRoot) {
+            context.getAttributes().remove(VIEWID_KEY_NAME);
+            if (currentViewRoot != null) {
                 context.setViewRoot(currentViewRoot);
                 if (!currentViewMapShallowCopy.isEmpty()) {
                     currentViewRoot.getViewMap(true).putAll(currentViewMapShallowCopy);
@@ -139,9 +134,9 @@ public class ViewMetadataImpl extends ViewMetadata {
             context.setProcessingEvents(true);
         }
 
-        return result;
-
+        return metadataView;
     }
+
 
     // ----------------------------------------------------------------------------------------------- UIImportConstants
 

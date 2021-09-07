@@ -18,7 +18,6 @@ package jakarta.faces.application;
 
 import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableSet;
-import static java.util.logging.Level.WARNING;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -240,9 +239,7 @@ public abstract class ViewHandler {
                 context.getExternalContext().setRequestCharacterEncoding(encoding);
             } catch (UnsupportedEncodingException e) {
                 String message = "Can't set encoding to: " + encoding + " Exception:" + e.getMessage();
-                if (log.isLoggable(WARNING)) {
-                    log.fine(message);
-                }
+                log.fine(message);
 
                 throw new FacesException(message, e);
             }

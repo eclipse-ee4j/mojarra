@@ -18,12 +18,16 @@
 
 package com.sun.faces.lifecycle;
 
+import static com.sun.faces.renderkit.RenderKitUtils.getResponseStateManager;
 import static com.sun.faces.util.MessageUtils.NULL_CONTEXT_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.NULL_REQUEST_VIEW_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.RESTORE_VIEW_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.Util.getViewHandler;
 import static com.sun.faces.util.Util.isOneOf;
+import static jakarta.faces.event.PhaseId.RESTORE_VIEW;
+import static jakarta.faces.render.ResponseStateManager.NON_POSTBACK_VIEW_TOKEN_PARAM;
+import static jakarta.faces.view.ViewMetadata.hasMetadata;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
 
@@ -37,7 +41,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
@@ -188,7 +191,7 @@ public class RestoreViewPhase extends Phase {
                         viewRoot = metadata.createMetadataView(facesContext);
 
                         // Only skip to render response if there is no metadata
-                        if (!ViewMetadata.hasMetadata(viewRoot)) {
+                        if (!hasMetadata(viewRoot)) {
                             facesContext.renderResponse();
                         }
                     }
@@ -234,22 +237,23 @@ public class RestoreViewPhase extends Phase {
         // how grizzly does this.
 
         Set<String> urlPatterns = viewHandler.getProtectedViewsUnmodifiable();
+
         // Implement section 12.1 of the Servlet spec (consider using Jakarta Authorization, perhaps via SPI)
-        boolean currentViewIsProtected = isProtectedView(viewId, urlPatterns);
-        if (currentViewIsProtected) {
+        if (isProtectedView(viewId, urlPatterns)) {
             ExternalContext extContext = context.getExternalContext();
             Map<String, String> headers = extContext.getRequestHeaderMap();
 
             // Check the token
-            String rkId = viewHandler.calculateRenderKitId(context);
-            ResponseStateManager rsm = RenderKitUtils.getResponseStateManager(context, rkId);
-            String incomingSecretKeyValue = extContext.getRequestParameterMap().get(ResponseStateManager.NON_POSTBACK_VIEW_TOKEN_PARAM);
-            if (null != incomingSecretKeyValue) {
+            ResponseStateManager rsm = getResponseStateManager(context, viewHandler.calculateRenderKitId(context));
+
+            String incomingSecretKeyValue = extContext.getRequestParameterMap().get(NON_POSTBACK_VIEW_TOKEN_PARAM);
+            if (incomingSecretKeyValue != null) {
                 try {
                     incomingSecretKeyValue = URLEncoder.encode(incomingSecretKeyValue, "UTF-8");
                 } catch (UnsupportedEncodingException e) {
                     if (LOGGER.isLoggable(SEVERE)) {
-                        LOGGER.log(SEVERE, "Unable to re-encode value of request parameter " + ResponseStateManager.NON_POSTBACK_VIEW_TOKEN_PARAM + ":"
+                        LOGGER.log(SEVERE,
+                            "Unable to re-encode value of request parameter " + NON_POSTBACK_VIEW_TOKEN_PARAM + ":"
                                 + incomingSecretKeyValue, e);
                     }
                     incomingSecretKeyValue = null;
@@ -257,7 +261,7 @@ public class RestoreViewPhase extends Phase {
             }
 
             String correctSecretKeyValue = rsm.getCryptographicallyStrongTokenFromSession(context);
-            if (null == incomingSecretKeyValue || !correctSecretKeyValue.equals(incomingSecretKeyValue)) {
+            if (incomingSecretKeyValue == null || !correctSecretKeyValue.equals(incomingSecretKeyValue)) {
                 LOGGER.log(SEVERE, "correctSecretKeyValue = {0} incomingSecretKeyValue = {1}",
                         new Object[] { correctSecretKeyValue, incomingSecretKeyValue });
                 throw new ProtectedViewException();
@@ -282,6 +286,7 @@ public class RestoreViewPhase extends Phase {
                     }
                 }
             }
+
             // Check the origin header
             if (headers.containsKey("Origin")) {
                 String origin = headers.get("Origin");
@@ -404,6 +409,7 @@ public class RestoreViewPhase extends Phase {
         }
     }
 
+
     // --------------------------------------------------------- Private Methods
 
     /**
@@ -421,7 +427,7 @@ public class RestoreViewPhase extends Phase {
         MethodExpression afterPhase = viewRoot.getAfterPhaseListener();
         if (afterPhase != null) {
             try {
-                PhaseEvent event = new PhaseEvent(context, PhaseId.RESTORE_VIEW, lifecycle);
+                PhaseEvent event = new PhaseEvent(context, RESTORE_VIEW, lifecycle);
                 afterPhase.invoke(context.getELContext(), new Object[] { event });
             } catch (Exception e) {
                 if (LOGGER.isLoggable(SEVERE)) {

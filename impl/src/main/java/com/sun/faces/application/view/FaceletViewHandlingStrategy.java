@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -23,6 +23,7 @@ import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.Face
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsViewMappings;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.StateSavingMethod;
 import static com.sun.faces.context.StateContext.getStateContext;
+import static com.sun.faces.facelets.tag.ui.UIDebug.debugRequest;
 import static com.sun.faces.renderkit.RenderKitUtils.getResponseStateManager;
 import static com.sun.faces.util.ComponentStruct.ADD;
 import static com.sun.faces.util.ComponentStruct.REMOVE;
@@ -273,7 +274,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         notNull("context", ctx);
         notNull("viewId", viewId);
 
-        if (UIDebug.debugRequest(ctx)) {
+        if (debugRequest(ctx)) {
             UIViewRoot root = (UIViewRoot) ctx.getApplication().createComponent(COMPONENT_TYPE);
             root.setViewId(viewId);
             return root;
@@ -381,8 +382,8 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         try {
             // Only build the view if this view has not yet been built.
             if (!isViewPopulated(ctx, viewToRender)) {
-                ViewDeclarationLanguage vdl = vdlFactory.getViewDeclarationLanguage(viewToRender.getViewId());
-                vdl.buildView(ctx, viewToRender);
+                vdlFactory.getViewDeclarationLanguage(viewToRender.getViewId())
+                          .buildView(ctx, viewToRender);
             }
 
             // Setup writer and assign it to the ctx
@@ -403,8 +404,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 getSession(ctx);
             }
 
-            Writer outputWriter = extContext.getResponseOutputWriter();
-            stateWriter = new WriteBehindStateWriter(outputWriter, ctx, responseBufferSize);
+            stateWriter = new WriteBehindStateWriter(extContext.getResponseOutputWriter(), ctx, responseBufferSize);
 
             ResponseWriter writer = origWriter.cloneWithWriter(stateWriter);
             ctx.setResponseWriter(writer);
@@ -415,25 +415,23 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 try {
                     ctx.getExternalContext().getFlash().doPostPhaseActions(ctx);
                 } catch (UnsupportedOperationException uoe) {
-                    if (LOGGER.isLoggable(FINE)) {
-                        LOGGER.fine("ExternalContext.getFlash() throw UnsupportedOperationException -> Flash unavailable");
-                    }
+                    LOGGER.fine("ExternalContext.getFlash() throw UnsupportedOperationException -> Flash unavailable");
                 }
             } else {
                 if (ctx.isProjectStage(Development)) {
                     FormOmittedChecker.check(ctx);
                 }
 
-                // render the XML declaration to the response
+                // Render the XML declaration to the response
                 String xmlDecl = getXMLDECLFromFacesContextAttributes(ctx);
-                if (null != xmlDecl) {
+                if (xmlDecl != null) {
                     // Do not escape.
                     writer.writePreamble(xmlDecl);
                 }
 
-                // render the DOCTYPE declaration to the response
+                // Render the DOCTYPE declaration to the response
                 Doctype doctype = viewToRender.getDoctype();
-                if (null != doctype) {
+                if (doctype != null) {
                     if (doctype instanceof UIComponent) {
                         ((UIComponent) doctype).encodeAll(ctx); // E.g. HtmlDoctype + DoctypeRenderer
                     } else {
@@ -443,15 +441,13 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                     writer.append('\n');
                 }
 
-                // render the view to the response
+                // Render the view to the response
                 writer.startDocument();
                 viewToRender.encodeAll(ctx);
                 try {
                     ctx.getExternalContext().getFlash().doPostPhaseActions(ctx);
                 } catch (UnsupportedOperationException uoe) {
-                    if (LOGGER.isLoggable(FINE)) {
-                        LOGGER.fine("ExternalContext.getFlash() throw UnsupportedOperationException -> Flash unavailable");
-                    }
+                    LOGGER.fine("ExternalContext.getFlash() throw UnsupportedOperationException -> Flash unavailable");
                 }
                 writer.endDocument();
             }
@@ -505,11 +501,9 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      */
     @Override
     public BeanInfo getComponentMetadata(FacesContext context, Resource ccResource) {
-
         DefaultFaceletFactory factory = (DefaultFaceletFactory) RequestStateManager.get(context, FACELET_FACTORY);
-        DefaultFaceletFactory ourFactory = factory;
 
-        if (ourFactory.needsToBeRefreshed(ccResource.getURL())) {
+        if (factory.needsToBeRefreshed(ccResource.getURL())) {
             metadataCache.remove(ccResource);
         }
 
@@ -859,7 +853,6 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * Initialize mappings, during the first request.
      */
     protected void initializeMappings() {
-
         String viewMappings = webConfig.getOptionValue(FaceletsViewMappings);
         if (viewMappings != null && viewMappings.length() > 0) {
             Map<String, Object> appMap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
@@ -897,9 +890,9 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * @throws IOException if the writer cannot be created
      */
     protected ResponseWriter createResponseWriter(FacesContext context) throws IOException {
-
         ExternalContext extContext = context.getExternalContext();
         RenderKit renderKit = context.getRenderKit();
+
         // Avoid a cryptic NullPointerException when the renderkit ID
         // is incorrectly set
         if (renderKit == null) {
@@ -991,7 +984,6 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * @return the encoding to be used for this response
      */
     protected String getResponseEncoding(FacesContext context, String orig) {
-
         String encoding = orig;
 
         // 1. get it from request
@@ -999,7 +991,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
         // 2. get it from the session
         if (encoding == null) {
-            if (null != context.getExternalContext().getSession(false)) {
+            if (context.getExternalContext().getSession(false) != null) {
                 Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
                 encoding = (String) sessionMap.get(CHARACTER_ENCODING_KEY);
                 if (LOGGER.isLoggable(FINEST)) {
@@ -1044,13 +1036,12 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * @return the content type to be used for this response
      */
     protected String getResponseContentType(FacesContext context, String orig) {
-
         String contentType = orig;
 
         // See if we need to override the contentType
-        Map<Object, Object> m = context.getAttributes();
-        if (m.containsKey("facelets.ContentType")) {
-            contentType = (String) m.get("facelets.ContentType");
+        Map<Object, Object> contextAttributes = context.getAttributes();
+        if (contextAttributes.containsKey("facelets.ContentType")) {
+            contentType = (String) contextAttributes.get("facelets.ContentType");
             if (LOGGER.isLoggable(FINEST)) {
                 LOGGER.finest("Facelet specified alternate contentType '" + contentType + "'");
             }
@@ -1059,9 +1050,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         // Safety check
         if (contentType == null) {
             contentType = "text/html";
-            if (LOGGER.isLoggable(FINEST)) {
-                LOGGER.finest("ResponseWriter created had a null ContentType, defaulting to text/html");
-            }
+            LOGGER.finest("ResponseWriter created had a null ContentType, defaulting to text/html");
         }
 
         return contentType;
@@ -1202,10 +1191,9 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
         if (library != null) {
             return "Composite Component: " + name + ", library: " + library;
-        } else {
-            return "Composite Component: " + name;
         }
 
+        return "Composite Component: " + name;
     }
 
     private void startTrackViewModifications(FacesContext ctx, UIViewRoot root) {
@@ -1238,7 +1226,6 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     }
 
     private void retargetHandler(FacesContext context, AttachedObjectHandler handler, UIComponent targetComponent) {
-
         if (UIComponent.isCompositeComponent(targetComponent)) {
             // RELEASE_PENDING Not keen on calling CompositeComponentTagHandler here....
             List<AttachedObjectHandler> nHandlers = CompositeComponentTagHandler.getAttachedObjectHandlers(targetComponent);
@@ -1284,7 +1271,6 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
         @Override
         public boolean hasNext() {
-
             if (curIndex != -1 && curIndex < descriptors.length) {
                 int idx = curIndex;
 
@@ -1311,16 +1297,12 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
         @Override
         public CompCompInterfaceMethodMetadata next() {
-
             return new CompCompInterfaceMethodMetadata(descriptors[curIndex++]);
-
         }
 
         @Override
         public void remove() {
-
             throw new UnsupportedOperationException();
-
         }
 
         private boolean shouldSkip(PropertyDescriptor pd) {
@@ -1343,14 +1325,12 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      */
     private static final class CompCompInterfaceMethodMetadata {
 
-        private final PropertyDescriptor pd;
+        private final PropertyDescriptor propertyDescriptor;
 
         // -------------------------------------------------------- Constructors
 
-        CompCompInterfaceMethodMetadata(PropertyDescriptor pd) {
-
-            this.pd = pd;
-
+        CompCompInterfaceMethodMetadata(PropertyDescriptor propertyDescriptor) {
+            this.propertyDescriptor = propertyDescriptor;
         }
 
         // ------------------------------------------------------ Public Methods
@@ -1360,13 +1340,12 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
          * @return the <code>method-signature</code> for this attribute
          */
         public String getMethodSignature(FacesContext ctx) {
-
-            ValueExpression ms = (ValueExpression) pd.getValue("method-signature");
-            if (ms != null) {
-                return (String) ms.getValue(ctx.getELContext());
+            ValueExpression methodSignature = (ValueExpression) propertyDescriptor.getValue("method-signature");
+            if (methodSignature != null) {
+                return (String) methodSignature.getValue(ctx.getELContext());
             }
-            return null;
 
+            return null;
         }
 
         /**
@@ -1374,21 +1353,19 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
          * @return an array of component targets to which a MethodExpression should be retargeted
          */
         public String[] getTargets(FacesContext ctx) {
-
-            ValueExpression ts = (ValueExpression) pd.getValue("targets");
-            if (ts != null) {
-                String targets = (String) ts.getValue(ctx.getELContext());
+            ValueExpression targetsExpression = (ValueExpression) propertyDescriptor.getValue("targets");
+            if (targetsExpression != null) {
+                String targets = (String) targetsExpression.getValue(ctx.getELContext());
                 if (targets != null) {
                     return Util.split(ctx.getExternalContext().getApplicationMap(), targets, " ");
                 }
             }
 
             return null;
-
         }
 
         public String getTargetAttributeName(FacesContext ctx) {
-            ValueExpression ve = (ValueExpression) pd.getValue("targetAttributeName");
+            ValueExpression ve = (ValueExpression) propertyDescriptor.getValue("targetAttributeName");
             return ve != null ? (String) ve.getValue(ctx.getELContext()) : null;
 
         }
@@ -1400,7 +1377,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
          */
         public boolean isRequired(FacesContext ctx) {
 
-            ValueExpression rd = (ValueExpression) pd.getValue("required");
+            ValueExpression rd = (ValueExpression) propertyDescriptor.getValue("required");
             return rd != null ? Boolean.valueOf(rd.getValue(ctx.getELContext()).toString()) : false;
 
         }
@@ -1410,18 +1387,14 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
          * composite component consumer. This value may be a ValueExpression, or a literal.
          */
         public Object getDefault() {
-
-            return pd.getValue("default");
-
+            return propertyDescriptor.getValue("default");
         }
 
         /**
          * @return the composite component attribute name
          */
         public String getName() {
-
-            return pd.getName();
-
+            return propertyDescriptor.getName();
         }
 
     } // END CompCompInterfaceMethodMetadata
@@ -1447,7 +1420,6 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         // -------------------------------------------------------- Constructors
 
         MethodRetargetHandlerManager() {
-
             MethodRetargetHandler[] handlers = { new ActionRegargetHandler(), new ActionListenerRegargetHandler(), new ValidatorRegargetHandler(),
                     new ValueChangeListenerRegargetHandler() };
             for (MethodRetargetHandler h : handlers) {
@@ -1466,18 +1438,14 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
          * attribute, or </code>null</code> if there is no handler available.
          */
         private MethodRetargetHandler getRetargetHandler(String attrName) {
-
             return handlerMap.get(attrName);
-
         }
 
         /**
          * @return a <code>MethodRetargetHandler</code> that can retarget arbitrarily named MethodExpressions.
          */
         private MethodRetargetHandler getDefaultHandler() {
-
             return arbitraryHandler;
-
         }
 
         // ------------------------------------------------------ Nested Classes
@@ -1503,7 +1471,6 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
             @Override
             public void retarget(FacesContext ctx, CompCompInterfaceMethodMetadata metadata, Object sourceValue, UIComponent target) {
-
                 String expr = sourceValue instanceof ValueExpression ? ((ValueExpression) sourceValue).getExpressionString() : sourceValue.toString();
                 ExpressionFactory f = ctx.getApplication().getExpressionFactory();
                 MethodExpression me = f.createMethodExpression(ctx.getELContext(), expr, Object.class, NO_ARGS);
@@ -1514,9 +1481,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
             @Override
             public String getAttribute() {
-
                 return ACTION;
-
             }
 
         } // END ActionRegargetHandler
@@ -1534,7 +1499,6 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
             @Override
             public void retarget(FacesContext ctx, CompCompInterfaceMethodMetadata metadata, Object sourceValue, UIComponent target) {
-
                 ValueExpression ve = (ValueExpression) sourceValue;
                 ExpressionFactory f = ctx.getApplication().getExpressionFactory();
                 MethodExpression me = f.createMethodExpression(ctx.getELContext(), ve.getExpressionString(), Void.TYPE, ACTION_LISTENER_ARGS);
@@ -1547,9 +1511,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
             @Override
             public String getAttribute() {
-
                 return ACTION_LISTENER;
-
             }
 
         } // END ActionListenerRegargetHandler
@@ -1567,7 +1529,6 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
             @Override
             public void retarget(FacesContext ctx, CompCompInterfaceMethodMetadata metadata, Object sourceValue, UIComponent target) {
-
                 ValueExpression ve = (ValueExpression) sourceValue;
                 ExpressionFactory f = ctx.getApplication().getExpressionFactory();
                 MethodExpression me = f.createMethodExpression(ctx.getELContext(), ve.getExpressionString(), Void.TYPE, VALIDATOR_ARGS);
@@ -1578,9 +1539,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
             @Override
             public String getAttribute() {
-
                 return VALIDATOR;
-
             }
 
         } // END ValidatorRegargetHandler
@@ -1625,7 +1584,6 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
             @Override
             public void retarget(FacesContext ctx, CompCompInterfaceMethodMetadata metadata, Object sourceValue, UIComponent target) {
-
                 ValueExpression ve = (ValueExpression) sourceValue;
                 ExpressionFactory f = ctx.getApplication().getExpressionFactory();
 
