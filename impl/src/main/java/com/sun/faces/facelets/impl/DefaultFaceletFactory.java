@@ -16,7 +16,14 @@
 
 package com.sun.faces.facelets.impl;
 
+import static com.sun.faces.RIConstants.CHAR_ENCODING;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.UseFaceletsID;
+import static com.sun.faces.util.Util.isEmpty;
+import static com.sun.faces.util.Util.notNull;
+import static com.sun.faces.util.Util.saveDOCTYPEToFacesContextAttributes;
+import static com.sun.faces.util.Util.saveXMLDECLToFacesContextAttributes;
+import static java.util.logging.Level.FINEST;
+import static java.util.regex.Pattern.quote;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -41,7 +48,6 @@ import com.sun.faces.context.FacesFileNotFoundException;
 import com.sun.faces.facelets.compiler.Compiler;
 import com.sun.faces.util.Cache;
 import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
 
 import jakarta.el.ELException;
 import jakarta.faces.FacesException;
@@ -74,13 +80,9 @@ public class DefaultFaceletFactory {
     // provides a custom one. The DefaultResourceResolver simply uses
     // the ResourceHandler to do its work.
     private ResourceResolver resolver;
-
     private URL baseUrl;
-
     private long refreshPeriod;
-
     private FaceletCache<DefaultFacelet> cache;
-
     private ConcurrentMap<String, FaceletCache<DefaultFacelet>> cachePerContract;
 
     Cache<String, IdMapper> idMappers;
@@ -88,35 +90,13 @@ public class DefaultFaceletFactory {
     // ------------------------------------------------------------ Constructors
 
     public DefaultFaceletFactory() {
-        compiler = null;
-        resolver = null;
         refreshPeriod = -1;
-        cache = null;
-        baseUrl = null;
     }
 
-    public DefaultFaceletFactory(Compiler compiler, ResourceResolver resolver) throws IOException {
+    public final void init(FacesContext facesContext, Compiler compiler, ResourceResolver resolver, long refreshPeriod, FaceletCache cache) {
+        notNull("compiler", compiler);
+        notNull("resolver", resolver);
 
-        this(compiler, resolver, -1, null);
-
-    }
-
-    public DefaultFaceletFactory(Compiler compiler, ResourceResolver resolver, long refreshPeriod) {
-        this(compiler, resolver, refreshPeriod, null);
-    }
-
-    public DefaultFaceletFactory(Compiler compiler, ResourceResolver resolver, long refreshPeriod, FaceletCache cache) {
-        init(compiler, resolver, refreshPeriod, cache);
-    }
-
-    public final void init(Compiler compiler, ResourceResolver resolver, long refreshPeriod, FaceletCache cache) {
-        Util.notNull("compiler", compiler);
-        Util.notNull("resolver", resolver);
-
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        if (facesContext == null) {
-            throw new IllegalStateException("DefaultFaceletFactory cannot locate the faces context");
-        }
         ExternalContext externalContext = facesContext.getExternalContext();
         WebConfiguration config = WebConfiguration.getInstance(externalContext);
 
@@ -125,7 +105,6 @@ public class DefaultFaceletFactory {
         this.resolver = resolver;
         baseUrl = resolver.resolveUrl("/");
         this.idMappers = config.isOptionEnabled(UseFaceletsID) ? null : new Cache<>(new IdMapperFactory());
-        // this.location = url;
         refreshPeriod = refreshPeriod >= 0 ? refreshPeriod * 1000 : -1;
         this.refreshPeriod = refreshPeriod;
         if (log.isLoggable(Level.FINE)) {
@@ -139,22 +118,6 @@ public class DefaultFaceletFactory {
         this.cache = initCache(cache);
     }
 
-    private FaceletCache<DefaultFacelet> initCache(FaceletCache<DefaultFacelet> cache) {
-
-        if (cache == null) {
-            FaceletCacheFactory cacheFactory = (FaceletCacheFactory) FactoryFinder.getFactory(FactoryFinder.FACELET_CACHE_FACTORY);
-            cache = cacheFactory.getFaceletCache();
-        }
-
-        // Create instance factories for the cache, so that the cache can
-        // create Facelets and Metadata Facelets
-        FaceletCache.MemberFactory<DefaultFacelet> faceletFactory = key -> createFacelet(key);
-        FaceletCache.MemberFactory<DefaultFacelet> metadataFaceletFactory = key -> createMetadataFacelet(key);
-
-        cache.setCacheFactories(faceletFactory, metadataFaceletFactory);
-        return cache;
-    }
-
     /*
      * (non-Javadoc)
      *
@@ -164,21 +127,12 @@ public class DefaultFaceletFactory {
         return resolver;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.sun.facelets.FaceletFactory#getFacelet(java.lang.String)
-     */
-    public Facelet getFacelet(FacesContext context, String uri) throws IOException {
-
-        return this.getFacelet(context, resolveURL(uri));
-
+    public Facelet getMetadataFacelet(FacesContext context, String uri) throws IOException {
+        return getMetadataFacelet(context, resolveURL(uri));
     }
 
-    public Facelet getMetadataFacelet(FacesContext context, String uri) throws IOException {
-
-        return this.getMetadataFacelet(context, resolveURL(uri));
-
+    public Facelet getFacelet(FacesContext context, String uri) throws IOException {
+        return getFacelet(context, resolveURL(uri));
     }
 
     /**
@@ -202,9 +156,9 @@ public class DefaultFaceletFactory {
                 throw new FacesFileNotFoundException(path + " Not Found in ExternalContext as a Resource");
             }
             return url;
-        } else {
-            return new URL(source, path);
         }
+
+        return new URL(source, path);
     }
 
     /**
@@ -221,25 +175,24 @@ public class DefaultFaceletFactory {
      * @throws ELException
      */
     public Facelet getFacelet(FacesContext context, URL url) throws IOException {
-
         Facelet result = getCache(context).getFacelet(url);
 
         DefaultFacelet _facelet = null;
         if (result instanceof DefaultFacelet) {
             _facelet = (DefaultFacelet) result;
+
             Doctype doctype = _facelet.getSavedDoctype();
-            if (null != doctype) {
-                Util.saveDOCTYPEToFacesContextAttributes(doctype);
+            if (doctype != null) {
+                saveDOCTYPEToFacesContextAttributes(doctype);
             }
 
             String xmlDecl = _facelet.getSavedXMLDecl();
-            if (null != xmlDecl) {
-                Util.saveXMLDECLToFacesContextAttributes(xmlDecl);
+            if (xmlDecl != null) {
+                saveXMLDECLToFacesContextAttributes(xmlDecl);
             }
         }
 
         return result;
-
     }
 
     public Facelet getMetadataFacelet(FacesContext context, URL url) throws IOException {
@@ -253,48 +206,15 @@ public class DefaultFaceletFactory {
         if (cachePerContract == null) {
             return false;
         }
+
         // PENDING(FCAPUTO) not sure, if this is what we want.
         for (FaceletCache<DefaultFacelet> faceletCache : cachePerContract.values()) {
             if (!faceletCache.isFaceletCached(url)) {
                 return true;
             }
         }
+
         return false;
-    }
-
-    private FaceletCache<DefaultFacelet> getCache(FacesContext context) {
-        List<String> contracts = context.getResourceLibraryContracts();
-        if (!contracts.isEmpty()) {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < contracts.size(); i++) {
-                builder.append(contracts.get(i));
-                if (i + 1 != contracts.size()) {
-                    builder.append(",");
-                }
-            }
-            String contractsKey = builder.toString();
-            FaceletCache<DefaultFacelet> faceletCache = cachePerContract.get(contractsKey);
-            if (faceletCache == null) {
-                // PENDING(FCAPUTO) we don't support com.sun.faces.config.WebConfiguration.WebContextInitParameter#FaceletCache for
-                // contracts
-                faceletCache = initCache(null);
-                cachePerContract.putIfAbsent(contractsKey, faceletCache);
-                faceletCache = cachePerContract.get(contractsKey);
-            }
-            return faceletCache;
-        }
-        return cache;
-    }
-
-    private URL resolveURL(String uri) throws IOException {
-        // PENDING(FCAPUTO) Deactivated caching for resource library contracts. If we still want to cache it, we need a cache
-        // per contract libraries list.
-        // But the ResourceHandler caches on his own (using ResourceManager).
-        URL url = this.resolveURL(baseUrl, uri);
-        if (url == null) {
-            throw new IOException("'" + uri + "' not found.");
-        }
-        return url;
     }
 
     public UIComponent _createComponent(FacesContext context, String taglibURI, String tagName, Map<String, Object> attributes) {
@@ -317,11 +237,13 @@ public class DefaultFaceletFactory {
             osw.append("<html xmlns=\"http://www.w3.org/1999/xhtml\"\n");
             osw.append("      xmlns:j=\"").append(taglibURI).append("\">");
             osw.append("  <j:").append(tagName).append(" ");
-            if (null != attributes && !attributes.isEmpty()) {
+
+            if (!isEmpty(attributes)) {
                 for (Map.Entry<String, Object> attr : attributes.entrySet()) {
                     osw.append(attr.getKey()).append("=\"").append(attr.getValue().toString()).append("\"").append(" ");
                 }
             }
+
             String tempId = context.getViewRoot().createUniqueId(context, tagName);
             osw.append(" id=\"").append(tempId).append("\" />");
             osw.append("</html>");
@@ -329,48 +251,43 @@ public class DefaultFaceletFactory {
                 osw.flush();
                 osw.close();
             } catch (IOException ex) {
-                if (log.isLoggable(Level.FINEST)) {
-                    log.log(Level.FINEST, "Flushing and closing stream", ex);
+                if (log.isLoggable(FINEST)) {
+                    log.log(FINEST, "Flushing and closing stream", ex);
                 }
             }
 
             URL fabricatedFaceletPage = tempFile.toURI().toURL();
-            Facelet f = createFacelet(fabricatedFaceletPage);
+            Facelet fabricatedFacelet = createFacelet(fabricatedFaceletPage);
             UIComponent tmp = app.createComponent("jakarta.faces.NamingContainer");
             tmp.setId(context.getViewRoot().createUniqueId());
-            f.apply(context, tmp);
+            fabricatedFacelet.apply(context, tmp);
             result = tmp.findComponent(tempId);
             tmp.getChildren().clear();
             osw = null;
 
         } catch (MalformedURLException mue) {
-            if (log.isLoggable(Level.FINEST)) {
-                log.log(Level.FINEST, "Invalid URL", mue);
-            }
+                log.log(FINEST, "Invalid URL", mue);
         } catch (IOException ioe) {
-            if (log.isLoggable(Level.FINEST)) {
-                log.log(Level.FINEST, "I/O error", ioe);
-            }
+                log.log(FINEST, "I/O error", ioe);
         } finally {
-            if (null != osw) {
+            if (osw != null) {
                 try {
                     osw.close();
                 } catch (IOException ioe) {
-                    if (log.isLoggable(Level.FINEST)) {
-                        log.log(Level.FINEST, "Closing stream", ioe);
-                    }
+                    log.log(FINEST, "Closing stream", ioe);
                 }
             }
-            if (null != tempFile) {
+
+            if (tempFile != null) {
                 boolean successful = tempFile.delete();
-                if (!successful && log.isLoggable(Level.FINEST)) {
-                    log.log(Level.FINEST, "Unable to delete temporary file.");
+                if (!successful && log.isLoggable(FINEST)) {
+                    log.log(FINEST, "Unable to delete temporary file.");
                 }
             }
         }
 
         try {
-            byte[] faceletPage = "facelet".getBytes(RIConstants.CHAR_ENCODING);
+            byte[] faceletPage = "facelet".getBytes(CHAR_ENCODING);
             ByteArrayInputStream bais = new ByteArrayInputStream(faceletPage);
         } catch (UnsupportedEncodingException uee) {
             if (log.isLoggable(Level.SEVERE)) {
@@ -378,10 +295,69 @@ public class DefaultFaceletFactory {
             }
         }
 
-        if (null != result) {
+        if (result != null) {
             result.setId(null);
         }
+
         return result;
+    }
+
+
+    // ---------------------------------------------------------- Private Methods
+
+
+    private FaceletCache<DefaultFacelet> initCache(FaceletCache<DefaultFacelet> cache) {
+        if (cache == null) {
+            FaceletCacheFactory cacheFactory = (FaceletCacheFactory) FactoryFinder.getFactory(FactoryFinder.FACELET_CACHE_FACTORY);
+            cache = cacheFactory.getFaceletCache();
+        }
+
+        // Create instance factories for the cache, so that the cache can
+        // create Facelets and Metadata Facelets
+        FaceletCache.MemberFactory<DefaultFacelet> faceletFactory = key -> createFacelet(key);
+        FaceletCache.MemberFactory<DefaultFacelet> metadataFaceletFactory = key -> createMetadataFacelet(key);
+
+        cache.setCacheFactories(faceletFactory, metadataFaceletFactory);
+        return cache;
+    }
+
+    private FaceletCache<DefaultFacelet> getCache(FacesContext context) {
+        List<String> contracts = context.getResourceLibraryContracts();
+        if (!contracts.isEmpty()) {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < contracts.size(); i++) {
+                builder.append(contracts.get(i));
+                if (i + 1 != contracts.size()) {
+                    builder.append(",");
+                }
+            }
+
+            String contractsKey = builder.toString();
+            FaceletCache<DefaultFacelet> faceletCache = cachePerContract.get(contractsKey);
+            if (faceletCache == null) {
+                // PENDING(FCAPUTO) we don't support com.sun.faces.config.WebConfiguration.WebContextInitParameter#FaceletCache for
+                // contracts
+                faceletCache = initCache(null);
+                cachePerContract.putIfAbsent(contractsKey, faceletCache);
+                faceletCache = cachePerContract.get(contractsKey);
+            }
+
+            return faceletCache;
+        }
+
+        return cache;
+    }
+
+    private URL resolveURL(String uri) throws IOException {
+        // PENDING(FCAPUTO) Deactivated caching for resource library contracts. If we still want to cache it, we need a cache
+        // per contract libraries list.
+        // But the ResourceHandler caches on his own (using ResourceManager).
+        URL url = resolveURL(baseUrl, uri);
+        if (url == null) {
+            throw new IOException("'" + uri + "' not found.");
+        }
+
+        return url;
     }
 
     /**
@@ -415,15 +391,14 @@ public class DefaultFaceletFactory {
     }
 
     private DefaultFacelet createMetadataFacelet(URL url) throws IOException {
+        log.fine(() -> "Creating Metadata Facelet for: " + url);
 
-        if (log.isLoggable(Level.FINE)) {
-            log.fine("Creating Metadata Facelet for: " + url);
-        }
-        String escapedBaseURL = Pattern.quote(baseUrl.getFile());
-        String alias = '/' + url.getFile().replaceFirst(escapedBaseURL, "");
+        String alias = '/' + url.getFile().replaceFirst(quote(baseUrl.getFile()), "");
         try {
-            FaceletHandler h = compiler.metadataCompile(url, alias);
-            return new DefaultFacelet(this, compiler.createExpressionFactory(), url, alias, h);
+            return new DefaultFacelet(this,
+                compiler.createExpressionFactory(),
+                url, alias,
+                compiler.metadataCompile(url, alias));
         } catch (FileNotFoundException fnfe) {
             throw new FileNotFoundException("Facelet " + alias + " not found at: " + url.toExternalForm());
         }
@@ -434,6 +409,7 @@ public class DefaultFaceletFactory {
         return refreshPeriod;
     }
 
+
     // ---------------------------------------------------------- Nested Classes
 
     private static final class IdMapperFactory implements Cache.Factory<String, IdMapper> {
@@ -442,9 +418,7 @@ public class DefaultFaceletFactory {
 
         @Override
         public IdMapper newInstance(String arg) throws InterruptedException {
-
             return new IdMapper();
-
         }
 
     }
