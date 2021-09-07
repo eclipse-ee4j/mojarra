@@ -84,11 +84,19 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>jakarta.faces</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    
+        <!--  
+        <dependency>
             <groupId>jakarta.faces</groupId>
             <artifactId>jakarta.faces-api</artifactId>
-            <version>3.0.0</version>
+            <version>4.0.0</version>
             <scope>provided</scope>
         </dependency>
+        -->
 
         <dependency>
             <groupId>jakarta.servlet</groupId>
@@ -405,7 +413,7 @@
             </activation>
 
             <properties>
-                <root>${maven.multiModuleProjectDirectory}</root>
+                <glassfish.root>${maven.multiModuleProjectDirectory}/target</glassfish.root>
             </properties>
 
             <dependencies>
@@ -431,8 +439,8 @@
                                     <goal>unpack</goal>
                                 </goals>
                                 <configuration>
-                                    <outputDirectory>${root}/target</outputDirectory>
-                                    <markersDirectory>${root}/target/dependency-maven-plugin-markers</markersDirectory>
+                                    <outputDirectory>${glassfish.root}</outputDirectory>
+                                    <markersDirectory>${glassfish.root}/dependency-maven-plugin-markers</markersDirectory>
                                     <artifactItems>
                                         <artifactItem>
                                             <groupId>org.glassfish.main.distributions</groupId>
@@ -440,7 +448,7 @@
                                             <version>${glassfish.version}</version>
                                             <type>zip</type>
                                             <overWrite>false</overWrite>
-                                            <outputDirectory>${root}/target</outputDirectory>
+                                            <outputDirectory>${glassfish.root}</outputDirectory>
                                         </artifactItem>
                                     </artifactItems>
                                 </configuration>
@@ -459,7 +467,7 @@
                                             <version>${jsf.version}</version>
                                             <type>jar</type>
                                             <overWrite>true</overWrite>
-                                            <outputDirectory>${root}/target/glassfish6/glassfish/modules</outputDirectory>
+                                            <outputDirectory>${glassfish.root}/glassfish6/glassfish/modules</outputDirectory>
                                             <destFileName>jakarta.faces.jar</destFileName>
                                         </artifactItem>
                                     </artifactItems>
@@ -492,18 +500,16 @@
                                 </goals>
                                 <configuration>
                                     <target if="suspend">
-                                        <property name="antProperty"
-                                            value="${foo}/target/glassfish6/glassfish/domains/domain1/config/domain.xml" />
-                                        <echo level="info">Suspending: Replacing in ${root}</echo>
+                                        <echo level="info">Suspending: Replacing in ${glassfish.root}</echo>
                                         <replace token="-Djava.awt.headless=true"
                                             value="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=9009"
-                                            dir="${root}/target/glassfish6/glassfish/domains/domain1/config/"
+                                            dir="${glassfish.root}/glassfish6/glassfish/domains/domain1/config/"
                                             summary="yes">
                                             <include name="domain.xml" />
                                         </replace>
                                         <replace token="# Framework config properties."
                                             value="org.osgi.framework.storage.clean=onFirstInit"
-                                            dir="${root}/target/glassfish6/glassfish/config/" summary="yes">
+                                            dir="${glassfish.root}/glassfish6/glassfish/config/" summary="yes">
                                             <include name="osgi.properties" />
                                         </replace>
                                     </target>
@@ -517,19 +523,17 @@
                                 </goals>
                                 <configuration>
                                     <target unless="suspend">
-                                        <property name="antProperty"
-                                            value="${foo}/target/glassfish6/glassfish/domains/domain1/config/domain.xml" />
                                         <echo level="info">Not suspending: Replacing in ${root}</echo>
                                         <replace
                                             token="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=9009"
                                             value="-Djava.awt.headless=true"
-                                            dir="${root}/target/glassfish6/glassfish/domains/domain1/config/"
+                                            dir="${glassfish.root}/glassfish6/glassfish/domains/domain1/config/"
                                             summary="yes">
                                             <include name="domain.xml" />
                                         </replace>
                                         <replace token="org.osgi.framework.storage.clean=onFirstInit"
                                             value="# Framework config properties."
-                                            dir="${root}/target/glassfish6/glassfish/config/" summary="yes">
+                                            dir="${glassfish.root}/glassfish6/glassfish/config/" summary="yes">
                                             <include name="osgi.properties" />
                                         </replace>
                                     </target>
@@ -542,7 +546,7 @@
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <configuration>
                             <environmentVariables>
-                                <GLASSFISH_HOME>${session.executionRootDirectory}/target/glassfish6</GLASSFISH_HOME>
+                                <GLASSFISH_HOME>${glassfish.root}/glassfish6</GLASSFISH_HOME>
                             </environmentVariables>
                         </configuration>
                     </plugin>
