@@ -24,14 +24,17 @@ import static com.sun.faces.util.MessageUtils.ILLEGAL_VIEW_ID_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.Util.getFacesMapping;
 import static com.sun.faces.util.Util.getFirstWildCardMappingToFacesServlet;
+import static com.sun.faces.util.Util.getViewHandler;
 import static com.sun.faces.util.Util.isViewIdExactMappedToFacesServlet;
 import static com.sun.faces.util.Util.notNull;
 import static jakarta.faces.FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY;
+import static jakarta.faces.push.PushContext.URI_PREFIX;
 import static jakarta.faces.render.RenderKitFactory.HTML_BASIC_RENDER_KIT;
 import static jakarta.faces.render.ResponseStateManager.NON_POSTBACK_VIEW_TOKEN_PARAM;
 import static jakarta.servlet.http.MappingMatch.EXACT;
 import static jakarta.servlet.http.MappingMatch.EXTENSION;
 import static jakarta.servlet.http.MappingMatch.PATH;
+import static java.text.MessageFormat.format;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 import static java.util.logging.Level.FINE;
@@ -41,7 +44,6 @@ import static java.util.logging.Level.WARNING;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -68,7 +70,6 @@ import jakarta.faces.component.UIViewParameter;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.push.PushContext;
 import jakarta.faces.view.ViewDeclarationLanguage;
 import jakarta.faces.view.ViewDeclarationLanguageFactory;
 import jakarta.faces.view.ViewMetadata;
@@ -314,8 +315,7 @@ public class MultiViewHandler extends ViewHandler {
         requireNonNull(channel, "channel");
 
         ExternalContext externalContext = context.getExternalContext();
-        String contextPath = externalContext.getRequestContextPath();
-        return externalContext.encodeWebsocketURL(contextPath + PushContext.URI_PREFIX + "/" + channel);
+        return externalContext.encodeWebsocketURL(externalContext.getRequestContextPath() + URI_PREFIX + "/" + channel);
     }
 
     @Override
@@ -328,7 +328,7 @@ public class MultiViewHandler extends ViewHandler {
         }
 
         ExternalContext ectx = context.getExternalContext();
-        return ectx.encodeActionURL(ectx.encodeBookmarkableURL(Util.getViewHandler(context).getActionURL(context, viewId), params));
+        return ectx.encodeActionURL(ectx.encodeBookmarkableURL(getViewHandler(context).getActionURL(context, viewId), params));
     }
 
     @Override
@@ -351,7 +351,6 @@ public class MultiViewHandler extends ViewHandler {
      */
     @Override
     public String getRedirectURL(FacesContext context, String viewId, Map<String, List<String>> parameters, boolean includeViewParams) {
-
         String encodingFromContext = (String) context.getAttributes().get(FACELETS_ENCODING_KEY);
         if (encodingFromContext == null) {
             encodingFromContext = (String) context.getViewRoot().getAttributes().get(FACELETS_ENCODING_KEY);
@@ -363,11 +362,8 @@ public class MultiViewHandler extends ViewHandler {
             try {
                 responseEncoding = context.getExternalContext().getResponseCharacterEncoding();
             } catch (Exception e) {
-                if (LOGGER.isLoggable(FINE)) {
-                    String message = "Unable to obtain response character encoding from ExternalContext {0}.  Using UTF-8.";
-                    message = MessageFormat.format(message, context.getExternalContext());
-                    LOGGER.log(FINE, message, e);
-                }
+                LOGGER.log(FINE, e, () ->
+                    format("Unable to obtain response character encoding from ExternalContext {0}.  Using UTF-8.", context.getExternalContext()));
                 responseEncoding = "UTF-8";
             }
         } else {
@@ -432,6 +428,7 @@ public class MultiViewHandler extends ViewHandler {
     public String deriveLogicalViewId(FacesContext context, String requestViewId) {
         return derivePhysicalViewId(context, requestViewId, false);
     }
+
 
     // ------------------------------------------------------- Protected Methods
 
@@ -547,9 +544,8 @@ public class MultiViewHandler extends ViewHandler {
             currentIsSameAsNew = true;
             toViewParams = currentViewParams;
         } else {
-            ViewDeclarationLanguage pdl = getViewDeclarationLanguage(ctx, viewId);
-            ViewMetadata viewMetadata = pdl.getViewMetadata(ctx, viewId);
-            if (null != viewMetadata) {
+            ViewMetadata viewMetadata = getViewDeclarationLanguage(ctx, viewId).getViewMetadata(ctx, viewId);
+            if (viewMetadata != null) {
                 UIViewRoot root = viewMetadata.createMetadataView(ctx);
                 toViewParams = ViewMetadata.getViewParameters(root);
             }
