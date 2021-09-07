@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,6 +17,8 @@
 package com.sun.faces.renderkit;
 
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.StateSavingMethod;
+import static com.sun.faces.util.RequestStateManager.FACES_VIEW_STATE;
+import static jakarta.faces.application.StateManager.STATE_SAVING_METHOD_CLIENT;
 
 import java.io.IOException;
 
@@ -25,7 +27,6 @@ import com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter;
 import com.sun.faces.util.RequestStateManager;
 
 import jakarta.faces.FacesException;
-import jakarta.faces.application.StateManager;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.render.ResponseStateManager;
 
@@ -38,11 +39,9 @@ public class ResponseStateManagerImpl extends ResponseStateManager {
     private StateHelper helper;
 
     public ResponseStateManagerImpl() {
-
         WebConfiguration webConfig = WebConfiguration.getInstance();
         String stateMode = webConfig.getOptionValue(StateSavingMethod);
-        helper = StateManager.STATE_SAVING_METHOD_CLIENT.equalsIgnoreCase(stateMode) ? new ClientSideStateHelper() : new ServerSideStateHelper();
-
+        helper = STATE_SAVING_METHOD_CLIENT.equalsIgnoreCase(stateMode) ? new ClientSideStateHelper() : new ServerSideStateHelper();
     }
 
     // --------------------------------------- Methods from ResponseStateManager
@@ -52,9 +51,7 @@ public class ResponseStateManagerImpl extends ResponseStateManager {
      */
     @Override
     public boolean isPostback(FacesContext context) {
-
         return context.getExternalContext().getRequestParameterMap().containsKey(PredefinedPostbackParameter.VIEW_STATE_PARAM.getName(context));
-
     }
 
     @Override
@@ -67,20 +64,19 @@ public class ResponseStateManagerImpl extends ResponseStateManager {
      */
     @Override
     public Object getState(FacesContext context, String viewId) {
-
-        Object state = RequestStateManager.get(context, RequestStateManager.FACES_VIEW_STATE);
+        Object state = RequestStateManager.get(context, FACES_VIEW_STATE);
         if (state == null) {
             try {
                 state = helper.getState(context, viewId);
                 if (state != null) {
-                    RequestStateManager.set(context, RequestStateManager.FACES_VIEW_STATE, state);
+                    RequestStateManager.set(context, FACES_VIEW_STATE, state);
                 }
             } catch (IOException e) {
                 throw new FacesException(e);
             }
         }
-        return state;
 
+        return state;
     }
 
     /**
@@ -88,9 +84,7 @@ public class ResponseStateManagerImpl extends ResponseStateManager {
      */
     @Override
     public void writeState(FacesContext context, Object state) throws IOException {
-
         helper.writeState(context, state, null);
-
     }
 
     /**
@@ -98,27 +92,14 @@ public class ResponseStateManagerImpl extends ResponseStateManager {
      */
     @Override
     public String getViewState(FacesContext context, Object state) {
-
         StringBuilder sb = new StringBuilder(32);
         try {
             helper.writeState(context, state, sb);
         } catch (IOException e) {
             throw new FacesException(e);
         }
+
         return sb.toString();
-
-    }
-
-    @SuppressWarnings({ "deprecation" })
-    @Override
-    public Object getTreeStructureToRestore(FacesContext context, String viewId) {
-
-        Object[] state = (Object[]) getState(context, viewId);
-        if (state != null) {
-            return state[0];
-        }
-        return null;
-
     }
 
     /**

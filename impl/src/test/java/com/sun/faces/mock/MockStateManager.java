@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -37,14 +37,6 @@ public class MockStateManager extends StateManager {
         return null;
     }
 
-    public SerializedView saveSerializedView(FacesContext context) {
-        return null;
-    }
-
-    public void writeState(FacesContext context,
-            SerializedView state) throws IOException {
-    }
-
     protected UIViewRoot restoreTreeStructure(FacesContext context,
             String viewId, String renderKitId) {
         return null;
@@ -60,11 +52,6 @@ public class MockStateManager extends StateManager {
 
     @Override
     public boolean isSavingStateInClient(FacesContext arg0) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Object saveView(FacesContext arg0) {
         throw new UnsupportedOperationException();
     }
 
