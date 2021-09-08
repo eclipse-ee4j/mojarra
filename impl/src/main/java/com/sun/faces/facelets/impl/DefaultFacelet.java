@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -103,6 +103,13 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
             setSavedXMLDecl(XMLDECL);
         }
 
+    }
+
+    @Override
+    public void applyMetadata(FacesContext facesContext, UIComponent parent) throws IOException {
+        // Call apply, since a DefaultFacelet instance will be specifically created to only
+        // hold the Metadata in advance.
+        apply(facesContext, parent);
     }
 
     /**

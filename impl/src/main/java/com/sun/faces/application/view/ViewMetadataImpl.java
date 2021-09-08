@@ -110,7 +110,7 @@ public class ViewMetadataImpl extends ViewMetadata {
             }
 
             faceletFactory.getMetadataFacelet(context, metadataView.getViewId())
-                          .apply(context, metadataView);
+                          .applyMetadata(context, metadataView);
 
             importConstantsIfNecessary(context, metadataView);
 
