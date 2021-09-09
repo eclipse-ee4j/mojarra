@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021 Contributors to Eclipse Foundation.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,6 +23,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.enterprise.util.Nonbinding;
 import jakarta.inject.Qualifier;
 
@@ -36,8 +38,26 @@ import jakarta.inject.Qualifier;
 @Retention(RUNTIME)
 public @interface FacesConfig {
 
+
     /**
-     * The Faces spec version 
+     * <p class="changed_added_4_0">
+     * Supports inline instantiation of the {@link FacesConfig} qualifier.
+     * </p>
+     *
+     * @since 4.0
+     */
+    public static final class Literal extends AnnotationLiteral<FacesConfig> implements FacesConfig {
+        private static final long serialVersionUID = 1L;
+
+        public static final Literal INSTANCE = new Literal();
+
+        @Override
+        public Version version() {
+            return null; // non binding, so not used
+        }
+    }
+    /**
+     * The Faces spec version
      *
      */
     public static enum Version {
