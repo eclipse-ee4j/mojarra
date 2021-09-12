@@ -23,7 +23,7 @@ import java.util.List;
 import jakarta.el.ELContext;
 import jakarta.el.ExpressionFactory;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.faces.annotation.FacesViewId;
+import jakarta.faces.annotation.View;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIOutput;
 import jakarta.faces.component.UIPanel;
@@ -33,7 +33,7 @@ import jakarta.faces.component.html.HtmlOutputText;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.Facelet;
 
-@FacesViewId("/hello.xhtml")
+@View("/hello.xhtml")
 @ApplicationScoped
 public class Hello extends Facelet {
 

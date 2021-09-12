@@ -53,7 +53,7 @@ import com.sun.faces.util.FacesLogger;
 import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
-import jakarta.faces.annotation.FacesViewId;
+import jakarta.faces.annotation.View;
 import jakarta.faces.application.Application;
 import jakarta.faces.component.Doctype;
 import jakarta.faces.component.UIComponent;
@@ -130,7 +130,7 @@ public class DefaultFaceletFactory {
     }
 
     public Facelet getMetadataFacelet(FacesContext context, String viewId) throws IOException {
-        Facelet facelet = getBeanReference(context, Facelet.class, FacesViewId.Literal.of(viewId));
+        Facelet facelet = getBeanReference(context, Facelet.class, View.Literal.of(viewId));
         if (facelet == null) {
             facelet = getMetadataFacelet(context, resolveURL(viewId));
         }
@@ -139,7 +139,7 @@ public class DefaultFaceletFactory {
     }
    
     public Facelet getFacelet(FacesContext context, String viewId) throws IOException {
-        Facelet facelet = getBeanReference(context, Facelet.class, FacesViewId.Literal.of(viewId));
+        Facelet facelet = getBeanReference(context, Facelet.class, View.Literal.of(viewId));
         if (facelet == null) {
             facelet = getFacelet(context, resolveURL(viewId));
         }

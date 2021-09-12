@@ -34,7 +34,7 @@ public abstract class Facelet {
 
     /**
      * <p>
-     * <span class="changed_modified_4_0">The</span> passed UIComponent parent will be populated/restored in accordance with
+     * <span class="changed_added_4_0">The</span> passed UIComponent parent will be populated/restored in accordance with
      * the <span class="changed_modified_4_0">Facelets chapter in the spec prose document with only the meta data as per the
      * <code>f:metadata</code> tag.</span>
      * </p>
