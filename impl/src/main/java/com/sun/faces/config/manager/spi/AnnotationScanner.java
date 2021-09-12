@@ -44,7 +44,6 @@ import jakarta.faces.event.NamedEvent;
 import jakarta.faces.render.FacesBehaviorRenderer;
 import jakarta.faces.render.FacesRenderer;
 import jakarta.faces.validator.FacesValidator;
-import jakarta.faces.view.facelets.FaceletsResourceResolver;
 import jakarta.servlet.ServletContext;
 
 /**
@@ -83,8 +82,7 @@ public abstract class AnnotationScanner extends AnnotationProvider {
             FacesComponent.class, FacesConverter.class,
             FacesValidator.class, FacesRenderer.class,
             NamedEvent.class, FacesBehavior.class,
-            FacesBehaviorRenderer.class,
-            FaceletsResourceResolver.class)));
+            FacesBehaviorRenderer.class)));
 
     private boolean isAnnotationScanPackagesSet;
     private String[] webInfClassesPackages;

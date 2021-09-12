@@ -48,7 +48,6 @@ import jakarta.faces.render.FacesBehaviorRenderer;
 import jakarta.faces.render.Renderer;
 import jakarta.faces.validator.FacesValidator;
 import jakarta.faces.validator.Validator;
-import jakarta.faces.view.facelets.FaceletsResourceResolver;
 import jakarta.faces.webapp.FacesServlet;
 import jakarta.servlet.ServletContainerInitializer;
 import jakarta.servlet.ServletContext;
@@ -70,7 +69,7 @@ import jakarta.websocket.server.ServerEndpoint;
  * <li>A CDI enabled bean with qualifier FacesConfig can be obtained</li>
  * </ul>
  */
-@HandlesTypes({ Converter.class, Endpoint.class, FaceletsResourceResolver.class, FacesBehavior.class, FacesBehaviorRenderer.class, FacesComponent.class,
+@HandlesTypes({ Converter.class, Endpoint.class, FacesBehavior.class, FacesBehaviorRenderer.class, FacesComponent.class,
         FacesConverter.class, FacesConfig.class, // Should actually be check for enabled bean, but difficult to guarantee, see SERVLET_SPEC-79
         FacesValidator.class, ListenerFor.class, ListenersFor.class, NamedEvent.class, PhaseListener.class, Renderer.class, Resource.class,
         ResourceDependencies.class, ResourceDependency.class, ServerApplicationConfig.class, ServerEndpoint.class, UIComponent.class, Validator.class })

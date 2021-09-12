@@ -69,7 +69,6 @@ import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.lifecycle.LifecycleFactory;
 import jakarta.faces.push.PushContext;
 import jakarta.faces.validator.BeanValidator;
-import jakarta.faces.view.facelets.ResourceResolver;
 import jakarta.faces.webapp.FacesServlet;
 import jakarta.servlet.ServletContext;
 
@@ -772,7 +771,6 @@ public class WebConfiguration {
         CompressableMimeTypes("com.sun.faces.compressableMimeTypes", ""),
         DisableUnicodeEscaping("com.sun.faces.disableUnicodeEscaping", "auto"),
         FaceletsDefaultRefreshPeriod(ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, "2"),
-        FaceletsResourceResolver(ResourceResolver.FACELETS_RESOURCE_RESOLVER_PARAM_NAME, ""),
         FaceletsViewMappings(ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME, ""),
         FaceletsLibraries(ViewHandler.FACELETS_LIBRARIES_PARAM_NAME, ""),
         FaceletsDecorators(ViewHandler.FACELETS_DECORATORS_PARAM_NAME, ""),

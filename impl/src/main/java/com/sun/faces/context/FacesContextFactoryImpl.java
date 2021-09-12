@@ -92,10 +92,6 @@ public class FacesContextFactoryImpl extends FacesContextFactory {
                 webConfig.isOptionEnabled(ViewRootPhaseListenerQueuesException) ? Boolean.TRUE : Boolean.FALSE);
         attrs.put(EnableValidateWholeBean.getQualifiedName(), webConfig.isOptionEnabled(EnableValidateWholeBean) ? Boolean.TRUE : Boolean.FALSE);
 
-        Object nonDefaultResourceResolver = extContext.getApplicationMap().get(DefaultResourceResolver.NON_DEFAULT_RESOURCE_RESOLVER_PARAM_NAME);
-        if (null != nonDefaultResourceResolver) {
-            attrs.put(DefaultResourceResolver.NON_DEFAULT_RESOURCE_RESOLVER_PARAM_NAME, nonDefaultResourceResolver);
-        }
         String facesConfigVersion = "" + appMap.get(RIConstants.FACES_CONFIG_VERSION);
         attrs.put(RIConstants.FACES_CONFIG_VERSION, facesConfigVersion);
     }

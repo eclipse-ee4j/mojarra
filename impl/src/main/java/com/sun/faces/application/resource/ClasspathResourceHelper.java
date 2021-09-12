@@ -29,13 +29,11 @@ import java.util.Collections;
 import java.util.List;
 
 import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.facelets.impl.DefaultResourceResolver;
 import com.sun.faces.util.Util;
 
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.view.facelets.ResourceResolver;
 
 /**
  * <p>
@@ -137,20 +135,12 @@ public class ClasspathResourceHelper extends ResourceHelper {
      */
     @Override
     public URL getURL(ResourceInfo resource, FacesContext ctx) {
-        ResourceResolver nonDefaultResourceResolver = (ResourceResolver) ctx.getAttributes()
-                .get(DefaultResourceResolver.NON_DEFAULT_RESOURCE_RESOLVER_PARAM_NAME);
         String path = resource.getPath();
-        URL url = null;
-        if (null != nonDefaultResourceResolver) {
-            url = nonDefaultResourceResolver.resolveUrl(path);
-        }
-        if (null == url) {
-            ClassLoader loader = Util.getCurrentLoader(this.getClass());
-            url = loader.getResource(path);
-            if (url == null) {
-                // try using this class' loader (necessary when running in OSGi)
-                url = this.getClass().getClassLoader().getResource(resource.getPath());
-            }
+        ClassLoader loader = Util.getCurrentLoader(this.getClass());
+        URL url = loader.getResource(path);
+        if (url == null) {
+            // try using this class' loader (necessary when running in OSGi)
+            url = this.getClass().getClassLoader().getResource(resource.getPath());
         }
         return url;
 
