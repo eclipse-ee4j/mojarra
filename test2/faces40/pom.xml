@@ -33,6 +33,7 @@
 
     <modules>
         <module>javaPage</module>
+        <module>cdi</module>
         <module>selectItemGroups</module>
         <module>inputFile</module>
         <module>namespaces</module>
