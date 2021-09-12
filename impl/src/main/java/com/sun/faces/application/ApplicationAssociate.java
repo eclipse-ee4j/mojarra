@@ -17,18 +17,13 @@ package com.sun.faces.application;
 
 import static com.sun.faces.RIConstants.FACES_CONFIG_VERSION;
 import static com.sun.faces.RIConstants.FACES_PREFIX;
-import static com.sun.faces.config.ConfigManager.getAnnotatedClasses;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableFaceletsResourceResolverResolveCompositeComponents;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.FaceletsSkipComments;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletCache;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsDecorators;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsDefaultRefreshPeriod;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsDefaultRefreshPeriodDeprecated;
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsResourceResolver;
 import static com.sun.faces.el.ELUtils.buildFacesResolver;
 import static com.sun.faces.el.FacesCompositeELResolver.ELResolverChainType.Faces;
-import static com.sun.faces.facelets.impl.DefaultResourceResolver.NON_DEFAULT_RESOURCE_RESOLVER_PARAM_NAME;
-import static com.sun.faces.facelets.util.ReflectionUtil.decorateInstance;
 import static com.sun.faces.facelets.util.ReflectionUtil.forName;
 import static com.sun.faces.util.MessageUtils.APPLICATION_ASSOCIATE_EXISTS_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
@@ -106,8 +101,6 @@ import jakarta.faces.flow.FlowHandler;
 import jakarta.faces.flow.FlowHandlerFactory;
 import jakarta.faces.view.facelets.FaceletCache;
 import jakarta.faces.view.facelets.FaceletCacheFactory;
-import jakarta.faces.view.facelets.FaceletsResourceResolver;
-import jakarta.faces.view.facelets.ResourceResolver;
 import jakarta.faces.view.facelets.TagDecorator;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
@@ -652,31 +645,7 @@ public class ApplicationAssociate {
         long period = parseLong(refreshPeriod);
 
         // resource resolver
-        ResourceResolver defaultResourceResolver = new DefaultResourceResolver(applicationImpl.getResourceHandler());
-        ResourceResolver resolver = defaultResourceResolver;
-
-        String resolverName = webConfig.getOptionValue(FaceletsResourceResolver);
-        if (resolverName != null && resolverName.length() > 0) {
-            resolver = (ResourceResolver) ReflectionUtil.decorateInstance(resolverName, ResourceResolver.class, resolver);
-        } else {
-
-            Set<? extends Class<?>> resourceResolvers = getAnnotatedClasses(context).get(FaceletsResourceResolver.class);
-            if (null != resourceResolvers && !resourceResolvers.isEmpty()) {
-                Class<?> resolverClass = resourceResolvers.iterator().next();
-                if (resourceResolvers.size() > 1 && LOGGER.isLoggable(SEVERE)) {
-                    LOGGER.log(SEVERE, "Found more than one class " + "annotated with FaceletsResourceResolver.  Will " + "use {0} and ignore the others",
-                            resolverClass);
-                }
-                resolver = (ResourceResolver) decorateInstance(resolverClass, ResourceResolver.class, resolver);
-            }
-        }
-
-        // If our resourceResolver is not the one we created above
-        // and the use of this ResousrecResolver for Composite Components
-        // is acceptable.
-        if (resolver != defaultResourceResolver && webConfig.isOptionEnabled(EnableFaceletsResourceResolverResolveCompositeComponents)) {
-            context.getExternalContext().getApplicationMap().put(NON_DEFAULT_RESOURCE_RESOLVER_PARAM_NAME, resolver);
-        }
+        DefaultResourceResolver resolver = new DefaultResourceResolver(applicationImpl.getResourceHandler());
 
         FaceletCache cache = null;
         String faceletCacheName = webConfig.getOptionValue(FaceletCache);

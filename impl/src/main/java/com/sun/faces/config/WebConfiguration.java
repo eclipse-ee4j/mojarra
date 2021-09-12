@@ -69,7 +69,6 @@ import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.lifecycle.LifecycleFactory;
 import jakarta.faces.push.PushContext;
 import jakarta.faces.validator.BeanValidator;
-import jakarta.faces.view.facelets.ResourceResolver;
 import jakarta.faces.webapp.FacesServlet;
 import jakarta.servlet.ServletContext;
 
@@ -776,8 +775,6 @@ public class WebConfiguration {
         DisableUnicodeEscaping("com.sun.faces.disableUnicodeEscaping", "auto"),
         FaceletsDefaultRefreshPeriod(ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, "2"),
         FaceletsDefaultRefreshPeriodDeprecated("facelets.REFRESH_PERIOD", "2", true, FaceletsDefaultRefreshPeriod, new FaceletsConfigParamLoggingStrategy()),
-        FaceletsResourceResolver(ResourceResolver.FACELETS_RESOURCE_RESOLVER_PARAM_NAME, ""),
-        FaceletsResourceResolverDeprecated("facelets.RESOURCE_RESOLVER", "", true, FaceletsResourceResolver, new FaceletsConfigParamLoggingStrategy()),
         FaceletsViewMappings(ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME, ""),
         FaceletsViewMappingsDeprecated("facelets.VIEW_MAPPINGS", "", true, FaceletsViewMappings, new FaceletsConfigParamLoggingStrategy()),
         FaceletsLibraries(ViewHandler.FACELETS_LIBRARIES_PARAM_NAME, ""),
@@ -898,7 +895,6 @@ public class WebConfiguration {
         CacheResourceModificationTimestamp("com.sun.faces.cacheResourceModificationTimestamp", false),
         EnableAgressiveSessionDirtying("com.sun.faces.enableAgressiveSessionDirtying", false),
         EnableDistributable("com.sun.faces.enableDistributable", false),
-        EnableFaceletsResourceResolverResolveCompositeComponents("com.sun.faces.enableFaceletsResourceResolverCompositeComponents", false),
         EnableMissingResourceLibraryDetection("com.sun.faces.enableMissingResourceLibraryDetection", false),
         DisableIdUniquenessCheck("com.sun.faces.disableIdUniquenessCheck", false),
         EnableTransitionTimeNoOpFlash("com.sun.faces.enableTransitionTimeNoOpFlash", false),

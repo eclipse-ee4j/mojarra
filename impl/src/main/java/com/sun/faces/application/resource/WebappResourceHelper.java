@@ -30,14 +30,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.facelets.impl.DefaultResourceResolver;
 import com.sun.faces.util.FacesLogger;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.view.facelets.ResourceResolver;
 
 /**
  * <p>
@@ -131,12 +129,7 @@ public class WebappResourceHelper extends ResourceHelper {
      */
     @Override
     public URL getURL(ResourceInfo resource, FacesContext ctx) {
-        ResourceResolver nonDefaultResourceResolver = (ResourceResolver) ctx.getAttributes()
-                .get(DefaultResourceResolver.NON_DEFAULT_RESOURCE_RESOLVER_PARAM_NAME);
         String path = resource.getPath();
-        if (null != nonDefaultResourceResolver) {
-            return nonDefaultResourceResolver.resolveUrl(path);
-        }
 
         try {
             return ctx.getExternalContext().getResource(path);

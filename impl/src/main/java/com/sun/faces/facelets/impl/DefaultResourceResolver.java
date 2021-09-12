@@ -18,24 +18,18 @@ package com.sun.faces.facelets.impl;
 
 import java.net.URL;
 
-import com.sun.faces.RIConstants;
-
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.application.ViewResource;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.view.facelets.ResourceResolver;
 
-public class DefaultResourceResolver extends ResourceResolver {
+public class DefaultResourceResolver {
 
-    private ResourceHandler resourceHandler = null;
-
-    public static final String NON_DEFAULT_RESOURCE_RESOLVER_PARAM_NAME = RIConstants.FACES_PREFIX + "NDRRPN";
+    private ResourceHandler resourceHandler;
 
     public DefaultResourceResolver(ResourceHandler resourceHandler) {
         this.resourceHandler = resourceHandler;
     }
 
-    @Override
     public URL resolveUrl(String path) {
         ViewResource faceletResource = resourceHandler.createViewResource(FacesContext.getCurrentInstance(), path);
 

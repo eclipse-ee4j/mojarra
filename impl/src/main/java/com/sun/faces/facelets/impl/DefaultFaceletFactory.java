@@ -62,7 +62,6 @@ import jakarta.faces.view.facelets.FaceletCache;
 import jakarta.faces.view.facelets.FaceletCacheFactory;
 import jakarta.faces.view.facelets.FaceletException;
 import jakarta.faces.view.facelets.FaceletHandler;
-import jakarta.faces.view.facelets.ResourceResolver;
 
 /**
  * Default FaceletFactory implementation.
@@ -79,7 +78,7 @@ public class DefaultFaceletFactory {
     // We continue to use a ResourceResolver just in case someone
     // provides a custom one. The DefaultResourceResolver simply uses
     // the ResourceHandler to do its work.
-    private ResourceResolver resolver;
+    private DefaultResourceResolver resolver;
     private URL baseUrl;
     private long refreshPeriod;
     private FaceletCache<DefaultFacelet> cache;
@@ -93,7 +92,7 @@ public class DefaultFaceletFactory {
         refreshPeriod = -1;
     }
 
-    public final void init(FacesContext facesContext, Compiler compiler, ResourceResolver resolver, long refreshPeriod, FaceletCache cache) {
+    public final void init(FacesContext facesContext, Compiler compiler, DefaultResourceResolver resolver, long refreshPeriod, FaceletCache cache) {
         notNull("compiler", compiler);
         notNull("resolver", resolver);
 
@@ -118,12 +117,7 @@ public class DefaultFaceletFactory {
         this.cache = initCache(cache);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.sun.facelets.FaceletFactory#getResourceResolver
-     */
-    public ResourceResolver getResourceResolver() {
+    public DefaultResourceResolver getResourceResolver() {
         return resolver;
     }
 
