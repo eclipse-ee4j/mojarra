@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021 Contributors to Eclipse Foundation.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -25,6 +26,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.inject.Qualifier;
 
 /**
@@ -39,4 +41,17 @@ import jakarta.inject.Qualifier;
 @Qualifier
 @Retention(value = RUNTIME)
 public @interface ApplicationMap {
+
+    /**
+     * <p class="changed_added_4_0">
+     * Supports inline instantiation of the {@link ApplicationMap} qualifier.
+     * </p>
+     *
+     * @since 4.0
+     */
+    public static final class Literal extends AnnotationLiteral<ApplicationMap> implements ApplicationMap {
+        private static final long serialVersionUID = 1L;
+
+        public static final Literal INSTANCE = new Literal();
+    }
 }
