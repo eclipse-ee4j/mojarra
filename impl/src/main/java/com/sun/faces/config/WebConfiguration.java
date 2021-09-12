@@ -756,16 +756,13 @@ public class WebConfiguration {
         AlternateLifecycleId(FacesServlet.LIFECYCLE_ID_ATTR, ""),
         ResourceExcludes(ResourceHandler.RESOURCE_EXCLUDES_PARAM_NAME, ResourceHandler.RESOURCE_EXCLUDES_DEFAULT_VALUE),
         NumberOfViews("com.sun.faces.numberOfViewsInSession", "15"),
-        NumberOfViewsDeprecated("com.sun.faces.NUMBER_OF_VIEWS_IN_SESSION", "15", true, NumberOfViews),
         NumberOfLogicalViews("com.sun.faces.numberOfLogicalViews", "15"),
-        NumberOfLogicalViewsDeprecated("com.sun.faces.NUMBER_OF_VIEWS_IN_LOGICAL_VIEW_IN_SESSION", "15", true, NumberOfLogicalViews),
         NumberOfConcurrentFlashUsers("com.sun.faces.numberOfConcerrentFlashUsers", "5000"),
         NumberOfFlashesBetweenFlashReapings("com.sun.faces.numberOfFlashesBetweenFlashReapings", "5000"),
         InjectionProviderClass("com.sun.faces.injectionProvider", ""),
         SerializationProviderClass("com.sun.faces.serializationProvider", ""),
         ResponseBufferSize("com.sun.faces.responseBufferSize", "1024"),
         FaceletsBufferSize(ViewHandler.FACELETS_BUFFER_SIZE_PARAM_NAME, "1024"),
-        FaceletsBufferSizeDeprecated("facelets.BUFFER_SIZE", "1024", true, FaceletsBufferSize, new FaceletsConfigParamLoggingStrategy()),
         ClientStateWriteBufferSize("com.sun.faces.clientStateWriteBufferSize", "8192"),
         ResourceBufferSize("com.sun.faces.resourceBufferSize", "2048"),
         ExpressionFactory("com.sun.faces.expressionFactory", "com.sun.el.ExpressionFactoryImpl"),
@@ -775,15 +772,10 @@ public class WebConfiguration {
         CompressableMimeTypes("com.sun.faces.compressableMimeTypes", ""),
         DisableUnicodeEscaping("com.sun.faces.disableUnicodeEscaping", "auto"),
         FaceletsDefaultRefreshPeriod(ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, "2"),
-        FaceletsDefaultRefreshPeriodDeprecated("facelets.REFRESH_PERIOD", "2", true, FaceletsDefaultRefreshPeriod, new FaceletsConfigParamLoggingStrategy()),
         FaceletsResourceResolver(ResourceResolver.FACELETS_RESOURCE_RESOLVER_PARAM_NAME, ""),
-        FaceletsResourceResolverDeprecated("facelets.RESOURCE_RESOLVER", "", true, FaceletsResourceResolver, new FaceletsConfigParamLoggingStrategy()),
         FaceletsViewMappings(ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME, ""),
-        FaceletsViewMappingsDeprecated("facelets.VIEW_MAPPINGS", "", true, FaceletsViewMappings, new FaceletsConfigParamLoggingStrategy()),
         FaceletsLibraries(ViewHandler.FACELETS_LIBRARIES_PARAM_NAME, ""),
-        FaceletsLibrariesDeprecated("facelets.LIBRARIES", "", true, FaceletsLibraries, new FaceletsConfigParamLoggingStrategy()),
         FaceletsDecorators(ViewHandler.FACELETS_DECORATORS_PARAM_NAME, ""),
-        FaceletsDecoratorsDeprecated("facelets.DECORATORS", "", true, FaceletsDecorators, new FaceletsConfigParamLoggingStrategy()),
         DuplicateJARPattern("com.sun.faces.duplicateJARPattern", ""),
         ValidateEmptyFields(UIInput.VALIDATE_EMPTY_FIELDS_PARAM_NAME, "auto"),
         FullStateSavingViewIds(StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME, ""),
@@ -818,18 +810,18 @@ public class WebConfiguration {
         // ------------------------------------------------- Package Private Methods
 
         WebContextInitParameter(String qualifiedName, String defaultValue) {
-            this(qualifiedName, defaultValue, false, null);
+            this(qualifiedName, defaultValue, false, null, null);
         }
 
         WebContextInitParameter(String qualifiedName, String defaultValue, boolean deprecated, WebContextInitParameter alternate) {
+            this(qualifiedName, defaultValue, deprecated, alternate, null);
+        }
+
+        WebContextInitParameter(String qualifiedName, String defaultValue, boolean deprecated, WebContextInitParameter alternate, DeprecationLoggingStrategy loggingStrategy) {
             this.qualifiedName = qualifiedName;
             this.defaultValue = defaultValue;
             this.deprecated = deprecated;
             this.alternate = alternate;
-        }
-
-        WebContextInitParameter(String qualifiedName, String defaultValue, boolean deprecated, WebContextInitParameter alternate, DeprecationLoggingStrategy loggingStrategy) {
-            this(qualifiedName, defaultValue, deprecated, alternate);
             this.loggingStrategy = loggingStrategy;
         }
 
@@ -863,32 +855,26 @@ public class WebConfiguration {
         ValidateFacesConfigFiles("com.sun.faces.validateXml", false),
         VerifyFacesConfigObjects("com.sun.faces.verifyObjects", false),
         ForceLoadFacesConfigFiles("com.sun.faces.forceLoadConfiguration", false),
-        DisableArtifactVersioning("com.sun.faces.disableVersionTracking", false, true, null),
         DisableClientStateEncryption("com.sun.faces.disableClientStateEncryption", false),
         DisableFacesServletAutomaticMapping(FacesServlet.DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME, false),
         EnableClientStateDebugging("com.sun.faces.enableClientStateDebugging", false),
         EnableHtmlTagLibraryValidator("com.sun.faces.enableHtmlTagLibValidator", false),
         EnableCoreTagLibraryValidator("com.sun.faces.enableCoreTagLibValidator", false),
         PreferXHTMLContentType("com.sun.faces.preferXHTML", false),
-        PreferXHTMLContextTypeDeprecated("com.sun.faces.PreferXHTML", false, true, PreferXHTMLContentType),
         CompressViewState("com.sun.faces.compressViewState", true),
-        CompressViewStateDeprecated("com.sun.faces.COMPRESS_STATE", true, true, CompressViewState),
         CompressJavaScript("com.sun.faces.compressJavaScript", true),
-        ExternalizeJavaScriptDeprecated("com.sun.faces.externalizeJavaScript", true, true, null),
         EnableJSStyleHiding("com.sun.faces.enableJSStyleHiding", false),
         EnableScriptInAttributeValue("com.sun.faces.enableScriptsInAttributeValues", true),
         WriteStateAtFormEnd("com.sun.faces.writeStateAtFormEnd", true),
         EnableLazyBeanValidation("com.sun.faces.enableLazyBeanValidation", true),
         EnableLoadBundle11Compatibility("com.sun.faces.enabledLoadBundle11Compatibility", false),
         SerializeServerState(StateManager.SERIALIZE_SERVER_STATE_PARAM_NAME, false),
-        SerializeServerStateDeprecated("com.sun.faces.serializeServerState", false, true, SerializeServerState),
         EnableViewStateIdRendering("com.sun.faces.enableViewStateIdRendering", true),
         RegisterConverterPropertyEditors("com.sun.faces.registerConverterPropertyEditors", false),
         DisableDefaultBeanValidator(BeanValidator.DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME, false),
         DateTimeConverterUsesSystemTimezone(Converter.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME, false),
         EnableHttpMethodRestrictionPhaseListener("com.sun.faces.ENABLE_HTTP_METHOD_RESTRICTION_PHASE_LISTENER", false),
         FaceletsSkipComments(ViewHandler.FACELETS_SKIP_COMMENTS_PARAM_NAME, false),
-        FaceletsSkipCommentsDeprecated("facelets.SKIP_COMMENTS", false, true, FaceletsSkipComments, new FaceletsConfigParamLoggingStrategy()),
         PartialStateSaving(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, true),
         GenerateUniqueServerStateIds("com.sun.faces.generateUniqueServerStateIds", true),
         InterpretEmptyStringSubmittedValuesAsNull(UIInput.EMPTY_STRING_AS_NULL_PARAM_NAME, false),
@@ -936,18 +922,18 @@ public class WebConfiguration {
         // ------------------------------------------------- Package Private Methods
 
         BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue) {
-            this(qualifiedName, defaultValue, false, null);
+            this(qualifiedName, defaultValue, false, null, null);
         }
 
         BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue, boolean deprecated, BooleanWebContextInitParameter alternate) {
+            this(qualifiedName, defaultValue, deprecated, alternate, null);
+        }
+
+        BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue, boolean deprecated, BooleanWebContextInitParameter alternate, DeprecationLoggingStrategy loggingStrategy) {
             this.qualifiedName = qualifiedName;
             this.defaultValue = defaultValue;
             this.deprecated = deprecated;
             this.alternate = alternate;
-        }
-
-        BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue, boolean deprecated, BooleanWebContextInitParameter alternate, DeprecationLoggingStrategy loggingStrategy) {
-            this(qualifiedName, defaultValue, deprecated, alternate);
             this.loggingStrategy = loggingStrategy;
 
         }
@@ -1030,15 +1016,6 @@ public class WebConfiguration {
         boolean shouldBeLogged(WebConfiguration configuration);
 
     }
-
-    private static class FaceletsConfigParamLoggingStrategy implements DeprecationLoggingStrategy {
-
-        @Override
-        public boolean shouldBeLogged(WebConfiguration configuration) {
-            return true;
-        }
-
-    } // END FaceletsConfigParamLoggingStrategy
 
     private interface DeferredLoggingAction {
 

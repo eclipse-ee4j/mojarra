@@ -20,7 +20,6 @@ import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParamet
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableViewStateIdRendering;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.GenerateUniqueServerStateIds;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.SerializeServerState;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.SerializeServerStateDeprecated;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.NumberOfLogicalViews;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.NumberOfViews;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.VIEW_STATE_PARAM;
@@ -338,7 +337,7 @@ public class ServerSideStateHelper extends StateHelper {
      */
     protected Object handleSaveState(Object state) {
 
-        if (webConfig.isOptionEnabled(SerializeServerStateDeprecated) || webConfig.isOptionEnabled(SerializeServerState)) {
+        if (webConfig.isOptionEnabled(SerializeServerState)) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
             ObjectOutputStream oas = null;
             try {
@@ -374,7 +373,7 @@ public class ServerSideStateHelper extends StateHelper {
      */
     protected Object handleRestoreState(Object state) {
 
-        if (webConfig.isOptionEnabled(SerializeServerStateDeprecated) || webConfig.isOptionEnabled(SerializeServerState)) {
+        if (webConfig.isOptionEnabled(SerializeServerState)) {
             try (ByteArrayInputStream bais = new ByteArrayInputStream((byte[]) state);
                     ObjectInputStream ois = serialProvider.createObjectInputStream(compressViewState ? new GZIPInputStream(bais, 1024) : bais);) {
                 return ois.readObject();
