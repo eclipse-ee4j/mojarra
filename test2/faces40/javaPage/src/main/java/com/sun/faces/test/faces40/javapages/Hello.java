@@ -26,6 +26,8 @@ public class Hello extends Facelet {
             return;
         }
 
+        ComponentBuilder components = new ComponentBuilder(facesContext);
+
         List<UIComponent> rootChildren = root.getChildren();
 
         UIOutput output = new UIOutput();
@@ -33,21 +35,21 @@ public class Hello extends Facelet {
         rootChildren.add(output);
 
 
-        HtmlBody body = new HtmlBody();
+        HtmlBody body = components.create(HtmlBody.COMPONENT_TYPE);
         rootChildren.add(body);
 
 
-        HtmlForm form = new HtmlForm();
+        HtmlForm form = components.create(HtmlForm.COMPONENT_TYPE);
         form.setId("form");
         body.getChildren().add(form);
 
 
-        HtmlOutputText message = new HtmlOutputText();
+        HtmlOutputText message = components.create(HtmlOutputText.COMPONENT_TYPE);
         message.setId("message");
         form.getChildren().add(message);
 
 
-        HtmlCommandButton actionButton = new HtmlCommandButton();
+        HtmlCommandButton actionButton = components.create(HtmlCommandButton.COMPONENT_TYPE);
         actionButton.setId("button");
         actionButton.addActionListener(e -> message.setValue("Hello, World"));
         actionButton.setValue("Do action");
@@ -57,6 +59,19 @@ public class Hello extends Facelet {
         output = new UIOutput();
         output.setValue("</html>");
         rootChildren.add(output);
+    }
+
+    private static class ComponentBuilder {
+        FacesContext facesContext;
+
+        ComponentBuilder(FacesContext facesContext) {
+            this.facesContext = facesContext;
+        }
+
+       @SuppressWarnings("unchecked")
+       <T> T create(String componentType) {
+           return (T) facesContext.getApplication().createComponent(facesContext, componentType, null);
+       }
     }
 
 }
