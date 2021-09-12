@@ -778,7 +778,6 @@ public class WebConfiguration {
         ValidateEmptyFields(UIInput.VALIDATE_EMPTY_FIELDS_PARAM_NAME, "auto"),
         FullStateSavingViewIds(StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME, ""),
         AnnotationScanPackages("com.sun.faces.annotationScanPackages", ""),
-        FaceletCache("com.sun.faces.faceletCache", ""),
         FaceletsProcessingFileExtensionProcessAs("", ""),
         ClientWindowMode(ClientWindow.CLIENT_WINDOW_MODE_PARAM_NAME, "none"),
         WebAppResourcesDirectory(ResourceHandler.WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME, "/resources"),

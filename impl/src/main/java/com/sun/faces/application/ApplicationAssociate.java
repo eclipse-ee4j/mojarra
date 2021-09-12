@@ -18,7 +18,6 @@ package com.sun.faces.application;
 import static com.sun.faces.RIConstants.FACES_CONFIG_VERSION;
 import static com.sun.faces.RIConstants.FACES_PREFIX;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.FaceletsSkipComments;
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletCache;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsDecorators;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsDefaultRefreshPeriod;
 import static com.sun.faces.el.ELUtils.buildFacesResolver;
@@ -37,7 +36,6 @@ import static java.lang.Long.parseLong;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.logging.Level.FINE;
-import static java.util.logging.Level.INFO;
 import static java.util.logging.Level.SEVERE;
 
 import java.io.IOException;
@@ -62,7 +60,6 @@ import com.sun.faces.component.search.SearchExpressionHandlerImpl;
 import com.sun.faces.config.ConfigManager;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.el.DemuxCompositeELResolver;
-import com.sun.faces.facelets.PrivateApiFaceletCacheAdapter;
 import com.sun.faces.facelets.compiler.Compiler;
 import com.sun.faces.facelets.compiler.SAXCompiler;
 import com.sun.faces.facelets.impl.DefaultFaceletFactory;
@@ -77,7 +74,6 @@ import com.sun.faces.facelets.tag.jstl.fn.JstlFunction;
 import com.sun.faces.facelets.tag.ui.UILibrary;
 import com.sun.faces.facelets.util.DevTools;
 import com.sun.faces.facelets.util.FunctionLibrary;
-import com.sun.faces.facelets.util.ReflectionUtil;
 import com.sun.faces.spi.InjectionProvider;
 import com.sun.faces.util.FacesLogger;
 
@@ -646,29 +642,8 @@ public class ApplicationAssociate {
         // resource resolver
         DefaultResourceResolver resolver = new DefaultResourceResolver(applicationImpl.getResourceHandler());
 
-        FaceletCache cache = null;
-        String faceletCacheName = webConfig.getOptionValue(FaceletCache);
-        if (faceletCacheName != null && faceletCacheName.length() > 0) {
-            try {
-                com.sun.faces.facelets.FaceletCache privateApiCache = (com.sun.faces.facelets.FaceletCache) ReflectionUtil.forName(faceletCacheName)
-                        .newInstance();
-                cache = new PrivateApiFaceletCacheAdapter(privateApiCache);
-            } catch (ClassCastException e) {
-                if (LOGGER.isLoggable(INFO)) {
-                    LOGGER.log(INFO, "Please remove context-param when using jakarta.faces.view.facelets.FaceletCache class with name:" + faceletCacheName
-                            + "and use the new FaceletCacheFactory API", e);
-                }
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-                if (LOGGER.isLoggable(SEVERE)) {
-                    LOGGER.log(SEVERE, "Error Loading Facelet cache: " + faceletCacheName, e);
-                }
-            }
-        }
-
-        if (cache == null) {
-            FaceletCacheFactory cacheFactory = (FaceletCacheFactory) FactoryFinder.getFactory(FACELET_CACHE_FACTORY);
-            cache = cacheFactory.getFaceletCache();
-        }
+        FaceletCacheFactory cacheFactory = (FaceletCacheFactory) FactoryFinder.getFactory(FACELET_CACHE_FACTORY);
+        FaceletCache<?> cache = cacheFactory.getFaceletCache();
 
         DefaultFaceletFactory toReturn = new DefaultFaceletFactory();
         toReturn.init(context, compiler, resolver, period, cache);
