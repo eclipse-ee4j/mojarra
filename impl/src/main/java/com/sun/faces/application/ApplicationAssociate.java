@@ -21,7 +21,6 @@ import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParamet
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletCache;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsDecorators;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsDefaultRefreshPeriod;
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsDefaultRefreshPeriodDeprecated;
 import static com.sun.faces.el.ELUtils.buildFacesResolver;
 import static com.sun.faces.el.FacesCompositeELResolver.ELResolverChainType.Faces;
 import static com.sun.faces.facelets.util.ReflectionUtil.forName;
@@ -634,7 +633,7 @@ public class ApplicationAssociate {
         // refresh period
         boolean isProduction = applicationImpl.getProjectStage() == Production;
         String refreshPeriod;
-        if (webConfig.isSet(FaceletsDefaultRefreshPeriod) || webConfig.isSet(FaceletsDefaultRefreshPeriodDeprecated)) {
+        if (webConfig.isSet(FaceletsDefaultRefreshPeriod)) {
             refreshPeriod = webConfig.getOptionValue(FaceletsDefaultRefreshPeriod);
         } else if (isProduction) {
             refreshPeriod = "-1";
