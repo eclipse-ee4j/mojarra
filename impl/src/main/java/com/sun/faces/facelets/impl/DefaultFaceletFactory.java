@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,6 +17,7 @@
 package com.sun.faces.facelets.impl;
 
 import static com.sun.faces.RIConstants.CHAR_ENCODING;
+import static com.sun.faces.cdi.CdiUtils.getBeanReference;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.UseFaceletsID;
 import static com.sun.faces.util.Util.isEmpty;
 import static com.sun.faces.util.Util.notNull;
@@ -52,6 +53,7 @@ import com.sun.faces.util.FacesLogger;
 import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
+import jakarta.faces.annotation.View;
 import jakarta.faces.application.Application;
 import jakarta.faces.component.Doctype;
 import jakarta.faces.component.UIComponent;
@@ -121,12 +123,22 @@ public class DefaultFaceletFactory {
         return resolver;
     }
 
-    public Facelet getMetadataFacelet(FacesContext context, String uri) throws IOException {
-        return getMetadataFacelet(context, resolveURL(uri));
-    }
+    public Facelet getMetadataFacelet(FacesContext context, String viewId) throws IOException {
+        Facelet facelet = getBeanReference(context, Facelet.class, View.Literal.of(viewId));
+        if (facelet == null) {
+            facelet = getMetadataFacelet(context, resolveURL(viewId));
+        }
 
-    public Facelet getFacelet(FacesContext context, String uri) throws IOException {
-        return getFacelet(context, resolveURL(uri));
+        return facelet;
+    }
+   
+    public Facelet getFacelet(FacesContext context, String viewId) throws IOException {
+        Facelet facelet = getBeanReference(context, Facelet.class, View.Literal.of(viewId));
+        if (facelet == null) {
+            facelet = getFacelet(context, resolveURL(viewId));
+        }
+
+        return facelet;
     }
 
     /**
