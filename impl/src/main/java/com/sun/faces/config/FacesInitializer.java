@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2009, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021 Contributors to Eclipse Foundation.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,6 +20,7 @@ package com.sun.faces.config;
 import static com.sun.faces.RIConstants.ANNOTATED_CLASSES;
 import static com.sun.faces.RIConstants.FACES_INITIALIZER_MAPPINGS_ADDED;
 import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
+import static com.sun.faces.RIConstants.FACES_SERVLET_REGISTRATION;
 import static com.sun.faces.util.Util.isEmpty;
 import static java.lang.Boolean.TRUE;
 
@@ -160,6 +162,8 @@ public class FacesInitializer implements ServletContainerInitializer {
         ServletRegistration existingFacesServletRegistration = getExistingFacesServletRegistration(servletContext);
         if (existingFacesServletRegistration != null) {
             // FacesServlet has already been defined, so we're not going to add additional mappings;
+
+            servletContext.setAttribute(FACES_SERVLET_REGISTRATION, existingFacesServletRegistration);
             return;
         }
 
@@ -173,6 +177,7 @@ public class FacesInitializer implements ServletContainerInitializer {
 
         servletContext.setAttribute(FACES_INITIALIZER_MAPPINGS_ADDED, TRUE);
         servletContext.setAttribute(FACES_SERVLET_MAPPINGS, newFacesServletRegistration.getMappings());
+        servletContext.setAttribute(FACES_SERVLET_REGISTRATION, newFacesServletRegistration);
     }
 
     private ServletRegistration getExistingFacesServletRegistration(ServletContext servletContext) {

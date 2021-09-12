@@ -16,38 +16,23 @@
     SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
 
 -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.glassfish.mojarra.test2</groupId>
+        <groupId>org.glassfish.mojarra.faces40</groupId>
         <artifactId>pom</artifactId>
         <version>4.0.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.glassfish.mojarra.faces40</groupId>
-    <artifactId>pom</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>extensionless-mapping</artifactId>
+    <packaging>war</packaging>
 
-    <name>Mojarra ${project.version} - Test - Faces 4.0</name>
+    <name>Mojarra ${project.version} - Test - Faces 4.0 - Extensionless Mapping</name>
 
-    <modules>
-    	<module>ajax</module>
-        <module>cdi</module>
-        <module>extensionless-mapping</module>
-        <module>javaPage</module>
-        <module>javaPageWithMetadata</module>
-        <module>selectItemGroups</module>
-        <module>inputFile</module>
-        <module>namespaces</module>
-        <module>selectItemGroup</module>
-    </modules>
-    
-    <dependencies>
-        <dependency>
-            <groupId>org.glassfish.mojarra.test</groupId>
-            <artifactId>util</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
+    <build>
+        <finalName>test-faces40-ajax</finalName>
+    </build>
 </project>
+

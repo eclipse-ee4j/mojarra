@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021 Contributors to Eclipse Foundation.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -244,6 +245,19 @@ public final class FacesServlet implements Servlet {
      * </p>
      */
     public static final String DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME = "jakarta.faces.DISABLE_FACESSERVLET_TO_XHTML";
+
+    /**
+     * <p class="changed_added_4_0">
+     * The <code>ServletContext</code> init parameter consulted by the runtime to tell if the automatic mapping of the
+     * {@code FacesServlet} to the extensionless variant (without {@code *.xhtml}) should be enabled. The implementation
+     * must enable this automatic mapping if and only if the value of this parameter is equal, ignoring case, to {@code true}.
+     * </p>
+     *
+     * <p>
+     * If this parameter is not specified, this automatic mapping is not enabled.
+     * </p>
+     */
+    public static final String AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME = "jakarta.faces.AUTOMATIC_EXTENSIONLESS_MAPPING";
 
     /**
      * The <code>Logger</code> for this class.
