@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -62,7 +62,6 @@ import jakarta.faces.view.ViewDeclarationLanguage;
  * {@link Application#createValidator}.
  * </p>
  */
-
 public abstract class Application {
 
     private Application defaultApplication;
@@ -235,13 +234,11 @@ public abstract class Application {
      * @since 2.0
      */
     public ResourceHandler getResourceHandler() {
-
         if (defaultApplication != null) {
             return defaultApplication.getResourceHandler();
         }
 
         throw new UnsupportedOperationException();
-
     }
 
     /**
@@ -249,23 +246,20 @@ public abstract class Application {
      * Set the {@link ResourceHandler} instance that will be utilized for rendering the markup for resources, and for
      * satisfying client requests to serve up resources.
      * </p>
-     * <div class="changed_added_2_0">
      *
      * @param resourceHandler The new <code>ResourceHandler</code> instance
      *
      * @throws IllegalStateException if this method is called after at least one request has been processed by the
      * <code>Lifecycle</code> instance for this application.
-     * @throws NullPointerException if <code>resourceHandler</code> is <code>null</code> </div>
+     * @throws NullPointerException if <code>resourceHandler</code> is <code>null</code>
      * @since 2.0
      */
     public void setResourceHandler(ResourceHandler resourceHandler) {
-
         if (defaultApplication != null) {
             defaultApplication.setResourceHandler(resourceHandler);
         } else {
             throw new UnsupportedOperationException();
         }
-
     }
 
     /**
@@ -346,7 +340,6 @@ public abstract class Application {
      * @since 2.0
      */
     public ProjectStage getProjectStage() {
-
         if (defaultApplication != null) {
             return defaultApplication.getProjectStage();
         }
@@ -467,12 +460,11 @@ public abstract class Application {
      * @since 2.2
      */
     public FlowHandler getFlowHandler() {
-
         if (defaultApplication != null) {
             return defaultApplication.getFlowHandler();
         }
-        return null;
 
+        return null;
     }
 
     /**
@@ -488,11 +480,9 @@ public abstract class Application {
      * @since 2.2
      */
     public void setFlowHandler(FlowHandler newHandler) {
-
         if (defaultApplication != null) {
             defaultApplication.setFlowHandler(newHandler);
         }
-
     }
 
     /**
@@ -564,11 +554,9 @@ public abstract class Application {
      * @since 2.0
      */
     public void addBehavior(String behaviorId, String behaviorClass) {
-
         if (defaultApplication != null) {
             defaultApplication.addBehavior(behaviorId, behaviorClass);
         }
-
     }
 
     /**
@@ -583,12 +571,11 @@ public abstract class Application {
      * @throws NullPointerException if <code>behaviorId</code> is <code>null</code>
      */
     public Behavior createBehavior(String behaviorId) throws FacesException {
-
         if (defaultApplication != null) {
             return defaultApplication.createBehavior(behaviorId);
         }
-        return null;
 
+        return null;
     }
 
     /**
@@ -599,12 +586,11 @@ public abstract class Application {
      * @return an iterator with behavior ids.
      */
     public Iterator<String> getBehaviorIds() {
-
         if (defaultApplication != null) {
             return defaultApplication.getBehaviorIds();
         }
-        return Collections.EMPTY_LIST.iterator();
 
+        return Collections.<String>emptyList().iterator();
     }
 
     /**
@@ -717,13 +703,11 @@ public abstract class Application {
      * @since 2.0
      */
     public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType, String rendererType) {
-
         if (defaultApplication != null) {
             return defaultApplication.createComponent(componentExpression, context, componentType, rendererType);
         }
 
         throw new UnsupportedOperationException();
-
     }
 
     /**
@@ -757,13 +741,11 @@ public abstract class Application {
      * @since 2.0
      */
     public UIComponent createComponent(FacesContext context, String componentType, String rendererType) {
-
         if (defaultApplication != null) {
             return defaultApplication.createComponent(context, componentType, rendererType);
         }
 
         throw new UnsupportedOperationException();
-
     }
 
     /**
@@ -888,13 +870,11 @@ public abstract class Application {
      * @since 2.0
      */
     public UIComponent createComponent(FacesContext context, Resource componentResource) {
-
         if (defaultApplication != null) {
             return defaultApplication.createComponent(context, componentResource);
         }
 
         throw new UnsupportedOperationException();
-
     }
 
     /**
@@ -1038,11 +1018,9 @@ public abstract class Application {
      * @since 2.0
      */
     public void addDefaultValidatorId(String validatorId) {
-
         if (defaultApplication != null) {
             defaultApplication.addDefaultValidatorId(validatorId);
         }
-
     }
 
     /**
@@ -1384,13 +1362,11 @@ public abstract class Application {
      *
      */
     public void publishEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass, Object source) {
-
         if (defaultApplication != null) {
             defaultApplication.publishEvent(context, systemEventClass, source);
         } else {
             throw new UnsupportedOperationException();
         }
-
     }
 
     /**
@@ -1419,13 +1395,11 @@ public abstract class Application {
      */
 
     public void publishEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source) {
-
         if (defaultApplication != null) {
             defaultApplication.publishEvent(context, systemEventClass, sourceBaseType, source);
         } else {
             throw new UnsupportedOperationException();
         }
-
     }
 
     /**
@@ -1473,13 +1447,11 @@ public abstract class Application {
      * @since 2.0
      */
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass, SystemEventListener listener) {
-
         if (defaultApplication != null) {
             defaultApplication.subscribeToEvent(systemEventClass, sourceClass, listener);
         } else {
             throw new UnsupportedOperationException();
         }
-
     }
 
     /**
@@ -1517,13 +1489,11 @@ public abstract class Application {
      * @since 2.0
      */
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener) {
-
         if (defaultApplication != null) {
             defaultApplication.subscribeToEvent(systemEventClass, listener);
         } else {
             throw new UnsupportedOperationException();
         }
-
     }
 
     /**
@@ -1557,13 +1527,11 @@ public abstract class Application {
      * @since 2.0
      */
     public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass, SystemEventListener listener) {
-
         if (defaultApplication != null) {
             defaultApplication.unsubscribeFromEvent(systemEventClass, sourceClass, listener);
         } else {
             throw new UnsupportedOperationException();
         }
-
     }
 
     /**
@@ -1594,13 +1562,11 @@ public abstract class Application {
      * @since 2.0
      */
     public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener) {
-
         if (defaultApplication != null) {
             defaultApplication.unsubscribeFromEvent(systemEventClass, listener);
         } else {
             throw new UnsupportedOperationException();
         }
-
     }
 
     /**
@@ -1612,13 +1578,11 @@ public abstract class Application {
      * @since 2.3
      */
     public SearchExpressionHandler getSearchExpressionHandler() {
-
         if (defaultApplication != null) {
             return defaultApplication.getSearchExpressionHandler();
-        } else {
-            throw new UnsupportedOperationException();
         }
 
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -1634,13 +1598,11 @@ public abstract class Application {
      * @since 2.3
      */
     public void setSearchExpressionHandler(SearchExpressionHandler searchExpressionHandler) {
-
         if (defaultApplication != null) {
             defaultApplication.setSearchExpressionHandler(searchExpressionHandler);
         } else {
             throw new UnsupportedOperationException();
         }
-
     }
 
     /**
@@ -1670,13 +1632,11 @@ public abstract class Application {
      * @since 2.3
      */
     public void addSearchKeywordResolver(SearchKeywordResolver resolver) {
-
         if (defaultApplication != null) {
             defaultApplication.addSearchKeywordResolver(resolver);
         } else {
             throw new UnsupportedOperationException();
         }
-
     }
 
     /**
@@ -1720,11 +1680,10 @@ public abstract class Application {
      * @since 2.3
      */
     public SearchKeywordResolver getSearchKeywordResolver() {
-
         if (defaultApplication != null) {
             return defaultApplication.getSearchKeywordResolver();
         }
-        throw new UnsupportedOperationException();
 
+        throw new UnsupportedOperationException();
     }
 }

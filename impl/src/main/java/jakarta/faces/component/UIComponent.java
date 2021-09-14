@@ -1233,6 +1233,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * UIComponent.visitTree() implementations must call UIComponent.pushComponentToEL() before performing the visit and
      * UIComponent.popComponentFromEL() after the visit.
      * </p>
+     * </div>
      *
      * @param visitContext the <code>VisitContext</code> for this visit
      * @param callback the <code>VisitCallback</code> instance whose <code>visit</code> method will be called for each node
@@ -1240,8 +1241,6 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * @return component implementations may return <code>true</code> to indicate that the tree visit is complete (eg. all
      * components that need to be visited have been visited). This results in the tree visit being short-circuited such that
      * no more components are visited.
-     *
-     * </div>
      *
      * @see VisitContext#invokeVisitCallback VisitContext.invokeVisitCallback()
      *
@@ -1450,7 +1449,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
     /**
      * <p class="changed_added_2_0">
      * Push the current <code>UIComponent</code> <code>this</code> to the {@link FacesContext} attribute map
-     * saving the previous <code>UIComponent</code> 
+     * saving the previous <code>UIComponent</code>
      * for a subsequent call to {@link #popComponentFromEL}.
      * </p>
      *

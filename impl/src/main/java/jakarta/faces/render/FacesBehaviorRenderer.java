@@ -26,13 +26,17 @@ import java.lang.annotation.Target;
 
 /**
  * <p class="changed_added_2_0">
- * The presence of this annotation on a class automatically registers the class with the runtime as a
- * {@link ClientBehaviorRenderer}. The value of the {@link #renderKitId} attribute is taken to be the
- * <em>render-kit-id</em> to which an instance of this <code>Renderer</code> is to be added. There must be a public
- * zero-argument constructor on any class where this annotation appears. The implementation must indicate a fatal error
- * if such a constructor does not exist and the application must not be placed in service. Within that
- * {@link RenderKit}, The value of the {@link #rendererType} attribute is taken to be the <em>renderer-type</em> The
- * implementation must guarantee that for each class annotated with <code>FacesBehaviorRenderer</code>, found with the
+ * The presence of this annotation on a class automatically registers the class with the runtime as a {@link ClientBehaviorRenderer}.
+ *
+ * The value of the {@link #renderKitId} attribute is taken to be the <em>render-kit-id</em> to which an instance of this
+ * <code>Renderer</code> is to be added.
+ *
+ * There must be a public zero-argument constructor on any class where this annotation appears. The implementation must indicate a fatal error
+ * if such a constructor does not exist and the application must not be placed in service.
+ *
+ * Within that {@link RenderKit}, the value of the {@link #rendererType} attribute is taken to be the <em>renderer-type</em>
+ *
+ * The implementation must guarantee that for each class annotated with <code>FacesBehaviorRenderer</code>, found with the
  * algorithm in section 11.5 of the spec prose document, the following actions are taken.
  * </p>
  *
@@ -78,6 +82,7 @@ import java.lang.annotation.Target;
 @Target(TYPE)
 @Inherited
 public @interface FacesBehaviorRenderer {
+
     /**
      * <p class="changed_added_2_0">
      * The value of this annotation attribute is taken to be the <em>render-kit-id</em> in which an instance of this class
@@ -88,8 +93,15 @@ public @interface FacesBehaviorRenderer {
      *
      * @return the <em>render-kit-id</em>
      */
-
     String renderKitId() default HTML_BASIC_RENDER_KIT;
 
+
+
+    /**
+     * Within the {@link RenderKit}, the value of this annotation attribute is
+     * taken to be the <em>renderer-type</em>
+     *
+     * @return the <em>renderer-type</em>
+     */
     String rendererType();
 }

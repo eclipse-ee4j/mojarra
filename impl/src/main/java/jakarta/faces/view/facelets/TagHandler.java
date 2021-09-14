@@ -35,7 +35,6 @@ public abstract class TagHandler implements FaceletHandler {
      * See {@link TagConfig#getTagId}.
      * </p>
      */
-
     protected final String tagId;
 
     /**
@@ -43,7 +42,6 @@ public abstract class TagHandler implements FaceletHandler {
      * A reference to the <code>Tag</code> instance corresponding to this <code>TagHandler</code> instance.
      * </p>
      */
-
     protected final Tag tag;
 
     /**
@@ -52,7 +50,6 @@ public abstract class TagHandler implements FaceletHandler {
      * instance.
      * </p>
      */
-
     protected final FaceletHandler nextHandler;
 
     /**
@@ -66,7 +63,6 @@ public abstract class TagHandler implements FaceletHandler {
      *
      * @param config The structure that contains useful to the operation of this instance.
      */
-
     public TagHandler(TagConfig config) {
         tagId = config.getTagId();
         tag = config.getTag();
@@ -95,6 +91,7 @@ public abstract class TagHandler implements FaceletHandler {
         if (attr == null) {
             throw new TagException(tag, "Attribute '" + localName + "' is required");
         }
+
         return attr;
     }
 

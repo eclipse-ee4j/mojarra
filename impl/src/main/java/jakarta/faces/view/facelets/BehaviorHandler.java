@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -27,46 +27,59 @@ import jakarta.faces.view.BehaviorHolderAttachedObjectHandler;
  * one Facelet element for this sort of attached object, <code>&lt;f:ajax&gt;</code>.
  * </p>
  */
-
 public class BehaviorHandler extends FaceletsAttachedObjectHandler implements BehaviorHolderAttachedObjectHandler {
 
     private final TagAttribute event;
-
     private String behaviorId;
-
     private TagHandlerDelegate helper;
 
+    /**
+     * Constructs the handler using the Id from the config.
+     *
+     * @param config config instance to get the behavior Id from.
+     */
     public BehaviorHandler(BehaviorConfig config) {
         super(config);
         behaviorId = config.getBehaviorId();
         event = getAttribute("event");
-        if (null != event && !event.isLiteral()) {
+        if (event != null && !event.isLiteral()) {
             throw new TagException(tag, "The 'event' attribute for behavior tag must be a literal");
         }
     }
 
-    public TagAttribute getEvent() {
-        return event;
-    }
-
     @Override
     public String getEventName() {
-        if (null != getEvent()) {
+        if (getEvent() != null) {
             return getEvent().getValue();
         }
+
         return null;
     }
 
     @Override
     protected TagHandlerDelegate getTagHandlerDelegate() {
-        if (null == helper) {
+        if (helper == null) {
             helper = delegateFactory.createBehaviorHandlerDelegate(this);
         }
+
         return helper;
     }
 
+    /**
+     * Returns the behavior Id obtained from the passed-in config.
+     * @return the behavior Id
+     */
     public String getBehaviorId() {
         return behaviorId;
+    }
+
+    /**
+     * Returns the event that is set as the "event" attribute on the behavior tag.
+     *
+     * @return the event tag attribute
+     */
+    public TagAttribute getEvent() {
+        return event;
     }
 
 }

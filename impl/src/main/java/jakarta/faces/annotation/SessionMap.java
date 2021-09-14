@@ -51,6 +51,9 @@ public @interface SessionMap {
     public static final class Literal extends AnnotationLiteral<SessionMap> implements SessionMap {
         private static final long serialVersionUID = 1L;
 
+        /**
+         * Instance of the {@link SessionMap} qualifier.
+         */
         public static final Literal INSTANCE = new Literal();
     }
 }

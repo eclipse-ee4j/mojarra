@@ -16,6 +16,8 @@
 
 package jakarta.faces.component;
 
+import jakarta.faces.context.FacesContext;
+
 /**
  * <p class="changed_added_2_1">
  * This interface is implemented by classes that need to save state that is expected to be available only within the
@@ -44,13 +46,13 @@ public interface TransientStateHolder {
     /**
      * <p class="changed_added_2_1">
      * Return the object containing related "transient states". that could be used later to restore the "transient state".
-     * <p>
+     * </p>
      *
      * @param context the Faces context.
      * @return object containing transient values
      * @since 2.1
      */
-    java.lang.Object saveTransientState(jakarta.faces.context.FacesContext context);
+    Object saveTransientState(FacesContext context);
 
     /**
      * <p class="changed_added_2_1">
@@ -65,5 +67,5 @@ public interface TransientStateHolder {
      * @param state the object containing transient values
      * @since 2.1
      */
-    void restoreTransientState(jakarta.faces.context.FacesContext context, java.lang.Object state);
+    void restoreTransientState(FacesContext context, Object state);
 }
