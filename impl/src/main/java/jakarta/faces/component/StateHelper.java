@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -92,10 +92,11 @@ public interface StateHelper extends StateHolder {
      * <p class="changed_added_2_0">
      * Attempts to find a value associated with the specified key, using the value expression collection from the component
      * if no such value is found.
+     * </p>
      *
      * @param key the name of the value in the internal map, or the name of a value expression in the components value
      * expression collection.
-     * </p>
+     *
      * @return the evaluated value.
      * @since 2.0
      */
@@ -113,7 +114,7 @@ public interface StateHelper extends StateHolder {
      * @since 2.0
      */
     Object eval(Serializable key, Object defaultValue);
-    
+
     /**
      * <p class="changed_added_4_0">
      * Performs the same logic as {@link #eval(java.io.Serializable)} } but if no value is found, this will return the

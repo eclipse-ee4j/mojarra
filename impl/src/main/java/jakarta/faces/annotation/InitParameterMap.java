@@ -52,6 +52,9 @@ public @interface InitParameterMap {
     public static final class Literal extends AnnotationLiteral<InitParameterMap> implements InitParameterMap {
         private static final long serialVersionUID = 1L;
 
+        /**
+         * Instance of the {@link InitParameterMap} qualifier.
+         */
         public static final Literal INSTANCE = new Literal();
     }
 }

@@ -49,6 +49,9 @@ public @interface FacesConfig {
     public static final class Literal extends AnnotationLiteral<FacesConfig> implements FacesConfig {
         private static final long serialVersionUID = 1L;
 
+        /**
+         * Instance of the {@link FacesConfig} qualifier.
+         */
         public static final Literal INSTANCE = new Literal();
 
         @Override

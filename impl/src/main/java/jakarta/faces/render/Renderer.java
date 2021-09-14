@@ -59,12 +59,13 @@ import jakarta.faces.convert.ConverterException;
  * </p>
  *
  * </div>
- * 
+ *
  * <div class="changed_modified_4_0">
- * @param <T> The component class.
+ * The generic parameter T represents the component class.
  * </div>
+ *
+ * @param <T> The component class.
  */
-
 public abstract class Renderer<T extends UIComponent> {
 
     /**

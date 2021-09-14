@@ -69,6 +69,9 @@ public @interface View {
      */
     public final static class Literal extends AnnotationLiteral<View> implements View {
 
+        /**
+         * Instance of the {@link View} qualifier.
+         */
         public static final Literal INSTANCE = of("");
 
         private static final long serialVersionUID = 1L;

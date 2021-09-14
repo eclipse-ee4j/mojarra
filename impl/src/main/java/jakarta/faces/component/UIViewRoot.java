@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,6 +17,7 @@
 package jakarta.faces.component;
 
 import static java.util.Collections.unmodifiableList;
+import static java.util.logging.Level.WARNING;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -248,11 +249,9 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * </p>
      */
     public UIViewRoot() {
-
         super();
         setRendererType(null);
         setId(createUniqueId());
-
     }
 
     // ------------------------------------------------------ Instance Variables
@@ -297,9 +296,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      */
     @Override
     public boolean isInView() {
-
         return true;
-
     }
 
     /**
@@ -320,9 +317,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      */
     @Override
     public String getFamily() {
-
         return COMPONENT_FAMILY;
-
     }
 
     /**
@@ -335,9 +330,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * @return the render kit id, or <code>null</code>.
      */
     public String getRenderKitId() {
-
         return (String) getStateHelper().eval(PropertyKeys.renderKitId);
-
     }
 
     /**
@@ -351,9 +344,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * this view with any specific {@link jakarta.faces.render.RenderKit} instance
      */
     public void setRenderKitId(String renderKitId) {
-
         getStateHelper().put(PropertyKeys.renderKitId, renderKitId);
-
     }
 
     /**
@@ -364,9 +355,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * @return the view id.
      */
     public String getViewId() {
-
         return (String) getStateHelper().get(PropertyKeys.viewId);
-
     }
 
     /**
@@ -377,9 +366,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * @param viewId The new view identifier
      */
     public void setViewId(String viewId) {
-
         getStateHelper().put(PropertyKeys.viewId, viewId);
-
     }
 
     /**
@@ -392,7 +379,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * @since 4.0
      */
     public Doctype getDoctype() {
-
         return doctype;
     }
 
@@ -406,7 +392,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * @since 4.0
      */
     public void setDoctype(Doctype doctype) {
-
         this.doctype = doctype;
     }
 
@@ -421,7 +406,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * @since 1.2
      */
     public MethodExpression getBeforePhaseListener() {
-
         return (MethodExpression) getStateHelper().get(PropertyKeys.beforePhase);
     }
 
@@ -486,7 +470,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * @since 1.2
      */
     public void removePhaseListener(PhaseListener toRemove) {
-
         getStateHelper().remove(PropertyKeys.phaseListeners, toRemove);
     }
 
@@ -500,9 +483,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * @since 1.2
      */
     public void addPhaseListener(PhaseListener newPhaseListener) {
-
         getStateHelper().add(PropertyKeys.phaseListeners, newPhaseListener);
-
     }
 
     /**
@@ -517,11 +498,9 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      */
     @SuppressWarnings("unchecked")
     public List<PhaseListener> getPhaseListeners() {
-
         List<PhaseListener> result = (List<PhaseListener>) getStateHelper().get(PropertyKeys.phaseListeners);
 
-        return result != null ? Collections.unmodifiableList(result) : Collections.unmodifiableList(Collections.<PhaseListener>emptyList());
-
+        return result != null ? unmodifiableList(result) : unmodifiableList(Collections.<PhaseListener>emptyList());
     }
 
     /**
@@ -532,14 +511,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * {@link #addComponentResource(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.String)}.
      * </p>
      *
-     * <div class="changed_added_2_0">
-     * <p>
-     *
      * @param context {@link FacesContext} for the current request
      * @param componentResource The {@link UIComponent} representing a {@link jakarta.faces.application.Resource} instance
-     *
-     * </p>
-     * </div>
      *
      * @since 2.0
      */
@@ -610,6 +583,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      */
     public void addComponentResource(FacesContext context, UIComponent componentResource, String target) {
         final Map<String, Object> attributes = componentResource.getAttributes();
+
         // look for a target in the component attribute set if arg is not set.
         if (target == null) {
             target = (String) attributes.get("target");
@@ -626,6 +600,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
                 }
             }
         }
+
         // add the resource to the facet
         facetChildren.add(componentResource);
     }
@@ -681,7 +656,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
         List<UIComponent> resources = getComponentResources(context, target, false);
 
         return resources != null ? resources : Collections.<UIComponent>emptyList();
-
     }
 
     /**
@@ -716,14 +690,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * view.
      * </p>
      *
-     * <div class="changed_added_2_0">
-     * <p>
-     *
      * @param context {@link FacesContext} for the current request
      * @param componentResource The {@link UIComponent} representing a {@link jakarta.faces.application.Resource} instance
-     *
-     * </p>
-     * </div>
      *
      * @since 2.0
      */
@@ -757,8 +725,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * @since 2.0
      */
     public void removeComponentResource(FacesContext context, UIComponent componentResource, String target) {
-
         final Map<String, Object> attributes = componentResource.getAttributes();
+
         // look for a target in the component attribute set if arg is not set.
         if (target == null) {
             target = (String) attributes.get("target");
@@ -770,7 +738,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
         if (facetChildren != null) {
             facetChildren.remove(componentResource);
         }
-
     }
 
     /**
@@ -780,7 +747,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * <strong>NOT</strong> part of the state that is saved and restored for this component.
      * </p>
      */
-    private List<List<FacesEvent>> events = null;
+    private List<List<FacesEvent>> events;
 
     /**
      * <p>
@@ -795,10 +762,10 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      */
     @Override
     public void queueEvent(FacesEvent event) {
-
         if (event == null) {
             throw new NullPointerException();
         }
+
         // We are a UIViewRoot, so no need to check for the ISE
         if (events == null) {
             int len = PhaseId.VALUES.size();
@@ -808,6 +775,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
             }
             this.events = events;
         }
+
         events.get(event.getPhaseId().getOrdinal()).add(event);
     }
 
@@ -826,11 +794,11 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * @since 2.0
      */
     public void broadcastEvents(FacesContext context, PhaseId phaseId) {
-
-        if (null == events) {
+        if (events == null) {
             // no events have been queued
             return;
         }
+
         boolean hasMoreAnyPhaseEvents;
         boolean hasMoreCurrentPhaseEvents;
 
@@ -872,7 +840,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
             }
 
             // then broadcast the events for this phase.
-            if (null != (eventsForPhaseId = events.get(phaseId.getOrdinal()))) {
+            if ((eventsForPhaseId = events.get(phaseId.getOrdinal())) != null) {
                 // We cannot use an Iterator because we will get
                 // ConcurrentModificationException errors, so fake it
                 while (!eventsForPhaseId.isEmpty()) {
@@ -908,8 +876,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
             hasMoreCurrentPhaseEvents = null != events.get(phaseId.getOrdinal()) && !events.get(phaseId.getOrdinal()).isEmpty();
 
         } while (hasMoreAnyPhaseEvents || hasMoreCurrentPhaseEvents);
-
     }
+
 
     // ------------------------------------------------ Lifecycle Phase Handlers
 
@@ -953,14 +921,13 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      */
     @Override
     public void processRestoreState(FacesContext context, Object state) {
-
         // hack to work around older state managers that may not set the
         // view root early enough
         if (context.getViewRoot() == null) {
             context.setViewRoot(this);
         }
-        super.processRestoreState(context, state);
 
+        super.processRestoreState(context, state);
     }
 
     /**
@@ -1235,7 +1202,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
     }
 
     private static PhaseEvent createPhaseEvent(FacesContext context, PhaseId phaseId) throws FacesException {
-
         if (lifecycle == null) {
             LifecycleFactory lifecycleFactory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
             String lifecycleId = context.getExternalContext().getInitParameter(FacesServlet.LIFECYCLE_ID_ATTR);
@@ -1246,7 +1212,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
         }
 
         return new PhaseEvent(context, phaseId, lifecycle);
-
     }
 
     /**
@@ -1415,12 +1380,13 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
     public String createUniqueId(FacesContext context, String seed) {
         if (seed != null) {
             return UIViewRoot.UNIQUE_ID_PREFIX + seed;
-        } else {
-            Integer i = (Integer) getStateHelper().get(PropertyKeys.lastId);
-            int lastId = i != null ? i : 0;
-            getStateHelper().put(PropertyKeys.lastId, ++lastId);
-            return UIViewRoot.UNIQUE_ID_PREFIX + lastId;
         }
+
+        Integer i = (Integer) getStateHelper().get(PropertyKeys.lastId);
+        int lastId = i != null ? i : 0;
+        getStateHelper().put(PropertyKeys.lastId, ++lastId);
+
+        return UIViewRoot.UNIQUE_ID_PREFIX + lastId;
     }
 
     /**
@@ -1442,7 +1408,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * @return The current <code>Locale</code> obtained by executing the above algorithm.
      */
     public Locale getLocale() {
-
         Object result = getStateHelper().eval(PropertyKeys.locale);
 
         if (result != null) {
@@ -1452,12 +1417,12 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
             } else if (result instanceof String) {
                 locale = getLocaleFromString((String) result);
             }
+
             return locale;
-        } else {
-            FacesContext context = getFacesContext();
-            return context.getApplication().getViewHandler().calculateLocale(context);
         }
 
+        FacesContext context = getFacesContext();
+        return context.getApplication().getViewHandler().calculateLocale(context);
     }
 
     // W3C XML specification refers to IETF RFC 1766 for language code
@@ -1467,7 +1432,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
 
     private static Locale getLocaleFromString(String localeStr) throws IllegalArgumentException {
         // length must be at least 2.
-        if (null == localeStr || localeStr.length() < 2) {
+        if (localeStr == null || localeStr.length() < 2) {
             throw new IllegalArgumentException("Illegal locale String: " + localeStr);
         }
 
@@ -1519,6 +1484,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
         } else if (lang != null) {
             result = new Locale(lang, "");
         }
+
         return result;
     }
 
@@ -1542,6 +1508,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
                 break;
             }
         }
+
         return result;
     }
 
@@ -1553,11 +1520,9 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * @param locale The new localization Locale
      */
     public void setLocale(Locale locale) {
-
         getStateHelper().put(PropertyKeys.locale, locale);
         // Make sure to appraise the Jakarta Expression Language of this switch in Locale.
         FacesContext.getCurrentInstance().getELContext().setLocale(locale);
-
     }
 
     /**
@@ -1571,9 +1536,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * @since 2.0
      */
     public Map<String, Object> getViewMap() {
-
         return getViewMap(true);
-
     }
 
     /**
@@ -1655,7 +1618,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * @since 2.0
      */
     public void subscribeToViewEvent(Class<? extends SystemEvent> systemEvent, SystemEventListener listener) {
-
         if (systemEvent == null) {
             throw new NullPointerException();
         }
@@ -1690,7 +1652,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * @since 2.0
      */
     public void unsubscribeFromViewEvent(Class<? extends SystemEvent> systemEvent, SystemEventListener listener) {
-
         if (systemEvent == null) {
             throw new NullPointerException();
         }
@@ -1704,7 +1665,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
                 listeners.remove(listener);
             }
         }
-
     }
 
     /**
@@ -1723,24 +1683,22 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      *
      */
     public List<SystemEventListener> getViewListenersForEventClass(Class<? extends SystemEvent> systemEvent) {
-
         if (systemEvent == null) {
             throw new NullPointerException();
         }
         if (viewListeners != null) {
             return viewListeners.get(systemEvent);
         }
-        return null;
 
+        return null;
     }
 
     private void encodeViewParameters(FacesContext context) {
-
         ViewDeclarationLanguage vdl = context.getApplication().getViewHandler().getViewDeclarationLanguage(context, getViewId());
-
         if (vdl == null) {
             return;
         }
+
         ViewMetadata metadata = vdl.getViewMetadata(context, getViewId());
         if (metadata != null) { // perhaps it's not supported
             Collection<UIViewParameter> params = ViewMetadata.getViewParameters(this);
@@ -1791,7 +1749,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
 
     @Override
     public Object saveState(FacesContext context) {
-
         if (context == null) {
             throw new NullPointerException();
         }
@@ -1804,13 +1761,11 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
         }
 
         return values;
-
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void restoreState(FacesContext context, Object state) {
-
         if (context == null) {
             throw new NullPointerException();
         }
@@ -1839,19 +1794,17 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
     // --------------------------------------------------------- Private Methods
 
     private static String getIdentifier(String target) {
-
         // check map
         String id = LOCATION_IDENTIFIER_MAP.get(target);
         if (id == null) {
             id = LOCATION_IDENTIFIER_PREFIX + target;
             LOCATION_IDENTIFIER_MAP.put(target, id);
         }
-        return id;
 
+        return id;
     }
 
     private List<UIComponent> getComponentResources(FacesContext context, String target, boolean create) {
-
         String location = getIdentifier(target);
         UIComponent facet = getFacet(location);
         if (facet == null && create) {
@@ -1864,7 +1817,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
         }
 
         return facet != null ? facet.getChildren() : null;
-
     }
 
     private static final class ViewMap extends HashMap<String, Object> {
@@ -1876,41 +1828,33 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
         // -------------------------------------------------------- Constructors
 
         ViewMap(ProjectStage stage) {
-
             this.stage = stage;
-
         }
 
         // ---------------------------------------------------- Methods from Map
 
         @Override
         public void clear() {
-
             FacesContext context = FacesContext.getCurrentInstance();
             context.getApplication().publishEvent(context, PreDestroyViewMapEvent.class, UIViewRoot.class, context.getViewRoot());
             super.clear();
-
         }
 
         @Override
         public Object put(String key, Object value) {
-
             if (value != null && ProjectStage.Development.equals(stage) && !(value instanceof Serializable)) {
-                LOGGER.log(Level.WARNING, "warning.component.uiviewroot_non_serializable_attribute_viewmap", new Object[] { key, value.getClass().getName() });
+                LOGGER.log(WARNING, "warning.component.uiviewroot_non_serializable_attribute_viewmap", new Object[] { key, value.getClass().getName() });
             }
             return super.put(key, value);
-
         }
 
         @Override
         public void putAll(Map<? extends String, ?> m) {
-
             for (Map.Entry<? extends String, ?> entry : m.entrySet()) {
                 String k = entry.getKey();
                 Object v = entry.getValue();
                 put(k, v);
             }
-
         }
 
     } // END ViewMap

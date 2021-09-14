@@ -51,6 +51,9 @@ public @interface RequestCookieMap {
     public static final class Literal extends AnnotationLiteral<RequestCookieMap> implements RequestCookieMap {
         private static final long serialVersionUID = 1L;
 
+        /**
+         * Instance of the {@link RequestCookieMap} qualifier.
+         */
         public static final Literal INSTANCE = new Literal();
     }
 }

@@ -35,11 +35,18 @@ import jakarta.faces.component.UIComponent;
 public abstract class DelegatingMetaTagHandler extends MetaTagHandler {
 
     private final TagAttribute binding;
-
     private final TagAttribute disabled;
 
+    /**
+     * Class that defines methods relating to helping tag handler instances.
+     */
     protected TagHandlerDelegateFactory delegateFactory;
 
+    /**
+     * Instantiates this handler with the given config.
+     *
+     * @param config the config used to instantiate this handler.
+     */
     public DelegatingMetaTagHandler(TagConfig config) {
         super(config);
         binding = getAttribute("binding");
@@ -62,24 +69,48 @@ public abstract class DelegatingMetaTagHandler extends MetaTagHandler {
      */
     protected abstract TagHandlerDelegate getTagHandlerDelegate();
 
+
     // Properties ----------------------------------------
 
+    /**
+     * Returns the value of the "disabled" attribute.
+     *
+     * @param ctx the context used for resolving the underlying attribute.
+     * @return true if the "disabled" attribute has been set to true, false otherwise.
+     */
     public boolean isDisabled(FaceletContext ctx) {
         return disabled != null && Boolean.TRUE.equals(disabled.getBoolean(ctx));
     }
 
+    /**
+     * Return the "binding" attribute.
+     * @return the "binding" attribute.
+     */
     public TagAttribute getBinding() {
         return binding;
     }
 
+    /**
+     * Return a reference to the <code>Tag</code> instance corresponding to this <code>TagHandler</code> instance.
+     * @return a reference to the <code>Tag</code> instance.
+     */
     public Tag getTag() {
         return tag;
     }
 
+    /**
+     * Return the tag id from the <code>TagConfig</code> used to instantiate this handler.
+     * @return the tag id from the <code>TagConfig</code>.
+     */
     public String getTagId() {
         return tagId;
     }
 
+    /**
+     * Return the named attribute from the tag attributes.
+     * @param localName the name of the attribute.
+     * @return the named attribute from the tag attributes.
+     */
     public TagAttribute getTagAttribute(String localName) {
         return super.getAttribute(localName);
     }
@@ -88,6 +119,7 @@ public abstract class DelegatingMetaTagHandler extends MetaTagHandler {
     public void setAttributes(FaceletContext ctx, Object instance) {
         super.setAttributes(ctx, instance);
     }
+
 
     // Methods ----------------------------------------
 
@@ -126,7 +158,6 @@ public abstract class DelegatingMetaTagHandler extends MetaTagHandler {
      *
      * @since 2.0
      */
-
     public void applyNextHandler(FaceletContext ctx, UIComponent c) throws IOException, FacesException, ELException {
         // first allow c to get populated
         nextHandler.apply(ctx, c);
@@ -142,7 +173,6 @@ public abstract class DelegatingMetaTagHandler extends MetaTagHandler {
      *
      * @since 2.0
      */
-
     @Override
     protected MetaRuleset createMetaRuleset(Class type) {
         return getTagHandlerDelegate().createMetaRuleset(type);
