@@ -32,12 +32,18 @@
     <name>Mojarra ${project.version} - Test - Faces 4.0</name>
 
     <modules>
-        <module>javaPage</module>
-        <module>cdi</module>
-        <module>selectItemGroups</module>
+        <module>ajax</module>
+        <module>doctype</module>
         <module>inputFile</module>
+        <module>inputText</module>
         <module>namespaces</module>
+        <module>cdi</module>
+        <module>javaPage</module>
+        <module>javaPageWithMetadata</module>
+        <module>resources</module>
         <module>selectItemGroup</module>
+        <module>selectItemGroups</module>
+        <module>selectManyCheckbox</module>
     </modules>
     
     <dependencies>
