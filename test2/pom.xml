@@ -18,6 +18,12 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>org.glassfish</groupId>
+        <artifactId>mojarra-parent</artifactId>
+        <version>4.0.0-SNAPSHOT</version>
+    </parent>
 
     <groupId>org.glassfish.mojarra.test2</groupId>
     <artifactId>pom</artifactId>
@@ -34,7 +40,7 @@
     </modules>
 
     <properties>
-        <java.min.version>1.8</java.min.version>
+        <java.min.version>11</java.min.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <jsf.version>${project.version}</jsf.version>
@@ -59,14 +65,14 @@
             <dependency>
                 <groupId>org.jboss.arquillian</groupId>
                 <artifactId>arquillian-bom</artifactId>
-                <version>1.7.0.Alpha3</version>
+                <version>1.7.0.Alpha10</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.jboss.arquillian.container</groupId>
                 <artifactId>arquillian-container-test-api</artifactId>
-                <version>1.7.0.Alpha3</version>
+                <version>1.7.0.Alpha10</version>
             </dependency>
             <dependency>
                 <groupId>com.h2database</groupId>
@@ -122,7 +128,7 @@
         <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>jakarta.enterprise.cdi-api</artifactId>
-            <version>3.0.0</version>
+            <version>4.0.0.Alpha2</version>
             <scope>provided</scope>
         </dependency>
 
@@ -204,7 +210,7 @@
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
-            <version>2.43.0</version>
+            <version>2.52.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -216,7 +222,7 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20180813</version>
+            <version>20210307</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
