@@ -1581,6 +1581,10 @@ public class Util {
                 Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
                 result = (BeanManager) applicationMap.get("org.jboss.weld.environment.servlet.javax.enterprise.inject.spi.BeanManager");
             }
+
+            if (result == null) {
+                result = (BeanManager) lookupBeanManagerFromCDI();
+            }
             
             if (result != null && facesContext != null) {
                 facesContext.getAttributes().put(RIConstants.CDI_BEAN_MANAGER, result);
@@ -1589,6 +1593,42 @@ public class Util {
         }
         
         return result;
+    }
+
+    /**
+     * This method tries to use the CDI-1.1 CDI.current() method to lookup the CDI BeanManager.
+     * We do all this via reflection to not blow up if CDI-1.1 is not on the classpath.
+     * @return the BeanManager or {@code null} if either not in a CDI-1.1 environment
+     *         or the BeanManager doesn't exist yet.
+     */
+    private static Object lookupBeanManagerFromCDI()
+    {
+        // Code inspired by MyFaces - FacesInitializerImpl #lookupBeanManagerFromCDI
+        try
+        {
+            try {
+                Class cdiClass = Class.forName("jakarta.enterprise.inject.spi.CDI",
+                        false, // do not initialize for faster startup
+                        Thread.currentThread().getContextClassLoader());
+
+                if (cdiClass != null)
+                {
+                    Method currentMethod = cdiClass.getMethod("current");
+                    Object cdi = currentMethod.invoke(null);
+
+                    Method getBeanManagerMethod = cdiClass.getMethod("getBeanManager");
+                    Object beanManager = getBeanManagerMethod.invoke(cdi);
+                    return beanManager;
+                }
+            }
+            catch (ClassNotFoundException ex) {
+            }
+        }
+        catch (Exception e)
+        {
+            // ignore
+        }
+        return null;
     }
     
     /**
