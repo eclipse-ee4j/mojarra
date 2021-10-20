@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -207,7 +207,7 @@ public class ELUtils {
         if (beanManager == null) {
             // TODO: use version enum and >=
             if (getFacesConfigXmlVersion(facesContext).equals("2.3") || getWebXmlVersion(facesContext).equals("4.0")) {
-                throw new FacesException("Unable to find CDI BeanManager");
+                return false;
             }
         } else {
             CdiExtension cdiExtension = getBeanReference(beanManager, CdiExtension.class);
