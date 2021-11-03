@@ -1016,7 +1016,7 @@ public class Util {
             pattern = Pattern.compile(regex);
             patternCache.put(regex, pattern);
         }
-        return  pattern.split(toSplit, splitLimit);
+        return pattern.split(toSplit, splitLimit);
     }
 
      public synchronized static String[] split(ServletContext sc,
@@ -1027,7 +1027,7 @@ public class Util {
             pattern = Pattern.compile(regex);
             patternCache.put(regex, pattern);
         }
-        return  pattern.split(toSplit, 0);
+        return pattern.split(toSplit, 0);
     }
 
 
