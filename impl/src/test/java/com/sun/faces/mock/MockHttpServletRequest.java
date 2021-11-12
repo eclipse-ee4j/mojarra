@@ -25,6 +25,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.RequestDispatcher;
@@ -244,11 +245,6 @@ public class MockHttpServletRequest implements HttpServletRequest {
     }
 
     @Override
-    public boolean isRequestedSessionIdFromUrl() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public boolean isRequestedSessionIdFromURL() {
         throw new UnsupportedOperationException();
     }
@@ -363,11 +359,6 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     @Override
     public BufferedReader getReader() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public String getRealPath(String path) {
         throw new UnsupportedOperationException();
     }
 

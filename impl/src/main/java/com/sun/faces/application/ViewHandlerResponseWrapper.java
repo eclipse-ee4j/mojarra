@@ -64,12 +64,6 @@ public class ViewHandlerResponseWrapper extends HttpServletResponseWrapper {
     }
 
     @Override
-    public void setStatus(int sc, String sm) {
-        super.setStatus(sc, sm);
-        status = sc;
-    }
-
-    @Override
     public int getStatus() {
         return status;
     }

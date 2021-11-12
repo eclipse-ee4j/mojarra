@@ -18,9 +18,9 @@ package com.sun.faces.mock;
 
 import java.util.Enumeration;
 import java.util.HashMap;
+
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpSession;
-import jakarta.servlet.http.HttpSessionContext;
 
 // Mock Object for HttpSession (Version 2.3)
 public class MockHttpSession implements HttpSession {
@@ -79,21 +79,6 @@ public class MockHttpSession implements HttpSession {
     }
 
     @Override
-    public HttpSessionContext getSessionContext() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Object getValue(String name) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public String[] getValueNames() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public void invalidate() {
         throw new UnsupportedOperationException();
     }
@@ -104,18 +89,8 @@ public class MockHttpSession implements HttpSession {
     }
 
     @Override
-    public void putValue(String name, Object value) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public void removeAttribute(String name) {
         attributes.remove(name);
-    }
-
-    @Override
-    public void removeValue(String name) {
-        throw new UnsupportedOperationException();
     }
 
     @Override
