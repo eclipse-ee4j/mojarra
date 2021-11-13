@@ -102,7 +102,7 @@ public class ExternalContextImpl extends ExternalContext {
     private Flash flash;
     private boolean distributable;
 
-    private enum ALLOWABLE_COOKIE_PROPERTIES {
+    private enum PREDEFINED_COOKIE_PROPERTIES {
         domain, maxAge, path, secure, httpOnly
     }
 
@@ -776,7 +776,7 @@ public class ExternalContextImpl extends ExternalContext {
         if (properties != null && properties.size() != 0) {
             for (Map.Entry<String, Object> entry : properties.entrySet()) {
                 String key = entry.getKey();
-                ALLOWABLE_COOKIE_PROPERTIES p = ALLOWABLE_COOKIE_PROPERTIES.valueOf(key);
+                PREDEFINED_COOKIE_PROPERTIES p = PREDEFINED_COOKIE_PROPERTIES.valueOf(key);
                 Object v = entry.getValue();
                 switch (p) {
                 case domain:
@@ -795,7 +795,8 @@ public class ExternalContextImpl extends ExternalContext {
                     cookie.setHttpOnly((Boolean) v);
                     break;
                 default:
-                    throw new IllegalStateException(); // shouldn't happen
+                    cookie.setAttribute(key, (String) v);
+                    break;
                 }
             }
         }
