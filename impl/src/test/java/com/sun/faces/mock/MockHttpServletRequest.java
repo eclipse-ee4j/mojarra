@@ -25,9 +25,11 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletConnection;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletInputStream;
@@ -244,11 +246,6 @@ public class MockHttpServletRequest implements HttpServletRequest {
     }
 
     @Override
-    public boolean isRequestedSessionIdFromUrl() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public boolean isRequestedSessionIdFromURL() {
         throw new UnsupportedOperationException();
     }
@@ -363,11 +360,6 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     @Override
     public BufferedReader getReader() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public String getRealPath(String path) {
         throw new UnsupportedOperationException();
     }
 
@@ -495,5 +487,20 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     public long getContentLengthLong() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String getRequestId() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String getProtocolRequestId() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public ServletConnection getServletConnection() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
