@@ -942,13 +942,29 @@ public class Util {
      * @return the result of <code>Pattern.spit(String, int)</code>
      */
     public synchronized static String[] split(Map<String, Object> appMap, String toSplit, String regex) {
+        return split(appMap, toSplit, regex, 0);
+    }
+    
+    /**
+     * <p>A slightly more efficient version of 
+     * <code>String.split()</code> which caches
+     * the <code>Pattern</code>s in an LRUMap instead of
+     * creating a new <code>Pattern</code> on each
+     * invocation. Limited by splitLimit.</p>
+     * @param appMap the Application Map
+     * @param toSplit the string to split
+     * @param regex the regex used for splitting
+     * @param splitLimit split result threshold
+     * @return the result of <code>Pattern.spit(String, int)</code>
+     */
+    public synchronized static String[] split(Map<String, Object> appMap, String toSplit, String regex, int splitLimit) {
         Map<String, Pattern> patternCache = getPatternCache(appMap);
         Pattern pattern = patternCache.get(regex);
         if (pattern == null) {
             pattern = Pattern.compile(regex);
             patternCache.put(regex, pattern);
         }
-        return pattern.split(toSplit, 0);
+        return pattern.split(toSplit, splitLimit);
     }
 
     public synchronized static String[] split(ServletContext sc, String toSplit, String regex) {
