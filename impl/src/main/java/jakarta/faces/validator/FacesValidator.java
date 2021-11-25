@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021-2021 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,6 +17,9 @@
 
 package jakarta.faces.validator;
 
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -41,7 +45,7 @@ import jakarta.inject.Qualifier;
  * </p>
  */
 @Retention(RUNTIME)
-@Target(TYPE)
+@Target({ TYPE, FIELD, METHOD, PARAMETER })
 @Inherited
 @Qualifier
 public @interface FacesValidator {
