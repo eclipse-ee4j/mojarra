@@ -117,7 +117,7 @@ public class Util {
     /**
      * RegEx patterns
      */
-    private static final String PATTERN_CACKE_KEY = RIConstants.FACES_PREFIX + "patternCache";
+    private static final String PATTERN_CACHE_KEY = RIConstants.FACES_PREFIX + "patternCache";
 
     private static final String FACES_SERVLET_CLASS = FacesServlet.class.getName();
 
@@ -127,10 +127,10 @@ public class Util {
 
     private static Map<String, Pattern> getPatternCache(Map<String, Object> appMap) {
         @SuppressWarnings("unchecked")
-        Map<String, Pattern> result = (Map<String, Pattern>) appMap.get(PATTERN_CACKE_KEY);
+        Map<String, Pattern> result = (Map<String, Pattern>) appMap.get(PATTERN_CACHE_KEY);
         if (result == null) {
             result = new LRUMap<>(15);
-            appMap.put(PATTERN_CACKE_KEY, result);
+            appMap.put(PATTERN_CACHE_KEY, result);
         }
 
         return result;
@@ -138,10 +138,10 @@ public class Util {
 
     private static Map<String, Pattern> getPatternCache(ServletContext sc) {
         @SuppressWarnings("unchecked")
-        Map<String, Pattern> result = (Map<String, Pattern>) sc.getAttribute(PATTERN_CACKE_KEY);
+        Map<String, Pattern> result = (Map<String, Pattern>) sc.getAttribute(PATTERN_CACHE_KEY);
         if (result == null) {
             result = new LRUMap<>(15);
-            sc.setAttribute(PATTERN_CACKE_KEY, result);
+            sc.setAttribute(PATTERN_CACHE_KEY, result);
         }
 
         return result;
