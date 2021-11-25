@@ -118,7 +118,7 @@ public class Util {
     /**
      * RegEx patterns
      */
-    private static final String PATTERN_CACKE_KEY = RIConstants.FACES_PREFIX + "patternCache";
+    private static final String PATTERN_CACHE_KEY = RIConstants.FACES_PREFIX + "patternCache";
     
     private static final String FACES_SERVLET_CLASS = FacesServlet.class.getName();
 
@@ -129,10 +129,10 @@ public class Util {
 
     private static Map<String, Pattern> getPatternCache(Map<String, Object> appMap) {
         @SuppressWarnings("unchecked")
-        Map<String, Pattern> result = (Map<String, Pattern>) appMap.get(PATTERN_CACKE_KEY);
+        Map<String, Pattern> result = (Map<String, Pattern>) appMap.get(PATTERN_CACHE_KEY);
         if (result == null) {
             result = new LRUMap<>(15);
-            appMap.put(PATTERN_CACKE_KEY, result);
+            appMap.put(PATTERN_CACHE_KEY, result);
         }
         
         return result;
@@ -140,10 +140,10 @@ public class Util {
 
     private static Map<String, Pattern> getPatternCache(ServletContext sc) {
         @SuppressWarnings("unchecked")
-        Map<String, Pattern> result = (Map<String, Pattern>) sc.getAttribute(PATTERN_CACKE_KEY);
+        Map<String, Pattern> result = (Map<String, Pattern>) sc.getAttribute(PATTERN_CACHE_KEY);
         if (result == null) {
             result = new LRUMap<>(15);
-            sc.setAttribute(PATTERN_CACKE_KEY, result);
+            sc.setAttribute(PATTERN_CACHE_KEY, result);
         }
 
         return result;
@@ -982,7 +982,6 @@ public class Util {
         return fd;
     }
    
-
     /**
      * <p>A slightly more efficient version of 
      * <code>String.split()</code> which caches
@@ -995,13 +994,29 @@ public class Util {
      * @return the result of <code>Pattern.spit(String, int)</code>
      */
     public synchronized static String[] split(Map<String, Object> appMap, String toSplit, String regex) {
+        return split(appMap, toSplit, regex, 0);
+    }
+    
+    /**
+     * <p>A slightly more efficient version of 
+     * <code>String.split()</code> which caches
+     * the <code>Pattern</code>s in an LRUMap instead of
+     * creating a new <code>Pattern</code> on each
+     * invocation. Limited by splitLimit.</p>
+     * @param appMap the Application Map
+     * @param toSplit the string to split
+     * @param regex the regex used for splitting
+     * @param splitLimit split result threshold
+     * @return the result of <code>Pattern.spit(String, int)</code>
+     */
+    public synchronized static String[] split(Map<String, Object> appMap, String toSplit, String regex, int splitLimit) {
         Map<String, Pattern> patternCache = getPatternCache(appMap);
         Pattern pattern = patternCache.get(regex);
         if (pattern == null) {
             pattern = Pattern.compile(regex);
             patternCache.put(regex, pattern);
         }
-        return  pattern.split(toSplit, 0);
+        return pattern.split(toSplit, splitLimit);
     }
 
      public synchronized static String[] split(ServletContext sc,
@@ -1012,7 +1027,7 @@ public class Util {
             pattern = Pattern.compile(regex);
             patternCache.put(regex, pattern);
         }
-        return  pattern.split(toSplit, 0);
+        return pattern.split(toSplit, 0);
     }
 
 
