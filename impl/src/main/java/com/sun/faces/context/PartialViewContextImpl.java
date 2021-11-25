@@ -56,6 +56,7 @@ import javax.faces.render.RenderKitFactory;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.component.visit.PartialVisitContext;
+import com.sun.faces.context.flash.ELFlash;
 import com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.HtmlUtils;
@@ -322,7 +323,9 @@ import com.sun.faces.util.Util;
                 renderState(ctx);
                 renderEvalScripts(ctx);
 
-                writer.endDocument();
+                if (!ctx.getAttributes().containsKey(ELFlash.DELAYED_END_DOCUMENT) || !(Boolean) ctx.getAttributes().get(ELFlash.DELAYED_END_DOCUMENT)) {
+                    writer.endDocument();
+                }
             } catch (IOException ex) {
                 this.cleanupAfterView();
             } catch (RuntimeException ex) {
