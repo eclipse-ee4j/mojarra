@@ -695,11 +695,17 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
     protected Collection<Object> createCollection(Collection<Object> collection, Class<? extends Collection<Object>> fallBackType) {
 
         @SuppressWarnings("unchecked")
-        Class<? extends Collection<Object>> lookupClass = collection != null ? (Class<? extends Collection<Object>>) collection.getClass() : fallBackType;
+        Class lookupClass = fallBackType;
+        if (collection != null) {
+            lookupClass = collection.getClass();
+            if (lookupClass.getName().equals(Arrays.class.getName() + "$ArrayList")) {
+                lookupClass = ArrayList.class;
+            }
+        }
 
         if (!lookupClass.isInterface() && !isAbstract(lookupClass.getModifiers())) {
             try {
-                return lookupClass.newInstance();
+                return (Collection<Object>) lookupClass.newInstance();
             } catch (InstantiationException | IllegalAccessException e) {
                 if (logger.isLoggable(SEVERE)) {
                     logger.log(SEVERE, "Unable to create new Collection instance for type " + lookupClass.getName(), e);
