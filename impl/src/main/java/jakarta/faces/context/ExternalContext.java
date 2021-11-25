@@ -118,7 +118,7 @@ public abstract class ExternalContext {
      *
      * <tr>
      *
-     * <th>Key in "values" <code>Map</code></th>
+     * <th>Key in "values" <code>Map</code> <span class="changed_added_4_0">(case sensitive)</span></th>
      *
      * <th>Expected type of value.</th>
      *
@@ -186,6 +186,16 @@ public abstract class ExternalContext {
      *
      * </tr>
      *
+     * <tr class="changed_added_4_0">
+     *
+     * <td><i>any other attribute</i> (e.g. SameSite)</td>
+     *
+     * <td>String</td>
+     *
+     * <td>setAttribute</td>
+     *
+     * </tr>
+     *
      * </table>
      *
      * <p>
@@ -201,9 +211,6 @@ public abstract class ExternalContext {
      *
      * @param properties A <code>Map</code> containg key/value pairs to be passed as arguments to the setter methods as
      * described above.
-     *
-     * @throws IllegalArgumentException if the <code>properties
-     * Map</code> is not-<code>null</code> and not empty and contains any keys that are not one of the keys listed above.
      *
      * @since 2.0
      */

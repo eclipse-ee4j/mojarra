@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Locale;
+
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -58,18 +59,8 @@ public class MockHttpServletResponse implements HttpServletResponse {
     }
 
     @Override
-    public String encodeRedirectUrl(String url) {
-        return (encodeRedirectURL(url));
-    }
-
-    @Override
     public String encodeRedirectURL(String url) {
         return (url);
-    }
-
-    @Override
-    public String encodeUrl(String url) {
-        return (encodeURL(url));
     }
 
     @Override
@@ -109,11 +100,6 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     @Override
     public void setStatus(int status) {
-        this.status = status;
-    }
-
-    @Override
-    public void setStatus(int status, String message) {
         this.status = status;
     }
 

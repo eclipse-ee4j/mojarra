@@ -51,6 +51,9 @@ public @interface RequestMap {
     public static final class Literal extends AnnotationLiteral<RequestMap> implements RequestMap {
         private static final long serialVersionUID = 1L;
 
+        /**
+         * Instance of the {@link RequestMap} qualifier.
+         */
         public static final Literal INSTANCE = new Literal();
     }
 }

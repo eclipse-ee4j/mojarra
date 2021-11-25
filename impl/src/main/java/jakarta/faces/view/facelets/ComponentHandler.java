@@ -175,12 +175,17 @@ public class ComponentHandler extends DelegatingMetaTagHandler {
 
     @Override
     protected TagHandlerDelegate getTagHandlerDelegate() {
-        if (null == helper) {
+        if (helper == null) {
             helper = delegateFactory.createComponentHandlerDelegate(this);
         }
+
         return helper;
     }
 
+    /**
+     * Returns the component configuration, a component-type/renderer-type pair.
+     * @return the component configuration
+     */
     public ComponentConfig getComponentConfig() {
         return componentConfig;
     }
@@ -198,7 +203,6 @@ public class ComponentHandler extends DelegatingMetaTagHandler {
      *
      * @since 2.2
      */
-
     public UIComponent createComponent(FaceletContext ctx) {
         return null;
     }
@@ -252,20 +256,19 @@ public class ComponentHandler extends DelegatingMetaTagHandler {
      * @since 2.0
      */
     public static boolean isNew(UIComponent component) {
-
-        UIComponent c = component;
-        if (c != null) {
-            UIComponent parent = c.getParent();
-            if (parent != null) {
-                if (UIComponent.isCompositeComponent(parent)) {
-                    c = parent;
-                }
-            }
-            return c.getParent() == null;
-        } else {
+        UIComponent componentToTest = component;
+        if (componentToTest == null) {
             return false;
         }
 
+        UIComponent parent = componentToTest.getParent();
+        if (parent != null) {
+            if (UIComponent.isCompositeComponent(parent)) {
+                componentToTest = parent;
+            }
+        }
+
+        return componentToTest.getParent() == null;
     }
 
 }

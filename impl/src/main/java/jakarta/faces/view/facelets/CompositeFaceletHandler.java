@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  * Copyright 2005-2007 The Apache Software Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,19 +24,21 @@ import jakarta.faces.component.UIComponent;
 /**
  * <p class="changed_added_2_0">
  * A FaceletHandler that is derived of 1 or more, inner FaceletHandlers. This class would be found if the next
- * FaceletHandler is structually, a body with multiple child elements as defined in XML. This class enables the Facelet
+ * FaceletHandler is structurally, a body with multiple child elements as defined in XML. This class enables the Facelet
  * runtime to traverse the tree of {@link FaceletHandler} instances built by the Facelets compiler.
  * </p>
  *
  */
 public final class CompositeFaceletHandler implements FaceletHandler {
 
-    private final FaceletHandler[] children;
-    private final int len;
+    private final FaceletHandler[] handlers;
 
-    public CompositeFaceletHandler(FaceletHandler[] children) {
-        this.children = children;
-        len = children.length;
+    /**
+     * Creates a new FaceletHandler out of the given inner FaceletHandlers.
+     * @param handlers the inner FaceletHandlers.
+     */
+    public CompositeFaceletHandler(FaceletHandler[] handlers) {
+        this.handlers = handlers;
     }
 
     /**
@@ -51,8 +53,8 @@ public final class CompositeFaceletHandler implements FaceletHandler {
      */
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
-        for (int i = 0; i < len; i++) {
-            children[i].apply(ctx, parent);
+        for (FaceletHandler childHandler : handlers) {
+            childHandler.apply(ctx, parent);
         }
     }
 
@@ -64,6 +66,6 @@ public final class CompositeFaceletHandler implements FaceletHandler {
      * @return Returns the array of child handlers contained by this handler.
      */
     public FaceletHandler[] getHandlers() {
-        return children;
+        return handlers;
     }
 }

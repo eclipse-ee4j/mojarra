@@ -67,6 +67,9 @@ public @interface ManagedProperty {
 
         private static final long serialVersionUID = 1L;
 
+        /**
+         * Instance of the {@link ManagedProperty} qualifier.
+         */
         public static final Literal INSTANCE = of("");
 
         private final String value;

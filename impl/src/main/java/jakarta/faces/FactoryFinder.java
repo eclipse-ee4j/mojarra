@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -32,7 +32,7 @@ import static jakarta.faces.ServletContextFacesContextFactory.SERVLET_CONTEXT_FI
  * <p>
  * If the Jakarta Server Faces configuration file bundled into the <code>WEB-INF</code> directory of the webapp contains
  * a <code>factory</code> entry of the given factory class name, that factory is used.
- * <p>
+ * </p>
  * </li>
  *
  * <li>
@@ -249,7 +249,6 @@ public final class FactoryFinder {
      * @return the found factory instance
      */
     public static Object getFactory(String factoryName) throws FacesException {
-
         FactoryFinderInstance factoryFinder;
 
         // Bug 20458755: If the factory being requested is the special

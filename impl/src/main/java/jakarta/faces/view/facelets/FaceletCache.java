@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -35,8 +35,10 @@ import java.net.URL;
  *
  * @since 2.1
  */
-
 public abstract class FaceletCache<V> {
+
+    private MemberFactory<V> memberFactory;
+    private MemberFactory<V> viewMetadataMemberFactory;
 
     /**
      * <p class="changed_added_2_1">
@@ -76,7 +78,6 @@ public abstract class FaceletCache<V> {
      * @return a cached or new {@code Facelet}
      *
      */
-
     public abstract V getFacelet(URL url) throws IOException;
 
     /**
@@ -93,7 +94,6 @@ public abstract class FaceletCache<V> {
      * @return true if a cached instance exists, false otherwise
      *
      */
-
     public abstract boolean isFaceletCached(URL url);
 
     /**
@@ -111,7 +111,6 @@ public abstract class FaceletCache<V> {
      * @return a cached or new View Metadata {@code Facelet} instance
      *
      */
-
     public abstract V getViewMetadataFacelet(URL url) throws IOException;
 
     /**
@@ -126,7 +125,6 @@ public abstract class FaceletCache<V> {
      *
      * @return true if a cached instance exists, false otherwise
      */
-
     public abstract boolean isViewMetadataFaceletCached(URL url);
 
     /**
@@ -177,9 +175,6 @@ public abstract class FaceletCache<V> {
         this.memberFactory = faceletFactory;
         this.viewMetadataMemberFactory = viewMetadataFaceletFactory;
     }
-
-    private MemberFactory<V> memberFactory;
-    private MemberFactory<V> viewMetadataMemberFactory;
 
     /**
      * <p class="changed_added_2_1">

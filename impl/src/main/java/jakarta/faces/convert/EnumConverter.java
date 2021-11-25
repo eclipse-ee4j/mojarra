@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -28,19 +28,7 @@ import jakarta.faces.context.FacesContext;
  *
  * @since 1.2
  */
-
 public class EnumConverter implements Converter, PartialStateHolder {
-
-    // for StateHolder
-    public EnumConverter() {
-
-    }
-
-    public EnumConverter(Class targetClass) {
-        this.targetClass = targetClass;
-    }
-
-    // ------------------------------------------------------ Manifest Constants
 
     /**
      * <p>
@@ -48,6 +36,8 @@ public class EnumConverter implements Converter, PartialStateHolder {
      * </p>
      */
     public static final String CONVERTER_ID = "jakarta.faces.Enum";
+
+    // ------------------------------------------------------ Manifest Constants
 
     /**
      * <p>
@@ -76,9 +66,28 @@ public class EnumConverter implements Converter, PartialStateHolder {
      */
     public static final String ENUM_NO_CLASS_ID = "jakarta.faces.converter.EnumConverter.ENUM_NO_CLASS";
 
-    // ----------------------------------------------------- Converter Methods
-
     private Class<? extends Enum> targetClass;
+    private boolean isTransient;
+    private boolean initialState;
+
+   /**
+    *  For StateHolder
+    */
+    public EnumConverter() {
+
+    }
+
+    /**
+     * Instantiates an enum converter with a class where enum constants are taken from.
+     *
+     * @param targetClass Class where the enum constants are taken from by the converter methods.
+     */
+    public EnumConverter(Class targetClass) {
+        this.targetClass = targetClass;
+    }
+
+
+    // ----------------------------------------------------- Converter Methods
 
     /**
      * <p>
@@ -99,7 +108,6 @@ public class EnumConverter implements Converter, PartialStateHolder {
      */
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
-
         if (context == null || component == null) {
             throw new NullPointerException();
         }
@@ -112,6 +120,7 @@ public class EnumConverter implements Converter, PartialStateHolder {
         if (value == null) {
             return null;
         }
+
         value = value.trim();
         if (value.length() < 1) {
             return null;
@@ -122,7 +131,6 @@ public class EnumConverter implements Converter, PartialStateHolder {
         } catch (IllegalArgumentException iae) {
             throw new ConverterException(MessageFactory.getMessage(context, ENUM_ID, value, value, MessageFactory.getLabel(context, component)), iae);
         }
-
     }
 
     /**
@@ -141,7 +149,6 @@ public class EnumConverter implements Converter, PartialStateHolder {
      */
     @Override
     public String getAsString(FacesContext context, UIComponent component, Object value) {
-
         if (context == null || component == null) {
             throw new NullPointerException();
         }
@@ -182,10 +189,9 @@ public class EnumConverter implements Converter, PartialStateHolder {
         if (!initialStateMarked()) {
             return targetClass;
         }
+
         return null;
     }
-
-    private boolean isTransient;
 
     @Override
     public void setTransient(boolean b) {
@@ -196,8 +202,6 @@ public class EnumConverter implements Converter, PartialStateHolder {
     public boolean isTransient() {
         return isTransient;
     }
-
-    private boolean initialState;
 
     @Override
     public void markInitialState() {

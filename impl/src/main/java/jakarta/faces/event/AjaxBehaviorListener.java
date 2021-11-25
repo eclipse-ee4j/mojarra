@@ -28,6 +28,8 @@ public interface AjaxBehaviorListener extends BehaviorListener {
 
     /**
      * <p class="changed_added_2_0">
+     * Process the Ajax behavior event.
+     * </p>
      *
      * @param event the <code>AjaxBehaviorEvent</code> instance that is being processed.
      *
