@@ -867,7 +867,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
                 String[] queryElements = Util.split(appMap, queryString, "&amp;|&");
                 for (int i = 0, len = queryElements.length; i < len; i++) {
-                    String[] elements = Util.split(appMap, queryElements[i], "=");
+                    String[] elements = Util.split(appMap, queryElements[i], "=", 2);
                     if (elements.length == 2) {
                         String rightHandSide = elements[1];
                         String sanitized = null != rightHandSide && 2 < rightHandSide.length() ? rightHandSide.trim() : "";
