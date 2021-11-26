@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation.
  * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -64,17 +65,17 @@ public class Spec1412IT {
         webClient.setIncorrectnessListener(new IgnoringIncorrectnessListener());
 
         HtmlPage page = webClient.getPage(webUrl + "spec1412.xhtml");
-        assertTrue(!page.asText().contains("Success!"));
+        assertTrue(!page.asNormalizedText().contains("Success!"));
 
         HtmlSubmitInput button = (HtmlSubmitInput) page.getHtmlElementById("form:button");
-        assertTrue(button.asText().equals("foo"));
+        assertTrue(button.asNormalizedText().equals("foo"));
 
         page = button.click();
         webClient.waitForBackgroundJavaScript(60000);
-        assertTrue(page.asText().contains("Success!"));
+        assertTrue(page.asNormalizedText().contains("Success!"));
 
         button = (HtmlSubmitInput) page.getHtmlElementById("form:button");
-        assertTrue(button.asText().equals("bar"));
+        assertTrue(button.asNormalizedText().equals("bar"));
     }
 
     @After

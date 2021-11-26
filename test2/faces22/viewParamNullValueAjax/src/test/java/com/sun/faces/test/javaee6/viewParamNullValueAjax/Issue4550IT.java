@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -72,21 +73,21 @@ public class Issue4550IT {
         HtmlSubmitInput submit = (HtmlSubmitInput) page.getHtmlElementById("form:ajaxCommandButton");
         assertNotNull(submit);
         page = (HtmlPage) submit.click();
-        String pageAsText = page.asText();
+        String pageAsText = page.asNormalizedText();
         assertTrue(pageAsText.contains(TEST_STRING));
 
         // Ajax submit click
         submit = (HtmlSubmitInput) page.getHtmlElementById("form:ajaxCommandButton");
         assertNotNull(submit);
         page = (HtmlPage) submit.click();
-        pageAsText = page.asText();
+        pageAsText = page.asNormalizedText();
         assertTrue(pageAsText.contains(TEST_STRING));
 
         // Non Ajax submit click
         submit = (HtmlSubmitInput) page.getHtmlElementById("form:commandButton");
         assertNotNull(submit);
         page = (HtmlPage) submit.click();
-        pageAsText = page.asText();
+        pageAsText = page.asNormalizedText();
         assertTrue(pageAsText.contains(TEST_STRING));
     }
 

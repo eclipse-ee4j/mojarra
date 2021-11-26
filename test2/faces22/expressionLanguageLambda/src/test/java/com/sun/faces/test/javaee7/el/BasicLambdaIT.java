@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation.
  * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -68,30 +69,30 @@ public class BasicLambdaIT {
     public void testIndex() throws Exception {
         HtmlPage page = webClient.getPage(webUrl);
         HtmlElement out = page.getHtmlElementById("output");
-        assertEquals("20", out.asText());
+        assertEquals("20", out.asNormalizedText());
 
         HtmlTextInput input = (HtmlTextInput) page.getElementById("input");
         input.setValueAttribute("1");
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("button");
         page = button.click();
         out = page.getHtmlElementById("output");
-        assertEquals("40", out.asText());
+        assertEquals("40", out.asNormalizedText());
 
         input = (HtmlTextInput) page.getElementById("input");
         input.setValueAttribute("2");
         button = (HtmlSubmitInput) page.getElementById("button");
         page = button.click();
         out = page.getHtmlElementById("output");
-        assertEquals("60", out.asText());
+        assertEquals("60", out.asNormalizedText());
     }
 
     @Test
     public void testBookTable() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/bookTable.xhtml");
-        assertTrue(page.asText().contains("At Swim Two Birds"));
-        assertTrue(page.asText().contains("The Third Policeman"));
+        assertTrue(page.asNormalizedText().contains("At Swim Two Birds"));
+        assertTrue(page.asNormalizedText().contains("The Third Policeman"));
         
         HtmlElement out = page.getHtmlElementById("output2");
-        assertEquals("The Picture of Dorian Gray", out.asText());
+        assertEquals("The Picture of Dorian Gray", out.asNormalizedText());
     }
 }

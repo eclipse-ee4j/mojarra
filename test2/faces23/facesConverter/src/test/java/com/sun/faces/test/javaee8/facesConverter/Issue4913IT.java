@@ -74,9 +74,9 @@ public class Issue4913IT {
     
     private static void validateMarkup(HtmlPage page) {
         DomElement issue4913Converter = page.getElementById("issue4913Converter");
-        assertEquals("Converter is invoked", "value is successfully converted in a managed converter", issue4913Converter.asText());
+        assertEquals("Converter is invoked", "value is successfully converted in a managed converter", issue4913Converter.asNormalizedText());
 
         DomElement issue4913ResourceDependency = page.getElementById("issue4913ResourceDependency");
-        assertEquals("Resource dependency is injected", "resource dependency is successfully injected via a managed converter", issue4913ResourceDependency.asText());
+        assertEquals("Resource dependency is injected", "resource dependency is successfully injected via a managed converter", issue4913ResourceDependency.asNormalizedText());
     }
 }

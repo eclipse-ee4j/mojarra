@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -66,12 +67,12 @@ public class Issue2948IT {
     public void testSessionLogging() throws Exception {
         HtmlPage page = webClient.getPage(webUrl);
         HtmlElement e = (HtmlElement) page.getElementById("initMessage");
-        long sessionInitTime = Long.valueOf(e.asText());
+        long sessionInitTime = Long.valueOf(e.asNormalizedText());
         HtmlSubmitInput invalidateButton = (HtmlSubmitInput) page.getElementById("invalidateSession");
 
         page = invalidateButton.click();
         e = (HtmlElement) page.getElementById("destroyMessage");
-        long sessionDestroyTime = Long.valueOf(e.asText());
+        long sessionDestroyTime = Long.valueOf(e.asNormalizedText());
         assertTrue(sessionInitTime < sessionDestroyTime);
     }
 
@@ -86,7 +87,7 @@ public class Issue2948IT {
         page = enterFlow.click();
 
         HtmlElement e = (HtmlElement) page.getElementById("initMessage");
-        long flowInitTime = Long.valueOf(e.asText());
+        long flowInitTime = Long.valueOf(e.asNormalizedText());
         HtmlSubmitInput next = (HtmlSubmitInput) page.getElementById("a");
 
         // 01_simplest/a.xhtml
@@ -101,7 +102,7 @@ public class Issue2948IT {
         // Should work, but doesn't: the action
 
 //        e = (HtmlElement) page.getElementById("destroyMessage");
-//        long flowDestroyTime = Long.valueOf(e.asText());
+//        long flowDestroyTime = Long.valueOf(e.asNormalizedText());
 //        assertTrue(flowInitTime < flowDestroyTime);
     }
 
@@ -109,12 +110,12 @@ public class Issue2948IT {
     public void testViewScopedLogging() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/viewScoped01.xhtml");
         HtmlElement e = (HtmlElement) page.getElementById("initMessage");
-        long flowInitTime = Long.valueOf(e.asText());
+        long flowInitTime = Long.valueOf(e.asNormalizedText());
         HtmlSubmitInput returnButton = (HtmlSubmitInput) page.getElementById("viewScoped02");
 
         page = returnButton.click();
         e = (HtmlElement) page.getElementById("destroyMessage");
-        long flowDestroyTime = Long.valueOf(e.asText());
+        long flowDestroyTime = Long.valueOf(e.asNormalizedText());
         assertTrue(flowInitTime < flowDestroyTime);
     }
 }

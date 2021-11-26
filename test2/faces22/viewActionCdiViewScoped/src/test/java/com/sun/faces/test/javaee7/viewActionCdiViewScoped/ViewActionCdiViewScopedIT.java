@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -64,13 +65,13 @@ public class ViewActionCdiViewScopedIT {
     public void testNoQueryParam() throws Exception {
         HtmlPage page = webClient.getPage(webUrl);
 
-        assertTrue(page.getBody().asText().indexOf("First Page") != -1);
+        assertTrue(page.getBody().asNormalizedText().indexOf("First Page") != -1);
     }
 
     @Test
     public void testWithQueryParam() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "/?page=2");
 
-        assertTrue(page.getBody().asText().indexOf("Second Page") != -1);
+        assertTrue(page.getBody().asNormalizedText().indexOf("Second Page") != -1);
     }
 }

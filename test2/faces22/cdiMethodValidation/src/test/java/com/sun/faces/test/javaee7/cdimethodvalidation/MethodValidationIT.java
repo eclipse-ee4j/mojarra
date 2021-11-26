@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation.
  * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -72,7 +73,7 @@ public class MethodValidationIT {
 
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("button");
         page = button.click();
-        String text = page.asText();
+        String text = page.asNormalizedText();
 
         assertTrue(text.contains("FooConstraint"));
         assertTrue(text.contains("my message"));
@@ -87,7 +88,7 @@ public class MethodValidationIT {
 
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("button");
         page = button.click();
-        String text = page.asText();
+        String text = page.asNormalizedText();
 
         assertTrue(!text.contains("FooConstraint"));
         assertTrue(text.contains("my message"));
@@ -102,7 +103,7 @@ public class MethodValidationIT {
 
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("button");
         page = button.click();
-        String text = page.asText();
+        String text = page.asNormalizedText();
 
         assertTrue(text.contains("FooConstraint"));
         assertTrue(text.contains("my message"));

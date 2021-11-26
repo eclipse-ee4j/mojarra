@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -133,6 +134,6 @@ public class Issue2641IT {
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("stay");
         page = button.click();
         DomElement output = page.getElementById("output");
-        assertTrue(output.asText().contains(value));
+        assertTrue(output.asNormalizedText().contains(value));
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Contributors to Eclipse Foundation.
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -79,7 +79,7 @@ public class Spec1567IT {
         input1 = (HtmlTextInput) page.getElementById("form1:inputs:input1");
         HtmlTextInput input2 = (HtmlTextInput) page.getElementById("form1:inputs:input2");
         HtmlTextInput input3 = (HtmlTextInput) page.getElementById("form1:inputs:input3");
-        String messages = page.getElementById("form1:messages").asText();
+        String messages = page.getElementById("form1:messages").asNormalizedText();
         assertEquals("input1 is filled with 1", "1", input1.getValueAttribute());
         assertEquals("input2 is empty", "", input2.getValueAttribute());
         assertEquals("input3 is empty", "", input3.getValueAttribute());
@@ -93,7 +93,7 @@ public class Spec1567IT {
         input1 = (HtmlTextInput) page.getElementById("form1:inputs:input1");
         input2 = (HtmlTextInput) page.getElementById("form1:inputs:input2");
         input3 = (HtmlTextInput) page.getElementById("form1:inputs:input3");
-        messages = page.getElementById("form1:messages").asText();
+        messages = page.getElementById("form1:messages").asNormalizedText();
         assertEquals("input1 is filled with 1", "1", input1.getValueAttribute());
         assertEquals("input2 is filled with 1", "1", input2.getValueAttribute());
         assertEquals("input3 is empty", "", input3.getValueAttribute());
@@ -107,7 +107,7 @@ public class Spec1567IT {
         input1 = (HtmlTextInput) page.getElementById("form1:inputs:input1");
         input2 = (HtmlTextInput) page.getElementById("form1:inputs:input2");
         input3 = (HtmlTextInput) page.getElementById("form1:inputs:input3");
-        messages = page.getElementById("form1:messages").asText();
+        messages = page.getElementById("form1:messages").asNormalizedText();
         assertEquals("input1 is refreshed to empty string", "", input1.getValueAttribute());
         assertEquals("input2 is refreshed to empty string", "", input2.getValueAttribute());
         assertEquals("input3 is filled and refreshed", "1x", input3.getValueAttribute());
@@ -121,7 +121,7 @@ public class Spec1567IT {
         input1 = (HtmlTextInput) page.getElementById("form2:inputs:input1");
         input2 = (HtmlTextInput) page.getElementById("form2:inputs:input2");
         input3 = (HtmlTextInput) page.getElementById("form2:inputs:input3");
-        messages = page.getElementById("form2:messages").asText();
+        messages = page.getElementById("form2:messages").asNormalizedText();
         assertEquals("input1 is filled with 1", "1", input1.getValueAttribute());
         assertEquals("input2 is empty", "", input2.getValueAttribute());
         assertEquals("input3 is empty", "", input3.getValueAttribute());
@@ -135,7 +135,7 @@ public class Spec1567IT {
         input1 = (HtmlTextInput) page.getElementById("form2:inputs:input1");
         input2 = (HtmlTextInput) page.getElementById("form2:inputs:input2");
         input3 = (HtmlTextInput) page.getElementById("form2:inputs:input3");
-        messages = page.getElementById("form2:messages").asText();
+        messages = page.getElementById("form2:messages").asNormalizedText();
         assertEquals("input1 is filled with 1", "1", input1.getValueAttribute());
         assertEquals("input2 is filled with 1", "1", input2.getValueAttribute());
         assertEquals("input3 is empty", "", input3.getValueAttribute());
@@ -149,7 +149,7 @@ public class Spec1567IT {
         input1 = (HtmlTextInput) page.getElementById("form2:inputs:input1");
         input2 = (HtmlTextInput) page.getElementById("form2:inputs:input2");
         input3 = (HtmlTextInput) page.getElementById("form2:inputs:input3");
-        messages = page.getElementById("form2:messages").asText();
+        messages = page.getElementById("form2:messages").asNormalizedText();
         assertEquals("input1 is refreshed to empty string", "", input1.getValueAttribute());
         assertEquals("input2 is refreshed to empty string", "", input2.getValueAttribute());
         assertEquals("input3 is filled and refreshed", "1x", input3.getValueAttribute());
@@ -163,7 +163,7 @@ public class Spec1567IT {
         input1 = (HtmlTextInput) page.getElementById("form3:inputs:input1");
         input2 = (HtmlTextInput) page.getElementById("form3:inputs:input2");
         input3 = (HtmlTextInput) page.getElementById("form3:inputs:input3");
-        messages = page.getElementById("form3:messages").asText();
+        messages = page.getElementById("form3:messages").asNormalizedText();
         assertEquals("input1 is refreshed to 1x", "1x", input1.getValueAttribute());
         assertEquals("input2 is refreshed to x", "x", input2.getValueAttribute());
         assertEquals("input3 is empty", "", input3.getValueAttribute());
@@ -177,7 +177,7 @@ public class Spec1567IT {
         input1 = (HtmlTextInput) page.getElementById("form3:inputs:input1");
         input2 = (HtmlTextInput) page.getElementById("form3:inputs:input2");
         input3 = (HtmlTextInput) page.getElementById("form3:inputs:input3");
-        messages = page.getElementById("form3:messages").asText();
+        messages = page.getElementById("form3:messages").asNormalizedText();
         assertEquals("input1 is refreshed to 1xx", "1xx", input1.getValueAttribute());
         assertEquals("input2 is refreshed to 1x", "1x", input2.getValueAttribute());
         assertEquals("input3 is empty", "", input3.getValueAttribute());
@@ -191,7 +191,7 @@ public class Spec1567IT {
         input1 = (HtmlTextInput) page.getElementById("form3:inputs:input1");
         input2 = (HtmlTextInput) page.getElementById("form3:inputs:input2");
         input3 = (HtmlTextInput) page.getElementById("form3:inputs:input3");
-        messages = page.getElementById("form3:messages").asText();
+        messages = page.getElementById("form3:messages").asNormalizedText();
         assertEquals("input1 is refreshed to empty string", "", input1.getValueAttribute());
         assertEquals("input2 is refreshed to empty string", "", input2.getValueAttribute());
         assertEquals("input3 is filled and refreshed", "1x", input3.getValueAttribute());

@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation.
  * Copyright (c) 2017, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -75,7 +76,7 @@ public class Issue4093IT {
 
         page = button.click();
 
-        String output = page.asText();
+        String output = page.asNormalizedText();
 
         assertTrue(output.contains("requiredwithoutpassthrough:value: Validation Error: Value is required."));
     }
@@ -90,7 +91,7 @@ public class Issue4093IT {
 
         page = button.click();
 
-        String output = page.asText();
+        String output = page.asNormalizedText();
 
         assertFalse(output.contains("Please fill out this field"));
     }
@@ -105,7 +106,7 @@ public class Issue4093IT {
 
         page = button.click();
 
-        String output = page.asText();
+        String output = page.asNormalizedText();
 
         assertTrue(output.contains("validatewithoutpassthrough:value: Validation Error: Value is required."));
     }
@@ -125,7 +126,7 @@ public class Issue4093IT {
 
         page = button.click();
 
-        String output = page.asText();
+        String output = page.asNormalizedText();
 
         assertFalse(output.contains("Please fill out this field"));
     }
@@ -145,7 +146,7 @@ public class Issue4093IT {
 
         page = button.click();
 
-        String output = page.asText();
+        String output = page.asNormalizedText();
 
         assertFalse(output.contains("Please fill out this field"));
     }

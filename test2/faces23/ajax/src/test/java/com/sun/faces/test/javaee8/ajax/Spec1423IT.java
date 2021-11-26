@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation.
  * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -65,14 +66,14 @@ public class Spec1423IT {
         HtmlPage page = webClient.getPage(webUrl + "spec1423.xhtml");
         HtmlSubmitInput button;
 
-        assertTrue(page.getHtmlElementById("scriptResult").asText().isEmpty());
-        assertTrue(page.getHtmlElementById("stylesheetResult").asText().isEmpty());
+        assertTrue(page.getHtmlElementById("scriptResult").asNormalizedText().isEmpty());
+        assertTrue(page.getHtmlElementById("stylesheetResult").asNormalizedText().isEmpty());
 
         button = (HtmlSubmitInput) page.getHtmlElementById("form1:addViaHead");
         page = button.click();
         webClient.waitForBackgroundJavaScript(60000);
-        assertTrue(page.getHtmlElementById("scriptResult").asText().equals("addedViaHead"));
-        assertTrue(page.getHtmlElementById("stylesheetResult").asText().isEmpty());
+        assertTrue(page.getHtmlElementById("scriptResult").asNormalizedText().equals("addedViaHead"));
+        assertTrue(page.getHtmlElementById("stylesheetResult").asNormalizedText().isEmpty());
     }
 
     @Test
@@ -80,14 +81,14 @@ public class Spec1423IT {
         HtmlPage page = webClient.getPage(webUrl + "spec1423.xhtml");
         HtmlSubmitInput button;
 
-        assertTrue(page.getHtmlElementById("scriptResult").asText().isEmpty());
-        assertTrue(page.getHtmlElementById("stylesheetResult").asText().isEmpty());
+        assertTrue(page.getHtmlElementById("scriptResult").asNormalizedText().isEmpty());
+        assertTrue(page.getHtmlElementById("stylesheetResult").asNormalizedText().isEmpty());
 
         button = (HtmlSubmitInput) page.getHtmlElementById("form1:addViaHead");
         page = button.click();
         webClient.waitForBackgroundJavaScript(60000);
-        assertTrue(page.getHtmlElementById("scriptResult").asText().equals("addedViaHead"));
-        assertTrue(page.getHtmlElementById("stylesheetResult").asText().isEmpty());
+        assertTrue(page.getHtmlElementById("scriptResult").asNormalizedText().equals("addedViaHead"));
+        assertTrue(page.getHtmlElementById("stylesheetResult").asNormalizedText().isEmpty());
 
         button = (HtmlSubmitInput) page.getHtmlElementById("form2:addViaInclude");
         page = button.click();
@@ -95,44 +96,44 @@ public class Spec1423IT {
 
         System.out.println(page.asXml());
 
-        assertTrue(page.getHtmlElementById("scriptResult").asText().equals("addedViaInclude"));
-        assertTrue(page.getHtmlElementById("stylesheetResult").asText().equals("rgb(255, 0, 0)"));
+        assertTrue(page.getHtmlElementById("scriptResult").asNormalizedText().equals("addedViaInclude"));
+        assertTrue(page.getHtmlElementById("stylesheetResult").asNormalizedText().equals("rgb(255, 0, 0)"));
 
         button = (HtmlSubmitInput) page.getHtmlElementById("form1:addViaBody");
         page = button.click();
         webClient.waitForBackgroundJavaScript(60000);
-        assertTrue(page.getHtmlElementById("scriptResult").asText().equals("addedViaBody"));
-        assertTrue(page.getHtmlElementById("stylesheetResult").asText().equals("rgb(255, 0, 0)"));
+        assertTrue(page.getHtmlElementById("scriptResult").asNormalizedText().equals("addedViaBody"));
+        assertTrue(page.getHtmlElementById("stylesheetResult").asNormalizedText().equals("rgb(255, 0, 0)"));
 
         button = (HtmlSubmitInput) page.getHtmlElementById("form2:addViaInclude");
         page = button.click();
         webClient.waitForBackgroundJavaScript(60000);
-        assertTrue(page.getHtmlElementById("scriptResult").asText().equals("addedViaBody"));
-        assertTrue(page.getHtmlElementById("stylesheetResult").asText().equals("rgb(255, 0, 0)"));
+        assertTrue(page.getHtmlElementById("scriptResult").asNormalizedText().equals("addedViaBody"));
+        assertTrue(page.getHtmlElementById("stylesheetResult").asNormalizedText().equals("rgb(255, 0, 0)"));
 
         button = (HtmlSubmitInput) page.getHtmlElementById("form1:addProgrammatically");
         page = button.click();
         webClient.waitForBackgroundJavaScript(60000);
-        assertTrue(page.getHtmlElementById("scriptResult").asText().equals("addedProgrammatically"));
-        assertTrue(page.getHtmlElementById("stylesheetResult").asText().equals("rgb(0, 255, 0)"));
+        assertTrue(page.getHtmlElementById("scriptResult").asNormalizedText().equals("addedProgrammatically"));
+        assertTrue(page.getHtmlElementById("stylesheetResult").asNormalizedText().equals("rgb(0, 255, 0)"));
 
         button = (HtmlSubmitInput) page.getHtmlElementById("form1:addViaHead");
         page = button.click();
         webClient.waitForBackgroundJavaScript(60000);
-        assertTrue(page.getHtmlElementById("scriptResult").asText().equals("addedProgrammatically"));
-        assertTrue(page.getHtmlElementById("stylesheetResult").asText().equals("rgb(0, 255, 0)"));
+        assertTrue(page.getHtmlElementById("scriptResult").asNormalizedText().equals("addedProgrammatically"));
+        assertTrue(page.getHtmlElementById("stylesheetResult").asNormalizedText().equals("rgb(0, 255, 0)"));
 
         button = (HtmlSubmitInput) page.getHtmlElementById("form1:addViaBody");
         page = button.click();
         webClient.waitForBackgroundJavaScript(60000);
-        assertTrue(page.getHtmlElementById("scriptResult").asText().equals("addedProgrammatically"));
-        assertTrue(page.getHtmlElementById("stylesheetResult").asText().equals("rgb(0, 255, 0)"));
+        assertTrue(page.getHtmlElementById("scriptResult").asNormalizedText().equals("addedProgrammatically"));
+        assertTrue(page.getHtmlElementById("stylesheetResult").asNormalizedText().equals("rgb(0, 255, 0)"));
 
         button = (HtmlSubmitInput) page.getHtmlElementById("form2:addViaInclude");
         page = button.click();
         webClient.waitForBackgroundJavaScript(60000);
-        assertTrue(page.getHtmlElementById("scriptResult").asText().equals("addedProgrammatically"));
-        assertTrue(page.getHtmlElementById("stylesheetResult").asText().equals("rgb(0, 255, 0)"));
+        assertTrue(page.getHtmlElementById("scriptResult").asNormalizedText().equals("addedProgrammatically"));
+        assertTrue(page.getHtmlElementById("stylesheetResult").asNormalizedText().equals("rgb(0, 255, 0)"));
     }
 
     @After

@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation.
  * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -76,6 +77,6 @@ public class NoBeansXmlIT {
         
         HtmlElement e = (HtmlElement) page.getElementById("value");
         
-        assertEquals(e.asText(), message);
+        assertEquals(e.asNormalizedText(), message);
     }    
 }

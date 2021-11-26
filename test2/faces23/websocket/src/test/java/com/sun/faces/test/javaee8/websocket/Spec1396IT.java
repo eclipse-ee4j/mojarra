@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation.
  * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -60,7 +61,7 @@ public class Spec1396IT {
     @Test
     public void testEnableWebsocketEndpoint() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "spec1396EnableWebsocketEndpoint.xhtml");
-        assertTrue(page.getHtmlElementById("param").asText().equals("true"));
+        assertTrue(page.getHtmlElementById("param").asNormalizedText().equals("true"));
     }
 
     @Test
@@ -121,7 +122,7 @@ public class Spec1396IT {
      * HtmlUnit is not capable of waiting until WS is opened. Hence this work around.
      */
     static void waitUntilWebsocketIsOpened(HtmlPage page) throws Exception {
-        Predicate<HtmlPage> isWebsocketOpened = p -> "yes".equals(page.getElementById("opened").asText());
+        Predicate<HtmlPage> isWebsocketOpened = p -> "yes".equals(page.getElementById("opened").asNormalizedText());
         int retries = 10;
 
         while (!isWebsocketOpened.test(page) && retries --> 0) {
@@ -137,7 +138,7 @@ public class Spec1396IT {
      * HtmlUnit is not capable of waiting until WS is pushed. Hence this work around.
      */
     static void waitUntilWebsocketIsPushed(HtmlPage page) throws Exception {
-        Predicate<HtmlPage> isWebsocketPushed = p -> "yes".equals(page.getElementById("opened").asText());
+        Predicate<HtmlPage> isWebsocketPushed = p -> "yes".equals(page.getElementById("opened").asNormalizedText());
         int retries = 10;
 
         while (!isWebsocketPushed.test(page) && retries --> 0) {

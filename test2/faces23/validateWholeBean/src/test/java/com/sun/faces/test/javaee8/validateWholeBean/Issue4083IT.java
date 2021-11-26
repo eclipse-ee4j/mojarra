@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation.
  * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -88,6 +89,6 @@ public class Issue4083IT {
         HtmlSubmitInput submit = (HtmlSubmitInput) page.getHtmlElementById("submit");
         HtmlPage page1 = submit.click();
 
-        assertEquals("Password fields must match", page1.getElementById("err").getElementsByTagName("li").get(0).asText());
+        assertEquals("Password fields must match", page1.getElementById("err").getElementsByTagName("li").get(0).asNormalizedText());
     }
 }

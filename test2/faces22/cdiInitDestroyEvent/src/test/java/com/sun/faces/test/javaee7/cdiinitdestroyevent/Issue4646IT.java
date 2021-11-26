@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation.
  * Copyright (c) 1997, 2019 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -67,17 +68,17 @@ public class Issue4646IT {
     public void testPreDestroyEventIssue4646() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "faces/issue4646.xhtml");
         HtmlElement counterElement = (HtmlElement) page.getElementById("counterMessage");
-        int currentCount = parseInt(counterElement.asText());
+        int currentCount = parseInt(counterElement.asNormalizedText());
         
         // +1
         page = webClient.getPage(webUrl + "faces/issue4646.xhtml");
         counterElement = (HtmlElement) page.getElementById("counterMessage");
-        assertEquals("+1 should be the objects created", currentCount + 1, parseInt(counterElement.asText()));
+        assertEquals("+1 should be the objects created", currentCount + 1, parseInt(counterElement.asNormalizedText()));
         
         // +2
         page = webClient.getPage(webUrl + "faces/issue4646.xhtml");
         counterElement = (HtmlElement) page.getElementById("counterMessage");
-        assertEquals("+2 should be the objects created", currentCount + 2, parseInt(counterElement.asText()));
+        assertEquals("+2 should be the objects created", currentCount + 2, parseInt(counterElement.asNormalizedText()));
         
         // invalidate
         HtmlSubmitInput invalidateButton = (HtmlSubmitInput) page.getElementById("invalidateSession");
@@ -86,7 +87,7 @@ public class Issue4646IT {
         // should be the initial count
         page = webClient.getPage(webUrl + "faces/issue4646.xhtml");
         counterElement = (HtmlElement) page.getElementById("counterMessage");
-        assertEquals("The initial count should be again", currentCount, parseInt(counterElement.asText()));
+        assertEquals("The initial count should be again", currentCount, parseInt(counterElement.asNormalizedText()));
         
         // invalidate again
         invalidateButton = (HtmlSubmitInput) page.getElementById("invalidateSession");
