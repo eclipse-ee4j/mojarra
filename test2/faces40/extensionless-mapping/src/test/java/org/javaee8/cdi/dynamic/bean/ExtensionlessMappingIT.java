@@ -75,6 +75,9 @@ public class ExtensionlessMappingIT {
         System.out.println("\nContent for `"+ webUrl + "foo" + "` :\n" + content + "\n");
 
         assertTrue(content.contains("This is page foo"));
+
+        assertTrue(page.getElementById("barxhtmllink").getAttribute("href").endsWith("/bar"));
+        assertTrue(page.getElementById("barlink").getAttribute("href").endsWith("/bar"));
     }
 
     @Test
