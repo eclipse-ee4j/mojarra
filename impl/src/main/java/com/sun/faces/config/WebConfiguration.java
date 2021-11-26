@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021 Contributors to Eclipse Foundation.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -854,6 +855,7 @@ public class WebConfiguration {
         ForceLoadFacesConfigFiles("com.sun.faces.forceLoadConfiguration", false),
         DisableClientStateEncryption("com.sun.faces.disableClientStateEncryption", false),
         DisableFacesServletAutomaticMapping(FacesServlet.DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME, false),
+        AutomaticExtensionlessMapping(FacesServlet.AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME, false),
         EnableClientStateDebugging("com.sun.faces.enableClientStateDebugging", false),
         EnableHtmlTagLibraryValidator("com.sun.faces.enableHtmlTagLibValidator", false),
         EnableCoreTagLibraryValidator("com.sun.faces.enableCoreTagLibValidator", false),

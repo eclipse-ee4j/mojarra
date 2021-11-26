@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021 Contributors to Eclipse Foundation.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,6 +20,7 @@
 package com.sun.faces.util;
 
 import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
+import static com.sun.faces.RIConstants.FACES_SERVLET_REGISTRATION;
 import static com.sun.faces.util.MessageUtils.ILLEGAL_ATTEMPT_SETTING_APPLICATION_ARTIFACT_ID;
 import static com.sun.faces.util.MessageUtils.NAMED_OBJECT_NOT_FOUND_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
@@ -179,6 +181,15 @@ public class Util {
         }
 
         return null;
+    }
+
+    public static Optional<ServletRegistration> getFacesServletRegistration(FacesContext context) {
+        Object unKnownContext = context.getExternalContext().getContext();
+        if (unKnownContext instanceof ServletContext) {
+            return Optional.of((ServletRegistration) ((ServletContext) unKnownContext).getAttribute(FACES_SERVLET_REGISTRATION));
+        }
+
+        return Optional.empty();
     }
 
     /**

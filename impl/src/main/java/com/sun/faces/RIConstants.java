@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021 Contributors to Eclipse Foundation.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -126,6 +127,13 @@ public class RIConstants {
      * So this key will store the mappings during the initialization.
      */
     public static final String FACES_SERVLET_MAPPINGS = FACES_PREFIX + "FacesServletMappings";
+
+    /**
+     * Key to annotate the registration for the FacesServlet. Since servlet 3.0 the ConfigureListener
+     * cannot access the servlet registration because it is initialized by a TLD and it is programmatic.
+     * So this key will store the registration during the initialization.
+     */
+    public static final String FACES_SERVLET_REGISTRATION = FACES_PREFIX + "FacesServletRegistration";
 
     private RIConstants() {
         throw new IllegalStateException();

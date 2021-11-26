@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021 Contributors to Eclipse Foundation.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,6 +18,7 @@ package com.sun.faces.application;
 
 import static com.sun.faces.RIConstants.FACES_CONFIG_VERSION;
 import static com.sun.faces.RIConstants.FACES_PREFIX;
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.AutomaticExtensionlessMapping;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.FaceletsSkipComments;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsDecorators;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsDefaultRefreshPeriod;
@@ -26,12 +28,14 @@ import static com.sun.faces.facelets.util.ReflectionUtil.forName;
 import static com.sun.faces.util.MessageUtils.APPLICATION_ASSOCIATE_EXISTS_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.Util.getFacesConfigXmlVersion;
+import static com.sun.faces.util.Util.getFacesServletRegistration;
 import static com.sun.faces.util.Util.isCdiAvailable;
 import static com.sun.faces.util.Util.split;
 import static jakarta.faces.FactoryFinder.FACELET_CACHE_FACTORY;
 import static jakarta.faces.FactoryFinder.FLOW_HANDLER_FACTORY;
 import static jakarta.faces.application.ProjectStage.Development;
 import static jakarta.faces.application.ProjectStage.Production;
+import static jakarta.faces.application.ViewVisitOption.RETURN_AS_MINIMAL_IMPLICIT_OUTCOME;
 import static java.lang.Long.parseLong;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
@@ -323,6 +327,14 @@ public class ApplicationAssociate {
 
             String facesConfigVersion = getFacesConfigXmlVersion(context);
             context.getExternalContext().getApplicationMap().put(FACES_CONFIG_VERSION, facesConfigVersion);
+
+            if (webConfig.isOptionEnabled(AutomaticExtensionlessMapping)) {
+                getFacesServletRegistration(context)
+                    .ifPresent(registration ->
+                        viewHandler.getViews(context, "/", RETURN_AS_MINIMAL_IMPLICIT_OUTCOME)
+                                   .forEach(view -> registration.addMapping(view)));
+            }
+
         }
 
     }
