@@ -36,7 +36,6 @@
     	  <module>ajax</module>
         <module>cdi</module>
         <module>extensionless-mapping</module>
-        <module>javaPage</module>
         
         <module>doctype</module>
 
