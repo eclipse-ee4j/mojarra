@@ -19,6 +19,7 @@ package com.sun.faces.util;
 
 import junit.framework.TestCase;
 
+import java.util.HashMap;
 import java.util.Locale;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.fail;
@@ -93,6 +94,22 @@ public class TestUtil_local extends TestCase {
             Util.getLocaleFromString("12-");
         } catch (Exception exception) {
         }
+    }
+    
+    public void testSplit() {
+        String[] result = null;
+        
+        result = Util.split(new HashMap<String,Object>(), "fooBarKey=Zm9vQmFyVmFsdWU====", "=", 2);
+        assertEquals(2, result.length);
+        assertEquals(result[1], "Zm9vQmFyVmFsdWU====");
+        
+        result = Util.split(new HashMap<String,Object>(), "fooBarKey=Zm9vQmFyVmFsdWU=", "=", 2);
+        assertEquals(2, result.length);
+        assertEquals(result[1], "Zm9vQmFyVmFsdWU=");
+        
+        result = Util.split(new HashMap<String,Object>(), "fooBarKey2=Zm9vQmFyVmFsdWUy", "=", 2);
+        assertEquals(2, result.length);
+        assertEquals(result[1], "Zm9vQmFyVmFsdWUy");
     }
 
 } // end of class TestUtil_local
