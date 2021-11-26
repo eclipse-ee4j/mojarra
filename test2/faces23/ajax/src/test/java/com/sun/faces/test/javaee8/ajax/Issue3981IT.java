@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation.
  * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -64,12 +65,12 @@ public class Issue3981IT {
         webClient.setIncorrectnessListener(new IgnoringIncorrectnessListener());
 
         HtmlPage page = webClient.getPage(webUrl + "issue3981.xhtml");
-        assertTrue(page.getHtmlElementById("form:result").asText().isEmpty());
+        assertTrue(page.getHtmlElementById("form:result").asNormalizedText().isEmpty());
 
         HtmlSubmitInput button = (HtmlSubmitInput) page.getHtmlElementById("form:button");
         page = button.click();
         webClient.waitForBackgroundJavaScript(60000);
-        assertTrue(page.getHtmlElementById("form:result").asText().equals("Success!"));
+        assertTrue(page.getHtmlElementById("form:result").asNormalizedText().equals("Success!"));
     }
 
     @After

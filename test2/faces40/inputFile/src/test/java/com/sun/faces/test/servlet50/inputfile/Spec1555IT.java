@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Contributors to Eclipse Foundation.
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -98,7 +98,7 @@ public class Spec1555IT {
 
         DomElement message = messages.getChildElements().iterator().next();
 
-        assertEquals("Uploaded file has been received", "field: singleSelection, name: " + file.getName() + ", size: " + file.length(), message.asText());
+        assertEquals("Uploaded file has been received", "field: singleSelection, name: " + file.getName() + ", size: " + file.length(), message.asNormalizedText());
     }
 
     @Test
@@ -136,9 +136,9 @@ public class Spec1555IT {
         DomElement message2 = iterator.next();
         DomElement message3 = iterator.next();
 
-        assertEquals("First uploaded file has been received", "field: multipleSelection, name: " + file1.getName() + ", size: " + file1.length(), message1.asText());
-        assertEquals("Second uploaded file has been received", "field: multipleSelection, name: " + file2.getName() + ", size: " + file2.length(), message2.asText());
-        assertEquals("Third uploaded file has been received", "field: multipleSelection, name: " + file3.getName() + ", size: " + file3.length(), message3.asText());
+        assertEquals("First uploaded file has been received", "field: multipleSelection, name: " + file1.getName() + ", size: " + file1.length(), message1.asNormalizedText());
+        assertEquals("Second uploaded file has been received", "field: multipleSelection, name: " + file2.getName() + ", size: " + file2.length(), message2.asNormalizedText());
+        assertEquals("Third uploaded file has been received", "field: multipleSelection, name: " + file3.getName() + ", size: " + file3.length(), message3.asNormalizedText());
     }
 
     private static File generateTempFile(String name, String ext, int size) throws IOException {

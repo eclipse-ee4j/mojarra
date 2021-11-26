@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation.
  * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -66,7 +67,7 @@ public class Issue4551IT {
         HtmlPage page = webClient.getPage(webUrl + "faces/issue4551.xhtml");
         HtmlElement submit = page.getHtmlElementById("form:submit");
         page = submit.click();
-        assertTrue(page.asText().contains("CustomValidator1 was validated"));
-        assertTrue(page.asText().contains("CustomValidator2 was validated"));
+        assertTrue(page.asNormalizedText().contains("CustomValidator1 was validated"));
+        assertTrue(page.asNormalizedText().contains("CustomValidator2 was validated"));
     }
 }

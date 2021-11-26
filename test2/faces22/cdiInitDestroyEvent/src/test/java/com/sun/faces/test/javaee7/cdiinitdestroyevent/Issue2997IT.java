@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -69,14 +70,14 @@ public class Issue2997IT {
         HtmlSubmitInput button = (HtmlSubmitInput) page.getElementById("flow-with-templates");
         page = button.click();
 
-        String pageText = page.getBody().asText();
+        String pageText = page.getBody().asNormalizedText();
         assertTrue(pageText.contains("Bottom From Template"));
         assertTrue(pageText.contains("issue2997Bean"));
 
         button = (HtmlSubmitInput) page.getElementById("issue2997Home");
         page = button.click();
 
-        pageText = page.getBody().asText();
+        pageText = page.getBody().asNormalizedText();
         assertTrue(pageText.contains("Issue2997Home"));
         assertTrue(pageText.contains("flow-with-templates"));
         assertTrue(pageText.contains("issue2997Bean"));
@@ -86,13 +87,13 @@ public class Issue2997IT {
         button = (HtmlSubmitInput) page.getElementById("flow-with-templates");
         page = button.click();
 
-        pageText = page.getBody().asText();
+        pageText = page.getBody().asNormalizedText();
         assertTrue(pageText.contains("Bottom From Template"));
 
         button = (HtmlSubmitInput) page.getElementById("issue2997UserList");
         page = button.click();
 
-        pageText = page.getBody().asText();
+        pageText = page.getBody().asNormalizedText();
         assertTrue(pageText.contains("Issue2997UserList"));
         assertTrue(pageText.contains("flow-with-templates"));
         assertTrue(pageText.contains("issue2997Bean"));
@@ -102,13 +103,13 @@ public class Issue2997IT {
         button = (HtmlSubmitInput) page.getElementById("flow-with-templates");
         page = button.click();
 
-        pageText = page.getBody().asText();
+        pageText = page.getBody().asNormalizedText();
         assertTrue(pageText.contains("Bottom From Template"));
 
         button = (HtmlSubmitInput) page.getElementById("issue2997PageInFacesConfig");
         page = button.click();
 
-        pageText = page.getBody().asText();
+        pageText = page.getBody().asNormalizedText();
         assertTrue(pageText.contains("Issue2997PageInFacesConfig"));
         assertTrue(pageText.contains("flow-with-templates"));
         assertTrue(pageText.contains("issue2997Bean"));

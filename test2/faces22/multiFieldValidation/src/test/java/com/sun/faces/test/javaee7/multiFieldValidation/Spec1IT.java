@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation.
  * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -87,10 +88,10 @@ public class Spec1IT {
         assertTrue(!pageText.contains("Password fields must match"));
         
         HtmlParagraph password1Value = page.getHtmlElementById("password1Value");
-        assertTrue(password1Value.asText().isEmpty());
+        assertTrue(password1Value.asNormalizedText().isEmpty());
         
         HtmlParagraph password2Value = page.getHtmlElementById("password2Value");
-        assertTrue(password2Value.asText().isEmpty());
+        assertTrue(password2Value.asNormalizedText().isEmpty());
     }
     
     @Test
@@ -114,10 +115,10 @@ public class Spec1IT {
         assertTrue(!pageText.contains("Password fields must match"));
         
         HtmlParagraph password1Value = page.getHtmlElementById("password1Value");
-        assertTrue(password1Value.asText().isEmpty());
+        assertTrue(password1Value.asNormalizedText().isEmpty());
         
         HtmlParagraph password2Value = page.getHtmlElementById("password2Value");
-        assertTrue(password2Value.asText().isEmpty());
+        assertTrue(password2Value.asNormalizedText().isEmpty());
     }
     
     @Test
@@ -141,10 +142,10 @@ public class Spec1IT {
         assertTrue(pageText.contains("Password fields must match"));
 
         HtmlParagraph password1Value = page.getHtmlElementById("password1Value");
-        assertTrue(password1Value.asText().isEmpty());
+        assertTrue(password1Value.asNormalizedText().isEmpty());
         
         HtmlParagraph password2Value = page.getHtmlElementById("password2Value");
-        assertTrue(password2Value.asText().isEmpty());
+        assertTrue(password2Value.asNormalizedText().isEmpty());
         
     }
     
@@ -169,10 +170,10 @@ public class Spec1IT {
         assertTrue(!pageText.contains("Password fields must match"));
 
         HtmlParagraph password1Value = page.getHtmlElementById("password1Value");
-        assertTrue(password1Value.asText().contains("foofoofoo"));
+        assertTrue(password1Value.asNormalizedText().contains("foofoofoo"));
         
         HtmlParagraph password2Value = page.getHtmlElementById("password2Value");
-        assertTrue(password2Value.asText().contains("foofoofoo"));
+        assertTrue(password2Value.asNormalizedText().contains("foofoofoo"));
         
     }
     

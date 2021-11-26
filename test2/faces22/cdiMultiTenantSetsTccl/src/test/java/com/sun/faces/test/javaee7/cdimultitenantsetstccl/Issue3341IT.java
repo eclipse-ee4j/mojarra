@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation.
  * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -69,7 +70,7 @@ public class Issue3341IT {
     public void testTCCLReplacementResilience() throws Exception {
         HtmlPage page = webClient.getPage(webUrl);
 
-        String pageText = page.getBody().asText();
+        String pageText = page.getBody().asNormalizedText();
         
         // If the BeforeFilter is configured to 
         if (pageText.matches("(?s).*SUCCESS.*")) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Contributors to Eclipse Foundation.
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -72,22 +72,22 @@ public class Spec1559IT {
 
         select.setSelectedAttribute(select.getOptionByValue("5"), true);
 
-        assertEquals("messages is empty before submit", "", page.getHtmlElementById("form:messages").asText());
-        assertEquals("output is empty before submit", "", page.getHtmlElementById("form:output").asText());
+        assertEquals("messages is empty before submit", "", page.getHtmlElementById("form:messages").asNormalizedText());
+        assertEquals("output is empty before submit", "", page.getHtmlElementById("form:output").asNormalizedText());
 
         page = page.getHtmlElementById("form:submit").click();
 
         assertValidMarkup(select);
-        assertEquals("messages is still empty after submit", "", page.getHtmlElementById("form:messages").asText());
-        assertEquals("output is '5' after submit", "5", page.getHtmlElementById("form:output").asText());
+        assertEquals("messages is still empty after submit", "", page.getHtmlElementById("form:messages").asNormalizedText());
+        assertEquals("output is '5' after submit", "5", page.getHtmlElementById("form:output").asNormalizedText());
 
         select = page.getHtmlElementById("form:input");
         select.setSelectedAttribute(select.getOptionByValue("2"), true);
         page = page.getHtmlElementById("form:submit").click();
 
         assertValidMarkup(select);
-        assertEquals("messages is still empty after submit", "", page.getHtmlElementById("form:messages").asText());
-        assertEquals("output is '2' after submit", "2", page.getHtmlElementById("form:output").asText());
+        assertEquals("messages is still empty after submit", "", page.getHtmlElementById("form:messages").asNormalizedText());
+        assertEquals("output is '2' after submit", "2", page.getHtmlElementById("form:output").asNormalizedText());
     }
 
     private static void assertValidMarkup(HtmlSelect select) {

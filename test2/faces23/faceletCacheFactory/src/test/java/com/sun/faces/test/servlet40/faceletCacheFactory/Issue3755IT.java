@@ -73,7 +73,7 @@ public class Issue3755IT {
         HtmlSubmitInput submit = page.getHtmlElementById("submit");
         page = submit.click();
 
-        String pageText = page.getBody().asText();
+        String pageText = page.getBody().asNormalizedText();
         assertTrue(pageText.contains("output: " + inputText));
         assertTrue(pageText.matches("(?s).*message.\\d+.*"));
     }

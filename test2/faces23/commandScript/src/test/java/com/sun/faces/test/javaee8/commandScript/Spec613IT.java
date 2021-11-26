@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation.
  * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -68,11 +69,11 @@ public class Spec613IT {
         HtmlPage page = webClient.getPage(webUrl + "spec613.xhtml");
         webClient.waitForBackgroundJavaScript(60000);
         assertTrue(page.getWebResponse().getContentAsString().contains(">var foo=function(o){"));
-        assertTrue(page.getHtmlElementById("result").asText().equals("foo"));
+        assertTrue(page.getHtmlElementById("result").asNormalizedText().equals("foo"));
 
         page.executeJavaScript("bar()");
         webClient.waitForBackgroundJavaScript(60000);
-        assertTrue(page.getHtmlElementById("result").asText().equals("bar"));
+        assertTrue(page.getHtmlElementById("result").asNormalizedText().equals("bar"));
     }
 
     @After

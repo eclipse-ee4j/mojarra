@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Contributors to Eclipse Foundation.
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -86,9 +86,9 @@ public class Spec1560IT {
         HtmlElement messageForTypeButton = (HtmlElement) page.getElementById("form:messageForTypeButton");
         HtmlElement messages = (HtmlElement) page.getElementById("messages");
 
-        String emailMessage = messageForTypeEmail.asText();
-        String buttonMessage = messageForTypeButton.asText();
-        String globalMessage = messages.asText();
+        String emailMessage = messageForTypeEmail.asNormalizedText();
+        String buttonMessage = messageForTypeButton.asNormalizedText();
+        String globalMessage = messages.asNormalizedText();
 
         if ("Development".equals(System.getProperty("webapp.projectStage"))) {
             assertEquals("There is no faces message for type 'email'", "", emailMessage);
