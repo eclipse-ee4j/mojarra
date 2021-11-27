@@ -661,9 +661,6 @@ public class ELFlash extends Flash {
     public static final String ACT_AS_DO_LAST_PHASE_ACTIONS = 
             ELFlash.class.getPackage().getName() + ".ACT_AS_DO_LAST_PHASE_ACTIONS";
 
-    public static final String DELAYED_END_DOCUMENT =
-            ELFlash.class.getPackage().getName() + ".DELAYED_END_DOCUMENT";
-
     /**
      * <p>This is the most magic of methods.  There are several scenarios
      * in which this method can be called, but the first time it is

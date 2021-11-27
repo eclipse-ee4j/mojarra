@@ -128,7 +128,6 @@ import javax.servlet.http.HttpSession;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.context.StateContext;
-import com.sun.faces.context.flash.ELFlash;
 import com.sun.faces.facelets.el.ContextualCompositeMethodExpression;
 import com.sun.faces.facelets.el.VariableMapperWrapper;
 import com.sun.faces.facelets.impl.DefaultFaceletFactory;
@@ -440,10 +439,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
             //  Don't call startDoc and endDoc on a partial response
             if (ctx.getPartialViewContext().isPartialRequest()) {
-                Map<Object, Object> contextMap = ctx.getAttributes();
-                contextMap.put(ELFlash.DELAYED_END_DOCUMENT, true);
                 viewToRender.encodeAll(ctx);
-                contextMap.remove(ELFlash.DELAYED_END_DOCUMENT);
                 try {
                     ctx.getExternalContext().getFlash().doPostPhaseActions(ctx);
                 } catch (UnsupportedOperationException uoe) {
@@ -451,7 +447,6 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                         LOGGER.fine("ExternalContext.getFlash() throw UnsupportedOperationException -> Flash unavailable");
                     }
                 }
-                ctx.getPartialViewContext().getPartialResponseWriter().endDocument();
             } else {
                 if (ctx.isProjectStage(Development)) {
                     FormOmittedChecker.check(ctx);
