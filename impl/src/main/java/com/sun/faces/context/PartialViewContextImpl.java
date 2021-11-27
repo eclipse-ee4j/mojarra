@@ -19,6 +19,7 @@ package com.sun.faces.context;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_EXECUTE_PARAM;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_RENDER_PARAM;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_RESET_VALUES_PARAM;
+import static java.util.logging.Level.FINE;
 import static javax.faces.FactoryFinder.VISIT_CONTEXT_FACTORY;
 
 import java.io.IOException;
@@ -56,7 +57,6 @@ import javax.faces.render.RenderKitFactory;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.component.visit.PartialVisitContext;
-import com.sun.faces.context.flash.ELFlash;
 import com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.HtmlUtils;
@@ -308,6 +308,7 @@ import com.sun.faces.util.Util;
                 if (isRenderAll()) {
                     renderAll(ctx, viewRoot);
                     renderState(ctx);
+                    doFlashPostPhaseActions(ctx);
                     writer.endDocument();
                     return;
                 }
@@ -322,16 +323,25 @@ import com.sun.faces.util.Util;
 
                 renderState(ctx);
                 renderEvalScripts(ctx);
+                doFlashPostPhaseActions(ctx);
 
-                if (!ctx.getAttributes().containsKey(ELFlash.DELAYED_END_DOCUMENT) || !(Boolean) ctx.getAttributes().get(ELFlash.DELAYED_END_DOCUMENT)) {
-                    writer.endDocument();
-                }
+                writer.endDocument();
             } catch (IOException ex) {
                 this.cleanupAfterView();
             } catch (RuntimeException ex) {
                 this.cleanupAfterView();
                 // Throw the exception
                 throw ex;
+            }
+        }
+    }
+    
+    private void doFlashPostPhaseActions(FacesContext ctx) {
+        try {
+            ctx.getExternalContext().getFlash().doPostPhaseActions(ctx);
+        } catch (UnsupportedOperationException uoe) {
+            if (LOGGER.isLoggable(FINE)) {
+                LOGGER.fine("ExternalContext.getFlash() throw UnsupportedOperationException -> Flash unavailable");
             }
         }
     }

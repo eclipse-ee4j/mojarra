@@ -128,7 +128,6 @@ import javax.servlet.http.HttpSession;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.context.StateContext;
-import com.sun.faces.context.flash.ELFlash;
 import com.sun.faces.facelets.el.ContextualCompositeMethodExpression;
 import com.sun.faces.facelets.el.VariableMapperWrapper;
 import com.sun.faces.facelets.impl.DefaultFaceletFactory;
@@ -438,20 +437,9 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             ResponseWriter writer = origWriter.cloneWithWriter(stateWriter);
             ctx.setResponseWriter(writer);
 
-            //  Don't call startDoc and endDoc on a partial response
             if (ctx.getPartialViewContext().isPartialRequest()) {
-                Map<Object, Object> contextMap = ctx.getAttributes();
-                contextMap.put(ELFlash.DELAYED_END_DOCUMENT, true);
+                // Any pre/post processing logic such as startDocument(), doPostPhaseActions() and endDocument() must be done in PartialViewContextImpl, see also #4977
                 viewToRender.encodeAll(ctx);
-                contextMap.remove(ELFlash.DELAYED_END_DOCUMENT);
-                try {
-                    ctx.getExternalContext().getFlash().doPostPhaseActions(ctx);
-                } catch (UnsupportedOperationException uoe) {
-                    if (LOGGER.isLoggable(FINE)) {
-                        LOGGER.fine("ExternalContext.getFlash() throw UnsupportedOperationException -> Flash unavailable");
-                    }
-                }
-                ctx.getPartialViewContext().getPartialResponseWriter().endDocument();
             } else {
                 if (ctx.isProjectStage(Development)) {
                     FormOmittedChecker.check(ctx);
