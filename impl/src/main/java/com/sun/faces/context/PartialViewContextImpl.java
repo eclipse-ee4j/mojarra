@@ -19,6 +19,7 @@ package com.sun.faces.context;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_EXECUTE_PARAM;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_RENDER_PARAM;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_RESET_VALUES_PARAM;
+import static java.util.logging.Level.FINE;
 import static javax.faces.FactoryFinder.VISIT_CONTEXT_FACTORY;
 
 import java.io.IOException;
@@ -307,6 +308,7 @@ import com.sun.faces.util.Util;
                 if (isRenderAll()) {
                     renderAll(ctx, viewRoot);
                     renderState(ctx);
+                    doFlashPostPhaseActions(ctx);
                     writer.endDocument();
                     return;
                 }
@@ -321,6 +323,7 @@ import com.sun.faces.util.Util;
 
                 renderState(ctx);
                 renderEvalScripts(ctx);
+                doFlashPostPhaseActions(ctx);
 
                 writer.endDocument();
             } catch (IOException ex) {
@@ -329,6 +332,16 @@ import com.sun.faces.util.Util;
                 this.cleanupAfterView();
                 // Throw the exception
                 throw ex;
+            }
+        }
+    }
+    
+    private void doFlashPostPhaseActions(FacesContext ctx) {
+        try {
+            ctx.getExternalContext().getFlash().doPostPhaseActions(ctx);
+        } catch (UnsupportedOperationException uoe) {
+            if (LOGGER.isLoggable(FINE)) {
+                LOGGER.fine("ExternalContext.getFlash() throw UnsupportedOperationException -> Flash unavailable");
             }
         }
     }
