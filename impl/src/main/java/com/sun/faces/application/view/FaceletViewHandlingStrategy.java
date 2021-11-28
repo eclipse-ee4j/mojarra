@@ -427,16 +427,9 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             ResponseWriter writer = origWriter.cloneWithWriter(stateWriter);
             ctx.setResponseWriter(writer);
 
-            // Don't call startDoc and endDoc on a partial response
             if (ctx.getPartialViewContext().isPartialRequest()) {
+                // Any pre/post processing logic such as startDocument(), doPostPhaseActions() and endDocument() must be done in PartialViewContextImpl, see also #4977
                 viewToRender.encodeAll(ctx);
-                try {
-                    ctx.getExternalContext().getFlash().doPostPhaseActions(ctx);
-                } catch (UnsupportedOperationException uoe) {
-                    if (LOGGER.isLoggable(FINE)) {
-                        LOGGER.fine("ExternalContext.getFlash() throw UnsupportedOperationException -> Flash unavailable");
-                    }
-                }
             } else {
                 if (ctx.isProjectStage(Development)) {
                     FormOmittedChecker.check(ctx);
