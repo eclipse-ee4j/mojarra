@@ -22,7 +22,7 @@
     <parent>
         <artifactId>pom</artifactId>
         <groupId>com.sun.faces.test.protocolaware.flash</groupId>
-        <version>3.0.1-SNAPSHOT-SNAPSHOT</version>
+        <version>3.0.2-SNAPSHOT</version>
     </parent>
     <groupId>com.sun.faces.test.protocolaware.flash</groupId>
     <artifactId>basic</artifactId>

@@ -22,10 +22,10 @@
     <parent>
         <groupId>com.sun.faces.test.servlet30</groupId>
         <artifactId>pom</artifactId>
-        <version>3.0.1-SNAPSHOT-SNAPSHOT</version>
+        <version>3.0.2-SNAPSHOT</version>
     </parent>
     <artifactId>stateViewExpiredExceptionMissing</artifactId>
-    <version>3.0.1-SNAPSHOT-SNAPSHOT</version>
+    <version>3.0.2-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>Mojarra ${project.version} - Test - Servlet 3.0 - State ViewExpiredException Missing</name>
     <build>
