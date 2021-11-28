@@ -21,12 +21,12 @@
   <parent>
     <artifactId>pom</artifactId>
     <groupId>com.sun.faces.test.javaee8</groupId>
-    <version>3.0.1-SNAPSHOT-SNAPSHOT</version>
+    <version>3.0.2-SNAPSHOT-SNAPSHOT</version>
   </parent>
   
   <groupId>com.sun.faces.test.javaee8</groupId>
   <artifactId>disablefacelettoxhtmlmapping</artifactId>
-  <version>3.0.1-SNAPSHOT-SNAPSHOT</version>
+  <version>3.0.2-SNAPSHOT-SNAPSHOT</version>
   <packaging>war</packaging>
 
   <name>Mojarra ${project.version} - Test - JavaEE 8 - Disable Facelet To Xhtml Mapping</name>

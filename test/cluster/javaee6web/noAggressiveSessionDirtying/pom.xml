@@ -22,10 +22,10 @@
     <parent>
         <artifactId>pom</artifactId>
         <groupId>com.sun.faces.test.cluster.javaee6web</groupId>
-        <version>3.0.1-SNAPSHOT-SNAPSHOT</version>
+        <version>3.0.2-SNAPSHOT-SNAPSHOT</version>
     </parent>
     <artifactId>noAggressiveSessionDirtying</artifactId>
-    <version>3.0.1-SNAPSHOT-SNAPSHOT</version>
+    <version>3.0.2-SNAPSHOT-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>Mojarra ${project.version} - Test - Cluster - JavaEE 6 Web - No Aggressive Session Dirtying</name>
     <build>
