@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.sun.faces.test.cluster.javaee6web.flow</groupId>
         <artifactId>pom</artifactId>
-        <version>3.0.2-SNAPSHOT-SNAPSHOT</version>
+        <version>3.0.2-SNAPSHOT</version>
     </parent>
     
     <artifactId>basic_faces_flow_call</artifactId>
