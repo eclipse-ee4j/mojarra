@@ -2462,41 +2462,6 @@ public class BackingBean implements PasswordHolder, Cloneable {
 
     <tag>
         <description><![CDATA[
-            <p class="changed_deleted_2_0_rev_a">The use of
-            this element has been deprecated in Facelets for Faces. 
-            Create and register a child UIOutput component
-            associated with the closest parent UIComponent custom
-            action, which renders nested body content.</p>
-        ]]></description>
-        <tag-name>verbatim</tag-name>
-        <component>
-            <component-type>jakarta.faces.Output</component-type>
-            <renderer-type>jakarta.faces.Text</renderer-type>
-        </component>
-        <attribute>
-            <description><![CDATA[
-                <p>Flag indicating that generated markup must
-                be escaped in a manner that is appropriate
-                for the markup language to be rendered.
-                Expressions must evaluate to a boolean.
-                Default value is false.</p>
-            ]]></description>
-            <name>escape</name>
-            <type>java.lang.Boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>Flag indicating whether or not this component should be rendered
-                (during Render Response Phase), or processed on any subsequent
-                form submit. The default value for this property is true.</p>
-            ]]></description>
-            <name>rendered</name>
-            <required>false</required>
-            <type>java.lang.Boolean</type>
-        </attribute>
-    </tag>
-    <tag>
-        <description><![CDATA[
             <p><span class="changed_modified_2_0_rev_a
             changed_modified_2_2">Container</span> for all JavaServer
             Faces core and custom component actions used on a
