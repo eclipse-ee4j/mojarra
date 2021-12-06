@@ -146,28 +146,6 @@ public abstract class FaceletCache<V> {
      * @since 2.3
      */
     public void setCacheFactories(MemberFactory<V> faceletFactory, MemberFactory<V> viewMetadataFaceletFactory) {
-        this.setMemberFactories(faceletFactory, viewMetadataFaceletFactory);
-    }
-
-    /**
-     * <p class="changed_added_2_1">
-     * This must be called by the runtime at startup time, before any requests are serviced, and allows for the
-     * <code>FaceletCache</code> implementation to provide the {@link MemberFactory} instances that will be used to create
-     * instances of Facelets and View Metadata Facelets.
-     * </p>
-     *
-     * @param faceletFactory the {@link MemberFactory} instance that will be used to create instances of Facelets.
-     *
-     * @param viewMetadataFaceletFactory the {@link MemberFactory} instance that will be used to create instances of
-     * metadata Facelets.
-     *
-     * @throws NullPointerException if either argument is <code>null</code>
-     *
-     * @deprecated
-     *
-     */
-    @Deprecated
-    protected void setMemberFactories(MemberFactory<V> faceletFactory, MemberFactory<V> viewMetadataFaceletFactory) {
         if (null == faceletFactory || null == viewMetadataFaceletFactory) {
             throw new NullPointerException("Neither faceletFactory no viewMetadataFaceletFactory may be null.");
         }
