@@ -132,8 +132,7 @@ public abstract class FaceletCache<V> {
      * <p class="changed_added_2_3">
      * This must be called by the runtime at startup time, before any requests are serviced, and allows for the
      * <code>FaceletCache</code> implementation to provide the {@link MemberFactory} instances that will be used to create
-     * instances of Facelets and View Metadata Facelets. The default implementation calls through to
-     * {@link #setMemberFactories(jakarta.faces.view.facelets.FaceletCache.MemberFactory, jakarta.faces.view.facelets.FaceletCache.MemberFactory)}.
+     * instances of Facelets and View Metadata Facelets.
      * </p>
      *
      * @param faceletFactory the {@link MemberFactory} instance that will be used to create instances of Facelets.
@@ -156,10 +155,10 @@ public abstract class FaceletCache<V> {
 
     /**
      * <p class="changed_added_2_1">
-     * Returns the {@link MemberFactory} passed to {@link #setMemberFactories} for the purpose of creating Facelet instance.
+     * Returns the {@link MemberFactory} passed to {@link #setCacheFactories} for the purpose of creating Facelet instance.
      * </p>
      *
-     * @return the {@link MemberFactory} passed to {@link #setMemberFactories} for the purpose of creating Facelet instance.
+     * @return the {@link MemberFactory} passed to {@link #setCacheFactories} for the purpose of creating Facelet instance.
      */
     protected MemberFactory<V> getMemberFactory() {
         return memberFactory;
@@ -167,11 +166,11 @@ public abstract class FaceletCache<V> {
 
     /**
      * <p class="changed_added_2_1">
-     * Returns the {@link MemberFactory} passed to {@link #setMemberFactories} for the purpose of creating View Metadata
+     * Returns the {@link MemberFactory} passed to {@link #setCacheFactories} for the purpose of creating View Metadata
      * Facelet instance.
      * </p>
      *
-     * @return the {@link MemberFactory} passed to {@link #setMemberFactories} for the purpose of creating View Metadata
+     * @return the {@link MemberFactory} passed to {@link #setCacheFactories} for the purpose of creating View Metadata
      * Facelet instance.
      */
     protected MemberFactory<V> getMetadataMemberFactory() {
