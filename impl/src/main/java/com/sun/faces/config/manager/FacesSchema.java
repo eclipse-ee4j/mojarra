@@ -15,7 +15,6 @@
  */
 package com.sun.faces.config.manager;
 
-import static com.sun.faces.config.manager.FacesSchema.Schemas.FACELETS_1_0_DEFAULT_NS;
 import static com.sun.faces.config.manager.FacesSchema.Schemas.FACES_1_1_XSD;
 import static com.sun.faces.config.manager.FacesSchema.Schemas.FACES_1_2_XSD;
 import static com.sun.faces.config.manager.FacesSchema.Schemas.FACES_1_2_XSD_FILE;
@@ -79,7 +78,6 @@ public enum FacesSchema {
             private static final String AS_DTD_DIR = System.getProperty(AS_INSTALL_ROOT) + separatorChar + "lib" + separatorChar + "dtds" + separatorChar;
 
             public static final String FACES_CONFIG_1_X_DEFAULT_NS = "http://java.sun.com/JSF/Configuration";
-            public static final String FACELETS_1_0_DEFAULT_NS = "http://java.sun.com/JSF/Facelet";
             public static final String JAVAEE_SCHEMA_LEGACY_DEFAULT_NS = "http://java.sun.com/xml/ns/javaee";
             public static final String JAVAEE_SCHEMA_DEFAULT_NS = "http://xmlns.jcp.org/xml/ns/javaee";
             public static final String JAKARTAEE_SCHEMA_DEFAULT_NS = "https://jakarta.ee/xml/ns/jakartaee";
@@ -327,10 +325,6 @@ public enum FacesSchema {
 
                 case FACES_CONFIG_1_X_DEFAULT_NS: {
                     return FACES_11;
-                }
-
-                case FACELETS_1_0_DEFAULT_NS: {
-                    return FACELET_TAGLIB_20;
                 }
 
                 default:
