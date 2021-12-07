@@ -852,13 +852,8 @@ attribute must be an absolute path starting with "/".</span>
         <div class="changed_added_2_0">
 	
         <p><span class="changed_modified_2_2
-        changed_modified_2_3">Use</span> this tag as an alternative to
-        <code>h:dataTable</code> or <code>c:forEach</code>, especially
-        when you are using the <code>jsfc</code> feature of
-        Facelets. You can specify this component as the value of the
-        <code>jsfc</code> attribute, like this:
-        &lt;div... jsfc="ui:repeat" value="#{contacts}"
-        var="contact"&gt;...  </p> </div>
+        changed_modified_2_3 changed_modified_4_0">Use</span> this tag as an alternative to
+        <code>h:dataTable</code> or <code>c:forEach</code></p> </div>
         
         ]]></description>
         <tag-name>repeat</tag-name>

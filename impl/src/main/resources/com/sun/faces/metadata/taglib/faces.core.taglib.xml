@@ -639,7 +639,7 @@
     <tag>
         <description><![CDATA[
 
-            <p class="changed_added_2_0">Allow JSF page authors to
+            <p class="changed_added_2_0">Allow Jakarta Faces page authors to
             install <code>ComponentSystemEventListener</code>
             instances
             on a component in a page.</p>
