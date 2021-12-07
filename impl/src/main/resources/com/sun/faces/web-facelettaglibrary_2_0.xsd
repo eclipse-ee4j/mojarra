@@ -109,7 +109,7 @@
 
             <facelet-taglib xmlns="http://java.sun.com/xml/ns/javaee"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facelettaglibary_2_0.xsd"
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facelettaglibrary_2_0.xsd"
               version="2.0">
 
             ...
@@ -120,7 +120,7 @@
             version of the schema using xsi:schemaLocation attribute
             for javaee namespace with the following location:
 
-            http://java.sun.com/xml/ns/javaee/web-facelettaglibary_2_0.xsd
+            http://java.sun.com/xml/ns/javaee/web-facelettaglibrary_2_0.xsd
 
             ]]>
 
