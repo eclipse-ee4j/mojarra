@@ -32,11 +32,11 @@
     <xsd:documentation>
       <![CDATA[
       [
-      <p>The XML Schema for the Tag Libraries in the Jakarta Faces
+      <p>The XML Schema for the Tag Libraries in the Jakarta Server Faces
       Standard Facelets View Declaration Language (Facelets VDL)
       (Version 3.0).</p>
       
-      <p>Jakarta Faces 3.0 Facelet Tag Libraries that wish to conform to 
+      <p>Jakarta Server Faces 3.0 Facelet Tag Libraries that wish to conform to 
       this schema must declare it in the following manner.</p>
       
       &lt;facelet-taglib xmlns="https://jakarta.ee/xml/ns/jakartaee"

@@ -30,10 +30,10 @@
   <xsd:annotation>
     <xsd:documentation>
       <![CDATA[
-      <p>The XML Schema for the Jakarta Faces Application
+      <p>The XML Schema for the Jakarta Server Faces Application
       Configuration File (Version 3.0).</p>
       
-      <p>All Jakarta Faces configuration files must indicate
+      <p>All JavaServer Faces configuration files must indicate
       the JavaServer Faces schema by indicating the JavaServer
       Faces namespace:</p>
       
@@ -394,7 +394,7 @@
         various per-application-singleton implementation artifacts for
         a particular web application that is utilizing
         JavaServer Faces.  For nested elements that are not specified,
-        the Jakarta Faces implementation must provide a suitable 
+        the Jakarta Server Faces implementation must provide a suitable 
         default.</p>
         
         ]]>
@@ -455,8 +455,8 @@
             NavigationHandler implementation class that will
             be called during the Invoke Application phase
             of the request processing lifecycle, if the
-            default ActionListener (provided by the Jakarta Faces 
-            implementation) is used.</p>
+            default ActionListener (provided by the Jakarta Server 
+            Faces implementation) is used.</p>
             
             ]]>
           </xsd:documentation>
@@ -797,7 +797,7 @@
         <p> The "factory" element provides a mechanism to define the
         various Factories that comprise parts of the implementation
         of JavaServer Faces.  For nested elements that are not
-        specified, the Jakarta Faces implementation must provide a 
+        specified, the Jakarta Server Faces implementation must provide a 
         suitable default.</p>
         
         ]]>
@@ -2973,8 +2973,8 @@
       <xsd:documentation>
         <![CDATA[
         <p class="changed_added_2_2">Any view that matches any of the
-        url-patterns in this element may only be reached from another Jakarta Faces 
-        view in the same web application. Because the runtime is aware of
+        url-patterns in this element may only be reached from another Jakarta Server 
+        Faces view in the same web application. Because the runtime is aware of
         which views are protected, any navigation from an unprotected
         view to a protected view is automatically subject to
         protection.</p>
