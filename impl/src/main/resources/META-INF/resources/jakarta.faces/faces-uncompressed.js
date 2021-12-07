@@ -29,7 +29,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
 
     /**
      * <span class="changed_modified_2_2">The top level global namespace
-     * for <span class="changed_modified_4_0">Jakarta</span> Faces functionality.</span>
+     * for Jakarta Faces functionality.</span>
 
      * @name faces
      * @namespace
@@ -3497,7 +3497,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
     
 
     /**
-     * The namespace for <span class="changed_modified_4_0">Jakarta</span> Faces JavaScript utilities.
+     * The namespace for Jakarta Faces JavaScript utilities.
      * @name faces.util
      * @namespace
      */
