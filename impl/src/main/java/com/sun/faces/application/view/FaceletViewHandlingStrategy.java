@@ -105,6 +105,7 @@ import jakarta.el.VariableMapper;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Resource;
+import jakarta.faces.application.ViewHandler;
 import jakarta.faces.application.ViewVisitOption;
 import jakarta.faces.component.ActionSource2;
 import jakarta.faces.component.Doctype;
@@ -773,9 +774,10 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
     /**
      * @param viewId the view ID to check
-     * @return <code>true</code> if assuming a default configuration and the view ID's extension is <code>.xhtml</code>
-     * Otherwise try to match the view ID based on the configured extendsion and prefixes.
+     * @return <code>true</code> if assuming a default configuration and the view ID's extension in {@link ViewHandler#FACELETS_SUFFIX_PARAM_NAME}
+     * Otherwise try to match the view ID based on the configured extensions and prefixes in {@link ViewHandler#FACELETS_VIEW_MAPPINGS_PARAM_NAME}
      *
+     * @see com.sun.faces.config.WebConfiguration.WebContextInitParameter#FaceletsSuffix
      * @see com.sun.faces.config.WebConfiguration.WebContextInitParameter#FaceletsViewMappings
      */
     @Override

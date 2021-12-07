@@ -439,7 +439,7 @@ a[href^="head"], a[href^="title"], a[href^="clientBehavior"] { cursor: url(chang
                  border-left-width:thin; border-right:none;
                  border-top:none; border-bottom:none; border-color:green }
 
-a[href^="subview"], a[href^="verbatim"] { cursor: url(changed_deleted_2_1_cursor.cur), pointer;
+a[href^="subview"] { cursor: url(changed_deleted_2_1_cursor.cur), pointer;
                  background: url(changed_deleted_2_1.png); 
                  padding-left:0.2em; border-left:solid;
                  border-left-width:thin; border-right:none;

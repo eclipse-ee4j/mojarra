@@ -62,20 +62,6 @@ public interface Validator<T> extends EventListener {
 
     /**
      * <p>
-     * The message identifier of the {@link jakarta.faces.application.FacesMessage} to be created if the maximum or minimum
-     * value check fails, and both the maximum and minimum values for this validator have been set. The message format
-     * string for this message may optionally include a <code>{0}</code> placeholder, which will be replaced by the
-     * configured minimum value, and a <code>{1}</code> placeholder, which will be replaced by the configured maximum value.
-     * </p>
-     *
-     * @deprecated Use {@link DoubleRangeValidator#NOT_IN_RANGE_MESSAGE_ID} or
-     * {@link LongRangeValidator#NOT_IN_RANGE_MESSAGE_ID} instead.
-     */
-    @Deprecated
-    String NOT_IN_RANGE_MESSAGE_ID = "jakarta.faces.validator.NOT_IN_RANGE";
-
-    /**
-     * <p>
      * <span class="changed_modified_2_0">Perform</span> the correctness checks implemented by this {@link Validator}
      * against the specified {@link UIComponent}. If any violations are found, a {@link ValidatorException} will be thrown
      * containing the {@link jakarta.faces.application.FacesMessage} describing the failure.

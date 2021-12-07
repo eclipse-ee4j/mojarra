@@ -489,7 +489,7 @@ public abstract class Application {
      * <p>
      * Return the {@link ViewHandler} instance that will be utilized during the <em>Restore View</em> and <em>Render
      * Response</em> phases of the request processing lifecycle. If not explicitly set, a default implementation must be
-     * provided that performs the functions described in the {@link ViewHandler} description in the JJakarta Faces
+     * provided that performs the functions described in the {@link ViewHandler} description in the Jakarta Faces
      * Specification.
      * </p>
      *
