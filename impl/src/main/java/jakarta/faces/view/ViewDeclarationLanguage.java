@@ -33,7 +33,7 @@ import jakarta.faces.context.FacesContext;
 /**
  * <p class="changed_added_2_0">
  * <span class="changed_modified_2_0_rev_a changed_modified_2_1 changed_modified_2_2">The</span> contract that a view
- * declaration language must implement to interact with the Jakarta Server Faces runtime. An implementation of this
+ * declaration language must implement to interact with the Jakarta Faces runtime. An implementation of this
  * class must be thread-safe.
  * </p>
  *
@@ -566,7 +566,7 @@ public abstract class ViewDeclarationLanguage {
      * For implementations that want to control the implementation of state saving and restoring, the
      * {@link StateManagementStrategy} allows them to do so. Returning <code>null</code> indicates that the implementation
      * wishes the runtime to handle the state saving and restoring. Implementations that provide the VDL for Facelets for
-     * Jakarta Server Faces 2.0 and later must return non-<code>null</code> from this method.
+     * Jakarta Faces 2.0 and later must return non-<code>null</code> from this method.
      * </p>
      *
      * @param context the {@code FacesContext} for the current request.

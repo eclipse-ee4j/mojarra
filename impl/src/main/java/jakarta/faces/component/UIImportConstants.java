@@ -36,7 +36,7 @@ import jakarta.faces.view.ViewMetadata;
  * </p>
  *
  * <p>
- * Instances of this class participate in the regular Jakarta Server Faces lifecycle, including on Ajax requests.
+ * Instances of this class participate in the regular Jakarta Faces lifecycle, including on Ajax requests.
  * </p>
  *
  * <p>

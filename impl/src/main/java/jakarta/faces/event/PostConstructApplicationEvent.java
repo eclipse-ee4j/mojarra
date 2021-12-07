@@ -26,7 +26,7 @@ import jakarta.faces.context.FacesContext;
  *
  * <p class="changed_added_2_0">
  * This event is useful for listeners that need to perform custom post-configuration processing without having to rely
- * on <code>ServletContextListener</code>s which may be invoked before the Jakarta Server Faces runtime has started it's
+ * on <code>ServletContextListener</code>s which may be invoked before the Jakarta Faces runtime has started it's
  * configuration process.
  * </p>
  *

@@ -20,7 +20,7 @@ package jakarta.faces.component;
  * <p class="changed_added_2_0">
  * <span class="changed_modified_2_2">This</span> component is paired with the <code>jakarta.faces.Button</code> or
  * <code>jakarta.faces.Link</code> renderers and encapsulates properties relating to the rendering of outcomes directly
- * to the response. This enables bookmarkability in Jakarta Server Faces applications.
+ * to the response. This enables bookmarkability in Jakarta Faces applications.
  * </p>
  *
  * @since 2.0

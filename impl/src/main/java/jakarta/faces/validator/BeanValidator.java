@@ -90,7 +90,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
 
     /**
      * <p class="changed_added_2_0">
-     * The name of the Jakarta Servlet context attribute which holds the object used by Jakarta Server Faces to obtain
+     * The name of the Jakarta Servlet context attribute which holds the object used by Jakarta Faces to obtain
      * Validator instances. If the Jakarta Servlet context attribute is missing or contains a null value, Jakarta Server
      * Faces is free to use this Jakarta Servlet context attribute to store the ValidatorFactory bootstrapped by this
      * validator.

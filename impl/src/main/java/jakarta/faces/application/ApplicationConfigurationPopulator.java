@@ -34,13 +34,13 @@ public abstract class ApplicationConfigurationPopulator {
 
     /**
      * <p class="changed_added_2_2">
-     * Service providers that implement this service must be called by the Jakarta Server Faces runtime exactly once for
+     * Service providers that implement this service must be called by the Jakarta Faces runtime exactly once for
      * each implementation, at startup, before any requests have been serviced. Before calling the
      * {@link #populateApplicationConfiguration} method, the runtime must ensure that the {@code Document} argument is empty
      * aside from being pre-configured to be in the proper namespace for an Application Configuration Resources file: {@code
      * http://xmlns.jcp.org/xml/ns/javaee}. Implementations of this service must ensure that any changes made to the
      * argument {@code
-     * Document} conform to that schema as defined in the specification. The Jakarta Server Faces runtime is not required to
+     * Document} conform to that schema as defined in the specification. The Jakarta Faces runtime is not required to
      * validate the {@code Document} after control returns from the service implementation, though it may do so.
      * </p>
      *

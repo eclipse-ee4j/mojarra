@@ -55,7 +55,7 @@ import jakarta.faces.render.ResponseStateManager;
  * To accomadate the widest possible range of implementation choices to support this feature, explicit names for modes
  * other than "none" and "url" are not specified. However, for all values of {@link #CLIENT_WINDOW_MODE_PARAM_NAME}, the
  * lifetime of a <code>ClientWindow</code> starts on the first request made by a particular client window (or tab, or
- * pop-up, etc) to the Jakarta Server Faces runtime and persists as long as that window remains open or the session
+ * pop-up, etc) to the Jakarta Faces runtime and persists as long as that window remains open or the session
  * expires, whichever comes first. A client window is always associated with exactly one <code>UIViewRoot</code>
  * instance at a time, but may display many different <code>UIViewRoot</code>s during its lifetime.
  * </p>

@@ -79,7 +79,7 @@ import jakarta.faces.context.FacesContext;
  * </p>
  *
  * <p>
- * This is the regular Jakarta Server Faces VDL View that has been in the specification since the beginning.
+ * This is the regular Jakarta Faces VDL View that has been in the specification since the beginning.
  * </p>
  *
  * </li>
@@ -136,7 +136,7 @@ import jakarta.faces.context.FacesContext;
  * </ul>
  *
  * <p>
- * Edges in the graph are defined by the existing Jakarta Server Faces navigation rule system.
+ * Edges in the graph are defined by the existing Jakarta Faces navigation rule system.
  * </p>
  *
  * <p>

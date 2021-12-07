@@ -26,7 +26,7 @@ import jakarta.faces.component.UIData;
 /**
  * <p>
  * <span class="changed_modified_2_0"><strong>DataModel</strong></span> is an abstraction around arbitrary data binding
- * technologies that can be used to adapt a variety of data sources for use by Jakarta Server Faces components that
+ * technologies that can be used to adapt a variety of data sources for use by Jakarta Faces components that
  * support per-row processing for their child components (such as {@link UIData}.
  * </p>
  *

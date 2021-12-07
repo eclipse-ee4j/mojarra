@@ -128,7 +128,7 @@ import jakarta.faces.context.FacesContext;
  * <blockquote>
  *
  * <p>
- * During the handling of resource requests, the Jakarta Server Faces run-time will be called upon to decode a resource
+ * During the handling of resource requests, the Jakarta Faces run-time will be called upon to decode a resource
  * in such a way as to serve up the bytes of the resource to the user-agent. This behavior is orchestrated by
  * {@link #handleResourceRequest}, which calls {@link Resource#getInputStream} to obtain bytes of the resource. See
  * {@link #handleResourceRequest} for the complete specification.
@@ -157,7 +157,7 @@ public abstract class ResourceHandler {
 
     /**
      * <p class="changed_added_2_3">
-     * Resource name of Jakarta Server Faces script resource.
+     * Resource name of Jakarta Faces script resource.
      * </p>
      *
      * @since 2.3
@@ -168,7 +168,7 @@ public abstract class ResourceHandler {
 
     /**
      * <p class="changed_modified_4_0">
-     * Resource name of Jakarta Server Faces script resource.
+     * Resource name of Jakarta Faces script resource.
      * </p>
      *
      * @since 2.3
@@ -177,7 +177,7 @@ public abstract class ResourceHandler {
 
     /**
      * <p class="changed_added_2_3">
-     * Library name of Jakarta Server Faces script resource.
+     * Library name of Jakarta Faces script resource.
      * </p>
      *
      * @since 2.3
@@ -188,7 +188,7 @@ public abstract class ResourceHandler {
 
     /**
      * <p class="changed_modified_4_0">
-     * Library name of Jakarta Server Faces script resource.
+     * Library name of Jakarta Faces script resource.
      * </p>
      *
      * @since 2.3
@@ -325,7 +325,7 @@ public abstract class ResourceHandler {
      * <li>
      * <p>
      * Considering faces flows (at the locations specified in the spec prose document section <em>Faces Flows</em> in the
-     * <em>Using Jakarta Server Faces in Web Applications</em> chapter).
+     * <em>Using Jakarta Faces in Web Applications</em> chapter).
      * </p>
      * </li>
      *

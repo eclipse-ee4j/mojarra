@@ -322,7 +322,7 @@
                         <Bundle-Name>Mojarra Faces Implementation ${project.version}</Bundle-Name>
                         <Bundle-Description>Eclipse Faces Implementation (jakarta.faces/4.0) ${project.version}</Bundle-Description>
                         
-                        <Specification-Title>Jakarta Server Faces</Specification-Title>
+                        <Specification-Title>Jakarta Faces</Specification-Title>
                         <Specification-Version>4.0</Specification-Version>
                         
                         <Implementation-Title>Mojarra</Implementation-Title> 

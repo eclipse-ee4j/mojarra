@@ -46,8 +46,8 @@ import jakarta.faces.view.ViewDeclarationLanguage;
  * <p>
  * <strong class="changed_modified_2_0 changed_modified_2_0_rev_a changed_modified_2_2
  * changed_modified_2_3">Application</strong> represents a per-web-application singleton object where applications based
- * on Jakarta Server Faces (or implementations wishing to provide extended functionality) can register application-wide
- * singletons that provide functionality required by Jakarta Server Faces. Default implementations of each object are
+ * on Jakarta Faces (or implementations wishing to provide extended functionality) can register application-wide
+ * singletons that provide functionality required by Jakarta Faces. Default implementations of each object are
  * provided for cases where the application does not choose to customize the behavior.
  * </p>
  *
@@ -145,7 +145,7 @@ public abstract class Application {
 
     /**
      * <p>
-     * Return the fully qualified class name of the <code>ResourceBundle</code> to be used for Jakarta Server Faces messages
+     * Return the fully qualified class name of the <code>ResourceBundle</code> to be used for Jakarta Faces messages
      * for this application. If not explicitly set, <code>null</code> is returned.
      * </p>
      *
@@ -155,7 +155,7 @@ public abstract class Application {
 
     /**
      * <p>
-     * Set the fully qualified class name of the <code>ResourceBundle</code> to be used for Jakarta Server Faces messages
+     * Set the fully qualified class name of the <code>ResourceBundle</code> to be used for Jakarta Faces messages
      * for this application. See the JavaDocs for the <code>java.util.ResourceBundle</code> class for more information about
      * the syntax for resource bundle names.
      * </p>
@@ -180,7 +180,7 @@ public abstract class Application {
      * <code>&lt;application&gt;</code> element.</li>
      * </ul>
      * <p>
-     * The runtime must employ the decorator pattern as for every other pluggable artifact in Jakarta Server Faces.
+     * The runtime must employ the decorator pattern as for every other pluggable artifact in Jakarta Faces.
      * </p>
      * </div>
      *
@@ -202,7 +202,7 @@ public abstract class Application {
 
     /**
      * <p class="changed_added_2_0">
-     * Return the singleton, stateless, thread-safe {@link ResourceHandler} for this application. The Jakarta Server Faces
+     * Return the singleton, stateless, thread-safe {@link ResourceHandler} for this application. The Jakarta Faces
      * implementation must support the following techniques for declaring an alternate implementation of
      * <code>ResourceHandler</code>.
      * </p>
@@ -218,7 +218,7 @@ public abstract class Application {
      * </ul>
      * <p>
      * In all of the above cases, the runtime must employ the decorator pattern as for every other pluggable artifact in
-     * Jakarta Server Faces.
+     * Jakarta Faces.
      * </p>
      *
      * <p class="changed_added_2_0">
@@ -350,7 +350,7 @@ public abstract class Application {
     /**
      * <p>
      * <span class="changed_modified_2_0_rev_a">Cause</span> an the argument <code>resolver</code> to be added to the
-     * resolver chain as specified in section 5.5.1 of the Jakarta Server Faces Specification.
+     * resolver chain as specified in section 5.5.1 of the Jakarta Faces Specification.
      * </p>
      *
      * <p>
@@ -489,7 +489,7 @@ public abstract class Application {
      * <p>
      * Return the {@link ViewHandler} instance that will be utilized during the <em>Restore View</em> and <em>Render
      * Response</em> phases of the request processing lifecycle. If not explicitly set, a default implementation must be
-     * provided that performs the functions described in the {@link ViewHandler} description in the JJakarta Server Faces
+     * provided that performs the functions described in the {@link ViewHandler} description in the JJakarta Faces
      * Specification.
      * </p>
      *
@@ -515,7 +515,7 @@ public abstract class Application {
      * <p>
      * Return the {@link StateManager} instance that will be utilized during the <em>Restore View</em> and <em>Render
      * Response</em> phases of the request processing lifecycle. If not explicitly set, a default implementation must be
-     * provided that performs the functions described in the {@link StateManager} description in the Jakarta Server Faces
+     * provided that performs the functions described in the {@link StateManager} description in the Jakarta Faces
      * Specification.
      * </p>
      *
@@ -773,7 +773,7 @@ public abstract class Application {
      * <p>
      * Obtain a reference to the <em>composite component metadata</em> for this composite component by calling
      * {@link ViewDeclarationLanguage#getComponentMetadata}, passing the <code>facesContext</code> and
-     * <code>componentResource</code> arguments to this method. This version of the Jakarta Server Faces specification uses
+     * <code>componentResource</code> arguments to this method. This version of the Jakarta Faces specification uses
      * JavaBeans as the API to the component metadata.
      * </p>
      * </li>

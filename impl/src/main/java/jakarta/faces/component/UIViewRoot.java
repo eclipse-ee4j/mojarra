@@ -1061,7 +1061,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * </p>
      *
      * <p class="changed_added_2_3">
-     * If this {@link UIViewRoot} is an instance of {@link NamingContainer}, then the Jakarta Server Faces implementation
+     * If this {@link UIViewRoot} is an instance of {@link NamingContainer}, then the Jakarta Faces implementation
      * must ensure that all encoded POST request parameter names are prefixed with
      * {@link UIViewRoot#getContainerClientId(FacesContext)} as per rules of {@link UIComponent#getClientId(FacesContext)}.
      * This also covers all predefined POST request parameters which are listed below:

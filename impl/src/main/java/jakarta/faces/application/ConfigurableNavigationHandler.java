@@ -91,7 +91,7 @@ public abstract class ConfigurableNavigationHandler extends NavigationHandler {
 
     /**
      * <p class="changed_added_2_0">
-     * A convenience method to signal the Jakarta Server Faces implementation to perform navigation with the provided
+     * A convenience method to signal the Jakarta Faces implementation to perform navigation with the provided
      * outcome. When the NavigationHandler is invoked, the current viewId is treated as the "from viewId" and the "from
      * action" is null.
      * </p>

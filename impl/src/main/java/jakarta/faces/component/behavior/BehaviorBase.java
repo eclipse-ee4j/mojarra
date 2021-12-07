@@ -58,7 +58,7 @@ public class BehaviorBase implements Behavior, PartialStateHolder {
      *
      * @param event The {@link BehaviorEvent} to be broadcast
      *
-     * @throws AbortProcessingException Signal the Jakarta Server Faces implementation that no further processing on the
+     * @throws AbortProcessingException Signal the Jakarta Faces implementation that no further processing on the
      * current event should be performed
      * @throws IllegalArgumentException if the implementation class of this {@link BehaviorEvent} is not supported by this
      * component

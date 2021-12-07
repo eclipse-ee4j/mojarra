@@ -301,7 +301,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * </p>
      *
      * <p>
-     * This method must be overridden and implemented for components that comply with Jakarta Server Faces 1.2 and later.
+     * This method must be overridden and implemented for components that comply with Jakarta Faces 1.2 and later.
      * </p>
      *
      * @param name Name of the attribute or property for which to retrieve a {@link ValueExpression}
@@ -339,7 +339,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * </p>
      *
      * <p>
-     * This method must be overridden and implemented for components that comply with Jakarta Server Faces 1.2 and later.
+     * This method must be overridden and implemented for components that comply with Jakarta Faces 1.2 and later.
      * </p>
      *
      * @since 1.2
@@ -776,7 +776,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * Return a flag indicating whether this component is responsible for rendering its child components. The default
      * implementation in {@link UIComponentBase#getRendersChildren} tries to find the renderer for this component. If it
      * does, it calls {@link Renderer#getRendersChildren} and returns the result. If it doesn't, it returns false. As of
-     * version 1.2 of the Jakarta Server Faces Specification, component authors are encouraged to return <code>true</code>
+     * version 1.2 of the Jakarta Faces Specification, component authors are encouraged to return <code>true</code>
      * from this method and rely on {@link UIComponentBase#encodeChildren}.
      * </p>
      *
@@ -836,7 +836,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
         return resourceBundleMap;
     }
 
-    // This is necessary for Jakarta Server Faces components that extend from UIComponent
+    // This is necessary for Jakarta Faces components that extend from UIComponent
     // directly rather than extending from UIComponentBase. Such components
     // may need to have implementations provided for methods that originated
     // from a spec version more recent than the version with which the component
@@ -1191,7 +1191,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      *
      * @param event The {@link FacesEvent} to be broadcast
      *
-     * @throws AbortProcessingException Signal the Jakarta Server Faces implementation that no further processing on the
+     * @throws AbortProcessingException Signal the Jakarta Faces implementation that no further processing on the
      * current event should be performed
      * @throws IllegalArgumentException if the implementation class of this {@link FacesEvent} is not supported by this
      * component

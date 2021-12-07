@@ -40,7 +40,7 @@ import jakarta.faces.view.ViewDeclarationLanguage;
  * <p>
  * <strong><span class="changed_modified_2_0 changed_modified_2_1 changed_modified_2_2 changed_modified_2_3">
  * ViewHandler</span></strong> is the pluggablity mechanism for allowing implementations of or applications using the
- * JJakarta Server Faces specification to provide their own handling of the activities in the <em>Render Response</em>
+ * JJakarta Faces specification to provide their own handling of the activities in the <em>Render Response</em>
  * and <em>Restore View</em> phases of the request processing lifecycle.
  *
  * This allows for implementations to support different response generation technologies, as well as alternative
@@ -56,7 +56,7 @@ import jakarta.faces.view.ViewDeclarationLanguage;
  *
  * <p class="changed_added_2_0">
  * Version 2 of the specification formally introduced the concept of <em>View Declaration Language</em>. A View
- * Declaration Language (VDL) is a syntax used to declare user interfaces comprised of instances of Jakarta Server Faces
+ * Declaration Language (VDL) is a syntax used to declare user interfaces comprised of instances of Jakarta Faces
  * {@link UIComponent}s. Any of the responsibilities of the <code>ViewHandler</code> that specifically deal with the VDL
  * sub-system are now the domain of the VDL implementation. These responsibilities are defined on the
  * {@link ViewDeclarationLanguage} class. The <code>ViewHandler</code> provides {@link #getViewDeclarationLanguage} as a
@@ -81,7 +81,7 @@ public abstract class ViewHandler {
     /**
      * <p>
      * <span class="changed_modified_2_0">Allow</span> the web application to define a
-     * <span class="changed_modified_2_0">list of alternate suffixes</span> for pages containing Jakarta Server Faces
+     * <span class="changed_modified_2_0">list of alternate suffixes</span> for pages containing Jakarta Faces
      * content. <span class="changed_modified_2_0">This list is a space separated list of values of the form
      * <i><code>.&lt;extension&gt;</code></i>. The first physical resource whose extension matches one of the configured
      * extensions will be the suffix used to create the view ID.</span> If this init parameter is not specified, the default
@@ -111,7 +111,7 @@ public abstract class ViewHandler {
 
     /**
      * <p class="changed_added_2_0">
-     * Allow the web application to define an alternate suffix for Facelet based XHTML pages containing Jakarta Server Faces
+     * Allow the web application to define an alternate suffix for Facelet based XHTML pages containing Jakarta Faces
      * content. If this init parameter is not specified, the default value is taken from the value of the constant
      * {@link #DEFAULT_FACELETS_SUFFIX}
      * </p>
@@ -466,7 +466,7 @@ public abstract class ViewHandler {
      * <span class="changed_modified_2_2">If</span> the value returned from this method is used as the <code>file</code>
      * argument to the four-argument constructor for <code>java.net.URL</code> (assuming appropriate values are used for the
      * first three arguments), then a client making a request to the <code>toExternalForm()</code> of that <code>URL</code>
-     * will select the argument <code>viewId</code> for traversing the Jakarta Server Faces lifecycle. Please see section
+     * will select the argument <code>viewId</code> for traversing the Jakarta Faces lifecycle. Please see section
      * 7.6.2 for the complete specification, <span class="changed_added_2_2">especially for details related to view
      * protection using the {@link jakarta.faces.render.ResponseStateManager#NON_POSTBACK_VIEW_TOKEN_PARAM}
      * </span><span class="changed_added_2_3"> and the behavior when the current request is to a URL for which the
@@ -487,7 +487,7 @@ public abstract class ViewHandler {
 
     /**
      * <p class="changed_added_2_0">
-     * Return a Jakarta Server Faces action URL derived from the <code>viewId</code> argument that is suitable to be used by
+     * Return a Jakarta Faces action URL derived from the <code>viewId</code> argument that is suitable to be used by
      * the {@link NavigationHandler} to issue a redirect request to the URL using a NonFaces request. Compliant
      * implementations must implement this method as specified in section 7.6.2. The default implementation simply calls
      * through to {@link #getActionURL}, passing the arguments <code>context</code> and <code>viewId</code>.
@@ -506,8 +506,8 @@ public abstract class ViewHandler {
 
     /**
      * <p class="changed_added_2_0">
-     * Return a Jakarta Server Faces action URL derived from the viewId argument that is suitable to be used as the target
-     * of a link in a Jakarta Server Faces response. Compliant implementations must implement this method as specified in
+     * Return a Jakarta Faces action URL derived from the viewId argument that is suitable to be used as the target
+     * of a link in a Jakarta Faces response. Compliant implementations must implement this method as specified in
      * section 7.6.2. The default implementation simply calls through to {@link #getActionURL}, passing the arguments
      * <code>context</code> and <code>viewId</code>.
      * </p>

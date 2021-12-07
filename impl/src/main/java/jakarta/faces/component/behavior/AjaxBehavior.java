@@ -547,7 +547,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
     private static Object saveBindings(FacesContext context, Map<String, ValueExpression> bindings) {
 
         // Note: This code is copied from UIComponentBase. In a future
-        // version of the Jakarta Server Faces spec, it would be useful to define a
+        // version of the Jakarta Faces spec, it would be useful to define a
         // attribute/property/bindings/state helper object that can be
         // shared across components/behaviors/validaters/converters.
 

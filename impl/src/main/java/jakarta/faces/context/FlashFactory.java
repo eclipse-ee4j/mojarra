@@ -21,14 +21,14 @@ import jakarta.faces.FacesWrapper;
 /**
  * <p>
  * <strong class="changed_added_2_2 changed_modified_2_3">FlashFactory</strong> is a factory object that creates (if
- * needed) and returns {@link Flash} instances. Implementations of Jakarta Server Faces must provide at least a default
+ * needed) and returns {@link Flash} instances. Implementations of Jakarta Faces must provide at least a default
  * implementation of {@link Flash}.
  * </p>
  *
  * <div class="changed_added_2_2">
  *
  * <p>
- * There must be one {@link FlashFactory} instance per web application that is utilizing Jakarta Server Faces. This
+ * There must be one {@link FlashFactory} instance per web application that is utilizing Jakarta Faces. This
  * instance can be acquired, in a portable manner, by calling:
  * </p>
  *
