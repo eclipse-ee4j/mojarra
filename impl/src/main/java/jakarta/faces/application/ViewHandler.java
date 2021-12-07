@@ -79,22 +79,21 @@ public abstract class ViewHandler {
     public static final String CHARACTER_ENCODING_KEY = "jakarta.faces.request.charset";
 
     /**
-     * <p>
-     * <span class="changed_modified_2_0">Allow</span> the web application to define a
-     * <span class="changed_modified_2_0">list of alternate suffixes</span> for pages containing Jakarta Server Faces
-     * content. <span class="changed_modified_2_0">This list is a space separated list of values of the form
-     * <i><code>.&lt;extension&gt;</code></i>. The first physical resource whose extension matches one of the configured
-     * extensions will be the suffix used to create the view ID.</span> If this init parameter is not specified, the default
-     * value is taken from the value of the constant {@link #DEFAULT_SUFFIX}.
+     * <p class="changed_modified_4_0">
+     * This is not anymore used since removal of support for Jakarta Pages.
      * </p>
+     * @deprecated Use {@link #FACELETS_SUFFIX_PARAM_NAME} instead.
      */
+    @Deprecated(since = "4.0", forRemoval = true)
     public static final String DEFAULT_SUFFIX_PARAM_NAME = "jakarta.faces.DEFAULT_SUFFIX";
 
     /**
-     * <p class="changed_modified_2_1">
-     * The value to use for the default extension if the webapp is using url extension mapping.
+     * <p class="changed_modified_4_0">
+     * This is not anymore used since removal of support for Jakarta Pages.
      * </p>
+     * @deprecated Use {@link #DEFAULT_FACELETS_SUFFIX} instead.
      */
+    @Deprecated(since = "4.0", forRemoval = true)
     public static final String DEFAULT_SUFFIX = ".xhtml";
 
     /**
@@ -111,8 +110,10 @@ public abstract class ViewHandler {
 
     /**
      * <p class="changed_added_2_0">
-     * Allow the web application to define an alternate suffix for Facelet based XHTML pages containing Jakarta Server Faces
-     * content. If this init parameter is not specified, the default value is taken from the value of the constant
+     * Allow the web application to define <span class="changed_modified_4_0">a list of alternate suffixes</span> for Facelet based XHTML pages containing Jakarta Server Faces
+     * content. <span class="changed_added_4_0">This list is a space separated list of values of the form
+     * <i><code>.&lt;extension&gt;</code></i>. The first physical resource whose extension matches one of the configured
+     * extensions will be the suffix used to create the view ID.</span> If this init parameter is not specified, the default value is taken from the value of the constant
      * {@link #DEFAULT_FACELETS_SUFFIX}
      * </p>
      *
@@ -137,8 +138,7 @@ public abstract class ViewHandler {
      * the semicolon (;) separated list of strings is either a file extension, as in <code>*.xhtml</code>, or a resource
      * prefix (starting with '/' and interpreted as relative to the web application root), as in <code>/user/*</code>. The
      * latter class of entry can also take the form of <code>/&lt;filename&gt;.&lt;extension&gt;*</code> such as
-     * <code>/login.jsp*</code>. The runtime must also consider the <code>facelets.VIEW_MAPPINGS</code> param name as an
-     * alias to this param name for backwards compatibility with existing Facelets applications.
+     * <code>/login.jsp*</code>.
      * </p>
      *
      * @since 2.0

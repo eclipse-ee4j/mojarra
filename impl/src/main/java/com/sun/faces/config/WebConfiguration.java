@@ -17,7 +17,6 @@
 
 package com.sun.faces.config;
 
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.DefaultSuffix;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsSuffix;
 import static com.sun.faces.util.Util.split;
 import static java.util.Arrays.asList;
@@ -133,7 +132,6 @@ public class WebConfiguration {
         // build the cache of list type params
         cachedListParams = new HashMap<>(3);
         getOptionValue(WebContextInitParameter.ResourceExcludes, " ");
-        getOptionValue(WebContextInitParameter.DefaultSuffix, " ");
         getOptionValue(WebContextInitParameter.FaceletsViewMappings, ";");
         getOptionValue(WebContextInitParameter.FaceletsSuffix, " ");
     }
@@ -325,18 +323,14 @@ public class WebConfiguration {
     }
 
     /**
-     * To include the facelets suffix into the supported suffixes.
-     *
-     * @return merged suffixes including both default suffixes and the facelet suffixes.
+     * @return the facelet suffixes.
      */
     public List<String> getConfiguredExtensions() {
-        String[] defaultSuffix = getOptionValue(DefaultSuffix, " ");
         String[] faceletsSuffix = getOptionValue(FaceletsSuffix, " ");
 
-        Set<String> mergedSet = new LinkedHashSet<>(asList(defaultSuffix));
-        mergedSet.addAll(asList(faceletsSuffix));
+        Set<String> deduplicatedFaceletsSuffixes = new LinkedHashSet<>(asList(faceletsSuffix));
 
-        return new ArrayList<>(mergedSet);
+        return new ArrayList<>(deduplicatedFaceletsSuffixes);
     }
 
     public void overrideContextInitParameter(WebContextInitParameter param, String value) {
@@ -750,7 +744,6 @@ public class WebConfiguration {
         ManagedBeanFactoryDecorator("com.sun.faces.managedBeanFactoryDecoratorClass", ""),
         StateSavingMethod(StateManager.STATE_SAVING_METHOD_PARAM_NAME, "server"),
         FaceletsSuffix(ViewHandler.FACELETS_SUFFIX_PARAM_NAME, ViewHandler.DEFAULT_FACELETS_SUFFIX),
-        DefaultSuffix(ViewHandler.DEFAULT_SUFFIX_PARAM_NAME, ViewHandler.DEFAULT_SUFFIX),
         JakartaFacesConfigFiles(FacesServlet.CONFIG_FILES_ATTR, ""),
         JakartaFacesProjectStage(ProjectStage.PROJECT_STAGE_PARAM_NAME, "Production"),
         AlternateLifecycleId(FacesServlet.LIFECYCLE_ID_ATTR, ""),

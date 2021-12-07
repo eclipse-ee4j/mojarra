@@ -609,11 +609,8 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
      * {@link Application#evaluateExpressionGet(jakarta.faces.context.FacesContext, String, Class)} on the wrapped
      * {@link Application} object.
      * </p>
-     *
-     * @deprecated See superclass for alternative.
      */
     @Override
-    @Deprecated
     public <T> T evaluateExpressionGet(FacesContext context, String expression, Class<? extends T> expectedType) throws ELException {
         return getWrapped().evaluateExpressionGet(context, expression, expectedType);
     }

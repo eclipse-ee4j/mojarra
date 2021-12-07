@@ -132,8 +132,6 @@ public final class CoreLibrary extends AbstractTagLibrary {
 
         addTagHandler("view", ViewHandler.class);
 
-        this.addComponent("verbatim", "jakarta.faces.HtmlOutputText", "jakarta.faces.Text", VerbatimHandler.class);
-
         this.addComponent("websocket", UIWebsocket.COMPONENT_TYPE, WebsocketRenderer.RENDERER_TYPE);
     }
 }
