@@ -86,7 +86,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
     }
 
     /**
-     * Method handles UIComponent tree creation in accordance with the JSF 1.2 spec.
+     * Method handles UIComponent tree creation in accordance with the Faces 1.2 spec.
      * <ol>
      * <li>First determines this UIComponent's id by calling
      * {@link jakarta.faces.view.facelets.ComponentHandler#getTagId()}.</li>

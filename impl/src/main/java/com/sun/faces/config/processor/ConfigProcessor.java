@@ -23,7 +23,7 @@ import jakarta.servlet.ServletContext;
 
 /**
  * <p>
- * This interface provides a CoR structure for processing JSF configuration resources.
+ * This interface provides a CoR structure for processing Faces configuration resources.
  * </p>
  */
 public interface ConfigProcessor {

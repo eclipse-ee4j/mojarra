@@ -162,7 +162,7 @@ public class FlashELResolver extends ELResolver {
 
     /**
      * <p>
-     * Not intended for manual invocation. Only called by the JSF Runtime.
+     * Not intended for manual invocation. Only called by the Faces Runtime.
      * </p>
      */
 

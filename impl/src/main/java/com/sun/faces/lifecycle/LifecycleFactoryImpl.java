@@ -32,7 +32,7 @@ import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.lifecycle.LifecycleFactory;
 
 /**
- * <B>LifecycleFactoryImpl</B> is the stock implementation of Lifecycle in the JSF RI.
+ * <B>LifecycleFactoryImpl</B> is the stock implementation of Lifecycle in the Faces RI.
  * <P>
  *
  * @see jakarta.faces.lifecycle.LifecycleFactory

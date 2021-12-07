@@ -603,7 +603,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
         // If the navigation rules do not have a match...
         if (caseStruct == null && outcome != null && viewId != null) {
-            // Treat empty string equivalent to null outcome. JSF 2.0 Rev a
+            // Treat empty string equivalent to null outcome. Faces 2.0 Rev a
             // Changelog issue C063.
             if (0 == outcome.length()) {
                 outcome = null;
