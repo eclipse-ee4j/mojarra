@@ -42,7 +42,7 @@ import jakarta.faces.lifecycle.Lifecycle;
 
 /**
  * <p>
- * <b>LifecycleImpl</b> is the stock implementation of the standard Lifecycle in the JavaServer Faces RI.
+ * <b>LifecycleImpl</b> is the stock implementation of the standard Lifecycle in the Jakarta Faces RI.
  * </p>
  */
 

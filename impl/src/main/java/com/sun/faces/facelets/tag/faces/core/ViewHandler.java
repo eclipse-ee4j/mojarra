@@ -39,7 +39,7 @@ import jakarta.faces.view.facelets.TagAttributeException;
 import jakarta.faces.view.facelets.TagConfig;
 
 /**
- * Container for all JavaServer Faces core and custom component actions used on a page.
+ * Container for all Jakarta Faces core and custom component actions used on a page.
  * <p/>
  * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/view.html">tag
  * documentation</a>.

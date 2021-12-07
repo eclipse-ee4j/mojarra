@@ -44,7 +44,7 @@ package com.sun.faces.spi;
  * <code>ConfigurationResourceProviders</code> <em>after</em> those that process <code>faces-config.xml</code> files in
  * <code>META-INF</code> but <em>before</em> those that process <code>faces-config.xml</code> files in the web
  * application. If the documents returned by this <code>ConfigurationResourceProvider</code> instance require specific
- * ordering semantics, then use the partial or absolute ordering feature provided by the JavaServer Faces 2.0
+ * ordering semantics, then use the partial or absolute ordering feature provided by the Jakarta Faces 2.0
  * specification.
  * </p>
  */
