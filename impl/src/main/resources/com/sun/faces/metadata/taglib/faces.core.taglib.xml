@@ -23,8 +23,8 @@
                 version="2.3">
     <description><![CDATA[
 
-    <p><span class="changed_modified_2_3">The</span> core JavaServer
-    Faces custom actions that are independent of any particular
+    <p><span class="changed_modified_2_3">The</span> core <span class="changed_modified_4_0">Jakarta Faces
+    tags</span> that are independent of any particular
     RenderKit.</p>
     
     ]]></description>
@@ -34,7 +34,7 @@
 
             <p>Register an ActionListener instance on the
             UIComponent associated with the closest parent UIComponent
-            custom action.</p>
+            <span class="changed_modified_4_0">tag</span>.</p>
         ]]></description>
         <tag-name>actionListener</tag-name>
         <handler-class>com.sun.faces.facelets.tag.faces.core.ActionListenerHandler</handler-class>
@@ -284,7 +284,7 @@
     <tag>
         <description><![CDATA[
             <p>Add an attribute to the UIComponent associated with the closest
-            parent UIComponent custom action.</p>
+            parent UIComponent <span class="changed_modified_4_0">tag</span>.</p>
         ]]></description>
         <tag-name>attribute</tag-name>
         <handler-class>com.sun.faces.facelets.tag.faces.core.AttributeHandler</handler-class>
@@ -307,7 +307,7 @@
     <tag>
         <description><![CDATA[<p class="changed_added_2_2">
             Add attributes to the UIComponent associated with the closest
-            parent UIComponent custom action.  
+            parent UIComponent <span class="changed_modified_4_0">tag</span>.  
             For each <code>Map.Entry</code> in the <code>Map&lt;String, Object&gt;</code>
             referenced by the value attribute of this tag, take the following action.
             If <code>parent.getAttributes().containsKey(entry.getKey())</code> returns 
@@ -333,7 +333,7 @@
 
             <p><span class="changed_modified_2_3">Register</span> a
             DateTimeConverter instance on the UIComponent associated
-            with the closest parent UIComponent custom action.</p>
+            with the closest parent UIComponent <span class="changed_modified_4_0">tag</span>.</p>
 
         ]]></description>
         <tag-name>convertDateTime</tag-name>
@@ -460,7 +460,7 @@
     <tag>
         <description><![CDATA[
             Register a NumberConverter instance on the UIComponent associated
-            with the closest parent UIComponent custom action.
+            with the closest parent UIComponent <span class="changed_modified_4_0">tag</span>.
         ]]></description>
         <tag-name>convertNumber</tag-name>
          <converter>
@@ -602,7 +602,7 @@
     <tag>
         <description><![CDATA[
             <p>Register a named Converter instance on the UIComponent
-            associated with the closest parent UIComponent custom action.</p>
+            associated with the closest parent UIComponent <span class="changed_modified_4_0">tag</span>.</p>
         ]]></description>
         <tag-name>converter</tag-name>
         <handler-class>com.sun.faces.facelets.tag.faces.core.ConvertDelegateHandler</handler-class>
@@ -774,7 +774,7 @@ for <code>@NamedEvent</code>.</p>
 
             <p><span class="changed_modified_2_3">Register</span> a named
             facet on the UIComponent associated with the closest parent
-            UIComponent custom action.</p>
+            UIComponent <span class="changed_modified_4_0">tag</span>.</p>
 
             <p class="changed_added_2_3">
               When the facet contains more than one child the children will be
@@ -840,7 +840,7 @@ for <code>@NamedEvent</code>.</p>
             literal string ???KEY??? is returned from the Map, where KEY is
             the key being looked up in the Map, instead of a
             MissingResourceException being thrown. If the ResourceBundle does
-            not exist, a JspException must be thrown.</p>
+            not exist, a TagAttributeException must be thrown.</p>
         ]]></description>
         <tag-name>loadBundle</tag-name>
         <handler-class>com.sun.faces.facelets.tag.faces.core.LoadBundleHandler</handler-class>
@@ -993,7 +993,7 @@ for <code>@NamedEvent</code>.</p>
         <p><span
         class="changed_modified_2_0_rev_a">Add</span> a child UIParameter
         component to the UIComponent associated with the closest parent
-        UIComponent custom action.</p>
+        UIComponent <span class="changed_modified_4_0">tag</span>.</p>
         ]]></description>
         <tag-name>param</tag-name>
         <component>
@@ -1004,7 +1004,7 @@ for <code>@NamedEvent</code>.</p>
             <description><![CDATA[
                 <p>ValueExpression to a backing bean
                 property bound to the component instance for
-                the UIComponent created by this custom action.</p>
+                the UIComponent created by this <span class="changed_modified_4_0">tag</span>.</p>
             ]]></description>
             <name>binding</name>
             <type>jakarta.faces.component.UIComponent</type>
@@ -1138,8 +1138,7 @@ for <code>@NamedEvent</code>.</p>
     <tag>
         <description><![CDATA[
             <p>Add a child UISelectItem component to the UIComponent
-            associated with the closest parent UIComponent custom
-            action.</p>
+            associated with the closest parent UIComponent <span class="changed_modified_4_0">tag</span>.</p>
         ]]></description>
         <tag-name>selectItem</tag-name>
         <component>
@@ -1150,7 +1149,7 @@ for <code>@NamedEvent</code>.</p>
             <description><![CDATA[
                 <p>Value binding expression to a backing bean
                 property bound to the component instance for
-                the UIComponent created by this custom action.</p>
+                the UIComponent created by this <span class="changed_modified_4_0">tag</span>.</p>
             ]]></description>
             <name>binding</name>
             <type>jakarta.faces.component.UIComponent</type>
@@ -1233,7 +1232,7 @@ for <code>@NamedEvent</code>.</p>
         <description><![CDATA[
             <p><span class="changed_modified_2_0">Add</span> a
             child UISelectItems component to the UIComponent associated
-            with the closed parent UIComponent custom action.</p>
+            with the closed parent UIComponent <span class="changed_modified_4_0">tag</span>.</p>
 
             <p class="changed_modified_2_0">When iterating over the
             select items, <code>toString()</code> must be called on
@@ -1256,7 +1255,7 @@ for <code>@NamedEvent</code>.</p>
             <description><![CDATA[
                 <p>Value binding expression to a backing bean
                 property bound to the component instance for
-                the UIComponent created by this custom action.</p>
+                the UIComponent created by this <span class="changed_modified_4_0">tag</span>.</p>
             ]]></description>
             <name>binding</name>
             <type>jakarta.faces.component.UIComponent</type>
@@ -1434,7 +1433,7 @@ of POJOs.
         </attribute> 
         <attribute>
             <description><![CDATA[
-                Value binding expression to a backing bean property bound to the component instance for the <code>UIComponent</code> created by this custom action.
+                Value binding expression to a backing bean property bound to the component instance for the <code>UIComponent</code> created by this <span class="changed_modified_4_0">tag</span>.
             ]]></description>
             <name>binding</name>
             <type>jakarta.faces.component.UIComponent</type>
@@ -1470,7 +1469,7 @@ of POJOs.
         </attribute> 
         <attribute>
             <description><![CDATA[
-                Value binding expression to a backing bean property bound to the component instance for the <code>UIComponent</code> created by this custom action.
+                Value binding expression to a backing bean property bound to the component instance for the <code>UIComponent</code> created by this <span class="changed_modified_4_0">tag</span>.
             ]]></description>
             <name>binding</name>
             <type>jakarta.faces.component.UIComponent</type>
@@ -1512,7 +1511,7 @@ of POJOs.
     <tag>
         <description><![CDATA[
             <p>Register an ActionListener instance on the UIComponent
-            associated with the closest parent UIComponent custom action.
+            associated with the closest parent UIComponent <span class="changed_modified_4_0">tag</span>.
             This actionListener will cause the value given by the "value"
             attribute to be set into the ValueExpression given by the "target"
             attribute.</p>
@@ -1606,11 +1605,12 @@ of POJOs.
 
     <tag>
         <description><![CDATA[
-            <p class="changed_deleted_2_0_rev_a">Container
-            action for all JavaServer Faces core and custom component
-            actions used on a nested page via "jsp:include" or any
-            custom action that dynamically includes another page from
-            the same web application, such as JSTL's "c:import".</p>        
+            <p class="changed_modified_4_0">Naming Container tag for all Jakarta Faces core and
+            component tags. It is particularly useful when a nested section included via
+            &lt;ui:include&gt; or any tag that dynamically includes another
+            page is included more than once, potentially causing duplicate component IDs.
+            Each of those nested sections can then be wrapped in its own &lt;f:subview&gt;
+            with each an unique id.</p>        
         ]]></description>
         <tag-name>subview</tag-name>
         <component>
@@ -1621,7 +1621,7 @@ of POJOs.
             <description><![CDATA[
                 <p>Value binding expression to a backing bean
                 property bound to the component instance for
-                the UIComponent created by this custom action.</p>
+                the UIComponent created by this <span class="changed_modified_4_0">tag</span>.</p>
             ]]></description>
             <name>binding</name>
             <type>jakarta.faces.component.UIComponent</type>
@@ -1719,7 +1719,7 @@ of POJOs.
         <description><![CDATA[
             <p>Register a DoubleRangeValidator instance on the
             UIComponent associated with the closest parent
-            UIComponent custom action.</p>
+            UIComponent <span class="changed_modified_4_0">tag</span>.</p>
         ]]></description>
         <tag-name>validateDoubleRange</tag-name>
         <validator>
@@ -1777,7 +1777,7 @@ of POJOs.
         <description><![CDATA[
             <p>Register a LengthValidator instance on the
             UIComponent associated with the closest parent
-            UIComponent custom action.</p>
+            UIComponent <span class="changed_modified_4_0">tag</span>.</p>
         ]]></description>
         <tag-name>validateLength</tag-name>
         <validator>
@@ -1835,7 +1835,7 @@ of POJOs.
         <description><![CDATA[
             <p>Register a LongRangeValidator instance on the
             UIComponent associated with the closest parent
-            UIComponent custom action.</p>
+            UIComponent <span class="changed_modified_4_0">tag</span>.</p>
         ]]></description>
         <tag-name>validateLongRange</tag-name>
         <validator>
@@ -2358,7 +2358,7 @@ public class BackingBean implements PasswordHolder, Cloneable {
             <p><span class="changed_modified_2_0">Register</span>
             a named
             Validator instance on the UIComponent associated with the
-            closest parent UIComponent custom action.</p>
+            closest parent UIComponent <span class="changed_modified_4_0">tag</span>.</p>
 
             <div class="changed_added_2_0">
 
@@ -2423,8 +2423,7 @@ public class BackingBean implements PasswordHolder, Cloneable {
     <tag>
         <description><![CDATA[
             <p>Register a ValueChangeListener instance on the UIComponent
-            associated with the closest parent UIComponent custom
-            action.</p>
+            associated with the closest parent UIComponent <span class="changed_modified_4_0">tag</span>.</p>
         ]]></description>
         <tag-name>valueChangeListener</tag-name>
         <handler-class>com.sun.faces.facelets.tag.faces.core.ValueChangeListenerHandler</handler-class>
@@ -2462,44 +2461,9 @@ public class BackingBean implements PasswordHolder, Cloneable {
 
     <tag>
         <description><![CDATA[
-            <p class="changed_deleted_2_0_rev_a">The use of
-            this element has been deprecated in Facelets for Faces. 
-            Create and register a child UIOutput component
-            associated with the closest parent UIComponent custom
-            action, which renders nested body content.</p>
-        ]]></description>
-        <tag-name>verbatim</tag-name>
-        <component>
-            <component-type>jakarta.faces.Output</component-type>
-            <renderer-type>jakarta.faces.Text</renderer-type>
-        </component>
-        <attribute>
-            <description><![CDATA[
-                <p>Flag indicating that generated markup must
-                be escaped in a manner that is appropriate
-                for the markup language to be rendered.
-                Expressions must evaluate to a boolean.
-                Default value is false.</p>
-            ]]></description>
-            <name>escape</name>
-            <type>java.lang.Boolean</type>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-                <p>Flag indicating whether or not this component should be rendered
-                (during Render Response Phase), or processed on any subsequent
-                form submit. The default value for this property is true.</p>
-            ]]></description>
-            <name>rendered</name>
-            <required>false</required>
-            <type>java.lang.Boolean</type>
-        </attribute>
-    </tag>
-    <tag>
-        <description><![CDATA[
             <p><span class="changed_modified_2_0_rev_a
-            changed_modified_2_2">Container</span> for all JavaServer
-            Faces core and custom component actions used on a
+            changed_modified_2_2">Container</span> for all Jakarta Faces
+            core and component <span class="changed_modified_4_0">tags</span> used on a
             page.</p>        ]]></description>
         <tag-name>view</tag-name>
         <component>
