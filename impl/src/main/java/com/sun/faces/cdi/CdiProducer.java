@@ -107,7 +107,7 @@ abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializab
      * Destroy the instance.
      *
      * <p>
-     * Since most artifact that the sub classes are producing are artifacts that the JSF runtime really is managing the
+     * Since most artifact that the sub classes are producing are artifacts that the Faces runtime really is managing the
      * destroy method here does not need to do anything.
      * </p>
      *

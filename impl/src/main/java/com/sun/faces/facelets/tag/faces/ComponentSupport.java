@@ -333,7 +333,7 @@ public final class ComponentSupport {
     }
 
     /**
-     * According to JSF 1.2 tag specs, this helper method will use the TagAttribute passed in determining the Locale
+     * According to Faces 1.2 tag specs, this helper method will use the TagAttribute passed in determining the Locale
      * intended.
      *
      * @param ctx FaceletContext to evaluate from

@@ -211,7 +211,7 @@ public class ELUtils {
             }
         } else {
             CdiExtension cdiExtension = getBeanReference(beanManager, CdiExtension.class);
-            if (cdiExtension.isAddBeansForJSFImplicitObjects()) {
+            if (cdiExtension.isAddBeansForFacesImplicitObjects()) {
                 composite.add(beanManager.getELResolver());
                 return true;
             }

@@ -99,7 +99,7 @@ public class RequestStateManager {
     public static final String FACELET_FACTORY = "com.sun.faces.FACELET_FACTORY";
 
     /**
-     * Used to indicate whether or not JSF script has already been installed.
+     * Used to indicate whether or not Faces script has already been installed.
      */
     public static final String SCRIPT_STATE = "com.sun.faces.SCRIPT_STATE";
 

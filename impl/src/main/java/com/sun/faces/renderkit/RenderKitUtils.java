@@ -979,7 +979,7 @@ public class RenderKitUtils {
 
     /**
      * <p>
-     * Only install the JSF script resource if it doesn't exist. The resource component will be installed with the target
+     * Only install the Faces script resource if it doesn't exist. The resource component will be installed with the target
      * "head".
      *
      * @param context the <code>FacesContext</code> for the current request

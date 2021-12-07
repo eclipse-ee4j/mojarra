@@ -65,7 +65,7 @@ public abstract class ConverterPropertyEditorBase extends PropertyEditorSupport 
         Object appAssociate = facesContextClass.getMethod("getCurrentInstance").invoke(null);
 
         if (appAssociate == null) {
-            throw new IllegalStateException("Unable to find Deployed JSF Application.  You're deployment environment may not support"
+            throw new IllegalStateException("Unable to find Deployed Faces Application.  You're deployment environment may not support"
                     + "ConverterPropertyEditors.  Try restarting your server or turn off " + "com.sun.faces.registerConverterPropertyEditors");
         }
 

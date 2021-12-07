@@ -882,7 +882,7 @@ public class InstanceFactory {
 
     /**
      * <p>
-     * To enable EL Coercion to use JSF Custom converters, this method will call
+     * To enable EL Coercion to use Faces Custom converters, this method will call
      * <code>PropertyEditorManager.registerEditor()</code>, passing the <code>ConverterPropertyEditor</code> class for the
      * <code>targetClass</code> if the target class is not one of the standard by-type converter target classes.
      *

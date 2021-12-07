@@ -414,7 +414,7 @@ final class CompilationManager {
         TagAttribute attr = tag.getAttributes().get("jsfc");
         if (attr != null) {
             if (log.isLoggable(Level.FINE)) {
-                log.fine(attr + " JSF Facelet Compile Directive Found");
+                log.fine(attr + " Facelet Compile Directive Found");
             }
             String value = attr.getValue();
             String namespace, localName;

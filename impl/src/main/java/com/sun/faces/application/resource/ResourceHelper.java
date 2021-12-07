@@ -389,7 +389,7 @@ public abstract class ResourceHelper {
      *
      * <p>
      * Implementation Note: It is safe to cast to a <code>HttpServletResponse</code> as this method will only be called when
-     * handling a resource request. Resource serving is outside of the JSF and Portlet lifecycle.
+     * handling a resource request. Resource serving is outside of the Faces and Portlet lifecycle.
      * </p>
      *
      * @param ctx the {@link FacesContext} for the current request

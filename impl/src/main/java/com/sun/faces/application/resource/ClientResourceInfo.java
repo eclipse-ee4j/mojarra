@@ -204,7 +204,7 @@ public class ClientResourceInfo extends ResourceInfo {
         if (library == null && localePrefix != null) {
             sb.append('/').append(localePrefix);
         }
-        // Specialcasing for handling JSF script in uncompressed state
+        // Specialcasing for handling Faces script in uncompressed state
         if (isDevStage && FACES_SCRIPT_LIBRARY_NAME.equals(libraryName) && FACES_SCRIPT_RESOURCE_NAME.equals(name)) {
             sb.append('/').append("faces-uncompressed.js");
         } else {

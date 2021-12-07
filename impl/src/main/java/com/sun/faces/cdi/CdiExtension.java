@@ -65,7 +65,7 @@ public class CdiExtension implements Extension {
 
     private Set<Type> managedPropertyTargetTypes = new HashSet<>();
 
-    private boolean addBeansForJSFImplicitObjects;
+    private boolean addBeansForFacesImplicitObjects;
 
     /**
      * Stores the logger.
@@ -89,7 +89,7 @@ public class CdiExtension implements Extension {
      * @param afterBeanDiscovery the after bean discovery.
      */
     public void afterBean(final @Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
-        if (addBeansForJSFImplicitObjects) {
+        if (addBeansForFacesImplicitObjects) {
             afterBeanDiscovery.addBean(new ApplicationProducer());
             afterBeanDiscovery.addBean(new ApplicationMapProducer());
             afterBeanDiscovery.addBean(new CompositeComponentProducer());
@@ -225,12 +225,12 @@ public class CdiExtension implements Extension {
         return forClassToDataModelClass;
     }
 
-    public boolean isAddBeansForJSFImplicitObjects() {
-        return addBeansForJSFImplicitObjects;
+    public boolean isAddBeansForFacesImplicitObjects() {
+        return addBeansForFacesImplicitObjects;
     }
 
     public void setAddBeansForJSFImplicitObjects(boolean addBeansForJSFImplicitObjects) {
-        this.addBeansForJSFImplicitObjects = addBeansForJSFImplicitObjects;
+        this.addBeansForFacesImplicitObjects = addBeansForJSFImplicitObjects;
     }
 
 }

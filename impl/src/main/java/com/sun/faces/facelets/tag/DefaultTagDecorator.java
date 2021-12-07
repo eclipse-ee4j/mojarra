@@ -106,7 +106,7 @@ class DefaultTagDecorator implements TagDecorator {
         // we only handle html tags!
         if (!("".equals(ns) || "http://www.w3.org/1999/xhtml".equals(ns))) {
             throw new FaceletException("Elements with namespace " + ns + " may not have attributes in namespace " + Namespace.faces.uri + "." + " Namespace "
-                    + Namespace.faces.uri + " is intended for otherwise non-JSF-aware markup, such as <input type=\"text\" " + Namespace.faces.name() + ":id >"
+                    + Namespace.faces.uri + " is intended for otherwise non-Faces-aware markup, such as <input type=\"text\" " + Namespace.faces.name() + ":id >"
                     + " It is not valid to have <h:commandButton faces:id=\"button\" />.");
         }
         for (Mapper mapper : Mapper.values()) {
