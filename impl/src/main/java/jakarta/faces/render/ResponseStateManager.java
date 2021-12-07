@@ -240,7 +240,7 @@ public abstract class ResponseStateManager {
      * </p>
      *
      * <p>
-     * For backwards compatibility with implementations of <code>ResponseStateManager</code> prior to Jakarta Server Faces
+     * For backwards compatibility with implementations of <code>ResponseStateManager</code> prior to Jakarta Faces
      * 1.2, a default implementation is provided that consults the {@link jakarta.faces.context.ExternalContext}'s
      * <code>requestParameterMap</code> and return <code>true</code> if its size is greater than 0.
      * </p>

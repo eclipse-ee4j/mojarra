@@ -524,7 +524,7 @@ package jakarta.faces.view.facelets;
  * <p>
  * The {@link Tag} instance returned from this decoration process must ultimately be passed to a {@link FaceletHandler}
  * instance as described in the spec prose document section titled, "Specification of the ViewDeclarationLanguage
- * Implementation for Facelets for Jakarta Server Faces 2.0".
+ * Implementation for Facelets for Jakarta Faces 2.0".
  * </p>
  *
  * </div>

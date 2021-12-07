@@ -33,9 +33,9 @@
       <p>The XML Schema for the Jakarta Server Faces Application
       Configuration File (Version 3.0).</p>
       
-      <p>All JavaServer Faces configuration files must indicate
-      the JavaServer Faces schema by indicating the JavaServer
-      Faces namespace:</p>
+      <p>All Jakarta Server Faces configuration files must indicate
+      the Jakarta Server Faces schema by indicating the
+      Jakarta Server Faces namespace:</p>
       
       <p>https://jakarta.ee/xml/ns/jakartaee</p>
       
@@ -221,7 +221,7 @@
         <xsd:documentation>
 
           The metadata-complete attribute defines whether this
-          JavaServer Faces application is complete, or whether
+          Jakarta Server Faces application is complete, or whether
           the class files available to this module and packaged with
           this application should be examined for annotations
           that specify configuration information.
@@ -233,13 +233,13 @@
           including any files named using the jakarta.faces.CONFIG_FILES
           attribute, must be ignored.
           
-          If metadata-complete is set to "true", the JavaServer Faces
+          If metadata-complete is set to "true", the Jakarta Server Faces
           runtime must ignore any annotations that specify configuration
           information, which might be present in the class files
           of the application.
           
           If metadata-complete is not specified or is set to
-          "false", the JavaServer Faces runtime must examine the class
+          "false", the Jakarta Server Faces runtime must examine the class
           files of the application for annotations, as specified by
           the specification.
           
@@ -393,7 +393,7 @@
         <p> The "application" element provides a mechanism to define the
         various per-application-singleton implementation artifacts for
         a particular web application that is utilizing
-        JavaServer Faces.  For nested elements that are not specified,
+        Jakarta Server Faces.  For nested elements that are not specified,
         the Jakarta Server Faces implementation must provide a suitable 
         default.</p>
         
@@ -796,7 +796,7 @@
         <![CDATA[
         <p> The "factory" element provides a mechanism to define the
         various Factories that comprise parts of the implementation
-        of JavaServer Faces.  For nested elements that are not
+        of Jakarta Server Faces.  For nested elements that are not
         specified, the Jakarta Server Faces implementation must provide a 
         suitable default.</p>
         
@@ -3106,7 +3106,7 @@
         used by design time tools to construct user interface dialogs
         based on the properties of the specified class.  The presence
         or absence of a referenced bean element has no impact on the
-        JavaServer Faces runtime environment inside a web application.</p>
+        Jakarta Server Faces runtime environment inside a web application.</p>
         
         ]]>
       </xsd:documentation>

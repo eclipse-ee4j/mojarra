@@ -183,7 +183,7 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
      *
      * @param event {@link FacesEvent} to be broadcast
      *
-     * @throws AbortProcessingException Signal the Jakarta Server Faces implementation that no further processing on the
+     * @throws AbortProcessingException Signal the Jakarta Faces implementation that no further processing on the
      * current event should be performed
      * @throws IllegalArgumentException if the implementation class of this {@link FacesEvent} is not supported by this
      * component

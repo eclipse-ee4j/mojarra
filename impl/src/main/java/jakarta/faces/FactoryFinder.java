@@ -22,7 +22,7 @@ import static jakarta.faces.ServletContextFacesContextFactory.SERVLET_CONTEXT_FI
  * <p>
  * <strong class="changed_modified_2_0 changed_modified_2_1 changed_modified_2_2
  * changed_modified_2_3">FactoryFinder</strong> implements the standard discovery algorithm for all factory objects
- * specified in the Jakarta Server Faces APIs. For a given factory class name, a corresponding implementation class is
+ * specified in the Jakarta Faces APIs. For a given factory class name, a corresponding implementation class is
  * searched for based on the following algorithm. Items are listed in order of decreasing search precedence:
  * </p>
  *
@@ -30,14 +30,14 @@ import static jakarta.faces.ServletContextFacesContextFactory.SERVLET_CONTEXT_FI
  *
  * <li>
  * <p>
- * If the Jakarta Server Faces configuration file bundled into the <code>WEB-INF</code> directory of the webapp contains
+ * If the Jakarta Faces configuration file bundled into the <code>WEB-INF</code> directory of the webapp contains
  * a <code>factory</code> entry of the given factory class name, that factory is used.
  * </p>
  * </li>
  *
  * <li>
  * <p>
- * If the Jakarta Server Faces configuration files named by the <code>jakarta.faces.CONFIG_FILES</code>
+ * If the Jakarta Faces configuration files named by the <code>jakarta.faces.CONFIG_FILES</code>
  * <code>ServletContext</code> init parameter contain any <code>factory</code> entries of the given factory class name,
  * those injectionProvider are used, with the last one taking precedence.
  * </p>
@@ -45,7 +45,7 @@ import static jakarta.faces.ServletContextFacesContextFactory.SERVLET_CONTEXT_FI
  *
  * <li>
  * <p>
- * If there are any Jakarta Server Faces configuration files bundled into the <code>META-INF</code> directory of any
+ * If there are any Jakarta Faces configuration files bundled into the <code>META-INF</code> directory of any
  * jars on the <code>ServletContext</code>'s resource paths, the <code>factory</code> entries of the given factory class
  * name in those files are used, with the last one taking precedence.
  * </p>
@@ -61,7 +61,7 @@ import static jakarta.faces.ServletContextFacesContextFactory.SERVLET_CONTEXT_FI
  *
  * <li>
  * <p>
- * If none of the above steps yield a match, the Jakarta Server Faces implementation specific class is used.
+ * If none of the above steps yield a match, the Jakarta Faces implementation specific class is used.
  * </p>
  * </li>
  *
@@ -75,7 +75,7 @@ import static jakarta.faces.ServletContextFacesContextFactory.SERVLET_CONTEXT_FI
  * <code>META-INF/services/jakarta.faces.context.FacesContextFactory</code> in a jar on the webapp ClassLoader. Also say
  * this implementation provided by the container vendor had a one argument constructor that took a
  * <code>FacesContextFactory</code> instance. The <code>FactoryFinder</code> system would call that one-argument
- * constructor, passing the implementation of <code>FacesContextFactory</code> provided by the Jakarta Server Faces
+ * constructor, passing the implementation of <code>FacesContextFactory</code> provided by the Jakarta Faces
  * implementation.
  * </p>
  *
@@ -226,22 +226,22 @@ public final class FactoryFinder {
     /**
      * <p>
      * <span class="changed_modified_2_0">Create</span> (if necessary) and return a per-web-application instance of the
-     * appropriate implementation class for the specified Jakarta Server Faces factory class, based on the discovery
+     * appropriate implementation class for the specified Jakarta Faces factory class, based on the discovery
      * algorithm described in the class description.
      * </p>
      *
      * <p class="changed_added_2_0">
-     * The standard injectionProvider and wrappers in Jakarta Server Faces all implement the interface {@link FacesWrapper}.
+     * The standard injectionProvider and wrappers in Jakarta Faces all implement the interface {@link FacesWrapper}.
      * If the returned <code>Object</code> is an implementation of one of the standard injectionProvider, it must be legal
      * to cast it to an instance of <code>FacesWrapper</code> and call {@link FacesWrapper#getWrapped} on the instance.
      * </p>
      *
-     * @param factoryName Fully qualified name of the Jakarta Server Faces factory for which an implementation instance is
+     * @param factoryName Fully qualified name of the Jakarta Faces factory for which an implementation instance is
      * requested
      * @throws FacesException if the web application class loader cannot be identified
      * @throws FacesException if an instance of the configured factory implementation class cannot be loaded
      * @throws FacesException if an instance of the configured factory implementation class cannot be instantiated
-     * @throws IllegalArgumentException if <code>factoryName</code> does not identify a standard Jakarta Server Faces
+     * @throws IllegalArgumentException if <code>factoryName</code> does not identify a standard Jakarta Faces
      * factory name
      * @throws IllegalStateException if there is no configured factory implementation class for the specified factory name
      * @throws NullPointerException if <code>factoryname</code> is null
@@ -281,7 +281,7 @@ public final class FactoryFinder {
      * This method can be used by implementations to store a factory mapping while parsing the Faces configuration file
      * </p>
      *
-     * @throws IllegalArgumentException if <code>factoryName</code> does not identify a standard Jakarta Server Faces
+     * @throws IllegalArgumentException if <code>factoryName</code> does not identify a standard Jakarta Faces
      * factory name
      * @throws NullPointerException if <code>factoryname</code> is null
      *

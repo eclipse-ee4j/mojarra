@@ -84,7 +84,7 @@ final class FactoryFinderInstance {
 
     /**
      * <p>
-     * The set of Jakarta Server Faces factory classes for which the factory discovery mechanism is supported. The entries
+     * The set of Jakarta Faces factory classes for which the factory discovery mechanism is supported. The entries
      * in this list must be alphabetically ordered according to the entire string of the *value* of each of the literals,
      * not just the last part of the literal!
      * </p>

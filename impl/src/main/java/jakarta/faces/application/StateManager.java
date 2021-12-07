@@ -102,7 +102,7 @@ public abstract class StateManager {
     /**
      * <p class="changed_added_2_0">
      * The runtime must interpret the value of this parameter as a comma separated list of view IDs, each of which must have
-     * their state saved using the state saving mechanism specified in Jakarta Server Faces 1.2.
+     * their state saved using the state saving mechanism specified in Jakarta Faces 1.2.
      * </p>
      */
     public static final String FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME = "jakarta.faces.FULL_STATE_SAVING_VIEW_IDS";

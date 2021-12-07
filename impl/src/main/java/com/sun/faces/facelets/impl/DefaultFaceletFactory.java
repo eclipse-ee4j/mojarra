@@ -155,7 +155,7 @@ public class DefaultFaceletFactory {
      * @throws IOException
      */
     public URL resolveURL(URL source, String path) throws IOException {
-        // PENDING(FCAPUTO): always go to the resolver to make resource libary contracts work with relative urls
+        // PENDING(FCAPUTO): always go to the resolver to make resource library contracts work with relative urls
         if (path.startsWith("/")) {
             URL url = resolver.resolveUrl(path);
             if (url == null) {

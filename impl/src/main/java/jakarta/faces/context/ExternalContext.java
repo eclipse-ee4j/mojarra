@@ -36,14 +36,14 @@ import jakarta.faces.lifecycle.ClientWindow;
  * <p>
  * <span class="changed_modified_2_0 changed_modified_2_1 changed_modified_2_2 changed_modified_2_3"> This</span> class
  * allows the Faces API to be unaware of the nature of its containing application environment. In particular, this class
- * allows Jakarta Server Faces based applications to run in either a Jakarta Servlet or a Portlet environment.
+ * allows Jakarta Faces based applications to run in either a Jakarta Servlet or a Portlet environment.
  * </p>
  *
  * <p class="changed_modified_2_0">
  * The documentation for this class only specifies the behavior for the <em>Jakarta Servlet</em> implementation of
  * <code>ExternalContext</code>. The <em>Portlet</em> implementation of <code>ExternalContext</code> is specified under
  * the revision of the <span style="text-decoration: underline;">Portlet Bridge Specification for JavaServer
- * Faces</span> JSR that corresponds to this version of the Jakarta Server Faces specification. See the Preface of the
+ * Faces</span> JSR that corresponds to this version of the Jakarta Faces specification. See the Preface of the
  * &quot;prose document&quot;, <a href="../../../overview-summary.html#overview_description">linked from the
  * javadocs</a>, for a reference.
  * </p>
@@ -400,7 +400,7 @@ public abstract class ExternalContext {
     /**
      * <p class="changed_added_2_0">
      * Return the threadsafe {@link Flash} for this application. The default implementation will throw
-     * <code>UnsupportedOperationException</code>. Compliant Jakarta Server Faces runtimes must provide an implementation of
+     * <code>UnsupportedOperationException</code>. Compliant Jakarta Faces runtimes must provide an implementation of
      * this method.
      * </p>
      *
@@ -2067,7 +2067,7 @@ public abstract class ExternalContext {
      * collection of Parameter objects provided by the parameters argument and append that query string to the baseUrl. This
      * method must be able to encode the parameters to a baseUrl that may or may not have existing query parameters. The
      * parameter values should be encoded appropriately for the environment so that the resulting URL can be used as the
-     * target of a link (e.g., in an href attribute) in a Jakarta Server Faces response. It's possible for an
+     * target of a link (e.g., in an href attribute) in a Jakarta Faces response. It's possible for an
      * ExternalContext implementation to override this method in any way that would make the URL bookmarkable in that
      * environment.
      * </p>

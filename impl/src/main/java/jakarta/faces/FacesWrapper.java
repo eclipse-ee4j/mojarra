@@ -18,7 +18,7 @@ package jakarta.faces;
 
 /**
  * <p class="changed_added_2_0">
- * <span class="changed_modified_2_3">Any</span> wrapper class in Jakarta Server Faces that must provide access to the
+ * <span class="changed_modified_2_3">Any</span> wrapper class in Jakarta Faces that must provide access to the
  * object it wraps must implement this interface.
  * </p>
  *

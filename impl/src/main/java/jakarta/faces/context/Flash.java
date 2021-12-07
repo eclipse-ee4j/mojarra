@@ -40,7 +40,7 @@ import jakarta.faces.event.PostPutFlashValueEvent;
  * </p>
  *
  * <p>
- * The implementation requirements will be described in terms of the runtime traversing the Jakarta Server Faces
+ * The implementation requirements will be described in terms of the runtime traversing the Jakarta Faces
  * lifecycle. The flash exposes a <code>Map</code> interface over two logical maps. The choice of which logical map is
  * accessed depends on the current faces lifecycle phase. One logical map is for the current traversal and the other is
  * for the next traversal. During the execute portion of the lifecycle, all flash accesses are sent to the current
@@ -83,7 +83,7 @@ import jakarta.faces.event.PostPutFlashValueEvent;
  * <p>
  * The implementation must allow the user to access the flash via the Jakarta Expression Language implicit object
  * <code>flash</code> and also via {@link jakarta.faces.context.ExternalContext#getFlash}. The implementation must
- * ensure that the flash is usable from both Jakarta Server Pages and from Facelets for Jakarta Server Faces 2. In
+ * ensure that the flash is usable from both Jakarta Server Pages and from Facelets for Jakarta Faces 2. In
  * addition to exposing the <code>Map</code> interface, there are several features exposed as methods on the
  * <code>Flash</code> itself. Each of these features may be accessed via Jakarta Expression Language as well, as
  * described in the javadocs.

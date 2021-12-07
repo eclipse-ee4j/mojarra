@@ -30,12 +30,12 @@
   <xsd:annotation>
     <xsd:documentation>
       <![CDATA[
-      <p>The XML Schema for the Jakarta Server Faces Application
+      <p>The XML Schema for the Jakarta Faces Application
       Configuration File (Version 4.0).</p>
       
-      <p>All JavaServer Faces configuration files must indicate
-      the JavaServer Faces schema by indicating the JavaServer
-      Faces namespace:</p>
+      <p>All Jakarta Faces configuration files must indicate
+      the Jakarta Faces schema by indicating the
+      Jakarta Faces namespace:</p>
       
       <p>https://jakarta.ee/xml/ns/jakartaee</p>
       
@@ -379,8 +379,8 @@
         <p> The "application" element provides a mechanism to define the
         various per-application-singleton implementation artifacts for
         a particular web application that is utilizing
-        JavaServer Faces.  For nested elements that are not specified,
-        the Jakarta Server Faces implementation must provide a suitable 
+        Jakarta Faces.  For nested elements that are not specified,
+        the Jakarta Faces implementation must provide a suitable 
         default.</p>
         
         ]]>
@@ -441,8 +441,8 @@
             NavigationHandler implementation class that will
             be called during the Invoke Application phase
             of the request processing lifecycle, if the
-            default ActionListener (provided by the Jakarta Server 
-            Faces implementation) is used.</p>
+            default ActionListener (provided by the Jakarta Faces 
+            implementation) is used.</p>
             
             ]]>
           </xsd:documentation>
@@ -752,8 +752,8 @@
         <![CDATA[
         <p> The "factory" element provides a mechanism to define the
         various Factories that comprise parts of the implementation
-        of JavaServer Faces.  For nested elements that are not
-        specified, the Jakarta Server Faces implementation must provide a 
+        of Jakarta Faces.  For nested elements that are not
+        specified, the Jakarta Faces implementation must provide a 
         suitable default.</p>
         
         ]]>
@@ -2628,8 +2628,8 @@
       <xsd:documentation>
         <![CDATA[
         <p class="changed_added_2_2">Any view that matches any of the
-        url-patterns in this element may only be reached from another Jakarta Server 
-        Faces view in the same web application. Because the runtime is aware of
+        url-patterns in this element may only be reached from another Jakarta Faces 
+        view in the same web application. Because the runtime is aware of
         which views are protected, any navigation from an unprotected
         view to a protected view is automatically subject to
         protection.</p>
@@ -2761,7 +2761,7 @@
         used by design time tools to construct user interface dialogs
         based on the properties of the specified class.  The presence
         or absence of a referenced bean element has no impact on the
-        JavaServer Faces runtime environment inside a web application.</p>
+        Jakarta Faces runtime environment inside a web application.</p>
         
         ]]>
       </xsd:documentation>

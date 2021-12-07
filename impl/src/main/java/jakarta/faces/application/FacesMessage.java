@@ -74,7 +74,7 @@ public class FacesMessage implements Serializable {
 
     /**
      * <p>
-     * <code>ResourceBundle</code> identifier for messages whose message identifiers are defined in the Jakarta Server Faces
+     * <code>ResourceBundle</code> identifier for messages whose message identifiers are defined in the Jakarta Faces
      * specification.
      * </p>
      */

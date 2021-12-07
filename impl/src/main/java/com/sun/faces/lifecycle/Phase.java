@@ -35,7 +35,7 @@ import jakarta.faces.lifecycle.Lifecycle;
 
 /**
  * <p>
- * A <strong>Phase</strong> is a single step in the processing of a JavaServer Faces request throughout its entire
+ * A <strong>Phase</strong> is a single step in the processing of a Jakarta Faces request throughout its entire
  * {@link jakarta.faces.lifecycle.Lifecycle}. Each <code>Phase</code> performs the required transitions on the state
  * information in the {@link FacesContext} associated with this request.
  */

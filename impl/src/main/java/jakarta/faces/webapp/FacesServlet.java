@@ -59,7 +59,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * <p>
  * <strong class="changed_modified_2_0 changed_modified_2_0_rev_a changed_modified_2_1 changed_modified_2_2
  * changed_modified_2_3">FacesServlet</strong> is a Jakarta Servlet servlet that manages the request processing
- * lifecycle for web applications that are utilizing Jakarta Server Faces to construct the user interface.
+ * lifecycle for web applications that are utilizing Jakarta Faces to construct the user interface.
  * </p>
  *
  * <div class="changed_added_2_1">
@@ -168,7 +168,7 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * <p>
  * This class must be annotated with {@code jakarta.servlet.annotation.MultipartConfig}. This causes the Jakarta Servlet
- * container in which the Jakarta Server Faces implementation is running to correctly handle multipart form data.
+ * container in which the Jakarta Faces implementation is running to correctly handle multipart form data.
  * </p>
  *
  * <p>
@@ -202,7 +202,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * </p>
  *
  * <p>
- * The Jakarta Server Faces specification only requires the use of the GET and POST http methods. If your web
+ * The Jakarta Faces specification only requires the use of the GET and POST http methods. If your web
  * application does not require any other http methods, such as PUT and DELETE, please consider restricting the
  * allowable http methods using the &lt;http-method&gt; and &lt;http-method-omission&gt; elements. Please see the
  * <strong>Security</strong> sections of the Jakarta Servlet Specification for more information about the use of these
@@ -220,7 +220,7 @@ public final class FacesServlet implements Servlet {
     /**
      * <p>
      * Context initialization parameter name for a comma delimited list of context-relative resource paths (in addition to
-     * <code>/WEB-INF/faces-config.xml</code> which is loaded automatically if it exists) containing Jakarta Server Faces
+     * <code>/WEB-INF/faces-config.xml</code> which is loaded automatically if it exists) containing Jakarta Faces
      * configuration information.
      * </p>
      */
@@ -410,7 +410,7 @@ public final class FacesServlet implements Servlet {
      *
      * <p class="changed_modified_2_0_rev_a">
      * The implementation must make it so {@link jakarta.faces.context.FacesContext#release} is called within a finally
-     * block as late as possible in the processing for the Jakarta Server Faces related portion of this request.
+     * block as late as possible in the processing for the Jakarta Faces related portion of this request.
      * </p>
      *
      * </div>

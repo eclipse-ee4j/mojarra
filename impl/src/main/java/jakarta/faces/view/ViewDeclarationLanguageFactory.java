@@ -93,7 +93,7 @@ public abstract class ViewDeclarationLanguageFactory implements FacesWrapper<Vie
      * <span class="changed_modified_2_1">Return</span> the <code>ViewDeclarationLanguage</code> instance suitable for
      * handling the VDL contained in the page referenced by the argument <code>viewId</code>. The default implementation
      * must return a valid <code>ViewDeclarationLanguage</code> instance for views written in either Jakarta Server Pages,
-     * Faces XML Views, or Facelets for Jakarta Server Faces 2.
+     * Faces XML Views, or Facelets for Jakarta Faces 2.
      * </p>
      *
      * @param viewId the viewId to be inspected for an appropriate <code>ViewDeclarationLanguage</code> implementation for

@@ -22,9 +22,9 @@
                 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facelettaglibrary_2_2.xsd"
                 version="2.2">
     <description><![CDATA[
-        This tag library contains JavaServer Faces component tags for all
+        This tag library contains Jakarta Faces component tags for all
         UIComponent + HTML RenderKit Renderer combinations defined in the
-        JavaServer Faces Specification.
+        Jakarta Faces Specification.
     ]]></description>
     <namespace>jakarta.faces.html</namespace>
     <tag>

@@ -60,7 +60,7 @@ import jakarta.websocket.CloseReason.CloseCodes;
  *
  * <h2 id="usage-client"><a href="#usage-client">Usage (client)</a></h2>
  * <p>
- * Declare <strong><code>&lt;f:websocket&gt;</code></strong> tag in the Jakarta Server Faces view with at least a
+ * Declare <strong><code>&lt;f:websocket&gt;</code></strong> tag in the Jakarta Faces view with at least a
  * <strong><code>channel</code></strong> name and an <strong><code>onmessage</code></strong> JavaScript listener
  * function. The channel name may not be a Jakarta Expression Language expression and it may only contain alphanumeric
  * characters, hyphens, underscores and periods.
@@ -141,7 +141,7 @@ import jakarta.websocket.CloseReason.CloseCodes;
  * <p>
  * Although websockets support two-way communication, the <code>&lt;f:websocket&gt;</code> push is designed for one-way
  * communication, from server to client. In case you intend to send some data from client to server, continue using
- * Jakarta Server Faces ajax the usual way. This has among others the advantage of maintaining the Jakarta Server Faces
+ * Jakarta Faces ajax the usual way. This has among others the advantage of maintaining the Jakarta Faces
  * view state, the HTTP session and, importantly, all security constraints on business service methods.
  *
  *
