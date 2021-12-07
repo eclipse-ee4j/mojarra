@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
-    Copyright (c) 2009, 2020 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2009, 2021 Oracle and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,13 +17,14 @@
 
 -->
 
-<facelet-taglib id="cc" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facelettaglibrary_2_3.xsd"
-              version="2.3">
+<facelet-taglib id="cc"
+    xmlns="https://jakarta.ee/xml/ns/jakartaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-facelettaglibrary_4_0.xsd"
+    version="4.0"
+>
     <description><![CDATA[
-
-</pre>
+        <p><strong>Jakarta Faces Composite ComponentsTag Library</strong></p> 
 
 <div class="changed_added_2_0">
 
