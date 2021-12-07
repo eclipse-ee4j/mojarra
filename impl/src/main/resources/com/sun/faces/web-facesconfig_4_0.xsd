@@ -33,9 +33,9 @@
       <p>The XML Schema for the Jakarta Faces Application
       Configuration File (Version 4.0).</p>
       
-      <p>All JavaServer Faces configuration files must indicate
-      the JavaServer Faces schema by indicating the JavaServer
-      Faces namespace:</p>
+      <p>All Jakarta Faces configuration files must indicate
+      the Jakarta Faces schema by indicating the
+      Jakarta Faces namespace:</p>
       
       <p>https://jakarta.ee/xml/ns/jakartaee</p>
       
@@ -379,7 +379,7 @@
         <p> The "application" element provides a mechanism to define the
         various per-application-singleton implementation artifacts for
         a particular web application that is utilizing
-        JavaServer Faces.  For nested elements that are not specified,
+        Jakarta Faces.  For nested elements that are not specified,
         the Jakarta Faces implementation must provide a suitable 
         default.</p>
         
@@ -752,7 +752,7 @@
         <![CDATA[
         <p> The "factory" element provides a mechanism to define the
         various Factories that comprise parts of the implementation
-        of JavaServer Faces.  For nested elements that are not
+        of Jakarta Faces.  For nested elements that are not
         specified, the Jakarta Faces implementation must provide a 
         suitable default.</p>
         
@@ -2761,7 +2761,7 @@
         used by design time tools to construct user interface dialogs
         based on the properties of the specified class.  The presence
         or absence of a referenced bean element has no impact on the
-        JavaServer Faces runtime environment inside a web application.</p>
+        Jakarta Faces runtime environment inside a web application.</p>
         
         ]]>
       </xsd:documentation>
