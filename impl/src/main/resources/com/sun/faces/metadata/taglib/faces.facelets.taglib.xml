@@ -1028,14 +1028,7 @@ attribute must be an absolute path starting with "/".</span>
 
 
             <div class="changed_added_2_0">
-            <p>Remove content from a page. This tag is often used in
-            conjunction with the <code>jsfc</code> feature of
-            Facelets,
-            to wrap additional markup. When Facelets removes markup from a page
-            by substituting markup items that have
-            a <code>jsfc</code> attribute with the specified
-            component, Facelets also removes anything in the page that
-            is contained in a <code>ui:remove</code> tag.</p>
+            <p>Remove content from a page.</p>
             </div>
 
         ]]></description>
