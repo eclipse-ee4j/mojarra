@@ -52,12 +52,10 @@ import jakarta.faces.render.ResponseStateManager;
 
 /**
  * <B>RenderKitImpl</B> is a class ...
- * <p/>
+ * 
  * <B>Lifetime And Scope</B>
- * <P>
  *
  */
-
 public class RenderKitImpl extends RenderKit {
 
     private static final Logger LOGGER = FacesLogger.RENDERKIT.getLogger();
@@ -72,14 +70,12 @@ public class RenderKitImpl extends RenderKit {
      * Keys are String renderer family. Values are HashMaps. Nested HashMap keys are Strings for the rendererType, and
      * values are the Renderer instances themselves.
      */
-
     private ConcurrentHashMap<String, HashMap<String, Renderer>> rendererFamilies = new ConcurrentHashMap<>();
 
     /**
      * For Behavior Renderers: Keys are Strings for the behaviorRendererType, and values are the behaviorRenderer instances
      * themselves.
      */
-
     private ConcurrentHashMap<String, ClientBehaviorRenderer> behaviorRenderers = new ConcurrentHashMap<>();
 
     private ResponseStateManager responseStateManager = new ResponseStateManagerImpl();
@@ -363,4 +359,4 @@ public class RenderKitImpl extends RenderKit {
 
     // The test for this class is in TestRenderKit.java
 
-} // end of class RenderKitImpl
+}

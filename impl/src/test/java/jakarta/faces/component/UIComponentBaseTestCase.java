@@ -815,21 +815,21 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
      * </p>
      * <code><pre>
      * root: id: root
-     * <p/>
+     * 
      *   form1: id: form1
-     * <p/>
+     * 
      *     panel1: id: panel
-     * <p/>
+     * 
      *       input1: id: input1
-     * <p/>
+     * 
      *       input2: id: input2
-     * <p/>
+     * 
      *   form2: id: form2
-     * <p/>
+     * 
      *     panel2: id: panel
-     * <p/>
+     * 
      *       input3: id: input1
-     * <p/>
+     * 
      *       input4: id: input2
      * </pre></code>
      *

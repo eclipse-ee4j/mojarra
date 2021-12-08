@@ -28,10 +28,10 @@ import com.sun.faces.util.Util;
  * </p>
  * <ul>
  * <li><code>&lt;InjectionProviderClassName&gt;:&lt;DelegateClassName&gt;</code></li>
- * <ul>
+ * </ul>
  *
  * <p>
- * Example:</p}
+ * Example:
  * <ul>
  * <li><code>com.sun.faces.vendor.GlassFishInjectionProvider:com.sun.enterprise.InjectionManager</code></li>
  * </ul>
@@ -48,7 +48,6 @@ public abstract class DiscoverableInjectionProvider implements InjectionProvider
      * currently deployed within, otherwise return <code>false</code>
      */
     public static boolean isInjectionFeatureAvailable(String delegateClass) {
-
         try {
             Util.loadClass(delegateClass, null);
             return true;

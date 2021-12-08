@@ -69,12 +69,8 @@ public class LifecycleConfigProcessor extends AbstractConfigProcessor {
 
     // -------------------------------------------- Methods from ConfigProcessor
 
-    /**
-     * @see ConfigProcessor#process(jakarta.servlet.ServletContext,com.sun.faces.config.manager.documents.DocumentInfo[])
-     */
     @Override
     public void process(ServletContext servletContext, FacesContext facesContext, DocumentInfo[] documentInfos) throws Exception {
-
         LifecycleFactory factory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
 
         for (int i = 0; i < documentInfos.length; i++) {

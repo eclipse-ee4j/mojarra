@@ -49,7 +49,7 @@ public interface ConfigAnnotationHandler {
     void collect(Class<?> target, Annotation annotation);
 
     /**
-     * <code>Push<code> the configuration based on the collected metadata to the current application.
+     * <code>Push</code> the configuration based on the collected metadata to the current application.
      */
     void push(FacesContext ctx);
 

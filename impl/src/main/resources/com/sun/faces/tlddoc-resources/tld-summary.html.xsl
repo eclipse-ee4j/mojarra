@@ -153,7 +153,7 @@
                 No Description
               </xsl:otherwise>
             </xsl:choose>
-            <p/>
+            
             <table border="1" cellpadding="3" cellspacing="0" width="100%">
               <tr bgcolor="#CCCCFF" class="TableHeadingColor">
                 <td colspan="2">
@@ -206,7 +206,7 @@
               </tr>
             </table>
             &#160;
-            <p/>
+            
             <!-- tags and tag files -->
             <xsl:if test="(count(javaee:tag)+count(javaee:tag-file)) > 0">
               <table border="1" cellpadding="3" cellspacing="0" width="100%">
@@ -218,7 +218,7 @@
                 <xsl:apply-templates select="javaee:tag|javaee:tag-file"/>
               </table>
               &#160;
-              <p/>
+              
             </xsl:if>
             <!-- functions -->
             <xsl:if test="count(javaee:function) > 0">
@@ -231,7 +231,7 @@
                 <xsl:apply-templates select="javaee:function"/>
               </table>
               &#160;
-              <p/>
+              
             </xsl:if>
             <!-- validators -->
             <xsl:if test="count(javaee:validator) > 0">
@@ -244,7 +244,7 @@
                 <xsl:apply-templates select="javaee:validator"/>
               </table>
               &#160;
-              <p/>
+              
             </xsl:if>
             <!-- listeners -->
             <xsl:if test="count(javaee:listener) > 0">
@@ -257,7 +257,7 @@
                 <xsl:apply-templates select="javaee:listener"/>
               </table>
               &#160;
-              <p/>
+              
             </xsl:if>
             <!-- taglib-extensions -->
 

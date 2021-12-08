@@ -32,8 +32,7 @@ import jakarta.servlet.ServletContext;
 
 /**
  * <p>
- * This <code>Callable</code> will be used by
- * {@link ConfigManager#getXMLDocuments(jakarta.servlet.ServletContext, java.util.List, java.util.concurrent.ExecutorService, boolean)}.
+ * This <code>Callable</code> will be used by <code>getXMLDocuments</code>
  * It represents one or more URIs to configuration resources that require processing.
  * </p>
  */

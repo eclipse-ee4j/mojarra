@@ -418,18 +418,18 @@ public class HtmlUtils {
 
     /**
      * Writes a string into URL-encoded format out to a Writer.
-     * <p/>
+     * 
      * All characters before the start of the query string will be encoded using UTF-8.
-     * <p/>
+     * 
      * Characters after the start of the query string will be encoded using a client-defined encoding. You'll need to use
      * the encoding that the server will expect. (HTML forms will generate query strings using the character encoding that
      * the HTML itself was generated in.)
-     * <p/>
+     * 
      * All characters will be encoded as needed for URLs, with the exception of the percent symbol ("%"). Because this is
      * the character itself used for escaping, attempting to escape this character would cause this code to double-escape
      * some strings. It also may be necessary to pre-escape some characters. In particular, a question mark ("?") is
      * considered the start of the query string.
-     * <p/>
+     * 
      *
      * <p>
      * NOTE: This is method is duplicated below. The difference being the acceptance of a char[] for the text to write. Any
@@ -486,18 +486,18 @@ public class HtmlUtils {
 
     /**
      * Writes a string into URL-encoded format out to a Writer.
-     * <p/>
+     * 
      * All characters before the start of the query string will be encoded using UTF-8.
-     * <p/>
+     * 
      * Characters after the start of the query string will be encoded using a client-defined encoding. You'll need to use
      * the encoding that the server will expect. (HTML forms will generate query strings using the character encoding that
      * the HTML itself was generated in.)
-     * <p/>
+     * 
      * All characters will be encoded as needed for URLs, with the exception of the percent symbol ("%"). Because this is
      * the character itself used for escaping, attempting to escape this character would cause this code to double-escape
      * some strings. It also may be necessary to pre-escape some characters. In particular, a question mark ("?") is
      * considered the start of the query string.
-     * <p/>
+     * 
      * <p>
      * NOTE: This is method is duplicated above. The difference being the acceptance of a String for the text to write. Any
      * changes made here, should be made above.

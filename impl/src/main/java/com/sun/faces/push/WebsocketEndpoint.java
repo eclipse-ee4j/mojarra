@@ -55,8 +55,8 @@ public class WebsocketEndpoint extends Endpoint {
     // Actions --------------------------------------------------------------------------------------------------------
 
     /**
-     * Add given web socket session to the {@link WebocketSessionManager}. If web socket session is not accepted (i.e. the
-     * channel identifier is unknown), then immediately close with reason VIOLATED_POLICY (close code 1008).
+     * Add given web socket session to the <code>WebocketSessionManager</code>. If web socket session is not accepted (i.e. the
+     * channel identifier is unknown), then immediately close with reason <code>VIOLATED_POLICY</code> (close code 1008).
      *
      * @param session The opened web socket session.
      * @param config The endpoint configuration.

@@ -37,7 +37,7 @@ import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.ActionEvent;
 
 /**
- * <b>CommandLinkRenderer</b> is a class that renders the current value of <code>UICommand<code> as a HyperLink that
+ * <b>CommandLinkRenderer</b> is a class that renders the current value of <code>UICommand</code> as a HyperLink that
  * acts like a Button.
  */
 

@@ -28,10 +28,10 @@ import com.sun.faces.util.FacesLogger;
 import jakarta.faces.context.FacesContext;
 
 /**
- * <p/>
+ * 
  * <code>ClientResourceInfo</code> is a simple wrapper class for information pertinent to building a complete resource
  * path using a Library.
- * <p/>
+ * 
  */
 public class ClientResourceInfo extends ResourceInfo {
 

@@ -57,7 +57,7 @@
                 <font class="FrameItemFont">
                   <a href="alltags-frame.html" target="tldFrame"><xsl:text>All Tags / Functions</xsl:text></a>
                 </font>
-                <p/>
+                
                 <font size="+1" class="FrameHeadingFont">
                   Tag Libraries
                 </font>
@@ -66,7 +66,7 @@
               </td>
             </tr>
           </table>
-          <p/>
+          
         </body>
       </html>
     </xsl:template>

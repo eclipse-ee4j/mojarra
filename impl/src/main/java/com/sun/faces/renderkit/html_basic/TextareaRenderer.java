@@ -29,7 +29,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
 /**
- * <B>TextareaRenderer</B> is a class that renders the current value of <code>UIInput<code> component as a Textarea.
+ * <B>TextareaRenderer</B> is a class that renders the current value of <code>UIInput</code> component as a Textarea.
  */
 
 public class TextareaRenderer extends HtmlBasicInputRenderer {
@@ -40,16 +40,13 @@ public class TextareaRenderer extends HtmlBasicInputRenderer {
 
     @Override
     public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
-
         rendererParamsNotNull(context, component);
-
     }
 
     // ------------------------------------------------------- Protected Methods
 
     @Override
     protected void getEndTextToRender(FacesContext context, UIComponent component, String currentValue) throws IOException {
-
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
 
@@ -58,7 +55,7 @@ public class TextareaRenderer extends HtmlBasicInputRenderer {
         writer.startElement("textarea", component);
         writeIdAttributeIfNecessary(context, writer, component);
         writer.writeAttribute("name", component.getClientId(context), "clientId");
-        if (null != styleClass) {
+        if (styleClass != null) {
             writer.writeAttribute("class", styleClass, "styleClass");
         }
 
@@ -82,4 +79,4 @@ public class TextareaRenderer extends HtmlBasicInputRenderer {
 
     }
 
-} // end of class TextareaRenderer
+}

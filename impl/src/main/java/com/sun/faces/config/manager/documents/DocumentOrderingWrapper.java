@@ -125,7 +125,7 @@ public class DocumentOrderingWrapper {
     // -------------------------------------------------------- Constructors
 
     /**
-     * Constructs a new <code>DocumentOrderingWrapper</code> for the specified <code>Document<code>.
+     * Constructs a new <code>DocumentOrderingWrapper</code> for the specified <code>Document</code>.
      */
     public DocumentOrderingWrapper(DocumentInfo document) {
         documentInfo = document;
@@ -149,7 +149,7 @@ public class DocumentOrderingWrapper {
     }
 
     /**
-     * @return this <code>Document<code>'s before IDs, if any
+     * @return this <code>Document</code>'s before IDs, if any
      */
     public String[] getBeforeIds() {
         return beforeIds;

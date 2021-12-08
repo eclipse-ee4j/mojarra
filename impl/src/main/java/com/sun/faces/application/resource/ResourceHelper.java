@@ -383,7 +383,7 @@ public abstract class ResourceHelper {
      * </p>
      *
      * <p>
-     * See <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html>RFC 2616, sec. 14</a> for details on the
+     * See http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html RFC 2616, sec. 14 for details on the
      * accept-encoding header.
      * </p>
      *

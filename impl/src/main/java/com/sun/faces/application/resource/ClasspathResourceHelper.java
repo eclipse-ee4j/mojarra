@@ -38,7 +38,7 @@ import jakarta.faces.context.FacesContext;
 /**
  * <p>
  * A {@link ResourceHelper} implementation for finding/serving resources found on the classpath within the
- * <code>META-INF/resources directory.
+ * <code>META-INF/resources directory</code>.
  * </p>
  *
  * @since 2.0
@@ -53,7 +53,6 @@ public class ClasspathResourceHelper extends ResourceHelper {
     // ------------------------------------------------------------ Constructors
 
     public ClasspathResourceHelper() {
-
         WebConfiguration webconfig = WebConfiguration.getInstance();
         cacheTimestamp = webconfig.isOptionEnabled(CacheResourceModificationTimestamp);
         enableMissingResourceLibraryDetection = webconfig.isOptionEnabled(EnableMissingResourceLibraryDetection);

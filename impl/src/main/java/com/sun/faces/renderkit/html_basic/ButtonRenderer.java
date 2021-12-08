@@ -40,7 +40,7 @@ import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.ActionEvent;
 
 /**
- * <B>ButtonRenderer</B> is a class that renders the current value of <code>UICommand<code> as a Button.
+ * <B>ButtonRenderer</B> is a class that renders the current value of <code>UICommand</code> as a Button.
  */
 
 public class ButtonRenderer extends HtmlBasicRenderer {

@@ -62,12 +62,8 @@ public class ProtectedViewsConfigProcessor extends AbstractConfigProcessor {
 
     // -------------------------------------------- Methods from ConfigProcessor
 
-    /**
-     * @see ConfigProcessor#process(jakarta.servlet.ServletContext,com.sun.faces.config.manager.documents.DocumentInfo[])
-     */
     @Override
     public void process(ServletContext servletContext, FacesContext facesContext, DocumentInfo[] documentInfos) throws Exception {
-
         for (int i = 0; i < documentInfos.length; i++) {
             if (LOGGER.isLoggable(FINE)) {
                 LOGGER.log(FINE, format("Processing protected-views element for document: ''{0}''", documentInfos[i].getSourceURI()));

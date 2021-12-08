@@ -82,7 +82,7 @@ import jakarta.faces.model.SelectItem;
 import jakarta.faces.model.SelectItemGroup;
 
 /**
- * <B>MenuRenderer</B> is a class that renders the current value of <code>UISelectOne<code> or <code>UISelectMany<code>
+ * <B>MenuRenderer</B> is a class that renders the current value of <code>UISelectOne</code> or <code>UISelectMany</code>
  * component as a list of menu options.
  */
 public class MenuRenderer extends HtmlBasicInputRenderer {

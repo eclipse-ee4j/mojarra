@@ -110,7 +110,7 @@ public class ResourceManager {
 
     /**
      * <p>
-     * Attempt to lookup a {@link ResourceInfo} based on the specified <code>libraryName<code> and <code>resourceName</code>
+     * Attempt to lookup a {@link ResourceInfo} based on the specified <code>libraryName</code> and <code>resourceName</code>
      * </p>
      *
      * <p>
@@ -390,13 +390,13 @@ public class ResourceManager {
     /**
      * <p>
      * Attempt to lookup and return a {@link LibraryInfo} based on the specified <code>arguments</code>.
-     * <p/>
+     * 
      * <p>
      * The lookup process will first search the file system of the web application *within the resources directory*. If the
      * library is not found, then it processed to searching the classpath, if not found there, search from the webapp root
      * *excluding* the resources directory.
      * </p>
-     * <p/>
+     * 
      * <p>
      * If a library is found, this method will return a {@link LibraryInfo} instance that contains the name, version, and
      * {@link ResourceHelper}.
@@ -433,12 +433,12 @@ public class ResourceManager {
     /**
      * <p>
      * Attempt to lookup and return a {@link ResourceInfo} based on the specified <code>arguments</code>.
-     * <p/>
+     * 
      * <p>
      * The lookup process will first search the file system of the web application. If the library is not found, then it
      * processed to searching the classpath.
      * </p>
-     * <p/>
+     * 
      * <p>
      * If a library is found, this method will return a {@link LibraryInfo} instance that contains the name, version, and
      * {@link ResourceHelper}.

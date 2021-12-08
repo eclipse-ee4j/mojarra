@@ -20,7 +20,6 @@ import static java.text.MessageFormat.format;
 import static java.util.logging.Level.FINE;
 
 import java.text.MessageFormat;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.xpath.XPathExpressionException;
@@ -72,9 +71,6 @@ public class BehaviorConfigProcessor extends AbstractConfigProcessor {
 
     // -------------------------------------------- Methods from ConfigProcessor
 
-    /**
-     * @see ConfigProcessor#process(jakarta.servlet.ServletContext,com.sun.faces.config.manager.documents.DocumentInfo[])
-     */
     @Override
     public void process(ServletContext sc, FacesContext facesContext, DocumentInfo[] documentInfos) throws Exception {
 
@@ -99,7 +95,6 @@ public class BehaviorConfigProcessor extends AbstractConfigProcessor {
     // --------------------------------------------------------- Private Methods
 
     private void addBehaviors(NodeList behaviors, String namespace) throws XPathExpressionException {
-
         Application app = getApplication();
         Verifier verifier = Verifier.getCurrentInstance();
         for (int i = 0, size = behaviors.getLength(); i < size; i++) {
@@ -123,8 +118,8 @@ public class BehaviorConfigProcessor extends AbstractConfigProcessor {
             }
 
             if (behaviorId != null && behaviorClass != null) {
-                if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.log(Level.FINE, MessageFormat.format("Calling Application.addBehavior({0},{1})", behaviorId, behaviorClass));
+                if (LOGGER.isLoggable(FINE)) {
+                    LOGGER.log(FINE, MessageFormat.format("Calling Application.addBehavior({0},{1})", behaviorId, behaviorClass));
                 }
                 if (verifier != null) {
                     verifier.validateObject(Verifier.ObjectType.BEHAVIOR, behaviorClass, Behavior.class);

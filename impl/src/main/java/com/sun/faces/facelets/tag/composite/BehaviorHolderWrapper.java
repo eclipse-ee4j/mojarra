@@ -16,6 +16,8 @@
 
 package com.sun.faces.facelets.tag.composite;
 
+import static java.util.Collections.unmodifiableMap;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
@@ -41,10 +43,6 @@ import jakarta.faces.event.FacesListener;
 import jakarta.faces.event.SystemEvent;
 import jakarta.faces.render.Renderer;
 
-/**
- * <p class="changed_added_2_0">
- * </p>
- */
 public class BehaviorHolderWrapper extends UIComponent implements ClientBehaviorHolder {
 
     private final UIComponent parent;
@@ -443,10 +441,11 @@ public class BehaviorHolderWrapper extends UIComponent implements ClientBehavior
             ClientBehaviorHolder parentHolder = (ClientBehaviorHolder) parent;
             Map<String, List<ClientBehavior>> behaviors = new HashMap<>(1);
             behaviors.put(virtualEvent, parentHolder.getClientBehaviors().get(event));
-            return Collections.unmodifiableMap(behaviors);
-        } else {
-            throw new FacesException("Unable to get behaviors from non-ClientBehaviorHolder parent:" + parent);
-        }
+            
+            return unmodifiableMap(behaviors);
+        } 
+        
+        throw new FacesException("Unable to get behaviors from non-ClientBehaviorHolder parent:" + parent);
     }
 
     @Override
