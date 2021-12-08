@@ -330,7 +330,7 @@ public class ConfigManager {
 
     /**
      * @param servletContext the <code>ServletContext</code> for the application in question
-     * @return <code>true</code> if this application has already been initialized, otherwise returns </code>fase</code>
+     * @return <code>true</code> if this application has already been initialized, otherwise returns <code>fase</code>
      */
     public boolean hasBeenInitialized(ServletContext servletContext) {
         return initializedContexts.contains(servletContext);

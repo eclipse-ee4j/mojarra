@@ -103,9 +103,8 @@ import jakarta.servlet.http.MappingMatch;
 
 /**
  * <B>Util</B> is a class ...
- * <p/>
+ * 
  * <B>Lifetime And Scope</B>
- * <P>
  *
  */
 public class Util {
@@ -228,15 +227,15 @@ public class Util {
      *
      * @param type the <code>Listener</code> type
      * @param binding a <code>ValueExpression</code> which resolves to a <code>Listener</code> instance
-     * @return a <code>Listener</code> instance based off the provided <code>type</code> and <binding>
+     * @return a <code>Listener</code> instance based off the provided <code>type</code> and <code>binding</code>
      */
     public static Object getListenerInstance(ValueExpression type, ValueExpression binding) {
-
         FacesContext faces = FacesContext.getCurrentInstance();
         Object instance = null;
         if (faces == null) {
             return null;
         }
+        
         if (binding != null) {
             instance = binding.getValue(faces.getELContext());
         }
@@ -253,7 +252,6 @@ public class Util {
         }
 
         return instance;
-
     }
 
     public static void setUnitTestModeEnabled(boolean enabled) {
@@ -1020,7 +1018,7 @@ public class Util {
     /**
      * Checks if the FacesServlet is exact mapped to the given resource.
      * <p>
-     * Not to be confused with {@link Util#isExactMapped(String)}, which checks if a string representing a mapping, not a
+     * Not to be confused with <code>isExactMapped(String)</code>, which checks if a string representing a mapping, not a
      * resource, is an exact mapping.
      *
      * @param viewId the view id to test
@@ -1033,7 +1031,7 @@ public class Util {
     /**
      * Checks if the FacesServlet is exact mapped to the given resource.
      * <p>
-     * Not to be confused with {@link Util#isExactMapped(String)}, which checks if a string representing a mapping, not a
+     * Not to be confused with <code>isExactMapped(String)</code>, which checks if a string representing a mapping, not a
      * resource, is an exact mapping.
      *
      * @param externalContext the external context for this request

@@ -18,6 +18,7 @@ package com.sun.faces.spi;
 
 import static com.sun.faces.spi.ServiceFactoryUtils.getProviderFromEntry;
 import static com.sun.faces.spi.ServiceFactoryUtils.getServiceEntries;
+import static java.util.logging.Level.FINE;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -63,7 +64,7 @@ public class ConfigurationResourceProviderFactory {
     /**
      * @param providerType the type of providers that should be discovered and instantiated.
      *
-     * @return an array of all <code>ConfigurationResourceProviders discovered that
+     * @return an array of all <code>ConfigurationResourceProviders</code> discovered that
      *  match the specified <code>ProviderType</code>.
      */
     public static ConfigurationResourceProvider[] createProviders(ProviderType providerType) {
@@ -92,7 +93,7 @@ public class ConfigurationResourceProviderFactory {
                 } catch (ClassCastException cce) {
                     // we are going to ignore these for now.
                 } catch (FacesException e) {
-                    if (LOGGER.isLoggable(Level.FINE)) {
+                    if (LOGGER.isLoggable(FINE)) {
                         LOGGER.log(Level.FINE, e.toString(), e);
                     }
                 }

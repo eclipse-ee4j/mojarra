@@ -114,7 +114,7 @@ public abstract class UIComponentBase extends UIComponent {
      * Each entry is an map of <code>PropertyDescriptor</code>s describing the properties of a concrete {@link UIComponent}
      * implementation, keyed by the corresponding <code>java.lang.Class</code>.
      * </p>
-     * <p/>
+     * 
      */
     private Map<Class<?>, Map<String, PropertyDescriptor>> descriptors;
 

@@ -96,7 +96,7 @@ public class FacesConfigInfo {
 
     /**
      * @return <code>true</code> if the <code>Document</code> provided at construction time represents the
-     * <code>/WEB-INF/faces-config.xml and is metadata complete.
+     * <code>/WEB-INF/faces-config.xml</code> and is metadata complete.
      */
     public boolean isMetadataComplete() {
         return metadataComplete;

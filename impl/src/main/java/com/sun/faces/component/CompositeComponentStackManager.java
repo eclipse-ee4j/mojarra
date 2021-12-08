@@ -31,7 +31,7 @@ import jakarta.faces.view.Location;
  *
  * <p>
  * The stacks are identified by the {@link StackType} enum which has two elements,
- * <code>TreeCreation<code> and <code>Evaluation</code>.
+ * <code>TreeCreation</code> and <code>Evaluation</code>.
  * </p>
  *
  * <p>

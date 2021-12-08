@@ -101,7 +101,7 @@ public class RestoreViewPhase extends Phase {
     /**
      * PRECONDITION: the necessary factories have been installed in the ServletContext attr set.
      * <P>
-     * <p/>
+     * 
      * POSTCONDITION: The facesContext has been initialized with a tree.
      */
 

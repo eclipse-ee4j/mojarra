@@ -39,7 +39,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
 /**
- * <B>TextRenderer</B> is a class that renders the current value of <code>UIInput<code> or <code>UIOutput<code>
+ * <B>TextRenderer</B> is a class that renders the current value of <code>UIInput</code> or <code>UIOutput</code>
  * component as a input field or static text.
  */
 public class TextRenderer extends HtmlBasicInputRenderer {
@@ -68,16 +68,13 @@ public class TextRenderer extends HtmlBasicInputRenderer {
 
     @Override
     public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
-
         rendererParamsNotNull(context, component);
-
     }
 
     // ------------------------------------------------------- Protected Methods
 
     @Override
     protected void getEndTextToRender(FacesContext context, UIComponent component, String currentValue) throws IOException {
-
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
         boolean shouldWriteIdAttribute = false;
@@ -178,7 +175,6 @@ public class TextRenderer extends HtmlBasicInputRenderer {
 
     @Override
     public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
-
         boolean renderChildren = WebConfiguration.getInstance().isOptionEnabled(WebConfiguration.BooleanWebContextInitParameter.AllowTextChildren);
 
         if (!renderChildren) {
@@ -201,4 +197,4 @@ public class TextRenderer extends HtmlBasicInputRenderer {
 
     // The testcase for this class is TestRenderers_2.java
 
-} // end of class TextRenderer
+}

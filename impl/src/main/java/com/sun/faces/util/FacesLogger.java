@@ -26,9 +26,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 /**
- * <p/>
  * An <code>enum</code> of all application <code>Logger</code>s.
- * </p>
  */
 public enum FacesLogger {
 

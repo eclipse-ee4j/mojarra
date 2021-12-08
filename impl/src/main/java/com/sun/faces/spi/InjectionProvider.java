@@ -35,7 +35,7 @@ public interface InjectionProvider {
      * <ul>
      * <li>Inject the supported resources per the Servlet 2.5 specification into the provided object</li>
      * </ul>
-     * </p>
+     * 
      * <p>
      * This method <em>must not</em> invoke any methods annotated with <code>@PostConstruct</code>
      *

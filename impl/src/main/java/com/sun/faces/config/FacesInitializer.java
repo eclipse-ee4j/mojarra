@@ -99,7 +99,7 @@ public class FacesInitializer implements ServletContainerInitializer {
             InitFacesContext initFacesContext = new InitFacesContext(servletContext);
             try {
                 if (appHasSomeFacesContent) {
-                    // Only look at mapping concerns if there is JSF content
+                    // Only look at mapping concerns if there is Faces content
                     handleMappingConcerns(servletContext);
                 }
                 // Other concerns also handled if there is an existing Faces Servlet mapping
@@ -143,7 +143,7 @@ public class FacesInitializer implements ServletContainerInitializer {
                 if (cdi != null) {
                     Instance<CdiExtension> extension = cdi.select(CdiExtension.class);
                     if (extension.isResolvable()) {
-                        return extension.get().isAddBeansForJSFImplicitObjects();
+                        return extension.get().isAddBeansForFacesImplicitObjects();
                     }
                 }
 

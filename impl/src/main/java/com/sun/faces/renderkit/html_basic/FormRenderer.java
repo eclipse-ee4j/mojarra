@@ -38,8 +38,9 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
-/** <B>FormRenderer</B> is a class that renders a <code>UIForm<code> as a Form. */
-
+/** 
+ * <B>FormRenderer</B> is a class that renders a <code>UIForm</code> as a Form. 
+ * */
 public class FormRenderer extends HtmlBasicRenderer {
 
     private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.FORMFORM);
@@ -82,7 +83,6 @@ public class FormRenderer extends HtmlBasicRenderer {
 
     @Override
     public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
-
         rendererParamsNotNull(context, component);
 
         if (!shouldEncode(component)) {
@@ -146,7 +146,6 @@ public class FormRenderer extends HtmlBasicRenderer {
 
     @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-
         rendererParamsNotNull(context, component);
         if (!shouldEncode(component)) {
             return;
@@ -184,11 +183,11 @@ public class FormRenderer extends HtmlBasicRenderer {
      * component.
      */
     private static String getActionStr(FacesContext context) {
-
         String viewId = context.getViewRoot().getViewId();
         String actionURL = context.getApplication().getViewHandler().getActionURL(context, viewId);
+        
         return context.getExternalContext().encodeActionURL(actionURL);
 
     }
 
-} // end of class FormRenderer
+}

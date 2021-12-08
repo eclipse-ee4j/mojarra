@@ -383,13 +383,13 @@ public abstract class ResourceHelper {
      * </p>
      *
      * <p>
-     * See <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html>RFC 2616, sec. 14</a> for details on the
+     * See http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html RFC 2616, sec. 14 for details on the
      * accept-encoding header.
      * </p>
      *
      * <p>
      * Implementation Note: It is safe to cast to a <code>HttpServletResponse</code> as this method will only be called when
-     * handling a resource request. Resource serving is outside of the JSF and Portlet lifecycle.
+     * handling a resource request. Resource serving is outside of the Faces and Portlet lifecycle.
      * </p>
      *
      * @param ctx the {@link FacesContext} for the current request

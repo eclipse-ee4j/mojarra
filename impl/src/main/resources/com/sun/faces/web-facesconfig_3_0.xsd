@@ -243,8 +243,8 @@
           files of the application for annotations, as specified by
           the specification.
           
-          If "WEB-INF/faces-config.xml" is not present, the JavaServer
-          Faces runtime will assume metadata-complete to be "false".
+          If "WEB-INF/faces-config.xml" is not present, the
+          Jakarta Server Faces runtime will assume metadata-complete to be "false".
           
           The value of this attribute will have no impact on
           runtime annotations such as @ResourceDependency or

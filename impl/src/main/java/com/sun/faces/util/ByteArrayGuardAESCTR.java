@@ -89,8 +89,8 @@ public final class ByteArrayGuardAESCTR {
      * encrypted data Returns a byte array consisting of the following concatenated together: |MAC for cnrypted Data | MAC
      * for Init Vector | Encrypted Data |
      *
-     * @param bytes The byte array to be encrypted.
-     * @return the encrypted byte array.
+     * @param value The value to be encrypted.
+     * @return the encrypted value.
      */
     public String encrypt(String value) {
         String securedata = null;

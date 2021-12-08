@@ -67,8 +67,7 @@ import com.sun.faces.util.Timer;
 import jakarta.servlet.ServletContext;
 
 /**
- * This <code>Callable</code> will be used by
- * {@link ConfigManager#getXMLDocuments(jakarta.servlet.ServletContext, java.util.List, java.util.concurrent.ExecutorService, boolean)}.
+ * This <code>Callable</code> will be used by <code>getXMLDocuments</code>
  * It represents a single configuration resource (such as faces-config.xml) to be parsed into a DOM.
  */
 public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {

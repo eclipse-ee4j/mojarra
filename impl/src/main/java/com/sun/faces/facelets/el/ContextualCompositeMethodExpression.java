@@ -81,15 +81,16 @@ import jakarta.faces.view.Location;
  * When <code>commandButton</code> is clicked, the <code>ContextualCompositeMethodExpression</code> first is looked up
  * by {@link com.sun.faces.facelets.tag.TagAttributeImpl.AttributeLookupMethodExpression} which results an instance of
  * <code>ContextualCompositeMethodExpression</code>. When this
- * <code>ContextualCompositeMethodExpression is invoked, the {@link jakarta.faces.view.Location}
+ * <code>ContextualCompositeMethodExpression</code> is invoked, the {@link jakarta.faces.view.Location}
  * object necessary to find the proper composite component will be derived from
- * source <code>ValueExpression</code> provided at construction time. Using the derived
+ * source <code>ValueExpression</code> provided at construction time. 
+ * 
+ * Using the derived
  * {@link jakarta.faces.view.Location}, we can find the composite component that matches 'owns' the template in which
  * the expression was defined in by comparing the path of the Location with the name and library of the
  * {@link jakarta.faces.application.Resource} instance associated with each composite component. If a matching composite
  * component is found, it will be made available to the EL by calling
  * {@link CompositeComponentStackManager#push(jakarta.faces.component.UIComponent)}.
- * </p>
  */
 public class ContextualCompositeMethodExpression extends MethodExpression {
 
@@ -106,7 +107,6 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
     // -------------------------------------------------------- Constructors
 
     public ContextualCompositeMethodExpression(ValueExpression source, MethodExpression delegate) {
-
         this.delegate = delegate;
         this.source = source;
         location = null;
@@ -116,7 +116,6 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
     }
 
     public ContextualCompositeMethodExpression(Location location, MethodExpression delegate) {
-
         this.delegate = delegate;
         this.location = location;
         source = null;
@@ -129,14 +128,11 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
 
     @Override
     public MethodInfo getMethodInfo(ELContext elContext) {
-
         return delegate.getMethodInfo(elContext);
-
     }
 
     @Override
     public Object invoke(ELContext elContext, Object[] objects) {
-
         FacesContext ctx = (FacesContext) elContext.getContext(FacesContext.class);
         try {
             boolean pushed = pushCompositeComponent(ctx);
@@ -197,31 +193,22 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
 
     @Override
     public String getExpressionString() {
-
         return delegate.getExpressionString();
-
     }
 
-    @SuppressWarnings({ "EqualsWhichDoesntCheckParameterClass" })
     @Override
     public boolean equals(Object o) {
-
         return delegate.equals(o);
-
     }
 
     @Override
     public int hashCode() {
-
         return delegate.hashCode();
-
     }
 
     @Override
     public boolean isLiteralText() {
-
         return delegate.isLiteralText();
-
     }
 
     // ----------------------------------------------------- Private Methods
@@ -276,4 +263,4 @@ public class ContextualCompositeMethodExpression extends MethodExpression {
         }
     }
 
-} // END ContextualCompositeMethodExpression
+}

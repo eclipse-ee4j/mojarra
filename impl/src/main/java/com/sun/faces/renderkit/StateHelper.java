@@ -89,7 +89,7 @@ public abstract class StateHelper {
     /**
      * This will be used the by the different <code>StateHelper</code> implementations when writing the end of the state or
      * viewId field. This value of this field is determined by the value of the
-     * {@link com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter#AutoCompleteOffOnViewState}<code>
+     * {@link com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter#AutoCompleteOffOnViewState}
      */
     protected char[] fieldEnd;
 
@@ -99,7 +99,6 @@ public abstract class StateHelper {
      * Constructs a new <code>StateHelper</code> instance.
      */
     public StateHelper() {
-
         FacesContext ctx = FacesContext.getCurrentInstance();
         serialProvider = SerializationProviderFactory.createInstance(ctx.getExternalContext());
         webConfig = WebConfiguration.getInstance(ctx.getExternalContext());
@@ -117,9 +116,7 @@ public abstract class StateHelper {
         try {
             result = URLEncoder.encode(result, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE, "Unable to URL encode cryptographically strong token, storing clear text in session instead.", e);
-            }
+            LOGGER.log(Level.SEVERE, "Unable to URL encode cryptographically strong token, storing clear text in session instead.", e);
             result = clearText;
         }
         session.setAttribute(TOKEN_NAME, result);
@@ -172,13 +169,12 @@ public abstract class StateHelper {
      * @return the view state from this request
      */
     protected static String getStateParamValue(FacesContext context) {
-
         String pValue = VIEW_STATE_PARAM.getValue(context);
         if (pValue != null && pValue.length() == 0) {
             pValue = null;
         }
+        
         return pValue;
-
     }
 
     /**
@@ -192,10 +188,9 @@ public abstract class StateHelper {
      * @throws IOException if an error occurs writing to the client
      */
     protected void writeRenderKitIdField(FacesContext context, ResponseWriter writer) throws IOException {
-
         String result = context.getViewRoot().getRenderKitId();
         String defaultRkit = context.getApplication().getDefaultRenderKitId();
-        if (null == defaultRkit) {
+        if (defaultRkit == null) {
             defaultRkit = RenderKitFactory.HTML_BASIC_RENDER_KIT;
         }
 
@@ -218,7 +213,7 @@ public abstract class StateHelper {
      */
     protected void writeClientWindowField(FacesContext context, ResponseWriter writer) throws IOException {
         ClientWindow window = context.getExternalContext().getClientWindow();
-        if (null != window) {
+        if (window != null) {
             writer.startElement("input", null);
             writer.writeAttribute("type", "hidden", null);
             writer.writeAttribute("name", CLIENT_WINDOW_PARAM.getName(context), null);

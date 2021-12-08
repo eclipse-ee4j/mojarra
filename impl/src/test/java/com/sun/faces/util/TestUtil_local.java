@@ -26,7 +26,7 @@ import static junit.framework.Assert.fail;
 
 /**
  * <B>TestUtil_local.java</B> is a class ...
- * <p/>
+ * 
  * <B>Lifetime And Scope</B>
  * <P>
  *

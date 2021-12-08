@@ -546,7 +546,7 @@ public abstract class ViewDeclarationLanguage {
      * argument {@code viewId}. If no match is found, return an empty list. See section JSF.7.7.2 for the specification of
      * the default implementation. For backward compatibility with prior implementations, an implementation is provided that
      * returns {@code null}, but any implementation compliant with the version of the specification in which this method was
-     * introduced must implement it as specified in JSF.7.7.2.
+     * introduced must implement it as specified in section JSF.7.7.2.
      * </p>
      *
      * @param context the {@code FacesContext} for this request

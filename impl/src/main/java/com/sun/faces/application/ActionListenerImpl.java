@@ -37,9 +37,11 @@ import jakarta.faces.event.ActionListener;
 /**
  * This action listener implementation processes action events during the <em>Apply Request Values</em> or <em>Invoke
  * Application</em> phase of the request processing lifecycle (depending upon the <code>immediate</code> property of the
- * {@link ActionSource} that queued this event. It invokes the specified application action method, and uses the logical
+ * {@link ActionSource} that queued this event. 
+ * 
+ * <p>
+ * It invokes the specified application action method, and uses the logical
  * outcome value to invoke the default navigation handler mechanism to determine which view should be displayed next.
- * </p>
  */
 public class ActionListenerImpl implements ActionListener {
 

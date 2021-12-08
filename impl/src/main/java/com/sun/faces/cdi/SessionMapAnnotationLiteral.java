@@ -20,7 +20,7 @@ import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.faces.annotation.SessionMap;
 
 /**
- * An annotation literal for <code>@SessionMap<code>.
+ * An annotation literal for <code>@SessionMap</code>.
  *
  * @since 2.3
  * @see SessionMap

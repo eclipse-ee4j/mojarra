@@ -29,7 +29,8 @@ import jakarta.faces.view.facelets.TagException;
 /**
  * Sets the specified name and attribute on the parent UIComponent. If the "value" specified is not a literal, it will
  * instead set the ValueExpression on the UIComponent.
- * <p />
+ * 
+ * <p>
  * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/attribute.html">tag
  * documentation</a>.
  *

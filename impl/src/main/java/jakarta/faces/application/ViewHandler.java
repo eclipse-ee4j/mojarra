@@ -110,7 +110,7 @@ public abstract class ViewHandler {
 
     /**
      * <p class="changed_added_2_0">
-     * Allow the web application to define <span class="changed_modified_4_0">a list of alternate suffixes</span> for Facelet based XHTML pages containing Jakarta Server Faces
+     * Allow the web application to define <span class="changed_modified_4_0">a list of alternate suffixes</span> for Facelet based XHTML pages containing Jakarta Faces
      * content. <span class="changed_added_4_0">This list is a space separated list of values of the form
      * <i><code>.&lt;extension&gt;</code></i>. The first physical resource whose extension matches one of the configured
      * extensions will be the suffix used to create the view ID.</span> If this init parameter is not specified, the default value is taken from the value of the constant

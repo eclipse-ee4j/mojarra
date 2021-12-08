@@ -489,7 +489,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * 1. tmp: a jakarta.faces.NamingContainer to serve as the temporary top level component
      *
      * 2. facetComponent: a jakarta.faces.Panel to serve as the parent UIComponent that is passed to Facelets so that the
-     * <cc:interface> section can be parsed and understood.
+     * <code>&lt;cc:interface&gt;</code> section can be parsed and understood.
      *
      * Per the compcomp spec, tmp has the compcomp Resource stored in its attr set under the key
      * Resource.COMPONENT_RESOURCE_KEY. tmp has the facetComponent added as its UIComponent.COMPOSITE_FACET_NAME facet.
@@ -743,7 +743,6 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public boolean viewExists(FacesContext context, String viewId) {
         if (handlesViewId(viewId)) {
             return getFaceletFactory().getResourceResolver().resolveUrl(viewId) != null;
@@ -752,17 +751,11 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         return false;
     }
 
-    /**
-     * @see jakarta.faces.view.ViewDeclarationLanguage#getViews(FacesContext, String)
-     */
     @Override
     public Stream<String> getViews(FacesContext context, String path, ViewVisitOption... options) {
         return mapIfNeeded(super.getViews(context, path).filter(viewId -> handlesViewId(viewId)), options);
     }
 
-    /**
-     * @see jakarta.faces.view.ViewDeclarationLanguage#getViews(FacesContext, String, int)
-     */
     @Override
     public Stream<String> getViews(FacesContext context, String path, int maxDepth, ViewVisitOption... options) {
         return mapIfNeeded(super.getViews(context, path, maxDepth).filter(viewId -> handlesViewId(viewId)), options);

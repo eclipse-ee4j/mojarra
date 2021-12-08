@@ -23,7 +23,7 @@ import java.io.Writer;
  * <p>
  * This is based on {@link java.io.StringWriter} but backed by a {@link StringBuilder} instead.
  * </p>
- * <p/>
+ * 
  * <p>
  * This class is not thread safe.
  * </p>

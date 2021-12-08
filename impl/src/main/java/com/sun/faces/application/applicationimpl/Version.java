@@ -29,7 +29,7 @@ public class Version {
     private Boolean isFaces23;
 
     /**
-     * Are we running in JSF 2.3+
+     * Are we running in Faces 2.3+
      *
      * @return true if we are, false otherwise.
      */
@@ -40,7 +40,7 @@ public class Version {
             if (beanManager == null) {
                 isFaces23 = false;
             } else {
-                isFaces23 = getBeanReference(beanManager, CdiExtension.class).isAddBeansForJSFImplicitObjects();
+                isFaces23 = getBeanReference(beanManager, CdiExtension.class).isAddBeansForFacesImplicitObjects();
             }
         }
 

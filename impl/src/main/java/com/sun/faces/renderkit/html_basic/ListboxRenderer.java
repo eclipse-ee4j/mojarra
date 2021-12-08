@@ -21,10 +21,9 @@ import java.io.IOException;
 import jakarta.faces.context.ResponseWriter;
 
 /**
- * <B>ListRenderer</B> is a class that renders the current value of <code>UISelectOne<code> or <code>UISelectMany<code>
+ * <B>ListRenderer</B> is a class that renders the current value of <code>UISelectOne</code> or <code>UISelectMany</code>
  * component as a list of options.
  */
-
 public class ListboxRenderer extends MenuRenderer {
 
     // ------------------------------------------------------- Protected Methods
@@ -34,7 +33,6 @@ public class ListboxRenderer extends MenuRenderer {
 
         // If size not specified, default to number of items
         writer.writeAttribute("size", itemCount, "size");
-
     }
 
-} // end of class ListboxRenderer
+}

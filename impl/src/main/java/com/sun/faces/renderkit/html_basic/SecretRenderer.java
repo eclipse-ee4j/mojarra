@@ -29,7 +29,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
 /**
- * <B>SecretRenderer</B> is a class that renders the current value of <code>UIInput<code> component as a password field.
+ * <B>SecretRenderer</B> is a class that renders the current value of <code>UIInput</code> component as a password field.
  */
 
 public class SecretRenderer extends HtmlBasicInputRenderer {

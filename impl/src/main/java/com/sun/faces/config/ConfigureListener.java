@@ -400,7 +400,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
      * included in WEB-INF are modified.
      */
     private void reload(ServletContext servletContext) {
-        LOGGER.log(INFO, () -> format("Reloading JSF configuration for context {0}", servletContext.getContextPath()));
+        LOGGER.log(INFO, () -> format("Reloading Faces configuration for context {0}", servletContext.getContextPath()));
 
         // tear down the application
         try {

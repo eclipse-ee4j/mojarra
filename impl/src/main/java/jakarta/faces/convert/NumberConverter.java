@@ -662,33 +662,33 @@ public class NumberConverter implements Converter, PartialStateHolder {
     private static final Class[] GET_INSTANCE_PARAM_TYPES = new Class[] { String.class };
 
     /**
-     * <p/>
+     * 
      * Override the formatting locale's default currency symbol with the specified currency code (specified via the
      * "currencyCode" attribute) or currency symbol (specified via the "currencySymbol" attribute).
      * </p>
-     * <p/>
+     * 
      * <p>
      * If both "currencyCode" and "currencySymbol" are present, "currencyCode" takes precedence over "currencySymbol" if the
      * java.util.Currency class is defined in the container's runtime (that is, if the container's runtime is J2SE 1.4 or
      * greater), and "currencySymbol" takes precendence over "currencyCode" otherwise.
      * </p>
-     * <p/>
+     * 
      * <p>
      * If only "currencyCode" is given, it is used as a currency symbol if java.util.Currency is not defined.
      * </p>
      *
      * <pre>
      * Example:
-     * <p/>
+     * 
      * JDK    "currencyCode" "currencySymbol" Currency symbol being displayed
      * -----------------------------------------------------------------------
      * all         ---            ---         Locale's default currency symbol
-     * <p/>
+     * 
      * <1.4        EUR            ---         EUR
      * >=1.4       EUR            ---         Locale's currency symbol for Euro
-     * <p/>
+     * 
      * all         ---           \u20AC       \u20AC
-     * <p/>
+     * 
      * <1.4        EUR           \u20AC       \u20AC
      * >=1.4       EUR           \u20AC       Locale's currency symbol for Euro
      * </pre>

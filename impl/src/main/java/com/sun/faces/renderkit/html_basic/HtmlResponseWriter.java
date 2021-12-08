@@ -53,11 +53,11 @@ public class HtmlResponseWriter extends ResponseWriter {
     // Character encoding of that Writer - this may be null
     // if the encoding isn't known.
     //
-    private String encoding = null;
+    private String encoding;
 
     // Writer to use for output;
     //
-    private Writer writer = null;
+    private Writer writer;
 
     // True when we need to close a start tag
     //
@@ -231,7 +231,7 @@ public class HtmlResponseWriter extends ResponseWriter {
 
         this.writer = writer;
 
-        if (null != contentType) {
+        if (contentType != null) {
             this.contentType = contentType;
         }
 
@@ -349,9 +349,7 @@ public class HtmlResponseWriter extends ResponseWriter {
     /** @return the content type such as "text/html" for this ResponseWriter. */
     @Override
     public String getContentType() {
-
         return contentType;
-
     }
 
     /**
@@ -362,7 +360,6 @@ public class HtmlResponseWriter extends ResponseWriter {
      */
     @Override
     public ResponseWriter cloneWithWriter(Writer writer) {
-
         try {
             HtmlResponseWriter responseWriter = new HtmlResponseWriter(writer, getContentType(), getCharacterEncoding(), isScriptHidingEnabled,
                     isScriptInAttributeValueEnabled, disableUnicodeEscaping, isPartial);
@@ -374,7 +371,6 @@ public class HtmlResponseWriter extends ResponseWriter {
             // This should never happen
             throw new IllegalStateException();
         }
-
     }
 
     /** Output the text for the end of a document. */
@@ -705,7 +701,6 @@ public class HtmlResponseWriter extends ResponseWriter {
      */
     @Override
     public void writeAttribute(String name, Object value, String componentPropertyName) throws IOException {
-
         if (name == null) {
             throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "name"));
         }
@@ -767,7 +762,6 @@ public class HtmlResponseWriter extends ResponseWriter {
      */
     @Override
     public void writeComment(Object comment) throws IOException {
-
         if (comment == null) {
             throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID));
         }
@@ -777,6 +771,7 @@ public class HtmlResponseWriter extends ResponseWriter {
         }
 
         closeStartIfNecessary();
+        
         // Don't include a trailing space after the '<!--'
         // or a leading space before the '-->' to support
         // IE conditional commentsoth
@@ -793,7 +788,7 @@ public class HtmlResponseWriter extends ResponseWriter {
      * Write a properly escaped single character, If there is an open element that has been created by a call to
      * <code>startElement()</code>, that element will be closed first.
      * </p>
-     * <p/>
+     * 
      * <p>
      * All angle bracket occurrences in the argument must be escaped using the &amp;gt; &amp;lt; syntax.
      * </p>
@@ -803,8 +798,8 @@ public class HtmlResponseWriter extends ResponseWriter {
      * @throws IOException if an input/output error occurs
      */
     public void writeText(char text) throws IOException {
-
         closeStartIfNecessary();
+        
         if (dontEscape) {
             if (writingCdata) {
                 charHolder[0] = text;
@@ -829,8 +824,7 @@ public class HtmlResponseWriter extends ResponseWriter {
      * <code>writeText(c, 0, c.length)</code>. If there is an open element that has been created by a call to
      * <code>startElement()</code>, that element will be closed first.
      * </p>
-     * </p>
-     * <p/>
+     * 
      * <p>
      * All angle bracket occurrences in the argument must be escaped using the &amp;gt; &amp;lt; syntax.
      * </p>
@@ -841,10 +835,10 @@ public class HtmlResponseWriter extends ResponseWriter {
      * @throws NullPointerException if <code>text</code> is <code>null</code>
      */
     public void writeText(char text[]) throws IOException {
-
         if (text == null) {
             throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "text"));
         }
+        
         closeStartIfNecessary();
 
         if (text.length == 0) return;
@@ -919,7 +913,7 @@ public class HtmlResponseWriter extends ResponseWriter {
      * Write properly escaped text from a character array. If there is an open element that has been created by a call to
      * <code>startElement()</code>, that element will be closed first.
      * </p>
-     * <p/>
+     * 
      * <p>
      * All angle bracket occurrences in the argument must be escaped using the &amp;gt; &amp;lt; syntax.
      * </p>

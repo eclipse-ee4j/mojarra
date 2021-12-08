@@ -261,9 +261,9 @@ final class FactoryFinderInstance {
      * <p>
      * Load and return an instance of the specified implementation class using the following algorithm.
      * </p>
-     * <p/>
+     * 
      * <ol>
-     * <p/>
+     * 
      * <li>
      * <p>
      * If the argument <code>implementations</code> list has more than one element, or exactly one element, interpret the
@@ -272,7 +272,7 @@ final class FactoryFinderInstance {
      * this step.
      * </p>
      * </li>
-     * <p/>
+     * 
      * <li>
      * <p>
      * Look for a resource called <code>/META-INF/services/&lt;factoryName&gt;</code>. If found, interpret it as a
@@ -284,7 +284,7 @@ final class FactoryFinderInstance {
      * step.
      * </p>
      * </li>
-     * <p/>
+     * 
      * <li>
      * <p>
      * Treat each remaining element in the <code>implementations</code> list as a fully qualified class name of a class
@@ -294,13 +294,13 @@ final class FactoryFinderInstance {
      * the previous step or iteration.
      * </p>
      * </li>
-     * <p/>
+     * 
      * <li>
      * <p>
      * Return the saved factory
      * </p>
      * </li>
-     * <p/>
+     * 
      * </ol>
      *
      * @param classLoader Class loader for the web application that will be loading the implementation class
@@ -380,12 +380,12 @@ final class FactoryFinderInstance {
      * <p>
      * Implement the decorator pattern for the factory implementation.
      * </p>
-     * <p/>
+     * 
      * <p>
      * If <code>previousImpl</code> is non-<code>null</code> and the class named by the argument <code>implName</code> has a
      * one arg contstructor of type <code>factoryName</code>, instantiate it, passing previousImpl to the constructor.
      * </p>
-     * <p/>
+     * 
      * <p>
      * Otherwise, we just instantiate and return <code>implName</code>.
      * </p>
