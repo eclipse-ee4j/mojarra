@@ -173,7 +173,7 @@ public class InitFacesContext extends NoOpFacesContext {
      * entry(s) with matching ServletContext from initContextServletContext map. Then remove entries from threadInitContext
      * map where the entry value(s) match the initFacesContext (associated with the ServletContext).
      *
-     * @param servletContext
+     * @param servletContext the involved servlet context
      */
     public static void cleanupInitMaps(ServletContext servletContext) {
 

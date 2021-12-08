@@ -257,10 +257,10 @@ public enum FacesSchema {
          * E.g. "https://jakarta.ee/xml/ns/jakartaee", "4.0", "faces-config" maps to <code>FACES_40</code>
          * </p>
          *
-         * @param documentNS
-         * @param version
-         * @param localName
-         * @return
+         * @param documentNS document's namespace
+         * @param version document's version
+         * @param localName document's root element
+         * @return the matching faces schema
          */
         public static FacesSchema fromDocumentId(String documentNS, String version, String localName) {
             switch (documentNS) {

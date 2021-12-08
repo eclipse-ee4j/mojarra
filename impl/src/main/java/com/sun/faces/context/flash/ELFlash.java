@@ -640,6 +640,9 @@ public class ELFlash extends Flash {
      * necessary because the call to extContext.flushBuffer() is too late, the response has already been committed by that
      * point. outgoingResponseIsRedirect is false.
      * </p>
+     * 
+     * @param context the involved faces context
+     * @param outgoingResponseIsRedirect whether outgoing response is redirect
      */
     public void doLastPhaseActions(FacesContext context, boolean outgoingResponseIsRedirect) {
         Map<Object, Object> contextMap = context.getAttributes();

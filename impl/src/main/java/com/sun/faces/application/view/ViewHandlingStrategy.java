@@ -40,7 +40,7 @@ import jakarta.faces.view.ViewDeclarationLanguage;
 /**
  * <p>
  * This represents how a particular page description language is to be rendered/restored.
- * <p>
+ * </p>
  */
 public abstract class ViewHandlingStrategy extends ViewDeclarationLanguage {
 

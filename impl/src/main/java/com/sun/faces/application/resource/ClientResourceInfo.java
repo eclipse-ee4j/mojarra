@@ -49,6 +49,7 @@ public class ClientResourceInfo extends ResourceInfo {
      * resource will be the same as the {@link ResourceHelper} of the {@link LibraryInfo}.
      *
      * @param library the library containing this resource
+     * @param contract the contract info
      * @param name the resource name
      * @param version the version of this resource (if any)
      * @param compressible if this resource should be compressed

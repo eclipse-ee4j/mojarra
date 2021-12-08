@@ -20,7 +20,7 @@ package com.sun.faces.application.resource;
  * <p>
  * <code>LibraryInfo</code> is a simple wrapper class for information pertinent to building a complete resource path
  * using a Library and/or Contract.
- * <p>
+ * </p>
  */
 public class LibraryInfo {
 

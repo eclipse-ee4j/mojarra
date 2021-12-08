@@ -77,9 +77,7 @@ import jakarta.faces.view.facelets.TagHandler;
  * <li>Add the {@link AjaxBehavior} instance to the {@link ClientBehaviorHolder} component by calling
  * {@link ClientBehaviorHolder#addClientBehavior} passing <code>event</code> and the {@link AjaxBehavior} instance.</li>
  * </ul>
- * <br/>
- * <br/>
- * 
+ * <p>
  * Check for the existence of the Ajax resource by calling <code>UIViewRoot.getComponentResources()</code>. If the Ajax
  * resource does not exist, create a <code>UIOutput</code> component instance and set the renderer type to
  * <code>jakarta.faces.resource.Script</code>. Set the the following attributes in the component's attribute
@@ -87,7 +85,7 @@ import jakarta.faces.view.facelets.TagHandler;
  * <code>name</code> with the value {@value ResourceHandler#FACES_SCRIPT_RESOURCE_NAME}. Install the component resource
  * using <code>UIViewRoot.addComponentResource()</code> and specifying <code>head</code> as the <code>target</code>
  * argument.
- *
+ * <p>
  * If this tag has component children, add the {@link AjaxBehavior} to {@link AjaxBehaviors} by calling
  * {@link AjaxBehaviors#pushBehavior}. As subsequent child components that implement the {@link ClientBehaviorHolder}
  * interface are evaluated this {@link AjaxBehavior} instance must be added as a behavior to the component.

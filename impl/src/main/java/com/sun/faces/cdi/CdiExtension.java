@@ -87,6 +87,7 @@ public class CdiExtension implements Extension {
      * After bean discovery.
      *
      * @param afterBeanDiscovery the after bean discovery.
+     * @param beanManager the bean manager.
      */
     public void afterBean(final @Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
         if (addBeansForFacesImplicitObjects) {
@@ -123,6 +124,7 @@ public class CdiExtension implements Extension {
     /**
      * Processing of beans
      *
+     * @param <T> the generic bean type
      * @param event the process bean event
      * @param beanManager the current bean manager
      */

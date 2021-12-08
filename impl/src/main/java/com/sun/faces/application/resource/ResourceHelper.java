@@ -212,6 +212,7 @@ public abstract class ResourceHelper {
      * @param contract the name of the contract
      * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request @return a {@link LibraryInfo} if a
      * matching library based off the inputs can be found, otherwise returns <code>null</code>
+     * @return library info
      */
     public abstract LibraryInfo findLibrary(String libraryName, String localePrefix, String contract, FacesContext ctx);
 
