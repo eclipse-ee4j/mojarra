@@ -99,7 +99,7 @@ public class RIConstants {
 
     public static final String FLOW_DISCOVERY_CDI_HELPER_BEAN_NAME = "csfFLOWDISCOVERYCDIHELPER";
 
-    public static final String JAVAEE_XMLNS = "http://xmlns.jcp.org/xml/ns/javaee";
+    public static final String JAKARTAEE_XMLNS = "https://jakarta.ee/xml/ns/jakartaee";
 
     /**
      * Convenience key to store / get BeanManager.

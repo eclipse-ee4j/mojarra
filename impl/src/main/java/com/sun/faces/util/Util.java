@@ -21,6 +21,7 @@ package com.sun.faces.util;
 
 import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
 import static com.sun.faces.RIConstants.FACES_SERVLET_REGISTRATION;
+import static com.sun.faces.RIConstants.JAKARTAEE_XMLNS;
 import static com.sun.faces.util.MessageUtils.ILLEGAL_ATTEMPT_SETTING_APPLICATION_ARTIFACT_ID;
 import static com.sun.faces.util.MessageUtils.NAMED_OBJECT_NOT_FOUND_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
@@ -1418,7 +1419,7 @@ public class Util {
         
         @Override
         public String getNamespaceURI(String prefix) {
-            return "https://jakarta.ee/xml/ns/jakartaee";
+            return JAKARTAEE_XMLNS;
         }
 
         @Override
