@@ -109,13 +109,13 @@ public final class ReflectionUtils {
      * be used to attempt a conversion.
      *
      * <p>
-     * Note 2: This method operates somewhat as the reverse of {@link Reflection#setProperties(Object, Map)}. Here only the
+     * Note 2: This method operates somewhat as the reverse of <code>Reflection#setProperties(Object, Map)</code> Here only the
      * available writable properties of the object are matched against the map with properties to set. Properties in the map
      * for which there isn't a corresponding writable property on the object are ignored.
      *
      * <p>
      * Following the above two notes, use this method when attempting to set properties on an object in a lenient best
-     * effort basis. Use {@link Reflection#setProperties(Object, Map)} when all properties need to be set with the exact
+     * effort basis. Use <code>Reflection#setProperties(Object, Map)</code> when all properties need to be set with the exact
      * type as the value appears in the map.
      *
      *

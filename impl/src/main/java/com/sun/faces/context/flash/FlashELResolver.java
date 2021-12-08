@@ -37,20 +37,18 @@ import jakarta.faces.context.FlashFactory;
  * <a target="_" href="http://api.rubyonrails.com/classes/ActionController/Flash.html"> "flash" concept in Ruby on
  * Rails</a>.
  * </p>
- * <p/>
+ * 
  * <p>
  * The feature is exposed to users via a custom <code>ELResolver</code> which introduces a new implicit object,
  * <code>flash</code>. The flash functions as <code>Map</code> and can be used in <code>getValue( )</code> or
  * <code>setValue(
  * )</code> expressions.
  * </p>
- * <p/>
+ * 
  * <p>
  * Usage
  * </p>
- * <p/>
- * <ul>
- * <p/>
+ * 
  * <p>
  * Consider three Faces views: viewA, viewB, and viewC. The user first views viewA, then clicks a button and is shown
  * viewB, where she clicks a button and is shown viewC. If values are stored into the flash during the rendering or
@@ -58,106 +56,89 @@ import jakarta.faces.context.FlashFactory;
  * rendering or postback phases of viewC. In other words, values stored into the flash on "this" request are accessible
  * for the "next" request, but not thereafter.
  * </p>
- * <p/>
+ * 
  * <p>
  * There are three ways to access the flash.
  * </p>
- * <p/>
+ * 
  * <ol>
- * <p/>
- * <li>
- * <p>
- * Using an Expression Language Expression, such as using <code>#{flash.foo}</code> as the value of an attribute in a page.
- * </p>
- * </li>
- * <p/>
- * <li>
- * <p>
- * Using the EL API, such as:
- * </p>
- * <p/>
- * <p>
- * <code><pre>
+ *   <li>
+ *     Using an Expression Language Expression, such as using <code>#{flash.foo}</code> as the value of an attribute in a page.
+ *   </li>
+ *   <li>
+ *     Using the EL API, such as:
+ * 
+ *     <p>
+ * <code>
  * FacesContext context = FacesContext.getCurrentInstance();
  * ValueExpression flashExpression = context.getApplication().
  *    createValueExpression(context.getELContext(), "#{flash.foo}",
  *                          null, Object.class);
  * flashExpression.setValue(context.getELContext(), "Foo's new value");
- * </pre></code>
- * </p>
- * <p/>
- * </li>
- * <p/>
- * <li>
- * <p>
- * Using getting the {@link ELFlash} directly, such as:
- * </p>
- * <p/>
- * <p>
- * <code><pre>
+ * </code>
+ *     </p>
+ * 
+ *   </li>
+ *   <li>
+ *     <p>
+ *       Using getting the {@link ELFlash} directly, such as:
+ *     </p>
+ * 
+ *     <p>
+ * <code>
  * Map&lt;String,Object&gt; flash = ELFlash.getFlash();
  * flash.put("foo", "Foo's new value");
- * </pre></code>
- * </p>
- * <p/>
- * </li>
- * <p/>
+ * </code>
+ *     </p>
+ *   </li>
  * </ol>
- * <p/>
+ * 
  * <p>
  * The main entry point to this feature is the first one. This library includes a simple custom tag, <code><a target="_"
  * href="../../../../tlddoc/jsfExt/set.html">jsfExt:set</a></code>, that evaluates an expression and sets its value into
  * another expression. <code>jsfExt:set</code> can be used to store values into the flash from JSP pages, like this:
  * </p>
- * <p/>
+ * 
  * <p>
  * <code>&lt;jsfExt:set var="#{flash.foo}" value="fooValue"
  * /&gt;</code>
  * </p>
- * <p/>
+ * 
  * <p>
  * or this:
  * </p>
- * <p/>
+ * 
  * <p>
  * <code>&lt;jsfExt:set var="#{flash.keep.bar}" value="#{user.name}"
  * /&gt;</code>
  * </p>
- * <p/>
+ * 
  * <p>
  * or even this:
  * </p>
- * <p/>
+ * 
  * <p>
- * <code><pre>
+ * <code>
  * &lt;jsfExt:set var="#{flash.now.baz}" value="#{cookie.userCookie}" /&gt;
- * <p/>
+ * 
  * &lt;h:outputText value="#{flash.now.baz}" /&gt;
- * <p/>
- * </pre></code>
+ * 
+ * </code>
  * </p>
- * <p/>
- * </ul>
- * <p/>
+ * 
  * <p>
  * Related Classes
  * </p>
- * <p/>
+ * 
  * <p>
  * The complete list of classes that make up this feature is
  * </p>
- * <p/>
+ * 
  * <ul>
- * <code>
- * <p/>
- * <li><p>FlashELResolver</p></li>
- * <p/>
- * <li><p>{@link ELFlash}</p></li>
- * <p/>
- * </code>
+ *   <li><code>FlashELResolver</code></li>
+ *   <li><code>{@link ELFlash}</code></li>
  * </ul>
  */
-
 public class FlashELResolver extends ELResolver {
 
     /**
@@ -277,7 +258,7 @@ public class FlashELResolver extends ELResolver {
      * and a <code>property</code> value equal to the literal string "flash". This is because set operations normally go
      * through the <code>MapELResolver</code> via the <code>ELFlash</code> <code>Map</code>.
      * </p>
-     * <p/>
+     * 
      * <p>
      * In other words, do not call this method directly to set a value into the flash! The only way to access the flash is
      * via the EL API.

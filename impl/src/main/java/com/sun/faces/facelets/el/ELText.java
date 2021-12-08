@@ -308,7 +308,7 @@ public class ELText {
     /**
      * Factory method for creating a validated ELText instance. When an Expression is hit, it will use the ExpressionFactory
      * to create a ValueExpression instance, resolving any functions at that time.
-     * <p/>
+     * 
      * Variables and properties will not be evaluated.
      *
      * @param fact ExpressionFactory to use

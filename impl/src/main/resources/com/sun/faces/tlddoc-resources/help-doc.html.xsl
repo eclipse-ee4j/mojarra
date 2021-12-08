@@ -88,14 +88,14 @@
           to the items in the navigation bar, described as follows.
           <H3>Overview</H3>
           <BLOCKQUOTE>
-            <P/>
+            
             The <A HREF="overview-summary.html">Overview</A> page is the front 
             page of this TLD document and provides a list of all tag libraries
             with a summary for each.
           </BLOCKQUOTE>
           <H3>Library</H3>
           <BLOCKQUOTE>
-            <P/>
+            
             Each tag library has a page that contains a list of its 
             validator, listeners, tags, and functions, with a summary for each.
             This page can contain four categories:
@@ -108,7 +108,7 @@
           </BLOCKQUOTE>
           <H3>Validator</H3>
           <BLOCKQUOTE>
-            <P/>
+            
             A tag library can have at most one validator.  If a tag library
             has a validator, it has its own page describing the validator,
             the class that implements the validator, and the available
@@ -116,14 +116,14 @@
           </BLOCKQUOTE>
           <h3>Listeners</h3>
           <blockquote>
-            <p/>
+            
             A tag library can have zero or more listeners.  If a tag library
             has at least one listener, a page is generated that lists all
             listener classes registered for the tag library.
           </blockquote>
           <h3>Tags</h3>
           <blockquote>
-            <p/>
+            
             A tag library can have zero or more tags.  Each tag has its own
             page that describes the tag, its display name, its unique action
             name, the class that implements the tag, the TagExtraInfo class,
@@ -133,7 +133,7 @@
           </blockquote>
           <h3>Functions</h3>
           <blockquote>
-            <p/>
+            
             A tag library can contain zero or more EL functions.  If a tag
             library has at least one function, a page is generated that lists
             all functions, the class that implements the function, the

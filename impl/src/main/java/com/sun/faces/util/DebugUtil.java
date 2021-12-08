@@ -47,69 +47,39 @@ import jakarta.faces.model.SelectItem;
 
 /**
  * <B>DebugUtil</B> is a class ...
- * <p/>
+ * 
  * <B>Lifetime And Scope</B>
- * <P>
  */
-
 public class DebugUtil {
 
     private static final Logger LOGGER = Logger.getLogger(DebugUtil.class.getPackage().getName());
-
-//
-// Protected Constants
-//
-
-//
-// Class Variables
-//
 
     private static boolean keepWaiting = true;
 
     private static int curDepth = 0;
 
-//
-// Instance Variables
-//
-
-// Attribute Instance Variables
-
-// Relationship Instance Variables
-
-//
-// Constructors and Initializers
-//
-
     public DebugUtil() {
         super();
-        // Util.parameterNonNull();
         init();
     }
 
     protected void init() {
-        // super.init();
     }
 
-//
-// Class methods
-//
 
     public static void setKeepWaiting(boolean keepWaiting) {
-
         DebugUtil.keepWaiting = keepWaiting;
-
     }
 
     /**
      * Usage:
      * <P>
-     * <p/>
+     * 
      * Place a call to this method in the earliest possible entry point of your servlet app. It will cause the app to enter
      * into an infinite loop, sleeping until the static var keepWaiting is set to false. The idea is that you attach your
      * debugger to the servlet, then, set a breakpont in this method. When it is hit, you use the debugger to set the
      * keepWaiting class var to false.
      */
-
     public static void waitForDebugger() {
         while (keepWaiting) {
             try {
@@ -121,7 +91,6 @@ public class DebugUtil {
     }
 
     private static void indentPrintln(Writer out, String str) {
-
         // handle indentation
         try {
             for (int i = 0; i < curDepth; i++) {
@@ -328,55 +297,6 @@ public class DebugUtil {
 
     }
 
-//    /**
-//     * Output of printTree() as a String.
-//     * Useful when used with a Logger. For example:
-//     *    logger.log(DebugUtil.printTree(root));
-//     */
-//    public static String printTree(TreeStructure root) {
-//        Writer writer = new FastStringWriter(1024);
-//        printTree(root, writer);
-//        return writer.toString();
-//    }
-//
-//    /**
-//     * Output of printTree() to a PrintStream.
-//     * Usage:
-//     *    DebugUtil.printTree(root, System.out);
-//     */
-//    public static void printTree(TreeStructure root, PrintStream out) {
-//        PrintWriter writer = new PrintWriter(out);
-//        printTree(root, writer);
-//        writer.flush();
-//    }
-//
-//    public static void printTree(TreeStructure root, Writer out) {
-//        if (null == root) {
-//            return;
-//        }
-//        int i = 0;
-//        Object value = null;
-//
-///* PENDING
-//   indentPrintln(out, "===>Type:" + root.getComponentType());
-//*/
-//        indentPrintln(out, "id:" + root.id);
-//        indentPrintln(out, "type:" + root.className);
-//
-//        Iterator items = null;
-//        SelectItem curItem = null;
-//        int j = 0;
-//
-//        curDepth++;
-//        if (null != root.children) {
-//            Iterator<TreeStructure> it = root.children.iterator();
-//            while (it.hasNext()) {
-//                printTree(it.next(), out);
-//            }
-//        }
-//        curDepth--;
-//    }
-
     public static void printTree(Object[] root, Writer out) {
 
         if (null == root) {
@@ -443,8 +363,4 @@ public class DebugUtil {
         }
     }
 
-    //
-// General Methods
-//
-
-} // end of class DebugUtil
+}

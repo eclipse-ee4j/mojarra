@@ -38,7 +38,8 @@ public interface ConfigProcessor {
      * Process the array of <code>Document</code>s.
      * </p>
      *
-     * @param sc the <code>ServletContext</code> for the application being configured
+     * @param servletContext the <code>ServletContext</code> for the application being configured
+     * @param facesContext the current faces context
      * @param documentInfos @throws Exception if an error occurs during processing
      */
     void process(ServletContext servletContext, FacesContext facesContext, DocumentInfo[] documentInfos) throws Exception;

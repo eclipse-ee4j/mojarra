@@ -17,17 +17,14 @@
 package com.sun.faces.util;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableMap;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * <p class="changed_added_2_0">
- * </p>
- *
  * @author asmirnov@exadel.com
  *
  */
@@ -54,12 +51,8 @@ public class CollectionsUtils {
         return new ConstMap<>();
     }
 
-    @SuppressWarnings("serial")
     public static class ConstMap<T, V> extends HashMap<T, V> {
 
-        /**
-         *
-         */
         private static final long serialVersionUID = 7233295794116070299L;
 
         public ConstMap() {
@@ -72,7 +65,7 @@ public class CollectionsUtils {
         }
 
         public Map<T, V> fix() {
-            return Collections.unmodifiableMap(this);
+            return unmodifiableMap(this);
         }
     }
 }

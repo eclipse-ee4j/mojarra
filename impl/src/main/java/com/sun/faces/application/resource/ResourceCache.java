@@ -16,16 +16,17 @@
 
 package com.sun.faces.application.resource;
 
+import static com.sun.faces.util.Util.notNull;
+import static java.util.logging.Level.FINE;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MultiKeyConcurrentHashMap;
-import com.sun.faces.util.Util;
 
 import jakarta.servlet.ServletContext;
 
@@ -69,9 +70,9 @@ public class ResourceCache {
     private ResourceCache(WebConfiguration config) {
         this(getCheckPeriod(config));
 
-        if (LOGGER.isLoggable(Level.FINE)) {
+        if (LOGGER.isLoggable(FINE)) {
             ServletContext sc = config.getServletContext();
-            LOGGER.log(Level.FINE, "ResourceCache constructed for {0}.  Check period is {1} minutes.",
+            LOGGER.log(FINE, "ResourceCache constructed for {0}.  Check period is {1} minutes.",
                     new Object[] { getServletContextIdentifier(sc), checkPeriod });
         }
     }
@@ -93,11 +94,10 @@ public class ResourceCache {
      * @return previous value associated with specified key, or null if there was no mapping for key
      */
     public ResourceInfo add(ResourceInfo info, List<String> contracts) {
+        notNull("info", info);
 
-        Util.notNull("info", info);
-
-        if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.log(Level.FINE, "Caching ResourceInfo: {0}", info.toString());
+        if (LOGGER.isLoggable(FINE)) {
+            LOGGER.log(FINE, "Caching ResourceInfo: {0}", info.toString());
         }
         ResourceInfoCheckPeriodProxy proxy = resourceCache.putIfAbsent(info.name, info.libraryName, info.localePrefix, new ArrayList(contracts),
                 new ResourceInfoCheckPeriodProxy(info, checkPeriod));
@@ -110,20 +110,18 @@ public class ResourceCache {
      * @param libraryName the library name
      * @param localePrefix the locale prefix
      * @param contracts the contracts
-     * @return the {@link ResourceInfo} associated with <code>key<code> if any.
+     * @return the {@link ResourceInfo} associated with <code>key</code> if any.
      */
     public ResourceInfo get(String name, String libraryName, String localePrefix, List<String> contracts) {
-
-        Util.notNull("name", name);
+        notNull("name", name);
 
         ResourceInfoCheckPeriodProxy proxy = resourceCache.get(name, libraryName, localePrefix, contracts);
         if (proxy != null && proxy.needsRefreshed()) {
             resourceCache.remove(name, libraryName, localePrefix, contracts);
             return null;
-        } else {
-            return proxy != null ? proxy.getResourceInfo() : null;
         }
-
+        
+        return proxy != null ? proxy.getResourceInfo() : null;
     }
 
     /**
@@ -132,35 +130,27 @@ public class ResourceCache {
      * </p>
      */
     public void clear() {
-
         resourceCache.clear();
-        if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.log(Level.FINE, "Cache Cleared");
-        }
-
+        LOGGER.log(FINE, "Cache Cleared");
     }
 
     // --------------------------------------------------------- Private Methods
 
     private static Long getCheckPeriod(WebConfiguration webConfig) {
-
         String val = webConfig.getOptionValue(WebContextInitParameter.ResourceUpdateCheckPeriod);
         try {
             return Long.parseLong(val);
         } catch (NumberFormatException nfe) {
             return Long.parseLong(WebContextInitParameter.ResourceUpdateCheckPeriod.getDefaultValue());
         }
-
     }
 
     private static String getServletContextIdentifier(ServletContext context) {
-
         if (context.getMajorVersion() == 2 && context.getMinorVersion() < 5) {
             return context.getServletContextName();
-        } else {
-            return context.getContextPath();
         }
-
+        
+        return context.getContextPath();
     }
 
     // ---------------------------------------------------------- Nested Classes
@@ -181,17 +171,13 @@ public class ResourceCache {
         }
 
         private boolean needsRefreshed() {
-
             return checkTime != null && checkTime < System.currentTimeMillis();
-
         }
 
         private ResourceInfo getResourceInfo() {
-
             return resourceInfo;
-
         }
 
     } // END ResourceInfoCheckPeriodProxy
 
-} // END ResourceCache
+}

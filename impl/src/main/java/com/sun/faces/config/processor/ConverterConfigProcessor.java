@@ -69,9 +69,6 @@ public class ConverterConfigProcessor extends AbstractConfigProcessor {
 
     // -------------------------------------------- Methods from ConfigProcessor
 
-    /**
-     * @see ConfigProcessor#process(jakarta.servlet.ServletContext,com.sun.faces.config.manager.documents.DocumentInfo[])
-     */
     @Override
     public void process(ServletContext sc, FacesContext facesContext, DocumentInfo[] documentInfos) throws Exception {
 

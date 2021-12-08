@@ -109,7 +109,7 @@ import jakarta.servlet.http.HttpServletRequest;
  * Break out the things that are associated with the Application, but need to be present even when the user has replaced
  * the Application instance.
  * </p>
- * <p/>
+ * 
  * <p>
  * For example: the user replaces ApplicationFactory, and wants to intercept calls to createValueExpression() and
  * createMethodExpression() for certain kinds of expressions, but allow the existing application to handle the rest.
@@ -584,9 +584,9 @@ public class ApplicationAssociate {
     }
 
     /**
-     * keys: <var> element from faces-config
+     * keys: element from faces-config
      * <p>
-     * <p/>
+     * 
      * values: ResourceBundleBean instances.
      */
 

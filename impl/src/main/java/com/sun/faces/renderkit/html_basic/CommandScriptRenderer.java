@@ -33,7 +33,7 @@ import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.PhaseId;
 
 /**
- * <b>CommandScriptRenderer</b> is a class that renders the current value of <code>UICommand<code> as a Script that acts
+ * <b>CommandScriptRenderer</b> is a class that renders the current value of <code>UICommand</code> as a Script that acts
  * like an Ajax Button.
  */
 public class CommandScriptRenderer extends HtmlBasicRenderer {
@@ -42,7 +42,6 @@ public class CommandScriptRenderer extends HtmlBasicRenderer {
 
     @Override
     public void decode(FacesContext context, UIComponent component) {
-
         rendererParamsNotNull(context, component);
 
         if (!shouldDecode(component)) {
@@ -65,7 +64,6 @@ public class CommandScriptRenderer extends HtmlBasicRenderer {
 
     @Override
     public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
-
         rendererParamsNotNull(context, component);
 
         if (!shouldEncode(component)) {
@@ -103,7 +101,6 @@ public class CommandScriptRenderer extends HtmlBasicRenderer {
 
     @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-
         rendererParamsNotNull(context, component);
 
         if (!shouldEncode(component)) {

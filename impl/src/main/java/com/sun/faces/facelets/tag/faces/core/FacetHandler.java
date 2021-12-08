@@ -28,7 +28,7 @@ import jakarta.faces.view.facelets.TagException;
 
 /**
  * Register a named facet on the UIComponent associated with the closest parent UIComponent custom action.
- * <p/>
+ * 
  * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/facet.html">tag
  * documentation</a>.
  *

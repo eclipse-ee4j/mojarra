@@ -56,7 +56,7 @@ import jakarta.faces.event.PostAddToViewEvent;
 import jakarta.faces.model.SelectItem;
 
 /**
- * <B>ReadoRenderer</B> is a class that renders the current value of <code>UISelectOne<code> or <code>UISelectMany<code>
+ * <B>ReadoRenderer</B> is a class that renders the current value of <code>UISelectOne</code> or <code>UISelectMany</code>
  * component as a list of radio buttons
  */
 @ListenerFor(systemEventClass = PostAddToViewEvent.class)
@@ -80,7 +80,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
     }
 
     /**
-     * This override delegates to {@link #decodeGroup(FacesContext, UISelectOne, String)} when 'group' attribute is set. It
+     * This override delegates to <code>decodeGroup(FacesContext context, UISelectOne radio, Group group)</code> when 'group' attribute is set. It
      * will only decode when the current component is the first one of group.
      */
     @Override
@@ -96,7 +96,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
     }
 
     /**
-     * This override delegates to {@link #encodeEndGroup(FacesContext, UISelectOne, String)} when 'group' attribute is set.
+     * This override delegates to <code>encodeEndGroup(FacesContext context, UISelectOne radio, Group group)</code> when 'group' attribute is set.
      */
     @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
@@ -114,12 +114,13 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
 
     /**
      * The difference with default decoding is:
-     * <li>Submitted value is obtained by group name.
-     * <li>Submitted value is prefixed with client ID of radio button component, this need to be compared and trimmed.
-     * <li>If any submitted value does not belong to current radio button component, reset its value.
+     * <ul>
+     *   <li>Submitted value is obtained by group name.
+     *   <li>Submitted value is prefixed with client ID of radio button component, this need to be compared and trimmed.
+     *   <li>If any submitted value does not belong to current radio button component, reset its value.
+     * </ul>
      */
     protected void decodeGroup(FacesContext context, UISelectOne radio, Group group) {
-
         rendererParamsNotNull(context, radio);
 
         if (!shouldDecode(radio)) {
@@ -155,10 +156,13 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
 
     /**
      * The difference with default encoding is:
-     * <li>Every radio button of same 'group' will have same 'name' attribute rendered, relative to UIForm parent.
-     * <li>The 'value' attribute of every radio button is prefixed with client ID of radio button component itself.
-     * <li>No additional (table) markup is being rendered.
-     * <li>Label, if any, is rendered directly after radio button element, without additional markup.
+     * 
+     * <ol>
+     *   <li>Every radio button of same 'group' will have same 'name' attribute rendered, relative to UIForm parent.
+     *   <li>The 'value' attribute of every radio button is prefixed with client ID of radio button component itself.
+     *   <li>No additional (table) markup is being rendered.
+     *   <li>Label, if any, is rendered directly after radio button element, without additional markup.
+     * </ol>
      */
     protected void encodeEndGroup(FacesContext context, UISelectOne radio, Group group) throws IOException {
         rendererParamsNotNull(context, radio);
@@ -369,7 +373,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
     }
 
     /**
-     * Keeps track of all <h:selectOneRadio group> detail.
+     * Keeps track of all <code>&lt;h:selectOneRadio group&gt;</code> detail.
      */
     protected static class Group {
 
@@ -408,7 +412,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
     }
 
     /**
-     * Used when a <h:selectOneRadio group> doesn't have a select item; it will then get it via first radio of the group.
+     * Used when a <code>&lt;h:selectOneRadio group&gt;</code> doesn't have a select item; it will then get it via first radio of the group.
      */
     public static class GroupSelectItem extends UISelectItem {
 
@@ -469,4 +473,4 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
         }
     }
 
-} // end of class RadioRenderer
+}

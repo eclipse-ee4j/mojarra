@@ -18,6 +18,7 @@ package com.sun.faces.el;
 
 import static com.sun.faces.component.CompositeComponentStackManager.StackType.Evaluation;
 import static com.sun.faces.component.CompositeComponentStackManager.StackType.TreeCreation;
+import static com.sun.faces.util.Util.notNull;
 
 import java.beans.BeanInfo;
 import java.beans.FeatureDescriptor;
@@ -31,7 +32,6 @@ import java.util.logging.Logger;
 
 import com.sun.faces.component.CompositeComponentStackManager;
 import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
 
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
@@ -92,7 +92,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
     @Override
     public Object getValue(ELContext context, Object base, Object property) {
 
-        Util.notNull("context", context);
+        notNull("context", context);
 
         if (base != null && base instanceof UIComponent && UIComponent.isCompositeComponent((UIComponent) base) && property != null) {
 
@@ -130,7 +130,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
      */
     @Override
     public Class<?> getType(ELContext context, Object base, Object property) {
-        Util.notNull("context", context);
+        notNull("context", context);
         if (!(base instanceof ExpressionEvalMap && property instanceof String)) {
             return null;
         }
@@ -182,7 +182,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
     @Override
     public void setValue(ELContext context, Object base, Object property, Object value) {
 
-        Util.notNull("context", context);
+        notNull("context", context);
 
     }
 
@@ -196,7 +196,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
     @Override
     public boolean isReadOnly(ELContext context, Object base, Object property) {
 
-        Util.notNull("context", context);
+        notNull("context", context);
         return true;
 
     }
@@ -211,25 +211,22 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
      */
     @Override
     public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
-
-        Util.notNull("context", context);
+        notNull("context", context);
         return null;
 
     }
 
     /**
      * <p>
-     * <code>attrs<code> is considered a <code>String</code> property.
+     * <code>attrs</code> is considered a <code>String</code> property.
      * </p>
      *
      * @see jakarta.el.ELResolver#getCommonPropertyType(jakarta.el.ELContext, Object)
      */
     @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base) {
-
-        Util.notNull("context", context);
+        notNull("context", context);
         return String.class;
-
     }
 
     // --------------------------------------------------------- Private Methods
@@ -266,6 +263,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
                 ((ExpressionEvalMap) evalMap).updateFacesContext(ctx);
             }
         }
+        
         return evalMap;
 
     }

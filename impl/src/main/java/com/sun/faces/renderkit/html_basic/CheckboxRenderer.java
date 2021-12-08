@@ -32,7 +32,7 @@ import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.convert.ConverterException;
 
 /**
- * <B>CheckboxRenderer</B> is a class that renders the current value of <code>UISelectBoolean<code> as a checkbox.
+ * <B>CheckboxRenderer</B> is a class that renders the current value of <code>UISelectBoolean</code> as a checkbox.
  */
 
 public class CheckboxRenderer extends HtmlBasicInputRenderer {
