@@ -21,18 +21,19 @@ import static com.sun.faces.RIConstants.ANNOTATED_CLASSES;
 import static com.sun.faces.RIConstants.FACES_INITIALIZER_MAPPINGS_ADDED;
 import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
 import static com.sun.faces.RIConstants.FACES_SERVLET_REGISTRATION;
-import static com.sun.faces.util.Util.isEmpty;
 import static java.lang.Boolean.TRUE;
 
-import java.net.MalformedURLException;
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.sun.faces.cdi.CdiExtension;
 
 import jakarta.annotation.Resource;
-import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.faces.annotation.FacesConfig;
 import jakarta.faces.application.ResourceDependencies;
@@ -46,6 +47,9 @@ import jakarta.faces.event.ListenerFor;
 import jakarta.faces.event.ListenersFor;
 import jakarta.faces.event.NamedEvent;
 import jakarta.faces.event.PhaseListener;
+import jakarta.faces.model.DataModel;
+import jakarta.faces.model.FacesDataModel;
+import jakarta.faces.push.PushContext;
 import jakarta.faces.render.FacesBehaviorRenderer;
 import jakarta.faces.render.Renderer;
 import jakarta.faces.validator.FacesValidator;
@@ -62,51 +66,84 @@ import jakarta.websocket.server.ServerContainer;
 import jakarta.websocket.server.ServerEndpoint;
 
 /**
- * Adds mappings <em>*.xhtml</em>, <em>/faces</em>, <em>*.jsf</em>, and <em>*.faces</em> for the FacesServlet (if it
- * hasn't already been mapped) if the following conditions are met:
+ * Initializes Jakarta Faces if at least one of the following conditions is met:
  *
  * <ul>
- * <li>The <code>Set</code> of classes passed to this initializer is not empty, or</li>
- * <li>/WEB-INF/faces-config.xml exists, or</li>
- * <li>A CDI enabled bean with qualifier FacesConfig can be obtained</li>
+ * <li>The <code>Set</code> of classes passed to this initializer contains a class of {@link #HANDLED_FACES_TYPES} , or</li>
+ * <li><code>FacesServlet</code> has been explicitly mapped ,or</li>
+ * <li><code>/WEB-INF/faces-config.xml</code> exists</li>
  * </ul>
+ * 
+ * If it is met and the <code>FacesServlet</code> has not been explicitly mapped, 
+ * then add mappings <em>*.xhtml</em>, <em>/faces</em>, <em>*.jsf</em>, and <em>*.faces</em> for the FacesServlet.
  */
-@HandlesTypes({ Converter.class, Endpoint.class, FacesBehavior.class, FacesBehaviorRenderer.class, FacesComponent.class,
-        FacesConverter.class, FacesConfig.class, // Should actually be check for enabled bean, but difficult to guarantee, see SERVLET_SPEC-79
-        FacesValidator.class, ListenerFor.class, ListenersFor.class, NamedEvent.class, PhaseListener.class, Renderer.class, Resource.class,
-        ResourceDependencies.class, ResourceDependency.class, ServerApplicationConfig.class, ServerEndpoint.class, UIComponent.class, Validator.class })
+@HandlesTypes({
+
+    // Jakarta Faces specific
+    Converter.class, DataModel.class, FacesBehavior.class, FacesBehaviorRenderer.class, FacesComponent.class, FacesConfig.class,
+    FacesConverter.class, FacesDataModel.class, FacesValidator.class, ListenerFor.class, ListenersFor.class, NamedEvent.class,
+    PhaseListener.class, Renderer.class, ResourceDependencies.class, ResourceDependency.class, UIComponent.class, Validator.class,
+
+    // Jakarta Websocket specific -- TODO: document why exactly this is relevant; is it something further down in the chain via HANDLED_CLASSES context attribute?
+    Endpoint.class, ServerApplicationConfig.class, ServerEndpoint.class, 
+
+    // General -- TODO: document why exactly this is relevant; is it something further down in the chain via HANDLED_CLASSES context attribute?
+    Resource.class,
+})
 public class FacesInitializer implements ServletContainerInitializer {
 
-    // NOTE: Loggins should not be used with this class.
+    // NOTE: Logging should not be used with this class.
 
-    private static final String FACES_SERVLET_CLASS = FacesServlet.class.getName();
+    public static final String FACES_PACKAGE_PREFIX = "jakarta.faces.";
+    public static final String MOJARRA_PACKAGE_PREFIX = "com.sun.faces.";
+
+    private static final String FACES_CONFIG_RESOURCE_PATH = "/WEB-INF/faces-config.xml";
+    private static final String FACES_SERVLET_CLASS_NAME = FacesServlet.class.getName();
+    private static final String[] FACES_SERVLET_MAPPINGS_WITH_XHTML = { "/faces/*", "*.jsf", "*.faces", "*.xhtml" };
+    private static final String[] FACES_SERVLET_MAPPINGS_WITHOUT_XHTML = { "/faces/*", "*.jsf", "*.faces" };
+
+    public static final Set<Class<?>> HANDLED_FACES_TYPES = Arrays
+        .stream(FacesInitializer.class.getAnnotation(HandlesTypes.class).value())
+        .filter(c -> c.getName().startsWith(FACES_PACKAGE_PREFIX))
+        .collect(Collectors.toUnmodifiableSet());
+
+    public static final Set<Class<?>> HANDLED_FACES_CLASSES = HANDLED_FACES_TYPES
+        .stream()
+        .filter(c -> !c.isAnnotation())
+        .collect(Collectors.toUnmodifiableSet());
+
+    @SuppressWarnings("unchecked")
+    public static final Set<Class<? extends Annotation>> HANDLED_FACES_ANNOTATIONS = HANDLED_FACES_TYPES
+        .stream()
+        .filter(c -> c.isAnnotation())
+        .map(c -> (Class<? extends Annotation>) c)
+        .collect(Collectors.toUnmodifiableSet());
 
     // -------------------------------- Methods from ServletContainerInitializer
 
     @Override
     public void onStartup(Set<Class<?>> classes, ServletContext servletContext) throws ServletException {
 
-        Set<Class<?>> annotatedClasses = new HashSet<>();
-        if (classes != null) {
-            annotatedClasses.addAll(classes);
-        }
-        servletContext.setAttribute(ANNOTATED_CLASSES, annotatedClasses);
+        Set<Class<?>> handledClasses = (classes == null) ? Collections.emptySet(): Collections.unmodifiableSet(classes);
+        servletContext.setAttribute(ANNOTATED_CLASSES, handledClasses);
 
-        boolean appHasSomeFacesContent = appMayHaveSomeFacesContent(classes, servletContext);
-        boolean appHasFacesServlet = getExistingFacesServletRegistration(servletContext) != null;
+        boolean appHasFacesContent = isFacesSpecificClassPresent(classes) || isFacesConfigFilePresent(servletContext);
+        boolean appHasFacesServlet = isFacesServletRegistrationPresent(servletContext);
 
-        if (appHasSomeFacesContent || appHasFacesServlet) {
+        if (appHasFacesContent || appHasFacesServlet) {
             InitFacesContext initFacesContext = new InitFacesContext(servletContext);
             try {
-                if (appHasSomeFacesContent) {
+                if (appHasFacesContent) {
                     // Only look at mapping concerns if there is Faces content
                     handleMappingConcerns(servletContext);
                 }
+
                 // Other concerns also handled if there is an existing Faces Servlet mapping
+                handleCdiConcerns();
+                handleWebSocketConcerns(servletContext);
 
                 // The Configure listener will do the bulk of initializing (configuring) Faces in a later phase.
-                servletContext.addListener(ConfigureListener.class);
-                handleWebSocketConcerns(servletContext);
+                servletContext.addListener(ConfigureListener.class); 
             } finally {
                 // Bug 20458755: The InitFacesContext was not being cleaned up, resulting in
                 // a partially constructed FacesContext being made available
@@ -117,62 +154,42 @@ public class FacesInitializer implements ServletContainerInitializer {
         }
     }
 
-    // --------------------------------------------------------- Private Methods
+    // --------------------------------------------------------- Helper Methods
 
-    private boolean appMayHaveSomeFacesContent(Set<Class<?>> classes, ServletContext context) {
-        if (!isEmpty(classes)) {
-            return true;
-        }
-
-        // No Faces specific classes found, check for a WEB-INF/faces-config.xml
-        try {
-            if (context.getResource("/WEB-INF/faces-config.xml") != null) {
-                return true;
-            }
-        } catch (MalformedURLException mue) {
-
-        }
-
-        // In the future remove FacesConfig.class from the @HandlesTypes annotation
-        // and only check via CDI
-        try {
-            CDI<Object> cdi = null;
-            try {
-                cdi = CDI.current();
-
-                if (cdi != null) {
-                    Instance<CdiExtension> extension = cdi.select(CdiExtension.class);
-                    if (extension.isResolvable()) {
-                        return extension.get().isAddBeansForFacesImplicitObjects();
-                    }
-                }
-
-            } catch (IllegalStateException e) {
-                // Ignore, CDI not active for this module
-            }
-
-        } catch (Exception e) {
-            // Any other exception; Ignore too
-        }
-
-        return false;
+    public static boolean isFacesSpecificClassPresent(Set<Class<?>> classes) {
+        Set<Class<?>> set = new HashSet<>(classes);
+        set.retainAll(HANDLED_FACES_TYPES);
+        return !set.isEmpty();
     }
+
+    public static boolean isFacesConfigFilePresent(ServletContext context) {
+        try {
+            return context.getResource(FACES_CONFIG_RESOURCE_PATH) != null;
+        } catch (Exception ignore) {
+            return false;
+        }
+    }
+
+    public static boolean isFacesServletRegistrationPresent(ServletContext context) {
+        return getExistingFacesServletRegistration(context) != null;
+    }
+
+    // --------------------------------------------------------- Private Methods
 
     private void handleMappingConcerns(ServletContext servletContext) throws ServletException {
         ServletRegistration existingFacesServletRegistration = getExistingFacesServletRegistration(servletContext);
         if (existingFacesServletRegistration != null) {
             // FacesServlet has already been defined, so we're not going to add additional mappings;
-
             servletContext.setAttribute(FACES_SERVLET_REGISTRATION, existingFacesServletRegistration);
             return;
         }
 
-        ServletRegistration newFacesServletRegistration = servletContext.addServlet("FacesServlet", "jakarta.faces.webapp.FacesServlet");
+        ServletRegistration newFacesServletRegistration = servletContext.addServlet(FacesServlet.class.getSimpleName(), FACES_SERVLET_CLASS_NAME);
 
-        if ("true".equalsIgnoreCase(servletContext.getInitParameter("jakarta.faces.DISABLE_FACESSERVLET_TO_XHTML"))) {
-            newFacesServletRegistration.addMapping("/faces/*", "*.jsf", "*.faces");
+        if (Boolean.parseBoolean(servletContext.getInitParameter(FacesServlet.DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME))) {
+            newFacesServletRegistration.addMapping(FACES_SERVLET_MAPPINGS_WITHOUT_XHTML);
         } else {
-            newFacesServletRegistration.addMapping("/faces/*", "*.jsf", "*.faces", "*.xhtml");
+            newFacesServletRegistration.addMapping(FACES_SERVLET_MAPPINGS_WITH_XHTML);
         }
 
         servletContext.setAttribute(FACES_INITIALIZER_MAPPINGS_ADDED, TRUE);
@@ -180,10 +197,10 @@ public class FacesInitializer implements ServletContainerInitializer {
         servletContext.setAttribute(FACES_SERVLET_REGISTRATION, newFacesServletRegistration);
     }
 
-    private ServletRegistration getExistingFacesServletRegistration(ServletContext servletContext) {
+    private static ServletRegistration getExistingFacesServletRegistration(ServletContext servletContext) {
         Map<String, ? extends ServletRegistration> existing = servletContext.getServletRegistrations();
         for (ServletRegistration registration : existing.values()) {
-            if (FACES_SERVLET_CLASS.equals(registration.getClassName())) {
+            if (FACES_SERVLET_CLASS_NAME.equals(registration.getClassName())) {
                 return registration;
             }
         }
@@ -191,38 +208,53 @@ public class FacesInitializer implements ServletContainerInitializer {
         return null;
     }
 
+    private void handleCdiConcerns() {
+        try {
+            CDI.current().select(CdiExtension.class).get().setFacesDiscovered(true);
+        } catch (Exception ignore) {
+            // NOOP (for now?).
+        }
+    }
+    
     private void handleWebSocketConcerns(ServletContext ctx) throws ServletException {
         if (ctx.getAttribute(ServerContainer.class.getName()) != null) {
             // Already initialized
             return;
         }
 
-        if (!Boolean.valueOf(ctx.getInitParameter("jakarta.faces.ENABLE_WEBSOCKET_ENDPOINT"))) {
+        if (!Boolean.valueOf(ctx.getInitParameter(PushContext.ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME))) {
             // Register websocket endpoint is not enabled
             return;
         }
 
+        // Below work around is specific for Tyrus websocket impl.
+        // As Mojarra is to be designed as a container-provided JAR (not an user-provided JAR), 
+        // the WebsocketEndpoint needs to be programmatically added in a ServletContextListener (in Mojarra's case the ConfigureListener),
+        // but at that point, servletContext.getAttribute(ServerContainer.class.getName()) returns null when Tyrus is used (Payara/GlassFish).
+        // Upon inspection it turns out that the TyrusServletContainerInitializer#onStartup() immediately returns when there are no user-provided endpoints
+        // and doesn't register the ServerContainer anymore, causing it to not be placed in ServletContext anymore.
+        // The below work around will thus manually take care of this.
+        
         ClassLoader cl = ctx.getClassLoader();
-
         Class<?> tyrusInitializerClass;
+
         try {
             tyrusInitializerClass = cl.loadClass("org.glassfish.tyrus.servlet.TyrusServletContainerInitializer");
         } catch (ClassNotFoundException cnfe) {
-            // No possibility of WebSocket.
+            // Tyrus is actually not being used (all other impls known so far do not expose this behavior). That's OK for now, so just continue as usual.
             return;
         }
 
         try {
-            ServletContainerInitializer tyrusInitializer = (ServletContainerInitializer) tyrusInitializerClass.newInstance();
-            Class<?> configClass = cl.loadClass("org.glassfish.tyrus.server.TyrusServerConfiguration");
+            ServletContainerInitializer tyrusInitializer = (ServletContainerInitializer) tyrusInitializerClass.getDeclaredConstructor().newInstance();
+            Class<?> tyrusConfigClass = cl.loadClass("org.glassfish.tyrus.server.TyrusServerConfiguration");
 
-            // List of classes must be non empty. TyrusServerConfiguration is ignored,
-            // so we add that as class to trigger Tyrus to initialize
-            HashSet<Class<?>> filteredClasses = new HashSet<>();
-            filteredClasses.add(configClass);
-
-            tyrusInitializer.onStartup(filteredClasses, ctx);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            // Set of classes must be mutable and contain the TyrusServerConfiguration class.
+            Set<Class<?>> handledTypes = new HashSet<>();
+            handledTypes.add(tyrusConfigClass);
+            tyrusInitializer.onStartup(handledTypes, ctx);
+        } catch (Exception ex) {
+            // Tyrus is being used but it failed for unclear reason while websocket endpoint should be enabled. That's not OK, so rethrow as ServletException.
             throw new ServletException(ex);
         }
 

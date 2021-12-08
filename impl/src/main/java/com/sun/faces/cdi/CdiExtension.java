@@ -18,7 +18,6 @@ package com.sun.faces.cdi;
 
 import static com.sun.faces.cdi.CdiUtils.addAnnotatedTypes;
 import static com.sun.faces.cdi.CdiUtils.getAnnotation;
-import static jakarta.faces.annotation.FacesConfig.Version.JSF_2_3;
 import static java.util.Collections.unmodifiableMap;
 
 import java.lang.reflect.ParameterizedType;
@@ -29,11 +28,11 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.sun.faces.config.FacesInitializer;
 import com.sun.faces.push.WebsocketChannelManager;
 import com.sun.faces.push.WebsocketSessionManager;
 import com.sun.faces.push.WebsocketUserManager;
@@ -42,13 +41,13 @@ import com.sun.faces.util.FacesLogger;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
 import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
+import jakarta.enterprise.inject.spi.Annotated;
 import jakarta.enterprise.inject.spi.AnnotatedField;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessBean;
 import jakarta.enterprise.inject.spi.ProcessManagedBean;
-import jakarta.faces.annotation.FacesConfig;
 import jakarta.faces.annotation.ManagedProperty;
 import jakarta.faces.model.DataModel;
 import jakarta.faces.model.FacesDataModel;
@@ -63,111 +62,174 @@ public class CdiExtension implements Extension {
      */
     private Map<Class<?>, Class<? extends DataModel<?>>> forClassToDataModelClass = new HashMap<>();
 
+    /**
+     * Map of {@code @ManagedProperty} target types
+     */
     private Set<Type> managedPropertyTargetTypes = new HashSet<>();
 
-    private boolean addBeansForFacesImplicitObjects;
+    /**
+     * Will be true if a class implementing or extenting from or annotated with a Jakarta Faces specific class has been discovered. 
+     */
+    private boolean facesDiscovered;
 
     /**
      * Stores the logger.
      */
     private static final Logger LOGGER = FacesLogger.APPLICATION_VIEW.getLogger();
 
+    // As per CDI spec this is the invocation order:
+    //  1. BeforeBeanDiscovery
+    //  2. ProcessAnnotatedType and ProcessSyntheticAnnotatedType
+    //  3. AfterTypeDiscovery
+    //  4. ProcessInjectionTarget and ProcessProducer
+    //  5. ProcessInjectionPoint
+    //  6. ProcessBeanAttributes
+    //  7. ProcessBean, ProcessManagedBean, ProcessSessionBean, ProcessProducerMethod, ProcessProducerField and ProcessSyntheticBean
+    //  8. ProcessObserverMethod and ProcessSyntheticObserverMethod
+    //  9. AfterBeanDiscovery
+    // 10. AfterDeploymentValidation
+
     /**
-     * Before bean discovery.
+     * BeforeBeanDiscovery: 
+     * <ul>
+     * <li>add impl specific managed beanss
      *
      * @param beforeBeanDiscovery the before bean discovery.
      * @param beanManager the bean manager.
      */
-    public void beforeBean(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
+    public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
         addAnnotatedTypes(beforeBeanDiscovery, beanManager, WebsocketUserManager.class, WebsocketSessionManager.class, WebsocketChannelManager.class,
                 WebsocketChannelManager.ViewScope.class, InjectionPointGenerator.class, WebsocketPushContextProducer.class);
     }
 
     /**
-     * After bean discovery.
+     * ProcessBean:
+     * <ul>
+     * <li>if bean is annotated with {@code @FacesDataModel} then collect it
+     * <li>if bean is an instance of Jakarta Faces specific class or is annotated with Jakarta Faces specific annotation, then consider "Faces Discovered" as true
+     *
+     * @param <T> the generic bean type
+     * @param processBeanEvent the process bean event
+     * @param beanManager the current bean manager
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends DataModel<?>> void processBean(@Observes ProcessBean<T> processBeanEvent, BeanManager beanManager) {
+        Annotated annotated = processBeanEvent.getAnnotated();
+        Class<?> beanClass = processBeanEvent.getBean().getBeanClass();
+
+        getAnnotation(beanManager, annotated, FacesDataModel.class)
+            .ifPresent(model -> forClassToDataModelClass.put(model.forClass(), (Class<T>) beanClass));
+
+        if (facesDiscovered || beanClass.getName().startsWith(FacesInitializer.MOJARRA_PACKAGE_PREFIX)) {
+            return;
+        }
+
+        if (!forClassToDataModelClass.isEmpty()) {
+            facesDiscovered = true;
+            return;
+        }
+        
+        if (FacesInitializer.HANDLED_FACES_CLASSES.stream().anyMatch(c -> c.isAssignableFrom(beanClass))) {
+            facesDiscovered = true;
+            return;
+        }
+        
+        if (FacesInitializer.HANDLED_FACES_ANNOTATIONS.stream().anyMatch(a -> getAnnotation(beanManager, annotated, a).isPresent())) {
+            facesDiscovered = true;
+            return;
+        }
+    }
+
+    /**
+     * ProcessManagedBean:
+     * <ul>
+     * <li>if "Faces Discovered" is not considered true (see {@link #processBean(ProcessBean, BeanManager)}), then abort immediately, else continue as follows
+     * <li>if bean has field with {@code @ManagedProperty} then collect its type
+     * 
+     * @param <T> the generic bean type
+     * @param processManagedBeanEvent the process managed bean event
+     * @param beanManager the current bean manager
+     */
+    public <T> void processManagedBean(@Observes ProcessManagedBean<T> processManagedBeanEvent, BeanManager beanManager) {
+        if (!facesDiscovered) {
+            return;
+        }
+        
+        try {
+            ProcessManagedBean<T> event = processManagedBeanEvent; // JDK8 u60 workaround - https://web.archive.org/web/20161007164846/http://mail.openjdk.java.net/pipermail/lambda-dev/2015-August/012146.html/012146.html
+
+            for (AnnotatedField<? super T> field : event.getAnnotatedBeanClass().getFields()) {
+                Type type = field.getBaseType();
+
+                if (field.isAnnotationPresent(ManagedProperty.class) && (type instanceof Class || type instanceof ParameterizedType)) {
+                    managedPropertyTargetTypes.add(type);
+                }
+            }
+        } catch (Exception e) {
+            // Log and continue; if we are not allowed somehow to investigate this ManagedBean, we're unlikely to be interested in it anyway,
+            // but logging at WARNING level is important
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning("Exception happened during processManagedBean: " + e);
+            }
+        }
+    }
+
+    /**
+     * AfterBeanDiscovery:
+     * <ul>
+     * <li>if "Faces Discovered" is not considered true (see {@link #processBean(ProcessBean, BeanManager)}), then abort immediately, else continue as follows
+     * <li>add all CDI producers allowing EL resolving of Faces specific artifacts
+     * <li>add a managed property type producer for each discovered managed property type
      *
      * @param afterBeanDiscovery the after bean discovery.
      * @param beanManager the bean manager.
      */
-    public void afterBean(final @Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
-        if (addBeansForFacesImplicitObjects) {
-            afterBeanDiscovery.addBean(new ApplicationProducer());
-            afterBeanDiscovery.addBean(new ApplicationMapProducer());
-            afterBeanDiscovery.addBean(new CompositeComponentProducer());
-            afterBeanDiscovery.addBean(new ComponentProducer());
-            afterBeanDiscovery.addBean(new FlashProducer());
-            afterBeanDiscovery.addBean(new FlowMapProducer());
-            afterBeanDiscovery.addBean(new HeaderMapProducer());
-            afterBeanDiscovery.addBean(new HeaderValuesMapProducer());
-            afterBeanDiscovery.addBean(new InitParameterMapProducer());
-            afterBeanDiscovery.addBean(new RequestParameterMapProducer());
-            afterBeanDiscovery.addBean(new RequestParameterValuesMapProducer());
-            afterBeanDiscovery.addBean(new RequestProducer());
-            afterBeanDiscovery.addBean(new RequestMapProducer());
-            afterBeanDiscovery.addBean(new ResourceHandlerProducer());
-            afterBeanDiscovery.addBean(new ExternalContextProducer());
-            afterBeanDiscovery.addBean(new FacesContextProducer());
-            afterBeanDiscovery.addBean(new RequestCookieMapProducer());
-            afterBeanDiscovery.addBean(new SessionProducer());
-            afterBeanDiscovery.addBean(new SessionMapProducer());
-            afterBeanDiscovery.addBean(new ViewMapProducer());
-            afterBeanDiscovery.addBean(new ViewProducer());
+    public void afterBeanDiscovery(final @Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
+        if (!facesDiscovered) {
+            return;
         }
-
+        
+        afterBeanDiscovery.addBean(new ApplicationProducer());
+        afterBeanDiscovery.addBean(new ApplicationMapProducer());
+        afterBeanDiscovery.addBean(new CompositeComponentProducer());
+        afterBeanDiscovery.addBean(new ComponentProducer());
+        afterBeanDiscovery.addBean(new FlashProducer());
+        afterBeanDiscovery.addBean(new FlowMapProducer());
+        afterBeanDiscovery.addBean(new HeaderMapProducer());
+        afterBeanDiscovery.addBean(new HeaderValuesMapProducer());
+        afterBeanDiscovery.addBean(new InitParameterMapProducer());
+        afterBeanDiscovery.addBean(new RequestParameterMapProducer());
+        afterBeanDiscovery.addBean(new RequestParameterValuesMapProducer());
+        afterBeanDiscovery.addBean(new RequestProducer());
+        afterBeanDiscovery.addBean(new RequestMapProducer());
+        afterBeanDiscovery.addBean(new ResourceHandlerProducer());
+        afterBeanDiscovery.addBean(new ExternalContextProducer());
+        afterBeanDiscovery.addBean(new FacesContextProducer());
+        afterBeanDiscovery.addBean(new RequestCookieMapProducer());
+        afterBeanDiscovery.addBean(new SessionProducer());
+        afterBeanDiscovery.addBean(new SessionMapProducer());
+        afterBeanDiscovery.addBean(new ViewMapProducer());
+        afterBeanDiscovery.addBean(new ViewProducer());
         afterBeanDiscovery.addBean(new DataModelClassesMapProducer());
-
+        
         for (Type type : managedPropertyTargetTypes) {
             afterBeanDiscovery.addBean(new ManagedPropertyProducer(type, beanManager));
         }
     }
 
     /**
-     * Processing of beans
-     *
-     * @param <T> the generic bean type
-     * @param event the process bean event
-     * @param beanManager the current bean manager
-     */
-    @SuppressWarnings("unchecked")
-    public <T extends DataModel<?>> void processBean(@Observes ProcessBean<T> event, BeanManager beanManager) {
-
-        Optional<FacesDataModel> optionalFacesDataModel = getAnnotation(beanManager, event.getAnnotated(), FacesDataModel.class);
-        if (optionalFacesDataModel.isPresent()) {
-            forClassToDataModelClass.put(optionalFacesDataModel.get().forClass(), (Class<? extends DataModel<?>>) event.getBean().getBeanClass());
-        }
-    }
-
-    public <T> void collect(@Observes ProcessManagedBean<T> eventIn, BeanManager beanManager) {
-
-        try {
-            ProcessManagedBean<T> event = eventIn; // JDK8 u60 workaround
-
-            getAnnotation(beanManager, event.getAnnotated(), FacesConfig.class)
-                    .ifPresent(config -> setAddBeansForJSFImplicitObjects(config.version().ordinal() >= JSF_2_3.ordinal()));
-
-            for (AnnotatedField<? super T> field : event.getAnnotatedBeanClass().getFields()) {
-                if (field.isAnnotationPresent(ManagedProperty.class)
-                        && (field.getBaseType() instanceof Class || field.getBaseType() instanceof ParameterizedType)) {
-                    managedPropertyTargetTypes.add(field.getBaseType());
-                }
-            }
-        } catch (Exception e) {
-            // Log and continue; if we are not allowed somehow to investigate this ManagedBean, we're unlikely to be interested in
-            // it anyway
-            // but logging at SEVERE level is important
-            if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.warning("Exception happened when collecting: " + e);
-            }
-        }
-    }
-
-    /**
-     * After deployment validation
+     * AfterDeploymentValidation:
+     * <ul>
+     * <li>if "Faces Discovered" is not considered true (see {@link #processBean(ProcessBean, BeanManager)}), then abort immediately, else continue as follows
+     * <li>
      *
      * @param event the after deployment validation event
      * @param beanManager the current bean manager
      */
     public void afterDeploymentValidation(@Observes AfterDeploymentValidation event, BeanManager beanManager) {
+        if (!facesDiscovered) {
+            return;
+        }
 
         // Sort the classes wrapped by a DataModel that we collected in processBean() such that
         // for any 2 classes X and Y from this collection, if an object of X is an instanceof an object of Y,
@@ -227,12 +289,11 @@ public class CdiExtension implements Extension {
         return forClassToDataModelClass;
     }
 
-    public boolean isAddBeansForFacesImplicitObjects() {
-        return addBeansForFacesImplicitObjects;
+    public boolean isFacesDiscovered() {
+        return facesDiscovered;
     }
 
-    public void setAddBeansForJSFImplicitObjects(boolean addBeansForJSFImplicitObjects) {
-        this.addBeansForFacesImplicitObjects = addBeansForJSFImplicitObjects;
+    public void setFacesDiscovered(boolean facesDiscovered) {
+        this.facesDiscovered = facesDiscovered;
     }
-
 }
