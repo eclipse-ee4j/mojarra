@@ -139,10 +139,7 @@ public class WebappLifecycleListener {
      */
     public void sessionDestroyed(HttpSessionEvent event) {
         activeSessions.remove(event.getSession());
-
-        if (Util.isCdiAvailable(servletContext)) {
-            FlowCDIContext.sessionDestroyed(event);
-        }
+        FlowCDIContext.sessionDestroyed(event);
 
         for (HttpSessionListener listener :
                 asList((HttpSessionListener)servletContext.getAttribute(VIEW_SCOPE_MANAGER),

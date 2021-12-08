@@ -1337,7 +1337,7 @@ public class Util {
             if (url != null) {
                 XPathFactory factory = XPathFactory.newInstance();
                 XPath xpath = factory.newXPath();
-                xpath.setNamespaceContext(new JavaeeNamespaceContext());
+                xpath.setNamespaceContext(new JakartaNamespaceContext());
                 stream = url.openStream();
                 DocumentBuilderFactory dbf = createDocumentBuilderFactory();
                 try {
@@ -1351,7 +1351,7 @@ public class Util {
                 dbf.setValidating(false);
                 dbf.setXIncludeAware(false);
                 dbf.setExpandEntityReferences(false);
-                result = xpath.evaluate("string(/javaee:faces-config/@version)",
+                result = xpath.evaluate("string(/" + JakartaNamespaceContext.PREFIX + ":faces-config/@version)",
                         dbf.newDocumentBuilder().parse(stream));
             }
         } catch (MalformedURLException mue) {
@@ -1382,7 +1382,7 @@ public class Util {
             if (url != null) {
                 XPathFactory factory = XPathFactory.newInstance();
                 XPath xpath = factory.newXPath();
-                xpath.setNamespaceContext(new JavaeeNamespaceContext());
+                xpath.setNamespaceContext(new JakartaNamespaceContext());
                 stream = url.openStream();
                 DocumentBuilderFactory dbf = createDocumentBuilderFactory();
                 try {
@@ -1396,7 +1396,7 @@ public class Util {
                 dbf.setValidating(false);
                 dbf.setXIncludeAware(false);
                 dbf.setExpandEntityReferences(false);
-                result = xpath.evaluate("string(/javaee:web-app/@version)", dbf.newDocumentBuilder().parse(stream));
+                result = xpath.evaluate("string(/" + JakartaNamespaceContext.PREFIX + ":web-app/@version)", dbf.newDocumentBuilder().parse(stream));
             }
         } catch (MalformedURLException mue) {
         } catch (XPathExpressionException | IOException xpee) {
@@ -1412,16 +1412,18 @@ public class Util {
         return result;
     }
 
-    public static class JavaeeNamespaceContext implements NamespaceContext {
+    public static class JakartaNamespaceContext implements NamespaceContext {
 
+        public static final String PREFIX = "jakartaee";
+        
         @Override
         public String getNamespaceURI(String prefix) {
-            return "http://xmlns.jcp.org/xml/ns/javaee";
+            return "https://jakarta.ee/xml/ns/jakartaee";
         }
 
         @Override
         public String getPrefix(String namespaceURI) {
-            return "javaee";
+            return PREFIX;
         }
 
         @Override
@@ -1471,53 +1473,9 @@ public class Util {
                 facesContext.getExternalContext().getApplicationMap().put(RIConstants.CDI_BEAN_MANAGER, result);
             }
         }
-
-        return result;
-    }
-
-    /**
-     * Is CDI available.
-     *
-     * @param facesContext the Faces context to consult.
-     * @return true if available, false otherwise.
-     */
-    public static boolean isCdiAvailable(FacesContext facesContext) {
-        boolean result;
-
-        if (facesContext != null && facesContext.getAttributes().containsKey(RIConstants.CDI_AVAILABLE)) {
-            result = (Boolean) facesContext.getAttributes().get(RIConstants.CDI_AVAILABLE);
-        } else if (facesContext != null && facesContext.getExternalContext().getApplicationMap().containsKey(RIConstants.CDI_AVAILABLE)) {
-            result = (Boolean) facesContext.getExternalContext().getApplicationMap().get(RIConstants.CDI_AVAILABLE);
-        } else {
-            result = getCdiBeanManager(facesContext) != null;
-
-            if (result && facesContext != null) {
-                facesContext.getAttributes().put(RIConstants.CDI_AVAILABLE, result);
-                facesContext.getExternalContext().getApplicationMap().put(RIConstants.CDI_AVAILABLE, result);
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Is CDI available (ServletContext variant)
-     *
-     * @param servletContext the servlet context.
-     * @return true if available, false otherwise.
-     */
-    public static boolean isCdiAvailable(ServletContext servletContext) {
-        boolean result;
-
-        Object value = servletContext.getAttribute(RIConstants.CDI_AVAILABLE);
-        if (value != null) {
-            result = (Boolean) value;
-        } else {
-            result = getCdiBeanManager(null) != null;
-
-            if (result) {
-                servletContext.setAttribute(RIConstants.CDI_AVAILABLE, result);
-            }
+        
+        if (result == null) {
+            throw new IllegalStateException("CDI is not available");
         }
 
         return result;

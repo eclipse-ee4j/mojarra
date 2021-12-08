@@ -139,7 +139,6 @@ public class InstanceFactory {
     private volatile Map<String, String> defaultValidatorInfo;
 
     private final ApplicationAssociate associate;
-    private Version version;
 
     /**
      * Stores the bean manager.
@@ -148,7 +147,6 @@ public class InstanceFactory {
 
     public InstanceFactory(ApplicationAssociate applicationAssociate) {
         associate = applicationAssociate;
-        version = new Version();
 
         componentMap = new ViewMemberInstanceFactoryMetadataMap<>(new ConcurrentHashMap<>());
         converterIdMap = new ViewMemberInstanceFactoryMetadataMap<>(new ConcurrentHashMap<>());
@@ -441,12 +439,10 @@ public class InstanceFactory {
         notNull("targetClass", targetClass);
         Converter returnVal = null;
 
-        if (version.isFaces23()) {
-            BeanManager beanManager = getBeanManager();
-            returnVal = CdiUtils.createConverter(beanManager, targetClass);
-            if (returnVal != null) {
-                return returnVal;
-            }
+        BeanManager beanManager = getBeanManager();
+        returnVal = CdiUtils.createConverter(beanManager, targetClass);
+        if (returnVal != null) {
+            return returnVal;
         }
 
         returnVal = (Converter) newConverter(targetClass, converterTypeMap, targetClass);
@@ -1049,27 +1045,15 @@ public class InstanceFactory {
     }
 
     private Behavior createCDIBehavior(String behaviorId) {
-        if (version.isFaces23()) {
-            return CdiUtils.createBehavior(getBeanManager(), behaviorId);
-        }
-
-        return null;
+        return CdiUtils.createBehavior(getBeanManager(), behaviorId);
     }
 
     private Converter<?> createCDIConverter(String converterId) {
-        if (version.isFaces23()) {
-            return CdiUtils.createConverter(getBeanManager(), converterId);
-        }
-
-        return null;
+        return CdiUtils.createConverter(getBeanManager(), converterId);
     }
 
     private Validator<?> createCDIValidator(String validatorId) {
-        if (version.isFaces23()) {
-            return CdiUtils.createValidator(getBeanManager(), validatorId);
-        }
-
-        return null;
+        return CdiUtils.createValidator(getBeanManager(), validatorId);
     }
 
 }

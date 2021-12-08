@@ -102,11 +102,6 @@ public class RIConstants {
     public static final String JAVAEE_XMLNS = "http://xmlns.jcp.org/xml/ns/javaee";
 
     /**
-     * Convenience key to determine if CDI is available.
-     */
-    public static final String CDI_AVAILABLE = FACES_PREFIX + "cdi.AvailableFlag";
-
-    /**
      * Convenience key to store / get BeanManager.
      */
     public static final String CDI_BEAN_MANAGER = FACES_PREFIX + "cdi.BeanManager";
