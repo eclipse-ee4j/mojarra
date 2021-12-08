@@ -30,6 +30,8 @@ public interface ConfigProcessor {
 
     /**
      * Called to initialize the per-application metadata used by the ConfigProcessor
+     * @param servletContext the involved servlet context
+     * @param facesContext the involved faces context
      */
     void initializeClassMetadataMap(ServletContext servletContext, FacesContext facesContext);
 
@@ -40,7 +42,8 @@ public interface ConfigProcessor {
      *
      * @param servletContext the <code>ServletContext</code> for the application being configured
      * @param facesContext the current faces context
-     * @param documentInfos @throws Exception if an error occurs during processing
+     * @param documentInfos the document infos
+     * @throws Exception if an error occurs during processing
      */
     void process(ServletContext servletContext, FacesContext facesContext, DocumentInfo[] documentInfos) throws Exception;
 

@@ -588,6 +588,9 @@ public class ApplicationAssociate {
      * <p>
      * 
      * values: ResourceBundleBean instances.
+     * 
+     * @param var the variable name
+     * @param bundle the application resource bundle
      */
 
     public void addResourceBundle(String var, ApplicationResourceBundle bundle) {

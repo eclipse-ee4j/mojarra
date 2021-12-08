@@ -111,6 +111,10 @@ public class ResourceImpl extends Resource implements Externalizable {
 
     /**
      * Creates a new instance of ResourceBase
+     * @param resourceInfo the resource info
+     * @param contentType the resource content type
+     * @param initialTime the resource initial time
+     * @param maxAge the resource max age
      */
     public ResourceImpl(ResourceInfo resourceInfo, String contentType, long initialTime, long maxAge) {
 

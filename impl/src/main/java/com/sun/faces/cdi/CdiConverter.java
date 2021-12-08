@@ -127,7 +127,7 @@ public class CdiConverter implements Converter, StateHolder {
      * We ignore the call as our proxy is always non-transient.
      * </p>
      *
-     * @param transientValue
+     * @param transientValue whether converter should be set to transient
      */
     @Override
     public void setTransient(boolean transientValue) {

@@ -100,6 +100,8 @@ public class ResourceManager {
     /**
      * Constructs a new <code>ResourceManager</code>. Note: if the current {@link ProjectStage} is
      * {@link ProjectStage#Development} caching or {@link ResourceInfo} instances will not occur.
+     * @param appMap the application map
+     * @param cache the resource cache
      */
     public ResourceManager(Map<String, Object> appMap, ResourceCache cache) {
         this.cache = cache;

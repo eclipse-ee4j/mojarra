@@ -126,6 +126,7 @@ public class DocumentOrderingWrapper {
 
     /**
      * Constructs a new <code>DocumentOrderingWrapper</code> for the specified <code>Document</code>.
+     * @param document the document info
      */
     public DocumentOrderingWrapper(DocumentInfo document) {
         documentInfo = document;
@@ -184,6 +185,7 @@ public class DocumentOrderingWrapper {
     }
 
     /**
+     * @param id the id to search for
      * @return <code>true</code> if this document is before the specified <code>id</code>, otherwise <code>false</code>
      */
     public boolean isBefore(String id) {
@@ -191,6 +193,7 @@ public class DocumentOrderingWrapper {
     }
 
     /**
+     * @param id the id to search for
      * @return <code>true</code> if this document is after the specified <code>id</code>, otherwise <code>false</code>
      */
     public boolean isAfter(String id) {
@@ -270,6 +273,7 @@ public class DocumentOrderingWrapper {
     /**
      * Sort the provided array of <code>Document</code>s per the requirements of the 2.0 specification. Note, that this
      * method only provides partial ordering and not absolute ordering.
+     * @param documents the documents to sort
      */
     public static void sort(DocumentOrderingWrapper[] documents) {
 

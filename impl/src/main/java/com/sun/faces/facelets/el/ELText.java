@@ -29,9 +29,11 @@ import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
+import jakarta.faces.FacesException;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.view.Location;
+import jakarta.faces.view.facelets.FaceletException;
 
 /**
  * Handles parsing EL Strings in accordance with the EL-API Specification. The parser accepts either <code>${..}</code>
@@ -246,8 +248,8 @@ public class ELText {
      *
      * @param out Writer to write to
      * @param ctx current ELContext state
-     * @throws ELException
-     * @throws IOException
+     * @throws ELException when an EL exception occurs
+     * @throws IOException when an I/O exception occurs
      */
     public void write(Writer out, ELContext ctx) throws ELException, IOException {
         out.write(literal);
@@ -261,7 +263,7 @@ public class ELText {
      * Evaluates the ELText to a String
      *
      * @param ctx current ELContext state
-     * @throws ELException
+     * @throws ELException when an EL exception occurs
      * @return the evaluated String
      */
     public String toString(ELContext ctx) throws ELException {
@@ -291,7 +293,7 @@ public class ELText {
      *
      * @param in String to parse
      * @return ELText instance that knows if the String was literal or not
-     * @throws jakarta.el.ELException
+     * @throws ELException when an EL exception occurs
      */
     public static ELText parse(String in) throws ELException {
         return parse(null, null, in);
@@ -314,8 +316,9 @@ public class ELText {
      * @param fact ExpressionFactory to use
      * @param ctx ELContext to validate against
      * @param in String to parse
+     * @param alias the alias
      * @return ELText that can be re-applied later
-     * @throws jakarta.el.ELException
+     * @throws ELException when an EL exception occurs
      */
     public static ELText parse(ExpressionFactory fact, ELContext ctx, String in, String alias) throws ELException {
         char[] ca = in.toCharArray();

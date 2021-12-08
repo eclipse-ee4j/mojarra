@@ -763,9 +763,6 @@ public class ExternalContextImpl extends ExternalContext {
 
     /**
      * @see ExternalContext#addResponseCookie(String, String, java.util.Map)
-     * @param name
-     * @param value
-     * @param properties
      */
     @Override
     public void addResponseCookie(String name, String value, Map<String, Object> properties) {

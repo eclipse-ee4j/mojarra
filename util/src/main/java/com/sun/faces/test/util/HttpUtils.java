@@ -27,13 +27,20 @@ public class HttpUtils {
     /**
      * <p>Create an HTTP request line from the following parameters.</p>
      * 
-     * <code><pre>&lt;methodName&gt; + " /" + &lt;path&gt; + " HTTP/1.1\r\n"</pre></code>
+     * <pre><code>&lt;methodName&gt; + " /" + &lt;path&gt; + " HTTP/1.1\r\n"</code></pre>
      * 
      * <p>Open a socket to the specified host and port, and issue the request. 
      * Read the result into a buffer and return it as the result.  Save aside the
      * HTTP response code into the outbound argument rc, which must have 
      * at least one element.</p>
      * 
+     * @param methodName the desired http method
+     * @param rc the mutable holder for the response code
+     * @param host the target host
+     * @param port the target port
+     * @param path the target path
+     * @return the response
+     * @throws Exception when an exception occurs
      */ 
 
     public static String issueHttpRequest(String methodName, int [] rc, String host, String port, String path) throws Exception {

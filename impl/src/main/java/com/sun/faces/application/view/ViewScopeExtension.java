@@ -71,6 +71,7 @@ public class ViewScopeExtension implements Extension {
      * After bean discovery.
      *
      * @param event the event.
+     * @param beanManager the bean manager.
      */
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
         LOGGER.finest("Adding @ViewScoped context to CDI runtime");

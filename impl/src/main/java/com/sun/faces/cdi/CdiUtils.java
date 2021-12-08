@@ -191,6 +191,7 @@ public final class CdiUtils {
     }
 
     /**
+     * @param <T> the generic bean type
      * @param beanManager the bean manager
      * @param type the required bean type the reference must have
      * @param qualifiers the required qualifiers the reference must have
@@ -215,6 +216,7 @@ public final class CdiUtils {
     /**
      * Returns concrete (non-proxied) bean instance of given class in current context.
      *
+     * @param <T> the generic bean type
      * @param type the required bean type the instance must have
      * @param create whether to auto-create bean if not exist
      * @return a bean instance adhering to the required type
@@ -240,6 +242,7 @@ public final class CdiUtils {
     /**
      * Finds an annotation in an Annotated, taking stereo types into account
      *
+     * @param <A> the generic annotation type
      * @param beanManager the current bean manager
      * @param annotated the Annotated in which to search
      * @param annotationType the type of the annotation to search for
@@ -314,6 +317,9 @@ public final class CdiUtils {
 
     /**
      * Returns the current injection point.
+     * @param beanManager the involved bean manager
+     * @param creationalContext the involved creational context
+     * @return the current injection point
      */
     public static InjectionPoint getCurrentInjectionPoint(BeanManager beanManager, CreationalContext<?> creationalContext) {
         Bean<? extends Object> bean = beanManager.resolve(beanManager.getBeans(InjectionPoint.class));
@@ -329,6 +335,10 @@ public final class CdiUtils {
 
     /**
      * Returns the qualifier annotation of the given qualifier class from the given injection point.
+     * @param <A> the type of given qualifier class 
+     * @param injectionPoint the injection point
+     * @param qualifierClass the qualifier class to be filtered
+     * @return the qualifier annotation
      */
     public static <A extends Annotation> A getQualifier(InjectionPoint injectionPoint, Class<A> qualifierClass) {
         for (Annotation annotation : injectionPoint.getQualifiers()) {
@@ -342,6 +352,9 @@ public final class CdiUtils {
 
     /**
      * Returns true if given scope is active in current context.
+     * @param <S> the type of given scope
+     * @param scope the scope to be checked
+     * @return whether given scope is active
      */
     public static <S extends Annotation> boolean isScopeActive(Class<S> scope) {
         BeanManager beanManager = Util.getCdiBeanManager(FacesContext.getCurrentInstance());

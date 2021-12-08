@@ -44,10 +44,10 @@ public interface TemplateClient {
      * 
      * @return true if this client matched/applied the definition for the passed name
      * 
-     * @throws IOException
-     * @throws FacesException
-     * @throws FaceletException
-     * @throws ELException
+     * @throws IOException when an I/O exception occurs
+     * @throws FaceletException when a Facelet exception occurs
+     * @throws FacesException when a Faces exception occurs
+     * @throws ELException when an EL exception occurs
      */
     boolean apply(FaceletContext ctx, UIComponent parent, String name) throws IOException;
 

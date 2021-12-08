@@ -167,7 +167,7 @@ public class ComponentValidators {
      * Pushes the provided <code>ValidatorInfo</code> onto the stack.
      * </p>
      *
-     * @param info
+     * @param info validator info
      */
     public void pushValidatorInfo(ValidatorInfo info) {
 

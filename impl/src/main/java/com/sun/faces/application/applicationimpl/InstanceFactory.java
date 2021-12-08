@@ -166,7 +166,7 @@ public class InstanceFactory {
         }
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#addComponent(java.lang.String, java.lang.String)
      */
     public void addComponent(String componentType, String componentClass) {
@@ -299,14 +299,14 @@ public class InstanceFactory {
         return createComponentApplyAnnotations(context, componentExpression, componentType, rendererType, true);
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#getComponentTypes()
      */
     public Iterator<String> getComponentTypes() {
         return componentMap.keySet().iterator();
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#addBehavior(String, String)
      */
     public void addBehavior(String behaviorId, String behaviorClass) {
@@ -325,7 +325,7 @@ public class InstanceFactory {
         }
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#createBehavior(String)
      */
     public Behavior createBehavior(String behaviorId) throws FacesException {
@@ -349,7 +349,7 @@ public class InstanceFactory {
         return behavior;
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#getBehaviorIds()
      */
     public Iterator<String> getBehaviorIds() {
@@ -381,7 +381,7 @@ public class InstanceFactory {
         }
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#addConverter(Class, String)
      */
     public void addConverter(Class<?> targetClass, String converterClass) {
@@ -406,7 +406,7 @@ public class InstanceFactory {
         }
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#createConverter(String)
      */
     public Converter<?> createConverter(String converterId) {
@@ -434,7 +434,7 @@ public class InstanceFactory {
         return converter;
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#createConverter(Class)
      */
     public Converter createConverter(Class<?> targetClass) {
@@ -499,7 +499,7 @@ public class InstanceFactory {
         return returnVal;
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#getConverterIds()
      */
     public Iterator<String> getConverterIds() {
@@ -507,14 +507,14 @@ public class InstanceFactory {
 
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#getConverterTypes()
      */
     public Iterator<Class<?>> getConverterTypes() {
         return converterTypeMap.keySet().iterator();
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#addValidator(String, String)
      */
     public void addValidator(String validatorId, String validatorClass) {
@@ -534,7 +534,7 @@ public class InstanceFactory {
 
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#createValidator(String)
      */
     public Validator<?> createValidator(String validatorId) throws FacesException {
@@ -558,14 +558,14 @@ public class InstanceFactory {
         return validator;
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#getValidatorIds()
      */
     public Iterator<String> getValidatorIds() {
         return validatorMap.keySet().iterator();
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#addDefaultValidatorId(String)
      */
     public synchronized void addDefaultValidatorId(String validatorId) {
@@ -575,7 +575,7 @@ public class InstanceFactory {
         defaultValidatorIds.add(validatorId);
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#getDefaultValidatorInfo()
      */
     public Map<String, String> getDefaultValidatorInfo() {

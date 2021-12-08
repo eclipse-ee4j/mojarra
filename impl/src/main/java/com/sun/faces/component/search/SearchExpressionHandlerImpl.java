@@ -456,11 +456,11 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
     }
 
     /**
-     * Extract the first command from the expression. @child(1):myId => @child(1) myId:@parent => myId
+     * Extract the first command from the expression. {@code @child(1):myId => @child(1) myId:@parent => myId}
      *
-     * @param facesContext
-     * @param expression
-     * @return
+     * @param facesContext the faces context
+     * @param expression the expression
+     * @return the first command from the expression
      */
     protected String extractFirstCommand(FacesContext facesContext, String expression) {
         // we can't use a split(":") or split(" ") as keyword parameters might contain spaces or commas

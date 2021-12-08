@@ -62,6 +62,7 @@ public class ClientWindowScopeManager implements HttpSessionListener {
      * Get our instance.
      *
      * @param facesContext the FacesContext.
+     * @return our instance
      */
     public static ClientWindowScopeManager getInstance(FacesContext facesContext) {
         if (!facesContext.getExternalContext().getApplicationMap().containsKey(CLIENT_WINDOW_SCOPE_MANAGER)) {

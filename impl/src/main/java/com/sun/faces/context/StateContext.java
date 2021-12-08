@@ -160,6 +160,8 @@ public class StateContext {
     /**
      * Installs a <code>SystemEventListener</code> on the <code>UIViewRoot</code> to track components added to or removed
      * from the view.
+     * @param ctx the involved faces context
+     * @param root the involved view root
      */
     public void startTrackViewModifications(FacesContext ctx, UIViewRoot root) {
         if (modListener == null) {
@@ -239,6 +241,7 @@ public class StateContext {
 
     /**
      * Get the dynamic list (of adds and removes).
+     * @return the dynamic list
      */
     public List<ComponentStruct> getDynamicActions() {
         return modListener != null ? modListener.getDynamicActions() : null;

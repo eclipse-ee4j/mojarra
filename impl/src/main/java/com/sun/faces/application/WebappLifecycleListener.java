@@ -48,7 +48,7 @@ import jakarta.servlet.http.HttpSessionListener;
 /**
  * <p>
  * Central location for web application lifecycle events.
- * <p>
+ * </p>
  * <p>
  * The main purpose of this class is detect when we should be invoking methods marked with the <code>@PreDestroy</code>
  * annotation.

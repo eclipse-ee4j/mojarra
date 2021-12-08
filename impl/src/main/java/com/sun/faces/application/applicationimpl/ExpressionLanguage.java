@@ -52,7 +52,7 @@ public class ExpressionLanguage {
         elResolvers = new CompositeELResolver();
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#addELContextListener(jakarta.el.ELContextListener)
      */
     public void addELContextListener(ELContextListener listener) {
@@ -61,7 +61,7 @@ public class ExpressionLanguage {
         }
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#removeELContextListener(jakarta.el.ELContextListener)
      */
     public void removeELContextListener(ELContextListener listener) {
@@ -70,7 +70,7 @@ public class ExpressionLanguage {
         }
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#getELContextListeners()
      */
     public ELContextListener[] getELContextListeners() {
@@ -81,7 +81,7 @@ public class ExpressionLanguage {
         return EMPTY_EL_CTX_LIST_ARRAY;
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#getELResolver()
      */
     public ELResolver getELResolver() {
@@ -96,7 +96,7 @@ public class ExpressionLanguage {
         return compositeELResolver;
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#addELResolver(jakarta.el.ELResolver)
      */
     public void addELResolver(ELResolver resolver) {
@@ -117,14 +117,14 @@ public class ExpressionLanguage {
         }
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#getExpressionFactory()
      */
     public ExpressionFactory getExpressionFactory() {
         return associate.getExpressionFactory();
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#evaluateExpressionGet(jakarta.faces.context.FacesContext, String, Class)
      */
     @SuppressWarnings("unchecked")

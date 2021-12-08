@@ -63,7 +63,6 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
     }
 
     /**
-     * @return
      * @see ExceptionHandler#getHandledExceptionQueuedEvent()
      */
     @Override
