@@ -17,7 +17,7 @@
 
 package com.sun.faces.config;
 
-import static com.sun.faces.RIConstants.ANNOTATED_CLASSES;
+import static com.sun.faces.RIConstants.HANDLED_CLASSES;
 import static com.sun.faces.RIConstants.FACES_INITIALIZER_MAPPINGS_ADDED;
 import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
 import static com.sun.faces.RIConstants.FACES_SERVLET_REGISTRATION;
@@ -125,7 +125,7 @@ public class FacesInitializer implements ServletContainerInitializer {
     public void onStartup(Set<Class<?>> classes, ServletContext servletContext) throws ServletException {
 
         Set<Class<?>> handledClasses = (classes == null) ? Collections.emptySet(): Collections.unmodifiableSet(classes);
-        servletContext.setAttribute(ANNOTATED_CLASSES, handledClasses);
+        servletContext.setAttribute(HANDLED_CLASSES, handledClasses);
 
         boolean appHasFacesContent = isFacesSpecificClassPresent(classes) || isFacesConfigFilePresent(servletContext);
         boolean appHasFacesServlet = isFacesServletRegistrationPresent(servletContext);
