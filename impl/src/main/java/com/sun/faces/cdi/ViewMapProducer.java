@@ -20,6 +20,7 @@ import java.lang.reflect.Type;
 import java.util.Map;
 
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.annotation.ViewMap;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 
@@ -40,7 +41,7 @@ public class ViewMapProducer extends CdiProducer<Map<String, Object>> {
     private static final long serialVersionUID = 1L;
 
     public ViewMapProducer() {
-        super.name("viewScope").scope(RequestScoped.class).qualifiers(new ViewMapAnnotationLiteral())
+        super.name("viewScope").scope(RequestScoped.class).qualifiers(ViewMap.Literal.INSTANCE)
                 .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, Object.class }), Map.class, Object.class).beanClass(Map.class)
                 .create(e -> FacesContext.getCurrentInstance().getViewRoot().getViewMap());
     }
