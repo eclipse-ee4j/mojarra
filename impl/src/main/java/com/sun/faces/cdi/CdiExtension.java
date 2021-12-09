@@ -105,6 +105,7 @@ public class CdiExtension implements Extension {
      * BeforeBeanDiscovery:
      * <ul>
      * <li>add impl specific managed beans
+     * </ul>
      *
      * @param beforeBeanDiscovery the before bean discovery.
      * @param beanManager the bean manager.
@@ -118,6 +119,7 @@ public class CdiExtension implements Extension {
      * <ul>
      * <li>if bean is an instance of Jakarta Faces specific class or is annotated with Jakarta Faces specific annotation, then consider "Faces Discovered" as true
      * <li>if bean is annotated with {@code @FacesDataModel} then collect it
+     * </ul>
      *
      * @param <T> the generic bean type
      * @param processBeanEvent the process bean event
@@ -148,6 +150,7 @@ public class CdiExtension implements Extension {
      * <ul>
      * <li>if bean is an instance of Jakarta Faces specific class or is annotated with Jakarta Faces specific annotation, then consider "Faces Discovered" as true
      * <li>if bean has field with {@code @ManagedProperty} then collect its type
+     * </ul>
      *
      * @param <T> the generic bean type
      * @param processManagedBeanEvent the process managed bean event
@@ -183,6 +186,7 @@ public class CdiExtension implements Extension {
      * <li>if "Faces Discovered" is not considered true (see {@link #processBean(ProcessBean, BeanManager)}), then abort immediately, else continue as follows
      * <li>add all CDI producers allowing EL resolving of Faces specific artifacts
      * <li>add a managed property type producer for each managed property type discovered in {@link #processManagedBean(ProcessManagedBean, BeanManager)}
+     * </ul>
      *
      * @param afterBeanDiscovery the after bean discovery.
      * @param beanManager the bean manager.
@@ -225,6 +229,7 @@ public class CdiExtension implements Extension {
      * <ul>
      * <li>if "Faces Discovered" is not considered true (see {@link #processBean(ProcessBean, BeanManager)}), then abort immediately, else continue as follows
      * <li>sort faces data models discovered in {@link #processBean(ProcessBean, BeanManager)} for use by {@link DataModelClassesMapProducer}
+     * </ul>
      *
      * @param event the after deployment validation event
      * @param beanManager the current bean manager
