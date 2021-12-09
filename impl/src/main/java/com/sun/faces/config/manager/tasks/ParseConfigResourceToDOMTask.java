@@ -17,7 +17,7 @@
 package com.sun.faces.config.manager.tasks;
 
 import static com.sun.faces.RIConstants.CHAR_ENCODING;
-import static com.sun.faces.RIConstants.JAVAEE_XMLNS;
+import static com.sun.faces.RIConstants.DOCUMENT_NAMESPACE;
 import static com.sun.faces.config.manager.DbfFactory.FACES_ENTITY_RESOLVER;
 import static com.sun.faces.config.manager.DbfFactory.FACES_ERROR_HANDLER;
 import static com.sun.faces.config.manager.FacesSchema.Schemas.FACES_CONFIG_1_X_DEFAULT_NS;
@@ -161,7 +161,7 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
         String documentNS = null;
         if (configDocument == null) {
             if (uriIsFlowDefinition(documentURI)) {
-                documentNS = JAVAEE_XMLNS;
+                documentNS = DOCUMENT_NAMESPACE;
                 configDocument = synthesizeEmptyFlowDefinition(documentURI);
             }
         } else {
