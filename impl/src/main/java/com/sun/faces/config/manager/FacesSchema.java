@@ -66,7 +66,10 @@ public enum FacesSchema {
 
         // taglib.xml
         FACELET_TAGLIB_20(Schemas.FACELET_TAGLIB_2_0_XSD, Schemas.FACELET_TAGLIB_2_0_XSD_FILE),
-        FACELET_TAGLIB_22(Schemas.FACELET_TAGLIB_2_2_XSD, Schemas.FACELET_TAGLIB_2_2_XSD_FILE);
+        FACELET_TAGLIB_22(Schemas.FACELET_TAGLIB_2_2_XSD, Schemas.FACELET_TAGLIB_2_2_XSD_FILE),
+        FACELET_TAGLIB_23(Schemas.FACELET_TAGLIB_2_3_XSD, Schemas.FACELET_TAGLIB_2_3_XSD_FILE),
+        FACELET_TAGLIB_30(Schemas.FACELET_TAGLIB_3_0_XSD, Schemas.FACELET_TAGLIB_3_0_XSD_FILE),
+        FACELET_TAGLIB_40(Schemas.FACELET_TAGLIB_4_0_XSD, Schemas.FACELET_TAGLIB_4_0_XSD_FILE);
 
         /**
          * Constants for individual schema files
@@ -84,7 +87,9 @@ public enum FacesSchema {
 
             public static final String FACELET_TAGLIB_2_0_XSD = "/com/sun/faces/web-facelettaglibrary_2_0.xsd";
             public static final String FACELET_TAGLIB_2_2_XSD = "/com/sun/faces/web-facelettaglibrary_2_2.xsd";
+            public static final String FACELET_TAGLIB_2_3_XSD = "/com/sun/faces/web-facelettaglibrary_2_3.xsd";
             public static final String FACELET_TAGLIB_3_0_XSD = "/com/sun/faces/web-facelettaglibrary_3_0.xsd";
+            public static final String FACELET_TAGLIB_4_0_XSD = "/com/sun/faces/web-facelettaglibrary_4_0.xsd";
 
             public static final String FACES_1_2_XSD = "/com/sun/faces/web-facesconfig_1_2.xsd";
             public static final String FACES_1_1_XSD = "/com/sun/faces/web-facesconfig_1_1.xsd";
@@ -97,7 +102,9 @@ public enum FacesSchema {
 
             public static final String FACELET_TAGLIB_2_0_XSD_FILE = AS_SCHEMA_DIR + "web-facelettaglibrary_2_0.xsd";
             public static final String FACELET_TAGLIB_2_2_XSD_FILE = AS_SCHEMA_DIR + "web-facelettaglibrary_2_2.xsd";
+            public static final String FACELET_TAGLIB_2_3_XSD_FILE = AS_SCHEMA_DIR + "web-facelettaglibrary_2_3.xsd";
             public static final String FACELET_TAGLIB_3_0_XSD_FILE = AS_SCHEMA_DIR + "web-facelettaglibrary_3_0.xsd";
+            public static final String FACELET_TAGLIB_4_0_XSD_FILE = AS_SCHEMA_DIR + "web-facelettaglibrary_4_0.xsd";
 
             // #### faces-config.xml XSDs within GlassFish
 
@@ -164,9 +171,24 @@ public enum FacesSchema {
                       FACELET_TAGLIB_2_0_XSD_FILE
                  },
                  {
+                     "web-facelettaglibrary_2_2.xsd",
+                      FACELET_TAGLIB_2_2_XSD,
+                      FACELET_TAGLIB_2_2_XSD_FILE
+                 },
+                 {
+                     "web-facelettaglibrary_2_3.xsd",
+                      FACELET_TAGLIB_2_3_XSD,
+                      FACELET_TAGLIB_2_3_XSD_FILE
+                 },
+                 {
                      "web-facelettaglibrary_3_0.xsd",
                       FACELET_TAGLIB_3_0_XSD,
                       FACELET_TAGLIB_3_0_XSD_FILE
+                 },
+                 {
+                     "web-facelettaglibrary_4_0.xsd",
+                      FACELET_TAGLIB_4_0_XSD,
+                      FACELET_TAGLIB_4_0_XSD_FILE
                  },
                  {
                      "web-facesconfig_1_2.xsd",
@@ -202,6 +224,11 @@ public enum FacesSchema {
                      "jakartaee_9.xsd",
                      "/com/sun/faces/jakartaee_9.xsd",
                      AS_SCHEMA_DIR + "jakartaee_9.xsd"
+                 },
+                 {
+                     "jakartaee_10.xsd",
+                     "/com/sun/faces/jakartaee_10.xsd",
+                     AS_SCHEMA_DIR + "jakartaee_10.xsd"
                  },
                  {
                      "javaee_web_services_client_1_2.xsd",
@@ -257,10 +284,10 @@ public enum FacesSchema {
          * E.g. "https://jakarta.ee/xml/ns/jakartaee", "4.0", "faces-config" maps to <code>FACES_40</code>
          * </p>
          *
-         * @param documentNS document's namespace
-         * @param version document's version
-         * @param localName document's root element
-         * @return the matching faces schema
+         * @param documentNS
+         * @param version
+         * @param localName
+         * @return
          */
         public static FacesSchema fromDocumentId(String documentNS, String version, String localName) {
             switch (documentNS) {
@@ -268,13 +295,13 @@ public enum FacesSchema {
                     switch (version) {
                         case "4.0":
                             if ("facelet-taglib".equals(localName)) {
-                                return FACELET_TAGLIB_22;
+                                return FACELET_TAGLIB_40;
                             } else {
                                 return FACES_40;
                             }
                         case "3.0":
                             if ("facelet-taglib".equals(localName)) {
-                                return FACELET_TAGLIB_22;
+                                return FACELET_TAGLIB_30;
                             } else {
                                 return FACES_30;
                             }
@@ -287,7 +314,7 @@ public enum FacesSchema {
                     switch (version) {
                         case "2.3":
                             if ("facelet-taglib".equals(localName)) {
-                                return FACELET_TAGLIB_22;
+                                return FACELET_TAGLIB_23;
                             } else {
                                 return FACES_23;
                             }
