@@ -18,7 +18,6 @@ package com.sun.faces.cdi;
 
 import static com.sun.faces.cdi.CdiUtils.addAnnotatedTypes;
 import static com.sun.faces.cdi.CdiUtils.getAnnotation;
-import static jakarta.faces.annotation.FacesConfig.Version.JSF_2_3;
 import static java.util.Collections.unmodifiableMap;
 
 import java.lang.reflect.ParameterizedType;
@@ -143,7 +142,7 @@ public class CdiExtension implements Extension {
             ProcessManagedBean<T> event = eventIn; // JDK8 u60 workaround
 
             getAnnotation(beanManager, event.getAnnotated(), FacesConfig.class)
-                    .ifPresent(config -> setAddBeansForJSFImplicitObjects(config.version().ordinal() >= JSF_2_3.ordinal()));
+                    .ifPresent(config -> setAddBeansForJSFImplicitObjects(true));
 
             for (AnnotatedField<? super T> field : event.getAnnotatedBeanClass().getFields()) {
                 if (field.isAnnotationPresent(ManagedProperty.class)

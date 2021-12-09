@@ -1475,54 +1475,10 @@ public class Util {
             }
         }
 
-        return result;
-    }
-
-    /**
-     * Is CDI available.
-     *
-     * @param facesContext the Faces context to consult.
-     * @return true if available, false otherwise.
-     */
-    public static boolean isCdiAvailable(FacesContext facesContext) {
-        boolean result;
-
-        if (facesContext != null && facesContext.getAttributes().containsKey(RIConstants.CDI_AVAILABLE)) {
-            result = (Boolean) facesContext.getAttributes().get(RIConstants.CDI_AVAILABLE);
-        } else if (facesContext != null && facesContext.getExternalContext().getApplicationMap().containsKey(RIConstants.CDI_AVAILABLE)) {
-            result = (Boolean) facesContext.getExternalContext().getApplicationMap().get(RIConstants.CDI_AVAILABLE);
-        } else {
-            result = getCdiBeanManager(facesContext) != null;
-
-            if (result && facesContext != null) {
-                facesContext.getAttributes().put(RIConstants.CDI_AVAILABLE, result);
-                facesContext.getExternalContext().getApplicationMap().put(RIConstants.CDI_AVAILABLE, result);
-            }
+        if (result == null) {
+            throw new IllegalStateException("CDI is not available");
         }
-
-        return result;
-    }
-
-    /**
-     * Is CDI available (ServletContext variant)
-     *
-     * @param servletContext the servlet context.
-     * @return true if available, false otherwise.
-     */
-    public static boolean isCdiAvailable(ServletContext servletContext) {
-        boolean result;
-
-        Object value = servletContext.getAttribute(RIConstants.CDI_AVAILABLE);
-        if (value != null) {
-            result = (Boolean) value;
-        } else {
-            result = getCdiBeanManager(null) != null;
-
-            if (result) {
-                servletContext.setAttribute(RIConstants.CDI_AVAILABLE, result);
-            }
-        }
-
+        
         return result;
     }
 

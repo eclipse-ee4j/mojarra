@@ -16,14 +16,11 @@
 package com.sun.faces.el;
 
 import static com.sun.faces.RIConstants.EMPTY_CLASS_ARGS;
-import static com.sun.faces.cdi.CdiUtils.getBeanReference;
 import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.ReflectionUtils.lookupMethod;
 import static com.sun.faces.util.ReflectionUtils.newInstance;
 import static com.sun.faces.util.Util.getCdiBeanManager;
-import static com.sun.faces.util.Util.getFacesConfigXmlVersion;
-import static com.sun.faces.util.Util.getWebXmlVersion;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -33,7 +30,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.cdi.CdiExtension;
 import com.sun.faces.context.flash.FlashELResolver;
 
 import jakarta.el.ArrayELResolver;
@@ -47,7 +43,6 @@ import jakarta.el.MapELResolver;
 import jakarta.el.ResourceBundleELResolver;
 import jakarta.el.ValueExpression;
 import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.faces.FacesException;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
@@ -110,7 +105,6 @@ public class ELUtils {
     public static final ArrayELResolver ARRAY_RESOLVER = new ArrayELResolver();
     public static final BeanELResolver BEAN_RESOLVER = new BeanELResolver();
     public static final FacesResourceBundleELResolver FACES_BUNDLE_RESOLVER = new FacesResourceBundleELResolver();
-    public static final ImplicitObjectELResolver IMPLICIT_RESOLVER = new ImplicitObjectELResolver();
     public static final FlashELResolver FLASH_RESOLVER = new FlashELResolver();
     public static final ListELResolver LIST_RESOLVER = new ListELResolver();
     public static final MapELResolver MAP_RESOLVER = new MapELResolver();
@@ -167,13 +161,7 @@ public class ELUtils {
      */
     public static void buildFacesResolver(FacesCompositeELResolver composite, ApplicationAssociate associate) {
         checkNotNull(composite, associate);
-
-        if (!tryAddCDIELResolver(composite)) {
-            // The CDI ELResolver that among others takes care of handling the implicit objects
-            // was not added. Add the old native implicit resolver.
-            composite.addRootELResolver(IMPLICIT_RESOLVER);
-        }
-
+        addCDIELResolver(composite);
         composite.add(FLASH_RESOLVER);
         composite.addPropertyELResolver(COMPOSITE_COMPONENT_ATTRIBUTES_EL_RESOLVER);
         addELResolvers(composite, associate.getELResolversFromFacesConfig());
@@ -199,25 +187,10 @@ public class ELUtils {
         }
     }
 
-    private static boolean tryAddCDIELResolver(FacesCompositeELResolver composite) {
+    private static void addCDIELResolver(FacesCompositeELResolver composite) {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-
         BeanManager beanManager = getCdiBeanManager(facesContext);
-
-        if (beanManager == null) {
-            // TODO: use version enum and >=
-            if (getFacesConfigXmlVersion(facesContext).equals("2.3") || getWebXmlVersion(facesContext).equals("4.0")) {
-                throw new FacesException("Unable to find CDI BeanManager");
-            }
-        } else {
-            CdiExtension cdiExtension = getBeanReference(beanManager, CdiExtension.class);
-            if (cdiExtension.isAddBeansForFacesImplicitObjects()) {
-                composite.add(beanManager.getELResolver());
-                return true;
-            }
-        }
-
-        return false;
+        composite.add(beanManager.getELResolver());
     }
 
     private static void addEL3_0_Resolvers(FacesCompositeELResolver composite, ApplicationAssociate associate) {
