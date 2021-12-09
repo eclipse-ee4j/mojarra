@@ -16,7 +16,7 @@
 
 package com.sun.faces.config.manager.spi;
 
-import static com.sun.faces.RIConstants.ANNOTATED_CLASSES;
+import static com.sun.faces.RIConstants.HANDLED_CLASSES;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.AnnotationScanPackages;
 import static com.sun.faces.config.manager.spi.AnnotationScanner.FACES_ANNOTATION_TYPE;
 import static com.sun.faces.util.Util.isEmpty;
@@ -63,7 +63,7 @@ public class FilterClassesFromFacesInitializerAnnotationProvider extends Annotat
     @SuppressWarnings("unchecked")
     @Override
     public Map<Class<? extends Annotation>, Set<Class<?>>> getAnnotatedClasses(Set<URI> urls) {
-        return createAnnotatedMap((Set<Class<?>>) servletContext.getAttribute(ANNOTATED_CLASSES));
+        return createAnnotatedMap((Set<Class<?>>) servletContext.getAttribute(HANDLED_CLASSES));
     }
 
     // ---------------------------------------------------------- Private Methods

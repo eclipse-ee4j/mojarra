@@ -16,7 +16,7 @@
 
 package com.sun.faces.config.manager.tasks;
 
-import static com.sun.faces.RIConstants.ANNOTATED_CLASSES;
+import static com.sun.faces.RIConstants.HANDLED_CLASSES;
 import static java.util.Collections.emptySet;
 
 import java.lang.annotation.Annotation;
@@ -51,7 +51,7 @@ public class FindAnnotatedConfigClasses implements Callable<Map<Class<? extends 
         this.facesContext = facesContext;
         provider = AnnotationProviderFactory.createAnnotationProvider(servletContext);
         this.metadataGetter = metadataGetter;
-        annotatedSet = (Set<Class<?>>) servletContext.getAttribute(ANNOTATED_CLASSES);
+        annotatedSet = (Set<Class<?>>) servletContext.getAttribute(HANDLED_CLASSES);
     }
 
     // ----------------------------------------------- Methods from Callable
