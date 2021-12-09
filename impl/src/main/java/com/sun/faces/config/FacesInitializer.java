@@ -23,17 +23,13 @@ import static com.sun.faces.RIConstants.FACES_SERVLET_REGISTRATION;
 import static java.lang.Boolean.parseBoolean;
 import static java.util.Collections.emptySet;
 
-import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.sun.faces.cdi.CdiExtension;
 
 import jakarta.annotation.Resource;
-import jakarta.enterprise.inject.spi.CDI;
 import jakarta.faces.annotation.FacesConfig;
 import jakarta.faces.application.ResourceDependencies;
 import jakarta.faces.application.ResourceDependency;
@@ -103,27 +99,6 @@ public class FacesInitializer implements ServletContainerInitializer {
     private static final String[] FACES_SERVLET_MAPPINGS_WITH_XHTML = { "/faces/*", "*.jsf", "*.faces", "*.xhtml" };
     private static final String[] FACES_SERVLET_MAPPINGS_WITHOUT_XHTML = { "/faces/*", "*.jsf", "*.faces" };
 
-    public static final Set<Class<?>> HANDLED_FACES_TYPES = Stream
-        .of(
-            ClientWindowScoped.class, Converter.class, DataModel.class, FacesBehavior.class, FacesBehaviorRenderer.class, FacesComponent.class, FacesConfig.class,
-            FacesConverter.class, FacesDataModel.class, FacesRenderer.class, FacesValidator.class, FlowBuilderParameter.class, FlowDefinition.class, FlowScoped.class,
-            ListenerFor.class, ListenersFor.class, NamedEvent.class, PhaseListener.class, Push.class, Renderer.class, ResourceDependencies.class, ResourceDependency.class,
-            UIComponent.class, Validator.class, ViewScoped.class
-        )
-        .collect(Collectors.toUnmodifiableSet());
-
-    public static final Set<Class<?>> HANDLED_FACES_CLASSES = HANDLED_FACES_TYPES
-        .stream()
-        .filter(c -> !c.isAnnotation())
-        .collect(Collectors.toUnmodifiableSet());
-
-    @SuppressWarnings("unchecked")
-    public static final Set<Class<? extends Annotation>> HANDLED_FACES_ANNOTATIONS = HANDLED_FACES_TYPES
-        .stream()
-        .filter(c -> c.isAnnotation())
-        .map(c -> (Class<? extends Annotation>) c)
-        .collect(Collectors.toUnmodifiableSet());
-
     // -------------------------------- Methods from ServletContainerInitializer
 
     @Override
@@ -133,8 +108,11 @@ public class FacesInitializer implements ServletContainerInitializer {
 
         boolean appHasFacesContent = isFacesSpecificTypePresent(classes) || isFacesConfigFilePresent(servletContext);
         boolean appHasFacesServlet = isFacesServletRegistrationPresent(servletContext);
+        boolean facesActive = appHasFacesContent || appHasFacesServlet;
 
-        if (appHasFacesContent || appHasFacesServlet) {
+        handleCdiConcerns(facesActive);
+
+        if (facesActive) {
             InitFacesContext initFacesContext = new InitFacesContext(servletContext);
 
             try {
@@ -144,7 +122,6 @@ public class FacesInitializer implements ServletContainerInitializer {
                 }
 
                 // Other concerns also handled if there is an existing Faces Servlet mapping
-                handleCdiConcerns();
                 handleWebSocketConcerns(servletContext);
 
                 // The Configure listener will do the bulk of initializing (configuring) Faces in a later phase.
@@ -163,14 +140,14 @@ public class FacesInitializer implements ServletContainerInitializer {
     // --------------------------------------------------------- Private Methods
 
     private static void setAnnotatedClasses(Set<Class<?>> classes, ServletContext servletContext) {
-        Set<Class<?>> annotatedClasses = new HashSet<>(classes == null ? emptySet() : classes);
-        annotatedClasses.retainAll(HANDLED_FACES_ANNOTATIONS);
-        servletContext.setAttribute(ANNOTATED_CLASSES, annotatedClasses); // NOTE: this must indeed be mutable, see also ProvideMetadataToAnnotationScanTask.
+        Set<Class<?>> set = new HashSet<>(classes == null ? emptySet() : classes);
+        set.removeIf(c -> !c.isAnnotation() || !c.getName().startsWith(FACES_PACKAGE_PREFIX));
+        servletContext.setAttribute(ANNOTATED_CLASSES, set); // NOTE: this must indeed be mutable, see also ProvideMetadataToAnnotationScanTask.
     }
 
     private static boolean isFacesSpecificTypePresent(Set<Class<?>> classes) {
         Set<Class<?>> set = new HashSet<>(classes == null ? emptySet() : classes);
-        set.retainAll(HANDLED_FACES_TYPES);
+        set.removeIf(c -> !c.getName().startsWith(FACES_PACKAGE_PREFIX));
         return !set.isEmpty();
     }
 
@@ -185,6 +162,15 @@ public class FacesInitializer implements ServletContainerInitializer {
 
     private static boolean isFacesServletRegistrationPresent(ServletContext context) {
         return getExistingFacesServletRegistration(context) != null;
+    }
+
+    private static void handleCdiConcerns(boolean facesActive) {
+        try {
+            CdiExtension.getInstance().setFacesActive(facesActive);
+        }
+        catch (Exception ignore) {
+            // NOOP (for now?).
+        }
     }
 
     private static void handleMappingConcerns(ServletContext servletContext) throws ServletException {
@@ -219,15 +205,6 @@ public class FacesInitializer implements ServletContainerInitializer {
         }
 
         return null;
-    }
-
-    private static void handleCdiConcerns() {
-        try {
-            CDI.current().select(CdiExtension.class).get().setFacesDiscovered(true);
-        }
-        catch (Exception ignore) {
-            // NOOP (for now?).
-        }
     }
 
     private static void handleWebSocketConcerns(ServletContext context) throws ServletException {

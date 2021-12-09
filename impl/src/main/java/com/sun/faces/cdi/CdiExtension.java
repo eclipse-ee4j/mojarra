@@ -41,15 +41,13 @@ import com.sun.faces.util.FacesLogger;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
 import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
-import jakarta.enterprise.inject.spi.Annotated;
 import jakarta.enterprise.inject.spi.AnnotatedField;
-import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessBean;
 import jakarta.enterprise.inject.spi.ProcessManagedBean;
-import jakarta.faces.annotation.FacesConfig;
 import jakarta.faces.annotation.ManagedProperty;
 import jakarta.faces.model.DataModel;
 import jakarta.faces.model.FacesDataModel;
@@ -83,11 +81,9 @@ public class CdiExtension implements Extension {
     private Set<Type> managedPropertyTargetTypes = new HashSet<>();
 
     /**
-     * Will be true if a class implementing or extenting from or annotated with a Jakarta Faces specific class has been discovered,
-     * or if {@link FacesInitializer} had the chance to run *before* this {@link CdiExtension} and already found Faces content to be present.
-     * As of now, this {@link CdiExtension} is only not yet capable of detecting a physical {@code /WEB-INF/faces-config.xml} file.
+     * Will be set to true by {@link FacesInitializer} if Jakarta Faces is considered activated on this application.
      */
-    private boolean facesDiscovered;
+    private Boolean facesActive;
 
     /**
      * Stores the logger.
@@ -122,7 +118,6 @@ public class CdiExtension implements Extension {
     /**
      * ProcessBean:
      * <ul>
-     * <li>if bean is an instance of Jakarta Faces specific class or is annotated with Jakarta Faces specific annotation, then consider "Faces Discovered" as true
      * <li>if bean is annotated with {@code @FacesDataModel} then collect it for {@link #afterDeploymentValidation(AfterDeploymentValidation, BeanManager)}
      * </ul>
      *
@@ -134,12 +129,9 @@ public class CdiExtension implements Extension {
     public <T extends DataModel<?>> void processBean(@Observes ProcessBean<T> processBeanEvent, BeanManager beanManager) {
         try {
             ProcessBean<T> event = processBeanEvent; // JDK8 u60 workaround - https://web.archive.org/web/20161007164846/http://mail.openjdk.java.net/pipermail/lambda-dev/2015-August/012146.html/012146.html
-            Annotated annotated = event.getAnnotated();
-            Bean<T> bean = event.getBean();
-            setFacesDiscoveredIfNecessary(annotated, bean, beanManager);
 
-            getAnnotation(beanManager, annotated, FacesDataModel.class)
-                .ifPresent(model -> forClassToDataModelClass.put(model.forClass(), (Class<T>) bean.getBeanClass()));
+            getAnnotation(beanManager, event.getAnnotated(), FacesDataModel.class)
+                .ifPresent(model -> forClassToDataModelClass.put(model.forClass(), (Class<T>) event.getBean().getBeanClass()));
         }
         catch (Exception e) {
             // Log and continue; if we are not allowed somehow to investigate this ManagedBean, we're unlikely to be interested in it anyway,
@@ -153,7 +145,6 @@ public class CdiExtension implements Extension {
     /**
      * ProcessManagedBean:
      * <ul>
-     * <li>if bean is an instance of Jakarta Faces specific class or is annotated with Jakarta Faces specific annotation, then consider "Faces Discovered" as true
      * <li>if bean has field with {@code @ManagedProperty} then collect its type for {@link #afterBeanDiscovery(AfterBeanDiscovery, BeanManager)}
      * </ul>
      *
@@ -163,12 +154,7 @@ public class CdiExtension implements Extension {
      */
     public <T> void processManagedBean(@Observes ProcessManagedBean<T> processManagedBeanEvent, BeanManager beanManager) {
         try {
-            ProcessManagedBean<T> event = processManagedBeanEvent; // JDK8 u60 workaround - https://web.archive.org/web/20161007164846/http://mail.openjdk.java.net/pipermail/lambda-dev/2015-August/012146.html/012146.html
-            Annotated annotated = event.getAnnotated();
-            Bean<T> bean = event.getBean();
-            setFacesDiscoveredIfNecessary(annotated, bean, beanManager);
-
-            for (AnnotatedField<? super T> field : event.getAnnotatedBeanClass().getFields()) {
+            for (AnnotatedField<? super T> field : processManagedBeanEvent.getAnnotatedBeanClass().getFields()) {
                 Type type = field.getBaseType();
 
                 if (field.isAnnotationPresent(ManagedProperty.class) && (type instanceof Class || type instanceof ParameterizedType)) {
@@ -188,7 +174,6 @@ public class CdiExtension implements Extension {
     /**
      * AfterBeanDiscovery:
      * <ul>
-     * <li>if "Faces Discovered" is not considered true, then abort immediately, else continue as follows
      * <li>add all CDI producer beans allowing EL resolving of Faces specific artifacts
      * <li>add a managed property type producer bean for each managed property type discovered in {@link #processManagedBean(ProcessManagedBean, BeanManager)}
      * </ul>
@@ -197,10 +182,6 @@ public class CdiExtension implements Extension {
      * @param beanManager the bean manager.
      */
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
-        if (!facesDiscovered) {
-            return;
-        }
-
         afterBeanDiscovery.addBean(new ApplicationProducer());
         afterBeanDiscovery.addBean(new ApplicationMapProducer());
         afterBeanDiscovery.addBean(new CompositeComponentProducer());
@@ -232,7 +213,6 @@ public class CdiExtension implements Extension {
     /**
      * AfterDeploymentValidation:
      * <ul>
-     * <li>if "Faces Discovered" is not considered true, then abort immediately, else continue as follows
      * <li>sort faces data models discovered in {@link #processBean(ProcessBean, BeanManager)} for use by {@link DataModelClassesMapProducer}
      * </ul>
      *
@@ -240,9 +220,6 @@ public class CdiExtension implements Extension {
      * @param beanManager the current bean manager
      */
     public void afterDeploymentValidation(@Observes AfterDeploymentValidation event, BeanManager beanManager) {
-        if (!facesDiscovered) {
-            return;
-        }
 
         // Sort the classes wrapped by a DataModel that we collected in processBean() such that
         // for any 2 classes X and Y from this collection, if an object of X is an instanceof an object of Y,
@@ -293,33 +270,6 @@ public class CdiExtension implements Extension {
         forClassToDataModelClass = unmodifiableMap(linkedForClassToDataModelClass);
     }
 
-    private void setFacesDiscoveredIfNecessary(Annotated annotated, Bean<?> bean, BeanManager beanManager) {
-        if (facesDiscovered) {
-            // Already discovered.
-            return;
-        }
-
-        if (getAnnotation(beanManager, annotated, FacesConfig.class).isPresent()) {
-            facesDiscovered = true;
-            return;
-        }
-
-        if (bean.getBeanClass().getName().startsWith(FacesInitializer.MOJARRA_PACKAGE_PREFIX)) {
-            // Mojarra specific impl should not count.
-            return;
-        }
-
-        if (FacesInitializer.HANDLED_FACES_CLASSES.stream().anyMatch(c -> c.isAssignableFrom(bean.getBeanClass()))) {
-            facesDiscovered = true;
-            return;
-        }
-
-        if (FacesInitializer.HANDLED_FACES_ANNOTATIONS.stream().anyMatch(a -> getAnnotation(beanManager, annotated, a).isPresent())) {
-            facesDiscovered = true;
-            return;
-        }
-    }
-
     /**
      * Gets the map of classes that can be wrapped by a data model to data model implementation classes
      *
@@ -329,11 +279,26 @@ public class CdiExtension implements Extension {
         return forClassToDataModelClass;
     }
 
-    public boolean isFacesDiscovered() {
-        return facesDiscovered;
+    /**
+     * Returns whether Jakarta Faces is considered active.
+     * @return <ul><li>{@code null} when {@link FacesInitializer} has not yet run,
+     * <li>or {@code false} when {@link FacesInitializer} has run but did not find any Jakarta Faces content nor Faces Servlet nor /WEB-INF/faces-config.xml,
+     * <li>else {@code true}
+     * </ul>
+     */
+    public Boolean getFacesActive() {
+        return facesActive;
     }
 
-    public void setFacesDiscovered(boolean facesDiscovered) {
-        this.facesDiscovered = facesDiscovered;
+    /**
+     * Sets whether Jakarta Faces is considered active; this should only be called by {@link FacesInitializer}.
+     * @param facesActive whether Jakarta Faces is considered active
+     */
+    public void setFacesActive(boolean facesActive) {
+        this.facesActive = facesActive;
+    }
+
+    public static CdiExtension getInstance() {
+        return CDI.current().select(CdiExtension.class).get();
     }
 }
