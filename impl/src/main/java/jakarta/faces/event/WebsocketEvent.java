@@ -26,6 +26,7 @@ import java.lang.annotation.Target;
 import java.util.Objects;
 
 import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.faces.push.Push;
 import jakarta.inject.Qualifier;
 import jakarta.websocket.CloseReason.CloseCode;
@@ -118,7 +119,23 @@ public final class WebsocketEvent implements Serializable {
     @Retention(RUNTIME)
     @Documented
     public @interface Opened {
-        //
+
+        /**
+         * <p class="changed_added_4_0">
+         * Supports inline instantiation of the {@link Opened} qualifier.
+         * </p>
+         *
+         * @since 4.0
+         */
+        public static final class Literal extends AnnotationLiteral<Opened> implements Opened {
+
+            private static final long serialVersionUID = 1L;
+
+            /**
+             * Instance of the {@link Opened} qualifier.
+             */
+            public static final Literal INSTANCE = new Literal();
+        }
     }
 
     /**
@@ -135,7 +152,23 @@ public final class WebsocketEvent implements Serializable {
     @Retention(RUNTIME)
     @Documented
     public @interface Closed {
-        //
+
+        /**
+         * <p class="changed_added_4_0">
+         * Supports inline instantiation of the {@link Closed} qualifier.
+         * </p>
+         *
+         * @since 4.0
+         */
+        public static final class Literal extends AnnotationLiteral<Closed> implements Closed {
+
+            private static final long serialVersionUID = 1L;
+
+            /**
+             * Instance of the {@link Closed} qualifier.
+             */
+            public static final Literal INSTANCE = new Literal();
+        }
     }
 
 }
