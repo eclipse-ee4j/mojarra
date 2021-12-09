@@ -49,6 +49,7 @@ import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessBean;
 import jakarta.enterprise.inject.spi.ProcessManagedBean;
+import jakarta.faces.annotation.FacesConfig;
 import jakarta.faces.annotation.ManagedProperty;
 import jakarta.faces.model.DataModel;
 import jakarta.faces.model.FacesDataModel;
@@ -295,6 +296,11 @@ public class CdiExtension implements Extension {
     private void setFacesDiscoveredIfNecessary(Annotated annotated, Bean<?> bean, BeanManager beanManager) {
         if (facesDiscovered) {
             // Already discovered.
+            return;
+        }
+
+        if (getAnnotation(beanManager, annotated, FacesConfig.class).isPresent()) {
+            facesDiscovered = true;
             return;
         }
 
