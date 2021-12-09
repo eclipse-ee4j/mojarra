@@ -7,16 +7,19 @@ import com.sun.faces.application.ApplicationImpl;
 import com.sun.faces.context.ExternalContextImpl;
 import com.sun.faces.context.FacesContextImpl;
 import com.sun.faces.lifecycle.LifecycleImpl;
+import com.sun.faces.mock.MockBeanManager;
 import com.sun.faces.mock.MockHttpServletRequest;
 import com.sun.faces.mock.MockHttpServletResponse;
 import com.sun.faces.mock.MockServletContext;
 
 import jakarta.faces.FactoryFinder;
+import jakarta.faces.context.FacesContext;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import jakarta.el.ELResolver;
+import jakarta.enterprise.inject.spi.CDI;
 
 import java.net.URL;
 
@@ -49,6 +52,8 @@ public class ELUtilsTest {
 
         applicationAssociate = (ApplicationAssociate) externalContext.getApplicationMap()
                 .get(RIConstants.FACES_PREFIX + "ApplicationAssociate");
+        
+        FacesContext.getCurrentInstance().getAttributes().put(RIConstants.CDI_BEAN_MANAGER, new MockBeanManager());
     }
 
     @Test
