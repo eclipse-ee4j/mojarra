@@ -116,8 +116,8 @@ public class CdiExtension implements Extension {
     /**
      * ProcessBean:
      * <ul>
-     * <li>if bean is annotated with {@code @FacesDataModel} then collect it
      * <li>if bean is an instance of Jakarta Faces specific class or is annotated with Jakarta Faces specific annotation, then consider "Faces Discovered" as true
+     * <li>if bean is annotated with {@code @FacesDataModel} then collect it
      *
      * @param <T> the generic bean type
      * @param processBeanEvent the process bean event
@@ -146,7 +146,7 @@ public class CdiExtension implements Extension {
     /**
      * ProcessManagedBean:
      * <ul>
-     * <li>if "Faces Discovered" is not considered true (see {@link #processBean(ProcessBean, BeanManager)}), then abort immediately, else continue as follows
+     * <li>if bean is an instance of Jakarta Faces specific class or is annotated with Jakarta Faces specific annotation, then consider "Faces Discovered" as true
      * <li>if bean has field with {@code @ManagedProperty} then collect its type
      *
      * @param <T> the generic bean type
