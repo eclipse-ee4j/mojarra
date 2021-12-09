@@ -29,7 +29,6 @@ import static com.sun.faces.util.MessageUtils.APPLICATION_ASSOCIATE_EXISTS_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.Util.getFacesConfigXmlVersion;
 import static com.sun.faces.util.Util.getFacesServletRegistration;
-import static com.sun.faces.util.Util.isCdiAvailable;
 import static com.sun.faces.util.Util.split;
 import static jakarta.faces.FactoryFinder.FACELET_CACHE_FACTORY;
 import static jakarta.faces.FactoryFinder.FLOW_HANDLER_FACTORY;
@@ -297,12 +296,11 @@ public class ApplicationAssociate {
             }
 
             FacesContext context = FacesContext.getCurrentInstance();
-            if (isCdiAvailable(context)) {
-                try {
-                    new JavaFlowLoaderHelper().loadFlows(context, flowHandler);
-                } catch (IOException ex) {
-                    LOGGER.log(SEVERE, null, ex);
-                }
+
+            try {
+                new JavaFlowLoaderHelper().loadFlows(context, flowHandler);
+            } catch (IOException ex) {
+                LOGGER.log(SEVERE, null, ex);
             }
 
             // cause the Facelet VDL to be instantiated eagerly, so it can

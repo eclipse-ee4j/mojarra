@@ -44,8 +44,6 @@ public class ExpressionLanguage {
     private CompositeELResolver elResolvers;
     private volatile FacesCompositeELResolver compositeELResolver;
 
-    private Version version = new Version();
-
     public ExpressionLanguage(ApplicationAssociate applicationAssociate) {
         associate = applicationAssociate;
         elContextListeners = new CopyOnWriteArrayList<>();
@@ -105,14 +103,9 @@ public class ExpressionLanguage {
         }
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        if (version.isFaces23()) {
+        BeanManager cdiBeanManager = getCdiBeanManager(facesContext);
 
-            BeanManager cdiBeanManager = getCdiBeanManager(facesContext);
-
-            if (cdiBeanManager != null && !resolver.equals(cdiBeanManager.getELResolver())) {
-                elResolvers.add(resolver);
-            }
-        } else {
+        if (!resolver.equals(cdiBeanManager.getELResolver())) {
             elResolvers.add(resolver);
         }
     }
