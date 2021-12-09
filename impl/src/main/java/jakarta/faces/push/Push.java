@@ -26,6 +26,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.Collection;
 
+import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.enterprise.util.Nonbinding;
 import jakarta.faces.component.UIWebsocket;
 import jakarta.faces.event.WebsocketEvent;
@@ -485,4 +486,35 @@ public @interface Push {
     @Nonbinding
     String channel() default "";
 
+    /**
+     * <p class="changed_added_4_0">
+     * Supports inline instantiation of the {@link Push} qualifier.
+     * </p>
+     *
+     * @since 4.0
+     */
+    public static final class Literal extends AnnotationLiteral<Push> implements Push {
+
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * Instance of the {@link Push} qualifier.
+         */
+        public static final Literal INSTANCE = of("");
+
+        private final String channel;
+
+        public static Literal of(String channel) {
+            return new Literal(channel);
+        }
+
+        private Literal(String channel) {
+            this.channel = channel;
+        }
+
+        @Override
+        public String channel() {
+            return channel;
+        }
+    }
 }

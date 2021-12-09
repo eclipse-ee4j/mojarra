@@ -27,6 +27,7 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.inject.Qualifier;
 
 /**
@@ -86,4 +87,50 @@ public @interface FacesValidator {
      */
 
     boolean managed() default false;
+
+    /**
+     * <p class="changed_added_4_0">
+     * Supports inline instantiation of the {@link FacesValidator} qualifier.
+     * </p>
+     *
+     * @since 4.0
+     */
+    public static final class Literal extends AnnotationLiteral<FacesValidator> implements FacesValidator {
+
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * Instance of the {@link FacesValidator} qualifier.
+         */
+        public static final Literal INSTANCE = of("", false, false);
+
+        private final String value;
+        private final boolean isDefault;
+        private final boolean managed;
+
+        public static Literal of(String value, boolean isDefault, boolean managed) {
+            return new Literal(value, isDefault, managed);
+        }
+
+        private Literal(String value, boolean isDefault, boolean managed) {
+            this.value = value;
+            this.isDefault = isDefault;
+            this.managed = managed;
+        }
+
+        @Override
+        public String value() {
+            return value;
+        }
+
+        @Override
+        public boolean isDefault() {
+            return isDefault;
+        }
+
+        @Override
+        public boolean managed() {
+            return managed;
+        }
+    }
 }
