@@ -27,6 +27,7 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.inject.Qualifier;
 
 /**
@@ -61,4 +62,43 @@ public @interface FacesBehavior {
      * @return true if CDI managed, false otherwise.
      */
     boolean managed() default false;
+
+    /**
+     * <p class="changed_added_4_0">
+     * Supports inline instantiation of the {@link FacesBehavior} qualifier.
+     * </p>
+     *
+     * @since 4.0
+     */
+    public static final class Literal extends AnnotationLiteral<FacesBehavior> implements FacesBehavior {
+
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * Instance of the {@link FacesBehavior} qualifier.
+         */
+        public static final Literal INSTANCE = of("", false);
+
+        private final String value;
+        private final boolean managed;
+
+        public static Literal of(String value, boolean managed) {
+            return new Literal(value, managed);
+        }
+
+        private Literal(String value, boolean managed) {
+            this.value = value;
+            this.managed = managed;
+        }
+
+        @Override
+        public String value() {
+            return value;
+        }
+        
+        @Override
+        public boolean managed() {
+            return managed;
+        }
+    }
 }

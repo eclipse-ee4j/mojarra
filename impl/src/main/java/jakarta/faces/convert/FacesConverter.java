@@ -26,6 +26,7 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.inject.Qualifier;
 
 /**
@@ -106,4 +107,50 @@ public @interface FacesConverter {
      */
 
     boolean managed() default false;
+
+    /**
+     * <p class="changed_added_4_0">
+     * Supports inline instantiation of the {@link FacesConverter} qualifier.
+     * </p>
+     *
+     * @since 4.0
+     */
+    public static final class Literal extends AnnotationLiteral<FacesConverter> implements FacesConverter {
+
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * Instance of the {@link FacesConverter} qualifier.
+         */
+        public static final Literal INSTANCE = of("", Object.class, false);
+
+        private final String value;
+        private final Class forClass;
+        private final boolean managed;
+
+        public static Literal of(String value, Class forClass, boolean managed) {
+            return new Literal(value, forClass, managed);
+        }
+
+        private Literal(String value, Class forClass, boolean managed) {
+            this.value = value;
+            this.forClass = forClass;
+            this.managed = managed;
+        }
+
+        @Override
+        public String value() {
+            return value;
+        }
+
+        @Override
+        public Class forClass() {
+            return forClass;
+        }
+
+        @Override
+        public boolean managed() {
+            return managed;
+        }
+    }
 }
