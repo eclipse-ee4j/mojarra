@@ -24,6 +24,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.Set;
 
+import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.faces.component.UIData;
 import jakarta.inject.Qualifier;
 
@@ -196,4 +197,36 @@ public @interface FacesDataModel {
      * @return the type that the DataModel that is annotated with this annotation is able to wrap
      */
     Class<?> forClass() default Object.class;
+
+    /**
+     * <p class="changed_added_4_0">
+     * Supports inline instantiation of the {@link FacesDataModel} qualifier.
+     * </p>
+     *
+     * @since 4.0
+     */
+    public static final class Literal extends AnnotationLiteral<FacesDataModel> implements FacesDataModel {
+
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * Instance of the {@link FacesDataModel} qualifier.
+         */
+        public static final Literal INSTANCE = of(Object.class);
+
+        private final Class<?> forClass;
+
+        public static Literal of(Class<?> forClass) {
+            return new Literal(forClass);
+        }
+
+        private Literal(Class<?> forClass) {
+            this.forClass = forClass;
+        }
+
+        @Override
+        public Class<?> forClass() {
+            return forClass;
+        }
+    }
 }
