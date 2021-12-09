@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -58,6 +58,10 @@ import jakarta.faces.model.FacesDataModel;
  */
 public class CdiExtension implements Extension {
 
+    /**
+     * Array of Mojarra impl specific CDI managed bean classes to add to CDI.
+     * This is necessary in case Mojarra is provided by server instead of by webapp as is often the case in Jakarta EE environments.
+     */
     private static final Class<?>[] MOJARRA_MANAGED_BEANS = {
             WebsocketUserManager.class,
             WebsocketSessionManager.class,
@@ -80,7 +84,7 @@ public class CdiExtension implements Extension {
     /**
      * Will be true if a class implementing or extenting from or annotated with a Jakarta Faces specific class has been discovered,
      * or if {@link FacesInitializer} had the chance to run *before* this {@link CdiExtension} and already found Faces content to be present.
-     * As of now, this {@link CdiExtension} is not yet capable of detecting a physical {@code /WEB-INF/faces-config.xml} file.
+     * As of now, this {@link CdiExtension} is only not yet capable of detecting a physical {@code /WEB-INF/faces-config.xml} file.
      */
     private boolean facesDiscovered;
 
@@ -118,7 +122,7 @@ public class CdiExtension implements Extension {
      * ProcessBean:
      * <ul>
      * <li>if bean is an instance of Jakarta Faces specific class or is annotated with Jakarta Faces specific annotation, then consider "Faces Discovered" as true
-     * <li>if bean is annotated with {@code @FacesDataModel} then collect it
+     * <li>if bean is annotated with {@code @FacesDataModel} then collect it for {@link #afterDeploymentValidation(AfterDeploymentValidation, BeanManager)}
      * </ul>
      *
      * @param <T> the generic bean type
@@ -149,7 +153,7 @@ public class CdiExtension implements Extension {
      * ProcessManagedBean:
      * <ul>
      * <li>if bean is an instance of Jakarta Faces specific class or is annotated with Jakarta Faces specific annotation, then consider "Faces Discovered" as true
-     * <li>if bean has field with {@code @ManagedProperty} then collect its type
+     * <li>if bean has field with {@code @ManagedProperty} then collect its type for {@link #afterBeanDiscovery(AfterBeanDiscovery, BeanManager)}
      * </ul>
      *
      * @param <T> the generic bean type
@@ -183,15 +187,15 @@ public class CdiExtension implements Extension {
     /**
      * AfterBeanDiscovery:
      * <ul>
-     * <li>if "Faces Discovered" is not considered true (see {@link #processBean(ProcessBean, BeanManager)}), then abort immediately, else continue as follows
-     * <li>add all CDI producers allowing EL resolving of Faces specific artifacts
-     * <li>add a managed property type producer for each managed property type discovered in {@link #processManagedBean(ProcessManagedBean, BeanManager)}
+     * <li>if "Faces Discovered" is not considered true, then abort immediately, else continue as follows
+     * <li>add all CDI producer beans allowing EL resolving of Faces specific artifacts
+     * <li>add a managed property type producer bean for each managed property type discovered in {@link #processManagedBean(ProcessManagedBean, BeanManager)}
      * </ul>
      *
      * @param afterBeanDiscovery the after bean discovery.
      * @param beanManager the bean manager.
      */
-    public void afterBeanDiscovery(final @Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
+    public void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
         if (!facesDiscovered) {
             return;
         }
@@ -227,7 +231,7 @@ public class CdiExtension implements Extension {
     /**
      * AfterDeploymentValidation:
      * <ul>
-     * <li>if "Faces Discovered" is not considered true (see {@link #processBean(ProcessBean, BeanManager)}), then abort immediately, else continue as follows
+     * <li>if "Faces Discovered" is not considered true, then abort immediately, else continue as follows
      * <li>sort faces data models discovered in {@link #processBean(ProcessBean, BeanManager)} for use by {@link DataModelClassesMapProducer}
      * </ul>
      *
@@ -289,7 +293,13 @@ public class CdiExtension implements Extension {
     }
 
     private void setFacesDiscoveredIfNecessary(Annotated annotated, Bean<?> bean, BeanManager beanManager) {
-        if (facesDiscovered || bean.getBeanClass().getName().startsWith(FacesInitializer.MOJARRA_PACKAGE_PREFIX)) {
+        if (facesDiscovered) {
+            // Already discovered.
+            return;
+        }
+
+        if (bean.getBeanClass().getName().startsWith(FacesInitializer.MOJARRA_PACKAGE_PREFIX)) {
+            // Mojarra specific impl should not count.
             return;
         }
 

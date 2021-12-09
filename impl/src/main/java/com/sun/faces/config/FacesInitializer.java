@@ -127,7 +127,7 @@ public class FacesInitializer implements ServletContainerInitializer {
 
         setAnnotatedClasses(classes, servletContext);
 
-        boolean appHasFacesContent = isFacesSpecificClassPresent(classes) || isFacesConfigFilePresent(servletContext);
+        boolean appHasFacesContent = isFacesSpecificTypePresent(classes) || isFacesConfigFilePresent(servletContext);
         boolean appHasFacesServlet = isFacesServletRegistrationPresent(servletContext);
 
         if (appHasFacesContent || appHasFacesServlet) {
@@ -164,7 +164,7 @@ public class FacesInitializer implements ServletContainerInitializer {
         servletContext.setAttribute(ANNOTATED_CLASSES, annotatedClasses); // NOTE: this must indeed be mutable, see also ProvideMetadataToAnnotationScanTask.
     }
 
-    private static boolean isFacesSpecificClassPresent(Set<Class<?>> classes) {
+    private static boolean isFacesSpecificTypePresent(Set<Class<?>> classes) {
         Set<Class<?>> set = new HashSet<>(classes);
         set.retainAll(HANDLED_FACES_TYPES);
         return !set.isEmpty();
