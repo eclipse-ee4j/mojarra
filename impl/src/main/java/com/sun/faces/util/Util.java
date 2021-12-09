@@ -73,6 +73,7 @@ import javax.xml.xpath.XPathFactory;
 import com.sun.faces.RIConstants;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.config.manager.FacesSchema;
 import com.sun.faces.io.FastStringWriter;
 
 import jakarta.el.ELResolver;
@@ -1337,7 +1338,7 @@ public class Util {
             if (url != null) {
                 XPathFactory factory = XPathFactory.newInstance();
                 XPath xpath = factory.newXPath();
-                xpath.setNamespaceContext(new JavaeeNamespaceContext());
+                xpath.setNamespaceContext(new JakartaNamespaceContext());
                 stream = url.openStream();
                 DocumentBuilderFactory dbf = createDocumentBuilderFactory();
                 try {
@@ -1351,7 +1352,7 @@ public class Util {
                 dbf.setValidating(false);
                 dbf.setXIncludeAware(false);
                 dbf.setExpandEntityReferences(false);
-                result = xpath.evaluate("string(/javaee:faces-config/@version)",
+                result = xpath.evaluate("string(/" + JakartaNamespaceContext.PREFIX + ":faces-config/@version)",
                         dbf.newDocumentBuilder().parse(stream));
             }
         } catch (MalformedURLException mue) {
@@ -1382,7 +1383,7 @@ public class Util {
             if (url != null) {
                 XPathFactory factory = XPathFactory.newInstance();
                 XPath xpath = factory.newXPath();
-                xpath.setNamespaceContext(new JavaeeNamespaceContext());
+                xpath.setNamespaceContext(new JakartaNamespaceContext());
                 stream = url.openStream();
                 DocumentBuilderFactory dbf = createDocumentBuilderFactory();
                 try {
@@ -1396,7 +1397,7 @@ public class Util {
                 dbf.setValidating(false);
                 dbf.setXIncludeAware(false);
                 dbf.setExpandEntityReferences(false);
-                result = xpath.evaluate("string(/javaee:web-app/@version)", dbf.newDocumentBuilder().parse(stream));
+                result = xpath.evaluate("string(/" + JakartaNamespaceContext.PREFIX + ":web-app/@version)", dbf.newDocumentBuilder().parse(stream));
             }
         } catch (MalformedURLException mue) {
         } catch (XPathExpressionException | IOException xpee) {
@@ -1412,16 +1413,18 @@ public class Util {
         return result;
     }
 
-    public static class JavaeeNamespaceContext implements NamespaceContext {
+    public static class JakartaNamespaceContext implements NamespaceContext {
 
+        public static final String PREFIX = "jakartaee";
+        
         @Override
         public String getNamespaceURI(String prefix) {
-            return "http://xmlns.jcp.org/xml/ns/javaee";
+            return FacesSchema.Schemas.JAKARTAEE_SCHEMA_DEFAULT_NS;
         }
 
         @Override
         public String getPrefix(String namespaceURI) {
-            return "javaee";
+            return PREFIX;
         }
 
         @Override
