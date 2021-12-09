@@ -1,5 +1,10 @@
 package com.sun.faces.el;
 
+import java.net.URL;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.sun.el.ExpressionFactoryImpl;
 import com.sun.faces.RIConstants;
 import com.sun.faces.application.ApplicationAssociate;
@@ -7,18 +12,14 @@ import com.sun.faces.application.ApplicationImpl;
 import com.sun.faces.context.ExternalContextImpl;
 import com.sun.faces.context.FacesContextImpl;
 import com.sun.faces.lifecycle.LifecycleImpl;
+import com.sun.faces.mock.MockBeanManager;
 import com.sun.faces.mock.MockHttpServletRequest;
 import com.sun.faces.mock.MockHttpServletResponse;
 import com.sun.faces.mock.MockServletContext;
 
-import jakarta.faces.FactoryFinder;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import jakarta.el.ELResolver;
-
-import java.net.URL;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.context.FacesContext;
 
 public class ELUtilsTest {
 
@@ -49,6 +50,8 @@ public class ELUtilsTest {
 
         applicationAssociate = (ApplicationAssociate) externalContext.getApplicationMap()
                 .get(RIConstants.FACES_PREFIX + "ApplicationAssociate");
+        
+        FacesContext.getCurrentInstance().getAttributes().put(RIConstants.CDI_BEAN_MANAGER, new MockBeanManager());
     }
 
     @Test

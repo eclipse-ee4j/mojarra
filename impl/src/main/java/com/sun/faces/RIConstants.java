@@ -17,6 +17,8 @@
 
 package com.sun.faces;
 
+import com.sun.faces.config.manager.FacesSchema;
+
 import jakarta.faces.render.RenderKitFactory;
 
 /**
@@ -99,7 +101,7 @@ public class RIConstants {
 
     public static final String FLOW_DISCOVERY_CDI_HELPER_BEAN_NAME = "csfFLOWDISCOVERYCDIHELPER";
 
-    public static final String JAVAEE_XMLNS = "http://xmlns.jcp.org/xml/ns/javaee";
+    public static final String DOCUMENT_NAMESPACE = FacesSchema.Schemas.JAKARTAEE_SCHEMA_DEFAULT_NS;
 
     /**
      * Convenience key to determine if CDI is available.
