@@ -24,11 +24,11 @@ import static java.lang.Boolean.parseBoolean;
 import static java.util.Collections.emptySet;
 
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.sun.faces.cdi.CdiExtension;
 
@@ -82,7 +82,7 @@ import jakarta.websocket.server.ServerContainer;
  */
 @HandlesTypes({
 
-    // Jakarta Faces specific
+    // Jakarta Faces specific -- must be exactly the same as HANDLED_FACES_TYPES
     ClientWindowScoped.class, Converter.class, DataModel.class, FacesBehavior.class, FacesBehaviorRenderer.class, FacesComponent.class, FacesConfig.class,
     FacesConverter.class, FacesDataModel.class, FacesRenderer.class, FacesValidator.class, FlowBuilderParameter.class, FlowDefinition.class, FlowScoped.class,
     ListenerFor.class, ListenersFor.class, NamedEvent.class, PhaseListener.class, Push.class, Renderer.class, ResourceDependencies.class, ResourceDependency.class,
@@ -103,9 +103,13 @@ public class FacesInitializer implements ServletContainerInitializer {
     private static final String[] FACES_SERVLET_MAPPINGS_WITH_XHTML = { "/faces/*", "*.jsf", "*.faces", "*.xhtml" };
     private static final String[] FACES_SERVLET_MAPPINGS_WITHOUT_XHTML = { "/faces/*", "*.jsf", "*.faces" };
 
-    public static final Set<Class<?>> HANDLED_FACES_TYPES = Arrays
-        .stream(FacesInitializer.class.getAnnotation(HandlesTypes.class).value())
-        .filter(c -> c.getName().startsWith(FACES_PACKAGE_PREFIX))
+    public static final Set<Class<?>> HANDLED_FACES_TYPES = Stream
+        .of(
+            ClientWindowScoped.class, Converter.class, DataModel.class, FacesBehavior.class, FacesBehaviorRenderer.class, FacesComponent.class, FacesConfig.class,
+            FacesConverter.class, FacesDataModel.class, FacesRenderer.class, FacesValidator.class, FlowBuilderParameter.class, FlowDefinition.class, FlowScoped.class,
+            ListenerFor.class, ListenersFor.class, NamedEvent.class, PhaseListener.class, Push.class, Renderer.class, ResourceDependencies.class, ResourceDependency.class,
+            UIComponent.class, Validator.class, ViewScoped.class
+        )
         .collect(Collectors.toUnmodifiableSet());
 
     public static final Set<Class<?>> HANDLED_FACES_CLASSES = HANDLED_FACES_TYPES
@@ -165,7 +169,7 @@ public class FacesInitializer implements ServletContainerInitializer {
     }
 
     private static boolean isFacesSpecificTypePresent(Set<Class<?>> classes) {
-        Set<Class<?>> set = new HashSet<>(classes);
+        Set<Class<?>> set = new HashSet<>(classes == null ? emptySet() : classes);
         set.retainAll(HANDLED_FACES_TYPES);
         return !set.isEmpty();
     }
