@@ -39,9 +39,6 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 
-@FacesConfig(
-	version = JSF_2_3
-)
 @Named
 @RequestScoped
 public class GetViewsBean {

@@ -28,7 +28,6 @@ import jakarta.inject.Named;
 
 @Named
 @RequestScoped
-@FacesConfig
 public class PostRenderViewEventBean {
 
     @Inject
