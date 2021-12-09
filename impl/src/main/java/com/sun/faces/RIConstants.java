@@ -101,6 +101,8 @@ public class RIConstants {
 
     public static final String DOCUMENT_NAMESPACE = FacesSchema.Schemas.JAKARTAEE_SCHEMA_DEFAULT_NS;
 
+    public static final String DOCUMENT_VERSION = "4.0";
+
     /**
      * Convenience key to store / get BeanManager.
      */
