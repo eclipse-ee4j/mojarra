@@ -16,7 +16,7 @@
 
 package com.sun.faces.cdi;
 
-import static java.lang.Boolean.TRUE;
+import static com.sun.faces.RIConstants.FACES_ACTIVE;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
@@ -34,6 +34,7 @@ import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.enterprise.inject.spi.PassivationCapable;
+import jakarta.faces.context.FacesContext;
 
 /**
  * An abstract base class used by the CDI producers for some common functionality.
@@ -103,10 +104,11 @@ abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializab
     @Override
     public T create(CreationalContext<T> creationalContext) {
         if (facesActive == null) {
-            facesActive = CdiExtension.getInstance().getFacesActive();
+            FacesContext context = FacesContext.getCurrentInstance();
+            facesActive = context != null && context.getExternalContext().getApplicationMap().containsKey(FACES_ACTIVE);
         }
 
-        return facesActive == TRUE ? create.apply(creationalContext) : null;
+        return facesActive ? create.apply(creationalContext) : null;
     }
 
     /**

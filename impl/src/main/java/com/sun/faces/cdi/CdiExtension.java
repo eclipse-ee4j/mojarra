@@ -32,7 +32,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.config.FacesInitializer;
 import com.sun.faces.push.WebsocketChannelManager;
 import com.sun.faces.push.WebsocketSessionManager;
 import com.sun.faces.push.WebsocketUserManager;
@@ -44,7 +43,6 @@ import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
 import jakarta.enterprise.inject.spi.AnnotatedField;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
-import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessBean;
 import jakarta.enterprise.inject.spi.ProcessManagedBean;
@@ -79,11 +77,6 @@ public class CdiExtension implements Extension {
      * Map of {@code @ManagedProperty} target types
      */
     private Set<Type> managedPropertyTargetTypes = new HashSet<>();
-
-    /**
-     * Will be set to true by {@link FacesInitializer} if Jakarta Faces is considered activated on this application.
-     */
-    private Boolean facesActive;
 
     /**
      * Stores the logger.
@@ -277,28 +270,5 @@ public class CdiExtension implements Extension {
      */
     public Map<Class<?>, Class<? extends DataModel<?>>> getForClassToDataModelClass() {
         return forClassToDataModelClass;
-    }
-
-    /**
-     * Returns whether Jakarta Faces is considered active.
-     * @return <ul><li>{@code null} when {@link FacesInitializer} has not yet run,
-     * <li>or {@code false} when {@link FacesInitializer} has run but did not find any Jakarta Faces content nor Faces Servlet nor /WEB-INF/faces-config.xml,
-     * <li>else {@code true}
-     * </ul>
-     */
-    public Boolean getFacesActive() {
-        return facesActive;
-    }
-
-    /**
-     * Sets whether Jakarta Faces is considered active; this should only be called by {@link FacesInitializer}.
-     * @param facesActive whether Jakarta Faces is considered active
-     */
-    public void setFacesActive(boolean facesActive) {
-        this.facesActive = facesActive;
-    }
-
-    public static CdiExtension getInstance() {
-        return CDI.current().select(CdiExtension.class).get();
     }
 }

@@ -18,6 +18,7 @@
 package com.sun.faces.config;
 
 import static com.sun.faces.RIConstants.ANNOTATED_CLASSES;
+import static com.sun.faces.RIConstants.FACES_ACTIVE;
 import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
 import static com.sun.faces.RIConstants.FACES_SERVLET_REGISTRATION;
 import static java.lang.Boolean.parseBoolean;
@@ -26,8 +27,6 @@ import static java.util.Collections.emptySet;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import com.sun.faces.cdi.CdiExtension;
 
 import jakarta.annotation.Resource;
 import jakarta.faces.annotation.FacesConfig;
@@ -78,7 +77,7 @@ import jakarta.websocket.server.ServerContainer;
  */
 @HandlesTypes({
 
-    // Jakarta Faces specific -- must be exactly the same as HANDLED_FACES_TYPES
+    // Jakarta Faces specific
     ClientWindowScoped.class, Converter.class, DataModel.class, FacesBehavior.class, FacesBehaviorRenderer.class, FacesComponent.class, FacesConfig.class,
     FacesConverter.class, FacesDataModel.class, FacesRenderer.class, FacesValidator.class, FlowBuilderParameter.class, FlowDefinition.class, FlowScoped.class,
     ListenerFor.class, ListenersFor.class, NamedEvent.class, PhaseListener.class, Push.class, Renderer.class, ResourceDependencies.class, ResourceDependency.class,
@@ -93,6 +92,7 @@ public class FacesInitializer implements ServletContainerInitializer {
 
     public static final String FACES_PACKAGE_PREFIX = "jakarta.faces.";
     public static final String MOJARRA_PACKAGE_PREFIX = "com.sun.faces.";
+    public static final String MOJARRA_TEST_PACKAGE_PREFIX = "com.sun.faces.test.";
 
     private static final String FACES_CONFIG_RESOURCE_PATH = "/WEB-INF/faces-config.xml";
     private static final String FACES_SERVLET_CLASS_NAME = FacesServlet.class.getName();
@@ -103,16 +103,15 @@ public class FacesInitializer implements ServletContainerInitializer {
 
     @Override
     public void onStartup(Set<Class<?>> classes, ServletContext servletContext) throws ServletException {
+        Set<Class<?>> customFacesTypes = filterCustomFacesTypes(classes);
 
-        setAnnotatedClasses(classes, servletContext);
-
-        boolean appHasFacesContent = isFacesSpecificTypePresent(classes) || isFacesConfigFilePresent(servletContext);
+        boolean appHasFacesContent = !customFacesTypes.isEmpty() || isFacesConfigFilePresent(servletContext);
         boolean appHasFacesServlet = isFacesServletRegistrationPresent(servletContext);
-        boolean facesActive = appHasFacesContent || appHasFacesServlet;
 
-        handleCdiConcerns(facesActive);
+        if (appHasFacesContent || appHasFacesServlet) {
+            servletContext.setAttribute(FACES_ACTIVE, true);
+            servletContext.setAttribute(ANNOTATED_CLASSES, customFacesTypes);
 
-        if (facesActive) {
             InitFacesContext initFacesContext = new InitFacesContext(servletContext);
 
             try {
@@ -139,16 +138,15 @@ public class FacesInitializer implements ServletContainerInitializer {
 
     // --------------------------------------------------------- Private Methods
 
-    private static void setAnnotatedClasses(Set<Class<?>> classes, ServletContext servletContext) {
+    private static Set<Class<?>> filterCustomFacesTypes(Set<Class<?>> classes) {
         Set<Class<?>> set = new HashSet<>(classes == null ? emptySet() : classes);
-        set.removeIf(c -> !c.isAnnotation() || !c.getName().startsWith(FACES_PACKAGE_PREFIX));
-        servletContext.setAttribute(ANNOTATED_CLASSES, set); // NOTE: this must indeed be mutable, see also ProvideMetadataToAnnotationScanTask.
+        set.removeIf(FacesInitializer::isApiOrImplClass);
+        return set;
     }
 
-    private static boolean isFacesSpecificTypePresent(Set<Class<?>> classes) {
-        Set<Class<?>> set = new HashSet<>(classes == null ? emptySet() : classes);
-        set.removeIf(c -> !c.getName().startsWith(FACES_PACKAGE_PREFIX));
-        return !set.isEmpty();
+    private static boolean isApiOrImplClass(Class<?> c) {
+        String name = c.getName();
+        return name.startsWith(FACES_PACKAGE_PREFIX) || (name.startsWith(MOJARRA_PACKAGE_PREFIX) && !name.startsWith(MOJARRA_TEST_PACKAGE_PREFIX));
     }
 
     private static boolean isFacesConfigFilePresent(ServletContext context) {
@@ -164,13 +162,16 @@ public class FacesInitializer implements ServletContainerInitializer {
         return getExistingFacesServletRegistration(context) != null;
     }
 
-    private static void handleCdiConcerns(boolean facesActive) {
-        try {
-            CdiExtension.getInstance().setFacesActive(facesActive);
+    private static ServletRegistration getExistingFacesServletRegistration(ServletContext servletContext) {
+        Map<String, ? extends ServletRegistration> existing = servletContext.getServletRegistrations();
+
+        for (ServletRegistration registration : existing.values()) {
+            if (FACES_SERVLET_CLASS_NAME.equals(registration.getClassName())) {
+                return registration;
+            }
         }
-        catch (Exception ignore) {
-            // NOOP (for now?).
-        }
+
+        return null;
     }
 
     private static void handleMappingConcerns(ServletContext servletContext) throws ServletException {
@@ -193,18 +194,6 @@ public class FacesInitializer implements ServletContainerInitializer {
 
         servletContext.setAttribute(FACES_SERVLET_MAPPINGS, newFacesServletRegistration.getMappings());
         servletContext.setAttribute(FACES_SERVLET_REGISTRATION, newFacesServletRegistration);
-    }
-
-    private static ServletRegistration getExistingFacesServletRegistration(ServletContext servletContext) {
-        Map<String, ? extends ServletRegistration> existing = servletContext.getServletRegistrations();
-
-        for (ServletRegistration registration : existing.values()) {
-            if (FACES_SERVLET_CLASS_NAME.equals(registration.getClassName())) {
-                return registration;
-            }
-        }
-
-        return null;
     }
 
     private static void handleWebSocketConcerns(ServletContext context) throws ServletException {
