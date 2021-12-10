@@ -31,6 +31,7 @@ import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -38,6 +39,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 
+@Ignore // Fails due to TyrusServletContainerInitializer#onStartup(classes) being null in current GlassFish version -- TODO: remove once GlassFish is fixed
 @RunWith(Arquillian.class)
 public class Issue4332IT {
 
