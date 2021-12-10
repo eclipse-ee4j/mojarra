@@ -134,7 +134,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
         newDoc = domImpl.createDocument(RIConstants.DOCUMENT_NAMESPACE, "faces-config", null);
         Node documentElement = newDoc.getDocumentElement();
         Attr versionAttribute = newDoc.createAttribute("version");
-        versionAttribute.setValue("2.2");
+        versionAttribute.setValue(RIConstants.DOCUMENT_VERSION);
         documentElement.getAttributes().setNamedItem(versionAttribute);
 
         Node facesConfig = newDoc.getFirstChild();
