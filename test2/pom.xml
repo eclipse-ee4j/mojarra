@@ -43,7 +43,7 @@
         <java.min.version>11</java.min.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <jsf.version>${project.version}</jsf.version>
+        <faces.version>${project.version}</faces.version>
         <maven.test.skip>false</maven.test.skip>
         <skipTests>false</skipTests>
 
@@ -428,7 +428,7 @@
                                         <artifactItem>
                                             <groupId>org.glassfish</groupId>
                                             <artifactId>jakarta.faces</artifactId>
-                                            <version>${jsf.version}</version>
+                                            <version>${faces.version}</version>
                                             <type>jar</type>
                                             <overWrite>true</overWrite>
                                             <outputDirectory>${glassfish.root}/glassfish6/glassfish/modules</outputDirectory>

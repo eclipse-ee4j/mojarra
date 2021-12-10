@@ -22,8 +22,8 @@ import org.w3c.dom.Document;
  *
  * <p class="changed_added_2_2">
  * This class defines a {@code java.util.ServiceLoader} service which enables programmatic configuration of the Jakarta
- * Server Faces runtime using the existing Application Configuration Resources schema. See the section "Application
- * Startup Behavior" in the specification prose document for the specification on when and how implementations of this
+ * Server Faces runtime using the existing Application Configuration Resources schema. See the section 11.3.2 "Application
+ * Startup Behavior" in the Jakarta Faces Specification Document for the specification on when and how implementations of this
  * service are used.
  * </p>
  *
@@ -51,8 +51,8 @@ public abstract class ApplicationConfigurationPopulator {
      * </p>
      *
      * <p>
-     * If the document is made to contain an {@code <ordering>} element, as specified in the section <em>Ordering of
-     * Artifacts</em> in the specification prose document, the document will be prioritized accordingly. Otherwise, the
+     * If the document is made to contain an {@code <ordering>} element, as specified in the section 11.3.8 "Ordering of
+     * Artifacts" in the Jakarta Faces Specification Document, the document will be prioritized accordingly. Otherwise, the
      * runtime must place the document in the list of other Application Configuration Resources documents at the "lowest"
      * priority, meaning any conflicts that may arise between the argument document and any other Application Configuration
      * Resources are resolved in favor of the other document.

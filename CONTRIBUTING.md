@@ -4,7 +4,7 @@ Thanks for your interest in this project.
 
 ## Project description
 
-Eclipse Mojarra is an implementation for the Jakarta Faces specification. 
+Eclipse Mojarra is an implementation for the Jakarta Faces Specification. 
 Jakarta Faces is a Java specification for building
 component-based user interfaces for web applications. It is also a MVC web
 framework that simplifies construction of user interfaces (UI) for server-based

@@ -38,7 +38,8 @@ import jakarta.inject.Qualifier;
  * to be the <em>validator-class</em>. 
  * 
  * The implementation must guarantee that for each class annotated with  * <code>FacesValidator</code>, found with the 
- * algorithm in section 11.5 of the spec prose document,
+ * algorithm in section 11.4 "Annotations that correspond to and may take the place of entries in the Application Configuration Resources"
+ * of the Jakarta Faces Specification Document,
  * {@link jakarta.faces.application.Application#addValidator(java.lang.String,java.lang.String)} is called, passing the
  * derived <em>validator-id</em> as the first argument and the derived <em>validator-class</em> as the second argument.
  * The implementation must guarantee that all such calls to <code>addValidator()</code> happen during application

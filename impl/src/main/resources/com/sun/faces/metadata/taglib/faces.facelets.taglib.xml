@@ -340,7 +340,8 @@
   <p>
 
 	Binds the component to a backing bean property, as specified in
-	the Faces specification.  <span class="changed_modified_2_2">The
+	section 3.1.5 "Component Bindings" of the Jakarta Faces Specification Document.
+    <span class="changed_modified_2_2">The
 	Java language type of this property must be a class that extends
 	<code>jakarta.faces.component.UIComponent</code>.  The scope of
 	the bean on which this property resides must be no wider than
@@ -661,7 +662,8 @@ starting with "/".</span>
 <div class="changed_added_2_0">
 
         <p>Binds the component to a backing bean property, as specified
-        in the Faces specification. <span class="changed_added_2_2">The
+        in section 3.1.5 "Component Bindings" of the Jakarta Faces Specification Document.
+        <span class="changed_added_2_2">The
 	Java language type of this property must be a class that extends
 	<code>jakarta.faces.component.UIComponent</code>.  The scope of
 	the bean on which this property resides must be no wider than

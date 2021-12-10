@@ -36,7 +36,7 @@ import jakarta.inject.Qualifier;
  *
  * <p>
  * The runtime must maintain a collection of these {@link DataModel}s such that {@link UIData} and other components
- * defined by the Jakarta Faces specification can query the runtime for a suitable {@link DataModel} wrapper
+ * defined by the Jakarta Faces Specification can query the runtime for a suitable {@link DataModel} wrapper
  * (adapter) for the type of their <code>value</code>. This has to be done after all wrappers for specific types such as
  * {@link Set} are tried, but before the {@link ScalarDataModel} is selected as the wrapper. See
  * {@link UIData#getValue()}.
@@ -46,7 +46,7 @@ import jakarta.inject.Qualifier;
  *
  * <p>
  * For an instance of type <code>Z</code> that is being bound to a <code>UIData</code> component or other component
- * defined by the Jakarta Faces specification that utilizes <code>DataModel</code>, the query for that type must
+ * defined by the Jakarta Faces Specification that utilizes <code>DataModel</code>, the query for that type must
  * return the <em>most specific</em> DataModel that can wrap <code>Z</code>.
  *
  * <p>

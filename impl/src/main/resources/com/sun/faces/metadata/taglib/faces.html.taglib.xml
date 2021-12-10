@@ -27,8 +27,8 @@
         <p><strong>Jakarta Faces HTML Tag Library</strong></p>
 
         <p>This tag library contains Jakarta Faces component tags for all
-        UIComponent + HTML RenderKit Renderer combinations defined in the
-        Jakarta Faces Specification.</p>
+        UIComponent + HTML RenderKit Renderer combinations as defined in
+        section 9.5 "Standard HTML RenderKit Tag Library" of the Jakarta Faces Specification Document.</p>
     ]]></description>
     <namespace>jakarta.faces.html</namespace>
     <tag>
