@@ -31,6 +31,7 @@ import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -77,6 +78,7 @@ public class Spec1423IT {
     }
 
     @Test
+    @Ignore // Fails due to FacesInitializer#onStartup(classes) being empty in current GlassFish version -- TODO: remove once GlassFish is fixed
     public void testSpec1423() throws Exception {
         HtmlPage page = webClient.getPage(webUrl + "spec1423.xhtml");
         HtmlSubmitInput button;
