@@ -47,7 +47,6 @@ import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessBean;
 import jakarta.enterprise.inject.spi.ProcessManagedBean;
-import jakarta.faces.annotation.FacesConfig;
 import jakarta.faces.annotation.ManagedProperty;
 import jakarta.faces.model.DataModel;
 import jakarta.faces.model.FacesDataModel;
@@ -141,8 +140,7 @@ public class CdiExtension implements Extension {
         try {
             ProcessManagedBean<T> event = eventIn; // JDK8 u60 workaround
 
-            getAnnotation(beanManager, event.getAnnotated(), FacesConfig.class)
-                    .ifPresent(config -> setAddBeansForJSFImplicitObjects(true));
+            setAddBeansForJSFImplicitObjects(true); // Temp until API issue 1594 is merged because ImplicitELResolver has been removed
 
             for (AnnotatedField<? super T> field : event.getAnnotatedBeanClass().getFields()) {
                 if (field.isAnnotationPresent(ManagedProperty.class)
