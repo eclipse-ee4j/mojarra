@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  * Copyright (c) 2021 Contributors to Eclipse Foundation.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -29,7 +29,6 @@ import static com.sun.faces.util.MessageUtils.APPLICATION_ASSOCIATE_EXISTS_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.Util.getFacesConfigXmlVersion;
 import static com.sun.faces.util.Util.getFacesServletRegistration;
-import static com.sun.faces.util.Util.isCdiAvailable;
 import static com.sun.faces.util.Util.split;
 import static jakarta.faces.FactoryFinder.FACELET_CACHE_FACTORY;
 import static jakarta.faces.FactoryFinder.FLOW_HANDLER_FACTORY;
@@ -102,7 +101,6 @@ import jakarta.faces.view.facelets.FaceletCache;
 import jakarta.faces.view.facelets.FaceletCacheFactory;
 import jakarta.faces.view.facelets.TagDecorator;
 import jakarta.servlet.ServletContext;
-import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * <p>
@@ -160,7 +158,6 @@ public class ApplicationAssociate {
 
     private AnnotationManager annotationManager;
     private boolean devModeEnabled;
-    private boolean hasPushBuilder;
     private Compiler compiler;
     private DefaultFaceletFactory faceletFactory;
     private ResourceManager resourceManager;
@@ -255,7 +252,6 @@ public class ApplicationAssociate {
         annotationManager = new AnnotationManager();
 
         devModeEnabled = appImpl.getProjectStage() == Development;
-        hasPushBuilder = checkForPushBuilder();
 
         if (!devModeEnabled) {
             resourceCache = new ResourceCache();
@@ -269,14 +265,6 @@ public class ApplicationAssociate {
 
         definingDocumentIdsToTruncatedJarUrls = new ConcurrentHashMap<>();
         timeOfInstantiation = System.currentTimeMillis();
-    }
-
-    private boolean checkForPushBuilder() {
-        try {
-            return HttpServletRequest.class.getMethod("newPushBuilder", (Class[]) null) != null;
-        } catch (NoSuchMethodException | SecurityException ex) {
-            return false;
-        }
     }
 
     public Application getApplication() {
@@ -308,12 +296,11 @@ public class ApplicationAssociate {
             }
 
             FacesContext context = FacesContext.getCurrentInstance();
-            if (isCdiAvailable(context)) {
-                try {
-                    new JavaFlowLoaderHelper().loadFlows(context, flowHandler);
-                } catch (IOException ex) {
-                    LOGGER.log(SEVERE, null, ex);
-                }
+
+            try {
+                new JavaFlowLoaderHelper().loadFlows(context, flowHandler);
+            } catch (IOException ex) {
+                LOGGER.log(SEVERE, null, ex);
             }
 
             // cause the Facelet VDL to be instantiated eagerly, so it can
@@ -432,10 +419,6 @@ public class ApplicationAssociate {
 
     public boolean isDevModeEnabled() {
         return devModeEnabled;
-    }
-
-    public boolean isPushBuilderSupported() {
-        return hasPushBuilder;
     }
 
     /**
@@ -588,6 +571,9 @@ public class ApplicationAssociate {
      * <p>
      * 
      * values: ResourceBundleBean instances.
+     * 
+     * @param var the variable name
+     * @param bundle the application resource bundle
      */
 
     public void addResourceBundle(String var, ApplicationResourceBundle bundle) {

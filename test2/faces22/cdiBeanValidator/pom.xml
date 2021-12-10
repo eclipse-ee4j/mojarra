@@ -27,5 +27,6 @@
     
     <artifactId>cdiBeanValidator</artifactId>
     <packaging>war</packaging>
+    <name>Mojarra ${project.version} - Test - Faces 2.2 - CDI Bean Validator</name>
     
 </project>

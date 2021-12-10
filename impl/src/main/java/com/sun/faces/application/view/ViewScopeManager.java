@@ -98,7 +98,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
      *
      * @param facesContext The faces context
      * @param viewMap The view to locate
-     * @return
+     * @return located ID
      */
     protected static String locateViewMapId(FacesContext facesContext, Map<String, Object> viewMap) {
         Object session = facesContext.getExternalContext().getSession(true);
@@ -202,6 +202,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
      * Get our instance.
      *
      * @param facesContext the FacesContext.
+     * @return our instance.
      */
     public static ViewScopeManager getInstance(FacesContext facesContext) {
         if (!facesContext.getExternalContext().getApplicationMap().containsKey(VIEW_SCOPE_MANAGER)) {
@@ -225,7 +226,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
      * Process the system event.
      *
      * @param systemEvent the system event.
-     * @throws AbortProcessingException when processing needs to be aborter.
+     * @throws AbortProcessingException when processing needs to be aborted.
      */
     @Override
     public void processEvent(SystemEvent systemEvent) throws AbortProcessingException {

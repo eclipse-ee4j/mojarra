@@ -44,9 +44,13 @@ import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.enterprise.util.TypeLiteral;
 import jakarta.faces.component.behavior.Behavior;
+import jakarta.faces.component.behavior.FacesBehavior;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.FacesConverter;
 import jakarta.faces.model.DataModel;
+import jakarta.faces.model.FacesDataModel;
+import jakarta.faces.validator.FacesValidator;
 import jakarta.faces.validator.Validator;
 
 /**
@@ -81,7 +85,7 @@ public final class CdiUtils {
      * @return the converter, or null if we could not match one.
      */
     public static Converter<?> createConverter(BeanManager beanManager, String value) {
-        Converter<?> managedConverter = createConverter(beanManager, new FacesConverterAnnotationLiteral(value, Object.class));
+        Converter<?> managedConverter = createConverter(beanManager, FacesConverter.Literal.of(value, Object.class, true));
 
         if (managedConverter != null) {
             ApplicationAssociate associate = ApplicationAssociate.getCurrentInstance();
@@ -105,7 +109,7 @@ public final class CdiUtils {
 
         for (Class<?> forClassOrSuperclass = forClass; managedConverter == null && forClassOrSuperclass != null
                 && forClassOrSuperclass != Object.class; forClassOrSuperclass = forClassOrSuperclass.getSuperclass()) {
-            managedConverter = createConverter(beanManager, new FacesConverterAnnotationLiteral("", forClassOrSuperclass));
+            managedConverter = createConverter(beanManager, FacesConverter.Literal.of("", forClassOrSuperclass, true));
         }
 
         if (managedConverter != null) {
@@ -141,7 +145,7 @@ public final class CdiUtils {
     public static Behavior createBehavior(BeanManager beanManager, String value) {
         Behavior delegatingBehavior = null;
 
-        Behavior managedBehavior = getBeanReference(beanManager, Behavior.class, new FacesBehaviorAnnotationLiteral(value));
+        Behavior managedBehavior = getBeanReference(beanManager, Behavior.class, FacesBehavior.Literal.of(value, true));
 
         if (managedBehavior != null) {
             delegatingBehavior = new CdiBehavior(value, managedBehavior);
@@ -159,7 +163,7 @@ public final class CdiUtils {
      */
     public static Validator<?> createValidator(BeanManager beanManager, String value) {
 
-        Annotation qualifier = new FacesValidatorAnnotationLiteral(value);
+        Annotation qualifier = FacesValidator.Literal.of(value, false, true);
 
         // Try to find parameterized validator first
         Validator<?> managedValidator = (Validator<?>) getBeanReferenceByType(beanManager, VALIDATOR_TYPE, qualifier);
@@ -191,6 +195,7 @@ public final class CdiUtils {
     }
 
     /**
+     * @param <T> the generic bean type
      * @param beanManager the bean manager
      * @param type the required bean type the reference must have
      * @param qualifiers the required qualifiers the reference must have
@@ -215,6 +220,7 @@ public final class CdiUtils {
     /**
      * Returns concrete (non-proxied) bean instance of given class in current context.
      *
+     * @param <T> the generic bean type
      * @param type the required bean type the instance must have
      * @param create whether to auto-create bean if not exist
      * @return a bean instance adhering to the required type
@@ -240,6 +246,7 @@ public final class CdiUtils {
     /**
      * Finds an annotation in an Annotated, taking stereo types into account
      *
+     * @param <A> the generic annotation type
      * @param beanManager the current bean manager
      * @param annotated the Annotated in which to search
      * @param annotationType the type of the annotation to search for
@@ -296,7 +303,7 @@ public final class CdiUtils {
                 // and has the @FacesDataModel annotation, with the "forClass" attribute set to the closest
                 // super class of our target class.
 
-                e -> dataModel.add(cdi.select(e.getValue(), new FacesDataModelAnnotationLiteral(e.getKey())).get()));
+                e -> dataModel.add(cdi.select(e.getValue(), FacesDataModel.Literal.of(e.getKey())).get()));
 
         return dataModel.isEmpty() ? null : dataModel.get(0);
     }
@@ -314,6 +321,9 @@ public final class CdiUtils {
 
     /**
      * Returns the current injection point.
+     * @param beanManager the involved bean manager
+     * @param creationalContext the involved creational context
+     * @return the current injection point
      */
     public static InjectionPoint getCurrentInjectionPoint(BeanManager beanManager, CreationalContext<?> creationalContext) {
         Bean<? extends Object> bean = beanManager.resolve(beanManager.getBeans(InjectionPoint.class));
@@ -329,6 +339,10 @@ public final class CdiUtils {
 
     /**
      * Returns the qualifier annotation of the given qualifier class from the given injection point.
+     * @param <A> the type of given qualifier class 
+     * @param injectionPoint the injection point
+     * @param qualifierClass the qualifier class to be filtered
+     * @return the qualifier annotation
      */
     public static <A extends Annotation> A getQualifier(InjectionPoint injectionPoint, Class<A> qualifierClass) {
         for (Annotation annotation : injectionPoint.getQualifiers()) {
@@ -342,6 +356,9 @@ public final class CdiUtils {
 
     /**
      * Returns true if given scope is active in current context.
+     * @param <S> the type of given scope
+     * @param scope the scope to be checked
+     * @return whether given scope is active
      */
     public static <S extends Annotation> boolean isScopeActive(Class<S> scope) {
         BeanManager beanManager = Util.getCdiBeanManager(FacesContext.getCurrentInstance());

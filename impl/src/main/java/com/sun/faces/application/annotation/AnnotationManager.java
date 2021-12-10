@@ -132,6 +132,7 @@ public class AnnotationManager {
      * </p>
      *
      * @param ctx FacesContext available during application initialization
+     * @param annotationType the involved annotation type
      * @param annotatedClasses <code>Collection</code> of class names known to contain one or more Faces configuration
      * annotations
      */

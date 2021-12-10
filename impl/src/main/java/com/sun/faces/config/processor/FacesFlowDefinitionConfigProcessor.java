@@ -131,24 +131,24 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
         dbf.setNamespaceAware(true);
         DocumentBuilder builder = dbf.newDocumentBuilder();
         DOMImplementation domImpl = builder.getDOMImplementation();
-        newDoc = domImpl.createDocument(RIConstants.JAVAEE_XMLNS, "faces-config", null);
+        newDoc = domImpl.createDocument(RIConstants.DOCUMENT_NAMESPACE, "faces-config", null);
         Node documentElement = newDoc.getDocumentElement();
         Attr versionAttribute = newDoc.createAttribute("version");
-        versionAttribute.setValue("2.2");
+        versionAttribute.setValue(RIConstants.DOCUMENT_VERSION);
         documentElement.getAttributes().setNamedItem(versionAttribute);
 
         Node facesConfig = newDoc.getFirstChild();
 
-        Element flowDefinition = newDoc.createElementNS(RIConstants.JAVAEE_XMLNS, "flow-definition");
+        Element flowDefinition = newDoc.createElementNS(RIConstants.DOCUMENT_NAMESPACE, "flow-definition");
         flowDefinition.setAttribute("id", flowName);
         facesConfig.appendChild(flowDefinition);
         final String flowReturnStr = flowName + "-return";
 
-        Element flowReturn = newDoc.createElementNS(RIConstants.JAVAEE_XMLNS, "flow-return");
+        Element flowReturn = newDoc.createElementNS(RIConstants.DOCUMENT_NAMESPACE, "flow-return");
         flowReturn.setAttribute("id", flowReturnStr);
         flowDefinition.appendChild(flowReturn);
 
-        Element fromOutcome = newDoc.createElementNS(RIConstants.JAVAEE_XMLNS, "from-outcome");
+        Element fromOutcome = newDoc.createElementNS(RIConstants.DOCUMENT_NAMESPACE, "from-outcome");
         flowReturn.appendChild(fromOutcome);
         fromOutcome.setTextContent("/" + flowReturnStr);
 

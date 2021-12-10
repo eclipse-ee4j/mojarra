@@ -41,7 +41,7 @@ public class ViewScopeEventListener implements ViewMapListener {
      * Handle the system event.
      *
      * @param se the system event.
-     * @throws AbortProcessingException
+     * @throws AbortProcessingException when processing needs to be aborted.
      */
     @Override
     public void processEvent(SystemEvent se) throws AbortProcessingException {

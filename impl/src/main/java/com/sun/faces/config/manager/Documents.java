@@ -16,7 +16,8 @@
 
 package com.sun.faces.config.manager;
 
-import static com.sun.faces.RIConstants.JAVAEE_XMLNS;
+import static com.sun.faces.RIConstants.DOCUMENT_NAMESPACE;
+import static com.sun.faces.RIConstants.DOCUMENT_VERSION;
 import static com.sun.faces.util.Util.isEmpty;
 import static java.util.Arrays.asList;
 import static java.util.logging.Level.INFO;
@@ -232,10 +233,10 @@ public class Documents {
     }
 
     private static Document createEmptyFacesConfigDocument(DOMImplementation domImpl) {
-        Document document = domImpl.createDocument(JAVAEE_XMLNS, "faces-config", null);
+        Document document = domImpl.createDocument(DOCUMENT_NAMESPACE, "faces-config", null);
 
         Attr versionAttribute = document.createAttribute("version");
-        versionAttribute.setValue("2.2");
+        versionAttribute.setValue(DOCUMENT_VERSION);
         document.getDocumentElement().getAttributes().setNamedItem(versionAttribute);
 
         return document;

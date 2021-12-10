@@ -20,6 +20,7 @@ import java.lang.reflect.Type;
 import java.util.Map;
 
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.annotation.HeaderMap;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
@@ -39,7 +40,7 @@ public class HeaderMapProducer extends CdiProducer<Map<String, String>> {
     private static final long serialVersionUID = 1L;
 
     public HeaderMapProducer() {
-        super.name("header").scope(RequestScoped.class).qualifiers(new HeaderMapAnnotationLiteral())
+        super.name("header").scope(RequestScoped.class).qualifiers(HeaderMap.Literal.INSTANCE)
                 .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, String.class }), Map.class, Object.class).beanClass(Map.class)
                 .create(e -> FacesContext.getCurrentInstance().getExternalContext().getRequestHeaderMap());
     }

@@ -152,7 +152,7 @@ public class DefaultFaceletFactory {
      *
      * @return resolved URL
      *
-     * @throws IOException
+     * @throws IOException when an I/O exception occurs
      */
     public URL resolveURL(URL source, String path) throws IOException {
         // PENDING(FCAPUTO): always go to the resolver to make resource library contracts work with relative urls
@@ -171,14 +171,15 @@ public class DefaultFaceletFactory {
      * Create a Facelet from the passed URL. This method checks if the cached Facelet needs to be refreshed before
      * returning. If so, uses the passed URL to build a new instance;
      *
+     * @param context the involved faces context
      * @param url source url
      *
      * @return Facelet instance
      *
-     * @throws IOException
-     * @throws FaceletException
-     * @throws FacesException
-     * @throws ELException
+     * @throws IOException when an I/O exception occurs
+     * @throws FaceletException when a Facelet exception occurs
+     * @throws FacesException when a Faces exception occurs
+     * @throws ELException when an EL exception occurs
      */
     public Facelet getFacelet(FacesContext context, URL url) throws IOException {
         Facelet result = getCache(context).getFacelet(url);

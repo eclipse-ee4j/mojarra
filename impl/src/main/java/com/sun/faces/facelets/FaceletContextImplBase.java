@@ -33,7 +33,7 @@ public abstract class FaceletContextImplBase extends FaceletContext {
     /**
      * Push the passed TemplateClient onto the stack for Definition Resolution
      *
-     * @param client
+     * @param client the template client
      * @see TemplateClient
      */
     public abstract void pushClient(TemplateClient client);
@@ -41,6 +41,7 @@ public abstract class FaceletContextImplBase extends FaceletContext {
     /**
      * Pop the last added TemplateClient
      *
+     * @param client the template client
      * @see TemplateClient
      */
     public abstract void popClient(TemplateClient client);
@@ -54,10 +55,10 @@ public abstract class FaceletContextImplBase extends FaceletContext {
      * @param parent the UIComponent to apply to
      * @param name name or null of the definition you want to apply
      * @return true if successfully applied, otherwise false
-     * @throws IOException
-     * @throws FaceletException
-     * @throws FacesException
-     * @throws ELException
+     * @throws IOException when an I/O exception occurs
+     * @throws FaceletException when a Facelet exception occurs
+     * @throws FacesException when a Faces exception occurs
+     * @throws ELException when an EL exception occurs
      */
     public abstract boolean includeDefinition(UIComponent parent, String name) throws IOException, FaceletException, FacesException, ELException;
 

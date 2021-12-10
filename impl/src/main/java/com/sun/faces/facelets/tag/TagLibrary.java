@@ -36,6 +36,7 @@ public interface TagLibrary {
      *
      * @param ns namespace
      * @param t the tag instance currently active at the time this method is called. May be null
+     * @return whether the namespace is used in this library
      *
      */
     boolean containsNamespace(String ns, Tag t);
@@ -45,6 +46,7 @@ public interface TagLibrary {
      *
      * @param ns namespace
      * @param localName local name
+     * @return whether handled by this library
      */
     boolean containsTagHandler(String ns, String localName);
 
@@ -55,7 +57,7 @@ public interface TagLibrary {
      * @param localName local name
      * @param tag configuration information
      * @return a new TagHandler instance
-     * @throws FacesException
+     * @throws FacesException when a Faces exception occurs
      */
     TagHandler createTagHandler(String ns, String localName, TagConfig tag) throws FacesException;
 
@@ -73,6 +75,7 @@ public interface TagLibrary {
      *
      * @param ns namespace
      * @param name function name
+     * @return a Method instance for the passed namespace and name
      */
     Method createFunction(String ns, String name);
 }

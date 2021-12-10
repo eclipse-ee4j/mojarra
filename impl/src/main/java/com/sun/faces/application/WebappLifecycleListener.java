@@ -20,7 +20,6 @@ import static com.sun.faces.application.view.ViewScopeManager.ACTIVE_VIEW_MAPS;
 import static com.sun.faces.application.view.ViewScopeManager.VIEW_SCOPE_MANAGER;
 import static com.sun.faces.cdi.clientwindow.ClientWindowScopeManager.CLIENT_WINDOW_SCOPE_MANAGER;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
-
 import static java.util.Arrays.asList;
 
 import java.util.ArrayList;
@@ -32,7 +31,6 @@ import com.sun.faces.config.InitFacesContext;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.flow.FlowCDIContext;
 import com.sun.faces.renderkit.StateHelper;
-import com.sun.faces.util.Util;
 
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.ExceptionQueuedEvent;
@@ -48,7 +46,7 @@ import jakarta.servlet.http.HttpSessionListener;
 /**
  * <p>
  * Central location for web application lifecycle events.
- * <p>
+ * </p>
  * <p>
  * The main purpose of this class is detect when we should be invoking methods marked with the <code>@PreDestroy</code>
  * annotation.
@@ -139,10 +137,7 @@ public class WebappLifecycleListener {
      */
     public void sessionDestroyed(HttpSessionEvent event) {
         activeSessions.remove(event.getSession());
-
-        if (Util.isCdiAvailable(servletContext)) {
-            FlowCDIContext.sessionDestroyed(event);
-        }
+        FlowCDIContext.sessionDestroyed(event);
 
         for (HttpSessionListener listener :
                 asList((HttpSessionListener)servletContext.getAttribute(VIEW_SCOPE_MANAGER),

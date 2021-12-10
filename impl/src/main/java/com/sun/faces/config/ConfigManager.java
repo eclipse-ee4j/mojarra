@@ -180,6 +180,7 @@ public class ConfigManager {
     }
 
     /**
+     * @param servletContext the involved servlet context
      * @return a <code>ConfigManager</code> instance
      */
     public static ConfigManager getInstance(ServletContext servletContext) {
@@ -187,6 +188,7 @@ public class ConfigManager {
     }
 
     /**
+     * @param ctx the involved faces context
      * @return the results of the annotation scan task
      */
     public static Map<Class<? extends Annotation>, Set<Class<?>>> getAnnotatedClasses(FacesContext ctx) {
@@ -216,6 +218,7 @@ public class ConfigManager {
      * </p>
      *
      * @param servletContext the <code>ServletContext</code> for the application that requires initialization
+     * @param facesContext the involved initialization faces context
      */
     public void initialize(ServletContext servletContext, InitFacesContext facesContext) {
         if (!hasBeenInitialized(servletContext)) {

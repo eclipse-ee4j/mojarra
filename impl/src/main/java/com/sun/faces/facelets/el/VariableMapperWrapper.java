@@ -38,7 +38,7 @@ public class VariableMapperWrapper extends VariableMapper {
     private Map vars;
 
     /**
-     *
+     * @param orig the original variable mapper to be wrapped
      */
     public VariableMapperWrapper(VariableMapper orig) {
         super();

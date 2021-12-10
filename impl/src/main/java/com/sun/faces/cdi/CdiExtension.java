@@ -18,7 +18,6 @@ package com.sun.faces.cdi;
 
 import static com.sun.faces.cdi.CdiUtils.addAnnotatedTypes;
 import static com.sun.faces.cdi.CdiUtils.getAnnotation;
-import static jakarta.faces.annotation.FacesConfig.Version.JSF_2_3;
 import static java.util.Collections.unmodifiableMap;
 
 import java.lang.reflect.ParameterizedType;
@@ -48,7 +47,6 @@ import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessBean;
 import jakarta.enterprise.inject.spi.ProcessManagedBean;
-import jakarta.faces.annotation.FacesConfig;
 import jakarta.faces.annotation.ManagedProperty;
 import jakarta.faces.model.DataModel;
 import jakarta.faces.model.FacesDataModel;
@@ -87,6 +85,7 @@ public class CdiExtension implements Extension {
      * After bean discovery.
      *
      * @param afterBeanDiscovery the after bean discovery.
+     * @param beanManager the bean manager.
      */
     public void afterBean(final @Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
         if (addBeansForFacesImplicitObjects) {
@@ -123,6 +122,7 @@ public class CdiExtension implements Extension {
     /**
      * Processing of beans
      *
+     * @param <T> the generic bean type
      * @param event the process bean event
      * @param beanManager the current bean manager
      */
@@ -140,8 +140,7 @@ public class CdiExtension implements Extension {
         try {
             ProcessManagedBean<T> event = eventIn; // JDK8 u60 workaround
 
-            getAnnotation(beanManager, event.getAnnotated(), FacesConfig.class)
-                    .ifPresent(config -> setAddBeansForJSFImplicitObjects(config.version().ordinal() >= JSF_2_3.ordinal()));
+            setAddBeansForJSFImplicitObjects(true); // Temp until API issue 1594 is merged because ImplicitELResolver has been removed
 
             for (AnnotatedField<? super T> field : event.getAnnotatedBeanClass().getFields()) {
                 if (field.isAnnotationPresent(ManagedProperty.class)

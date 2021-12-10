@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2021 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -16,13 +17,11 @@
 
 package com.sun.faces.context;
 
-import static com.sun.faces.RIConstants.FACES_PREFIX;
 import static com.sun.faces.RIConstants.PUSH_RESOURCE_URLS_KEY_NAME;
 import static com.sun.faces.context.ContextParam.SendPoweredByHeader;
 import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.Util.isEmpty;
-import static java.lang.Boolean.FALSE;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,7 +43,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.faces.RIConstants;
-import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.context.flash.ELFlash;
 import com.sun.faces.renderkit.html_basic.ScriptRenderer;
 import com.sun.faces.renderkit.html_basic.StylesheetRenderer;
@@ -73,6 +71,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.PushBuilder;
 
 /**
  * <p>
@@ -81,8 +80,6 @@ import jakarta.servlet.http.HttpSession;
 public class ExternalContextImpl extends ExternalContext {
 
     private static final Logger LOGGER = FacesLogger.CONTEXT.getLogger();
-
-    private static final String PUSH_SUPPORTED_ATTRIBUTE_NAME = FACES_PREFIX + "ExternalContextImpl.PUSH_SUPPORTED";
 
     private ServletContext servletContext = null;
     private ServletRequest request = null;
@@ -567,9 +564,8 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public String encodeResourceURL(String url) {
-        if (null == url) {
-            String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "url");
-            throw new NullPointerException(message);
+        if (url == null) {
+            throw new NullPointerException(getExceptionMessageString(NULL_PARAMETERS_ERROR_MESSAGE_ID, "url"));
         }
 
         String result = ((HttpServletResponse) response).encodeURL(url);
@@ -763,9 +759,6 @@ public class ExternalContextImpl extends ExternalContext {
 
     /**
      * @see ExternalContext#addResponseCookie(String, String, java.util.Map)
-     * @param name
-     * @param value
-     * @param properties
      */
     @Override
     public void addResponseCookie(String name, String value, Map<String, Object> properties) {
@@ -1055,28 +1048,10 @@ public class ExternalContextImpl extends ExternalContext {
 
     private void pushIfPossibleAndNecessary(String result) {
         FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext extContext = context.getExternalContext();
-        Map<Object, Object> attrs = context.getAttributes();
-        Object val;
 
-        // 1. check the request cache
-        if (null != (val = attrs.get(PUSH_SUPPORTED_ATTRIBUTE_NAME))) {
-            if (!(Boolean) val) {
-                return;
-            }
-        }
-
-        // 2. Not in the request cache, see if PushBuilder is available in the container
-        ApplicationAssociate associate = ApplicationAssociate.getInstance(extContext);
-        if (!associate.isPushBuilderSupported()) {
-            // At least we won't have to hit the ApplicationAssociate every time on this request.
-            attrs.putIfAbsent(PUSH_SUPPORTED_ATTRIBUTE_NAME, FALSE);
-            return;
-        }
-
-        // 3. Don't bother trying to push if we've already pushed this URL for this request
+        // 1. Don't bother trying to push if we've already pushed this URL for this request
         @SuppressWarnings("unchecked")
-        Set<String> resourceUrls = (Set<String>) FacesContext.getCurrentInstance().getAttributes().computeIfAbsent(PUSH_RESOURCE_URLS_KEY_NAME,
+        Set<String> resourceUrls = (Set<String>) context.getAttributes().computeIfAbsent(PUSH_RESOURCE_URLS_KEY_NAME,
                 k -> new HashSet<>());
 
         if (resourceUrls.contains(result)) {
@@ -1084,43 +1059,27 @@ public class ExternalContextImpl extends ExternalContext {
         }
         resourceUrls.add(result);
 
-        // 4. At this point we know
-        // a) the container has PushBuilder
-        // b) we haven't pushed this URL for this request before
-        Object pbObj = getPushBuilder(context, extContext);
-        if (pbObj != null) {
-            // and now we also know c) there was no If-Modified-Since header
-            ((jakarta.servlet.http.PushBuilder) pbObj).path(result).push();
+        // 2. At this point we know we haven't pushed this URL for this request before
+        PushBuilder pushBuilder = getPushBuilder(context);
+        if (pushBuilder != null) {
+            // and now we also know there was no If-Modified-Since header
+            pushBuilder.path(result).push();
         }
 
     }
 
-    private Object getPushBuilder(FacesContext context, ExternalContext extContext) {
-        jakarta.servlet.http.PushBuilder result = null;
+    private PushBuilder getPushBuilder(FacesContext context) {
+        ExternalContext extContext = context.getExternalContext();
+        
+        if (extContext.getRequest() instanceof HttpServletRequest) {
+            HttpServletRequest hreq = (HttpServletRequest) extContext.getRequest();
 
-        Object requestObj = extContext.getRequest();
-        if (requestObj instanceof HttpServletRequest) {
-            Map<Object, Object> attrs = context.getAttributes();
-            HttpServletRequest hreq = (HttpServletRequest) requestObj;
-            Object val;
-            boolean isPushSupported = false;
-
-            // Try to pull value from the request cache
-            if ((val = attrs.get(PUSH_SUPPORTED_ATTRIBUTE_NAME)) != null) {
-                isPushSupported = (Boolean) val;
-            } else {
-                // If the request has an If-Modified-Since header, do not push, since it's
-                // possible the resources are already in the cache.
-                isPushSupported = isEmpty(extContext.getRequestHeaderMap().get("If-Modified-Since"));
+            if (isEmpty(extContext.getRequestHeaderMap().get("If-Modified-Since"))) {
+                return hreq.newPushBuilder();
             }
-
-            if (isPushSupported) {
-                isPushSupported = (result = hreq.newPushBuilder()) != null;
-            }
-            attrs.putIfAbsent(PUSH_SUPPORTED_ATTRIBUTE_NAME, isPushSupported);
         }
 
-        return result;
+        return null;
     }
 
     private void doLastPhaseActions(FacesContext context, boolean outgoingResponseIsRedirect) {

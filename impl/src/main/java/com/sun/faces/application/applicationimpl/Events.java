@@ -66,15 +66,8 @@ public class Events {
 
     private ReentrantLisneterInvocationGuard listenerInvocationGuard = new ReentrantLisneterInvocationGuard();
 
-    /**
-     * @see jakarta.faces.application.Application#publishEvent(FacesContext, Class, Object)
-     */
-    public void publishEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass, Object source, ProjectStage projectStage) {
-        publishEvent(context, systemEventClass, null, source, projectStage);
-    }
-
-    /**
-     * @see jakarta.faces.application.Application#publishEvent(FacesContext, Class, Object)
+    /*
+     * @see jakarta.faces.application.Application#publishEvent(FacesContext, Class, Class, Object)
      */
     public void publishEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source,
             ProjectStage projectStage) {
@@ -118,14 +111,14 @@ public class Events {
         }
     }
 
-    /**
+    /*
      * @see Application#subscribeToEvent(Class, jakarta.faces.event.SystemEventListener)
      */
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener) {
         subscribeToEvent(systemEventClass, null, listener);
     }
 
-    /**
+    /*
      * @see Application#subscribeToEvent(Class, Class, jakarta.faces.event.SystemEventListener)
      */
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass, SystemEventListener listener) {
@@ -136,7 +129,7 @@ public class Events {
         getListeners(systemEventClass, sourceClass).add(listener);
     }
 
-    /**
+    /*
      * @see Application#unsubscribeFromEvent(Class, Class, jakarta.faces.event.SystemEventListener)
      */
     public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass, SystemEventListener listener) {

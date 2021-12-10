@@ -52,7 +52,7 @@
     
     <h_jakarta:body>
         <div id="ui_sun"><ui_sun:repeat value="#{['v','a','l','u','e']}" var="v">#{v}</ui_sun:repeat></div>
-        <div id="f_sun"><f_sun:verbatim>value</f_sun:verbatim></div>
+        <div id="f_sun"><f_sun:subview>value</f_sun:subview></div>
         <div id="h_sun"><h_sun:outputText value="value" /></div>
         <div id="cc_sun"><cc_sun:component value="value" /></div>
         <div id="c_sun"><c_sun:if test="#{true}">value</c_sun:if></div>
@@ -60,7 +60,7 @@
 
         <div id="jsf_jcp"><main jsf_jcp:id="id_jcp" /></div>
         <div id="ui_jcp"><ui_jcp:repeat value="#{['v','a','l','u','e']}" var="v">#{v}</ui_jcp:repeat></div>
-        <div id="f_jcp"><f_jcp:verbatim>value</f_jcp:verbatim></div>
+        <div id="f_jcp"><f_jcp:subview>value</f_jcp:subview></div>
         <div id="h_jcp"><h_jcp:outputText value="value" /></div>
         <div id="p_jcp"><h_jcp:inputText p_jcp:type="email" /></div>
         <div id="cc_jcp"><cc_jcp:component value="value" /></div>   
@@ -70,7 +70,7 @@
 
         <div id="faces_jakarta"><main faces_jakarta:id="id_jakarta" /></div>
         <div id="ui_jakarta"><ui_jakarta:repeat value="#{['v','a','l','u','e']}" var="v">#{v}</ui_jakarta:repeat></div>
-        <div id="f_jakarta"><f_jakarta:verbatim>value</f_jakarta:verbatim></div>
+        <div id="f_jakarta"><f_jakarta:subview>value</f_jakarta:subview></div>
         <div id="h_jakarta"><h_jakarta:outputText value="value" /></div>
         <div id="p_jakarta"><h_jakarta:inputText p_jakarta:type="email" /></div>
         <div id="cc_jakarta"><cc_jakarta:component value="value" /></div>
