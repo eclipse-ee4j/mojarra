@@ -30,7 +30,6 @@ import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -119,7 +118,6 @@ public class Spec790IT {
     }
 
     @Test
-    @Ignore // fails due to https://sourceforge.net/p/htmlunit/bugs/1815 TODO enable when HtmlUnit 2.24 is final
     public void testSpec790AjaxNavigation() throws Exception {
         webClient.setIncorrectnessListener(new IgnoringIncorrectnessListener());
 

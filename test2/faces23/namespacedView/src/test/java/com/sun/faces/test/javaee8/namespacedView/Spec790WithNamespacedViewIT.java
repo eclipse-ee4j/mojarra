@@ -30,7 +30,6 @@ import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -122,7 +121,6 @@ public class Spec790WithNamespacedViewIT {
     }
 
     @Test
-    @Ignore // fails due to https://sourceforge.net/p/htmlunit/bugs/1815 TODO enable when HtmlUnit 2.24 is final (2.24 final, still fails)
     public void testSpec790WithNamespacedViewAjaxNavigation() throws Exception {
         webClient.setIncorrectnessListener((o, i) -> {});
 
