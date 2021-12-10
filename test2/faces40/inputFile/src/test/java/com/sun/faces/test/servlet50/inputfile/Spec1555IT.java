@@ -89,14 +89,9 @@ public class Spec1555IT {
         assertEquals("Multiple attribute is NOT set", "", input.getAttribute("multiple"));
 
         File file = generateTempFile("file", "bin", 123);
-        System.out.println("path: " + file.getAbsolutePath());
-        System.out.println("size: " + file.length());
-        System.out.println("time: " + file.lastModified());
         input.setValueAttribute(file.getAbsolutePath());
 
         page = page.getHtmlElementById(form + ":submit").click();
-
-        System.out.println(page.asXml());
         
         assertEquals("Value attribute is NOT set", "", page.getHtmlElementById(form + ":input").getAttribute("value"));
 
