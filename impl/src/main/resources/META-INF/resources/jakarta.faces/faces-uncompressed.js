@@ -1433,51 +1433,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
 
             var src = markup;
 
-            // If our special render all markup is present..
-            if (id === "jakarta.faces.ViewRoot" || id === "jakarta.faces.ViewBody") {
-
-                // spec790: If UIViewRoot is currently being updated,
-                // then it means that ajax navigation has taken place.
-                // So, ensure that context.render has correct value for this condition,
-                // because this is not necessarily correclty specified during the request.
-                context.render = "@all";
-
-                var bodyStartEx = new RegExp("< *body[^>]*>", "gi");
-                var bodyEndEx = new RegExp("< */ *body[^>]*>", "gi");
-                var newsrc;
-
-                var docBody = document.getElementsByTagName("body")[0];
-                var bodyStart = bodyStartEx.exec(src);
-
-                if (bodyStart !== null) { // replace body tag
-                    // First, try with XML manipulation
-                    try {
-                        runStylesheets(src);
-                        // Get scripts from text
-                        scripts = getScripts(src);
-                        // Remove scripts from text
-                        newsrc = removeScripts(src);
-                        elementReplace(getBodyElement(newsrc), docBody);
-                        runScripts(scripts);
-                    } catch (e) {
-                        // OK, replacing the body didn't work with XML - fall back to quirks mode insert
-                        var srcBody, bodyEnd;
-                        // if src contains </body>
-                        bodyEnd = bodyEndEx.exec(src);
-                        if (bodyEnd !== null) {
-                            srcBody = src.substring(bodyStartEx.lastIndex, bodyEnd.index);
-                        } else { // can't find the </body> tag, punt
-                            srcBody = src.substring(bodyStartEx.lastIndex);
-                        }
-                        // replace body contents with innerHTML - note, script handling happens within function
-                        elementReplaceStr(docBody, "body", srcBody);
-
-                    }
-
-                } else {  // replace body contents with innerHTML - note, script handling happens within function
-                    elementReplaceStr(docBody, "body", src);
-                }
-            } else if (id === "jakarta.faces.ViewHead") {
+            if (id === "jakarta.faces.ViewHead") {
                 throw new Error("jakarta.faces.ViewHead not supported - browsers cannot reliably replace the head's contents");
             } else if (id === "jakarta.faces.Resource") {
                 runStylesheets(src);
@@ -1485,74 +1441,120 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                 runScripts(scripts);
             } else {
                 var element = $(id);
-                if (!element) {
-                    throw new Error("During update: " + id + " not found");
-                }
 
                 if (context.namingContainerId && id == context.namingContainerId) {
                     // spec790: If UIViewRoot is a NamingContainer and this is currently being updated,
                     // then it means that ajax navigation has taken place.
                     // So, ensure that context.render has correct value for this condition,
-                    // because this is not necessarily correclty specified during the request.
-                    context.render = context.namingContainerId;
+                    // because this is not necessarily correctly specified during the request.
+                    context.render = element ? context.namingContainerId : "@all";
                 }
 
-                var parent = element.parentNode;
-                // Trim space padding before assigning to innerHTML
-                var html = src.replace(/^\s+/g, '').replace(/\s+$/g, '');
-                var parserElement = document.createElement('div');
-                var tag = element.nodeName.toLowerCase();
-                var tableElements = ['td', 'th', 'tr', 'tbody', 'thead', 'tfoot'];
-                var isInTable = false;
-                for (var tei = 0, tel = tableElements.length; tei < tel; tei++) {
-                    if (tableElements[tei] == tag) {
-                        isInTable = true;
-                        break;
+                if (id === "jakarta.faces.ViewRoot" || id === "jakarta.faces.ViewBody" || context.render === "@all") {
+    
+                    // spec790: If UIViewRoot is currently being updated,
+                    // then it means that ajax navigation has taken place.
+                    // So, ensure that context.render has correct value for this condition,
+                    // because this is not necessarily correctly specified during the request.
+                    context.render = "@all";
+    
+                    var bodyStartEx = new RegExp("< *body[^>]*>", "gi");
+                    var bodyEndEx = new RegExp("< */ *body[^>]*>", "gi");
+                    var newsrc;
+    
+                    var docBody = document.getElementsByTagName("body")[0];
+                    var bodyStart = bodyStartEx.exec(src);
+    
+                    if (bodyStart !== null) { // replace body tag
+                        // First, try with XML manipulation
+                        try {
+                            runStylesheets(src);
+                            // Get scripts from text
+                            scripts = getScripts(src);
+                            // Remove scripts from text
+                            newsrc = removeScripts(src);
+                            elementReplace(getBodyElement(newsrc), docBody);
+                            runScripts(scripts);
+                        } catch (e) {
+                            // OK, replacing the body didn't work with XML - fall back to quirks mode insert
+                            var srcBody, bodyEnd;
+                            // if src contains </body>
+                            bodyEnd = bodyEndEx.exec(src);
+                            if (bodyEnd !== null) {
+                                srcBody = src.substring(bodyStartEx.lastIndex, bodyEnd.index);
+                            } else { // can't find the </body> tag, punt
+                                srcBody = src.substring(bodyStartEx.lastIndex);
+                            }
+                            // replace body contents with innerHTML - note, script handling happens within function
+                            elementReplaceStr(docBody, "body", srcBody);
+    
+                        }
+    
+                    } else {  // replace body contents with innerHTML - note, script handling happens within function
+                        elementReplaceStr(docBody, "body", src);
                     }
-                }
-                if (isInTable) {
-
-                    if (isAutoExec()) {
-                        // Create html
-                        parserElement.innerHTML = '<table>' + html + '</table>';
-                    } else {
-                        // Get the scripts from the text
-                        scripts = getScripts(html);
-                        // Remove scripts from text
-                        html = removeScripts(html);
-                        parserElement.innerHTML = '<table>' + html + '</table>';
+                } else {
+                    if (!element) {
+                        throw new Error("During update: " + id + " not found");
                     }
-                    var newElement = parserElement.firstChild;
-                    //some browsers will also create intermediary elements such as table>tbody>tr>td
-                    while ((null !== newElement) && (id !== newElement.id)) {
-                        newElement = newElement.firstChild;
+    
+                    var parent = element.parentNode;
+                    // Trim space padding before assigning to innerHTML
+                    var html = src.replace(/^\s+/g, '').replace(/\s+$/g, '');
+                    var parserElement = document.createElement('div');
+                    var tag = element.nodeName.toLowerCase();
+                    var tableElements = ['td', 'th', 'tr', 'tbody', 'thead', 'tfoot'];
+                    var isInTable = false;
+                    for (var tei = 0, tel = tableElements.length; tei < tel; tei++) {
+                        if (tableElements[tei] == tag) {
+                            isInTable = true;
+                            break;
+                        }
                     }
-                    parent.replaceChild(newElement, element);
-                    runScripts(scripts);
-                } else if (element.nodeName.toLowerCase() === 'input') {
-                    // special case handling for 'input' elements
-                    // in order to not lose focus when updating,
-                    // input elements need to be added in place.
-                    parserElement = document.createElement('div');
-                    parserElement.innerHTML = html;
-                    newElement = parserElement.firstChild;
-
-                    cloneAttributes(element, newElement);
-                    deleteNode(parserElement);
-                } else if (html.length > 0) {
-                    if (isAutoExec()) {
-                        // Create html
+                    if (isInTable) {
+    
+                        if (isAutoExec()) {
+                            // Create html
+                            parserElement.innerHTML = '<table>' + html + '</table>';
+                        } else {
+                            // Get the scripts from the text
+                            scripts = getScripts(html);
+                            // Remove scripts from text
+                            html = removeScripts(html);
+                            parserElement.innerHTML = '<table>' + html + '</table>';
+                        }
+                        var newElement = parserElement.firstChild;
+                        //some browsers will also create intermediary elements such as table>tbody>tr>td
+                        while ((null !== newElement) && (id !== newElement.id)) {
+                            newElement = newElement.firstChild;
+                        }
+                        parent.replaceChild(newElement, element);
+                        runScripts(scripts);
+                    } else if (element.nodeName.toLowerCase() === 'input') {
+                        // special case handling for 'input' elements
+                        // in order to not lose focus when updating,
+                        // input elements need to be added in place.
+                        parserElement = document.createElement('div');
                         parserElement.innerHTML = html;
-                    } else {
-                        // Get the scripts from the text
-                        scripts = getScripts(html);
-                        // Remove scripts from text
-                        html = removeScripts(html);
-                        parserElement.innerHTML = html;
+                        newElement = parserElement.firstChild;
+    
+                        cloneAttributes(element, newElement);
+                        deleteNode(parserElement);
+                    } else if (html.length > 0) {
+                        if (isAutoExec()) {
+                            // Create html
+                            parserElement.innerHTML = html;
+                        } else {
+                            // Get the scripts from the text
+                            scripts = getScripts(html);
+                            // Remove scripts from text
+                            html = removeScripts(html);
+                            parserElement.innerHTML = html;
+                        }
+                        replaceNode(parserElement.firstChild, element);
+                        deleteNode(parserElement);
+                        runScripts(scripts);
                     }
-                    replaceNode(parserElement.firstChild, element);
-                    deleteNode(parserElement);
-                    runScripts(scripts);
                 }
             }
         };
