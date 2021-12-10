@@ -67,7 +67,7 @@ import jakarta.websocket.server.ServerContainer;
  * Initializes Jakarta Faces if at least one of the following conditions is met:
  *
  * <ul>
- * <li>The <code>Set</code> of classes passed to this initializer contains a class of {@link #HANDLED_FACES_TYPES} , or</li>
+ * <li>The <code>Set</code> of classes passed to this initializer contains an user-defined Faces type, or</li>
  * <li><code>FacesServlet</code> has been explicitly mapped ,or</li>
  * <li><code>/WEB-INF/faces-config.xml</code> exists</li>
  * </ul>
