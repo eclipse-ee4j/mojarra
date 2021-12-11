@@ -44,7 +44,8 @@ import jakarta.faces.event.SystemEventListener;
  * </p>
  *
  * <p>
- * This approach allows the <code>ExceptionHandler</code> facility specified in section 6.2 "ExceptionHandler" of the Jakarta Faces Specification Document to 
+ * This approach allows the <code>ExceptionHandler</code> facility specified in 
+ * section 6.2 "ExceptionHandler" of the Jakarta Faces Specification Document to 
  * operate on the <code>Exception</code>.
  * </p>
  *
@@ -84,8 +85,8 @@ import jakarta.faces.event.SystemEventListener;
  *
  * <p>
  * With either approach, any <code>ExceptionQueuedEvent</code> instances that are published in this way are accessible
- * to the {@link #handle} method, which is called at the end of each lifecycle phase, as specified in section 6.2 "ExceptionHandler" of the 
- * Jakarta Faces Specification Document.
+ * to the {@link #handle} method, which is called at the end of each lifecycle phase, as specified in 
+ * section 6.2 "ExceptionHandler" of the Jakarta Faces Specification Document.
  * </p>
  *
  * <p class="changed_added_2_3">
@@ -109,8 +110,8 @@ public abstract class ExceptionHandler implements SystemEventListener {
      * <p class="changed_added_2_0">
      * Take action to handle the <code>Exception</code> instances residing inside the {@link ExceptionQueuedEvent} instances
      * that have been queued by calls to <code>Application().publishEvent(ExceptionQueuedEvent.class,
-     * <em>eventContext</em>)</code>. The requirements of the default implementation are detailed in section 6.2.1 "Default ExceptionHandler implementation" of the 
-     * Jakarta Faces Specification Document.
+     * <em>eventContext</em>)</code>. The requirements of the default implementation are detailed in 
+     * section 6.2.1 "Default ExceptionHandler implementation" of the Jakarta Faces Specification Document.
      * </p>
      *
      * @throws FacesException if and only if a problem occurs while performing the algorithm to handle the

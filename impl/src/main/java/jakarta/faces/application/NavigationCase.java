@@ -57,8 +57,8 @@ public class NavigationCase {
 
     /**
      * <p class="changed_added_2_0">
-     * Construct a new <code>NavigationCase</code> based on the provided arguments. See section 7.4.2 "Default NavigationHandler Algorithm" 
-     * of the Jakarta Faces Specification Document for how a
+     * Construct a new <code>NavigationCase</code> based on the provided arguments. 
+     * See section 7.4.2 "Default NavigationHandler Algorithm" of the Jakarta Faces Specification Document for how a
      * <code>NavigationCase</code> is used by the standard {@link ConfigurableNavigationHandler}
      * </p>
      *
@@ -88,8 +88,8 @@ public class NavigationCase {
 
     /**
      * <p class="changed_added_2_0">
-     * Construct a new <code>NavigationCase</code> based on the provided arguments. See section 7.4.2 "Default NavigationHandler Algorithm" 
-     * of the Jakarta Faces Specification Document 
+     * Construct a new <code>NavigationCase</code> based on the provided arguments. 
+     * See section 7.4.2 "Default NavigationHandler Algorithm" of the Jakarta Faces Specification Document 
      * for how a <code>NavigationCase</code> is used by the standard {@link ConfigurableNavigationHandler}
      * </p>
      *

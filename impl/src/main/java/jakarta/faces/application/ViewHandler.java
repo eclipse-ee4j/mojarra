@@ -467,8 +467,8 @@ public abstract class ViewHandler {
      * <span class="changed_modified_2_2">If</span> the value returned from this method is used as the <code>file</code>
      * argument to the four-argument constructor for <code>java.net.URL</code> (assuming appropriate values are used for the
      * first three arguments), then a client making a request to the <code>toExternalForm()</code> of that <code>URL</code>
-     * will select the argument <code>viewId</code> for traversing the Jakarta Faces lifecycle. Please see section
-     * 7.6.2 "Default ViewHandler Implementation" of the Jakarta Faces Specification Document
+     * will select the argument <code>viewId</code> for traversing the Jakarta Faces lifecycle. Please see
+     * section 7.6.2 "Default ViewHandler Implementation" of the Jakarta Faces Specification Document
      * for the complete specification, <span class="changed_added_2_2">especially for details related to view
      * protection using the {@link jakarta.faces.render.ResponseStateManager#NON_POSTBACK_VIEW_TOKEN_PARAM}
      * </span><span class="changed_added_2_3"> and the behavior when the current request is to a URL for which the

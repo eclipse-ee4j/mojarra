@@ -35,8 +35,9 @@ public abstract class Facelet {
     /**
      * <p>
      * <span class="changed_added_4_0">The</span> passed UIComponent parent will be populated/restored in accordance with
-     * the section 10.2.1 "Specification of the ViewDeclarationLanguage Implementation for Facelets for Jakarta Faces"
-     * in the Jakarta Faces Specification Document with only the meta data as per the <code>f:metadata</code> tag.
+     * the 
+     * section 10.2.1 "Specification of the ViewDeclarationLanguage Implementation for Facelets for Jakarta Faces" in the Jakarta Faces Specification Document 
+     * with only the meta data as per the <code>f:metadata</code> tag.
      * </p>
      *
      * @param facesContext The current FacesContext (Should be the same as FacesContext.getInstance())
@@ -56,8 +57,7 @@ public abstract class Facelet {
     /**
      * <p>
      * <span class="changed_modified_2_2">The</span> passed UIComponent parent will be populated/restored in accordance with
-     * the section 10.2.1 "Specification of the ViewDeclarationLanguage Implementation for Facelets for Jakarta Faces"
-     * in the Jakarta Faces Specification Document.
+     * the section 10.2.1 "Specification of the ViewDeclarationLanguage Implementation for Facelets for Jakarta Faces" in the Jakarta Faces Specification Document.
      * </p>
      *
      * @param facesContext The current FacesContext (Should be the same as FacesContext.getInstance())

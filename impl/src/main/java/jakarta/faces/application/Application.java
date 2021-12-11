@@ -73,8 +73,7 @@ public abstract class Application {
      * <span class="changed_modified_2_2">Return</span> the default {@link ActionListener} to be registered for all
      * {@link jakarta.faces.component.ActionSource} components in this application. If not explicitly set, a default
      * implementation must be provided that performs the <span class="changed_modified_2_2">functions as specified in the
-     * section 7.1.1 "ActionListener Property" in the chapter 7 "Application Integration" of the
-     * Jakarta Faces Specification Document.</span>
+     * section 7.1.1 "ActionListener Property" in the chapter 7 "Application Integration" of the Jakarta Faces Specification Document.</span>
      * </p>
      *
      * <p>
@@ -350,7 +349,7 @@ public abstract class Application {
     /**
      * <p>
      * <span class="changed_modified_2_0_rev_a">Cause</span> an the argument <code>resolver</code> to be added to the
-     * resolver chain as specified in section 5.5.2 "ELResolver" of the Jakarta Faces Specification Document.
+     * resolver chain as specified in section 5.3.2 "ELResolver" of the Jakarta Faces Specification Document.
      * </p>
      *
      * <p>

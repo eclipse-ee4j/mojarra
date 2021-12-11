@@ -36,8 +36,9 @@ import jakarta.inject.Qualifier;
  * <em>converter-id</em>, the value of the {@link #forClass} attribute is taken to be <em>converter-for-class</em> and
  * the fully qualified class name of the class to which this annotation is attached is taken to be the
  * <em>converter-class</em>. The implementation must guarantee that for each class annotated with
- * <code>FacesConverter</code>, found with the algorithm in section 11.4 "Annotations that correspond to and may take the 
- * place of entries in the Application Configuration Resources" of the Jakarta Faces Specification Document, the proper variant of
+ * <code>FacesConverter</code>, found with the algorithm in 
+ * section 11.4 "Annotations that correspond to and may take the place of entries in the Application Configuration Resources" of the Jakarta Faces Specification Document,
+ * the proper variant of
  * <code>Application.addConverter()</code> is called. If <em>converter-id</em> is not the empty string,
  * {@link jakarta.faces.application.Application#addConverter(java.lang.String,java.lang.String)} is called, passing the
  * derived <em>converter-id</em> as the first argument and the derived <em>converter-class</em> as the second argument.

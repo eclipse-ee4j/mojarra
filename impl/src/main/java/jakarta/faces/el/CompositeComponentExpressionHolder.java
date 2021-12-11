@@ -21,7 +21,7 @@ import jakarta.el.ValueExpression;
 /**
  * This interface <em>must</em> be implemented by the <code>Map</code> returned by the composite component
  * <code>ELResolver</code>, described in 
- * section 5.6.3.2 "Composite Component Attributes ELResolver" of the Jakarta Faces Specification Document,
+ * section 5.4.3.1 "faces.CompositeComponentAttributesELResolver" of the Jakarta Faces Specification Document,
  * when evaluating <code>#{cc.attrs}</code> expressions.
  *
  * @since 2.0

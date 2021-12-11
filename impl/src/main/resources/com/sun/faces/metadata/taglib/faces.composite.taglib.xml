@@ -49,8 +49,8 @@
 <h2>Creating a Composite Component</h2>
 
   <p>A composite component is declared by creating a Facelets file
-  inside of a resource library.  (See section 2.6 "Resource Handling" of the
-  Jakarta Faces Specification Document for more information about resource
+  inside of a resource library.  (See section 2.6 "Resource Handling" of the Jakarta Faces Specification Document
+  for more information about resource
   libraries.)  A composite component must reside within a resource
   library.  It is not possible to create a composite component without
   putting it inside of a resource library.</p>
@@ -1060,9 +1060,9 @@ section.</span></p>
 
             </ul>
 
-            <p>For each of the behaviorial interfaces in Section 3.2
-            "Component Behavioral Interfaces" of
-            the Jakarta Faces Specification Document, there is a tag in the
+            <p>For each of the behaviorial interfaces in
+            section 3.2 "Component Behavioral Interfaces" of the Jakarta Faces Specification Document,
+            there is a tag in the
             <code>cc:</code> library to nest inside of the
             <code>&lt;cc:interface&gt;</code> section.
             </p>

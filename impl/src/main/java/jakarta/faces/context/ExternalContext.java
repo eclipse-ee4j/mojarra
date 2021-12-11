@@ -43,8 +43,8 @@ import jakarta.faces.lifecycle.ClientWindow;
  * The documentation for this class only specifies the behavior for the <em>Jakarta Servlet</em> implementation of
  * <code>ExternalContext</code>. The <em>Portlet</em> implementation of <code>ExternalContext</code> is specified under
  * the revision of the <span style="text-decoration: underline;">Portlet Bridge Specification for JavaServer
- * Faces</span> JSR that corresponds to this version of the Jakarta Faces Specification. See the Preface of the
- * Jakarta Faces Specification Document, for a reference.
+ * Faces</span> JSR that corresponds to this version of the Jakarta Faces Specification. 
+ * See the Preface of the Jakarta Faces Specification Document, for a reference.
  * </p>
  *
  * <p class="changed_added_2_0">

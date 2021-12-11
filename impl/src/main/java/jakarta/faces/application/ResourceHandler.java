@@ -311,8 +311,8 @@ public abstract class ResourceHandler {
      *
      * <li>
      * <p>
-     * Considering resource library contracts (at the locations specified in the Jakarta Faces Specification Document section 2.7 "Resource 
-     * Library Contracts").
+     * Considering resource library contracts (at the locations specified in the 
+     * Jakarta Faces Specification Document section 2.7 "Resource Library Contracts").
      * </p>
      * </li>
      *
@@ -324,7 +324,8 @@ public abstract class ResourceHandler {
      *
      * <li>
      * <p>
-     * Considering faces flows (at the locations specified in the Jakarta Faces Specification Document section 11.3.3 "Faces Flows").
+     * Considering faces flows (at the locations specified in the 
+     * Jakarta Faces Specification Document section 11.3.3 "Faces Flows").
      * </p>
      * </li>
      *
@@ -420,8 +421,8 @@ public abstract class ResourceHandler {
      * <div class="changed_added_2_2">
      *
      * <p>
-     * The resource must be identified according to the specification in section 2.6.1.3 "Resource Identifiers"
-     * of the Jakarta Faces Specification Document. New requirements were
+     * The resource must be identified according to the specification in 
+     * section 2.6.1.3 "Resource Identifiers" of the Jakarta Faces Specification Document. New requirements were
      * introduced in version 2.2 of the specification.
      * </p>
      *
