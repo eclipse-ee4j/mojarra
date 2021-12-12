@@ -16,7 +16,6 @@
 
 package com.sun.faces.cdi;
 
-import static com.sun.faces.RIConstants.FACES_ACTIVE;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
@@ -55,7 +54,6 @@ abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializab
     private Set<Annotation> qualifiers = unmodifiableSet(asSet(new DefaultAnnotationLiteral(), new AnyAnnotationLiteral()));
     private Class<? extends Annotation> scope = Dependent.class;
     private Function<CreationalContext<T>, T> create;
-    private Boolean facesActive;
 
     /**
      * Get the ID of this particular instantiation of the producer.
@@ -103,12 +101,7 @@ abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializab
 
     @Override
     public T create(CreationalContext<T> creationalContext) {
-        if (facesActive == null) {
-            FacesContext context = FacesContext.getCurrentInstance();
-            facesActive = context != null && context.getExternalContext().getApplicationMap().containsKey(FACES_ACTIVE);
-        }
-
-        return facesActive ? create.apply(creationalContext) : null;
+        return FacesContext.getCurrentInstance() != null ? create.apply(creationalContext) : null;
     }
 
     /**

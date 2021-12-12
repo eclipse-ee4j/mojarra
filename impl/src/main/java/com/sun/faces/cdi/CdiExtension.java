@@ -175,6 +175,10 @@ public class CdiExtension implements Extension {
      * @param beanManager the bean manager.
      */
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
+
+        // Ideally below should only happen if Jakarta Faces is considered active,
+        // but this is not detectable as ServletContext is not necessarily available at this moment.
+
         afterBeanDiscovery.addBean(new ApplicationProducer());
         afterBeanDiscovery.addBean(new ApplicationMapProducer());
         afterBeanDiscovery.addBean(new CompositeComponentProducer());

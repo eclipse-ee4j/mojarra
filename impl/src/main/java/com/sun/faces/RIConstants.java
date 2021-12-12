@@ -119,11 +119,6 @@ public class RIConstants {
     public static final String ANNOTATED_CLASSES = FACES_PREFIX + "AnnotatedClasses";
 
     /**
-     * Key to mark Jakarta Faces as active.
-     */
-    public static final String FACES_ACTIVE = FACES_PREFIX + "Active";
-
-    /**
      * Key to annotate the mappings for the FacesServlet. Since servlet 3.0 the ConfigureListener
      * cannot access the servlet mappings because it is initialized by a TLD and it is programmatic.
      * So this key will store the mappings during the initialization.

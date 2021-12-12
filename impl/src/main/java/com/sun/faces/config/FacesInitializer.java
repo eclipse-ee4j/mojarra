@@ -18,7 +18,6 @@
 package com.sun.faces.config;
 
 import static com.sun.faces.RIConstants.ANNOTATED_CLASSES;
-import static com.sun.faces.RIConstants.FACES_ACTIVE;
 import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
 import static com.sun.faces.RIConstants.FACES_SERVLET_REGISTRATION;
 import static java.lang.Boolean.parseBoolean;
@@ -72,7 +71,7 @@ import jakarta.websocket.server.ServerContainer;
  * <li><code>/WEB-INF/faces-config.xml</code> exists</li>
  * </ul>
  *
- * If it is met and the <code>FacesServlet</code> has not been explicitly mapped,
+ * If it is met, and the <code>FacesServlet</code> has not been explicitly mapped,
  * then add mappings <em>*.xhtml</em>, <em>/faces</em>, <em>*.jsf</em>, and <em>*.faces</em> for the FacesServlet.
  */
 @HandlesTypes({
@@ -109,9 +108,7 @@ public class FacesInitializer implements ServletContainerInitializer {
         boolean appHasFacesServlet = isFacesServletRegistrationPresent(servletContext);
 
         if (appHasFacesContent || appHasFacesServlet) {
-            servletContext.setAttribute(FACES_ACTIVE, true);
             servletContext.setAttribute(ANNOTATED_CLASSES, customFacesTypes);
-
             InitFacesContext initFacesContext = new InitFacesContext(servletContext);
 
             try {
