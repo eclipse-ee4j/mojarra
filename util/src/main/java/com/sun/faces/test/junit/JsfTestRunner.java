@@ -47,9 +47,9 @@ public class JsfTestRunner extends BlockJUnit4ClassRunner {
         if (clazz.getAnnotation(JsfTest.class) != null) {
             JsfTest jsfTest = clazz.getAnnotation(JsfTest.class);
 
-            if (System.getProperty("jsf.version") != null) {
+            if (System.getProperty("faces.version") != null) {
                 try {
-                    JsfVersion serverVersion = JsfVersion.fromString(System.getProperty("jsf.version"));
+                    JsfVersion serverVersion = JsfVersion.fromString(System.getProperty("faces.version"));
 
                     if (serverVersion.ordinal() < jsfTest.value().ordinal()) {
                         this.skip = true;
@@ -83,7 +83,7 @@ public class JsfTestRunner extends BlockJUnit4ClassRunner {
                     boolean excludeFlag = false;
 
                     if (jsfTest.excludes().length > 0) {
-                        JsfServerExclude exclude = JsfServerExclude.fromString(System.getProperty("jsf.serverString"));
+                        JsfServerExclude exclude = JsfServerExclude.fromString(System.getProperty("faces.serverString"));
 
                         if (exclude != null) {
                             for (JsfServerExclude current : jsfTest.excludes()) {
@@ -94,9 +94,9 @@ public class JsfTestRunner extends BlockJUnit4ClassRunner {
                         }
                     }
 
-                    if (!excludeFlag && System.getProperty("jsf.version") != null) {
+                    if (!excludeFlag && System.getProperty("faces.version") != null) {
                         try {
-                            JsfVersion serverVersion = JsfVersion.fromString(System.getProperty("jsf.version"));
+                            JsfVersion serverVersion = JsfVersion.fromString(System.getProperty("faces.version"));
 
                             if (serverVersion.ordinal() < jsfTest.value().ordinal()) {
                             } else {

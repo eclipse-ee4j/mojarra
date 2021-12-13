@@ -544,8 +544,8 @@
           <xsd:documentation>
             <![CDATA[
             <p class="changed_added_2_2">A valid resource identifier
-            as specified in the spec prose document section
-            2.6.1.3.  For example:</p>
+            as specified in the Jakarta Faces Specification Document section 2.6.1.3 "Resource Identifiers".
+            For example:</p>
             
             <p><code>&lt;resource-id&gt;myCC/ccName.xhtml&lt;/resource-id&gt;</code></p>
             

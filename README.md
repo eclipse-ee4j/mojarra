@@ -302,7 +302,7 @@ Pull requests are accepted on following branches:
 - [`3.0`][29] (3.0.x)
 - [`2.3`][30] (2.3.x)
 
-Note that it's okay to send a PR to the master branch, but this one is for JSF.next and not the current 2.3.x or 3.0.x version.
+Note that it's okay to send a PR to the master branch, but this one is for Faces.next and not the current 2.3.x or 3.0.x version.
 
 
 ## Resources
