@@ -1433,51 +1433,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
 
             var src = markup;
 
-            // If our special render all markup is present..
-            if (id === "jakarta.faces.ViewRoot" || id === "jakarta.faces.ViewBody") {
-
-                // spec790: If UIViewRoot is currently being updated,
-                // then it means that ajax navigation has taken place.
-                // So, ensure that context.render has correct value for this condition,
-                // because this is not necessarily correclty specified during the request.
-                context.render = "@all";
-
-                var bodyStartEx = new RegExp("< *body[^>]*>", "gi");
-                var bodyEndEx = new RegExp("< */ *body[^>]*>", "gi");
-                var newsrc;
-
-                var docBody = document.getElementsByTagName("body")[0];
-                var bodyStart = bodyStartEx.exec(src);
-
-                if (bodyStart !== null) { // replace body tag
-                    // First, try with XML manipulation
-                    try {
-                        runStylesheets(src);
-                        // Get scripts from text
-                        scripts = getScripts(src);
-                        // Remove scripts from text
-                        newsrc = removeScripts(src);
-                        elementReplace(getBodyElement(newsrc), docBody);
-                        runScripts(scripts);
-                    } catch (e) {
-                        // OK, replacing the body didn't work with XML - fall back to quirks mode insert
-                        var srcBody, bodyEnd;
-                        // if src contains </body>
-                        bodyEnd = bodyEndEx.exec(src);
-                        if (bodyEnd !== null) {
-                            srcBody = src.substring(bodyStartEx.lastIndex, bodyEnd.index);
-                        } else { // can't find the </body> tag, punt
-                            srcBody = src.substring(bodyStartEx.lastIndex);
-                        }
-                        // replace body contents with innerHTML - note, script handling happens within function
-                        elementReplaceStr(docBody, "body", srcBody);
-
-                    }
-
-                } else {  // replace body contents with innerHTML - note, script handling happens within function
-                    elementReplaceStr(docBody, "body", src);
-                }
-            } else if (id === "jakarta.faces.ViewHead") {
+            if (id === "jakarta.faces.ViewHead") {
                 throw new Error("jakarta.faces.ViewHead not supported - browsers cannot reliably replace the head's contents");
             } else if (id === "jakarta.faces.Resource") {
                 runStylesheets(src);
@@ -1485,74 +1441,120 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                 runScripts(scripts);
             } else {
                 var element = $(id);
-                if (!element) {
-                    throw new Error("During update: " + id + " not found");
-                }
 
                 if (context.namingContainerId && id == context.namingContainerId) {
                     // spec790: If UIViewRoot is a NamingContainer and this is currently being updated,
                     // then it means that ajax navigation has taken place.
                     // So, ensure that context.render has correct value for this condition,
-                    // because this is not necessarily correclty specified during the request.
-                    context.render = context.namingContainerId;
+                    // because this is not necessarily correctly specified during the request.
+                    context.render = element ? context.namingContainerId : "@all";
                 }
 
-                var parent = element.parentNode;
-                // Trim space padding before assigning to innerHTML
-                var html = src.replace(/^\s+/g, '').replace(/\s+$/g, '');
-                var parserElement = document.createElement('div');
-                var tag = element.nodeName.toLowerCase();
-                var tableElements = ['td', 'th', 'tr', 'tbody', 'thead', 'tfoot'];
-                var isInTable = false;
-                for (var tei = 0, tel = tableElements.length; tei < tel; tei++) {
-                    if (tableElements[tei] == tag) {
-                        isInTable = true;
-                        break;
+                if (id === "jakarta.faces.ViewRoot" || id === "jakarta.faces.ViewBody" || context.render === "@all") {
+    
+                    // spec790: If UIViewRoot is currently being updated,
+                    // then it means that ajax navigation has taken place.
+                    // So, ensure that context.render has correct value for this condition,
+                    // because this is not necessarily correctly specified during the request.
+                    context.render = "@all";
+    
+                    var bodyStartEx = new RegExp("< *body[^>]*>", "gi");
+                    var bodyEndEx = new RegExp("< */ *body[^>]*>", "gi");
+                    var newsrc;
+    
+                    var docBody = document.getElementsByTagName("body")[0];
+                    var bodyStart = bodyStartEx.exec(src);
+    
+                    if (bodyStart !== null) { // replace body tag
+                        // First, try with XML manipulation
+                        try {
+                            runStylesheets(src);
+                            // Get scripts from text
+                            scripts = getScripts(src);
+                            // Remove scripts from text
+                            newsrc = removeScripts(src);
+                            elementReplace(getBodyElement(newsrc), docBody);
+                            runScripts(scripts);
+                        } catch (e) {
+                            // OK, replacing the body didn't work with XML - fall back to quirks mode insert
+                            var srcBody, bodyEnd;
+                            // if src contains </body>
+                            bodyEnd = bodyEndEx.exec(src);
+                            if (bodyEnd !== null) {
+                                srcBody = src.substring(bodyStartEx.lastIndex, bodyEnd.index);
+                            } else { // can't find the </body> tag, punt
+                                srcBody = src.substring(bodyStartEx.lastIndex);
+                            }
+                            // replace body contents with innerHTML - note, script handling happens within function
+                            elementReplaceStr(docBody, "body", srcBody);
+    
+                        }
+    
+                    } else {  // replace body contents with innerHTML - note, script handling happens within function
+                        elementReplaceStr(docBody, "body", src);
                     }
-                }
-                if (isInTable) {
-
-                    if (isAutoExec()) {
-                        // Create html
-                        parserElement.innerHTML = '<table>' + html + '</table>';
-                    } else {
-                        // Get the scripts from the text
-                        scripts = getScripts(html);
-                        // Remove scripts from text
-                        html = removeScripts(html);
-                        parserElement.innerHTML = '<table>' + html + '</table>';
+                } else {
+                    if (!element) {
+                        throw new Error("During update: " + id + " not found");
                     }
-                    var newElement = parserElement.firstChild;
-                    //some browsers will also create intermediary elements such as table>tbody>tr>td
-                    while ((null !== newElement) && (id !== newElement.id)) {
-                        newElement = newElement.firstChild;
+    
+                    var parent = element.parentNode;
+                    // Trim space padding before assigning to innerHTML
+                    var html = src.replace(/^\s+/g, '').replace(/\s+$/g, '');
+                    var parserElement = document.createElement('div');
+                    var tag = element.nodeName.toLowerCase();
+                    var tableElements = ['td', 'th', 'tr', 'tbody', 'thead', 'tfoot'];
+                    var isInTable = false;
+                    for (var tei = 0, tel = tableElements.length; tei < tel; tei++) {
+                        if (tableElements[tei] == tag) {
+                            isInTable = true;
+                            break;
+                        }
                     }
-                    parent.replaceChild(newElement, element);
-                    runScripts(scripts);
-                } else if (element.nodeName.toLowerCase() === 'input') {
-                    // special case handling for 'input' elements
-                    // in order to not lose focus when updating,
-                    // input elements need to be added in place.
-                    parserElement = document.createElement('div');
-                    parserElement.innerHTML = html;
-                    newElement = parserElement.firstChild;
-
-                    cloneAttributes(element, newElement);
-                    deleteNode(parserElement);
-                } else if (html.length > 0) {
-                    if (isAutoExec()) {
-                        // Create html
+                    if (isInTable) {
+    
+                        if (isAutoExec()) {
+                            // Create html
+                            parserElement.innerHTML = '<table>' + html + '</table>';
+                        } else {
+                            // Get the scripts from the text
+                            scripts = getScripts(html);
+                            // Remove scripts from text
+                            html = removeScripts(html);
+                            parserElement.innerHTML = '<table>' + html + '</table>';
+                        }
+                        var newElement = parserElement.firstChild;
+                        //some browsers will also create intermediary elements such as table>tbody>tr>td
+                        while ((null !== newElement) && (id !== newElement.id)) {
+                            newElement = newElement.firstChild;
+                        }
+                        parent.replaceChild(newElement, element);
+                        runScripts(scripts);
+                    } else if (element.nodeName.toLowerCase() === 'input') {
+                        // special case handling for 'input' elements
+                        // in order to not lose focus when updating,
+                        // input elements need to be added in place.
+                        parserElement = document.createElement('div');
                         parserElement.innerHTML = html;
-                    } else {
-                        // Get the scripts from the text
-                        scripts = getScripts(html);
-                        // Remove scripts from text
-                        html = removeScripts(html);
-                        parserElement.innerHTML = html;
+                        newElement = parserElement.firstChild;
+    
+                        cloneAttributes(element, newElement);
+                        deleteNode(parserElement);
+                    } else if (html.length > 0) {
+                        if (isAutoExec()) {
+                            // Create html
+                            parserElement.innerHTML = html;
+                        } else {
+                            // Get the scripts from the text
+                            scripts = getScripts(html);
+                            // Remove scripts from text
+                            html = removeScripts(html);
+                            parserElement.innerHTML = html;
+                        }
+                        replaceNode(parserElement.firstChild, element);
+                        deleteNode(parserElement);
+                        runScripts(scripts);
                     }
-                    replaceNode(parserElement.firstChild, element);
-                    deleteNode(parserElement);
-                    runScripts(scripts);
                 }
             }
         };
@@ -2312,9 +2314,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
              * <li><code>onevent</code> (the event handler for this request)</li></ul>
              * The request context will be used during error/event handling.</li>
              * <li>Send a <code>begin</code> event following the procedure as outlined
-             * in the Chapter 13 "Sending Events" section of the spec prose document <a
-             *  href="../../javadocs/overview-summary.html#prose_document">linked in the
-             *  overview summary</a></li>
+             * in the Jakarta Faces Specification Document section 13.3.5.3 "Sending Events".</li>
              * <li>Set the request header with the name: <code>Faces-Request</code> and the
              * value: <code>partial/ajax</code>.</li>
              * <li>Determine the <code>posting URL</code> as follows: If the hidden field
@@ -2699,17 +2699,11 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
              * <ul>
              * <p>If there is no XML response returned, signal an <code>emptyResponse</code>
              * error. If the XML response does not follow the format as outlined
-             * in Appendix A of the spec prose document <a
-             *  href="../../javadocs/overview-summary.html#prose_document">linked in the
-             *  overview summary</a> signal a <code>malformedError</code> error.  Refer to
-             * section "Signaling Errors" in Chapter 13 of the spec prose document <a
-             *  href="../../javadocs/overview-summary.html#prose_document">linked in the
-             *  overview summary</a>.</p>
+             * in Appendix A.3 "XML Schema Definition For Partial Response" of the Jakarta Faces Specification Document
+             * signal a <code>malformedError</code> error.  Refer to
+             * Jakarta Faces Specification Document section 13.3.6.3 "Signaling Errors".</p>
              * <p>If the response was successfully processed, send a <code>success</code>
-             * event as outlined in Chapter 13 "Sending Events" section of the spec prose
-             * document <a
-             * href="../../javadocs/overview-summary.html#prose_document">linked in the
-             * overview summary</a>.</p>
+             * event as outlined in Jakarta Faces Specification Document section 13.3.5.3 "Sending Events".</p>
              * <p><i>Update Element Processing</i></p>
              * The <code>update</code> element is used to update a single DOM element.  The
              * "id" attribute of the <code>update</code> element refers to the DOM element that
@@ -2889,9 +2883,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
              * Extract this <code>&lt;error&gt;</code> element's <code>error-name</code> contents
              * and the <code>error-message</code> contents. Signal a <code>serverError</code> passing
              * the <code>errorName</code> and <code>errorMessage</code>.  Refer to
-             * section "Signaling Errors" in Chapter 13 of the spec prose document <a
-             *  href="../../javadocs/overview-summary.html#prose_document">linked in the
-             *  overview summary</a>.</li>
+             * Jakarta Faces Specification Document section 13.3.6.3 "Signaling Errors".</li>
              * <p><i>Extensions</i></p>
              * <li>The <code>&lt;extensions&gt;</code> element provides a way for framework
              * implementations to provide their own information.</li>

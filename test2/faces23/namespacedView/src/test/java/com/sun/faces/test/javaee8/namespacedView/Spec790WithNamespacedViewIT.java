@@ -122,7 +122,6 @@ public class Spec790WithNamespacedViewIT {
     }
 
     @Test
-    @Ignore // Fails due to yet unknown cause -- TODO: investigate
     public void testSpec790WithNamespacedViewAjaxNavigation() throws Exception {
         webClient.setIncorrectnessListener((o, i) -> {});
 
@@ -137,8 +136,6 @@ public class Spec790WithNamespacedViewIT {
         page = button.click();
         webClient.waitForBackgroundJavaScript(60000);
         
-        System.out.println(page.asXml()); // Ajax button doesn't seem to be executed at all. Probably JS error?
-
         namingContainerPrefix = page.getHead().getId().split("(?<=:)", 2)[0];
         HtmlForm form1 = (HtmlForm) page.getHtmlElementById(namingContainerPrefix + "form1");
         HtmlInput form1ViewState = (HtmlInput) form1.getInputByName(namingContainerPrefix + "jakarta.faces.ViewState");

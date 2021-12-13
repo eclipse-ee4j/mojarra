@@ -39,7 +39,6 @@ public class ReflectionUtil {
      *
      */
     private ReflectionUtil() {
-        super();
     }
 
     public static Class forName(String name) throws ClassNotFoundException {
@@ -67,6 +66,11 @@ public class ReflectionUtil {
             }
         }
         return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T newInstance(String name) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException {
+        return (T) forName(name).getDeclaredConstructor().newInstance();
     }
 
     /**

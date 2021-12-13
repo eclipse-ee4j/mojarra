@@ -24126,11 +24126,11 @@ https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=447
       follows:</p>
 
       <p><code>var a=function(){#USER_FUNCTION#};
-      var b=function(){#JSF_FUNCTION#};
+      var b=function(){#FACES_FUNCTION#};
       return (a()==false) ? false : b();</code></p>
       
       <p>where #USER_FUNCTION# is the user's JavaScript and
-      #JSF_FUNCTION# is the JavaScript rendered by JSF.  The choice
+      #FACES_FUNCTION# is the JavaScript rendered by Jakarta Faces.  The choice
       function should operate such that if the user's JavaScript returns
       true, then the rendered JavaScript will also execute.</p>
  

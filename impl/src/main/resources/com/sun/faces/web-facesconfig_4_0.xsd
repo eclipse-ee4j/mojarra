@@ -167,7 +167,7 @@
             element declares the name of this application
             configuration resource.  Such names are used
             in the document ordering scheme specified in section
-            JSF.11.4.6.</p>
+            11.3.8 "Ordering of Artifacts" of the Jakarta Faces Specification Document.</p>
             
             <p class="changed_added_2_2">This value is taken to be the 
             defining document id of any &lt;flow-definition&gt; elements 
@@ -276,7 +276,9 @@
     <xsd:annotation>
       <xsd:documentation>
         <![CDATA[
-        <p> Please see section JSF.11.4.6 for the specification of this element.</p>
+        <p> Please see section 
+        11.3.8 "Ordering of Artifacts" of the Jakarta Faces Specification Document
+        for the specification of this element.</p>
         
         ]]>
       </xsd:documentation>
@@ -332,7 +334,8 @@
         <p> This element indicates that the ordering sub-element in which
         it was placed should take special action regarding the ordering
         of this application resource relative to other
-        application configuration resources.  See section JSF.11.4.6
+        application configuration resources.
+        See section 11.3.8 "Ordering of Artifacts" of the Jakarta Faces Specification Document
         for the complete specification.</p>
         
         ]]>
@@ -350,7 +353,9 @@
       <xsd:documentation>
         <![CDATA[
         <p> Only relevant if this is placed within the /WEB-INF/faces-config.xml.
-        Please see section JSF.11.4.6 for the specification for details.</p>
+        Please see 
+        section 11.3.8 "Ordering of Artifacts" of the Jakarta Faces Specification Document
+        for the specification for details.</p>
         
         ]]>
       </xsd:documentation>
@@ -2424,7 +2429,8 @@
         <xsd:annotation>
           <xsd:documentation>
             <![CDATA[
-            <p> Please see section JSF.7.4.2 for the specification of this element.</p>
+            <p> Please see section 7.4.2 "Default NavigationHandler Algorithm" of the Jakarta Faces Specification Document
+            for the specification of this element.</p>
             
             ]]>
           </xsd:documentation>

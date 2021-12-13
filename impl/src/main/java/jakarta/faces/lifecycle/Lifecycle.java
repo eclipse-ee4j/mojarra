@@ -54,8 +54,8 @@ public abstract class Lifecycle {
     /**
      * <p>
      * Execute all of the phases of the request processing lifecycle, up to but not including the <em>Render Response</em>
-     * phase, as described in the Jakarta Faces Specification, in the specified order. The processing flow can be
-     * affected (by the application, by components, or by event listeners) by calls to the <code>renderResponse()</code> or
+     * phase, as described in section 2 "Request Processing Lifecycle" of the Jakarta Faces Specification Document, in the specified order.
+     * The processing flow can be affected (by the application, by components, or by event listeners) by calls to the <code>renderResponse()</code> or
      * <code>responseComplete()</code> methods of the {@link FacesContext} instance associated with the current request.
      * </p>
      *

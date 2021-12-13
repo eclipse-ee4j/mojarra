@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
-    Copyright (c) 2009, 2020 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2009, 2021 Oracle and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,16 +17,18 @@
 
 -->
 
-<facelet-taglib id="f" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facelettaglibrary_2_3.xsd"
-                version="2.3">
+<facelet-taglib id="f"
+    xmlns="https://jakarta.ee/xml/ns/jakartaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-facelettaglibrary_4_0.xsd"
+    version="4.0"
+>
     <description><![CDATA[
+        <p><strong>Jakarta Faces Core Tag Library</strong></p>
 
-    <p><span class="changed_modified_2_3">The</span> core Jakarta Faces
-    <span class="changed_modified_4_0">tags</span> that are independent of any particular
-    RenderKit.</p>
-    
+        <p><span class="changed_modified_2_3">The</span> core Jakarta Faces
+        <span class="changed_modified_4_0">tags</span> that are independent of any particular
+        RenderKit.</p>
     ]]></description>
     <namespace>jakarta.faces.core</namespace>
     <tag>

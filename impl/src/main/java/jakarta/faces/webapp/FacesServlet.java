@@ -202,7 +202,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * </p>
  *
  * <p>
- * The Jakarta Faces specification only requires the use of the GET and POST http methods. If your web
+ * The Jakarta Faces Specification only requires the use of the GET and POST http methods. If your web
  * application does not require any other http methods, such as PUT and DELETE, please consider restricting the
  * allowable http methods using the &lt;http-method&gt; and &lt;http-method-omission&gt; elements. Please see the
  * <strong>Security</strong> sections of the Jakarta Servlet Specification for more information about the use of these
