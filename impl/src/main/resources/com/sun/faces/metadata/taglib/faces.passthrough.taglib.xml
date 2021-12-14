@@ -27,7 +27,7 @@
         <p><strong>Jakarta Faces Passthrough Attributes Tag Library</strong></p>
 
         <p class="changed_added_2_2">Facelet tag attributes in 
-        this namespace must be added to the pass through attribute map <br />
+        this namespace must be added to the pass through attribute map
         on the <code>UIComponent</code> corresponding to the facelet 
         tag.  There are no tags in this tag library.</p>
 
