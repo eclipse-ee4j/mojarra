@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
@@ -68,6 +69,8 @@ public class UIRepeat extends UINamingContainer {
 
     private final static DataModel EMPTY_MODEL =
           new ListDataModel<>(Collections.emptyList());
+
+    private static final String CLIENT_ID_NESTED_IN_ITERATOR_PATTERN = COMPONENT_TYPE + ".CLIENT_ID_NESTED_IN_ITERATOR_PATTERN";
 
     // our data
     private Object value;
@@ -198,8 +201,8 @@ public class UIRepeat extends UINamingContainer {
         this.varStatus = varStatus;
     }
 
-    private void resetDataModel() {
-        if (this.isNestedInIterator()) {
+    private void resetDataModel(FacesContext context) {
+        if (this.isNestedInIterator(context)) {
             this.setDataModel(null);
         }
     }
@@ -437,7 +440,7 @@ public class UIRepeat extends UINamingContainer {
 
     private boolean keepSaved(FacesContext context) {
 
-        return (hasErrorMessages(context) || isNestedInIterator());
+        return (hasErrorMessages(context) || isNestedInIterator(context));
 
     }
 
@@ -449,15 +452,29 @@ public class UIRepeat extends UINamingContainer {
     }
 
     
-    private boolean isNestedInIterator() {
+    private boolean isNestedInIterator(FacesContext context) {
         UIComponent parent = this.getParent();
-        while (parent != null) {
-            if (parent instanceof UIData || parent instanceof UIRepeat) {
+
+        if (parent == null) {
+            return false;
+        }
+
+        for (UIComponent p = parent; p != null; p = p.getParent()) {
+            if (p instanceof UIData || p instanceof UIRepeat) {
                 return true;
             }
-            parent = parent.getParent();
         }
-        return false;
+
+        // https://github.com/eclipse-ee4j/mojarra/issues/4957
+        // We should in long term probably introduce a common interface like UIIterable.
+        // But this is solid for now as all known implementing components already follow this pattern.
+        // We could theoretically even remove the above instanceof checks.
+        Pattern clientIdNestedInIteratorPattern = (Pattern) context.getExternalContext().getApplicationMap().computeIfAbsent(CLIENT_ID_NESTED_IN_ITERATOR_PATTERN, k -> {
+            String separatorChar = Pattern.quote(String.valueOf(UINamingContainer.getSeparatorChar(context)));
+            return Pattern.compile(".+" + separatorChar + "[0-9]+" + separatorChar + ".+");
+        });
+
+        return clientIdNestedInIteratorPattern.matcher(parent.getClientId(context)).matches();
     }
 
     private void setIndex(FacesContext ctx, int index) {
@@ -503,7 +520,7 @@ public class UIRepeat extends UINamingContainer {
             return;
 
         // clear datamodel
-        this.resetDataModel();
+        this.resetDataModel(faces);
 
         // We must clear the child state if we just entered the Render Phase, and there are no error messages
         if (PhaseId.RENDER_RESPONSE.equals(phase) && !hasErrorMessages(faces)) {
@@ -836,14 +853,14 @@ public class UIRepeat extends UINamingContainer {
     @Override
     public void processUpdates(FacesContext faces) {
         if (!this.isRendered()) return;
-        this.resetDataModel();
+        this.resetDataModel(faces);
         this.process(faces, PhaseId.UPDATE_MODEL_VALUES);
     }
 
     @Override
     public void processValidators(FacesContext faces) {
         if (!this.isRendered()) return;
-        this.resetDataModel();
+        this.resetDataModel(faces);
         Application app = faces.getApplication();
         app.publishEvent(faces, PreValidateEvent.class, this);
         this.process(faces, PhaseId.PROCESS_VALIDATIONS);
@@ -977,10 +994,10 @@ public class UIRepeat extends UINamingContainer {
     public void broadcast(FacesEvent event) throws AbortProcessingException {
         if (event instanceof IndexedEvent) {
             IndexedEvent idxEvent = (IndexedEvent) event;
-            this.resetDataModel();
-            int prevIndex = this.index;
             FacesEvent target = idxEvent.getTarget();
             FacesContext ctx = target.getFacesContext();
+            this.resetDataModel(ctx);
+            int prevIndex = this.index;
             UIComponent source = target.getComponent();
             UIComponent compositeParent = null;
             try {
