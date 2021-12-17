@@ -18,6 +18,7 @@ package com.sun.faces.facelets.component;
 
 import static com.sun.faces.cdi.CdiUtils.createDataModel;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.BEHAVIOR_SOURCE_PARAM;
+import static com.sun.faces.util.Util.isNestedInIterator;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -28,7 +29,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
@@ -37,7 +37,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.component.ContextCallback;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIData;
 import javax.faces.component.UINamingContainer;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
@@ -69,8 +68,6 @@ public class UIRepeat extends UINamingContainer {
 
     private final static DataModel EMPTY_MODEL =
           new ListDataModel<>(Collections.emptyList());
-
-    private static final String CLIENT_ID_NESTED_IN_ITERATOR_PATTERN = COMPONENT_TYPE + ".CLIENT_ID_NESTED_IN_ITERATOR_PATTERN";
 
     // our data
     private Object value;
@@ -202,7 +199,7 @@ public class UIRepeat extends UINamingContainer {
     }
 
     private void resetDataModel(FacesContext context) {
-        if (this.isNestedInIterator(context)) {
+        if (isNestedInIterator(context, this)) {
             this.setDataModel(null);
         }
     }
@@ -440,7 +437,7 @@ public class UIRepeat extends UINamingContainer {
 
     private boolean keepSaved(FacesContext context) {
 
-        return (hasErrorMessages(context) || isNestedInIterator(context));
+        return (hasErrorMessages(context) || isNestedInIterator(context, this));
 
     }
 
@@ -449,32 +446,6 @@ public class UIRepeat extends UINamingContainer {
         FacesMessage.Severity sev = context.getMaximumSeverity();
         return (sev != null && (FacesMessage.SEVERITY_ERROR.compareTo(sev) <= 0));
         
-    }
-
-    
-    private boolean isNestedInIterator(FacesContext context) {
-        UIComponent parent = this.getParent();
-
-        if (parent == null) {
-            return false;
-        }
-
-        for (UIComponent p = parent; p != null; p = p.getParent()) {
-            if (p instanceof UIData || p instanceof UIRepeat) {
-                return true;
-            }
-        }
-
-        // https://github.com/eclipse-ee4j/mojarra/issues/4957
-        // We should in long term probably introduce a common interface like UIIterable.
-        // But this is solid for now as all known implementing components already follow this pattern.
-        // We could theoretically even remove the above instanceof checks.
-        Pattern clientIdNestedInIteratorPattern = (Pattern) context.getExternalContext().getApplicationMap().computeIfAbsent(CLIENT_ID_NESTED_IN_ITERATOR_PATTERN, k -> {
-            String separatorChar = Pattern.quote(String.valueOf(UINamingContainer.getSeparatorChar(context)));
-            return Pattern.compile(".+" + separatorChar + "[0-9]+" + separatorChar + ".+");
-        });
-
-        return clientIdNestedInIteratorPattern.matcher(parent.getClientId(context)).matches();
     }
 
     private void setIndex(FacesContext ctx, int index) {
