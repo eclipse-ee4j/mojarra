@@ -2314,9 +2314,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
              * <li><code>onevent</code> (the event handler for this request)</li></ul>
              * The request context will be used during error/event handling.</li>
              * <li>Send a <code>begin</code> event following the procedure as outlined
-             * in the Chapter 13 "Sending Events" section of the spec prose document <a
-             *  href="../../javadocs/overview-summary.html#prose_document">linked in the
-             *  overview summary</a></li>
+             * in the Jakarta Faces Specification Document section 13.3.5.3 "Sending Events".</li>
              * <li>Set the request header with the name: <code>Faces-Request</code> and the
              * value: <code>partial/ajax</code>.</li>
              * <li>Determine the <code>posting URL</code> as follows: If the hidden field
@@ -2701,17 +2699,11 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
              * <ul>
              * <p>If there is no XML response returned, signal an <code>emptyResponse</code>
              * error. If the XML response does not follow the format as outlined
-             * in Appendix A of the spec prose document <a
-             *  href="../../javadocs/overview-summary.html#prose_document">linked in the
-             *  overview summary</a> signal a <code>malformedError</code> error.  Refer to
-             * section "Signaling Errors" in Chapter 13 of the spec prose document <a
-             *  href="../../javadocs/overview-summary.html#prose_document">linked in the
-             *  overview summary</a>.</p>
+             * in Appendix A.3 "XML Schema Definition For Partial Response" of the Jakarta Faces Specification Document
+             * signal a <code>malformedError</code> error.  Refer to
+             * Jakarta Faces Specification Document section 13.3.6.3 "Signaling Errors".</p>
              * <p>If the response was successfully processed, send a <code>success</code>
-             * event as outlined in Chapter 13 "Sending Events" section of the spec prose
-             * document <a
-             * href="../../javadocs/overview-summary.html#prose_document">linked in the
-             * overview summary</a>.</p>
+             * event as outlined in Jakarta Faces Specification Document section 13.3.5.3 "Sending Events".</p>
              * <p><i>Update Element Processing</i></p>
              * The <code>update</code> element is used to update a single DOM element.  The
              * "id" attribute of the <code>update</code> element refers to the DOM element that
@@ -2891,9 +2883,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
              * Extract this <code>&lt;error&gt;</code> element's <code>error-name</code> contents
              * and the <code>error-message</code> contents. Signal a <code>serverError</code> passing
              * the <code>errorName</code> and <code>errorMessage</code>.  Refer to
-             * section "Signaling Errors" in Chapter 13 of the spec prose document <a
-             *  href="../../javadocs/overview-summary.html#prose_document">linked in the
-             *  overview summary</a>.</li>
+             * Jakarta Faces Specification Document section 13.3.6.3 "Signaling Errors".</li>
              * <p><i>Extensions</i></p>
              * <li>The <code>&lt;extensions&gt;</code> element provides a way for framework
              * implementations to provide their own information.</li>

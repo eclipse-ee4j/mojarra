@@ -797,7 +797,8 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * {@link jakarta.faces.application.ResourceHandler#createResource(java.lang.String,java.lang.String)}, passing the
      * derived <em>resourceName</em> and <em>libraryName</em>. Note that this will automatically allow for the localization
      * of the <code>ResourceBundle</code> due to the localization facility implemented in <code>createResource</code>, which
-     * is specified in section 2.6.1.3 of the spec prose document. If the resultant {@link Resource} exists and can be
+     * is specified in section 2.6.1.3 "Resource Identifiers" of the Jakarta Faces Specification Document.
+     * If the resultant {@link Resource} exists and can be
      * found, the <code>InputStream</code> for the resource is used to create a <code>ResourceBundle</code>. If either of
      * the two previous steps for obtaining the <code>ResourceBundle</code> for this component is successful, the
      * <code>ResourceBundle</code> is wrapped in a <code>Map&lt;String,String&gt;</code> and returned. Otherwise

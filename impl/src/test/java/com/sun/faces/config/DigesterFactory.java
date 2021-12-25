@@ -177,7 +177,7 @@ public class DigesterFactory {
     /**
      * <p>
      * Creates a new <code>Digester</code> instance configured for use with
-     * JSF.</p>
+     * Jakarta Faces.</p>
      * @return 
      */
     public Digester createDigester() {
@@ -218,7 +218,7 @@ public class DigesterFactory {
     /**
      * <p>
      * Configures the provided <code>Digester</code> instance appropriate for
-     * use with JSF.</p>
+     * use with Jakarta Faces.</p>
      *
      * @param digester - the <code>Digester</code> instance to configure
      */

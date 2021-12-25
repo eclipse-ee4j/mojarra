@@ -40,7 +40,7 @@ import jakarta.faces.view.ViewDeclarationLanguage;
  * <p>
  * <strong><span class="changed_modified_2_0 changed_modified_2_1 changed_modified_2_2 changed_modified_2_3">
  * ViewHandler</span></strong> is the pluggablity mechanism for allowing implementations of or applications using the
- * Jakarta Faces specification to provide their own handling of the activities in the <em>Render Response</em>
+ * Jakarta Faces Specification to provide their own handling of the activities in the <em>Render Response</em>
  * and <em>Restore View</em> phases of the request processing lifecycle.
  *
  * This allows for implementations to support different response generation technologies, as well as alternative
@@ -407,7 +407,7 @@ public abstract class ViewHandler {
     /**
      * <p class="changed_added_2_0">
      * Derive and return the viewId from the current request, or the argument input by following the algorithm defined in
-     * specification section 7.6.2.
+     * section 7.6.2 "Default ViewHandler Implementation" of the Jakarta Faces Specification Document.
      * </p>
      *
      * <p class="changed_added_2_3">
@@ -435,7 +435,8 @@ public abstract class ViewHandler {
     /**
      * <p class="changed_added_2_1">
      * Derive and return the viewId from the current request, or the argument input by following the algorithm defined in
-     * specification section 7.6.2. Note that unlike <code>deriveViewId()</code>, this method does not require that a
+     * section 7.6.2 "Default ViewHandler Implementation" of the Jakarta Faces Specification Document.
+     * Note that unlike <code>deriveViewId()</code>, this method does not require that a
      * physical view be present.
      * </p>
      *
@@ -466,8 +467,9 @@ public abstract class ViewHandler {
      * <span class="changed_modified_2_2">If</span> the value returned from this method is used as the <code>file</code>
      * argument to the four-argument constructor for <code>java.net.URL</code> (assuming appropriate values are used for the
      * first three arguments), then a client making a request to the <code>toExternalForm()</code> of that <code>URL</code>
-     * will select the argument <code>viewId</code> for traversing the Jakarta Faces lifecycle. Please see section
-     * 7.6.2 for the complete specification, <span class="changed_added_2_2">especially for details related to view
+     * will select the argument <code>viewId</code> for traversing the Jakarta Faces lifecycle. Please see
+     * section 7.6.2 "Default ViewHandler Implementation" of the Jakarta Faces Specification Document
+     * for the complete specification, <span class="changed_added_2_2">especially for details related to view
      * protection using the {@link jakarta.faces.render.ResponseStateManager#NON_POSTBACK_VIEW_TOKEN_PARAM}
      * </span><span class="changed_added_2_3"> and the behavior when the current request is to a URL for which the
      * FacesServlet has an exact mapping as defined by Servlet.12.2</span>.
@@ -489,7 +491,9 @@ public abstract class ViewHandler {
      * <p class="changed_added_2_0">
      * Return a Jakarta Faces action URL derived from the <code>viewId</code> argument that is suitable to be used by
      * the {@link NavigationHandler} to issue a redirect request to the URL using a NonFaces request. Compliant
-     * implementations must implement this method as specified in section 7.6.2. The default implementation simply calls
+     * implementations must implement this method as specified in 
+     * section 7.6.2 "Default ViewHandler Implementation" of the Jakarta Faces Specification Document.
+     * The default implementation simply calls
      * through to {@link #getActionURL}, passing the arguments <code>context</code> and <code>viewId</code>.
      * </p>
      *
@@ -508,7 +512,8 @@ public abstract class ViewHandler {
      * <p class="changed_added_2_0">
      * Return a Jakarta Faces action URL derived from the viewId argument that is suitable to be used as the target
      * of a link in a Jakarta Faces response. Compliant implementations must implement this method as specified in
-     * section 7.6.2. The default implementation simply calls through to {@link #getActionURL}, passing the arguments
+     * section 7.6.2 "Default ViewHandler Implementation" of the Jakarta Faces Specification Document.
+     * The default implementation simply calls through to {@link #getActionURL}, passing the arguments
      * <code>context</code> and <code>viewId</code>.
      * </p>
      *

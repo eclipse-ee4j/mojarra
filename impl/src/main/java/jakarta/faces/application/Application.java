@@ -73,8 +73,7 @@ public abstract class Application {
      * <span class="changed_modified_2_2">Return</span> the default {@link ActionListener} to be registered for all
      * {@link jakarta.faces.component.ActionSource} components in this application. If not explicitly set, a default
      * implementation must be provided that performs the <span class="changed_modified_2_2">functions as specified in the
-     * section titled "ActionListener Property" in the chapter titled "Application Integration" of the spec prose
-     * document.</span>
+     * section 7.1.1 "ActionListener Property" in the chapter 7 "Application Integration" of the Jakarta Faces Specification Document.</span>
      * </p>
      *
      * <p>
@@ -350,7 +349,7 @@ public abstract class Application {
     /**
      * <p>
      * <span class="changed_modified_2_0_rev_a">Cause</span> an the argument <code>resolver</code> to be added to the
-     * resolver chain as specified in section 5.5.1 of the Jakarta Faces Specification.
+     * resolver chain as specified in section 5.3.2 "ELResolver" of the Jakarta Faces Specification Document.
      * </p>
      *
      * <p>
@@ -773,7 +772,7 @@ public abstract class Application {
      * <p>
      * Obtain a reference to the <em>composite component metadata</em> for this composite component by calling
      * {@link ViewDeclarationLanguage#getComponentMetadata}, passing the <code>facesContext</code> and
-     * <code>componentResource</code> arguments to this method. This version of the Jakarta Faces specification uses
+     * <code>componentResource</code> arguments to this method. This version of the Jakarta Faces Specification uses
      * JavaBeans as the API to the component metadata.
      * </p>
      * </li>
@@ -794,7 +793,7 @@ public abstract class Application {
      * <p>
      * Otherwise, determine if a script based component for this <code>Resource</code> can be found by calling
      * {@link ViewDeclarationLanguage#getScriptComponentResource}. If the result is non-<code>null</code>, and is a script
-     * written in one of the languages listed in 4.3 of the specification prose document, create a
+     * written in <span class="changed_modified_4_0">a language satisfying the content type <code>text/javascript</code></span>, create a
      * <code>UIComponent</code> instance from the script resource.
      * </p>
      * </li>

@@ -32,7 +32,7 @@ public abstract class Metadata {
 
     /**
      * <p class="changed_added_2_0">
-     * Take the action prescribed in the Jakarta Faces specification for this particular VDL element attribute.
+     * Take the action prescribed in the Jakarta Faces Specification for this particular VDL element attribute.
      * </p>
      *
      * @param ctx The FaceletContext for this request.

@@ -42,11 +42,11 @@ of Mojarra produced by this project. The tests are then run against this server.
 Tests can be run with any version of Mojarra supported by GlassFish (7.x / 6.1.x at the moment):
 
 ```bash
-mvn clean install -pl :childCountTest -Djsf.version=3.0.0
+mvn clean install -pl :childCountTest -Dfaces.version=3.0.0
 ```
 
 ```bash
-mvn clean install -pl :childCountTest -Djsf.version=4.0.0-RC1
+mvn clean install -pl :childCountTest -Dfaces.version=4.0.0-RC1
 ```
 
 etc

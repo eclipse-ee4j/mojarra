@@ -37,7 +37,9 @@ import java.lang.annotation.Target;
  * Within that {@link RenderKit}, the value of the {@link #rendererType} attribute is taken to be the <em>renderer-type</em>
  *
  * The implementation must guarantee that for each class annotated with <code>FacesBehaviorRenderer</code>, found with the
- * algorithm in section 11.5 of the spec prose document, the following actions are taken.
+ * algorithm in 
+ * section 11.4 "Annotations that correspond to and may take the place of entries in the Application Configuration Resources" of the Jakarta Faces Specification Document,
+ * the following actions are taken.
  * </p>
  *
  * <div class="changed_added_2_0">
