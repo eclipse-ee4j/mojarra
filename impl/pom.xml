@@ -72,7 +72,7 @@
         <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>jakarta.enterprise.cdi-api</artifactId>
-            <version>4.0.0.Beta2</version>
+            <version>4.0.0.Beta3</version>
             <scope>provided</scope>
         </dependency>
 
@@ -121,7 +121,7 @@
         <dependency>
             <groupId>jakarta.xml.ws</groupId>
             <artifactId>jakarta.xml.ws-api</artifactId>
-            <version>4.0.0-RC1</version>
+            <version>4.0.0-RC2</version>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
@@ -270,7 +270,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <id>generate-resources</id>
@@ -304,7 +304,7 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>5.1.2</version>
+                <version>5.1.3</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
@@ -333,22 +333,22 @@
                         <Extension-Name>jakarta.faces</Extension-Name>
                         
                         <Export-Package>
-                            jakarta.faces.*;version=3.0,
-                            com.sun.faces.*;version=3.0
+                            jakarta.faces.*,
+                            com.sun.faces.*
                         </Export-Package>
                         
                         <Import-Package>
                             jakarta.faces.*,
                             com.sun.faces.*,
                             jakarta.servlet.annotation.*;resolution:=optional,
-                            jakarta.servlet.*;version=5.0,
-                            jakarta.el.*;version=4.0,
+                            jakarta.servlet.*,
+                            jakarta.el.*,
                             jakarta.inject.*,
-                            jakarta.enterprise.inject.*;version=3.0,
-                            jakarta.enterprise.util.*;version=3.0,
-                            jakarta.enterprise.context.*;version=3.0,
-                            jakarta.annotation.processing.*;version=3.0,
-                            jakarta.annotation.*;version=2.0,
+                            jakarta.enterprise.inject.*,
+                            jakarta.enterprise.util.*,
+                            jakarta.enterprise.context.*,
+                            jakarta.annotation.processing.*,
+                            jakarta.annotation.*,
                             javax.crypto.*,
                             jakarta.websocket.*;resolution:=optional,
                             jakarta.json.*;resolution:=optional,
