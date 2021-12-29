@@ -48,7 +48,7 @@
         <skipTests>false</skipTests>
 
         <!-- Application Server versions (these are downloaded and installed in these versions by Maven for the CI profiles) -->
-        <glassfish.version>6.2.3</glassfish.version>
+        <glassfish.version>7.0.0-M1</glassfish.version>
         <tomcat.version>9.0.12</tomcat.version>
     </properties>
 
@@ -431,7 +431,7 @@
                                             <version>${faces.version}</version>
                                             <type>jar</type>
                                             <overWrite>true</overWrite>
-                                            <outputDirectory>${glassfish.root}/glassfish6/glassfish/modules</outputDirectory>
+                                            <outputDirectory>${glassfish.root}/glassfish7/glassfish/modules</outputDirectory>
                                             <destFileName>jakarta.faces.jar</destFileName>
                                         </artifactItem>
                                     </artifactItems>
@@ -443,7 +443,7 @@
                          <artifactId>maven-failsafe-plugin</artifactId>
                          <configuration>
                              <systemPropertyVariables>
-                                 <glassfish.home>${glassfish.root}/glassfish6</glassfish.home>
+                                 <glassfish.home>${glassfish.root}/glassfish7</glassfish.home>
                              </systemPropertyVariables>
                          </configuration>
                     </plugin>
