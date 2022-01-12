@@ -18,6 +18,7 @@ package com.sun.faces.facelets.component;
 
 import static com.sun.faces.cdi.CdiUtils.createDataModel;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.BEHAVIOR_SOURCE_PARAM;
+import static com.sun.faces.util.Util.isNestedInIterator;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -36,7 +37,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.component.ContextCallback;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIData;
 import javax.faces.component.UINamingContainer;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
@@ -198,8 +198,8 @@ public class UIRepeat extends UINamingContainer {
         this.varStatus = varStatus;
     }
 
-    private void resetDataModel() {
-        if (this.isNestedInIterator()) {
+    private void resetDataModel(FacesContext context) {
+        if (isNestedInIterator(context, this)) {
             this.setDataModel(null);
         }
     }
@@ -437,7 +437,7 @@ public class UIRepeat extends UINamingContainer {
 
     private boolean keepSaved(FacesContext context) {
 
-        return (hasErrorMessages(context) || isNestedInIterator());
+        return (hasErrorMessages(context) || isNestedInIterator(context, this));
 
     }
 
@@ -446,18 +446,6 @@ public class UIRepeat extends UINamingContainer {
         FacesMessage.Severity sev = context.getMaximumSeverity();
         return (sev != null && (FacesMessage.SEVERITY_ERROR.compareTo(sev) <= 0));
         
-    }
-
-    
-    private boolean isNestedInIterator() {
-        UIComponent parent = this.getParent();
-        while (parent != null) {
-            if (parent instanceof UIData || parent instanceof UIRepeat) {
-                return true;
-            }
-            parent = parent.getParent();
-        }
-        return false;
     }
 
     private void setIndex(FacesContext ctx, int index) {
@@ -503,7 +491,7 @@ public class UIRepeat extends UINamingContainer {
             return;
 
         // clear datamodel
-        this.resetDataModel();
+        this.resetDataModel(faces);
 
         // We must clear the child state if we just entered the Render Phase, and there are no error messages
         if (PhaseId.RENDER_RESPONSE.equals(phase) && !hasErrorMessages(faces)) {
@@ -836,14 +824,14 @@ public class UIRepeat extends UINamingContainer {
     @Override
     public void processUpdates(FacesContext faces) {
         if (!this.isRendered()) return;
-        this.resetDataModel();
+        this.resetDataModel(faces);
         this.process(faces, PhaseId.UPDATE_MODEL_VALUES);
     }
 
     @Override
     public void processValidators(FacesContext faces) {
         if (!this.isRendered()) return;
-        this.resetDataModel();
+        this.resetDataModel(faces);
         Application app = faces.getApplication();
         app.publishEvent(faces, PreValidateEvent.class, this);
         this.process(faces, PhaseId.PROCESS_VALIDATIONS);
@@ -977,10 +965,10 @@ public class UIRepeat extends UINamingContainer {
     public void broadcast(FacesEvent event) throws AbortProcessingException {
         if (event instanceof IndexedEvent) {
             IndexedEvent idxEvent = (IndexedEvent) event;
-            this.resetDataModel();
-            int prevIndex = this.index;
             FacesEvent target = idxEvent.getTarget();
             FacesContext ctx = target.getFacesContext();
+            this.resetDataModel(ctx);
+            int prevIndex = this.index;
             UIComponent source = target.getComponent();
             UIComponent compositeParent = null;
             try {
