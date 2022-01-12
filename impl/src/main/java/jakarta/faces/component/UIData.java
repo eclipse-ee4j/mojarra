@@ -16,6 +16,8 @@
 
 package jakarta.faces.component;
 
+import static com.sun.faces.util.Util.isNestedInIterator;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.ResultSet;
@@ -792,7 +794,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         // - create an empty StringBuilder that will be used to build
         // this instance's ID
         if (baseClientId == null && clientIdBuilder == null) {
-            if (!isNestedWithinIterator()) {
+            if (!isNestedWithinIterator(context)) {
                 clientIdBuilder = new StringBuilder(super.getClientId(context));
                 baseClientId = clientIdBuilder.toString();
                 baseClientIdLength = baseClientId.length() + 1;
@@ -805,7 +807,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         int rowIndex = getRowIndex();
         if (rowIndex >= 0) {
             String cid;
-            if (!isNestedWithinIterator()) {
+            if (!isNestedWithinIterator(context)) {
                 // we're not nested, so the clientIdBuilder is already
                 // primed with clientID +
                 // UINamingContainer.getSeparatorChar(). Append the
@@ -823,7 +825,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             }
             return cid;
         } else {
-            if (!isNestedWithinIterator()) {
+            if (!isNestedWithinIterator(context)) {
                 // Not nested and no row available, so just return our baseClientId
                 return baseClientId;
             } else {
@@ -1011,7 +1013,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         FacesContext context = event.getFacesContext();
         // Set up the correct context and fire our wrapped event
         WrapperEvent revent = (WrapperEvent) event;
-        if (isNestedWithinIterator()) {
+        if (isNestedWithinIterator(context)) {
             setDataModel(null);
         }
         int oldRowIndex = getRowIndex();
@@ -1831,7 +1833,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     // initialization may be performed either during a normal validation
     // (ie. processValidators()) or during a tree visit (ie. visitTree()).
     private void preValidate(FacesContext context) {
-        if (isNestedWithinIterator()) {
+        if (isNestedWithinIterator(context)) {
             setDataModel(null);
         }
     }
@@ -1840,7 +1842,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     // initialization may be performed either during normal update
     // (ie. processUpdates()) or during a tree visit (ie. visitTree()).
     private void preUpdate(FacesContext context) {
-        if (isNestedWithinIterator()) {
+        if (isNestedWithinIterator(context)) {
             setDataModel(null);
         }
     }
@@ -2116,26 +2118,15 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      */
     private boolean keepSaved(FacesContext context) {
 
-        return contextHasErrorMessages(context) || isNestedWithinIterator();
+        return contextHasErrorMessages(context) || isNestedWithinIterator(context);
 
     }
 
-    private Boolean isNestedWithinIterator() {
+    private Boolean isNestedWithinIterator(FacesContext context) {
         if (isNested == null) {
-            UIComponent parent = this;
-            while (null != (parent = parent.getParent())) {
-                if (parent instanceof UIData || parent.getClass().getName().endsWith("UIRepeat")) {
-                    isNested = Boolean.TRUE;
-                    break;
-                }
-            }
-            if (isNested == null) {
-                isNested = Boolean.FALSE;
-            }
-            return isNested;
-        } else {
-            return isNested;
+            isNested = isNestedInIterator(context, this);
         }
+        return isNested;
     }
 
     private boolean contextHasErrorMessages(FacesContext context) {
