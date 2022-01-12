@@ -75,11 +75,6 @@
                 <version>1.7.0.Alpha10</version>
             </dependency>
             <dependency>
-                <groupId>com.h2database</groupId>
-                <artifactId>h2</artifactId>
-                <version>1.4.200</version>
-            </dependency>
-            <dependency>
                 <groupId>fish.payara.arquillian</groupId>
                 <artifactId>payara-client-ee8</artifactId>
                 <version>2.3.1</version>
