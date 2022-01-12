@@ -18,6 +18,7 @@ package com.sun.faces.facelets.component;
 
 import static com.sun.faces.cdi.CdiUtils.createDataModel;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.BEHAVIOR_SOURCE_PARAM;
+import static com.sun.faces.util.Util.isNestedInIterator;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -38,7 +39,6 @@ import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.ContextCallback;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UIData;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.visit.VisitCallback;
 import jakarta.faces.component.visit.VisitContext;
@@ -194,9 +194,9 @@ public class UIRepeat extends UINamingContainer {
         this.varStatus = varStatus;
     }
 
-    private void resetDataModel() {
-        if (isNestedInIterator()) {
-            setDataModel(null);
+    private void resetDataModel(FacesContext context) {
+        if (isNestedInIterator(context, this)) {
+            this.setDataModel(null);
         }
     }
 
@@ -431,7 +431,7 @@ public class UIRepeat extends UINamingContainer {
 
     private boolean keepSaved(FacesContext context) {
 
-        return hasErrorMessages(context) || isNestedInIterator();
+        return hasErrorMessages(context) || isNestedInIterator(context, this);
 
     }
 
@@ -440,17 +440,6 @@ public class UIRepeat extends UINamingContainer {
         FacesMessage.Severity sev = context.getMaximumSeverity();
         return sev != null && FacesMessage.SEVERITY_ERROR.compareTo(sev) <= 0;
 
-    }
-
-    private boolean isNestedInIterator() {
-        UIComponent parent = getParent();
-        while (parent != null) {
-            if (parent instanceof UIData || parent instanceof UIRepeat) {
-                return true;
-            }
-            parent = parent.getParent();
-        }
-        return false;
     }
 
     private void setIndex(FacesContext ctx, int index) {
@@ -497,7 +486,7 @@ public class UIRepeat extends UINamingContainer {
         }
 
         // clear datamodel
-        resetDataModel();
+        resetDataModel(faces);
 
         // We must clear the child state if we just entered the Render Phase, and there are no error messages
         if (PhaseId.RENDER_RESPONSE.equals(phase) && !hasErrorMessages(faces)) {
@@ -805,7 +794,7 @@ public class UIRepeat extends UINamingContainer {
         if (!isRendered()) {
             return;
         }
-        resetDataModel();
+        resetDataModel(faces);
         process(faces, PhaseId.UPDATE_MODEL_VALUES);
     }
 
@@ -814,7 +803,7 @@ public class UIRepeat extends UINamingContainer {
         if (!isRendered()) {
             return;
         }
-        resetDataModel();
+        resetDataModel(faces);
         Application app = faces.getApplication();
         app.publishEvent(faces, PreValidateEvent.class, this);
         process(faces, PhaseId.PROCESS_VALIDATIONS);
@@ -947,10 +936,10 @@ public class UIRepeat extends UINamingContainer {
     public void broadcast(FacesEvent event) throws AbortProcessingException {
         if (event instanceof IndexedEvent) {
             IndexedEvent idxEvent = (IndexedEvent) event;
-            resetDataModel();
-            int prevIndex = index;
             FacesEvent target = idxEvent.getTarget();
             FacesContext ctx = target.getFacesContext();
+            resetDataModel(ctx);
+            int prevIndex = index;
             UIComponent source = target.getComponent();
             UIComponent compositeParent = null;
             try {
