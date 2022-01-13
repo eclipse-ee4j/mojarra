@@ -20,31 +20,32 @@ import static javax.faces.component.UINamingContainer.getSeparatorChar;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.component.ActionSource;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UINamingContainer;
 import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorContext;
 import javax.faces.component.html.HtmlCommandScript;
+import javax.faces.component.search.ComponentNotFoundException;
+import javax.faces.component.search.SearchExpressionContext;
+import javax.faces.component.search.SearchExpressionHandler;
+import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.render.ClientBehaviorRenderer;
 
+import com.sun.faces.facelets.tag.composite.InsertChildrenHandler;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.FacesLogger;
-import java.util.EnumSet;
-import java.util.Set;
-import javax.faces.component.UINamingContainer;
-import javax.faces.component.search.ComponentNotFoundException;
-import javax.faces.component.search.SearchExpressionContext;
-import javax.faces.component.search.SearchExpressionHandler;
-import javax.faces.component.search.SearchExpressionHint;
 
 /*
  *<b>AjaxBehaviorRenderer</b> renders Ajax behavior for a component.
@@ -334,7 +335,7 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer  {
 
             boolean clientResolveableExpression = expression.equals("@all") || expression.equals("@none") || expression.equals("@form") || expression.equals("@this");
 
-            if (composite != null && expression.equals("@this") || expression.startsWith("@this" + separatorChar)) {
+            if (composite != null && !isHandledByInsertChildren(component, composite) && (expression.equals("@this") || expression.startsWith("@this" + separatorChar))) {
                 expression = expression.replaceFirst("@this", separatorChar + composite.getClientId(facesContext));
                 clientResolveableExpression = false;
             }
@@ -369,6 +370,16 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer  {
             }
         }
         builder.append("'");
+    }
+
+    private static boolean isHandledByInsertChildren(UIComponent component, UIComponent composite) {
+        for (UIComponent parent = component.getParent(); parent != null && !parent.equals(composite); parent = parent.getParent()) {
+            if (parent.getAttributes().containsKey(InsertChildrenHandler.INDEX_ATTRIBUTE)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // Returns the resolved (client id) for a particular id.
