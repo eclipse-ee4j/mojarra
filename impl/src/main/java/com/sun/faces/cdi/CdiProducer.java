@@ -33,6 +33,7 @@ import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.enterprise.inject.spi.PassivationCapable;
+import jakarta.faces.context.FacesContext;
 
 /**
  * An abstract base class used by the CDI producers for some common functionality.
@@ -100,7 +101,7 @@ abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializab
 
     @Override
     public T create(CreationalContext<T> creationalContext) {
-        return create.apply(creationalContext);
+        return FacesContext.getCurrentInstance() != null ? create.apply(creationalContext) : null;
     }
 
     /**
@@ -195,7 +196,7 @@ abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializab
     }
 
     @SafeVarargs
-    protected static <T> Set<T> asSet(T... a) {
+    private static <T> Set<T> asSet(T... a) {
         return new HashSet<>(asList(a));
     }
 

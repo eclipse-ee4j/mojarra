@@ -16,14 +16,14 @@
 
 package com.sun.faces.test.javaee8.cdi;
 
-import static jakarta.faces.annotation.FacesConfig.Version.JSF_2_3;
-
 import jakarta.faces.annotation.FacesConfig;
 
 @FacesConfig(
-	// Activates CDI build-in beans that provide the injection this project
-    // tests for
-	version = JSF_2_3 
+	// Activates CDI build-in beans that provide the injection this project tests for.
+    // Note that this project has explicitly no FacesServlet mapping in web.xml as well as no faces-config.xml file.
+    // In other words, this test also assures that FacesInitializer is able to rely on solely this @FacesConfig annotated bean.
+        
+    // TODO: a faces-config.xml file has been added because of FacesInitializer#onStartup(classes) being empty in current GlassFish version -- that file should be removed once GlassFish is fixed
 )
 public class ConfigurationBean {
 

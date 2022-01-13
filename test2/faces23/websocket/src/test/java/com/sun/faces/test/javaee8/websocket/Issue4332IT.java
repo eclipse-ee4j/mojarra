@@ -39,7 +39,6 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 
-@Ignore // Fails due to TyrusServletContainerInitializer#onStartup(classes) being null in current GlassFish version -- TODO: remove once GlassFish is fixed
 @RunWith(Arquillian.class)
 public class Issue4332IT {
 

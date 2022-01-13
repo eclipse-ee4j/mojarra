@@ -70,13 +70,11 @@ public abstract class AnnotationScanner extends AnnotationProvider {
             "Ljakarta/faces/validator/FacesValidator;", "Ljakarta/faces/render/FacesRenderer;",
             "Ljakarta/faces/event/NamedEvent;", "Ljakarta/faces/component/behavior/FacesBehavior;",
             "Ljakarta/faces/render/FacesBehaviorRenderer;",
-            "Ljakarta/faces/view/facelets/FaceletsResourceResolver;",
 
             "jakarta.faces.component.FacesComponent", "jakarta.faces.convert.FacesConverter",
             "jakarta.faces.validator.FacesValidator", "jakarta.faces.render.FacesRenderer",
             "jakarta.faces.event.NamedEvent", "jakarta.faces.component.behavior.FacesBehavior",
-            "jakarta.faces.render.FacesBehaviorRenderer",
-            "jakarta.faces.view.facelets.FaceletsResourceResolver")));
+            "jakarta.faces.render.FacesBehaviorRenderer")));
 
     protected static final Set<Class<? extends Annotation>> FACES_ANNOTATION_TYPE = unmodifiableSet(new HashSet<>(asList(
             FacesComponent.class, FacesConverter.class,

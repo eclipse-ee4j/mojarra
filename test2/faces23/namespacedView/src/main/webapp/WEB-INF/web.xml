@@ -37,8 +37,4 @@
         <param-name>jakarta.faces.SERIALIZE_SERVER_STATE</param-name>
         <param-value>${webapp.serializeServerState}</param-value>
     </context-param>
-    <context-param>
-        <param-name>jakarta.faces.ENABLE_CDI_RESOLVER_CHAIN</param-name>
-        <param-value>true</param-value>
-    </context-param>
 </web-app>
