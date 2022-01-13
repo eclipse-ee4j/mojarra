@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.sun.faces.facelets.tag.composite.InsertChildrenHandler;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.FacesLogger;
 
@@ -310,7 +311,7 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer {
 
             boolean clientResolveableExpression = expression.equals("@all") || expression.equals("@none") || expression.equals("@form") || expression.equals("@this");
 
-            if (composite != null && (expression.equals("@this") || expression.startsWith("@this" + separatorChar))) {
+            if (composite != null && !isHandledByInsertChildren(component, composite) && (expression.equals("@this") || expression.startsWith("@this" + separatorChar))) {
                 expression = expression.replaceFirst("@this", separatorChar + composite.getClientId(facesContext));
                 clientResolveableExpression = false;
             }
@@ -344,6 +345,16 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer {
             }
         }
         builder.append("'");
+    }
+
+    private static boolean isHandledByInsertChildren(UIComponent component, UIComponent composite) {
+        for (UIComponent parent = component.getParent(); parent != null && !parent.equals(composite); parent = parent.getParent()) {
+            if (parent.getAttributes().containsKey(InsertChildrenHandler.INDEX_ATTRIBUTE)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // Returns the resolved (client id) for a particular id.
