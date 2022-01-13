@@ -44,6 +44,8 @@ public class InsertChildrenHandler extends TagHandlerImpl {
 
     private final Logger LOGGER = FacesLogger.TAGLIB.getLogger();
     private static final String REQUIRED_ATTRIBUTE = "required";
+    
+    public static final String INDEX_ATTRIBUTE = "InsertChildrenHandler.idx";
 
     // This attribute is not required. If not defined, then assume the facet
     // isn't necessary.
@@ -86,8 +88,8 @@ public class InsertChildrenHandler extends TagHandlerImpl {
 
             this.ctx = ctx;
             this.component = component;
-            if (!component.getAttributes().containsKey("idx")) {
-                component.getAttributes().put("idx", idx);
+            if (!component.getAttributes().containsKey(INDEX_ATTRIBUTE)) {
+                component.getAttributes().put(INDEX_ATTRIBUTE, idx); // NOTE: this is also used by AjaxBehaviorRenderer in order to detect if f:ajax was handled by cc:insertChildren. See also #5032
             }
             this.idx = idx;
             this.location = location;
@@ -149,7 +151,7 @@ public class InsertChildrenHandler extends TagHandlerImpl {
         // ----------------------------------------------------- Private Methods
 
         private int getIdx() {
-            Integer idx = (Integer) component.getAttributes().get("idx");
+            Integer idx = (Integer) component.getAttributes().get(INDEX_ATTRIBUTE);
             return idx != null ? idx : this.idx;
         }
 
