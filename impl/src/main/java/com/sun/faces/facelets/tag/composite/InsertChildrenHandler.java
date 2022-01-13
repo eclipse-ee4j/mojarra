@@ -47,6 +47,8 @@ public class InsertChildrenHandler extends TagHandlerImpl {
     
     public static final String INDEX_ATTRIBUTE = "InsertChildrenHandler.idx";
 
+    public static final String INDEX_ATTRIBUTE = "InsertChildrenHandler.idx";
+
     // This attribute is not required. If not defined, then assume the facet
     // isn't necessary.
     private TagAttribute required;
