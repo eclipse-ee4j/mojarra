@@ -54,7 +54,6 @@ public class HtmlUtils {
 
     /**
      * Write char array text.
-     * @param forXml 
      */
     static public void writeText(Writer out,
                                  boolean escapeUnicode,
@@ -76,7 +75,6 @@ public class HtmlUtils {
 
     /**
      * Write String text.  
-     * @param forXml 
      */
     static public void writeText(Writer out,
                                  boolean escapeUnicode,
@@ -191,7 +189,6 @@ public class HtmlUtils {
      * Write a string attribute.  Note that this code
      * is duplicated below for character arrays - change both
      * places if you make any changes!!!
-     * @param forXml 
      */
     static public void writeAttribute(Writer out,
                                       boolean escapeUnicode,
