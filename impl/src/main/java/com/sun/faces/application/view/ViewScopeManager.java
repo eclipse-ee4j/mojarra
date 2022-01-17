@@ -16,17 +16,16 @@
 
 package com.sun.faces.application.view;
 
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.config.WebConfiguration;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
-import com.sun.faces.mgbean.BeanManager;
-import com.sun.faces.util.LRUMap;
+import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.NumberOfActiveViewMaps;
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.faces.application.FacesMessage;
 import javax.faces.application.ProjectStage;
 import javax.faces.component.UIViewRoot;
@@ -39,6 +38,11 @@ import javax.faces.event.ViewMapListener;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
+
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.mgbean.BeanManager;
+import com.sun.faces.util.LRUMap;
 
 /**
  * The manager that deals with non-CDI and CDI ViewScoped beans.
@@ -75,6 +79,8 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
     private ViewScopeContextManager contextManager;
     
     private boolean distributable;
+    
+    private Integer numberOfActiveViewMapsInWebXml;
 
     /**
      * Constructor.
@@ -94,6 +100,17 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
         WebConfiguration config = WebConfiguration.getInstance(context.getExternalContext());
         distributable = config.isOptionEnabled(EnableDistributable);
         
+        String numberOfActiveViewMapsAsString = config.getOptionValue(NumberOfActiveViewMaps);
+        if (numberOfActiveViewMapsAsString != null) {
+            try {
+                numberOfActiveViewMapsInWebXml = Integer.parseInt(numberOfActiveViewMapsAsString);
+            }
+            catch (NumberFormatException e) {
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.log(Level.WARNING, "Cannot parse " + NumberOfActiveViewMaps.getQualifiedName(), e);
+                }
+            }
+        }
     }
 
     /**
@@ -297,7 +314,11 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
                 Map<String, Object> sessionMap = facesContext.getExternalContext().getSessionMap();
                 Integer size = (Integer) sessionMap.get(ACTIVE_VIEW_MAPS_SIZE);
                 if (size == null) {
-                    size = 25;
+                    size = numberOfActiveViewMapsInWebXml;
+                    
+                    if (size == null) {
+                        size = Integer.parseInt(NumberOfActiveViewMaps.getDefaultValue());
+                    }
                 }
 
                 if (sessionMap.get(ACTIVE_VIEW_MAPS) == null) {
