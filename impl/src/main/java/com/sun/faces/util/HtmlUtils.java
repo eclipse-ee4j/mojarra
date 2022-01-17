@@ -28,7 +28,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.sun.faces.RIConstants;
-import com.sun.faces.config.WebConfiguration;
 
 /**
  * Utility class for HTML.
@@ -48,26 +47,27 @@ public class HtmlUtils {
     static public void writeText(Writer out,
                                  boolean escapeUnicode,
                                  boolean escapeIsocode, char[] buffer,
-                                 char[] text) throws IOException {
-        writeText(out, escapeUnicode, escapeIsocode, buffer, text, 0, text.length);
+                                 char[] text, boolean forXml) throws IOException {
+        writeText(out, escapeUnicode, escapeIsocode, buffer, text, 0, text.length, forXml);
     }
 
 
     /**
      * Write char array text.
+     * @param forXml 
      */
     static public void writeText(Writer out,
                                  boolean escapeUnicode,
                                  boolean escapeIsocode, char[] buff,
                                  char[] text,
                                  int start,
-                                 int length) throws IOException {
+                                 int length, boolean forXml) throws IOException {
         int buffLength = buff.length;
         int buffIndex = 0;
 
         int end = start + length;
         for (int i = start; i < end; i++) {
-            buffIndex = writeTextChar(out, escapeUnicode, escapeIsocode, text[i], buffIndex, buff, buffLength);
+            buffIndex = writeTextChar(out, escapeUnicode, escapeIsocode, text[i], buffIndex, buff, buffLength, forXml);
         }
 
         flushBuffer(out, buff, buffIndex);
@@ -76,24 +76,25 @@ public class HtmlUtils {
 
     /**
      * Write String text.  
+     * @param forXml 
      */
     static public void writeText(Writer out,
                                  boolean escapeUnicode,
                                  boolean escapeIsocode, char[] buff,
                                  String text,
-                                 char[] textBuff) throws IOException {
+                                 char[] textBuff, boolean forXml) throws IOException {
 
         int length = text.length();
 
         if (length >= 16) {
             text.getChars(0, length, textBuff, 0);
-            writeText(out, escapeUnicode, escapeIsocode, buff, textBuff, 0, length);
+            writeText(out, escapeUnicode, escapeIsocode, buff, textBuff, 0, length, forXml);
         } else {
             int buffLength = buff.length;
             int buffIndex = 0;
             for (int i = 0; i < length; i++) {
                 char ch = text.charAt(i);
-                buffIndex = writeTextChar(out, escapeUnicode, escapeIsocode, ch, buffIndex, buff, buffLength);
+                buffIndex = writeTextChar(out, escapeUnicode, escapeIsocode, ch, buffIndex, buff, buffLength, forXml);
             }
             flushBuffer(out, buff, buffIndex);
         }
@@ -107,10 +108,10 @@ public class HtmlUtils {
                                      char ch,
                                      int buffIndex,
                                      char[] buff,
-                                     int buffLength) throws IOException {
+                                     int buffLength, boolean forXml) throws IOException {
         int nextIndex;
         if (ch <= 0x1f) {
-            if (!isPrintableControlChar(ch)) {
+            if (!isPrintableControlChar(ch, forXml)) {
                 return buffIndex;
             }
         }
@@ -190,6 +191,7 @@ public class HtmlUtils {
      * Write a string attribute.  Note that this code
      * is duplicated below for character arrays - change both
      * places if you make any changes!!!
+     * @param forXml 
      */
     static public void writeAttribute(Writer out,
                                       boolean escapeUnicode,
@@ -197,7 +199,7 @@ public class HtmlUtils {
                                       char[] buff,
                                       String text,
                                       char[] textBuff,
-                                      boolean isScriptInAttributeValueEnabled) throws IOException {
+                                      boolean isScriptInAttributeValueEnabled, boolean forXml) throws IOException {
 
         int length = text.length();
         if (length >= 16) {
@@ -207,7 +209,7 @@ public class HtmlUtils {
             }
             text.getChars(0, length, textBuff, 0);
             writeAttribute(out, escapeUnicode, escapeIsocode, buff, textBuff, 0, length,
-                    isScriptInAttributeValueEnabled);
+                    isScriptInAttributeValueEnabled, forXml);
         } else {
             int buffLength = buff.length;
             int buffIndex = 0;
@@ -215,7 +217,7 @@ public class HtmlUtils {
                 char ch = text.charAt(i);
 
                 if (ch <= 0x1f) {
-                    if (!isPrintableControlChar(ch)) {
+                    if (!isPrintableControlChar(ch, forXml)) {
                         continue;
                     }
                 }
@@ -323,16 +325,6 @@ public class HtmlUtils {
     }
 
 
-    static public void writeAttribute(Writer out,
-                                      boolean escapeUnicode,
-                                      boolean escapeIsocode,
-                                      char[] buffer,
-                                      char[] text) throws IOException {
-        writeAttribute(out, escapeUnicode, escapeIsocode, buffer, text, 0, text.length,
-                WebConfiguration.BooleanWebContextInitParameter.EnableScriptInAttributeValue.getDefaultValue());
-    }
-
-
     /**
      * Write a character array attribute.  Note that this code
      * is duplicated above for string - change both places if you make
@@ -345,7 +337,7 @@ public class HtmlUtils {
                                       char[] text,
                                       int start,
                                       int length,
-                                      boolean isScriptInAttributeValueEnabled) throws IOException {
+                                      boolean isScriptInAttributeValueEnabled, boolean forXml) throws IOException {
         int buffLength = buff.length;
         int buffIndex = 0;
 
@@ -355,7 +347,7 @@ public class HtmlUtils {
 
             // "Application Program Command" or less...
             if (ch <= 0x1f) {
-                if (!isPrintableControlChar(ch)) {
+                if (!isPrintableControlChar(ch, forXml)) {
                     continue;
                 }
             }
@@ -461,9 +453,9 @@ public class HtmlUtils {
     }
 
 
-    static private boolean isPrintableControlChar(int ch) {
+    static private boolean isPrintableControlChar(int ch, boolean forXml) {
 
-        return (ch == 0x09 || ch == 0x0A || ch == 0x0C || ch == 0x0D);
+        return (ch == 0x09 || ch == 0x0A || (ch == 0x0C && !forXml) || ch == 0x0D);
 
     }
 
@@ -753,7 +745,7 @@ public class HtmlUtils {
         if (textBuffer.length < len) {
             textBuffer = new char[len * 2];
         }
-        HtmlUtils.writeText(out, true, true, outbuf, text, textBuffer);
+        HtmlUtils.writeText(out, true, true, outbuf, text, textBuffer, true);
     }
 
     static public void writeUnescapedTextForXML(Writer out, String text) throws IOException {
@@ -762,7 +754,7 @@ public class HtmlUtils {
         for (int i = 0; i < length; i++) {
             final char ch = text.charAt(i);
 
-            if (ch < 0x20 ? (ch == 0x9 || ch == 0xA || ch == 0xD) : (ch <= 0xD7FF || (ch >= 0xE000 && ch <= 0xFFFD))) {
+            if (ch < 0x20 ? isPrintableControlChar(ch, true) : (ch <= 0xD7FF || (ch >= 0xE000 && ch <= 0xFFFD))) {
                 // Only those chars are allowed in XML. https://www.w3.org/TR/xml/#charsets Character Range
                 out.write(ch);
             }

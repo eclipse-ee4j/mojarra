@@ -811,7 +811,7 @@ public class HtmlResponseWriter extends ResponseWriter {
                                      buffer,
                                      val,
                                      textBuffer,
-                                     isScriptInAttributeValueEnabled);
+                                     isScriptInAttributeValueEnabled, isPartial);
             attributesBuffer.write('"');
         }
 
@@ -850,7 +850,7 @@ public class HtmlResponseWriter extends ResponseWriter {
         writer.write("<!--");
         String str = comment.toString();
         ensureTextBufferCapacity(str);
-        HtmlUtils.writeText(writer, true, true, buffer, str, textBuffer);
+        HtmlUtils.writeText(writer, true, true, buffer, str, textBuffer, isPartial);
         writer.write("-->");
 
     }
@@ -880,7 +880,7 @@ public class HtmlResponseWriter extends ResponseWriter {
             }
         } else if (isPartial || !writingCdata) {
             charHolder[0] = text;
-            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, buffer, charHolder);
+            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, buffer, charHolder, isPartial);
         } else {  // if writingCdata
             assert writingCdata;
             charHolder[0] = text;
@@ -922,7 +922,7 @@ public class HtmlResponseWriter extends ResponseWriter {
                 writer.write(text);
             }
         } else if (isPartial || !writingCdata) {
-            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, buffer, text);
+            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, buffer, text, isPartial);
         } else { // if writingCdata
             assert writingCdata;
             writeEscaped(text, 0, text.length);
@@ -969,7 +969,7 @@ public class HtmlResponseWriter extends ResponseWriter {
                                 escapeIso,
                                 buffer,
                                 textStr,
-                                textBuffer);
+                                textBuffer, isPartial);
         } else { // if writingCdata
             assert writingCdata;
             int textLen = textStr.length();
@@ -1030,7 +1030,7 @@ public class HtmlResponseWriter extends ResponseWriter {
                 writer.write(text, off, len);
             }
         } else if (isPartial || !writingCdata) {
-            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, buffer, text, off, len);
+            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, buffer, text, off, len, isPartial);
         } else { // if (writingCdata)
             assert writingCdata;
             writeEscaped(text, off, len);
@@ -1108,7 +1108,7 @@ public class HtmlResponseWriter extends ResponseWriter {
                                      buffer,
                                      stringValue,
                                      textBuffer,
-                                     isScriptInAttributeValueEnabled);
+                                     isScriptInAttributeValueEnabled, isPartial);
         } else {
             HtmlUtils.writeURL(attributesBuffer,
                                stringValue,
