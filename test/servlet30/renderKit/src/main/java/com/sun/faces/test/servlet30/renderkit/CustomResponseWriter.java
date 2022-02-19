@@ -276,7 +276,7 @@ public class CustomResponseWriter extends ResponseWriter {
             
             // write the attribute value
             ensureTextBufferCapacity(value.toString());
-            HtmlUtils.writeAttribute(writer, true, true, buffer, value.toString(), textBuffer, true);
+            HtmlUtils.writeAttribute(writer, true, true, buffer, value.toString(), textBuffer, true, false);
             //PENDING (horwat) using String as a result of Tomcat char
             //        writer ArrayIndexOutOfBoundsException (3584)
             writer.write("\"");
@@ -324,7 +324,7 @@ public class CustomResponseWriter extends ResponseWriter {
         ensureTextBufferCapacity(stringValue);
         // Javascript URLs should not be URL-encoded
         if (stringValue.startsWith("javascript:")) {
-            HtmlUtils.writeAttribute(writer, true, true, buffer, stringValue, textBuffer, true);
+            HtmlUtils.writeAttribute(writer, true, true, buffer, stringValue, textBuffer, true, false);
         } else {
             HtmlUtils.writeURL(writer, stringValue, textBuffer, encoding);
         }
@@ -383,7 +383,7 @@ public class CustomResponseWriter extends ResponseWriter {
             writer.write(text.toString());
         } else {
             ensureTextBufferCapacity(text.toString());
-            HtmlUtils.writeText(writer, true, true, buffer, text.toString(), textBuffer);
+            HtmlUtils.writeText(writer, true, true, buffer, text.toString(), textBuffer, false);
         }
     }
 
@@ -405,7 +405,7 @@ public class CustomResponseWriter extends ResponseWriter {
             writer.write(text);
         } else {
             charHolder[0] = text;
-            HtmlUtils.writeText(writer, true, true, buffer, charHolder);
+            HtmlUtils.writeText(writer, true, true, buffer, charHolder, false);
         }
     }
 
@@ -435,7 +435,7 @@ public class CustomResponseWriter extends ResponseWriter {
         if (dontEscape) {
             writer.write(text);
         } else {
-            HtmlUtils.writeText(writer, true, true, buffer, text);
+            HtmlUtils.writeText(writer, true, true, buffer, text, false);
         }
     }
 
@@ -471,7 +471,7 @@ public class CustomResponseWriter extends ResponseWriter {
         if (dontEscape) {
             writer.write(text, off, len);
         } else {
-            HtmlUtils.writeText(writer, true, true, buffer, text, off, len);
+            HtmlUtils.writeText(writer, true, true, buffer, text, off, len, false);
         }
     }
 
