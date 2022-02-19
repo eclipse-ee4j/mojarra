@@ -916,6 +916,10 @@ public class WebConfiguration {
               true,
               NumberOfLogicalViews
         ),
+        NumberOfActiveViewMaps(
+              "com.sun.faces.numberOfActiveViewMaps",
+              "25"
+        ),
         NumberOfConcurrentFlashUsers(
               "com.sun.faces.numberOfConcerrentFlashUsers",
               "5000"
