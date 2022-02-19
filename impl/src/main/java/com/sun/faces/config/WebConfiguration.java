@@ -750,6 +750,7 @@ public class WebConfiguration {
         ResourceExcludes(ResourceHandler.RESOURCE_EXCLUDES_PARAM_NAME, ResourceHandler.RESOURCE_EXCLUDES_DEFAULT_VALUE),
         NumberOfViews("com.sun.faces.numberOfViewsInSession", "15"),
         NumberOfLogicalViews("com.sun.faces.numberOfLogicalViews", "15"),
+        NumberOfActiveViewMaps("com.sun.faces.numberOfActiveViewMaps", "25"),
         NumberOfConcurrentFlashUsers("com.sun.faces.numberOfConcerrentFlashUsers", "5000"),
         NumberOfFlashesBetweenFlashReapings("com.sun.faces.numberOfFlashesBetweenFlashReapings", "5000"),
         InjectionProviderClass("com.sun.faces.injectionProvider", ""),

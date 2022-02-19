@@ -17,9 +17,8 @@
 package com.sun.faces.application.view;
 
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
-import static java.util.logging.Level.FINE;
+import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.NumberOfActiveViewMaps;
 import static java.util.logging.Level.FINEST;
-import static java.util.logging.Level.INFO;
 import static java.util.logging.Level.WARNING;
 
 import java.util.Collections;
@@ -80,6 +79,8 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
     private ViewScopeContextManager contextManager;
 
     private boolean distributable;
+    
+    private Integer numberOfActiveViewMapsInWebXml;
 
     /**
      * Constructor.
@@ -89,6 +90,18 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
         contextManager = new ViewScopeContextManager();
         WebConfiguration config = WebConfiguration.getInstance(context.getExternalContext());
         distributable = config.isOptionEnabled(EnableDistributable);
+
+        String numberOfActiveViewMapsAsString = config.getOptionValue(NumberOfActiveViewMaps);
+        if (numberOfActiveViewMapsAsString != null) {
+            try {
+                numberOfActiveViewMapsInWebXml = Integer.parseInt(numberOfActiveViewMapsAsString);
+            }
+            catch (NumberFormatException e) {
+                if (LOGGER.isLoggable(WARNING)) {
+                    LOGGER.log(WARNING, "Cannot parse " + NumberOfActiveViewMaps.getQualifiedName(), e);
+                }
+            }
+        }
     }
     
     /**
@@ -267,7 +280,11 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
                 Map<String, Object> sessionMap = facesContext.getExternalContext().getSessionMap();
                 Integer size = (Integer) sessionMap.get(ACTIVE_VIEW_MAPS_SIZE);
                 if (size == null) {
-                    size = 25;
+                    size = numberOfActiveViewMapsInWebXml;
+                    
+                    if (size == null) {
+                        size = Integer.parseInt(NumberOfActiveViewMaps.getDefaultValue());
+                    }
                 }
 
                 if (sessionMap.get(ACTIVE_VIEW_MAPS) == null) {
