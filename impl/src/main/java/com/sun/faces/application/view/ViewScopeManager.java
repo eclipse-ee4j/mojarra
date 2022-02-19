@@ -17,6 +17,7 @@
 package com.sun.faces.application.view;
 
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
+import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.NumberOfActiveViewMaps;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -78,6 +79,8 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
     private ViewScopeContextManager contextManager;
 
     private boolean distributable;
+    
+    private Integer numberOfActiveViewMapsInWebXml;
 
     /**
      * Constructor.
@@ -97,6 +100,17 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
         WebConfiguration config = WebConfiguration.getInstance(context.getExternalContext());
         distributable = config.isOptionEnabled(EnableDistributable);
 
+        String numberOfActiveViewMapsAsString = config.getOptionValue(NumberOfActiveViewMaps);
+        if (numberOfActiveViewMapsAsString != null) {
+            try {
+                numberOfActiveViewMapsInWebXml = Integer.parseInt(numberOfActiveViewMapsAsString);
+            }
+            catch (NumberFormatException e) {
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.log(Level.WARNING, "Cannot parse " + NumberOfActiveViewMaps.getQualifiedName(), e);
+                }
+            }
+        }
     }
 
     /**
@@ -299,7 +313,11 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
                 Map<String, Object> sessionMap = facesContext.getExternalContext().getSessionMap();
                 Integer size = (Integer) sessionMap.get(ACTIVE_VIEW_MAPS_SIZE);
                 if (size == null) {
-                    size = 25;
+                    size = numberOfActiveViewMapsInWebXml;
+                    
+                    if (size == null) {
+                        size = Integer.parseInt(NumberOfActiveViewMaps.getDefaultValue());
+                    }
                 }
 
                 if (sessionMap.get(ACTIVE_VIEW_MAPS) == null) {

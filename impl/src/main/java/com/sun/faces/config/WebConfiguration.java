@@ -797,6 +797,7 @@ public class WebConfiguration {
         NumberOfViewsDeprecated("com.sun.faces.NUMBER_OF_VIEWS_IN_SESSION", "15", true, NumberOfViews),
         NumberOfLogicalViews("com.sun.faces.numberOfLogicalViews", "15"),
         NumberOfLogicalViewsDeprecated("com.sun.faces.NUMBER_OF_VIEWS_IN_LOGICAL_VIEW_IN_SESSION", "15", true, NumberOfLogicalViews),
+        NumberOfActiveViewMaps("com.sun.faces.numberOfActiveViewMaps", "25"),
         NumberOfConcurrentFlashUsers("com.sun.faces.numberOfConcerrentFlashUsers", "5000"),
         NumberOfFlashesBetweenFlashReapings("com.sun.faces.numberOfFlashesBetweenFlashReapings", "5000"),
         InjectionProviderClass("com.sun.faces.injectionProvider", ""),
