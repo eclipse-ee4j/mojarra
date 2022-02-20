@@ -1322,22 +1322,31 @@ public class Util {
     static public boolean classHasAnnotations(Class<?> clazz) {
         if (clazz != null) {
             while (clazz != Object.class) {
-                Field[] fields = clazz.getDeclaredFields();
-                if (fields != null) {
-                    for (Field field : fields) {
-                        if (field.getAnnotations().length > 0) {
-                            return true;
+                try {
+                    Field[] fields = clazz.getDeclaredFields();
+                    if (fields != null) {
+                        for (Field field : fields) {
+                            if (field.getAnnotations().length > 0) {
+                                return true;
+                            }
+                        }
+                    }
+                    
+                    Method[] methods = clazz.getDeclaredMethods();
+                    if (methods != null) {
+                        for (Method method : methods) {
+                            if (method.getDeclaredAnnotations().length > 0) {
+                                return true;
+                            }
                         }
                     }
                 }
-
-                Method[] methods = clazz.getDeclaredMethods();
-                if (methods != null) {
-                    for (Method method : methods) {
-                        if (method.getDeclaredAnnotations().length > 0) {
-                            return true;
-                        }
+                catch (NoClassDefFoundError e) {
+                    if (LOGGER.isLoggable(FINE)) {
+                        LOGGER.log(FINE, "Cannot inspect " + clazz + " because of missing dependency " + e.getMessage());
                     }
+
+                    return false;
                 }
 
                 clazz = clazz.getSuperclass();
