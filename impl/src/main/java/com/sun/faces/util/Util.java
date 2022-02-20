@@ -78,6 +78,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.validation.SchemaFactory;
@@ -1499,10 +1500,23 @@ public class Util {
                 XPath xpath = factory.newXPath();
                 xpath.setNamespaceContext(new JavaeeNamespaceContext());
                 stream = url.openStream();
+                DocumentBuilderFactory dbf = createDocumentBuilderFactory();
+                try {
+                    dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+                    dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+                    dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+
+                } catch (ParserConfigurationException pce) {
+                }
+                dbf.setNamespaceAware(true);
+                dbf.setValidating(false);
+                dbf.setXIncludeAware(false);
+                dbf.setExpandEntityReferences(false);
                 result = xpath.evaluate("string(/javaee:faces-config/@version)", new InputSource(stream));
             }
         } catch (MalformedURLException mue) {
         } catch (XPathExpressionException | IOException xpee) {
+        } catch (Exception e) {
         } finally {
             if (stream != null) {
                 try {
@@ -1529,10 +1543,23 @@ public class Util {
                 XPath xpath = factory.newXPath();
                 xpath.setNamespaceContext(new JavaeeNamespaceContext());
                 stream = url.openStream();
+                DocumentBuilderFactory dbf = createDocumentBuilderFactory();
+                try {
+                    dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+                    dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+                    dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+
+                } catch (ParserConfigurationException pce) {
+                }
+                dbf.setNamespaceAware(true);
+                dbf.setValidating(false);
+                dbf.setXIncludeAware(false);
+                dbf.setExpandEntityReferences(false);
                 result = xpath.evaluate("string(/javaee:web-app/@version)", new InputSource(stream));
             }
         } catch (MalformedURLException mue) {
         } catch (XPathExpressionException | IOException xpee) {
+        } catch (Exception e) {
         } finally {
             if (stream != null) {
                 try {
