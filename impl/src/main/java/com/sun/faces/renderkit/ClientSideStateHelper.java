@@ -21,6 +21,7 @@ import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParamet
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.ClientStateTimeout;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.ClientStateWriteBufferSize;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.VIEW_STATE_PARAM;
+import static java.util.logging.Level.WARNING;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -434,8 +435,16 @@ public class ClientSideStateHelper extends StateHelper {
             String timeout = webConfig.getOptionValue(ClientStateTimeout);
             try {
                 stateTimeout = Long.parseLong(timeout);
+
+                if (stateTimeout < 0) {
+                    stateTimeoutEnabled = false;
+                }
             } catch (NumberFormatException nfe) {
-                stateTimeout = Long.parseLong(ClientStateTimeout.getDefaultValue());
+                if (LOGGER.isLoggable(WARNING)) {
+                    LOGGER.log(WARNING, ClientStateTimeout.getQualifiedName() + " context param value of '" + timeout + "' is not parseable as Long, it will be ignored");
+                }
+
+                stateTimeoutEnabled = false;
             }
         }
 
