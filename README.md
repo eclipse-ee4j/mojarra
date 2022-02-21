@@ -112,6 +112,11 @@ In case of WildFly/JBoss EAP, [you need to manually package `jsf-api.jar` and `j
     You can check [`org.glassfish:jakarta.faces`][16] repository to find the latest Mojarra 4.0.x version.
 
 
+## Testing
+
+Since Mojarra 4, tests have been moved to the [Faces project](https://github.com/jakartaee/faces/tree/master/tck).
+
+
 ## Hello World Example
 
 We assume that you already know how to create an empty Maven WAR Project or Dynamic Web Project in your favourite IDE with a CDI 3.0+ compatible `/WEB-INF/beans.xml` deployment descriptor file (which can be kept fully empty). Don't forget to add JARs or configure pom.xml if necessary, as instructed in previous chapter.
