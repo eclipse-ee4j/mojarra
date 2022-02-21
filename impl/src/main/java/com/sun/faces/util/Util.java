@@ -27,6 +27,7 @@ import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.NULL_VIEW_ID_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static java.util.Collections.emptyList;
+import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
 
 import java.beans.FeatureDescriptor;
