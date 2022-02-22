@@ -12,9 +12,9 @@ assignees: ''
 **Imnportant**
 
 Do not file any issues with non Mojarra dependencies in the mix, like for instance PrimeFaces 
-or any other 3rd party vendor. If you do your issue will be closed without being looked at.
-Note we have to do this as we do NOT have the bandwidth to debug any issues that arise from 
-including them.
+or any other 3rd party vendor. If something is not working with another library in the mix
+you need to remove it so you can validate it is not an issue caused by it. Thank you for 
+adhering to this guidance!
 
 ---
 
