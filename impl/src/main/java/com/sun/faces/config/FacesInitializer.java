@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Contributors to Eclipse Foundation.
+ * Copyright (c) 2021, 2022 Contributors to Eclipse Foundation.
  * Copyright (c) 2009, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -20,14 +20,13 @@ package com.sun.faces.config;
 import static com.sun.faces.RIConstants.ANNOTATED_CLASSES;
 import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
 import static com.sun.faces.RIConstants.FACES_SERVLET_REGISTRATION;
+import static com.sun.faces.util.Util.isEmpty;
 import static java.lang.Boolean.parseBoolean;
-import static java.util.Collections.emptySet;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import jakarta.annotation.Resource;
 import jakarta.faces.annotation.FacesConfig;
 import jakarta.faces.application.ResourceDependencies;
 import jakarta.faces.application.ResourceDependency;
@@ -81,9 +80,6 @@ import jakarta.websocket.server.ServerContainer;
     FacesConverter.class, FacesDataModel.class, FacesRenderer.class, FacesValidator.class, FlowBuilderParameter.class, FlowDefinition.class, FlowScoped.class,
     ListenerFor.class, ListenersFor.class, NamedEvent.class, PhaseListener.class, Push.class, Renderer.class, ResourceDependencies.class, ResourceDependency.class,
     UIComponent.class, Validator.class, ViewScoped.class,
-
-    // General -- TODO: document why exactly this is relevant; it was added here https://github.com/javaee/mojarra/commit/74cb6a1c35d74d1a3097b8c02d746bda42a40507
-    Resource.class,
 })
 public class FacesInitializer implements ServletContainerInitializer {
 
@@ -102,13 +98,11 @@ public class FacesInitializer implements ServletContainerInitializer {
 
     @Override
     public void onStartup(Set<Class<?>> classes, ServletContext servletContext) throws ServletException {
-        Set<Class<?>> customFacesTypes = filterCustomFacesTypes(classes);
-
-        boolean appHasFacesContent = !customFacesTypes.isEmpty() || isFacesConfigFilePresent(servletContext);
+        boolean appHasFacesContent = !isEmpty(classes) || isFacesConfigFilePresent(servletContext);
         boolean appHasFacesServlet = isFacesServletRegistrationPresent(servletContext);
 
         if (appHasFacesContent || appHasFacesServlet) {
-            servletContext.setAttribute(ANNOTATED_CLASSES, customFacesTypes);
+            addAnnotatedClasses(classes, servletContext);
             InitFacesContext initFacesContext = new InitFacesContext(servletContext);
 
             try {
@@ -130,22 +124,38 @@ public class FacesInitializer implements ServletContainerInitializer {
                 initFacesContext.releaseCurrentInstance();
                 initFacesContext.release();
             }
+        } else {
+            // No Faces content, so if the other initializer added annotated classes they won't be needed
+            if (servletContext.getAttribute(ANNOTATED_CLASSES) != null) {
+                servletContext.removeAttribute(ANNOTATED_CLASSES);
+            }
         }
     }
 
+    public static void addAnnotatedClasses(Set<Class<?>> classes, ServletContext servletContext) {
+        if (isEmpty(classes)) {
+            // Nothing to add, just return
+            return;
+        }
+
+        @SuppressWarnings("unchecked")
+        Set<Class<?>> existingClasses = (Set<Class<?>>) servletContext.getAttribute(ANNOTATED_CLASSES);
+
+        if (isEmpty(existingClasses)) {
+            // No classes set before, so set the new classes as the initial set
+            servletContext.setAttribute(ANNOTATED_CLASSES, classes);
+            return;
+        }
+
+        // We have both existing and new classes, so create a new merged set.
+        Set<Class<?>> newAnnotatedClasses = new HashSet<Class<?>>();
+        newAnnotatedClasses.addAll(classes);
+        newAnnotatedClasses.addAll(existingClasses);
+
+        servletContext.setAttribute(ANNOTATED_CLASSES, newAnnotatedClasses);
+    }
+
     // --------------------------------------------------------- Private Methods
-
-
-    private static Set<Class<?>> filterCustomFacesTypes(Set<Class<?>> classes) {
-        Set<Class<?>> set = new HashSet<>(classes == null ? emptySet() : classes);
-        set.removeIf(FacesInitializer::isApiOrImplClass);
-        return set;
-    }
-
-    private static boolean isApiOrImplClass(Class<?> c) {
-        String name = c.getName();
-        return name.startsWith(FACES_PACKAGE_PREFIX) || (name.startsWith(MOJARRA_PACKAGE_PREFIX) && !name.startsWith(MOJARRA_TEST_PACKAGE_PREFIX));
-    }
 
     private static boolean isFacesConfigFilePresent(ServletContext context) {
         try {
