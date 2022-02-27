@@ -31,14 +31,17 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import jakarta.el.PropertyNotFoundException;
 import jakarta.el.ValueExpression;
 import jakarta.el.ValueReference;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.PartialStateHolder;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIInput;
 import jakarta.faces.context.FacesContext;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.MessageInterpolator;
@@ -293,21 +296,21 @@ public class BeanValidator implements Validator, PartialStateHolder {
         }
 
         ValueExpression valueExpression = component.getValueExpression("value");
+
         if (valueExpression == null) {
             return;
         }
 
-        jakarta.validation.Validator beanValidator = getBeanValidator(context);
-
-        Class<?>[] validationGroupsArray = parseValidationGroups(getValidationGroups());
-
-        ValueReference valueReference = valueExpression.getValueReference(context.getELContext());
+        ValueReference valueReference = getValueReference(context, component, valueExpression);
 
         if (valueReference == null) {
             return;
         }
 
+        Class<?>[] validationGroupsArray = parseValidationGroups(getValidationGroups());
+        
         if (isResolvable(valueReference, valueExpression)) {
+            jakarta.validation.Validator beanValidator = getBeanValidator(context);
 
             @SuppressWarnings("rawtypes")
             Set violationsRaw = null;
@@ -349,6 +352,26 @@ public class BeanValidator implements Validator, PartialStateHolder {
         // validation can be performed if desired
         if (wholeBeanValidationEnabled(context, validationGroupsArray)) {
             recordValidationResult(context, component, valueReference.getBase(), valueReference.getProperty().toString(), value);
+        }
+    }
+
+    private static ValueReference getValueReference(FacesContext context, UIComponent component, ValueExpression valueExpression) {
+        try {
+            return valueExpression.getValueReference(context.getELContext());
+        }
+        catch (PropertyNotFoundException e) {
+            if (component instanceof UIInput && ((UIInput) component).getSubmittedValue() == null) {
+                if (LOGGER.isLoggable(Level.FINE)) {
+                    LOGGER.log(Level.FINE,
+                               "Property of value expression {0} of component {1} could not be found, but submitted value is null in first place, so not attempting to validate", // See Mojarra issue 4734
+                               new Object[]{
+                                       valueExpression.getExpressionString(),
+                                       component.getId() });
+                }
+                return null;
+            } else {
+                throw e;
+            }
         }
     }
 
