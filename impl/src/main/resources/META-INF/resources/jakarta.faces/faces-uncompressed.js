@@ -2111,6 +2111,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
              * argument is not a function.
              *
              * @member faces.ajax
+             * @function faces.ajax.addOnError
              * @param callback a reference to a function to call on an error
              */
             addOnError: function addOnError(callback) {
@@ -2138,6 +2139,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
              * argument is not a function.
              *
              * @member faces.ajax
+             * @function faces.ajax.addOnEvent
              * @param callback a reference to a function to call on an event
              */
             addOnEvent: function addOnEvent(callback) {
