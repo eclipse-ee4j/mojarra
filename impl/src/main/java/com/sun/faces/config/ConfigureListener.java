@@ -632,14 +632,10 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
 
     private static String getServletContextIdentifier(ServletContext context) {
-        if (context.getMajorVersion() == 2 && context.getMinorVersion() < 5) {
+        try {
+            return context.getContextPath();
+        } catch(AbstractMethodError error){
             return context.getServletContextName();
-        } else {
-            try {
-                return context.getContextPath();
-            } catch(AbstractMethodError error){
-                return context.getServletContextName();
-            }
         }
     }
 
@@ -856,11 +852,6 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
          */
         private void scanForFacesServlet(ServletContext context) {
             InputStream in = context.getResourceAsStream(WEB_XML_PATH);
-            if (in == null) {
-                if (context.getMajorVersion() < 3) {
-                    throw new ConfigurationException("no web.xml present");
-                }
-            }
             SAXParserFactory factory = getConfiguredFactory();
             if (in != null) {
                 try {
@@ -882,7 +873,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                     }
                 }
             }
-            if (!facesServletPresent && context.getMajorVersion() >= 3) {
+            if (!facesServletPresent) {
                 ClassLoader cl = Util.getCurrentLoader(this);
                 Enumeration<URL> urls;
                 try {
