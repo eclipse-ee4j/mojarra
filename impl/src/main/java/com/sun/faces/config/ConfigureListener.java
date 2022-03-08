@@ -612,17 +612,6 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
     private static boolean isJspTwoOne(ServletContext context) {
 
-        // The following try/catch is a hack to work around
-        // a bug in Tomcat 6 where JspFactory.getDefaultFactory() will
-        // return null unless JspRuntimeContext has been loaded.
-        try {
-            Class.forName("org.apache.jasper.compiler.JspRuntimeContext");
-        } catch (ClassNotFoundException ignored) {
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.log(Level.FINEST, "Dected JSP 2.1", ignored);
-            }
-        }
-
         if (JspFactory.getDefaultFactory() == null) {
             return false;
         }
