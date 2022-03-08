@@ -644,28 +644,12 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
     }
 
 
-    private static boolean isJspTwoOne(ServletContext context) {
-
-        // The following try/catch is a hack to work around
-        // a bug in Tomcat 6 where JspFactory.getDefaultFactory() will
-        // return null unless JspRuntimeContext has been loaded.
-        try {
-            Class.forName("org.apache.jasper.compiler.JspRuntimeContext");
-        } catch (ClassNotFoundException ignored) {
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.log(Level.FINEST, "Dected JSP 2.1", ignored);
-            }
-        }
+    private static boolean isJsp(ServletContext context) {
 
         if (JspFactory.getDefaultFactory() == null) {
             return false;
         }
-        try {
-            JspFactory.class.getMethod("getJspApplicationContext",
-                    ServletContext.class);
-        } catch (NoSuchMethodException | SecurityException e) {
-            return false;
-        }
+
         try {
             JspFactory.getDefaultFactory().getJspApplicationContext(context);
         } catch (Throwable e) {
@@ -678,7 +662,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
     public void registerELResolverAndListenerWithJsp(ServletContext context, boolean reloaded) {
 
         if (webConfig.isSet(WebContextInitParameter.ExpressionFactory)
-                || !isJspTwoOne(context)) {
+                || !isJsp(context)) {
 
             // first try to load a factory defined in web.xml
             if (!installExpressionFactory(context,
