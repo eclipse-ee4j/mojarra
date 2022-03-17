@@ -154,13 +154,7 @@ public class ResourceCache {
     }
 
     private static String getServletContextIdentifier(ServletContext context) {
-
-        if (context.getMajorVersion() == 2 && context.getMinorVersion() < 5) {
-            return context.getServletContextName();
-        } else {
-            return context.getContextPath();
-        }
-
+        return context.getContextPath();
     }
 
     // ---------------------------------------------------------- Nested Classes

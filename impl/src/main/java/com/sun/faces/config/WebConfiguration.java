@@ -324,11 +324,6 @@ public class WebConfiguration {
      * @return the name of this application
      */
     public String getServletContextName() {
-
-        if (servletContext.getMajorVersion() == 2 && servletContext.getMinorVersion() <= 4) {
-            return servletContext.getServletContextName();
-        }
-
         return servletContext.getContextPath();
     }
 
