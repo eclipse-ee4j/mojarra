@@ -18,13 +18,12 @@ package jakarta.faces.component;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import com.sun.faces.mock.MockExternalContext;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.context.FacesContext;
@@ -360,6 +359,21 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         c.popComponentFromEL(facesContext);
         assertTrue(c.getListenersForEventClass(PostAddToViewEvent.class).size() == 1);
 
+    }
+
+    public void testAttributesThatAreSetStateHolder() throws Exception {
+        ComponentTestImpl c = new ComponentTestImpl();
+        c.getAttributes().put("attr1", "value1");
+        c.markInitialState();
+        c.getAttributes().put("attr2", "value2");
+        assertEquals(Arrays.asList("attr1", "attr2"), c.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet"));
+
+        Object state = c.saveState(facesContext);
+        c = new ComponentTestImpl();
+        c.pushComponentToEL(facesContext, c);
+        c.restoreState(facesContext, state);
+        c.popComponentFromEL(facesContext);
+        assertEquals(Arrays.asList("attr1", "attr2"), c.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet"));
     }
 
     public void testValueExpressions() throws Exception {
