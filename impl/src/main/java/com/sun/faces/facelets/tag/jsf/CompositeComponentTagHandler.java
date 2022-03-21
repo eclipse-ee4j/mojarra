@@ -24,6 +24,9 @@ import com.sun.faces.facelets.tag.MetaRulesetImpl;
 import com.sun.faces.facelets.tag.MetadataTargetImpl;
 import com.sun.faces.util.Util;
 import com.sun.faces.util.FacesLogger;
+
+import static com.sun.faces.facelets.tag.jsf.ComponentSupport.getViewRoot;
+
 import java.beans.BeanDescriptor;
 import javax.el.ELException;
 import javax.el.ValueExpression;
@@ -37,6 +40,7 @@ import javax.faces.component.ActionSource;
 import javax.faces.component.ValueHolder;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UISelectOne;
+import javax.faces.component.UniqueIdVendor;
 import javax.faces.component.UISelectMany;
 import javax.faces.context.FacesContext;
 import javax.faces.view.AttachedObjectHandler;
@@ -322,6 +326,7 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
             facetComponent = (UIPanel)
             facesContext.getApplication().createComponent("javax.faces.Panel");
             facetComponent.setRendererType("javax.faces.Group");
+            facetComponent.setId((c instanceof UniqueIdVendor ? (UniqueIdVendor) c : getViewRoot(ctx, c)).createUniqueId(facesContext, null));
             c.getFacets().put(UIComponent.COMPOSITE_FACET_NAME, facetComponent);
         }                                                                                 
         else {
