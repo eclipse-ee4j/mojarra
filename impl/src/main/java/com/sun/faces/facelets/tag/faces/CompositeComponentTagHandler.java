@@ -16,6 +16,8 @@
 
 package com.sun.faces.facelets.tag.faces;
 
+import static com.sun.faces.facelets.tag.faces.ComponentSupport.getViewRoot;
+
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -51,6 +53,7 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIPanel;
 import jakarta.faces.component.UISelectMany;
 import jakarta.faces.component.UISelectOne;
+import jakarta.faces.component.UniqueIdVendor;
 import jakarta.faces.component.ValueHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.AttachedObjectHandler;
@@ -296,6 +299,7 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
         if (ComponentHandler.isNew(c)) {
             facetComponent = (UIPanel) facesContext.getApplication().createComponent("jakarta.faces.Panel");
             facetComponent.setRendererType("jakarta.faces.Group");
+            facetComponent.setId((c instanceof UniqueIdVendor ? (UniqueIdVendor) c : getViewRoot(ctx, c)).createUniqueId(facesContext, null));
             c.getFacets().put(UIComponent.COMPOSITE_FACET_NAME, facetComponent);
         } else {
             facetComponent = (UIPanel) c.getFacets().get(UIComponent.COMPOSITE_FACET_NAME);

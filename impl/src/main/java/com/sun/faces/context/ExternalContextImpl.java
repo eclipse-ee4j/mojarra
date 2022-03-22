@@ -169,14 +169,7 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public String getContextName() {
-
-        if (servletContext.getMajorVersion() >= 3 || servletContext.getMajorVersion() == 2 && servletContext.getMinorVersion() == 5) {
-            return servletContext.getServletContextName();
-        } else {
-            // for servlet 2.4 support
-            return servletContext.getServletContextName();
-        }
-
+        return servletContext.getServletContextName();
     }
 
     /**
