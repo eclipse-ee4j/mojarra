@@ -325,7 +325,11 @@ public class ResourceHandlerImpl extends ResourceHandler {
                     }
 
                 } catch (IOException ioe) {
-                    send404(context, resourceName, libraryName, ioe, true);
+                    if (isClientAbortException(ioe)) {
+                        send404(context, resourceName, libraryName, false);
+                    } else {
+                        send404(context, resourceName, libraryName, ioe, true);
+                    }
                 } finally {
                     if (out != null) {
                         try {
@@ -347,6 +351,10 @@ public class ResourceHandlerImpl extends ResourceHandler {
             send404(context, resourceName, libraryName, true);
         }
 
+    }
+
+    private static boolean isClientAbortException(IOException ioe) {
+        return ioe.getClass().getCanonicalName().equals("org.apache.catalina.connector.ClientAbortException");
     }
     
     private boolean libraryNameIsSafe(String libraryName) {
