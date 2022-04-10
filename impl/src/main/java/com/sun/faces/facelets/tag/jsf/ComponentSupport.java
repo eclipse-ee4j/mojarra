@@ -208,16 +208,17 @@ public final class ComponentSupport {
         if (isBuildingNewComponentTree(context)) {
             return null;
         }
-        Map<Object, Object> attrs = context.getAttributes();
-        if (attrs.containsKey(PartialStateSaving)) {
-            if ((Boolean) attrs.get(PartialStateSaving)) {
-                result = findChildByTagId(context, parent, id);
-            }
+        if (isPartialStateSaving(context)) {
+            result = getDescendantMarkIdCache(parent).get(id);
         }
 
         return result;
     }
 
+    private static boolean isPartialStateSaving(FacesContext context) {
+        return context.getAttributes().get(PartialStateSaving) == Boolean.TRUE;
+    }
+    
     /**
      * By TagId, find Child
      *
@@ -226,8 +227,73 @@ public final class ComponentSupport {
      * @return the UI component
      */
     public static UIComponent findChildByTagId(FacesContext context, UIComponent parent, String id) {
-        // fast path - get the child from the descendant mark id cache
-        return getDescendantMarkIdCache(parent).get(id);
+        if (isPartialStateSaving(context)) {
+            // fast path - get the child from the descendant mark id cache
+            return getDescendantMarkIdCache(parent).get(id);
+        }
+        else {
+            // original impl - traverse the tree
+            return findChildByTagIdFullStateSaving(context, parent, id);
+        }
+    }
+
+    private static UIComponent findChildByTagIdFullStateSaving(FacesContext context, UIComponent parent, String id) {
+        UIComponent c = null;
+        UIViewRoot root = context.getViewRoot();
+        boolean hasDynamicComponents = (null != root && root.getAttributes().containsKey(RIConstants.TREE_HAS_DYNAMIC_COMPONENTS));
+        String cid = null;
+        List<UIComponent> components;
+        String facetName = getFacetName(parent);
+        if (null != facetName) {
+            c = parent.getFacet(facetName);
+            // We will have a facet name, but no corresponding facet in the
+            // case of facets with composite components.  In this case,
+            // we must do the brute force search.
+            if (null != c) {
+                cid = (String) c.getAttributes().get(MARK_CREATED);
+                if (id.equals(cid)) {
+                    return c;
+                }
+            } 
+        }
+        if (0 < parent.getFacetCount()) {
+            components = new ArrayList<>();
+            components.addAll(parent.getFacets().values());
+            components.addAll(parent.getChildren());
+        } else {
+            components = parent.getChildren();
+        }
+
+        int len = components.size();
+        for (int i = 0; i < len; i++) {
+            c = components.get(i);
+            cid = (String) c.getAttributes().get(MARK_CREATED);
+            if (id.equals(cid)) {
+                return c;
+            }
+            if (c instanceof UIPanel && c.getAttributes().containsKey(IMPLICIT_PANEL)) {
+                for (UIComponent c2 : c.getChildren()) {
+                    cid = (String) c2.getAttributes().get(MARK_CREATED);
+                    if (id.equals(cid)) {
+                        return c2;
+                    }
+                }
+            }
+            if (hasDynamicComponents) {
+                /*
+                 * Make sure we look for the child recursively it might have moved
+                 * into a different parent in the parent hierarchy. Note currently
+                 * we are only looking down the tree. Maybe it would be better
+                 * to use the VisitTree API instead.
+                 */
+                UIComponent foundChild = findChildByTagId(context, c, id);
+                if (foundChild != null) {
+                    return foundChild;
+                }
+            }
+        }
+
+        return null;
     }
 
     @SuppressWarnings("unchecked")
