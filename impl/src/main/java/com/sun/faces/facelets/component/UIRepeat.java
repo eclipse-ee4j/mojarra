@@ -648,6 +648,7 @@ public class UIRepeat extends UINamingContainer {
         int oldRowIndex = -1;
         if (visitRows) {
             oldRowIndex = getDataModel().getRowIndex();
+            captureOrigValue(facesContext);        
             setIndex(facesContext, -1);
         }
 
@@ -689,8 +690,8 @@ public class UIRepeat extends UINamingContainer {
             popComponentFromEL(facesContext);
             if (visitRows) {
                 setIndex(facesContext, oldRowIndex);
+                restoreOrigValue(facesContext);
             }
-            clearValue(facesContext);
         }
 
         // Return false to allow the visit to continue
