@@ -26,6 +26,7 @@ import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.el.ValueBinding;
+import jakarta.faces.render.Renderer;
 
 /**
  * <p>
@@ -270,6 +271,24 @@ public class UISelectMany extends UIInput {
     public String getFamily() {
 
         return COMPONENT_FAMILY;
+
+    }
+
+    private transient Object submittedValue = null;
+
+    @Override
+    public Object getSubmittedValue() {
+        if (submittedValue == null && !isValid() && considerEmptyStringNull(FacesContext.getCurrentInstance())) { // JAVASERVERFACES_SPEC_PUBLIC-671
+            return new String[0]; // Mojarra#5081
+        } else {
+            return submittedValue;
+        }
+    }
+
+    @Override
+    public void setSubmittedValue(Object submittedValue) {
+
+        this.submittedValue = submittedValue;
 
     }
 
