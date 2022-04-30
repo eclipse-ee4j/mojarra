@@ -27,6 +27,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.el.ValueBinding;
+import javax.faces.render.Renderer;
 
 
 /**
@@ -261,6 +262,26 @@ public class UISelectMany extends UIInput {
 
     }
 
+
+    private transient Object submittedValue = null;
+
+
+    @Override
+    public Object getSubmittedValue() {
+        if (submittedValue == null && !isValid() && considerEmptyStringNull(FacesContext.getCurrentInstance())) { // JAVASERVERFACES_SPEC_PUBLIC-671
+            return new String[0]; // Mojarra#5081
+        } else {
+            return submittedValue;
+        }
+    }
+
+
+    @Override
+    public void setSubmittedValue(Object submittedValue) {
+
+        this.submittedValue = submittedValue;
+
+    }
 
     /**
      * <p>Return the currently selected values, or <code>null</code> if there
