@@ -1343,7 +1343,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
         context.addMessage(getClientId(context), message);
     }
 
-    private boolean considerEmptyStringNull(FacesContext ctx) {
+    boolean considerEmptyStringNull(FacesContext ctx) {
 
         if (emptyStringIsNull == null) {
             String val = ctx.getExternalContext().getInitParameter(EMPTY_STRING_AS_NULL_PARAM_NAME);
