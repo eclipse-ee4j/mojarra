@@ -22,6 +22,7 @@ Certification
 -------------
 * [Jakarta Faces 2.3 TCK results summary](https://eclipse-ee4j.github.io/mojarra/certifications/jakarta-faces/2.3/TCK-Results)
 * [Jakarta Faces 3.0 TCK results summary](https://eclipse-ee4j.github.io/mojarra/certifications/jakarta-faces/3.0/TCK-Results)
+* [Jakarta Faces 4.0 TCK results summary](https://eclipse-ee4j.github.io/mojarra/certifications/jakarta-faces/4.0/TCK-Results)
 
 ## Minimum Requirements 3.0
 
