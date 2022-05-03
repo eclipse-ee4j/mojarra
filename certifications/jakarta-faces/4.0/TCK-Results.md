@@ -32,12 +32,12 @@ Number of Tests Failed      = 0
 Number of Tests with Errors = 0
 ********************************************************************************
 
-[javatest.batch] ********************************************************************************
-[javatest.batch] Completed running 5416 tests.
-[javatest.batch] Number of Tests Passed      = 5416
-[javatest.batch] Number of Tests Failed      = 0
-[javatest.batch] Number of Tests with Errors = 0
-[javatest.batch] ********************************************************************************
+ [exec] [javatest.batch] ********************************************************************************
+ [exec] [javatest.batch] Completed running 5400 tests.
+ [exec] [javatest.batch] Number of Tests Passed      = 5400
+ [exec] [javatest.batch] Number of Tests Failed      = 0
+ [exec] [javatest.batch] Number of Tests with Errors = 0
+ [exec] [javatest.batch] ********************************************************************************
 
 SHA256_IMPL=
 SHA256_TCK=d69fb9def990eae47e647cb3bd70d78d7e34189f9aedfce2071607677fb02e4f
