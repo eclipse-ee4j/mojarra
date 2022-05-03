@@ -24,6 +24,16 @@ Certification
 * [Jakarta Faces 3.0 TCK results summary](https://eclipse-ee4j.github.io/mojarra/certifications/jakarta-faces/3.0/TCK-Results)
 * [Jakarta Faces 4.0 TCK results summary](https://eclipse-ee4j.github.io/mojarra/certifications/jakarta-faces/4.0/TCK-Results)
 
+## Minimum Requirements 4.0
+
+- Java 11
+- Jakarta Servlet 6.0
+- Jakarta Expression Language 5.0
+- CDI 4.0
+- Jakarta Standard Tag Library 2.0
+- Jakarta JSON Processing  2.0 (optional, only when `<f:websocket>` is used)
+- Jakarta Validation 3.0 (optional, only when `<f:validateBean>` or `<f:validateWholeBean>` is used)
+
 ## Minimum Requirements 3.0
 
 - Java 1.8
