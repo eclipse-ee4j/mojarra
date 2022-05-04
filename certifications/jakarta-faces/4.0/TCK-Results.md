@@ -40,7 +40,7 @@ Number of Tests with Errors = 0
  [exec] [javatest.batch] ********************************************************************************
 
 SHA256_IMPL=
-SHA256_TCK=d69fb9def990eae47e647cb3bd70d78d7e34189f9aedfce2071607677fb02e4f
+SHA256_TCK=0211baea7856dc376a978a326deeba4efe7956e80e887adc6151e28bc9380f00
 TCK_download=https://download.eclipse.org/ee4j/jakartaee-tck/jakartaee10/staged/eftl/jakarta-faces-tck-4.0.0.zip
 OS2=Debian GNU/Linux 10
 OS3=10.12
