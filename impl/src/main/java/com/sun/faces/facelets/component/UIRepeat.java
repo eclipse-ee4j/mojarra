@@ -649,9 +649,9 @@ public class UIRepeat extends UINamingContainer {
         FacesContext facesContext = context.getFacesContext();
         boolean visitRows = requiresRowIteration(context);
 
-        int oldRowIndex = -1;
+        int oldIndex = -1;
         if (visitRows) {
-            oldRowIndex = getDataModel().getRowIndex();
+            oldIndex = index;
             captureOrigValue(facesContext);        
             setIndex(facesContext, -1);
         }
@@ -694,7 +694,7 @@ public class UIRepeat extends UINamingContainer {
             // Clean up - pop EL and restore old row index
             popComponentFromEL(facesContext);
             if (visitRows) {
-                setIndex(facesContext, oldRowIndex);
+                setIndex(facesContext, oldIndex);
                 restoreOrigValue(facesContext);
             }
         }
