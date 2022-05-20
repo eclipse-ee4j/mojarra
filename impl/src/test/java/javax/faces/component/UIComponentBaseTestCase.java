@@ -478,14 +478,14 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         c.getAttributes().put("attr1", "value1");
         c.markInitialState();
         c.getAttributes().put("attr2", "value2");
-        assertEquals(Arrays.asList("attr1", "attr2"), c.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet"));
+        assertEquals(Arrays.asList("attr1", "attr2"), c.getAttributes().get("javax.faces.component.UIComponentBase.attributesThatAreSet"));
 
         Object state = c.saveState(facesContext);
         c = new ComponentTestImpl();
         c.pushComponentToEL(facesContext, c);
         c.restoreState(facesContext, state);
         c.popComponentFromEL(facesContext);
-        assertEquals(Arrays.asList("attr1", "attr2"), c.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet"));
+        assertEquals(Arrays.asList("attr1", "attr2"), c.getAttributes().get("javax.faces.component.UIComponentBase.attributesThatAreSet"));
     }
 
     public void testValueExpressions() throws Exception {
