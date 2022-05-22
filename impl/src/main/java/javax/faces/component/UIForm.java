@@ -23,6 +23,7 @@ import static javax.faces.component.visit.VisitResult.COMPLETE;
 import java.util.Collection;
 import java.util.Iterator;
 
+import javax.faces.FacesException;
 import javax.faces.application.Application;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
@@ -372,7 +373,27 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
         // visit to continue.
         return false;
     }
-    
+
+    /**
+     * @see UIComponent#invokeOnComponent
+     */
+    @Override
+    public boolean invokeOnComponent(FacesContext context, String clientId, ContextCallback callback) throws FacesException {
+
+        // Optimization: In case when invokeOnComponent is used and the form has prependId=true, 
+        // we can early skip the whole component tree if the baseClientId != form clientId.
+
+        if (isPrependId()) {
+            String baseClientId = getClientId(context);
+
+            // skip if the component is not a child of the UIForm
+            if (!clientId.startsWith(baseClientId)) {
+                return false;
+            }
+        }
+
+        return super.invokeOnComponent(context, clientId, callback);
+    }
     
     // ----------------------------------------------------- Private Methods
     
