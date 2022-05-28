@@ -312,7 +312,11 @@ public class ResourceHandlerImpl extends ResourceHandler {
                     }
 
                 } catch (IOException ioe) {
-                    send404(context, resourceName, libraryName, ioe, true);
+                    if (isConnectionAbort(ioe)) { // to be removed, when the exception is standardised in servlet.
+                        send404(context, resourceName, libraryName, false);
+                    } else {
+                        send404(context, resourceName, libraryName, ioe, true);
+                    }
                 } finally {
                     if (out != null) {
                         try {
@@ -334,6 +338,12 @@ public class ResourceHandlerImpl extends ResourceHandler {
             send404(context, resourceName, libraryName, true);
         }
 
+    }
+
+    private static boolean isConnectionAbort(IOException ioe) {
+        String exceptionClassName = ioe.getClass().getCanonicalName();
+        return exceptionClassName.equals("org.apache.catalina.connector.ClientAbortException") ||
+               exceptionClassName.equals("org.eclipse.jetty.io.EofException");
     }
 
     private boolean libraryNameIsSafe(String libraryName) {
