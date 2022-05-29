@@ -17,6 +17,7 @@
 package com.sun.faces.cdi;
 
 import static java.util.Optional.empty;
+import static java.util.stream.Collectors.toSet;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -169,6 +171,25 @@ public final class CdiUtils {
             managedValidator = getBeanReference(beanManager, Validator.class, qualifier);
         }
 
+        if (managedValidator == null) {
+            // Still nothing found, try default qualifier and value as bean name.
+            qualifier = new FacesValidatorAnnotationLiteral("");
+            managedValidator = (Validator<?>) getBeanReferenceByType(
+                    beanManager,
+                    VALIDATOR_TYPE,
+                    value,
+                    qualifier);
+        }
+                
+        if (managedValidator == null) {
+            // No parameterized validator, try raw validator
+            managedValidator = getBeanReference(
+                beanManager,
+                Validator.class,
+                value,
+                qualifier);
+        }
+
         if (managedValidator != null) {
             return new CdiValidator(value, managedValidator);
         }
@@ -193,19 +214,48 @@ public final class CdiUtils {
      * @return a bean reference adhering to the required type and qualifiers
      */
     public static <T> T getBeanReference(BeanManager beanManager, Class<T> type, Annotation... qualifiers) {
-        return type.cast(getBeanReferenceByType(beanManager, type, qualifiers));
+        return getBeanReference(beanManager, type, null, qualifiers);
     }
 
     public static Object getBeanReferenceByType(BeanManager beanManager, Type type, Annotation... qualifiers) {
+        return getBeanReferenceByType(beanManager, type, null, qualifiers);
+    }
+
+    private static <T> T getBeanReference(BeanManager beanManager, Class<T> type, String beanName, Annotation... qualifiers) {
+        return type.cast(getBeanReferenceByType(beanManager, type, beanName, qualifiers));
+    }
+
+    private static Object getBeanReferenceByType(BeanManager beanManager, Type type, String beanName, Annotation... qualifiers) {
 
         Object beanReference = null;
 
-        Bean<?> bean = beanManager.resolve(beanManager.getBeans(type, qualifiers));
+        Set<Bean<? extends Object>> beans = beanManager.getBeans(type, qualifiers);
+        if (beanName != null) {
+            beans = beans.stream()
+                .filter(bean -> beanName.equals(getBeanName(bean)))
+                .collect(toSet());
+        }
+        Bean<?> bean = beanManager.resolve(beans);
         if (bean != null) {
             beanReference = beanManager.getReference(bean, type, beanManager.createCreationalContext(bean));
         }
 
         return beanReference;
+    }
+
+    private static String getBeanName(Bean<?> bean) {
+        String name = bean.getName();
+
+        if (name != null) {
+            return name;
+        }
+
+        String className = bean.getBeanClass().getSimpleName();
+
+        return new StringBuilder()
+            .append(Character.toLowerCase(className.charAt(0)))
+            .append(className.substring(1))
+            .toString();
     }
 
     /**
