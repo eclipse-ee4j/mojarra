@@ -177,7 +177,7 @@ public final class CdiUtils {
 
         if (managedValidator == null) {
             // Still nothing found, try default qualifier and value as bean name.
-            qualifier = new FacesValidatorAnnotationLiteral("");
+            qualifier = FacesValidator.Literal.of("", false, true);
             managedValidator = (Validator<?>) getBeanReferenceByType(
                     beanManager,
                     VALIDATOR_TYPE,
