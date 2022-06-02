@@ -140,7 +140,7 @@ class AttachedObjectListHolder<T> implements PartialStateHolder {
                     add(restored);
                 }
             }
-        } else {
+        } else if (this.attachedObjects != null && this.attachedObjects.size() == attachedObjects.length) {
             // Assume 1:1 relation between existing attachedObjects and state
             for (int i = 0, len = attachedObjects.length; i < len; i++) {
                 T attachedObject = this.attachedObjects.get(i);
