@@ -306,17 +306,17 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         testComponent.getChildren().add(child3);
 
         // make sure children are stored in naming container properly
-        Iterator kidItr = null;
+        Iterator<UIComponent> kidItr = null;
 
         kidItr = testComponent.getFacetsAndChildren();
 
-        child = (UIComponent) kidItr.next();
+        child = kidItr.next();
         assertTrue(child.equals(child1));
 
-        child = (UIComponent) kidItr.next();
+        child = kidItr.next();
         assertTrue(child.equals(child2));
 
-        child = (UIComponent) kidItr.next();
+        child = kidItr.next();
         assertTrue(child.equals(child3));
 
         // make sure child is removed from component and naming container
@@ -325,10 +325,10 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
 
         kidItr = testComponent.getFacetsAndChildren();
 
-        child = (UIComponent) kidItr.next();
+        child = kidItr.next();
         assertTrue(child.equals(child2));
 
-        child = (UIComponent) kidItr.next();
+        child = kidItr.next();
         assertTrue(child.equals(child3));
 
         // make sure child is removed from component and naming container
@@ -337,7 +337,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
 
         kidItr = testComponent.getFacetsAndChildren();
 
-        child = (UIComponent) kidItr.next();
+        child = kidItr.next();
         assertTrue(child.equals(child3));
 
         // make sure child is removed from component and naming container
@@ -749,9 +749,9 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         }
 
         // Append the calls for each facet
-        Iterator names = component.getFacets().keySet().iterator();
+		Iterator<String> names = component.getFacets().keySet().iterator();
         while (names.hasNext()) {
-            String name = (String) names.next();
+            String name = names.next();
             sb.append("/").append(lmethod).append("-").append(name);
             if (cmethod != null && component.getFacets().get(name).isRendered()) {
                 sb.append("/").append(cmethod).append("-").append(name);
@@ -759,9 +759,9 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         }
 
         // Append the calls for each child
-        Iterator kids = component.getChildren().iterator();
+		Iterator<UIComponent> kids = component.getChildren().iterator();
         while (kids.hasNext()) {
-            UIComponent kid = (UIComponent) kids.next();
+            UIComponent kid = kids.next();
             lifecycleTrace(lmethod, cmethod, kid, sb);
         }
 
@@ -789,7 +789,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         testComponent.getFacets().put("facet2", facet2);
         testComponent.getFacets().put("facet3", facet3);
 
-        Iterator iter = testComponent.getFacetsAndChildren();
+		Iterator<UIComponent> iter = testComponent.getFacetsAndChildren();
         Object cur = null;
         boolean exceptionThrown = false;
         assertTrue(iter.hasNext());
