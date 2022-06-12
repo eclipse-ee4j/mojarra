@@ -19,7 +19,6 @@ package com.sun.faces.util;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Collections;
-import static junit.framework.Assert.assertEquals;
 
 import junit.framework.TestCase;
 

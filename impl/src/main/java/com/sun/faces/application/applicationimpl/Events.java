@@ -35,7 +35,6 @@ import com.sun.faces.application.applicationimpl.events.ReentrantLisneterInvocat
 import com.sun.faces.application.applicationimpl.events.SystemEventHelper;
 import com.sun.faces.util.FacesLogger;
 
-import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;

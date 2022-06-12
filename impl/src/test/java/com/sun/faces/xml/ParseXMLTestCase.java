@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.File;
 import java.io.FileInputStream;
-import static junit.framework.Assert.fail;
 import junit.framework.TestCase;
 
 public class ParseXMLTestCase extends TestCase {

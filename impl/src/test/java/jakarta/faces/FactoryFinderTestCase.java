@@ -20,7 +20,6 @@ import com.sun.faces.mock.MockHttpServletRequest;
 import com.sun.faces.mock.MockHttpServletResponse;
 import com.sun.faces.mock.MockServletContext;
 
-import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationFactory;
 import jakarta.faces.context.FacesContext;

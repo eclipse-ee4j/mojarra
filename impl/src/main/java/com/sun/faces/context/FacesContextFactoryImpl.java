@@ -26,7 +26,6 @@ import java.util.Map;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.facelets.impl.DefaultResourceResolver;
 import com.sun.faces.util.Util;
 
 import jakarta.faces.FacesException;
