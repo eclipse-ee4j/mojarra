@@ -156,7 +156,7 @@ public class DigesterFactory {
             VersionListener listener) {
         DigesterFactory result = new DigesterFactory(isValidating);
         if (null != listener) {
-            result.RESOLVER.setVersionListener(listener);
+            RESOLVER.setVersionListener(listener);
             versionListener.set(listener);
         }
 
