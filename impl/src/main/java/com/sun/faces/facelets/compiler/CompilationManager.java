@@ -219,8 +219,6 @@ final class CompilationManager {
         String[] qname = determineQName(t);
         t = trimAttributes(t);
 
-        boolean handled = false;
-
         if (isTrimmed(qname[0], qname[1])) {
             if (log.isLoggable(Level.FINE)) {
                 log.fine("Composition Found, Popping Parent Tags");

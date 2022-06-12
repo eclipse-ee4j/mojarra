@@ -16,8 +16,6 @@
 
 package jakarta.faces.event;
 
-import java.util.logging.Logger;
-
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.MethodExpression;
@@ -35,8 +33,6 @@ import jakarta.faces.context.FacesContext;
  */
 
 public class MethodExpressionActionListener implements ActionListener, StateHolder {
-
-    private static final Logger LOGGER = Logger.getLogger("jakarta.faces.event", "jakarta.faces.LogStrings");
 
     // ------------------------------------------------------ Instance Variables
 

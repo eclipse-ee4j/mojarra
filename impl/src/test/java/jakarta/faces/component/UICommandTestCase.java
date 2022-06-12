@@ -50,8 +50,6 @@ public class UICommandTestCase extends UIComponentBaseTestCase {
         super(name);
     }
 
-    private static Class actionListenerSignature[] = { ActionEvent.class };
-
     // ---------------------------------------------------- Overall Test Methods
     // Set up instance variables required by this test case.
     @Override
@@ -177,7 +175,6 @@ public class UICommandTestCase extends UIComponentBaseTestCase {
     public void testListeners() {
 
         CommandTestImpl command = new CommandTestImpl();
-        ActionListenerTestImpl listener = null;
 
         command.addActionListener(new ActionListenerTestImpl("ARV0"));
         command.addActionListener(new ActionListenerTestImpl("ARV1"));
@@ -197,7 +194,6 @@ public class UICommandTestCase extends UIComponentBaseTestCase {
     public void testEmptyListeners() {
 
         CommandTestImpl command = new CommandTestImpl();
-        ActionListenerTestImpl listener = null;
 
         // No listeners added, should be empty
         ActionListener listeners[] = command.getActionListeners();
