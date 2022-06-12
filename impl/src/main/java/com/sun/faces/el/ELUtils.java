@@ -250,11 +250,6 @@ public class ELUtils {
      * taking into account the maximum cache size.
      */
     private static void rememberEvaluationResult(String expression, boolean isCompositeComponent) {
-        // validity check
-        if (compositeComponentEvaluationCacheMaxSize <= 0) {
-            return;
-        }
-
         synchronized (compositeComponentEvaluationCache) {
             if (compositeComponentEvaluationCache.size() >= compositeComponentEvaluationCacheMaxSize) {
                 // obtain the oldest cached element
