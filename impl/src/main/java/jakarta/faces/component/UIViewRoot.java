@@ -1136,7 +1136,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      *
      * @param context the context for this request
      * @param phaseId the {@link PhaseId} of the current phase
-     * @param isBefore, if true, notify beforePhase listeners. Notify afterPhase listeners otherwise.
+     * @param isBefore if true, notify beforePhase listeners. Notify afterPhase listeners otherwise.
      */
     private void notifyPhaseListeners(FacesContext context, PhaseId phaseId, boolean isBefore) {
         PhaseEvent event = createPhaseEvent(context, phaseId);

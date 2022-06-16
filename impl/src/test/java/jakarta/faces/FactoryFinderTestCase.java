@@ -36,10 +36,6 @@ import junit.framework.TestCase;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-/**
- * <p>
- * Unit tests for {@link UISelectBooleanBase}.</p>
- */
 public class FactoryFinderTestCase extends TestCase {
 
     // ------------------------------------------------------------ Constructors
