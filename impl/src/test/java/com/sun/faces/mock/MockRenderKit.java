@@ -146,7 +146,7 @@ public class MockRenderKit extends RenderKit {
             if (params.containsKey(clientId)) {
                 // System.err.println("  '" + input.currentValue(context) +
                 //                    "' --> '" + params.get(clientId) + "'");
-                input.setSubmittedValue((String) params.get(clientId));
+                input.setSubmittedValue(params.get(clientId));
             }
         }
 

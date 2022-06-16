@@ -203,7 +203,7 @@ public class MockApplication extends Application {
         this.stateManager = stateManager;
     }
 
-    private Map components = new HashMap();
+    private Map<String, String> components = new HashMap<String, String>();
 
     @Override
     public void addComponent(String componentType, String componentClass) {
@@ -212,7 +212,7 @@ public class MockApplication extends Application {
 
     @Override
     public UIComponent createComponent(String componentType) {
-        String componentClass = (String) components.get(componentType);
+        String componentClass = components.get(componentType);
         try {
             Class clazz = Class.forName(componentClass);
             return ((UIComponent) clazz.newInstance());
@@ -230,11 +230,11 @@ public class MockApplication extends Application {
     }
 
     @Override
-    public Iterator getComponentTypes() {
+    public Iterator<String> getComponentTypes() {
         return (components.keySet().iterator());
     }
 
-    private Map converters = new HashMap();
+    private Map<String, String> converters = new HashMap<String, String>();
 
     @Override
     public void addConverter(String converterId, String converterClass) {
@@ -248,7 +248,7 @@ public class MockApplication extends Application {
 
     @Override
     public Converter createConverter(String converterId) {
-        String converterClass = (String) converters.get(converterId);
+        String converterClass = converters.get(converterId);
         try {
             Class clazz = Class.forName(converterClass);
             return ((Converter) clazz.newInstance());
@@ -263,7 +263,7 @@ public class MockApplication extends Application {
     }
 
     @Override
-    public Iterator getConverterIds() {
+    public Iterator<String> getConverterIds() {
         return (converters.keySet().iterator());
     }
 
@@ -284,7 +284,7 @@ public class MockApplication extends Application {
         return messageBundle;
     }
 
-    private Map validators = new HashMap();
+    private Map<String, String> validators = new HashMap<String, String>();
 
     @Override
     public void addValidator(String validatorId, String validatorClass) {
@@ -293,7 +293,7 @@ public class MockApplication extends Application {
 
     @Override
     public Validator createValidator(String validatorId) {
-        String validatorClass = (String) validators.get(validatorId);
+        String validatorClass = validators.get(validatorId);
         try {
             Class clazz = Class.forName(validatorClass);
             return ((Validator) clazz.newInstance());
@@ -303,7 +303,7 @@ public class MockApplication extends Application {
     }
 
     @Override
-    public Iterator getValidatorIds() {
+    public Iterator<String> getValidatorIds() {
         return (validators.keySet().iterator());
     }
 
@@ -313,7 +313,7 @@ public class MockApplication extends Application {
     }
 
     @Override
-    public void setSupportedLocales(Collection newLocales) {
+    public void setSupportedLocales(Collection<Locale> newLocales) {
     }
 
     @Override
@@ -750,7 +750,7 @@ public class MockApplication extends Application {
         public SystemEventHelper() {
 
             systemEventInfoCache
-                    = new Cache<Class<? extends SystemEvent>, SystemEventInfo>(
+                    = new Cache<>(
                             new Factory<Class<? extends SystemEvent>, SystemEventInfo>() {
                                 @Override
                                 public SystemEventInfo newInstance(final Class<? extends SystemEvent> arg)
@@ -802,23 +802,23 @@ public class MockApplication extends Application {
             // Initialize the 'sources' cache for, ahem, readability...
             // ~generics++
             Factory<Class<?>, Cache<Class<? extends SystemEvent>, EventInfo>> eventCacheFactory
-                    = new Factory<Class<?>, Cache<Class<? extends SystemEvent>, EventInfo>>() {
+                    = new Factory<>() {
                         @Override
                         public Cache<Class<? extends SystemEvent>, EventInfo> newInstance(
                                 final Class<?> sourceClass)
                         throws InterruptedException {
                             Factory<Class<? extends SystemEvent>, EventInfo> eventInfoFactory
-                            = new Factory<Class<? extends SystemEvent>, EventInfo>() {
+                            = new Factory<>() {
                                 @Override
                                 public EventInfo newInstance(final Class<? extends SystemEvent> systemEventClass)
                                 throws InterruptedException {
                                     return new EventInfo(systemEventClass, sourceClass);
                                 }
                             };
-                            return new Cache<Class<? extends SystemEvent>, EventInfo>(eventInfoFactory);
+                            return new Cache<>(eventInfoFactory);
                         }
                     };
-            sourceCache = new Cache<Class<?>, Cache<Class<? extends SystemEvent>, EventInfo>>(eventCacheFactory);
+            sourceCache = new Cache<>(eventCacheFactory);
 
         }
 
@@ -841,7 +841,7 @@ public class MockApplication extends Application {
      */
     private static class SystemEventInfo {
 
-        private Cache<Class<?>, EventInfo> cache = new Cache<Class<?>, EventInfo>(
+        private Cache<Class<?>, EventInfo> cache = new Cache<>(
                 new Factory<Class<?>, EventInfo>() {
                     @Override
                     public EventInfo newInstance(Class<?> arg)
@@ -879,7 +879,7 @@ public class MockApplication extends Application {
         private Class<? extends SystemEvent> systemEvent;
         private Class<?> sourceClass;
         private Set<SystemEventListener> listeners;
-        private Constructor eventConstructor;
+        private Constructor<? extends SystemEvent> eventConstructor;
         private Map<Class<?>, Constructor> constructorMap;
 
         // -------------------------------------------------------- Constructors
@@ -888,8 +888,8 @@ public class MockApplication extends Application {
 
             this.systemEvent = systemEvent;
             this.sourceClass = sourceClass;
-            this.listeners = new CopyOnWriteArraySet<SystemEventListener>();
-            this.constructorMap = new HashMap<Class<?>, Constructor>();
+            this.listeners = new CopyOnWriteArraySet<>();
+            this.constructorMap = new HashMap<>();
             if (!sourceClass.equals(Void.class)) {
                 eventConstructor = getEventConstructor(sourceClass);
             }
@@ -905,10 +905,10 @@ public class MockApplication extends Application {
 
         public SystemEvent createSystemEvent(Object source) {
 
-            Constructor toInvoke = getCachedConstructor(source.getClass());
+            Constructor<? extends SystemEvent> toInvoke = getCachedConstructor(source.getClass());
             if (toInvoke != null) {
                 try {
-                    return (SystemEvent) toInvoke.newInstance(source);
+                    return toInvoke.newInstance(source);
                 } catch (Exception e) {
                     throw new FacesException(e);
                 }
@@ -918,12 +918,12 @@ public class MockApplication extends Application {
         }
 
         // ----------------------------------------------------- Private Methods
-        private Constructor getCachedConstructor(Class<?> source) {
+        private Constructor<? extends SystemEvent> getCachedConstructor(Class<?> source) {
 
             if (eventConstructor != null) {
                 return eventConstructor;
             } else {
-                Constructor c = constructorMap.get(source);
+                Constructor<? extends SystemEvent> c = constructorMap.get(source);
                 if (c == null) {
                     c = getEventConstructor(source);
                     if (c != null) {
@@ -935,9 +935,9 @@ public class MockApplication extends Application {
 
         }
 
-        private Constructor getEventConstructor(Class<?> source) {
+        private Constructor<? extends SystemEvent> getEventConstructor(Class<?> source) {
 
-            Constructor ctor = null;
+            Constructor<? extends SystemEvent> ctor = null;
             try {
                 return systemEvent.getDeclaredConstructor(source);
             } catch (NoSuchMethodException ignored) {
@@ -982,7 +982,7 @@ public class MockApplication extends Application {
     private static final class Cache<K, V> {
 
         private ConcurrentMap<K, Future<V>> cache
-                = new ConcurrentHashMap<K, Future<V>>();
+                = new ConcurrentHashMap<>();
         private Factory<K, V> factory;
 
         // -------------------------------------------------------- Constructors
@@ -1016,13 +1016,13 @@ public class MockApplication extends Application {
             while (true) {
                 Future<V> f = cache.get(key);
                 if (f == null) {
-                    Callable<V> callable = new Callable<V>() {
+                    Callable<V> callable = new Callable<>() {
                         @Override
                         public V call() throws Exception {
                             return factory.newInstance(key);
                         }
                     };
-                    FutureTask<V> ft = new FutureTask<V>(callable);
+                    FutureTask<V> ft = new FutureTask<>(callable);
                     // here is the real beauty of the concurrent utilities.
                     // 1.  putIfAbsent() is atomic
                     // 2.  putIfAbsent() will return the value already associated
