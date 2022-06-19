@@ -503,9 +503,7 @@ public class MultiViewHandler extends ViewHandler {
 
             appendOrReplaceExtension(viewId, ext, length, extIdx, buffer);
 
-            String convertedViewId = buffer.toString();
-
-            return convertedViewId;
+            return buffer.toString();
         }
 
         return viewId;
