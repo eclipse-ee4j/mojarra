@@ -2,7 +2,6 @@
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  * Copyright 2004 The Apache Software Foundation
  * Copyright 2004-2008 Emmanouil Batsis, mailto: mbatsis at users full stop sourceforge full stop net
- * Copyright 2004-2008 Emmanouil Batsis, mailto: mbatsis at users full stop sourceforge full stop net
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,71 +18,43 @@
 
 /**
  @project Faces JavaScript Library
- @version 2.2
+ @version 4.0
  @description This is the standard implementation of the Faces JavaScript Library.
  */
 
+"use strict";
+
 // Detect if this is already loaded, and if loaded, if it's a higher version
-if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
-      (faces.implversion && faces.implversion >= 3))) {
+if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
+        && (faces.implversion && faces.implversion >= 4)) ) {
+
+    //const isNull = (value) => (typeof value === "object" && !value);
+    window.UDEF = 'undefined';
+    window.isNull = (value) => (typeof value === UDEF || (typeof value === "object" && !value));
+    window.isNotNull = (value) => !isNull(value);
 
     /**
      * <span class="changed_modified_2_2">The top level global namespace
      * for Jakarta Faces functionality.</span>
-
      * @name faces
      * @namespace
      */
     var faces = {};
 
     /**
-
      * <span class="changed_modified_2_2 changed_modified_2_3">The namespace for Ajax
      * functionality.</span>
-
      * @name faces.ajax
      * @namespace
      * @exec
      */
     faces.ajax = function() {
 
-        var eventListeners = [];
-        var errorListeners = [];
+        const eventListeners = [];
+        const errorListeners = [];
 
-        var delayHandler = null;
-        /**
-         * Determine if the current browser is part of Microsoft's failed attempt at
-         * standards modification.
-         * @ignore
-         */
-        var isIE = function isIE() {
-            if (typeof isIECache !== "undefined") {
-                return isIECache;
-            }
-            isIECache =
-                   document.all && window.ActiveXObject &&
-                   navigator.userAgent.toLowerCase().indexOf("msie") > -1 &&
-                   navigator.userAgent.toLowerCase().indexOf("opera") == -1;
-            return isIECache;
-        };
-        var isIECache;
-
-        /**
-         * Determine the version of IE.
-         * @ignore
-         */
-        var getIEVersion = function getIEVersion() {
-            if (typeof IEVersionCache !== "undefined") {
-                return IEVersionCache;
-            }
-            if (/MSIE ([0-9]+)/.test(navigator.userAgent)) {
-                IEVersionCache = parseInt(RegExp.$1);
-            } else {
-                IEVersionCache = -1;
-            }
-            return IEVersionCache;
-        }
-        var IEVersionCache;
+        let delayHandler = null;
+        let isAutoExecCache;
 
         /**
          * Determine if loading scripts into the page executes the script.
@@ -91,16 +62,13 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * @returns {boolean} does including a script in the dom execute it?
          * @ignore
          */
-        var isAutoExec = function isAutoExec() {
+        const isAutoExec = function isAutoExec() {
             try {
-                if (typeof isAutoExecCache !== "undefined") {
-                    return isAutoExecCache;
-                }
-                var autoExecTestString = "<script>var mojarra = mojarra || {};mojarra.autoExecTest = true;</script>";
-                var tempElement = document.createElement('span');
+                if (isNotNull(isAutoExecCache)) return isAutoExecCache;
+                const tempElement = document.createElement('span');
                 tempElement.innerHTML = autoExecTestString;
-                var body = document.getElementsByTagName('body')[0];
-                var tempNode = body.appendChild(tempElement);
+                //let body = document.getElementsByTagName('body')[0];
+                const tempNode = document.body.appendChild(tempElement);
                 if (mojarra && mojarra.autoExecTest) {
                     isAutoExecCache = true;
                     delete mojarra.autoExecTest;
@@ -117,272 +85,26 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                 return isAutoExecCache;
             }
         };
-        var isAutoExecCache;
 
         /**
+         * Get the Ajax JS Transport... XMLHttpRequest
+         * @deprecated
+        const getTransport = () => { return new XMLHttpRequest(); };
+         */
+
+        /**
+         * Utility function that determines if a file control exists for the form.
          * @ignore
          */
-        var getTransport = function getTransport(context) {
-            var returnVal;
-            // Here we check for encoding type for file upload(s).
-            // This is where we would also include a check for the existence of
-            // input file control for the current form (see hasInputFileControl
-            // function) but IE9 (at least) seems to render controls outside of
-            // form.
-            if (typeof context !== 'undefined' && context !== null &&
-                context.includesInputFile &&
-                context.form.enctype === "multipart/form-data") {
-                returnVal = new FrameTransport(context);
-                return returnVal;
-            }
-            var methods = [
-                function() {
-                    return new XMLHttpRequest();
-                },
-                function() {
-                    return new ActiveXObject('Msxml2.XMLHTTP');
-                },
-                function() {
-                    return new ActiveXObject('Microsoft.XMLHTTP');
-                }
-            ];
-
-            for (var i = 0, len = methods.length; i < len; i++) {
-                try {
-                    returnVal = methods[i]();
-                } catch(e) {
-                    continue;
-                }
-                return returnVal;
-            }
-            throw new Error('Could not create an XHR object.');
-        };
-        
-        /**
-         * Used for iframe based communication (instead of XHR).
-         * @ignore
-         */
-        var FrameTransport = function FrameTransport(context) {
-            this.context = context;
-            this.frame = null;
-            this.FRAME_ID = "FacesFrameId";
-            this.FRAME_PARTIAL_ID = "Faces-Request";
-            this.partial = null;
-            this.aborted = false;
-            this.responseText = null;
-            this.responseXML = null;
-            this.readyState = 0;
-            this.requestHeader = {};
-            this.status = null;
-            this.method = null;
-            this.url = null;
-            this.requestParams = null;
-        };
-        
-        /**
-         * Extends FrameTransport an adds method functionality.
-         * @ignore
-         */
-        FrameTransport.prototype = {
-            
-            /**
-             *@ignore
-             */
-            setRequestHeader:function(key, value) {
-                if (typeof(value) !== "undefined") {
-                    this.requestHeader[key] = value;  
-                }
-            },
-            
-            /**
-             * Creates the hidden iframe and sets readystate.
-             * @ignore
-             */
-            open:function(method, url, async) {
-                this.method = method;
-                this.url = url;
-                this.async = async;
-                this.frame = document.getElementById(this.FRAME_ID);
-                if (this.frame) {
-                    this.frame.parentNode.removeChild(this.frame);
-                    this.frame = null;
-                }
-                if (!this.frame) {  
-                    if ((!isIE() && !isIE9Plus())) {
-                        this.frame = document.createElement('iframe');
-                        this.frame.src = "about:blank";
-                        this.frame.id = this.FRAME_ID;
-                        this.frame.name = this.FRAME_ID;
-                        this.frame.type = "content";
-                        this.frame.collapsed = "true";
-                        this.frame.style = "visibility:hidden";   
-                        this.frame.width = "0";
-                        this.frame.height = "0";
-                        this.frame.style = "border:0";
-                        this.frame.frameBorder = 0;
-                        document.body.appendChild(this.frame);
-                        this.frame.onload = bind(this, this.callback);
-                    } else {
-                        var div = document.createElement("div");
-                        div.id = "frameDiv";
-                        div.innerHTML = "<iframe id='" + this.FRAME_ID + "' name='" + this.FRAME_ID + "' style='display:none;' src='about:blank' type='content' onload='this.onload_cb();'  ></iframe>";
-                        document.body.appendChild(div);
-                        this.frame = document.getElementById(this.FRAME_ID);
-                        this.frame.onload_cb = bind(this, this.callback);
-                    }
-                }
-                // Create to send "Faces-Request" param with value "partial/ajax"
-                // For iframe approach we are sending as request parameter
-                // For non-iframe (xhr ajax) it is sent in the request header
-                this.partial = document.createElement("input");
-                this.partial.setAttribute("type", "hidden");
-                this.partial.setAttribute("id", this.FRAME_PARTIAL_ID);
-                this.partial.setAttribute("name", this.FRAME_PARTIAL_ID);
-                this.partial.setAttribute("value", "partial/ajax");
-                this.context.form.appendChild(this.partial);
-  
-                this.readyState = 1;                         
-            },
-            
-            /**
-             * Sets the form target to iframe, sets up request parameters
-             * and submits the form.
-             * @ignore
-             */
-            send: function(data) {
-                var evt = {};
-                this.context.form.target = this.frame.name;
-                this.context.form.method = this.method;
-                if (this.url) {
-                    this.context.form.action = this.url;
-                }
-
-                this.readyState = 3;
-
-                this.onreadystatechange(evt);
-                
-                var ddata = decodeURIComponent(data);
-                var dataArray = ddata.split("&");
-                var input;
-                this.requestParams = new Array();
-                for (var i=0; i<dataArray.length; i++) {
-                    var nameValue = dataArray[i].split("=");
-                    if (nameValue[0] === this.context.namingContainerPrefix + "jakarta.faces.source" ||
-                        nameValue[0] === this.context.namingContainerPrefix + "jakarta.faces.partial.event" ||
-                        nameValue[0] === this.context.namingContainerPrefix + "jakarta.faces.partial.execute" ||
-                        nameValue[0] === this.context.namingContainerPrefix + "jakarta.faces.partial.render" ||
-                        nameValue[0] === this.context.namingContainerPrefix + "jakarta.faces.partial.ajax" ||
-                        nameValue[0] === this.context.namingContainerPrefix + "jakarta.faces.behavior.event") {
-                        input = document.createElement("input");
-                        input.setAttribute("type", "hidden");
-                        input.setAttribute("id", nameValue[0]);
-                        input.setAttribute("name", nameValue[0]);
-                        input.setAttribute("value", nameValue[1]);
-                        this.context.form.appendChild(input);
-                        this.requestParams.push(nameValue[0]);
-                    }
-                }
-                this.requestParams.push(this.FRAME_PARTIAL_ID);
-                this.context.form.submit();
-            },
-            
-            /**
-             *@ignore
-             */
-            abort:function() {
-                this.aborted = true; 
-            },
-            
-            /**
-             *@ignore
-             */
-            onreadystatechange:function(evt) {
-                
-            },
-            
-            /**
-             * Extracts response from iframe document, sets readystate.
-             * @ignore
-             */
-            callback: function() {
-                if (this.aborted) {
-                    return;
-                }
-                var iFrameDoc;
-                var docBody;
-                try {
-                    var evt = {};
-                    iFrameDoc = this.frame.contentWindow.document || 
-                        this.frame.contentDocument || this.frame.document;
-                    docBody = iFrameDoc.body || iFrameDoc.documentElement;
-                    this.responseText = docBody.innerHTML;
-                    this.responseXML = iFrameDoc.XMLDocument || iFrameDoc;
-                    this.status = 201;
-                    this.readyState = 4;  
-
-                    this.onreadystatechange(evt);                
-                } finally {
-                    this.cleanupReqParams();
-                }               
-            },
-            
-            /**
-             *@ignore
-             */
-            cleanupReqParams: function() {
-                for (var i=0; i<this.requestParams.length; i++) {
-                    var elements = this.context.form.childNodes;
-                    for (var j=0; j<elements.length; j++) {
-                        if (!elements[j].type === "hidden") {
-                            continue;
-                        }
-                        if (elements[j].name === this.requestParams[i]) {
-                            var node = this.context.form.removeChild(elements[j]);
-                            node = null;                           
-                            break;
-                        }
-                    }   
-                }
-            }
-        };
-        
-       
-        /**
-         *Utility function that binds function to scope.
-         *@ignore
-         */
-        var bind = function(scope, fn) {
-            return function () {
-                fn.apply(scope, arguments);
-            };
-        };
-
-        /**
-         * Utility function that determines if a file control exists
-         * for the form.
-         * @ignore
-         */
-        var hasInputFileControl = function(form) {
-            var returnVal = false;
-            var inputs = form.getElementsByTagName("input");
-            if (inputs !== null && typeof inputs !=="undefined") {
-                for (var i=0; i<inputs.length; i++) {
-                    if (inputs[i].type === "file") {
-                        returnVal = true;
-                        break;
-                    }
-                }    
-            }
-            return returnVal;
-        };
+        const hasInputFileControl = function(form) { return isNotNull(form.querySelector("input[type=file]")); };
         
         /**
          * Find instance of passed String via getElementById
          * @ignore
          */
-        var $ = function $() {
-            var results = [], element;
-            for (var i = 0; i < arguments.length; i++) {
+        const $ = function $() {
+            let results = [], element;
+            for (let i = 0; i < arguments.length; i++) {
                 element = arguments[i];
                 if (typeof element == 'string') {
                     element = document.getElementById(element);
@@ -398,59 +120,38 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * @returns form element representing enclosing form, or first form if none found.
          * @ignore
          */
-        var getForm = function getForm(element) {
-            if (element) {
-                var form = $(element);
-                while (form) {
-
-                    if (form.nodeName && (form.nodeName.toLowerCase() == 'form')) {
-                        return form;
-                    }
-                    if (form.form) {
-                        return form.form;
-                    }
-                    if (form.parentNode) {
-                        form = form.parentNode;
-                    } else {
-                        form = null;
-                    }
-                }
-                return document.forms[0];
-            }
-            return null;
+        const getForm = function(element) {
+            const form = element.closest('form');
+            return form ? form : document.forms[0];
         };
 
         /**
          * Get an array of all Faces form elements which need their view state to be updated.
          * This covers at least the form that submitted the request and any form that is covered in the render target list.
-         * 
+         *
          * @param context An object containing the request context, including the following properties:
          * the source element, per call onerror callback function, per call onevent callback function, the render
          * instructions, the submitting form ID, the naming container ID and naming container prefix.
          */
-        var getFormsToUpdate = function getFormsToUpdate(context) {
-            var formsToUpdate = [];
+        const getFormsToUpdate = function getFormsToUpdate(context) {
+            const formsToUpdate = [];
 
-            var add = function(element) {
+            const add = function (element) {
                 if (element) {
-                    if (element.nodeName 
-                        && element.nodeName.toLowerCase() == "form" 
-                        && element.method == "post" 
-                        && element.id 
-                        && element.elements 
-                        && element.id.indexOf(context.namingContainerPrefix) == 0)
-                    {
+                    if (element.nodeName
+                        && element.nodeName.toLowerCase() === "form"
+                        && element.method === "post"
+                        && element.id
+                        && element.elements
+                        && element.id.indexOf(context.namingContainerPrefix) === 0) {
                         formsToUpdate.push(element);
-                    }
-                    else {
-                        var forms = element.getElementsByTagName("form");
-    
-                        for (var i = 0; i < forms.length; i++) {
-                            add(forms[i]);
-                        }
+                    } else {
+                        const forms = element.getElementsByTagName("form");
+                        for ( const form of forms )
+                            add(form);
                     }
                 }
-            }
+            };
 
             if (context.formId) {
                 add(document.getElementById(context.formId));
@@ -459,11 +160,10 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
             if (context.render) {
                 if (context.render.indexOf("@all") >= 0) {
                     add(document);
-                }
-                else {
-                    var clientIds = context.render.split(" ");
+                } else {
+                    const clientIds = context.render.split(" ");
 
-                    for (var i = 0; i < clientIds.length; i++) {
+                    for (let i = 0; i < clientIds.length; i++) {
                         if (clientIds.hasOwnProperty(i)) {
                             add(document.getElementById(clientIds[i]));
                         }
@@ -472,7 +172,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
             }
 
             return formsToUpdate;
-        }
+        };
 
         /**
          * <p>Namespace given space separated parameters if necessary (only
@@ -496,52 +196,43 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * This is to be used for prefixing absolute target client IDs.
          * @ignore
          */
-        var namespaceParametersIfNecessary = function namespaceParametersIfNecessary(parameters, sourceClientId, namingContainerPrefix) {
-            if (sourceClientId.indexOf(namingContainerPrefix) != 0) {
+        const namespaceParametersIfNecessary = function namespaceParametersIfNecessary(parameters, sourceClientId, namingContainerPrefix) {
+            if (sourceClientId.indexOf(namingContainerPrefix) !== 0) {
                 return parameters; // Unexpected source client ID; let's silently do nothing.
             }
 
-        	var targetClientIds = parameters.replace(/^\s+|\s+$/g, '').split(/\s+/g);
+            const targetClientIds = parameters.replace(/^\s+|\s+$/g, '').split(/\s+/g);
 
-        	for (var i = 0; i < targetClientIds.length; i++) {
-        	    var targetClientId = targetClientIds[i];
+            for (let i = 0; i < targetClientIds.length; i++) {
+                let targetClientId = targetClientIds[i];
 
-        	    if (targetClientId.indexOf(faces.separatorchar) == 0) {
-        	        targetClientId = targetClientId.substring(1);
+                if (targetClientId.indexOf(faces.separatorchar) === 0) {
+                    targetClientId = targetClientId.substring(1);
 
-        	        if (targetClientId.indexOf(namingContainerPrefix) != 0) {
+                    if (targetClientId.indexOf(namingContainerPrefix) !== 0) {
                         targetClientId = namingContainerPrefix + targetClientId;
                     }
-        	    }
-        	    else if (targetClientId.indexOf(namingContainerPrefix) != 0) {
-        	        var parentClientId = sourceClientId.substring(0, sourceClientId.lastIndexOf(faces.separatorchar));
+                } else if (targetClientId.indexOf(namingContainerPrefix) !== 0) {
+                    const parentClientId = sourceClientId.substring(0, sourceClientId.lastIndexOf(faces.separatorchar));
 
-        	        if (namingContainerPrefix + targetClientId == parentClientId) {
-        	            targetClientId = parentClientId;
-        	        }
-        	        else {
-        	            targetClientId = parentClientId + faces.separatorchar + targetClientId;
-        	        }
-				}
+                    if (namingContainerPrefix + targetClientId === parentClientId) {
+                        targetClientId = parentClientId;
+                    } else {
+                        targetClientId = parentClientId + faces.separatorchar + targetClientId;
+                    }
+                }
 
-				targetClientIds[i] = targetClientId;
-			}
+                targetClientIds[i] = targetClientId;
+            }
 
-        	return targetClientIds.join(' ');
+            return targetClientIds.join(' ');
         };
 
         /**
          * Check if a value exists in an array
          * @ignore
          */
-        var isInArray = function isInArray(array, value) {
-            for (var i = 0; i < array.length; i++) {
-                if (array[i] === value) {
-                    return true;
-                }
-            }
-            return false;
-        };
+        const isInArray = function (array,value) { return Array.prototype.includes ? array.includes(value) : array.indexOf(value) > -1 };
 
 
         /**
@@ -549,20 +240,15 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * @param src JavaScript code to evaluate
          * @ignore
          */
-        var globalEval = function globalEval(src) {
-            if (window.execScript) {
-                window.execScript(src);
-                return;
-            }
+        const globalEval = function globalEval(src) {
+            // @deprecated
+            // if (window.execScript) {window.execScript(src);return;}
             // We have to wrap the call in an anon function because of a firefox bug, where this is incorrectly set
             // We need to explicitly call window.eval because of a Chrome peculiarity
             /**
              * @ignore
              */
-            var fn = function() {
-                window.eval.call(window,src);
-            };
-            fn();
+            (() => window.eval.call(window, src))();
         };
 
         /**
@@ -571,21 +257,20 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * @returns {array} of script text
          * @ignore
          */
-        var getScripts = function getScripts(str) {
+        const getScripts = function getScripts(str) {
             // Regex to find all scripts in a string
-            var findscripts = /<script[^>]*>([\S\s]*?)<\/script>/igm;
+            const findscripts = /<script[^>]*>([\S\s]*?)<\/script>/igm;
             // Regex to find one script, to isolate it's content [2] and attributes [1]
-            var findscript = /<script([^>]*)>([\S\s]*?)<\/script>/im;
+            const findscript = /<script([^>]*)>([\S\s]*?)<\/script>/im;
             // Regex to find type attribute
-            var findtype = /type="([\S]*?)"/im;
-            var initialnodes = [];
-            var scripts = [];
-            initialnodes = str.match(findscripts);
+            const findtype = /type="([\S]*?)"/im;
+            const scripts = [];
+            const initialnodes = str.match(findscripts);
             while (!!initialnodes && initialnodes.length > 0) {
-                var scriptStr = [];
+                let scriptStr = [];
                 scriptStr = initialnodes.shift().match(findscript);
                 // check the type - skip if specified but not text/javascript
-                var type = scriptStr[1].match(findtype);
+                const type = scriptStr[1].match(findtype);
                 if (!!type && type[1] !== "text/javascript") {
                     continue;
                 }
@@ -594,8 +279,8 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
             return scripts;
         };
 
-        var removeScripts = function removeScripts(str) {
-            return str.replace(/<script[^>]*type="text\/javascript"[^>]*>([\S\s]*?)<\/script>/igm,"");
+        const removeScripts = function removeScripts(str) {
+            return str.replace(/<script[^>]*type="text\/javascript"[^>]*>([\S\s]*?)<\/script>/igm, "");
         };
 
         /**
@@ -603,25 +288,21 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * @param scripts Array of script nodes.
          * @ignore
          */
-        var runScripts = function runScripts(scripts) {
+        const runScripts = function runScripts(scripts) {
             if (!scripts || scripts.length === 0) {
                 return;
             }
 
-            var loadedScripts = document.getElementsByTagName("script");
-            var loadedScriptUrls = [];
+            const loadedScripts = document.getElementsByTagName("script");
+            const loadedScriptUrls = [];
 
-            for (var i = 0; i < loadedScripts.length; i++) {
-                var scriptNode = loadedScripts[i];
-                var url = scriptNode.getAttribute("src");
-
-                if (url) {
-                    loadedScriptUrls.push(url);
-                }
+            for(let i = 0; i < loadedScripts.length; i++) {
+                const scriptNode = loadedScripts[i];
+                const url = scriptNode.getAttribute("src");
+                if (url) loadedScriptUrls.push(url);
             }
 
-            var head = document.head || document.getElementsByTagName('head')[0] || document.documentElement;
-            runScript(head, loadedScriptUrls, scripts, 0);
+            runScript(document.head, loadedScriptUrls, scripts, 0);
         };
 
         /**
@@ -632,29 +313,29 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * @param index Index of script to be loaded.
          * @ignore
          */
-        var runScript = function runScript(head, loadedScriptUrls, scripts, index) {
+        const runScript = function runScript(head, loadedScriptUrls, scripts, index) {
             if (index >= scripts.length) {
                 return;
             }
 
             // Regex to find src attribute
-            var findsrc = /src="([\S]*?)"/im;
+            const findsrc = /src="([\S]*?)"/im;
             // Regex to remove leading cruft
-            var stripStart = /^\s*(<!--)*\s*(\/\/)*\s*(\/\*)*\s*\n*\**\n*\s*\*.*\n*\s*\*\/(<!\[CDATA\[)*/;
+            const stripStart = /^\s*(<!--)*\s*(\/\/)*\s*(\/\*)*\s*\n*\**\n*\s*\*.*\n*\s*\*\/(<!\[CDATA\[)*/;
 
-            var scriptStr = scripts[index];
-            var src = scriptStr[1].match(findsrc);
-            var scriptLoadedViaUrl = false;
+            const scriptStr = scripts[index];
+            const src = scriptStr[1].match(findsrc);
+            let scriptLoadedViaUrl = false;
 
             if (!!src && src[1]) {
                 // if this is a file, load it
-                var url = unescapeHTML(src[1]);
+                const url = unescapeHTML(src[1]);
                 // if this is already loaded, don't load it
                 // it's never necessary, and can make debugging difficult
                 if (loadedScriptUrls.indexOf(url) < 0) {
                     // create script node
-                    var scriptNode = document.createElement('script');
-                    var parserElement = document.createElement('div');
+                    let scriptNode = document.createElement('script');
+                    const parserElement = document.createElement('div');
                     parserElement.innerHTML = scriptStr[0];
                     cloneAttributes(scriptNode, parserElement.firstChild);
                     deleteNode(parserElement);
@@ -672,11 +353,11 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                 }
             } else if (!!scriptStr && scriptStr[2]) {
                 // else get content of tag, without leading CDATA and such
-                var script = scriptStr[2].replace(stripStart,"");
+                const script = scriptStr[2].replace(stripStart, "");
 
                 if (!!script) {
                     // create script node
-                    var scriptNode = document.createElement('script');
+                    const scriptNode = document.createElement('script');
                     scriptNode.type = 'text/javascript';
                     scriptNode.text = script; // add the code to the script node
                     head.appendChild(scriptNode); // add it to the head
@@ -694,39 +375,39 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * @param str
          * @ignore
          */
-        var runStylesheets = function runStylesheets(str) {
+        const runStylesheets = function runStylesheets(str) {
             // Regex to find all links in a string
-            var findlinks = /<link[^>]*\/>/igm;
+            const findlinks = /<link[^>]*\/>/igm;
             // Regex to find one link, to isolate its attributes [1]
-            var findlink = /<link([^>]*)\/>/im;
+            const findlink = /<link([^>]*)\/>/im;
             // Regex to find type attribute
-            var findtype = /type="([\S]*?)"/im;
-            var findhref = /href="([\S]*?)"/im;
+            const findtype = /type="([\S]*?)"/im;
+            const findhref = /href="([\S]*?)"/im;
 
-            var stylesheets = [];
-            var loadedStylesheetUrls = null;
-            var head = document.head || document.getElementsByTagName('head')[0] || document.documentElement;
-            var parserElement = null;
+            // const stylesheets = [];
+            let loadedStylesheetUrls = null;
+            // const head = document.head || document.getElementsByTagName('head')[0] || document.documentElement;
+            let parserElement = null;
 
-            var initialnodes = str.match(findlinks);
+            const initialnodes = str.match(findlinks);
             while (!!initialnodes && initialnodes.length > 0) {
-                var linkStr = initialnodes.shift().match(findlink);
+                const linkStr = initialnodes.shift().match(findlink);
                 // check the type - skip if specified but not text/css
-                var type = linkStr[1].match(findtype);
+                const type = linkStr[1].match(findtype);
                 if (!!type && type[1] !== "text/css") {
                     continue;
                 }
-                var href = linkStr[1].match(findhref);
+                const href = linkStr[1].match(findhref);
                 if (!!href && href[1]) {
                     if (loadedStylesheetUrls === null) {
-                        var loadedLinks = document.getElementsByTagName("link");
+                        const loadedLinks = document.getElementsByTagName("link");
                         loadedStylesheetUrls = [];
 
-                        for (var i = 0; i < loadedLinks.length; i++) {
-                            var linkNode = loadedLinks[i];
-                            var linkNodeType = linkNode.getAttribute("type");
+                        for (let i = 0; i < loadedLinks.length; i++) {
+                            const linkNode = loadedLinks[i];
+                            const linkNodeType = linkNode.getAttribute("type");
                             if (!linkNodeType || linkNodeType === "text/css") {
-                                var url = linkNode.getAttribute("href");
+                                const url = linkNode.getAttribute("href");
 
                                 if (url) {
                                     loadedStylesheetUrls.push(url);
@@ -735,17 +416,17 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                         }
                     }
 
-                    var url = unescapeHTML(href[1]);
+                    const url = unescapeHTML(href[1]);
 
                     if (loadedStylesheetUrls.indexOf(url) < 0) {
                         // create stylesheet node
                         parserElement = parserElement !== null ? parserElement : document.createElement('div');
                         parserElement.innerHTML = linkStr[0];
-                        var linkNode = parserElement.firstChild;
+                        const linkNode = parserElement.firstChild;
                         linkNode.type = 'text/css';
                         linkNode.rel = 'stylesheet';
                         linkNode.href = url;
-                        head.insertBefore(linkNode, null); // add it to end of the head (and don't remove it)
+                        document.head.insertBefore(linkNode, null); // add it to end of the head (and don't remove it)
                     }
                 }
             }
@@ -760,31 +441,31 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * @param src string new content for element
          * @ignore
          */
-        var elementReplaceStr = function elementReplaceStr(element, tempTagName, src) {
+        const elementReplaceStr = function elementReplaceStr(element, tempTagName, src) {
+            // Creating a head element isn't allowed in IE, and faulty in most browsers,
+            // so it is not allowed
+            if (element && element.nodeName && element.nodeName.toLowerCase() === "head")
+                throw new Error("Attempted to replace a head element - this is not allowed.");
 
-            var temp = document.createElement(tempTagName);
+            const temp = document.createElement(tempTagName);
             if (element.id) {
                 temp.id = element.id;
             }
 
             // Creating a head element isn't allowed in IE, and faulty in most browsers,
             // so it is not allowed
-            if (element.nodeName.toLowerCase() === "head") {
-                throw new Error("Attempted to replace a head element - this is not allowed.");
+            let scripts = [];
+            if (isAutoExec()) {
+                temp.innerHTML = src;
             } else {
-                var scripts = [];
-                if (isAutoExec()) {
-                    temp.innerHTML = src;
-                } else {
-                    // Get scripts from text
-                    scripts = getScripts(src);
-                    // Remove scripts from text
-                    src = removeScripts(src);
-                    temp.innerHTML = src;
-                }
+                // Get scripts from text
+                scripts = getScripts(src);
+                // Remove scripts from text
+                src = removeScripts(src);
+                temp.innerHTML = src;
             }
 
-            replaceNode(temp, element);            
+            replaceNode(temp, element);
             cloneAttributes(temp, element);
             runScripts(scripts);
 
@@ -798,152 +479,75 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * Note:  This code originally from Sarissa: http://dev.abiss.gr/sarissa
          * It has been modified to fit into the overall codebase
          */
-        var getText = function getText(oNode, deep) {
-            var Node = {ELEMENT_NODE: 1, ATTRIBUTE_NODE: 2, TEXT_NODE: 3, CDATA_SECTION_NODE: 4,
-                ENTITY_REFERENCE_NODE: 5,  ENTITY_NODE: 6, PROCESSING_INSTRUCTION_NODE: 7,
-                COMMENT_NODE: 8, DOCUMENT_NODE: 9, DOCUMENT_TYPE_NODE: 10,
-                DOCUMENT_FRAGMENT_NODE: 11, NOTATION_NODE: 12};
-
-            var s = "";
-            var nodes = oNode.childNodes;
-            for (var i = 0; i < nodes.length; i++) {
-                var node = nodes[i];
-                var nodeType = node.nodeType;
-                if (nodeType == Node.TEXT_NODE || nodeType == Node.CDATA_SECTION_NODE) {
+        const getText = function getText(oNode, deep) {
+            let s = "";
+            const nodes = oNode.childNodes;
+            for (let i = 0; i < nodes.length; i++) {
+                const node = nodes[i];
+                const nodeType = node.nodeType;
+                if (nodeType === Node.TEXT_NODE || nodeType === Node.CDATA_SECTION_NODE) {
                     s += node.data;
-                } else if (deep === true && (nodeType == Node.ELEMENT_NODE ||
-                                             nodeType == Node.DOCUMENT_NODE ||
-                                             nodeType == Node.DOCUMENT_FRAGMENT_NODE)) {
+                } else if (deep === true && (nodeType === Node.ELEMENT_NODE ||
+                    nodeType === Node.DOCUMENT_NODE ||
+                    nodeType === Node.DOCUMENT_FRAGMENT_NODE)) {
                     s += getText(node, true);
                 }
             }
             return s;
         };
 
-        var PARSED_OK = "Document contains no parsing errors";
-        var PARSED_EMPTY = "Document is empty";
-        var PARSED_UNKNOWN_ERROR = "Not well-formed or other error";
-        var getParseErrorText;
-        if (isIE()) {
-            /**
-             * Note: This code orginally from Sarissa: http://dev.abiss.gr/sarissa
-             * @ignore
-             */
-            getParseErrorText = function (oDoc) {
-                var parseErrorText = PARSED_OK;
-                if (oDoc && oDoc.parseError && oDoc.parseError.errorCode && oDoc.parseError.errorCode !== 0) {
-                    parseErrorText = "XML Parsing Error: " + oDoc.parseError.reason +
-                                     "\nLocation: " + oDoc.parseError.url +
-                                     "\nLine Number " + oDoc.parseError.line + ", Column " +
-                                     oDoc.parseError.linepos +
-                                     ":\n" + oDoc.parseError.srcText +
-                                     "\n";
-                    for (var i = 0; i < oDoc.parseError.linepos; i++) {
-                        parseErrorText += "-";
-                    }
-                    parseErrorText += "^\n";
-                }
-                else if (oDoc.documentElement === null) {
-                    parseErrorText = PARSED_EMPTY;
-                }
-                return parseErrorText;
-            };
-        } else { // (non-IE)
+        const PARSED_OK = "Document contains no parsing errors";
+        const PARSED_EMPTY = "Document is empty";
+        const PARSED_UNKNOWN_ERROR = "Not well-formed or other error";
 
-            /**
-             * <p>Returns a human readable description of the parsing error. Useful
-             * for debugging. Tip: append the returned error string in a &lt;pre&gt;
-             * element if you want to render it.</p>
-             * @param  oDoc The target DOM document
-             * @returns {String} The parsing error description of the target Document in
-             *          human readable form (preformated text)
-             * @ignore
-             * Note:  This code orginally from Sarissa: http://dev.abiss.gr/sarissa
-             */
-            getParseErrorText = function (oDoc) {
-                var parseErrorText = PARSED_OK;
-                if ((!oDoc) || (!oDoc.documentElement)) {
-                    parseErrorText = PARSED_EMPTY;
-                } else if (oDoc.documentElement.tagName == "parsererror") {
-                    parseErrorText = oDoc.documentElement.firstChild.data;
-                    parseErrorText += "\n" + oDoc.documentElement.firstChild.nextSibling.firstChild.data;
-                } else if (oDoc.getElementsByTagName("parsererror").length > 0) {
-                    var parsererror = oDoc.getElementsByTagName("parsererror")[0];
-                    parseErrorText = getText(parsererror, true) + "\n";
-                } else if (oDoc.parseError && oDoc.parseError.errorCode !== 0) {
-                    parseErrorText = PARSED_UNKNOWN_ERROR;
-                }
-                return parseErrorText;
-            };
-        }
-
-        if ((typeof(document.importNode) == "undefined") && isIE()) {
-            try {
-                /**
-                 * Implementation of importNode for the context window document in IE.
-                 * If <code>oNode</code> is a TextNode, <code>bChildren</code> is ignored.
-                 * @param oNode the Node to import
-                 * @param bChildren whether to include the children of oNode
-                 * @returns the imported node for further use
-                 * @ignore
-                 * Note:  This code orginally from Sarissa: http://dev.abiss.gr/sarissa
-                 */
-                document.importNode = function(oNode, bChildren) {
-                    var tmp;
-                    if (oNode.nodeName == '#text') {
-                        return document.createTextNode(oNode.data);
-                    }
-                    else {
-                        if (oNode.nodeName == "tbody" || oNode.nodeName == "tr") {
-                            tmp = document.createElement("table");
-                        }
-                        else if (oNode.nodeName == "td") {
-                            tmp = document.createElement("tr");
-                        }
-                        else if (oNode.nodeName == "option") {
-                            tmp = document.createElement("select");
-                        }
-                        else {
-                            tmp = document.createElement("div");
-                        }
-                        if (bChildren) {
-                            tmp.innerHTML = oNode.xml ? oNode.xml : oNode.outerHTML;
-                        } else {
-                            tmp.innerHTML = oNode.xml ? oNode.cloneNode(false).xml : oNode.cloneNode(false).outerHTML;
-                        }
-                        return tmp.getElementsByTagName("*")[0];
-                    }
-                };
-            } catch(e) {
+        /**
+         * <p>Returns a human readable description of the parsing error. Useful
+         * for debugging. Tip: append the returned error string in a &lt;pre&gt;
+         * element if you want to render it.</p>
+         * @param  oDoc The target DOM document
+         * @returns {String} The parsing error description of the target Document in
+         *          human readable form (preformated text)
+         * @ignore
+         * Note:  This code orginally from Sarissa: http://dev.abiss.gr/sarissa
+         */
+        const getParseErrorText = function (oDoc) {
+            let parseErrorText = PARSED_OK;
+            if ((!oDoc) || (!oDoc.documentElement)) {
+                parseErrorText = PARSED_EMPTY;
+            } else if (oDoc.documentElement.tagName === "parsererror") {
+                parseErrorText = oDoc.documentElement.firstChild.data;
+                parseErrorText += "\n" + oDoc.documentElement.firstChild.nextSibling.firstChild.data;
+            } else if (oDoc.getElementsByTagName("parsererror").length > 0) {
+                const parsererror = oDoc.getElementsByTagName("parsererror")[0];
+                parseErrorText = getText(parsererror, true) + "\n";
+            } else if (oDoc.parseError && oDoc.parseError.errorCode !== 0) {
+                parseErrorText = PARSED_UNKNOWN_ERROR;
             }
-        }
-        // Setup Node type constants for those browsers that don't have them (IE)
-        var Node = {ELEMENT_NODE: 1, ATTRIBUTE_NODE: 2, TEXT_NODE: 3, CDATA_SECTION_NODE: 4,
-            ENTITY_REFERENCE_NODE: 5,  ENTITY_NODE: 6, PROCESSING_INSTRUCTION_NODE: 7,
-            COMMENT_NODE: 8, DOCUMENT_NODE: 9, DOCUMENT_TYPE_NODE: 10,
-            DOCUMENT_FRAGMENT_NODE: 11, NOTATION_NODE: 12};
+            return parseErrorText;
+        };
 
         // PENDING - add support for removing handlers added via DOM 2 methods
+
+        const NODE_EVENTS = ['abort', 'blur', 'change', 'error', 'focus', 'load', 'reset', 'resize', 'scroll', 'select', 'submit', 'unload',
+            'keydown', 'keypress', 'keyup', 'click', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseup', 'dblclick' ];
+
         /**
          * Delete all events attached to a node
          * @param node
          * @ignore
          */
-        var clearEvents = function clearEvents(node) {
+        const clearEvents = function clearEvents(node) {
             if (!node) {
                 return;
             }
 
             // don't do anything for text and comment nodes - unnecessary
-            if (node.nodeType == Node.TEXT_NODE || node.nodeType == Node.COMMENT_NODE) {
+            if (node.nodeType === Node.TEXT_NODE || node.nodeType === Node.COMMENT_NODE) {
                 return;
             }
-
-            var events = ['abort', 'blur', 'change', 'error', 'focus', 'load', 'reset', 'resize', 'scroll', 'select', 'submit', 'unload',
-            'keydown', 'keypress', 'keyup', 'click', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseup', 'dblclick' ];
             try {
-                for (var e in events) {
-                    if (events.hasOwnProperty(e)) {
+                for (const e in NODE_EVENTS) {
+                    if (NODE_EVENTS.hasOwnProperty(e)) {
                         node[e] = null;
                     }
                 }
@@ -953,63 +557,13 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
         };
 
         /**
-         * Determine if this current browser is IE9 or greater
-         * @param node
-         * @ignore
-         */
-        var isIE9Plus = function isIE9Plus() {
-            var iev = getIEVersion();
-            if (iev >= 9) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-
-        /**
          * Deletes node
          * @param node
          * @ignore
          */
-        var deleteNode = function deleteNode(node) {
-            if (!node) {
-                return;
-            }
-            if (!node.parentNode) {
-                // if there's no parent, there's nothing to do
-                return;
-            }
-            if (!isIE() || (isIE() && isIE9Plus())) {
-                // nothing special required
+        const deleteNode = function deleteNode(node) {
+            if (node && node.parentNode)
                 node.parentNode.removeChild(node);
-                return;
-            }
-            // The rest of this code is specialcasing for IE
-            if (node.nodeName.toLowerCase() === "body") {
-                // special case for removing body under IE.
-                deleteChildren(node);
-                try {
-                    node.outerHTML = '';
-                } catch (ex) {
-                    // fails under some circumstances, but not in RI
-                    // supplied responses.  If we've gotten here, it's
-                    // fairly safe to leave a lingering body tag rather than
-                    // fail outright
-                }
-                return;
-            }
-            var temp = node.ownerDocument.createElement('div');
-            var parent = node.parentNode;
-            temp.appendChild(parent.removeChild(node));
-            // Now clean up the temporary element
-            try {
-                temp.outerHTML = ''; //prevent leak in IE
-            } catch (ex) {
-                // at least we tried.  Fails in some circumstances,
-                // but not in RI supplied responses.  Better to leave a lingering
-                // temporary div than to fail outright.
-            }
         };
 
         /**
@@ -1017,14 +571,10 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * @param node
          * @ignore
          */
-        var deleteChildren = function deleteChildren(node) {
-            if (!node) {
-                return;
-            }
-            for (var x = node.childNodes.length - 1; x >= 0; x--) { //delete all of node's children
-                var childNode = node.childNodes[x];
-                deleteNode(childNode);
-            }
+        const deleteChildren = function deleteChildren(node) {
+            if (node)
+                while (node.lastElementChild)
+                    node.removeChild(node.lastElementChild);
         };
 
         /**
@@ -1036,22 +586,22 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * Note:  This code originally from Sarissa:  http://dev.abiss.gr/sarissa
          * It has been modified to fit into the overall codebase
          */
-        var copyChildNodes = function copyChildNodes(nodeFrom, nodeTo) {
+        const copyChildNodes = function copyChildNodes(nodeFrom, nodeTo) {
 
             if ((!nodeFrom) || (!nodeTo)) {
                 throw "Both source and destination nodes must be provided";
             }
 
             deleteChildren(nodeTo);
-            var nodes = nodeFrom.childNodes;
+            const nodes = nodeFrom.childNodes;
             // if within the same doc, just move, else copy and delete
-            if (nodeFrom.ownerDocument == nodeTo.ownerDocument) {
+            if (nodeFrom.ownerDocument === nodeTo.ownerDocument) {
                 while (nodeFrom.firstChild) {
                     nodeTo.appendChild(nodeFrom.firstChild);
                 }
             } else {
-                var ownerDoc = nodeTo.nodeType == Node.DOCUMENT_NODE ? nodeTo : nodeTo.ownerDocument;
-                var i;
+                const ownerDoc = nodeTo.nodeType === Node.DOCUMENT_NODE ? nodeTo : nodeTo.ownerDocument;
+                let i;
                 if (typeof(ownerDoc.importNode) != "undefined") {
                     for (i = 0; i < nodes.length; i++) {
                         nodeTo.appendChild(ownerDoc.importNode(nodes[i], true));
@@ -1066,24 +616,19 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
 
 
         /**
-         * Replace one node with another.  Necessary for handling IE memory leak.
+         * Replace one node with another.
          * @param node
          * @param newNode
          * @ignore
          */
-        var replaceNode = function replaceNode(newNode, node) {
-               if(isIE()){
-                    node.parentNode.insertBefore(newNode, node);
-                    deleteNode(node);
-               } else {
-                    node.parentNode.replaceChild(newNode, node);
-               }
+        const replaceNode = function replaceNode(newNode, node) {
+            node.parentNode.replaceChild(newNode, node);
         };
 
         /**
          * @ignore
          */
-        var propertyToAttribute = function propertyToAttribute(name) {
+        const propertyToAttribute = function propertyToAttribute(name) {
             if (name === 'className') {
                 return 'class';
             } else if (name === 'xmllang') {
@@ -1095,15 +640,15 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
 
         /**
          * @ignore
-         */
-        var isFunctionNative = function isFunctionNative(func) {
+        const isFunctionNative = function isFunctionNative(func) {
             return /^\s*function[^{]+{\s*\[native code\]\s*}\s*$/.test(String(func));
         };
+         */
 
         /**
          * @ignore
-         */
-        var detectAttributes = function detectAttributes(element) {
+
+        const detectAttributes = function detectAttributes(element) {
             //test if 'hasAttribute' method is present and its native code is intact
             //for example, Prototype can add its own implementation if missing
             if (element.hasAttribute && isFunctionNative(element.hasAttribute)) {
@@ -1112,11 +657,11 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                 }
             } else {
                 try {
-                    //when accessing .getAttribute method without arguments does not throw an error then the method is not available
+                    // when accessing .getAttribute method without arguments does not throw an error then the method is not available
                     element.getAttribute;
 
-                    var html = element.outerHTML;
-                    var startTag = html.match(/^<[^>]*>/)[0];
+                    const html = element.outerHTML;
+                    const startTag = html.match(/^<[^>]*>/)[0];
                     return function(name) {
                         return startTag.indexOf(name + '=') > -1;
                     }
@@ -1127,6 +672,25 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                 }
             }
         };
+         */
+
+
+        // Enumerate all the names of the event listeners
+        const listenerNames =
+            [ 'onclick', 'ondblclick', 'onmousedown', 'onmousemove', 'onmouseout',
+                'onmouseover', 'onmouseup', 'onkeydown', 'onkeypress', 'onkeyup',
+                'onhelp', 'onblur', 'onfocus', 'onchange', 'onload', 'onunload', 'onabort',
+                'onreset', 'onselect', 'onsubmit'
+            ];
+
+        // enumerate core element attributes - without 'dir' as special case
+        const coreElementProperties = ['className', 'title', 'lang', 'xmllang'];
+
+        // enumerate additional input element attributes
+        const inputElementProperties = [ 'name', 'value', 'size', 'maxLength', 'src', 'alt', 'useMap', 'tabIndex', 'accessKey', 'accept', 'type' ];
+
+        // enumerate additional boolean input attributes
+        const inputElementBooleanProperties = [ 'checked', 'disabled', 'readOnly' ];
 
         /**
          * copy all attributes from one element to another - except id
@@ -1134,132 +698,101 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * @param source element to copy attributes from
          * @ignore
          */
-        var cloneAttributes = function cloneAttributes(target, source) {
+        const cloneAttributes = function cloneAttributes(target, source) {
 
-            // enumerate core element attributes - without 'dir' as special case
-            var coreElementProperties = ['className', 'title', 'lang', 'xmllang'];
-            // enumerate additional input element attributes
-            var inputElementProperties = [
-                'name', 'value', 'size', 'maxLength', 'src', 'alt', 'useMap', 'tabIndex', 'accessKey', 'accept', 'type'
-            ];
-            // enumerate additional boolean input attributes
-            var inputElementBooleanProperties = [
-                'checked', 'disabled', 'readOnly'
-            ];
+            //const sourceAttributeDetector = detectAttributes(source);
+            //const targetAttributeDetector = detectAttributes(target);
 
-            // Enumerate all the names of the event listeners
-            var listenerNames =
-                [ 'onclick', 'ondblclick', 'onmousedown', 'onmousemove', 'onmouseout',
-                    'onmouseover', 'onmouseup', 'onkeydown', 'onkeypress', 'onkeyup',
-                    'onhelp', 'onblur', 'onfocus', 'onchange', 'onload', 'onunload', 'onabort',
-                    'onreset', 'onselect', 'onsubmit'
-                ];
+            const isInputElement = target.nodeName.toLowerCase() === 'input';
+            const propertyNames = isInputElement ? coreElementProperties.concat(inputElementProperties) : coreElementProperties;
+            const isXML = !source.ownerDocument.contentType || source.ownerDocument.contentType === 'text/xml';
+            for (let iIndex = 0, iLength = propertyNames.length; iIndex < iLength; iIndex++) {
+                const propertyName = propertyNames[iIndex];
+                const attributeName = propertyToAttribute(propertyName);
+                //if ( sourceAttributeDetector(attributeName)) {
 
-            var sourceAttributeDetector = detectAttributes(source);
-            var targetAttributeDetector = detectAttributes(target);
-
-            var isInputElement = target.nodeName.toLowerCase() === 'input';
-            var propertyNames = isInputElement ? coreElementProperties.concat(inputElementProperties) : coreElementProperties;
-            var isXML = !source.ownerDocument.contentType || source.ownerDocument.contentType == 'text/xml';
-            for (var iIndex = 0, iLength = propertyNames.length; iIndex < iLength; iIndex++) {
-                var propertyName = propertyNames[iIndex];
-                var attributeName = propertyToAttribute(propertyName);
-                if (sourceAttributeDetector(attributeName)) {
-                
-                    //With IE 7 (quirks or standard mode) and IE 8/9 (quirks mode only), 
+                    //With IE 7 (quirks or standard mode) and IE 8/9 (quirks mode only),
                     //you cannot get the attribute using 'class'. You must use 'className'
-                    //which is the same value you use to get the indexed property. The only 
+                    //which is the same value you use to get the indexed property. The only
                     //reliable way to detect this (without trying to evaluate the browser
-                    //mode and version) is to compare the two return values using 'className' 
+                    //mode and version) is to compare the two return values using 'className'
                     //to see if they exactly the same.  If they are, then use the property
                     //name when using getAttribute.
-                    if( attributeName == 'class'){
-                        if( isIE() && (source.getAttribute(propertyName) === source[propertyName]) ){
-                            attributeName = propertyName;
-                        }
-                    }
+                    // if( attributeName === 'class'){
+                    //     if( isIE() && (source.getAttribute(propertyName) === source[propertyName]) ){
+                    //         attributeName = propertyName;
+                    //     }
+                    // }
 
-                    var newValue = isXML ? source.getAttribute(attributeName) : source[propertyName];
-                    var oldValue = target[propertyName];
-                    if (oldValue != newValue) {
-                        target[propertyName] = newValue;
+                    const sourceValue = isXML ? source.getAttribute(attributeName) : source[propertyName];
+                    const targetValue = target[propertyName];
+                    if (targetValue !== sourceValue) {
+                        target[propertyName] = sourceValue;
                     }
-                } else {
-                    //setting property to '' seems to be the only cross-browser method for removing an attribute
-                    //avoid setting 'value' property to '' for checkbox and radio input elements because then the
-                    //'value' is used instead of the 'checked' property when the form is serialized by the browser
-                    if (attributeName == "value" && (target.type != 'checkbox' && target.type != 'radio')) {
-                         target[propertyName] = '';
-                    }
-                    target.removeAttribute(attributeName);
-                }
+                // } else {
+                //     //setting property to '' seems to be the only cross-browser method for removing an attribute
+                //     //avoid setting 'value' property to '' for checkbox and radio input elements because then the
+                //     //'value' is used instead of the 'checked' property when the form is serialized by the browser
+                //     if (attributeName === "value" && (target.type !== 'checkbox' && target.type !== 'radio')) {
+                //          target[propertyName] = '';
+                //     }
+                //     target.removeAttribute(attributeName);
+                // }
             }
 
-            var booleanPropertyNames = isInputElement ? inputElementBooleanProperties : [];
-            for (var jIndex = 0, jLength = booleanPropertyNames.length; jIndex < jLength; jIndex++) {
-                var booleanPropertyName = booleanPropertyNames[jIndex];
-                var newBooleanValue = source[booleanPropertyName];
-                var oldBooleanValue = target[booleanPropertyName];
-                if (oldBooleanValue != newBooleanValue) {
+            const booleanPropertyNames = isInputElement ? inputElementBooleanProperties : [];
+            const jLength = booleanPropertyNames.length;
+            for (let jIndex = 0 ; jIndex < jLength; jIndex++) {
+                const booleanPropertyName = booleanPropertyNames[jIndex];
+                const newBooleanValue = source[booleanPropertyName];
+                const oldBooleanValue = target[booleanPropertyName];
+                if (oldBooleanValue !== newBooleanValue) {
                     target[booleanPropertyName] = newBooleanValue;
                 }
             }
 
             //'style' attribute special case
-            if (sourceAttributeDetector('style')) {
-                var newStyle;
-                var oldStyle;
-                if (isIE()) {
-                    newStyle = source.style.cssText;
-                    oldStyle = target.style.cssText;
-                    if (newStyle != oldStyle) {
-                        target.style.cssText = newStyle;
-                    }
-                } else {
-                    newStyle = source.getAttribute('style');
-                    oldStyle = target.getAttribute('style');
-                    if (newStyle != oldStyle) {
-                        target.setAttribute('style', newStyle);
-                    }
+            if ( source.hasAttribute('style') ) { // sourceAttributeDetector('style')
+                const sourceStyle = source.getAttribute('style');
+                const targetStyle = target.getAttribute('style');
+                if (sourceStyle !== targetStyle) {
+                    target.setAttribute('style', sourceStyle);
                 }
-            } else if (targetAttributeDetector('style')){
+            } else if ( target.hasAttribute('style') ) { // targetAttributeDetector('style')
                 target.removeAttribute('style');
             }
 
             // Special case for 'dir' attribute
-            if (!isIE() && source.dir != target.dir) {
-                if (sourceAttributeDetector('dir')) {
+            if (source.dir !== target.dir) {
+                if ( source.hasAttribute('dir') ) { // sourceAttributeDetector('dir')
                     target.dir = source.dir;
-                } else if (targetAttributeDetector('dir')) {
+                } else if ( target.hasAttribute('dir') ) { // targetAttributeDetector('dir')
                     target.dir = '';
                 }
             }
 
-            for (var lIndex = 0, lLength = listenerNames.length; lIndex < lLength; lIndex++) {
-                var name = listenerNames[lIndex];
+            for (let lIndex = 0, lLength = listenerNames.length; lIndex < lLength; lIndex++) {
+                const name = listenerNames[lIndex];
                 target[name] = source[name] ? source[name] : null;
                 if (source[name]) {
                     source[name] = null;
                 }
             }
 
-            //clone HTML5 data-* attributes
-            try{
-                var targetDataset = target.dataset;
-                var sourceDataset = source.dataset;
-                if (targetDataset || sourceDataset) {
-                    //cleanup the dataset
-                    for (var tp in targetDataset) {
-                        delete targetDataset[tp];
-                    }
-                    //copy dataset's properties
-                    for (var sp in sourceDataset) {
-                        targetDataset[sp] = sourceDataset[sp];
-                    }
+            // clone HTML5 data-* attributes
+            const sourceDataset = source.dataset;
+            const targetDataset = target.dataset;
+            if (targetDataset || sourceDataset) {
+                //cleanup the dataset
+                for (const tp in targetDataset) {
+                    delete targetDataset[tp];
                 }
-            } catch (ex) {
-                //most probably dataset properties are not supported
+                //copy dataset's properties
+                for (const sp in sourceDataset) {
+                    targetDataset[sp] = sourceDataset[sp];
+                }
             }
+
         };
 
         /**
@@ -1268,18 +801,18 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * @param origElement original element to replace
          * @ignore
          */
-        var elementReplace = function elementReplace(newElement, origElement) {
-            copyChildNodes(newElement, origElement);
+        const elementReplace = function elementReplace(newElement, origElement) {
+            copyChildNodes(newElement, origElement);       // fixme: it should not be from origElement to newElement ?!
             // sadly, we have to reparse all over again
             // to reregister the event handlers and styles
             // PENDING do some performance tests on large pages
-            origElement.innerHTML = origElement.innerHTML;
+            origElement.innerHTML = origElement.innerHTML; // fixme: ??
 
             try {
                 cloneAttributes(origElement, newElement);
             } catch (ex) {
                 // if in dev mode, report an error, else try to limp onward
-                if (faces.getProjectStage() == "Development") {
+                if (faces.getProjectStage() === "Development") {
                     throw new Error("Error updating attributes");
                 }
             }
@@ -1293,25 +826,28 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * @return element the body element
          * @ignore
          */
-        var getBodyElement = function getBodyElement(docStr) {
+        const getBodyElement = function getBodyElement(docStr) {
 
-            var doc;  // intermediate document we'll create
-            var body; // Body element to return
+            //let doc;  // intermediate document we'll create
+            //let body; // Body element to return
 
-            if (typeof DOMParser !== "undefined") {  // FF, S, Chrome
-                doc = (new DOMParser()).parseFromString(docStr, "text/xml");
-            } else if (typeof ActiveXObject !== "undefined") { // IE
-                doc = new ActiveXObject("MSXML2.DOMDocument");
-                doc.loadXML(docStr);
-            } else {
-                throw new Error("You don't seem to be running a supported browser");
-            }
+            const doc = (new DOMParser()).parseFromString(docStr, "text/xml")
+
+            //if (typeof DOMParser !== "undefined") {  // FF, S, Chrome
+            //    doc = (new DOMParser()).parseFromString(docStr, "text/xml");
+            //}
+            // else if (typeof ActiveXObject !== "undefined") { // IE
+            //     doc = new ActiveXObject("MSXML2.DOMDocument");
+            //     doc.loadXML(docStr);
+            // } else {
+            //     throw new Error("You don't seem to be running a supported browser");
+            // }
 
             if (getParseErrorText(doc) !== PARSED_OK) {
                 throw new Error(getParseErrorText(doc));
             }
 
-            body = doc.getElementsByTagName("body")[0];
+            const body = doc.body; //doc.getElementsByTagName("body")[0];
 
             if (!body) {
                 throw new Error("Can't find body tag in returned document.");
@@ -1325,19 +861,27 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * @param form
          * @ignore
          */
-        var getEncodedUrlElement = function getEncodedUrlElement(form) {
-            var encodedUrlElement = form['jakarta.faces.encodedURL'];
+        const getEncodedUrlElement = function getEncodedUrlElement(form) {
+            const encodedUrlElement = form['jakarta.faces.encodedURL'];
 
             if (encodedUrlElement) {
                 return encodedUrlElement;
             } else {
-                var formElements = form.elements;
-                for (var i = 0, length = formElements.length; i < length; i++) {
-                    var formElement = formElements[i];
+                // const formElements = form.elements;
+                // let i = 0, length = formElements.length;
+                // for (; i < length; i++) {
+                //     const formElement = formElements[i];
+                //     if (formElement.name && (formElement.name.indexOf('jakarta.faces.encodedURL') >= 0)) {
+                //         return formElement;
+                //     }
+                // }
+
+                for ( const formElement of form.elements ) {
                     if (formElement.name && (formElement.name.indexOf('jakarta.faces.encodedURL') >= 0)) {
                         return formElement;
                     }
                 }
+
             }
 
             return undefined;
@@ -1346,22 +890,21 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
         /**
          * Update hidden state fields from the server into the DOM for any Faces forms which need to be updated.
          * This covers at least the form that submitted the request and any form that is covered in the render target list.
-         * 
+         *
          * @param updateElement The update element of partial response holding the state value.
          * @param context An object containing the request context, including the following properties:
          * the source element, per call onerror callback function, per call onevent callback function, the render
          * instructions, the submitting form ID, the naming container ID and naming container prefix.
-         * @param hiddenStateFieldName The hidden state field name, e.g. jakarta.faces.ViewState or jakarta.faces.ClientWindow 
+         * @param hiddenStateFieldName The hidden state field name, e.g. jakarta.faces.ViewState or jakarta.faces.ClientWindow
          */
-        var updateHiddenStateFields = function updateHiddenStateFields(updateElement, context, hiddenStateFieldName) {
-            var firstChild = updateElement.firstChild;
-            var state = (typeof firstChild.wholeText !== 'undefined') ? firstChild.wholeText : firstChild.nodeValue;
-            var formsToUpdate = getFormsToUpdate(context);
+        const updateHiddenStateFields = function updateHiddenStateFields(updateElement, context, hiddenStateFieldName) {
+            const firstChild = updateElement.firstChild;
+            const state = (typeof firstChild.wholeText !== 'undefined') ? firstChild.wholeText : firstChild.nodeValue;
+            const formsToUpdate = getFormsToUpdate(context);
 
-            for (var i = 0; i < formsToUpdate.length; i++) {
-                var formToUpdate = formsToUpdate[i];
-                var field = getHiddenStateField(formToUpdate, hiddenStateFieldName, context.namingContainerPrefix);
-                if (typeof field == "undefined") {
+            for ( const formToUpdate of formsToUpdate ) {
+                let field = getHiddenStateField(formToUpdate, hiddenStateFieldName, context.namingContainerPrefix);
+                if (isNull(field)) {
                     field = document.createElement("input");
                     field.type = "hidden";
                     field.name = context.namingContainerPrefix + hiddenStateFieldName;
@@ -1369,28 +912,33 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                 }
                 field.value = state;
             }
-        }
+        };
 
         /**
          * Find hidden state field for a given form.
          * @param form The form to find hidden state field in.
-         * @param hiddenStateFieldName The hidden state field name, e.g. jakarta.faces.ViewState or jakarta.faces.ClientWindow 
+         * @param hiddenStateFieldName The hidden state field name, e.g. jakarta.faces.ViewState or jakarta.faces.ClientWindow
          * @param namingContainerPrefix The naming container prefix, if any (the view root ID suffixed with separator character).
          * @ignore
          */
-        var getHiddenStateField = function getHiddenStateField(form, hiddenStateFieldName, namingContainerPrefix) {
+        const getHiddenStateField = function getHiddenStateField(form, hiddenStateFieldName, namingContainerPrefix) {
             namingContainerPrefix = namingContainerPrefix || "";
-            var field = form[namingContainerPrefix + hiddenStateFieldName];
+            const field = form[namingContainerPrefix + hiddenStateFieldName];
 
             if (field) {
                 return field;
             }
             else {
-                var formElements = form.elements;
+                // const formElements = form.elements;
+                // let i = 0, length = formElements.length;
+                // for (; i < length; i++) {
+                //     const formElement = formElements[i];
+                //     if (formElement.name && (formElement.name.indexOf(hiddenStateFieldName) >= 0)) {
+                //         return formElement;
+                //     }
+                // }
 
-                for (var i = 0, length = formElements.length; i < length; i++) {
-                    var formElement = formElements[i];
-
+                for ( const formElement of form.elements ) {
                     if (formElement.name && (formElement.name.indexOf(hiddenStateFieldName) >= 0)) {
                         return formElement;
                     }
@@ -1408,13 +956,14 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * instructions, the submitting form ID, the naming container ID and naming container prefix.
          * @ignore
          */
-        var doUpdate = function doUpdate(updateElement, context) {
-            var id, content, markup;
-            var scripts = []; // temp holding value for array of script nodes
+        const doUpdate = function doUpdate(updateElement, context) {
+            let id, content, markup;
+            let scripts = []; // temp holding value for array of script nodes
+            let newElement;
 
             id = updateElement.getAttribute('id');
-            var viewStateRegex = new RegExp(context.namingContainerPrefix + "jakarta.faces.ViewState" + faces.separatorchar + ".+$");
-            var windowIdRegex = new RegExp(context.namingContainerPrefix + "jakarta.faces.ClientWindow" + faces.separatorchar + ".+$");
+            const viewStateRegex = new RegExp(context.namingContainerPrefix + "jakarta.faces.ViewState" + faces.separatorchar + ".+$");
+            const windowIdRegex = new RegExp(context.namingContainerPrefix + "jakarta.faces.ClientWindow" + faces.separatorchar + ".+$");
 
             if (id.match(viewStateRegex)) {
                 updateHiddenStateFields(updateElement, context, "jakarta.faces.ViewState");
@@ -1426,12 +975,12 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
 
             // join the CDATA sections in the markup
             markup = '';
-            for (var j = 0; j < updateElement.childNodes.length; j++) {
+            for (let j = 0; j < updateElement.childNodes.length; j++) {
                 content = updateElement.childNodes[j];
                 markup += content.nodeValue;
             }
 
-            var src = markup;
+            const src = markup;
 
             if (id === "jakarta.faces.ViewHead") {
                 throw new Error("jakarta.faces.ViewHead not supported - browsers cannot reliably replace the head's contents");
@@ -1440,9 +989,9 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                 scripts = getScripts(src);
                 runScripts(scripts);
             } else {
-                var element = $(id);
+                const element = $(id);
 
-                if (context.namingContainerId && id == context.namingContainerId) {
+                if (context.namingContainerId && id === context.namingContainerId) {
                     // spec790: If UIViewRoot is a NamingContainer and this is currently being updated,
                     // then it means that ajax navigation has taken place.
                     // So, ensure that context.render has correct value for this condition,
@@ -1451,20 +1000,20 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                 }
 
                 if (id === "jakarta.faces.ViewRoot" || id === "jakarta.faces.ViewBody" || context.render === "@all") {
-    
+
                     // spec790: If UIViewRoot is currently being updated,
                     // then it means that ajax navigation has taken place.
                     // So, ensure that context.render has correct value for this condition,
                     // because this is not necessarily correctly specified during the request.
                     context.render = "@all";
-    
-                    var bodyStartEx = new RegExp("< *body[^>]*>", "gi");
-                    var bodyEndEx = new RegExp("< */ *body[^>]*>", "gi");
-                    var newsrc;
-    
-                    var docBody = document.getElementsByTagName("body")[0];
-                    var bodyStart = bodyStartEx.exec(src);
-    
+
+                    const bodyStartEx = new RegExp("< *body[^>]*>", "gi");
+                    const bodyEndEx = new RegExp("< */ *body[^>]*>", "gi");
+                    let newsrc;
+
+                    const docBody = document.body; //document.getElementsByTagName("body")[0];
+                    const bodyStart = bodyStartEx.exec(src);
+
                     if (bodyStart !== null) { // replace body tag
                         // First, try with XML manipulation
                         try {
@@ -1477,7 +1026,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                             runScripts(scripts);
                         } catch (e) {
                             // OK, replacing the body didn't work with XML - fall back to quirks mode insert
-                            var srcBody, bodyEnd;
+                            let srcBody, bodyEnd;
                             // if src contains </body>
                             bodyEnd = bodyEndEx.exec(src);
                             if (bodyEnd !== null) {
@@ -1487,9 +1036,9 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                             }
                             // replace body contents with innerHTML - note, script handling happens within function
                             elementReplaceStr(docBody, "body", srcBody);
-    
+
                         }
-    
+
                     } else {  // replace body contents with innerHTML - note, script handling happens within function
                         elementReplaceStr(docBody, "body", src);
                     }
@@ -1497,22 +1046,25 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                     if (!element) {
                         throw new Error("During update: " + id + " not found");
                     }
-    
-                    var parent = element.parentNode;
+
+                    const parent = element.parentNode;
                     // Trim space padding before assigning to innerHTML
-                    var html = src.replace(/^\s+/g, '').replace(/\s+$/g, '');
-                    var parserElement = document.createElement('div');
-                    var tag = element.nodeName.toLowerCase();
-                    var tableElements = ['td', 'th', 'tr', 'tbody', 'thead', 'tfoot'];
-                    var isInTable = false;
-                    for (var tei = 0, tel = tableElements.length; tei < tel; tei++) {
-                        if (tableElements[tei] == tag) {
-                            isInTable = true;
-                            break;
-                        }
-                    }
+                    let html = src.replace(/^\s+/g, '').replace(/\s+$/g, '');
+                    let parserElement = document.createElement('div');
+                    const tag = element.nodeName.toLowerCase();
+                    const tableElements = ['td', 'th', 'tr', 'tbody', 'thead', 'tfoot'];
+                    const isInTable = tableElements.includes(tag);
+                    // let isInTable = false;
+                    // let tei = 0, tel = tableElements.length;
+                    // for (; tei < tel; tei++) {
+                    //     if (tableElements[tei] === tag) {
+                    //         isInTable = true;
+                    //         break;
+                    //     }
+                    // }
+
                     if (isInTable) {
-    
+
                         if (isAutoExec()) {
                             // Create html
                             parserElement.innerHTML = '<table>' + html + '</table>';
@@ -1523,7 +1075,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                             html = removeScripts(html);
                             parserElement.innerHTML = '<table>' + html + '</table>';
                         }
-                        var newElement = parserElement.firstChild;
+                        newElement = parserElement.firstChild;
                         //some browsers will also create intermediary elements such as table>tbody>tr>td
                         while ((null !== newElement) && (id !== newElement.id)) {
                             newElement = newElement.firstChild;
@@ -1537,7 +1089,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                         parserElement = document.createElement('div');
                         parserElement.innerHTML = html;
                         newElement = parserElement.firstChild;
-    
+
                         cloneAttributes(element, newElement);
                         deleteNode(parserElement);
                     } else if (html.length > 0) {
@@ -1564,10 +1116,8 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * @param element
          * @ignore
          */
-        var doDelete = function doDelete(element) {
-            var id = element.getAttribute('id');
-            var target = $(id);
-            deleteNode(target);
+        const doDelete = function doDelete(element) {
+            if (element) deleteNode($(element.getAttribute('id')));
         };
 
         /**
@@ -1575,13 +1125,13 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * @param element
          * @ignore
          */
-        var doInsert = function doInsert(element) {
-            var tablePattern = new RegExp("<\\s*(td|th|tr|tbody|thead|tfoot)", "i");
-            var scripts = [];
-            var target = $(element.firstChild.getAttribute('id'));
-            var parent = target.parentNode;
-            var html = element.firstChild.firstChild.nodeValue;
-            var isInTable = tablePattern.test(html);
+        const doInsert = function doInsert(element) {
+            const tablePattern = new RegExp("<\\s*(td|th|tr|tbody|thead|tfoot)", "i");
+            let scripts = [];
+            let target = $(element.firstChild.getAttribute('id'));
+            const parent = target.parentNode;
+            let html = element.firstChild.firstChild.nodeValue;
+            const isInTable = tablePattern.test(html);
 
             if (!isAutoExec())  {
                 // Get the scripts from the text
@@ -1589,14 +1139,14 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                 // Remove scripts from text
                 html = removeScripts(html);
             }
-            var tempElement = document.createElement('div');
-            var newElement = null;
+            const tempElement = document.createElement('div');
+            let newElement;
             if (isInTable)  {
                 tempElement.innerHTML = '<table>' + html + '</table>';
                 newElement = tempElement.firstChild;
                 //some browsers will also create intermediary elements such as table>tbody>tr>td
                 //test for presence of id on the new element since we do not have it directly
-                while ((null !== newElement) && ("" == newElement.id)) {
+                while ((null !== newElement) && ("" === newElement.id)) {
                     newElement = newElement.firstChild;
                 }
             } else {
@@ -1620,22 +1170,21 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * @param element
          * @ignore
          */
-        var doAttributes = function doAttributes(element) {
+        const doAttributes = function doAttributes(element) {
 
             // Get id of element we'll act against
-            var id = element.getAttribute('id');
-
-            var target = $(id);
+            const id = element.getAttribute('id');
+            const target = $(id);
 
             if (!target) {
                 throw new Error("The specified id: " + id + " was not found in the page.");
             }
 
             // There can be multiple attributes modified.  Loop through the list.
-            var nodes = element.childNodes;
-            for (var i = 0; i < nodes.length; i++) {
-                var name = nodes[i].getAttribute('name');
-                var value = nodes[i].getAttribute('value');
+            const nodes = element.childNodes;
+            for (let i = 0; i < nodes.length; i++) {
+                let name = nodes[i].getAttribute('name');
+                const value = nodes[i].getAttribute('value');
 
                 //boolean attribute handling code for all browsers
                 if (name === 'disabled') {
@@ -1644,40 +1193,15 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                 } else if (name === 'checked') {
                     target.checked = value === 'checked' || value === 'on' || value === 'true';
                     return;
-                } else if (name == 'readonly') {
+                } else if (name === 'readonly') {
                     target.readOnly = value === 'readonly' || value === 'true';
                     return;
                 }
 
-                if (!isIE()) {
-                    if (name === 'value') {
-                        target.value = value;
-                    } else {
-                        target.setAttribute(name, value);
-                    }
-                } else { // if it's IE, then quite a bit more work is required
-                    if (name === 'class') {
-                        target.className = value;
-                    } else if (name === "for") {
-                        name = 'htmlFor';
-                        target.setAttribute(name, value, 0);
-                    } else if (name === 'style') {
-                        target.style.setAttribute('cssText', value, 0);
-                    } else if (name.substring(0, 2) === 'on') {
-                        var c = document.body.appendChild(document.createElement('span'));
-                        try {
-                            c.innerHTML = '<span ' + name + '="' + value + '"/>';
-                            target[name] = c.firstChild[name];
-                        } finally {
-                            document.body.removeChild(c);
-                        }
-                    } else if (name === 'dir') {
-                        if (faces.getProjectStage() == 'Development') {
-                            throw new Error("Cannot set 'dir' attribute in IE");
-                        }
-                    } else {
-                        target.setAttribute(name, value, 0);
-                    }
+                if (name === 'value') {
+                    target.value = value;
+                } else {
+                    target.setAttribute(name, value);
                 }
             }
         };
@@ -1687,11 +1211,10 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * @param element to eval
          * @ignore
          */
-        var doEval = function doEval(element) {
-            var evalText = '';
-            var childNodes = element.childNodes;
-            for (var i = 0; i < childNodes.length; i++) {
-                evalText += childNodes[i].nodeValue;
+        const doEval = function doEval(element) {
+            let evalText = '';
+            for ( const node of element.childNodes ) {
+                evalText += node.nodeValue;
             }
             globalEval(evalText);
         };
@@ -1700,14 +1223,13 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * Ajax Request Queue
          * @ignore
          */
-        var Queue = new function Queue() {
+        const Queue = function Queue() {
 
             // Create the internal queue
-            var queue = [];
-
+            let queue = [];
 
             // the amount of space at the front of the queue, initialised to zero
-            var queueSpace = 0;
+            let queueSpace = 0;
 
             /** Returns the size of this Queue. The size of a Queue is equal to the number
              * of elements that have been enqueued minus the number of elements that have
@@ -1746,7 +1268,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
              */
             this.dequeue = function dequeue() {
                 // initialise the element to return to be undefined
-                var element = undefined;
+                let element = undefined;
 
                 // check whether the queue is empty
                 if (queue.length) {
@@ -1762,11 +1284,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                     }
                 }
                 // return the removed element
-                try {
-                    return element;
-                } finally {
-                    element = null; // IE 6 leak prevention
-                }
+                return element;
             };
 
             /** Returns the oldest element in this Queue. If this Queue is empty then
@@ -1776,29 +1294,25 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
              */
             this.getOldestElement = function getOldestElement() {
                 // initialise the element to return to be undefined
-                var element = undefined;
+                let element = undefined;
 
                 // if the queue is not element then fetch the oldest element in the queue
                 if (queue.length) {
                     element = queue[queueSpace];
                 }
                 // return the oldest element
-                try {
-                    return element;
-                } finally {
-                    element = null; //IE 6 leak prevention
-                }
+                return element;
             };
-        }();
+        };
 
 
         /**
          * AjaxEngine handles Ajax implementation details.
          * @ignore
          */
-        var AjaxEngine = function AjaxEngine(context) {
+        const AjaxEngine = function AjaxEngine(context) {
 
-            var req = {};                  // Request Object
+            const req = {};                  // Request Object
             req.url = null;                // Request URL
             req.context = context;              // Context of request and response
             req.context.sourceid = null;   // Source of this request
@@ -1814,35 +1328,35 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
             req.status = null;             // Response Status Code From Server
             req.fromQueue = false;         // Indicates if the request was taken off the queue before being sent. This prevents the request from entering the queue redundantly.
 
-            req.que = Queue;
-            
+            req.que = new Queue();
+
             // Get a transport Handle
             // The transport will be an iframe transport if the form
             // has multipart encoding type.  This is where we could
-            // handle XMLHttpRequest Level2 as well (perhaps 
+            // handle XMLHttpRequest Level2 as well (perhaps
             // something like:  if ('upload' in req.xmlReq)'
-            req.xmlReq = getTransport(context);
+            // req.xmlReq = getTransport(context);
+            req.xmlReq = new XMLHttpRequest();
 
-            if (req.xmlReq === null) {
-                return null;
-            }
+            //if (req.xmlReq === null) return null;
 
-            /**
-             * @ignore
-             */
-            function noop() {}
-            
+            // /**
+            //  * @ignore
+            //  */
+            // function noop() {
+            // }
+
             // Set up request/response state callbacks
             /**
              * @ignore
              */
-            req.xmlReq.onreadystatechange = function() {
+            req.xmlReq.onreadystatechange = function () {
                 if (req.xmlReq.readyState === 4) {
                     req.onComplete();
-                    // next two lines prevent closure/ciruclar reference leaks
+                    // next two lines prevent closure/circular reference leaks
                     // of XHR instances in IE
-                    req.xmlReq.onreadystatechange = noop;
-                    req.xmlReq = null;
+                    // req.xmlReq.onreadystatechange = noop;
+                    // req.xmlReq = null;
                 }
             };
 
@@ -1867,23 +1381,21 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                 // dequeue requests that have been completed (readyState 4) and send
                 // requests that ready to be sent (readyState 0).
 
-                var nextReq = req.que.getOldestElement();
-                if (nextReq === null || typeof nextReq === 'undefined') {
+                let nextReq = req.que.getOldestElement();
+                if (isNull(nextReq)) {
                     return;
                 }
-                while ((typeof nextReq.xmlReq !== 'undefined' && nextReq.xmlReq !== null) &&
-                       nextReq.xmlReq.readyState === 4) {
+                while (isNotNull(nextReq.xmlReq) && nextReq.xmlReq.readyState === 4) {
                     req.que.dequeue();
                     nextReq = req.que.getOldestElement();
-                    if (nextReq === null || typeof nextReq === 'undefined') {
+                    if (isNull(nextReq)) {
                         break;
                     }
                 }
-                if (nextReq === null || typeof nextReq === 'undefined') {
+                if (isNull(nextReq)) {
                     return;
                 }
-                if ((typeof nextReq.xmlReq !== 'undefined' && nextReq.xmlReq !== null) &&
-                    nextReq.xmlReq.readyState === 0) {
+                if (isNotNull(nextReq.xmlReq) && nextReq.xmlReq.readyState === 0) {
                     nextReq.fromQueue = true;
                     nextReq.sendRequest();
                 }
@@ -1897,8 +1409,8 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
              * request parameters.
              * @ignore
              */
-            req.setupArguments = function(args) {
-                for (var i in args) {
+            req.setupArguments = function (args) {
+                for (const i in args) {
                     if (args.hasOwnProperty(i)) {
                         if (typeof req[i] === 'undefined') {
                             req.parameters[i] = args[i];
@@ -1914,8 +1426,8 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
              * (GET or POST) and sends the request using the specified url.
              * @ignore
              */
-            req.sendRequest = function() {
-                if (req.xmlReq !== null) {
+            req.sendRequest = function () {
+                if (isNotNull(req.xmlReq)) {
                     // if there is already a request on the queue waiting to be processed..
                     // just queue this request
                     if (!req.que.isEmpty()) {
@@ -1929,45 +1441,73 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                         req.que.enqueue(req);
                     }
                     // Some logic to get the real request URL
-                    if (req.generateUniqueUrl && req.method == "GET") {
+                    if (req.generateUniqueUrl && req.method === "GET") {
                         req.parameters["AjaxRequestUniqueId"] = new Date().getTime() + "" + req.requestIndex;
                     }
-                    var content = null; // For POST requests, to hold query string
-                    for (var i in req.parameters) {
+
+                    // If multipart prepare the FormData
+                    const isMultiPart = (req.method === "POST" && context.form.enctype === 'multipart/form-data');
+                    let formData = null;
+                    if ( isMultiPart ) {
+                        formData = new FormData(context.form);
+                        formData.append('Faces-Request','partial/ajax');
+                    }
+
+                    // Add parameters encoded or multipart
+                    for (let i in req.parameters) {
                         if (req.parameters.hasOwnProperty(i)) {
-                            if (req.queryString.length > 0) {
-                                req.queryString += "&";
+                            if ( isMultiPart ) {
+                                // add parameter to FormData
+                                formData.append(i,req.parameters[i]);
+                            } else {
+                                // add encoded request query string to queryString for POST
+                                if (req.queryString.length > 0) req.queryString += "&";
+                                req.queryString += encodeURIComponent(i) + "=" + encodeURIComponent(req.parameters[i]);
                             }
-                            req.queryString += encodeURIComponent(i) + "=" + encodeURIComponent(req.parameters[i]);
                         }
                     }
+
+                    // GET Request
                     if (req.method === "GET") {
                         if (req.queryString.length > 0) {
                             req.url += ((req.url.indexOf("?") > -1) ? "&" : "?") + req.queryString;
                         }
                     }
+
+                    // Open Ajax request
                     req.xmlReq.open(req.method, req.url, req.async);
+
+                    // For POST urlencoded or GET requests, to hold query string
+                    // let content = null;
+
                     // note that we are including the charset=UTF-8 as part of the content type (even
                     // if encodeURIComponent encodes as UTF-8), because with some
-                    // browsers it will not be set in the request.  Some server implementations need to 
+                    // browsers it will not be set in the request.  Some server implementations need to
                     // determine the character encoding from the request header content type.
                     if (req.method === "POST") {
-                        if (typeof req.xmlReq.setRequestHeader !== 'undefined') {
-                            req.xmlReq.setRequestHeader('Faces-Request', 'partial/ajax');
-                            req.xmlReq.setRequestHeader('Content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
-                        }
-                        content = req.queryString;
+                        req.xmlReq.setRequestHeader('Faces-Request', 'partial/ajax');
+                        if ( !isMultiPart ) // GET or POST
+                            req.xmlReq.setRequestHeader( 'Content-type' , context.form.enctype+';charset=UTF-8' );
+                        // req.xmlReq.setRequestHeader('Content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+                        // content = req.queryString;
                     }
+
                     // note that async == false is not a supported feature.  We may change it in ways
                     // that break existing programs at any time, with no warning.
-                    if(!req.async) {
-                        req.xmlReq.onreadystatechange = null; // no need for readystate change listening
-                    }
+                    if (!req.async) req.xmlReq.onreadystatechange = null; // no need for readystate change listening
+
+                    // Send begin event
                     sendEvent(req.xmlReq, req.context, "begin");
-                    req.xmlReq.send(content);
-                    if(!req.async){
-                        req.onComplete();
-                }
+
+                    // IF multipart/form-data use FormData
+                    if (isMultiPart) req.xmlReq.send(formData);
+
+                    // ELSE use query string
+                    else req.xmlReq.send(req.queryString);
+
+                    // call OnComplete if not async
+                    if(!req.async) req.onComplete();
+
                 }
             };
 
@@ -1979,16 +1519,16 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * Assumes that the request has completed.
          * @ignore
          */
-        var sendError = function sendError(request, context, status, description, serverErrorName, serverErrorMessage) {
+        const sendError = function sendError(request, context, status, description, serverErrorName, serverErrorMessage) {
 
-            // Possible errornames:
+            // Possible error names:
             // httpError
             // emptyResponse
             // serverError
             // malformedXML
 
-            var sent = false;
-            var data = {};  // data payload for function
+            let sent = false;
+            const data = {};  // data payload for function
             data.type = "error";
             data.status = status;
             data.source = context.sourceid;
@@ -2004,17 +1544,17 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
 
             if (description) {
                 data.description = description;
-            } else if (status == "httpError") {
+            } else if (status === "httpError") {
                 if (data.responseCode === 0) {
                     data.description = "The Http Transport returned a 0 status code.  This is usually the result of mixing ajax and full requests.  This is usually undesired, for both performance and data integrity reasons.";
                 } else {
                     data.description = "There was an error communicating with the server, status: " + data.responseCode;
                 }
-            } else if (status == "serverError") {
+            } else if (status === "serverError") {
                 data.description = serverErrorMessage;
-            } else if (status == "emptyResponse") {
+            } else if (status === "emptyResponse") {
                 data.description = "An empty response was received from the server.  Check server error logs.";
-            } else if (status == "malformedXML") {
+            } else if (status === "malformedXML") {
                 if (getParseErrorText(data.responseXML) !== PARSED_OK) {
                     data.description = getParseErrorText(data.responseXML);
                 } else {
@@ -2022,7 +1562,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                 }
             }
 
-            if (status == "serverError") {
+            if (status === "serverError") {
                 data.errorName = serverErrorName;
                 data.errorMessage = serverErrorMessage;
             }
@@ -2033,7 +1573,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                 sent = true;
             }
 
-            for (var i in errorListeners) {
+            for (const i in errorListeners) {
                 if (errorListeners.hasOwnProperty(i)) {
                     errorListeners[i].call(null, data);
                     sent = true;
@@ -2041,7 +1581,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
             }
 
             if (!sent && faces.getProjectStage() === "Development") {
-                if (status == "serverError") {
+                if (status === "serverError") {
                     alert("serverError: " + serverErrorName + " " + serverErrorMessage);
                 } else {
                     alert(status + ": " + data.description);
@@ -2054,9 +1594,9 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * Request is assumed to have completed, except in the case of event = 'begin'.
          * @ignore
          */
-        var sendEvent = function sendEvent(request, context, status) {
+        const sendEvent = function sendEvent(request, context, status) {
 
-            var data = {};
+            const data = {};
             data.type = "event";
             data.status = status;
             data.source = context.sourceid;
@@ -2075,14 +1615,14 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                 context.onevent.call(null, data);
             }
 
-            for (var i in eventListeners) {
+            for (const i in eventListeners) {
                 if (eventListeners.hasOwnProperty(i)) {
                     eventListeners[i].call(null, data);
                 }
             }
         };
 
-        var unescapeHTML = function unescapeHTML(escapedHTML) {
+        const unescapeHTML = function unescapeHTML(escapedHTML) {
             return escapedHTML
                 .replace(/&apos;/g, "'")
                 .replace(/&quot;/g, '"')
@@ -2451,12 +1991,13 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
 
             request: function request(source, event, options) {
 
-                var element, form, viewStateElement;   //  Element variables
-                var all, none;
-                
-                var context = {};
+                //let property;
+                let element, form, viewStateElement;   //  Element variables
+                let all, none;
 
-                if (typeof source === 'undefined' || source === null) {
+                let context = {};
+
+                if (isNull(source)) {
                     throw new Error("faces.ajax.request: source not set");
                 }
                 if(delayHandler) {
@@ -2480,12 +2021,12 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                 
                 context.element = element;
 
-                if (typeof(options) === 'undefined' || options === null) {
+                if (isNull(options)) {
                     options = {};
                 }
 
                 // Error handler for this request
-                var onerror = false;
+                let onerror = false;
 
                 if (options.onerror && typeof options.onerror === 'function') {
                     onerror = options.onerror;
@@ -2494,7 +2035,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                 }
 
                 // Event handler for this request
-                var onevent = false;
+                let onevent = false;
 
                 if (options.onevent && typeof options.onevent === 'function') {
                     onevent = options.onevent;
@@ -2514,8 +2055,8 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                 
                 context.form = form;
                 context.formId = form.id;
-                
-                var viewState = faces.getViewState(form);
+
+                const viewState = faces.getViewState(form);
 
                 // Set up additional arguments to be used in the request..
                 // Make sure "jakarta.faces.source" is set up.
@@ -2524,9 +2065,9 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                 // "execute" list.  If there were no "execute" ids
                 // specified, determine the default.
 
-                var args = {};
+                const args = {};
 
-                var namingContainerPrefix = viewStateElement.name.substring(0, viewStateElement.name.indexOf("jakarta.faces.ViewState"));
+                const namingContainerPrefix = viewStateElement.name.substring(0, viewStateElement.name.indexOf("jakarta.faces.ViewState"));
 
                 args[namingContainerPrefix + "jakarta.faces.source"] = element.id;
 
@@ -2552,7 +2093,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                         if (all < 0) {
                             options.execute = options.execute.replace("@this", element.id);
                             options.execute = options.execute.replace("@form", form.id);
-                            var temp = options.execute.split(' ');
+                            const temp = options.execute.split(' ');
                             if (!isInArray(temp, element.name)) {
                                 options.execute = element.name + " " + options.execute;
                             }
@@ -2585,34 +2126,34 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                         args[namingContainerPrefix + "jakarta.faces.partial.render"] = options.render;
                     }
                 }
-                var explicitlyDoNotDelay = ((typeof options.delay == 'undefined') || (typeof options.delay == 'string') &&
-                                            (options.delay.toLowerCase() == 'none'));
-                var delayValue;
+                const explicitlyDoNotDelay =    ((typeof options.delay == 'undefined') || (typeof options.delay == 'string') &&
+                                                (options.delay.toLowerCase() === 'none'));
+                let delayValue;
                 if (typeof options.delay == 'number') {
                     delayValue = options.delay;
                 } else  {
-                    var converted = parseInt(options.delay);
-                    
+                    const converted = parseInt(options.delay);
+
                     if (!explicitlyDoNotDelay && isNaN(converted)) {
                         throw new Error('invalid value for delay option: ' + options.delay);
                     }
                     delayValue = converted;
                 }
 
-                var checkForTypeFile
+                // var checkForTypeFile
 
                 // check the execute ids to see if any include an input of type "file"
                 context.includesInputFile = false;
-                var ids = options.execute.split(" ");
-                if (ids == "@all") { ids = [ form.id ]; }
+                let ids = options.execute.split(" ");
+                if (ids == "@all") { ids = [ form.id ]; } // fixme: how can this equality test works???
                 if (ids) {
-                    for (i = 0; i < ids.length; i++) {
-                        var elem = document.getElementById(ids[i]);
+                    for (let i = 0; i < ids.length; i++) {
+                        const elem = document.getElementById(ids[i]);
                         if (elem) {
-                            var nodeType = elem.nodeType;
-                            if (nodeType == Node.ELEMENT_NODE) {
-                                var elemAttributeDetector = detectAttributes(elem);
-                                if (elemAttributeDetector("type")) {
+                            const nodeType = elem.nodeType;
+                            if (nodeType === Node.ELEMENT_NODE) {
+                                //const elemAttributeDetector = detectAttributes(elem);
+                                if ( elem.hasAttribute("type") ) { // elemAttributeDetector("type")
                                     if (elem.getAttribute("type") === "file") {
                                         context.includesInputFile = true;
                                         break;
@@ -2629,8 +2170,8 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                 }
 
                 // copy all params to args
-                var params = options.params || {};
-                for (var property in params) {
+                const params = options.params || {};
+                for (let property in params) {
                     if (params.hasOwnProperty(property)) {
                         args[namingContainerPrefix + property] = params[property];
                     }
@@ -2646,7 +2187,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                 delete options.params;
 
                 // copy all other options to args (for backwards compatibility on issue 4115)
-                for (var property in options) {
+                for (let property in options) {
                     if (options.hasOwnProperty(property)) {
                         args[namingContainerPrefix + property] = options[property];
                     }
@@ -2657,14 +2198,14 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
 
                 // Determine the posting url
 
-                var encodedUrlField = getEncodedUrlElement(form);
+                const encodedUrlField = getEncodedUrlElement(form);
                 if (typeof encodedUrlField == 'undefined') {
                     args["url"] = form.action;
                 } else {
                     args["url"] = encodedUrlField.value;
                 }
-                var sendRequest = function() {
-                    var ajaxEngine = new AjaxEngine(context);
+                let sendRequest = function () {
+                    const ajaxEngine = new AjaxEngine(context);
                     ajaxEngine.setupArguments(args);
                     ajaxEngine.queryString = viewState;
                     ajaxEngine.context.onevent = onevent;
@@ -2675,10 +2216,10 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                     ajaxEngine.sendRequest();
 
                     // null out element variables to protect against IE memory leak
-                    element = null;
-                    form = null;
-                    sendRequest = null;
-                    context = null;
+                    // element = null;
+                    // form = null;
+                    // sendRequest = null;
+                    // context = null;
                 };
 
                 if (explicitlyDoNotDelay) {
@@ -2908,19 +2449,20 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
              * @function faces.ajax.response
              */
             response: function response(request, context) {
+                let i;
                 if (!request) {
                     throw new Error("faces.ajax.response: Request parameter is unset");
                 }
 
                 // ensure context source is the dom element and not the ID
                 // per 14.4.1 of the 2.0 specification.  We're doing it here
-                // *before* any errors or events are propagated becasue the
+                // *before* any errors or events are propagated because the
                 // DOM element may be removed after the update has been processed.
                 if (typeof context.sourceid === 'string') {
                     context.sourceid = document.getElementById(context.sourceid);
                 }
 
-                var xml = request.responseXML;
+                const xml = request.responseXML;
                 if (xml === null) {
                     sendError(request, context, "emptyResponse");
                     return;
@@ -2931,15 +2473,15 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                     return;
                 }
 
-                var partialResponse = xml.getElementsByTagName("partial-response")[0];
-                var namingContainerId = partialResponse.getAttribute("id");
-                var namingContainerPrefix = namingContainerId ? (namingContainerId + faces.separatorchar) : "";
-                var responseType = partialResponse.firstChild;
-                
+                const partialResponse = xml.getElementsByTagName("partial-response")[0];
+                const namingContainerId = partialResponse.getAttribute("id");
+                const namingContainerPrefix = namingContainerId ? (namingContainerId + faces.separatorchar) : "";
+                let responseType = partialResponse.firstChild;
+
                 context.namingContainerId = namingContainerId;
                 context.namingContainerPrefix = namingContainerPrefix;
 
-                for (var i = 0; i < partialResponse.childNodes.length; i++) {
+                for (i = 0; i < partialResponse.childNodes.length; i++) {
                     if (partialResponse.childNodes[i].nodeName === "error") {
                         responseType = partialResponse.childNodes[i];
                         break;
@@ -2947,10 +2489,10 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                 }
 
                 if (responseType.nodeName === "error") { // it's an error
-                    var errorName = "";
-                    var errorMessage = "";
-                    
-                    var element = responseType.firstChild;
+                    let errorName = "";
+                    let errorMessage = "";
+
+                    let element = responseType.firstChild;
                     if (element.nodeName === "error-name") {
                         if (null != element.firstChild) {
                             errorName = element.firstChild.nodeValue;
@@ -2981,10 +2523,10 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                 }
 
 
-                var changes = responseType.childNodes;
+                const changes = responseType.childNodes;
 
                 try {
-                    for (var i = 0; i < changes.length; i++) {
+                    for (let i=0; i < changes.length; i++) {
                         switch (changes[i].nodeName) {
                             case "update":
                                 doUpdate(changes[i], context);
@@ -3045,18 +2587,23 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
         if (typeof mojarra !== 'undefined' && typeof mojarra.projectStageCache !== 'undefined') {
             return mojarra.projectStageCache;
         }
-        var scripts = document.getElementsByTagName("script"); // nodelist of scripts
-        var script; // faces.js script
-        var s = 0; // incremental variable for for loop
-        var stage; // temp value for stage
-        var match; // temp value for match
-        while (s < scripts.length) {
-            if (typeof scripts[s].src === 'string' && scripts[s].src.match('\/javax\.faces\.resource\/faces\.js\?.*ln=javax\.faces')) {
-                script = scripts[s].src;
-                break;
-            }
-            s++;
-        }
+        // faces.js script
+        // var scripts = document.getElementsByTagName("script"); // nodelist of scripts
+        // var script; // faces.js script
+        // var s = 0; // incremental variable for for loop
+        // var stage; // temp value for stage
+        // var match; // temp value for match
+        // while (s < scripts.length) {
+        //     if (typeof scripts[s].src === 'string' && scripts[s].src.match('\/javax\.faces\.resource\/faces\.js\?.*ln=javax\.faces')) {
+        //         script = scripts[s].src;
+        //         break;
+        //     }
+        //     s++;
+        // }
+        const _script = document.querySelector("script[type='text/javascript'][src*='jakarta.faces.resource/faces.js']");
+        const script = isNotNull(_script) ? _script.src : null;
+
+        let match,stage;
         if (typeof script == "string") {
             match = script.match("stage=(.*)");
             if (match) {
@@ -3096,22 +2643,22 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
         if (!form) {
             throw new Error("faces.getViewState:  form must be set");
         }
-        var els = form.elements;
-        var len = els.length;
+        const els = form.elements;
+        const len = els.length;
         // create an array which we'll use to hold all the intermediate strings
         // this bypasses a problem in IE when repeatedly concatenating very
         // large strings - we'll perform the concatenation once at the end
-        var qString = [];
-        var addField = function(name, value) {
-            var tmpStr = "";
+        const qString = [];
+        const addField = function (name, value) {
+            let tmpStr = "";
             if (qString.length > 0) {
                 tmpStr = "&";
             }
             tmpStr += encodeURIComponent(name) + "=" + encodeURIComponent(value);
             qString.push(tmpStr);
         };
-        for (var i = 0; i < len; i++) {
-            var el = els[i];
+        for (let i = 0; i < len; i++) {
+            const el = els[i];
             if (el.name === "") {
                 continue;
             }
@@ -3128,7 +2675,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                         }
                         break;
                     case 'select-multiple':
-                        for (var j = 0; j < el.options.length; j++) {
+                        for (let j = 0; j < el.options.length; j++) {
                             if (el.options[j].selected) {
                                 addField(el.name, el.options[j].value);
                             }
@@ -3142,7 +2689,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                         break;
                     default:
                         // this is for any input incl.  text', 'password', 'hidden', 'textarea'
-                        var nodeName = el.nodeName.toLowerCase();
+                        const nodeName = el.nodeName.toLowerCase();
                         if (nodeName === "input" || nodeName === "select" ||
                             nodeName === "button" || nodeName === "object" ||
                             nodeName === "textarea") {                                 
@@ -3172,23 +2719,29 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
      * @function faces.getClientWindow
      */
     faces.getClientWindow = function(node) {
-        var FORM = "form";
-        var WIN_ID = "jakarta.faces.ClientWindow";
+        const FORM = "form";
+        const WIN_ID = "jakarta.faces.ClientWindow";
 
         /**
          * Find jakarta.faces.ClientWindow field for a given form.
          * @param form
          * @ignore
          */
-        var getWindowIdElement = function getWindowIdElement(form) {
-            var windowIdElement = form[WIN_ID];
+        const getWindowIdElement = function getWindowIdElement(form) {
+            const windowIdElement = form[WIN_ID];
 
             if (windowIdElement) {
                 return windowIdElement;
             } else {
-                var formElements = form.elements;
-                for (var i = 0, length = formElements.length; i < length; i++) {
-                    var formElement = formElements[i];
+                // const formElements = form.elements;
+                // let i = 0, length = formElements.length;
+                // for (; i < length; i++) {
+                //     const formElement = formElements[i];
+                //     if (formElement.name && (formElement.name.indexOf(WIN_ID) >= 0)) {
+                //         return formElement;
+                //     }
+                // }
+                for ( const formElement of form.elements ) {
                     if (formElement.name && (formElement.name.indexOf(WIN_ID) >= 0)) {
                         return formElement;
                     }
@@ -3198,29 +2751,29 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
             return undefined;
         };
 
-        var fetchWindowIdFromForms = function (forms) {
-            var result_idx = {};
-            var result;
-            var foundCnt = 0;
-            for (var cnt = forms.length - 1; cnt >= 0; cnt--) {
-                var UDEF = 'undefined';
-                var currentForm = forms[cnt];
-                var windowIdElement = getWindowIdElement(currentForm);
-                var windowId = windowIdElement && windowIdElement.value;
-                if (UDEF != typeof windowId) {
-                    if (foundCnt > 0 && UDEF == typeof result_idx[windowId]) throw Error("Multiple different windowIds found in document");
+        const fetchWindowIdFromForms = function (forms) {
+            const result_idx = {};
+            let result;
+            let foundCnt = 0;
+            for (let cnt = forms.length - 1; cnt >= 0; cnt--) {
+                //const UDEF = 'undefined';
+                const currentForm = forms[cnt];
+                const windowIdElement = getWindowIdElement(currentForm);
+                const windowId = windowIdElement && windowIdElement.value;
+                if (UDEF !== typeof windowId) {
+                    if (foundCnt > 0 && UDEF === typeof result_idx[windowId]) throw Error("Multiple different windowIds found in document");
                     result = windowId;
                     result_idx[windowId] = true;
                     foundCnt++;
                 }
             }
             return result;
-        }
+        };
 
         /**
          * @ignore
          */
-        var getChildForms = function (currentElement) {
+        const getChildForms = function (currentElement) {
             //Special condition no element we return document forms
             //as search parameter, ideal would be to
             //have the viewroot here but the frameworks
@@ -3229,47 +2782,47 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
             if (!currentElement) {
                 return document.forms;
             }
-            
-            var targetArr = [];
+
+            let targetArr = [];
             if (!currentElement.tagName) return [];
-            else if (currentElement.tagName.toLowerCase() == FORM) {
+            else if (currentElement.tagName.toLowerCase() === FORM) {
                 targetArr.push(currentElement);
                 return targetArr;
             }
-            
+
             //if query selectors are supported we can take
             //a non recursive shortcut
             if (currentElement.querySelectorAll) {
                 return currentElement.querySelectorAll(FORM);
             }
-            
+
             //old recursive way, due to flakeyness of querySelectorAll
-            for (var cnt = currentElement.childNodes.length - 1; cnt >= 0; cnt--) {
-                var currentChild = currentElement.childNodes[cnt];
+            for (let cnt = currentElement.childNodes.length - 1; cnt >= 0; cnt--) {
+                const currentChild = currentElement.childNodes[cnt];
                 targetArr = targetArr.concat(getChildForms(currentChild, FORM));
             }
             return targetArr;
-        }
-        
+        };
+
         /**
          * @ignore
          */
-        var fetchWindowIdFromURL = function () {
-            var href = window.location.href;
-            var windowId = "windowId";
-            var regex = new RegExp("[\\?&]" + windowId + "=([^&#\\;]*)");
-            var results = regex.exec(href);
+        const fetchWindowIdFromURL = function () {
+            const href = window.location.href;
+            const windowId = "windowId";
+            const regex = new RegExp("[\\?&]" + windowId + "=([^&#\\;]*)");
+            const results = regex.exec(href);
             //initial trial over the url and a regexp
             if (results != null) return results[1];
             return null;
-        }
-        
+        };
+
         //byId ($)
-        var finalNode = (node && (typeof node == "string" || node instanceof String)) ?
+        const finalNode = (node && (typeof node == "string" || node instanceof String)) ?
             document.getElementById(node) : (node || null);
-        
-        var forms = getChildForms(finalNode);
-        var result = fetchWindowIdFromForms(forms);
+
+        const forms = getChildForms(finalNode);
+        const result = fetchWindowIdFromForms(forms);
         return (null != result) ? result : fetchWindowIdFromURL();
         
 
@@ -3287,16 +2840,16 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
 
         // "Constant" fields ----------------------------------------------------------------------------------------------
 
-        var URL_PROTOCOL = window.location.protocol.replace("http", "ws") + "//";
-        var RECONNECT_INTERVAL = 500;
-        var MAX_RECONNECT_ATTEMPTS = 25;
-        var REASON_EXPIRED = "Expired";
-        var REASON_UNKNOWN_CHANNEL = "Unknown channel";
+        const URL_PROTOCOL = window.location.protocol.replace("http", "ws") + "//";
+        const RECONNECT_INTERVAL = 500;
+        const MAX_RECONNECT_ATTEMPTS = 25;
+        const REASON_EXPIRED = "Expired";
+        const REASON_UNKNOWN_CHANNEL = "Unknown channel";
 
         // Private static fields ------------------------------------------------------------------------------------------
 
-        var sockets = {};
-        var self = {};
+        const sockets = {};
+        const self = {};
 
         // Private constructor functions ----------------------------------------------------------------------------------
 
@@ -3317,9 +2870,9 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
 
             // Private fields -----------------------------------------------------------------------------------------
 
-            var socket;
-            var reconnectAttempts;
-            var self = this;
+            let socket;
+            let reconnectAttempts;
+            const self = this;
 
             // Public functions ---------------------------------------------------------------------------------------
 
@@ -3327,7 +2880,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
              * Opens the reconnecting websocket.
              */
             self.open = function() {
-                if (socket && socket.readyState == 1) {
+                if (socket && socket.readyState === 1) {
                     return;
                 }
 
@@ -3342,12 +2895,12 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                 }
 
                 socket.onmessage = function(event) {
-                    var message = JSON.parse(event.data).data;
+                    const message = JSON.parse(event.data).data;
                     onmessage(message, channel, event);
-                    var functions = behaviors[message];
+                    const functions = behaviors[message];
 
                     if (functions && functions.length) {
-                        for (var i = 0; i < functions.length; i++) {
+                        for (let i = 0; i < functions.length; i++) {
                             functions[i]();
                         }
                     }
@@ -3355,8 +2908,8 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
 
                 socket.onclose = function(event) {
                     if (!socket
-                            || (event.code == 1000 && event.reason == REASON_EXPIRED)
-                            || (event.code == 1008 || event.reason == REASON_UNKNOWN_CHANNEL) // Older IE versions incorrectly return 1005 instead of 1008, hence the fallback check on the message.
+                            || (event.code === 1000 && event.reason === REASON_EXPIRED)
+                            || (event.code === 1008 || event.reason === REASON_UNKNOWN_CHANNEL) // Older IE versions incorrectly return 1005 instead of 1008, hence the fallback check on the message.
                             || (reconnectAttempts == null)
                             || (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS))
                     {
@@ -3374,9 +2927,9 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
              */
             self.close = function() {
                 if (socket) {
-                    var s = socket;
+                    const s = socket;
                     socket = null;
-                    reconnectAttempts == null;
+                    reconnectAttempts = null;
                     s.close();
                 }
             }
@@ -3473,14 +3026,9 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * @throws {Error} When client identifier is unknown. You may need to initialize it first via <code>init()</code> function.
          */
         function getSocket(clientId) {
-            var socket = sockets[clientId];
-
-            if (socket) {
-                return socket;
-            }
-            else {
-                throw new Error("Unknown clientId: " + clientId);
-            }
+            const socket = sockets[clientId];
+            if (socket) return socket;
+            else throw new Error("Unknown clientId: " + clientId);
         }
 
         // Expose self to public ------------------------------------------------------------------------------------------
@@ -3520,13 +3068,13 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
         }
 
         // RELEASE_PENDING rogerk - shouldn't this be getElementById instead of null
-        var thisArg = (typeof source === 'object') ? source : null;
+        const thisArg = (typeof source === 'object') ? source : null;
 
         // Call back any scripts that were passed in
-        for (var i = 2; i < arguments.length; i++) {
+        for (let i = 2; i < arguments.length; i++) {
 
-            var f = new Function("event", arguments[i]);
-            var returnValue = f.call(thisArg, event);
+            const f = new Function("event", arguments[i]);
+            const returnValue = f.call(thisArg, event);
 
             if (returnValue === false) {
                 return false;
@@ -3554,7 +3102,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
      * minor release number, leftmost digits, major release number.
      * This number may only be incremented by a new release of the specification.</p>
      */
-    faces.specversion = 23000;
+    faces.specversion = 40000;
 
     /**
      * <p>An integer specifying the implementation version that this file implements.
@@ -3562,7 +3110,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
      * <code>faces.specversion</code>
      * This number is implementation dependent.</p>
      */
-    faces.implversion = 3;
+    faces.implversion = 4;
 
 
 } //end if version detection block
@@ -3617,9 +3165,9 @@ var mojarra = mojarra || {};
  * @param f - the target form
  */
 mojarra.dpf = function dpf(f) {
-    var adp = f.adp;
+    const adp = f.adp;
     if (adp !== null) {
-        for (var i = 0; i < adp.length; i++) {
+        for (let i=0; i < adp.length; i++) {
             f.removeChild(adp[i]);
         }
     }
@@ -3637,12 +3185,12 @@ mojarra.dpf = function dpf(f) {
  *  fields.
  */
 mojarra.apf = function apf(f, pvp) {
-    var adp = new Array();
+    const adp = [];
     f.adp = adp;
-    var i = 0;
-    for (var k in pvp) {
+    let i = 0;
+    for (const k in pvp) {
         if (pvp.hasOwnProperty(k)) {
-            var p = document.createElement("input");
+            const p = document.createElement("input");
             p.type = "hidden";
             p.name = k;
             p.value = pvp[k];
@@ -3667,12 +3215,12 @@ mojarra.apf = function apf(f, pvp) {
  */
 mojarra.cljs = function cljs(f, pvp, t) {
     mojarra.apf(f, pvp);
-    var ft = f.target;
+    const ft = f.target;
     if (t) {
         f.target = t;
     }
 
-    var input = document.createElement('input');
+    const input = document.createElement('input');
     input.type = 'submit';
     f.appendChild(input);
     input.click();
@@ -3708,22 +3256,10 @@ mojarra.facescbk = function facescbk(f, t, e) {
  *  @param op options object
  */
 mojarra.ab = function ab(s, e, n, ex, re, op) {
-    if (!op) {
-        op = {};
-    }
-
-    if (n) {
-        op["jakarta.faces.behavior.event"] = n;
-    }
-
-    if (ex) {
-        op["execute"] = ex;
-    }
-
-    if (re) {
-        op["render"] = re;
-    }
-
+    if (!op) op = {};
+    if (n)   op["jakarta.faces.behavior.event"] = n;
+    if (ex)  op["execute"] = ex;
+    if (re)  op["render"] = re;
     faces.ajax.request(s, e, op);
 };
 
@@ -3743,7 +3279,7 @@ mojarra.l = function l(l) {
         window.attachEvent("onload", l);
     }
     else if (typeof window.onload === "function") {
-        var oldListener = window.onload;
+        const oldListener = window.onload;
         window.onload = function() { oldListener(); l(); };
     }
     else {
