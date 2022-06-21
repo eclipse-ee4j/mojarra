@@ -205,74 +205,8 @@
                 </includes>
             </resource>
         </resources>
-        <pluginManagement>
-            <plugins>
-                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.
-                <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>net.alchim31.maven</groupId>
-                                        <artifactId>yuicompressor-maven-plugin</artifactId>
-                                        <versionRange>[1.5,)</versionRange>
-                                        <goals>
-                                            <goal>compress</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <execute>
-                                            <runOnIncremental>false</runOnIncremental>
-                                        </execute>
-                                    </action>
-                                </pluginExecution>
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
-                </plugin>
-                -->
-            </plugins>
-        </pluginManagement>
         <plugins>
         
-            <!-- ###  C O M P R E S S  /  M I N I F Y   faces.js  ###
-            <plugin>
-                <groupId>net.alchim31.maven</groupId>
-                <artifactId>yuicompressor-maven-plugin</artifactId>
-                <version>1.5.1</version>
-                <executions>
-                    <execution>
-                        <id>minify-faces-js</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>compress</goal>
-                        </goals>
-                        <configuration>
-                            <nosuffix>true</nosuffix>
-                            <preProcessAggregates>true</preProcessAggregates>
-                            <aggregations>
-                                <aggregation>
-                                    <includes>
-                                        <include>${project.basedir}/src/main/resources/META-INF/resources/jakarta.faces/faces-uncompressed.js</include>
-                                    </includes>
-                                    <output>${project.build.directory}/generated-resources/yui/faces.js</output>
-                                </aggregation>
-                            </aggregations>
-                            <includes>
-                                <include>*.js</include>
-                            </includes>
-                            <sourceDirectory>${project.build.directory}/generated-resources/yui</sourceDirectory>
-                            <outputDirectory>${project.build.directory}/generated-resources/yui/META-INF/resources/jakarta.faces/</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
-
             <!-- ###  C O M P R E S S  /  M I N I F Y   faces.js  ### -->
             <!-- https://blutorange.github.io/closure-compiler-maven-plugin/minify-mojo.html -->
             <plugin>
@@ -291,7 +225,7 @@
                             <encoding>UTF-8</encoding>
                             <!-- Base configuration for all executions (bundles) -->
                             <baseSourceDir>${project.basedir}/src/main/resources/META-INF/resources/</baseSourceDir>
-                            <baseTargetDir>${project.build.directory}/generated-resources/yui/META-INF/resources/</baseTargetDir>
+                            <baseTargetDir>${project.build.directory}/generated-resources/minified/META-INF/resources/</baseTargetDir>
                             <sourceDir>jakarta.faces</sourceDir>
                             <targetDir>jakarta.faces</targetDir>
                             <includes>
@@ -320,7 +254,7 @@
                         <configuration>
                             <resources>
                                 <resource>
-                                    <directory>${project.build.directory}/generated-resources/yui</directory>
+                                    <directory>${project.build.directory}/generated-resources/minified</directory>
                                 </resource>
                             </resources>
                         </configuration>

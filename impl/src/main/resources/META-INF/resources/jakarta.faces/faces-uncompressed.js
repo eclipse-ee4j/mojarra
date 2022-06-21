@@ -28,11 +28,6 @@
 if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
         && (faces.implversion && faces.implversion >= 4)) ) {
 
-    //const isNull = (value) => (typeof value === "object" && !value);
-    window.UDEF = 'undefined';
-    window.isNull = (value) => (typeof value === UDEF || (typeof value === "object" && !value));
-    window.isNotNull = (value) => !isNull(value);
-
     /**
      * <span class="changed_modified_2_2">The top level global namespace
      * for Jakarta Faces functionality.</span>
@@ -40,6 +35,10 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
      * @namespace
      */
     var faces = {};
+
+    const UDEF = 'undefined';
+    const isNull = (value) => (typeof value === UDEF || (typeof value === "object" && !value));
+    const isNotNull = (value) => !isNull(value);
 
     /**
      * <span class="changed_modified_2_2 changed_modified_2_3">The namespace for Ajax
@@ -54,6 +53,11 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
         const errorListeners = [];
 
         let delayHandler = null;
+
+        // --- AUTOEXEC JS -----------------------------------------------------------------------------------
+
+        const autoExecTestString = "<script>var mojarra = mojarra || {};mojarra.autoExecTest = true;</script>";
+
         let isAutoExecCache;
 
         /**
@@ -65,17 +69,17 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
         const isAutoExec = function isAutoExec() {
             try {
                 if (isNotNull(isAutoExecCache)) return isAutoExecCache;
-                const tempElement = document.createElement('span');
-                tempElement.innerHTML = autoExecTestString;
-                //let body = document.getElementsByTagName('body')[0];
-                const tempNode = document.body.appendChild(tempElement);
+
+                const spanElement = document.createElement('span');
+                spanElement.innerHTML = autoExecTestString;
+                const spanNode = document.body.appendChild(spanElement);
                 if (mojarra && mojarra.autoExecTest) {
                     isAutoExecCache = true;
                     delete mojarra.autoExecTest;
                 } else {
                     isAutoExecCache = false;
                 }
-                deleteNode(tempNode);
+                deleteNode(spanNode);
                 return isAutoExecCache;
             } catch (ex) {
                 // OK, that didn't work, we'll have to make an assumption
@@ -85,12 +89,6 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 return isAutoExecCache;
             }
         };
-
-        /**
-         * Get the Ajax JS Transport... XMLHttpRequest
-         * @deprecated
-        const getTransport = () => { return new XMLHttpRequest(); };
-         */
 
         /**
          * Utility function that determines if a file control exists for the form.
@@ -103,13 +101,9 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * @ignore
          */
         const $ = function $() {
-            let results = [], element;
-            for (let i = 0; i < arguments.length; i++) {
-                element = arguments[i];
-                if (typeof element == 'string') {
-                    element = document.getElementById(element);
-                }
-                results.push(element);
+            const results = [];
+            for ( const element of arguments ) {
+                results.push( (typeof element == 'string') ? document.getElementById(element) : element );
             }
             return results.length > 1 ? results : results[0];
         };
@@ -136,7 +130,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
         const getFormsToUpdate = function getFormsToUpdate(context) {
             const formsToUpdate = [];
 
-            const add = function (element) {
+            const add = function(element) {
                 if (element) {
                     if (element.nodeName
                         && element.nodeName.toLowerCase() === "form"
@@ -234,15 +228,12 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          */
         const isInArray = function (array,value) { return Array.prototype.includes ? array.includes(value) : array.indexOf(value) > -1 };
 
-
         /**
          * Evaluate JavaScript code in a global context.
          * @param src JavaScript code to evaluate
          * @ignore
          */
         const globalEval = function globalEval(src) {
-            // @deprecated
-            // if (window.execScript) {window.execScript(src);return;}
             // We have to wrap the call in an anon function because of a firefox bug, where this is incorrectly set
             // We need to explicitly call window.eval because of a Chrome peculiarity
             /**
@@ -251,6 +242,15 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             (() => window.eval.call(window, src))();
         };
 
+        // Regex to find all scripts in a string
+        const findscripts = /<script[^>]*>([\S\s]*?)<\/script>/igm;
+
+        // Regex to find one script, to isolate it's content [2] and attributes [1]
+        const findscript = /<script([^>]*)>([\S\s]*?)<\/script>/im;
+
+        // Regex to find type attribute
+        const findtype = /type="([\S]*?)"/im;
+
         /**
          * Get all scripts from supplied string, return them as an array for later processing.
          * @param str
@@ -258,12 +258,6 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * @ignore
          */
         const getScripts = function getScripts(str) {
-            // Regex to find all scripts in a string
-            const findscripts = /<script[^>]*>([\S\s]*?)<\/script>/igm;
-            // Regex to find one script, to isolate it's content [2] and attributes [1]
-            const findscript = /<script([^>]*)>([\S\s]*?)<\/script>/im;
-            // Regex to find type attribute
-            const findtype = /type="([\S]*?)"/im;
             const scripts = [];
             const initialnodes = str.match(findscripts);
             while (!!initialnodes && initialnodes.length > 0) {
@@ -296,8 +290,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             const loadedScripts = document.getElementsByTagName("script");
             const loadedScriptUrls = [];
 
-            for(let i = 0; i < loadedScripts.length; i++) {
-                const scriptNode = loadedScripts[i];
+            for( const scriptNode of loadedScripts ) {
                 const url = scriptNode.getAttribute("src");
                 if (url) loadedScriptUrls.push(url);
             }
@@ -323,6 +316,8 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             // Regex to remove leading cruft
             const stripStart = /^\s*(<!--)*\s*(\/\/)*\s*(\/\*)*\s*\n*\**\n*\s*\*.*\n*\s*\*\/(<!\[CDATA\[)*/;
 
+            const scriptLoadedStates = [ 'loaded','complete' ];
+
             const scriptStr = scripts[index];
             const src = scriptStr[1].match(findsrc);
             let scriptLoadedViaUrl = false;
@@ -342,13 +337,12 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                     scriptNode.type = 'text/javascript';
                     scriptNode.src = url; // add the src to the script node
                     scriptNode.onload = scriptNode.onreadystatechange = function(_, abort) {
-                        if (abort || !scriptNode.readyState || /loaded|complete/.test(scriptNode.readyState)) {
-                            scriptNode.onload = scriptNode.onreadystatechange = null; // IE memory leak fix.
-                            scriptNode = null;
+                        if (abort || !scriptNode.readyState || isInArray(scriptLoadedStates,scriptNode.readyState)) {
+                            scriptNode = null;                                           // why?
                             runScript(head, loadedScriptUrls, scripts, index + 1); // Run next script.
                         }
                     };
-                    head.insertBefore(scriptNode, null); // add it to end of the head (and don't remove it)
+                    head.appendChild(scriptNode); // add it to end of the head (and don't remove it)
                     scriptLoadedViaUrl = true;
                 }
             } else if (!!scriptStr && scriptStr[2]) {
@@ -384,9 +378,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             const findtype = /type="([\S]*?)"/im;
             const findhref = /href="([\S]*?)"/im;
 
-            // const stylesheets = [];
             let loadedStylesheetUrls = null;
-            // const head = document.head || document.getElementsByTagName('head')[0] || document.documentElement;
             let parserElement = null;
 
             const initialnodes = str.match(findlinks);
@@ -403,8 +395,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                         const loadedLinks = document.getElementsByTagName("link");
                         loadedStylesheetUrls = [];
 
-                        for (let i = 0; i < loadedLinks.length; i++) {
-                            const linkNode = loadedLinks[i];
+                        for ( const linkNode of loadedLinks ) {
                             const linkNodeType = linkNode.getAttribute("type");
                             if (!linkNodeType || linkNodeType === "text/css") {
                                 const url = linkNode.getAttribute("href");
@@ -426,7 +417,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                         linkNode.type = 'text/css';
                         linkNode.rel = 'stylesheet';
                         linkNode.href = url;
-                        document.head.insertBefore(linkNode, null); // add it to end of the head (and don't remove it)
+                        document.head.appendChild(linkNode); // add it to end of the head (and don't remove it)
                     }
                 }
             }
@@ -452,8 +443,6 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 temp.id = element.id;
             }
 
-            // Creating a head element isn't allowed in IE, and faulty in most browsers,
-            // so it is not allowed
             let scripts = [];
             if (isAutoExec()) {
                 temp.innerHTML = src;
@@ -482,8 +471,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
         const getText = function getText(oNode, deep) {
             let s = "";
             const nodes = oNode.childNodes;
-            for (let i = 0; i < nodes.length; i++) {
-                const node = nodes[i];
+            for ( const node of nodes ) {
                 const nodeType = node.nodeType;
                 if (nodeType === Node.TEXT_NODE || nodeType === Node.CDATA_SECTION_NODE) {
                     s += node.data;
@@ -528,8 +516,10 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
 
         // PENDING - add support for removing handlers added via DOM 2 methods
 
-        const NODE_EVENTS = ['abort', 'blur', 'change', 'error', 'focus', 'load', 'reset', 'resize', 'scroll', 'select', 'submit', 'unload',
-            'keydown', 'keypress', 'keyup', 'click', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseup', 'dblclick' ];
+        const NODE_EVENTS = [
+            'abort', 'blur', 'change', 'error', 'focus', 'load', 'reset', 'resize', 'scroll', 'select', 'submit', 'unload',
+            'keydown', 'keypress', 'keyup', 'click', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseup', 'dblclick'
+        ];
 
         /**
          * Delete all events attached to a node
@@ -601,15 +591,9 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 }
             } else {
                 const ownerDoc = nodeTo.nodeType === Node.DOCUMENT_NODE ? nodeTo : nodeTo.ownerDocument;
-                let i;
-                if (typeof(ownerDoc.importNode) != "undefined") {
-                    for (i = 0; i < nodes.length; i++) {
-                        nodeTo.appendChild(ownerDoc.importNode(nodes[i], true));
-                    }
-                } else {
-                    for (i = 0; i < nodes.length; i++) {
-                        nodeTo.appendChild(nodes[i].cloneNode(true));
-                    }
+
+                for ( const nodeFromChild of nodes ) {
+                    nodeTo.appendChild(ownerDoc.importNode(nodeFromChild, true));
                 }
             }
         };
@@ -638,50 +622,13 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             }
         };
 
-        /**
-         * @ignore
-        const isFunctionNative = function isFunctionNative(func) {
-            return /^\s*function[^{]+{\s*\[native code\]\s*}\s*$/.test(String(func));
-        };
-         */
-
-        /**
-         * @ignore
-
-        const detectAttributes = function detectAttributes(element) {
-            //test if 'hasAttribute' method is present and its native code is intact
-            //for example, Prototype can add its own implementation if missing
-            if (element.hasAttribute && isFunctionNative(element.hasAttribute)) {
-                return function(name) {
-                    return element.hasAttribute(name);
-                }
-            } else {
-                try {
-                    // when accessing .getAttribute method without arguments does not throw an error then the method is not available
-                    element.getAttribute;
-
-                    const html = element.outerHTML;
-                    const startTag = html.match(/^<[^>]*>/)[0];
-                    return function(name) {
-                        return startTag.indexOf(name + '=') > -1;
-                    }
-                } catch (ex) {
-                    return function(name) {
-                        return element.getAttribute(name);
-                    }
-                }
-            }
-        };
-         */
-
-
         // Enumerate all the names of the event listeners
-        const listenerNames =
-            [ 'onclick', 'ondblclick', 'onmousedown', 'onmousemove', 'onmouseout',
-                'onmouseover', 'onmouseup', 'onkeydown', 'onkeypress', 'onkeyup',
-                'onhelp', 'onblur', 'onfocus', 'onchange', 'onload', 'onunload', 'onabort',
-                'onreset', 'onselect', 'onsubmit'
-            ];
+        const LISTENER_NAMES = [
+            'onclick', 'ondblclick', 'onmousedown', 'onmousemove', 'onmouseout',
+            'onmouseover', 'onmouseup', 'onkeydown', 'onkeypress', 'onkeyup',
+            'onhelp', 'onblur', 'onfocus', 'onchange', 'onload', 'onunload', 'onabort',
+            'onreset', 'onselect', 'onsubmit'
+        ];
 
         // enumerate core element attributes - without 'dir' as special case
         const coreElementProperties = ['className', 'title', 'lang', 'xmllang'];
@@ -692,6 +639,8 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
         // enumerate additional boolean input attributes
         const inputElementBooleanProperties = [ 'checked', 'disabled', 'readOnly' ];
 
+        const TABLE_ELEMENTS = ['td', 'th', 'tr', 'tbody', 'thead', 'tfoot'];
+
         /**
          * copy all attributes from one element to another - except id
          * @param target element to copy attributes to
@@ -700,50 +649,25 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          */
         const cloneAttributes = function cloneAttributes(target, source) {
 
-            //const sourceAttributeDetector = detectAttributes(source);
-            //const targetAttributeDetector = detectAttributes(target);
-
             const isInputElement = target.nodeName.toLowerCase() === 'input';
             const propertyNames = isInputElement ? coreElementProperties.concat(inputElementProperties) : coreElementProperties;
             const isXML = !source.ownerDocument.contentType || source.ownerDocument.contentType === 'text/xml';
-            for (let iIndex = 0, iLength = propertyNames.length; iIndex < iLength; iIndex++) {
-                const propertyName = propertyNames[iIndex];
+
+            for (let i=0 ; i < propertyNames.length; i++) {
+                const propertyName = propertyNames[i];
                 const attributeName = propertyToAttribute(propertyName);
-                //if ( sourceAttributeDetector(attributeName)) {
 
-                    //With IE 7 (quirks or standard mode) and IE 8/9 (quirks mode only),
-                    //you cannot get the attribute using 'class'. You must use 'className'
-                    //which is the same value you use to get the indexed property. The only
-                    //reliable way to detect this (without trying to evaluate the browser
-                    //mode and version) is to compare the two return values using 'className'
-                    //to see if they exactly the same.  If they are, then use the property
-                    //name when using getAttribute.
-                    // if( attributeName === 'class'){
-                    //     if( isIE() && (source.getAttribute(propertyName) === source[propertyName]) ){
-                    //         attributeName = propertyName;
-                    //     }
-                    // }
+                const sourceValue = isXML ? source.getAttribute(attributeName) : source[propertyName];
+                const targetValue = target[propertyName];
 
-                    const sourceValue = isXML ? source.getAttribute(attributeName) : source[propertyName];
-                    const targetValue = target[propertyName];
-                    if (targetValue !== sourceValue) {
-                        target[propertyName] = sourceValue;
-                    }
-                // } else {
-                //     //setting property to '' seems to be the only cross-browser method for removing an attribute
-                //     //avoid setting 'value' property to '' for checkbox and radio input elements because then the
-                //     //'value' is used instead of the 'checked' property when the form is serialized by the browser
-                //     if (attributeName === "value" && (target.type !== 'checkbox' && target.type !== 'radio')) {
-                //          target[propertyName] = '';
-                //     }
-                //     target.removeAttribute(attributeName);
-                // }
+                if (targetValue !== sourceValue) {
+                    target[propertyName] = sourceValue;
+                }
             }
 
             const booleanPropertyNames = isInputElement ? inputElementBooleanProperties : [];
-            const jLength = booleanPropertyNames.length;
-            for (let jIndex = 0 ; jIndex < jLength; jIndex++) {
-                const booleanPropertyName = booleanPropertyNames[jIndex];
+            for (let i=0 ; i < booleanPropertyNames.length; i++) {
+                const booleanPropertyName = booleanPropertyNames[i];
                 const newBooleanValue = source[booleanPropertyName];
                 const oldBooleanValue = target[booleanPropertyName];
                 if (oldBooleanValue !== newBooleanValue) {
@@ -752,27 +676,26 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             }
 
             //'style' attribute special case
-            if ( source.hasAttribute('style') ) { // sourceAttributeDetector('style')
+            if ( source.hasAttribute('style') ) {
                 const sourceStyle = source.getAttribute('style');
                 const targetStyle = target.getAttribute('style');
                 if (sourceStyle !== targetStyle) {
                     target.setAttribute('style', sourceStyle);
                 }
-            } else if ( target.hasAttribute('style') ) { // targetAttributeDetector('style')
+            } else if ( target.hasAttribute('style') ) {
                 target.removeAttribute('style');
             }
 
             // Special case for 'dir' attribute
             if (source.dir !== target.dir) {
-                if ( source.hasAttribute('dir') ) { // sourceAttributeDetector('dir')
+                if ( source.hasAttribute('dir') ) {
                     target.dir = source.dir;
-                } else if ( target.hasAttribute('dir') ) { // targetAttributeDetector('dir')
+                } else if ( target.hasAttribute('dir') ) {
                     target.dir = '';
                 }
             }
 
-            for (let lIndex = 0, lLength = listenerNames.length; lIndex < lLength; lIndex++) {
-                const name = listenerNames[lIndex];
+            for ( const name of LISTENER_NAMES ) {
                 target[name] = source[name] ? source[name] : null;
                 if (source[name]) {
                     source[name] = null;
@@ -806,7 +729,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             // sadly, we have to reparse all over again
             // to reregister the event handlers and styles
             // PENDING do some performance tests on large pages
-            origElement.innerHTML = origElement.innerHTML; // fixme: ??
+            origElement.innerHTML = origElement.innerHTML; // fixme: what is this??
 
             try {
                 cloneAttributes(origElement, newElement);
@@ -828,26 +751,13 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          */
         const getBodyElement = function getBodyElement(docStr) {
 
-            //let doc;  // intermediate document we'll create
-            //let body; // Body element to return
-
             const doc = (new DOMParser()).parseFromString(docStr, "text/xml")
-
-            //if (typeof DOMParser !== "undefined") {  // FF, S, Chrome
-            //    doc = (new DOMParser()).parseFromString(docStr, "text/xml");
-            //}
-            // else if (typeof ActiveXObject !== "undefined") { // IE
-            //     doc = new ActiveXObject("MSXML2.DOMDocument");
-            //     doc.loadXML(docStr);
-            // } else {
-            //     throw new Error("You don't seem to be running a supported browser");
-            // }
 
             if (getParseErrorText(doc) !== PARSED_OK) {
                 throw new Error(getParseErrorText(doc));
             }
 
-            const body = doc.body; //doc.getElementsByTagName("body")[0];
+            const body = doc.body;
 
             if (!body) {
                 throw new Error("Can't find body tag in returned document.");
@@ -867,21 +777,11 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             if (encodedUrlElement) {
                 return encodedUrlElement;
             } else {
-                // const formElements = form.elements;
-                // let i = 0, length = formElements.length;
-                // for (; i < length; i++) {
-                //     const formElement = formElements[i];
-                //     if (formElement.name && (formElement.name.indexOf('jakarta.faces.encodedURL') >= 0)) {
-                //         return formElement;
-                //     }
-                // }
-
                 for ( const formElement of form.elements ) {
                     if (formElement.name && (formElement.name.indexOf('jakarta.faces.encodedURL') >= 0)) {
                         return formElement;
                     }
                 }
-
             }
 
             return undefined;
@@ -902,13 +802,13 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             const state = (typeof firstChild.wholeText !== 'undefined') ? firstChild.wholeText : firstChild.nodeValue;
             const formsToUpdate = getFormsToUpdate(context);
 
-            for ( const formToUpdate of formsToUpdate ) {
-                let field = getHiddenStateField(formToUpdate, hiddenStateFieldName, context.namingContainerPrefix);
+            for ( const form of formsToUpdate ) {
+                let field = getHiddenStateField(form, hiddenStateFieldName, context.namingContainerPrefix);
                 if (isNull(field)) {
                     field = document.createElement("input");
                     field.type = "hidden";
                     field.name = context.namingContainerPrefix + hiddenStateFieldName;
-                    formToUpdate.appendChild(field);
+                    form.appendChild(field);
                 }
                 field.value = state;
             }
@@ -929,15 +829,6 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 return field;
             }
             else {
-                // const formElements = form.elements;
-                // let i = 0, length = formElements.length;
-                // for (; i < length; i++) {
-                //     const formElement = formElements[i];
-                //     if (formElement.name && (formElement.name.indexOf(hiddenStateFieldName) >= 0)) {
-                //         return formElement;
-                //     }
-                // }
-
                 for ( const formElement of form.elements ) {
                     if (formElement.name && (formElement.name.indexOf(hiddenStateFieldName) >= 0)) {
                         return formElement;
@@ -957,7 +848,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * @ignore
          */
         const doUpdate = function doUpdate(updateElement, context) {
-            let id, content, markup;
+            let id, markup;
             let scripts = []; // temp holding value for array of script nodes
             let newElement;
 
@@ -975,9 +866,8 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
 
             // join the CDATA sections in the markup
             markup = '';
-            for (let j = 0; j < updateElement.childNodes.length; j++) {
-                content = updateElement.childNodes[j];
-                markup += content.nodeValue;
+            for ( const updateElementChild of updateElement.childNodes ) {
+                markup += updateElementChild.nodeValue;
             }
 
             const src = markup;
@@ -1011,7 +901,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                     const bodyEndEx = new RegExp("< */ *body[^>]*>", "gi");
                     let newsrc;
 
-                    const docBody = document.body; //document.getElementsByTagName("body")[0];
+                    const docBody = document.body;
                     const bodyStart = bodyStartEx.exec(src);
 
                     if (bodyStart !== null) { // replace body tag
@@ -1052,16 +942,8 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                     let html = src.replace(/^\s+/g, '').replace(/\s+$/g, '');
                     let parserElement = document.createElement('div');
                     const tag = element.nodeName.toLowerCase();
-                    const tableElements = ['td', 'th', 'tr', 'tbody', 'thead', 'tfoot'];
-                    const isInTable = tableElements.includes(tag);
-                    // let isInTable = false;
-                    // let tei = 0, tel = tableElements.length;
-                    // for (; tei < tel; tei++) {
-                    //     if (tableElements[tei] === tag) {
-                    //         isInTable = true;
-                    //         break;
-                    //     }
-                    // }
+
+                    const isInTable = isInArray(TABLE_ELEMENTS,tag);
 
                     if (isInTable) {
 
@@ -1126,11 +1008,14 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * @ignore
          */
         const doInsert = function doInsert(element) {
-            const tablePattern = new RegExp("<\\s*(td|th|tr|tbody|thead|tfoot)", "i");
+
             let scripts = [];
             let target = $(element.firstChild.getAttribute('id'));
             const parent = target.parentNode;
             let html = element.firstChild.firstChild.nodeValue;
+
+            // todo: check if is it possible to use the TABLE_ELEMENTS array and remove the RegExp
+            const tablePattern = new RegExp("<\\s*(td|th|tr|tbody|thead|tfoot)", "i");
             const isInTable = tablePattern.test(html);
 
             if (!isAutoExec())  {
@@ -1182,9 +1067,9 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
 
             // There can be multiple attributes modified.  Loop through the list.
             const nodes = element.childNodes;
-            for (let i = 0; i < nodes.length; i++) {
-                let name = nodes[i].getAttribute('name');
-                const value = nodes[i].getAttribute('value');
+            for ( const node of nodes ) {
+                const name = node.getAttribute('name');
+                const value = node.getAttribute('value');
 
                 //boolean attribute handling code for all browsers
                 if (name === 'disabled') {
@@ -1287,21 +1172,14 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 return element;
             };
 
-            /** Returns the oldest element in this Queue. If this Queue is empty then
+            /**
+             * Returns the oldest element in this Queue. If this Queue is empty then
              * undefined is returned. This function returns the same value as the dequeue
              * function, but does not remove the returned element from this Queue.
              * @ignore
              */
             this.getOldestElement = function getOldestElement() {
-                // initialise the element to return to be undefined
-                let element = undefined;
-
-                // if the queue is not element then fetch the oldest element in the queue
-                if (queue.length) {
-                    element = queue[queueSpace];
-                }
-                // return the oldest element
-                return element;
+                return queue.length ? queue[queueSpace] : undefined;
             };
         };
 
@@ -1330,33 +1208,17 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
 
             req.que = new Queue();
 
-            // Get a transport Handle
-            // The transport will be an iframe transport if the form
-            // has multipart encoding type.  This is where we could
-            // handle XMLHttpRequest Level2 as well (perhaps
+            // This is where we could handle XMLHttpRequest Level2 as well (perhaps
             // something like:  if ('upload' in req.xmlReq)'
-            // req.xmlReq = getTransport(context);
             req.xmlReq = new XMLHttpRequest();
-
-            //if (req.xmlReq === null) return null;
-
-            // /**
-            //  * @ignore
-            //  */
-            // function noop() {
-            // }
 
             // Set up request/response state callbacks
             /**
              * @ignore
              */
-            req.xmlReq.onreadystatechange = function () {
+            req.xmlReq.onreadystatechange = function() {
                 if (req.xmlReq.readyState === 4) {
                     req.onComplete();
-                    // next two lines prevent closure/circular reference leaks
-                    // of XHR instances in IE
-                    // req.xmlReq.onreadystatechange = noop;
-                    // req.xmlReq = null;
                 }
             };
 
@@ -1991,8 +1853,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
 
             request: function request(source, event, options) {
 
-                //let property;
-                let element, form, viewStateElement;   //  Element variables
+                let element, viewStateElement;   //  Element variables
                 let all, none;
 
                 let context = {};
@@ -2013,6 +1874,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 } else {
                     throw new Error("faces.ajax.request: source must be object or string");
                 }
+
                 // attempt to handle case of name unset
                 // this might be true in a badly written composite component
                 if (!element.name) {
@@ -2043,7 +1905,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                     throw new Error("faces.ajax.request: Added an onevent callback that was not a function");
                 }
 
-                form = getForm(element);
+                const form = getForm(element);
                 if (!form) {
                     throw new Error("faces.ajax.request: Method must be called within a form");
                 }
@@ -2140,20 +2002,19 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                     delayValue = converted;
                 }
 
-                // var checkForTypeFile
-
-                // check the execute ids to see if any include an input of type "file"
+                // check the "execute" ids to see if any include an input of type "file"
                 context.includesInputFile = false;
                 let ids = options.execute.split(" ");
-                if (ids == "@all") { ids = [ form.id ]; } // fixme: how can this equality test works???
+
+                // if @all -> execute only this form
+                if ( isInArray(ids,"@all") ) ids = [ form.id ];
+
                 if (ids) {
                     for (let i = 0; i < ids.length; i++) {
                         const elem = document.getElementById(ids[i]);
                         if (elem) {
-                            const nodeType = elem.nodeType;
-                            if (nodeType === Node.ELEMENT_NODE) {
-                                //const elemAttributeDetector = detectAttributes(elem);
-                                if ( elem.hasAttribute("type") ) { // elemAttributeDetector("type")
+                            if (elem.nodeType === Node.ELEMENT_NODE) {
+                                if ( elem.hasAttribute("type") ) {
                                     if (elem.getAttribute("type") === "file") {
                                         context.includesInputFile = true;
                                         break;
@@ -2187,7 +2048,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 delete options.params;
 
                 // copy all other options to args (for backwards compatibility on issue 4115)
-                for (let property in options) {
+                for (const property in options) {
                     if (options.hasOwnProperty(property)) {
                         args[namingContainerPrefix + property] = options[property];
                     }
@@ -2204,7 +2065,8 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 } else {
                     args["url"] = encodedUrlField.value;
                 }
-                let sendRequest = function () {
+
+                const sendRequest = function() {
                     const ajaxEngine = new AjaxEngine(context);
                     ajaxEngine.setupArguments(args);
                     ajaxEngine.queryString = viewState;
@@ -2214,12 +2076,6 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                     ajaxEngine.context.render = args[namingContainerPrefix + "jakarta.faces.partial.render"] || "";
                     ajaxEngine.context.namingContainerPrefix = namingContainerPrefix;
                     ajaxEngine.sendRequest();
-
-                    // null out element variables to protect against IE memory leak
-                    // element = null;
-                    // form = null;
-                    // sendRequest = null;
-                    // context = null;
                 };
 
                 if (explicitlyDoNotDelay) {
@@ -2449,7 +2305,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
              * @function faces.ajax.response
              */
             response: function response(request, context) {
-                let i;
+
                 if (!request) {
                     throw new Error("faces.ajax.response: Request parameter is unset");
                 }
@@ -2481,9 +2337,9 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 context.namingContainerId = namingContainerId;
                 context.namingContainerPrefix = namingContainerPrefix;
 
-                for (i = 0; i < partialResponse.childNodes.length; i++) {
-                    if (partialResponse.childNodes[i].nodeName === "error") {
-                        responseType = partialResponse.childNodes[i];
+                for ( const partialResponseChild of partialResponse.childNodes ) {
+                    if (partialResponseChild.nodeName === "error") {
+                        responseType = partialResponseChild;
                         break;
                     }
                 }
@@ -2522,32 +2378,29 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                     return;
                 }
 
-
-                const changes = responseType.childNodes;
-
                 try {
-                    for (let i=0; i < changes.length; i++) {
-                        switch (changes[i].nodeName) {
+                    for ( const change of responseType.childNodes ) {
+                        switch (change.nodeName) {
                             case "update":
-                                doUpdate(changes[i], context);
+                                doUpdate(change, context);
                                 break;
                             case "delete":
-                                doDelete(changes[i]);
+                                doDelete(change);
                                 break;
                             case "insert":
-                                doInsert(changes[i]);
+                                doInsert(change);
                                 break;
                             case "attributes":
-                                doAttributes(changes[i]);
+                                doAttributes(change);
                                 break;
                             case "eval":
-                                doEval(changes[i]);
+                                doEval(change);
                                 break;
                             case "extension":
                                 // no action
                                 break;
                             default:
-                                sendError(request, context, "malformedXML", "Changes allowed are: update, delete, insert, attributes, eval, extension.  Received " + changes[i].nodeName + " instead.");
+                                sendError(request, context, "malformedXML", "Changes allowed are: update, delete, insert, attributes, eval, extension.  Received " + change.nodeName + " instead.");
                                 return;
                         }
                     }
@@ -2643,22 +2496,18 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
         if (!form) {
             throw new Error("faces.getViewState:  form must be set");
         }
-        const els = form.elements;
-        const len = els.length;
+
         // create an array which we'll use to hold all the intermediate strings
         // this bypasses a problem in IE when repeatedly concatenating very
         // large strings - we'll perform the concatenation once at the end
         const qString = [];
+
         const addField = function (name, value) {
-            let tmpStr = "";
-            if (qString.length > 0) {
-                tmpStr = "&";
-            }
-            tmpStr += encodeURIComponent(name) + "=" + encodeURIComponent(value);
-            qString.push(tmpStr);
+            qString.push( (qString.length > 0 ? "&" : "") + encodeURIComponent(name) + "=" + encodeURIComponent(value) );
         };
-        for (let i = 0; i < len; i++) {
-            const el = els[i];
+
+        const els = form.elements;
+        for (const el of els) {
             if (el.name === "") {
                 continue;
             }
@@ -2675,9 +2524,9 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                         }
                         break;
                     case 'select-multiple':
-                        for (let j = 0; j < el.options.length; j++) {
-                            if (el.options[j].selected) {
-                                addField(el.name, el.options[j].value);
+                        for ( const option of el.options) {
+                            if (option.selected) {
+                                addField(el.name, option.value);
                             }
                         }
                         break;
@@ -2733,14 +2582,6 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             if (windowIdElement) {
                 return windowIdElement;
             } else {
-                // const formElements = form.elements;
-                // let i = 0, length = formElements.length;
-                // for (; i < length; i++) {
-                //     const formElement = formElements[i];
-                //     if (formElement.name && (formElement.name.indexOf(WIN_ID) >= 0)) {
-                //         return formElement;
-                //     }
-                // }
                 for ( const formElement of form.elements ) {
                     if (formElement.name && (formElement.name.indexOf(WIN_ID) >= 0)) {
                         return formElement;
@@ -2756,7 +2597,6 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             let result;
             let foundCnt = 0;
             for (let cnt = forms.length - 1; cnt >= 0; cnt--) {
-                //const UDEF = 'undefined';
                 const currentForm = forms[cnt];
                 const windowIdElement = getWindowIdElement(currentForm);
                 const windowId = windowIdElement && windowIdElement.value;
@@ -2779,29 +2619,13 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             //have the viewroot here but the frameworks
             //can deal with that themselves by using
             //the viewroot as currentElement
-            if (!currentElement) {
-                return document.forms;
-            }
+            if (!currentElement) return document.forms;
 
-            let targetArr = [];
             if (!currentElement.tagName) return [];
-            else if (currentElement.tagName.toLowerCase() === FORM) {
-                targetArr.push(currentElement);
-                return targetArr;
-            }
 
-            //if query selectors are supported we can take
-            //a non recursive shortcut
-            if (currentElement.querySelectorAll) {
-                return currentElement.querySelectorAll(FORM);
-            }
+            if (currentElement.tagName.toLowerCase() === FORM) return [ currentElement ];
 
-            //old recursive way, due to flakeyness of querySelectorAll
-            for (let cnt = currentElement.childNodes.length - 1; cnt >= 0; cnt--) {
-                const currentChild = currentElement.childNodes[cnt];
-                targetArr = targetArr.concat(getChildForms(currentChild, FORM));
-            }
-            return targetArr;
+            return currentElement.querySelectorAll(FORM);
         };
 
         /**
@@ -2970,11 +2794,6 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          */
         self.init = function(clientId, url, channel, onopen, onmessage, onerror, onclose, behaviors, autoconnect) {
             onclose = resolveFunction(onclose);
-
-            if (!window.WebSocket) { // IE6-9.
-                onclose(-1, clientId);
-                return;
-            }
 
             if (!sockets[clientId]) {
                 sockets[clientId] = new ReconnectingWebsocket(url, channel, resolveFunction(onopen), resolveFunction(onmessage), resolveFunction(onerror), onclose, behaviors);
@@ -3274,9 +3093,6 @@ mojarra.l = function l(l) {
     }
     else if (window.addEventListener) {
         window.addEventListener("load", l, false);
-    }
-    else if (window.attachEvent) {
-        window.attachEvent("onload", l);
     }
     else if (typeof window.onload === "function") {
         const oldListener = window.onload;
