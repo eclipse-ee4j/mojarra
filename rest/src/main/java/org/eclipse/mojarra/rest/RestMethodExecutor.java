@@ -29,5 +29,5 @@ public interface RestMethodExecutor {
      * @param restMappingMatch the REST mapping match.
      * @return the result.
      */
-    public Object execute(FacesContext facesContext, RestMappingMatch restMappingMatch);
+    Object execute(FacesContext facesContext, RestMappingMatch restMappingMatch);
 }

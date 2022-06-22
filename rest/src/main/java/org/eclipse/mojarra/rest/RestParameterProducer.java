@@ -32,7 +32,7 @@ public interface RestParameterProducer {
      * @param parameterAnnotations the annotations.
      * @return the instance.
      */
-    public Object produce(
+    Object produce(
             FacesContext facesContext, 
             RestMappingMatch restMappingMatch, 
             Class<?> parameterType, 

@@ -28,5 +28,5 @@ public interface RestMappingMatcher {
      * @param facesContext the Faces context.
      * @return the REST mapping match, or null if not found.
      */
-    public RestMappingMatch match(FacesContext facesContext);
+    RestMappingMatch match(FacesContext facesContext);
 }

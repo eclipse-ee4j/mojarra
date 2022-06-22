@@ -27,5 +27,5 @@ public interface RestResponseWriter {
      *
      * @param facesContext the Faces context.
      */
-    public void writeResponse(FacesContext facesContext);
+    void writeResponse(FacesContext facesContext);
 }
