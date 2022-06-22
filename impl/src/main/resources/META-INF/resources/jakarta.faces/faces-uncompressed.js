@@ -36,9 +36,20 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
      */
     var faces = {};
 
+    // --- JS Lang --------------------------------------------------------------------
     const UDEF = 'undefined';
+    const EMPTY = "";
+    const SPACE = " ";
     const isNull = (value) => (typeof value === UDEF || (typeof value === "object" && !value));
     const isNotNull = (value) => !isNull(value);
+
+    // Chrome 47, Chrome Android 47, Edge 14, Firefox 43, Node.js 6.0.0, Opera 34, Safari 9, Safari iOS 9
+    const ES6_AVAILABLE = !!Array.prototype.includes;
+
+    // --- Faces constants ------------------------------------------------------------
+    const VIEW_STATE_PARAM = "jakarta.faces.ViewState";
+    const CLIENT_WINDOW_PARAM = "jakarta.faces.ClientWindow";
+    const FORM = "form";
 
     /**
      * <span class="changed_modified_2_2 changed_modified_2_3">The namespace for Ajax
@@ -133,14 +144,14 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             const add = function(element) {
                 if (element) {
                     if (element.nodeName
-                        && element.nodeName.toLowerCase() === "form"
+                        && element.nodeName.toLowerCase() === FORM
                         && element.method === "post"
                         && element.id
                         && element.elements
                         && element.id.indexOf(context.namingContainerPrefix) === 0) {
                         formsToUpdate.push(element);
                     } else {
-                        const forms = element.getElementsByTagName("form");
+                        const forms = element.getElementsByTagName(FORM);
                         for ( const form of forms )
                             add(form);
                     }
@@ -152,10 +163,10 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             }
 
             if (context.render) {
-                if (context.render.indexOf("@all") >= 0) {
+                if (context.render.indexOf("@all") !== -1 ) {
                     add(document);
                 } else {
-                    const clientIds = context.render.split(" ");
+                    const clientIds = context.render.split(SPACE);
 
                     for (let i = 0; i < clientIds.length; i++) {
                         if (clientIds.hasOwnProperty(i)) {
@@ -226,7 +237,13 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * Check if a value exists in an array
          * @ignore
          */
-        const isInArray = function (array,value) { return Array.prototype.includes ? array.includes(value) : array.indexOf(value) > -1 };
+        const isInArray = function(array,value) { return ES6_AVAILABLE ? array.includes(value) : array.indexOf(value) !== -1 };
+
+        /**
+         * Check if a String or an array contains a value
+         * @ignore
+         */
+        const contains = function(stringOrArray,value) { return stringOrArray.indexOf(value) !== -1; }
 
         /**
          * Evaluate JavaScript code in a global context.
@@ -274,7 +291,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
         };
 
         const removeScripts = function removeScripts(str) {
-            return str.replace(/<script[^>]*type="text\/javascript"[^>]*>([\S\s]*?)<\/script>/igm, "");
+            return str.replace(/<script[^>]*type="text\/javascript"[^>]*>([\S\s]*?)<\/script>/igm, EMPTY);
         };
 
         /**
@@ -347,7 +364,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 }
             } else if (!!scriptStr && scriptStr[2]) {
                 // else get content of tag, without leading CDATA and such
-                const script = scriptStr[2].replace(stripStart, "");
+                const script = scriptStr[2].replace(stripStart, EMPTY);
 
                 if (!!script) {
                     // create script node
@@ -469,7 +486,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * It has been modified to fit into the overall codebase
          */
         const getText = function getText(oNode, deep) {
-            let s = "";
+            let s = EMPTY;
             const nodes = oNode.childNodes;
             for ( const node of nodes ) {
                 const nodeType = node.nodeType;
@@ -822,7 +839,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * @ignore
          */
         const getHiddenStateField = function getHiddenStateField(form, hiddenStateFieldName, namingContainerPrefix) {
-            namingContainerPrefix = namingContainerPrefix || "";
+            namingContainerPrefix = namingContainerPrefix || EMPTY;
             const field = form[namingContainerPrefix + hiddenStateFieldName];
 
             if (field) {
@@ -830,7 +847,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             }
             else {
                 for ( const formElement of form.elements ) {
-                    if (formElement.name && (formElement.name.indexOf(hiddenStateFieldName) >= 0)) {
+                    if (formElement.name && contains(formElement.name, hiddenStateFieldName) ) {
                         return formElement;
                     }
                 }
@@ -853,14 +870,14 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             let newElement;
 
             id = updateElement.getAttribute('id');
-            const viewStateRegex = new RegExp(context.namingContainerPrefix + "jakarta.faces.ViewState" + faces.separatorchar + ".+$");
-            const windowIdRegex = new RegExp(context.namingContainerPrefix + "jakarta.faces.ClientWindow" + faces.separatorchar + ".+$");
+            const viewStateRegex = new RegExp(context.namingContainerPrefix + VIEW_STATE_PARAM + faces.separatorchar + ".+$");
+            const windowIdRegex = new RegExp(context.namingContainerPrefix + CLIENT_WINDOW_PARAM + faces.separatorchar + ".+$");
 
             if (id.match(viewStateRegex)) {
-                updateHiddenStateFields(updateElement, context, "jakarta.faces.ViewState");
+                updateHiddenStateFields(updateElement, context, VIEW_STATE_PARAM);
                 return;
             } else if (id.match(windowIdRegex)) {
-                updateHiddenStateFields(updateElement, context, "jakarta.faces.ClientWindow");
+                updateHiddenStateFields(updateElement, context, CLIENT_WINDOW_PARAM);
                 return;
             }
 
@@ -1031,7 +1048,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 newElement = tempElement.firstChild;
                 //some browsers will also create intermediary elements such as table>tbody>tr>td
                 //test for presence of id on the new element since we do not have it directly
-                while ((null !== newElement) && ("" === newElement.id)) {
+                while ((null !== newElement) && (EMPTY === newElement.id)) {
                     newElement = newElement.firstChild;
                 }
             } else {
@@ -1304,7 +1321,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                     }
                     // Some logic to get the real request URL
                     if (req.generateUniqueUrl && req.method === "GET") {
-                        req.parameters["AjaxRequestUniqueId"] = new Date().getTime() + "" + req.requestIndex;
+                        req.parameters["AjaxRequestUniqueId"] = new Date().getTime() + EMPTY + req.requestIndex;
                     }
 
                     // If multipart prepare the FormData
@@ -1444,7 +1461,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
 
             if (!sent && faces.getProjectStage() === "Development") {
                 if (status === "serverError") {
-                    alert("serverError: " + serverErrorName + " " + serverErrorMessage);
+                    alert("serverError: " + serverErrorName + SPACE + serverErrorMessage);
                 } else {
                     alert(status + ": " + data.description);
                 }
@@ -1910,7 +1927,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                     throw new Error("faces.ajax.request: Method must be called within a form");
                 }
 
-                viewStateElement = getHiddenStateField(form, "jakarta.faces.ViewState");
+                viewStateElement = getHiddenStateField(form, VIEW_STATE_PARAM);
                 if (!viewStateElement) {
                     throw new Error("faces.ajax.request: Form has no view state element");
                 }
@@ -1918,7 +1935,59 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 context.form = form;
                 context.formId = form.id;
 
-                const viewState = faces.getViewState(form);
+                const viewState = faces.getViewState(form); // encoded query string to process
+                const originalViewState = viewState;        // copy of encoded query string to process
+
+                // --- Partial submit adapted from OmniFaces ------------------------------------------
+
+                const execute = options ? options.execute : null;
+
+                const shouldCreatePartialViewState = execute && !contains(execute,"@form") && !contains(execute,"@all");
+
+                let partialViewState = undefined;
+
+                // if we can create a partialSubmit
+                if ( shouldCreatePartialViewState ) {
+
+                    // array of ids for partial submit, always with Faces ViewState and Client Window id
+                    // VIEW_STATE_PARAM , CLIENT_WINDOW_PARAM
+                    let partialExecuteIds = [];
+
+                    // if execute IS NOT @none
+                    if ( ! contains(execute,"@none") ) {
+
+                        // add all the uriEncoded execute(s) params and replace @this with source.id
+                        partialExecuteIds = execute.replace("@this", source.id).split(SPACE).map(encodeURIComponent);
+
+                        // always add form.id
+                        partialExecuteIds.push(encodeURIComponent(form.id));
+
+                    }
+
+                    // always add Faces ViewState
+                    partialExecuteIds.push(VIEW_STATE_PARAM);
+
+                    // always add Faces Client Window id
+                    partialExecuteIds.push(CLIENT_WINDOW_PARAM);
+
+                    // temp array to avoid multiple string concat
+                    const partialViewStateParts = [];
+
+                    originalViewState.replace( /([^=&]+)=([^&]*)/g , function( match , key, value) {
+
+                        // match:   hello:0:edit=Hello
+                        // key:     hello:0:edit
+                        // value:   Hello
+                        if ( isInArray( partialExecuteIds , key ) ) {
+                            partialViewStateParts.push(match);
+                        }
+                    });
+
+                    // build partial query string
+                    partialViewState = partialViewStateParts.join("&");
+                }
+
+                // --- /Partial submit adapted from OmniFaces ------------------------------------------
 
                 // Set up additional arguments to be used in the request..
                 // Make sure "jakarta.faces.source" is set up.
@@ -1929,7 +1998,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
 
                 const args = {};
 
-                const namingContainerPrefix = viewStateElement.name.substring(0, viewStateElement.name.indexOf("jakarta.faces.ViewState"));
+                const namingContainerPrefix = viewStateElement.name.substring(0, viewStateElement.name.indexOf(VIEW_STATE_PARAM));
 
                 args[namingContainerPrefix + "jakarta.faces.source"] = element.id;
 
@@ -1955,9 +2024,9 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                         if (all < 0) {
                             options.execute = options.execute.replace("@this", element.id);
                             options.execute = options.execute.replace("@form", form.id);
-                            const temp = options.execute.split(' ');
+                            const temp = options.execute.split(SPACE);
                             if (!isInArray(temp, element.name)) {
-                                options.execute = element.name + " " + options.execute;
+                                options.execute = element.name + SPACE + options.execute;
                             }
                             if (namingContainerPrefix) {
                             	options.execute = namespaceParametersIfNecessary(options.execute, element.name, namingContainerPrefix);
@@ -1968,7 +2037,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                         args[namingContainerPrefix + "jakarta.faces.partial.execute"] = options.execute;
                     }
                 } else {
-                    options.execute = element.name + " " + element.id;
+                    options.execute = element.name + SPACE + element.id;
                     args[namingContainerPrefix + "jakarta.faces.partial.execute"] = options.execute;
                 }
 
@@ -2004,7 +2073,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
 
                 // check the "execute" ids to see if any include an input of type "file"
                 context.includesInputFile = false;
-                let ids = options.execute.split(" ");
+                let ids = options.execute.split(SPACE);
 
                 // if @all -> execute only this form
                 if ( isInArray(ids,"@all") ) ids = [ form.id ];
@@ -2069,11 +2138,11 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 const sendRequest = function() {
                     const ajaxEngine = new AjaxEngine(context);
                     ajaxEngine.setupArguments(args);
-                    ajaxEngine.queryString = viewState;
+                    ajaxEngine.queryString = partialViewState ? partialViewState : viewState;
                     ajaxEngine.context.onevent = onevent;
                     ajaxEngine.context.onerror = onerror;
                     ajaxEngine.context.sourceid = element.id;
-                    ajaxEngine.context.render = args[namingContainerPrefix + "jakarta.faces.partial.render"] || "";
+                    ajaxEngine.context.render = args[namingContainerPrefix + "jakarta.faces.partial.render"] || EMPTY;
                     ajaxEngine.context.namingContainerPrefix = namingContainerPrefix;
                     ajaxEngine.sendRequest();
                 };
@@ -2331,7 +2400,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
 
                 const partialResponse = xml.getElementsByTagName("partial-response")[0];
                 const namingContainerId = partialResponse.getAttribute("id");
-                const namingContainerPrefix = namingContainerId ? (namingContainerId + faces.separatorchar) : "";
+                const namingContainerPrefix = namingContainerId ? (namingContainerId + faces.separatorchar) : EMPTY;
                 let responseType = partialResponse.firstChild;
 
                 context.namingContainerId = namingContainerId;
@@ -2345,8 +2414,8 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 }
 
                 if (responseType.nodeName === "error") { // it's an error
-                    let errorName = "";
-                    let errorMessage = "";
+                    let errorName = EMPTY;
+                    let errorMessage = EMPTY;
 
                     let element = responseType.firstChild;
                     if (element.nodeName === "error-name") {
@@ -2503,12 +2572,12 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
         const qString = [];
 
         const addField = function (name, value) {
-            qString.push( (qString.length > 0 ? "&" : "") + encodeURIComponent(name) + "=" + encodeURIComponent(value) );
+            qString.push( (qString.length > 0 ? "&" : EMPTY) + encodeURIComponent(name) + "=" + encodeURIComponent(value) );
         };
 
         const els = form.elements;
         for (const el of els) {
-            if (el.name === "") {
+            if (el.name === EMPTY) {
                 continue;
             }
             if (!el.disabled) {
@@ -2549,7 +2618,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             }
         }
         // concatenate the array
-        return qString.join("");
+        return qString.join(EMPTY);
     };
 
     /**
@@ -2568,8 +2637,6 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
      * @function faces.getClientWindow
      */
     faces.getClientWindow = function(node) {
-        const FORM = "form";
-        const WIN_ID = "jakarta.faces.ClientWindow";
 
         /**
          * Find jakarta.faces.ClientWindow field for a given form.
@@ -2577,13 +2644,13 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * @ignore
          */
         const getWindowIdElement = function getWindowIdElement(form) {
-            const windowIdElement = form[WIN_ID];
+            const windowIdElement = form[CLIENT_WINDOW_PARAM];
 
             if (windowIdElement) {
                 return windowIdElement;
             } else {
                 for ( const formElement of form.elements ) {
-                    if (formElement.name && (formElement.name.indexOf(WIN_ID) >= 0)) {
+                    if ( formElement.name && (formElement.name.indexOf(CLIENT_WINDOW_PARAM) >= 0) ) {
                         return formElement;
                     }
                 }
