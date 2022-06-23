@@ -28,11 +28,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MockRenderKitFactory extends RenderKitFactory {
 
     public MockRenderKitFactory(RenderKitFactory oldImpl) {
-        super(oldImpl); // is it correct?
-        System.setProperty(FactoryFinder.RENDER_KIT_FACTORY, this.getClass().getName());
+        System.setProperty(FactoryFinder.RENDER_KIT_FACTORY,
+                this.getClass().getName());
     }
 
-    protected final ConcurrentHashMap<String, RenderKit> renderKits = new ConcurrentHashMap<>(1,1.0f);
+    public MockRenderKitFactory() {
+    }
+
+    private final ConcurrentHashMap<String, RenderKit> renderKits = new ConcurrentHashMap<>(1,1.0f);
 
     @Override
     public void addRenderKit(String renderKitId, RenderKit renderKit) {
@@ -40,7 +43,7 @@ public class MockRenderKitFactory extends RenderKitFactory {
             throw new NullPointerException();
         }
 
-        // atomic put if there is no mapping for renderKitId
+        // atomic put if there is no previous mapping for renderKitId
         RenderKit previous = renderKits.putIfAbsent(renderKitId, renderKit);
 
         // if there was a previous mapping -> IllegalArgumentException
