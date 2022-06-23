@@ -16,38 +16,35 @@
 
 package com.sun.faces.mock;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
 
+import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
+
+
 public class MockRenderKitFactory extends RenderKitFactory {
 
     public MockRenderKitFactory(RenderKitFactory oldImpl) {
-        System.setProperty(FactoryFinder.RENDER_KIT_FACTORY,
-                this.getClass().getName());
+        super(oldImpl); // is it correct?
+        System.setProperty(FactoryFinder.RENDER_KIT_FACTORY, this.getClass().getName());
     }
 
-    public MockRenderKitFactory() {
-    }
-
-    private Map renderKits = new HashMap();
+    protected final ConcurrentHashMap<String, RenderKit> renderKits = new ConcurrentHashMap<>(1,1.0f);
 
     @Override
     public void addRenderKit(String renderKitId, RenderKit renderKit) {
         if ((renderKitId == null) || (renderKit == null)) {
             throw new NullPointerException();
         }
-        synchronized (renderKits) {
-            if (renderKits.containsKey(renderKitId)) {
-                throw new IllegalArgumentException(renderKitId);
-            }
-            renderKits.put(renderKitId, renderKit);
-        }
+
+        // atomic put if there is no mapping for renderKitId
+        RenderKit previous = renderKits.putIfAbsent(renderKitId, renderKit);
+
+        // if there was a previous mapping -> IllegalArgumentException
+        if ( previous != null ) throw new IllegalArgumentException(renderKitId);
     }
 
     @Override
@@ -55,19 +52,16 @@ public class MockRenderKitFactory extends RenderKitFactory {
         if (renderKitId == null) {
             throw new NullPointerException();
         }
-        synchronized (renderKits) {
-            RenderKit renderKit = (RenderKit) renderKits.get(renderKitId);
-            if (renderKit == null) {
-                throw new IllegalArgumentException(renderKitId);
-            }
-            return (renderKit);
+
+        final RenderKit renderKit = renderKits.get(renderKitId);
+
+        if (renderKit == null) {
+            throw new IllegalArgumentException(renderKitId);
         }
+
+        return renderKit;
     }
 
-    @Override
-    public Iterator getRenderKitIds() {
-        synchronized (renderKits) {
-            return (renderKits.keySet().iterator());
-        }
-    }
+    @Override public Iterator<String> getRenderKitIds() { return renderKits.keySet().iterator(); }
+
 }
