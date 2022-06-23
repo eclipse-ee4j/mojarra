@@ -319,7 +319,7 @@ public class ApplicationAssociate {
                 getFacesServletRegistration(context)
                     .ifPresent(registration ->
                         viewHandler.getViews(context, "/", RETURN_AS_MINIMAL_IMPLICIT_OUTCOME)
-                                   .forEach(view -> registration.addMapping(view)));
+                                   .forEach(registration::addMapping));
             }
 
         }
