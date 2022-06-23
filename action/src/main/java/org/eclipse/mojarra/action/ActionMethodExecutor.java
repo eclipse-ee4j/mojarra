@@ -28,5 +28,5 @@ public interface ActionMethodExecutor {
      * @param facesContext the Faces context.
      * @param actionMappingMatch the action mapping match.
      */
-    public void execute(FacesContext facesContext, ActionMappingMatch actionMappingMatch);
+    void execute(FacesContext facesContext, ActionMappingMatch actionMappingMatch);
 }

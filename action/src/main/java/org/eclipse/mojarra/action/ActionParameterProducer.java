@@ -32,7 +32,7 @@ public interface ActionParameterProducer {
      * @param parameterAnnotations the parameter annotations.
      * @return the instance.
      */
-    public Object produce(
+    Object produce(
             FacesContext facesContext,
             ActionMappingMatch actionMappingMatch,
             Class<?> parameterType,

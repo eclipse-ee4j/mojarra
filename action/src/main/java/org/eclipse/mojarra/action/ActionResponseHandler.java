@@ -29,5 +29,5 @@ public interface ActionResponseHandler {
      * @param facesContext the Faces context.
      * @throws FacesException when a serious error occurs.
      */
-    public void respond(FacesContext facesContext) throws FacesException;
+    void respond(FacesContext facesContext) throws FacesException;
 }

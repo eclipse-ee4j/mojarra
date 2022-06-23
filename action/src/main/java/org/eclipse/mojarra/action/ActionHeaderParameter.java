@@ -34,5 +34,5 @@ public @interface ActionHeaderParameter {
      * 
      * @return the name.
      */
-    public String value() default "";
+    String value() default "";
 }

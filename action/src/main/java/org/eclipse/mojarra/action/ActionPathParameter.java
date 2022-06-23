@@ -34,5 +34,5 @@ public @interface ActionPathParameter {
      * 
      * @return the name (a.k.a capturing group).
      */
-    public String value() default "";
+    String value() default "";
 }

@@ -28,5 +28,5 @@ public interface ActionMappingMatcher {
      * @param facesContext the Faces context.
      * @return the action mapping match, or null if not found.
      */
-    public ActionMappingMatch match(FacesContext facesContext);
+    ActionMappingMatch match(FacesContext facesContext);
 }
