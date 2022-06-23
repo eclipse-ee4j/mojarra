@@ -32,6 +32,8 @@ import jakarta.inject.Named;
 @Named("org.eclipse.mojarra.rest.RestLifecycle")
 public class RestLifecycle extends Lifecycle {
 
+    public static final String RESPONSE_CONTENT_TYPE_JSON = "application/json";
+
     /**
      * Stores the RestMappingMatcher.
      */
@@ -111,8 +113,8 @@ public class RestLifecycle extends Lifecycle {
             ExternalContext externalContext = facesContext.getExternalContext();
             String responseContentType = externalContext.getResponseContentType();
             if (responseContentType == null) {
-                externalContext.setResponseContentType("application/json");
-                responseContentType = "application/json";
+                externalContext.setResponseContentType(RESPONSE_CONTENT_TYPE_JSON);
+                responseContentType = RESPONSE_CONTENT_TYPE_JSON;
             }
             restResponseMatcher.getResponseWriter(responseContentType).writeResponse(facesContext);
         }
