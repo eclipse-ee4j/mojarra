@@ -38,27 +38,20 @@ import java.io.IOException;
 public class MockRenderKit extends RenderKit {
 
     public MockRenderKit() {
-        addRenderer(UIData.COMPONENT_FAMILY,
-                "jakarta.faces.Table", new TestRenderer(true));
-        addRenderer(UIInput.COMPONENT_FAMILY,
-                "TestRenderer", new TestRenderer());
-        addRenderer(UIInput.COMPONENT_FAMILY,
-                "jakarta.faces.Text", new TestRenderer());
-        addRenderer(UIOutput.COMPONENT_FAMILY,
-                "TestRenderer", new TestRenderer());
-        addRenderer(UIOutput.COMPONENT_FAMILY,
-                "jakarta.faces.Text", new TestRenderer());
-        addRenderer(UIPanel.COMPONENT_FAMILY,
-                "jakarta.faces.Grid", new TestRenderer(true));
+        addRenderer(UIData.COMPONENT_FAMILY, "jakarta.faces.Table", new TestRenderer(true));
+        addRenderer(UIInput.COMPONENT_FAMILY, "TestRenderer", new TestRenderer());
+        addRenderer(UIInput.COMPONENT_FAMILY, "jakarta.faces.Text", new TestRenderer());
+        addRenderer(UIOutput.COMPONENT_FAMILY, "TestRenderer", new TestRenderer());
+        addRenderer(UIOutput.COMPONENT_FAMILY, "jakarta.faces.Text", new TestRenderer());
+        addRenderer(UIPanel.COMPONENT_FAMILY, "jakarta.faces.Grid", new TestRenderer(true));
         responseStateManager = new MockResponseStateManager();
     }
 
-    private Map renderers = new HashMap();
-    private ResponseStateManager responseStateManager = null;
+    private final Map<String,Renderer<? extends UIComponent>> renderers = new HashMap<>();
+    private ResponseStateManager responseStateManager;
 
     @Override
-    public void addRenderer(String family, String rendererType,
-            Renderer renderer) {
+    public void addRenderer(String family, String rendererType, Renderer<? extends UIComponent> renderer) {
         if ((family == null) || (rendererType == null) || (renderer == null)) {
             throw new NullPointerException();
         }
@@ -66,11 +59,11 @@ public class MockRenderKit extends RenderKit {
     }
 
     @Override
-    public Renderer getRenderer(String family, String rendererType) {
+    public Renderer<? extends UIComponent> getRenderer(String family, String rendererType) {
         if ((family == null) || (rendererType == null)) {
             throw new NullPointerException();
         }
-        return ((Renderer) renderers.get(family + "|" + rendererType));
+        return renderers.get(family + "|" + rendererType);
     }
 
     @Override
@@ -116,7 +109,7 @@ public class MockRenderKit extends RenderKit {
         return responseStateManager;
     }
 
-    class TestRenderer extends Renderer {
+    class TestRenderer extends Renderer<UIComponent> {
 
         private boolean rendersChildren = false;
 
@@ -142,11 +135,11 @@ public class MockRenderKit extends RenderKit {
             // System.err.println("decode(" + clientId + ")");
 
             // Decode incoming request parameters
-            Map params = context.getExternalContext().getRequestParameterMap();
+            Map<String, String> params = context.getExternalContext().getRequestParameterMap();
             if (params.containsKey(clientId)) {
                 // System.err.println("  '" + input.currentValue(context) +
                 //                    "' --> '" + params.get(clientId) + "'");
-                input.setSubmittedValue((String) params.get(clientId));
+                input.setSubmittedValue(params.get(clientId));
             }
         }
 
