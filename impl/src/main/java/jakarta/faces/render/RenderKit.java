@@ -18,9 +18,7 @@ package jakarta.faces.render;
 
 import java.io.OutputStream;
 import java.io.Writer;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.ResponseStream;
@@ -64,7 +62,7 @@ public abstract class RenderKit {
      *
      * @throws NullPointerException if <code>family</code> or <code>rendererType</code> or <code>renderer</code> is null
      */
-    public abstract void addRenderer(String family, String rendererType, Renderer renderer);
+    public abstract void addRenderer(String family, String rendererType, Renderer<? extends UIComponent> renderer);
 
     /**
      * <p>
@@ -79,7 +77,7 @@ public abstract class RenderKit {
      *
      * @return the {@link Renderer} instance
      */
-    public abstract Renderer getRenderer(String family, String rendererType);
+    public abstract Renderer<? extends UIComponent> getRenderer(String family, String rendererType);
 
     /**
      * <p>
@@ -155,10 +153,7 @@ public abstract class RenderKit {
      *
      */
     public Iterator<String> getComponentFamilies() {
-
-        Set<String> empty = Collections.emptySet();
-        return empty.iterator();
-
+        return Collections.emptyIterator();
     }
 
     /**
@@ -183,10 +178,7 @@ public abstract class RenderKit {
      *
      */
     public Iterator<String> getRendererTypes(String componentFamily) {
-
-        Set<String> empty = Collections.emptySet();
-        return empty.iterator();
-
+        return Collections.emptyIterator();
     }
 
     /**
