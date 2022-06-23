@@ -27,8 +27,6 @@ import jakarta.inject.Named;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 /**
  * The CDI RenderKitFactory.
@@ -48,29 +46,12 @@ public class CdiRenderKitFactory extends RenderKitFactory {
 
     /**
      * Constructor.
-     */
-    public CdiRenderKitFactory() {
-    }
-
-    /**
-     * Constructor.
      *
      * @param wrapped the wrapped RenderKitFactory.
      */
     public CdiRenderKitFactory(RenderKitFactory wrapped) {
         super(wrapped);
-        try {
-            InitialContext initialContext = new InitialContext();
-            beanManager = (BeanManager) initialContext.lookup("java:comp/BeanManager");
-        } catch (NamingException ne) {
-        }
-        if (beanManager == null) {
-            try {
-                InitialContext initialContext = new InitialContext();
-                beanManager = (BeanManager) initialContext.lookup("java:comp/env/BeanManager");
-            } catch (NamingException ne) {
-            }
-        }
+        beanManager = CDI.current().getBeanManager();
     }
 
     @Override
@@ -86,9 +67,7 @@ public class CdiRenderKitFactory extends RenderKitFactory {
         } else {
             AnnotatedType<RenderKit> type = beanManager.createAnnotatedType(RenderKit.class);
             Set<Bean<?>> beans = beanManager.getBeans(type.getBaseType(), NamedLiteral.of(renderKitId));
-            Iterator<Bean<?>> iterator = beans.iterator();
-            while (iterator.hasNext()) {
-                Bean<?> bean = iterator.next();
+            for (Bean<?> bean : beans) {
                 Named named = bean.getBeanClass().getAnnotation(Named.class);
                 if (named.value().equals(renderKitId)) {
                     result = (RenderKit) CDI.current().select(named).get();
@@ -105,9 +84,7 @@ public class CdiRenderKitFactory extends RenderKitFactory {
         getWrapped().getRenderKitIds().forEachRemaining(renderKitIds::add);
         AnnotatedType<RenderKit> type = beanManager.createAnnotatedType(RenderKit.class);
         Set<Bean<?>> beans = beanManager.getBeans(type.getBaseType());
-        Iterator<Bean<?>> iterator = beans.iterator();
-        while (iterator.hasNext()) {
-            Bean<?> bean = iterator.next();
+        for (Bean<?> bean : beans) {
             if (bean.getBeanClass().isAnnotationPresent(Named.class)) {
                 Named named = bean.getBeanClass().getAnnotation(Named.class);
                 renderKitIds.add(named.value());
