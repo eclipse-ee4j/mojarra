@@ -51,6 +51,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -63,6 +64,8 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.sun.faces.config.ConfigManager;
 import com.sun.faces.spi.InjectionProvider;
@@ -89,9 +92,11 @@ final class FactoryFinderInstance {
      * not just the last part of the literal!
      * </p>
      */
-    private final List<String> factoryNames = asSortedList(APPLICATION_FACTORY, VISIT_CONTEXT_FACTORY, EXCEPTION_HANDLER_FACTORY, EXTERNAL_CONTEXT_FACTORY,
+    private final List<String> factoryNames = Stream.of(
+            APPLICATION_FACTORY, VISIT_CONTEXT_FACTORY, EXCEPTION_HANDLER_FACTORY, EXTERNAL_CONTEXT_FACTORY,
             FACES_CONTEXT_FACTORY, FLASH_FACTORY, FLOW_HANDLER_FACTORY, PARTIAL_VIEW_CONTEXT_FACTORY, CLIENT_WINDOW_FACTORY, LIFECYCLE_FACTORY,
-            RENDER_KIT_FACTORY, VIEW_DECLARATION_LANGUAGE_FACTORY, FACELET_CACHE_FACTORY, TAG_HANDLER_DELEGATE_FACTORY, SEARCH_EXPRESSION_CONTEXT_FACTORY);
+            RENDER_KIT_FACTORY, VIEW_DECLARATION_LANGUAGE_FACTORY, FACELET_CACHE_FACTORY, TAG_HANDLER_DELEGATE_FACTORY, SEARCH_EXPRESSION_CONTEXT_FACTORY
+    ).sorted().collect(Collectors.toList());
 
     /**
      * <p>
@@ -428,10 +433,12 @@ final class FactoryFinderInstance {
                 // Since this is the hard coded implementation default, there is no preceding implementation,
                 // so don't bother with a non-zero-argument ctor.
 
-                factoryImplementation = Class.forName(factoryImplClassName, false, classLoader).newInstance();
+                factoryImplementation = Class.forName(factoryImplClassName, false, classLoader).getDeclaredConstructor().newInstance();
 
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException e ) {
                 throw new FacesException(factoryImplClassName, e);
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException(e);
             }
         }
 
@@ -450,7 +457,7 @@ final class FactoryFinderInstance {
     private String readLineFromStream(InputStream stream) throws IOException {
         // Deal with systems whose native encoding is possibly
         // different from the way that the services entry was created
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
             return reader.readLine();
         } catch (UnsupportedEncodingException uee) {
             // The DM_DEFAULT_ENCODING warning is acceptable here
@@ -513,33 +520,27 @@ final class FactoryFinderInstance {
     }
 
     private Map<String, Class<?>> buildFactoryClassesMap() {
-        Map<String, Class<?>> buildUpFactoryClasses;
-
-        buildUpFactoryClasses = new HashMap<>();
-        buildUpFactoryClasses.put(APPLICATION_FACTORY, jakarta.faces.application.ApplicationFactory.class);
-        buildUpFactoryClasses.put(VISIT_CONTEXT_FACTORY, jakarta.faces.component.visit.VisitContextFactory.class);
-        buildUpFactoryClasses.put(EXCEPTION_HANDLER_FACTORY, jakarta.faces.context.ExceptionHandlerFactory.class);
-        buildUpFactoryClasses.put(EXTERNAL_CONTEXT_FACTORY, jakarta.faces.context.ExternalContextFactory.class);
-        buildUpFactoryClasses.put(FACES_CONTEXT_FACTORY, jakarta.faces.context.FacesContextFactory.class);
-        buildUpFactoryClasses.put(FLASH_FACTORY, jakarta.faces.context.FlashFactory.class);
-        buildUpFactoryClasses.put(PARTIAL_VIEW_CONTEXT_FACTORY, jakarta.faces.context.PartialViewContextFactory.class);
-        buildUpFactoryClasses.put(LIFECYCLE_FACTORY, jakarta.faces.lifecycle.LifecycleFactory.class);
-        buildUpFactoryClasses.put(CLIENT_WINDOW_FACTORY, jakarta.faces.lifecycle.ClientWindowFactory.class);
-        buildUpFactoryClasses.put(RENDER_KIT_FACTORY, jakarta.faces.render.RenderKitFactory.class);
-        buildUpFactoryClasses.put(VIEW_DECLARATION_LANGUAGE_FACTORY, jakarta.faces.view.ViewDeclarationLanguageFactory.class);
-        buildUpFactoryClasses.put(FACELET_CACHE_FACTORY, jakarta.faces.view.facelets.FaceletCacheFactory.class);
-        buildUpFactoryClasses.put(TAG_HANDLER_DELEGATE_FACTORY, jakarta.faces.view.facelets.TagHandlerDelegateFactory.class);
-        buildUpFactoryClasses.put(FLOW_HANDLER_FACTORY, jakarta.faces.flow.FlowHandlerFactory.class);
-        buildUpFactoryClasses.put(SEARCH_EXPRESSION_CONTEXT_FACTORY, jakarta.faces.component.search.SearchExpressionContextFactory.class);
-
-        return unmodifiableMap(buildUpFactoryClasses);
+        return Map.ofEntries(
+                Map.entry(APPLICATION_FACTORY, jakarta.faces.application.ApplicationFactory.class),
+                Map.entry(VISIT_CONTEXT_FACTORY, jakarta.faces.component.visit.VisitContextFactory.class),
+                Map.entry(EXCEPTION_HANDLER_FACTORY, jakarta.faces.context.ExceptionHandlerFactory.class),
+                Map.entry(EXTERNAL_CONTEXT_FACTORY, jakarta.faces.context.ExternalContextFactory.class),
+                Map.entry(FACES_CONTEXT_FACTORY, jakarta.faces.context.FacesContextFactory.class),
+                Map.entry(FLASH_FACTORY, jakarta.faces.context.FlashFactory.class),
+                Map.entry(PARTIAL_VIEW_CONTEXT_FACTORY, jakarta.faces.context.PartialViewContextFactory.class),
+                Map.entry(LIFECYCLE_FACTORY, jakarta.faces.lifecycle.LifecycleFactory.class),
+                Map.entry(CLIENT_WINDOW_FACTORY, jakarta.faces.lifecycle.ClientWindowFactory.class),
+                Map.entry(RENDER_KIT_FACTORY, jakarta.faces.render.RenderKitFactory.class),
+                Map.entry(VIEW_DECLARATION_LANGUAGE_FACTORY, jakarta.faces.view.ViewDeclarationLanguageFactory.class),
+                Map.entry(FACELET_CACHE_FACTORY, jakarta.faces.view.facelets.FaceletCacheFactory.class),
+                Map.entry(TAG_HANDLER_DELEGATE_FACTORY, jakarta.faces.view.facelets.TagHandlerDelegateFactory.class),
+                Map.entry(FLOW_HANDLER_FACTORY, jakarta.faces.flow.FlowHandlerFactory.class),
+                Map.entry(SEARCH_EXPRESSION_CONTEXT_FACTORY, jakarta.faces.component.search.SearchExpressionContextFactory.class)
+        );
     }
 
-    private List<String> asSortedList(String... names) {
-        List<String> list = Arrays.asList(names);
-        Collections.sort(list);
-
-        return list;
-    }
+//    private List<String> asSortedList(String... names) {
+//        return Stream.of(names).sorted().collect(Collectors.toList());
+//    }
 
 }

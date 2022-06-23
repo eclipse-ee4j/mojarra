@@ -46,6 +46,13 @@ public class CdiRenderKitFactory extends RenderKitFactory {
 
     /**
      * Constructor.
+     */
+    public CdiRenderKitFactory() {
+    }
+
+
+    /**
+     * Constructor.
      *
      * @param wrapped the wrapped RenderKitFactory.
      */

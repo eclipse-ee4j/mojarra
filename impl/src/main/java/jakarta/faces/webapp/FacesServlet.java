@@ -277,7 +277,7 @@ public final class FacesServlet implements Servlet {
 
         OPTIONS("OPTIONS"), GET("GET"), HEAD("HEAD"), POST("POST"), PUT("PUT"), DELETE("DELETE"), TRACE("TRACE"), CONNECT("CONNECT");
 
-        private String name;
+        private final String name;
 
         HttpMethod(String name) {
             this.name = name;
@@ -573,10 +573,8 @@ public final class FacesServlet implements Servlet {
 
                     logUnknownHttpMethod(httpMethod);
 
-                    // prevent duplicates
-                    if (!allowedUnknownHttpMethods.contains(httpMethod)) {
-                        allowedUnknownHttpMethods.add(httpMethod);
-                    }
+                    // using Set prevent duplicates
+                    allowedUnknownHttpMethods.add(httpMethod);
                 } else {
                     // prevent duplicates
                     if (!allowedKnownHttpMethodsStringList.contains(httpMethod)) {

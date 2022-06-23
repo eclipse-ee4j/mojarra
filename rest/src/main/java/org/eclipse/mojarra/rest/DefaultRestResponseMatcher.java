@@ -42,9 +42,7 @@ public class DefaultRestResponseMatcher implements RestResponseMatcher {
         RestResponseWriter result = null;
         AnnotatedType<RestResponseWriter> type = beanManager.createAnnotatedType(RestResponseWriter.class);
         Set<Bean<?>> beans = beanManager.getBeans(type.getBaseType());
-        Iterator<Bean<?>> iterator = beans.iterator();
-        while (iterator.hasNext()) {
-            Bean<?> bean = iterator.next();
+        for (Bean<?> bean : beans) {
             RestResponseWriterContentType contentType = bean.getBeanClass().getAnnotation(RestResponseWriterContentType.class);
             if (contentType != null && contentType.value().equals(responseContentType)) {
                 result = (RestResponseWriter) CDI.current().select(bean.getBeanClass()).get();
@@ -53,7 +51,7 @@ public class DefaultRestResponseMatcher implements RestResponseMatcher {
         }
         if (result == null) {
             beans = beanManager.getBeans(type.getBaseType(), new Default.Literal());
-            iterator = beans.iterator();
+            Iterator<Bean<?>> iterator = beans.iterator();
             Bean<?> bean = iterator.next();
             result = (RestResponseWriter) CDI.current().select(bean.getBeanClass()).get();
         }

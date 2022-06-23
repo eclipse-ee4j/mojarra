@@ -44,8 +44,7 @@ public class DefaultActionMethodExecutor implements ActionMethodExecutor {
      */
     @Override
     public void execute(FacesContext facesContext, ActionMappingMatch actionMappingMatch) {
-        Instance instance = CDI.current().select(
-                actionMappingMatch.getBean().getBeanClass(), Any.Literal.INSTANCE);
+        Instance<?> instance = CDI.current().select(actionMappingMatch.getBean().getBeanClass(), Any.Literal.INSTANCE);
         String viewId;
         try {
             Object[] parameters = new Object[actionMappingMatch.getMethod().getParameterCount()];
@@ -58,8 +57,7 @@ public class DefaultActionMethodExecutor implements ActionMethodExecutor {
                             actionMappingMatch.getMethod().getParameterAnnotations()[i]);
                 }
             }
-            viewId = (String) actionMappingMatch.getMethod().invoke(
-                    instance.get(), parameters);
+            viewId = (String) actionMappingMatch.getMethod().invoke(instance.get(), parameters);
         } catch (Throwable throwable) {
             throw new FacesException(throwable);
         }
