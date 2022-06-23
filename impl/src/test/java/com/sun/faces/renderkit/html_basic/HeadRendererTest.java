@@ -19,7 +19,7 @@ package com.sun.faces.renderkit.html_basic;
 import java.io.StringWriter;
 import java.util.Collections;
 
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
 import static org.easymock.EasyMock.expect;
 import org.junit.Test;
 import org.powermock.api.easymock.PowerMock;
