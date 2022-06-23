@@ -16,12 +16,11 @@
 
 package jakarta.faces.render;
 
-import java.io.IOException;
-import java.util.Iterator;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.ConverterException;
+
+import java.io.IOException;
 
 /**
  * <p>
@@ -140,9 +139,7 @@ public abstract class Renderer<T extends UIComponent> {
             throw new NullPointerException();
         }
         if (component.getChildCount() > 0) {
-            Iterator<UIComponent> kids = component.getChildren().iterator();
-            while (kids.hasNext()) {
-                UIComponent kid = kids.next();
+            for (UIComponent kid : component.getChildren()) {
                 kid.encodeAll(context);
             }
         }
