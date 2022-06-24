@@ -17,7 +17,6 @@
 package jakarta.faces;
 
 import junit.framework.TestCase;
-import jakarta.faces.FactoryFinder;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 

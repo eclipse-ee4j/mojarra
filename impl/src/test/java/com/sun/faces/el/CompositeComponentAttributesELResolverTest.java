@@ -24,14 +24,10 @@ import jakarta.faces.component.UIPanel;
 import jakarta.faces.context.FacesContext;
 
 import java.beans.BeanDescriptor;
-import java.beans.BeanInfo;
-import java.beans.PropertyDescriptor;
-import java.beans.SimpleBeanInfo;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import jakarta.el.ELContext;
-import jakarta.el.MapELResolver;
 
 import org.easymock.EasyMock;
 import org.junit.Test;

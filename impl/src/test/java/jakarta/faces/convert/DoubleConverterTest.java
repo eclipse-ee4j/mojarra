@@ -26,7 +26,6 @@ import org.powermock.api.easymock.PowerMock;
 
 import jakarta.faces.component.UIPanel;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.convert.DoubleConverter;
 
 /**
  * The JUnit tests for the DoubleConverter class.

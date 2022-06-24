@@ -19,8 +19,6 @@ package jakarta.faces.validator;
 import java.util.Locale;
 
 import jakarta.faces.component.UIInput;
-import jakarta.faces.validator.DoubleRangeValidator;
-import jakarta.faces.validator.ValidatorException;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
