@@ -101,10 +101,10 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
                     }
                     try {
                         boolean result = doTestAttributesTransparency(vh, newComp);
-                        outcomes[threadNum] = new Boolean(result);
+                        outcomes[threadNum] = Boolean.valueOf(result);
                     } catch (Throwable e) {
                         e.printStackTrace();
-                        outcomes[threadNum] = new Boolean(false);
+                        outcomes[threadNum] = Boolean.FALSE;
                     }
                 }
             };
