@@ -52,7 +52,6 @@ public class ParseXMLTestCase extends TestCase {
 
     /**
      * Return the tests included in this test suite.
-     * @return 
      */
     public static Test suite() {
         return (new TestSuite(ParseXMLTestCase.class));

@@ -189,7 +189,7 @@ public class UIComponentBaseBehaviorTestCase extends UIComponentTestCase {
 
     /**
      * Test method for
-     * {@link jakarta.faces.component.UIComponentBase#addClientBehavior(java.lang.String, jakarta.faces.component.behavior.Behavior)}.
+     * {@link jakarta.faces.component.UIComponentBase#addClientBehavior(java.lang.String, jakarta.faces.component.behavior.ClientBehavior)}.
      */
     public void testAddBehavior() {
         BehaviorComponent comp = new BehaviorComponent();

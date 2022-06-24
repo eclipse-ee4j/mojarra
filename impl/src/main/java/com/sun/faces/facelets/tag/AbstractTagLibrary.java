@@ -145,7 +145,6 @@ public abstract class AbstractTagLibrary implements TagLibrary {
          * <p class="changed_added_2_0">
          * </p>
          *
-         * @return
          * @see jakarta.faces.view.facelets.TagConfig#getNextHandler()
          */
         @Override
@@ -157,7 +156,6 @@ public abstract class AbstractTagLibrary implements TagLibrary {
          * <p class="changed_added_2_0">
          * </p>
          *
-         * @return
          * @see jakarta.faces.view.facelets.TagConfig#getTag()
          */
         @Override
@@ -169,7 +167,6 @@ public abstract class AbstractTagLibrary implements TagLibrary {
          * <p class="changed_added_2_0">
          * </p>
          *
-         * @return
          * @see jakarta.faces.view.facelets.TagConfig#getTagId()
          */
         @Override

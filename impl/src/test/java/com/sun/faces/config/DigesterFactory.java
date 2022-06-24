@@ -115,7 +115,6 @@ public class DigesterFactory {
      * <p>
      * Returns a new <code>DigesterFactory</code> instance that will create a
      * non-validating <code>Digester</code> instance.</p>
-     * @return 
      */
     public static DigesterFactory newInstance() {
         return DigesterFactory.newInstance(false);
@@ -178,7 +177,6 @@ public class DigesterFactory {
      * <p>
      * Creates a new <code>Digester</code> instance configured for use with
      * Jakarta Faces.</p>
-     * @return 
      */
     public Digester createDigester() {
         Digester digester = new Digester();
