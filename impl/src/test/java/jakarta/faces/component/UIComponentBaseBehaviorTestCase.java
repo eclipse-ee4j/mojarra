@@ -17,11 +17,9 @@
 package jakarta.faces.component;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,7 +44,7 @@ public class UIComponentBaseBehaviorTestCase extends UIComponentTestCase {
     private static final String ONCLICK = "onclick";
     private static final String ONCHANGE = "onchange";
     private static final String TEST_FAMILY = "jakarta.faces.Test";
-    private static final Collection<String> EVENTS = set(ONTEST, ONCLICK, ONCHANGE);
+	private static final Collection<String> EVENTS = Set.of(ONTEST, ONCLICK, ONCHANGE);
 
     public static class BehaviorComponent extends UIComponentBase implements ClientBehaviorHolder {
 
@@ -253,7 +251,4 @@ public class UIComponentBaseBehaviorTestCase extends UIComponentTestCase {
         assertEquals(ONTEST, holder.getDefaultEventName());
     }
 
-    public static <T> Set<T> set(T... ts) {
-        return new HashSet<>(Arrays.asList(ts));
-    }
 }
