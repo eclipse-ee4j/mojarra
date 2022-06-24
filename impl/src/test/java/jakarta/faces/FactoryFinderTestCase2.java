@@ -17,14 +17,9 @@
 package jakarta.faces;
 
 import junit.framework.TestCase;
-import jakarta.faces.FactoryFinder;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-/**
- * <p>
- * Unit tests for {@link UISelectBooleanBase}.</p>
- */
 public class FactoryFinderTestCase2 extends TestCase {
 
     // ------------------------------------------------------------ Constructors

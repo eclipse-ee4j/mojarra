@@ -526,7 +526,7 @@ public class MockApplication extends Application {
      * jakarta.faces.event.SystemEventListener#processEvent} method must be called
      * when events of type <code>systemEventClass</code> are fired.
      *
-     * @throws <code>NullPointerException</code> if any combination of
+     * @throws NullPointerException if any combination of
      * <code>systemEventClass</code>, or <code>listener</code> are
      * <code>null</code>.
      *
@@ -566,7 +566,7 @@ public class MockApplication extends Application {
      * jakarta.faces.event.SystemEventListener#processEvent} method must be called
      * when events of type <code>systemEventClass</code> are fired.
      *
-     * @throws <code>NullPointerException</code> if any combination of
+     * @throws NullPointerException if any combination of
      * <code>systemEventClass</code>, or <code>listener</code> are
      * <code>null</code>.
      *
@@ -600,7 +600,7 @@ public class MockApplication extends Application {
      * jakarta.faces.event.SystemEventListener} to remove from the internal data
      * structure.
      *
-     * @throws <code>NullPointerException</code> if any combination of
+     * @throws NullPointerException if any combination of
      * <code>context</code>, <code>systemEventClass</code>, or
      * <code>listener</code> are <code>null</code>.
      */
@@ -639,7 +639,7 @@ public class MockApplication extends Application {
      * jakarta.faces.event.SystemEventListener} to remove from the internal data
      * structure.
      *
-     * @throws <code>NullPointerException</code> if any combination of
+     * @throws NullPointerException if any combination of
      * <code>context</code>, <code>systemEventClass</code>, or
      * <code>listener</code> are <code>null</code>.
      */

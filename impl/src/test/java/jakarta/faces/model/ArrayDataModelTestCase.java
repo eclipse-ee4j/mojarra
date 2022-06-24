@@ -16,7 +16,6 @@
 
 package jakarta.faces.model;
 
-import jakarta.faces.model.ArrayDataModel;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 

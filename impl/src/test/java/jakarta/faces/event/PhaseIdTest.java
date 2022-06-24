@@ -19,10 +19,6 @@ package jakarta.faces.event;
 import junit.framework.TestCase;
 import java.util.Iterator;
 
-import jakarta.faces.event.PhaseId;
-
-import static junit.framework.Assert.assertTrue;
-
 public class PhaseIdTest extends TestCase {
 //
 // Protected Constants

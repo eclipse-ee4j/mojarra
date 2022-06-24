@@ -40,13 +40,11 @@ public abstract class MetadataWrapperMap<K, V> implements Map<K, V> {
         this.wrapped.clear();
     }
 
-    @SuppressWarnings(value = "")
     @Override
     public boolean containsKey(Object key) {
         return this.wrapped.containsKey(key);
     }
 
-    @SuppressWarnings(value = "")
     @Override
     public boolean containsValue(Object value) {
         return this.wrapped.containsValue(value);
@@ -57,7 +55,6 @@ public abstract class MetadataWrapperMap<K, V> implements Map<K, V> {
         return this.wrapped.entrySet();
     }
 
-    @SuppressWarnings(value = "")
     @Override
     public V get(Object key) {
         return this.wrapped.get(key);
@@ -86,7 +83,6 @@ public abstract class MetadataWrapperMap<K, V> implements Map<K, V> {
         this.wrapped.putAll(m);
     }
 
-    @SuppressWarnings(value = "")
     @Override
     public V remove(Object key) {
         return this.wrapped.remove(key);

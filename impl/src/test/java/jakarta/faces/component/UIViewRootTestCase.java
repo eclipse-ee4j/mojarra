@@ -57,8 +57,6 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
     // ---------------------------------------------------- Overall Test Methods
     /**
      * Return the tests included in this test suite.
-     *
-     * @return
      */
     public static Test suite() {
         return new TestSuite(UIViewRootTestCase.class);

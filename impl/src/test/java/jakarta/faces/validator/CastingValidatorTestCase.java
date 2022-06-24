@@ -16,7 +16,6 @@
 
 package jakarta.faces.validator;
 
-import jakarta.faces.validator.Validator;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 

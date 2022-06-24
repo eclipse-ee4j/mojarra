@@ -23,7 +23,6 @@ import jakarta.faces.FactoryFinder;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
-import jakarta.faces.validator.Validator;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 

@@ -24,7 +24,7 @@ package jakarta.faces;
  *
  * <p class="changed_added_2_3">
  * The expected usage of all subclasses is to provide a constructor that takes an instance of type <code>T</code>, which
- * sets the instance variable that is returned from the {@link getWrapped} method.
+ * sets the instance variable that is returned from the {@link #getWrapped} method.
  * </p>
  *
  * @param <T> the wrapped type.

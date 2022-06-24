@@ -113,7 +113,8 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     }
 
     /**
-     * @see com.sun.faces.facelets.Facelet#apply(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent)
+     * @see jakarta.faces.view.facelets.Facelet#apply(jakarta.faces.context.FacesContext,
+     *      jakarta.faces.component.UIComponent)
      */
     @Override
     public void apply(FacesContext facesContext, UIComponent parent) throws IOException {
@@ -300,7 +301,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     /**
      * Grabs a DefaultFacelet from referenced DefaultFaceletFacotry
      *
-     * @see DefaultFaceletFactory#getFacelet(URL)
+     * @see DefaultFaceletFactory#getFacelet(FacesContext,URL)
      * @param ctx FaceletContext to pass to the included Facelet
      * @param parent UIComponent to apply changes to
      * @param url URL source to include Facelet from

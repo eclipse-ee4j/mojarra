@@ -24,14 +24,6 @@ import java.util.Map;
 import java.util.Set;
 import com.sun.faces.mock.MockResultSet;
 
-import jakarta.faces.model.ArrayDataModel;
-import jakarta.faces.model.ResultSetDataModel;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 

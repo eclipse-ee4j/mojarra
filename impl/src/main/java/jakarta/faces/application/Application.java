@@ -370,10 +370,11 @@ public abstract class Application {
      * not breaking existing applications that extend {@link Application}.
      * </p>
      *
+     * @param resolver the Jakarta Expression Language resolver to add.
+     *
      * @throws IllegalStateException <span class="changed_modified_2_0_rev_a">if called after the first request to the
      * {@link jakarta.faces.webapp.FacesServlet} has been serviced.</span>
      *
-     * @param resolver the Jakarta Expression Language resolver to add.
      * @since 1.2
      */
     public void addELResolver(ELResolver resolver) {
@@ -1623,11 +1624,12 @@ public abstract class Application {
      *
      * </div>
      *
+     * @param resolver the SearchKeywordResolver to add.
+     *
      * @throws IllegalStateException if called after the first request to the {@link jakarta.faces.webapp.FacesServlet} has
      * been serviced.
      * @throws NullPointerException when resolver is null.
      *
-     * @param resolver the SearchKeywordResolver to add.
      * @since 2.3
      */
     public void addSearchKeywordResolver(SearchKeywordResolver resolver) {

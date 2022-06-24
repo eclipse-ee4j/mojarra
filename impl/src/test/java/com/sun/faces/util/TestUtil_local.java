@@ -21,8 +21,6 @@ import junit.framework.TestCase;
 
 import java.util.HashMap;
 import java.util.Locale;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.fail;
 
 /**
  * <B>TestUtil_local.java</B> is a class ...
