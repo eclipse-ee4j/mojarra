@@ -28,18 +28,11 @@
 if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
         && (faces.implversion && faces.implversion >= 4)) ) {
 
-    /**
-     * <span class="changed_modified_2_2">The top level global namespace
-     * for Jakarta Faces functionality.</span>
-     * @name faces
-     * @namespace
-     */
-    var faces = {};
-
     // --- JS Lang --------------------------------------------------------------------
     const UDEF = 'undefined';
     const EMPTY = "";
     const SPACE = " ";
+    const FORM = "form";
     const isNull = (value) => (typeof value === UDEF || (typeof value === "object" && !value));
     const isNotNull = (value) => !isNull(value);
 
@@ -49,7 +42,73 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
     // --- Faces constants ------------------------------------------------------------
     const VIEW_STATE_PARAM = "jakarta.faces.ViewState";
     const CLIENT_WINDOW_PARAM = "jakarta.faces.ClientWindow";
-    const FORM = "form";
+
+    /**
+     * experimental: do partial submit during ajax request
+     */
+    const PARTIAL_SUBMIT_ENABLED = true;
+
+    /**
+     * Check if a String or an array contains a value
+     * @ignore
+     */
+    const contains = function(stringOrArray,value) { return stringOrArray.indexOf(value) !== -1; }
+
+    /**
+     * Check if a value exists in an array
+     * @ignore
+     */
+    const isInArray = function(array,value) { return ES6_AVAILABLE ? array.includes(value) : contains(array,value) };
+
+    /**
+     * Evaluate JavaScript code in a global context.
+     * @param src JavaScript code to evaluate
+     * @ignore
+     */
+    const globalEval = function globalEval(src) {
+        // We have to wrap the call in an anon function because of a firefox bug, where this is incorrectly set
+        // We need to explicitly call window.eval because of a Chrome peculiarity
+        /**
+         * @ignore
+         */
+        const fn = function() {
+            window.eval.call(window, src);
+        };
+        fn();
+    };
+
+    /**
+     * Utility function ported from Omnifaces Form.ts
+     * to identify a child element by name
+     * @param executeIds
+     * @param name
+     * @returns {boolean}
+     * @ignore
+     */
+    const containsNamedChild = function containsNamedChild(executeIds, name) {
+        try {
+            for (const executeId of executeIds) {
+                const parent = document.getElementById(executeId); // suppose it is a naming container
+                // return true if there is a child of the naming container with name equals to param name
+                if (parent && parent.querySelector("[name='" + name + "']")) {
+                    return true;
+                }
+            }
+        }
+        catch (e) {
+            console.warn("Cannot determine if " + executeIds + " contains child " + name, e);
+        }
+
+        return false;
+    }
+
+    /**
+     * <span class="changed_modified_2_2">The top level global namespace
+     * for Jakarta Faces functionality.</span>
+     * @name faces
+     * @namespace
+     */
+    var faces = {};
 
     /**
      * <span class="changed_modified_2_2 changed_modified_2_3">The namespace for Ajax
@@ -69,7 +128,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
 
         const autoExecTestString = "<script>var mojarra = mojarra || {};mojarra.autoExecTest = true;</script>";
 
-        let isAutoExecCache;
+        let isAutoExecCache = undefined;
 
         /**
          * Determine if loading scripts into the page executes the script.
@@ -79,24 +138,23 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          */
         const isAutoExec = function isAutoExec() {
             try {
-                if (isNotNull(isAutoExecCache)) return isAutoExecCache;
+                if (typeof isAutoExecCache !== UDEF) return isAutoExecCache;
 
-                const spanElement = document.createElement('span');
-                spanElement.innerHTML = autoExecTestString;
-                const spanNode = document.body.appendChild(spanElement);
+                const tempElement = document.createElement('span');
+                tempElement.innerHTML = autoExecTestString;
+                const tempNode = document.body.appendChild(tempElement);
                 if (mojarra && mojarra.autoExecTest) {
                     isAutoExecCache = true;
                     delete mojarra.autoExecTest;
                 } else {
                     isAutoExecCache = false;
                 }
-                deleteNode(spanNode);
+                deleteNode(tempNode);
                 return isAutoExecCache;
             } catch (ex) {
                 // OK, that didn't work, we'll have to make an assumption
-                if (typeof isAutoExecCache === "undefined") {
-                    isAutoExecCache = false;
-                }
+                if (typeof isAutoExecCache === UDEF) isAutoExecCache = false;
+
                 return isAutoExecCache;
             }
         };
@@ -231,32 +289,6 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             }
 
             return targetClientIds.join(' ');
-        };
-
-        /**
-         * Check if a value exists in an array
-         * @ignore
-         */
-        const isInArray = function(array,value) { return ES6_AVAILABLE ? array.includes(value) : array.indexOf(value) !== -1 };
-
-        /**
-         * Check if a String or an array contains a value
-         * @ignore
-         */
-        const contains = function(stringOrArray,value) { return stringOrArray.indexOf(value) !== -1; }
-
-        /**
-         * Evaluate JavaScript code in a global context.
-         * @param src JavaScript code to evaluate
-         * @ignore
-         */
-        const globalEval = function globalEval(src) {
-            // We have to wrap the call in an anon function because of a firefox bug, where this is incorrectly set
-            // We need to explicitly call window.eval because of a Chrome peculiarity
-            /**
-             * @ignore
-             */
-            (() => window.eval.call(window, src))();
         };
 
         // Regex to find all scripts in a string
@@ -486,6 +518,8 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * It has been modified to fit into the overall codebase
          */
         const getText = function getText(oNode, deep) {
+            // TODO: in what this function differs from Node.textContent?
+            // https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent
             let s = EMPTY;
             const nodes = oNode.childNodes;
             for ( const node of nodes ) {
@@ -511,9 +545,9 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * element if you want to render it.</p>
          * @param  oDoc The target DOM document
          * @returns {String} The parsing error description of the target Document in
-         *          human readable form (preformated text)
+         *          human readable form (preformatted text)
          * @ignore
-         * Note:  This code orginally from Sarissa: http://dev.abiss.gr/sarissa
+         * Note:  This code originally from Sarissa: http://dev.abiss.gr/sarissa
          */
         const getParseErrorText = function (oDoc) {
             let parseErrorText = PARSED_OK;
@@ -795,7 +829,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 return encodedUrlElement;
             } else {
                 for ( const formElement of form.elements ) {
-                    if (formElement.name && (formElement.name.indexOf('jakarta.faces.encodedURL') >= 0)) {
+                    if (formElement.name && contains(formElement.name,'jakarta.faces.encodedURL') ) {
                         return formElement;
                     }
                 }
@@ -865,11 +899,11 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * @ignore
          */
         const doUpdate = function doUpdate(updateElement, context) {
-            let id, markup;
+
             let scripts = []; // temp holding value for array of script nodes
             let newElement;
 
-            id = updateElement.getAttribute('id');
+            const id = updateElement.getAttribute('id');
             const viewStateRegex = new RegExp(context.namingContainerPrefix + VIEW_STATE_PARAM + faces.separatorchar + ".+$");
             const windowIdRegex = new RegExp(context.namingContainerPrefix + CLIENT_WINDOW_PARAM + faces.separatorchar + ".+$");
 
@@ -882,7 +916,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             }
 
             // join the CDATA sections in the markup
-            markup = '';
+            let markup = EMPTY;
             for ( const updateElementChild of updateElement.childNodes ) {
                 markup += updateElementChild.nodeValue;
             }
@@ -1326,11 +1360,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
 
                     // If multipart prepare the FormData
                     const isMultiPart = (req.method === "POST" && context.form.enctype === 'multipart/form-data');
-                    let formData = null;
-                    if ( isMultiPart ) {
-                        formData = new FormData(context.form);
-                        formData.append('Faces-Request','partial/ajax');
-                    }
+                    const formData = isMultiPart ? new FormData(context.form) : undefined;
 
                     // Add parameters encoded or multipart
                     for (let i in req.parameters) {
@@ -1356,19 +1386,19 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                     // Open Ajax request
                     req.xmlReq.open(req.method, req.url, req.async);
 
-                    // For POST urlencoded or GET requests, to hold query string
-                    // let content = null;
-
                     // note that we are including the charset=UTF-8 as part of the content type (even
                     // if encodeURIComponent encodes as UTF-8), because with some
                     // browsers it will not be set in the request.  Some server implementations need to
                     // determine the character encoding from the request header content type.
                     if (req.method === "POST") {
                         req.xmlReq.setRequestHeader('Faces-Request', 'partial/ajax');
-                        if ( !isMultiPart ) // GET or POST
-                            req.xmlReq.setRequestHeader( 'Content-type' , context.form.enctype+';charset=UTF-8' );
+
+                        // file upload
+                        if ( isMultiPart ) formData.append('Faces-Request','partial/ajax');
+
+                        // GET or POST
                         // req.xmlReq.setRequestHeader('Content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
-                        // content = req.queryString;
+                        else req.xmlReq.setRequestHeader( 'Content-type' , context.form.enctype+';charset=UTF-8' );
                     }
 
                     // note that async == false is not a supported feature.  We may change it in ways
@@ -1870,10 +1900,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
 
             request: function request(source, event, options) {
 
-                let element, viewStateElement;   //  Element variables
-                let all, none;
-
-                let context = {};
+                const context = {};
 
                 if (isNull(source)) {
                     throw new Error("faces.ajax.request: source not set");
@@ -1884,6 +1911,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 }
 
                 // set up the element based on source
+                let element;
                 if (typeof source === 'string') {
                     element = document.getElementById(source);
                 } else if (typeof source === 'object') {
@@ -1927,67 +1955,13 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                     throw new Error("faces.ajax.request: Method must be called within a form");
                 }
 
-                viewStateElement = getHiddenStateField(form, VIEW_STATE_PARAM);
+                const viewStateElement = getHiddenStateField(form, VIEW_STATE_PARAM);
                 if (!viewStateElement) {
                     throw new Error("faces.ajax.request: Form has no view state element");
                 }
                 
                 context.form = form;
                 context.formId = form.id;
-
-                const viewState = faces.getViewState(form); // encoded query string to process
-                const originalViewState = viewState;        // copy of encoded query string to process
-
-                // --- Partial submit adapted from OmniFaces ------------------------------------------
-
-                const execute = options ? options.execute : null;
-
-                const shouldCreatePartialViewState = execute && !contains(execute,"@form") && !contains(execute,"@all");
-
-                let partialViewState = undefined;
-
-                // if we can create a partialSubmit
-                if ( shouldCreatePartialViewState ) {
-
-                    // array of ids for partial submit, always with Faces ViewState and Client Window id
-                    // VIEW_STATE_PARAM , CLIENT_WINDOW_PARAM
-                    let partialExecuteIds = [];
-
-                    // if execute IS NOT @none
-                    if ( ! contains(execute,"@none") ) {
-
-                        // add all the uriEncoded execute(s) params and replace @this with source.id
-                        partialExecuteIds = execute.replace("@this", source.id).split(SPACE).map(encodeURIComponent);
-
-                        // always add form.id
-                        partialExecuteIds.push(encodeURIComponent(form.id));
-
-                    }
-
-                    // always add Faces ViewState
-                    partialExecuteIds.push(VIEW_STATE_PARAM);
-
-                    // always add Faces Client Window id
-                    partialExecuteIds.push(CLIENT_WINDOW_PARAM);
-
-                    // temp array to avoid multiple string concat
-                    const partialViewStateParts = [];
-
-                    originalViewState.replace( /([^=&]+)=([^&]*)/g , function( match , key, value) {
-
-                        // match:   hello:0:edit=Hello
-                        // key:     hello:0:edit
-                        // value:   Hello
-                        if ( isInArray( partialExecuteIds , key ) ) {
-                            partialViewStateParts.push(match);
-                        }
-                    });
-
-                    // build partial query string
-                    partialViewState = partialViewStateParts.join("&");
-                }
-
-                // --- /Partial submit adapted from OmniFaces ------------------------------------------
 
                 // Set up additional arguments to be used in the request..
                 // Make sure "jakarta.faces.source" is set up.
@@ -2010,6 +1984,12 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                     args[namingContainerPrefix + "jakarta.faces.partial.resetValues"] = options.resetValues;
                 }
 
+                // do a partial submit only if it is enabled and:
+                // 1) option.execute is not defined (<f:ajax />)
+                // 2) if it is defined it should not contain @form or @all
+                const doPartialSubmit = PARTIAL_SUBMIT_ENABLED
+                                        && ( !options.execute || ( !contains(options.execute,"@form") && !contains(options.execute,"@all") ) );
+
                 // If we have 'execute' identifiers:
                 // Handle any keywords that may be present.
                 // If @none present anywhere, do not send the
@@ -2018,10 +1998,10 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 // delimited.
 
                 if (options.execute) {
-                    none = options.execute.indexOf("@none");
-                    if (none < 0) {
-                        all = options.execute.indexOf("@all");
-                        if (all < 0) {
+                    const isNone = contains(options.execute,"@none");
+                    if ( !isNone ) {
+                        const isAll = contains(options.execute,"@all");
+                        if ( !isAll ) {
                             options.execute = options.execute.replace("@this", element.id);
                             options.execute = options.execute.replace("@form", form.id);
                             const temp = options.execute.split(SPACE);
@@ -2036,16 +2016,17 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                         }
                         args[namingContainerPrefix + "jakarta.faces.partial.execute"] = options.execute;
                     }
-                } else {
-                    options.execute = element.name + SPACE + element.id;
+                } else { // in case of <f:ajax />
+                    // it's wrong to add 2 times the same value!
+                    options.execute = element.name === element.id ? element.id : element.name+SPACE+element.id;
                     args[namingContainerPrefix + "jakarta.faces.partial.execute"] = options.execute;
                 }
 
                 if (options.render) {
-                    none = options.render.indexOf("@none");
-                    if (none < 0) {
-                        all = options.render.indexOf("@all");
-                        if (all < 0) {
+                    const isNone = contains(options.render,"@none");
+                    if ( !isNone ) {
+                        const isAll = contains(options.render,"@all");
+                        if ( !isAll ) {
                             options.render = options.render.replace("@this", element.id);
                             options.render = options.render.replace("@form", form.id);
                             if (namingContainerPrefix) {
@@ -2057,6 +2038,8 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                         args[namingContainerPrefix + "jakarta.faces.partial.render"] = options.render;
                     }
                 }
+
+                // delay value for request execution
                 const explicitlyDoNotDelay =    ((typeof options.delay == 'undefined') || (typeof options.delay == 'string') &&
                                                 (options.delay.toLowerCase() === 'none'));
                 let delayValue;
@@ -2079,8 +2062,8 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 if ( isInArray(ids,"@all") ) ids = [ form.id ];
 
                 if (ids) {
-                    for (let i = 0; i < ids.length; i++) {
-                        const elem = document.getElementById(ids[i]);
+                    for ( const id of ids ) {
+                        const elem = document.getElementById(id);
                         if (elem) {
                             if (elem.nodeType === Node.ELEMENT_NODE) {
                                 if ( elem.hasAttribute("type") ) {
@@ -2098,6 +2081,9 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                         }
                     }
                 }
+
+                // encoded query string to process, eventually with partial submit logic enabled
+                const viewState = faces.getViewState( form ,  doPartialSubmit ? options.execute : undefined )
 
                 // copy all params to args
                 const params = options.params || {};
@@ -2138,7 +2124,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 const sendRequest = function() {
                     const ajaxEngine = new AjaxEngine(context);
                     ajaxEngine.setupArguments(args);
-                    ajaxEngine.queryString = partialViewState ? partialViewState : viewState;
+                    ajaxEngine.queryString = viewState;
                     ajaxEngine.context.onevent = onevent;
                     ajaxEngine.context.onerror = onerror;
                     ajaxEngine.context.sourceid = element.id;
@@ -2510,18 +2496,6 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             return mojarra.projectStageCache;
         }
         // faces.js script
-        // var scripts = document.getElementsByTagName("script"); // nodelist of scripts
-        // var script; // faces.js script
-        // var s = 0; // incremental variable for for loop
-        // var stage; // temp value for stage
-        // var match; // temp value for match
-        // while (s < scripts.length) {
-        //     if (typeof scripts[s].src === 'string' && scripts[s].src.match('\/javax\.faces\.resource\/faces\.js\?.*ln=javax\.faces')) {
-        //         script = scripts[s].src;
-        //         break;
-        //     }
-        //     s++;
-        // }
         const _script = document.querySelector("script[type='text/javascript'][src*='jakarta.faces.resource/faces.js']");
         const script = isNotNull(_script) ? _script.src : null;
 
@@ -2558,10 +2532,12 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
      * accordance with: <a href="http://www.w3.org/TR/html401/interact/forms.html#h-17.13.2">
      * Section 17.13.2 of the HTML Specification</a>.
      *
+     * @param execute The option.execute string built inside faces.ajax.request
+     *
      * @returns String The encoded state for the specified form's input controls.
      * @function faces.getViewState
      */
-    faces.getViewState = function(form) {
+    faces.getViewState = function(form,execute) {
         if (!form) {
             throw new Error("faces.getViewState:  form must be set");
         }
@@ -2571,8 +2547,29 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
         // large strings - we'll perform the concatenation once at the end
         const qString = [];
 
-        const addField = function (name, value) {
-            qString.push( (qString.length > 0 ? "&" : EMPTY) + encodeURIComponent(name) + "=" + encodeURIComponent(value) );
+        // --- Partial submit adapted from OmniFaces ------------------------------------------
+
+        // if execute is defined and execute is not '@all' of '@form'
+        // we could do a partial submit
+        let partialExecuteIds = undefined;
+        if ( execute ) {
+
+            // string -> array
+            partialExecuteIds = execute.split(SPACE);
+
+            // always process Faces ViewState
+            partialExecuteIds.push(VIEW_STATE_PARAM);
+
+            // always process Faces Client Window id
+            partialExecuteIds.push(CLIENT_WINDOW_PARAM);
+
+        }
+
+        // add encoded name=value string to query string parts array.
+        // If execute is defined then add the field only if the name is inside the "execute" array (partial submit)
+        const addField = function(name, value) {
+            const add = !partialExecuteIds || isInArray(partialExecuteIds, name) || containsNamedChild(partialExecuteIds,name);
+            if (add) qString.push( (qString.length > 0 ? "&" : EMPTY) + encodeURIComponent(name) + "=" + encodeURIComponent(value) );
         };
 
         const els = form.elements;
@@ -2643,29 +2640,30 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * @param form
          * @ignore
          */
-        const getWindowIdElement = function getWindowIdElement(form) {
+        const getWindowIdElement = function(form) {
             const windowIdElement = form[CLIENT_WINDOW_PARAM];
-
-            if (windowIdElement) {
-                return windowIdElement;
-            } else {
-                for ( const formElement of form.elements ) {
-                    if ( formElement.name && (formElement.name.indexOf(CLIENT_WINDOW_PARAM) >= 0) ) {
-                        return formElement;
-                    }
-                }
-            }
-
-            return undefined;
+            return windowIdElement ? windowIdElement : form.querySelector("input[name="+CLIENT_WINDOW_PARAM+"]");
         };
 
-        const fetchWindowIdFromForms = function (forms) {
+        const fetchWindowIdFromForms = function(forms) {
             const result_idx = {};
             let result;
             let foundCnt = 0;
-            for (let cnt = forms.length - 1; cnt >= 0; cnt--) {
-                const currentForm = forms[cnt];
-                const windowIdElement = getWindowIdElement(currentForm);
+            // why reverse order?
+            // for (let cnt = forms.length - 1; cnt >= 0; cnt--) {
+            //     const currentForm = forms[cnt];
+            //     const windowIdElement = getWindowIdElement(currentForm);
+            //     const windowId = windowIdElement && windowIdElement.value;
+            //     if (UDEF !== typeof windowId) {
+            //         if (foundCnt > 0 && UDEF === typeof result_idx[windowId]) throw Error("Multiple different windowIds found in document");
+            //         result = windowId;
+            //         result_idx[windowId] = true;
+            //         foundCnt++;
+            //     }
+            // }
+
+            for ( const form of forms ) {
+                const windowIdElement = getWindowIdElement(form);
                 const windowId = windowIdElement && windowIdElement.value;
                 if (UDEF !== typeof windowId) {
                     if (foundCnt > 0 && UDEF === typeof result_idx[windowId]) throw Error("Multiple different windowIds found in document");
@@ -2674,38 +2672,35 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                     foundCnt++;
                 }
             }
+
             return result;
         };
 
         /**
          * @ignore
          */
-        const getChildForms = function (currentElement) {
+        const getChildForms = function getChildForms(currentElement) {
             //Special condition no element we return document forms
             //as search parameter, ideal would be to
             //have the viewroot here but the frameworks
             //can deal with that themselves by using
             //the viewroot as currentElement
             if (!currentElement) return document.forms;
-
             if (!currentElement.tagName) return [];
-
             if (currentElement.tagName.toLowerCase() === FORM) return [ currentElement ];
-
             return currentElement.querySelectorAll(FORM);
         };
 
         /**
          * @ignore
          */
-        const fetchWindowIdFromURL = function () {
+        const fetchWindowIdFromURL = function fetchWindowIdFromURL() {
             const href = window.location.href;
             const windowId = "windowId";
             const regex = new RegExp("[\\?&]" + windowId + "=([^&#\\;]*)");
             const results = regex.exec(href);
             //initial trial over the url and a regexp
-            if (results != null) return results[1];
-            return null;
+            return (results != null) ? results[1] : null;
         };
 
         //byId ($)
@@ -3022,14 +3017,6 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
  @version 2.0
  @description This is the standard implementation of the Faces Ajax Library.
  */
-
-/**
- * Register with OpenAjax
- */
-if (typeof OpenAjax !== "undefined" &&
-    typeof OpenAjax.hub.registerLibrary !== "undefined") {
-    OpenAjax.hub.registerLibrary("mojarra", "www.sun.com", "1.0", null);
-}
 
 /**
  * @name mojarra
