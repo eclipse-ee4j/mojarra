@@ -370,7 +370,9 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel implemen
         return "click";
     }
 
+    // TODO The same as jakarta.faces.component.html.HtmlComponentUtils#handleAttribute
     private void handleAttribute(String name, Object value) {
+        @SuppressWarnings("unchecked")
         List<String> setAttributes = (List<String>) getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");
         if (setAttributes == null) {
             String cname = this.getClass().getName();

@@ -17,10 +17,8 @@
  */
 package jakarta.faces.component.html;
 
-import java.util.ArrayList;
-import java.util.List;
+import static jakarta.faces.component.html.HtmlComponentUtils.handleAttribute;
 
-import jakarta.el.ValueExpression;
 import jakarta.faces.component.Doctype;
 import jakarta.faces.component.UIOutput;
 
@@ -32,8 +30,6 @@ import jakarta.faces.component.UIOutput;
  * </p>
  */
 public class HtmlDoctype extends UIOutput implements Doctype {
-
-    private static final String OPTIMIZED_PACKAGE = "jakarta.faces.component.";
 
     public HtmlDoctype() {
         super();
@@ -92,7 +88,7 @@ public class HtmlDoctype extends UIOutput implements Doctype {
      */
     public void setPublic(java.lang.String _public) {
         getStateHelper().put(PropertyKeys.publicVal, _public);
-        handleAttribute("public", _public);
+        handleAttribute(this, "public", _public);
     }
 
     /**
@@ -119,7 +115,7 @@ public class HtmlDoctype extends UIOutput implements Doctype {
      */
     public void setRootElement(java.lang.String rootElement) {
         getStateHelper().put(PropertyKeys.rootElement, rootElement);
-        handleAttribute("rootElement", rootElement);
+        handleAttribute(this, "rootElement", rootElement);
     }
 
     /**
@@ -146,28 +142,7 @@ public class HtmlDoctype extends UIOutput implements Doctype {
      */
     public void setSystem(java.lang.String system) {
         getStateHelper().put(PropertyKeys.system, system);
-        handleAttribute("system", system);
-    }
-
-    private void handleAttribute(String name, Object value) {
-        List<String> setAttributes = (List<String>) getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");
-        if (setAttributes == null) {
-            String cname = this.getClass().getName();
-            if (cname != null && cname.startsWith(OPTIMIZED_PACKAGE)) {
-                setAttributes = new ArrayList<>(6);
-                getAttributes().put("jakarta.faces.component.UIComponentBase.attributesThatAreSet", setAttributes);
-            }
-        }
-        if (setAttributes != null) {
-            if (value == null) {
-                ValueExpression ve = getValueExpression(name);
-                if (ve == null) {
-                    setAttributes.remove(name);
-                }
-            } else if (!setAttributes.contains(name)) {
-                setAttributes.add(name);
-            }
-        }
+        handleAttribute(this, "system", system);
     }
 
 }

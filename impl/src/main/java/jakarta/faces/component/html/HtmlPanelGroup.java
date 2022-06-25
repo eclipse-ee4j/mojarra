@@ -17,13 +17,12 @@
  */
 package jakarta.faces.component.html;
 
-import java.util.ArrayList;
+import static jakarta.faces.component.html.HtmlComponentUtils.handleAttribute;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
-import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIPanel;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 
@@ -38,8 +37,6 @@ import jakarta.faces.component.behavior.ClientBehaviorHolder;
  * </p>
  */
 public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
-
-    private static final String OPTIMIZED_PACKAGE = "jakarta.faces.component.";
 
     public HtmlPanelGroup() {
         super();
@@ -124,7 +121,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      */
     public void setOnclick(java.lang.String onclick) {
         getStateHelper().put(PropertyKeys.onclick, onclick);
-        handleAttribute("onclick", onclick);
+        handleAttribute(this, "onclick", onclick);
     }
 
     /**
@@ -150,7 +147,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      */
     public void setOndblclick(java.lang.String ondblclick) {
         getStateHelper().put(PropertyKeys.ondblclick, ondblclick);
-        handleAttribute("ondblclick", ondblclick);
+        handleAttribute(this, "ondblclick", ondblclick);
     }
 
     /**
@@ -176,7 +173,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      */
     public void setOnkeydown(java.lang.String onkeydown) {
         getStateHelper().put(PropertyKeys.onkeydown, onkeydown);
-        handleAttribute("onkeydown", onkeydown);
+        handleAttribute(this, "onkeydown", onkeydown);
     }
 
     /**
@@ -202,7 +199,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      */
     public void setOnkeypress(java.lang.String onkeypress) {
         getStateHelper().put(PropertyKeys.onkeypress, onkeypress);
-        handleAttribute("onkeypress", onkeypress);
+        handleAttribute(this, "onkeypress", onkeypress);
     }
 
     /**
@@ -228,7 +225,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      */
     public void setOnkeyup(java.lang.String onkeyup) {
         getStateHelper().put(PropertyKeys.onkeyup, onkeyup);
-        handleAttribute("onkeyup", onkeyup);
+        handleAttribute(this, "onkeyup", onkeyup);
     }
 
     /**
@@ -254,7 +251,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      */
     public void setOnmousedown(java.lang.String onmousedown) {
         getStateHelper().put(PropertyKeys.onmousedown, onmousedown);
-        handleAttribute("onmousedown", onmousedown);
+        handleAttribute(this, "onmousedown", onmousedown);
     }
 
     /**
@@ -280,7 +277,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      */
     public void setOnmousemove(java.lang.String onmousemove) {
         getStateHelper().put(PropertyKeys.onmousemove, onmousemove);
-        handleAttribute("onmousemove", onmousemove);
+        handleAttribute(this, "onmousemove", onmousemove);
     }
 
     /**
@@ -306,7 +303,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      */
     public void setOnmouseout(java.lang.String onmouseout) {
         getStateHelper().put(PropertyKeys.onmouseout, onmouseout);
-        handleAttribute("onmouseout", onmouseout);
+        handleAttribute(this, "onmouseout", onmouseout);
     }
 
     /**
@@ -332,7 +329,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      */
     public void setOnmouseover(java.lang.String onmouseover) {
         getStateHelper().put(PropertyKeys.onmouseover, onmouseover);
-        handleAttribute("onmouseover", onmouseover);
+        handleAttribute(this, "onmouseover", onmouseover);
     }
 
     /**
@@ -358,7 +355,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      */
     public void setOnmouseup(java.lang.String onmouseup) {
         getStateHelper().put(PropertyKeys.onmouseup, onmouseup);
-        handleAttribute("onmouseup", onmouseup);
+        handleAttribute(this, "onmouseup", onmouseup);
     }
 
     /**
@@ -384,7 +381,7 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
      */
     public void setStyle(java.lang.String style) {
         getStateHelper().put(PropertyKeys.style, style);
-        handleAttribute("style", style);
+        handleAttribute(this, "style", style);
     }
 
     /**
@@ -424,27 +421,6 @@ public class HtmlPanelGroup extends UIPanel implements ClientBehaviorHolder {
     @Override
     public String getDefaultEventName() {
         return null;
-    }
-
-    private void handleAttribute(String name, Object value) {
-        List<String> setAttributes = (List<String>) getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");
-        if (setAttributes == null) {
-            String cname = this.getClass().getName();
-            if (cname != null && cname.startsWith(OPTIMIZED_PACKAGE)) {
-                setAttributes = new ArrayList<>(6);
-                getAttributes().put("jakarta.faces.component.UIComponentBase.attributesThatAreSet", setAttributes);
-            }
-        }
-        if (setAttributes != null) {
-            if (value == null) {
-                ValueExpression ve = getValueExpression(name);
-                if (ve == null) {
-                    setAttributes.remove(name);
-                }
-            } else if (!setAttributes.contains(name)) {
-                setAttributes.add(name);
-            }
-        }
     }
 
 }
