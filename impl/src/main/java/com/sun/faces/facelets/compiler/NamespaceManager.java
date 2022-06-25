@@ -38,13 +38,13 @@ final class NamespaceManager {
         }
     }
 
-    private final List namespaces;
+    private final List<NS> namespaces;
 
     /**
      *
      */
     public NamespaceManager() {
-        namespaces = new ArrayList();
+        namespaces = new ArrayList<>();
     }
 
     public void reset() {
@@ -59,7 +59,7 @@ final class NamespaceManager {
     public String getNamespace(String prefix) {
         NS ns = null;
         for (int i = 0; i < namespaces.size(); i++) {
-            ns = (NS) namespaces.get(i);
+            ns = namespaces.get(i);
             if (ns.prefix.equals(prefix)) {
                 return ns.namespace;
             }
@@ -70,7 +70,7 @@ final class NamespaceManager {
     public void popNamespace(String prefix) {
         NS ns = null;
         for (int i = 0; i < namespaces.size(); i++) {
-            ns = (NS) namespaces.get(i);
+            ns = namespaces.get(i);
             if (ns.prefix.equals(prefix)) {
                 namespaces.remove(i);
                 return;
@@ -83,7 +83,7 @@ final class NamespaceManager {
         if (namespaces.size() > 0) {
             NS ns = null;
             for (int i = namespaces.size() - 1; i >= 0; i--) {
-                ns = (NS) namespaces.get(i);
+                ns = namespaces.get(i);
                 unit.setNamespace(ns.prefix, ns.namespace);
             }
         }

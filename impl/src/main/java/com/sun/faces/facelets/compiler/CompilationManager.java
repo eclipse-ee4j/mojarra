@@ -466,7 +466,7 @@ final class CompilationManager {
         if (remove == 0) {
             return tag;
         } else {
-            List attrList = new ArrayList(attr.length);
+            List<TagAttribute> attrList = new ArrayList<>(attr.length);
             int p = 0;
             for (int i = 0; i < attr.length; i++) {
                 p = 1 << i;
@@ -475,7 +475,7 @@ final class CompilationManager {
                 }
                 attrList.add(attr[i]);
             }
-            attr = (TagAttribute[]) attrList.toArray(new TagAttribute[attrList.size()]);
+            attr = attrList.toArray(new TagAttribute[attrList.size()]);
             return new Tag(tag.getLocation(), tag.getNamespace(), tag.getLocalName(), tag.getQName(), new TagAttributesImpl(attr));
         }
     }
