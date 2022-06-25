@@ -124,7 +124,7 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
                     foundNull = true;
                 }
             }
-            Thread.currentThread().sleep(500);
+            Thread.sleep(500);
         }
 
         for (i = 0; i < outcomes.length; i++) {
