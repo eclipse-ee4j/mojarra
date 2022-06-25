@@ -297,11 +297,14 @@ final class CompilationManager {
                 finishUnit();
             } else {
                 t.endTag();
+                if (t.isClosed()) {
+                    this.finishUnit();
+                }
                 return;
             }
+            unit = this.currentUnit();
         }
 
-        unit = currentUnit();
         if (unit instanceof TagUnit) {
             TagUnit t = (TagUnit) unit;
             if (t instanceof TrimmedTagUnit) {
