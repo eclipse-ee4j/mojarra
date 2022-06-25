@@ -16,13 +16,9 @@
 
 package com.sun.faces.application.resource;
 
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.util.FacesLogger;
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.CacheResourceModificationTimestamp;
+import static com.sun.faces.util.Util.ensureLeadingSlash;
 
-import javax.faces.FacesException;
-import javax.faces.application.ProjectStage;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -34,9 +30,15 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.CacheResourceModificationTimestamp;
-import com.sun.faces.facelets.impl.DefaultResourceResolver;
+import javax.faces.FacesException;
+import javax.faces.application.ProjectStage;
+import javax.faces.component.UIViewRoot;
+import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.ResourceResolver;
+
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.facelets.impl.DefaultResourceResolver;
+import com.sun.faces.util.FacesLogger;
 
 /**
  * <p>
@@ -65,7 +67,7 @@ public class WebappResourceHelper extends ResourceHelper {
 
         WebConfiguration webconfig = WebConfiguration.getInstance();
         cacheTimestamp = webconfig.isOptionEnabled(CacheResourceModificationTimestamp);
-        BASE_RESOURCE_PATH = webconfig.getOptionValue(WebConfiguration.WebContextInitParameter.WebAppResourcesDirectory);
+        BASE_RESOURCE_PATH = ensureLeadingSlash(webconfig.getOptionValue(WebConfiguration.WebContextInitParameter.WebAppResourcesDirectory));
         BASE_CONTRACTS_PATH = webconfig.getOptionValue(WebConfiguration.WebContextInitParameter.WebAppContractsDirectory);
 
     }
