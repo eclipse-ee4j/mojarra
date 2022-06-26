@@ -45,7 +45,6 @@ public class TypedCollections {
      * @return the dynamically-type checked collection.
      * @throws java.lang.ClassCastException
      */
-    @SuppressWarnings("unchecked")
     public static <E, TypedC extends Collection<E>> TypedC dynamicallyCastCollection(Collection<?> c, Class<E> type, Class<TypedC> collectionType) {
         if (c == null) {
             return null;

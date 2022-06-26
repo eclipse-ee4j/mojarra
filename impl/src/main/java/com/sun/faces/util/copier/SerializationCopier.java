@@ -68,7 +68,6 @@ public class SerializationCopier implements Copier {
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
         In in = new In(byteArrayInputStream, out);
 
-        @SuppressWarnings("unchecked")
         T cloned = (T) in.readObject();
 
         return cloned;

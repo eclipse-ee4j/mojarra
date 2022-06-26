@@ -125,7 +125,6 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
      *
      * @throws NoSuchElementException if there are no more elements
      */
-    @SuppressWarnings({ "unchecked" })
     @Override
     public SelectItem next() {
 
@@ -396,7 +395,6 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
          * A <code>SelectItem</code> implementation to support generating unique <code>SelectItem</code> values based on
          * <code>ValueExpressions</code> from the owning {@link UISelectItems} instance.
          */
-        @SuppressWarnings({ "serial" })
         private static final class GenericObjectSelectItem extends SelectItem {
 
             private static final String VAR = "var";

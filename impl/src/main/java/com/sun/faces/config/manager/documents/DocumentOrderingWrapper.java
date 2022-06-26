@@ -758,7 +758,6 @@ public class DocumentOrderingWrapper {
 
     } // END FacesConfigComparator
 
-    @SuppressWarnings({ "serial" })
     private static final class CircularDependencyException extends Exception {
 
         // -------------------------------------------------------- Constructors
