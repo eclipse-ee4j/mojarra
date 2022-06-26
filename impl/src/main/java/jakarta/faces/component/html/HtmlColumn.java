@@ -17,10 +17,6 @@
  */
 package jakarta.faces.component.html;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIColumn;
 
 /**
@@ -29,8 +25,6 @@ import jakarta.faces.component.UIColumn;
  * </p>
  */
 public class HtmlColumn extends UIColumn {
-
-    private static final String OPTIMIZED_PACKAGE = "jakarta.faces.component.";
 
     public HtmlColumn() {
         super();
@@ -163,27 +157,6 @@ public class HtmlColumn extends UIColumn {
      */
     public void setStyleClass(java.lang.String styleClass) {
         getStateHelper().put(PropertyKeys.styleClass, styleClass);
-    }
-
-    private void handleAttribute(String name, Object value) {
-        List<String> setAttributes = (List<String>) getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");
-        if (setAttributes == null) {
-            String cname = this.getClass().getName();
-            if (cname != null && cname.startsWith(OPTIMIZED_PACKAGE)) {
-                setAttributes = new ArrayList<>(6);
-                getAttributes().put("jakarta.faces.component.UIComponentBase.attributesThatAreSet", setAttributes);
-            }
-        }
-        if (setAttributes != null) {
-            if (value == null) {
-                ValueExpression ve = getValueExpression(name);
-                if (ve == null) {
-                    setAttributes.remove(name);
-                }
-            } else if (!setAttributes.contains(name)) {
-                setAttributes.add(name);
-            }
-        }
     }
 
 }
