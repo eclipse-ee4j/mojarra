@@ -40,7 +40,6 @@ import junit.framework.TestSuite;
 
 public class UIComponentBaseAttachedStateTestCase extends TestCase {
 
-    private UIComponentBase component;
     private MockFacesContext facesContext = null;
     private MockServletContext servletContext;
     private MockHttpServletRequest request;
@@ -58,7 +57,6 @@ public class UIComponentBaseAttachedStateTestCase extends TestCase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        component = new UIOutput();
         facesContext = new MockFacesContext();
 
         servletContext = new MockServletContext();

@@ -61,7 +61,6 @@ import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
 import jakarta.faces.event.SystemEventListenerHolder;
 import jakarta.faces.validator.Validator;
-import jakarta.servlet.ServletContext;
 
 public class MockApplication extends Application {
 
@@ -81,10 +80,8 @@ public class MockApplication extends Application {
         addConverter("jakarta.faces.Long",
                 "jakarta.faces.convert.LongConverter");
         addValidator("Length", "jakarta.faces.validator.LengthValidator");
-        servletContext = new MockServletContext();
     }
 
-    private ServletContext servletContext = null;
     private ActionListener actionListener = null;
     private static boolean processActionCalled = false;
 

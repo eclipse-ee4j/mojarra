@@ -17,11 +17,9 @@
 package com.sun.faces.facelets.tag.faces;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.annotation.FacesComponentUsage;
-import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
 import jakarta.faces.FacesException;
@@ -32,8 +30,6 @@ import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagHandler;
 
 public class FacesComponentTagLibrary extends LazyTagLibrary {
-
-    private static final Logger LOGGER = FacesLogger.FACELETS_COMPONENT.getLogger();
 
     private ApplicationAssociate appAss;
 

@@ -69,10 +69,6 @@ public class WebPrintWriter extends PrintWriter {
             // no-op
         }
 
-        protected NoOpWriter(Object lock) {
-            // no-op
-        }
-
         @Override
         public void write(int c) throws IOException {
             // no-op

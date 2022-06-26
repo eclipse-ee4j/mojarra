@@ -18,15 +18,11 @@ package com.sun.faces.util;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.logging.Logger;
 
 /**
  * A concurrent caching mechanism.
  */
 public class Cache<K, V> {
-
-    // Log instance for this class
-    private static final Logger LOGGER = FacesLogger.UTIL.getLogger();
 
     /**
      * Factory interface for creating various cacheable objects.
