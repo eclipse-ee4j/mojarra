@@ -1550,4 +1550,13 @@ public class Util {
         return clientIdNestedInIteratorPattern.matcher(parent.getClientId(context)).matches();
     }
 
+    public static String ensureLeadingSlash(String s) {
+        if (s == null || (!s.isEmpty() && s.charAt(0) == '/')) {
+            return s;
+        }
+        else {
+            return '/' + s;
+        }
+    }
+
 }
