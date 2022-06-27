@@ -29,7 +29,7 @@
    <parent>
         <groupId>org.glassfish</groupId>
         <artifactId>mojarra-parent</artifactId>
-        <version>4.0.1-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
     </parent>
 
    <artifactId>jakarta.faces</artifactId>
@@ -207,65 +207,37 @@
         </resources>
         <pluginManagement>
             <plugins>
-                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-                <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>net.alchim31.maven</groupId>
-                                        <artifactId>yuicompressor-maven-plugin</artifactId>
-                                        <versionRange>[1.5,)</versionRange>
-                                        <goals>
-                                            <goal>compress</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <execute>
-                                            <runOnIncremental>false</runOnIncremental>
-                                        </execute>
-                                    </action>
-                                </pluginExecution>
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
-                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
         
             <!-- ###  C O M P R E S S  /  M I N I F Y   faces.js  ###   -->
+            <!-- https://blutorange.github.io/closure-compiler-maven-plugin/minify-mojo.html -->
             <plugin>
-                <groupId>net.alchim31.maven</groupId>
-                <artifactId>yuicompressor-maven-plugin</artifactId>
-                <version>1.5.1</version>
+                <groupId>com.github.blutorange</groupId>
+                <artifactId>closure-compiler-maven-plugin</artifactId>
+                <version>2.23.0</version>
                 <executions>
+                    <!-- Process all files in the "includes" directory individually-->
                     <execution>
                         <id>minify-faces-js</id>
                         <phase>generate-sources</phase>
                         <goals>
-                            <goal>compress</goal>
+                            <goal>minify</goal>
                         </goals>
                         <configuration>
-                            <nosuffix>true</nosuffix>
-                            <preProcessAggregates>true</preProcessAggregates>
-                            <aggregations>
-                                <aggregation>
-                                    <includes>
-                                        <include>${project.basedir}/src/main/resources/META-INF/resources/jakarta.faces/faces-uncompressed.js</include>
-                                    </includes>
-                                    <output>${project.build.directory}/generated-resources/yui/faces.js</output>
-                                </aggregation>
-                            </aggregations>
+                            <encoding>UTF-8</encoding>
+                            <!-- Base configuration for all executions (bundles) -->
+                            <baseSourceDir>${project.basedir}/src/main/resources/META-INF/resources/</baseSourceDir>
+                            <baseTargetDir>${project.build.directory}/generated-resources/minified/META-INF/resources/</baseTargetDir>
+                            <sourceDir>jakarta.faces</sourceDir>
+                            <targetDir>jakarta.faces</targetDir>
                             <includes>
-                                <include>*.js</include>
+                                <include>faces-uncompressed.js</include>
                             </includes>
-                            <sourceDirectory>${project.build.directory}/generated-resources/yui</sourceDirectory>
-                            <outputDirectory>${project.build.directory}/generated-resources/yui/META-INF/resources/jakarta.faces/</outputDirectory>
+                            <outputFilename>#{path}/faces.js</outputFilename>
+                            <skipMerge>true</skipMerge>
+                            <closureLanguageOut>ECMASCRIPT5_STRICT</closureLanguageOut>
                         </configuration>
                     </execution>
                 </executions>
@@ -287,7 +259,7 @@
                         <configuration>
                             <resources>
                                 <resource>
-                                    <directory>${project.build.directory}/generated-resources/yui</directory>
+                                    <directory>${project.build.directory}/generated-resources/minified</directory>
                                 </resource>
                             </resources>
                         </configuration>
