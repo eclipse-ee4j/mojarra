@@ -28,10 +28,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import com.sun.faces.component.CompositeComponentStackManager;
-import com.sun.faces.util.FacesLogger;
 
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
@@ -48,9 +46,6 @@ import jakarta.faces.el.CompositeComponentExpressionHolder;
  * </p>
  */
 public class CompositeComponentAttributesELResolver extends ELResolver {
-
-    // Log instance for this class
-    private static final Logger LOGGER = FacesLogger.CONTEXT.getLogger();
 
     /**
      * Implicit object related only to the cc implicitObject.

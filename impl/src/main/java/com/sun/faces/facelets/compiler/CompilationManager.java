@@ -219,8 +219,6 @@ final class CompilationManager {
         String[] qname = determineQName(t);
         t = trimAttributes(t);
 
-        boolean handled = false;
-
         if (isTrimmed(qname[0], qname[1])) {
             if (log.isLoggable(Level.FINE)) {
                 log.fine("Composition Found, Popping Parent Tags");
@@ -297,11 +295,14 @@ final class CompilationManager {
                 finishUnit();
             } else {
                 t.endTag();
+                if (t.isClosed()) {
+                    this.finishUnit();
+                }
                 return;
             }
+            unit = this.currentUnit();
         }
 
-        unit = currentUnit();
         if (unit instanceof TagUnit) {
             TagUnit t = (TagUnit) unit;
             if (t instanceof TrimmedTagUnit) {
@@ -466,7 +467,7 @@ final class CompilationManager {
         if (remove == 0) {
             return tag;
         } else {
-            List attrList = new ArrayList(attr.length);
+            List<TagAttribute> attrList = new ArrayList<>(attr.length);
             int p = 0;
             for (int i = 0; i < attr.length; i++) {
                 p = 1 << i;
@@ -475,7 +476,7 @@ final class CompilationManager {
                 }
                 attrList.add(attr[i]);
             }
-            attr = (TagAttribute[]) attrList.toArray(new TagAttribute[attrList.size()]);
+            attr = attrList.toArray(new TagAttribute[attrList.size()]);
             return new Tag(tag.getLocation(), tag.getNamespace(), tag.getLocalName(), tag.getQName(), new TagAttributesImpl(attr));
         }
     }

@@ -105,19 +105,16 @@ public class ApplicationMap extends BaseContextMap<Object> {
 
     // --------------------------------------------- Methods from BaseContextMap
 
-    @SuppressWarnings("unchecked")
     @Override
     protected Iterator<Map.Entry<String, Object>> getEntryIterator() {
         return new EntryIterator(servletContext.getAttributeNames());
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     protected Iterator<String> getKeyIterator() {
         return new KeyIterator(servletContext.getAttributeNames());
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     protected Iterator<Object> getValueIterator() {
         return new ValueIterator(servletContext.getAttributeNames());

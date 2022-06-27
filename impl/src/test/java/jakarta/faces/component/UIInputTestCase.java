@@ -166,7 +166,6 @@ public class UIInputTestCase extends UIOutputTestCase {
     // Test listener registration and deregistration
     public void testListeners() {
         InputTestImpl input = new InputTestImpl();
-        ValueChangeListenerTestImpl listener = null;
 
         input.addValueChangeListener(new ValueChangeListenerTestImpl("ARV0"));
         input.addValueChangeListener(new ValueChangeListenerTestImpl("ARV1"));
@@ -184,7 +183,6 @@ public class UIInputTestCase extends UIOutputTestCase {
     // Test empty listener list
     public void testEmptyListeners() {
         InputTestImpl input = new InputTestImpl();
-        ValueChangeListenerTestImpl listener = null;
 
         // No listeners added, should be empty
         ValueChangeListener listeners[] = input.getValueChangeListeners();

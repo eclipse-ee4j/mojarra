@@ -16,14 +16,12 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 package jakarta.faces.component.html;
+import static jakarta.faces.component.html.HtmlComponentUtils.handleAttribute;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
-import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIGraphic;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 
@@ -37,8 +35,6 @@ import jakarta.faces.component.behavior.ClientBehaviorHolder;
  * </p>
  */
 public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder {
-
-    private static final String OPTIMIZED_PACKAGE = "jakarta.faces.component.";
 
     public HtmlGraphicImage() {
         super();
@@ -98,7 +94,7 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
      */
     public void setAlt(java.lang.String alt) {
         getStateHelper().put(PropertyKeys.alt, alt);
-        handleAttribute("alt", alt);
+        handleAttribute(this, "alt", alt);
     }
 
     /**
@@ -126,7 +122,7 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
      */
     public void setDir(java.lang.String dir) {
         getStateHelper().put(PropertyKeys.dir, dir);
-        handleAttribute("dir", dir);
+        handleAttribute(this, "dir", dir);
     }
 
     /**
@@ -152,7 +148,7 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
      */
     public void setHeight(java.lang.String height) {
         getStateHelper().put(PropertyKeys.height, height);
-        handleAttribute("height", height);
+        handleAttribute(this, "height", height);
     }
 
     /**
@@ -205,7 +201,7 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
      */
     public void setLang(java.lang.String lang) {
         getStateHelper().put(PropertyKeys.lang, lang);
-        handleAttribute("lang", lang);
+        handleAttribute(this, "lang", lang);
     }
 
     /**
@@ -231,7 +227,7 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
      */
     public void setLongdesc(java.lang.String longdesc) {
         getStateHelper().put(PropertyKeys.longdesc, longdesc);
-        handleAttribute("longdesc", longdesc);
+        handleAttribute(this, "longdesc", longdesc);
     }
 
     /**
@@ -257,7 +253,7 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
      */
     public void setOnclick(java.lang.String onclick) {
         getStateHelper().put(PropertyKeys.onclick, onclick);
-        handleAttribute("onclick", onclick);
+        handleAttribute(this, "onclick", onclick);
     }
 
     /**
@@ -283,7 +279,7 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
      */
     public void setOndblclick(java.lang.String ondblclick) {
         getStateHelper().put(PropertyKeys.ondblclick, ondblclick);
-        handleAttribute("ondblclick", ondblclick);
+        handleAttribute(this, "ondblclick", ondblclick);
     }
 
     /**
@@ -309,7 +305,7 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
      */
     public void setOnkeydown(java.lang.String onkeydown) {
         getStateHelper().put(PropertyKeys.onkeydown, onkeydown);
-        handleAttribute("onkeydown", onkeydown);
+        handleAttribute(this, "onkeydown", onkeydown);
     }
 
     /**
@@ -335,7 +331,7 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
      */
     public void setOnkeypress(java.lang.String onkeypress) {
         getStateHelper().put(PropertyKeys.onkeypress, onkeypress);
-        handleAttribute("onkeypress", onkeypress);
+        handleAttribute(this, "onkeypress", onkeypress);
     }
 
     /**
@@ -361,7 +357,7 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
      */
     public void setOnkeyup(java.lang.String onkeyup) {
         getStateHelper().put(PropertyKeys.onkeyup, onkeyup);
-        handleAttribute("onkeyup", onkeyup);
+        handleAttribute(this, "onkeyup", onkeyup);
     }
 
     /**
@@ -387,7 +383,7 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
      */
     public void setOnmousedown(java.lang.String onmousedown) {
         getStateHelper().put(PropertyKeys.onmousedown, onmousedown);
-        handleAttribute("onmousedown", onmousedown);
+        handleAttribute(this, "onmousedown", onmousedown);
     }
 
     /**
@@ -413,7 +409,7 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
      */
     public void setOnmousemove(java.lang.String onmousemove) {
         getStateHelper().put(PropertyKeys.onmousemove, onmousemove);
-        handleAttribute("onmousemove", onmousemove);
+        handleAttribute(this, "onmousemove", onmousemove);
     }
 
     /**
@@ -439,7 +435,7 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
      */
     public void setOnmouseout(java.lang.String onmouseout) {
         getStateHelper().put(PropertyKeys.onmouseout, onmouseout);
-        handleAttribute("onmouseout", onmouseout);
+        handleAttribute(this, "onmouseout", onmouseout);
     }
 
     /**
@@ -465,7 +461,7 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
      */
     public void setOnmouseover(java.lang.String onmouseover) {
         getStateHelper().put(PropertyKeys.onmouseover, onmouseover);
-        handleAttribute("onmouseover", onmouseover);
+        handleAttribute(this, "onmouseover", onmouseover);
     }
 
     /**
@@ -491,7 +487,7 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
      */
     public void setOnmouseup(java.lang.String onmouseup) {
         getStateHelper().put(PropertyKeys.onmouseup, onmouseup);
-        handleAttribute("onmouseup", onmouseup);
+        handleAttribute(this, "onmouseup", onmouseup);
     }
 
     /**
@@ -529,7 +525,7 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
      */
     public void setRole(java.lang.String role) {
         getStateHelper().put(PropertyKeys.role, role);
-        handleAttribute("role", role);
+        handleAttribute(this, "role", role);
     }
 
     /**
@@ -555,7 +551,7 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
      */
     public void setStyle(java.lang.String style) {
         getStateHelper().put(PropertyKeys.style, style);
-        handleAttribute("style", style);
+        handleAttribute(this, "style", style);
     }
 
     /**
@@ -607,7 +603,7 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
      */
     public void setTitle(java.lang.String title) {
         getStateHelper().put(PropertyKeys.title, title);
-        handleAttribute("title", title);
+        handleAttribute(this, "title", title);
     }
 
     /**
@@ -633,7 +629,7 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
      */
     public void setUsemap(java.lang.String usemap) {
         getStateHelper().put(PropertyKeys.usemap, usemap);
-        handleAttribute("usemap", usemap);
+        handleAttribute(this, "usemap", usemap);
     }
 
     /**
@@ -659,7 +655,7 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
      */
     public void setWidth(java.lang.String width) {
         getStateHelper().put(PropertyKeys.width, width);
-        handleAttribute("width", width);
+        handleAttribute(this, "width", width);
     }
 
     private static final Collection<String> EVENT_NAMES = Collections.unmodifiableCollection(
@@ -673,27 +669,6 @@ public class HtmlGraphicImage extends UIGraphic implements ClientBehaviorHolder 
     @Override
     public String getDefaultEventName() {
         return null;
-    }
-
-    private void handleAttribute(String name, Object value) {
-        List<String> setAttributes = (List<String>) getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");
-        if (setAttributes == null) {
-            String cname = this.getClass().getName();
-            if (cname != null && cname.startsWith(OPTIMIZED_PACKAGE)) {
-                setAttributes = new ArrayList<>(6);
-                getAttributes().put("jakarta.faces.component.UIComponentBase.attributesThatAreSet", setAttributes);
-            }
-        }
-        if (setAttributes != null) {
-            if (value == null) {
-                ValueExpression ve = getValueExpression(name);
-                if (ve == null) {
-                    setAttributes.remove(name);
-                }
-            } else if (!setAttributes.contains(name)) {
-                setAttributes.add(name);
-            }
-        }
     }
 
 }

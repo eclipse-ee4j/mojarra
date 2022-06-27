@@ -23,12 +23,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import com.sun.faces.application.view.FaceletViewHandlingStrategy;
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 import com.sun.faces.facelets.tag.faces.ComponentSupport;
-import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 
 import jakarta.el.ValueExpression;
@@ -45,8 +43,6 @@ import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagException;
 
 public class InterfaceHandler extends TagHandlerImpl {
-
-    private final Logger LOGGER = FacesLogger.TAGLIB.getLogger();
 
     private static final String[] ATTRIBUTES_DEV = { "displayName", "expert", "hidden", "preferred", "shortDescription", "name", "componentType" };
 

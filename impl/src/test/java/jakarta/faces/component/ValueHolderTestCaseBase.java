@@ -16,10 +16,6 @@
 
 package jakarta.faces.component;
 
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
-import java.util.Map;
-
 import jakarta.faces.component.html.HtmlInputText;
 import jakarta.faces.convert.LongConverter;
 import jakarta.faces.convert.NumberConverter;
@@ -124,7 +120,7 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
                     foundNull = true;
                 }
             }
-            Thread.currentThread().sleep(500);
+            Thread.sleep(500);
         }
 
         for (i = 0; i < outcomes.length; i++) {
@@ -132,13 +128,6 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
                 fail("Thread " + i + " failed");
             }
         }
-    }
-
-    private void clearDescriptors() throws Exception {
-        Field descriptorsField = UIComponentBase.class.getDeclaredField("descriptors");
-        descriptorsField.setAccessible(true);
-        Map<Class<?>, Map<String, PropertyDescriptor>> descriptors = (Map<Class<?>, Map<String, PropertyDescriptor>>) descriptorsField.get(null);
-        descriptors.clear();
     }
 
     @Override

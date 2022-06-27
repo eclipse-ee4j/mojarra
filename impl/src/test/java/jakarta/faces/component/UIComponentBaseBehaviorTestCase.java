@@ -70,12 +70,8 @@ public class UIComponentBaseBehaviorTestCase extends UIComponentTestCase {
 
     }
 
-    @SuppressWarnings("serial")
     public static class TestBehavior implements ClientBehavior, Serializable {
 
-        /**
-         *
-         */
         private static final long serialVersionUID = 1L;
 
         private static final Set<ClientBehaviorHint> HINTS = Collections.unmodifiableSet(EnumSet.of(ClientBehaviorHint.SUBMITTING));

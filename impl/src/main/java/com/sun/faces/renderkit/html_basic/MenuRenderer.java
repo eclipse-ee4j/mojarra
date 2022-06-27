@@ -689,8 +689,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
      */
     protected Collection<Object> createCollection(Collection<Object> collection, Class<? extends Collection<Object>> fallBackType) {
 
-        @SuppressWarnings("unchecked")
-        Class lookupClass = fallBackType;
+        Class<?> lookupClass = fallBackType;
         if (collection != null) {
             lookupClass = collection.getClass();
             if (lookupClass.getName().equals(Arrays.class.getName() + "$ArrayList")) {

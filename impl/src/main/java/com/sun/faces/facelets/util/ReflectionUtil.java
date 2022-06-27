@@ -23,8 +23,6 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 
 import com.sun.faces.config.ConfigurationException;
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
 import com.sun.faces.util.ReflectionUtils;
 import com.sun.faces.util.Util;
 
@@ -231,8 +229,4 @@ public class ReflectionUtil {
 
     }
 
-    private static boolean isDevModeEnabled() {
-        WebConfiguration webconfig = WebConfiguration.getInstance();
-        return webconfig != null && "Development".equals(webconfig.getOptionValue(WebContextInitParameter.JakartaFacesProjectStage));
-    }
 }

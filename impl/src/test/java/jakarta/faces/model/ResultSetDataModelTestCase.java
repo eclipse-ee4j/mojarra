@@ -117,16 +117,16 @@ public class ResultSetDataModelTestCase extends DataModelTestCaseBase {
         // Test positive results
         assertTrue(map.containsValue(Boolean.TRUE));
         assertTrue(map.containsValue(Boolean.FALSE));
-        assertTrue(map.containsValue(new Byte((byte) 1)));
-        assertTrue(map.containsValue(new Double((double) 100.0)));
-        assertTrue(map.containsValue(new Float((float) 10.0)));
-        assertTrue(map.containsValue(new Integer((int) 1000)));
-        assertTrue(map.containsValue(new Long((long) 10000)));
+        assertTrue(map.containsValue(Byte.valueOf((byte) 1)));
+        assertTrue(map.containsValue(Double.valueOf(100.0)));
+        assertTrue(map.containsValue(Float.valueOf((float) 10.0)));
+        assertTrue(map.containsValue(Integer.valueOf(1000)));
+        assertTrue(map.containsValue(Long.valueOf(10000l)));
         assertTrue(map.containsValue("This is string 1"));
 
         // Test negative results
         assertTrue(!map.containsValue("foo"));
-        assertTrue(!map.containsValue(new Integer(654321)));
+        assertTrue(!map.containsValue(Integer.valueOf(654321)));
     }
 
     // Test ((Map) getRowData()).entrySet()
@@ -141,37 +141,23 @@ public class ResultSetDataModelTestCase extends DataModelTestCaseBase {
         Set set = map.entrySet();
 
         // Test exact match postive results
-        assertTrue(set.contains(new TestEntry("booleanProperty",
-                Boolean.FALSE)));
-        assertTrue(set.contains(new TestEntry("booleanSecond",
-                Boolean.TRUE)));
-        assertTrue(set.contains(new TestEntry("byteProperty",
-                new Byte((byte) 1))));
-        assertTrue(set.contains(new TestEntry("doubleProperty",
-                new Double((double) 100.0))));
-        assertTrue(set.contains(new TestEntry("floatProperty",
-                new Float((float) 10.0))));
-        assertTrue(set.contains(new TestEntry("intProperty",
-                new Integer((int) 1000))));
-        assertTrue(set.contains(new TestEntry("longProperty",
-                new Long((long) 10000))));
+        assertTrue(set.contains(new TestEntry("booleanProperty", Boolean.FALSE)));
+        assertTrue(set.contains(new TestEntry("booleanSecond", Boolean.TRUE)));
+        assertTrue(set.contains(new TestEntry("byteProperty", Byte.valueOf((byte) 1))));
+        assertTrue(set.contains(new TestEntry("doubleProperty", Double.valueOf(100.0))));
+        assertTrue(set.contains(new TestEntry("floatProperty", Float.valueOf((float) 10.0))));
+        assertTrue(set.contains(new TestEntry("intProperty", Integer.valueOf(1000))));
+        assertTrue(set.contains(new TestEntry("longProperty", Long.valueOf(10000l))));
         assertTrue(set.contains(new TestEntry("stringProperty", "This is string 1")));
 
         // Test exact match postive results
-        assertTrue(set.contains(new TestEntry("booleanPROPERTY",
-                Boolean.FALSE)));
-        assertTrue(set.contains(new TestEntry("booleanSECOND",
-                Boolean.TRUE)));
-        assertTrue(set.contains(new TestEntry("bytePROPERTY",
-                new Byte((byte) 1))));
-        assertTrue(set.contains(new TestEntry("doublePROPERTY",
-                new Double((double) 100.0))));
-        assertTrue(set.contains(new TestEntry("floatPROPERTY",
-                new Float((float) 10.0))));
-        assertTrue(set.contains(new TestEntry("intPROPERTY",
-                new Integer((int) 1000))));
-        assertTrue(set.contains(new TestEntry("longPROPERTY",
-                new Long((long) 10000))));
+        assertTrue(set.contains(new TestEntry("booleanPROPERTY", Boolean.FALSE)));
+        assertTrue(set.contains(new TestEntry("booleanSECOND", Boolean.TRUE)));
+        assertTrue(set.contains(new TestEntry("bytePROPERTY", Byte.valueOf((byte) 1))));
+        assertTrue(set.contains(new TestEntry("doublePROPERTY", Double.valueOf(100.0))));
+        assertTrue(set.contains(new TestEntry("floatPROPERTY", Float.valueOf((float) 10.0))));
+        assertTrue(set.contains(new TestEntry("intPROPERTY", Integer.valueOf(1000))));
+        assertTrue(set.contains(new TestEntry("longPROPERTY", Long.valueOf(10000l))));
         assertTrue(set.contains(new TestEntry("stringPROPERTY", "This is string 1")));
 
         // Test negative results
@@ -213,40 +199,24 @@ public class ResultSetDataModelTestCase extends DataModelTestCaseBase {
         Map map = (Map) data;
 
         // Test exact match on column names
-        assertEquals(Boolean.FALSE,
-                (Boolean) map.get("booleanProperty"));
-        assertEquals(Boolean.TRUE,
-                (Boolean) map.get("booleanSecond"));
-        assertEquals(new Byte((byte) 1),
-                (Byte) map.get("byteProperty"));
-        assertEquals(new Double((double) 100.0),
-                (Double) map.get("doubleProperty"));
-        assertEquals(new Float((float) 10.0),
-                (Float) map.get("floatProperty"));
-        assertEquals(new Integer((int) 1000),
-                (Integer) map.get("intProperty"));
-        assertEquals(new Long((long) 10000),
-                (Long) map.get("longProperty"));
-        assertEquals("This is string 1",
-                (String) map.get("stringProperty"));
+        assertEquals(Boolean.FALSE, map.get("booleanProperty"));
+        assertEquals(Boolean.TRUE, map.get("booleanSecond"));
+        assertEquals(Byte.valueOf((byte) 1), map.get("byteProperty"));
+        assertEquals(Double.valueOf(100.0), map.get("doubleProperty"));
+        assertEquals(Float.valueOf((float) 10.0), map.get("floatProperty"));
+        assertEquals(Integer.valueOf(1000), map.get("intProperty"));
+        assertEquals(Long.valueOf(10000l), map.get("longProperty"));
+        assertEquals("This is string 1", (String) map.get("stringProperty"));
 
         // Test inexact match on column names
-        assertEquals(Boolean.FALSE,
-                (Boolean) map.get("booleanPROPERTY"));
-        assertEquals(Boolean.TRUE,
-                (Boolean) map.get("booleanSECOND"));
-        assertEquals(new Byte((byte) 1),
-                (Byte) map.get("bytePROPERTY"));
-        assertEquals(new Double((double) 100.0),
-                (Double) map.get("doublePROPERTY"));
-        assertEquals(new Float((float) 10.0),
-                (Float) map.get("floatPROPERTY"));
-        assertEquals(new Integer((int) 1000),
-                (Integer) map.get("intPROPERTY"));
-        assertEquals(new Long((long) 10000),
-                (Long) map.get("longPROPERTY"));
-        assertEquals("This is string 1",
-                (String) map.get("stringPROPERTY"));
+        assertEquals(Boolean.FALSE, map.get("booleanPROPERTY"));
+        assertEquals(Boolean.TRUE, map.get("booleanSECOND"));
+        assertEquals(Byte.valueOf((byte) 1), map.get("bytePROPERTY"));
+        assertEquals(Double.valueOf(100.0), map.get("doublePROPERTY"));
+        assertEquals(Float.valueOf((float) 10.0), map.get("floatPROPERTY"));
+        assertEquals(Integer.valueOf(1000), map.get("intPROPERTY"));
+        assertEquals(Long.valueOf(10000l), map.get("longPROPERTY"));
+        assertEquals("This is string 1", (String) map.get("stringPROPERTY"));
 
         // Test null return on non-existent column names
         assertNull(map.get("foo"));
@@ -499,16 +469,16 @@ public class ResultSetDataModelTestCase extends DataModelTestCaseBase {
         // Test positive results
         assertTrue(values.contains(Boolean.TRUE));
         assertTrue(values.contains(Boolean.FALSE));
-        assertTrue(values.contains(new Byte((byte) 1)));
-        assertTrue(values.contains(new Double((double) 100.0)));
-        assertTrue(values.contains(new Float((float) 10.0)));
-        assertTrue(values.contains(new Integer((int) 1000)));
-        assertTrue(values.contains(new Long((long) 10000)));
+        assertTrue(values.contains(Byte.valueOf((byte) 1)));
+        assertTrue(values.contains(Double.valueOf(100.0)));
+        assertTrue(values.contains(Float.valueOf((float) 10.0)));
+        assertTrue(values.contains(Integer.valueOf(1000)));
+        assertTrue(values.contains(Long.valueOf(10000l)));
         assertTrue(values.contains("This is string 1"));
 
         // Test negative results
         assertTrue(!values.contains("foo"));
-        assertTrue(!values.contains(new Integer(654321)));
+        assertTrue(!values.contains(Integer.valueOf(654321)));
 
         // Test other methods
         assertTrue(!values.isEmpty());

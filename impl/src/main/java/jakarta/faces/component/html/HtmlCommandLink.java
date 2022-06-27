@@ -17,13 +17,12 @@
  */
 package jakarta.faces.component.html;
 
-import java.util.ArrayList;
+import static jakarta.faces.component.html.HtmlComponentUtils.handleAttribute;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
-import jakarta.el.ValueExpression;
 import jakarta.faces.component.UICommand;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 
@@ -38,8 +37,6 @@ import jakarta.faces.component.behavior.ClientBehaviorHolder;
  * </p>
  */
 public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
-
-    private static final String OPTIMIZED_PACKAGE = "jakarta.faces.component.";
 
     public HtmlCommandLink() {
         super();
@@ -99,7 +96,7 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
      */
     public void setAccesskey(java.lang.String accesskey) {
         getStateHelper().put(PropertyKeys.accesskey, accesskey);
-        handleAttribute("accesskey", accesskey);
+        handleAttribute(this, "accesskey", accesskey);
     }
 
     /**
@@ -125,7 +122,7 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
      */
     public void setCharset(java.lang.String charset) {
         getStateHelper().put(PropertyKeys.charset, charset);
-        handleAttribute("charset", charset);
+        handleAttribute(this, "charset", charset);
     }
 
     /**
@@ -151,7 +148,7 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
      */
     public void setCoords(java.lang.String coords) {
         getStateHelper().put(PropertyKeys.coords, coords);
-        handleAttribute("coords", coords);
+        handleAttribute(this, "coords", coords);
     }
 
     /**
@@ -179,7 +176,7 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
      */
     public void setDir(java.lang.String dir) {
         getStateHelper().put(PropertyKeys.dir, dir);
-        handleAttribute("dir", dir);
+        handleAttribute(this, "dir", dir);
     }
 
     /**
@@ -230,7 +227,7 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
      */
     public void setHreflang(java.lang.String hreflang) {
         getStateHelper().put(PropertyKeys.hreflang, hreflang);
-        handleAttribute("hreflang", hreflang);
+        handleAttribute(this, "hreflang", hreflang);
     }
 
     /**
@@ -256,7 +253,7 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
      */
     public void setLang(java.lang.String lang) {
         getStateHelper().put(PropertyKeys.lang, lang);
-        handleAttribute("lang", lang);
+        handleAttribute(this, "lang", lang);
     }
 
     /**
@@ -282,7 +279,7 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
      */
     public void setOnblur(java.lang.String onblur) {
         getStateHelper().put(PropertyKeys.onblur, onblur);
-        handleAttribute("onblur", onblur);
+        handleAttribute(this, "onblur", onblur);
     }
 
     /**
@@ -333,7 +330,7 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
      */
     public void setOndblclick(java.lang.String ondblclick) {
         getStateHelper().put(PropertyKeys.ondblclick, ondblclick);
-        handleAttribute("ondblclick", ondblclick);
+        handleAttribute(this, "ondblclick", ondblclick);
     }
 
     /**
@@ -359,7 +356,7 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
      */
     public void setOnfocus(java.lang.String onfocus) {
         getStateHelper().put(PropertyKeys.onfocus, onfocus);
-        handleAttribute("onfocus", onfocus);
+        handleAttribute(this, "onfocus", onfocus);
     }
 
     /**
@@ -385,7 +382,7 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
      */
     public void setOnkeydown(java.lang.String onkeydown) {
         getStateHelper().put(PropertyKeys.onkeydown, onkeydown);
-        handleAttribute("onkeydown", onkeydown);
+        handleAttribute(this, "onkeydown", onkeydown);
     }
 
     /**
@@ -411,7 +408,7 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
      */
     public void setOnkeypress(java.lang.String onkeypress) {
         getStateHelper().put(PropertyKeys.onkeypress, onkeypress);
-        handleAttribute("onkeypress", onkeypress);
+        handleAttribute(this, "onkeypress", onkeypress);
     }
 
     /**
@@ -437,7 +434,7 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
      */
     public void setOnkeyup(java.lang.String onkeyup) {
         getStateHelper().put(PropertyKeys.onkeyup, onkeyup);
-        handleAttribute("onkeyup", onkeyup);
+        handleAttribute(this, "onkeyup", onkeyup);
     }
 
     /**
@@ -463,7 +460,7 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
      */
     public void setOnmousedown(java.lang.String onmousedown) {
         getStateHelper().put(PropertyKeys.onmousedown, onmousedown);
-        handleAttribute("onmousedown", onmousedown);
+        handleAttribute(this, "onmousedown", onmousedown);
     }
 
     /**
@@ -489,7 +486,7 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
      */
     public void setOnmousemove(java.lang.String onmousemove) {
         getStateHelper().put(PropertyKeys.onmousemove, onmousemove);
-        handleAttribute("onmousemove", onmousemove);
+        handleAttribute(this, "onmousemove", onmousemove);
     }
 
     /**
@@ -515,7 +512,7 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
      */
     public void setOnmouseout(java.lang.String onmouseout) {
         getStateHelper().put(PropertyKeys.onmouseout, onmouseout);
-        handleAttribute("onmouseout", onmouseout);
+        handleAttribute(this, "onmouseout", onmouseout);
     }
 
     /**
@@ -541,7 +538,7 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
      */
     public void setOnmouseover(java.lang.String onmouseover) {
         getStateHelper().put(PropertyKeys.onmouseover, onmouseover);
-        handleAttribute("onmouseover", onmouseover);
+        handleAttribute(this, "onmouseover", onmouseover);
     }
 
     /**
@@ -567,7 +564,7 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
      */
     public void setOnmouseup(java.lang.String onmouseup) {
         getStateHelper().put(PropertyKeys.onmouseup, onmouseup);
-        handleAttribute("onmouseup", onmouseup);
+        handleAttribute(this, "onmouseup", onmouseup);
     }
 
     /**
@@ -594,7 +591,7 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
      */
     public void setRel(java.lang.String rel) {
         getStateHelper().put(PropertyKeys.rel, rel);
-        handleAttribute("rel", rel);
+        handleAttribute(this, "rel", rel);
     }
 
     /**
@@ -621,7 +618,7 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
      */
     public void setRev(java.lang.String rev) {
         getStateHelper().put(PropertyKeys.rev, rev);
-        handleAttribute("rev", rev);
+        handleAttribute(this, "rev", rev);
     }
 
     /**
@@ -659,7 +656,7 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
      */
     public void setRole(java.lang.String role) {
         getStateHelper().put(PropertyKeys.role, role);
-        handleAttribute("role", role);
+        handleAttribute(this, "role", role);
     }
 
     /**
@@ -686,7 +683,7 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
      */
     public void setShape(java.lang.String shape) {
         getStateHelper().put(PropertyKeys.shape, shape);
-        handleAttribute("shape", shape);
+        handleAttribute(this, "shape", shape);
     }
 
     /**
@@ -712,7 +709,7 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
      */
     public void setStyle(java.lang.String style) {
         getStateHelper().put(PropertyKeys.style, style);
-        handleAttribute("style", style);
+        handleAttribute(this, "style", style);
     }
 
     /**
@@ -765,7 +762,7 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
      */
     public void setTabindex(java.lang.String tabindex) {
         getStateHelper().put(PropertyKeys.tabindex, tabindex);
-        handleAttribute("tabindex", tabindex);
+        handleAttribute(this, "tabindex", tabindex);
     }
 
     /**
@@ -816,7 +813,7 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
      */
     public void setTitle(java.lang.String title) {
         getStateHelper().put(PropertyKeys.title, title);
-        handleAttribute("title", title);
+        handleAttribute(this, "title", title);
     }
 
     /**
@@ -842,7 +839,7 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
      */
     public void setType(java.lang.String type) {
         getStateHelper().put(PropertyKeys.type, type);
-        handleAttribute("type", type);
+        handleAttribute(this, "type", type);
     }
 
     private static final Collection<String> EVENT_NAMES = Collections.unmodifiableCollection(Arrays.asList("blur", "click", "action", "dblclick", "focus",
@@ -856,27 +853,6 @@ public class HtmlCommandLink extends UICommand implements ClientBehaviorHolder {
     @Override
     public String getDefaultEventName() {
         return "action";
-    }
-
-    private void handleAttribute(String name, Object value) {
-        List<String> setAttributes = (List<String>) getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");
-        if (setAttributes == null) {
-            String cname = this.getClass().getName();
-            if (cname != null && cname.startsWith(OPTIMIZED_PACKAGE)) {
-                setAttributes = new ArrayList<>(6);
-                getAttributes().put("jakarta.faces.component.UIComponentBase.attributesThatAreSet", setAttributes);
-            }
-        }
-        if (setAttributes != null) {
-            if (value == null) {
-                ValueExpression ve = getValueExpression(name);
-                if (ve == null) {
-                    setAttributes.remove(name);
-                }
-            } else if (!setAttributes.contains(name)) {
-                setAttributes.add(name);
-            }
-        }
     }
 
 }

@@ -17,13 +17,12 @@
  */
 package jakarta.faces.component.html;
 
-import java.util.ArrayList;
+import static jakarta.faces.component.html.HtmlComponentUtils.handleAttribute;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
-import jakarta.el.ValueExpression;
 import jakarta.faces.component.UISelectMany;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 
@@ -38,8 +37,6 @@ import jakarta.faces.component.behavior.ClientBehaviorHolder;
  * </p>
  */
 public class HtmlSelectManyCheckbox extends UISelectMany implements ClientBehaviorHolder {
-
-    private static final String OPTIMIZED_PACKAGE = "jakarta.faces.component.";
 
     public HtmlSelectManyCheckbox() {
         super();
@@ -100,7 +97,7 @@ public class HtmlSelectManyCheckbox extends UISelectMany implements ClientBehavi
      */
     public void setAccesskey(java.lang.String accesskey) {
         getStateHelper().put(PropertyKeys.accesskey, accesskey);
-        handleAttribute("accesskey", accesskey);
+        handleAttribute(this, "accesskey", accesskey);
     }
 
     /**
@@ -126,7 +123,7 @@ public class HtmlSelectManyCheckbox extends UISelectMany implements ClientBehavi
      */
     public void setBorder(int border) {
         getStateHelper().put(PropertyKeys.border, border);
-        handleAttribute("border", border);
+        handleAttribute(this, "border", border);
     }
 
     /**
@@ -154,7 +151,7 @@ public class HtmlSelectManyCheckbox extends UISelectMany implements ClientBehavi
      */
     public void setDir(java.lang.String dir) {
         getStateHelper().put(PropertyKeys.dir, dir);
-        handleAttribute("dir", dir);
+        handleAttribute(this, "dir", dir);
     }
 
     /**
@@ -282,7 +279,7 @@ public class HtmlSelectManyCheckbox extends UISelectMany implements ClientBehavi
      */
     public void setLang(java.lang.String lang) {
         getStateHelper().put(PropertyKeys.lang, lang);
-        handleAttribute("lang", lang);
+        handleAttribute(this, "lang", lang);
     }
 
     /**
@@ -335,7 +332,7 @@ public class HtmlSelectManyCheckbox extends UISelectMany implements ClientBehavi
      */
     public void setOnblur(java.lang.String onblur) {
         getStateHelper().put(PropertyKeys.onblur, onblur);
-        handleAttribute("onblur", onblur);
+        handleAttribute(this, "onblur", onblur);
     }
 
     /**
@@ -361,7 +358,7 @@ public class HtmlSelectManyCheckbox extends UISelectMany implements ClientBehavi
      */
     public void setOnchange(java.lang.String onchange) {
         getStateHelper().put(PropertyKeys.onchange, onchange);
-        handleAttribute("onchange", onchange);
+        handleAttribute(this, "onchange", onchange);
     }
 
     /**
@@ -412,7 +409,7 @@ public class HtmlSelectManyCheckbox extends UISelectMany implements ClientBehavi
      */
     public void setOndblclick(java.lang.String ondblclick) {
         getStateHelper().put(PropertyKeys.ondblclick, ondblclick);
-        handleAttribute("ondblclick", ondblclick);
+        handleAttribute(this, "ondblclick", ondblclick);
     }
 
     /**
@@ -438,7 +435,7 @@ public class HtmlSelectManyCheckbox extends UISelectMany implements ClientBehavi
      */
     public void setOnfocus(java.lang.String onfocus) {
         getStateHelper().put(PropertyKeys.onfocus, onfocus);
-        handleAttribute("onfocus", onfocus);
+        handleAttribute(this, "onfocus", onfocus);
     }
 
     /**
@@ -464,7 +461,7 @@ public class HtmlSelectManyCheckbox extends UISelectMany implements ClientBehavi
      */
     public void setOnkeydown(java.lang.String onkeydown) {
         getStateHelper().put(PropertyKeys.onkeydown, onkeydown);
-        handleAttribute("onkeydown", onkeydown);
+        handleAttribute(this, "onkeydown", onkeydown);
     }
 
     /**
@@ -490,7 +487,7 @@ public class HtmlSelectManyCheckbox extends UISelectMany implements ClientBehavi
      */
     public void setOnkeypress(java.lang.String onkeypress) {
         getStateHelper().put(PropertyKeys.onkeypress, onkeypress);
-        handleAttribute("onkeypress", onkeypress);
+        handleAttribute(this, "onkeypress", onkeypress);
     }
 
     /**
@@ -516,7 +513,7 @@ public class HtmlSelectManyCheckbox extends UISelectMany implements ClientBehavi
      */
     public void setOnkeyup(java.lang.String onkeyup) {
         getStateHelper().put(PropertyKeys.onkeyup, onkeyup);
-        handleAttribute("onkeyup", onkeyup);
+        handleAttribute(this, "onkeyup", onkeyup);
     }
 
     /**
@@ -542,7 +539,7 @@ public class HtmlSelectManyCheckbox extends UISelectMany implements ClientBehavi
      */
     public void setOnmousedown(java.lang.String onmousedown) {
         getStateHelper().put(PropertyKeys.onmousedown, onmousedown);
-        handleAttribute("onmousedown", onmousedown);
+        handleAttribute(this, "onmousedown", onmousedown);
     }
 
     /**
@@ -568,7 +565,7 @@ public class HtmlSelectManyCheckbox extends UISelectMany implements ClientBehavi
      */
     public void setOnmousemove(java.lang.String onmousemove) {
         getStateHelper().put(PropertyKeys.onmousemove, onmousemove);
-        handleAttribute("onmousemove", onmousemove);
+        handleAttribute(this, "onmousemove", onmousemove);
     }
 
     /**
@@ -594,7 +591,7 @@ public class HtmlSelectManyCheckbox extends UISelectMany implements ClientBehavi
      */
     public void setOnmouseout(java.lang.String onmouseout) {
         getStateHelper().put(PropertyKeys.onmouseout, onmouseout);
-        handleAttribute("onmouseout", onmouseout);
+        handleAttribute(this, "onmouseout", onmouseout);
     }
 
     /**
@@ -620,7 +617,7 @@ public class HtmlSelectManyCheckbox extends UISelectMany implements ClientBehavi
      */
     public void setOnmouseover(java.lang.String onmouseover) {
         getStateHelper().put(PropertyKeys.onmouseover, onmouseover);
-        handleAttribute("onmouseover", onmouseover);
+        handleAttribute(this, "onmouseover", onmouseover);
     }
 
     /**
@@ -646,7 +643,7 @@ public class HtmlSelectManyCheckbox extends UISelectMany implements ClientBehavi
      */
     public void setOnmouseup(java.lang.String onmouseup) {
         getStateHelper().put(PropertyKeys.onmouseup, onmouseup);
-        handleAttribute("onmouseup", onmouseup);
+        handleAttribute(this, "onmouseup", onmouseup);
     }
 
     /**
@@ -672,7 +669,7 @@ public class HtmlSelectManyCheckbox extends UISelectMany implements ClientBehavi
      */
     public void setOnselect(java.lang.String onselect) {
         getStateHelper().put(PropertyKeys.onselect, onselect);
-        handleAttribute("onselect", onselect);
+        handleAttribute(this, "onselect", onselect);
     }
 
     /**
@@ -737,7 +734,7 @@ public class HtmlSelectManyCheckbox extends UISelectMany implements ClientBehavi
      */
     public void setRole(java.lang.String role) {
         getStateHelper().put(PropertyKeys.role, role);
-        handleAttribute("role", role);
+        handleAttribute(this, "role", role);
     }
 
     /**
@@ -788,7 +785,7 @@ public class HtmlSelectManyCheckbox extends UISelectMany implements ClientBehavi
      */
     public void setStyle(java.lang.String style) {
         getStateHelper().put(PropertyKeys.style, style);
-        handleAttribute("style", style);
+        handleAttribute(this, "style", style);
     }
 
     /**
@@ -841,7 +838,7 @@ public class HtmlSelectManyCheckbox extends UISelectMany implements ClientBehavi
      */
     public void setTabindex(java.lang.String tabindex) {
         getStateHelper().put(PropertyKeys.tabindex, tabindex);
-        handleAttribute("tabindex", tabindex);
+        handleAttribute(this, "tabindex", tabindex);
     }
 
     /**
@@ -867,7 +864,7 @@ public class HtmlSelectManyCheckbox extends UISelectMany implements ClientBehavi
      */
     public void setTitle(java.lang.String title) {
         getStateHelper().put(PropertyKeys.title, title);
-        handleAttribute("title", title);
+        handleAttribute(this, "title", title);
     }
 
     /**
@@ -906,27 +903,6 @@ public class HtmlSelectManyCheckbox extends UISelectMany implements ClientBehavi
     @Override
     public String getDefaultEventName() {
         return "valueChange";
-    }
-
-    private void handleAttribute(String name, Object value) {
-        List<String> setAttributes = (List<String>) getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");
-        if (setAttributes == null) {
-            String cname = this.getClass().getName();
-            if (cname != null && cname.startsWith(OPTIMIZED_PACKAGE)) {
-                setAttributes = new ArrayList<>(6);
-                getAttributes().put("jakarta.faces.component.UIComponentBase.attributesThatAreSet", setAttributes);
-            }
-        }
-        if (setAttributes != null) {
-            if (value == null) {
-                ValueExpression ve = getValueExpression(name);
-                if (ve == null) {
-                    setAttributes.remove(name);
-                }
-            } else if (!setAttributes.contains(name)) {
-                setAttributes.add(name);
-            }
-        }
     }
 
 }

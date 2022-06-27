@@ -30,7 +30,7 @@ import jakarta.faces.view.facelets.FaceletHandler;
  */
 final class NamespaceUnit extends CompilationUnit {
 
-    private final Map ns = new HashMap();
+    private final Map<String, String> ns = new HashMap<>();
     private final TagLibrary library;
 
     public NamespaceUnit(TagLibrary library) {

@@ -60,11 +60,11 @@ public abstract class Compiler {
 
     private boolean trimmingComments = false;
 
-    private final List libraries = new ArrayList();
+    private final List<TagLibrary> libraries = new ArrayList<>();
 
-    private final List decorators = new ArrayList();
+    private final List<TagDecorator> decorators = new ArrayList<>();
 
-    private final Map features = new HashMap();
+    private final Map<String, String> features = new HashMap<>();
 
     /**
      *
@@ -90,7 +90,7 @@ public abstract class Compiler {
 
     public final TagDecorator createTagDecorator() {
         if (decorators.size() > 0) {
-            return new CompositeTagDecorator((TagDecorator[]) decorators.toArray(new TagDecorator[decorators.size()]));
+            return new CompositeTagDecorator(decorators.toArray(new TagDecorator[decorators.size()]));
         }
         return EMPTY_DECORATOR;
     }
@@ -127,7 +127,7 @@ public abstract class Compiler {
     }
 
     private final Object featureInstance(String name) {
-        String type = (String) features.get(name);
+        String type = features.get(name);
         if (type != null) {
             try {
                 return ReflectionUtil.forName(type).newInstance();
@@ -140,7 +140,7 @@ public abstract class Compiler {
 
     public final TagLibrary createTagLibrary(CompilationMessageHolder unit) {
         if (libraries.size() > 0) {
-            return new CompositeTagLibrary((TagLibrary[]) libraries.toArray(new TagLibrary[libraries.size()]), unit);
+            return new CompositeTagLibrary(libraries.toArray(new TagLibrary[libraries.size()]), unit);
         }
         return EMPTY_LIBRARY;
     }
@@ -157,7 +157,7 @@ public abstract class Compiler {
     }
 
     public final String getFeature(String name) {
-        return (String) features.get(name);
+        return features.get(name);
     }
 
     public final boolean isTrimmingComments() {

@@ -16,43 +16,34 @@
 
 package com.sun.faces.xml;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import org.xml.sax.InputSource;
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import java.util.ArrayList;
-import java.util.List;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.xml.sax.InputSource;
+
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 public class ParseXMLTestCase extends TestCase {
 
-    List list = new ArrayList();
+    List<File> list = new ArrayList<>();
     private final static String xmlDir = "/conf/share";
-    private final static String jsfri = "/jsf-ri";
 
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
     public ParseXMLTestCase(String name) {
         super(name);
     }
 
-    /**
-     * Set up instance variables required by this test case.
-     */
     @Override
     public void setUp() throws Exception {
         super.setUp();
     }
 
-    /**
-     * Return the tests included in this test suite.
-     */
     public static Test suite() {
         return (new TestSuite(ParseXMLTestCase.class));
     }
@@ -68,7 +59,6 @@ public class ParseXMLTestCase extends TestCase {
         System.out.println("current dir = " + curDir);
         System.out.flush();
         visitAllDirsAndFiles(new File(baseDir, xmlDir));
-        //printAllXMLFiles();
         for (Object file : list) {
             try {
                 SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -95,7 +85,6 @@ public class ParseXMLTestCase extends TestCase {
 
         if (dir.isFile()) {
             if (isXML(dir)) {
-                //add it to the list
                 list.add(dir);
             }
         }
@@ -109,18 +98,7 @@ public class ParseXMLTestCase extends TestCase {
 
     public boolean isXML(File file) {
         String name = file.getName();
-        if (name.endsWith(".xml")) {
-            //it is an xml file
-            //add to list
-            return true;
-        } else {
-            return false;
-        }
+        return name.endsWith(".xml");
     }
 
-    private void printAllXMLFiles() {
-        for (Object l : list) {
-            System.out.println("XML file : " + l);
-        }
-    }
 }
