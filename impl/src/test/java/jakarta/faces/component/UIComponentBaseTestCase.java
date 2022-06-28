@@ -749,7 +749,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         }
 
         // Append the calls for each facet
-		Iterator<String> names = component.getFacets().keySet().iterator();
+        Iterator<String> names = component.getFacets().keySet().iterator();
         while (names.hasNext()) {
             String name = names.next();
             sb.append("/").append(lmethod).append("-").append(name);
@@ -759,7 +759,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         }
 
         // Append the calls for each child
-		Iterator<UIComponent> kids = component.getChildren().iterator();
+        Iterator<UIComponent> kids = component.getChildren().iterator();
         while (kids.hasNext()) {
             UIComponent kid = kids.next();
             lifecycleTrace(lmethod, cmethod, kid, sb);
@@ -789,7 +789,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         testComponent.getFacets().put("facet2", facet2);
         testComponent.getFacets().put("facet3", facet3);
 
-		Iterator<UIComponent> iter = testComponent.getFacetsAndChildren();
+        Iterator<UIComponent> iter = testComponent.getFacetsAndChildren();
         Object cur = null;
         boolean exceptionThrown = false;
         assertTrue(iter.hasNext());
