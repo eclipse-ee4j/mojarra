@@ -717,7 +717,7 @@ public class HtmlResponseWriter extends ResponseWriter {
             scriptOrStyleSrc = true;
         }
 
-        Class valueClass = value.getClass();
+        Class<?> valueClass = value.getClass();
 
         // Output Boolean values specially
         if (valueClass == Boolean.class) {

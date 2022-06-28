@@ -102,7 +102,7 @@ class StateHolderSaver implements Serializable {
 
     public Object restore(FacesContext context) throws IllegalStateException {
         Object result = null;
-        Class toRestoreClass;
+        Class<?> toRestoreClass;
 
         // if the Object to save implemented Serializable but not
         // StateHolder
@@ -143,7 +143,7 @@ class StateHolderSaver implements Serializable {
         return result;
     }
 
-    private static Class loadClass(String name, Object fallbackClass) throws ClassNotFoundException {
+    private static Class<?> loadClass(String name, Object fallbackClass) throws ClassNotFoundException {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         if (loader == null) {
             loader = fallbackClass.getClass().getClassLoader();

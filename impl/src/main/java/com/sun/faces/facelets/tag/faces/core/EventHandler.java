@@ -65,8 +65,8 @@ public class EventHandler extends TagHandler {
             }
             if (eventClass != null) {
                 parent.subscribeToEvent(eventClass,
-                        new DeclarativeSystemEventListener(listener.getMethodExpression(ctx, Object.class, new Class[] { ComponentSystemEvent.class }),
-                                listener.getMethodExpression(ctx, Object.class, new Class[] {})));
+                        new DeclarativeSystemEventListener(listener.getMethodExpression(ctx, Object.class, new Class<?>[] { ComponentSystemEvent.class }),
+                                listener.getMethodExpression(ctx, Object.class, new Class<?>[] {})));
             }
         }
     }

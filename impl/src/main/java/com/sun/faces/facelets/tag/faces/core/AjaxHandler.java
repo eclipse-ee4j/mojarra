@@ -320,15 +320,15 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
 
         if (null != listener) {
             behavior.addAjaxBehaviorListener(
-                    new AjaxBehaviorListenerImpl(listener.getMethodExpression(ctx, Object.class, new Class[] { AjaxBehaviorEvent.class }),
-                            listener.getMethodExpression(ctx, Object.class, new Class[] {})));
+                    new AjaxBehaviorListenerImpl(listener.getMethodExpression(ctx, Object.class, new Class<?>[] { AjaxBehaviorEvent.class }),
+                            listener.getMethodExpression(ctx, Object.class, new Class<?>[] {})));
         }
 
         return behavior;
     }
 
     // Sets the value from the TagAttribute on the behavior
-    private void setBehaviorAttribute(FaceletContext ctx, AjaxBehavior behavior, TagAttribute attr, Class type) {
+    private void setBehaviorAttribute(FaceletContext ctx, AjaxBehavior behavior, TagAttribute attr, Class<?> type) {
 
         if (attr != null) {
             behavior.setValueExpression(attr.getLocalName(), attr.getValueExpression(ctx, type));

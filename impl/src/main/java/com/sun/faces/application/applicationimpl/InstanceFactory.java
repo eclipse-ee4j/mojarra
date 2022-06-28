@@ -97,14 +97,14 @@ public class InstanceFactory {
     private static final Map<Class<?>, String> STANDARD_TYPE_TO_CONV_ID_MAP = new HashMap<>(16, 1.0f);
 
     static {
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Byte", new Class[] { Byte.TYPE, Byte.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Boolean", new Class[] { Boolean.TYPE, Boolean.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Character", new Class[] { Character.TYPE, Character.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Short", new Class[] { Short.TYPE, Short.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Integer", new Class[] { Integer.TYPE, Integer.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Long", new Class[] { Long.TYPE, Long.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Float", new Class[] { Float.TYPE, Float.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Double", new Class[] { Double.TYPE, Double.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Byte", new Class<?>[] { Byte.TYPE, Byte.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Boolean", new Class<?>[] { Boolean.TYPE, Boolean.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Character", new Class<?>[] { Character.TYPE, Character.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Short", new Class<?>[] { Short.TYPE, Short.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Integer", new Class<?>[] { Integer.TYPE, Integer.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Long", new Class<?>[] { Long.TYPE, Long.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Float", new Class<?>[] { Float.TYPE, Float.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Double", new Class<?>[] { Double.TYPE, Double.class });
         for (Map.Entry<String, Class<?>[]> entry : STANDARD_CONV_ID_TO_TYPE_MAP.entrySet()) {
             Class<?>[] types = entry.getValue();
             String key = entry.getKey();
@@ -586,7 +586,7 @@ public class InstanceFactory {
                             Object result = validatorMap.get(id);
                             if (null != result) {
                                 if (result instanceof Class) {
-                                    validatorClass = ((Class) result).getName();
+                                    validatorClass = ((Class<?>) result).getName();
                                 } else {
                                     validatorClass = result.toString();
                                 }
@@ -773,7 +773,7 @@ public class InstanceFactory {
                 throw new FacesException(e.getMessage(), e);
             }
         } else {
-            clazz = (Class) value;
+            clazz = (Class<?>) value;
         }
 
         try {
@@ -1005,7 +1005,7 @@ public class InstanceFactory {
                 throw new FacesException(e.getMessage(), e);
             }
         } else {
-            clazz = (Class) value;
+            clazz = (Class<?>) value;
         }
 
         Constructor ctor = ReflectionUtils.lookupConstructor(clazz, Class.class);

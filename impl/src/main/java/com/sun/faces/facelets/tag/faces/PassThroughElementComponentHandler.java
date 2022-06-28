@@ -55,7 +55,7 @@ public class PassThroughElementComponentHandler extends ComponentHandler {
     public UIComponent createComponent(FaceletContext ctx) {
         UIComponent result = null;
         try {
-            Class clazz = Util.loadClass("com.sun.faces.component.PassthroughElement", this);
+            Class<?> clazz = Util.loadClass("com.sun.faces.component.PassthroughElement", this);
             result = (UIComponent) clazz.newInstance();
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException cnfe) {
             throw new FacesException(cnfe);

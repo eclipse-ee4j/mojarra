@@ -599,7 +599,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
 
             NodeList params = (NodeList) xpath.evaluate(".//ns1:parameter", methodCallNode, XPathConstants.NODESET);
             if (null != params) {
-                List<Class> paramTypes = Collections.emptyList();
+                List<Class<?>> paramTypes = Collections.emptyList();
                 if (0 < params.getLength()) {
                     paramTypes = new ArrayList<>();
                     List<Parameter> paramList = new ArrayList<>();
@@ -624,7 +624,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
                         if (null != classList && 1 == classList.getLength()) {
                             classStr = classList.item(0).getNodeValue().trim();
                         }
-                        Class clazz = String.class;
+                        Class<?> clazz = String.class;
                         if (null != classStr) {
                             try {
                                 clazz = ReflectionUtil.forName(classStr);
@@ -640,7 +640,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
                     }
                     methodCallBuilder.parameters(paramList);
                 }
-                Class[] paramArray = new Class[paramTypes.size()];
+                Class<?>[] paramArray = new Class[paramTypes.size()];
                 paramTypes.toArray(paramArray);
                 methodCallBuilder.expression(methodStr, paramArray);
             }

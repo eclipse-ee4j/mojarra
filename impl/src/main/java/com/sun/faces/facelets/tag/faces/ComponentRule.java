@@ -57,7 +57,7 @@ final class ComponentRule extends MetaRule {
 
         private final TagAttribute attr;
 
-        private final Class type;
+        private final Class<?> type;
 
         public ValueExpressionMetadata(String name, Class type, TagAttribute attr) {
             this.name = name;
@@ -86,7 +86,7 @@ final class ComponentRule extends MetaRule {
 
             // if component and dynamic, then must set expression
             if (!attribute.isLiteral()) {
-                Class type = meta.getPropertyType(name);
+                Class<?> type = meta.getPropertyType(name);
                 if (type == null) {
                     type = Object.class;
                 }
@@ -102,7 +102,7 @@ final class ComponentRule extends MetaRule {
         return null;
     }
 
-    private static void warnAttr(TagAttribute attr, Class type, String n) {
+    private static void warnAttr(TagAttribute attr, Class<?> type, String n) {
         if (log.isLoggable(Level.FINER)) {
             log.finer(attr + " Property '" + n + "' is not on type: " + type.getName());
         }
