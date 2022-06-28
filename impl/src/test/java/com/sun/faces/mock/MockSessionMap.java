@@ -24,9 +24,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import jakarta.servlet.http.HttpSession;
 
-final class MockSessionMap implements Map {
+final class MockSessionMap implements Map<String, Object> {
 
     public MockSessionMap(HttpSession session) {
         this.session = session;
@@ -34,116 +35,130 @@ final class MockSessionMap implements Map {
 
     private HttpSession session = null;
 
+    @Override
     public void clear() {
-        Iterator keys = keySet().iterator();
+        Iterator<String> keys = keySet().iterator();
         while (keys.hasNext()) {
-            session.removeAttribute((String) keys.next());
+            session.removeAttribute(keys.next());
         }
     }
 
+    @Override
     public boolean containsKey(Object key) {
-        return (session.getAttribute(key(key)) != null);
+        return session.getAttribute(key(key)) != null;
     }
 
+    @Override
     public boolean containsValue(Object value) {
         if (value == null) {
-            return (false);
+            return false;
         }
-        Enumeration keys = session.getAttributeNames();
+        Enumeration<String> keys = session.getAttributeNames();
         while (keys.hasMoreElements()) {
-            Object next = session.getAttribute((String) keys.nextElement());
+            Object next = session.getAttribute(keys.nextElement());
             if (next == value) {
-                return (true);
+                return true;
             }
         }
-        return (false);
+        return false;
     }
 
+    @Override
     public Set entrySet() {
         Set set = new HashSet();
         Enumeration keys = session.getAttributeNames();
         while (keys.hasMoreElements()) {
             set.add(session.getAttribute((String) keys.nextElement()));
         }
-        return (set);
+        return set;
     }
 
+    @Override
     public boolean equals(Object o) {
-        return (session.equals(o));
+        return session.equals(o);
     }
 
+    @Override
     public Object get(Object key) {
-        return (session.getAttribute(key(key)));
+        return session.getAttribute(key(key));
     }
 
+    @Override
     public int hashCode() {
-        return (session.hashCode());
+        return session.hashCode();
     }
 
+    @Override
     public boolean isEmpty() {
-        return (size() < 1);
+        return size() < 1;
     }
 
-    public Set keySet() {
-        Set set = new HashSet();
-        Enumeration keys = session.getAttributeNames();
+    @Override
+    public Set<String> keySet() {
+        Set<String> set = new HashSet<>();
+        Enumeration<String> keys = session.getAttributeNames();
         while (keys.hasMoreElements()) {
             set.add(keys.nextElement());
         }
-        return (set);
+        return set;
     }
 
-    public Object put(Object key, Object value) {
+    @Override
+    public Object put(String key, Object value) {
         if (value == null) {
             return (remove(key));
         }
         String skey = key(key);
         Object previous = session.getAttribute(skey);
         session.setAttribute(skey, value);
-        return (previous);
+        return previous;
     }
 
-    public void putAll(Map map) {
-        Iterator keys = map.keySet().iterator();
+    @Override
+    public void putAll(Map<? extends String, ? extends Object> map) {
+        Iterator<? extends String> keys = map.keySet().iterator();
         while (keys.hasNext()) {
-            String key = (String) keys.next();
+            String key = keys.next();
             session.setAttribute(key, map.get(key));
         }
     }
 
+    @Override
     public Object remove(Object key) {
         String skey = key(key);
         Object previous = session.getAttribute(skey);
         session.removeAttribute(skey);
-        return (previous);
+        return previous;
     }
 
+    @Override
     public int size() {
         int n = 0;
-        Enumeration keys = session.getAttributeNames();
+        Enumeration<?> keys = session.getAttributeNames();
         while (keys.hasMoreElements()) {
             keys.nextElement();
             n++;
         }
-        return (n);
+        return n;
     }
 
-    public Collection values() {
-        List list = new ArrayList();
-        Enumeration keys = session.getAttributeNames();
+    @Override
+    public Collection<Object> values() {
+        List<Object> list = new ArrayList<>();
+        Enumeration<String> keys = session.getAttributeNames();
         while (keys.hasMoreElements()) {
-            list.add(session.getAttribute((String) keys.nextElement()));
+            list.add(session.getAttribute(keys.nextElement()));
         }
-        return (list);
+        return list;
     }
 
     private String key(Object key) {
         if (key == null) {
             throw new IllegalArgumentException();
         } else if (key instanceof String) {
-            return ((String) key);
+            return (String) key;
         } else {
-            return (key.toString());
+            return key.toString();
         }
     }
 
