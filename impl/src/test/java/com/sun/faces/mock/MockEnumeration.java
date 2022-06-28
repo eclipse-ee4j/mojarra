@@ -24,13 +24,13 @@ import java.util.Iterator;
  * General purpose <code>Enumeration</code> wrapper around an
  * <code>Iterator</code> specified to our controller.</p>
  */
-public class MockEnumeration implements Enumeration {
+public class MockEnumeration<T> implements Enumeration<T> {
 
-    public MockEnumeration(Iterator iterator) {
+    public MockEnumeration(Iterator<T> iterator) {
         this.iterator = iterator;
     }
 
-    protected Iterator iterator;
+    protected Iterator<T> iterator;
 
     @Override
     public boolean hasMoreElements() {
@@ -38,7 +38,7 @@ public class MockEnumeration implements Enumeration {
     }
 
     @Override
-    public Object nextElement() {
+    public T nextElement() {
         return (iterator.next());
     }
 }
