@@ -16,6 +16,7 @@
 
 package com.sun.faces.mock;
 
+import java.beans.FeatureDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.Map;
@@ -82,7 +83,7 @@ public class MockELResolver extends ELResolver {
         }
 
         // Look up in ascending scopes
-        Map map = null;
+        Map<String, Object> map = null;
         map = econtext().getRequestMap();
         if (map.containsKey(name)) {
             return (map.get(name));
@@ -151,7 +152,7 @@ public class MockELResolver extends ELResolver {
     }
 
     @Override
-    public Iterator getFeatureDescriptors(ELContext context, Object base) {
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
         return null;
     }
 

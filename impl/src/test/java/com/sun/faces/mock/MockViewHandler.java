@@ -55,25 +55,6 @@ public class MockViewHandler extends ViewHandler {
     public StateManager getStateManager() {
         if (null == stateManager) {
             stateManager = new StateManager() {
-                protected Object getTreeStructureToSave(FacesContext context) {
-                    return null;
-                }
-
-                protected Object getComponentStateToSave(FacesContext context) {
-                    return null;
-                }
-
-                public UIViewRoot restoreView(FacesContext context, String viewId, String renderKitId) {
-                    return null;
-                }
-
-                protected UIViewRoot restoreTreeStructure(FacesContext context,
-                        String viewId, String renderKitId) {
-                    return null;
-                }
-
-                protected void restoreComponentState(FacesContext context, UIViewRoot root, String renderKitId) {
-                }
             };
         }
         return stateManager;
