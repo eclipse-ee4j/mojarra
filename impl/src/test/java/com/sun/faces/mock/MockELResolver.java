@@ -110,7 +110,7 @@ public class MockELResolver extends ELResolver {
         String name = property.toString();
         try {
             if (base instanceof Map) {
-                Map map = (Map) base;
+                Map<?, ?> map = (Map<?, ?>) base;
                 if (map.containsKey(name)) {
                     return (map.get(name));
                 } else {
@@ -136,9 +136,8 @@ public class MockELResolver extends ELResolver {
     }
 
     @Override
-    public Class getType(ELContext context, Object base, Object property) throws ELException {
-        Class result = null;
-        return result;
+    public Class<?> getType(ELContext context, Object base, Object property) throws ELException {
+        return null;
     }
 
     @Override
@@ -157,8 +156,7 @@ public class MockELResolver extends ELResolver {
     }
 
     @Override
-    public Class getCommonPropertyType(ELContext context, Object base) {
-        Class result = null;
-        return result;
+    public Class<?> getCommonPropertyType(ELContext context, Object base) {
+        return null;
     }
 }
