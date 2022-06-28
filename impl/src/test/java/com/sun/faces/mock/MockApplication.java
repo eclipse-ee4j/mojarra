@@ -166,9 +166,9 @@ public class MockApplication extends Application {
     }
 
     @Override
-    public Object evaluateExpressionGet(FacesContext context,
+    public <T> T evaluateExpressionGet(FacesContext context,
             String expression,
-            Class expectedType) throws ELException {
+            Class<? extends T> expectedType) throws ELException {
         ValueExpression ve = getExpressionFactory().createValueExpression(context.getELContext(), expression, expectedType);
         return ve.getValue(context.getELContext());
     }
@@ -203,7 +203,7 @@ public class MockApplication extends Application {
         this.stateManager = stateManager;
     }
 
-    private Map<String, String> components = new HashMap<String, String>();
+    private Map<String, String> components = new HashMap<>();
 
     @Override
     public void addComponent(String componentType, String componentClass) {
@@ -214,7 +214,7 @@ public class MockApplication extends Application {
     public UIComponent createComponent(String componentType) {
         String componentClass = components.get(componentType);
         try {
-            Class clazz = Class.forName(componentClass);
+            Class<?> clazz = Class.forName(componentClass);
             return ((UIComponent) clazz.newInstance());
         } catch (Exception e) {
             throw new FacesException(e);
@@ -234,7 +234,7 @@ public class MockApplication extends Application {
         return (components.keySet().iterator());
     }
 
-    private Map<String, String> converters = new HashMap<String, String>();
+    private Map<String, String> converters = new HashMap<>();
 
     @Override
     public void addConverter(String converterId, String converterClass) {
@@ -242,7 +242,7 @@ public class MockApplication extends Application {
     }
 
     @Override
-    public void addConverter(Class targetClass, String converterClass) {
+    public void addConverter(Class<?> targetClass, String converterClass) {
         throw new UnsupportedOperationException();
     }
 
@@ -250,7 +250,7 @@ public class MockApplication extends Application {
     public Converter createConverter(String converterId) {
         String converterClass = converters.get(converterId);
         try {
-            Class clazz = Class.forName(converterClass);
+            Class<?> clazz = Class.forName(converterClass);
             return ((Converter) clazz.newInstance());
         } catch (Exception e) {
             throw new FacesException(e);
@@ -268,7 +268,7 @@ public class MockApplication extends Application {
     }
 
     @Override
-    public Iterator getConverterTypes() {
+    public Iterator<Class<?>> getConverterTypes() {
         throw new UnsupportedOperationException();
     }
 
@@ -284,7 +284,7 @@ public class MockApplication extends Application {
         return messageBundle;
     }
 
-    private Map<String, String> validators = new HashMap<String, String>();
+    private Map<String, String> validators = new HashMap<>();
 
     @Override
     public void addValidator(String validatorId, String validatorClass) {
@@ -295,7 +295,7 @@ public class MockApplication extends Application {
     public Validator createValidator(String validatorId) {
         String validatorClass = validators.get(validatorId);
         try {
-            Class clazz = Class.forName(validatorClass);
+            Class<?> clazz = Class.forName(validatorClass);
             return ((Validator) clazz.newInstance());
         } catch (Exception e) {
             throw new FacesException(e);
@@ -308,8 +308,8 @@ public class MockApplication extends Application {
     }
 
     @Override
-    public Iterator getSupportedLocales() {
-        return Collections.EMPTY_LIST.iterator();
+    public Iterator<Locale> getSupportedLocales() {
+        return Collections.emptyListIterator();
     }
 
     @Override
@@ -981,8 +981,7 @@ public class MockApplication extends Application {
      */
     private static final class Cache<K, V> {
 
-        private ConcurrentMap<K, Future<V>> cache
-                = new ConcurrentHashMap<>();
+        private ConcurrentMap<K, Future<V>> cache = new ConcurrentHashMap<>();
         private Factory<K, V> factory;
 
         // -------------------------------------------------------- Constructors
