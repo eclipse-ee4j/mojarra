@@ -1302,7 +1302,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
             return null;
         }
 
-        Class converterType;
+        Class<?> converterType;
         try {
             converterType = valueExpression.getType(context.getELContext());
         } catch (ELException e) {

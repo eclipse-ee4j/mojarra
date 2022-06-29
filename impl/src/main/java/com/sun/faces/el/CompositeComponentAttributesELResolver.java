@@ -150,7 +150,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
                         Object type = cur.getValue("type");
                         if (null != type) {
                             assert type instanceof Class;
-                            metaType = (Class) type;
+                            metaType = (Class<?>) type;
                             break;
                         }
                     }

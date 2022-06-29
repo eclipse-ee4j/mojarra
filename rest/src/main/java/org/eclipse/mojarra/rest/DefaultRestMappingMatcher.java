@@ -41,7 +41,7 @@ public class DefaultRestMappingMatcher implements RestMappingMatcher {
      */
     private RestMappingMatch determineRestMappingMatch(FacesContext facesContext, Bean<?> bean) {
         RestMappingMatch result = null;
-        Class clazz = bean.getBeanClass();
+        Class<?> clazz = bean.getBeanClass();
         AnnotatedType annotatedType = CDI.current().getBeanManager().createAnnotatedType(clazz);
         Set<AnnotatedMethod> annotatedMethodSet = annotatedType.getMethods();
         for (AnnotatedMethod method : annotatedMethodSet) {

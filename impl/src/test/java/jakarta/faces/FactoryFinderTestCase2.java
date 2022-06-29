@@ -85,7 +85,7 @@ public class FactoryFinderTestCase2 extends TestCase {
      */
     public void testJSFImplCase() throws Exception {
         Object factory = null;
-        Class clazz = null;
+        Class<?> clazz = null;
 
         FactoryFinder.releaseFactories();
         int len, i = 0;

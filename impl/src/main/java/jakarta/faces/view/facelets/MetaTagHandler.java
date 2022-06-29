@@ -60,7 +60,7 @@ public abstract class MetaTagHandler extends TagHandler {
     /**
      * Stores the last type.
      */
-    private Class lastType = Object.class;
+    private Class<?> lastType = Object.class;
 
     /**
      * Stores the mapper.
@@ -93,7 +93,7 @@ public abstract class MetaTagHandler extends TagHandler {
      */
     protected void setAttributes(FaceletContext ctx, Object instance) {
         if (instance != null) {
-            Class type = instance.getClass();
+            Class<?> type = instance.getClass();
             if (mapper == null || !lastType.equals(type)) {
                 lastType = type;
                 mapper = createMetaRuleset(type).finish();

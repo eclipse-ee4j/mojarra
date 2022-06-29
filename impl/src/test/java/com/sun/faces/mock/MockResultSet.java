@@ -69,7 +69,7 @@ public class MockResultSet implements ResultSet {
     private Object beans[] = null;
 
     // Class representing the underlying data type we are wrapping
-    private Class clazz = null;
+    private Class<?> clazz = null;
 
     // ResultSetMetaData for this ResultSet
     private MockResultSetMetaData metadata = null;

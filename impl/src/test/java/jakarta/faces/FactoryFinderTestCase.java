@@ -105,7 +105,7 @@ public class FactoryFinderTestCase extends TestCase {
      */
     public void testFacesConfigCase() throws Exception {
         Object factory = null;
-        Class clazz = null;
+        Class<?> clazz = null;
 
         FactoryFinder.releaseFactories();
         int len, i = 0;
@@ -198,7 +198,7 @@ public class FactoryFinderTestCase extends TestCase {
      */
     public void testServicesCase() throws Exception {
         Object factory = null;
-        Class clazz = null;
+        Class<?> clazz = null;
 
         FactoryFinder.releaseFactories();
         int len, i = 0;

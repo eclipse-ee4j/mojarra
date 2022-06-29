@@ -51,7 +51,7 @@ public class MetaRulesetImpl extends MetaRuleset {
     private final static Map<Class, WeakReference<MetadataTarget>> metadata = Collections.synchronizedMap(new WeakHashMap<>());
 
     private final Tag tag;
-    private final Class type;
+    private final Class<?> type;
     private final Map<String, TagAttribute> attributes;
     private final List<Metadata> mappers;
     private final List<MetaRule> rules;

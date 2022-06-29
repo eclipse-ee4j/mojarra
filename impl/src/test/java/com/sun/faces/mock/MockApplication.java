@@ -214,7 +214,7 @@ public class MockApplication extends Application {
     public UIComponent createComponent(String componentType) {
         String componentClass = components.get(componentType);
         try {
-            Class clazz = Class.forName(componentClass);
+            Class<?> clazz = Class.forName(componentClass);
             return ((UIComponent) clazz.newInstance());
         } catch (Exception e) {
             throw new FacesException(e);
@@ -250,7 +250,7 @@ public class MockApplication extends Application {
     public Converter createConverter(String converterId) {
         String converterClass = converters.get(converterId);
         try {
-            Class clazz = Class.forName(converterClass);
+            Class<?> clazz = Class.forName(converterClass);
             return ((Converter) clazz.newInstance());
         } catch (Exception e) {
             throw new FacesException(e);
@@ -295,7 +295,7 @@ public class MockApplication extends Application {
     public Validator createValidator(String validatorId) {
         String validatorClass = validators.get(validatorId);
         try {
-            Class clazz = Class.forName(validatorClass);
+            Class<?> clazz = Class.forName(validatorClass);
             return ((Validator) clazz.newInstance());
         } catch (Exception e) {
             throw new FacesException(e);

@@ -1445,7 +1445,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
          */
         private static abstract class AbstractRetargetHandler implements MethodRetargetHandler {
 
-            protected static final Class[] NO_ARGS = new Class[0];
+            protected static final Class<?>[] NO_ARGS = new Class[0];
 
         } // END AbstractRetargetHandler
 
@@ -1483,7 +1483,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         private static final class ActionListenerRegargetHandler extends AbstractRetargetHandler {
 
             private static final String ACTION_LISTENER = "actionListener";
-            private static final Class[] ACTION_LISTENER_ARGS = new Class[] { ActionEvent.class };
+            private static final Class<?>[] ACTION_LISTENER_ARGS = new Class<?>[] { ActionEvent.class };
 
             // ------------------------------ Methods from MethodRetargetHandler
 
@@ -1513,7 +1513,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         private static final class ValidatorRegargetHandler extends AbstractRetargetHandler {
 
             private static final String VALIDATOR = "validator";
-            private static final Class[] VALIDATOR_ARGS = new Class[] { FacesContext.class, UIComponent.class, Object.class };
+            private static final Class<?>[] VALIDATOR_ARGS = new Class<?>[] { FacesContext.class, UIComponent.class, Object.class };
 
             // ------------------------------ Methods from MethodRetargetHandler
 
@@ -1541,7 +1541,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         private static final class ValueChangeListenerRegargetHandler extends AbstractRetargetHandler {
 
             private static final String VALUE_CHANGE_LISTENER = "valueChangeListener";
-            private static final Class[] VALUE_CHANGE_LISTENER_ARGS = new Class[] { ValueChangeEvent.class };
+            private static final Class<?>[] VALUE_CHANGE_LISTENER_ARGS = new Class<?>[] { ValueChangeEvent.class };
 
             // ------------------------------ Methods from MethodRetargetHandler
 
