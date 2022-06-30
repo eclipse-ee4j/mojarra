@@ -206,13 +206,6 @@ public class UICommandTestCase extends UIComponentBaseTestCase {
     public void testLifecycleManagement() {
     }
 
-    // Test setting properties to invalid values
-    @Override
-    public void testPropertiesInvalid() throws Exception {
-        super.testPropertiesInvalid();
-        UICommand command = (UICommand) component;
-    }
-
     public void testNestedCommands() {
         UIViewRoot root = new UIViewRoot();
         UICommand c1 = new UICommand();

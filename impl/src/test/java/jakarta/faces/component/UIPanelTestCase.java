@@ -59,27 +59,6 @@ public class UIPanelTestCase extends UIComponentBaseTestCase {
     public void testLifecycleManagement() {
     }
 
-    // Test a pristine UIPanel instance
-    @Override
-    public void testPristine() {
-        super.testPristine();
-        UIPanel panel = (UIPanel) component;
-    }
-
-    // Test setting properties to invalid values
-    @Override
-    public void testPropertiesInvalid() throws Exception {
-        super.testPropertiesInvalid();
-        UIPanel panel = (UIPanel) component;
-    }
-
-    // Test setting properties to valid values
-    @Override
-    public void testPropertiesValid() throws Exception {
-        super.testPropertiesValid();
-        UIPanel panel = (UIPanel) component;
-    }
-
     // --------------------------------------------------------- Support Methods
     // Create a pristine component of the type to be used in state holder tests
     @Override

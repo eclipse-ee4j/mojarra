@@ -53,45 +53,9 @@ public class UIOutputTestCase extends ValueHolderTestCaseBase {
     }
 
     // ------------------------------------------------- Individual Test Methods
-    // Test attribute-property transparency
-    @Override
-    public void testAttributesTransparency() {
-
-        super.testAttributesTransparency();
-        UIOutput output = (UIOutput) component;
-
-    }
-
     // Suppress lifecycle tests since we do not have a renderer
     @Override
     public void testLifecycleManagement() {
-    }
-
-    // Test a pristine UIOutput instance
-    @Override
-    public void testPristine() {
-
-        super.testPristine();
-        UIOutput output = (UIOutput) component;
-
-    }
-
-    // Test setting properties to invalid values
-    @Override
-    public void testPropertiesInvalid() throws Exception {
-
-        super.testPropertiesInvalid();
-        UIOutput output = (UIOutput) component;
-
-    }
-
-    // Test setting properties to valid values
-    @Override
-    public void testPropertiesValid() throws Exception {
-
-        super.testPropertiesValid();
-        UIOutput output = (UIOutput) component;
-
     }
 
     // --------------------------------------------------------- Support Methods

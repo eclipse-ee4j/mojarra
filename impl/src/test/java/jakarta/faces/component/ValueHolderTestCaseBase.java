@@ -180,13 +180,6 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
         assertNull("no converter", vh.getConverter());
     }
 
-    // Test setting properties to invalid values
-    @Override
-    public void testPropertiesInvalid() throws Exception {
-        super.testPropertiesInvalid();
-        ValueHolder vh = (ValueHolder) component;
-    }
-
     // Test setting properties to valid values
     @Override
     public void testPropertiesValid() throws Exception {

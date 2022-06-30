@@ -64,27 +64,6 @@ public class UISelectOneTestCase extends UIInputTestCase {
     }
 
     // ------------------------------------------------- Individual Test Methods
-    // Test a pristine UISelectOne instance
-    @Override
-    public void testPristine() {
-        super.testPristine();
-        UISelectOne selectOne = (UISelectOne) component;
-    }
-
-    // Test setting properties to invalid values
-    @Override
-    public void testPropertiesInvalid() throws Exception {
-        super.testPropertiesInvalid();
-        UISelectOne selectOne = (UISelectOne) component;
-    }
-
-    // Test setting properties to valid values
-    @Override
-    public void testPropertiesValid() throws Exception {
-        super.testPropertiesValid();
-        UISelectOne selectOne = (UISelectOne) component;
-    }
-
     // Test validation of value against the valid list
     public void testValidation() throws Exception {
         // Put our component under test in a tree under a UIViewRoot
