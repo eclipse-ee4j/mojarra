@@ -89,9 +89,9 @@ public class UISelectOneTestCase extends UIInputTestCase {
         selectOne.setSubmittedValue("bop");
         selectOne.validate(facesContext);
         assertTrue(!selectOne.isValid());
-        Iterator messages = facesContext.getMessages();
+        Iterator<FacesMessage> messages = facesContext.getMessages();
         while (messages.hasNext()) {
-            FacesMessage message = (FacesMessage) messages.next();
+            FacesMessage message = messages.next();
             assertTrue(message.getSummary().indexOf("mylabel") >= 0);
         }
     }
@@ -103,7 +103,7 @@ public class UISelectOneTestCase extends UIInputTestCase {
         root.getChildren().add(component);
 
         // Add valid options to the component under test
-        Map map = new HashMap();
+        Map<String, String> map = new HashMap<>();
         map.put("key_foo", "foo");
         map.put("key_bar", "bar");
         map.put("key_baz", "baz");
@@ -269,11 +269,10 @@ public class UISelectOneTestCase extends UIInputTestCase {
         param.setName("param");
         param.setValue("paramValue");
         selectOne.getChildren().add(param);
-        Iterator iter = new SelectItemsIterator(facesContext, selectOne);
+        Iterator<SelectItem> iter = new SelectItemsIterator(facesContext, selectOne);
         while (iter.hasNext()) {
-            Object object = iter.next();
-            assertTrue(object instanceof jakarta.faces.model.SelectItem);
-            assertTrue(((SelectItem) object).getValue().equals("orr") || ((SelectItem) object).getValue().equals("esposito"));
+            SelectItem selectItem = iter.next();
+            assertTrue(selectItem.getValue().equals("orr") || selectItem.getValue().equals("esposito"));
         }
 
         // sub test 2: non-selectitem in middle
@@ -283,9 +282,8 @@ public class UISelectOneTestCase extends UIInputTestCase {
         selectOne.getChildren().add(new UISelectItemSub("howe", null, null));
         iter = new SelectItemsIterator(facesContext, selectOne);
         while (iter.hasNext()) {
-            Object object = iter.next();
-            assertTrue(object instanceof jakarta.faces.model.SelectItem);
-            assertTrue(((SelectItem) object).getValue().equals("gretsky") || ((SelectItem) object).getValue().equals("howe"));
+            SelectItem selectItem = iter.next();
+            assertTrue(selectItem.getValue().equals("gretsky") || selectItem.getValue().equals("howe"));
         }
     }
 
@@ -308,11 +306,11 @@ public class UISelectOneTestCase extends UIInputTestCase {
     }
 
     // Create an options list with nested groups
-    protected List setupOptions() {
+    protected List<SelectItem> setupOptions() {
         SelectItemGroup group, subgroup;
         subgroup = new SelectItemGroup("Group C");
         subgroup.setSelectItems(new SelectItem[] { new SelectItem("C1"), new SelectItem("C2"), new SelectItem("C3") });
-        List options = new ArrayList();
+        List<SelectItem> options = new ArrayList<>();
         options.add(new SelectItem("A1"));
         group = new SelectItemGroup("Group B");
         group.setSelectItems(new SelectItem[] { new SelectItem("B1"), subgroup, new SelectItem("B2"), new SelectItem("B3") });

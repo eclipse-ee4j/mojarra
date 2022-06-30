@@ -85,7 +85,7 @@ public class UICommandTestCase extends UIComponentBaseTestCase {
         // Override the default action listener to test ordering
         ActionListener oldDefaultActionListener = facesContext.getApplication().getActionListener();
         facesContext.getApplication().setActionListener(new CommandActionListenerTestImpl("14"));
-        Map map = new HashMap();
+        Map<String, String> map = new HashMap<>();
         map.put(command.getClientId(facesContext), "");
         MockExternalContext econtext = (MockExternalContext) facesContext.getExternalContext();
         econtext.setRequestParameterMap(map);
@@ -292,7 +292,7 @@ public class UICommandTestCase extends UIComponentBaseTestCase {
                 return;
             }
             String clientId = component.getClientId(context);
-            Map params = context.getExternalContext().getRequestParameterMap();
+            Map<String, String> params = context.getExternalContext().getRequestParameterMap();
             if (params.containsKey(clientId)) {
                 component.queueEvent(new ActionEvent(component));
             }

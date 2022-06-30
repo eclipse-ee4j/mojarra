@@ -80,8 +80,9 @@ public class UIComponentBaseAttachedStateTestCase extends TestCase {
         reInitializeFactoryManager.invoke(null, (Object[]) null);
     }
 
+
     public void testAttachedObjectsSet() throws Exception {
-        Set<ValueChangeListener> returnedAttachedObjects = null, attachedObjects = new HashSet<>();
+        Set<ValueChangeListener> attachedObjects = new HashSet<>();
         ValueChangeListener toAdd = new ValueChangeListenerTestImpl();
         attachedObjects.add(toAdd);
         toAdd = new ValueChangeListenerTestImpl();
@@ -89,11 +90,14 @@ public class UIComponentBaseAttachedStateTestCase extends TestCase {
         toAdd = new ValueChangeListenerTestImpl();
         attachedObjects.add(toAdd);
         Object result = UIComponentBase.saveAttachedState(facesContext, attachedObjects);
-        returnedAttachedObjects = (Set<ValueChangeListener>) UIComponentBase.restoreAttachedState(facesContext, result);
+        @SuppressWarnings("unchecked")
+        Set<ValueChangeListener> returnedAttachedObjects = (Set<ValueChangeListener>) UIComponentBase
+                .restoreAttachedState(facesContext, result);
+        assertNotNull(returnedAttachedObjects);
     }
 
     public void testAttachedObjectsStack() throws Exception {
-        Stack<ValueChangeListener> returnedAttachedObjects = null, attachedObjects = new Stack<>();
+        Stack<ValueChangeListener> attachedObjects = new Stack<>();
         ValueChangeListener toAdd = new ValueChangeListenerTestImpl();
         attachedObjects.add(toAdd);
         toAdd = new ValueChangeListenerTestImpl();
@@ -101,11 +105,14 @@ public class UIComponentBaseAttachedStateTestCase extends TestCase {
         toAdd = new ValueChangeListenerTestImpl();
         attachedObjects.add(toAdd);
         Object result = UIComponentBase.saveAttachedState(facesContext, attachedObjects);
-        returnedAttachedObjects = (Stack<ValueChangeListener>) UIComponentBase.restoreAttachedState(facesContext, result);
+        @SuppressWarnings("unchecked")
+        Stack<ValueChangeListener> returnedAttachedObjects = (Stack<ValueChangeListener>) UIComponentBase
+                .restoreAttachedState(facesContext, result);
+        assertNotNull(returnedAttachedObjects);
     }
 
     public void testAttachedObjectsMap() throws Exception {
-        Map<String, ValueChangeListener> returnedAttachedObjects = null, attachedObjects = new HashMap<>();
+        Map<String, ValueChangeListener> attachedObjects = new HashMap<>();
         ValueChangeListener toAdd = new ValueChangeListenerTestImpl();
         attachedObjects.put("one", toAdd);
         toAdd = new ValueChangeListenerTestImpl();
@@ -113,10 +120,14 @@ public class UIComponentBaseAttachedStateTestCase extends TestCase {
         toAdd = new ValueChangeListenerTestImpl();
         attachedObjects.put("three", toAdd);
         Object result = UIComponentBase.saveAttachedState(facesContext, attachedObjects);
-        returnedAttachedObjects = (Map<String, ValueChangeListener>) UIComponentBase.restoreAttachedState(facesContext, result);
+        @SuppressWarnings("unchecked")
+        Map<String, ValueChangeListener> returnedAttachedObjects = (Map<String, ValueChangeListener>) UIComponentBase
+                .restoreAttachedState(facesContext, result);
+        assertNotNull(returnedAttachedObjects);
     }
 
     // Regression test for bug #907
+    @SuppressWarnings("unchecked")
     public void testAttachedObjectsCount() throws Exception {
         Set<ValueChangeListener> returnedAttachedObjects = null, attachedObjects = new HashSet<>();
         ValueChangeListener toAdd = new ValueChangeListenerTestImpl();
