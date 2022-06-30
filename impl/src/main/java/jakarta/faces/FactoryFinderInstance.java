@@ -428,9 +428,10 @@ final class FactoryFinderInstance {
                 // Since this is the hard coded implementation default, there is no preceding implementation,
                 // so don't bother with a non-zero-argument ctor.
 
-                factoryImplementation = Class.forName(factoryImplClassName, false, classLoader).newInstance();
+                factoryImplementation = Class.forName(factoryImplClassName, false, classLoader).getDeclaredConstructor()
+                        .newInstance();
 
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
                 throw new FacesException(factoryImplClassName, e);
             }
         }

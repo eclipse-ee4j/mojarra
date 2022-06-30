@@ -84,7 +84,7 @@ public class SerializationProviderFactory {
             try {
                 Class<?> clazz = Util.loadClass(className, SerializationProviderFactory.class);
                 if (implementsSerializationProvider(clazz)) {
-                    provider = (SerializationProvider) clazz.newInstance();
+                    provider = (SerializationProvider) clazz.getDeclaredConstructor().newInstance();
                 } else {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
                         LOGGER.log(Level.SEVERE, "faces.spi.serialization.provider_not_implemented", new Object[] { className });
@@ -94,7 +94,7 @@ public class SerializationProviderFactory {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, "faces.spi.serialization.provider_not_found", new Object[] { className });
                 }
-            } catch (InstantiationException | IllegalAccessException ie) {
+            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException ie) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, "faces.spi.serialization.provider_cannot_instantiate", new Object[] { className });
                     LOGGER.log(Level.SEVERE, "", ie);

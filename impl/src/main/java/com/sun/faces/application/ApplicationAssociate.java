@@ -107,7 +107,7 @@ import jakarta.servlet.ServletContext;
  * Break out the things that are associated with the Application, but need to be present even when the user has replaced
  * the Application instance.
  * </p>
- * 
+ *
  * <p>
  * For example: the user replaces ApplicationFactory, and wants to intercept calls to createValueExpression() and
  * createMethodExpression() for certain kinds of expressions, but allow the existing application to handle the rest.
@@ -139,7 +139,7 @@ public class ApplicationAssociate {
 
     private static final String ASSOCIATE_KEY = RIConstants.FACES_PREFIX + "ApplicationAssociate";
 
-    private static ThreadLocal<ApplicationAssociate> instance = new ThreadLocal<ApplicationAssociate>() {
+    private static ThreadLocal<ApplicationAssociate> instance = new ThreadLocal<>() {
         @Override
         protected ApplicationAssociate initialValue() {
             return null;
@@ -569,9 +569,9 @@ public class ApplicationAssociate {
     /**
      * keys: element from faces-config
      * <p>
-     * 
+     *
      * values: ResourceBundleBean instances.
-     * 
+     *
      * @param var the variable name
      * @param bundle the application resource bundle
      */
@@ -668,12 +668,13 @@ public class ApplicationAssociate {
         if (decoratorsParamValue != null) {
             for (String decorator : split(appMap, decoratorsParamValue.trim(), ";")) {
                 try {
-                    newCompiler.addTagDecorator((TagDecorator) forName(decorator).newInstance());
+                    newCompiler
+                            .addTagDecorator((TagDecorator) forName(decorator).getDeclaredConstructor().newInstance());
 
                     if (LOGGER.isLoggable(FINE)) {
                         LOGGER.log(FINE, "Successfully Loaded Decorator: {0}", decorator);
                     }
-                } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+                } catch (ReflectiveOperationException | IllegalArgumentException | SecurityException e) {
                     if (LOGGER.isLoggable(SEVERE)) {
                         LOGGER.log(SEVERE, "Error Loading Decorator: " + decorator, e);
                     }

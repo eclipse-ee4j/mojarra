@@ -94,8 +94,9 @@ public class RenderKitConfigHandler implements ConfigAnnotationHandler {
                             throw new IllegalStateException("Error processing annotated Renderer " + ra.toString() + " on class " + rClass.getName()
                                     + ".  Unable to find specified RenderKit.");
                         }
-                        rk.addRenderer(ra.componentFamily(), ra.rendererType(), (Renderer) rClass.newInstance());
-                    } catch (IllegalStateException | InstantiationException | IllegalAccessException e) {
+                        rk.addRenderer(ra.componentFamily(), ra.rendererType(),
+                                (Renderer) rClass.getDeclaredConstructor().newInstance());
+                    } catch (IllegalStateException | ReflectiveOperationException | SecurityException e) {
                         throw new FacesException(e);
                     }
                 } else if (entry.getValue() instanceof FacesBehaviorRenderer) {
@@ -106,8 +107,9 @@ public class RenderKitConfigHandler implements ConfigAnnotationHandler {
                             throw new IllegalStateException("Error processing annotated ClientBehaviorRenderer " + bra.toString() + " on class "
                                     + rClass.getName() + ".  Unable to find specified RenderKit.");
                         }
-                        rk.addClientBehaviorRenderer(bra.rendererType(), (ClientBehaviorRenderer) rClass.newInstance());
-                    } catch (IllegalStateException | InstantiationException | IllegalAccessException e) {
+                        rk.addClientBehaviorRenderer(bra.rendererType(),
+                                (ClientBehaviorRenderer) rClass.getDeclaredConstructor().newInstance());
+                    } catch (IllegalStateException | ReflectiveOperationException | SecurityException e) {
                         throw new FacesException(e);
                     }
                 }

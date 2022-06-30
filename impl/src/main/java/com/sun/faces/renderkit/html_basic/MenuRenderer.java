@@ -699,8 +699,8 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
 
         if (!lookupClass.isInterface() && !isAbstract(lookupClass.getModifiers())) {
             try {
-                return (Collection<Object>) lookupClass.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
+                return (Collection<Object>) lookupClass.getDeclaredConstructor().newInstance();
+            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
                 if (logger.isLoggable(SEVERE)) {
                     logger.log(SEVERE, "Unable to create new Collection instance for type " + lookupClass.getName(), e);
                 }

@@ -86,12 +86,11 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
                         vh = (ValueHolder) newComp;
                     } else {
                         try {
-                            newComp = ValueHolderTestCaseBase.this.component.getClass().newInstance();
+                            newComp = ValueHolderTestCaseBase.this.component.getClass().getDeclaredConstructor()
+                                    .newInstance();
                             vh = (ValueHolder) newComp;
 
-                        } catch (IllegalAccessException ex) {
-                            fail("Can't instantiate class of " + ValueHolderTestCaseBase.this.component.getClass().getName());
-                        } catch (InstantiationException ex) {
+                        } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException ex) {
                             fail("Can't instantiate class of " + ValueHolderTestCaseBase.this.component.getClass().getName());
                         }
                     }

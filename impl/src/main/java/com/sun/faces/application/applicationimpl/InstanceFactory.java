@@ -254,13 +254,13 @@ public class InstanceFactory {
                     if (!associate.isDevModeEnabled()) {
                         componentMap.put(className, clazz);
                     }
-                    result = (UIComponent) clazz.newInstance();
+                    result = (UIComponent) clazz.getDeclaredConstructor().newInstance();
                 }
             } catch (ClassNotFoundException ex) {
                 if (!associate.isDevModeEnabled()) {
                     componentMap.put(className, ComponentResourceClassNotFound.class);
                 }
-            } catch (InstantiationException | IllegalAccessException | ClassCastException ie) {
+            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException ie) {
                 throw new FacesException(ie);
             }
         }
@@ -623,8 +623,8 @@ public class InstanceFactory {
             if (!associate.isDevModeEnabled()) {
                 componentMap.put(className, componentClass);
             }
-            result = (UIComponent) componentClass.newInstance();
-        } catch (IllegalAccessException | InstantiationException | ClassNotFoundException ex) {
+            result = (UIComponent) componentClass.getDeclaredConstructor().newInstance();
+        } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException ex) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, null, ex);
             }
@@ -777,7 +777,7 @@ public class InstanceFactory {
         }
 
         try {
-            result = clazz.newInstance();
+            result = clazz.getDeclaredConstructor().newInstance();
         } catch (Throwable t) {
             Throwable previousT;
             do {
@@ -1018,8 +1018,8 @@ public class InstanceFactory {
             }
         } else {
             try {
-                result = clazz.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
+                result = clazz.getDeclaredConstructor().newInstance();
+            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
                 cause = e;
             }
         }

@@ -174,9 +174,9 @@ public class ReflectionUtil {
                 }
             }
             if (clazz != null && returnObject == null) {
-                returnObject = clazz.newInstance();
+                returnObject = clazz.getDeclaredConstructor().newInstance();
             }
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+        } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
             throw new ConfigurationException(
                     buildMessage(MessageFormat.format("Unable to create a new instance of ''{0}'': {1}", clazz.getName(), e.toString())), e);
         }
