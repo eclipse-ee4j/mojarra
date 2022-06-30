@@ -62,7 +62,7 @@ public class NamingContainerTestCase extends JUnitFacesTestCaseBase {
             renderKitFactory.addRenderKit(RenderKitFactory.HTML_BASIC_RENDER_KIT, renderKit);
         } catch (IllegalArgumentException e) {
         }
-        Map<?, ?> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>();
         externalContext.setRequestParameterMap(map);
 
     }
