@@ -24,9 +24,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import jakarta.servlet.ServletContext;
 
-final class MockApplicationMap implements Map {
+final class MockApplicationMap implements Map<String, Object> {
 
     public MockApplicationMap(ServletContext context) {
         this.context = context;
@@ -34,24 +35,27 @@ final class MockApplicationMap implements Map {
 
     private ServletContext context = null;
 
+    @Override
     public void clear() {
-        Iterator keys = keySet().iterator();
+        Iterator<String> keys = keySet().iterator();
         while (keys.hasNext()) {
-            context.removeAttribute((String) keys.next());
+            context.removeAttribute(keys.next());
         }
     }
 
+    @Override
     public boolean containsKey(Object key) {
         return (context.getAttribute(key(key)) != null);
     }
 
+    @Override
     public boolean containsValue(Object value) {
         if (value == null) {
             return (false);
         }
-        Enumeration keys = context.getAttributeNames();
+        Enumeration<String> keys = context.getAttributeNames();
         while (keys.hasMoreElements()) {
-            Object next = context.getAttribute((String) keys.nextElement());
+            Object next = context.getAttribute(keys.nextElement());
             if (next == value) {
                 return (true);
             }
@@ -59,41 +63,48 @@ final class MockApplicationMap implements Map {
         return (false);
     }
 
+    @Override
     public Set entrySet() {
-        Set set = new HashSet();
-        Enumeration keys = context.getAttributeNames();
+        Set<Object> set = new HashSet<>();
+        Enumeration<String> keys = context.getAttributeNames();
         while (keys.hasMoreElements()) {
-            set.add(context.getAttribute((String) keys.nextElement()));
+            set.add(context.getAttribute(keys.nextElement()));
         }
-        return (set);
+        return set;
     }
 
+    @Override
     public boolean equals(Object o) {
         return (context.equals(o));
     }
 
+    @Override
     public Object get(Object key) {
         return (context.getAttribute(key(key)));
     }
 
+    @Override
     public int hashCode() {
         return (context.hashCode());
     }
 
+    @Override
     public boolean isEmpty() {
         return (size() < 1);
     }
 
-    public Set keySet() {
-        Set set = new HashSet();
-        Enumeration keys = context.getAttributeNames();
+    @Override
+    public Set<String> keySet() {
+        Set<String> set = new HashSet<>();
+        Enumeration<String> keys = context.getAttributeNames();
         while (keys.hasMoreElements()) {
             set.add(keys.nextElement());
         }
         return (set);
     }
 
-    public Object put(Object key, Object value) {
+    @Override
+    public Object put(String key, Object value) {
         if (value == null) {
             return (remove(key));
         }
@@ -103,14 +114,16 @@ final class MockApplicationMap implements Map {
         return (previous);
     }
 
+    @Override
     public void putAll(Map map) {
-        Iterator keys = map.keySet().iterator();
+        Iterator<?> keys = map.keySet().iterator();
         while (keys.hasNext()) {
             String key = (String) keys.next();
             context.setAttribute(key, map.get(key));
         }
     }
 
+    @Override
     public Object remove(Object key) {
         String skey = key(key);
         Object previous = context.getAttribute(skey);
@@ -118,9 +131,10 @@ final class MockApplicationMap implements Map {
         return (previous);
     }
 
+    @Override
     public int size() {
         int n = 0;
-        Enumeration keys = context.getAttributeNames();
+        Enumeration<String> keys = context.getAttributeNames();
         while (keys.hasMoreElements()) {
             keys.nextElement();
             n++;
@@ -128,11 +142,12 @@ final class MockApplicationMap implements Map {
         return (n);
     }
 
-    public Collection values() {
-        List list = new ArrayList();
-        Enumeration keys = context.getAttributeNames();
+    @Override
+    public Collection<Object> values() {
+        List<Object> list = new ArrayList<>();
+        Enumeration<String> keys = context.getAttributeNames();
         while (keys.hasMoreElements()) {
-            list.add(context.getAttribute((String) keys.nextElement()));
+            list.add(context.getAttribute(keys.nextElement()));
         }
         return (list);
     }
