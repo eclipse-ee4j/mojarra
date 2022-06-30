@@ -138,9 +138,9 @@ public class UISelectManyTestCase extends UIInputTestCase {
         selectMany.validate(facesContext);
         assertTrue(!selectMany.isValid());
 
-        Iterator messages = facesContext.getMessages();
+        Iterator<FacesMessage> messages = facesContext.getMessages();
         while (messages.hasNext()) {
-            FacesMessage message = (FacesMessage) messages.next();
+            FacesMessage message = messages.next();
             assertTrue(message.getSummary().indexOf("mylabel") >= 0);
         }
     }
@@ -489,11 +489,11 @@ public class UISelectManyTestCase extends UIInputTestCase {
     }
 
     // Create an options list with nested groups
-    protected List setupOptions() {
+    protected List<SelectItem> setupOptions() {
         SelectItemGroup group, subgroup;
         subgroup = new SelectItemGroup("Group C");
         subgroup.setSelectItems(new SelectItem[] { new SelectItem("C1"), new SelectItem("C2"), new SelectItem("C3") });
-        List options = new ArrayList();
+        List<SelectItem> options = new ArrayList<>();
         options.add(new SelectItem("A1"));
         group = new SelectItemGroup("Group B");
         group.setSelectItems(new SelectItem[] { new SelectItem("B1"), subgroup, new SelectItem("B2"), new SelectItem("B3") });
@@ -505,7 +505,7 @@ public class UISelectManyTestCase extends UIInputTestCase {
     }
 
     // Create an options list with nested groups
-    protected Set setupOptionsSet() {
+    protected Set<SelectItem> setupOptionsSet() {
         SelectItemGroup group, subgroup;
         subgroup = new SelectItemGroup("Group C");
         subgroup.setSelectItems(new SelectItem[] { new SelectItem("C1"), new SelectItem("C2"), new SelectItem("C3") });

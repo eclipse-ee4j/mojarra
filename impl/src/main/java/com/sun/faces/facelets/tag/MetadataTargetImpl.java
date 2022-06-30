@@ -33,12 +33,12 @@ import jakarta.faces.view.facelets.MetadataTarget;
  */
 public class MetadataTargetImpl extends MetadataTarget {
 
-    private final Map pd;
+    private final Map<String, PropertyDescriptor> pd;
     private final Class<?> type;
 
     public MetadataTargetImpl(Class type) throws IntrospectionException {
         this.type = type;
-        pd = new HashMap();
+        pd = new HashMap<>();
         BeanInfo info = Introspector.getBeanInfo(type);
         PropertyDescriptor[] pda = info.getPropertyDescriptors();
         for (int i = 0; i < pda.length; i++) {
@@ -48,7 +48,7 @@ public class MetadataTargetImpl extends MetadataTarget {
 
     @Override
     public PropertyDescriptor getProperty(String name) {
-        return (PropertyDescriptor) pd.get(name);
+        return pd.get(name);
     }
 
     @Override
