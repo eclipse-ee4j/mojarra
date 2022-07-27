@@ -258,7 +258,7 @@ public class MockApplication extends Application {
     }
 
     @Override
-    public Converter createConverter(Class targetClass) {
+    public Converter createConverter(Class<?> targetClass) {
         throw new UnsupportedOperationException();
     }
 
@@ -941,15 +941,15 @@ public class MockApplication extends Application {
             try {
                 return systemEvent.getDeclaredConstructor(source);
             } catch (NoSuchMethodException ignored) {
-                Constructor[] ctors = systemEvent.getConstructors();
+                Constructor<?>[] ctors = systemEvent.getConstructors();
                 if (ctors != null) {
-                    for (Constructor c : ctors) {
+                    for (Constructor<?> c : ctors) {
                         Class<?>[] params = c.getParameterTypes();
                         if (params.length != 1) {
                             continue;
                         }
                         if (params[0].isAssignableFrom(source)) {
-                            return c;
+                            return (Constructor<? extends SystemEvent>) c;
                         }
                     }
                 }

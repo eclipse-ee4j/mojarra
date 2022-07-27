@@ -65,10 +65,10 @@ final class MockSessionMap implements Map<String, Object> {
 
     @Override
     public Set entrySet() {
-        Set set = new HashSet();
-        Enumeration keys = session.getAttributeNames();
+        Set<Object> set = new HashSet<>();
+        Enumeration<String> keys = session.getAttributeNames();
         while (keys.hasMoreElements()) {
-            set.add(session.getAttribute((String) keys.nextElement()));
+            set.add(session.getAttribute(keys.nextElement()));
         }
         return set;
     }

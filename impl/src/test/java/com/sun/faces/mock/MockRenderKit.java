@@ -16,6 +16,9 @@
 
 package com.sun.faces.mock;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,15 +34,11 @@ import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.Renderer;
 import jakarta.faces.render.ResponseStateManager;
 
-import java.io.Writer;
-import java.io.OutputStream;
-import java.io.IOException;
-
 public class MockRenderKit extends RenderKit {
 
     public MockRenderKit() {
         addRenderer(UIData.COMPONENT_FAMILY,
-                "jakarta.faces.Table", new TestRenderer(true));
+                "jakarta.faces.Table", new TestRenderer());
         addRenderer(UIInput.COMPONENT_FAMILY,
                 "TestRenderer", new TestRenderer());
         addRenderer(UIInput.COMPONENT_FAMILY,
@@ -49,11 +48,11 @@ public class MockRenderKit extends RenderKit {
         addRenderer(UIOutput.COMPONENT_FAMILY,
                 "jakarta.faces.Text", new TestRenderer());
         addRenderer(UIPanel.COMPONENT_FAMILY,
-                "jakarta.faces.Grid", new TestRenderer(true));
+                "jakarta.faces.Grid", new TestRenderer());
         responseStateManager = new MockResponseStateManager();
     }
 
-    private Map renderers = new HashMap();
+    private Map<String, Renderer> renderers = new HashMap<>();
     private ResponseStateManager responseStateManager = null;
 
     @Override
@@ -70,7 +69,7 @@ public class MockRenderKit extends RenderKit {
         if ((family == null) || (rendererType == null)) {
             throw new NullPointerException();
         }
-        return ((Renderer) renderers.get(family + "|" + rendererType));
+        return (renderers.get(family + "|" + rendererType));
     }
 
     @Override
@@ -116,15 +115,9 @@ public class MockRenderKit extends RenderKit {
         return responseStateManager;
     }
 
-    class TestRenderer extends Renderer {
-
-        private boolean rendersChildren = false;
+    class TestRenderer extends Renderer<UIComponent> {
 
         public TestRenderer() {
-        }
-
-        public TestRenderer(boolean rendersChildren) {
-            this.rendersChildren = rendersChildren;
         }
 
         @Override
@@ -142,7 +135,7 @@ public class MockRenderKit extends RenderKit {
             // System.err.println("decode(" + clientId + ")");
 
             // Decode incoming request parameters
-            Map params = context.getExternalContext().getRequestParameterMap();
+            Map<String, String> params = context.getExternalContext().getRequestParameterMap();
             if (params.containsKey(clientId)) {
                 // System.err.println("  '" + input.currentValue(context) +
                 //                    "' --> '" + params.get(clientId) + "'");

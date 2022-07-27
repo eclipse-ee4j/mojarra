@@ -18,27 +18,29 @@ package com.sun.faces.mock;
 
 import java.io.InputStream;
 import java.io.Reader;
-import java.sql.NClob;
-import java.sql.RowId;
-import java.sql.SQLXML;
-import java.util.Calendar;
-import java.util.Map;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.Date;
+import java.sql.NClob;
 import java.sql.Ref;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.RowId;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
+import java.sql.SQLXML;
 import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
-import com.sun.faces.mock.model.BeanTestImpl;
+import java.util.Calendar;
+import java.util.Map;
+
 import org.apache.commons.beanutils.PropertyUtils;
+
+import com.sun.faces.mock.model.BeanTestImpl;
 
 /**
  * <p>
@@ -241,6 +243,7 @@ public class MockResultSet implements ResultSet {
     /**
      * @deprecated
      */
+    @Deprecated
     @Override
     public BigDecimal getBigDecimal(int columnIndex, int scale)
             throws SQLException {
@@ -256,6 +259,7 @@ public class MockResultSet implements ResultSet {
      * @param columnName
      * @deprecated
      */
+    @Deprecated
     @Override
     public BigDecimal getBigDecimal(String columnName, int scale)
             throws SQLException {
@@ -409,12 +413,12 @@ public class MockResultSet implements ResultSet {
     }
 
     @Override
-    public Object getObject(int columnIndex, Map map) throws SQLException {
+    public Object getObject(int columnIndex, Map<String, Class<?>> map) throws SQLException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Object getObject(String columnName, Map map) throws SQLException {
+    public Object getObject(String columnName, Map<String, Class<?>> map) throws SQLException {
         throw new UnsupportedOperationException();
     }
 
@@ -498,6 +502,7 @@ public class MockResultSet implements ResultSet {
     /**
      * @deprecated
      */
+    @Deprecated
     @Override
     public InputStream getUnicodeStream(int columnIndex) throws SQLException {
         throw new UnsupportedOperationException();
@@ -507,6 +512,7 @@ public class MockResultSet implements ResultSet {
      * @param columnName
      * @deprecated
      */
+    @Deprecated
     @Override
     public InputStream getUnicodeStream(String columnName) throws SQLException {
         throw new UnsupportedOperationException();
@@ -1131,11 +1137,13 @@ public class MockResultSet implements ResultSet {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public <T> T getObject(String columnLabel, Class<T> type) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

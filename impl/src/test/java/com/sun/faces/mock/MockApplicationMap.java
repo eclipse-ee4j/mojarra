@@ -115,7 +115,7 @@ final class MockApplicationMap implements Map<String, Object> {
     }
 
     @Override
-    public void putAll(Map map) {
+    public void putAll(Map<? extends String, ? extends Object> map) {
         Iterator<?> keys = map.keySet().iterator();
         while (keys.hasNext()) {
             String key = (String) keys.next();

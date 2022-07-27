@@ -85,13 +85,6 @@ public class UISelectItemsTestCase extends UIComponentBaseTestCase {
         assertNull("no value", selectItems.getValue());
     }
 
-    // Test setting properties to invalid values
-    @Override
-    public void testPropertiesInvalid() throws Exception {
-        super.testPropertiesInvalid();
-        UISelectItems selectItems = (UISelectItems) component;
-    }
-
     // Test setting properties to valid values
     @Override
     public void testPropertiesValid() throws Exception {

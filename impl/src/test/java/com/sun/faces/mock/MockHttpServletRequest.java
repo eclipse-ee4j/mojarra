@@ -68,7 +68,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
         setHttpSession(session);
     }
 
-    protected HashMap attributes = new HashMap();
+    protected HashMap<String, Object> attributes = new HashMap<>();
     protected String contextPath = null;
     protected Locale locale = null;
     protected HashMap<String, String[]> parameters = new HashMap<>();
@@ -271,8 +271,8 @@ public class MockHttpServletRequest implements HttpServletRequest {
     }
 
     @Override
-    public Enumeration getAttributeNames() {
-        return (new MockEnumeration(attributes.keySet().iterator()));
+    public Enumeration<String> getAttributeNames() {
+        return (new MockEnumeration<>(attributes.keySet().iterator()));
     }
 
     @Override
@@ -324,7 +324,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
     }
 
     @Override
-    public Enumeration getLocales() {
+    public Enumeration<Locale> getLocales() {
         throw new UnsupportedOperationException();
     }
 
@@ -339,13 +339,13 @@ public class MockHttpServletRequest implements HttpServletRequest {
     }
 
     @Override
-    public Map getParameterMap() {
+    public Map<String, String[]> getParameterMap() {
         return (parameters);
     }
 
     @Override
-    public Enumeration getParameterNames() {
-        return (new MockEnumeration(parameters.keySet().iterator()));
+    public Enumeration<String> getParameterNames() {
+        return (new MockEnumeration<>(parameters.keySet().iterator()));
     }
 
     @Override

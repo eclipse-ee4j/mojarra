@@ -107,6 +107,7 @@ public class HtmlResponseWriterTest {
         responseWriter.endElement("script");
         responseWriter.flush();
         assertEquals(expected, stringWriter.toString());
+        responseWriter.close();
 
         // Case 2 start is // end is /* */
         stringWriter = new StringWriter();
@@ -116,6 +117,7 @@ public class HtmlResponseWriterTest {
         responseWriter.endElement("script");
         responseWriter.flush();
         assertEquals(expected, stringWriter.toString());
+        responseWriter.close();
 
         // Case 3 start is /* */  end is /* */
         stringWriter = new StringWriter();
@@ -125,6 +127,7 @@ public class HtmlResponseWriterTest {
         responseWriter.endElement("script");
         responseWriter.flush();
         assertEquals(expected, stringWriter.toString());
+        responseWriter.close();
 
         // Case 4 start is /* */  end is //
         stringWriter = new StringWriter();
@@ -134,6 +137,7 @@ public class HtmlResponseWriterTest {
         responseWriter.endElement("script");
         responseWriter.flush();
         assertEquals(expected, stringWriter.toString());
+        responseWriter.close();
 
         // Case 5 start is /* */  end is //
         stringWriter = new StringWriter();
@@ -143,6 +147,7 @@ public class HtmlResponseWriterTest {
         responseWriter.endElement("script");
         responseWriter.flush();
         assertEquals(expected, stringWriter.toString());
+        responseWriter.close();
     }
 
     /**
@@ -163,6 +168,7 @@ public class HtmlResponseWriterTest {
         responseWriter.endElement("style");
         responseWriter.flush();
         assertEquals(expectedStart + "]]]><![CDATA[" + expectedEnd, stringWriter.toString());
+        responseWriter.close();
 
         // two chars
         stringWriter = new StringWriter();
@@ -174,6 +180,7 @@ public class HtmlResponseWriterTest {
         responseWriter.endElement("style");
         responseWriter.flush();
         assertEquals(expectedStart + "]]]><![CDATA[]]]><![CDATA[" + expectedEnd, stringWriter.toString());
+        responseWriter.close();
 
         // long string
         stringWriter = new StringWriter();
@@ -185,6 +192,7 @@ public class HtmlResponseWriterTest {
         responseWriter.endElement("style");
         responseWriter.flush();
         assertEquals(expectedStart + "abc]]]><![CDATA[]>abc" + expectedEnd, stringWriter.toString());
+        responseWriter.close();
     }
 
     /**
@@ -206,6 +214,6 @@ public class HtmlResponseWriterTest {
         responseWriter.endElement("style");
         responseWriter.flush();
         assertEquals(expectedStart + expectedEnd, stringWriter.toString());
-
+        responseWriter.close();
     }
 }
