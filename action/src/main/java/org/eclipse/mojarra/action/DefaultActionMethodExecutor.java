@@ -44,7 +44,7 @@ public class DefaultActionMethodExecutor implements ActionMethodExecutor {
      */
     @Override
     public void execute(FacesContext facesContext, ActionMappingMatch actionMappingMatch) {
-        Instance instance = CDI.current().select(
+        Instance<?> instance = CDI.current().select(
                 actionMappingMatch.getBean().getBeanClass(), Any.Literal.INSTANCE);
         String viewId;
         try {
