@@ -16,11 +16,12 @@
 
 package com.sun.faces.renderkit.html_basic;
 
+import static org.easymock.EasyMock.expect;
+import static org.junit.Assert.assertTrue;
+
 import java.io.StringWriter;
 import java.util.Collections;
 
-import static org.junit.Assert.assertTrue;
-import static org.easymock.EasyMock.expect;
 import org.junit.Test;
 import org.powermock.api.easymock.PowerMock;
 
@@ -51,7 +52,7 @@ public class HeadRendererTest {
     @Test
     public void testEncodeBegin() throws Exception {
         //
-        // TODO: Note we are not testing this method as its complexity is too 
+        // TODO: Note we are not testing this method as its complexity is too
         // high, because it uses WebConfiguration.getInstance to get
         // configuration information that should be readily available to the
         // renderer through either the FacesContext or the component being
@@ -89,11 +90,11 @@ public class HeadRendererTest {
         UIViewRoot viewRoot = PowerMock.createMock(UIViewRoot.class);
         HeadRenderer headRenderer = new HeadRenderer();
         HtmlHead htmlHead = new HtmlHead();
-        
+
         expect(facesContext.getResponseWriter()).andReturn(testResponseWriter).anyTimes();
         expect(facesContext.getViewRoot()).andReturn(viewRoot).anyTimes();
-        expect(viewRoot.getComponentResources(facesContext, "head")).andReturn(Collections.EMPTY_LIST).anyTimes();
-        
+        expect(viewRoot.getComponentResources(facesContext, "head")).andReturn(Collections.emptyList()).anyTimes();
+
         PowerMock.replay(facesContext, viewRoot);
         headRenderer.encodeEnd(facesContext, htmlHead);
         PowerMock.verify(facesContext, viewRoot);

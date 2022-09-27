@@ -16,6 +16,10 @@
 
 package com.sun.faces.junit;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.sun.faces.mock.MockApplication;
 import com.sun.faces.mock.MockExternalContext;
 import com.sun.faces.mock.MockFacesContext;
@@ -30,11 +34,6 @@ import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.ApplicationFactory;
 import jakarta.faces.context.FacesContextFactory;
 import jakarta.faces.lifecycle.LifecycleFactory;
-
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-
 import junit.framework.TestCase;
 
 public class JUnitFacesTestCaseBase extends TestCase {
@@ -91,7 +90,7 @@ public class JUnitFacesTestCaseBase extends TestCase {
         lifecycle = (MockLifecycle) lFactory.getLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE);
         facesContext = (MockFacesContext) fcFactory.getFacesContext(servletContext, request, response, lifecycle);
         externalContext = (MockExternalContext) facesContext.getExternalContext();
-        Map map = new HashMap();
+        Map<String, String> map = new HashMap<>();
         externalContext.setRequestParameterMap(map);
 
         ApplicationFactory applicationFactory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
