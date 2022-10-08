@@ -30,7 +30,6 @@ import static java.util.logging.Level.SEVERE;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -212,7 +211,7 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
                     }
 
                     if (clazz != null && returnObject == null) {
-                        returnObject = clazz.newInstance();
+                        returnObject = clazz.getDeclaredConstructor().newInstance();
                     }
 
                     ApplicationInstanceFactoryMetadataMap<String, Object> classMetadataMap = getClassMetadataMap(sc);
@@ -246,7 +245,7 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
                         buildMessage(format("Class ''{0}'' is missing a runtime dependency: {1}", className, ncdfe.toString()), source), ncdfe);
             } catch (ClassCastException cce) {
                 throw new ConfigurationException(buildMessage(format("Class ''{0}'' is not an instance of ''{1}''", className, rootType), source), cce);
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | FacesException e) {
+            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException | FacesException e) {
                 throw new ConfigurationException(buildMessage(format("Unable to create a new instance of ''{0}'': {1}", className, e.toString()), source), e);
             }
         }

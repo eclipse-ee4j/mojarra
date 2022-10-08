@@ -241,14 +241,14 @@ public class Util {
         if (faces == null) {
             return null;
         }
-        
+
         if (binding != null) {
             instance = binding.getValue(faces.getELContext());
         }
         if (instance == null && type != null) {
             try {
                 instance = ReflectionUtils.newInstance((String) type.getValue(faces.getELContext()));
-            } catch (InstantiationException | IllegalAccessException e) {
+            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
                 throw new AbortProcessingException(e.getMessage(), e);
             }
 
@@ -347,8 +347,8 @@ public class Util {
     @SuppressWarnings("unchecked")
     public static <T> T newInstance(Class<?> clazz) {
         try {
-            return (T) clazz.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+            return (T) clazz.getDeclaredConstructor().newInstance();
+        } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
     }
@@ -965,9 +965,9 @@ public class Util {
     public synchronized static String[] split(Map<String, Object> appMap, String toSplit, String regex) {
         return split(appMap, toSplit, regex, 0);
     }
-    
+
     /**
-     * <p>A slightly more efficient version of 
+     * <p>A slightly more efficient version of
      * <code>String.split()</code> which caches
      * the <code>Pattern</code>s in an LRUMap instead of
      * creating a new <code>Pattern</code> on each
@@ -1182,7 +1182,7 @@ public class Util {
                             }
                         }
                     }
-                    
+
                     Method[] methods = clazz.getDeclaredMethods();
                     if (methods != null) {
                         for (Method method : methods) {
@@ -1430,7 +1430,7 @@ public class Util {
     public static class JakartaNamespaceContext implements NamespaceContext {
 
         public static final String PREFIX = "jakartaee";
-        
+
         @Override
         public String getNamespaceURI(String prefix) {
             return FacesSchema.Schemas.JAKARTAEE_SCHEMA_DEFAULT_NS;
@@ -1492,7 +1492,7 @@ public class Util {
         if (result == null) {
             throw new IllegalStateException("CDI is not available");
         }
-        
+
         return result;
     }
 

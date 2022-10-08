@@ -22,7 +22,6 @@ import static com.sun.faces.util.ReflectionUtils.lookupMethod;
 import static com.sun.faces.util.ReflectionUtils.newInstance;
 import static com.sun.faces.util.Util.getCdiBeanManager;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -54,7 +53,7 @@ public class ELUtils {
     /**
      * Private cache for storing evaluation results for composite components checks.
      */
-    private static final HashMap<String, Boolean> compositeComponentEvaluationCache = new HashMap<String, Boolean>();
+    private static final HashMap<String, Boolean> compositeComponentEvaluationCache = new HashMap<>();
 
     /**
      * The maximum size of the <code>compositeComponentEvaluationCache</code>.
@@ -64,7 +63,7 @@ public class ELUtils {
     /**
      * FIFO queue, holding access information about the <code>compositeComponentEvaluationCache</code>.
      */
-    private static final LinkedList<String> evaluationCacheFifoQueue = new LinkedList<String>();
+    private static final LinkedList<String> evaluationCacheFifoQueue = new LinkedList<>();
 
     /**
      * Class member, indicating a <I>positive</I> evaluation result.
@@ -208,7 +207,7 @@ public class ELUtils {
                     // jakarta.el.staticFieldELResolver
                     composite.addRootELResolver((ELResolver) newInstance("jakarta.el.StaticFieldELResolver"));
                 }
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException t) {
+            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException t) {
                 // This is normal on containers that do not have these ELResolvers
             }
         }

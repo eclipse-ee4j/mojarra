@@ -1378,8 +1378,8 @@ public abstract class UIComponentBase extends UIComponent {
             if (Collection.class.isAssignableFrom(mapOrCollection)) {
                 Collection<Object> retCollection = null;
                 try {
-                    retCollection = (Collection<Object>) mapOrCollection.newInstance();
-                } catch (InstantiationException | IllegalAccessException e) {
+                    retCollection = (Collection<Object>) mapOrCollection.getDeclaredConstructor().newInstance();
+                } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
                         LOGGER.log(Level.SEVERE, e.toString(), e);
                     }
@@ -1400,8 +1400,8 @@ public abstract class UIComponentBase extends UIComponent {
                 // If we were doing assertions: assert(mapOrList.isAssignableFrom(Map.class));
                 Map<Object, Object> retMap = null;
                 try {
-                    retMap = (Map<Object, Object>) mapOrCollection.newInstance();
-                } catch (InstantiationException | IllegalAccessException e) {
+                    retMap = (Map<Object, Object>) mapOrCollection.getDeclaredConstructor().newInstance();
+                } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
                         LOGGER.log(Level.SEVERE, e.toString(), e);
                     }
@@ -2203,8 +2203,8 @@ public abstract class UIComponentBase extends UIComponent {
             // noinspection unchecked
             Class<?> clazz = (Class<?>) in.readObject();
             try {
-                component = (UIComponent) clazz.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
+                component = (UIComponent) clazz.getDeclaredConstructor().newInstance();
+            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
                 throw new RuntimeException(e);
             }
             component.restoreState(FacesContext.getCurrentInstance(), in.readObject());

@@ -146,13 +146,13 @@ public class ConverterPropertyEditorFactory {
         public ClassTemplateInfo(Class<? extends ConverterPropertyEditorBase> templateClass) {
             this.templateClass = templateClass;
             try {
-                ConverterPropertyEditorBase tc = templateClass.newInstance();
+                ConverterPropertyEditorBase tc = templateClass.getDeclaredConstructor().newInstance();
                 Class<?> templateTargetClass = tc.getTargetClass();
                 loadTemplateBytes();
                 classNameConstant = findConstant(getVMClassName(templateClass));
                 classNameRefConstant = findConstant(new StringBuilder(64).append('L').append(getVMClassName(templateClass)).append(';').toString());
                 targetClassConstant = findConstant(getVMClassName(templateTargetClass));
-            } catch (InstantiationException | IllegalAccessException | IOException e) {
+            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException | IOException e) {
                 if (LOGGER.isLoggable(Level.FINE)) {
                     LOGGER.log(Level.FINE, "Unexected exception ClassTemplateInfo", e);
                 }

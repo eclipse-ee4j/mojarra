@@ -130,8 +130,8 @@ public abstract class Compiler {
         String type = features.get(name);
         if (type != null) {
             try {
-                return ReflectionUtil.forName(type).newInstance();
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException t) {
+                return ReflectionUtil.forName(type).getDeclaredConstructor().newInstance();
+            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
                 throw new FaceletException("Could not instantiate feature[" + name + "]: " + type);
             }
         }
