@@ -182,6 +182,13 @@
             <version>2.1</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>8.0.0.Final</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
    <build>
