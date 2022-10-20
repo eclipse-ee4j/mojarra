@@ -303,7 +303,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
 
         ValueReference valueReference = getValueReference(context, component, valueExpression);
 
-        if (valueReference == null) {
+        if (valueReference == null || valueReference.getBase() == null) {
             return;
         }
 
