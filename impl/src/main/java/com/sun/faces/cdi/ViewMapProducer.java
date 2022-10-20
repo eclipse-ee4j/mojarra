@@ -42,7 +42,7 @@ public class ViewMapProducer extends CdiProducer<Map<String, Object>> {
 
     public ViewMapProducer() {
         super.name("viewScope").scope(RequestScoped.class).qualifiers(ViewMap.Literal.INSTANCE)
-                .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, Object.class }), Map.class, Object.class).beanClass(Map.class)
+                .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, Object.class }), Map.class, Object.class)
                 .create(e -> FacesContext.getCurrentInstance().getViewRoot().getViewMap());
     }
 

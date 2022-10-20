@@ -42,7 +42,7 @@ public class RequestParameterMapProducer extends CdiProducer<Map<String, String>
 
     public RequestParameterMapProducer() {
         super.name("param").scope(RequestScoped.class).qualifiers(RequestParameterMap.Literal.INSTANCE)
-                .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, String.class }), Map.class, Object.class).beanClass(Map.class)
+                .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, String.class }), Map.class, Object.class)
                 .create(e -> FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap());
     }
 

@@ -49,7 +49,8 @@ abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializab
 
     private String id = this.getClass().getName();
     private String name;
-    private Class<?> beanClass = Object.class;
+    // for synthetic beans, the beanClass defaults to the extension that registers them
+    private Class<?> beanClass = CdiExtension.class;
     private Set<Type> types = singleton(Object.class);
     private Set<Annotation> qualifiers = unmodifiableSet(asSet(new DefaultAnnotationLiteral(), new AnyAnnotationLiteral()));
     private Class<? extends Annotation> scope = Dependent.class;
@@ -164,19 +165,8 @@ abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializab
         return this;
     }
 
-    protected CdiProducer<T> beanClass(Class<?> beanClass) {
-        this.beanClass = beanClass;
-        return this;
-    }
-
     protected CdiProducer<T> types(Type... types) {
         this.types = asSet(types);
-        return this;
-    }
-
-    protected CdiProducer<T> beanClassAndType(Class<?> beanClass) {
-        beanClass(beanClass);
-        types(beanClass);
         return this;
     }
 

@@ -41,7 +41,7 @@ public class InitParameterMapProducer extends CdiProducer<Map<String, String>> {
 
     public InitParameterMapProducer() {
         super.name("initParam").scope(RequestScoped.class).qualifiers(InitParameterMap.Literal.INSTANCE)
-                .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, String.class }), Map.class, Object.class).beanClass(Map.class)
+                .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, String.class }), Map.class, Object.class)
                 .create(e -> FacesContext.getCurrentInstance().getExternalContext().getInitParameterMap());
     }
 
