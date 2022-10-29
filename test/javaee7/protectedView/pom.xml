@@ -21,7 +21,7 @@
   <parent>
     <artifactId>pom</artifactId>
     <groupId>com.sun.faces.test.javaee7</groupId>
-    <version>3.0.2-SNAPSHOT</version>
+    <version>3.0.3-SNAPSHOT</version>
   </parent>
   
   <artifactId>protectedView</artifactId>

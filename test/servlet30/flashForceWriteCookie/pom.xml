@@ -21,12 +21,12 @@
   <parent>
     <artifactId>pom</artifactId>
     <groupId>com.sun.faces.test.servlet30</groupId>
-    <version>3.0.2-SNAPSHOT</version>
+    <version>3.0.3-SNAPSHOT</version>
   </parent>
   
   <groupId>com.sun.faces.test.servlet30</groupId>
   <artifactId>flashForceWriteCookie</artifactId>
-  <version>3.0.2-SNAPSHOT</version>
+  <version>3.0.3-SNAPSHOT</version>
   <packaging>war</packaging>
   <name>Mojarra ${project.version} - Test - Servlet 3.0 - Flash With ForceCookieWrite context-param</name>
   

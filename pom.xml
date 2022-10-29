@@ -54,9 +54,7 @@
    
     <modules>
         <module>impl</module>
-        <!--  Commented out until we have a running Jakarta-ized GF to test against
         <module>test</module>
-        -->
         <module>util</module>
     </modules>
     
