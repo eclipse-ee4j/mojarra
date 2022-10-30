@@ -27,6 +27,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.util.Util;
@@ -112,19 +113,14 @@ public class ClasspathResourceHelper extends ResourceHelper {
         if (ctx.isProjectStage(Development)) {
             ClassLoader loader = Util.getCurrentLoader(getClass());
             String path = resource.getPath();
-            if (loader.getResource(path) != null) {
-                in = loader.getResource(path).openStream();
-            }
-            if (in == null && getClass().getClassLoader().getResource(path) != null) {
-                in = getClass().getClassLoader().getResource(path).openStream();
+            URL url = getResourceURL(loader, path, ctx);
+            if (url != null) {
+            	in = url.openStream();
             }
         } else {
             ClassLoader loader = Util.getCurrentLoader(getClass());
             String path = resource.getPath();
-            in = loader.getResourceAsStream(path);
-            if (in == null) {
-                in = getClass().getClassLoader().getResourceAsStream(path);
-            }
+            in = getResourceAsStream(loader, path, ctx);
         }
         return in;
     }
@@ -328,6 +324,66 @@ public class ClasspathResourceHelper extends ResourceHelper {
         }
 
         return result;
+    }
+
+    private InputStream getResourceAsStream(ClassLoader loader, String path, FacesContext ctx) {
+    	InputStream in = null;
+      	List<String> localizedPaths = getLocalizedProperties(path, ctx);
+      	for (String path_: localizedPaths) {
+      		in = getResourceAsStream(loader, path_);
+      		if (in != null) {
+      			break;
+      		}
+      	}
+      	return in;
+    }
+    
+    private URL getResourceURL(ClassLoader loader, String path, FacesContext ctx) {
+    	List<String> localizedPaths = getLocalizedProperties(path, ctx);
+    	URL url = null;
+    	for (String path_: localizedPaths) {
+    		url = getResource_(loader, path_);
+    		if (url != null) {
+    			break;
+    		}
+    	}
+    	return url;
+    }
+    
+    private InputStream getResourceAsStream(ClassLoader loader, String path) {
+    	InputStream in = loader.getResourceAsStream(path);
+    	if (in == null) {
+    		in = getClass().getClassLoader().getResourceAsStream(path);
+    	}
+    	return in;
+    }
+
+    private URL getResource_(ClassLoader loader, String path) {
+    	URL res = loader.getResource(path);
+    	if (res == null) {
+    		res = getClass().getClassLoader().getResource(path);
+    	}
+    	return res;
+    }
+    
+    private List<String> getLocalizedProperties(String path, FacesContext ctx) {
+    	Locale loc = (ctx != null && ctx.getViewRoot() != null) ? ctx.getViewRoot().getLocale() : null;
+    	if (!path.endsWith(".properties") || loc == null) {
+    		return Collections.singletonList(path);
+    	}
+    	List<String> list = new ArrayList<>();
+    	String base = path.substring(0, path.lastIndexOf(".properties"));
+    	if (!loc.getVariant().isEmpty()) {
+    		list.add(String.format("%s_%s_%s_%s.properties", base, loc.getLanguage(), loc.getCountry(), loc.getVariant()));
+    	}
+    	if (!loc.getCountry().isEmpty()) {
+    		list.add(String.format("%s_%s_%s.properties", base, loc.getLanguage(), loc.getCountry()));
+    	}
+    	if (!loc.getLanguage().isEmpty()) {
+    		list.add(String.format("%s_%s.properties", base, loc.getLanguage()));
+    	}
+    	list.add(path);
+    	return list;
     }
 
 }
