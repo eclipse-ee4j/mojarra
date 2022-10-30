@@ -81,6 +81,9 @@ public class UIRepeat extends UINamingContainer {
 
     private int index = -1;
 
+    private Integer originalBegin;
+    private Integer originalEnd;
+
     private Integer begin;
     private Integer end;
     private Integer step;
@@ -213,8 +216,15 @@ public class UIRepeat extends UINamingContainer {
         if (this.model == null) {
             Object val = this.getValue();
             if (val == null) {
-                Integer begin = getBegin();
-                Integer end = getEnd();
+                if (originalBegin == null) {
+                    originalBegin = getBegin();
+                }
+                if (originalEnd == null) {
+                    originalEnd = getEnd();
+                }
+
+                Integer begin = originalBegin;
+                Integer end = originalEnd;
 
                 if (end == null) {
                     if (begin == null) {
@@ -1025,6 +1035,8 @@ public class UIRepeat extends UINamingContainer {
         this.var = (String) state[5];
         this.varStatus = (String) state[6];
         this.value = state[7];
+        this.originalBegin = (Integer) state[8];
+        this.originalEnd = (Integer) state[9];
     }
 
     @Override
@@ -1034,7 +1046,7 @@ public class UIRepeat extends UINamingContainer {
         if (faces == null) {
             throw new NullPointerException();
         }
-        Object[] state = new Object[8];
+        Object[] state = new Object[10];
         state[0] = super.saveState(faces);
         state[1] = this.childState;
         state[2] = this.begin;
@@ -1043,6 +1055,8 @@ public class UIRepeat extends UINamingContainer {
         state[5] = this.var;
         state[6] = this.varStatus;
         state[7] = this.value;
+        state[8] = this.originalBegin;
+        state[9] = this.originalEnd;
         return state;
     }
 
