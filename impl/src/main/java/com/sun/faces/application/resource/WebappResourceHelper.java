@@ -16,13 +16,8 @@
 
 package com.sun.faces.application.resource;
 
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.util.FacesLogger;
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.CacheResourceModificationTimestamp;
 
-import javax.faces.FacesException;
-import javax.faces.application.ProjectStage;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -30,14 +25,19 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.CacheResourceModificationTimestamp;
-import com.sun.faces.facelets.impl.DefaultResourceResolver;
+import javax.faces.FacesException;
+import javax.faces.application.ProjectStage;
+import javax.faces.component.UIViewRoot;
+import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.ResourceResolver;
+
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.facelets.impl.DefaultResourceResolver;
+import com.sun.faces.util.FacesLogger;
 
 /**
  * <p>
@@ -127,7 +127,7 @@ public class WebappResourceHelper extends ResourceHelper {
     @Override
     protected InputStream getNonCompressedInputStream(ResourceInfo resource, FacesContext ctx)
     throws IOException {
-    	List<String> localizedPaths = getLocalizedProperties(resource.getPath(), ctx);
+    	List<String> localizedPaths = getLocalizedPaths(resource.getPath(), ctx);
     	InputStream in = null;
     	for (String path_: localizedPaths) {
     		in = ctx.getExternalContext().getResourceAsStream(path_);
@@ -364,26 +364,6 @@ public class WebappResourceHelper extends ResourceHelper {
         }
             
         return basePath;
-    }
-
-    private List<String> getLocalizedProperties(String path, FacesContext ctx) {
-    	Locale loc = (ctx != null && ctx.getViewRoot() != null) ? ctx.getViewRoot().getLocale() : null;
-    	if (!path.endsWith(".properties") || loc == null) {
-    		return Collections.singletonList(path);
-    	}
-    	List<String> list = new ArrayList<>();
-    	String base = path.substring(0, path.lastIndexOf(".properties"));
-    	if (!loc.getVariant().isEmpty()) {
-    		list.add(String.format("%s_%s_%s_%s.properties", base, loc.getLanguage(), loc.getCountry(), loc.getVariant()));
-    	}
-    	if (!loc.getCountry().isEmpty()) {
-    		list.add(String.format("%s_%s_%s.properties", base, loc.getLanguage(), loc.getCountry()));
-    	}
-    	if (!loc.getLanguage().isEmpty()) {
-    		list.add(String.format("%s_%s.properties", base, loc.getLanguage()));
-    	}
-    	list.add(path);
-    	return list;
     }
 
 }
