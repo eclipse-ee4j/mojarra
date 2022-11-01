@@ -27,14 +27,11 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Logger;
 
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
 final class CurrentThreadToServletContext {
-
-    private static final Logger LOGGER = Logger.getLogger("jakarta.faces", "jakarta.faces.LogStrings");
 
     // Bug 20458755: This instance provides a method to look up the current FacesContext
     // that bypasses the additional check for the InitFacesContext introduced

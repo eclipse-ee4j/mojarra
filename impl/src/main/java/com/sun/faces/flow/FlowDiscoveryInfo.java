@@ -18,7 +18,7 @@ package com.sun.faces.flow;
 
 public class FlowDiscoveryInfo {
 
-    private Class definingClass;
+    private Class<?> definingClass;
     private String id;
     private String definingDocument;
 

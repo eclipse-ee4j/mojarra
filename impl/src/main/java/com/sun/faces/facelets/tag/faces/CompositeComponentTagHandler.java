@@ -398,7 +398,7 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
                             return Object.class;
                         }
                     } else {
-                        return (Class) obj;
+                        return (Class<?>) obj;
                     }
                 } else {
                     // defer to the default processing which will inspect the
@@ -448,7 +448,7 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
         public Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta) {
 
             if (meta.isTargetInstanceOf(UIComponent.class)) {
-                Class type = meta.getPropertyType(name);
+                Class<?> type = meta.getPropertyType(name);
                 if (type == null) {
                     type = Object.class;
                 }

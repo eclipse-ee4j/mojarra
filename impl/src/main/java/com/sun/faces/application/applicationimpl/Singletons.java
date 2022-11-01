@@ -34,7 +34,6 @@ import java.util.logging.Logger;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.util.FacesLogger;
 
-import jakarta.faces.application.Application;
 import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.application.StateManager;

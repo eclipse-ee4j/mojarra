@@ -376,7 +376,7 @@ public class FacesMessage implements Serializable {
      * Class used to represent message severity levels in a typesafe enumeration.
      * </p>
      */
-    public static class Severity implements Comparable {
+    public static class Severity implements Comparable<Severity> {
 
         // ------------------------------------------------------- Constructors
 
@@ -417,8 +417,8 @@ public class FacesMessage implements Serializable {
          * @param other The other object to be compared to
          */
         @Override
-        public int compareTo(Object other) {
-            return ordinal - ((Severity) other).ordinal;
+        public int compareTo(Severity other) {
+            return ordinal - other.ordinal;
         }
 
         /**

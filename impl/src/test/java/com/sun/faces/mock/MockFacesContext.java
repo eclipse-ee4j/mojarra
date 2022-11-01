@@ -98,7 +98,7 @@ public class MockFacesContext extends FacesContext {
     public Map<Object, Object> getAttributes() {
 
         if (null == attributes) {
-            attributes = new HashMap<Object, Object>();
+            attributes = new HashMap<>();
         }
 
         return attributes;
@@ -106,7 +106,7 @@ public class MockFacesContext extends FacesContext {
 
     // clientIdsWithMessages
     @Override
-    public Iterator getClientIdsWithMessages() {
+    public Iterator<String> getClientIdsWithMessages() {
         return (messages.keySet().iterator());
     }
 
@@ -163,26 +163,26 @@ public class MockFacesContext extends FacesContext {
     }
 
     // messages
-    private Map<String, List<FacesMessage>> messages = new HashMap();
+    private Map<String, List<FacesMessage>> messages = new HashMap<>();
 
     @Override
-    public Iterator getMessages() {
+    public Iterator<FacesMessage> getMessages() {
         List<FacesMessage> results = getMessageList();
         return (results.iterator());
     }
 
     @Override
-    public Iterator getMessages(String clientId) {
+    public Iterator<FacesMessage> getMessages(String clientId) {
         List<FacesMessage> list = getMessageList(clientId);
         return (list.iterator());
     }
 
     @Override
     public List<FacesMessage> getMessageList() {
-        ArrayList results = new ArrayList<FacesMessage>();
-        Iterator clientIds = messages.keySet().iterator();
+        List<FacesMessage> results = new ArrayList<>();
+        Iterator<String> clientIds = messages.keySet().iterator();
         while (clientIds.hasNext()) {
-            String clientId = (String) clientIds.next();
+            String clientId = clientIds.next();
             results.addAll(messages.get(clientId));
         }
         return results;
@@ -192,7 +192,7 @@ public class MockFacesContext extends FacesContext {
     public List<FacesMessage> getMessageList(String clientId) {
         List<FacesMessage> list = messages.get(clientId);
         if (list == null) {
-            list = Collections.EMPTY_LIST;
+            list = Collections.emptyList();
         }
         return list;
     }
@@ -328,9 +328,9 @@ public class MockFacesContext extends FacesContext {
                 maxSeverity = sev;
             }
         }
-        List list = messages.get(clientId);
+        List<FacesMessage> list = messages.get(clientId);
         if (list == null) {
-            list = new ArrayList();
+            list = new ArrayList<>();
             messages.put(clientId, list);
         }
         list.add(message);

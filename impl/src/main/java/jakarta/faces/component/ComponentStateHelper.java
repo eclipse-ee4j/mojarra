@@ -161,7 +161,6 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
      * enough.
      *
      * @param key
-     * @return
      */
     @Override
     public Object get(Serializable key) {

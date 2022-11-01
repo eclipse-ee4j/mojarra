@@ -19,11 +19,7 @@ package jakarta.faces.validator;
 import java.util.Locale;
 
 import jakarta.faces.component.UIInput;
-import jakarta.faces.validator.LengthValidator;
-import jakarta.faces.validator.ValidatorException;
 
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 

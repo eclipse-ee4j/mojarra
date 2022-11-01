@@ -59,7 +59,6 @@ public final class ByteArrayGuardAESCTR {
     private static final Logger LOGGER = FacesLogger.RENDERKIT.getLogger();
 
     private static final int KEY_LENGTH = 128;
-    private static final int IV_LENGTH = 16;
 
     private static final String KEY_ALGORITHM = "AES";
     private static final String CIPHER_CODE = "AES/CTR/NoPadding";

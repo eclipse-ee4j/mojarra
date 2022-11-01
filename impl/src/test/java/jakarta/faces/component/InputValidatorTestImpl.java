@@ -24,7 +24,7 @@ import jakarta.faces.validator.Validator;
  * Test implementation of {@link Validator}.
  * </p>
  */
-public class InputValidatorTestImpl implements Validator {
+public class InputValidatorTestImpl implements Validator<Object> {
 
     protected String validatorId = null;
 

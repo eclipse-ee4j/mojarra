@@ -17,7 +17,6 @@
 package com.sun.faces.facelets.util;
 
 import java.util.jar.JarFile;
-import static junit.framework.Assert.assertNull;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

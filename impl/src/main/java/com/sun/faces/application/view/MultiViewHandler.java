@@ -503,14 +503,7 @@ public class MultiViewHandler extends ViewHandler {
 
             appendOrReplaceExtension(viewId, ext, length, extIdx, buffer);
 
-            String convertedViewId = buffer.toString();
-
-            ViewDeclarationLanguage vdl = getViewDeclarationLanguage(context, convertedViewId);
-
-            if (vdl.viewExists(context, convertedViewId)) {
-                // RELEASE_PENDING (rlubke,driscoll) cache the lookup
-                return convertedViewId;
-            }
+            return buffer.toString();
         }
 
         return viewId;

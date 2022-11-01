@@ -51,7 +51,7 @@ public class AnnotationProviderFactory {
             Object provider = null;
             try {
                 // try two arguments constructor
-                provider = ServiceFactoryUtils.getProviderFromEntry(services[0], new Class[] { ServletContext.class, AnnotationProvider.class },
+                provider = ServiceFactoryUtils.getProviderFromEntry(services[0], new Class<?>[] { ServletContext.class, AnnotationProvider.class },
                         new Object[] { sc, annotationProvider });
             } catch (FacesException e) {
                 if (!NoSuchMethodException.class.isInstance(e.getCause())) {
@@ -64,7 +64,7 @@ public class AnnotationProviderFactory {
             if (provider == null) {
                 try {
                     // try one argument constructor
-                    provider = ServiceFactoryUtils.getProviderFromEntry(services[0], new Class[] { ServletContext.class }, new Object[] { sc });
+                    provider = ServiceFactoryUtils.getProviderFromEntry(services[0], new Class<?>[] { ServletContext.class }, new Object[] { sc });
                 } catch (FacesException e) {
                     if (LOGGER.isLoggable(Level.FINE)) {
                         LOGGER.log(Level.FINE, e.toString(), e);

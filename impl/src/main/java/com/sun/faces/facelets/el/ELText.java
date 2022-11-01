@@ -29,11 +29,9 @@ import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
-import jakarta.faces.FacesException;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.view.Location;
-import jakarta.faces.view.facelets.FaceletException;
 
 /**
  * Handles parsing EL Strings in accordance with the EL-API Specification. The parser accepts either <code>${..}</code>
@@ -46,9 +44,6 @@ public class ELText {
 
     private static final class LiteralValueExpression extends ValueExpression {
 
-        /**
-         *
-         */
         private static final long serialVersionUID = 1L;
 
         private final String text;
@@ -87,7 +82,7 @@ public class ELText {
         }
 
         @Override
-        public Object getValue(ELContext context) {
+        public <T> T getValue(ELContext context) {
             return null;
         }
 
@@ -330,7 +325,7 @@ public class ELText {
         int vlen = 0;
 
         StringBuffer buff = new StringBuffer(128);
-        List text = new ArrayList();
+        List<ELText> text = new ArrayList<>();
         ELText t = null;
         ValueExpression ve = null;
 
@@ -390,9 +385,9 @@ public class ELText {
         if (text.isEmpty()) {
             return new ELText("");
         } else if (text.size() == 1) {
-            return (ELText) text.get(0);
+            return text.get(0);
         } else {
-            ELText[] ta = (ELText[]) text.toArray(new ELText[text.size()]);
+            ELText[] ta = text.toArray(new ELText[text.size()]);
             return new ELTextComposite(ta);
         }
     }

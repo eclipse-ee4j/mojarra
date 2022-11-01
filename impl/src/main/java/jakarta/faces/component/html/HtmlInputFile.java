@@ -16,24 +16,20 @@
 
 package jakarta.faces.component.html;
 
-import java.util.ArrayList;
+import static jakarta.faces.component.html.HtmlComponentUtils.handleAttribute;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
-import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
-import jakarta.faces.context.FacesContext;
 
 /**
  * Represents an HTML <code>input</code> element of type <code>file</code>.
  *
  */
 public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
-
-    private static final String OPTIMIZED_PACKAGE = "jakarta.faces.component.";
 
     public HtmlInputFile() {
         super();
@@ -100,7 +96,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
      */
     public void setAccesskey(java.lang.String accesskey) {
         getStateHelper().put(PropertyKeys.accesskey, accesskey);
-        handleAttribute("accesskey", accesskey);
+        handleAttribute(this, "accesskey", accesskey);
     }
 
     /**
@@ -133,7 +129,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
      */
     public void setAccept(java.lang.String accept) {
         getStateHelper().put(PropertyKeys.accept, accept);
-        handleAttribute("accept", accept);
+        handleAttribute(this, "accept", accept);
     }
 
     /**
@@ -163,7 +159,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
     @Deprecated(since = "4.0", forRemoval = true)
     public void setAlt(java.lang.String alt) {
         getStateHelper().put(PropertyKeys.alt, alt);
-        handleAttribute("alt", alt);
+        handleAttribute(this, "alt", alt);
     }
 
     /**
@@ -225,7 +221,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
      */
     public void setDir(java.lang.String dir) {
         getStateHelper().put(PropertyKeys.dir, dir);
-        handleAttribute("dir", dir);
+        handleAttribute(this, "dir", dir);
     }
 
     /**
@@ -309,7 +305,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
      */
     public void setLang(java.lang.String lang) {
         getStateHelper().put(PropertyKeys.lang, lang);
-        handleAttribute("lang", lang);
+        handleAttribute(this, "lang", lang);
     }
 
     /**
@@ -341,7 +337,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
      */
     public void setMultiple(boolean multiple) {
         getStateHelper().put(PropertyKeys.multiple, multiple);
-        handleAttribute("multiple", multiple);
+        handleAttribute(this, "multiple", multiple);
     }
 
     /**
@@ -371,7 +367,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
     @Deprecated(since = "4.0", forRemoval = true)
     public void setMaxlength(int maxlength) {
         getStateHelper().put(PropertyKeys.maxlength, maxlength);
-        handleAttribute("maxlength", maxlength);
+        handleAttribute(this, "maxlength", maxlength);
     }
 
     /**
@@ -399,7 +395,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
      */
     public void setOnblur(java.lang.String onblur) {
         getStateHelper().put(PropertyKeys.onblur, onblur);
-        handleAttribute("onblur", onblur);
+        handleAttribute(this, "onblur", onblur);
     }
 
     /**
@@ -454,7 +450,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
      */
     public void setOnclick(java.lang.String onclick) {
         getStateHelper().put(PropertyKeys.onclick, onclick);
-        handleAttribute("onclick", onclick);
+        handleAttribute(this, "onclick", onclick);
     }
 
     /**
@@ -482,7 +478,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
      */
     public void setOndblclick(java.lang.String ondblclick) {
         getStateHelper().put(PropertyKeys.ondblclick, ondblclick);
-        handleAttribute("ondblclick", ondblclick);
+        handleAttribute(this, "ondblclick", ondblclick);
     }
 
     /**
@@ -510,7 +506,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
      */
     public void setOnfocus(java.lang.String onfocus) {
         getStateHelper().put(PropertyKeys.onfocus, onfocus);
-        handleAttribute("onfocus", onfocus);
+        handleAttribute(this, "onfocus", onfocus);
     }
 
     /**
@@ -538,7 +534,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
      */
     public void setOnkeydown(java.lang.String onkeydown) {
         getStateHelper().put(PropertyKeys.onkeydown, onkeydown);
-        handleAttribute("onkeydown", onkeydown);
+        handleAttribute(this, "onkeydown", onkeydown);
     }
 
     /**
@@ -566,7 +562,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
      */
     public void setOnkeypress(java.lang.String onkeypress) {
         getStateHelper().put(PropertyKeys.onkeypress, onkeypress);
-        handleAttribute("onkeypress", onkeypress);
+        handleAttribute(this, "onkeypress", onkeypress);
     }
 
     /**
@@ -594,7 +590,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
      */
     public void setOnkeyup(java.lang.String onkeyup) {
         getStateHelper().put(PropertyKeys.onkeyup, onkeyup);
-        handleAttribute("onkeyup", onkeyup);
+        handleAttribute(this, "onkeyup", onkeyup);
     }
 
     /**
@@ -622,7 +618,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
      */
     public void setOnmousedown(java.lang.String onmousedown) {
         getStateHelper().put(PropertyKeys.onmousedown, onmousedown);
-        handleAttribute("onmousedown", onmousedown);
+        handleAttribute(this, "onmousedown", onmousedown);
     }
 
     /**
@@ -650,7 +646,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
      */
     public void setOnmousemove(java.lang.String onmousemove) {
         getStateHelper().put(PropertyKeys.onmousemove, onmousemove);
-        handleAttribute("onmousemove", onmousemove);
+        handleAttribute(this, "onmousemove", onmousemove);
     }
 
     /**
@@ -678,7 +674,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
      */
     public void setOnmouseout(java.lang.String onmouseout) {
         getStateHelper().put(PropertyKeys.onmouseout, onmouseout);
-        handleAttribute("onmouseout", onmouseout);
+        handleAttribute(this, "onmouseout", onmouseout);
     }
 
     /**
@@ -706,7 +702,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
      */
     public void setOnmouseover(java.lang.String onmouseover) {
         getStateHelper().put(PropertyKeys.onmouseover, onmouseover);
-        handleAttribute("onmouseover", onmouseover);
+        handleAttribute(this, "onmouseover", onmouseover);
     }
 
     /**
@@ -734,7 +730,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
      */
     public void setOnmouseup(java.lang.String onmouseup) {
         getStateHelper().put(PropertyKeys.onmouseup, onmouseup);
-        handleAttribute("onmouseup", onmouseup);
+        handleAttribute(this, "onmouseup", onmouseup);
     }
 
     /**
@@ -762,7 +758,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
      */
     public void setOnselect(java.lang.String onselect) {
         getStateHelper().put(PropertyKeys.onselect, onselect);
-        handleAttribute("onselect", onselect);
+        handleAttribute(this, "onselect", onselect);
     }
 
     /**
@@ -833,7 +829,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
      */
     public void setRole(java.lang.String role) {
         getStateHelper().put(PropertyKeys.role, role);
-        handleAttribute("role", role);
+        handleAttribute(this, "role", role);
     }
 
     /**
@@ -863,7 +859,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
     @Deprecated(since = "4.0", forRemoval = true)
     public void setSize(int size) {
         getStateHelper().put(PropertyKeys.size, size);
-        handleAttribute("size", size);
+        handleAttribute(this, "size", size);
     }
 
     /**
@@ -891,7 +887,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
      */
     public void setStyle(java.lang.String style) {
         getStateHelper().put(PropertyKeys.style, style);
-        handleAttribute("style", style);
+        handleAttribute(this, "style", style);
     }
 
     /**
@@ -948,7 +944,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
      */
     public void setTabindex(java.lang.String tabindex) {
         getStateHelper().put(PropertyKeys.tabindex, tabindex);
-        handleAttribute("tabindex", tabindex);
+        handleAttribute(this, "tabindex", tabindex);
     }
 
     /**
@@ -976,7 +972,7 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
      */
     public void setTitle(java.lang.String title) {
         getStateHelper().put(PropertyKeys.title, title);
-        handleAttribute("title", title);
+        handleAttribute(this, "title", title);
     }
 
     private static final Collection<String> EVENT_NAMES = Collections.unmodifiableCollection(Arrays.asList("blur", "change", "valueChange", "click", "dblclick",
@@ -990,36 +986,6 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
     @Override
     public String getDefaultEventName() {
         return "valueChange";
-    }
-
-    private void handleAttribute(String name, Object value) {
-        List<String> setAttributes = (List<String>) getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");
-        if (setAttributes == null) {
-            String cname = this.getClass().getName();
-            if (cname != null && cname.startsWith(OPTIMIZED_PACKAGE)) {
-                setAttributes = new ArrayList<>(6);
-                getAttributes().put("jakarta.faces.component.UIComponentBase.attributesThatAreSet", setAttributes);
-            }
-        }
-        if (setAttributes != null) {
-            if (value == null) {
-                ValueExpression ve = getValueExpression(name);
-                if (ve == null) {
-                    setAttributes.remove(name);
-                }
-            } else if (!setAttributes.contains(name)) {
-                setAttributes.add(name);
-            }
-        }
-    }
-
-    @Override
-    public Object saveState(FacesContext context) {
-        Object result;
-        resetValue();
-        result = super.saveState(context);
-
-        return result;
     }
 
 }

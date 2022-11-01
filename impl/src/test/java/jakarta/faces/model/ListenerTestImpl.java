@@ -16,9 +16,6 @@
 
 package jakarta.faces.model;
 
-import jakarta.faces.model.DataModelEvent;
-import jakarta.faces.model.DataModelListener;
-
 /**
  * <p>
  * Test implementation of DataModelListener.</p>

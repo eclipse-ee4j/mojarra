@@ -34,7 +34,7 @@ import jakarta.el.VariableMapper;
  */
 public final class DefaultVariableMapper extends VariableMapper {
 
-    private Map vars;
+    private Map<String, ValueExpression> vars;
 
     public DefaultVariableMapper() {
         super();
@@ -46,7 +46,7 @@ public final class DefaultVariableMapper extends VariableMapper {
     @Override
     public ValueExpression resolveVariable(String name) {
         if (vars != null) {
-            return (ValueExpression) vars.get(name);
+            return vars.get(name);
         }
         return null;
     }
@@ -57,9 +57,9 @@ public final class DefaultVariableMapper extends VariableMapper {
     @Override
     public ValueExpression setVariable(String name, ValueExpression expression) {
         if (vars == null) {
-            vars = new HashMap();
+            vars = new HashMap<>();
         }
-        return (ValueExpression) vars.put(name, expression);
+        return vars.put(name, expression);
     }
 
 }

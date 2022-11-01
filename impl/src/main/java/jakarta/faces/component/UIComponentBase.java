@@ -73,7 +73,6 @@ import jakarta.faces.event.BehaviorEvent;
 import jakarta.faces.event.ComponentSystemEventListener;
 import jakarta.faces.event.FacesEvent;
 import jakarta.faces.event.FacesListener;
-import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.PostAddToViewEvent;
 import jakarta.faces.event.PostValidateEvent;
 import jakarta.faces.event.PreRemoveFromViewEvent;
@@ -114,7 +113,7 @@ public abstract class UIComponentBase extends UIComponent {
      * Each entry is an map of <code>PropertyDescriptor</code>s describing the properties of a concrete {@link UIComponent}
      * implementation, keyed by the corresponding <code>java.lang.Class</code>.
      * </p>
-     * 
+     *
      */
     private Map<Class<?>, Map<String, PropertyDescriptor>> descriptors;
 
@@ -1293,7 +1292,7 @@ public abstract class UIComponentBase extends UIComponent {
         }
 
         Object result;
-        Class mapOrCollectionClass = attachedObject.getClass();
+        Class<?> mapOrCollectionClass = attachedObject.getClass();
         boolean newWillSucceed = true;
         // first, test for newability of the class.
         try {
@@ -1375,12 +1374,12 @@ public abstract class UIComponentBase extends UIComponent {
         if (stateObj instanceof List) {
             List<StateHolderSaver> stateList = (List<StateHolderSaver>) stateObj;
             StateHolderSaver collectionSaver = stateList.get(0);
-            Class mapOrCollection = (Class) collectionSaver.restore(context);
+            Class<?> mapOrCollection = (Class<?>) collectionSaver.restore(context);
             if (Collection.class.isAssignableFrom(mapOrCollection)) {
                 Collection<Object> retCollection = null;
                 try {
-                    retCollection = (Collection<Object>) mapOrCollection.newInstance();
-                } catch (InstantiationException | IllegalAccessException e) {
+                    retCollection = (Collection<Object>) mapOrCollection.getDeclaredConstructor().newInstance();
+                } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
                         LOGGER.log(Level.SEVERE, e.toString(), e);
                     }
@@ -1401,8 +1400,8 @@ public abstract class UIComponentBase extends UIComponent {
                 // If we were doing assertions: assert(mapOrList.isAssignableFrom(Map.class));
                 Map<Object, Object> retMap = null;
                 try {
-                    retMap = (Map<Object, Object>) mapOrCollection.newInstance();
-                } catch (InstantiationException | IllegalAccessException e) {
+                    retMap = (Map<Object, Object>) mapOrCollection.getDeclaredConstructor().newInstance();
+                } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
                         LOGGER.log(Level.SEVERE, e.toString(), e);
                     }
@@ -1855,7 +1854,7 @@ public abstract class UIComponentBase extends UIComponent {
     private final static Object[] EMPTY_ARRAY = new Object[0];
 
     // Empty iterator for short circuiting operations
-    private final static Iterator<UIComponent> EMPTY_ITERATOR = new Iterator<UIComponent>() {
+    private final static Iterator<UIComponent> EMPTY_ITERATOR = new Iterator<>() {
 
         @Override
         public void remove() {
@@ -2202,10 +2201,10 @@ public abstract class UIComponentBase extends UIComponent {
 
         private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
             // noinspection unchecked
-            Class clazz = (Class) in.readObject();
+            Class<?> clazz = (Class<?>) in.readObject();
             try {
-                component = (UIComponent) clazz.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
+                component = (UIComponent) clazz.getDeclaredConstructor().newInstance();
+            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
                 throw new RuntimeException(e);
             }
             component.restoreState(FacesContext.getCurrentInstance(), in.readObject());

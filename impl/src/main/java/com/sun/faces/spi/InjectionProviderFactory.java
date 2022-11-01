@@ -114,7 +114,7 @@ public class InjectionProviderFactory {
                         Constructor ctor = clazz.getConstructor(ServletContext.class);
                         return (InjectionProvider) ctor.newInstance((ServletContext) extContext.getContext());
                     } catch (NoSuchMethodException nsme) {
-                        return (InjectionProvider) clazz.newInstance();
+                        return (InjectionProvider) clazz.getDeclaredConstructor().newInstance();
                     } catch (InvocationTargetException ite) {
                         if (LOGGER.isLoggable(Level.SEVERE)) {
                             LOGGER.log(Level.SEVERE, "faces.spi.injection.provider_cannot_instantiate", new Object[] { className });
@@ -130,7 +130,7 @@ public class InjectionProviderFactory {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, "faces.spi.injection.provider_not_found", new Object[] { className });
                 }
-            } catch (InstantiationException | IllegalAccessException ie) {
+            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException ie) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, "faces.spi.injection.provider_cannot_instantiate", new Object[] { className });
                     LOGGER.log(Level.SEVERE, "", ie);

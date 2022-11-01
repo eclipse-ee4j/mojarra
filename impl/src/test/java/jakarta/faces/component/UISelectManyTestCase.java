@@ -138,9 +138,9 @@ public class UISelectManyTestCase extends UIInputTestCase {
         selectMany.validate(facesContext);
         assertTrue(!selectMany.isValid());
 
-        Iterator messages = facesContext.getMessages();
+        Iterator<FacesMessage> messages = facesContext.getMessages();
         while (messages.hasNext()) {
-            FacesMessage message = (FacesMessage) messages.next();
+            FacesMessage message = messages.next();
             assertTrue(message.getSummary().indexOf("mylabel") >= 0);
         }
     }
@@ -370,7 +370,7 @@ public class UISelectManyTestCase extends UIInputTestCase {
         param.setValue("paramValue");
         selectMany.getChildren().add(param);
         selectMany.getChildren().add(new UISelectItemSub("esposito", null, null));
-        Iterator<SelectItem> iter = new SelectItemsIterator(facesContext, selectMany);
+        Iterator<SelectItem> iter = new SelectItemsIterator<>(facesContext, selectMany);
         while (iter.hasNext()) {
             Object object = iter.next();
             assertTrue(object instanceof jakarta.faces.model.SelectItem);
@@ -382,7 +382,7 @@ public class UISelectManyTestCase extends UIInputTestCase {
         selectMany.getChildren().add(new UISelectItemSub("gretsky", null, null));
         selectMany.getChildren().add(param);
         selectMany.getChildren().add(new UISelectItemSub("howe", null, null));
-        iter = new SelectItemsIterator(facesContext, selectMany);
+        iter = new SelectItemsIterator<>(facesContext, selectMany);
         while (iter.hasNext()) {
             Object object = iter.next();
             assertTrue(object instanceof jakarta.faces.model.SelectItem);
@@ -394,7 +394,7 @@ public class UISelectManyTestCase extends UIInputTestCase {
         UISelectItems items = new UISelectItems();
         items.setValue(Collections.emptyList());
         selectMany.getChildren().add(items);
-        iter = new SelectItemsIterator(facesContext, selectMany);
+        iter = new SelectItemsIterator<>(facesContext, selectMany);
         assertTrue(!iter.hasNext());
         try {
             iter.next();
@@ -411,7 +411,7 @@ public class UISelectManyTestCase extends UIInputTestCase {
         items = new UISelectItems();
         items.setValue(cItems);
         selectMany.getChildren().add(items);
-        iter = new SelectItemsIterator(facesContext, selectMany);
+        iter = new SelectItemsIterator<>(facesContext, selectMany);
         SelectItem previous = null;
         for (int i = 0, len = cItems.size(); i < len; i++) {
             assertTrue(iter.hasNext());
@@ -443,7 +443,7 @@ public class UISelectManyTestCase extends UIInputTestCase {
         items = new UISelectItems();
         items.setValue(new ListDataModel<>((List<Integer>) cItems));
         selectMany.getChildren().add(items);
-        iter = new SelectItemsIterator(facesContext, selectMany);
+        iter = new SelectItemsIterator<>(facesContext, selectMany);
         previous = null;
         for (int i = 0, len = cItems.size(); i < len; i++) {
             assertTrue(iter.hasNext());
@@ -489,11 +489,11 @@ public class UISelectManyTestCase extends UIInputTestCase {
     }
 
     // Create an options list with nested groups
-    protected List setupOptions() {
+    protected List<SelectItem> setupOptions() {
         SelectItemGroup group, subgroup;
         subgroup = new SelectItemGroup("Group C");
         subgroup.setSelectItems(new SelectItem[] { new SelectItem("C1"), new SelectItem("C2"), new SelectItem("C3") });
-        List options = new ArrayList();
+        List<SelectItem> options = new ArrayList<>();
         options.add(new SelectItem("A1"));
         group = new SelectItemGroup("Group B");
         group.setSelectItems(new SelectItem[] { new SelectItem("B1"), subgroup, new SelectItem("B2"), new SelectItem("B3") });
@@ -505,7 +505,7 @@ public class UISelectManyTestCase extends UIInputTestCase {
     }
 
     // Create an options list with nested groups
-    protected Set setupOptionsSet() {
+    protected Set<SelectItem> setupOptionsSet() {
         SelectItemGroup group, subgroup;
         subgroup = new SelectItemGroup("Group C");
         subgroup.setSelectItems(new SelectItem[] { new SelectItem("C1"), new SelectItem("C2"), new SelectItem("C3") });

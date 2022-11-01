@@ -62,7 +62,6 @@ public final class CompositeTagLibrary implements TagLibrary {
      */
     @Override
     public boolean containsNamespace(String ns, Tag t) {
-        boolean result = true;
         for (int i = 0; i < libraries.length; i++) {
             if (libraries[i].containsNamespace(ns, null)) {
                 return true;

@@ -315,7 +315,6 @@ public class ResultSetDataModel extends DataModel<Map<String, Object>> {
     // operations to the underlying ResultSet, after setting the required
     // row index
     // NOT SERIALIZABLE
-    @SuppressWarnings({ "serial" })
     private static class ResultSetMap extends TreeMap<String, Object> {
 
         private ResultSetDataModel model;

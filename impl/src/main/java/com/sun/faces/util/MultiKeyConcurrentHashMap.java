@@ -167,7 +167,6 @@ public class MultiKeyConcurrentHashMap<K, V> {
      * Segments are specialized versions of hash tables. This subclasses from ReentrantLock opportunistically, just to
      * simplify some locking and avoid separate construction.
      */
-    @SuppressWarnings({ "serial" })
     static final class Segment<K, V> extends ReentrantLock {
         /*
          * Segments maintain a table of entry lists that are ALWAYS kept in a consistent state, so can be read without locking.

@@ -160,9 +160,6 @@ public class HtmlResponseWriter extends ResponseWriter {
     private static final char[] ESCAPEDSTART = ("&lt;" + BREAKCDATA + "![").toCharArray();
     private static final char[] ESCAPEDEND = ("]" + BREAKCDATA + "]>").toCharArray();
 
-    private static final int CLOSEBRACKET = ']';
-    private static final int LT = '<';
-
     static final Pattern CDATA_START_SLASH_SLASH;
 
     static final Pattern CDATA_END_SLASH_SLASH;
@@ -720,7 +717,7 @@ public class HtmlResponseWriter extends ResponseWriter {
             scriptOrStyleSrc = true;
         }
 
-        Class valueClass = value.getClass();
+        Class<?> valueClass = value.getClass();
 
         // Output Boolean values specially
         if (valueClass == Boolean.class) {

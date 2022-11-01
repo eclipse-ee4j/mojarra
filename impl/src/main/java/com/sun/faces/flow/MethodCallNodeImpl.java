@@ -56,7 +56,7 @@ public class MethodCallNodeImpl extends MethodCallNode implements Serializable {
         parameters = Collections.unmodifiableList(_parameters);
 
         ExpressionFactory ef = context.getApplication().getExpressionFactory();
-        Class[] paramTypes = new Class[0];
+        Class<?>[] paramTypes = new Class[0];
         if (0 < parameters.size()) {
             paramTypes = new Class[parameters.size()];
             int i = 0;

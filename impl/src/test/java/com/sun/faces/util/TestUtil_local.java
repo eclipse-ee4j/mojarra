@@ -20,9 +20,6 @@ package com.sun.faces.util;
 import junit.framework.TestCase;
 
 import java.util.HashMap;
-import java.util.Locale;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.fail;
 
 /**
  * <B>TestUtil_local.java</B> is a class ...
@@ -61,13 +58,11 @@ public class TestUtil_local extends TestCase {
 // General Methods
 //
     public void testGetLocaleFromString() {
-        Locale result = null;
-
         // positive tests
-        assertNotNull(result = Util.getLocaleFromString("ps"));
-        assertNotNull(result = Util.getLocaleFromString("tg_AF"));
-        assertNotNull(result = Util.getLocaleFromString("tk_IQ-Traditional"));
-        assertNotNull(result = Util.getLocaleFromString("tk-IQ_Traditional"));
+        assertNotNull(Util.getLocaleFromString("ps"));
+        assertNotNull(Util.getLocaleFromString("tg_AF"));
+        assertNotNull(Util.getLocaleFromString("tk_IQ-Traditional"));
+        assertNotNull(Util.getLocaleFromString("tk-IQ_Traditional"));
 
         try {
             Util.getLocaleFromString("aoeuhoentuhtnhtnhoaenhnhu");

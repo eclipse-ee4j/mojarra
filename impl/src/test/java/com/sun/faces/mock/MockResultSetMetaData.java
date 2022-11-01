@@ -37,7 +37,6 @@ public class MockResultSetMetaData implements ResultSetMetaData {
      * @param clazz Class whose properties we treat like columns
      */
     public MockResultSetMetaData(Class clazz) throws SQLException {
-        this.clazz = clazz;
         try {
             descriptors
                     = Introspector.getBeanInfo(clazz).getPropertyDescriptors();
@@ -47,8 +46,6 @@ public class MockResultSetMetaData implements ResultSetMetaData {
     }
 
     // ------------------------------------------------------ Instance Variables
-    // The Class whose properties we are treating as columns
-    private Class clazz = null;
 
     // The PropertyDescriptors for the Class we are wrapping
     private PropertyDescriptor descriptors[] = null;

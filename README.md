@@ -309,6 +309,13 @@ Pull requests are accepted on following branches:
 
 Note that it's okay to send a PR to the master branch, but this one is for Faces.next and not the current 2.3.x or 3.0.x version.
 
+## Releasing
+
+pom.xml versions can be adjusted as follows
+
+```
+mvn versions:set -DgroupId=* -DartifactId=* -DoldVersion=* -DgenerateBackupPoms=false -DnewVersion=4.0.1-SNAPSHOT
+```
 
 ## Resources
 

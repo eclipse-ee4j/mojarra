@@ -303,7 +303,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
 
         ValueReference valueReference = getValueReference(context, component, valueExpression);
 
-        if (valueReference == null) {
+        if (valueReference == null || valueReference.getBase() == null) {
             return;
         }
 
@@ -414,7 +414,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
         }
 
         if (validationGroupsStr == null) {
-            cachedValidationGroups = new Class[] { Default.class };
+            cachedValidationGroups = new Class<?>[] { Default.class };
             return cachedValidationGroups;
         }
 

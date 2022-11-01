@@ -253,11 +253,11 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
                 }
             }
 
-            UIComponent component = (UIComponent) clazz.newInstance();
+            UIComponent component = (UIComponent) clazz.getDeclaredConstructor().newInstance();
             component.setId(treeNode.id);
 
             return component;
-        } catch (ClassNotFoundException | NullPointerException | InstantiationException | IllegalAccessException e) {
+        } catch (NullPointerException | IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
             throw new FacesException(e);
         }
     }

@@ -20,16 +20,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import jakarta.faces.model.DataModel;
-import jakarta.faces.model.ResultSetDataModel;
-import jakarta.faces.model.ScalarDataModel;
-
 import java.lang.reflect.Method;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

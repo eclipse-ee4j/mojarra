@@ -22,7 +22,6 @@ import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.LRUMap;
 import jakarta.enterprise.context.spi.Contextual;
 import jakarta.enterprise.context.spi.CreationalContext;
-import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.PassivationCapable;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -36,7 +35,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
-import static com.sun.faces.util.Util.getCdiBeanManager;
 import static java.util.logging.Level.FINEST;
 
 /**

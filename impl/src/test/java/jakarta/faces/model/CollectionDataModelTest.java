@@ -19,8 +19,6 @@ package jakarta.faces.model;
 import java.util.ArrayList;
 import org.junit.Test;
 
-import jakarta.faces.model.CollectionDataModel;
-
 import static org.junit.Assert.*;
 
 /**

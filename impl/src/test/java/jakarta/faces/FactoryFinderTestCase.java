@@ -20,7 +20,6 @@ import com.sun.faces.mock.MockHttpServletRequest;
 import com.sun.faces.mock.MockHttpServletResponse;
 import com.sun.faces.mock.MockServletContext;
 
-import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationFactory;
 import jakarta.faces.context.FacesContext;
@@ -36,10 +35,6 @@ import junit.framework.TestCase;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-/**
- * <p>
- * Unit tests for {@link UISelectBooleanBase}.</p>
- */
 public class FactoryFinderTestCase extends TestCase {
 
     // ------------------------------------------------------------ Constructors
@@ -110,7 +105,7 @@ public class FactoryFinderTestCase extends TestCase {
      */
     public void testFacesConfigCase() throws Exception {
         Object factory = null;
-        Class clazz = null;
+        Class<?> clazz = null;
 
         FactoryFinder.releaseFactories();
         int len, i = 0;
@@ -203,7 +198,7 @@ public class FactoryFinderTestCase extends TestCase {
      */
     public void testServicesCase() throws Exception {
         Object factory = null;
-        Class clazz = null;
+        Class<?> clazz = null;
 
         FactoryFinder.releaseFactories();
         int len, i = 0;
