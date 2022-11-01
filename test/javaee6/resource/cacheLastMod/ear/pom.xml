@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.sun.faces.test.javaee6.resource.cacheLastMod</groupId>
         <artifactId>pom</artifactId>
-        <version>2.3.17-SNAPSHOT</version>
+        <version>2.3.19-SNAPSHOT</version>
     </parent>
     <name>Mojarra ${project.version} - Test - JavaEE 6 - resource - cacheLastMod - ear</name>
     <groupId>com.sun.faces.test.javaee6.resource.cacheLastMod</groupId>

@@ -297,6 +297,13 @@ Pull requests are accepted on following branches:
 
 Note that it's okay to send a PR to the master branch, but this one is for JSF.next and not the current 2.3.x version!
 
+## Releasing
+
+pom.xml versions can be adjusted as follows
+
+```
+mvn versions:set -DgroupId=* -DartifactId=* -DgenerateBackupPoms=false -DnewVersion=2.3.19-SNAPSHOT
+```
 
 ## Resources
 
