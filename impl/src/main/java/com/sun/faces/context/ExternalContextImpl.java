@@ -100,7 +100,16 @@ public class ExternalContextImpl extends ExternalContext {
     private boolean distributable;
 
     private enum PREDEFINED_COOKIE_PROPERTIES {
-        domain, maxAge, path, secure, httpOnly
+        domain, maxAge, path, secure, httpOnly, attribute;
+
+        static PREDEFINED_COOKIE_PROPERTIES of(String key) {
+            try {
+                return valueOf(key);
+            }
+            catch (IllegalArgumentException ignore) {
+                return attribute;
+            }
+        }
     }
 
     static final Class theUnmodifiableMapClass = Collections.unmodifiableMap(new HashMap<>()).getClass();
@@ -762,7 +771,7 @@ public class ExternalContextImpl extends ExternalContext {
         if (properties != null && properties.size() != 0) {
             for (Map.Entry<String, Object> entry : properties.entrySet()) {
                 String key = entry.getKey();
-                PREDEFINED_COOKIE_PROPERTIES p = PREDEFINED_COOKIE_PROPERTIES.valueOf(key);
+                PREDEFINED_COOKIE_PROPERTIES p = PREDEFINED_COOKIE_PROPERTIES.of(key);
                 Object v = entry.getValue();
                 switch (p) {
                 case domain:
