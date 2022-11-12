@@ -1760,6 +1760,19 @@ public class Util {
         }
     }
 
+    /**
+     * Extract first numeric segment from given client ID.
+     * <ul>
+     * <li>'table:1:button' should return 1</li>
+     * <li>'table:2' should return 2</li>
+     * <li>'3:button' should return 3</li>
+     * <li>'4' should return 4</li>
+     * </ul>
+     * @param clientId the client ID
+     * @param separatorChar the separator character
+     * @return first numeric segment from given client ID.
+     * @throws NumberFormatException when given client ID doesn't have any numeric segment at all.
+     */
     public static int extractFirstNumericSegment(String clientId, char separatorChar) {
         int nextSeparatorChar = clientId.indexOf(separatorChar);
 
