@@ -168,7 +168,6 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     private MethodRetargetHandlerManager retargetHandlerManager = new MethodRetargetHandlerManager();
 
     private int responseBufferSize;
-    private boolean responseBufferSizeSet;
 
     private Cache<Resource, BeanInfo> metadataCache;
     private Map<String, List<String>> contractMappings;
@@ -812,7 +811,6 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         });
 
         try {
-            responseBufferSizeSet = webConfig.isSet(FaceletsBufferSize);
             responseBufferSize = Integer.parseInt(webConfig.getOptionValue(FaceletsBufferSize));
         } catch (NumberFormatException nfe) {
             responseBufferSize = Integer.parseInt(FaceletsBufferSize.getDefaultValue());
@@ -890,10 +888,8 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             throw new IllegalStateException("No render kit was available for id \"" + id + "\"");
         }
 
-        if (responseBufferSizeSet) {
-            // set the buffer for content
-            extContext.setResponseBufferSize(responseBufferSize);
-        }
+        // set the buffer for content
+        extContext.setResponseBufferSize(responseBufferSize);
 
         // get our content type
         String contentType = (String) context.getAttributes().get("facelets.ContentType");
