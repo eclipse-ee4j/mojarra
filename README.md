@@ -14,9 +14,9 @@
 [//]: # " SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 "
 -->
 
-# Mojarra 4.0 WIP
+# Mojarra 4.0
 
-Eclipse's implementation of the upcoming Jakarta Faces 4.0 specification
+Eclipse's implementation of the Jakarta Faces 4.0 specification
 
 For Mojarra / JSF 2.3 please have a look at https://github.com/eclipse-ee4j/mojarra/blob/2.3/README.md.  
 For Mojarra / JSF 3.0 please have a look at https://github.com/eclipse-ee4j/mojarra/blob/3.0/README.md.
@@ -24,21 +24,21 @@ For Mojarra / JSF 3.0 please have a look at https://github.com/eclipse-ee4j/moja
 ## Minimum Requirements
 
 - Java 11
-- Jakarta Servlet 5.0
-- Jakarta Expression Language 4.0
-- CDI 3.0
+- Jakarta Servlet 6.0
+- Jakarta Expression Language 5.0
+- CDI 4.0
 - Jakarta Standard Tag Library 2.0
+- Jakarta Web Socket 2.0 (optional, only when `<f:websocket>` is used)
 - Jakarta JSON Processing  2.0 (optional, only when `<f:websocket>` is used)
-- Jakarta Validation 3.0 (optional, only when `<f:validateBean>` or `<f:validateWholeBean>` is used; 2.0 recommended)
+- Jakarta Validation 3.0 (optional, only when `<f:validateBean>` or `<f:validateWholeBean>` is used)
 
 CDI is explicitly required because since Jakarta Faces 2.3 the `javax.faces.bean.*` annotations such as `@ManagedBean` are deprecated, and in 4.0 these have been removed. Several implicit Jakarta Expression Language objects are produced via CDI producers, and `<f:websocket>` manages the Jakarta WebSocket sessions and events via CDI.
 
 
 ## Installation
 
-Depending on the server used, Jakarta Faces may already be built-in (full fledged Jakarta EE containers such as [WildFly][1], [JBoss EAP][2], [TomEE][3], [Payara][4], [GlassFish][5], [Liberty][6], etc.), or not (barebones Jakarta Server Pages/Jakarta Servlet containers such as [Tomcat][7], [Jetty][8], etc.). If the server doesn't ship with Jakarta Faces built-in, then you need to manually install Jakarta Faces 4.0 along with CDI 3.0+, Jakarta JSON Processing 2.0+ and Jakarta Standard Tag Library 2.0+ as those Jakarta Servlet containers usually also don't even ship with those Jakarta Faces dependencies.
+Depending on the server used, Jakarta Faces may already be built-in (full fledged Jakarta EE containers such as [WildFly][1], [JBoss EAP][2], [TomEE][3], [Payara][4], [GlassFish][5], [Liberty][6], etc.), or not (barebones Jakarta Server Pages/Jakarta Servlet containers such as [Tomcat][7], [Jetty][8], etc.). If the server doesn't ship with Jakarta Faces built-in, then you need to manually install Jakarta Faces 4.0 along with CDI 4.0+, Jakarta JSON Processing 2.0+ and Jakarta Standard Tag Library 2.0+ as those Jakarta Servlet containers usually also don't even ship with those Jakarta Faces dependencies.
 
-Note that as Mojarra 4.0 is WIP, there's no current Jakarta EE server or runtime shipping with a Mojarra 4.0 snapshot or milestone. The first milestone version of GlassFish 7.0.0 may contain this. A GlassFish 7.0.0 milestone may be released in Q2 2021.
 
 ### Non-Maven
 
@@ -58,9 +58,9 @@ In case you're manually carrying around JARs:
     - [`jakarta.json-api-2.0.jar`][12] (optional, only when `<f:websocket>` is used)
     - [`jakarta.json-2.0.jar`][12a] (optional, only when `<f:websocket>` is used)
     - [`validation-api-3.0.0.Final.jar`][13] (optional, only when `<f:validateBean|validateWholeBean>` is used)
-    - [`hibernate-validator-7.0.z.Final.jar`][14] (optional, only when `<f:validateBean|validateWholeBean>` is used)
+    - [`hibernate-validator-8.0.x.Final.jar`][14] (optional, only when `<f:validateBean|validateWholeBean>` is used)
 
-    Substitute `x` with latest 4.0.x version number.
+    Substitute `x` with latest version number available.
 
 ### Maven
 
@@ -72,7 +72,7 @@ In case you're using Maven, you can find below the necessary coordinates:
     <dependency>
        <groupId>jakarta.platform</groupId>
        <artifactId>jakarta.jakartaee-api</artifactId>
-       <version>9.0.0</version>
+       <version>10.0.0</version>
        <scope>provided</scope>
     </dependency>
     ```
@@ -105,7 +105,7 @@ In case of WildFly/JBoss EAP, [you need to manually package `jsf-api.jar` and `j
     <dependency> <!-- Optional, only when <f:validateBean> or <f:validateWholeBean> is used. -->
         <groupId>org.hibernate.validator</groupId>
         <artifactId>hibernate-validator</artifactId>
-        <version>7.0.0.Final</version>
+        <version><!-- Use latest 8.0.x version. --></version>
     </dependency>
     ```
 
@@ -119,19 +119,19 @@ Since Mojarra 4, tests have been moved to the [Faces project](https://github.com
 
 ## Hello World Example
 
-We assume that you already know how to create an empty Maven WAR Project or Dynamic Web Project in your favourite IDE with a CDI 3.0+ compatible `/WEB-INF/beans.xml` deployment descriptor file (which can be kept fully empty). Don't forget to add JARs or configure pom.xml if necessary, as instructed in previous chapter.
+We assume that you already know how to create an empty Maven WAR Project or Dynamic Web Project in your favourite IDE with a CDI 4.0+ compatible `/WEB-INF/beans.xml` deployment descriptor file (which can be kept fully empty). Don't forget to add JARs or configure pom.xml if necessary, as instructed in previous chapter.
 
 ### Controller
 
-Optionally, register the `FacesServlet` in a Servlet 5.0+ compatible deployment descriptor file `/WEB-INF/web.xml` as below:
+Optionally, register the `FacesServlet` in a Servlet 6.0+ compatible deployment descriptor file `/WEB-INF/web.xml` as below:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app
     xmlns="https://jakarta.ee/xml/ns/jakartaee"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
-    version="5.0"
+    xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+    version="6.0"
 >
     <servlet>
         <servlet-name>facesServlet</servlet-name>
@@ -144,7 +144,7 @@ Optionally, register the `FacesServlet` in a Servlet 5.0+ compatible deployment 
 </web-app>
 ```
 
-Noted should be that Jakarta Faces 3.0+ is already "implicitly" registered and mapped on `*.jsf`, `*.faces` and `/faces/*` when running on a Jakarta Servlet 5.0+ container. This will be overridden altogether when explicitly registering as above. [The `*.xhtml` URL pattern is preferred over above for security and clarity reasons][17]. Jakarta Faces 2.3+ adds `*.xhtml` to set of default patterns, hence the `FacesServlet` registration being optional. But when you don't explicitly map it on `*.xhtml`, then people can still access JSF pages using `*.jsf`, `*.faces` or `/faces/*` URL patterns. This is not nice for SEO as JSF by design doesn't 301-redirect them to a single mapping.
+Noted should be that Jakarta Faces is already "implicitly" registered and mapped on `*.xhtml`, `*.jsf`, `*.faces` and `/faces/*` when running on a Jakarta Servlet container. This will be overridden altogether when explicitly registering as above. [The `*.xhtml` URL pattern is preferred over above for security and clarity reasons][17]. When you don't explicitly map it on `*.xhtml`, then people can still access Faces pages using `*.jsf`, `*.faces` or `/faces/*` URL patterns. This is not nice for SEO as Faces by design doesn't 301-redirect them to a single mapping.
 
 The Faces deployment descriptor file `/WEB-INF/faces-config.xml` is fully optional.
 
@@ -153,7 +153,7 @@ The Faces deployment descriptor file `/WEB-INF/faces-config.xml` is fully option
 <faces-config
     xmlns="https://jakarta.ee/xml/ns/jakartaee"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_3_0.xsd"
+    xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_4_0.xsd"
     version="4.0"
 >
     <!-- Put any faces config here. -->
@@ -196,7 +196,7 @@ public class Hello {
 }
 ```
 
-Noted should be that in reality in the average Jakarta EE application the above "model" is further breakdown into a Jakarta Persistence entity, a Jakarta Enterprise Beans service and a smaller backing bean. The Jakarta Persistence entity and Jakarta Enterprise Beans service then basically act as a true "model" and the backing bean becomes a "controller" for that model. This may in first place be confusing to starters, but it all depends on the point of view. See also [What components are MVC in JSF MVC framework?][18] and [JSF Controller, Service and DAO][19].
+Noted should be that in reality in the average Jakarta EE application the above "model" is further breakdown into a Jakarta Persistence entity, a Jakarta Enterprise Beans service and a smaller backing bean. The Jakarta Persistence entity and Jakarta Enterprise Beans service then basically act as a true "model" and the backing bean becomes a "controller" for that model. This may in first place be confusing to starters, but it all depends on the point of view. See also [What components are MVC in Faces MVC framework?][18] and [Faces Controller, Service and DAO][19].
 
 ### View
 
@@ -205,7 +205,6 @@ Finally create a [Facelets][20] file `/hello.xhtml` as below:
 ```xml
 <!DOCTYPE html>
 <html lang="en"
-    xmlns="http://www.w3.org/1999/xhtml"
     xmlns:f="jakarta.faces.core"
     xmlns:h="jakarta.faces.html">
     <h:head>
@@ -233,7 +232,7 @@ Start the server and open it by `http://localhost:8080/contextname/hello.xhtml`.
 
 CDI is activated by default in Jakarta Faces 4.0 and can´t be deactivated.  
 It´s not required anymore to add `@FacesConfig` to a CDI managed bean to accomplish this.
-As of Jakarta Faces 4.0 `@FacesConfig` still removes the need to explicitly add a FacesServlet entry to web.xml.
+As of Jakarta Faces 4.0 `@FacesConfig` still removes the need to explicitly add a `FacesServlet` entry to `web.xml`.
 
 ## Building
 
