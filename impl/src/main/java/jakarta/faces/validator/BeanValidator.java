@@ -357,7 +357,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
 
     private static ValueReference getValueReference(FacesContext context, UIComponent component, ValueExpression valueExpression) {
         try {
-            return valueExpression.getValueReference(context.getELContext());
+            return new ValueExpressionAnalyzer(valueExpression).getReference(context.getELContext());
         }
         catch (PropertyNotFoundException e) {
             if (component instanceof UIInput && ((UIInput) component).getSubmittedValue() == null) {
