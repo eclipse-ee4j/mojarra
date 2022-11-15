@@ -11,7 +11,7 @@ In below example we assume 3.0.3.
     - `RELEASE_VERSION` = `3.0.3`
     - `JDK` = `JDK8`
     - click [Build] button
-6. Wait for it to finish
+6. Wait for it to finish successfully
 7. Drill down into this build e.g. [build 95](https://ci.eclipse.org/mojarra/job/1_mojarra-build-and-stage/95)
 8. Click [Console Output](https://ci.eclipse.org/mojarra/job/1_mojarra-build-and-stage/95/console) in menu
 9. Ctrl+F 'orgglassfish', to find release ID, e.g. `Created staging repository with ID "orgglassfish-1230"`, remember this for `STAGING_RELEASE_ID` in a later step
@@ -24,12 +24,12 @@ In below example we assume 3.0.3.
     - `IMPL_VERSION` = `3.0.3`
     - `IMPL_BRANCH` = `3.0`
     - click [Build] button
-15. Wait for it to finish
+15. Wait for it to finish successfully
 16. Open [3_mojarra-staging-to-release](https://ci.eclipse.org/mojarra/job/3_mojarra-staging-to-release/)
 17. Click [Build with parameters](https://ci.eclipse.org/mojarra/job/3_mojarra-staging-to-release/build) in menu
     - `STAGING_RELEASE_ID` = `orgglassfish-1230`
     - click [Build] button
-18. Wait for it to finish
+18. Wait for it to finish successfully
 19. Verify that it's present in [Maven Central](https://repo1.maven.org/maven2/org/glassfish/jakarta.faces/) (might take up to a hour)
 20. If everything is OK, then merge 3.0.3 branch into 3.0 via PR
 21. Delete the 3.0.3 branch after merge
