@@ -238,10 +238,25 @@ As of Jakarta Faces 4.0 `@FacesConfig` still removes the need to explicitly add 
 
 In case you want to checkout this repository and manually build from source yourself (if necessary after editing source code), here are the instructions:
 
-### Jakarta Faces 4.0
+### Jakarta Faces.Next
 
 1. Make sure that you have JDK 11, Ant and Maven installed.
 2. Checkout branch [`master`][28].
+3. Run the following commands from the root directory of the project:
+
+    ```bash
+    # under the root dir of project
+    mvn clean install
+    ```
+
+4. The binary is now available as `impl/target/jakarta.faces-4.x.x-SNAPSHOT.jar`.
+
+
+
+### Jakarta Faces 4.0
+
+1. Make sure that you have JDK 11, Ant and Maven installed.
+2. Checkout branch [`4.0`][31].
 3. Run the following commands from the root directory of the project:
 
     ```bash
@@ -286,6 +301,11 @@ Jakarta Faces 2.2 and lower are not supported by Eclipse. If such support is nee
 In case you want to checkout to edit the source code of Mojarra with full IDE support, here are the instructions. Note that this only allows you to *edit* the code. Actually building the Mojarra artefacts still has to be done using the instructions provided above.
 
 ### Eclipse
+
+#### Jakarta Faces 4.0
+
+1. Checkout branch [`4.0`][29] using File -> import -> Git
+2. Right click the Mojarra project after checkout, choose Configure -> Convert to Maven Project
 
 #### Jakarta Faces 3.0
 
@@ -358,3 +378,4 @@ mvn versions:set -DgroupId=* -DartifactId=* -DoldVersion=* -DgenerateBackupPoms=
   [28]: https://github.com/eclipse-ee4j/mojarra
   [29]: https://github.com/eclipse-ee4j/mojarra/tree/3.0
   [30]: https://github.com/eclipse-ee4j/mojarra/tree/2.3
+  [31]: https://github.com/eclipse-ee4j/mojarra/tree/4.0
