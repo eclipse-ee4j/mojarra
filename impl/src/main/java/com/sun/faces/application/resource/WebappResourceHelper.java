@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -122,9 +123,15 @@ public class WebappResourceHelper extends ResourceHelper {
      */
     @Override
     protected InputStream getNonCompressedInputStream(ResourceInfo resource, FacesContext ctx) throws IOException {
-
-        return ctx.getExternalContext().getResourceAsStream(resource.getPath());
-
+    	List<String> localizedPaths = getLocalizedPaths(resource.getPath(), ctx);
+    	InputStream in = null;
+    	for (String path_: localizedPaths) {
+    		in = ctx.getExternalContext().getResourceAsStream(path_);
+    		if (in != null) {
+    			break;
+    		}
+    	}
+    	return in;
     }
 
     /**
