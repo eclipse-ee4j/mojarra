@@ -16,7 +16,9 @@
 
 package javax.faces.component;
 
+import static com.sun.faces.util.Util.extractFirstNumericSegment;
 import static com.sun.faces.util.Util.isNestedInIterator;
+import static java.lang.Character.isDigit;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -1013,40 +1015,27 @@ public class UIData extends UIComponentBase
         // clientId will be something like form:outerData:3:outerColumn
         // for a non-nested table.  clientId will be something like
         // outerData:3:data:3:input for a nested table.
+        // We need to find the first occurring client ID segment which is parseable as a number.
         if (clientId.startsWith(myId)) {
             try {
-                int preRowIndexSep, postRowIndexSep;
-
-                if (-1 != (preRowIndexSep =
-                      clientId.indexOf(sepChar,
-                                       myId.length()))) {
-                    // Check the length
-                    if (++preRowIndexSep < clientId.length()) {
-                        if (-1 != (postRowIndexSep =
-                              clientId.indexOf(sepChar,
-                                               preRowIndexSep + 1))) {
-                            try {
-                                newRow = Integer
-                                        .parseInt(clientId.substring(preRowIndexSep,
-                                                postRowIndexSep));
-                            } catch (NumberFormatException ex) {
-                                // PENDING(edburns): I18N
-                                String message =
-                                      "Trying to extract rowIndex from clientId \'"
-                                      +
-                                      clientId
-                                      + "\' "
-                                      + ex.getMessage();
-                                throw new NumberFormatException(message);
-                            }
-                            this.setRowIndex(newRow);
-                            if (this.isRowAvailable()) {
-                                found = super.invokeOnComponent(context,
-                                                                clientId,
-                                                                callback);
-                            }
-                        }
-                    }
+                try {
+                    newRow = extractFirstNumericSegment(clientId.substring(myId.length()), sepChar);
+                }
+                catch (NumberFormatException ex) {
+                    // PENDING(edburns): I18N
+                    String message =
+                            "Trying to extract rowIndex from clientId \'"
+                                    +
+                                    clientId
+                                    + "\' "
+                                    + ex.getMessage();
+                    throw new NumberFormatException(message);
+                }
+                this.setRowIndex(newRow);
+                if (this.isRowAvailable()) {
+                    found = super.invokeOnComponent(context,
+                            clientId,
+                            callback);
                 }
             }
             catch (FacesException fe) {
