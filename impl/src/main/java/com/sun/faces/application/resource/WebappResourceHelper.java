@@ -128,12 +128,17 @@ public class WebappResourceHelper extends ResourceHelper {
     @Override
     protected InputStream getNonCompressedInputStream(ResourceInfo resource, FacesContext ctx)
     throws IOException {
-
-        return ctx.getExternalContext().getResourceAsStream(resource.getPath());
-
+    	List<String> localizedPaths = getLocalizedPaths(resource.getPath(), ctx);
+    	InputStream in = null;
+    	for (String path_: localizedPaths) {
+    		in = ctx.getExternalContext().getResourceAsStream(path_);
+    		if (in != null) {
+    			break;
+    		}
+    	}
+    	return in;
     }
-
-
+    
     /**
      * @see ResourceHelper#getURL(com.sun.faces.application.resource.ResourceInfo, javax.faces.context.FacesContext) 
      */
