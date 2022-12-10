@@ -301,9 +301,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
 
         String currentValue = null;
         Object currentObj = getValue(component);
-        if (currentObj != null) {
-            currentValue = getFormattedValue(context, component, currentObj);
-        }
+        currentValue = getFormattedValue(context, component, currentObj);
         return currentValue;
 
     }
