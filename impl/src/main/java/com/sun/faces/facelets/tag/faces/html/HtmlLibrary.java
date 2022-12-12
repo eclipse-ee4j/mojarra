@@ -27,6 +27,7 @@ import jakarta.faces.component.html.HtmlCommandButton;
 import jakarta.faces.component.html.HtmlCommandLink;
 import jakarta.faces.component.html.HtmlCommandScript;
 import jakarta.faces.component.html.HtmlDataTable;
+import jakarta.faces.component.html.HtmlDoctype;
 import jakarta.faces.component.html.HtmlForm;
 import jakarta.faces.component.html.HtmlGraphicImage;
 import jakarta.faces.component.html.HtmlInputFile;
@@ -89,7 +90,7 @@ public final class HtmlLibrary extends AbstractHtmlLibrary {
 
         addHtmlComponent("html", UIOutput.COMPONENT_TYPE, "jakarta.faces.Html");
 
-        addHtmlComponent("doctype", UIOutput.COMPONENT_TYPE, "jakarta.faces.Doctype");
+        addHtmlComponent("doctype", HtmlDoctype.COMPONENT_TYPE, "jakarta.faces.Doctype");
 
         addHtmlComponent("inputFile", HtmlInputFile.COMPONENT_TYPE, "jakarta.faces.File");
 
