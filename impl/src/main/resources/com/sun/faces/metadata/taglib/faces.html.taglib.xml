@@ -1190,20 +1190,6 @@
         </component>
         <attribute>
             <description>
-                <![CDATA[
-                    <span class="changed_added_4_1">
-                        The component identifier for this component.
-                        This value must be unique within the closest parent component that is a naming container.
-                        The attribute is only rendered when the current doctype is a HTML5 doctype.
-                    </span>
-                ]]>
-            </description>
-            <name>id</name>
-            <required>false</required>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>
                 <![CDATA[Direction indication for text that does not inherit directionality.
               Valid values are "LTR" (left-to-right) and "RTL" (right-to-left).]]>
             </description>
@@ -1292,20 +1278,6 @@
             <component-type>jakarta.faces.Output</component-type>
             <renderer-type>jakarta.faces.Body</renderer-type>
         </component>
-        <attribute>
-            <description>
-                <![CDATA[
-                    <span class="changed_added_4_1">
-                        The component identifier for this component.
-                        This value must be unique within the closest parent component that is a naming container.
-                        The attribute is only rendered when the current doctype is a HTML5 doctype.
-                    </span>
-                ]]>
-            </description>
-            <name>id</name>
-            <required>false</required>
-            <type>java.lang.String</type>
-        </attribute>
         <attribute>
             <description>
                 <![CDATA[Direction indication for text that does not inherit directionality.

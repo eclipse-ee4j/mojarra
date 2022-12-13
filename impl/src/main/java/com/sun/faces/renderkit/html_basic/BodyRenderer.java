@@ -54,9 +54,7 @@ public class BodyRenderer extends HtmlBasicRenderer {
     public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         writer.startElement("body", component);
-        if (RenderKitUtils.isOutputHtml5Doctype(context)) {
-            writeIdAttributeIfNecessary(context, writer, component);
-        }
+        writeIdAttributeIfNecessary(context, writer, component);
         String styleClass = (String) component.getAttributes().get("styleClass");
         if (styleClass != null && styleClass.length() != 0) {
             writer.writeAttribute("class", styleClass, "styleClass");
