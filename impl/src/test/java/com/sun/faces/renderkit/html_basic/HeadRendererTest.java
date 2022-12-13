@@ -16,14 +16,16 @@
 
 package com.sun.faces.renderkit.html_basic;
 
+import static org.easymock.EasyMock.expect;
+import static org.junit.Assert.assertTrue;
+
 import java.io.StringWriter;
 import java.util.Collections;
 
-import static org.junit.Assert.assertTrue;
-import static org.easymock.EasyMock.expect;
 import org.junit.Test;
 import org.powermock.api.easymock.PowerMock;
 
+import jakarta.faces.component.Doctype;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.html.HtmlHead;
 import jakarta.faces.context.FacesContext;
@@ -50,13 +52,26 @@ public class HeadRendererTest {
      */
     @Test
     public void testEncodeBegin() throws Exception {
-        //
-        // TODO: Note we are not testing this method as its complexity is too 
-        // high, because it uses WebConfiguration.getInstance to get
-        // configuration information that should be readily available to the
-        // renderer through either the FacesContext or the component being
-        // rendered.
-        //
+        StringWriter writer = new StringWriter();
+        ResponseWriter testResponseWriter = new TestResponseWriter(writer);
+        FacesContext facesContext = PowerMock.createPartialMock(FacesContext.class, "getResponseWriter");
+        UIViewRoot viewRoot = PowerMock.createMock(UIViewRoot.class);
+        Doctype doctype = PowerMock.createMock(Doctype.class);
+        HeadRenderer headRenderer = new HeadRenderer();
+        HtmlHead htmlHead = new HtmlHead();
+        
+        expect(facesContext.getResponseWriter()).andReturn(testResponseWriter).anyTimes();
+        expect(facesContext.getViewRoot()).andReturn(viewRoot).anyTimes();
+        expect(viewRoot.getDoctype()).andReturn(doctype).anyTimes();
+        expect(doctype.getRootElement()).andReturn("html").anyTimes();
+        expect(doctype.getPublic()).andReturn(null).anyTimes();
+        expect(doctype.getSystem()).andReturn(null).anyTimes();
+        
+        PowerMock.replay(facesContext);
+        headRenderer.encodeBegin(facesContext, htmlHead);
+        PowerMock.verify(facesContext);
+        String html = writer.toString();
+        assertTrue(html.contains("<head"));
     }
 
     /**
