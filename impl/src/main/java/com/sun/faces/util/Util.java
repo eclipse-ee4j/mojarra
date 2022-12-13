@@ -25,6 +25,7 @@ import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.NULL_VIEW_ID_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.RequestStateManager.INVOCATION_PATH;
+import static java.lang.Character.isDigit;
 import static java.util.Collections.emptyList;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
@@ -1677,6 +1678,35 @@ public class Util {
         else {
             return '/' + s;
         }
+    }
+
+    /**
+     * Extract first numeric segment from given client ID.
+     * <ul>
+     * <li>'table:1:button' should return 1</li>
+     * <li>'table:2' should return 2</li>
+     * <li>'3:button' should return 3</li>
+     * <li>'4' should return 4</li>
+     * </ul>
+     * @param clientId the client ID
+     * @param separatorChar the separator character
+     * @return first numeric segment from given client ID.
+     * @throws NumberFormatException when given client ID doesn't have any numeric segment at all.
+     */
+    public static int extractFirstNumericSegment(String clientId, char separatorChar) {
+        int nextSeparatorChar = clientId.indexOf(separatorChar);
+
+        while (clientId.length() > 0 && !isDigit(clientId.charAt(0)) && nextSeparatorChar >= 0) {
+            clientId = clientId.substring(nextSeparatorChar + 1);
+            nextSeparatorChar = clientId.indexOf(separatorChar);
+        }
+
+        if (clientId.length() > 0 && isDigit(clientId.charAt(0))) {
+            String firstNumericSegment = nextSeparatorChar >= 0 ? clientId.substring(0, nextSeparatorChar) : clientId;
+            return Integer.parseInt(firstNumericSegment);
+        }
+
+        throw new NumberFormatException("there is no numeric segment");
     }
 
 }
