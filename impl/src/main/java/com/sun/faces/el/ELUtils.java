@@ -18,6 +18,7 @@ package com.sun.faces.el;
 
 import static com.sun.faces.RIConstants.EMPTY_CLASS_ARGS;
 import static com.sun.faces.cdi.CdiUtils.getBeanReference;
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.InterpretEmptyStringSubmittedValuesAsNull;
 import static com.sun.faces.el.FacesCompositeELResolver.ELResolverChainType.Faces;
 import static com.sun.faces.el.FacesCompositeELResolver.ELResolverChainType.JSP;
 import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
@@ -62,6 +63,7 @@ import javax.servlet.jsp.JspFactory;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.cdi.CdiExtension;
+import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.context.flash.FlashELResolver;
 import com.sun.faces.mgbean.BeanManager;
 import com.sun.faces.util.MessageUtils;
@@ -178,6 +180,8 @@ public class ELUtils {
 
     public static final ListELResolver LIST_RESOLVER = new ListELResolver();
 
+    public static final EmptyStringToNullELResolver EMPTY_STRING_TO_NULL_RESOLVER = new EmptyStringToNullELResolver();
+
     public static final ManagedBeanELResolver MANAGED_BEAN_RESOLVER =
         new ManagedBeanELResolver();
 
@@ -266,6 +270,11 @@ public class ELUtils {
         addVariableResolvers(composite, Faces, associate);
         addPropertyResolvers(composite, associate);
         composite.add(associate.getApplicationELResolvers());
+
+        if (WebConfiguration.getInstance().isOptionEnabled(InterpretEmptyStringSubmittedValuesAsNull)) {
+            composite.addPropertyELResolver(EMPTY_STRING_TO_NULL_RESOLVER);
+        }
+
         composite.addRootELResolver(MANAGED_BEAN_RESOLVER);
         composite.addPropertyELResolver(RESOURCE_RESOLVER);
         composite.addPropertyELResolver(BUNDLE_RESOLVER);
