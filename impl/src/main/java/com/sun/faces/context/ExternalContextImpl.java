@@ -929,6 +929,14 @@ public class ExternalContextImpl extends ExternalContext {
     }
 
     /**
+     * @see jakarta.faces.context.ExternalContext#setResponseContentLengthLong(long)
+     */
+    @Override
+    public void setResponseContentLengthLong(long length) {
+        response.setContentLengthLong(length);
+    }
+
+    /**
      * @see jakarta.faces.context.ExternalContext#setSessionMaxInactiveInterval(int)
      */
     @Override

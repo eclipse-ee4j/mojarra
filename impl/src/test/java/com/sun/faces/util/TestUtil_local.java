@@ -107,4 +107,30 @@ public class TestUtil_local extends TestCase {
         assertEquals(result[1], "Zm9vQmFyVmFsdWUy");
     }
 
+    public void testExtractFirstNumericSegment() {
+        char separatorChar = ':';
+
+        assertEquals(1, Util.extractFirstNumericSegment("form:table:1:button", separatorChar));
+        assertEquals(2, Util.extractFirstNumericSegment("form:table:nested:2:button", separatorChar));
+        assertEquals(3, Util.extractFirstNumericSegment("form:table:3", separatorChar));
+        assertEquals(4, Util.extractFirstNumericSegment("4:button", separatorChar));
+        assertEquals(5, Util.extractFirstNumericSegment("5", separatorChar));
+
+        try {
+            Util.extractFirstNumericSegment("none", separatorChar);
+            fail();
+        }
+        catch (NumberFormatException e) {
+            assertEquals("there is no numeric segment", e.getMessage());
+        }
+
+        try {
+            Util.extractFirstNumericSegment("", separatorChar);
+            fail();
+        }
+        catch (NumberFormatException e) {
+            assertEquals("there is no numeric segment", e.getMessage());
+        }
+    }
+    
 } // end of class TestUtil_local
