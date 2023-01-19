@@ -24,6 +24,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -100,7 +101,7 @@ final class ServiceFactoryUtils {
                     input = conn.getInputStream();
                     if (input != null) {
                         try {
-                            reader = new BufferedReader(new InputStreamReader(input, "UTF-8"));
+                            reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
                         } catch (Exception e) {
                             // The DM_DEFAULT_ENCODING warning is acceptable here
                             // because we explicitly *want* to use the Java runtime's
@@ -108,7 +109,12 @@ final class ServiceFactoryUtils {
                             reader = new BufferedReader(new InputStreamReader(input));
                         }
                         for (String line = reader.readLine(); line != null; line = reader.readLine()) {
-                            results.add(line.trim());
+                            String cleanedLine = cleanupServiceLine(line);
+                            // Process line only if after removing comment part and trimming
+                            // there's still anything left.
+                            if (cleanedLine != null) {
+                                results.add(cleanedLine);
+                            }
                         }
                     }
                 } catch (Exception e) {
@@ -143,4 +149,29 @@ final class ServiceFactoryUtils {
 
     }
 
+    /**
+     * Cleans line in service file by processing comments and trimming.
+     *
+     * @param line
+     *         Line to clean.
+     * @return The cleaned line, if it isn't empty after removing the comment and trimming,
+     *         otherwise <code>null</code>.
+     */
+    private static String cleanupServiceLine(String line) {
+        // Process comments, starting at '#'.
+        int commentIndex = line.indexOf('#');
+        if (commentIndex == 0) {
+            // The whole line is a comment, no need to process it.
+            return null;
+        } else if (commentIndex > 0) {
+            // Cut everything of after '#'.
+            line = line.substring(0, commentIndex);
+        }
+        line = line.trim();
+        if (line.isEmpty()) {
+            return null;
+        } else {
+            return line;
+        }
+    }
 }
