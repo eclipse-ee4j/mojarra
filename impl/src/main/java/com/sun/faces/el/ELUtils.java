@@ -16,6 +16,7 @@
 package com.sun.faces.el;
 
 import static com.sun.faces.RIConstants.EMPTY_CLASS_ARGS;
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.InterpretEmptyStringSubmittedValuesAsNull;
 import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.ReflectionUtils.lookupMethod;
@@ -29,6 +30,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.context.flash.FlashELResolver;
 
 import jakarta.el.ArrayELResolver;
@@ -111,6 +113,7 @@ public class ELUtils {
     public static final ScopedAttributeELResolver SCOPED_RESOLVER = new ScopedAttributeELResolver();
     public static final ResourceELResolver RESOURCE_RESOLVER = new ResourceELResolver();
     public static final CompositeComponentAttributesELResolver COMPOSITE_COMPONENT_ATTRIBUTES_EL_RESOLVER = new CompositeComponentAttributesELResolver();
+    public static final EmptyStringToNullELResolver EMPTY_STRING_TO_NULL_RESOLVER = new EmptyStringToNullELResolver();
 
     // ------------------------------------------------------------ Constructors
 
@@ -165,6 +168,11 @@ public class ELUtils {
         composite.addPropertyELResolver(COMPOSITE_COMPONENT_ATTRIBUTES_EL_RESOLVER);
         addELResolvers(composite, associate.getELResolversFromFacesConfig());
         composite.add(associate.getApplicationELResolvers());
+
+        if (WebConfiguration.getInstance().isOptionEnabled(InterpretEmptyStringSubmittedValuesAsNull)) {
+            composite.addPropertyELResolver(EMPTY_STRING_TO_NULL_RESOLVER);
+        }
+
         composite.addPropertyELResolver(RESOURCE_RESOLVER);
         composite.addPropertyELResolver(BUNDLE_RESOLVER);
         composite.addRootELResolver(FACES_BUNDLE_RESOLVER);
