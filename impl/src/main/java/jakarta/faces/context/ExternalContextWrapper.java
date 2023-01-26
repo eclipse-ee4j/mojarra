@@ -1037,6 +1037,20 @@ public abstract class ExternalContextWrapper extends ExternalContext implements 
     }
 
     /**
+     * <p class="changed_added_4_1">
+     * The default behavior of this method is to call
+     * {@link jakarta.faces.context.ExternalContext#setResponseContentLengthLong(long)} on the wrapped {@link ExternalContext}
+     * object.
+     * </p>
+     *
+     * @see jakarta.faces.context.ExternalContext#setResponseContentLengthLong(long)
+     */
+    @Override
+    public void setResponseContentLengthLong(long length) {
+        getWrapped().setResponseContentLengthLong(length);
+    }
+
+    /**
      * <p>
      * The default behavior of this method is to call
      * {@link jakarta.faces.context.ExternalContext#encodeBookmarkableURL(String, java.util.Map)} on the wrapped

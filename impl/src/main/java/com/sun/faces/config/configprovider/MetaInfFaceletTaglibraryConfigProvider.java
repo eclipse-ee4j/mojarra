@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -50,7 +51,7 @@ public class MetaInfFaceletTaglibraryConfigProvider implements ConfigurationReso
     public Collection<URI> getResources(ServletContext context) {
 
         try {
-            List<URL> resourceURLs = asList(Classpath.search(getCurrentLoader(this), "META-INF/", SUFFIX));
+            List<URL> resourceURLs = new ArrayList<>(asList(Classpath.search(getCurrentLoader(this), "META-INF/", SUFFIX)));
 
             // Special case for finding taglib files in WEB-INF/classes/META-INF
             Set<String> paths = context.getResourcePaths(WEB_INF_CLASSES);
