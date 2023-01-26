@@ -64,7 +64,10 @@ public class ResourcePathsIterator implements Iterator<String> {
     }
 
     private void visit(String resourcePath) {
-        stack.addAll(externalContext.getResourcePaths(resourcePath));
+        java.util.Set<String> set = externalContext.getResourcePaths(resourcePath);
+        if(set != null) {
+            stack.addAll(set);
+        }
     }
 
     private void tryTake() {

@@ -104,11 +104,11 @@ public class HeadRendererTest {
         UIViewRoot viewRoot = PowerMock.createMock(UIViewRoot.class);
         HeadRenderer headRenderer = new HeadRenderer();
         HtmlHead htmlHead = new HtmlHead();
-        
+
         expect(facesContext.getResponseWriter()).andReturn(testResponseWriter).anyTimes();
         expect(facesContext.getViewRoot()).andReturn(viewRoot).anyTimes();
-        expect(viewRoot.getComponentResources(facesContext, "head")).andReturn(Collections.EMPTY_LIST).anyTimes();
-        
+        expect(viewRoot.getComponentResources(facesContext, "head")).andReturn(Collections.emptyList()).anyTimes();
+
         PowerMock.replay(facesContext, viewRoot);
         headRenderer.encodeEnd(facesContext, htmlHead);
         PowerMock.verify(facesContext, viewRoot);

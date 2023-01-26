@@ -63,14 +63,14 @@ public class BodyRendererTest {
         BodyRenderer bodyRenderer = new BodyRenderer();
         HtmlBody htmlBody = new HtmlBody();
         htmlBody.getAttributes().put("styleClass", "myclass");
-        
+
         expect(facesContext.getResponseWriter()).andReturn(testResponseWriter).anyTimes();
         expect(facesContext.getViewRoot()).andReturn(viewRoot).anyTimes();
         expect(viewRoot.getDoctype()).andReturn(doctype).anyTimes();
         expect(doctype.getRootElement()).andReturn("html").anyTimes();
         expect(doctype.getPublic()).andReturn(null).anyTimes();
         expect(doctype.getSystem()).andReturn(null).anyTimes();
-        
+
         PowerMock.replay(facesContext);
         bodyRenderer.encodeBegin(facesContext, htmlBody);
         PowerMock.verify(facesContext);
@@ -110,14 +110,15 @@ public class BodyRendererTest {
         Application application = PowerMock.createMock(Application.class);
         BodyRenderer bodyRenderer = new BodyRenderer();
         HtmlBody htmlBody = new HtmlBody();
-        
+
         expect(facesContext.getApplication()).andReturn(application).anyTimes();
-        expect(facesContext.getClientIdsWithMessages()).andReturn(Collections.EMPTY_LIST.iterator()).anyTimes();
+        expect(facesContext.getClientIdsWithMessages()).andReturn(Collections.<String>emptyList().iterator())
+                .anyTimes();
         expect(facesContext.getResponseWriter()).andReturn(testResponseWriter).anyTimes();
         expect(facesContext.getViewRoot()).andReturn(viewRoot).anyTimes();
         expect(facesContext.isProjectStage(ProjectStage.Development)).andReturn(false).anyTimes();
-        expect(viewRoot.getComponentResources(facesContext, "body")).andReturn(Collections.EMPTY_LIST).anyTimes();
-       
+        expect(viewRoot.getComponentResources(facesContext, "body")).andReturn(Collections.emptyList()).anyTimes();
+
         PowerMock.replay(facesContext, viewRoot, application);
         bodyRenderer.encodeEnd(facesContext, htmlBody);
         PowerMock.verify(facesContext, viewRoot, application);

@@ -16,6 +16,8 @@
 
 package com.sun.faces.application;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -25,8 +27,6 @@ import java.io.ObjectOutputStream;
 import org.junit.Test;
 
 import jakarta.faces.application.FacesMessage;
-
-import static org.junit.Assert.*;
 
 public class FacesMessageTest {
 
@@ -69,7 +69,6 @@ public class FacesMessageTest {
         String mDetail, mDetail1 = null;
         String severity, severity1 = null;
         ByteArrayOutputStream bos = null;
-        ByteArrayInputStream bis = null;
 
         mSummary = message.getSummary();
         mDetail = message.getDetail();

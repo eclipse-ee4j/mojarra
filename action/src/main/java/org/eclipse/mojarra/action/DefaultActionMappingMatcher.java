@@ -39,10 +39,12 @@ public class DefaultActionMappingMatcher implements ActionMappingMatcher {
      * @param bean the bean.
      * @return the action mapping match, or null if not found.
      */
+    @SuppressWarnings("rawtypes")
     private ActionMappingMatch determineActionMappingMatch(FacesContext facesContext, Bean<?> bean) {
         ActionMappingMatch result = null;
         Class<?> clazz = bean.getBeanClass();
         AnnotatedType annotatedType = CDI.current().getBeanManager().createAnnotatedType(clazz);
+        @SuppressWarnings("unchecked")
         Set<AnnotatedMethod> annotatedMethodSet = annotatedType.getMethods();
         for (AnnotatedMethod method : annotatedMethodSet) {
             if (method.isAnnotationPresent(ActionMapping.class)) {
