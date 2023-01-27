@@ -39,7 +39,7 @@ public class ResourceHandlerProducer extends CdiProducer<ResourceHandler> {
     private static final long serialVersionUID = 1L;
 
     public ResourceHandlerProducer() {
-        super.name("resource").scope(RequestScoped.class).beanClassAndType(ResourceHandler.class)
+        super.name("resource").scope(RequestScoped.class).types(ResourceHandler.class)
                 .create(e -> FacesContext.getCurrentInstance().getApplication().getResourceHandler());
     }
 

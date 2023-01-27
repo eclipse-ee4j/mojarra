@@ -41,7 +41,7 @@ public class FlashProducer extends CdiProducer<Object> {
     }
 
     public FlashProducer() {
-        super.name("flash").beanClass(Flash.class)
+        super.name("flash")
                 .types(Flash.class, new ParameterizedTypeImpl(Map.class, new Type[] { Dummy.class, Dummy.class }), Object.class).scope(RequestScoped.class)
                 .create(e -> FacesContext.getCurrentInstance().getExternalContext().getFlash());
     }
