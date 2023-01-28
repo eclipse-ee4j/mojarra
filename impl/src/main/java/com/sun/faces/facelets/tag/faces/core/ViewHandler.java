@@ -51,7 +51,7 @@ public final class ViewHandler extends TagHandlerImpl {
 
     private static final Logger LOGGER = FacesLogger.TAGLIB.getLogger();
 
-    private final static Class[] LISTENER_SIG = new Class[] { PhaseEvent.class };
+    private final static Class<?>[] LISTENER_SIG = new Class<?>[] { PhaseEvent.class };
 
     private final TagAttribute locale;
 

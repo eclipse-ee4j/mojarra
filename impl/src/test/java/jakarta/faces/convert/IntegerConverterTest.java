@@ -16,16 +16,16 @@
 
 package jakarta.faces.convert;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+
 import org.junit.Test;
 import org.powermock.api.easymock.PowerMock;
 
 import jakarta.faces.component.UIPanel;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.convert.IntegerConverter;
 
 /**
  * The JUnit tests for the IntegerConverter class.

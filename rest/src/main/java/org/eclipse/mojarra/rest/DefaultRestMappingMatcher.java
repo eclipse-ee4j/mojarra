@@ -18,6 +18,7 @@ package org.eclipse.mojarra.rest;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Pattern;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
@@ -39,10 +40,12 @@ public class DefaultRestMappingMatcher implements RestMappingMatcher {
      * @param bean the bean.
      * @return the REST mapping match, or null if not found.
      */
+    @SuppressWarnings("rawtypes")
     private RestMappingMatch determineRestMappingMatch(FacesContext facesContext, Bean<?> bean) {
         RestMappingMatch result = null;
-        Class clazz = bean.getBeanClass();
+        Class<?> clazz = bean.getBeanClass();
         AnnotatedType annotatedType = CDI.current().getBeanManager().createAnnotatedType(clazz);
+        @SuppressWarnings("unchecked")
         Set<AnnotatedMethod> annotatedMethodSet = annotatedType.getMethods();
         for (AnnotatedMethod method : annotatedMethodSet) {
             if (method.isAnnotationPresent(RestPath.class)) {

@@ -16,24 +16,27 @@
 
 package com.sun.faces.context;
 
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import org.junit.Test;
+import org.powermock.api.easymock.PowerMock;
+
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import org.junit.Test;
-import org.powermock.api.easymock.PowerMock;
 
 /**
  * The JUnit tests for the ExternalContextImpl class.
@@ -123,13 +126,6 @@ public class ExternalContextImplTest {
         valueIterator.next();
         try {
             valueIterator.remove();
-            fail();
-        } catch (Exception e) {
-            assertTrue(e instanceof UnsupportedOperationException);
-        }
-
-        try {
-            requestCookieMap.entrySet().remove("test");
             fail();
         } catch (Exception e) {
             assertTrue(e instanceof UnsupportedOperationException);

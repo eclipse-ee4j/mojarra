@@ -163,7 +163,7 @@ class SelectUtils {
      *
      * @see ExpressionFactory#coerceToType(Object, Class)
      */
-    private static Object coerceToModelType(FacesContext ctx, Object value, Class toType) {
+    private static Object coerceToModelType(FacesContext ctx, Object value, Class<?> toType) {
 
         Object newValue;
         try {

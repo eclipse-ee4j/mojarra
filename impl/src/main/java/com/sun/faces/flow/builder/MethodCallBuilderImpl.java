@@ -31,7 +31,7 @@ public class MethodCallBuilderImpl extends MethodCallBuilder {
     private FlowBuilderImpl root;
     private String methodCallId;
     private MethodCallNodeImpl methodCallNode;
-    private static final Class[] EMPTY_ARGS = new Class[0];
+    private static final Class<?>[] EMPTY_ARGS = new Class[0];
 
     public MethodCallBuilderImpl(FlowBuilderImpl root, String id) {
         this.root = root;

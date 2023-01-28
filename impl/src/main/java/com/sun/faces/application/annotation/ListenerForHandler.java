@@ -61,7 +61,7 @@ class ListenerForHandler implements RuntimeAnnotationHandler {
                 target.subscribeToEvent(listenersFor[i].systemEventClass(), (ComponentSystemEventListener) listener);
             }
         } else if (listener instanceof SystemEventListener) {
-            Class sourceClassValue = null;
+            Class<?> sourceClassValue = null;
             Application app = ctx.getApplication();
             for (int i = 0, len = listenersFor.length; i < len; i++) {
                 sourceClassValue = listenersFor[i].sourceClass();

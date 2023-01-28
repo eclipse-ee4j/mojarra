@@ -65,8 +65,8 @@ public class PhaseListenerHandler extends TagHandlerImpl {
             }
             if (instance == null && type != null) {
                 try {
-                    instance = (PhaseListener) ReflectionUtil.forName(type).newInstance();
-                } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+                    instance = (PhaseListener) ReflectionUtil.forName(type).getDeclaredConstructor().newInstance();
+                } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
                     throw new AbortProcessingException("Couldn't Lazily instantiate PhaseListener", e);
                 }
                 if (binding != null) {

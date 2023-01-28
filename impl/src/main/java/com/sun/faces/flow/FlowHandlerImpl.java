@@ -208,7 +208,6 @@ public class FlowHandlerImpl extends FlowHandler {
     // and makes the system "enter" the flow.
 
     @Override
-    @SuppressWarnings(value = "")
     public void transition(FacesContext context, Flow sourceFlow, Flow targetFlow, FlowCallNode outboundCallNode, String toViewId) {
         Util.notNull("context", context);
         Util.notNull("toViewId", toViewId);

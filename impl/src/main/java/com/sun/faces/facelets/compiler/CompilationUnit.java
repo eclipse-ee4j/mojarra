@@ -43,7 +43,7 @@ class CompilationUnit {
         }
     };
 
-    private List children;
+    private List<CompilationUnit> children;
 
     public CompilationUnit() {
     }
@@ -58,7 +58,7 @@ class CompilationUnit {
 
     public void addChild(CompilationUnit unit) {
         if (children == null) {
-            children = new ArrayList();
+            children = new ArrayList<>();
         }
         children.add(unit);
     }
@@ -76,12 +76,12 @@ class CompilationUnit {
             return LEAF;
         }
         if (children.size() == 1) {
-            CompilationUnit u = (CompilationUnit) children.get(0);
+            CompilationUnit u = children.get(0);
             return u.createFaceletHandler();
         }
         FaceletHandler[] fh = new FaceletHandler[children.size()];
         for (int i = 0; i < fh.length; i++) {
-            fh[i] = ((CompilationUnit) children.get(i)).createFaceletHandler();
+            fh[i] = children.get(i).createFaceletHandler();
         }
         return new CompositeFaceletHandler(fh);
     }

@@ -38,7 +38,6 @@ public class UIParameterTest {
     @Test
     public void testIsDisable() throws Exception {
         FacesContext facesContext = PowerMock.createNicePartialMockForAllMethodsExcept(FacesContext.class, "getCurrentInstance", "setCurrentInstance");
-        ValueExpression valueExpression = PowerMock.createMock(ValueExpression.class);
         Method method = FacesContext.class.getDeclaredMethod("setCurrentInstance", FacesContext.class);
         method.setAccessible(true);
         method.invoke(null, facesContext);

@@ -23,10 +23,7 @@ import jakarta.faces.FactoryFinder;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
-import jakarta.faces.webapp.FacesServlet;
-
 import jakarta.servlet.http.HttpServletResponse;
-import static junit.framework.Assert.assertEquals;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 

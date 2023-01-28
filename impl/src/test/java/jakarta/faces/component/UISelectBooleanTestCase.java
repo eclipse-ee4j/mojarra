@@ -76,13 +76,6 @@ public class UISelectBooleanTestCase extends UIInputTestCase {
         assertTrue("not selected", !selectBoolean.isSelected());
     }
 
-    // Test setting properties to invalid values
-    @Override
-    public void testPropertiesInvalid() throws Exception {
-        super.testPropertiesInvalid();
-        UISelectBoolean selectBoolean = (UISelectBoolean) component;
-    }
-
     // --------------------------------------------------------- Support Methods
     // Create a pristine component of the type to be used in state holder tests
     @Override

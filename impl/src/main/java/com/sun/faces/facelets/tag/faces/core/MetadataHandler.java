@@ -58,6 +58,9 @@ public class MetadataHandler extends TagHandlerImpl {
             root = (UIViewRoot) parent;
         } else {
             root = ctx.getFacesContext().getViewRoot();
+            if (root != null && LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.log(Level.WARNING, "faces.metadata.invalid.location", root.getViewId());
+            }
         }
         if (root == null) {
             if (LOGGER.isLoggable(Level.SEVERE)) {

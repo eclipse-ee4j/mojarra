@@ -29,14 +29,14 @@
 
    <groupId>org.glassfish</groupId>
    <artifactId>mojarra-parent</artifactId>
-   <version>4.0.0-SNAPSHOT</version>
+   <version>4.1.0-SNAPSHOT</version>
    <packaging>pom</packaging>
 
    <name>Mojarra ${project.version} - Project</name>
    <licenses>
         <license>
             <name>EPL 2.0</name>
-            <url>http://www.eclipse.org/legal/epl-2.0</url>
+            <url>https://www.eclipse.org/legal/epl-2.0</url>
             <distribution>repo</distribution>
         </license>
         <license>

@@ -37,7 +37,7 @@ public class ComponentProducer extends CdiProducer<UIComponent> {
     private static final long serialVersionUID = 1L;
 
     public ComponentProducer() {
-        super.name("component").beanClassAndType(UIComponent.class).create(e -> getCurrentComponent(FacesContext.getCurrentInstance()));
+        super.name("component").types(UIComponent.class).create(e -> getCurrentComponent(FacesContext.getCurrentInstance()));
     }
 
 }

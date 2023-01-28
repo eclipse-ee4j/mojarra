@@ -99,7 +99,7 @@ public class ConverterConfigHandler implements ConfigAnnotationHandler {
             Application app = ctx.getApplication();
             for (Map.Entry<Object, String> entry : converters.entrySet()) {
                 if (entry.getKey() instanceof Class) {
-                    app.addConverter((Class) entry.getKey(), entry.getValue());
+                    app.addConverter((Class<?>) entry.getKey(), entry.getValue());
                 } else {
                     app.addConverter((String) entry.getKey(), entry.getValue());
                 }

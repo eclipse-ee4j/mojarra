@@ -34,10 +34,10 @@ import jakarta.faces.view.facelets.FaceletHandler;
 final class NamespaceHandler extends FunctionMapper implements FaceletHandler {
 
     private final TagLibrary library;
-    private final Map ns;
+    private final Map<String, String> ns;
     private FaceletHandler next;
 
-    public NamespaceHandler(FaceletHandler next, TagLibrary library, Map ns) {
+    public NamespaceHandler(FaceletHandler next, TagLibrary library, Map<String, String> ns) {
         this.library = library;
         this.ns = ns;
         this.next = next;
@@ -57,7 +57,7 @@ final class NamespaceHandler extends FunctionMapper implements FaceletHandler {
 
     @Override
     public Method resolveFunction(String prefix, String localName) {
-        String uri = (String) ns.get(prefix);
+        String uri = ns.get(prefix);
         if (uri != null) {
             return library.createFunction(uri, localName);
         }

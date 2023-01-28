@@ -281,13 +281,13 @@ public final class FactoryFinder {
      * This method can be used by implementations to store a factory mapping while parsing the Faces configuration file
      * </p>
      *
-     * @throws IllegalArgumentException if <code>factoryName</code> does not identify a standard Jakarta Faces
-     * factory name
-     * @throws NullPointerException if <code>factoryname</code> is null
-     *
      * @param factoryName the name to be used in a subsequent call to {@link #getFactory}.
      *
      * @param implName the fully qualified class name of the factory corresponding to {@code factoryName}.
+     *
+     * @throws IllegalArgumentException if <code>factoryName</code> does not identify a standard Jakarta Faces
+     * factory name
+     * @throws NullPointerException if <code>factoryname</code> is null
      */
     public static void setFactory(String factoryName, String implName) {
         FACTORIES_CACHE.getFactoryFinder().addFactory(factoryName, implName);

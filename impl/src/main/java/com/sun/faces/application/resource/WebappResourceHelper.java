@@ -17,6 +17,7 @@
 package com.sun.faces.application.resource;
 
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.CacheResourceModificationTimestamp;
+import static com.sun.faces.util.Util.ensureLeadingSlash;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,8 +62,8 @@ public class WebappResourceHelper extends ResourceHelper {
 
         WebConfiguration webconfig = WebConfiguration.getInstance();
         cacheTimestamp = webconfig.isOptionEnabled(CacheResourceModificationTimestamp);
-        BASE_RESOURCE_PATH = webconfig.getOptionValue(WebConfiguration.WebContextInitParameter.WebAppResourcesDirectory);
-        BASE_CONTRACTS_PATH = webconfig.getOptionValue(WebConfiguration.WebContextInitParameter.WebAppContractsDirectory);
+        BASE_RESOURCE_PATH = ensureLeadingSlash(webconfig.getOptionValue(WebConfiguration.WebContextInitParameter.WebAppResourcesDirectory));
+        BASE_CONTRACTS_PATH = ensureLeadingSlash(webconfig.getOptionValue(WebConfiguration.WebContextInitParameter.WebAppContractsDirectory));
 
     }
 
@@ -113,15 +114,21 @@ public class WebappResourceHelper extends ResourceHelper {
         return BASE_CONTRACTS_PATH;
     }
 
-    /**
+    /**	
      * @see ResourceHelper#getNonCompressedInputStream(com.sun.faces.application.resource.ResourceInfo,
      * jakarta.faces.context.FacesContext)
      */
     @Override
     protected InputStream getNonCompressedInputStream(ResourceInfo resource, FacesContext ctx) throws IOException {
-
-        return ctx.getExternalContext().getResourceAsStream(resource.getPath());
-
+       	List<String> localizedPaths = getLocalizedPaths(resource.getPath(), ctx);
+    	InputStream in = null;
+    	for (String path_: localizedPaths) {
+    		in = ctx.getExternalContext().getResourceAsStream(path_);
+    		if (in != null) {
+    			break;
+    		}
+    	}
+    	return in;
     }
 
     /**
@@ -288,5 +295,4 @@ public class WebappResourceHelper extends ResourceHelper {
 
         return basePath;
     }
-
 }

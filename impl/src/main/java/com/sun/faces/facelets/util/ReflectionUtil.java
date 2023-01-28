@@ -23,8 +23,6 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 
 import com.sun.faces.config.ConfigurationException;
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
 import com.sun.faces.util.ReflectionUtils;
 import com.sun.faces.util.Util;
 
@@ -32,7 +30,7 @@ public class ReflectionUtil {
 
     private static final String[] PRIMITIVE_NAMES = new String[] { "boolean", "byte", "char", "double", "float", "int", "long", "short", "void" };
 
-    private static final Class[] PRIMITIVES = new Class[] { boolean.class, byte.class, char.class, double.class, float.class, int.class, long.class,
+    private static final Class<?>[] PRIMITIVES = new Class<?>[] { boolean.class, byte.class, char.class, double.class, float.class, int.class, long.class,
             short.class, Void.TYPE };
 
     /**
@@ -45,7 +43,7 @@ public class ReflectionUtil {
         if (null == name || "".equals(name)) {
             return null;
         }
-        Class c = forNamePrimitive(name);
+        Class<?> c = forNamePrimitive(name);
         if (c == null) {
             if (name.endsWith("[]")) {
                 String nc = name.substring(0, name.length() - 2);
@@ -84,7 +82,7 @@ public class ReflectionUtil {
         if (s == null) {
             return null;
         }
-        Class[] c = new Class[s.length];
+        Class<?>[] c = new Class[s.length];
         for (int i = 0; i < s.length; i++) {
             c[i] = forName(s[i]);
         }
@@ -176,9 +174,9 @@ public class ReflectionUtil {
                 }
             }
             if (clazz != null && returnObject == null) {
-                returnObject = clazz.newInstance();
+                returnObject = clazz.getDeclaredConstructor().newInstance();
             }
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+        } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
             throw new ConfigurationException(
                     buildMessage(MessageFormat.format("Unable to create a new instance of ''{0}'': {1}", clazz.getName(), e.toString())), e);
         }
@@ -231,8 +229,4 @@ public class ReflectionUtil {
 
     }
 
-    private static boolean isDevModeEnabled() {
-        WebConfiguration webconfig = WebConfiguration.getInstance();
-        return webconfig != null && "Development".equals(webconfig.getOptionValue(WebContextInitParameter.JakartaFacesProjectStage));
-    }
 }

@@ -649,7 +649,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
 
     // --------------------------------------------------------- Private Methods
 
-    private static Class currencyClass;
+    private static Class<?> currencyClass;
 
     static {
         try {
@@ -659,7 +659,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
         }
     }
 
-    private static final Class[] GET_INSTANCE_PARAM_TYPES = new Class[] { String.class };
+    private static final Class<?>[] GET_INSTANCE_PARAM_TYPES = new Class<?>[] { String.class };
 
     /**
      * 
@@ -735,9 +735,9 @@ public class NumberConverter implements Converter, PartialStateHolder {
             /*
              * java.text.NumberFormat.setCurrency()
              */
-            Class[] paramTypes = new Class[1];
+            Class<?>[] paramTypes = new Class[1];
             paramTypes[0] = currencyClass;
-            Class numberFormatClass = Class.forName("java.text.NumberFormat");
+            Class<?> numberFormatClass = Class.forName("java.text.NumberFormat");
             m = numberFormatClass.getMethod("setCurrency", paramTypes);
             methodArgs[0] = currency;
             m.invoke(formatter, methodArgs);

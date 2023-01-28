@@ -91,9 +91,9 @@ public abstract class ApplicationFactory implements FacesWrapper<ApplicationFact
      * Replace the {@link Application} instance that will be returned for this web application.
      * </p>
      *
-     * @throws NullPointerException if <code>application</code> is <code>null</code>.
-     *
      * @param application The replacement {@link Application} instance
+     *
+     * @throws NullPointerException if <code>application</code> is <code>null</code>.
      */
     public abstract void setApplication(Application application);
 

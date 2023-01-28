@@ -127,7 +127,7 @@ public @interface FacesConverter {
         public static final Literal INSTANCE = of("", Object.class, false);
 
         private final String value;
-        private final Class forClass;
+        private final Class<?> forClass;
         private final boolean managed;
 
         public static Literal of(String value, Class forClass, boolean managed) {

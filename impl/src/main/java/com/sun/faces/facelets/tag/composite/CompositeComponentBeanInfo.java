@@ -81,7 +81,7 @@ public class CompositeComponentBeanInfo extends SimpleBeanInfo implements BeanIn
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
 
-        descriptor = new BeanDescriptor((Class) in.readObject());
+        descriptor = new BeanDescriptor((Class<?>) in.readObject());
         int size = (int) in.readObject();
         for (int i = 0; i < size; i++) {
 

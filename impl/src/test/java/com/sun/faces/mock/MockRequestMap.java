@@ -24,9 +24,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import jakarta.servlet.ServletRequest;
 
-final class MockRequestMap implements Map {
+final class MockRequestMap implements Map<String, Object> {
 
     public MockRequestMap(ServletRequest request) {
         this.request = request;
@@ -34,24 +35,27 @@ final class MockRequestMap implements Map {
 
     private ServletRequest request = null;
 
+    @Override
     public void clear() {
-        Iterator keys = keySet().iterator();
+        Iterator<String> keys = keySet().iterator();
         while (keys.hasNext()) {
-            request.removeAttribute((String) keys.next());
+            request.removeAttribute(keys.next());
         }
     }
 
+    @Override
     public boolean containsKey(Object key) {
         return (request.getAttribute(key(key)) != null);
     }
 
+    @Override
     public boolean containsValue(Object value) {
         if (value == null) {
             return (false);
         }
-        Enumeration keys = request.getAttributeNames();
+        Enumeration<String> keys = request.getAttributeNames();
         while (keys.hasMoreElements()) {
-            Object next = request.getAttribute((String) keys.nextElement());
+            Object next = request.getAttribute(keys.nextElement());
             if (next == value) {
                 return (true);
             }
@@ -59,41 +63,48 @@ final class MockRequestMap implements Map {
         return (false);
     }
 
+    @Override
     public Set entrySet() {
-        Set set = new HashSet();
-        Enumeration keys = request.getAttributeNames();
+        Set<Object> set = new HashSet<>();
+        Enumeration<String> keys = request.getAttributeNames();
         while (keys.hasMoreElements()) {
-            set.add(request.getAttribute((String) keys.nextElement()));
+            set.add(request.getAttribute(keys.nextElement()));
         }
-        return (set);
+        return set;
     }
 
+    @Override
     public boolean equals(Object o) {
         return (request.equals(o));
     }
 
+    @Override
     public Object get(Object key) {
         return (request.getAttribute(key(key)));
     }
 
+    @Override
     public int hashCode() {
         return (request.hashCode());
     }
 
+    @Override
     public boolean isEmpty() {
         return (size() < 1);
     }
 
-    public Set keySet() {
-        Set set = new HashSet();
-        Enumeration keys = request.getAttributeNames();
+    @Override
+    public Set<String> keySet() {
+        Set<String> set = new HashSet<>();
+        Enumeration<String> keys = request.getAttributeNames();
         while (keys.hasMoreElements()) {
             set.add(keys.nextElement());
         }
         return (set);
     }
 
-    public Object put(Object key, Object value) {
+    @Override
+    public Object put(String key, Object value) {
         if (value == null) {
             return (remove(key));
         }
@@ -103,14 +114,16 @@ final class MockRequestMap implements Map {
         return (previous);
     }
 
-    public void putAll(Map map) {
-        Iterator keys = map.keySet().iterator();
+    @Override
+    public void putAll(Map<? extends String, ? extends Object> map) {
+        Iterator<? extends String> keys = map.keySet().iterator();
         while (keys.hasNext()) {
-            String key = (String) keys.next();
+            String key = keys.next();
             request.setAttribute(key, map.get(key));
         }
     }
 
+    @Override
     public Object remove(Object key) {
         String skey = key(key);
         Object previous = request.getAttribute(skey);
@@ -118,9 +131,10 @@ final class MockRequestMap implements Map {
         return (previous);
     }
 
+    @Override
     public int size() {
         int n = 0;
-        Enumeration keys = request.getAttributeNames();
+        Enumeration<String> keys = request.getAttributeNames();
         while (keys.hasMoreElements()) {
             keys.nextElement();
             n++;
@@ -128,11 +142,12 @@ final class MockRequestMap implements Map {
         return (n);
     }
 
-    public Collection values() {
-        List list = new ArrayList();
-        Enumeration keys = request.getAttributeNames();
+    @Override
+    public Collection<Object> values() {
+        List<Object> list = new ArrayList<>();
+        Enumeration<String> keys = request.getAttributeNames();
         while (keys.hasMoreElements()) {
-            list.add(request.getAttribute((String) keys.nextElement()));
+            list.add(request.getAttribute(keys.nextElement()));
         }
         return (list);
     }

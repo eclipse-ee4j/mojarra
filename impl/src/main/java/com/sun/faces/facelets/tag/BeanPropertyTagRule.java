@@ -69,7 +69,7 @@ final class BeanPropertyTagRule extends MetaRule {
 
         private final TagAttribute attribute;
 
-        private final Class type;
+        private final Class<?> type;
 
         public DynamicPropertyMetadata(Method method, TagAttribute attribute) {
             this.method = method;

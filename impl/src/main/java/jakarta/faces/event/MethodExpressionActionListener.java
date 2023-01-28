@@ -16,8 +16,6 @@
 
 package jakarta.faces.event;
 
-import java.util.logging.Logger;
-
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.MethodExpression;
@@ -36,14 +34,12 @@ import jakarta.faces.context.FacesContext;
 
 public class MethodExpressionActionListener implements ActionListener, StateHolder {
 
-    private static final Logger LOGGER = Logger.getLogger("jakarta.faces.event", "jakarta.faces.LogStrings");
-
     // ------------------------------------------------------ Instance Variables
 
     private MethodExpression methodExpressionOneArg = null;
     private MethodExpression methodExpressionZeroArg = null;
     private boolean isTransient;
-    private final static Class[] ACTION_LISTENER_ZEROARG_SIG = new Class[] {};
+    private final static Class<?>[] ACTION_LISTENER_ZEROARG_SIG = new Class<?>[] {};
 
     public MethodExpressionActionListener() {
     }

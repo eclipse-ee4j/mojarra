@@ -201,7 +201,7 @@ class PropertyHandlerManager {
                     }
                 }
             } else {
-                type = null != obj ? (Class) obj : Object.class;
+                type = null != obj ? (Class<?>) obj : Object.class;
             }
             target.setValue(propName, attribute.getValueExpression(ctx, type));
         }

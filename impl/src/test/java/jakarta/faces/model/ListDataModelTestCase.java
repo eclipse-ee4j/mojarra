@@ -19,7 +19,6 @@ package jakarta.faces.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.faces.model.ListDataModel;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 

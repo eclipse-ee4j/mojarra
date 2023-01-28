@@ -16,30 +16,24 @@
 
 package jakarta.faces;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.lang.reflect.Method;
+
 import com.sun.faces.mock.MockHttpServletRequest;
 import com.sun.faces.mock.MockHttpServletResponse;
 import com.sun.faces.mock.MockServletContext;
 
-import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationFactory;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.FacesContextFactory;
 import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.lifecycle.LifecycleFactory;
-
-import java.io.File;
-import java.io.PrintWriter;
-import java.lang.reflect.Method;
-
-import junit.framework.TestCase;
 import junit.framework.Test;
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-/**
- * <p>
- * Unit tests for {@link UISelectBooleanBase}.</p>
- */
 public class FactoryFinderTestCase extends TestCase {
 
     // ------------------------------------------------------------ Constructors
@@ -110,7 +104,7 @@ public class FactoryFinderTestCase extends TestCase {
      */
     public void testFacesConfigCase() throws Exception {
         Object factory = null;
-        Class clazz = null;
+        Class<?> clazz = null;
 
         FactoryFinder.releaseFactories();
         int len, i = 0;
@@ -127,7 +121,7 @@ public class FactoryFinderTestCase extends TestCase {
         servicesDir.mkdirs();
 
         File servicesFile = new File(servicesDir, "jakarta.faces.context.FacesContextFactory");
-        
+
         if (servicesFile.exists()) {
             servicesFile.delete();
         }
@@ -135,12 +129,12 @@ public class FactoryFinderTestCase extends TestCase {
         writer.println("jakarta.faces.mock.MockFacesContextFactoryExtender");
         writer.flush();
         writer.close();
-        
+
         File cServicesDir = new File(System.getProperty("basedir"), "target/generated-classes/cobertura/META-INF/services");
         cServicesDir.mkdirs();
 
         File cServicesFile = new File(cServicesDir, "jakarta.faces.context.FacesContextFactory");
-        
+
         if (cServicesFile.exists()) {
             cServicesFile.delete();
         }
@@ -168,7 +162,7 @@ public class FactoryFinderTestCase extends TestCase {
         assertTrue(System.getProperty(FACTORIES[2][0]).equals("jakarta.faces.mock.MockFacesContextFactoryExtender2"));
         assertTrue(System.getProperty("oldImpl").equals("jakarta.faces.mock.MockFacesContextFactoryExtender"));
 
-        // Verify IllegalStateException when factory not found 
+        // Verify IllegalStateException when factory not found
         FactoryFinder.releaseFactories();
         FactoryFinder.setFactory(FACTORIES[0][0], FACTORIES[0][1]);
         FactoryFinder.setFactory(FACTORIES[1][0], FACTORIES[1][1]);
@@ -203,7 +197,7 @@ public class FactoryFinderTestCase extends TestCase {
      */
     public void testServicesCase() throws Exception {
         Object factory = null;
-        Class clazz = null;
+        Class<?> clazz = null;
 
         FactoryFinder.releaseFactories();
         int len, i = 0;
@@ -220,25 +214,25 @@ public class FactoryFinderTestCase extends TestCase {
         servicesDir.mkdirs();
 
         File servicesFile = new File(servicesDir, "jakarta.faces.context.FacesContextFactory");
-        
+
         if (servicesFile.exists()) {
             servicesFile.delete();
         }
-        
+
         PrintWriter writer = new PrintWriter(servicesFile);
         writer.println("jakarta.faces.mock.MockFacesContextFactoryExtender");
         writer.flush();
         writer.close();
-        
+
         File cServicesDir = new File(System.getProperty("basedir"), "target/generated-classes/cobertura/META-INF/services");
         cServicesDir.mkdirs();
 
         File cServicesFile = new File(cServicesDir, "jakarta.faces.context.FacesContextFactory");
-        
+
         if (cServicesFile.exists()) {
             cServicesFile.delete();
         }
-        
+
         PrintWriter cWriter = new PrintWriter(cServicesFile);
         cWriter.println("jakarta.faces.mock.MockFacesContextFactoryExtender");
         cWriter.flush();
@@ -280,9 +274,11 @@ public class FactoryFinderTestCase extends TestCase {
         Object response = new MockHttpServletResponse();
         Object containerContext = new MockServletContext();
         Lifecycle l = lFactory.getLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE);
+        @SuppressWarnings("unused")
         FacesContext context = fcFactory.getFacesContext(containerContext, request, response, l);
 
         ApplicationFactory aFactory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
+        @SuppressWarnings("unused")
         Application app = aFactory.getApplication();
         FactoryFinder.releaseFactories();
     }

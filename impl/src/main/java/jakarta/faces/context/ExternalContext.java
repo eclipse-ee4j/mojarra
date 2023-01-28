@@ -2033,7 +2033,7 @@ public abstract class ExternalContext {
 
     /**
      * <p class="changed_added_2_0">
-     * Set the content length of the response.
+     * Set the content length of the response <span class="changed_modified_4_1">as an int</span>
      * </p>
      *
      * <p>
@@ -2054,6 +2054,35 @@ public abstract class ExternalContext {
 
         if (defaultExternalContext != null) {
             defaultExternalContext.setResponseContentLength(length);
+        } else {
+            throw new UnsupportedOperationException();
+        }
+
+    }
+
+    /**
+     * <p class="changed_added_4_1">
+     * Set the content length of the response as a long.
+     * </p>
+     *
+     * <p>
+     * <em>Jakarta Servlet:</em> This must be performed by calling the <code>jakarta.servlet.http.HttpServletResponse</code>
+     * <code>setContentLengthLong</code> method.
+     * </p>
+     *
+     * <p>
+     * The default implementation throws <code>UnsupportedOperationException</code> and is provided for the sole purpose of
+     * not breaking existing applications that extend this class.
+     * </p>
+     *
+     * @param length the value to be set.
+     *
+     * @since 4.1
+     */
+    public void setResponseContentLengthLong(long length) {
+
+        if (defaultExternalContext != null) {
+            defaultExternalContext.setResponseContentLengthLong(length);
         } else {
             throw new UnsupportedOperationException();
         }
