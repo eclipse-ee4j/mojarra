@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2022, 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -376,7 +377,7 @@ public class FacesMessage implements Serializable {
      * Class used to represent message severity levels in a typesafe enumeration.
      * </p>
      */
-    public static class Severity implements Comparable<Severity> {
+    public static class Severity implements Comparable {
 
         // ------------------------------------------------------- Constructors
 
@@ -417,8 +418,8 @@ public class FacesMessage implements Serializable {
          * @param other The other object to be compared to
          */
         @Override
-        public int compareTo(Severity other) {
-            return ordinal - other.ordinal;
+        public int compareTo(Object other) {
+            return ordinal - ((Severity) other).ordinal;
         }
 
         /**
