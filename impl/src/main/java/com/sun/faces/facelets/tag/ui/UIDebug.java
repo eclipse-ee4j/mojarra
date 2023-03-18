@@ -82,7 +82,7 @@ public final class UIDebug extends UIComponentBase {
 
             StringBuffer sb = new StringBuffer(512);
             sb.append("//<![CDATA[\n");
-            sb.append("function faceletsDebug(URL) {");
+            sb.append("function faceletsDebugWindow(URL) {");
             sb.append("day = new Date();");
             sb.append("id = day.getTime();");
             sb.append(
@@ -90,7 +90,7 @@ public final class UIDebug extends UIComponentBase {
             sb.append("(function() { if (typeof faceletsDebug === 'undefined') { var faceletsDebug = false; } if (!faceletsDebug) {");
             sb.append("var faceletsOrigKeyup = document.onkeyup;");
             sb.append("document.onkeyup = function(e) { if (window.event) e = window.event; if (String.fromCharCode(e.keyCode) == '" + getHotkey()
-                    + "' & e.shiftKey & e.ctrlKey) faceletsDebug('");
+                    + "' & e.shiftKey & e.ctrlKey) faceletsDebugWindow('");
             sb.append(actionId);
             sb.append(actionId.indexOf('?') == -1 ? '?' : '&');
             sb.append(KEY);
