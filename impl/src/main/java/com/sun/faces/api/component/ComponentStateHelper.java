@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -14,7 +15,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.faces.component;
+package com.sun.faces.api.component;
 
 import static com.sun.faces.facelets.tag.faces.ComponentSupport.MARK_CREATED;
 import static com.sun.faces.facelets.tag.faces.ComponentSupport.addToDescendantMarkIdCache;
@@ -32,6 +33,11 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import jakarta.el.ValueExpression;
+import jakarta.faces.component.PartialStateHolder;
+import jakarta.faces.component.StateHelper;
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.component.TransientStateHelper;
+import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIComponent.PropertyKeys;
 import jakarta.faces.context.FacesContext;
 
@@ -42,7 +48,7 @@ import jakarta.faces.context.FacesContext;
  * other implementations of the StateHolder interface.
  */
 @SuppressWarnings({ "unchecked" })
-class ComponentStateHelper implements StateHelper, TransientStateHelper {
+public class ComponentStateHelper implements StateHelper, TransientStateHelper {
 
     private UIComponent component;
     private boolean isTransient;
@@ -185,7 +191,7 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
         if (retVal == null) {
             ValueExpression valueExpression = component.getValueExpression(key.toString());
             if (valueExpression != null) {
-                retVal = valueExpression.getValue(component.getFacesContext().getELContext());
+                retVal = valueExpression.getValue(FacesContext.getCurrentInstance().getELContext());
             }
 
         }
@@ -203,7 +209,7 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
         if (retVal == null) {
             ValueExpression valueExpression = component.getValueExpression(key.toString());
             if (valueExpression != null) {
-                retVal = valueExpression.getValue(component.getFacesContext().getELContext());
+                retVal = valueExpression.getValue(FacesContext.getCurrentInstance().getELContext());
             }
 
         }

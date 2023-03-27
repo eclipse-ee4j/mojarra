@@ -18,6 +18,7 @@ package jakarta.faces.component;
 
 import java.lang.reflect.Method;
 
+import com.sun.faces.api.component.StateHolderSaver;
 import com.sun.faces.mock.MockExternalContext;
 import com.sun.faces.mock.MockFacesContext;
 import com.sun.faces.mock.MockHttpServletRequest;
@@ -118,7 +119,7 @@ public class UIOutputAttachedObjectStateTestCase extends TestCase {
         converter = new DateTimeConverter();
         output.setConverter(converter);
 
-        // now validate what we've restored
+        // Now validate what we've restored
         // first, ensure converter is null. This will
         // be the case when initialState has been marked
         // for the component.
@@ -126,7 +127,7 @@ public class UIOutputAttachedObjectStateTestCase extends TestCase {
         assertTrue(output.getConverter() != null);
         assertTrue("dd-MM-yy".equals(converter.getPattern()));
 
-        // now validate the case where UIOutput has some event
+        // Now validate the case where UIOutput has some event
         // that adds a converter *after* initial state has been
         // marked. This will cause the component to save full
         // state.
@@ -144,15 +145,19 @@ public class UIOutputAttachedObjectStateTestCase extends TestCase {
         // without setting a converter, we should have a new DateTimeConverter
         // *with* the expected pattern.
         assertTrue(result instanceof Object[]);
+
         state = (Object[]) result;
         assertTrue(state.length == 2);
         assertTrue(state[1] instanceof StateHolderSaver);
+
         output = new UIOutput();
         assertNull(output.getConverter());
+
         output.restoreState(facesContext, state);
         Converter c = output.getConverter();
         assertNotNull(c);
         assertTrue(c instanceof DateTimeConverter);
+
         converter = (DateTimeConverter) c;
         assertTrue("dd-MM-yy".equals(converter.getPattern()));
     }

@@ -31,7 +31,7 @@ import java.lang.annotation.Target;
  * application must not be placed in service. Within that {@link RenderKit}, The value of the {@link #rendererType}
  * attribute is taken to be the <em>renderer-type</em>, and the value of the {@link #componentFamily} attribute is to be
  * taken as the <em>component-family</em>. The implementation must guarantee that for each class annotated with
- * <code>FacesRenderer</code>, found with the algorithm in 
+ * <code>FacesRenderer</code>, found with the algorithm in
  * section 11.4 "Annotations that correspond to and may take the place of entries in the Application Configuration Resources" of the Jakarta Faces Specification Document,
  * the following actions are taken.
  * </p>
@@ -87,7 +87,6 @@ public @interface FacesRenderer {
      *
      * @return the <em>render-kit-id</em>
      */
-
     String renderKitId() default RenderKitFactory.HTML_BASIC_RENDER_KIT;
 
     /**
@@ -99,7 +98,6 @@ public @interface FacesRenderer {
      *
      * @return the <em>renderer-type</em>
      */
-
     String rendererType();
 
     /**
@@ -111,7 +109,6 @@ public @interface FacesRenderer {
      *
      * @return the <em>component-family</em>
      */
-
     String componentFamily();
 
 }

@@ -16,13 +16,14 @@
 
 package jakarta.faces.component;
 
+import com.sun.faces.api.component.StateHolderSaver;
+
 import jakarta.faces.convert.IntegerConverter;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 public class StateHolderSaverTestCase extends UIComponentBaseTestCase {
 
-    // ------------------------------------------------------ Instance Variables
     // ------------------------------------------------------------ Constructors
     // Construct a new instance of this test case.
     public StateHolderSaverTestCase(String name) {
@@ -53,31 +54,27 @@ public class StateHolderSaverTestCase extends UIComponentBaseTestCase {
     }
 
     public void testImplementsStateHolder() throws Exception {
-        StateHolderSaver saver = null;
         UIInput postSave, preSave = new UIInput();
         preSave.setId("id1");
         preSave.setRendererType(null);
 
-        saver = new StateHolderSaver(facesContext, preSave);
+        StateHolderSaver saver = new StateHolderSaver(facesContext, preSave);
         postSave = (UIInput) saver.restore(facesContext);
         assertEquals(postSave.getId(), preSave.getId());
     }
 
     public void testImplementsSerializable() throws Exception {
-        StateHolderSaver saver = null;
         String preSave = "hello";
-        String postSave = null;
 
-        saver = new StateHolderSaver(facesContext, preSave);
-        postSave = (String) saver.restore(facesContext);
+        StateHolderSaver saver = new StateHolderSaver(facesContext, preSave);
+        String postSave = (String) saver.restore(facesContext);
         assertTrue(preSave.equals(postSave));
     }
 
     public void testImplementsNeither() throws Exception {
-        StateHolderSaver saver = null;
         IntegerConverter preSave = new IntegerConverter(), postSave = null;
 
-        saver = new StateHolderSaver(facesContext, preSave);
+        StateHolderSaver saver = new StateHolderSaver(facesContext, preSave);
         postSave = (IntegerConverter) saver.restore(facesContext);
         assertTrue(postSave != null); // lack of ClassCastException
     }

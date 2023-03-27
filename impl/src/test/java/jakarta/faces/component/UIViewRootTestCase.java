@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Locale;
 
+import com.sun.faces.api.component.UIViewRootImpl;
 import com.sun.faces.mock.MockRenderKit;
 
 import jakarta.el.MethodExpression;
@@ -515,14 +516,16 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         assertTrue(phaseListener.isAfterPhaseCalled());
     }
 
-    private void checkEventQueuesSizes(List<List> events, int applyEventsSize, int valEventsSize, int updateEventsSize,
-            int appEventsSize) {
+    private void checkEventQueuesSizes(List<List> events, int applyEventsSize, int valEventsSize, int updateEventsSize, int appEventsSize) {
         List<?> applyEvents = events.get(PhaseId.APPLY_REQUEST_VALUES.getOrdinal());
         assertEquals("Apply-Request-Values Event Count", applyEventsSize, applyEvents.size());
+
         List<?> valEvents = events.get(PhaseId.PROCESS_VALIDATIONS.getOrdinal());
         assertEquals("Process-Validations Event Count", valEventsSize, valEvents.size());
+
         List<?> updateEvents = events.get(PhaseId.UPDATE_MODEL_VALUES.getOrdinal());
         assertEquals("Update-Model Event Count", updateEventsSize, updateEvents.size());
+
         List<?> appEvents = events.get(PhaseId.INVOKE_APPLICATION.getOrdinal());
         assertEquals("Invoke-Application Event Count", appEventsSize, appEvents.size());
     }
@@ -531,34 +534,60 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
     public void testEventsListClear() {
         UIViewRoot root = facesContext.getApplication().getViewHandler().createView(facesContext, null);
         facesContext.setViewRoot(root);
+
         EventTestImpl event1, event2, event3, event4 = null;
         event1 = new EventTestImpl(root, "1");
         event1.setPhaseId(PhaseId.APPLY_REQUEST_VALUES);
         root.queueEvent(event1);
+
         event2 = new EventTestImpl(root, "2");
         event2.setPhaseId(PhaseId.PROCESS_VALIDATIONS);
         root.queueEvent(event2);
+
         event3 = new EventTestImpl(root, "3");
         event3.setPhaseId(PhaseId.UPDATE_MODEL_VALUES);
         root.queueEvent(event3);
+
         event4 = new EventTestImpl(root, "4");
         event4.setPhaseId(PhaseId.INVOKE_APPLICATION);
         root.queueEvent(event4);
-        final Field fields[] = UIViewRoot.class.getDeclaredFields();
+
+        Field[] fields = UIViewRoot.class.getDeclaredFields();
         Field field = null;
         List<List> events = null;
+        UIViewRootImpl uiViewRootImpl = null;
+
         for (int i = 0; i < fields.length; ++i) {
-            if ("events".equals(fields[i].getName())) {
+
+            if ("uiViewRootImpl".equals(fields[i].getName())) {
                 field = fields[i];
                 field.setAccessible(true);
                 try {
-                    events = TypedCollections.dynamicallyCastList((List<?>) field.get(root), List.class);
+                    uiViewRootImpl = (UIViewRootImpl) field.get(root);
+
+                    fields = UIViewRootImpl.class.getDeclaredFields();
+
+                    for (int j = 0; j < fields.length; ++j) {
+                        if ("events".equals(fields[j].getName())) {
+                            field = fields[j];
+                            field.setAccessible(true);
+                            try {
+                                events = TypedCollections.dynamicallyCastList((List<?>) field.get(uiViewRootImpl), List.class);
+                            } catch (Exception e) {
+                                assertTrue(false);
+                            }
+                            break;
+                    }
+                    }
+
                 } catch (Exception e) {
                     assertTrue(false);
                 }
                 break;
             }
+
         }
+
         // CASE: renderReponse not set; responseComplete not set;
         // check for existence of events before processDecodes
         checkEventQueuesSizes(events, 1, 1, 1, 1);
@@ -585,7 +614,7 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         root.queueEvent(event3);
         root.queueEvent(event4);
         try {
-            events = TypedCollections.dynamicallyCastList((List<?>) field.get(root), List.class);
+            events = TypedCollections.dynamicallyCastList((List<?>) field.get(uiViewRootImpl), List.class);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -606,7 +635,7 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         root.queueEvent(event3);
         root.queueEvent(event4);
         try {
-            events = TypedCollections.dynamicallyCastList((List<?>) field.get(root), List.class);
+            events = TypedCollections.dynamicallyCastList((List<?>) field.get(uiViewRootImpl), List.class);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -627,7 +656,7 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         root.queueEvent(event3);
         root.queueEvent(event4);
         try {
-            events = TypedCollections.dynamicallyCastList((List<?>) field.get(root), List.class);
+            events = TypedCollections.dynamicallyCastList((List<?>) field.get(uiViewRootImpl), List.class);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -642,7 +671,7 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         // finally, get the internal events list one more time
         // to make sure it is null
         try {
-            events = TypedCollections.dynamicallyCastList((List<?>) field.get(root), List.class);
+            events = TypedCollections.dynamicallyCastList((List<?>) field.get(uiViewRootImpl), List.class);
         } catch (Exception e) {
             assertTrue(false);
         }

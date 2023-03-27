@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -14,10 +15,12 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.faces.component;
+package com.sun.faces.api.component;
 
 import java.io.Serializable;
 
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
 /**
@@ -25,7 +28,7 @@ import jakarta.faces.context.FacesContext;
  * Helper class for saving and restoring attached objects.
  * </p>
  */
-class StateHolderSaver implements Serializable {
+public class StateHolderSaver implements Serializable {
 
     private static final long serialVersionUID = 6470180891722042701L;
 
@@ -100,7 +103,7 @@ class StateHolderSaver implements Serializable {
 
     public Object restore(FacesContext context) throws IllegalStateException {
         Object result = null;
-        Class<?> toRestoreClass;
+        Class toRestoreClass;
 
         // if the Object to save implemented Serializable but not
         // StateHolder
@@ -141,7 +144,7 @@ class StateHolderSaver implements Serializable {
         return result;
     }
 
-    private static Class<?> loadClass(String name, Object fallbackClass) throws ClassNotFoundException {
+    private static Class loadClass(String name, Object fallbackClass) throws ClassNotFoundException {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         if (loader == null) {
             loader = fallbackClass.getClass().getClassLoader();

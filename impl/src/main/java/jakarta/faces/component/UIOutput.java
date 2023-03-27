@@ -16,6 +16,8 @@
 
 package jakarta.faces.component;
 
+import com.sun.faces.api.component.StateHolderSaver;
+
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 
@@ -99,7 +101,6 @@ public class UIOutput extends UIComponentBase implements ValueHolder {
 
     @Override
     public Converter getConverter() {
-
         if (converter != null) {
             return converter;
         }
@@ -109,8 +110,8 @@ public class UIOutput extends UIComponentBase implements ValueHolder {
 
     @Override
     public void setConverter(Converter converter) {
-
         clearInitialState();
+
         // we don't push the converter to the StateHelper
         // if it's been explicitly set (i.e. it's not a ValueExpression
         // reference
@@ -161,9 +162,9 @@ public class UIOutput extends UIComponentBase implements ValueHolder {
     public void markInitialState() {
         super.markInitialState();
 
-        Converter<?> c = getConverter();
-        if (c instanceof PartialStateHolder) {
-            ((PartialStateHolder) c).markInitialState();
+        Converter<?> converter = getConverter();
+        if (converter instanceof PartialStateHolder) {
+            ((PartialStateHolder) converter).markInitialState();
         }
     }
 
@@ -172,9 +173,9 @@ public class UIOutput extends UIComponentBase implements ValueHolder {
         if (initialStateMarked()) {
             super.clearInitialState();
 
-            Converter<?> c = getConverter();
-            if (c != null && c instanceof PartialStateHolder) {
-                ((PartialStateHolder) c).clearInitialState();
+            Converter<?> converter = getConverter();
+            if (converter != null && converter instanceof PartialStateHolder) {
+                ((PartialStateHolder) converter).clearInitialState();
             }
         }
     }
@@ -222,7 +223,6 @@ public class UIOutput extends UIComponentBase implements ValueHolder {
 
     @Override
     public void restoreState(FacesContext context, Object state) {
-
         if (context == null) {
             throw new NullPointerException();
         }
@@ -233,14 +233,15 @@ public class UIOutput extends UIComponentBase implements ValueHolder {
 
         Object[] values = (Object[]) state;
         super.restoreState(context, values[0]);
+
         Object converterState = values[1];
         if (converterState instanceof StateHolderSaver) {
-            // this means full state was saved and as such
+            // This means full state was saved and as such
             // overwrite any existing converter with the saved
             // converter
             converter = (Converter<?>) restoreAttachedState(context, converterState);
         } else {
-            // apply any saved state to the existing converter
+            // Apply any saved state to the existing converter
             if (converterState != null && converter instanceof StateHolder) {
                 ((StateHolder) converter).restoreState(context, converterState);
             }

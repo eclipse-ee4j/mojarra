@@ -47,6 +47,13 @@ import jakarta.faces.context.FacesContext;
 
 public abstract class RenderKitFactory implements FacesWrapper<RenderKitFactory> {
 
+    /**
+     * <p>
+     * The render kit identifier of the default {@link RenderKit} instance for this Jakarta Faces implementation.
+     * </p>
+     */
+    public static final String HTML_BASIC_RENDER_KIT = "HTML_BASIC";
+
     private RenderKitFactory wrapped;
 
     /**
@@ -81,13 +88,6 @@ public abstract class RenderKitFactory implements FacesWrapper<RenderKitFactory>
     public RenderKitFactory getWrapped() {
         return wrapped;
     }
-
-    /**
-     * <p>
-     * The render kit identifier of the default {@link RenderKit} instance for this Jakarta Faces implementation.
-     * </p>
-     */
-    public static final String HTML_BASIC_RENDER_KIT = "HTML_BASIC";
 
     /**
      * <p>

@@ -829,21 +829,21 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
      * </p>
      * <code><pre>
      * root: id: root
-     * 
+     *
      *   form1: id: form1
-     * 
+     *
      *     panel1: id: panel
-     * 
+     *
      *       input1: id: input1
-     * 
+     *
      *       input2: id: input2
-     * 
+     *
      *   form2: id: form2
-     * 
+     *
      *     panel2: id: panel
-     * 
+     *
      *       input3: id: input1
-     * 
+     *
      *       input4: id: input2
      * </pre></code>
      *
@@ -1246,51 +1246,54 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
     }
 
     public void testChildrenListAfterAddViewPublish() {
-
         QueueingListener listener = new QueueingListener();
         application.subscribeToEvent(PostAddToViewEvent.class, listener);
 
-        UIComponent c1 = createComponent();
-        UIComponent c2 = createComponent();
-        UIComponent c3 = createComponent();
-        UIComponent c4 = createComponent();
-        c1.getChildren().add(c2);
-        List<SystemEvent> e = listener.getEvents();
-        assertTrue(e.isEmpty());
-        c2.getChildren().add(c3);
-        assertTrue(e.isEmpty());
+        UIComponent component1 = createComponent();
+        UIComponent component2 = createComponent();
+        UIComponent component3 = createComponent();
+        UIComponent component4 = createComponent();
+
+        component1.getChildren().add(component2);
+
+        List<SystemEvent> events = listener.getEvents();
+        assertTrue(events.isEmpty());
+
+        component2.getChildren().add(component3);
+        assertTrue(events.isEmpty());
+
         UIViewRoot root = new UIViewRoot();
-        root.getChildren().add(c1);
+        root.getChildren().add(component1);
 
-        // sub-tree has been added to the view. Ensure that subsequent additions
+        // Sub-tree has been added to the view. Ensure that subsequent additions
         // to that sub-tree cause the PostAddToViewEvent to fire.
-        c2.getChildren().add(c4);
-        assertTrue("Expected Event queue size of 4, found: " + e.size(), e.size() == 4);
+        component2.getChildren().add(component4);
+        assertTrue("Expected Event queue size of 4, found: " + events.size(), events.size() == 4);
 
-        UIComponent[] comps = { c1, c2, c3, c4 };
+        UIComponent[] comps = { component1, component2, component3, component4 };
         for (int i = 0; i < comps.length; i++) {
-            assertTrue("Index " + i + " invalid", e.get(i).getSource() == comps[i]);
+            assertTrue("Index " + i + " invalid", events.get(i).getSource() == comps[i]);
         }
 
         // remove c1 and it's children from the subview, then remove and
         // re-add one of the children in the sub-tree. No event should
         // be fired
-        e.clear();
-        root.getChildren().remove(c1);
-        c2.getChildren().remove(c4);
-        c2.getChildren().add(c4);
-        assertTrue("AfterAddToView events queued after a sub-tree was removed from the view, and a child added to the sub-view", e.isEmpty());
+        events.clear();
+        root.getChildren().remove(component1);
+        component2.getChildren().remove(component4);
+        component2.getChildren().add(component4);
+        assertTrue("AfterAddToView events queued after a sub-tree was removed from the view, and a child added to the sub-view", events.isEmpty());
 
-        c2.getChildren().remove(c4);
-        c1.getChildren().add(c4);
-        assertTrue("AfterAddToView events queued after a sub-tree was removed from the view, and a child added to the sub-view", e.isEmpty());
+        component2.getChildren().remove(component4);
+        component1.getChildren().add(component4);
+        assertTrue("AfterAddToView events queued after a sub-tree was removed from the view, and a child added to the sub-view", events.isEmpty());
 
         // re-wire c1 as a child of root and ensure all children get re-notified
-        root.getChildren().add(c1);
-        assertTrue("Expected Event queue size of 4, found: " + e.size(), e.size() == 4);
+        root.getChildren().add(component1);
+        assertTrue("Expected Event queue size of 4, found: " + events.size(), events.size() == 4);
 
         for (int i = 0; i < comps.length; i++) {
-            assertTrue("Index " + i + " invalid", e.get(i).getSource() == comps[i]);
+            assertTrue("Index " + i + " invalid", events.get(i).getSource() == comps[i]);
         }
 
         // validate clearing c1's children (effectively removing them from the view
@@ -1298,119 +1301,119 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         // the disconnected children.
         // At this point in the test, c2 and c4 are children of c1, and c3
         // is a child of c2.
-        c1.getChildren().clear();
+        component1.getChildren().clear();
         UIComponent temp = createComponent();
-        e.clear();
-        c2.getChildren().add(temp);
-        assertTrue("AfterAddToView events queued after a sub-tree was removed from the view, and a child added to the sub-view", e.isEmpty());
-        c2.getChildren().remove(temp);
-        c3.getChildren().add(temp);
-        assertTrue("AfterAddToView events queued after a sub-tree was removed from the view, and a child added to the sub-view", e.isEmpty());
-        c3.getChildren().remove(temp);
-        c4.getChildren().add(temp);
-        assertTrue("AfterAddToView events queued after a sub-tree was removed from the view, and a child added to the sub-view", e.isEmpty());
-        c4.getChildren().remove(temp);
+        events.clear();
+        component2.getChildren().add(temp);
+        assertTrue("AfterAddToView events queued after a sub-tree was removed from the view, and a child added to the sub-view", events.isEmpty());
+        component2.getChildren().remove(temp);
+        component3.getChildren().add(temp);
+        assertTrue("AfterAddToView events queued after a sub-tree was removed from the view, and a child added to the sub-view", events.isEmpty());
+        component3.getChildren().remove(temp);
+        component4.getChildren().add(temp);
+        assertTrue("AfterAddToView events queued after a sub-tree was removed from the view, and a child added to the sub-view", events.isEmpty());
+        component4.getChildren().remove(temp);
 
         // now add c2 and c4 as children of c1. This should cause three
         // events to fire
-        c1.getChildren().add(c2);
-        c1.getChildren().add(c4);
-        assertTrue("Expected Event queue size of 3, found: " + e.size(), e.size() == 3);
+        component1.getChildren().add(component2);
+        component1.getChildren().add(component4);
+        assertTrue("Expected Event queue size of 3, found: " + events.size(), events.size() == 3);
 
-        UIComponent[] comps2 = { c2, c3, c4 };
+        UIComponent[] comps2 = { component2, component3, component4 };
         for (int i = 0; i < comps2.length; i++) {
-            assertTrue("Index " + i + " invalid", e.get(i).getSource() == comps2[i]);
+            assertTrue("Index " + i + " invalid", events.get(i).getSource() == comps2[i]);
         }
 
         // validate add(int, UIComponent) fires events
-        e.clear();
-        c1.getChildren().remove(c4);
-        c1.getChildren().add(0, c4);
+        events.clear();
+        component1.getChildren().remove(component4);
+        component1.getChildren().add(0, component4);
 
-        assertTrue(c1.getChildren().get(0) == c4);
-        assertTrue(c1.getChildren().get(1) == c2);
-        assertTrue("Expected Event queue size of 1, found: " + e.size(), e.size() == 1);
-        assertTrue(e.get(0).getSource() == c4);
+        assertTrue(component1.getChildren().get(0) == component4);
+        assertTrue(component1.getChildren().get(1) == component2);
+        assertTrue("Expected Event queue size of 1, found: " + events.size(), events.size() == 1);
+        assertTrue(events.get(0).getSource() == component4);
 
         // validate addAll(Collection<UIComponent>) fires events
-        e.clear();
-        c1.getChildren().clear();
+        events.clear();
+        component1.getChildren().clear();
         List<UIComponent> children = new ArrayList<>(2);
-        Collections.addAll(children, c2, c4);
-        c1.getChildren().addAll(children);
-        assertTrue(c1.getChildren().get(0) == c2);
-        assertTrue(c1.getChildren().get(1) == c4);
-        assertTrue("Expected Event queue size of 3, found: " + e.size(), e.size() == 3);
-        assertTrue(e.get(0).getSource() == c2);
-        assertTrue(e.get(2).getSource() == c4);
+        Collections.addAll(children, component2, component4);
+        component1.getChildren().addAll(children);
+        assertTrue(component1.getChildren().get(0) == component2);
+        assertTrue(component1.getChildren().get(1) == component4);
+        assertTrue("Expected Event queue size of 3, found: " + events.size(), events.size() == 3);
+        assertTrue(events.get(0).getSource() == component2);
+        assertTrue(events.get(2).getSource() == component4);
 
         // validate addAll(int, Collection<UIComponent>) fires events
-        e.clear();
+        events.clear();
         children = new ArrayList<>(2);
         UIComponent t1 = createComponent();
         UIComponent t2 = createComponent();
         Collections.addAll(children, t1, t2);
-        c1.getChildren().addAll(0, children);
-        assertTrue(c1.getChildren().get(0) == t1);
-        assertTrue(c1.getChildren().get(1) == t2);
-        assertTrue(c1.getChildren().get(2) == c2);
-        assertTrue(c1.getChildren().get(3) == c4);
-        assertTrue("Expected Event queue size of 2, found: " + e.size(), e.size() == 2);
-        assertTrue(e.get(0).getSource() == t1);
-        assertTrue(e.get(1).getSource() == t2);
+        component1.getChildren().addAll(0, children);
+        assertTrue(component1.getChildren().get(0) == t1);
+        assertTrue(component1.getChildren().get(1) == t2);
+        assertTrue(component1.getChildren().get(2) == component2);
+        assertTrue(component1.getChildren().get(3) == component4);
+        assertTrue("Expected Event queue size of 2, found: " + events.size(), events.size() == 2);
+        assertTrue(events.get(0).getSource() == t1);
+        assertTrue(events.get(1).getSource() == t2);
 
         // validate retainAll(Collection<UIComponent> properly disconnects
         // the components from the view such that events aren't fired
         // if children are added to them
-        e.clear();
+        events.clear();
         List<UIComponent> retained = new ArrayList<>(2);
-        Collections.addAll(retained, c2, c4);
-        c1.getChildren().retainAll(retained);
-        assertTrue(c1.getChildren().size() == 2);
-        assertTrue(c1.getChildren().get(0) == c2);
-        assertTrue(c1.getChildren().get(1) == c4);
+        Collections.addAll(retained, component2, component4);
+        component1.getChildren().retainAll(retained);
+        assertTrue(component1.getChildren().size() == 2);
+        assertTrue(component1.getChildren().get(0) == component2);
+        assertTrue(component1.getChildren().get(1) == component4);
         t1.getChildren().add(t2);
-        assertTrue("Expected Event queue size of 0, found: " + e.size(), e.isEmpty());
+        assertTrue("Expected Event queue size of 0, found: " + events.size(), events.isEmpty());
 
         // test set(int, UIComponent) properly fires an event if the parent
         // the component is being added to is wired to the view
-        e.clear();
-        c1.getChildren().set(0, t1);
-        assertTrue(c1.getChildren().size() == 2);
-        assertTrue(c1.getChildren().get(0) == t1);
-        assertTrue(c1.getChildren().get(1) == c4);
-        assertTrue("Expected Event queue size of 2, found: " + e.size(), e.size() == 2);
-        assertTrue(e.get(0).getSource() == t1);
-        assertTrue(e.get(1).getSource() == t2);
+        events.clear();
+        component1.getChildren().set(0, t1);
+        assertTrue(component1.getChildren().size() == 2);
+        assertTrue(component1.getChildren().get(0) == t1);
+        assertTrue(component1.getChildren().get(1) == component4);
+        assertTrue("Expected Event queue size of 2, found: " + events.size(), events.size() == 2);
+        assertTrue(events.get(0).getSource() == t1);
+        assertTrue(events.get(1).getSource() == t2);
 
         // c2 was removed by the set operation, so ensure it's marked as
         // having been removed from the view by ensuring events aren't fired.
-        e.clear();
+        events.clear();
         UIComponent t3 = createComponent();
-        c2.getChildren().add(t3);
-        assertTrue("Expected Event queue size of 0, found: " + e.size(), e.isEmpty());
+        component2.getChildren().add(t3);
+        assertTrue("Expected Event queue size of 0, found: " + events.size(), events.isEmpty());
 
         application.unsubscribeFromEvent(PostAddToViewEvent.class, listener);
 
         // validate Iterator.remove() over c1's children correctly disconnects
         // the children from the view
-        for (Iterator<UIComponent> i = c1.getChildren().iterator(); i.hasNext();) {
+        for (Iterator<UIComponent> i = component1.getChildren().iterator(); i.hasNext();) {
             i.next();
             i.remove();
         }
 
         // at this point, t1 and c4 should be disconnected meaning adding children
         // to t1, t2, or c4 should result in no events being fired
-        e.clear();
+        events.clear();
         t1.getChildren().add(temp);
-        assertTrue("AfterAddToView events queued after a sub-tree was removed from the view, and a child added to the sub-view", e.isEmpty());
+        assertTrue("AfterAddToView events queued after a sub-tree was removed from the view, and a child added to the sub-view", events.isEmpty());
         t1.getChildren().remove(temp);
         t2.getChildren().add(temp);
-        assertTrue("AfterAddToView events queued after a sub-tree was removed from the view, and a child added to the sub-view", e.isEmpty());
+        assertTrue("AfterAddToView events queued after a sub-tree was removed from the view, and a child added to the sub-view", events.isEmpty());
         t2.getChildren().remove(temp);
-        c4.getChildren().add(temp);
-        assertTrue("AfterAddToView events queued after a sub-tree was removed from the view, and a child added to the sub-view", e.isEmpty());
-        c4.getChildren().remove(temp);
+        component4.getChildren().add(temp);
+        assertTrue("AfterAddToView events queued after a sub-tree was removed from the view, and a child added to the sub-view", events.isEmpty());
+        component4.getChildren().remove(temp);
 
     }
 

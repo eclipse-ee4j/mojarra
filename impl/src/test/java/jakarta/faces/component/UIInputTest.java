@@ -25,6 +25,8 @@ import static org.junit.Assert.assertTrue;
 import org.easymock.EasyMock;
 import org.junit.Test;
 
+import com.sun.faces.api.component.StateHolderSaver;
+
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.LengthValidator;
 import jakarta.faces.validator.LongRangeValidator;
@@ -126,44 +128,48 @@ public class UIInputTest {
     public void testRestoreState5() {
         FacesContext context = EasyMock.createMock(FacesContext.class);
         UIInput input = new UIInput();
-        LengthValidator l1 = new LengthValidator();
-        LengthValidator l2 = new LengthValidator();
+        LengthValidator lengthValidator1 = new LengthValidator();
+        LengthValidator lengthValidator2 = new LengthValidator();
         replay(context);
-        input.addValidator(l1);
-        input.addValidator(l2);
-        l1.setMinimum(1);
-        l2.setMinimum(2);
+
+        input.addValidator(lengthValidator1);
+        input.addValidator(lengthValidator2);
+        lengthValidator1.setMinimum(1);
+        lengthValidator2.setMinimum(2);
         input.markInitialState();
-        l2.setMinimum(3);
+        lengthValidator2.setMinimum(3);
         assertTrue(input.initialStateMarked());
-        assertTrue(l1.initialStateMarked());
-        assertTrue(!l2.initialStateMarked());
+        assertTrue(lengthValidator1.initialStateMarked());
+        assertTrue(!lengthValidator2.initialStateMarked());
+
         Object state = input.saveState(context);
         assertTrue(state instanceof Object[]);
+
         Object[] validatorState = (Object[]) ((Object[]) state)[1];
         assertNotNull(validatorState);
         assertNull(validatorState[0]);
         assertNotNull(validatorState[1]);
         assertTrue(!(validatorState[1] instanceof StateHolderSaver));
+
         input = new UIInput();
-        l1 = new LengthValidator();
-        l2 = new LengthValidator();
-        l1.setMinimum(1);
-        l2.setMinimum(2);
-        input.addValidator(l1);
-        input.addValidator(l2);
+        lengthValidator1 = new LengthValidator();
+        lengthValidator2 = new LengthValidator();
+        lengthValidator1.setMinimum(1);
+        lengthValidator2.setMinimum(2);
+        input.addValidator(lengthValidator1);
+        input.addValidator(lengthValidator2);
         input.restoreState(context, state);
-        assertTrue(l1.getMinimum() == 1);
-        assertTrue(l2.getMinimum() == 3);
+        assertTrue(lengthValidator1.getMinimum() == 1);
+        assertTrue(lengthValidator2.getMinimum() == 3);
         assertTrue(input.getValidators().length == 2);
 
         input = new UIInput();
-        l1 = new LengthValidator();
-        l2 = new LengthValidator();
-        input.addValidator(l1);
-        input.addValidator(l2);
-        l1.setMinimum(1);
-        l2.setMinimum(2);
+        lengthValidator1 = new LengthValidator();
+        lengthValidator2 = new LengthValidator();
+        input.addValidator(lengthValidator1);
+        input.addValidator(lengthValidator2);
+        lengthValidator1.setMinimum(1);
+        lengthValidator2.setMinimum(2);
         input.markInitialState();
         LengthValidator l3 = new LengthValidator();
         l3.setMinimum(3);
@@ -171,6 +177,7 @@ public class UIInputTest {
         state = input.saveState(context);
         assertNotNull(validatorState);
         assertTrue(state instanceof Object[]);
+
         validatorState = (Object[]) ((Object[]) state)[1];
         assertNotNull(validatorState);
         assertTrue(validatorState.length == 3);
@@ -182,19 +189,20 @@ public class UIInputTest {
         assertTrue(validatorState[2] instanceof StateHolderSaver);
 
         input = new UIInput();
-        l1 = new LengthValidator();
-        l2 = new LengthValidator();
+        lengthValidator1 = new LengthValidator();
+        lengthValidator2 = new LengthValidator();
         l3 = new LengthValidator();
         LengthValidator l4 = new LengthValidator();
-        input.addValidator(l1);
-        input.addValidator(l2);
+        input.addValidator(lengthValidator1);
+        input.addValidator(lengthValidator2);
         input.addValidator(l3);
         input.addValidator(l4);
-        l1.setMinimum(100);
-        l2.setMinimum(101);
+        lengthValidator1.setMinimum(100);
+        lengthValidator2.setMinimum(101);
         l3.setMinimum(102);
         l4.setMinimum(103);
         assertTrue(input.getValidators().length == 4);
+
         input.markInitialState();
         input.restoreState(context, state);
         assertTrue(input.getValidators().length == 3);

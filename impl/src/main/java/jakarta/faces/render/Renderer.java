@@ -97,7 +97,7 @@ public abstract class Renderer<T extends UIComponent> {
      * @throws NullPointerException if <code>context</code> or <code>component</code> is <code>null</code>
      */
     public void decode(FacesContext context, T component) {
-        if (null == context || null == component) {
+        if (context == null || component == null) {
             throw new NullPointerException();
         }
     }
@@ -117,7 +117,7 @@ public abstract class Renderer<T extends UIComponent> {
      * @throws NullPointerException if <code>context</code> or <code>component</code> is null
      */
     public void encodeBegin(FacesContext context, T component) throws IOException {
-        if (null == context || null == component) {
+        if (context == null || component == null) {
             throw new NullPointerException();
         }
     }
@@ -139,6 +139,7 @@ public abstract class Renderer<T extends UIComponent> {
         if (context == null || component == null) {
             throw new NullPointerException();
         }
+
         if (component.getChildCount() > 0) {
             Iterator<UIComponent> kids = component.getChildren().iterator();
             while (kids.hasNext()) {
@@ -161,7 +162,7 @@ public abstract class Renderer<T extends UIComponent> {
      * @throws NullPointerException if <code>context</code> or <code>component</code> is <code>null</code>
      */
     public void encodeEnd(FacesContext context, T component) throws IOException {
-        if (null == context || null == component) {
+        if (context == null || component == null) {
             throw new NullPointerException();
         }
     }
@@ -183,12 +184,11 @@ public abstract class Renderer<T extends UIComponent> {
      * @return the converted {@code clientId}
      */
     public String convertClientId(FacesContext context, String clientId) {
-
         if (context == null || clientId == null) {
             throw new NullPointerException();
         }
-        return clientId;
 
+        return clientId;
     }
 
     /**
@@ -199,7 +199,6 @@ public abstract class Renderer<T extends UIComponent> {
      *
      * @return the current value of the flag
      */
-
     public boolean getRendersChildren() {
         return false;
     }
@@ -225,6 +224,7 @@ public abstract class Renderer<T extends UIComponent> {
         if (context == null || component == null) {
             throw new NullPointerException();
         }
+
         return submittedValue;
     }
 }

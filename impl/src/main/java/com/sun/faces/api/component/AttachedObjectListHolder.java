@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -14,7 +15,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.faces.component;
+package com.sun.faces.api.component;
 
 import static jakarta.faces.component.UIComponentBase.saveAttachedState;
 
@@ -23,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import jakarta.faces.component.PartialStateHolder;
+import jakarta.faces.component.StateHolder;
 import jakarta.faces.context.FacesContext;
 
 /**
@@ -32,7 +35,7 @@ import jakarta.faces.context.FacesContext;
  * </p>
  */
 @SuppressWarnings({ "unchecked" })
-class AttachedObjectListHolder<T> implements PartialStateHolder {
+public class AttachedObjectListHolder<T> implements PartialStateHolder {
 
     private boolean initialState;
     private List<T> attachedObjects = new ArrayList<>(2);
@@ -41,7 +44,6 @@ class AttachedObjectListHolder<T> implements PartialStateHolder {
 
     @Override
     public void markInitialState() {
-
         if (!attachedObjects.isEmpty()) {
             for (T t : attachedObjects) {
                 if (t instanceof PartialStateHolder) {
@@ -49,8 +51,8 @@ class AttachedObjectListHolder<T> implements PartialStateHolder {
                 }
             }
         }
-        initialState = true;
 
+        initialState = true;
     }
 
     @Override
@@ -60,7 +62,6 @@ class AttachedObjectListHolder<T> implements PartialStateHolder {
 
     @Override
     public void clearInitialState() {
-
         if (!attachedObjects.isEmpty()) {
             for (T t : attachedObjects) {
                 if (t instanceof PartialStateHolder) {
@@ -76,7 +77,6 @@ class AttachedObjectListHolder<T> implements PartialStateHolder {
 
     @Override
     public Object saveState(FacesContext context) {
-
         if (context == null) {
             throw new NullPointerException();
         }
@@ -114,7 +114,6 @@ class AttachedObjectListHolder<T> implements PartialStateHolder {
 
     @Override
     public void restoreState(FacesContext context, Object state) {
-
         if (context == null) {
             throw new NullPointerException();
         }
@@ -161,23 +160,21 @@ class AttachedObjectListHolder<T> implements PartialStateHolder {
         // no-op
     }
 
-    // ------------------------------------------------------ Public Methods
-
-    void add(T attachedObject) {
+    public void add(T attachedObject) {
         clearInitialState();
         attachedObjects.add(attachedObject);
     }
 
-    void remove(T attachedObject) {
+    public void remove(T attachedObject) {
         clearInitialState();
         attachedObjects.remove(attachedObject);
     }
 
-    T[] asArray(Class<T> type) {
+    public T[] asArray(Class<T> type) {
         return new ArrayList<>(attachedObjects).toArray((T[]) Array.newInstance(type, attachedObjects.size()));
     }
 
-    Iterator<T> iterator() {
+    public Iterator<T> iterator() {
         return attachedObjects.iterator();
     }
 

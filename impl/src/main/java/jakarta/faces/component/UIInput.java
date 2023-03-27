@@ -21,6 +21,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.sun.faces.api.component.AttachedObjectListHolder;
+
 import jakarta.el.ELException;
 import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
@@ -1158,7 +1160,6 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      */
     @Override
     public void addValidator(Validator validator) {
-
         if (validator == null) {
             throw new NullPointerException();
         }

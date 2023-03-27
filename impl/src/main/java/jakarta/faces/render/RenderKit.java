@@ -155,10 +155,8 @@ public abstract class RenderKit {
      *
      */
     public Iterator<String> getComponentFamilies() {
-
         Set<String> empty = Collections.emptySet();
         return empty.iterator();
-
     }
 
     /**
@@ -183,10 +181,8 @@ public abstract class RenderKit {
      *
      */
     public Iterator<String> getRendererTypes(String componentFamily) {
-
         Set<String> empty = Collections.emptySet();
         return empty.iterator();
-
     }
 
     /**

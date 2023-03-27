@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Contributors to Eclipse Foundation.
+ * Copyright (c) 2022, 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -15,7 +15,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.faces.component;
+package com.sun.faces.api.component;
 
 import static com.sun.faces.facelets.tag.faces.ComponentSupport.addToDescendantMarkIdCache;
 import static com.sun.faces.facelets.tag.faces.ComponentSupport.isNotRenderingResponse;
@@ -41,6 +41,7 @@ import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.AbstractCollection;
 import java.util.AbstractMap;
 import java.util.AbstractSet;
@@ -57,16 +58,21 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.sun.faces.api.component.AttachedObjectListHolder;
-import com.sun.faces.api.component.StateHolderSaver;
-import com.sun.faces.api.component.UIComponentBaseImpl;
 
 import jakarta.el.ELException;
 import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
+import jakarta.faces.component.ContextCallback;
+import jakarta.faces.component.NamingContainer;
+import jakarta.faces.component.PartialStateHolder;
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIComponentBase;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.component.UniqueIdVendor;
 import jakarta.faces.component.behavior.Behavior;
 import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
@@ -100,13 +106,13 @@ import jakarta.faces.render.Renderer;
  * should override this method to return <code>true</code> instead.
  * </p>
  */
-public abstract class UIComponentBase extends UIComponent {
+public abstract class UIComponentBaseImpl extends UIComponentImpl implements PeerHolder {
 
     // -------------------------------------------------------------- Attributes
 
     private static Logger LOGGER = Logger.getLogger("jakarta.faces.component", "jakarta.faces.LogStrings");
 
-    private static final String ADDED = UIComponentBase.class.getName() + ".ADDED";
+    private static final String ADDED = UIComponentBaseImpl.class.getName() + ".ADDED";
 
     private static final int MY_STATE = 0;
     private static final int CHILD_STATE = 1;
@@ -180,37 +186,28 @@ public abstract class UIComponentBase extends UIComponent {
      */
     private boolean transientFlag;
 
-    private UIComponentBaseImpl uiComponentBaseImpl;
+    private UIComponentBase peer;
 
-    public UIComponentBaseImpl getUiComponentBaseImpl() {
-        return uiComponentBaseImpl;
+    @Override
+    public UIComponentBase getPeer() {
+        return peer;
     }
 
-    public void setUiComponentBaseImpl(UIComponentBaseImpl uiComponentBaseImpl) {
-        this.uiComponentBaseImpl = uiComponentBaseImpl;
+    public void setPeer(UIComponentBase peer) {
+        this.peer = peer;
     }
 
     /**
      * Default constructor, populates the descriptor map.
      */
-    public UIComponentBase() {
+    public UIComponentBaseImpl() {
         populateDescriptorsMapIfNecessary();
-    }
-
-    public UIComponentBase(UIComponentBaseImpl uiComponentBaseImpl) {
-        super(uiComponentBaseImpl);
-        populateDescriptorsMapIfNecessary();
-        this.uiComponentBaseImpl = uiComponentBaseImpl;
     }
 
     @Override
     public Map<String, Object> getAttributes() {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.getAttributes();
-        }
-
         if (attributes == null) {
-            attributes = new AttributesMap(this);
+            attributes = new AttributesMap(getPeer());
         }
 
         return attributes;
@@ -218,10 +215,6 @@ public abstract class UIComponentBase extends UIComponent {
 
     @Override
     public Map<String, Object> getPassThroughAttributes(boolean create) {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.getPassThroughAttributes(create);
-        }
-
         @SuppressWarnings("unchecked")
         Map<String, Object> passThroughAttributes = (Map<String, Object>) this.getStateHelper().get(PropertyKeys.passThroughAttributes);
 
@@ -240,10 +233,6 @@ public abstract class UIComponentBase extends UIComponent {
      */
     @Override
     public String getClientId(FacesContext context) {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.getClientId(context);
-        }
-
         if (context == null) {
             throw new NullPointerException();
         }
@@ -278,10 +267,6 @@ public abstract class UIComponentBase extends UIComponent {
 
     @Override
     public String getId() {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.getId();
-        }
-
         return id;
     }
 
@@ -291,12 +276,7 @@ public abstract class UIComponentBase extends UIComponent {
      */
     @Override
     public void setId(String id) {
-        if (uiComponentBaseImpl != null) {
-            uiComponentBaseImpl.setId(id);
-        }
-
-
-        // if the current ID is not null, and the passed
+        // If the current ID is not null, and the passed
         // argument is the same, no need to validate it
         // as it has already been validated.
         if (this.id == null || !this.id.equals(id)) {
@@ -309,24 +289,14 @@ public abstract class UIComponentBase extends UIComponent {
 
     @Override
     public UIComponent getParent() {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.getParent();
-        }
-
-
         return parent;
     }
 
     @Override
     public void setParent(UIComponent parent) {
-        if (uiComponentBaseImpl != null) {
-            uiComponentBaseImpl.setParent(parent);
-        }
-
-
         if (parent == null) {
             if (this.parent != null) {
-                doPreRemoveProcessing(FacesContext.getCurrentInstance(), this);
+                doPreRemoveProcessing(FacesContext.getCurrentInstance(), getPeer());
                 this.parent = parent;
             }
             compositeParent = null;
@@ -340,7 +310,7 @@ public abstract class UIComponentBase extends UIComponent {
                 // and cause a stack overflow.
                 getAttributes().put(ADDED, TRUE);
 
-                doPostAddProcessing(FacesContext.getCurrentInstance(), this);
+                doPostAddProcessing(FacesContext.getCurrentInstance(), getPeer());
 
                 // Remove the attribute once we've returned from the event
                 // processing.
@@ -351,48 +321,26 @@ public abstract class UIComponentBase extends UIComponent {
 
     @Override
     public boolean isRendered() {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.isRendered();
-        }
-
         return Boolean.valueOf(getStateHelper().eval(PropertyKeys.rendered, TRUE).toString());
     }
 
     @Override
     public void setRendered(boolean rendered) {
-        if (uiComponentBaseImpl != null) {
-            uiComponentBaseImpl.setRendered(rendered);
-        }
-
         getStateHelper().put(PropertyKeys.rendered, rendered);
     }
 
     @Override
     public String getRendererType() {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.getRendererType();
-        }
-
         return (String) getStateHelper().eval(PropertyKeys.rendererType);
     }
 
     @Override
     public void setRendererType(String rendererType) {
-        if (uiComponentBaseImpl != null) {
-            uiComponentBaseImpl.setRendererType(rendererType);
-        }
-
-
         getStateHelper().put(PropertyKeys.rendererType, rendererType);
     }
 
     @Override
     public boolean getRendersChildren() {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.getRendersChildren();
-        }
-
-
         if (getRendererType() != null) {
             Renderer renderer = getRenderer(getFacesContext());
             if (renderer != null) {
@@ -407,13 +355,8 @@ public abstract class UIComponentBase extends UIComponent {
 
     @Override
     public List<UIComponent> getChildren() {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.getChildren();
-        }
-
-
         if (children == null) {
-            children = new ChildrenList(this);
+            children = new ChildrenList(getPeer());
         }
 
         return children;
@@ -422,10 +365,6 @@ public abstract class UIComponentBase extends UIComponent {
     // Do not allocate the children List to answer this question
     @Override
     public int getChildCount() {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.getChildCount();
-        }
-
         if (children != null) {
             return children.size();
         }
@@ -438,10 +377,6 @@ public abstract class UIComponentBase extends UIComponent {
      */
     @Override
     public UIComponent findComponent(String expression) {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.findComponent(expression);
-        }
-
         if (expression == null) {
             throw new NullPointerException();
         }
@@ -474,10 +409,6 @@ public abstract class UIComponentBase extends UIComponent {
      */
     @Override
     public boolean invokeOnComponent(FacesContext context, String clientId, ContextCallback callback) throws FacesException {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.invokeOnComponent(context, clientId, callback);
-        }
-
         return super.invokeOnComponent(context, clientId, callback);
     }
 
@@ -485,10 +416,6 @@ public abstract class UIComponentBase extends UIComponent {
 
     @Override
     public Map<String, UIComponent> getFacets() {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.getFacets();
-        }
-
         if (facets == null) {
             facets = new FacetsMap(this);
         }
@@ -499,10 +426,6 @@ public abstract class UIComponentBase extends UIComponent {
     // Do not allocate the children List to answer this question
     @Override
     public int getFacetCount() {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.getFacetCount();
-        }
-
         if (facets != null) {
             return facets.size();
         }
@@ -513,10 +436,6 @@ public abstract class UIComponentBase extends UIComponent {
     // Do not allocate the facets Map to answer this question
     @Override
     public UIComponent getFacet(String name) {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.getFacet(name);
-        }
-
         if (facets != null) {
             return facets.get(name);
         }
@@ -526,11 +445,6 @@ public abstract class UIComponentBase extends UIComponent {
 
     @Override
     public Iterator<UIComponent> getFacetsAndChildren() {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.getFacetsAndChildren();
-        }
-
-
         int childCount = getChildCount(), facetCount = getFacetCount();
 
         // If there are neither facets nor children
@@ -549,7 +463,7 @@ public abstract class UIComponentBase extends UIComponent {
         }
 
         // If there are both children and facets
-        return new FacetsAndChildrenIterator(this);
+        return new FacetsAndChildrenIterator(getPeer());
     }
 
     // -------------------------------------------- Lifecycle Processing Methods
@@ -561,10 +475,6 @@ public abstract class UIComponentBase extends UIComponent {
      */
     @Override
     public void broadcast(FacesEvent event) throws AbortProcessingException {
-        if (uiComponentBaseImpl != null) {
-            uiComponentBaseImpl.broadcast(event);
-        }
-
         if (event == null) {
             throw new NullPointerException();
         }
@@ -591,11 +501,6 @@ public abstract class UIComponentBase extends UIComponent {
      */
     @Override
     public void decode(FacesContext context) {
-        if (uiComponentBaseImpl != null) {
-            uiComponentBaseImpl.decode(context);
-        }
-
-
         if (context == null) {
             throw new NullPointerException();
         }
@@ -604,7 +509,7 @@ public abstract class UIComponentBase extends UIComponent {
         if (rendererType != null) {
             Renderer renderer = getRenderer(context);
             if (renderer != null) {
-                renderer.decode(context, this);
+                renderer.decode(context, getPeer());
             } else {
                 if (LOGGER.isLoggable(FINE)) {
                     LOGGER.fine("Can't get Renderer for type " + rendererType);
@@ -618,11 +523,6 @@ public abstract class UIComponentBase extends UIComponent {
      */
     @Override
     public void encodeBegin(FacesContext context) throws IOException {
-        if (uiComponentBaseImpl != null) {
-            uiComponentBaseImpl.encodeBegin(context);
-        }
-
-
         if (context == null) {
             throw new NullPointerException();
         }
@@ -633,13 +533,13 @@ public abstract class UIComponentBase extends UIComponent {
             return;
         }
 
-        context.getApplication().publishEvent(context, PreRenderComponentEvent.class, this);
+        context.getApplication().publishEvent(context, PreRenderComponentEvent.class, getPeer());
 
         String rendererType = getRendererType();
         if (rendererType != null) {
             Renderer renderer = getRenderer(context);
             if (renderer != null) {
-                renderer.encodeBegin(context, this);
+                renderer.encodeBegin(context, getPeer());
             } else {
                 if (LOGGER.isLoggable(FINE)) {
                     LOGGER.fine("Can't get Renderer for type " + rendererType);
@@ -653,11 +553,6 @@ public abstract class UIComponentBase extends UIComponent {
      */
     @Override
     public void encodeChildren(FacesContext context) throws IOException {
-        if (uiComponentBaseImpl != null) {
-            uiComponentBaseImpl.encodeChildren(context);
-        }
-
-
         if (context == null) {
             throw new NullPointerException();
         }
@@ -669,7 +564,7 @@ public abstract class UIComponentBase extends UIComponent {
         if (getRendererType() != null) {
             Renderer renderer = getRenderer(context);
             if (renderer != null) {
-                renderer.encodeChildren(context, this);
+                renderer.encodeChildren(context, getPeer());
             }
             // We've already logged for this component
         } else if (getChildCount() > 0) {
@@ -685,11 +580,6 @@ public abstract class UIComponentBase extends UIComponent {
      */
     @Override
     public void encodeEnd(FacesContext context) throws IOException {
-        if (uiComponentBaseImpl != null) {
-            uiComponentBaseImpl.encodeEnd(context);
-        }
-
-
         if (context == null) {
             throw new NullPointerException();
         }
@@ -702,7 +592,7 @@ public abstract class UIComponentBase extends UIComponent {
         if (getRendererType() != null) {
             Renderer renderer = getRenderer(context);
             if (renderer != null) {
-                renderer.encodeEnd(context, this);
+                renderer.encodeEnd(context, getPeer());
             }
 
             // We've already logged for this component
@@ -753,13 +643,7 @@ public abstract class UIComponentBase extends UIComponent {
      * @throws NullPointerException if <code>listener</code> is <code>null</code>
      */
     @Override
-    protected void addFacesListener(FacesListener listener) {
-        if (uiComponentBaseImpl != null) {
-            uiComponentBaseImpl.addFacesListener(listener);
-            return;
-        }
-
-
+    public void addFacesListener(FacesListener listener) {
         if (listener == null) {
             throw new NullPointerException();
         }
@@ -776,12 +660,7 @@ public abstract class UIComponentBase extends UIComponent {
      * @throws NullPointerException {@inheritDoc}
      */
     @Override
-    protected FacesListener[] getFacesListeners(Class clazz) {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.getFacesListeners(clazz);
-        }
-
-
+    public FacesListener[] getFacesListeners(Class clazz) {
         if (clazz == null) {
             throw new NullPointerException();
         }
@@ -817,12 +696,7 @@ public abstract class UIComponentBase extends UIComponent {
      * @throws NullPointerException if <code>listener</code> is <code>null</code>
      */
     @Override
-    protected void removeFacesListener(FacesListener listener) {
-        if (uiComponentBaseImpl != null) {
-            uiComponentBaseImpl.removeFacesListener(listener);
-            return;
-        }
-
+    public void removeFacesListener(FacesListener listener) {
         if (listener == null) {
             throw new NullPointerException();
         }
@@ -838,12 +712,6 @@ public abstract class UIComponentBase extends UIComponent {
      */
     @Override
     public void queueEvent(FacesEvent event) {
-        if (uiComponentBaseImpl != null) {
-            uiComponentBaseImpl.queueEvent(event);
-            return;
-        }
-
-
         if (event == null) {
             throw new NullPointerException();
         }
@@ -886,12 +754,6 @@ public abstract class UIComponentBase extends UIComponent {
      */
     @Override
     public void subscribeToEvent(Class<? extends SystemEvent> eventClass, ComponentSystemEventListener componentListener) {
-        if (uiComponentBaseImpl != null) {
-            uiComponentBaseImpl.subscribeToEvent(eventClass, componentListener);
-            return;
-        }
-
-
         if (isAnyNull(eventClass, componentListener)) {
             throw new NullPointerException();
         }
@@ -904,7 +766,7 @@ public abstract class UIComponentBase extends UIComponent {
             listenersByEventClass = new HashMap<>(3, 1.0f);
         }
 
-        SystemEventListener facesLifecycleListener = new ComponentSystemEventListenerAdapter(componentListener, this);
+        SystemEventListener facesLifecycleListener = new ComponentSystemEventListenerAdapter(componentListener, getPeer());
         List<SystemEventListener> listenersForEventClass = listenersByEventClass.get(eventClass);
         if (listenersForEventClass == null) {
             listenersForEventClass = new ArrayList<>(3);
@@ -936,12 +798,6 @@ public abstract class UIComponentBase extends UIComponent {
      */
     @Override
     public void unsubscribeFromEvent(Class<? extends SystemEvent> eventClass, ComponentSystemEventListener componentListener) {
-        if (uiComponentBaseImpl != null) {
-            uiComponentBaseImpl.unsubscribeFromEvent(eventClass, componentListener);
-            return;
-        }
-
-
         if (isAnyNull(eventClass, componentListener)) {
             throw new NullPointerException();
         }
@@ -975,11 +831,6 @@ public abstract class UIComponentBase extends UIComponent {
      */
     @Override
     public List<SystemEventListener> getListenersForEventClass(Class<? extends SystemEvent> eventClass) {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.getListenersForEventClass(eventClass);
-        }
-
-
         if (eventClass == null) {
             throw new NullPointerException();
         }
@@ -998,12 +849,6 @@ public abstract class UIComponentBase extends UIComponent {
      */
     @Override
     public void processDecodes(FacesContext context) {
-        if (uiComponentBaseImpl != null) {
-            uiComponentBaseImpl.processDecodes(context);
-            return;
-        }
-
-
         if (context == null) {
             throw new NullPointerException();
         }
@@ -1040,11 +885,6 @@ public abstract class UIComponentBase extends UIComponent {
      */
     @Override
     public void processValidators(FacesContext context) {
-        if (uiComponentBaseImpl != null) {
-            uiComponentBaseImpl.processValidators(context);
-            return;
-        }
-
         if (context == null) {
             throw new NullPointerException();
         }
@@ -1058,7 +898,7 @@ public abstract class UIComponentBase extends UIComponent {
 
         try {
             Application application = context.getApplication();
-            application.publishEvent(context, PreValidateEvent.class, this);
+            application.publishEvent(context, PreValidateEvent.class, getPeer());
 
             // Process all the facets and children of this component
             Iterator<UIComponent> kids = getFacetsAndChildren();
@@ -1067,7 +907,7 @@ public abstract class UIComponentBase extends UIComponent {
                 kid.processValidators(context);
             }
 
-            application.publishEvent(context, PostValidateEvent.class, this);
+            application.publishEvent(context, PostValidateEvent.class, getPeer());
         } finally {
             popComponentFromEL(context);
         }
@@ -1078,11 +918,6 @@ public abstract class UIComponentBase extends UIComponent {
      */
     @Override
     public void processUpdates(FacesContext context) {
-        if (uiComponentBaseImpl != null) {
-            uiComponentBaseImpl.processUpdates(context);
-            return;
-        }
-
         if (context == null) {
             throw new NullPointerException();
         }
@@ -1111,11 +946,6 @@ public abstract class UIComponentBase extends UIComponent {
      */
     @Override
     public Object processSaveState(FacesContext context) {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.processSaveState(context);
-        }
-
-
         if (context == null) {
             throw new NullPointerException();
         }
@@ -1163,11 +993,6 @@ public abstract class UIComponentBase extends UIComponent {
      */
     @Override
     public void processRestoreState(FacesContext context, Object state) {
-        if (uiComponentBaseImpl != null) {
-            uiComponentBaseImpl.processRestoreState(context, state);
-            return;
-        }
-
         if (context == null) {
             throw new NullPointerException();
         }
@@ -1195,10 +1020,7 @@ public abstract class UIComponentBase extends UIComponent {
     // ------------------------------------------------------- Protected Methods
 
     @Override
-    protected FacesContext getFacesContext() {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.getFacesContext();
-        }
+    public FacesContext getFacesContext() {
 
         // PENDING(edburns): we can't use the cache ivar because we
         // don't always know when to clear it. For example, in the
@@ -1214,10 +1036,7 @@ public abstract class UIComponentBase extends UIComponent {
     }
 
     @Override
-    protected Renderer getRenderer(FacesContext context) {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.getRenderer(context);
-        }
+    public Renderer getRenderer(FacesContext context) {
 
         Renderer renderer = null;
 
@@ -1250,12 +1069,6 @@ public abstract class UIComponentBase extends UIComponent {
      */
     @Override
     public void markInitialState() {
-        if (uiComponentBaseImpl != null) {
-            uiComponentBaseImpl.markInitialState();
-            return;
-        }
-
-
         super.markInitialState();
 
         if (listeners != null) {
@@ -1289,12 +1102,6 @@ public abstract class UIComponentBase extends UIComponent {
      */
     @Override
     public void clearInitialState() {
-        if (uiComponentBaseImpl != null) {
-            uiComponentBaseImpl.clearInitialState();
-            return;
-        }
-
-
         super.clearInitialState();
         if (listeners != null) {
             listeners.clearInitialState();
@@ -1319,11 +1126,6 @@ public abstract class UIComponentBase extends UIComponent {
 
     @Override
     public Object saveState(FacesContext context) {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.saveState(context);
-        }
-
-
         if (context == null) {
             throw new NullPointerException();
         }
@@ -1381,12 +1183,6 @@ public abstract class UIComponentBase extends UIComponent {
 
     @Override
     public void restoreState(FacesContext context, Object state) {
-        if (uiComponentBaseImpl != null) {
-            uiComponentBaseImpl.restoreState(context, state);
-            return;
-        }
-
-
         if (context == null) {
             throw new NullPointerException();
         }
@@ -1433,20 +1229,11 @@ public abstract class UIComponentBase extends UIComponent {
 
     @Override
     public boolean isTransient() {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.isTransient();
-        }
-
         return transientFlag;
     }
 
     @Override
     public void setTransient(boolean transientFlag) {
-        if (uiComponentBaseImpl != null) {
-            uiComponentBaseImpl.setTransient(transientFlag);
-            return;
-        }
-
         this.transientFlag = transientFlag;
     }
 
@@ -1481,7 +1268,64 @@ public abstract class UIComponentBase extends UIComponent {
      */
 
     public static Object saveAttachedState(FacesContext context, Object attachedObject) {
-        return UIComponentBaseImpl.saveAttachedState(context, attachedObject);
+        if (context == null) {
+            throw new NullPointerException();
+        }
+
+        if (attachedObject == null) {
+            return null;
+        }
+
+        Object result;
+        Class<?> mapOrCollectionClass = attachedObject.getClass();
+        boolean newWillSucceed = true;
+        // first, test for newability of the class.
+        try {
+            int modifiers = mapOrCollectionClass.getModifiers();
+            newWillSucceed = Modifier.isPublic(modifiers);
+            if (newWillSucceed) {
+                newWillSucceed = null != mapOrCollectionClass.getConstructor();
+            }
+        } catch (Exception e) {
+            newWillSucceed = false;
+        }
+
+        if (newWillSucceed && attachedObject instanceof Collection) {
+            Collection attachedCollection = (Collection) attachedObject;
+            List<StateHolderSaver> resultList = new ArrayList<>(attachedCollection.size() + 1);
+            resultList.add(new StateHolderSaver(context, mapOrCollectionClass));
+            for (Object item : attachedCollection) {
+                if (item != null) {
+                    if (item instanceof StateHolder && ((StateHolder) item).isTransient()) {
+                        continue;
+                    }
+                    resultList.add(new StateHolderSaver(context, item));
+                }
+            }
+            result = resultList;
+        } else if (newWillSucceed && attachedObject instanceof Map) {
+            Map<Object, Object> attachedMap = (Map<Object, Object>) attachedObject;
+            List<StateHolderSaver> resultList = new ArrayList<>(attachedMap.size() * 2 + 1);
+            resultList.add(new StateHolderSaver(context, mapOrCollectionClass));
+            Object key, value;
+            for (Map.Entry<Object, Object> entry : attachedMap.entrySet()) {
+                key = entry.getKey();
+                if (key instanceof StateHolder && ((StateHolder) key).isTransient()) {
+                    continue;
+                }
+                value = entry.getValue();
+                if (value instanceof StateHolder && ((StateHolder) value).isTransient()) {
+                    continue;
+                }
+                resultList.add(new StateHolderSaver(context, key));
+                resultList.add(new StateHolderSaver(context, value));
+            }
+            result = resultList;
+        } else {
+            result = new StateHolderSaver(context, attachedObject);
+        }
+
+        return result;
     }
 
     /**
@@ -1504,14 +1348,89 @@ public abstract class UIComponentBase extends UIComponent {
      */
 
     public static Object restoreAttachedState(FacesContext context, Object stateObj) throws IllegalStateException {
-        return UIComponentBaseImpl.restoreAttachedState(context, stateObj);
+        if (null == context) {
+            throw new NullPointerException();
+        }
+        if (null == stateObj) {
+            return null;
+        }
+        Object result;
+
+        if (stateObj instanceof List) {
+            List<StateHolderSaver> stateList = (List<StateHolderSaver>) stateObj;
+            StateHolderSaver collectionSaver = stateList.get(0);
+            Class<?> mapOrCollection = (Class<?>) collectionSaver.restore(context);
+            if (Collection.class.isAssignableFrom(mapOrCollection)) {
+                Collection<Object> retCollection = null;
+                try {
+                    retCollection = (Collection<Object>) mapOrCollection.getDeclaredConstructor().newInstance();
+                } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
+                    if (LOGGER.isLoggable(Level.SEVERE)) {
+                        LOGGER.log(Level.SEVERE, e.toString(), e);
+                    }
+                    throw new IllegalStateException("Unknown object type");
+                }
+                for (int i = 1, len = stateList.size(); i < len; i++) {
+                    try {
+                        retCollection.add(stateList.get(i).restore(context));
+                    } catch (ClassCastException cce) {
+                        if (LOGGER.isLoggable(Level.SEVERE)) {
+                            LOGGER.log(Level.SEVERE, cce.toString(), cce);
+                        }
+                        throw new IllegalStateException("Unknown object type");
+                    }
+                }
+                result = retCollection;
+            } else {
+                // If we were doing assertions: assert(mapOrList.isAssignableFrom(Map.class));
+                Map<Object, Object> retMap = null;
+                try {
+                    retMap = (Map<Object, Object>) mapOrCollection.getDeclaredConstructor().newInstance();
+                } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
+                    if (LOGGER.isLoggable(Level.SEVERE)) {
+                        LOGGER.log(Level.SEVERE, e.toString(), e);
+                    }
+                    throw new IllegalStateException("Unknown object type");
+                }
+                for (int i = 1, len = stateList.size(); i < len; i += 2) {
+                    try {
+                        retMap.put(stateList.get(i).restore(context), stateList.get(i + 1).restore(context));
+                    } catch (ClassCastException cce) {
+                        if (LOGGER.isLoggable(Level.SEVERE)) {
+                            LOGGER.log(Level.SEVERE, cce.toString(), cce);
+                        }
+                        throw new IllegalStateException("Unknown object type");
+                    }
+                }
+                result = retMap;
+
+            }
+        } else if (stateObj instanceof StateHolderSaver) {
+            StateHolderSaver saver = (StateHolderSaver) stateObj;
+            result = saver.restore(context);
+        } else {
+            throw new IllegalStateException("Unknown object type");
+        }
+        return result;
     }
 
-    private Object saveSystemEventListeners(FacesContext ctx) {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.saveSystemEventListeners(ctx);
-        }
+    private static Map<String, ValueExpression> restoreBindingsState(FacesContext context, Object state) {
 
+        if (state == null) {
+            return null;
+        }
+        Object values[] = (Object[]) state;
+        String names[] = (String[]) values[0];
+        Object states[] = (Object[]) values[1];
+        Map<String, ValueExpression> bindings = new HashMap<>(names.length);
+        for (int i = 0; i < names.length; i++) {
+            bindings.put(names[i], (ValueExpression) restoreAttachedState(context, states[i]));
+        }
+        return bindings;
+
+    }
+
+    public Object saveSystemEventListeners(FacesContext ctx) {
 
         if (listenersByEventClass == null) {
             return null;
@@ -1536,11 +1455,7 @@ public abstract class UIComponentBase extends UIComponent {
 
     }
 
-    private Map<Class<? extends SystemEvent>, List<SystemEventListener>> restoreSystemEventListeners(FacesContext ctx, Object state) {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.restoreSystemEventListeners(ctx, state);
-        }
-
+    public Map<Class<? extends SystemEvent>, List<SystemEventListener>> restoreSystemEventListeners(FacesContext ctx, Object state) {
 
         if (state == null) {
             return null;
@@ -1557,24 +1472,22 @@ public abstract class UIComponentBase extends UIComponent {
     }
 
     public Map<String, PropertyDescriptor> getDescriptorMap() {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.getDescriptorMap();
-        }
-
-
         return propertyDescriptorMap;
     }
 
     private void doPostAddProcessing(FacesContext context, UIComponent added) {
+
         if (parent.isInView()) {
             publishAfterViewEvents(context, context.getApplication(), added);
         }
+
     }
 
     private void doPreRemoveProcessing(FacesContext context, UIComponent toRemove) {
         if (parent.isInView()) {
             disconnectFromView(context, context.getApplication(), toRemove);
         }
+
     }
 
     // ------------------------------------------------------------- BehaviorHolder stub methods.
@@ -1602,12 +1515,6 @@ public abstract class UIComponentBase extends UIComponent {
      * @since 2.0
      */
     public void addClientBehavior(String eventName, ClientBehavior behavior) {
-        if (uiComponentBaseImpl != null) {
-            uiComponentBaseImpl.addClientBehavior(eventName, behavior);
-            return;
-        }
-
-
         assertClientBehaviorHolder();
         // First, make sure that the event is supported. We don't want
         // to bother attaching behaviors for unsupported events.
@@ -1676,11 +1583,6 @@ public abstract class UIComponentBase extends UIComponent {
      * @since 2.0
      */
     public Collection<String> getEventNames() {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.getEventNames();
-        }
-
-
         assertClientBehaviorHolder();
         // Note: we intentionally return null here even though this
         // is not a valid value. The result is that addClientBehavior()
@@ -1705,11 +1607,6 @@ public abstract class UIComponentBase extends UIComponent {
      * @since 2.0
      */
     public Map<String, List<ClientBehavior>> getClientBehaviors() {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.getClientBehaviors();
-        }
-
-
         if (null == behaviors) {
             return Collections.emptyMap();
         }
@@ -1732,12 +1629,7 @@ public abstract class UIComponentBase extends UIComponent {
      * @return the default event name.
      */
     public String getDefaultEventName() {
-        if (uiComponentBaseImpl != null) {
-            return uiComponentBaseImpl.getDefaultEventName();
-        }
-
         assertClientBehaviorHolder();
-
         // Our default implementation just returns null - no default
         // event name;
         return null;
@@ -1901,8 +1793,8 @@ public abstract class UIComponentBase extends UIComponent {
     }
 
     private static void disconnectFromView(FacesContext context, Application application, UIComponent component) {
-
         application.publishEvent(context, PreRemoveFromViewEvent.class, component);
+
         component.setInView(false);
         component.compositeParent = null;
         if (component.getChildCount() > 0) {
@@ -1972,7 +1864,6 @@ public abstract class UIComponentBase extends UIComponent {
         // -------------------------------------------------------- Constructors
 
         private AttributesMap(UIComponent component) {
-
             this.component = component;
             pdMap = ((UIComponentBase) component).getDescriptorMap();
         }
@@ -1982,18 +1873,17 @@ public abstract class UIComponentBase extends UIComponent {
             if (ATTRIBUTES_THAT_ARE_SET_KEY.equals(keyObj)) {
                 return true;
             }
+
             String key = (String) keyObj;
-            PropertyDescriptor pd = getPropertyDescriptor(key);
-            if (pd == null) {
+            PropertyDescriptor propertyDescriptor = getPropertyDescriptor(key);
+            if (propertyDescriptor == null) {
                 Map<String, Object> attributes = (Map<String, Object>) component.getStateHelper().get(PropertyKeys.attributes);
                 if (attributes != null) {
                     return attributes.containsKey(key);
-                } else {
-                    return false;
                 }
-            } else {
-                return false;
             }
+
+            return false;
         }
 
         @Override
@@ -2003,9 +1893,11 @@ public abstract class UIComponentBase extends UIComponent {
             if (key == null) {
                 throw new NullPointerException();
             }
+
             if (ATTRIBUTES_THAT_ARE_SET_KEY.equals(key)) {
                 result = component.getStateHelper().get(UIComponent.PropertyKeysPrivate.attributesThatAreSet);
             }
+
             Map<String, Object> attributes = (Map<String, Object>) component.getStateHelper().get(PropertyKeys.attributes);
             if (null == result) {
                 PropertyDescriptor pd = getPropertyDescriptor(key);
@@ -2039,11 +1931,12 @@ public abstract class UIComponentBase extends UIComponent {
                     }
                 }
             }
+
             if (null == result) {
                 ValueExpression ve = component.getValueExpression(key);
                 if (ve != null) {
                     try {
-                        result = ve.getValue(component.getFacesContext().getELContext());
+                        result = ve.getValue(FacesContext.getCurrentInstance().getELContext());
                     } catch (ELException e) {
                         throw new FacesException(e);
                     }
@@ -2076,13 +1969,14 @@ public abstract class UIComponentBase extends UIComponent {
                     if (readMethod != null) {
                         result = readMethod.invoke(component, EMPTY_OBJECT_ARRAY);
                     }
+
                     Method writeMethod = pd.getWriteMethod();
                     if (writeMethod != null) {
                         writeMethod.invoke(component, value);
                     } else {
-                        // TODO: i18n
                         throw new IllegalArgumentException("Setter not found for property " + keyValue);
                     }
+
                     return result;
                 } catch (IllegalAccessException e) {
                     throw new FacesException(e);
@@ -2297,35 +2191,37 @@ public abstract class UIComponentBase extends UIComponent {
         public ChildrenList(UIComponent component) {
             super(6);
             this.component = component;
-            this.context = component.getFacesContext();
+            this.context = FacesContext.getCurrentInstance();
         }
 
         @Override
         public void add(int index, UIComponent element) {
             if (element == null) {
                 throw new NullPointerException();
-            } else if (index < 0 || index > size()) {
-                throw new IndexOutOfBoundsException();
-            } else {
-                addToDescendantMarkIdCache(component, element);
-                eraseParent(element);
-                super.add(index, element);
-                element.setParent(component);
-
             }
+
+            if (index < 0 || index > size()) {
+                throw new IndexOutOfBoundsException();
+            }
+
+            addToDescendantMarkIdCache(component, element);
+            eraseParent(element);
+            super.add(index, element);
+            element.setParent(component);
         }
 
         @Override
         public boolean add(UIComponent element) {
             if (element == null) {
                 throw new NullPointerException();
-            } else {
-                addToDescendantMarkIdCache(component, element);
-                eraseParent(element);
-                boolean result = super.add(element);
-                element.setParent(component);
-                return result;
             }
+
+            addToDescendantMarkIdCache(component, element);
+            eraseParent(element);
+            boolean result = super.add(element);
+            element.setParent(component);
+
+            return result;
         }
 
         @Override
@@ -2625,7 +2521,7 @@ public abstract class UIComponentBase extends UIComponent {
         public FacetsMap(UIComponent component) {
             super(3, 1.0f);
             this.component = component;
-            context = component.getFacesContext();
+            context = FacesContext.getCurrentInstance();
         }
 
         @Override
@@ -3328,7 +3224,7 @@ public abstract class UIComponentBase extends UIComponent {
         }
     }
 
-    private UIComponent findBaseComponent(String expression, final char sepChar) {
+    public UIComponent findBaseComponent(String expression, final char sepChar) {
         // Identify the base component from which we will perform our search
         UIComponent base = this;
 
@@ -3355,7 +3251,7 @@ public abstract class UIComponentBase extends UIComponent {
         return base;
     }
 
-    private UIComponent evaluateSearchExpression(UIComponent base, String expression, final String SEPARATOR_STRING) {
+    public UIComponent evaluateSearchExpression(UIComponent base, String expression, final String SEPARATOR_STRING) {
         UIComponent result = null;
 
         String[] segments = expression.split(SEPARATOR_STRING);
@@ -3393,8 +3289,41 @@ public abstract class UIComponentBase extends UIComponent {
      * @param base Base {@link UIComponent} from which to search
      * @param id Component identifier to be matched
      */
-    private static UIComponent findComponent(UIComponent base, String id, boolean checkId) {
-        return UIComponentBaseImpl.findComponent(base, id, checkId);
+    public static UIComponent findComponent(UIComponent base, String id, boolean checkId) {
+        if (checkId && id.equals(base.getId())) {
+            if (base instanceof PeerHolder) {
+                return ((PeerHolder) base).getPeer();
+            }
+
+            return base;
+        }
+
+        // Search through our facets and children
+        UIComponent component = null;
+        for (Iterator<UIComponent> i = base.getFacetsAndChildren(); i.hasNext();) {
+            UIComponent kid = i.next();
+            if (!(kid instanceof NamingContainer)) {
+                if (checkId && id.equals(kid.getId())) {
+                    component = kid;
+                    break;
+                }
+
+                component = findComponent(kid, id, true);
+
+                if (component != null) {
+                    break;
+                }
+            } else if (id.equals(kid.getId())) {
+                component = kid;
+                break;
+            }
+        }
+
+        if (component instanceof PeerHolder) {
+            return ((PeerHolder) component).getPeer();
+        }
+
+        return component;
     }
 
     private List<Object> collectChildState(FacesContext context, List<Object> stateList) {

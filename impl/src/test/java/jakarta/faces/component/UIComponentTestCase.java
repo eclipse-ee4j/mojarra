@@ -159,46 +159,55 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         Listener postlistener = new Listener();
         List<String> ldata = new ArrayList<>();
         ldata.add("one");
+
         UIViewRoot root = new UIViewRoot();
         root.setId("root");
         root.subscribeToEvent(PreValidateEvent.class, prelistener);
         root.subscribeToEvent(PostValidateEvent.class, postlistener);
+
         UIOutput out = new UIOutput();
         out.setId("out");
         out.subscribeToEvent(PreValidateEvent.class, prelistener);
         out.subscribeToEvent(PostValidateEvent.class, postlistener);
         root.getChildren().add(out);
-        UIForm f = new UIForm();
-        f.setSubmitted(true);
-        f.setId("form");
-        f.subscribeToEvent(PreValidateEvent.class, prelistener);
-        f.subscribeToEvent(PostValidateEvent.class, postlistener);
-        root.getChildren().add(f);
+
+        UIForm form = new UIForm();
+        form.setSubmitted(true);
+        form.setId("form");
+        form.subscribeToEvent(PreValidateEvent.class, prelistener);
+        form.subscribeToEvent(PostValidateEvent.class, postlistener);
+        root.getChildren().add(form);
+
         UIData data = new UIData();
         data.setId("data");
         data.subscribeToEvent(PreValidateEvent.class, prelistener);
         data.subscribeToEvent(PostValidateEvent.class, postlistener);
         data.setValue(ldata);
-        UIColumn c = new UIColumn();
-        c.setId("column");
-        c.subscribeToEvent(PreValidateEvent.class, prelistener);
-        c.subscribeToEvent(PostValidateEvent.class, postlistener);
+
+        UIColumn column = new UIColumn();
+        column.setId("column");
+        column.subscribeToEvent(PreValidateEvent.class, prelistener);
+        column.subscribeToEvent(PostValidateEvent.class, postlistener);
+
         UIInput in = new UIInput();
         in.setId("in");
         in.subscribeToEvent(PreValidateEvent.class, prelistener);
         in.subscribeToEvent(PostValidateEvent.class, postlistener);
         in.addValidator(new ValidationSignal());
-        c.getChildren().add(in);
-        data.getChildren().add(c);
-        f.getChildren().add(data);
+
+        column.getChildren().add(in);
+        data.getChildren().add(column);
+        form.getChildren().add(data);
         data.setRowIndex(0);
-        UIComponent col = data.getChildren().get(0);
-        ((UIInput) col.getChildren().get(0)).setSubmittedValue("hello");
+
+        UIComponent columnTest = data.getChildren().get(0);
+        ((UIInput) columnTest.getChildren().get(0)).setSubmittedValue("hello");
         data.setRowIndex(-1);
+
         root.processValidators(facesContext);
+
         assertEquals("root/out/form/data/in/", "root/out/form/data/in/", prelistener.getResults());
         assertEquals("out/*/in/data/form/root/", "out/*/in/data/form/root/", postlistener.getResults());
-
     }
 
     // Test behavior of Map returned by getAttributes()
@@ -1857,9 +1866,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
 
         @Override
         public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
-
             component.getAttributes().put("vCalled", Boolean.TRUE);
-
         }
     }
 

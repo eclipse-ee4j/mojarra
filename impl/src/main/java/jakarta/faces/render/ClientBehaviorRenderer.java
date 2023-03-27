@@ -37,7 +37,6 @@ import jakarta.faces.context.FacesContext;
  *
  * @since 2.0
  */
-
 public abstract class ClientBehaviorRenderer {
 
     // ------------------------------------------------------ Rendering Methods
@@ -67,7 +66,6 @@ public abstract class ClientBehaviorRenderer {
      *
      */
     public String getScript(ClientBehaviorContext behaviorContext, ClientBehavior behavior) {
-
         return null;
     }
 
@@ -92,7 +90,6 @@ public abstract class ClientBehaviorRenderer {
      * @since 2.0
      */
     public void decode(FacesContext context, UIComponent component, ClientBehavior behavior) {
-
         if (null == context || null == component || behavior == null) {
             throw new NullPointerException();
         }

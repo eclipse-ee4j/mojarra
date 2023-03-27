@@ -79,16 +79,23 @@ public class UIViewRootTest {
         expect(facesContext.getExternalContext()).andReturn(externalContext).anyTimes();
         expect(externalContext.getApplicationMap()).andReturn(null).anyTimes();
         replay(facesContext, externalContext);
+
         UIViewRoot viewRoot = new UIViewRoot();
         verify(facesContext, externalContext);
 
         reset(facesContext, externalContext);
+
         expect(facesContext.getApplication()).andReturn(application).anyTimes();
         expect(application.getProjectStage()).andReturn(ProjectStage.UnitTest);
+
         application.publishEvent(facesContext, PostConstructViewMapEvent.class, UIViewRoot.class, viewRoot);
+
         expect(facesContext.getViewRoot()).andReturn(viewRoot);
+
         application.publishEvent(facesContext, PreDestroyViewMapEvent.class, UIViewRoot.class, viewRoot);
+
         expect(facesContext.getViewRoot()).andReturn(viewRoot);
+
         application.publishEvent(facesContext, PreDestroyViewMapEvent.class, UIViewRoot.class, viewRoot);
 
         replay(facesContext, application, externalContext, httpSession);

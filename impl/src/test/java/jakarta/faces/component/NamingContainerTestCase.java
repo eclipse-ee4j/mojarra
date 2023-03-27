@@ -193,24 +193,34 @@ public class NamingContainerTestCase extends JUnitFacesTestCaseBase {
         // "d" has children "e" and "f"
         // "c" has children "h" and "i"
         // Components "b" and "d" implement NamingContainer
+
         UIViewRoot a = root;
         a.setId("a");
+
         UIForm b = new UIForm();
         b.setId("b");
+
         UIPanel c = new UIPanel();
         c.setId("c");
+
         UINamingContainer d = new UINamingContainer();
         d.setId("d");
+
         UIPanel e = new UIPanel();
         e.setId("e");
+
         UIPanel f = new UIPanel();
         f.setId("f");
+
         UIPanel g = new UIPanel();
         g.setId("g");
+
         UIPanel h = new UIPanel();
         h.setId("h");
+
         UIPanel i = new UIPanel();
         i.setId("i");
+
         a.getChildren().add(b);
         a.getChildren().add(c);
         b.getChildren().add(d);
