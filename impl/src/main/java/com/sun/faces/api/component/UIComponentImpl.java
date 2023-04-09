@@ -44,7 +44,6 @@ import java.util.Objects;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jakarta.el.ELContext;
@@ -326,7 +325,6 @@ public abstract class UIComponentImpl extends UIComponent implements PeerHolder 
      */
     @Override
     public ValueExpression getValueExpression(String name) {
-
         if (name == null) {
             throw new NullPointerException();
         }
@@ -1561,30 +1559,30 @@ public abstract class UIComponentImpl extends UIComponent implements PeerHolder 
 
         ArrayDeque<UIComponent> componentELStack = _getComponentELStack(_CURRENT_COMPONENT_STACK_KEY, contextAttributes);
 
-        // Detect cases where the stack has become unbalanced. Due to how UIComponentBase
-        // implemented pushing and pooping of components from the ELContext, components
-        // that
-        // overrode just one of encodeBegin or encodeEnd, or only called super in one case
+        // Detect cases where the stack has become unbalanced.
+
+        // Due to how UIComponentBase implemented pushing and popping of components from the ELContext,
+        // components that overrode just one of encodeBegin or encodeEnd, or only called super in one case
         // will become unbalanced. Detect and correct for those cases here.
-        //
-        // detect case where push was never called. In that case, pop should be a no-op
-        if (_isPushedAsCurrentRefCount < 1) {
-            if (componentELStack.peek() != this) {
+
+
+        // 1. Detect case where push was never called. In that case, pop should be a no-op
+        if (getPeer()._isPushedAsCurrentRefCount < 1) {
+            if (componentELStack.peek() != getPeer()) {
                 return;
             }
-            LOGGER.log(Level.SEVERE, "the component(" + this + ") is the head component of the stack, but it's _isPushedAsCurrentRefCount < 1");
+            LOGGER.log(SEVERE, "the component(" + getPeer() + ") is the head component of the stack, but it's _isPushedAsCurrentRefCount < 1");
         }
 
-        // check for the other unbalanced case, a component was pushed but never popped.
-        // Keep
-        // popping those components until we get to our component
-        for (UIComponent topComponent = componentELStack.peek(); topComponent != this; topComponent = componentELStack.peek()) {
+        // 2. Detect case where a component was pushed but never popped.
+        // Keep popping those components until we get to our component
+        for (UIComponent topComponent = componentELStack.peek(); topComponent != getPeer(); topComponent = componentELStack.peek()) {
             topComponent.popComponentFromEL(context);
         }
 
-        // pop ourselves off of the stack
+        // Pop ourselves off of the stack
         componentELStack.pop();
-        _isPushedAsCurrentRefCount--;
+        getPeer()._isPushedAsCurrentRefCount--;
 
         // If we're a composite component, we also have to pop ourselves off of the
         // composite stack
@@ -1611,14 +1609,11 @@ public abstract class UIComponentImpl extends UIComponent implements PeerHolder 
             throw new NullPointerException();
         }
 
-        boolean result = false;
-        if (null != component.isCompositeComponent) {
-            result = component.isCompositeComponent.booleanValue();
-        } else {
-            result = component.isCompositeComponent = component.getAttributes().containsKey(Resource.COMPONENT_RESOURCE_KEY);
+        if (component.isCompositeComponent == null) {
+            component.isCompositeComponent = component.getAttributes().containsKey(COMPONENT_RESOURCE_KEY);
         }
 
-        return result;
+        return component.isCompositeComponent;
     }
 
     /**

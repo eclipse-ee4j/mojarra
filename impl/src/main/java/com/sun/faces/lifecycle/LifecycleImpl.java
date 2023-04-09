@@ -16,6 +16,9 @@
 
 package com.sun.faces.lifecycle;
 
+import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
+import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
+
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
@@ -107,23 +110,31 @@ public class LifecycleImpl extends Lifecycle {
             return;
         }
         if (context == null) {
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
+            throw new NullPointerException(getExceptionMessageString(NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
         }
 
-        ExternalContext extContext = context.getExternalContext();
-        ClientWindow myWindow = extContext.getClientWindow();
-        if (null == myWindow) {
-            myWindow = createClientWindow(context);
-            if (null != myWindow) {
-                myWindow.decode(context);
-                extContext.setClientWindow(myWindow);
-            }
+        ExternalContext externalContext = context.getExternalContext();
+        ClientWindow clientWindow = getClientWindow(context, externalContext);
+
+        if (clientWindow != null) {
+            clientWindow.decode(context);
+            externalContext.setClientWindow(clientWindow);
         }
 
         // If you need to do the "send down the HTML" trick, be sure to
         // mark responseComplete true after doing so. That way
         // the remaining lifecycle methods will not execute.
 
+    }
+
+    private ClientWindow getClientWindow(FacesContext context, ExternalContext extContext) {
+        ClientWindow clientWindow = extContext.getClientWindow();
+
+        if (clientWindow == null) {
+            clientWindow = createClientWindow(context);
+        }
+
+        return clientWindow;
     }
 
     private ClientWindow createClientWindow(FacesContext context) {
