@@ -86,12 +86,11 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
                         vh = (ValueHolder) newComp;
                     } else {
                         try {
-                            newComp = ValueHolderTestCaseBase.this.component.getClass().newInstance();
+                            newComp = ValueHolderTestCaseBase.this.component.getClass().getDeclaredConstructor()
+                                    .newInstance();
                             vh = (ValueHolder) newComp;
 
-                        } catch (IllegalAccessException ex) {
-                            fail("Can't instantiate class of " + ValueHolderTestCaseBase.this.component.getClass().getName());
-                        } catch (InstantiationException ex) {
+                        } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException ex) {
                             fail("Can't instantiate class of " + ValueHolderTestCaseBase.this.component.getClass().getName());
                         }
                     }
@@ -178,13 +177,6 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
         // Validate properties
         assertNull("no value", vh.getValue());
         assertNull("no converter", vh.getConverter());
-    }
-
-    // Test setting properties to invalid values
-    @Override
-    public void testPropertiesInvalid() throws Exception {
-        super.testPropertiesInvalid();
-        ValueHolder vh = (ValueHolder) component;
     }
 
     // Test setting properties to valid values

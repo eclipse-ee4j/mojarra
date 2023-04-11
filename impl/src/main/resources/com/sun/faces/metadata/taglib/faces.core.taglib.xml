@@ -868,7 +868,7 @@ for <code>@NamedEvent</code>.</p>
         <description><![CDATA[
 
             <p class="changed_added_2_0">Declare the metadata
-            facet for this view. This must be a child of the
+            facet for this view. This must be a <span class="changed_added_4_1">direct</span> child of the
             <code>&lt;f:view&gt;</code>. This tag
             must reside within the top level XHTML file for the given
             viewId<span class="changed_modified_2_0_rev_a">, or in a

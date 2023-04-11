@@ -114,15 +114,21 @@ public class WebappResourceHelper extends ResourceHelper {
         return BASE_CONTRACTS_PATH;
     }
 
-    /**
+    /**	
      * @see ResourceHelper#getNonCompressedInputStream(com.sun.faces.application.resource.ResourceInfo,
      * jakarta.faces.context.FacesContext)
      */
     @Override
     protected InputStream getNonCompressedInputStream(ResourceInfo resource, FacesContext ctx) throws IOException {
-
-        return ctx.getExternalContext().getResourceAsStream(resource.getPath());
-
+       	List<String> localizedPaths = getLocalizedPaths(resource.getPath(), ctx);
+    	InputStream in = null;
+    	for (String path_: localizedPaths) {
+    		in = ctx.getExternalContext().getResourceAsStream(path_);
+    		if (in != null) {
+    			break;
+    		}
+    	}
+    	return in;
     }
 
     /**
@@ -289,5 +295,4 @@ public class WebappResourceHelper extends ResourceHelper {
 
         return basePath;
     }
-
 }

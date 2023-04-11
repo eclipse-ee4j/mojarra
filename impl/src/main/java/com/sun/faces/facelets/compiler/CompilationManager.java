@@ -295,12 +295,10 @@ final class CompilationManager {
                 finishUnit();
             } else {
                 t.endTag();
-                if (t.isClosed()) {
-                    this.finishUnit();
-                }
                 return;
             }
-            unit = this.currentUnit();
+
+            unit = currentUnit();
         }
 
         if (unit instanceof TagUnit) {
@@ -328,9 +326,14 @@ final class CompilationManager {
         }
 
         boolean alreadyPresent = namespaceManager.getNamespace(prefix) != null;
+        
+        if (alreadyPresent) {
+            return;
+        }
+
         namespaceManager.pushNamespace(prefix, uri);
         NamespaceUnit unit;
-        if (currentUnit() instanceof NamespaceUnit && !alreadyPresent) {
+        if (currentUnit() instanceof NamespaceUnit) {
             unit = (NamespaceUnit) currentUnit();
         } else {
             unit = new NamespaceUnit(tagLibrary);

@@ -39,7 +39,7 @@ public class CdiConverter implements Converter, StateHolder {
     /**
      * Stores the for-class (if any).
      */
-    private Class forClass;
+    private Class<?> forClass;
 
     /**
      * Constructor.
@@ -107,7 +107,7 @@ public class CdiConverter implements Converter, StateHolder {
     public void restoreState(FacesContext facesContext, Object state) {
         Object[] stateArray = (Object[]) state;
         converterId = (String) stateArray[0];
-        forClass = (Class) stateArray[1];
+        forClass = (Class<?>) stateArray[1];
     }
 
     /**

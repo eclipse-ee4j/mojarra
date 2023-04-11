@@ -80,8 +80,8 @@ public @interface FacesValidator {
 
     /**
      * <p class="changed_added_2_3">
-     * The value of this annotation attribute is taken to be an indicator that flags whether or not the given converter is a
-     * CDI managed converter.
+     * The value of this annotation attribute is taken to be an indicator that flags whether or not the given validator is a
+     * CDI managed validator.
      * </p>
      *
      * @return true if CDI managed, false otherwise.

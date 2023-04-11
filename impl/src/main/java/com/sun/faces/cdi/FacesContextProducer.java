@@ -36,7 +36,7 @@ public class FacesContextProducer extends CdiProducer<FacesContext> {
     private static final long serialVersionUID = 1L;
 
     public FacesContextProducer() {
-        super.name("facesContext").scope(RequestScoped.class).types(FacesContext.class).beanClass(FacesContext.class)
+        super.name("facesContext").scope(RequestScoped.class).types(FacesContext.class)
                 .create(e -> FacesContext.getCurrentInstance());
     }
 

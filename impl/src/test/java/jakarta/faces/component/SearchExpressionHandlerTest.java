@@ -153,17 +153,6 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         }
     }
 
-    private String resolveClientIds(UIComponent source, String expressions, SearchExpressionHint... hints) {
-
-        SearchExpressionContext searchContext = SearchExpressionContext.createSearchExpressionContext(facesContext, source, new HashSet<>(Arrays.asList(hints)),
-                null);
-        SearchExpressionHandler handler = FacesContext.getCurrentInstance().getApplication().getSearchExpressionHandler();
-
-        List<String> clientIds = handler.resolveClientIds(searchContext, expressions);
-
-        return String.join(" ", clientIds);
-    }
-
     public void test_ResolveComponent_Parent() {
 
         UIComponent root = new UIPanel();

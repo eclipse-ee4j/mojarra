@@ -342,7 +342,7 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
     public void testPhaseListenerExceptions() throws Exception {
         PhaseId[] ids = { PhaseId.APPLY_REQUEST_VALUES, PhaseId.PROCESS_VALIDATIONS, PhaseId.UPDATE_MODEL_VALUES, PhaseId.INVOKE_APPLICATION,
                 PhaseId.RENDER_RESPONSE };
-        Class[] args = new Class[] { PhaseEvent.class };
+        Class<?>[] args = new Class<?>[] { PhaseEvent.class };
         MethodExpression beforeExpression = facesContext.getApplication().getExpressionFactory().createMethodExpression(facesContext.getELContext(),
                 "#{bean.beforePhase}", null, args);
         MethodExpression afterExpression = facesContext.getApplication().getExpressionFactory().createMethodExpression(facesContext.getELContext(),
@@ -418,7 +418,7 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
     public void doTestPhaseMethodExpressionWithPhaseId(UIViewRoot root, PhaseId phaseId) throws Exception {
         PhaseListenerBean phaseListenerBean = new PhaseListenerBean(phaseId);
         facesContext.getExternalContext().getRequestMap().put("bean", phaseListenerBean);
-        Class[] args = new Class[] { PhaseEvent.class };
+        Class<?>[] args = new Class<?>[] { PhaseEvent.class };
         MethodExpression beforeExpression = facesContext.getApplication().getExpressionFactory().createMethodExpression(facesContext.getELContext(),
                 "#{bean.beforePhase}", null, args),
                 afterExpression = facesContext.getApplication().getExpressionFactory().createMethodExpression(facesContext.getELContext(), "#{bean.afterPhase}",
@@ -498,7 +498,7 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         PhaseListenerBean phaseListener = new PhaseListenerBean(phaseId);
         PhaseListenerBean phaseListenerBean = new PhaseListenerBean(phaseId);
         facesContext.getExternalContext().getRequestMap().put("bean", phaseListenerBean);
-        Class[] args = new Class[] { PhaseEvent.class };
+        Class<?>[] args = new Class<?>[] { PhaseEvent.class };
         MethodExpression beforeExpression = facesContext.getApplication().getExpressionFactory().createMethodExpression(facesContext.getELContext(),
                 "#{bean.beforePhase}", null, args),
                 afterExpression = facesContext.getApplication().getExpressionFactory().createMethodExpression(facesContext.getELContext(), "#{bean.afterPhase}",
@@ -515,14 +515,15 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         assertTrue(phaseListener.isAfterPhaseCalled());
     }
 
-    private void checkEventQueuesSizes(List<List> events, int applyEventsSize, int valEventsSize, int updateEventsSize, int appEventsSize) {
-        List applyEvents = events.get(PhaseId.APPLY_REQUEST_VALUES.getOrdinal());
+    private void checkEventQueuesSizes(List<List> events, int applyEventsSize, int valEventsSize, int updateEventsSize,
+            int appEventsSize) {
+        List<?> applyEvents = events.get(PhaseId.APPLY_REQUEST_VALUES.getOrdinal());
         assertEquals("Apply-Request-Values Event Count", applyEventsSize, applyEvents.size());
-        List valEvents = events.get(PhaseId.PROCESS_VALIDATIONS.getOrdinal());
+        List<?> valEvents = events.get(PhaseId.PROCESS_VALIDATIONS.getOrdinal());
         assertEquals("Process-Validations Event Count", valEventsSize, valEvents.size());
-        List updateEvents = events.get(PhaseId.UPDATE_MODEL_VALUES.getOrdinal());
+        List<?> updateEvents = events.get(PhaseId.UPDATE_MODEL_VALUES.getOrdinal());
         assertEquals("Update-Model Event Count", updateEventsSize, updateEvents.size());
-        List appEvents = events.get(PhaseId.INVOKE_APPLICATION.getOrdinal());
+        List<?> appEvents = events.get(PhaseId.INVOKE_APPLICATION.getOrdinal());
         assertEquals("Invoke-Application Event Count", appEventsSize, appEvents.size());
     }
 
@@ -551,7 +552,7 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
                 field = fields[i];
                 field.setAccessible(true);
                 try {
-                    events = TypedCollections.dynamicallyCastList((List) field.get(root), List.class);
+                    events = TypedCollections.dynamicallyCastList((List<?>) field.get(root), List.class);
                 } catch (Exception e) {
                     assertTrue(false);
                 }
@@ -584,7 +585,7 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         root.queueEvent(event3);
         root.queueEvent(event4);
         try {
-            events = TypedCollections.dynamicallyCastList((List) field.get(root), List.class);
+            events = TypedCollections.dynamicallyCastList((List<?>) field.get(root), List.class);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -605,7 +606,7 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         root.queueEvent(event3);
         root.queueEvent(event4);
         try {
-            events = TypedCollections.dynamicallyCastList((List) field.get(root), List.class);
+            events = TypedCollections.dynamicallyCastList((List<?>) field.get(root), List.class);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -626,7 +627,7 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         root.queueEvent(event3);
         root.queueEvent(event4);
         try {
-            events = TypedCollections.dynamicallyCastList((List) field.get(root), List.class);
+            events = TypedCollections.dynamicallyCastList((List<?>) field.get(root), List.class);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -641,7 +642,7 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         // finally, get the internal events list one more time
         // to make sure it is null
         try {
-            events = TypedCollections.dynamicallyCastList((List) field.get(root), List.class);
+            events = TypedCollections.dynamicallyCastList((List<?>) field.get(root), List.class);
         } catch (Exception e) {
             assertTrue(false);
         }

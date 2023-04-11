@@ -116,7 +116,7 @@ class MessageFactory {
 
         // see if we have a user-provided bundle
         Application app = getApplication();
-        Class appClass = app.getClass();
+        Class<?> appClass = app.getClass();
         if (null != (bundleName = app.getMessageBundle())) {
             if (null != (bundle = ResourceBundle.getBundle(bundleName, locale, getCurrentLoader(appClass)))) {
                 // see if we have a hit

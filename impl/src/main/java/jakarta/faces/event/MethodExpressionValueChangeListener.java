@@ -38,7 +38,7 @@ public class MethodExpressionValueChangeListener implements ValueChangeListener,
     private MethodExpression methodExpressionOneArg = null;
     private MethodExpression methodExpressionZeroArg = null;
     private boolean isTransient;
-    private final static Class[] VALUECHANGE_LISTENER_ZEROARG_SIG = new Class[] {};
+    private final static Class<?>[] VALUECHANGE_LISTENER_ZEROARG_SIG = new Class<?>[] {};
 
     public MethodExpressionValueChangeListener() {
     }

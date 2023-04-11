@@ -78,7 +78,7 @@ public abstract class FacesContext {
             String declaringClassName = callstack[3].getClassName();
             try {
                 ClassLoader curLoader = curThread.getContextClassLoader();
-                Class declaringClass = curLoader.loadClass(declaringClassName);
+                Class<?> declaringClass = curLoader.loadClass(declaringClassName);
                 if (!FacesContextFactory.class.isAssignableFrom(declaringClass)) {
                     isCreatedFromValidFactory = false;
                 }
@@ -838,7 +838,7 @@ public abstract class FacesContext {
      * The <code>ThreadLocal</code> variable used to record the {@link FacesContext} instance for each processing thread.
      * </p>
      */
-    private static ThreadLocal<FacesContext> instance = new ThreadLocal<FacesContext>() {
+    private static ThreadLocal<FacesContext> instance = new ThreadLocal<>() {
         @Override
         protected FacesContext initialValue() {
             return null;

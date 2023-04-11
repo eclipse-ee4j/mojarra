@@ -39,7 +39,7 @@ public class MethodExpressionActionListener implements ActionListener, StateHold
     private MethodExpression methodExpressionOneArg = null;
     private MethodExpression methodExpressionZeroArg = null;
     private boolean isTransient;
-    private final static Class[] ACTION_LISTENER_ZEROARG_SIG = new Class[] {};
+    private final static Class<?>[] ACTION_LISTENER_ZEROARG_SIG = new Class<?>[] {};
 
     public MethodExpressionActionListener() {
     }

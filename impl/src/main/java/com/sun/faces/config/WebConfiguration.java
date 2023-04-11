@@ -755,7 +755,6 @@ public class WebConfiguration {
         NumberOfFlashesBetweenFlashReapings("com.sun.faces.numberOfFlashesBetweenFlashReapings", "5000"),
         InjectionProviderClass("com.sun.faces.injectionProvider", ""),
         SerializationProviderClass("com.sun.faces.serializationProvider", ""),
-        ResponseBufferSize("com.sun.faces.responseBufferSize", "1024"),
         FaceletsBufferSize(ViewHandler.FACELETS_BUFFER_SIZE_PARAM_NAME, "1024"),
         ClientStateWriteBufferSize("com.sun.faces.clientStateWriteBufferSize", "8192"),
         ResourceBufferSize("com.sun.faces.resourceBufferSize", "2048"),

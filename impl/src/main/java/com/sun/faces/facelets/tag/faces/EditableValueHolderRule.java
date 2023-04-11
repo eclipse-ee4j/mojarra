@@ -76,9 +76,9 @@ public final class EditableValueHolderRule extends MetaRule {
         }
     }
 
-    private final static Class[] VALIDATOR_SIG = new Class[] { FacesContext.class, UIComponent.class, Object.class };
+    private final static Class<?>[] VALIDATOR_SIG = new Class<?>[] { FacesContext.class, UIComponent.class, Object.class };
 
-    private final static Class[] VALUECHANGE_SIG = new Class[] { ValueChangeEvent.class };
+    private final static Class<?>[] VALUECHANGE_SIG = new Class<?>[] { ValueChangeEvent.class };
 
     public final static EditableValueHolderRule Instance = new EditableValueHolderRule();
 

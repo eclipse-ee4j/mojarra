@@ -249,8 +249,8 @@ public final class ReflectionUtils {
      */
     public static <T> T instance(Class<T> clazz) {
         try {
-            return clazz.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+            return clazz.getDeclaredConstructor().newInstance();
+        } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
             throw new IllegalStateException(e);
         }
     }
@@ -347,14 +347,15 @@ public final class ReflectionUtils {
      * @throws InstantiationException if the class cannot be instantiated
      * @throws IllegalAccessException if there is a security violation
      */
-    public static Object newInstance(String className) throws InstantiationException, IllegalAccessException {
+    public static Object newInstance(String className)
+            throws IllegalArgumentException, ReflectiveOperationException, SecurityException {
 
         ClassLoader loader = Util.getCurrentLoader(null);
         if (loader == null) {
             return null;
         }
 
-        return getMetaData(loader, className).lookupClass().newInstance();
+        return getMetaData(loader, className).lookupClass().getDeclaredConstructor().newInstance();
     }
 
     /**

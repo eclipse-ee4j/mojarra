@@ -97,7 +97,7 @@ public class ToolsUtil {
         return Logger.getLogger(loggerName, FACES_LOG_STRINGS);
     }
 
-    public static Class loadClass(String name,
+    public static Class<?> loadClass(String name,
             Object fallbackClass)
             throws ClassNotFoundException {
         ClassLoader loader = ToolsUtil.getCurrentLoader(fallbackClass);

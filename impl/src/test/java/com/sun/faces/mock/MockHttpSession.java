@@ -34,7 +34,7 @@ public class MockHttpSession implements HttpSession {
         setServletContext(servletContext);
     }
 
-    protected HashMap attributes = new HashMap();
+    protected HashMap<String, Object> attributes = new HashMap<>();
     protected ServletContext servletContext = null;
 
     // --------------------------------------------------------- Public Methods
@@ -49,8 +49,8 @@ public class MockHttpSession implements HttpSession {
     }
 
     @Override
-    public Enumeration getAttributeNames() {
-        return (new MockEnumeration(attributes.keySet().iterator()));
+    public Enumeration<String> getAttributeNames() {
+        return (new MockEnumeration<String>(attributes.keySet().iterator()));
     }
 
     @Override

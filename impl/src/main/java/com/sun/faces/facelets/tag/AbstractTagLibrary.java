@@ -311,7 +311,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
         protected final Class type;
 
-        protected final Constructor constructor;
+        protected final Constructor<?> constructor;
 
         public UserComponentHandlerFactory(String componentType, String renderType, Class type) {
             this.componentType = componentType;
@@ -391,7 +391,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
         protected final Class type;
 
-        protected final Constructor constructor;
+        protected final Constructor<?> constructor;
 
         public UserConverterHandlerFactory(String converterId, Class type) {
             this.converterId = converterId;
@@ -423,7 +423,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
         protected final Class type;
 
-        protected final Constructor constructor;
+        protected final Constructor<?> constructor;
 
         public UserValidatorHandlerFactory(String validatorId, Class type) {
             this.validatorId = validatorId;
@@ -455,7 +455,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
         protected final Class type;
 
-        protected final Constructor constructor;
+        protected final Constructor<?> constructor;
 
         public UserBehaviorHandlerFactory(String behaviorId, Class type) {
             this.behaviorId = behaviorId;
@@ -480,16 +480,16 @@ public abstract class AbstractTagLibrary implements TagLibrary {
         }
     }
 
-    private final Map factories;
+    private final Map<String, TagHandlerFactory> factories;
 
     private final String namespace;
 
-    private final Map functions;
+    private final Map<String, Method> functions;
 
     public AbstractTagLibrary(String namespace) {
         this.namespace = namespace;
-        factories = new HashMap();
-        functions = new HashMap();
+        factories = new HashMap<String, TagHandlerFactory>();
+        functions = new HashMap<String, Method>();
     }
 
     /**
@@ -662,7 +662,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
     @Override
     public TagHandler createTagHandler(String ns, String localName, TagConfig tag) throws FacesException {
         if (namespace.equals(ns)) {
-            TagHandlerFactory f = (TagHandlerFactory) factories.get(localName);
+            TagHandlerFactory f = factories.get(localName);
             if (f != null) {
                 return f.createHandler(tag);
             }
@@ -691,7 +691,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
     @Override
     public Method createFunction(String ns, String name) {
         if (namespace.equals(ns)) {
-            return (Method) functions.get(name);
+            return functions.get(name);
         }
         return null;
     }

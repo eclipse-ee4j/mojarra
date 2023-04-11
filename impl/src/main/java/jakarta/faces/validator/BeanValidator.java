@@ -43,6 +43,7 @@ import jakarta.faces.component.PartialStateHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.CompositeComponentExpressionHolder;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.MessageInterpolator;
 import jakarta.validation.Validation;
@@ -303,7 +304,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
 
         ValueReference valueReference = getValueReference(context, component, valueExpression);
 
-        if (valueReference == null) {
+        if (valueReference == null || valueReference.getBase() == null) {
             return;
         }
 
@@ -357,7 +358,17 @@ public class BeanValidator implements Validator, PartialStateHolder {
 
     private static ValueReference getValueReference(FacesContext context, UIComponent component, ValueExpression valueExpression) {
         try {
-            return valueExpression.getValueReference(context.getELContext());
+            ValueReference reference = valueExpression.getValueReference(context.getELContext());
+            if (reference != null) {
+                Object base = reference.getBase();
+                if (base instanceof CompositeComponentExpressionHolder) {
+                    ValueExpression ve = ((CompositeComponentExpressionHolder) base).getExpression(String.valueOf(reference.getProperty()));
+                    if (ve != null) {
+                        reference = getValueReference(context, component, ve);
+                    }
+                }
+            }
+            return reference;
         }
         catch (PropertyNotFoundException e) {
             if (component instanceof UIInput && ((UIInput) component).getSubmittedValue() == null) {
@@ -414,7 +425,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
         }
 
         if (validationGroupsStr == null) {
-            cachedValidationGroups = new Class[] { Default.class };
+            cachedValidationGroups = new Class<?>[] { Default.class };
             return cachedValidationGroups;
         }
 

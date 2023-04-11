@@ -52,17 +52,17 @@ public final class TagAttributesImpl extends TagAttributes {
 
         // grab namespaces
         int i = 0;
-        Set set = new HashSet();
+        Set<String> set = new HashSet<>();
         for (i = 0; i < this.attrs.length; i++) {
             set.add(this.attrs[i].getNamespace());
         }
-        ns = (String[]) set.toArray(new String[set.size()]);
+        ns = set.toArray(new String[set.size()]);
         Arrays.sort(ns);
 
         // assign attrs
-        nsattrs = new ArrayList();
+        nsattrs = new ArrayList<>();
         for (i = 0; i < ns.length; i++) {
-            nsattrs.add(i, new ArrayList());
+            nsattrs.add(i, new ArrayList<>());
         }
         int nsIdx = 0;
         for (i = 0; i < this.attrs.length; i++) {

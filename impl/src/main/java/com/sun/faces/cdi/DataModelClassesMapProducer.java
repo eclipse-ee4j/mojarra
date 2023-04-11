@@ -45,7 +45,7 @@ public class DataModelClassesMapProducer extends CdiProducer<Map<Class<?>, Class
 
     public DataModelClassesMapProducer() {
         super.name("comSunFacesDataModelClassesMap").scope(ApplicationScoped.class).qualifiers(new DataModelClassesAnnotationLiteral())
-                .types(Map.class, Object.class).beanClass(Map.class).create(e -> CDI.current().select(CdiExtension.class).get().getForClassToDataModelClass());
+                .types(Map.class, Object.class).create(e -> CDI.current().select(CdiExtension.class).get().getForClassToDataModelClass());
     }
 
 }

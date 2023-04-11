@@ -102,7 +102,7 @@ class StateHolderSaver implements Serializable {
 
     public Object restore(FacesContext context) throws IllegalStateException {
         Object result = null;
-        Class toRestoreClass;
+        Class<?> toRestoreClass;
 
         // if the Object to save implemented Serializable but not
         // StateHolder

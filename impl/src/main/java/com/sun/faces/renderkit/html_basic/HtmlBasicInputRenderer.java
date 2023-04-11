@@ -64,7 +64,7 @@ public abstract class HtmlBasicInputRenderer extends HtmlBasicRenderer {
         }
 
         if (null == converter && null != valueExpression) {
-            Class converterType;
+            Class<?> converterType;
             try {
                 converterType = valueExpression.getType(context.getELContext());
             } catch (PropertyNotFoundException e) {

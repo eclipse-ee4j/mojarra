@@ -301,9 +301,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
 
         String currentValue = null;
         Object currentObj = getValue(component);
-        if (currentObj != null) {
-            currentValue = getFormattedValue(context, component, currentObj);
-        }
+        currentValue = getFormattedValue(context, component, currentObj);
         return currentValue;
 
     }
@@ -438,7 +436,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
             // if converter attribute set, try to acquire a converter
             // using its class type.
 
-            Class converterType = currentValue.getClass();
+            Class<?> converterType = currentValue.getClass();
             converter = Util.getConverterForClass(converterType, context);
 
             // if there is no default converter available for this identifier,
