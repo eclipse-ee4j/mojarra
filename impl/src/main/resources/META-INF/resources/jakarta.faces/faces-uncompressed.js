@@ -167,15 +167,10 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
         const hasInputFileControl = function(form) { return isNotNull(form.querySelector("input[type='file']")); };
 
         /**
-         * Find instance of passed String via getElementById
+         * Find instance of passed String via getElementById.
          * @ignore
          */
         const $ = function $( elementOrId ) {
-            // const results = [];
-            // for ( const element of arguments ) {
-            //     results.push( (typeof element == 'string') ? document.getElementById(element) : element );
-            // }
-            // return results.length > 1 ? results : results[0];
             return typeof elementOrId == 'string' ? document.getElementById(elementOrId) : elementOrId;
         };
 
@@ -614,8 +609,8 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          */
         const deleteChildren = function deleteChildren(node) {
             if (node)
-                while (node.lastElementChild)
-                    node.lastElementChild.remove();
+                while (node.lastChild)
+                    node.lastChild.remove();
         };
 
         /**
@@ -624,8 +619,6 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * @param  nodeFrom the Node to copy the childNodes from
          * @param  nodeTo the Node to copy the childNodes to
          * @ignore
-         * Note:  This code originally from Sarissa:  http://dev.abiss.gr/sarissa
-         * It has been modified to fit into the overall codebase
          */
         const copyChildNodes = function copyChildNodes(nodeFrom, nodeTo) {
 
@@ -634,18 +627,25 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             }
 
             deleteChildren(nodeTo);
-            const nodes = nodeFrom.childNodes;
+
             // if within the same doc, just move, else copy and delete
             if (nodeFrom.ownerDocument === nodeTo.ownerDocument) {
-                while (nodeFrom.firstChild) {
+                while (nodeFrom.firstChild)
                     nodeTo.appendChild(nodeFrom.firstChild);
-                }
+
             } else {
                 const ownerDoc = nodeTo.nodeType === Node.DOCUMENT_NODE ? nodeTo : nodeTo.ownerDocument;
+                const nodeFromChildNodes = nodeFrom.childNodes;
 
-                for ( const nodeFromChild of nodes ) {
-                    nodeTo.appendChild(ownerDoc.importNode(nodeFromChild, true));
-                }
+                //if ( typeof(ownerDoc.importNode) !== UDEF ) {
+                    for ( const nodeFromChild of nodeFromChildNodes )
+                        nodeTo.appendChild(ownerDoc.importNode(nodeFromChild, true));
+
+                //} else {
+                //    for ( const nodeFromChild of nodeFromChildNodes )
+                //        nodeTo.appendChild(nodeFromChild.cloneNode(true));
+                //}
+
             }
         };
 
@@ -703,34 +703,24 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             const propertyNames = isInputElement ? coreAndInputElementProperties : coreElementProperties;
             const isXML = !source.ownerDocument.contentType || source.ownerDocument.contentType === 'text/xml';
 
-            for (const propertyName of propertyNames ) {
+            for ( const propertyName of propertyNames ) {
                 const attributeName = propertyToAttribute(propertyName);
                 const sourceValue = isXML ? source.getAttribute(attributeName) : source[propertyName];
-                const targetValue = target[propertyName];
-
-                if (targetValue !== sourceValue) {
-                    target[propertyName] = sourceValue;
-                }
+                target[propertyName] = sourceValue;
             }
 
             const booleanPropertyNames = isInputElement ? inputElementBooleanProperties : [];
             for ( const booleanPropertyName of booleanPropertyNames ) {
                 const newBooleanValue = source[booleanPropertyName];
-                //const oldBooleanValue = target[booleanPropertyName];
-                // TODO: why check equality? ... just assign the value...?
-                //if (oldBooleanValue !== newBooleanValue) {
-                    target[booleanPropertyName] = newBooleanValue;
-                //}
+                target[booleanPropertyName] = newBooleanValue;
             }
 
-            //'style' attribute special case | TODO: why check equality? ... just do setAttribute....
+            //'style' attribute special case
             if ( source.hasAttribute('style') ) {
                 const sourceStyle = source.getAttribute('style');
-                //const targetStyle = target.getAttribute('style');
-                //if (sourceStyle !== targetStyle) {
-                    target.setAttribute('style', sourceStyle);
-                //}
-            } else if ( target.hasAttribute('style') ) {
+                target.setAttribute('style', sourceStyle);
+            }
+            else if ( target.hasAttribute('style') ) {
                 target.removeAttribute('style');
             }
 
@@ -773,22 +763,18 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * @ignore
          */
         const elementReplace = function elementReplace(newElement, origElement) {
-            copyChildNodes(newElement, origElement);
-            // sadly, we have to reparse all over again
-            // to reregister the event handlers and styles
-            // PENDING do some performance tests on large pages
 
-            // fixme: what is this??
-            //origElement.innerHTML = origElement.innerHTML;
+            copyChildNodes(newElement, origElement);            // children
 
             try {
-                cloneAttributes(origElement, newElement);
+                cloneAttributes(origElement, newElement);       // attributes
             } catch (ex) {
                 // if in dev mode, report an error, else try to limp onward
                 if (faces.getProjectStage() === "Development") {
                     throw new Error("Error updating attributes");
                 }
             }
+
             deleteNode(newElement);
         };
 
@@ -806,11 +792,14 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 throw new Error(getParseErrorText(doc));
             }
 
-            if (!doc.body) {
+            // doc.body it's not working as expected
+            const body = doc.getElementsByTagName("body")[0];
+
+            if (!body) {
                 throw new Error("Can't find body tag in returned document.");
             }
 
-            return doc.body;
+            return body;
         };
 
         /**
@@ -921,9 +910,9 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
 
                     const bodyStartEx = new RegExp("< *body[^>]*>", "gi");
                     const bodyEndEx = new RegExp("< */ *body[^>]*>", "gi");
-                    let newsrc;
 
-                    const docBody = document.body;
+                    // document.body is not working as expected
+                    const docBody = document.getElementsByTagName('body')[0];
                     const bodyStart = bodyStartEx.exec(src);
 
                     if (bodyStart !== null) { // replace body tag
@@ -933,8 +922,8 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                             // Get scripts from text
                             scripts = getScripts(src);
                             // Remove scripts from text
-                            newsrc = removeScripts(src);
-                            elementReplace(getBodyElement(newsrc), docBody);
+                            const newSrc = removeScripts(src);
+                            elementReplace(getBodyElement(newSrc), docBody);
                             runScripts(scripts);
                         } catch (e) {
                             // OK, replacing the body didn't work with XML - fall back to quirks mode insert
@@ -1120,8 +1109,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * @ignore
          */
         const doEval = function doEval(element) {
-            // async IIFE
-            (async () => {
+            (() => { //
                 const src = element ? element.textContent : undefined;
                 if (src) window.eval.call(window, src);
                 else console.warn('called doEval with no source code');
