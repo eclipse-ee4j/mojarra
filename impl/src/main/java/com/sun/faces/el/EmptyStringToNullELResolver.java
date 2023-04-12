@@ -16,13 +16,15 @@
 
 package com.sun.faces.el;
 
-import java.beans.FeatureDescriptor;
-import java.util.Iterator;
-
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
 
+import java.beans.FeatureDescriptor;
+import java.util.Iterator;
+
 public class EmptyStringToNullELResolver extends ELResolver {
+
+    public static final String EVALUATION_CONTEXT_CLASS_SIMPLE_NAME = "EvaluationContext";
 
     @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base) {
@@ -32,7 +34,7 @@ public class EmptyStringToNullELResolver extends ELResolver {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T convertToType(ELContext context, Object value, Class<T> targetType) {
-        if (value == null && targetType == String.class) {
+        if ( value == null && targetType == String.class && EVALUATION_CONTEXT_CLASS_SIMPLE_NAME.equals(context.getClass().getSimpleName()) ) {
             context.setPropertyResolved(true);
         }
 
