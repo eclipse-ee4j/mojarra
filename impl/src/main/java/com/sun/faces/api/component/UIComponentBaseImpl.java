@@ -417,7 +417,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
     @Override
     public Map<String, UIComponent> getFacets() {
         if (facets == null) {
-            facets = new FacetsMap(this);
+            facets = new FacetsMap(getPeer());
         }
 
         return facets;
