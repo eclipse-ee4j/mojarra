@@ -16,11 +16,11 @@
 
 package com.sun.faces.el;
 
-import jakarta.el.ELContext;
-import jakarta.el.ELResolver;
-
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
+
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
 
 public class EmptyStringToNullELResolver extends ELResolver {
 
