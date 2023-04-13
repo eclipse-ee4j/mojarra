@@ -42,6 +42,8 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
     // --- Faces constants ------------------------------------------------------------
     const VIEW_STATE_PARAM = "jakarta.faces.ViewState";
     const CLIENT_WINDOW_PARAM = "jakarta.faces.ClientWindow";
+    const ALWAYS_EXECUTE_IDS = [ VIEW_STATE_PARAM , CLIENT_WINDOW_PARAM ];
+    const ENCODED_URL_PARAM = "jakarta.faces.encodedURL";
 
     /**
      * experimental: do partial submit during ajax request
@@ -61,6 +63,22 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
     const isInArray = function(array,value) { return ES6_AVAILABLE ? array.includes(value) : contains(array,value) };
 
     /**
+     * get dom element or document child by name attribute
+     * @ignore
+     */
+    const getElementByName = function(element, name) {
+        return element.querySelector("[name='"+name+"']");
+    }
+
+    /**
+     * get the input element inside a form identified by name attribute
+     * @ignore
+     */
+    const getFormInputElementByName = function(form, inputElementName) {
+        return inputElementName in form ? form[inputElementName] : getElementByName(form,inputElementName);
+    }
+
+    /**
      * Utility function ported from Omnifaces Form.ts
      * to identify a child element by name
      * @param executeIds
@@ -73,7 +91,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             for (const executeId of executeIds) {
                 const parent = document.getElementById(executeId); // suppose it is a naming container
                 // return true if there is a child of the naming container with name equals to the passed name
-                if (parent && parent.querySelector("[name='" + name + "']")) {
+                if (parent && getElementByName(parent, name) ) {
                     return true;
                 }
             }
@@ -149,15 +167,11 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
         const hasInputFileControl = function(form) { return isNotNull(form.querySelector("input[type='file']")); };
 
         /**
-         * Find instance of passed String via getElementById
+         * Find instance of passed String via getElementById.
          * @ignore
          */
-        const $ = function $() {
-            const results = [];
-            for ( const element of arguments ) {
-                results.push( (typeof element == 'string') ? document.getElementById(element) : element );
-            }
-            return results.length > 1 ? results : results[0];
+        const $ = function $( elementOrId ) {
+            return typeof elementOrId == 'string' ? document.getElementById(elementOrId) : elementOrId;
         };
 
         /**
@@ -208,12 +222,8 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                     add(document);
                 } else {
                     const clientIds = context.render.split(SPACE);
-
-                    for (let i = 0; i < clientIds.length; i++) {
-                        if (clientIds.hasOwnProperty(i)) {
-                            add(document.getElementById(clientIds[i]));
-                        }
-                    }
+                    for ( const clientId of clientIds )
+                        add(document.getElementById(clientId));
                 }
             }
 
@@ -499,7 +509,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * @ignore
          * Note:  This code originally from Sarissa: http://dev.abiss.gr/sarissa
          * It has been modified to fit into the overall codebase
-         */
+
         const getText = function getText(oNode, deep) {
             // TODO: in what this function differs from Node.textContent?
             // https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent
@@ -516,7 +526,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 }
             }
             return s;
-        };
+        };*/
 
         const PARSED_OK = "Document contains no parsing errors";
         const PARSED_EMPTY = "Document is empty";
@@ -541,7 +551,8 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 parseErrorText += "\n" + oDoc.documentElement.firstChild.nextSibling.firstChild.data;
             } else if (oDoc.getElementsByTagName("parsererror").length > 0) {
                 const parsererror = oDoc.getElementsByTagName("parsererror")[0];
-                parseErrorText = getText(parsererror, true) + "\n";
+                // parseErrorText = getText(parsererror, true) + "\n";
+                parseErrorText = parsererror.textContent + "\n";
             } else if (oDoc.parseError && oDoc.parseError.errorCode !== 0) {
                 parseErrorText = PARSED_UNKNOWN_ERROR;
             }
@@ -550,16 +561,17 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
 
         // PENDING - add support for removing handlers added via DOM 2 methods
 
-        const NODE_EVENTS = [
-            'abort', 'blur', 'change', 'error', 'focus', 'load', 'reset', 'resize', 'scroll', 'select', 'submit', 'unload',
-            'keydown', 'keypress', 'keyup', 'click', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseup', 'dblclick'
-        ];
+        // const NODE_EVENTS = [
+        //     'abort', 'blur', 'change', 'error', 'focus', 'load', 'reset', 'resize', 'scroll', 'select', 'submit', 'unload',
+        //     'keydown', 'keypress', 'keyup', 'click', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseup', 'dblclick'
+        // ];
 
         /**
+         * UNUSED ... ?
          * Delete all events attached to a node
          * @param node
          * @ignore
-         */
+
         const clearEvents = function clearEvents(node) {
             if (!node) {
                 return;
@@ -579,6 +591,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 // it's OK if it fails, at least we tried
             }
         };
+         */
 
         /**
          * Deletes node
@@ -586,8 +599,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * @ignore
          */
         const deleteNode = function deleteNode(node) {
-            if (node && node.parentNode)
-                node.parentNode.removeChild(node);
+            if (node) node.remove();
         };
 
         /**
@@ -597,8 +609,8 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          */
         const deleteChildren = function deleteChildren(node) {
             if (node)
-                while (node.lastElementChild)
-                    node.removeChild(node.lastElementChild);
+                while (node.lastChild)
+                    node.lastChild.remove();
         };
 
         /**
@@ -607,8 +619,6 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * @param  nodeFrom the Node to copy the childNodes from
          * @param  nodeTo the Node to copy the childNodes to
          * @ignore
-         * Note:  This code originally from Sarissa:  http://dev.abiss.gr/sarissa
-         * It has been modified to fit into the overall codebase
          */
         const copyChildNodes = function copyChildNodes(nodeFrom, nodeTo) {
 
@@ -617,18 +627,25 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             }
 
             deleteChildren(nodeTo);
-            const nodes = nodeFrom.childNodes;
+
             // if within the same doc, just move, else copy and delete
             if (nodeFrom.ownerDocument === nodeTo.ownerDocument) {
-                while (nodeFrom.firstChild) {
+                while (nodeFrom.firstChild)
                     nodeTo.appendChild(nodeFrom.firstChild);
-                }
+
             } else {
                 const ownerDoc = nodeTo.nodeType === Node.DOCUMENT_NODE ? nodeTo : nodeTo.ownerDocument;
+                const nodeFromChildNodes = nodeFrom.childNodes;
 
-                for ( const nodeFromChild of nodes ) {
-                    nodeTo.appendChild(ownerDoc.importNode(nodeFromChild, true));
-                }
+                //if ( typeof(ownerDoc.importNode) !== UDEF ) {
+                    for ( const nodeFromChild of nodeFromChildNodes )
+                        nodeTo.appendChild(ownerDoc.importNode(nodeFromChild, true));
+
+                //} else {
+                //    for ( const nodeFromChild of nodeFromChildNodes )
+                //        nodeTo.appendChild(nodeFromChild.cloneNode(true));
+                //}
+
             }
         };
 
@@ -640,20 +657,16 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * @ignore
          */
         const replaceNode = function replaceNode(newNode, node) {
-            node.parentNode.replaceChild(newNode, node);
+            node.replaceWith(newNode);
         };
 
         /**
          * @ignore
          */
         const propertyToAttribute = function propertyToAttribute(name) {
-            if (name === 'className') {
-                return 'class';
-            } else if (name === 'xmllang') {
-                return 'xml:lang';
-            } else {
-                return name.toLowerCase();
-            }
+            if (name === 'className')    return 'class';
+            else if (name === 'xmllang') return 'xml:lang';
+            else                         return name.toLowerCase();
         };
 
         // Enumerate all the names of the event listeners
@@ -670,6 +683,9 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
         // enumerate additional input element attributes
         const inputElementProperties = [ 'name', 'value', 'size', 'maxLength', 'src', 'alt', 'useMap', 'tabIndex', 'accessKey', 'accept', 'type' ];
 
+        // core + input element properties
+        const coreAndInputElementProperties = coreElementProperties.concat(inputElementProperties);
+
         // enumerate additional boolean input attributes
         const inputElementBooleanProperties = [ 'checked', 'disabled', 'readOnly' ];
 
@@ -684,39 +700,27 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
         const cloneAttributes = function cloneAttributes(target, source) {
 
             const isInputElement = target.nodeName.toLowerCase() === 'input';
-            const propertyNames = isInputElement ? coreElementProperties.concat(inputElementProperties) : coreElementProperties;
+            const propertyNames = isInputElement ? coreAndInputElementProperties : coreElementProperties;
             const isXML = !source.ownerDocument.contentType || source.ownerDocument.contentType === 'text/xml';
 
-            for (let i=0 ; i < propertyNames.length; i++) {
-                const propertyName = propertyNames[i];
+            for ( const propertyName of propertyNames ) {
                 const attributeName = propertyToAttribute(propertyName);
-
                 const sourceValue = isXML ? source.getAttribute(attributeName) : source[propertyName];
-                const targetValue = target[propertyName];
-
-                if (targetValue !== sourceValue) {
-                    target[propertyName] = sourceValue;
-                }
+                target[propertyName] = sourceValue;
             }
 
             const booleanPropertyNames = isInputElement ? inputElementBooleanProperties : [];
-            for (let i=0 ; i < booleanPropertyNames.length; i++) {
-                const booleanPropertyName = booleanPropertyNames[i];
+            for ( const booleanPropertyName of booleanPropertyNames ) {
                 const newBooleanValue = source[booleanPropertyName];
-                const oldBooleanValue = target[booleanPropertyName];
-                if (oldBooleanValue !== newBooleanValue) {
-                    target[booleanPropertyName] = newBooleanValue;
-                }
+                target[booleanPropertyName] = newBooleanValue;
             }
 
             //'style' attribute special case
             if ( source.hasAttribute('style') ) {
                 const sourceStyle = source.getAttribute('style');
-                const targetStyle = target.getAttribute('style');
-                if (sourceStyle !== targetStyle) {
-                    target.setAttribute('style', sourceStyle);
-                }
-            } else if ( target.hasAttribute('style') ) {
+                target.setAttribute('style', sourceStyle);
+            }
+            else if ( target.hasAttribute('style') ) {
                 target.removeAttribute('style');
             }
 
@@ -759,22 +763,18 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * @ignore
          */
         const elementReplace = function elementReplace(newElement, origElement) {
-            copyChildNodes(newElement, origElement);
-            // sadly, we have to reparse all over again
-            // to reregister the event handlers and styles
-            // PENDING do some performance tests on large pages
 
-            // fixme: what is this??
-            //origElement.innerHTML = origElement.innerHTML;
+            copyChildNodes(newElement, origElement);            // children
 
             try {
-                cloneAttributes(origElement, newElement);
+                cloneAttributes(origElement, newElement);       // attributes
             } catch (ex) {
                 // if in dev mode, report an error, else try to limp onward
                 if (faces.getProjectStage() === "Development") {
                     throw new Error("Error updating attributes");
                 }
             }
+
             deleteNode(newElement);
         };
 
@@ -792,11 +792,14 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 throw new Error(getParseErrorText(doc));
             }
 
-            if (!doc.body) {
+            // doc.body it's not working as expected
+            const body = doc.getElementsByTagName("body")[0];
+
+            if (!body) {
                 throw new Error("Can't find body tag in returned document.");
             }
 
-            return doc.body;
+            return body;
         };
 
         /**
@@ -805,19 +808,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * @ignore
          */
         const getEncodedUrlElement = function getEncodedUrlElement(form) {
-            const encodedUrlElement = form['jakarta.faces.encodedURL'];
-
-            if (encodedUrlElement) {
-                return encodedUrlElement;
-            } else {
-                for ( const formElement of form.elements ) {
-                    if (formElement.name && contains(formElement.name,'jakarta.faces.encodedURL') ) {
-                        return formElement;
-                    }
-                }
-            }
-
-            return undefined;
+            return getFormInputElementByName(form,ENCODED_URL_PARAM);
         };
 
         /**
@@ -855,21 +846,8 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * @ignore
          */
         const getHiddenStateField = function getHiddenStateField(form, hiddenStateFieldName, namingContainerPrefix) {
-            namingContainerPrefix = namingContainerPrefix || EMPTY;
-            const field = form[namingContainerPrefix + hiddenStateFieldName];
-
-            if (field) {
-                return field;
-            }
-            else {
-                for ( const formElement of form.elements ) {
-                    if (formElement.name && contains(formElement.name, hiddenStateFieldName) ) {
-                        return formElement;
-                    }
-                }
-            }
-
-            return undefined;
+            const fullHiddenStateFieldName = namingContainerPrefix ? namingContainerPrefix+hiddenStateFieldName : hiddenStateFieldName;
+            return getFormInputElementByName( form , fullHiddenStateFieldName );
         };
 
         /**
@@ -932,9 +910,9 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
 
                     const bodyStartEx = new RegExp("< *body[^>]*>", "gi");
                     const bodyEndEx = new RegExp("< */ *body[^>]*>", "gi");
-                    let newsrc;
 
-                    const docBody = document.body;
+                    // document.body is not working as expected
+                    const docBody = document.getElementsByTagName('body')[0];
                     const bodyStart = bodyStartEx.exec(src);
 
                     if (bodyStart !== null) { // replace body tag
@@ -944,8 +922,8 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                             // Get scripts from text
                             scripts = getScripts(src);
                             // Remove scripts from text
-                            newsrc = removeScripts(src);
-                            elementReplace(getBodyElement(newsrc), docBody);
+                            const newSrc = removeScripts(src);
+                            elementReplace(getBodyElement(newSrc), docBody);
                             runScripts(scripts);
                         } catch (e) {
                             // OK, replacing the body didn't work with XML - fall back to quirks mode insert
@@ -1131,30 +1109,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * @ignore
          */
         const doEval = function doEval(element) {
-
-            // should be equal to Node.textContent
-            // let src = '';
-            // for ( const node of element.childNodes ) {
-            //     src += node.nodeValue;
-            // }
-
-            // const nodeText = element.textContent;
-
-            // We have to wrap the call in an anon function because of a firefox bug, where this is incorrectly set
-            // We need to explicitly call window.eval because of a Chrome peculiarity
-
-            // const fn = function() {
-            //     window.eval.call(window, src);
-            // };
-            // fn();
-
-            /**
-             * @ignore
-             */
-            // switch to an async IIFE?
-            // TODO: async requires Safari 10... it was released on 2017... it's ok?
-            // async
-            (function() {
+            (() => { //
                 const src = element ? element.textContent : undefined;
                 if (src) window.eval.call(window, src);
                 else console.warn('called doEval with no source code');
@@ -1250,13 +1205,13 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          */
         const AjaxEngine = function AjaxEngine(context) {
 
-            const req = {};                  // Request Object
+            const req = {};                // Request Object
             req.url = null;                // Request URL
-            req.context = context;              // Context of request and response
+            req.context = context;         // Context of request and response
             req.context.sourceid = null;   // Source of this request
             req.context.onerror = null;    // Error handler for request
             req.context.onevent = null;    // Event handler for request
-            req.context.namingContainerId = null;   // If UIViewRoot is an instance of NamingContainer this represents its ID.
+            req.context.namingContainerId = null;       // If UIViewRoot is an instance of NamingContainer this represents its ID.
             req.context.namingContainerPrefix = null;   // If UIViewRoot is an instance of NamingContainer this represents its ID suffixed with separator character, else an empty string.
             req.xmlReq = null;             // XMLHttpRequest Object
             req.async = true;              // Default - Asynchronous
@@ -1331,14 +1286,12 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
              * request parameters.
              * @ignore
              */
-            req.setupArguments = function (args) {
-                for (const i in args) {
-                    if (args.hasOwnProperty(i)) {
-                        if (typeof req[i] === 'undefined') {
-                            req.parameters[i] = args[i];
-                        } else {
-                            req[i] = args[i];
-                        }
+            req.setupArguments = function(args) {
+                for (const i of Object.keys(args) ) {
+                    if (typeof req[i] === UDEF) {
+                        req.parameters[i] = args[i];
+                    } else {
+                        req[i] = args[i];
                     }
                 }
             };
@@ -1352,6 +1305,8 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 if (isNotNull(req.xmlReq)) {
                     // if there is already a request on the queue waiting to be processed..
                     // just queue this request
+                    // TODO: add support for async ajax requests
+                    // https://github.com/eclipse-ee4j/mojarra/issues/4946
                     if (!req.que.isEmpty()) {
                         if (!req.fromQueue) {
                             req.que.enqueue(req);
@@ -1374,16 +1329,15 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                     const formData = isMultiPart ? new FormData(context.form) : undefined;
 
                     // Add parameters encoded or multipart
-                    for (const i in req.parameters) {
-                        if (req.parameters.hasOwnProperty(i)) {
-                            if ( isMultiPart ) {
-                                // add parameter to FormData
-                                formData.append(i,req.parameters[i]);
-                            } else {
-                                // add encoded request query string to queryString for POST
-                                if (req.queryString.length > 0) req.queryString += "&";
-                                req.queryString += encodeURIComponent(i) + "=" + encodeURIComponent(req.parameters[i]);
-                            }
+                    for ( const i of Object.keys(req.parameters) ) {
+                        // if is multipart request -> add parameter to FormData
+                        if ( isMultiPart ) {
+                            formData.append(i,req.parameters[i]);
+                        }
+                        // else is a normal post request -> add encoded request query string to queryString for POST
+                        else {
+                            if (req.queryString.length > 0) req.queryString += "&";
+                            req.queryString += encodeURIComponent(i) + "=" + encodeURIComponent(req.parameters[i]);
                         }
                     }
 
@@ -1493,11 +1447,9 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 sent = true;
             }
 
-            for (const i in errorListeners) {
-                if (errorListeners.hasOwnProperty(i)) {
-                    errorListeners[i].call(null, data);
-                    sent = true;
-                }
+            for (const data of errorListeners) {
+                data.call(null, data);
+                sent = true;
             }
 
             if (!sent && faces.getProjectStage() === "Development") {
@@ -1535,10 +1487,8 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 context.onevent.call(null, data);
             }
 
-            for (const i in eventListeners) {
-                if (eventListeners.hasOwnProperty(i)) {
-                    eventListeners[i].call(null, data);
-                }
+            for (const data of eventListeners) { //
+                data.call(null, data); // Todo: tricky, can be improved?
             }
         };
 
@@ -1996,10 +1946,9 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 }
 
                 // do a partial submit only if it is enabled and:
-                // 1) option.execute is not defined (<f:ajax />)
+                // 1) option.execute is not defined, eg. <f:ajax />
                 // 2) if it is defined it should not contain @form or @all
-                const doPartialSubmit = PARTIAL_SUBMIT_ENABLED
-                    && ( !options.execute || ( !contains(options.execute,"@form") && !contains(options.execute,"@all") ) );
+                const doPartialSubmit = PARTIAL_SUBMIT_ENABLED && ( !options.execute || ( !contains(options.execute,"@form") && !contains(options.execute,"@all") ) );
 
                 // If we have 'execute' identifiers:
                 // Handle any keywords that may be present.
@@ -2094,14 +2043,12 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 }
 
                 // encoded query string to process, eventually with partial submit logic enabled
-                const viewState = faces.getViewState( form ,  doPartialSubmit ? options.execute : undefined )
+                const viewState = doPartialSubmit ? faces.getPartialViewState( form , options.execute ) : faces.getViewState(form);
 
                 // copy all params to args
                 const params = options.params || {};
-                for (let property in params) {
-                    if (params.hasOwnProperty(property)) {
-                        args[namingContainerPrefix + property] = params[property];
-                    }
+                for (const property of Object.keys(params) ) {
+                    args[namingContainerPrefix + property] = params[property];
                 }
 
                 // remove non-passthrough options
@@ -2114,19 +2061,16 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 delete options.params;
 
                 // copy all other options to args (for backwards compatibility on issue 4115)
-                for (const property in options) {
-                    if (options.hasOwnProperty(property)) {
-                        args[namingContainerPrefix + property] = options[property];
-                    }
+                for (const property of Object.keys(options) ) {
+                    args[namingContainerPrefix + property] = options[property];
                 }
 
                 args[namingContainerPrefix + "jakarta.faces.partial.ajax"] = "true";
                 args["method"] = "POST";
 
                 // Determine the posting url
-
                 const encodedUrlField = getEncodedUrlElement(form);
-                if (typeof encodedUrlField == 'undefined') {
+                if ( isNull(encodedUrlField) ) {
                     args["url"] = form.action;
                 } else {
                     args["url"] = encodedUrlField.value;
@@ -2508,18 +2452,9 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
         }
         // faces.js script
         const _script = document.querySelector("script[type='text/javascript'][src*='jakarta.faces.resource/faces.js']");
-        const script = isNotNull(_script) ? _script.src : null;
+        const scriptSrcSearchParam = isNotNull(_script) ? new URLSearchParams(_script.src) : null;
 
-        let match,stage;
-        if (typeof script == "string") {
-            match = script.match("stage=(.*)");
-            if (match) {
-                stage = match[1];
-            }
-        }
-        if (typeof stage === 'undefined' || !stage) {
-            stage = "Production";
-        }
+        const stage = ( isNotNull(scriptSrcSearchParam) && scriptSrcSearchParam.get('stage') === 'Development' ) ? 'Development' : 'Production';
 
         mojarra = mojarra || {};
         mojarra.projectStageCache = stage;
@@ -2527,60 +2462,28 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
         return mojarra.projectStageCache;
     };
 
-
     /**
-     * <p>Collect and encode state for input controls associated
-     * with the specified <code>form</code> element.  This will include
-     * all input controls of type <code>hidden</code>.</p>
-     * <p><b>Usage:</b></p>
-     * <pre><code>
-     * var state = faces.getViewState(form);
-     * </pre></code>
-     *
-     * @param form The <code>form</code> element whose contained
-     * <code>input</code> controls will be collected and encoded.
-     * Only successful controls will be collected and encoded in
-     * accordance with: <a href="http://www.w3.org/TR/html401/interact/forms.html#h-17.13.2">
-     * Section 17.13.2 of the HTML Specification</a>.
-     *
-     * @param execute The option.execute string built inside faces.ajax.request
-     *
-     * @returns String The encoded state for the specified form's input controls.
-     * @function faces.getViewState
+     * Partial submit adapted from OmniFaces
+     * @param form
+     * @param execute
+     * @returns {string}
      */
-    faces.getViewState = function(form,execute) {
-        if (!form) {
-            throw new Error("faces.getViewState:  form must be set");
-        }
+    faces.getPartialViewState = function(form, execute) {
 
         // create an array which we'll use to hold all the intermediate strings
         // this bypasses a problem in IE when repeatedly concatenating very
         // large strings - we'll perform the concatenation once at the end
-        const qString = [];
-
-        // --- Partial submit adapted from OmniFaces ------------------------------------------
+        let qString = EMPTY;
 
         // if execute is defined and execute is not '@all' or '@form'
         // then we could do a partial submit
-        let partialExecuteIds = undefined;
-        if (execute) {
-
-            // string -> array
-            partialExecuteIds = execute.split(SPACE);
-
-            // always process Faces ViewState
-            partialExecuteIds.push(VIEW_STATE_PARAM);
-
-            // always process Faces Client Window id
-            partialExecuteIds.push(CLIENT_WINDOW_PARAM);
-
-        }
+        const partialExecuteIds = execute ? execute.split(SPACE).concat(ALWAYS_EXECUTE_IDS) : undefined;
 
         // add encoded name=value string to query string parts array.
         // If partialExecuteIds is defined then add the field only if the name is inside the "partialExecuteIds" array (partial submit)
         const addField = function(name, value) {
             const add = !partialExecuteIds || isInArray(partialExecuteIds, name) || containsNamedChild(partialExecuteIds,name);
-            if (add) qString.push( (qString.length > 0 ? "&" : EMPTY) + encodeURIComponent(name) + "=" + encodeURIComponent(value) );
+            if (add) qString += ( (qString.length > 0 ? "&" : EMPTY) + encodeURIComponent(name) + "=" + encodeURIComponent(value) );
         };
 
         const els = form.elements;
@@ -2625,8 +2528,87 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 }
             }
         }
-        // concatenate the array
-        return qString.join(EMPTY);
+        return qString;
+    }
+
+
+    /**
+     * <p>Collect and encode state for input controls associated
+     * with the specified <code>form</code> element.  This will include
+     * all input controls of type <code>hidden</code>.</p>
+     * <p><b>Usage:</b></p>
+     * <pre><code>
+     * var state = faces.getViewState(form);
+     * </pre></code>
+     *
+     * @param form The <code>form</code> element whose contained
+     * <code>input</code> controls will be collected and encoded.
+     * Only successful controls will be collected and encoded in
+     * accordance with: <a href="http://www.w3.org/TR/html401/interact/forms.html#h-17.13.2">
+     * Section 17.13.2 of the HTML Specification</a>.
+     *
+     * @param execute The option.execute string built inside faces.ajax.request
+     *
+     * @returns String The encoded state for the specified form's input controls.
+     * @function faces.getViewState
+     */
+    faces.getViewState = function(form) {
+        if (!form) throw new Error("faces.getViewState:  form must be set");
+
+        // create an array which we'll use to hold all the intermediate strings
+        // this bypasses a problem in IE when repeatedly concatenating very
+        // large strings - we'll perform the concatenation once at the end
+        let qString = EMPTY;
+
+        // add encoded name=value string to query string parts array.
+        // If partialExecuteIds is defined then add the field only if the name is inside the "partialExecuteIds" array (partial submit)
+        const addField = function(name, value) {
+            qString += ( (qString.length > 0 ? "&" : EMPTY) + encodeURIComponent(name) + "=" + encodeURIComponent(value) );
+        };
+
+        const els = form.elements;
+        for (const el of els) {
+            if (el.name === EMPTY) {
+                continue;
+            }
+            if (!el.disabled) {
+                switch (el.type) {
+                    case 'submit':
+                    case 'reset':
+                    case 'image':
+                    case 'file':
+                        break;
+                    case 'select-one':
+                        if (el.selectedIndex >= 0) {
+                            addField(el.name, el.options[el.selectedIndex].value);
+                        }
+                        break;
+                    case 'select-multiple':
+                        for ( const option of el.options) {
+                            if (option.selected) {
+                                addField(el.name, option.value);
+                            }
+                        }
+                        break;
+                    case 'checkbox':
+                    case 'radio':
+                        if (el.checked) {
+                            addField(el.name, el.value || 'on');
+                        }
+                        break;
+                    default:
+                        // this is for any input incl.  text', 'password', 'hidden', 'textarea'
+                        const nodeName = el.nodeName.toLowerCase();
+                        if (nodeName === "input" || nodeName === "select" ||
+                            nodeName === "button" || nodeName === "object" ||
+                            nodeName === "textarea") {
+                            addField(el.name, el.value);
+                        }
+                        break;
+                }
+            }
+        }
+        return qString;
     };
 
     /**
@@ -2652,26 +2634,13 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * @ignore
          */
         const getWindowIdElement = function(form) {
-            const windowIdElement = form[CLIENT_WINDOW_PARAM];
-            return windowIdElement ? windowIdElement : form.querySelector("input[name="+CLIENT_WINDOW_PARAM+"]");
+            return getFormInputElementByName(form,CLIENT_WINDOW_PARAM);
         };
 
         const fetchWindowIdFromForms = function(forms) {
             const result_idx = {};
             let result;
             let foundCnt = 0;
-            // why reverse order?
-            // for (let cnt = forms.length - 1; cnt >= 0; cnt--) {
-            //     const currentForm = forms[cnt];
-            //     const windowIdElement = getWindowIdElement(currentForm);
-            //     const windowId = windowIdElement && windowIdElement.value;
-            //     if (UDEF !== typeof windowId) {
-            //         if (foundCnt > 0 && UDEF === typeof result_idx[windowId]) throw Error("Multiple different windowIds found in document");
-            //         result = windowId;
-            //         result_idx[windowId] = true;
-            //         foundCnt++;
-            //     }
-            // }
 
             for ( const form of forms ) {
                 const windowIdElement = getWindowIdElement(form);
@@ -3051,13 +3020,13 @@ var mojarra = mojarra || {};
 mojarra.dpf = function dpf(f) {
     const adp = f.adp;
     if (adp !== null) {
-        for (let i=0; i < adp.length; i++) {
-            f.removeChild(adp[i]);
+        for ( const param of adp ) {
+            param.remove();
         }
     }
 };
 
-/*
+/**
  * This function adds any parameters specified by the
  * parameter 'pvp' to the form represented by param 'f'.
  * Any parameters added will be stored in a variable
@@ -3072,19 +3041,17 @@ mojarra.apf = function apf(f, pvp) {
     const adp = [];
     f.adp = adp;
     let i = 0;
-    for (const k in pvp) {
-        if (pvp.hasOwnProperty(k)) {
-            const p = document.createElement("input");
-            p.type = "hidden";
-            p.name = k;
-            p.value = pvp[k];
-            f.appendChild(p);
-            adp[i++] = p;
-        }
+    for (const k of Object.keys(pvp) ) {
+        const p = document.createElement("input");
+        p.type = "hidden";
+        p.name = k;
+        p.value = pvp[k];
+        f.appendChild(p);
+        adp[i++] = p;
     }
 };
 
-/*
+/**
  * This is called by command link and command button.  It provides
  * the form it is nested in, the parameters that need to be
  * added and finally, the target of the action.  This function
@@ -3108,13 +3075,13 @@ mojarra.cljs = function cljs(f, pvp, t) {
     input.type = 'submit';
     f.appendChild(input);
     input.click();
-    f.removeChild(input);
+    input.remove();
 
     f.target = ft;
     mojarra.dpf(f);
 };
 
-/*
+/**
  * This is called by functions that need access to their calling
  * context, in the form of <code>this</code> and <code>event</code>
  * objects.
@@ -3128,7 +3095,7 @@ mojarra.facescbk = function facescbk(f, t, e) {
     return f.call(t,e);
 };
 
-/*
+/**
  * This is called by the AjaxBehaviorRenderer script to
  * trigger a faces.ajax.request() call.
  *
@@ -3147,7 +3114,7 @@ mojarra.ab = function ab(s, e, n, ex, re, op) {
     faces.ajax.request(s, e, op);
 };
 
-/*
+/**
  * This is called by command script when autorun=true.
  *
  * @param l window onload callback function
@@ -3166,4 +3133,5 @@ mojarra.l = function l(l) {
     else {
         window.onload = l;
     }
+
 };
