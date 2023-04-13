@@ -199,7 +199,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
     }
 
     /**
-     * Default constructor, populates the descriptor map.
+     * Default constructor, does not populate the descriptor map, so setPeer MUST be called for that.
      */
     public UIComponentBaseImpl() {
 
