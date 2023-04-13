@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2022, 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -438,9 +439,20 @@ public class MultiViewHandler extends ViewHandler {
         HttpServletMapping mapping = getFacesMapping(ctx);
         String physicalViewId;
 
-        if (mapping.getMappingMatch() == EXACT || mapping.getMappingMatch() == EXTENSION) {
-            // Exact mapping, e.g. /foo or Prefix mapping, e.g. /foo.xhtml
+        if (mapping.getMappingMatch() == EXTENSION) {
+            // Suffix mapping, e.g. /foo.xhtml
             physicalViewId = convertViewId(ctx, requestViewId);
+        } else if (mapping.getMappingMatch() == EXACT) {
+            if (requestViewId.equals(mapping.getPattern())) {
+                // Fuzzy logic: if request equals the view ID we're asking for
+                // this is a call from MultiViewHandler.createView. In that case instead
+                // of /foo we want /foo.xhtml.
+                return convertViewId(ctx, requestViewId);
+            }
+
+            // Exact mapping, e.g. /foo
+            // We're likely called here by derive*ViewId, which wants /foo
+            physicalViewId = requestViewId;
         } else {
             // Prefix mapping, e.g. /faces/foo.xhtml
             physicalViewId = normalizeRequestURI(requestViewId, mapping.getPattern().replace("/*", ""));
