@@ -195,13 +195,14 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
 
     public void setPeer(UIComponentBase peer) {
         this.peer = peer;
+        populateDescriptorsMapIfNecessary();
     }
 
     /**
      * Default constructor, populates the descriptor map.
      */
     public UIComponentBaseImpl() {
-        populateDescriptorsMapIfNecessary();
+
     }
 
     @Override
@@ -3061,28 +3062,23 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
     @SuppressWarnings("unchecked")
     private void populateDescriptorsMapIfNecessary() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        Class<?> clazz = getClass();
+        Class<?> componentPeerClass = getPeer().getClass();
 
-        /*
-         * If we can find a valid FacesContext we are going to use it to get access to the property descriptor map.
-         */
-        if (facesContext != null && facesContext.getExternalContext() != null && facesContext.getExternalContext().getApplicationMap() != null) {
+        // If we can find a valid FacesContext we are going to use it to get access to the property descriptor map.
+        if (hasApplicationMap(facesContext)) {
+            descriptors = (Map<Class<?>, Map<String, PropertyDescriptor>>)
+                facesContext.getExternalContext()
+                            .getApplicationMap()
+                            .computeIfAbsent("com.sun.faces.compnent.COMPONENT_DESCRIPTORS_MAP", e -> new ConcurrentHashMap<>());
 
-            Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
-
-            if (!applicationMap.containsKey("com.sun.faces.compnent.COMPONENT_DESCRIPTORS_MAP")) {
-                applicationMap.put("com.sun.faces.compnent.COMPONENT_DESCRIPTORS_MAP", new ConcurrentHashMap<>());
-            }
-
-            descriptors = (Map<Class<?>, Map<String, PropertyDescriptor>>) applicationMap.get("com.sun.faces.compnent.COMPONENT_DESCRIPTORS_MAP");
-            propertyDescriptorMap = descriptors.get(clazz);
+            propertyDescriptorMap = descriptors.get(componentPeerClass);
         }
 
         if (propertyDescriptorMap == null) {
 
             // We did not find the property descriptor map so we are now going to load it.
 
-            PropertyDescriptor propertyDescriptors[] = getPropertyDescriptors();
+            PropertyDescriptor propertyDescriptors[] = getPropertyDescriptors(componentPeerClass);
             if (propertyDescriptors != null) {
                 propertyDescriptorMap = new HashMap<>(propertyDescriptors.length, 1.0f);
                 for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
@@ -3090,14 +3086,21 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
                 }
 
                 if (LOGGER.isLoggable(FINE)) {
-                    LOGGER.log(FINE, "fine.component.populating_descriptor_map", new Object[] { clazz, currentThread().getName() });
+                    LOGGER.log(FINE, "fine.component.populating_descriptor_map", new Object[] { componentPeerClass, currentThread().getName() });
                 }
 
-                if (descriptors != null && !descriptors.containsKey(clazz)) {
-                    descriptors.put(clazz, propertyDescriptorMap);
+                if (descriptors != null && !descriptors.containsKey(componentPeerClass)) {
+                    descriptors.put(componentPeerClass, propertyDescriptorMap);
                 }
             }
         }
+    }
+
+    private boolean hasApplicationMap(FacesContext facesContext) {
+        return
+            facesContext != null &&
+            facesContext.getExternalContext() != null &&
+            facesContext.getExternalContext().getApplicationMap() != null;
     }
 
     /**
@@ -3108,9 +3111,9 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
      *
      * @throws FacesException if an introspection exception occurs
      */
-    private PropertyDescriptor[] getPropertyDescriptors() {
+    private PropertyDescriptor[] getPropertyDescriptors(Class<?> beanClass) {
         try {
-            return getBeanInfo(getClass()).getPropertyDescriptors();
+            return getBeanInfo(beanClass).getPropertyDescriptors();
         } catch (IntrospectionException e) {
             throw new FacesException(e);
         }

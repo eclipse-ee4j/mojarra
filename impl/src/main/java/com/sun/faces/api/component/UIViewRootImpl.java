@@ -261,6 +261,7 @@ public class UIViewRootImpl extends UIComponentBaseImpl implements UniqueIdVendo
 
     public void setPeer(UIViewRoot peer) {
         this.peer = peer;
+        super.setPeer(peer);
     }
 
     /**
