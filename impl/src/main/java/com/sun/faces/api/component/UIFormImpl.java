@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -14,14 +15,27 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.faces.component;
+package com.sun.faces.api.component;
 
-import com.sun.faces.api.component.UIFormImpl;
+import static com.sun.faces.util.Util.coalesce;
+import static jakarta.faces.component.UIViewRoot.UNIQUE_ID_PREFIX;
+import static jakarta.faces.component.visit.VisitResult.COMPLETE;
+
+import java.util.Collection;
+import java.util.Iterator;
 
 import jakarta.faces.FacesException;
+import jakarta.faces.application.Application;
+import jakarta.faces.component.ContextCallback;
+import jakarta.faces.component.NamingContainer;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UniqueIdVendor;
 import jakarta.faces.component.visit.VisitCallback;
 import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PostValidateEvent;
+import jakarta.faces.event.PreValidateEvent;
 
 /**
  * <p>
@@ -35,7 +49,7 @@ import jakarta.faces.context.FacesContext;
  * be changed by calling the <code>setRendererType()</code> method.
  * </p>
  */
-public class UIForm extends UIComponentBase implements NamingContainer, UniqueIdVendor {
+public class UIFormImpl extends UIComponentBaseImpl implements NamingContainer, UniqueIdVendor {
 
     // ------------------------------------------------------ Manifest Constants
 
@@ -53,20 +67,50 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
      */
     public static final String COMPONENT_FAMILY = "jakarta.faces.Form";
 
-    UIFormImpl uiFormImpl;
+    /**
+     * Properties that are tracked by state saving.
+     */
+    enum PropertyKeys {
+
+        /**
+         * <p>
+         * The prependId flag.
+         * </p>
+         */
+        prependId,
+
+        /**
+         * <p>
+         * Last id vended by {@link UIForm#createUniqueId(jakarta.faces.context.FacesContext, String)}.
+         * </p>
+         */
+        lastId,
+
+        submitted,
+    }
+
+    UIForm peer;
 
     // ------------------------------------------------------------ Constructors
+
+    @Override
+    public UIForm getPeer() {
+        return peer;
+    }
+
+    public void setPeer(UIForm peer) {
+        this.peer = peer;
+        super.setPeer(peer);
+    }
 
     /**
      * <p>
      * Create a new {@link UIForm} instance with default property values.
      * </p>
      */
-    public UIForm() {
-        super(new UIFormImpl());
+    public UIFormImpl() {
+        super();
         setRendererType("jakarta.faces.Form");
-        this.uiFormImpl = (UIFormImpl) getUiComponentBaseImpl();
-        uiFormImpl.setPeer(this);
     }
 
     // -------------------------------------------------------------- Properties
@@ -89,7 +133,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
      * @return <code>true</code> if the form was submitted, <code>false</code> otherwise.
      */
     public boolean isSubmitted() {
-        return uiFormImpl.isSubmitted();
+        return (Boolean) getTransientStateHelper().getTransient(PropertyKeys.submitted, false);
     }
 
     /**
@@ -113,7 +157,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
      * @param submitted the new value of the submitted flag.
      */
     public void setSubmitted(boolean submitted) {
-        uiFormImpl.setSubmitted(submitted);
+        getTransientStateHelper().putTransient(PropertyKeys.submitted, submitted);
     }
 
     /**
@@ -122,7 +166,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
      * @return <code>true</code> if it is, <code>false</code> otherwise.
      */
     public boolean isPrependId() {
-        return uiFormImpl.isPrependId();
+        return (Boolean) getStateHelper().eval(PropertyKeys.prependId, true);
     }
 
     /**
@@ -131,7 +175,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
      * @param prependId <code>true</code> if it is, <code>false</code> otherwise.
      */
     public void setPrependId(boolean prependId) {
-        uiFormImpl.setPrependId(prependId);
+        getStateHelper().put(PropertyKeys.prependId, prependId);
     }
 
     // ----------------------------------------------------- UIComponent Methods
@@ -146,7 +190,23 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
      */
     @Override
     public void processDecodes(FacesContext context) {
-        uiFormImpl.processDecodes(context);
+        if (context == null) {
+            throw new NullPointerException();
+        }
+
+        // Process this component itself
+        decode(context);
+
+        // If we're not the submitted form, don't process children.
+        if (!isSubmitted()) {
+            return;
+        }
+
+        // Process all facets and children of this component
+        Iterator<UIComponent> kids = getFacetsAndChildren();
+        while (kids.hasNext()) {
+            kids.next().processDecodes(context);
+        }
     }
 
     /**
@@ -161,7 +221,26 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
      */
     @Override
     public void processValidators(FacesContext context) {
-        uiFormImpl.processValidators(context);
+        if (context == null) {
+            throw new NullPointerException();
+        }
+
+        if (!isSubmitted()) {
+            return;
+        }
+
+        pushComponentToEL(context, getPeer());
+        Application application = context.getApplication();
+        application.publishEvent(context, PreValidateEvent.class, getPeer());
+
+        // Process all the facets and children of this component
+        Iterator<UIComponent> kids = getFacetsAndChildren();
+        while (kids.hasNext()) {
+            kids.next().processValidators(context);
+        }
+
+        application.publishEvent(context, PostValidateEvent.class, getPeer());
+        popComponentFromEL(context);
     }
 
     /**
@@ -174,7 +253,25 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
      */
     @Override
     public void processUpdates(FacesContext context) {
-        uiFormImpl.processUpdates(context);
+        if (context == null) {
+            throw new NullPointerException();
+        }
+
+        if (!isSubmitted()) {
+            return;
+        }
+
+        pushComponentToEL(context, getPeer());
+
+        try {
+            // Process all facets and children of this component
+            Iterator<UIComponent> kids = getFacetsAndChildren();
+            while (kids.hasNext()) {
+                kids.next().processUpdates(context);
+            }
+        } finally {
+            popComponentFromEL(context);
+        }
     }
 
     /**
@@ -194,7 +291,20 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
      */
     @Override
     public String createUniqueId(FacesContext context, String seed) {
-        return uiFormImpl.createUniqueId(context, seed);
+        if (isPrependId()) {
+            int lastId = coalesce(getLastId(), 0);
+
+            setLastId(++lastId);
+
+            return UNIQUE_ID_PREFIX + coalesce(seed, lastId);
+        }
+
+        UIComponent ancestorNamingContainer = getParent() == null ? null : getParent().getNamingContainer();
+        if (ancestorNamingContainer instanceof UniqueIdVendor) {
+            return ((UniqueIdVendor) ancestorNamingContainer).createUniqueId(context, seed);
+        }
+
+        return context.getViewRoot().createUniqueId(context, seed);
     }
 
     /**
@@ -206,7 +316,19 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
      */
     @Override
     public String getContainerClientId(FacesContext context) {
-        return uiFormImpl.getContainerClientId(context);
+        if (isPrependId()) {
+            return super.getContainerClientId(context);
+        }
+
+        UIComponent parent = getParent();
+        while (parent != null) {
+            if (parent instanceof NamingContainer) {
+                return parent.getContainerClientId(context);
+            }
+            parent = parent.getParent();
+        }
+
+        return null;
     }
 
     /**
@@ -214,7 +336,47 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
      */
     @Override
     public boolean visitTree(VisitContext context, VisitCallback callback) {
-        return uiFormImpl.visitTree(context, callback);
+
+        // NamingContainers can optimize partial tree visits by taking advantage
+        // of the fact that it is possible to detect whether any ids to visit
+        // exist underneath the NamingContainer. If no such ids exist, there
+        // is no need to visit the subtree under the NamingContainer.
+
+        // UIForm is a bit different from other NamingContainers. It only acts
+        // as a NamingContainer when prependId is true. Note that if it
+        // weren't for this, we could push this implementation up in to
+        // UIComponent and share it across all NamingContainers. Instead,
+        // we currently duplicate this implementation in UIForm and
+        // UINamingContainer, so that we can check isPrependId() here.
+
+        if (!isPrependId()) {
+            return super.visitTree(context, callback);
+        }
+
+        Collection<String> idsToVisit = context.getSubtreeIdsToVisit(this);
+
+        // If we have ids to visit, let the superclass implementation
+        // handle the visit
+        if (!idsToVisit.isEmpty()) {
+            return super.visitTree(context, callback);
+        }
+
+        // If we have no child ids to visit, just visit ourselves, if
+        // we are visitable.
+        if (isVisitable(context)) {
+            FacesContext facesContext = context.getFacesContext();
+            pushComponentToEL(facesContext, null);
+
+            try {
+                return context.invokeVisitCallback(this, callback) == COMPLETE;
+            } finally {
+                popComponentFromEL(facesContext);
+            }
+        }
+
+        // Done visiting this subtree. Return false to allow
+        // visit to continue.
+        return false;
     }
 
     /**
@@ -222,8 +384,29 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
      */
     @Override
     public boolean invokeOnComponent(FacesContext context, String clientId, ContextCallback callback) throws FacesException {
-        return uiFormImpl.invokeOnComponent(context, clientId, callback);
+
+        // Optimization: In case when invokeOnComponent is used and the form has prependId=true,
+        // we can early skip the whole component tree if the baseClientId != form clientId.
+
+        if (isPrependId()) {
+            String baseClientId = getClientId(context);
+
+            // skip if the component is not a child of the UIForm
+            if (!clientId.startsWith(baseClientId)) {
+                return false;
+            }
+        }
+
+        return super.invokeOnComponent(context, clientId, callback);
     }
 
+    // ----------------------------------------------------- Private Methods
 
+    public Integer getLastId() {
+        return (Integer) getStateHelper().get(PropertyKeys.lastId);
+    }
+
+    public void setLastId(Integer lastId) {
+        getStateHelper().put(PropertyKeys.lastId, lastId);
+    }
 }
