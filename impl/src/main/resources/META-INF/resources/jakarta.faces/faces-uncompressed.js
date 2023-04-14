@@ -51,13 +51,13 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
     const PARTIAL_SUBMIT_ENABLED = true;
 
     /**
-     * Check if a String or an array contains a value
+     * Check if a String or an Array contains a value
      * @ignore
      */
     const contains = function(stringOrArray,value) { return stringOrArray.indexOf(value) !== -1; }
 
     /**
-     * Check if a value exists in an array
+     * Check if a value exists in an Array
      * @ignore
      */
     const isInArray = function(array,value) { return ES6_AVAILABLE ? array.includes(value) : contains(array,value) };
@@ -218,7 +218,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             }
 
             if (context.render) {
-                if (context.render.indexOf("@all") !== -1 ) {
+                if ( contains(context.render,"@all") ) {
                     add(document);
                 } else {
                     const clientIds = context.render.split(SPACE);
@@ -236,7 +236,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * function is here for backwards compatibility with manual
          * faces.ajax.request() calls written before Spec790 changes.</p>
 
-         * @param parameters Spaceseparated string of parameters as
+         * @param parameters Space separated string of parameters as
          * usually specified in f:ajax execute and render attributes.
 
          * @param sourceClientId The client ID of the f:ajax
@@ -259,7 +259,8 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
 
             const targetClientIds = parameters.replace(/^\s+|\s+$/g, '').split(/\s+/g);
 
-            for (let i = 0; i < targetClientIds.length; i++) {
+            // adapt each targetClientId and replace the modified version inside the original array
+            for ( let i = 0; i < targetClientIds.length; i++) {
                 let targetClientId = targetClientIds[i];
 
                 if (targetClientId.indexOf(faces.separatorchar) === 0) {
@@ -278,10 +279,12 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                     }
                 }
 
+                // replace the modified target client inside the array
                 targetClientIds[i] = targetClientId;
             }
 
-            return targetClientIds.join(' ');
+            // return a space separated string of all the target client id
+            return targetClientIds.join(SPACE);
         };
 
         // Regex to find all scripts in a string
@@ -337,7 +340,8 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 if (url) loadedScriptUrls.push(url);
             }
 
-            runScript(document.head, loadedScriptUrls, scripts, 0);
+            const head = document.head || document.getElementsByTagName('head')[0] || document.documentElement;
+            runScript(head, loadedScriptUrls, scripts, 0);
         };
 
         /**
@@ -420,6 +424,9 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             const findtype = /type="([\S]*?)"/im;
             const findhref = /href="([\S]*?)"/im;
 
+            // the head of the document, note that document.head do not always work
+            const head = document.head || document.getElementsByTagName('head')[0] || document.documentElement;
+
             let loadedStylesheetUrls = null;
             let parserElement = null;
 
@@ -451,7 +458,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
 
                     const url = unescapeHTML(href[1]);
 
-                    if (loadedStylesheetUrls.indexOf(url) < 0) {
+                    if ( loadedStylesheetUrls && loadedStylesheetUrls.indexOf(url) < 0) {
                         // create stylesheet node
                         parserElement = parserElement !== null ? parserElement : document.createElement('div');
                         parserElement.innerHTML = linkStr[0];
@@ -459,7 +466,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                         linkNode.type = 'text/css';
                         linkNode.rel = 'stylesheet';
                         linkNode.href = url;
-                        document.head.appendChild(linkNode); // add it to end of the head (and don't remove it)
+                        head.appendChild(linkNode); // add it to end of the head (and don't remove it)
                     }
                 }
             }
@@ -536,24 +543,24 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * <p>Returns a human readable description of the parsing error. Useful
          * for debugging. Tip: append the returned error string in a &lt;pre&gt;
          * element if you want to render it.</p>
-         * @param  oDoc The target DOM document
+         * @param  doc The target DOM document
          * @returns {String} The parsing error description of the target Document in
          *          human readable form (preformatted text)
          * @ignore
          * Note:  This code originally from Sarissa: http://dev.abiss.gr/sarissa
          */
-        const getParseErrorText = function (oDoc) {
+        const getParseErrorText = function (doc) {
             let parseErrorText = PARSED_OK;
-            if ((!oDoc) || (!oDoc.documentElement)) {
+            if ((!doc) || (!doc.documentElement)) {
                 parseErrorText = PARSED_EMPTY;
-            } else if (oDoc.documentElement.tagName === "parsererror") {
-                parseErrorText = oDoc.documentElement.firstChild.data;
-                parseErrorText += "\n" + oDoc.documentElement.firstChild.nextSibling.firstChild.data;
-            } else if (oDoc.getElementsByTagName("parsererror").length > 0) {
-                const parsererror = oDoc.getElementsByTagName("parsererror")[0];
+            } else if (doc.documentElement.tagName === "parsererror") {
+                parseErrorText = doc.documentElement.firstChild.data;
+                parseErrorText += "\n" + doc.documentElement.firstChild.nextSibling.firstChild.data;
+            } else if (doc.getElementsByTagName("parsererror").length > 0) {
+                const parsererror = doc.getElementsByTagName("parsererror")[0];
                 // parseErrorText = getText(parsererror, true) + "\n";
                 parseErrorText = parsererror.textContent + "\n";
-            } else if (oDoc.parseError && oDoc.parseError.errorCode !== 0) {
+            } else if (doc.parseError && doc.parseError.errorCode !== 0) {
                 parseErrorText = PARSED_UNKNOWN_ERROR;
             }
             return parseErrorText;
@@ -561,37 +568,32 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
 
         // PENDING - add support for removing handlers added via DOM 2 methods
 
-        // const NODE_EVENTS = [
-        //     'abort', 'blur', 'change', 'error', 'focus', 'load', 'reset', 'resize', 'scroll', 'select', 'submit', 'unload',
-        //     'keydown', 'keypress', 'keyup', 'click', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseup', 'dblclick'
-        // ];
+        const NODE_EVENTS = [
+            'abort', 'blur', 'change', 'error', 'focus', 'load', 'reset', 'resize', 'scroll', 'select', 'submit', 'unload',
+            'keydown', 'keypress', 'keyup', 'click', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseup', 'dblclick'
+        ];
 
         /**
-         * UNUSED ... ?
          * Delete all events attached to a node
          * @param node
          * @ignore
-
+         */
         const clearEvents = function clearEvents(node) {
             if (!node) {
                 return;
             }
-
             // don't do anything for text and comment nodes - unnecessary
             if (node.nodeType === Node.TEXT_NODE || node.nodeType === Node.COMMENT_NODE) {
                 return;
             }
+            // remove the events from node
             try {
-                for (const e in NODE_EVENTS) {
-                    if (NODE_EVENTS.hasOwnProperty(e)) {
-                        node[e] = null;
-                    }
-                }
+                for (const eventName in NODE_EVENTS)
+                    node[eventName] = null;
             } catch (ex) {
                 // it's OK if it fails, at least we tried
             }
         };
-         */
 
         /**
          * Deletes node
@@ -706,19 +708,19 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             for ( const propertyName of propertyNames ) {
                 const attributeName = propertyToAttribute(propertyName);
                 const sourceValue = isXML ? source.getAttribute(attributeName) : source[propertyName];
-                target[propertyName] = sourceValue;
+                if (isNotNull(sourceValue)) target[propertyName] = sourceValue;
             }
 
             const booleanPropertyNames = isInputElement ? inputElementBooleanProperties : [];
             for ( const booleanPropertyName of booleanPropertyNames ) {
                 const newBooleanValue = source[booleanPropertyName];
-                target[booleanPropertyName] = newBooleanValue;
+                if (isNotNull(newBooleanValue)) target[booleanPropertyName] = newBooleanValue;
             }
 
             //'style' attribute special case
             if ( source.hasAttribute('style') ) {
                 const sourceStyle = source.getAttribute('style');
-                target.setAttribute('style', sourceStyle);
+                if (isNotNull(sourceStyle)) target.setAttribute('style', sourceStyle);
             }
             else if ( target.hasAttribute('style') ) {
                 target.removeAttribute('style');
@@ -764,10 +766,18 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          */
         const elementReplace = function elementReplace(newElement, origElement) {
 
-            copyChildNodes(newElement, origElement);            // children
+            // // move or copy child nodes
+            // copyChildNodes(newElement, origElement);
+            //
+            // // sadly, we have to reparse all over again
+            // // to reregister the event handlers and styles
+            // // PENDING do some performance tests on large pages
+            // origElement.innerHTML = origElement.innerHTML;
+            //
 
+            // copy source attributes to target node
             try {
-                cloneAttributes(origElement, newElement);       // attributes
+                cloneAttributes(origElement, newElement);
             } catch (ex) {
                 // if in dev mode, report an error, else try to limp onward
                 if (faces.getProjectStage() === "Development") {
@@ -775,6 +785,10 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 }
             }
 
+            // copy source html to target node
+            origElement.innerHTML = newElement.innerHTML;
+
+            // delete source node
             deleteNode(newElement);
         };
 
@@ -788,11 +802,13 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
 
             const doc = (new DOMParser()).parseFromString(docStr, "text/xml")
 
-            if (getParseErrorText(doc) !== PARSED_OK) {
-                throw new Error(getParseErrorText(doc));
+            // if there is an error
+            const parsedError = getParseErrorText(doc);
+            if (parsedError !== PARSED_OK) {
+                throw new Error(parsedError);
             }
 
-            // doc.body it's not working as expected
+            // doc.body do not work in this situation
             const body = doc.getElementsByTagName("body")[0];
 
             if (!body) {
@@ -937,7 +953,6 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                             }
                             // replace body contents with innerHTML - note, script handling happens within function
                             elementReplaceStr(docBody, "body", srcBody);
-
                         }
 
                     } else {  // replace body contents with innerHTML - note, script handling happens within function
@@ -1154,7 +1169,6 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
              * @ignore
              */
             this.enqueue = function enqueue(element) {
-                // Queue the request
                 queue.push(element);
             };
 
@@ -1205,7 +1219,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          */
         const AjaxEngine = function AjaxEngine(context) {
 
-            const req = {};                // Request Object
+            const req = {};            // Request Object
             req.url = null;                // Request URL
             req.context = context;         // Context of request and response
             req.context.sourceid = null;   // Source of this request
@@ -1220,12 +1234,8 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             req.method = null;             // GET or POST
             req.status = null;             // Response Status Code From Server
             req.fromQueue = false;         // Indicates if the request was taken off the queue before being sent. This prevents the request from entering the queue redundantly.
-
-            req.que = new Queue();
-
-            // This is where we could handle XMLHttpRequest Level2 as well (perhaps
-            // something like:  if ('upload' in req.xmlReq)'
-            req.xmlReq = new XMLHttpRequest();
+            req.que = new Queue();         // the queue for requests
+            req.xmlReq = new XMLHttpRequest(); // The real XMLHttpRequest Level2
 
             // Set up request/response state callbacks
             /**
@@ -1429,8 +1439,9 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             } else if (status === "emptyResponse") {
                 data.description = "An empty response was received from the server.  Check server error logs.";
             } else if (status === "malformedXML") {
-                if (getParseErrorText(data.responseXML) !== PARSED_OK) {
-                    data.description = getParseErrorText(data.responseXML);
+                const parsedErrorText = getParseErrorText(data.responseXML);
+                if ( parsedErrorText !== PARSED_OK) {
+                    data.description = parsedErrorText;
                 } else {
                     data.description = "An invalid XML response was received from the server.";
                 }
@@ -1442,13 +1453,15 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             }
 
             // If we have a registered callback, send the error to it.
+            // TODO: do we need to call the function in the global context?
             if (context.onerror) {
                 context.onerror.call(null, data);
                 sent = true;
             }
 
-            for (const data of errorListeners) {
-                data.call(null, data);
+            // TODO: do we need to call these functions in the global context?
+            for (const listener of errorListeners) {
+                listener.call(null, data);
                 sent = true;
             }
 
@@ -1483,12 +1496,14 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 data.responseText = request.responseText;
             }
 
+            // TODO: do we need to call this functions in the global context?
             if (context.onevent) {
                 context.onevent.call(null, data);
             }
 
-            for (const data of eventListeners) { //
-                data.call(null, data); // Todo: tricky, can be improved?
+            // TODO: do we need to call these functions in the global context?
+            for (const listener of eventListeners) {
+                listener.call(null, data);
             }
         };
 
@@ -1526,7 +1541,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
              */
             addOnError: function addOnError(callback) {
                 if (typeof callback === 'function') {
-                    errorListeners[errorListeners.length] = callback;
+                    errorListeners.push(callback);
                 } else {
                     throw new Error("faces.ajax.addOnError:  Added a callback that was not a function.");
                 }
@@ -1554,7 +1569,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
              */
             addOnEvent: function addOnEvent(callback) {
                 if (typeof callback === 'function') {
-                    eventListeners[eventListeners.length] = callback;
+                    eventListeners.push(callback);
                 } else {
                     throw new Error("faces.ajax.addOnEvent: Added a callback that was not a function");
                 }
@@ -2706,7 +2721,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
 
         // "Constant" fields ----------------------------------------------------------------------------------------------
 
-        const URL_PROTOCOL = window.location.protocol.replace("http", "ws") + "//";
+        const URL_PROTOCOL = window.location.protocol.replace("http", "ws") + "//"; // todo: unused... https...?
         const RECONNECT_INTERVAL = 500;
         const MAX_RECONNECT_ATTEMPTS = 25;
         const REASON_EXPIRED = "Expired";
@@ -2874,7 +2889,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * If given function is actually not a function, then try to interpret it as name of a global function.
          * If it still doesn't resolve to anything, then return a NOOP function.
          * @param {Object} fn Can be function, or string representing function name, or undefined.
-         * @return {function} The intented function, or a NOOP function when undefined.
+         * @return {function} The intended function, or a NOOP function when undefined.
          */
         function resolveFunction(fn) {
             return (typeof fn !== "function") && (fn = window[fn] || function(){}), fn;
