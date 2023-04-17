@@ -293,6 +293,7 @@ public abstract class UIComponentBase extends UIComponent {
     public void setId(String id) {
         if (uiComponentBaseImpl != null) {
             uiComponentBaseImpl.setId(id);
+            return;
         }
 
 
@@ -321,6 +322,7 @@ public abstract class UIComponentBase extends UIComponent {
     public void setParent(UIComponent parent) {
         if (uiComponentBaseImpl != null) {
             uiComponentBaseImpl.setParent(parent);
+            return;
         }
 
 
@@ -362,6 +364,7 @@ public abstract class UIComponentBase extends UIComponent {
     public void setRendered(boolean rendered) {
         if (uiComponentBaseImpl != null) {
             uiComponentBaseImpl.setRendered(rendered);
+            return;
         }
 
         getStateHelper().put(PropertyKeys.rendered, rendered);
@@ -380,6 +383,7 @@ public abstract class UIComponentBase extends UIComponent {
     public void setRendererType(String rendererType) {
         if (uiComponentBaseImpl != null) {
             uiComponentBaseImpl.setRendererType(rendererType);
+            return;
         }
 
 
@@ -563,6 +567,7 @@ public abstract class UIComponentBase extends UIComponent {
     public void broadcast(FacesEvent event) throws AbortProcessingException {
         if (uiComponentBaseImpl != null) {
             uiComponentBaseImpl.broadcast(event);
+            return;
         }
 
         if (event == null) {
@@ -593,6 +598,7 @@ public abstract class UIComponentBase extends UIComponent {
     public void decode(FacesContext context) {
         if (uiComponentBaseImpl != null) {
             uiComponentBaseImpl.decode(context);
+            return;
         }
 
 
@@ -620,6 +626,7 @@ public abstract class UIComponentBase extends UIComponent {
     public void encodeBegin(FacesContext context) throws IOException {
         if (uiComponentBaseImpl != null) {
             uiComponentBaseImpl.encodeBegin(context);
+            return;
         }
 
 
@@ -655,6 +662,7 @@ public abstract class UIComponentBase extends UIComponent {
     public void encodeChildren(FacesContext context) throws IOException {
         if (uiComponentBaseImpl != null) {
             uiComponentBaseImpl.encodeChildren(context);
+            return;
         }
 
 
@@ -687,6 +695,7 @@ public abstract class UIComponentBase extends UIComponent {
     public void encodeEnd(FacesContext context) throws IOException {
         if (uiComponentBaseImpl != null) {
             uiComponentBaseImpl.encodeEnd(context);
+            return;
         }
 
 
