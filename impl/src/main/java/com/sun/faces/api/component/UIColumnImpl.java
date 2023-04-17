@@ -14,9 +14,11 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.faces.component;
+package com.sun.faces.api.component;
 
-import com.sun.faces.api.component.UIColumnImpl;
+import jakarta.faces.component.UIColumn;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIData;
 
 /**
  * <p>
@@ -24,7 +26,7 @@ import com.sun.faces.api.component.UIColumnImpl;
  * {@link UIData} component.
  * </p>
  */
-public class UIColumn extends UIComponentBase {
+public class UIColumnImpl extends UIComponentBaseImpl {
 
     // ------------------------------------------------------ Manifest Constants
 
@@ -42,20 +44,28 @@ public class UIColumn extends UIComponentBase {
      */
     public static final String COMPONENT_FAMILY = "jakarta.faces.Column";
 
-    UIColumnImpl uiColumnImpl;
+    UIColumn peer;
 
-    // ----------------------------------------------------------- Constructors
+    // ------------------------------------------------------------ Constructors
+
+    @Override
+    public UIColumn getPeer() {
+        return peer;
+    }
+
+    public void setPeer(UIColumn peer) {
+        this.peer = peer;
+        super.setPeer(peer);
+    }
 
     /**
      * <p>
      * Create a new {@link UIColumn} instance with default property values.
      * </p>
      */
-    public UIColumn() {
-        super(new UIColumnImpl());
+    public UIColumnImpl() {
+        super();
         setRendererType(null);
-        this.uiColumnImpl = (UIColumnImpl) getUiComponentBaseImpl();
-        uiColumnImpl.setPeer(this);
     }
 
     // -------------------------------------------------------------- Properties
@@ -71,43 +81,51 @@ public class UIColumn extends UIComponentBase {
     }
 
     /**
+     * <p>
      * Return the footer facet of the column (if any). A convenience method for <code>getFacet("footer")</code>.
+     * </p>
      *
      * @return the footer component.
      */
     public UIComponent getFooter() {
-        return uiColumnImpl.getFooter();
+        return getFacet("footer");
     }
 
     /**
+     * <p>
      * Set the footer facet of the column. A convenience method for <code>getFacets().put("footer", footer)</code>.
+     * </p>
      *
      * @param footer the new footer facet
      *
      * @throws NullPointerException if <code>footer</code> is <code>null</code>
      */
     public void setFooter(UIComponent footer) {
-        uiColumnImpl.setFooter(footer);
+        getFacets().put("footer", footer);
     }
 
     /**
+     * <p>
      * Return the header facet of the column (if any). A convenience method for <code>getFacet("header")</code>.
+     * </p>
      *
      * @return the header component.
      */
     public UIComponent getHeader() {
-        return uiColumnImpl.getHeader();
+        return getFacet("header");
     }
 
     /**
+     * <p>
      * Set the header facet of the column. A convenience method for <code>getFacets().put("header", header)</code>.
+     * </p>
      *
      * @param header the new header facet
      *
      * @throws NullPointerException if <code>header</code> is <code>null</code>
      */
     public void setHeader(UIComponent header) {
-        uiColumnImpl.setHeader(header);
+        getFacets().put("header", header);
     }
 
 }
