@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2022, 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -14,12 +15,18 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.faces.component;
+package com.sun.faces.api.component;
 
-import com.sun.faces.api.component.UICommandImpl;
+import static jakarta.faces.event.PhaseId.APPLY_REQUEST_VALUES;
+import static jakarta.faces.event.PhaseId.INVOKE_APPLICATION;
 
 import jakarta.el.MethodExpression;
 import jakarta.faces.application.Application;
+import jakarta.faces.component.ActionSource;
+import jakarta.faces.component.ActionSource2;
+import jakarta.faces.component.UICommand;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.ActionListener;
@@ -27,9 +34,11 @@ import jakarta.faces.event.FacesEvent;
 import jakarta.faces.render.Renderer;
 
 /**
+ * <p>
  * <strong>UICommand</strong> is a {@link UIComponent} that represents a user interface component which, when activated
  * by the user, triggers an application specific "command" or "action". Such a component is typically rendered as a push
  * button, a menu item, or a hyperlink.
+ * </p>
  *
  * <p>
  * When the <code>decode()</code> method of this {@link UICommand}, or its corresponding {@link Renderer}, detects that
@@ -40,11 +49,11 @@ import jakarta.faces.render.Renderer;
  * <p>
  * Listeners will be invoked in the following order:
  * <ol>
- *   <li>{@link ActionListener}s, in the order in which they were registered.
- *   <li>The "actionListener" {@link MethodExpression} (which will cover the "actionListener" that was set as a
- *       <code>MethodBinding</code>).
- *   <li>The default {@link ActionListener}, retrieved from the {@link Application} - and therefore, any attached "action"
- *       {@link MethodExpression}.
+ * <li>{@link ActionListener}s, in the order in which they were registered.
+ * <li>The "actionListener" {@link MethodExpression} (which will cover the "actionListener" that was set as a
+ * <code>MethodBinding</code>).
+ * <li>The default {@link ActionListener}, retrieved from the {@link Application} - and therefore, any attached "action"
+ * {@link MethodExpression}.
  * </ol>
  *
  * <p>
@@ -52,17 +61,21 @@ import jakarta.faces.render.Renderer;
  * be changed by calling the <code>setRendererType()</code> method.
  * </p>
  */
-public class UICommand extends UIComponentBase implements ActionSource2 {
+public class UICommandImpl extends UIComponentBaseImpl implements ActionSource2 {
 
     // ------------------------------------------------------ Manifest Constants
 
     /**
+     * <p>
      * The standard component type for this component.
+     * </p>
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.Command";
 
     /**
+     * <p>
      * The standard component family for this component.
+     * </p>
      */
     public static final String COMPONENT_FAMILY = "jakarta.faces.Command";
 
@@ -73,18 +86,28 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
         value, immediate, methodBindingActionListener, actionExpression,
     }
 
-    UICommandImpl uiCommandImpl;
+    UICommand peer;
 
     // ------------------------------------------------------------ Constructors
 
+    @Override
+    public UICommand getPeer() {
+        return peer;
+    }
+
+    public void setPeer(UICommand peer) {
+        this.peer = peer;
+        super.setPeer(peer);
+    }
+
     /**
+     * <p>
      * Create a new {@link UICommand} instance with default property values.
+     * </p>
      */
-    public UICommand() {
-        super(new UICommandImpl());
+    public UICommandImpl() {
+        super();
         setRendererType("jakarta.faces.Button");
-        this.uiCommandImpl = (UICommandImpl) getUiComponentBaseImpl();
-        uiCommandImpl.setPeer(this);
     }
 
     // -------------------------------------------------------------- Properties
@@ -97,46 +120,52 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
     // ------------------------------------------------- ActionSource/ActionSource2 Properties
 
     /**
+     * <p>
      * The immediate flag.
+     * </p>
      */
     @Override
     public boolean isImmediate() {
-        return uiCommandImpl.isImmediate();
+        return (Boolean) getStateHelper().eval(PropertyKeys.immediate, false);
     }
 
     @Override
     public void setImmediate(boolean immediate) {
-        uiCommandImpl.setImmediate(immediate);
+        getStateHelper().put(PropertyKeys.immediate, immediate);
     }
 
     /**
+     * <p>
      * Returns the <code>value</code> property of the <code>UICommand</code>. This is most often rendered as a label.
+     * </p>
      *
      * @return The object representing the value of this component.
      */
     public Object getValue() {
-        return uiCommandImpl.getValue();
+        return getStateHelper().eval(PropertyKeys.value);
     }
 
     /**
+     * <p>
      * Sets the <code>value</code> property of the <code>UICommand</code>. This is most often rendered as a label.
+     * </p>
      *
      * @param value the new value
      */
     public void setValue(Object value) {
-        uiCommandImpl.setValue(value);
+        getStateHelper().put(PropertyKeys.value, value);
     }
 
     // ---------------------------------------------------- ActionSource / ActionSource2 Methods
 
     @Override
     public MethodExpression getActionExpression() {
-        return uiCommandImpl.getActionExpression();
+        return (MethodExpression) getStateHelper().get(PropertyKeys.actionExpression);
     }
 
     @Override
     public void setActionExpression(MethodExpression actionExpression) {
-        uiCommandImpl.setActionExpression(actionExpression);
+        getStateHelper().put(PropertyKeys.actionExpression, actionExpression);
     }
 
     /**
@@ -144,12 +173,12 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
      */
     @Override
     public void addActionListener(ActionListener listener) {
-        uiCommandImpl.addActionListener(listener);
+        addFacesListener(listener);
     }
 
     @Override
     public ActionListener[] getActionListeners() {
-        return uiCommandImpl.getActionListeners();
+        return (ActionListener[]) getFacesListeners(ActionListener.class);
     }
 
     /**
@@ -157,15 +186,17 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
      */
     @Override
     public void removeActionListener(ActionListener listener) {
-        uiCommandImpl.removeActionListener(listener);
+        removeFacesListener(listener);
     }
 
     // ----------------------------------------------------- UIComponent Methods
 
     /**
+     * <p>
      * In addition to to the default {@link UIComponent#broadcast} processing, pass the {@link ActionEvent} being broadcast
      * to the method referenced by <code>actionListener</code> (if any), and to the default {@link ActionListener}
      * registered on the {@link jakarta.faces.application.Application}.
+     * </p>
      *
      * @param event {@link FacesEvent} to be broadcast
      *
@@ -177,20 +208,46 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
      */
     @Override
     public void broadcast(FacesEvent event) throws AbortProcessingException {
-        uiCommandImpl.broadcast(event);
+
+        // Perform standard superclass processing (including calling our
+        // ActionListeners)
+        super.broadcast(event);
+
+        if (event instanceof ActionEvent) {
+            FacesContext context = event.getFacesContext();
+
+            // Invoke the default ActionListener
+            ActionListener listener = context.getApplication().getActionListener();
+            if (listener != null) {
+                listener.processAction((ActionEvent) event);
+            }
+        }
     }
 
     /**
+     *
+     * <p>
      * Intercept <code>queueEvent</code> and take the following action. If the event is an <code>{@link ActionEvent}</code>,
      * obtain the <code>UIComponent</code> instance from the event. If the component is an <code>{@link ActionSource}</code>
      * obtain the value of its "immediate" property. If it is true, mark the phaseId for the event to be
      * <code>PhaseId.APPLY_REQUEST_VALUES</code> otherwise, mark the phaseId to be <code>PhaseId.INVOKE_APPLICATION</code>.
      * The event must be passed on to <code>super.queueEvent()</code> before returning from this method.
+     * </p>
      *
      */
     @Override
     public void queueEvent(FacesEvent event) {
-        uiCommandImpl.queueEvent(event);
+        UIComponent component = event.getComponent();
+
+        if (event instanceof ActionEvent && component instanceof ActionSource) {
+            if (((ActionSource) component).isImmediate()) {
+                event.setPhaseId(APPLY_REQUEST_VALUES);
+            } else {
+                event.setPhaseId(INVOKE_APPLICATION);
+            }
+        }
+
+        super.queueEvent(event);
     }
 
 }
