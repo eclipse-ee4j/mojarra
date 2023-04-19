@@ -1517,10 +1517,11 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
      */
     public void addClientBehavior(String eventName, ClientBehavior behavior) {
         assertClientBehaviorHolder();
+
         // First, make sure that the event is supported. We don't want
         // to bother attaching behaviors for unsupported events.
 
-        Collection<String> eventNames = getEventNames();
+        Collection<String> eventNames = getPeer().getEventNames();
 
         // getClientEventNames() is spec'ed to require a non-null Set.
         // If getClientEventNames() returns null, throw an exception
@@ -1533,22 +1534,23 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
         if (eventNames.contains(eventName)) {
 
             if (initialStateMarked()) {
-                // a Behavior has been added dynamically. Update existing
+                // A Behavior has been added dynamically. Update existing
                 // Behaviors, if any, to save their full state.
                 if (behaviors != null) {
                     for (Entry<String, List<ClientBehavior>> entry : behaviors.entrySet()) {
-                        for (ClientBehavior b : entry.getValue()) {
-                            if (b instanceof PartialStateHolder) {
+                        for (ClientBehavior clientBehavior : entry.getValue()) {
+                            if (clientBehavior instanceof PartialStateHolder) {
                                 ((PartialStateHolder) behavior).clearInitialState();
                             }
                         }
                     }
                 }
             }
+
             // We've got an event that we support, create our Map
             // if necessary
 
-            if (null == behaviors) {
+            if (behaviors == null) {
                 // Typically we only have a small number of behaviors for
                 // any component - in most cases only 1. Using a very small
                 // initial capacity so that we keep the footprint to a minimum.
@@ -1558,7 +1560,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
 
             List<ClientBehavior> eventBehaviours = behaviors.get(eventName);
 
-            if (null == eventBehaviours) {
+            if (eventBehaviours == null) {
                 // Again using small initial capacity - we typically
                 // only have 1 Behavior per event type.
                 eventBehaviours = new ArrayList<>(3);
@@ -1654,7 +1656,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
      * @return true if component implements {@link ClientBehaviorHolder} interface.
      */
     private boolean isClientBehaviorHolder() {
-        return ClientBehaviorHolder.class.isInstance(this);
+        return ClientBehaviorHolder.class.isInstance(getPeer());
     }
 
     /**
