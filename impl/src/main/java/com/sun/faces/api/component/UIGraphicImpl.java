@@ -14,11 +14,11 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.faces.component;
-
-import com.sun.faces.api.component.UIGraphicImpl;
+package com.sun.faces.api.component;
 
 import jakarta.el.ValueExpression;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIGraphic;
 
 /**
  * <p>
@@ -31,8 +31,20 @@ import jakarta.el.ValueExpression;
  * be changed by calling the <code>setRendererType()</code> method.
  * </p>
  */
-public class UIGraphic extends UIComponentBase {
+public class UIGraphicImpl extends UIComponentBaseImpl implements PeerHolder  {
 
+    /**
+     * Properties that are tracked by state saving.
+     */
+    enum PropertyKeys {
+
+        /**
+         * <p>
+         * The local value of this {@link UIComponent}.
+         * </p>
+         */
+        value
+    }
 
     // ------------------------------------------------------ Manifest Constants
 
@@ -50,22 +62,29 @@ public class UIGraphic extends UIComponentBase {
      */
     public static final String COMPONENT_FAMILY = "jakarta.faces.Graphic";
 
-    UIGraphicImpl uiGraphicImpl;
+    UIGraphic peer;
 
     // ------------------------------------------------------------ Constructors
+
+    @Override
+    public UIGraphic getPeer() {
+        return peer;
+    }
+
+    public void setPeer(UIGraphic peer) {
+        this.peer = peer;
+        super.setPeer(peer);
+    }
 
     /**
      * <p>
      * Create a new {@link UIGraphic} instance with default property values.
      * </p>
      */
-    public UIGraphic() {
-        super(new UIGraphicImpl());
+    public UIGraphicImpl() {
+        super();
         setRendererType("jakarta.faces.Image");
-        this.uiGraphicImpl = (UIGraphicImpl) getUiComponentBaseImpl();
-        uiGraphicImpl.setPeer(this);
     }
-
 
 
     // -------------------------------------------------------------- Properties
@@ -83,7 +102,7 @@ public class UIGraphic extends UIComponentBase {
      * @return the url.
      */
     public String getUrl() {
-        return uiGraphicImpl.getUrl();
+        return (String) getValue();
     }
 
     /**
@@ -94,7 +113,7 @@ public class UIGraphic extends UIComponentBase {
      * @param url The new image URL
      */
     public void setUrl(String url) {
-        uiGraphicImpl.setUrl(url);
+        setValue(url);
     }
 
     /**
@@ -105,7 +124,7 @@ public class UIGraphic extends UIComponentBase {
      * @return the value.
      */
     public Object getValue() {
-        return uiGraphicImpl.getValue();
+        return getStateHelper().eval(PropertyKeys.value);
     }
 
     /**
@@ -116,16 +135,17 @@ public class UIGraphic extends UIComponentBase {
      * @param value the new value
      */
     public void setValue(Object value) {
-        uiGraphicImpl.setValue(value);
+        getStateHelper().put(PropertyKeys.value, value);
     }
-
 
     // ---------------------------------------------------------------- Bindings
 
 
     /**
+     * <p>
      * Return any {@link ValueExpression} set for <code>value</code> if a {@link ValueExpression} for <code>url</code> is
      * requested; otherwise, perform the default superclass processing for this method.
+     * </p>
      *
      * @param name Name of the attribute or property for which to retrieve a {@link ValueExpression}
      * @return the value expression, or <code>null</code>.
@@ -134,12 +154,18 @@ public class UIGraphic extends UIComponentBase {
      */
     @Override
     public ValueExpression getValueExpression(String name) {
-        return uiGraphicImpl.getValueExpression(name);
+        if ("url".equals(name)) {
+            return super.getValueExpression("value");
+        } else {
+            return super.getValueExpression(name);
+        }
     }
 
     /**
+     * <p>
      * Store any {@link ValueExpression} specified for <code>url</code> under <code>value</code> instead; otherwise, perform
      * the default superclass processing for this method.
+     * </p>
      *
      * @param name Name of the attribute or property for which to set a {@link ValueExpression}
      * @param binding The {@link ValueExpression} to set, or <code>null</code> to remove any currently set
@@ -150,8 +176,13 @@ public class UIGraphic extends UIComponentBase {
      */
     @Override
     public void setValueExpression(String name, ValueExpression binding) {
-        uiGraphicImpl.setValueExpression(name, binding);
+        if ("url".equals(name)) {
+            super.setValueExpression("value", binding);
+        } else {
+            super.setValueExpression(name, binding);
+        }
     }
 
+    // ----------------------------------------------------- StateHolder Methods
 
 }
