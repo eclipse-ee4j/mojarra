@@ -14,11 +14,10 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.faces.component;
-
-import com.sun.faces.api.component.UIImportConstantsImpl;
+package com.sun.faces.api.component;
 
 import jakarta.el.ValueExpression;
+import jakarta.faces.component.UIImportConstants;
 import jakarta.faces.view.ViewMetadata;
 
 /**
@@ -110,36 +109,52 @@ import jakarta.faces.view.ViewMetadata;
  *
  * @since 2.3
  */
-public class UIImportConstants extends UIComponentBase {
+public class UIImportConstantsImpl extends UIComponentBaseImpl {
 
     // ---------------------------------------------------------------------------------------------- Manifest Constants
 
     /**
+     * <p>
      * The standard component type for this component.
+     * </p>
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.ImportConstants";
 
     /**
+     * <p>
      * The standard component family for this component.
+     * </p>
      */
     public static final String COMPONENT_FAMILY = "jakarta.faces.ImportConstants";
 
+    /**
+     * Properties that are tracked by state saving.
+     */
+    enum PropertyKeys {
+        type, var;
+    }
 
-    UIImportConstantsImpl uiImportConstants;
+    UIImportConstants peer;
 
     // ------------------------------------------------------------ Constructors
 
+    @Override
+    public UIImportConstants getPeer() {
+        return peer;
+    }
+
+    public void setPeer(UIImportConstants peer) {
+        this.peer = peer;
+        super.setPeer(peer);
+    }
 
     /**
      * <p>
-     * Create a new {@link UIImportConstants} instance with renderer type set to <code>null</code>.
+     * Create a new {@link UIImportConstantsImpl} instance with renderer type set to <code>null</code>.
      * </p>
      */
-    public UIImportConstants() {
-        super(new UIImportConstantsImpl());
+    public UIImportConstantsImpl() {
         setRendererType(null);
-        this.uiImportConstants = (UIImportConstantsImpl) getUiComponentBaseImpl();
-        uiImportConstants.setPeer(this);
     }
 
     // ------------------------------------------------------------------------------------------------------ Properties
@@ -150,46 +165,56 @@ public class UIImportConstants extends UIComponentBase {
     }
 
     /**
+     * <p>
      * Returns the fully qualified name of the type to import the constant field values for.
+     * </p>
      *
      * @return The fully qualified name of the type to import the constant field values for.
      */
     public String getType() {
-        return uiImportConstants.getType();
+        return (String) getStateHelper().eval(PropertyKeys.type);
     }
 
     /**
+     * <p>
      * Sets the fully qualified name of the type to import the constant field values for.
+     * </p>
      *
      * @param type The fully qualified name of the type to import the constant field values for.
      */
     public void setType(final String type) {
-        uiImportConstants.setType(type);
+        getStateHelper().put(PropertyKeys.type, type);
     }
 
     /**
+     * <p>
      * Returns name of request scope attribute under which constants will be exposed as a Map.
+     * </p>
      *
      * @return Name of request scope attribute under which constants will be exposed as a Map.
      */
     public String getVar() {
-        return uiImportConstants.getVar();
+        return (String) getStateHelper().eval(PropertyKeys.var);
     }
 
     /**
+     * <p>
      * Sets name of request scope attribute under which constants will be exposed as a Map.
+     * </p>
      *
      * @param var Name of request scope attribute under which constants will be exposed as a Map.
      */
     public void setVar(final String var) {
-        uiImportConstants.setVar(var);
+        getStateHelper().put(PropertyKeys.var, var);
     }
 
     // --------------------------------------------------------------------------------------------- UIComponent Methods
 
     /**
+     * <p>
      * Set the {@link ValueExpression} used to calculate the value for the specified attribute or property name, if any. If
      * a {@link ValueExpression} is set for the <code>var</code> property, throw an illegal argument exception.
+     * </p>
      *
      * @throws IllegalArgumentException If <code>name</code> is one of <code>id</code>, <code>parent</code>, or
      * <code>var</code>.
@@ -197,7 +222,11 @@ public class UIImportConstants extends UIComponentBase {
      */
     @Override
     public void setValueExpression(String name, ValueExpression binding) {
-        uiImportConstants.setValueExpression(name, binding);
+        if (PropertyKeys.var.toString().equals(name)) {
+            throw new IllegalArgumentException(name);
+        }
+
+        super.setValueExpression(name, binding);
     }
 
 }
