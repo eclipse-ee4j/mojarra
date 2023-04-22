@@ -1110,8 +1110,8 @@ public abstract class UIComponentImpl extends UIComponent implements PeerHolder 
         boolean found = false;
         if (clientId.equals(getClientId(context))) {
             try {
-                pushComponentToEL(context, this);
-                callback.invokeContextCallback(context, this);
+                pushComponentToEL(context, getPeer());
+                callback.invokeContextCallback(context, getPeer());
 
                 return true;
             } catch (Exception e) {
@@ -1306,7 +1306,7 @@ public abstract class UIComponentImpl extends UIComponent implements PeerHolder 
         try {
             // Visit ourselves. Note that we delegate to the
             // VisitContext to actually perform the visit.
-            VisitResult result = visitContext.invokeVisitCallback(this, callback);
+            VisitResult result = visitContext.invokeVisitCallback(getPeer(), callback);
 
             // If the visit is complete, short-circuit out and end the visit
             if (result == COMPLETE) {
@@ -1586,7 +1586,7 @@ public abstract class UIComponentImpl extends UIComponent implements PeerHolder 
 
         // If we're a composite component, we also have to pop ourselves off of the
         // composite stack
-        if (UIComponentImpl.isCompositeComponent(this)) {
+        if (UIComponentImpl.isCompositeComponent(getPeer())) {
             ArrayDeque<UIComponent> compositeELStack = _getComponentELStack(_CURRENT_COMPOSITE_COMPONENT_STACK_KEY, contextAttributes);
             if (!compositeELStack.isEmpty()) {
                 compositeELStack.pop();
@@ -1829,7 +1829,7 @@ public abstract class UIComponentImpl extends UIComponent implements PeerHolder 
      */
     @Override
     public UIComponent getNamingContainer() {
-        UIComponent namingContainer = this;
+        UIComponent namingContainer = getPeer();
         while (namingContainer != null) {
             if (namingContainer instanceof NamingContainer) {
                 return namingContainer;
@@ -1916,7 +1916,7 @@ public abstract class UIComponentImpl extends UIComponent implements PeerHolder 
             // make sure to populate the ValueExpression for it.
             ValueExpression valueExpression = getValueExpression("binding");
             if (valueExpression != null) {
-                valueExpression.setValue(FacesContext.getCurrentInstance().getELContext(), this);
+                valueExpression.setValue(FacesContext.getCurrentInstance().getELContext(), getPeer());
             }
 
             isCompositeComponent = null;
