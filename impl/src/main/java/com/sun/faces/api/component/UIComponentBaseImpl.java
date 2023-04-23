@@ -28,6 +28,8 @@ import static java.lang.Boolean.TRUE;
 import static java.lang.Character.isDigit;
 import static java.lang.Character.isLetter;
 import static java.lang.Thread.currentThread;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableList;
 import static java.util.logging.Level.FINE;
@@ -92,10 +94,8 @@ import jakarta.faces.event.SystemEventListener;
 import jakarta.faces.render.Renderer;
 
 /**
- * <p>
  * <strong class="changed_modified_2_0 changed_modified_2_0_rev_a changed_added_2_1">UIComponentBase</strong> is a
  * convenience base class that implements the default concrete behavior of all methods defined by {@link UIComponent}.
- * </p>
  *
  * <p>
  * By default, this class defines <code>getRendersChildren()</code> to find the renderer for this component and call its
@@ -185,6 +185,11 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
      * Flag indicating a desire to now participate in state saving.
      */
     private boolean transientFlag;
+
+    /**
+     * behaviors associated with this component.
+     */
+    private BehaviorsMap behaviors;
 
     private UIComponentBase peer;
 
@@ -602,6 +607,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
         popComponentFromEL(context);
     }
 
+
     // -------------------------------------------------- Event Listener Methods
 
     /**
@@ -837,11 +843,12 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
         }
 
         if (listenersByEventClass != null) {
-            return listenersByEventClass.getOrDefault(eventClass, Collections.emptyList());
+            return listenersByEventClass.getOrDefault(eventClass, emptyList());
         }
 
-        return Collections.emptyList();
+        return emptyList();
     }
+
 
     // ------------------------------------------------ Lifecycle Phase Handlers
 
@@ -871,7 +878,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
 
             // Process this component itself
             try {
-                decode(context);
+                getPeer().decode(context);
             } catch (RuntimeException e) {
                 context.renderResponse();
                 throw e;
@@ -1005,7 +1012,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
             Object[] childState = (Object[]) stateStruct[CHILD_STATE];
 
             // Process this component itself
-            restoreState(context, stateStruct[MY_STATE]);
+            getPeer().restoreState(context, stateStruct[MY_STATE]);
 
             // Process all the children of this component
             int i = restoreChildState(context, childState);
@@ -1017,6 +1024,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
             popComponentFromEL(context);
         }
     }
+
 
     // ------------------------------------------------------- Protected Methods
 
@@ -1038,7 +1046,6 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
 
     @Override
     public Renderer getRenderer(FacesContext context) {
-
         Renderer renderer = null;
 
         String rendererType = getRendererType();
@@ -1058,6 +1065,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
         return renderer;
     }
 
+
     // ---------------------------------------------- PartialStateHolder Methods
 
     /**
@@ -1075,6 +1083,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
         if (listeners != null) {
             listeners.markInitialState();
         }
+
         if (listenersByEventClass != null) {
             for (List<SystemEventListener> listener : listenersByEventClass.values()) {
                 if (listener instanceof PartialStateHolder) {
@@ -1082,6 +1091,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
                 }
             }
         }
+
         if (behaviors != null) {
             for (Entry<String, List<ClientBehavior>> entry : behaviors.entrySet()) {
                 for (ClientBehavior behavior : entry.getValue()) {
@@ -1104,9 +1114,11 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
     @Override
     public void clearInitialState() {
         super.clearInitialState();
+
         if (listeners != null) {
             listeners.clearInitialState();
         }
+
         if (listenersByEventClass != null) {
             for (List<SystemEventListener> listener : listenersByEventClass.values()) {
                 if (listener instanceof PartialStateHolder) {
@@ -1114,6 +1126,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
                 }
             }
         }
+
         if (behaviors != null) {
             for (Entry<String, List<ClientBehavior>> entry : behaviors.entrySet()) {
                 for (ClientBehavior behavior : entry.getValue()) {
@@ -1215,7 +1228,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
         }
 
         if (values[4] != null) {
-            getStateHelper().restoreState(context, values[4]);
+            getPeer().getStateHelper().restoreState(context, values[4]);
         }
 
         if (values.length == 6) {
@@ -1237,6 +1250,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
     public void setTransient(boolean transientFlag) {
         this.transientFlag = transientFlag;
     }
+
 
     // -------------------------------------- Helper methods for state saving
 
@@ -1280,7 +1294,8 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
         Object result;
         Class<?> mapOrCollectionClass = attachedObject.getClass();
         boolean newWillSucceed = true;
-        // first, test for newability of the class.
+
+        // First, test for newability of the class.
         try {
             int modifiers = mapOrCollectionClass.getModifiers();
             newWillSucceed = Modifier.isPublic(modifiers);
@@ -1349,10 +1364,10 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
      */
 
     public static Object restoreAttachedState(FacesContext context, Object stateObj) throws IllegalStateException {
-        if (null == context) {
+        if (context == null) {
             throw new NullPointerException();
         }
-        if (null == stateObj) {
+        if (stateObj == null) {
             return null;
         }
         Object result;
@@ -1412,14 +1427,15 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
         } else {
             throw new IllegalStateException("Unknown object type");
         }
+
         return result;
     }
 
     private static Map<String, ValueExpression> restoreBindingsState(FacesContext context, Object state) {
-
         if (state == null) {
             return null;
         }
+
         Object values[] = (Object[]) state;
         String names[] = (String[]) values[0];
         Object states[] = (Object[]) values[1];
@@ -1427,12 +1443,11 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
         for (int i = 0; i < names.length; i++) {
             bindings.put(names[i], (ValueExpression) restoreAttachedState(context, states[i]));
         }
-        return bindings;
 
+        return bindings;
     }
 
     public Object saveSystemEventListeners(FacesContext ctx) {
-
         if (listenersByEventClass == null) {
             return null;
         }
@@ -1453,11 +1468,9 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
         }
 
         return savedState ? listeners : null;
-
     }
 
     public Map<Class<? extends SystemEvent>, List<SystemEventListener>> restoreSystemEventListeners(FacesContext ctx, Object state) {
-
         if (state == null) {
             return null;
         }
@@ -1477,11 +1490,9 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
     }
 
     private void doPostAddProcessing(FacesContext context, UIComponent added) {
-
         if (parent.isInView()) {
             publishAfterViewEvents(context, context.getApplication(), added);
         }
-
     }
 
     private void doPreRemoveProcessing(FacesContext context, UIComponent toRemove) {
@@ -1491,12 +1502,9 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
 
     }
 
+
     // ------------------------------------------------------------- BehaviorHolder stub methods.
 
-    /**
-     * behaviors associated with this component.
-     */
-    private BehaviorsMap behaviors;
 
     /**
      * <p class="changed_added_2_0">
@@ -1610,8 +1618,8 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
      * @since 2.0
      */
     public Map<String, List<ClientBehavior>> getClientBehaviors() {
-        if (null == behaviors) {
-            return Collections.emptyMap();
+        if (behaviors == null) {
+            return emptyMap();
         }
 
         return behaviors;
@@ -1633,6 +1641,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
      */
     public String getDefaultEventName() {
         assertClientBehaviorHolder();
+
         // Our default implementation just returns null - no default
         // event name;
         return null;
@@ -1740,24 +1749,23 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
     }
 
     private Object saveBehavior(FacesContext ctx, ClientBehavior behavior) {
-
-        // if the Behavior isn't a StateHolder, do nothing as it will be
+        // If the Behavior isn't a StateHolder, do nothing as it will be
         // added to the BehaviorMap when the template is re-executed.
         return behavior instanceof StateHolder ? ((StateHolder) behavior).saveState(ctx) : null;
 
     }
 
     private void restoreBehaviors(FacesContext ctx, List<ClientBehavior> existingBehaviors, Object[] state) {
-
-        // this method assumes a one to one correspondence in both length and
+        // This method assumes a one to one correspondence in both length and
         // order.
         for (int i = 0, len = state.length; i < len; i++) {
             ClientBehavior behavior = existingBehaviors.get(i);
             if (state[i] == null) {
-                // nothing to do...move on
+                // Nothing to do...move on
                 continue;
             }
-            // if the Behavior is a StateHolder, invoke restoreState
+
+            // If the Behavior is a StateHolder, invoke restoreState
             // passing in the current state. If it's not, just ignore
             // it and move along.
             if (behavior instanceof StateHolder) {
@@ -1771,8 +1779,8 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
     }
 
     private static void publishAfterViewEvents(FacesContext context, Application application, UIComponent component) {
-
         component.setInView(true);
+
         try {
             component.pushComponentToEL(context, component);
             application.publishEvent(context, PostAddToViewEvent.class, component);
@@ -1841,6 +1849,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
 
     // Private implementation of Map that supports the functionality
     // required by UIComponent.getFacets()
+    //
     // HISTORY:
     // Versions 1.333 and older used inheritence to provide the
     // basic map functionality. This was wasteful since a
