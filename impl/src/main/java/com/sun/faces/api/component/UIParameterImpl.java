@@ -14,13 +14,16 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.faces.component;
+package com.sun.faces.api.component;
 
-import com.sun.faces.api.component.UIParameterImpl;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIParameter;
 
 /**
+ * <p>
  * <strong>UIParameter</strong> is a {@link UIComponent} that represents an optionally named configuration parameter for
  * a parent component.
+ * </p>
  *
  * <p>
  * Parent components should retrieve the value of a parameter by calling <code>getValue()</code>. In this way, the
@@ -33,8 +36,10 @@ import com.sun.faces.api.component.UIParameterImpl;
  * via the <code>getValue()</code> method. {@link jakarta.faces.render.Renderer}s that support parameter names on their
  * nested {@link UIParameter} child components should document their use of this property.
  * </p>
+ *
  */
-public class UIParameter extends UIComponentBase {
+
+public class UIParameterImpl extends UIComponentBaseImpl {
 
     // ------------------------------------------------------ Manifest Constants
 
@@ -48,21 +53,31 @@ public class UIParameter extends UIComponentBase {
      */
     public static final String COMPONENT_FAMILY = "jakarta.faces.Parameter";
 
-    UIParameterImpl uiParameterImpl;
+    enum PropertyKeys {
+        name, value, disable
+    }
+
+    UIParameter peer;
 
     // ------------------------------------------------------------ Constructors
 
+    @Override
+    public UIParameter getPeer() {
+        return peer;
+    }
+
+    public void setPeer(UIParameter peer) {
+        this.peer = peer;
+        super.setPeer(peer);
+    }
 
     /**
      * Create a new {@link UIParameter} instance with default property values.
      */
-    public UIParameter() {
-        super(new UIParameterImpl());
+    public UIParameterImpl() {
+        super();
         setRendererType(null);
-        this.uiParameterImpl = (UIParameterImpl) getUiComponentBaseImpl();
-        uiParameterImpl.setPeer(this);
     }
-
 
     // -------------------------------------------------------------- Properties
 
@@ -72,39 +87,47 @@ public class UIParameter extends UIComponentBase {
     }
 
     /**
+     * <p>
      * Return the optional parameter name for this parameter.
+     * </p>
      *
      * @return the name.
      */
     public String getName() {
-        return uiParameterImpl.getName();
+        return (String) getStateHelper().eval(PropertyKeys.name);
     }
 
     /**
+     * <p>
      * Set the optional parameter name for this parameter.
+     * </p>
      *
      * @param name The new parameter name, or <code>null</code> for no name
      */
     public void setName(String name) {
-        uiParameterImpl.setName(name);
+        getStateHelper().put(PropertyKeys.name, name);
     }
 
     /**
+     * <p>
      * Returns the <code>value</code> property of the <code>UIParameter</code>.
+     * </p>
      *
      * @return the value.
      */
     public Object getValue() {
-        return uiParameterImpl.getValue();
+        return getStateHelper().eval(PropertyKeys.value);
     }
 
     /**
+     * <p>
      * Sets the <code>value</code> property of the\ <code>UIParameter</code>.
+     * </p>
      *
      * @param value the new value
      */
     public void setValue(Object value) {
-        uiParameterImpl.setValue(value);
+        getStateHelper().put(PropertyKeys.value, value);
     }
 
     /**
@@ -118,17 +141,19 @@ public class UIParameter extends UIComponentBase {
      * @since 2.0
      */
     public boolean isDisable() {
-        return uiParameterImpl.isDisable();
+        return (Boolean) getStateHelper().eval(PropertyKeys.disable, false);
     }
 
     /**
+     * <p>
      * Sets the <code>disable</code> property of the <code>UIParameter</code>.
+     * </p>
      *
      * @param disable the value for the disable flag.
      * @since 2.0
      */
     public void setDisable(boolean disable) {
-        uiParameterImpl.setDisable(disable);
+        getStateHelper().put(PropertyKeys.disable, disable);
     }
 
 }

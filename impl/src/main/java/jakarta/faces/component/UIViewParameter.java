@@ -16,6 +16,8 @@
 
 package jakarta.faces.component;
 
+import static java.util.Arrays.asList;
+
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -276,10 +278,13 @@ public class UIViewParameter extends UIInput {
      */
     private boolean isRequiredViaNestedRequiredValidator() {
         boolean result = false;
-        if (null == validators) {
+
+        Validator[] validators = getValidators();
+        if (validators == null) {
             return result;
         }
-        Iterator<Validator> iter = validators.iterator();
+
+        Iterator<Validator> iter = asList(validators).iterator();
         while (iter.hasNext()) {
             if (iter.next() instanceof RequiredValidator) {
                 // See JAVASERVERFACES-2526. Note that we can assume

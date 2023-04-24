@@ -199,7 +199,6 @@ public abstract class UIComponentBase extends UIComponent {
 
     public UIComponentBase(UIComponentBaseImpl uiComponentBaseImpl) {
         super(uiComponentBaseImpl);
-        populateDescriptorsMapIfNecessary();
         this.uiComponentBaseImpl = uiComponentBaseImpl;
     }
 

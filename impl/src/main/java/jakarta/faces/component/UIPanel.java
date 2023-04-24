@@ -26,25 +26,19 @@ public class UIPanel extends UIComponentBase {
     // ------------------------------------------------------ Manifest Constants
 
     /**
-     * <p>
      * The standard component type for this component.
-     * </p>
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.Panel";
 
     /**
-     * <p>
      * The standard component family for this component.
-     * </p>
      */
     public static final String COMPONENT_FAMILY = "jakarta.faces.Panel";
 
     // ------------------------------------------------------------ Constructors
 
     /**
-     * <p>
      * Create a new {@link UIPanel} instance with default property values.
-     * </p>
      */
     public UIPanel() {
         super();

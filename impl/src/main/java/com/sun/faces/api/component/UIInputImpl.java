@@ -14,27 +14,40 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.faces.component;
+package com.sun.faces.api.component;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import com.sun.faces.api.component.UIInputImpl;
 
 import jakarta.el.ELException;
 import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
+import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.PartialStateHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIComponentBase;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIViewParameter;
+import jakarta.faces.component.UpdateModelException;
 import jakarta.faces.context.ExceptionHandler;
+import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.ConverterException;
+import jakarta.faces.event.ExceptionQueuedEvent;
 import jakarta.faces.event.ExceptionQueuedEventContext;
 import jakarta.faces.event.PhaseId;
+import jakarta.faces.event.PostValidateEvent;
+import jakarta.faces.event.PreValidateEvent;
 import jakarta.faces.event.ValueChangeEvent;
 import jakarta.faces.event.ValueChangeListener;
 import jakarta.faces.render.Renderer;
+import jakarta.faces.validator.BeanValidator;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
 
@@ -82,35 +95,46 @@ import jakarta.faces.validator.ValidatorException;
  * calling the <code>setRendererType()</code> method.
  * </p>
  */
-public class UIInput extends UIOutput implements EditableValueHolder {
+public class UIInputImpl extends UIOutputImpl implements EditableValueHolder {
 
+    private static final String BEANS_VALIDATION_AVAILABLE = "jakarta.faces.private.BEANS_VALIDATION_AVAILABLE";
 
     // ------------------------------------------------------ Manifest Constants
 
     /**
+     * <p>
      * The standard component type for this component.
+     * </p>
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.Input";
 
     /**
+     * <p>
      * The standard component family for this component.
+     * </p>
      */
     public static final String COMPONENT_FAMILY = "jakarta.faces.Input";
 
     /**
+     * <p>
      * The message identifier of the {@link jakarta.faces.application.FacesMessage} to be created if a conversion error
      * occurs, and neither the page author nor the {@link ConverterException} provides a message.
+     * </p>
      */
     public static final String CONVERSION_MESSAGE_ID = "jakarta.faces.component.UIInput.CONVERSION";
 
     /**
+     * <p>
      * The message identifier of the {@link jakarta.faces.application.FacesMessage} to be created if a required check fails.
+     * </p>
      */
     public static final String REQUIRED_MESSAGE_ID = "jakarta.faces.component.UIInput.REQUIRED";
 
     /**
+     * <p>
      * The message identifier of the {@link jakarta.faces.application.FacesMessage} to be created if a model update error
      * occurs, and the thrown exception has no message.
+     * </p>
      */
     public static final String UPDATE_MESSAGE_ID = "jakarta.faces.component.UIInput.UPDATE";
 
@@ -139,24 +163,87 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      */
     public static final String ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE = "jakarta.faces.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE";
 
+    private static final Validator[] EMPTY_VALIDATOR = new Validator[0];
 
-    UIInputImpl uiInputImpl;
+    private transient Boolean emptyStringIsNull;
+
+    private transient Boolean validateEmptyFields;
+
+    private transient Boolean isSetAlwaysValidateRequired;
+
+    enum PropertyKeys {
+        /**
+         * <p>
+         * The "localValueSet" state for this component.
+         */
+        localValueSet,
+
+        /**
+         * <p>
+         * If the input is required or not.
+         * </p>
+         */
+        required,
+
+        /**
+         * <p>
+         * Custom message to be displayed if input is required but non was submitted.
+         * </p>
+         */
+        requiredMessage,
+
+        /**
+         * <p>
+         * Custom message to be displayed when conversion fails.
+         * </p>
+         */
+        converterMessage,
+
+        /**
+         * <p>
+         * Custom message to be displayed when validation fails.
+         * </p>
+         */
+        validatorMessage,
+
+        /**
+         * <p>
+         * Flag indicating whether or not this component is valid.
+         * </p>
+         */
+        valid,
+
+        /**
+         * <p>
+         * Flag indicating when conversion/validation should occur.
+         * </p>
+         */
+        immediate,
+
+    }
+
+    UIInput peer;
 
     // ------------------------------------------------------------ Constructors
 
-
-    /**
-     * <p>
-     * Create a new {@link UIInput} instance with default property values.
-     * </p>
-     */
-    public UIInput() {
-        super(new UIInputImpl());
-        setRendererType("jakarta.faces.Text");
-        this.uiInputImpl = (UIInputImpl) getUiComponentBaseImpl();
-        uiInputImpl.setPeer(this);
+    @Override
+    public UIInput getPeer() {
+        return peer;
     }
 
+    public void setPeer(UIInput peer) {
+        this.peer = peer;
+        super.setPeer(peer);
+    }
+
+    /**
+     * Create a new {@link UIInput} instance with default property values.
+     */
+    public UIInputImpl() {
+        super();
+        setRendererType("jakarta.faces.Text");
+
+    }
 
     // -------------------------------------------------------------- Properties
 
@@ -166,23 +253,38 @@ public class UIInput extends UIOutput implements EditableValueHolder {
     }
 
     /**
+     * <p>
+     * The submittedValue value of this {@link UIInput} component.
+     * </p>
+     */
+    private transient Object submittedValue = null;
+
+    /**
+     * <p>
      * Return the submittedValue value of this {@link UIInput} component. This method should only be used by the
      * <code>decode()</code> and <code>validate()</code> method of this component, or its corresponding {@link Renderer}.
+     * </p>
      */
     @Override
     public Object getSubmittedValue() {
-        return uiInputImpl.getSubmittedValue();
+        if (submittedValue == null && !getPeer().isValid() && considerEmptyStringNull(FacesContext.getCurrentInstance())) { // JAVASERVERFACES_SPEC_PUBLIC-671
+            return "";
+        }
+
+        return submittedValue;
     }
 
     /**
+     * <p>
      * Set the submittedValue value of this {@link UIInput} component. This method should only be used by the
      * <code>decode()</code> and <code>validate()</code> method of this component, or its corresponding {@link Renderer}.
+     * </p>
      *
      * @param submittedValue The new submitted value
      */
     @Override
     public void setSubmittedValue(Object submittedValue) {
-        uiInputImpl.setSubmittedValue(submittedValue);
+        this.submittedValue = submittedValue;
     }
 
     /**
@@ -195,12 +297,15 @@ public class UIInput extends UIOutput implements EditableValueHolder {
 
     @Override
     public Object getValue() {
-        return uiInputImpl.getValue();
+        return getPeer().isLocalValueSet() ? getPeer().getLocalValue() : super.getValue();
     }
 
     @Override
     public void setValue(Object value) {
-        uiInputImpl.setValue(value);
+        super.setValue(value);
+
+        // Mark the local value as set.
+        getPeer().setLocalValueSet(true);
     }
 
     /**
@@ -231,9 +336,13 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * returned from <code>getValue()</code>.
      * </p>
      */
+
     @Override
     public void resetValue() {
-        uiInputImpl.resetValue();
+        super.resetValue();
+        getPeer().setSubmittedValue(null);
+        getPeer().getStateHelper().remove(PropertyKeys.localValueSet);
+        getPeer().getStateHelper().remove(PropertyKeys.valid);
     }
 
     /**
@@ -242,7 +351,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      */
     @Override
     public boolean isLocalValueSet() {
-        return uiInputImpl.isLocalValueSet();
+        return (Boolean) getPeer().getStateHelper().eval(PropertyKeys.localValueSet, false);
     }
 
     /**
@@ -250,18 +359,21 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      */
     @Override
     public void setLocalValueSet(boolean localValueSet) {
-        uiInputImpl.setLocalValueSet(localValueSet);
+        getPeer().getStateHelper().put(PropertyKeys.localValueSet, localValueSet);
     }
 
     /**
+     * <p>
      * Return the "required field" state for this component.
+     * </p>
      */
     @Override
     public boolean isRequired() {
-        return uiInputImpl.isRequired();
+        return (Boolean) getPeer().getStateHelper().eval(PropertyKeys.required, false);
     }
 
     /**
+     * <p>
      * If there has been a call to {@link #setRequiredMessage} on this instance, return the message. Otherwise, call
      * {@link #getValueExpression} passing the key "requiredMessage", get the result of the expression, and return it. Any
      * {@link ELException}s thrown during the call to <code>getValue()</code> must be wrapped in a {@link FacesException}
@@ -269,22 +381,27 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      *
      * @return the required message.
      */
+
     public String getRequiredMessage() {
-        return uiInputImpl.getRequiredMessage();
+        return (String) getPeer().getStateHelper().eval(PropertyKeys.requiredMessage);
     }
 
     /**
+     * <p>
      * Override any {@link ValueExpression} set for the "requiredMessage" with the literal argument provided to this method.
      * Subsequent calls to {@link #getRequiredMessage} will return this value;
+     * </p>
      *
      * @param message the literal message value to be displayed in the event the user hasn't supplied a value and one is
      * required.
      */
+
     public void setRequiredMessage(String message) {
-        uiInputImpl.setRequiredMessage(message);
+        getPeer().getStateHelper().put(PropertyKeys.requiredMessage, message);
     }
 
     /**
+     * <p>
      * If there has been a call to {@link #setConverterMessage} on this instance, return the message. Otherwise, call
      * {@link #getValueExpression} passing the key "converterMessage", get the result of the expression, and return it. Any
      * {@link ELException}s thrown during the call to <code>getValue()</code> must be wrapped in a {@link FacesException}
@@ -293,17 +410,19 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * @return the converter message.
      */
     public String getConverterMessage() {
-        return uiInputImpl.getConverterMessage();
+        return (String) getPeer().getStateHelper().eval(PropertyKeys.converterMessage);
     }
 
     /**
+     * <p>
      * Override any {@link ValueExpression} set for the "converterMessage" with the literal argument provided to this
      * method. Subsequent calls to {@link #getConverterMessage} will return this value;
+     * </p>
      *
      * @param message the literal message value to be displayed in the event conversion fails.
      */
     public void setConverterMessage(String message) {
-        uiInputImpl.setConverterMessage(message);
+        getPeer().getStateHelper().put(PropertyKeys.converterMessage, message);
     }
 
     /**
@@ -316,7 +435,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * @return the validator message.
      */
     public String getValidatorMessage() {
-        return uiInputImpl.getValidatorMessage();
+        return (String) getPeer().getStateHelper().eval(PropertyKeys.validatorMessage);
     }
 
     /**
@@ -328,72 +447,100 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * @param message the literal message value to be displayed in the event validation fails.
      */
     public void setValidatorMessage(String message) {
-        uiInputImpl.setValidatorMessage(message);
+        getPeer().getStateHelper().put(PropertyKeys.validatorMessage, message);
     }
 
     @Override
     public boolean isValid() {
-        return uiInputImpl.isValid();
+        return (Boolean) getPeer().getStateHelper().eval(PropertyKeys.valid, true);
     }
 
     @Override
     public void setValid(boolean valid) {
-        uiInputImpl.setValid(valid);
+        getPeer().getStateHelper().put(PropertyKeys.valid, valid);
     }
 
     /**
+     * <p>
      * Set the "required field" state for this component.
+     * </p>
      *
      * @param required The new "required field" state
      */
     @Override
     public void setRequired(boolean required) {
-        uiInputImpl.setRequired(required);
+        getPeer().getStateHelper().put(PropertyKeys.required, required);
     }
 
     @Override
     public boolean isImmediate() {
-        return uiInputImpl.isImmediate();
+        return (Boolean) getPeer().getStateHelper().eval(PropertyKeys.immediate, false);
     }
 
     @Override
     public void setImmediate(boolean immediate) {
-        uiInputImpl.setImmediate(immediate);
+        getPeer().getStateHelper().put(PropertyKeys.immediate, immediate);
     }
 
 
     // ----------------------------------------------------- UIComponent Methods
 
     /**
+     * <p>
      * In addition to the actions taken in {@link UIOutput} when {@link PartialStateHolder#markInitialState()} is called,
      * check if any of the installed {@link Validator}s are PartialStateHolders and if so, call
      * {@link jakarta.faces.component.PartialStateHolder#markInitialState()} as appropriate.
+     * </p>
      */
     @Override
     public void markInitialState() {
-        uiInputImpl.markInitialState();
+        super.markInitialState();
+        if (validators != null) {
+            validators.markInitialState();
+        }
 
     }
 
     @Override
     public void clearInitialState() {
-        uiInputImpl.clearInitialState();
+        if (initialStateMarked()) {
+            super.clearInitialState();
+            if (validators != null) {
+                validators.clearInitialState();
+            }
+        }
     }
 
     /**
+     * <p>
      * Specialized decode behavior on top of that provided by the superclass. In addition to the standard
      * <code>processDecodes</code> behavior inherited from {@link UIComponentBase}, calls <code>validate()</code> if the the
      * <code>immediate</code> property is true; if the component is invalid afterwards or a <code>RuntimeException</code> is
      * thrown, calls {@link FacesContext#renderResponse}.
+     * </p>
      *
      * @throws NullPointerException {@inheritDoc}
      */
     @Override
     public void processDecodes(FacesContext context) {
-        uiInputImpl.processDecodes(context);
+        if (context == null) {
+            throw new NullPointerException();
+        }
+
+        // Skip processing if our rendered flag is false
+        if (!getPeer().isRendered()) {
+            return;
+        }
+
+        super.processDecodes(context);
+
+        if (getPeer().isImmediate()) {
+            executeValidate(context);
+        }
     }
 
     /**
+     * <p>
      * <span class="changed_modified_2_3">In</span> addition to the standard <code>processValidators</code> behavior
      * inherited from {@link UIComponentBase}, calls <code>validate()</code> if the <code>immediate</code> property is false
      * (which is the default); if the component is invalid afterwards, calls {@link FacesContext#renderResponse}.
@@ -401,25 +548,73 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * component must be validated first, followed by the component's children and facets.</span> If a
      * <code>RuntimeException</code> is thrown during validation processing, calls {@link FacesContext#renderResponse} and
      * re-throw the exception.
+     * </p>
      *
      * @throws NullPointerException {@inheritDoc}
      */
     @Override
     public void processValidators(FacesContext context) {
-        uiInputImpl.processValidators(context);
+        if (context == null) {
+            throw new NullPointerException();
+        }
+
+        // Skip processing if our rendered flag is false
+        if (!getPeer().isRendered()) {
+            return;
+        }
+
+        getPeer().pushComponentToEL(context, getPeer());
+
+        if (!isImmediate()) {
+            Application application = context.getApplication();
+            application.publishEvent(context, PreValidateEvent.class, getPeer());
+            executeValidate(context);
+            application.publishEvent(context, PostValidateEvent.class, getPeer());
+        }
+        for (Iterator<UIComponent> i = getFacetsAndChildren(); i.hasNext();) {
+            i.next().processValidators(context);
+        }
+
+        getPeer().popComponentFromEL(context);
     }
 
     /**
+     * <p>
      * In addition to the standard <code>processUpdates</code> behavior inherited from {@link UIComponentBase}, calls
      * <code>updateModel()</code>. If the component is invalid afterwards, calls {@link FacesContext#renderResponse}. If a
      * <code>RuntimeException</code> is thrown during update processing, calls {@link FacesContext#renderResponse} and
      * re-throw the exception.
+     * </p>
      *
      * @throws NullPointerException {@inheritDoc}
      */
     @Override
     public void processUpdates(FacesContext context) {
-        uiInputImpl.processUpdates(context);
+        if (context == null) {
+            throw new NullPointerException();
+        }
+
+        // Skip processing if our rendered flag is false
+        if (!getPeer().isRendered()) {
+            return;
+        }
+
+        super.processUpdates(context);
+
+        getPeer().pushComponentToEL(context, getPeer());
+
+        try {
+            getPeer().updateModel(context);
+        } catch (RuntimeException e) {
+            context.renderResponse();
+            throw e;
+        } finally {
+            getPeer().popComponentFromEL(context);
+        }
+
+        if (!getPeer().isValid()) {
+            context.renderResponse();
+        }
     }
 
     /**
@@ -427,13 +622,20 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      */
     @Override
     public void decode(FacesContext context) {
-        uiInputImpl.decode(context);
+        if (context == null) {
+            throw new NullPointerException();
+        }
+
+        // Force validity back to "true"
+        getPeer().setValid(true);
+        super.decode(context);
     }
 
     /**
+     * <p>
      * <span class="changed_modified_2_0">Perform</span> the following algorithm to update the model data associated with
      * this {@link UIInput}, if any, as appropriate.
-     *
+     * </p>
      * <ul>
      * <li>If the <code>valid</code> property of this component is <code>false</code>, take no further action.</li>
      * <li>If the <code>localValueSet</code> property of this component is <code>false</code>, take no further action.</li>
@@ -464,15 +666,59 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * @throws NullPointerException if <code>context</code> is <code>null</code>
      */
     public void updateModel(FacesContext context) {
-        uiInputImpl.updateModel(context);
-    }
+        if (context == null) {
+            throw new NullPointerException();
+        }
 
+        if (!getPeer().isValid() || !getPeer().isLocalValueSet()) {
+            return;
+        }
+
+        ValueExpression ve = getPeer().getValueExpression("value");
+        if (ve != null) {
+            Throwable caught = null;
+            FacesMessage message = null;
+            try {
+                ve.setValue(context.getELContext(), getLocalValue());
+                getPeer().resetValue();
+            } catch (ELException e) {
+                caught = e;
+                String messageStr = e.getMessage();
+                Throwable result = e.getCause();
+                while (null != result && result.getClass().isAssignableFrom(ELException.class)) {
+                    messageStr = result.getMessage();
+                    result = result.getCause();
+                }
+                if (null == messageStr) {
+                    message = MessageFactory.getMessage(context, UPDATE_MESSAGE_ID, MessageFactory.getLabel(context, getPeer()));
+                } else {
+                    message = new FacesMessage(FacesMessage.SEVERITY_ERROR, messageStr, messageStr);
+                }
+                getPeer().setValid(false);
+            } catch (Exception e) {
+                caught = e;
+                message = MessageFactory.getMessage(context, UPDATE_MESSAGE_ID, MessageFactory.getLabel(context, getPeer()));
+                getPeer().setValid(false);
+            }
+            if (caught != null) {
+                // PENDING(edburns): verify this is in the spec.
+                @SuppressWarnings({ "ThrowableInstanceNeverThrown" })
+                UpdateModelException toQueue = new UpdateModelException(message, caught);
+                ExceptionQueuedEventContext eventContext = new ExceptionQueuedEventContext(context, toQueue, getPeer(), PhaseId.UPDATE_MODEL_VALUES);
+                context.getApplication().publishEvent(context, ExceptionQueuedEvent.class, eventContext);
+
+            }
+
+        }
+    }
 
     // ------------------------------------------------------ Validation Methods
 
     /**
+     * <p>
      * <span class="changed_modified_2_0 changed_modified_2_2 changed_modified_2_3">Perform</span> the following algorithm
      * to validate the local value of this {@link UIInput}.
+     * </p>
      *
      * <ul>
      *
@@ -519,7 +765,81 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * @throws NullPointerException if <code>context</code> is null
      */
     public void validate(FacesContext context) {
-        uiInputImpl.validate(context);
+        if (context == null) {
+            throw new NullPointerException();
+        }
+
+        // Submitted value == null means "the component was not submitted
+        // at all".
+        Object submittedValue = getPeer().getSubmittedValue();
+        if (submittedValue == null) {
+            if (getPeer().isRequired() && isSetAlwaysValidateRequired(context)) {
+                // continue as below
+            } else {
+                if (getPeer() instanceof UIViewParameter && considerEmptyStringNull(context)) {
+                    // https://github.com/eclipse-ee4j/mojarra/issues/4550
+                    // https://github.com/eclipse-ee4j/mojarra/issues/4716
+                    validateValue(context,  getConvertedValue(context, submittedValue));
+                }
+                return;
+            }
+        }
+
+        // If non-null, an instanceof String, and we're configured to treat
+        // zero-length Strings as null:
+        // call setSubmittedValue(null)
+        if ((considerEmptyStringNull(context) && submittedValue instanceof String && ((String) submittedValue).length() == 0)) {
+            setSubmittedValue(null);
+            submittedValue = null;
+        }
+
+        Object newValue = null;
+
+        try {
+            newValue = getConvertedValue(context, submittedValue);
+        } catch (ConverterException ce) {
+            addConversionErrorMessage(context, ce);
+            setValid(false);
+            if (submittedValue == null) {
+                setSubmittedValue("");
+            }
+        }
+
+        validateValue(context, newValue);
+
+        // If our value is valid, store the new value, erase the
+        // "submitted" value, and emit a ValueChangeEvent if appropriate
+        if (getPeer().isValid()) {
+            Object previous = getPeer().getValue();
+            getPeer().setValue(newValue);
+            getPeer().setSubmittedValue(null);
+            if (compareValues(previous, newValue)) {
+                getPeer().queueEvent(new ValueChangeEvent(context, getPeer(), previous, newValue));
+            }
+        }
+
+    }
+
+    /*
+     * Respecting the fact that someone may have decorated FacesContextFactory and thus skipped our saving of this init
+     * param, look for the init param and return its value. The return is saved in a transient ivar to provide performance
+     * while not perturbing state saving.
+     */
+
+    private boolean isSetAlwaysValidateRequired(FacesContext context) {
+        if (isSetAlwaysValidateRequired != null) {
+            return isSetAlwaysValidateRequired;
+        }
+
+        Boolean bool = (Boolean) context.getAttributes().get(ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE);
+        if (bool != null) {
+            isSetAlwaysValidateRequired = bool;
+        } else {
+            String val = context.getExternalContext().getInitParameter(ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE);
+            isSetAlwaysValidateRequired = Boolean.valueOf(val);
+        }
+
+        return isSetAlwaysValidateRequired;
     }
 
     /**
@@ -556,14 +876,30 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * @param newSubmittedValue the new submitted value.
      * @return the converted value.
      */
-    protected Object getConvertedValue(FacesContext context, Object newSubmittedValue) throws ConverterException {
-        return uiInputImpl.getConvertedValue(context, newSubmittedValue);
+    public Object getConvertedValue(FacesContext context, Object newSubmittedValue) throws ConverterException {
+        Renderer renderer = getRenderer(context);
+        Object newValue;
+
+        if (renderer != null) {
+            newValue = renderer.getConvertedValue(context, getPeer(), newSubmittedValue);
+        } else if (newSubmittedValue instanceof String) {
+            // If there's no Renderer, and we've got a String,
+            // run it through the Converter (if any)
+            Converter converter = getConverterWithType(context);
+            if (converter != null) {
+                newValue = converter.getAsObject(context, getPeer(), (String) newSubmittedValue);
+            } else {
+                newValue = newSubmittedValue;
+            }
+        } else {
+            newValue = newSubmittedValue;
+        }
+
+        return newValue;
     }
 
     /**
-     * <p>
      * <span class="changed_modified_2_0">Set</span> the "valid" property according to the below algorithm.
-     * </p>
      *
      * <ul>
      *
@@ -641,8 +977,56 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * @param context the Faces context.
      * @param newValue the new value.
      */
-    protected void validateValue(FacesContext context, Object newValue) {
-        uiInputImpl.validateValue(context, newValue);
+    public void validateValue(FacesContext context, Object newValue) {
+        // If our value is valid, enforce the required property if present
+        if (getPeer().isValid() && getPeer().isRequired() && isEmpty(newValue)) {
+            String requiredMessageStr = getPeer().getRequiredMessage();
+            FacesMessage message;
+            if (null != requiredMessageStr) {
+                message = new FacesMessage(FacesMessage.SEVERITY_ERROR, requiredMessageStr, requiredMessageStr);
+            } else {
+                message = MessageFactory.getMessage(context, REQUIRED_MESSAGE_ID, MessageFactory.getLabel(context, getPeer()));
+            }
+            context.addMessage(getClientId(context), message);
+            setValid(false);
+        }
+
+        // If our value is valid and not empty or empty w/ validate empty fields enabled, call all validators
+        if (getPeer().isValid() && (!isEmpty(newValue) || validateEmptyFields(context))) {
+            if (validators != null) {
+                Validator[] validators = this.validators.asArray(Validator.class);
+                for (Validator validator : validators) {
+                    try {
+                        validator.validate(context, getPeer(), newValue);
+                    } catch (ValidatorException ve) {
+                        // If the validator throws an exception, we're
+                        // invalid, and we need to add a message
+                        getPeer().setValid(false);
+                        FacesMessage message;
+                        String validatorMessageString = getPeer().getValidatorMessage();
+
+                        if (null != validatorMessageString) {
+                            message = new FacesMessage(FacesMessage.SEVERITY_ERROR, validatorMessageString, validatorMessageString);
+                            message.setSeverity(FacesMessage.SEVERITY_ERROR);
+                        } else {
+                            Collection<FacesMessage> messages = ve.getFacesMessages();
+                            if (null != messages) {
+                                message = null;
+                                String cid = getClientId(context);
+                                for (FacesMessage m : messages) {
+                                    context.addMessage(cid, m);
+                                }
+                            } else {
+                                message = ve.getFacesMessage();
+                            }
+                        }
+                        if (message != null) {
+                            context.addMessage(getClientId(context), message);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -659,10 +1043,45 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * @param value new value of this component (if any)
      * @return <code>true</code> if the new value is different from the previous value, <code>false</code> otherwise.
      */
-    protected boolean compareValues(Object previous, Object value) {
-        return uiInputImpl.compareValues(previous, value);
+    public boolean compareValues(Object previous, Object value) {
+        boolean result = true;
+
+        if (previous == null) {
+            result = value != null;
+        } else if (value == null) {
+            result = true;
+        } else {
+            boolean previousEqualsValue = previous.equals(value);
+            if (!previousEqualsValue && previous instanceof Comparable && value instanceof Comparable) {
+                try {
+                    result = !(0 == ((Comparable) previous).compareTo(value));
+                } catch (ClassCastException cce) {
+                    // Comparable throws CCE if the types prevent a comparison
+                    result = true;
+                }
+            } else {
+                result = !previousEqualsValue;
+            }
+        }
+        return result;
     }
 
+    /**
+     * Executes validation logic.
+     */
+    private void executeValidate(FacesContext context) {
+        try {
+            getPeer().validate(context);
+        } catch (RuntimeException e) {
+            context.renderResponse();
+            throw e;
+        }
+
+        if (!isValid()) {
+            context.validationFailed();
+            context.renderResponse();
+        }
+    }
 
     /**
      * <p class="changed_modified_2_3">
@@ -680,6 +1099,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * @return true if it is, false otherwise.
      */
     public static boolean isEmpty(Object value) {
+
         if (value == null) {
             return true;
         } else if (value instanceof String && ((String) value).length() < 1) {
@@ -699,77 +1119,106 @@ public class UIInput extends UIOutput implements EditableValueHolder {
         } else if (value instanceof Map && ((Map) value).isEmpty()) {
             return true;
         }
-
         return false;
     }
 
+    /**
+     * <p>
+     * The set of {@link Validator}s associated with this <code>UIComponent</code>.
+     * </p>
+     */
+    AttachedObjectListHolder<Validator> validators;
 
     /**
+     * <p>
      * Add a {@link Validator} instance to the set associated with this {@link UIInput}.
+     * </p>
      *
      * @param validator The {@link Validator} to add
      * @throws NullPointerException if <code>validator</code> is null
      */
     @Override
     public void addValidator(Validator validator) {
-        uiInputImpl.addValidator(validator);
+        if (validator == null) {
+            throw new NullPointerException();
+        }
 
+        if (validators == null) {
+            validators = new AttachedObjectListHolder<>();
+        }
+
+        validators.add(validator);
     }
 
     /**
+     * <p>
      * Return the set of registered {@link Validator}s for this {@link UIInput} instance. If there are no registered
      * validators, a zero-length array is returned.
+     * </p>
      */
     @Override
     public Validator[] getValidators() {
-        return uiInputImpl.getValidators();
+        return validators != null ? validators.asArray(Validator.class) : EMPTY_VALIDATOR;
     }
 
     /**
+     * <p>
      * Remove a {@link Validator} instance from the set associated with this {@link UIInput}, if it was previously
      * associated. Otherwise, do nothing.
+     * </p>
      *
      * @param validator The {@link Validator} to remove
      */
     @Override
     public void removeValidator(Validator validator) {
-        uiInputImpl.removeValidator(validator);
-    }
+        if (validator == null) {
+            return;
+        }
 
+        if (validators != null) {
+            validators.remove(validator);
+        }
+    }
 
     // ------------------------------------------------ Event Processing Methods
 
     /**
+     * <p>
      * Add a new {@link ValueChangeListener} to the set of listeners interested in being notified when
      * {@link ValueChangeEvent}s occur.
+     * </p>
      *
      * @param listener The {@link ValueChangeListener} to be added
      * @throws NullPointerException if <code>listener</code> is <code>null</code>
      */
     @Override
     public void addValueChangeListener(ValueChangeListener listener) {
-        uiInputImpl.addValueChangeListener(listener);
+        addFacesListener(listener);
     }
 
     /**
+     * <p>
      * Return the set of registered {@link ValueChangeListener}s for this {@link UIInput} instance. If there are no
      * registered listeners, a zero-length array is returned.
+     * </p>
      */
     @Override
     public ValueChangeListener[] getValueChangeListeners() {
-        return uiInputImpl.getValueChangeListeners();
+        return (ValueChangeListener[]) getFacesListeners(ValueChangeListener.class);
     }
 
     /**
+     * <p>
      * Remove an existing {@link ValueChangeListener} (if any) from the set of listeners interested in being notified when
      * {@link ValueChangeEvent}s occur.
+     * </p>
      *
      * @param listener The {@link ValueChangeListener} to be removed
      * @throws NullPointerException if <code>listener</code> is <code>null</code>
      */
     @Override
     public void removeValueChangeListener(ValueChangeListener listener) {
-        uiInputImpl.removeValueChangeListener(listener);
+        removeFacesListener(listener);
     }
 
 
@@ -777,17 +1226,140 @@ public class UIInput extends UIOutput implements EditableValueHolder {
 
     @Override
     public Object saveState(FacesContext context) {
-        return uiInputImpl.saveState(context);
+        if (context == null) {
+            throw new NullPointerException();
+        }
+
+        Object[] result = null;
+
+        Object superState = super.saveState(context);
+        Object validatorsState = validators != null ? validators.saveState(context) : null;
+
+        if (superState != null || validatorsState != null) {
+            result = new Object[] { superState, validatorsState };
+        }
+
+        return result;
     }
 
     @Override
     public void restoreState(FacesContext context, Object state) {
-        uiInputImpl.restoreState(context, state);
+        if (context == null) {
+            throw new NullPointerException();
+        }
+
+        if (state == null) {
+            return;
+        }
+
+        Object[] values = (Object[]) state;
+        super.restoreState(context, values[0]);
+        if (values[1] != null) {
+            if (validators == null) {
+                validators = new AttachedObjectListHolder<>();
+            }
+            validators.restoreState(context, values[1]);
+        }
+
     }
 
+    private Converter getConverterWithType(FacesContext context) {
+        Converter converter = getPeer().getConverter();
+        if (converter != null) {
+            return converter;
+        }
 
-    boolean considerEmptyStringNull(FacesContext context) {
-        return uiInputImpl.considerEmptyStringNull(context);
+        ValueExpression valueExpression = getPeer().getValueExpression("value");
+        if (valueExpression == null) {
+            return null;
+        }
+
+        Class<?> converterType;
+        try {
+            converterType = valueExpression.getType(context.getELContext());
+        } catch (ELException e) {
+            throw new FacesException(e);
+        }
+
+        // if converterType is null, String, or Object, assume
+        // no conversion is needed
+        if (converterType == null || converterType == String.class || converterType == Object.class) {
+            return null;
+        }
+
+        // if getType returns a type for which we support a default
+        // conversion, acquire an appropriate converter instance.
+        try {
+            Application application = context.getApplication();
+            return application.createConverter(converterType);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private void addConversionErrorMessage(FacesContext context, ConverterException ce) {
+        FacesMessage message;
+        String converterMessageString = getConverterMessage();
+        if (null != converterMessageString) {
+            message = new FacesMessage(FacesMessage.SEVERITY_ERROR, converterMessageString, converterMessageString);
+        } else {
+            message = ce.getFacesMessage();
+            if (message == null) {
+                message = MessageFactory.getMessage(context, CONVERSION_MESSAGE_ID);
+                if (message.getDetail() == null) {
+                    message.setDetail(ce.getMessage());
+                }
+            }
+        }
+
+        context.addMessage(getClientId(context), message);
+    }
+
+    public boolean considerEmptyStringNull(FacesContext ctx) {
+        if (emptyStringIsNull == null) {
+            String val = ctx.getExternalContext().getInitParameter(EMPTY_STRING_AS_NULL_PARAM_NAME);
+            emptyStringIsNull = Boolean.valueOf(val);
+        }
+
+        return emptyStringIsNull;
+    }
+
+    private boolean validateEmptyFields(FacesContext ctx) {
+        if (validateEmptyFields == null) {
+            ExternalContext extCtx = ctx.getExternalContext();
+            String val = extCtx.getInitParameter(VALIDATE_EMPTY_FIELDS_PARAM_NAME);
+
+            if (val == null) {
+                val = (String) extCtx.getApplicationMap().get(VALIDATE_EMPTY_FIELDS_PARAM_NAME);
+            }
+            if (val == null || "auto".equals(val)) {
+                validateEmptyFields = isBeansValidationAvailable(ctx);
+            } else {
+                validateEmptyFields = Boolean.valueOf(val);
+            }
+        }
+
+        return validateEmptyFields;
+
+    }
+
+    private boolean isBeansValidationAvailable(FacesContext context) {
+        boolean result = false;
+
+        Map<String, Object> appMap = context.getExternalContext().getApplicationMap();
+
+        if (appMap.containsKey(BEANS_VALIDATION_AVAILABLE)) {
+            result = (Boolean) appMap.get(BEANS_VALIDATION_AVAILABLE);
+        } else {
+            try {
+                new BeanValidator();
+                appMap.put(BEANS_VALIDATION_AVAILABLE, result = true);
+            } catch (Throwable t) {
+                appMap.put(BEANS_VALIDATION_AVAILABLE, Boolean.FALSE);
+            }
+        }
+
+        return result;
     }
 
 }

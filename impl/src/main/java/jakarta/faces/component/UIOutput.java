@@ -72,16 +72,28 @@ public class UIOutput extends UIComponentBase implements ValueHolder {
     // ------------------------------------------------------------ Constructors
 
 
+
     /**
      * <p>
      * Create a new {@link UIOutput} instance with default property values.
      * </p>
      */
     public UIOutput() {
-        super(new UIOutputImpl());
+        this(new UIOutputImpl());
+        this.uiOutputImpl.setPeer(this);
+    }
+
+    /**
+     * <p>
+     * Create a new {@link UIOutput} instance with given property values.
+     * </p>
+     *
+     * @param uiOutputImpl the UIOutputImpl to delegate to
+     */
+    public UIOutput(UIOutputImpl uiOutputImpl) {
+        super(uiOutputImpl);
         setRendererType("jakarta.faces.Text");
         this.uiOutputImpl = (UIOutputImpl) getUiComponentBaseImpl();
-        uiOutputImpl.setPeer(this);
     }
 
 
