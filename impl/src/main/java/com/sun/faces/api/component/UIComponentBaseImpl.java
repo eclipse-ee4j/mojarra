@@ -23,6 +23,7 @@ import static com.sun.faces.facelets.tag.faces.ComponentSupport.removeFromDescen
 import static com.sun.faces.util.Util.isAllNull;
 import static com.sun.faces.util.Util.isAnyNull;
 import static com.sun.faces.util.Util.isEmpty;
+import static com.sun.faces.util.Util.notNull;
 import static java.beans.Introspector.getBeanInfo;
 import static java.lang.Boolean.TRUE;
 import static java.lang.Character.isDigit;
@@ -226,7 +227,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
 
         if (passThroughAttributes == null && create) {
             passThroughAttributes = new PassThroughAttributesMap<>();
-            getStateHelper().put(PropertyKeys.passThroughAttributes, passThroughAttributes);
+            getPeer().getStateHelper().put(PropertyKeys.passThroughAttributes, passThroughAttributes);
         }
 
         return passThroughAttributes;
@@ -239,9 +240,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
      */
     @Override
     public String getClientId(FacesContext context) {
-        if (context == null) {
-            throw new NullPointerException();
-        }
+        notNull(context);
 
         // If the clientId is not yet set
         if (clientId == null) {
@@ -253,8 +252,8 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
             // Now resolve our own client id
             clientId = getId();
             if (clientId == null) {
-                setId(generateId(context, namingContainerAncestor));
-                clientId = getId();
+                getPeer().setId(generateId(context, namingContainerAncestor));
+                clientId = getPeer().getId();
             }
 
             if (parentId != null) {
@@ -314,13 +313,13 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
                 // it's being processed. If we don't do this, and the component
                 // is re-parented, the events could fire again in certain cases
                 // and cause a stack overflow.
-                getAttributes().put(ADDED, TRUE);
+                getPeer().getAttributes().put(ADDED, TRUE);
 
                 doPostAddProcessing(FacesContext.getCurrentInstance(), getPeer());
 
                 // Remove the attribute once we've returned from the event
                 // processing.
-                getAttributes().remove(ADDED);
+                getPeer().getAttributes().remove(ADDED);
             }
         }
     }
@@ -347,7 +346,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
 
     @Override
     public boolean getRendersChildren() {
-        if (getRendererType() != null) {
+        if (getPeer().getRendererType() != null) {
             Renderer renderer = getRenderer(getFacesContext());
             if (renderer != null) {
                 return renderer.getRendersChildren();
@@ -383,9 +382,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
      */
     @Override
     public UIComponent findComponent(String expression) {
-        if (expression == null) {
-            throw new NullPointerException();
-        }
+        notNull(expression);
 
         if (expression.isEmpty()) {
             // If an empty value is provided, fail fast.
@@ -481,9 +478,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
      */
     @Override
     public void broadcast(FacesEvent event) throws AbortProcessingException {
-        if (event == null) {
-            throw new NullPointerException();
-        }
+        notNull(event);
 
         if (event instanceof BehaviorEvent) {
             BehaviorEvent behaviorEvent = (BehaviorEvent) event;
@@ -507,19 +502,15 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
      */
     @Override
     public void decode(FacesContext context) {
-        if (context == null) {
-            throw new NullPointerException();
-        }
+        notNull(context);
 
-        String rendererType = getRendererType();
+        String rendererType = getPeer().getRendererType();
         if (rendererType != null) {
             Renderer renderer = getRenderer(context);
             if (renderer != null) {
                 renderer.decode(context, getPeer());
             } else {
-                if (LOGGER.isLoggable(FINE)) {
-                    LOGGER.fine("Can't get Renderer for type " + rendererType);
-                }
+                LOGGER.log(Level.FINE, () -> "Can't get Renderer for type " + rendererType);
             }
         }
     }
@@ -529,27 +520,23 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
      */
     @Override
     public void encodeBegin(FacesContext context) throws IOException {
-        if (context == null) {
-            throw new NullPointerException();
-        }
+        notNull(context);
 
-        pushComponentToEL(context, null);
+        getPeer().pushComponentToEL(context, null);
 
-        if (!isRendered()) {
+        if (!getPeer().isRendered()) {
             return;
         }
 
         context.getApplication().publishEvent(context, PreRenderComponentEvent.class, getPeer());
 
-        String rendererType = getRendererType();
+        String rendererType = getPeer().getRendererType();
         if (rendererType != null) {
             Renderer renderer = getRenderer(context);
             if (renderer != null) {
                 renderer.encodeBegin(context, getPeer());
             } else {
-                if (LOGGER.isLoggable(FINE)) {
-                    LOGGER.fine("Can't get Renderer for type " + rendererType);
-                }
+                LOGGER.log(Level.FINE, () ->  "Can't get Renderer for type " + rendererType);
             }
         }
     }
@@ -559,22 +546,20 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
      */
     @Override
     public void encodeChildren(FacesContext context) throws IOException {
-        if (context == null) {
-            throw new NullPointerException();
-        }
+        notNull(context);
 
-        if (!isRendered()) {
+        if (!getPeer().isRendered()) {
             return;
         }
 
-        if (getRendererType() != null) {
+        if (getPeer().getRendererType() != null) {
             Renderer renderer = getRenderer(context);
             if (renderer != null) {
                 renderer.encodeChildren(context, getPeer());
             }
             // We've already logged for this component
         } else if (getChildCount() > 0) {
-            for (UIComponent child : getChildren()) {
+            for (UIComponent child : getPeer().getChildren()) {
                 child.encodeAll(context);
             }
         }
@@ -586,16 +571,14 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
      */
     @Override
     public void encodeEnd(FacesContext context) throws IOException {
-        if (context == null) {
-            throw new NullPointerException();
-        }
+        notNull(context);
 
-        if (!isRendered()) {
-            popComponentFromEL(context);
+        if (!getPeer().isRendered()) {
+            getPeer().popComponentFromEL(context);
             return;
         }
 
-        if (getRendererType() != null) {
+        if (getPeer().getRendererType() != null) {
             Renderer renderer = getRenderer(context);
             if (renderer != null) {
                 renderer.encodeEnd(context, getPeer());
@@ -604,7 +587,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
             // We've already logged for this component
         }
 
-        popComponentFromEL(context);
+        getPeer().popComponentFromEL(context);
     }
 
 
@@ -651,9 +634,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
      */
     @Override
     public void addFacesListener(FacesListener listener) {
-        if (listener == null) {
-            throw new NullPointerException();
-        }
+        notNull(listener);
 
         if (listeners == null) {
             listeners = new AttachedObjectListHolder<>();
@@ -668,9 +649,8 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
      */
     @Override
     public FacesListener[] getFacesListeners(Class clazz) {
-        if (clazz == null) {
-            throw new NullPointerException();
-        }
+        notNull(clazz);
+
         if (!FacesListener.class.isAssignableFrom(clazz)) {
             throw new IllegalArgumentException();
         }
@@ -704,9 +684,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
      */
     @Override
     public void removeFacesListener(FacesListener listener) {
-        if (listener == null) {
-            throw new NullPointerException();
-        }
+        notNull(listener);
 
         if (listeners != null) {
             listeners.remove(listener);
@@ -719,12 +697,9 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
      */
     @Override
     public void queueEvent(FacesEvent event) {
-        if (event == null) {
-            throw new NullPointerException();
-        }
+        notNull(event);
 
         UIComponent parent = getParent();
-
         if (parent == null) {
             throw new IllegalStateException();
         }
@@ -838,9 +813,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
      */
     @Override
     public List<SystemEventListener> getListenersForEventClass(Class<? extends SystemEvent> eventClass) {
-        if (eventClass == null) {
-            throw new NullPointerException();
-        }
+        notNull(eventClass);
 
         if (listenersByEventClass != null) {
             return listenersByEventClass.getOrDefault(eventClass, emptyList());
@@ -857,24 +830,20 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
      */
     @Override
     public void processDecodes(FacesContext context) {
-        if (context == null) {
-            throw new NullPointerException();
-        }
+        notNull(context);
 
         // Skip processing if our rendered flag is false
-        if (!isRendered()) {
+        if (!getPeer().isRendered()) {
             return;
         }
 
-        pushComponentToEL(context, null);
+        getPeer().pushComponentToEL(context, null);
 
         try {
             // Process all facets and children of this component
-            Iterator<UIComponent> kids = getFacetsAndChildren();
-            while (kids.hasNext()) {
-                UIComponent kid = kids.next();
-                kid.processDecodes(context);
-            }
+            getPeer().getFacetsAndChildren()
+                     .forEachRemaining(kid -> kid.processDecodes(context));
+
 
             // Process this component itself
             try {
@@ -884,7 +853,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
                 throw e;
             }
         } finally {
-            popComponentFromEL(context);
+            getPeer().popComponentFromEL(context);
         }
     }
 
@@ -893,31 +862,26 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
      */
     @Override
     public void processValidators(FacesContext context) {
-        if (context == null) {
-            throw new NullPointerException();
-        }
+        notNull(context);
 
         // Skip processing if our rendered flag is false
-        if (!isRendered()) {
+        if (!getPeer().isRendered()) {
             return;
         }
 
-        pushComponentToEL(context, null);
+        getPeer().pushComponentToEL(context, null);
 
         try {
             Application application = context.getApplication();
             application.publishEvent(context, PreValidateEvent.class, getPeer());
 
             // Process all the facets and children of this component
-            Iterator<UIComponent> kids = getFacetsAndChildren();
-            while (kids.hasNext()) {
-                UIComponent kid = kids.next();
-                kid.processValidators(context);
-            }
+            getPeer().getFacetsAndChildren()
+                     .forEachRemaining(kid -> kid.processValidators(context));
 
             application.publishEvent(context, PostValidateEvent.class, getPeer());
         } finally {
-            popComponentFromEL(context);
+            getPeer().popComponentFromEL(context);
         }
     }
 
@@ -926,26 +890,24 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
      */
     @Override
     public void processUpdates(FacesContext context) {
-        if (context == null) {
-            throw new NullPointerException();
-        }
+        notNull(context);
 
         // Skip processing if our rendered flag is false
-        if (!isRendered()) {
+        if (!getPeer().isRendered()) {
             return;
         }
 
-        pushComponentToEL(context, null);
+        getPeer().pushComponentToEL(context, null);
 
         try {
             // Process all facets and children of this component
-            Iterator<UIComponent> kids = getFacetsAndChildren();
+            Iterator<UIComponent> kids = getPeer().getFacetsAndChildren();
             while (kids.hasNext()) {
                 UIComponent kid = kids.next();
                 kid.processUpdates(context);
             }
         } finally {
-            popComponentFromEL(context);
+            getPeer().popComponentFromEL(context);
         }
     }
 
@@ -954,25 +916,23 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
      */
     @Override
     public Object processSaveState(FacesContext context) {
-        if (context == null) {
-            throw new NullPointerException();
-        }
+        notNull(context);
 
-        if (isTransient()) {
+        if (getPeer().isTransient()) {
             return null;
         }
 
         Object[] stateStruct = new Object[2];
         Object[] childState = EMPTY_ARRAY;
 
-        pushComponentToEL(context, null);
+        getPeer().pushComponentToEL(context, null);
 
         try {
             // Process this component itself
-            stateStruct[MY_STATE] = saveState(context);
+            stateStruct[MY_STATE] = getPeer().saveState(context);
 
             // Determine if we have any children to store
-            int count = getChildCount() + getFacetCount();
+            int count = getPeer().getChildCount() + getPeer().getFacetCount();
             if (count > 0) {
 
                 // This arraylist will store state
@@ -989,7 +949,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
                 childState = stateList.toArray();
             }
         } finally {
-            popComponentFromEL(context);
+            getPeer().popComponentFromEL(context);
         }
 
         stateStruct[CHILD_STATE] = childState;
@@ -1001,11 +961,9 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
      */
     @Override
     public void processRestoreState(FacesContext context, Object state) {
-        if (context == null) {
-            throw new NullPointerException();
-        }
+        notNull(context);
 
-        pushComponentToEL(context, null);
+        getPeer().pushComponentToEL(context, null);
 
         try {
             Object[] stateStruct = (Object[]) state;
@@ -1021,7 +979,7 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
             restoreFacetsState(context, childState, i);
 
         } finally {
-            popComponentFromEL(context);
+            getPeer().popComponentFromEL(context);
         }
     }
 
@@ -1048,17 +1006,17 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
     public Renderer getRenderer(FacesContext context) {
         Renderer renderer = null;
 
-        String rendererType = getRendererType();
+        String rendererType = getPeer().getRendererType();
         if (rendererType != null) {
-            renderer = context.getRenderKit().getRenderer(getFamily(), rendererType);
+            renderer = context.getRenderKit().getRenderer(getPeer().getFamily(), rendererType);
 
-            if (renderer == null && LOGGER.isLoggable(FINE)) {
-                LOGGER.fine("Can't get Renderer for type " + rendererType);
+            if (renderer == null) {
+                LOGGER.log(FINE, () -> "Can't get Renderer for type " + rendererType);
             }
         } else {
             if (LOGGER.isLoggable(FINE)) {
-                String id = getId();
-                LOGGER.fine("No renderer-type for component " + id != null ? id : getClass().getName());
+                String id = getPeer().getId();
+                LOGGER.log(FINE, () -> ("No renderer-type for component " + id != null ? id : getClass().getName()));
             }
         }
 
@@ -3214,7 +3172,6 @@ public abstract class UIComponentBaseImpl extends UIComponentImpl implements Pee
      * @param id The component identifier to test
      */
     private static void validateId(String id) {
-
         if (id == null) {
             return;
         }

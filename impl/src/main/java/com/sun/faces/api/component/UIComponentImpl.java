@@ -19,6 +19,7 @@ package com.sun.faces.api.component;
 
 import static com.sun.faces.util.Util.isAnyNull;
 import static com.sun.faces.util.Util.isOneOf;
+import static com.sun.faces.util.Util.notNull;
 import static jakarta.faces.application.Resource.COMPONENT_RESOURCE_KEY;
 import static jakarta.faces.component.visit.VisitHint.SKIP_TRANSIENT;
 import static jakarta.faces.component.visit.VisitHint.SKIP_UNRENDERED;
@@ -261,7 +262,7 @@ public abstract class UIComponentImpl extends UIComponent implements PeerHolder 
      */
     @Override
     public Map<String, Object> getPassThroughAttributes() {
-        return getPassThroughAttributes(true);
+        return getPeer().getPassThroughAttributes(true);
     }
 
     /**
@@ -330,7 +331,7 @@ public abstract class UIComponentImpl extends UIComponent implements PeerHolder 
         }
 
         @SuppressWarnings("unchecked")
-        Map<String, ValueExpression> map = (Map<String, ValueExpression>) getStateHelper().get(UIComponentBase.PropertyKeys.bindings);
+        var map = (Map<String, ValueExpression>) getPeer().getStateHelper().get(UIComponentBase.PropertyKeys.bindings);
 
         return map != null ? map.get(name) : null;
     }
@@ -367,40 +368,39 @@ public abstract class UIComponentImpl extends UIComponent implements PeerHolder 
      */
     @Override
     public void setValueExpression(String name, ValueExpression binding) {
-
-        if (name == null) {
-            throw new NullPointerException();
-        }
+        notNull(name);
 
         if (isOneOf(name, "id", "parent")) {
             throw new IllegalArgumentException();
         }
 
+        StateHelper stateHelper = getPeer().getStateHelper();
+
         if (binding != null) {
             if (!binding.isLiteralText()) {
 
                 @SuppressWarnings("unchecked")
-                List<String> sProperties = (List<String>) getStateHelper().get(PropertyKeysPrivate.attributesThatAreSet);
+                List<String> sProperties = (List<String>) stateHelper.get(PropertyKeysPrivate.attributesThatAreSet);
 
                 if (sProperties == null) {
-                    getStateHelper().add(PropertyKeysPrivate.attributesThatAreSet, name);
+                    stateHelper.add(PropertyKeysPrivate.attributesThatAreSet, name);
                 } else if (!sProperties.contains(name)) {
-                    getStateHelper().add(PropertyKeysPrivate.attributesThatAreSet, name);
+                    stateHelper.add(PropertyKeysPrivate.attributesThatAreSet, name);
                 }
 
-                getStateHelper().put(UIComponentBase.PropertyKeys.bindings, name, binding);
+                stateHelper.put(UIComponentBase.PropertyKeys.bindings, name, binding);
 
             } else {
                 ELContext context = FacesContext.getCurrentInstance().getELContext();
                 try {
-                    getAttributes().put(name, binding.getValue(context));
+                    getPeer().getAttributes().put(name, binding.getValue(context));
                 } catch (ELException ele) {
                     throw new FacesException(ele);
                 }
             }
         } else {
-            getStateHelper().remove(PropertyKeysPrivate.attributesThatAreSet, name);
-            getStateHelper().remove(UIComponentBase.PropertyKeys.bindings, name);
+            stateHelper.remove(PropertyKeysPrivate.attributesThatAreSet, name);
+            stateHelper.remove(UIComponentBase.PropertyKeys.bindings, name);
         }
     }
 
@@ -842,7 +842,6 @@ public abstract class UIComponentImpl extends UIComponent implements PeerHolder 
      */
     @Override
     public Map<String, String> getResourceBundleMap() {
-
         if (resourceBundleMap == null) {
 
             FacesContext context = FacesContext.getCurrentInstance();
@@ -870,22 +869,6 @@ public abstract class UIComponentImpl extends UIComponent implements PeerHolder 
         return resourceBundleMap;
     }
 
-    // This is necessary for Jakarta Faces components that extend from UIComponentImpl
-    // directly rather than extending from UIComponentBase. Such components
-    // may need to have implementations provided for methods that originated
-    // from a spec version more recent than the version with which the component
-    // complies. Currently this private property is only consulted in the
-    // getValueExpression() method.
-    // private boolean isUIComponentBase;
-    // private boolean isUIComponentBaseIsSet = false;
-    //
-    // private boolean isUIComponentBase() {
-    // if (!isUIComponentBaseIsSet) {
-    // isUIComponentBase = (this instanceof UIComponentBase);
-    // }
-    //
-    // return isUIComponentBase;
-    // }
 
     // ------------------------------------------------- Tree Management Methods
 
@@ -1181,7 +1164,7 @@ public abstract class UIComponentImpl extends UIComponent implements PeerHolder 
      */
     @Override
     public int getFacetCount() {
-        return getFacets().size();
+        return getPeer().getFacets().size();
     }
 
     /**
@@ -1211,6 +1194,7 @@ public abstract class UIComponentImpl extends UIComponent implements PeerHolder 
      */
     @Override
     public abstract Iterator<UIComponent> getFacetsAndChildren();
+
 
     // -------------------------------------------- Lifecycle Processing Methods
 
@@ -1301,7 +1285,7 @@ public abstract class UIComponentImpl extends UIComponent implements PeerHolder 
 
         // Push ourselves to Jakarta Expression Language before visiting
         FacesContext facesContext = visitContext.getFacesContext();
-        pushComponentToEL(facesContext, null);
+        getPeer().pushComponentToEL(facesContext, null);
 
         try {
             // Visit ourselves. Note that we delegate to the
@@ -1315,7 +1299,7 @@ public abstract class UIComponentImpl extends UIComponent implements PeerHolder 
 
             // Visit children if necessary
             if (result == ACCEPT) {
-                Iterator<UIComponent> kids = getFacetsAndChildren();
+                Iterator<UIComponent> kids = getPeer().getFacetsAndChildren();
 
                 while (kids.hasNext()) {
                     boolean done = kids.next().visitTree(visitContext, callback);
@@ -1328,7 +1312,7 @@ public abstract class UIComponentImpl extends UIComponent implements PeerHolder 
             }
         } finally {
             // Pop ourselves off the Jakarta Expression Language stack
-            popComponentFromEL(facesContext);
+            getPeer().popComponentFromEL(facesContext);
         }
 
         // Return false to allow the visit to continue
@@ -1362,7 +1346,6 @@ public abstract class UIComponentImpl extends UIComponent implements PeerHolder 
      */
     @Override
     public boolean isVisitable(VisitContext context) {
-
         // VisitHints currently defines two hints that affect visitability:
         // VIIST_RENDERED and VISIT_TRANSIENT.
         // Check for both of these and if set, verify that we comply.
@@ -1456,26 +1439,25 @@ public abstract class UIComponentImpl extends UIComponent implements PeerHolder 
      */
     @Override
     public void encodeAll(FacesContext context) throws IOException {
-
         if (context == null) {
             throw new NullPointerException();
         }
 
-        if (!isRendered()) {
+        if (!getPeer().isRendered()) {
             return;
         }
 
-        encodeBegin(context);
+        getPeer().encodeBegin(context);
 
-        if (getRendersChildren()) {
-            encodeChildren(context);
+        if (getPeer().getRendersChildren()) {
+            getPeer().encodeChildren(context);
         } else if (getChildCount() > 0) {
             for (UIComponent kid : getChildren()) {
                 kid.encodeAll(context);
             }
         }
 
-        encodeEnd(context);
+        getPeer().encodeEnd(context);
     }
 
     @SuppressWarnings("unchecked")
@@ -1914,7 +1896,7 @@ public abstract class UIComponentImpl extends UIComponent implements PeerHolder 
 
             // If this component has a component value reference expression,
             // make sure to populate the ValueExpression for it.
-            ValueExpression valueExpression = getValueExpression("binding");
+            ValueExpression valueExpression = getPeer().getValueExpression("binding");
             if (valueExpression != null) {
                 valueExpression.setValue(FacesContext.getCurrentInstance().getELContext(), getPeer());
             }
@@ -2034,10 +2016,10 @@ public abstract class UIComponentImpl extends UIComponent implements PeerHolder 
     @Override
     protected abstract Renderer getRenderer(FacesContext context);
 
+
     // --------------------------------------------------------- Package Private
 
-    static final class ComponentSystemEventListenerAdapter
-            implements ComponentSystemEventListener, SystemEventListener, StateHolder, FacesWrapper<ComponentSystemEventListener> {
+    static final class ComponentSystemEventListenerAdapter implements ComponentSystemEventListener, SystemEventListener, StateHolder, FacesWrapper<ComponentSystemEventListener> {
 
         ComponentSystemEventListener wrapped;
         Class<?> instanceClass;
@@ -2369,7 +2351,6 @@ public abstract class UIComponentImpl extends UIComponent implements PeerHolder 
     }
 
     private ResourceBundle findResourceBundleAsResource(FacesContext context) {
-
         if (getAttributes().containsKey(COMPONENT_RESOURCE_KEY)) {
             Resource ccResource = (Resource) getAttributes().get(COMPONENT_RESOURCE_KEY);
 
@@ -2398,7 +2379,7 @@ public abstract class UIComponentImpl extends UIComponent implements PeerHolder 
         int i;
         if (-1 != (i = resourceName.lastIndexOf("."))) {
             resourceName = resourceName.substring(0, i) + ".properties";
-            if (null != context) {
+            if (context != null) {
                 result = context.getApplication().getResourceHandler().createResource(resourceName, libraryName);
                 InputStream propertiesInputStream = null;
                 try {
@@ -2411,9 +2392,7 @@ public abstract class UIComponentImpl extends UIComponent implements PeerHolder 
                         try {
                             propertiesInputStream.close();
                         } catch (IOException ioe) {
-                            if (LOGGER.isLoggable(SEVERE)) {
-                                LOGGER.log(SEVERE, null, ioe);
-                            }
+                            LOGGER.log(SEVERE, null, ioe);
                         }
                     }
                 }

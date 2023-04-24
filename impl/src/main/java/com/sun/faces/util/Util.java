@@ -108,7 +108,7 @@ import jakarta.servlet.http.MappingMatch;
 
 /**
  * <B>Util</B> is a class ...
- * 
+ *
  * <B>Lifetime And Scope</B>
  *
  */
@@ -453,6 +453,12 @@ public class Util {
     public static void notNegative(String varname, long number) {
         if (number < 0) {
             throw new IllegalArgumentException("\"" + varname + "\" is negative");
+        }
+    }
+
+    public static void notNull(Object var) {
+        if (var == null) {
+            throw new NullPointerException();
         }
     }
 

@@ -16,6 +16,8 @@
 
 package com.sun.faces.renderkit.html_basic;
 
+import static com.sun.faces.util.Util.componentIsDisabled;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +25,6 @@ import java.util.List;
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.util.MessageUtils;
-import com.sun.faces.util.Util;
 
 import jakarta.faces.application.NavigationCase;
 import jakarta.faces.application.ProjectStage;
@@ -44,7 +45,6 @@ public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
 
     @Override
     public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
-
         rendererParamsNotNull(context, component);
 
         if (!shouldEncode(component)) {
@@ -53,7 +53,7 @@ public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
 
         NavigationCase navCase = null;
         boolean failedToResolveNavigationCase = false;
-        boolean disabled = Util.componentIsDisabled(component);
+        boolean disabled = componentIsDisabled(component);
 
         if (!disabled) {
             navCase = getNavigationCase(context, component);
@@ -74,7 +74,6 @@ public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
 
     @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-
         rendererParamsNotNull(context, component);
 
         if (!shouldEncode(component)) {
@@ -82,18 +81,14 @@ public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
         }
 
         ResponseWriter writer = context.getResponseWriter();
-        assert writer != null;
-        String endElement = Util.componentIsDisabled(component) || context.getAttributes().remove(NO_NAV_CASE) != null ? "span" : "a";
+        String endElement = componentIsDisabled(component) || context.getAttributes().remove(NO_NAV_CASE) != null ? "span" : "a";
         writer.endElement(endElement);
-
     }
 
     // ------------------------------------------------------- Protected Methods
 
     protected void renderAsDisabled(FacesContext context, UIComponent component, boolean failedToResolveNavigationCase) throws IOException {
-
         ResponseWriter writer = context.getResponseWriter();
-        assert writer != null;
 
         writer.startElement("span", component);
         writeIdAndNameAttributes(context, writer, component);
@@ -111,9 +106,7 @@ public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
     }
 
     protected void renderAsActive(FacesContext context, NavigationCase navCase, UIComponent component) throws IOException {
-
         ResponseWriter writer = context.getResponseWriter();
-        assert writer != null;
 
         writer.startElement("a", component);
         writeIdAndNameAttributes(context, writer, component);
@@ -125,34 +118,29 @@ public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
         renderLinkCommonAttributes(writer, component);
         renderPassThruAttributes(context, writer, component, ATTRIBUTES, null);
         writeValue(writer, component);
-
     }
 
     protected void writeIdAndNameAttributes(FacesContext context, ResponseWriter writer, UIComponent component) throws IOException {
-
         String writtenId = writeIdAttributeIfNecessary(context, writer, component);
-        if (null != writtenId) {
+        if (writtenId != null) {
             writer.writeAttribute("name", writtenId, "name");
         }
 
     }
 
     protected void writeValue(ResponseWriter writer, UIComponent component) throws IOException {
-
         writer.writeText(getLabel(component), component, null);
         writer.flush();
-
     }
 
     protected void renderLinkCommonAttributes(ResponseWriter writer, UIComponent component) throws IOException {
-
-        // this is common to both link and button target renderers
+        // This is common to both link and button target renderers
         String styleClass = (String) component.getAttributes().get("styleClass");
         if (styleClass != null && styleClass.length() > 0) {
             writer.writeAttribute("class", styleClass, "styleClass");
         }
 
-        // target/onclick should be pass through, but right now, due to command Link,
+        // Target/onclick should be pass through, but right now, due to command Link,
         // they all share the same base properties file which marks them as non
         // pass-through
         String target = (String) component.getAttributes().get("target");
