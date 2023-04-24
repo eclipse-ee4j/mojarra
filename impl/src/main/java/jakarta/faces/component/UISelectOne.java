@@ -211,7 +211,7 @@ public class UISelectOne extends UIInput {
      * @throws NullPointerException if <code>context</code> is <code>null</code>
      */
     @Override
-    protected void validateValue(FacesContext context, Object value) {
+    public void validateValue(FacesContext context, Object value) {
 
         super.validateValue(context, value);
 

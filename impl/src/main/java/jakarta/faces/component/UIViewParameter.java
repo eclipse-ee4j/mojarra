@@ -433,7 +433,7 @@ public class UIViewParameter extends UIInput {
      * @since 2.0
      */
     @Override
-    protected Object getConvertedValue(FacesContext context, Object submittedValue) throws ConverterException {
+    public Object getConvertedValue(FacesContext context, Object submittedValue) throws ConverterException {
 
         return getInputTextRenderer(context).getConvertedValue(context, this, submittedValue);
 

@@ -556,7 +556,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * @param newSubmittedValue the new submitted value.
      * @return the converted value.
      */
-    protected Object getConvertedValue(FacesContext context, Object newSubmittedValue) throws ConverterException {
+    public Object getConvertedValue(FacesContext context, Object newSubmittedValue) throws ConverterException {
         return uiInputImpl.getConvertedValue(context, newSubmittedValue);
     }
 
@@ -641,7 +641,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * @param context the Faces context.
      * @param newValue the new value.
      */
-    protected void validateValue(FacesContext context, Object newValue) {
+    public void validateValue(FacesContext context, Object newValue) {
         uiInputImpl.validateValue(context, newValue);
     }
 
@@ -659,7 +659,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * @param value new value of this component (if any)
      * @return <code>true</code> if the new value is different from the previous value, <code>false</code> otherwise.
      */
-    protected boolean compareValues(Object previous, Object value) {
+    public boolean compareValues(Object previous, Object value) {
         return uiInputImpl.compareValues(previous, value);
     }
 

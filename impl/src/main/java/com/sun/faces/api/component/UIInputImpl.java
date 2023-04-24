@@ -805,7 +805,7 @@ public class UIInputImpl extends UIOutputImpl implements EditableValueHolder {
             }
         }
 
-        validateValue(context, newValue);
+        getPeer().validateValue(context, newValue);
 
         // If our value is valid, store the new value, erase the
         // "submitted" value, and emit a ValueChangeEvent if appropriate

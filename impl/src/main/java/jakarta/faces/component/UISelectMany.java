@@ -368,7 +368,7 @@ public class UISelectMany extends UIInput {
      * @return <code>true</code> if the new value is different from the previous value, <code>false</code> otherwise.
      */
     @Override
-    protected boolean compareValues(Object previous, Object value) {
+    public boolean compareValues(Object previous, Object value) {
         if (previous == null && value != null) {
             return true;
         } else if (previous != null && value == null) {
@@ -510,7 +510,7 @@ public class UISelectMany extends UIInput {
      */
 
     @Override
-    protected void validateValue(FacesContext context, Object value) {
+    public void validateValue(FacesContext context, Object value) {
         super.validateValue(context, value);
 
         // Skip validation if it is not necessary
