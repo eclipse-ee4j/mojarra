@@ -14,9 +14,9 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.faces.component;
+package com.sun.faces.api.component;
 
-import com.sun.faces.api.component.UIOutcomeTargetImpl;
+import jakarta.faces.component.UIOutcomeTarget;
 
 /**
  * <p class="changed_added_2_0">
@@ -27,38 +27,51 @@ import com.sun.faces.api.component.UIOutcomeTargetImpl;
  *
  * @since 2.0
  */
-public class UIOutcomeTarget extends UIOutput {
+public class UIOutcomeTargetImpl extends UIOutputImpl {
 
     // ------------------------------------------------------ Manifest Constants
 
     /**
+     * <p>
      * The standard component type for this component.
+     * </p>
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.OutcomeTarget";
 
     /**
+     * <p>
      * The standard component family for this component.
+     * </p>
      */
     public static final String COMPONENT_FAMILY = "jakarta.faces.OutcomeTarget";
 
+    enum PropertyKeys {
+        includeViewParams, outcome, disableClientWindow
+    }
 
-    UIOutcomeTargetImpl uiOutcomeTargetImpl;
+    UIOutcomeTarget peer;
 
     // ------------------------------------------------------------ Constructors
 
+    @Override
+    public UIOutcomeTarget getPeer() {
+        return peer;
+    }
+
+    public void setPeer(UIOutcomeTarget peer) {
+        this.peer = peer;
+        super.setPeer(peer);
+    }
 
     /**
      * <p>
      * Create a new {@link UIOutcomeTarget} instance with default property values.
      * </p>
      */
-    public UIOutcomeTarget() {
-        super(new UIOutcomeTargetImpl());
+    public UIOutcomeTargetImpl() {
+        super();
         setRendererType("jakarta.faces.Link");
-        this.uiOutcomeTargetImpl = (UIOutcomeTargetImpl) getUiComponentBaseImpl();
-        uiOutcomeTargetImpl.setPeer(this);
     }
-
 
     // -------------------------------------------------------------- Properties
 
@@ -76,7 +89,7 @@ public class UIOutcomeTarget extends UIOutput {
      * @since 2.0
      */
     public boolean isIncludeViewParams() {
-        return uiOutcomeTargetImpl.isIncludeViewParams();
+        return (Boolean) getStateHelper().eval(PropertyKeys.includeViewParams, false);
     }
 
     /**
@@ -89,7 +102,7 @@ public class UIOutcomeTarget extends UIOutput {
      * @since 2.0
      */
     public void setIncludeViewParams(boolean includeViewParams) {
-        uiOutcomeTargetImpl.setIncludeViewParams(includeViewParams);
+        getStateHelper().put(PropertyKeys.includeViewParams, includeViewParams);
     }
 
     /**
@@ -101,7 +114,7 @@ public class UIOutcomeTarget extends UIOutput {
      * @since 2.0
      */
     public boolean isDisableClientWindow() {
-        return uiOutcomeTargetImpl.isDisableClientWindow();
+        return (Boolean) getStateHelper().eval(PropertyKeys.disableClientWindow, false);
     }
 
     /**
@@ -114,7 +127,7 @@ public class UIOutcomeTarget extends UIOutput {
      * @since 2.2
      */
     public void setDisableClientWindow(boolean disableClientWindow) {
-        uiOutcomeTargetImpl.setDisableClientWindow(disableClientWindow);
+        getStateHelper().put(PropertyKeys.disableClientWindow, disableClientWindow);
     }
 
     /**
@@ -127,7 +140,7 @@ public class UIOutcomeTarget extends UIOutput {
      * @since 2.0
      */
     public String getOutcome() {
-        return uiOutcomeTargetImpl.getOutcome();
+        return (String) getStateHelper().eval(PropertyKeys.outcome);
     }
 
     /**
@@ -136,11 +149,12 @@ public class UIOutcomeTarget extends UIOutput {
      * NavigationHandler when resolving the target url of this component.
      * </p>
      *
-     * @param outcome the navigation outcome
      * @since 2.0
+     *
+     * @param outcome the navigation outcome
      */
     public void setOutcome(String outcome) {
-        uiOutcomeTargetImpl.setOutcome(outcome);
+        getStateHelper().put(PropertyKeys.outcome, outcome);
     }
 
 }

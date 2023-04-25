@@ -16,13 +16,13 @@
 
 package jakarta.faces.component;
 
+import com.sun.faces.api.component.UIMessagesImpl;
+
 import jakarta.faces.context.FacesContext;
 
 /**
- * <p>
  * The renderer for this component is responsible for obtaining the messages from the {@link FacesContext} and
  * displaying them to the user.
- * </p>
  *
  * <p>
  * This component supports the <code>Messages</code> renderer-type.
@@ -33,24 +33,18 @@ import jakarta.faces.context.FacesContext;
  * can be changed by calling the <code>setRendererType()</code> method.
  * </p>
  *
- *
  */
-
 public class UIMessages extends UIComponentBase {
 
     // ------------------------------------------------------ Manifest Constants
 
     /**
-     * <p>
      * The standard component type for this component.
-     * </p>
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.Messages";
 
     /**
-     * <p>
      * The standard component family for this component.
-     * </p>
      */
     public static final String COMPONENT_FAMILY = "jakarta.faces.Messages";
 
@@ -72,27 +66,27 @@ public class UIMessages extends UIComponentBase {
         }
     }
 
+    UIMessagesImpl uiMessagesImpl;
+
     // ------------------------------------------------------------ Constructors
 
+
     /**
-     * <p>
      * Create a new {@link UIMessages} instance with default property values.
-     * </p>
      */
     public UIMessages() {
-
-        super();
+        super(new UIMessagesImpl());
         setRendererType("jakarta.faces.Messages");
-
+        this.uiMessagesImpl = (UIMessagesImpl) getUiComponentBaseImpl();
+        uiMessagesImpl.setPeer(this);
     }
+
 
     // -------------------------------------------------------------- Properties
 
     @Override
     public String getFamily() {
-
         return COMPONENT_FAMILY;
-
     }
 
     /**
@@ -103,104 +97,75 @@ public class UIMessages extends UIComponentBase {
      * @return the for client identifier.
      */
     public String getFor() {
-
-        return (String) getStateHelper().eval(PropertyKeys.forValue);
-
+        return uiMessagesImpl.getFor();
     }
 
     /**
-     * <p>
      * Set the client identifier of the component for which this component represents associated message(s) (if any). This
      * property must be set before the message is displayed.
-     * </p>
      *
      * @param newFor The new client id
      */
     public void setFor(String newFor) {
-
-        getStateHelper().put(PropertyKeys.forValue, newFor);
-
+        uiMessagesImpl.setFor(newFor);
     }
 
     /**
-     * <p>
      * Return the flag indicating whether only global messages (that is, messages with no associated client identifier)
      * should be rendered. Mutually exclusive with the "for" property which takes precedence. Defaults to false.
-     * </p>
      *
      * @return <code>true</code> if only global messages are to be shown, <code>false</code> otherwise.
      */
     public boolean isGlobalOnly() {
-
-        return (Boolean) getStateHelper().eval(PropertyKeys.globalOnly, false);
-
+        return uiMessagesImpl.isGlobalOnly();
     }
 
     /**
-     * <p>
      * Set the flag indicating whether only global messages (that is, messages with no associated client identifier) should
      * be rendered.
-     * </p>
      *
      * @param globalOnly The new flag value
      */
     public void setGlobalOnly(boolean globalOnly) {
-
-        getStateHelper().put(PropertyKeys.globalOnly, globalOnly);
-
+        uiMessagesImpl.setGlobalOnly(globalOnly);
     }
 
     /**
-     * <p>
      * Return the flag indicating whether the <code>detail</code> property of the associated message(s) should be displayed.
      * Defaults to false.
-     * </p>
      *
      * @return <code>true</code> if detail is to be shown, <code>false</code> otherwise.
      */
     public boolean isShowDetail() {
-
-        return (Boolean) getStateHelper().eval(PropertyKeys.showDetail, false);
-
+        return uiMessagesImpl.isShowDetail();
     }
 
     /**
-     * <p>
      * Set the flag indicating whether the <code>detail</code> property of the associated message(s) should be displayed.
-     * </p>
      *
      * @param showDetail The new flag
      */
     public void setShowDetail(boolean showDetail) {
-
-        getStateHelper().put(PropertyKeys.showDetail, showDetail);
+        uiMessagesImpl.setShowDetail(showDetail);
     }
 
     /**
-     * <p>
      * Return the flag indicating whether the <code>summary</code> property of the associated message(s) should be
      * displayed. Defaults to true.
-     * </p>
      *
      * @return <code>true</code> if the summary is to be shown, <code>false</code> otherwise.
      */
     public boolean isShowSummary() {
-
-        return (Boolean) getStateHelper().eval(PropertyKeys.showSummary, true);
-
+        return uiMessagesImpl.isShowSummary();
     }
 
     /**
-     * <p>
      * Set the flag indicating whether the <code>summary</code> property of the associated message(s) should be displayed.
-     * </p>
      *
      * @param showSummary The new flag value
      */
     public void setShowSummary(boolean showSummary) {
-
-        getStateHelper().put(PropertyKeys.showSummary, showSummary);
-
+        uiMessagesImpl.setShowSummary(showSummary);
     }
 
     /**
@@ -211,24 +176,18 @@ public class UIMessages extends UIComponentBase {
      * @since 2.0
      */
     public boolean isRedisplay() {
-
-        return (Boolean) getStateHelper().eval(PropertyKeys.redisplay, true);
-
+        return uiMessagesImpl.isRedisplay();
     }
 
     /**
-     * <p>
      * Set the flag indicating whether the <code>detail</code> property of the associated message(s) should be displayed.
-     * </p>
      *
      * @param redisplay flag indicating whether previously handled messages are redisplayed or not
      *
      * @since 2.0
      */
     public void setRedisplay(boolean redisplay) {
-
-        getStateHelper().put(PropertyKeys.redisplay, redisplay);
-
+        uiMessagesImpl.setRedisplay(redisplay);
     }
 
 }

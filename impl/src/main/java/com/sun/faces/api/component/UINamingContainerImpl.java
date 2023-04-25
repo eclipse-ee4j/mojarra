@@ -14,14 +14,21 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.faces.component;
+package com.sun.faces.api.component;
 
+import static com.sun.faces.util.Util.coalesce;
+import static jakarta.faces.component.UIViewRoot.UNIQUE_ID_PREFIX;
+import static jakarta.faces.component.visit.VisitResult.COMPLETE;
 import static java.util.logging.Level.SEVERE;
 
+import java.util.Collection;
 import java.util.logging.Logger;
 
-import com.sun.faces.api.component.UINamingContainerImpl;
-
+import jakarta.faces.component.NamingContainer;
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.component.UniqueIdVendor;
 import jakarta.faces.component.visit.VisitCallback;
 import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.context.FacesContext;
@@ -33,19 +40,23 @@ import jakarta.faces.context.FacesContext;
  * </p>
  */
 
-public class UINamingContainer extends UIComponentBase implements NamingContainer, UniqueIdVendor, StateHolder {
+public class UINamingContainerImpl extends UIComponentBaseImpl implements NamingContainer, UniqueIdVendor, StateHolder {
 
     // ------------------------------------------------------ Manifest Constants
 
     private static Logger LOGGER = Logger.getLogger("jakarta.faces.component", "jakarta.faces.LogStrings");
 
     /**
+     * <p>
      * The standard component type for this component.
+     * </p>
      */
     public static final String COMPONENT_TYPE = "jakarta.faces.NamingContainer";
 
     /**
+     * <p>
      * The standard component family for this component.
+     * </p>
      */
     public static final String COMPONENT_FAMILY = "jakarta.faces.NamingContainer";
 
@@ -58,24 +69,33 @@ public class UINamingContainer extends UIComponentBase implements NamingContaine
      */
     public static final String SEPARATOR_CHAR_PARAM_NAME = "jakarta.faces.SEPARATOR_CHAR";
 
+    enum PropertyKeys {
+        lastId
+    }
 
-    UINamingContainerImpl uiNamingContainerImpl;
+    UINamingContainer peer;
 
     // ------------------------------------------------------------ Constructors
 
+    @Override
+    public UINamingContainer getPeer() {
+        return peer;
+    }
+
+    public void setPeer(UINamingContainer peer) {
+        this.peer = peer;
+        super.setPeer(peer);
+    }
 
     /**
      * <p>
      * Create a new {@link UINamingContainer} instance with default property values.
      * </p>
      */
-    public UINamingContainer() {
-        super(new UINamingContainerImpl());
+    public UINamingContainerImpl() {
+        super();
         setRendererType(null);
-        this.uiNamingContainerImpl = (UINamingContainerImpl) getUiComponentBaseImpl();
-        uiNamingContainerImpl.setPeer(this);
     }
-
 
     // -------------------------------------------------------------- Properties
 
@@ -130,12 +150,53 @@ public class UINamingContainer extends UIComponentBase implements NamingContaine
      */
     @Override
     public boolean visitTree(VisitContext context, VisitCallback callback) {
-        return uiNamingContainerImpl.visitTree(context, callback);
+
+        // NamingContainers can optimize partial tree visits by taking advantage
+        // of the fact that it is possible to detect whether any ids to visit
+        // exist underneath the NamingContainer. If no such ids exist, there
+        // is no need to visit the subtree under the NamingContainer.
+        Collection<String> idsToVisit = context.getSubtreeIdsToVisit(this);
+
+        // If we have ids to visit, let the superclass implementation
+        // handle the visit
+        if (!idsToVisit.isEmpty()) {
+            return super.visitTree(context, callback);
+        }
+
+        // If we have no child ids to visit, just visit ourselves, if
+        // we are visitable.
+        if (isVisitable(context)) {
+            FacesContext facesContext = context.getFacesContext();
+            pushComponentToEL(facesContext, null);
+
+            try {
+                return context.invokeVisitCallback(this, callback) == COMPLETE;
+            } finally {
+                popComponentFromEL(facesContext);
+            }
+        }
+
+        // Done visiting this subtree. Return false to allow
+        // visit to continue.
+        return false;
     }
 
     @Override
     public String createUniqueId(FacesContext context, String seed) {
-        return uiNamingContainerImpl.createUniqueId(context, seed);
+        int lastId = coalesce(getLastId(), 0);
+        setLastId(++lastId);
+
+        return UNIQUE_ID_PREFIX + coalesce(seed, lastId);
+    }
+
+    // ----------------------------------------------------- Private Methods
+
+    private Integer getLastId() {
+        return (Integer) getStateHelper().get(PropertyKeys.lastId);
+    }
+
+    private void setLastId(Integer lastId) {
+        getStateHelper().put(PropertyKeys.lastId, lastId);
     }
 
 }

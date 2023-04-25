@@ -192,7 +192,6 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      *
      * @since 2.2
      */
-
     @Override
     public Object getValue() {
         return uiInputImpl.getValue();
