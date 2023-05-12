@@ -97,8 +97,9 @@ public class ViewMetadataImpl extends ViewMetadata {
                 Map<String, Object> currentViewMap = currentViewRoot.getViewMap(false);
 
                 if (!isEmpty(currentViewMap)) {
+                    currentViewMapShallowCopy = new HashMap<>(currentViewMap);
                     metadataView.getViewMap(true)
-                                .putAll(new HashMap<>(currentViewMap));
+                                .putAll(currentViewMapShallowCopy);
                 }
             }
 
