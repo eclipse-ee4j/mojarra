@@ -16,13 +16,13 @@
 
 package com.sun.faces.application;
 
-import javax.faces.context.FacesContext;
-import javax.faces.application.Application;
-
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.faces.application.Application;
+import javax.faces.context.FacesContext;
 
 class SharedUtils {
 
@@ -77,7 +77,9 @@ class SharedUtils {
                     if (isExpression(value)) {
                         value = app.evaluateExpressionGet(context, value, String.class);
                     }
-                    ret.add(value);
+                    if (value != null) {
+                        ret.add(value);
+                    }
                 }
             }
 
