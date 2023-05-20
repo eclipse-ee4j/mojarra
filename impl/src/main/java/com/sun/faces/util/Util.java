@@ -1494,7 +1494,7 @@ public class Util {
                         weld.onStartup(null, servletContext);
                         result = (BeanManager) applicationMap.get("org.jboss.weld.environment.servlet.jakarta.enterprise.inject.spi.BeanManager");
                     } catch (Exception | LinkageError e) {
-                        LOGGER.log(WARNING, "Reinitializing Weld failed", e);
+                        LOGGER.log(WARNING, "Reinitializing Weld failed - giving up, please make sure your project has at least one @Named bean and retry", e);
                     }
                 }
             }
