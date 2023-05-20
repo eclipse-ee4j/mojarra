@@ -43,6 +43,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -136,7 +137,7 @@ public class Util {
         @SuppressWarnings("unchecked")
         Map<String, Pattern> result = (Map<String, Pattern>) appMap.get(PATTERN_CACHE_KEY);
         if (result == null) {
-            result = new LRUMap<>(15);
+            result = Collections.synchronizedMap(new LRUMap<>(15));
             appMap.put(PATTERN_CACHE_KEY, result);
         }
         
@@ -147,7 +148,7 @@ public class Util {
         @SuppressWarnings("unchecked")
         Map<String, Pattern> result = (Map<String, Pattern>) sc.getAttribute(PATTERN_CACHE_KEY);
         if (result == null) {
-            result = new LRUMap<>(15);
+            result = Collections.synchronizedMap(new LRUMap<>(15));
             sc.setAttribute(PATTERN_CACHE_KEY, result);
         }
 
@@ -998,7 +999,7 @@ public class Util {
      * @param regex the regex used for splitting
      * @return the result of <code>Pattern.spit(String, int)</code>
      */
-    public synchronized static String[] split(Map<String, Object> appMap, String toSplit, String regex) {
+    public static String[] split(Map<String, Object> appMap, String toSplit, String regex) {
         return split(appMap, toSplit, regex, 0);
     }
     
@@ -1014,24 +1015,16 @@ public class Util {
      * @param splitLimit split result threshold
      * @return the result of <code>Pattern.spit(String, int)</code>
      */
-    public synchronized static String[] split(Map<String, Object> appMap, String toSplit, String regex, int splitLimit) {
+    public static String[] split(Map<String, Object> appMap, String toSplit, String regex, int splitLimit) {
         Map<String, Pattern> patternCache = getPatternCache(appMap);
-        Pattern pattern = patternCache.get(regex);
-        if (pattern == null) {
-            pattern = Pattern.compile(regex);
-            patternCache.put(regex, pattern);
-        }
+        Pattern pattern = patternCache.computeIfAbsent(regex, Pattern::compile);
         return pattern.split(toSplit, splitLimit);
     }
 
-     public synchronized static String[] split(ServletContext sc,
+     public static String[] split(ServletContext sc,
              String toSplit, String regex) {
         Map<String, Pattern> patternCache = getPatternCache(sc);
-        Pattern pattern = patternCache.get(regex);
-        if (pattern == null) {
-            pattern = Pattern.compile(regex);
-            patternCache.put(regex, pattern);
-        }
+        Pattern pattern = patternCache.computeIfAbsent(regex, Pattern::compile);
         return pattern.split(toSplit, 0);
     }
 
