@@ -16,7 +16,7 @@
 
 package com.sun.faces.cdi;
 
-import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
@@ -36,7 +36,7 @@ public class SessionProducer extends CdiProducer<Object> {
     private static final long serialVersionUID = 1L;
 
     public SessionProducer() {
-        super.name("session").scope(SessionScoped.class).create(e -> FacesContext.getCurrentInstance().getExternalContext().getSession(false));
+        super.name("session").scope(RequestScoped.class).create(e -> FacesContext.getCurrentInstance().getExternalContext().getSession(false));
 
     }
 
