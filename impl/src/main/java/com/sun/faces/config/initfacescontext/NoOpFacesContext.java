@@ -16,8 +16,10 @@
 
 package com.sun.faces.config.initfacescontext;
 
+import static java.util.Collections.emptyIterator;
 import static java.util.Collections.emptyList;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,8 +40,7 @@ public abstract class NoOpFacesContext extends FacesContext {
 
     @Override
     public Iterator<String> getClientIdsWithMessages() {
-        List<String> list = emptyList();
-        return list.iterator();
+        return emptyIterator();
     }
 
     @Override
@@ -49,8 +50,7 @@ public abstract class NoOpFacesContext extends FacesContext {
 
     @Override
     public Iterator<FacesMessage> getMessages() {
-        List<FacesMessage> list = emptyList();
-        return list.iterator();
+        return emptyIterator();
     }
 
     @Override

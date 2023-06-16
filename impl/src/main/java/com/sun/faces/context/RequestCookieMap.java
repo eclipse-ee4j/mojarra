@@ -56,9 +56,9 @@ public class RequestCookieMap extends BaseContextMap<Object> {
         String keyString = key.toString();
         Object result = null;
 
-        for (int i = 0; i < cookies.length; i++) {
-            if (cookies[i].getName().equals(keyString)) {
-                result = cookies[i];
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals(keyString)) {
+                result = cookie;
                 break;
             }
         }
@@ -88,8 +88,8 @@ public class RequestCookieMap extends BaseContextMap<Object> {
     @Override
     public int hashCode() {
         int hashCode = 7 * request.hashCode();
-        for (Iterator i = entrySet().iterator(); i.hasNext();) {
-            hashCode += i.next().hashCode();
+        for (Map.Entry<String, Object> stringObjectEntry : entrySet()) {
+            hashCode += stringObjectEntry.hashCode();
         }
         return hashCode;
     }
@@ -113,7 +113,7 @@ public class RequestCookieMap extends BaseContextMap<Object> {
 
     // ----------------------------------------------------------- Inner Classes
 
-    private static class CookieArrayEnumerator implements Enumeration {
+    private static class CookieArrayEnumerator implements Enumeration<String> {
 
         Cookie[] cookies;
         int curIndex = -1;
@@ -130,7 +130,7 @@ public class RequestCookieMap extends BaseContextMap<Object> {
         }
 
         @Override
-        public Object nextElement() {
+        public String nextElement() {
             curIndex++;
             if (curIndex < upperBound) {
                 return cookies[curIndex].getName();

@@ -17,6 +17,7 @@
 package com.sun.faces.context;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.component.UIComponent;
@@ -124,17 +125,13 @@ class StateHolderSaver implements Serializable {
             throw new IllegalStateException(e);
         }
 
-        if (null != toRestoreClass) {
-            try {
-                result = toRestoreClass.newInstance();
-            } catch (InstantiationException e) {
-                throw new IllegalStateException(e);
-            } catch (IllegalAccessException a) {
-                throw new IllegalStateException(a);
-            }
+        try {
+            result = toRestoreClass.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            throw new IllegalStateException(e);
         }
 
-        if (null != result && null != savedState && result instanceof StateHolder) {
+        if (null != savedState && result instanceof StateHolder) {
             // don't need to check transient, since that was done on
             // the saving side.
             Serializable[] tuple = (Serializable[]) savedState;
@@ -143,7 +140,7 @@ class StateHolderSaver implements Serializable {
         return result;
     }
 
-    private static Class loadClass(String name, Object fallbackClass) throws ClassNotFoundException {
+    private static Class<?> loadClass(String name, Object fallbackClass) throws ClassNotFoundException {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         if (loader == null) {
             loader = fallbackClass.getClass().getClassLoader();

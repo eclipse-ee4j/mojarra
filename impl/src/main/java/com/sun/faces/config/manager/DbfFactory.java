@@ -103,7 +103,7 @@ public class DbfFactory {
          * Contains mapping between grammar name and the local URL to the
          * physical resource.
          */
-        private HashMap<String, String> entities = new HashMap<>(12, 1.0f);
+        private final HashMap<String, String> entities = new HashMap<>(12, 1.0f);
 
         // -------------------------------------------------------- Constructors
 
@@ -129,7 +129,7 @@ public class DbfFactory {
                             try {
                                 schemaUrl = schemaFile.toURI().toURL();
                             } catch (MalformedURLException mue) {
-                                LOGGER.log(SEVERE, mue, () -> mue.toString());
+                                LOGGER.log(SEVERE, mue, mue::toString);
                             }
 
                             if (schemaUrl == null) {
@@ -353,7 +353,7 @@ public class DbfFactory {
 
         if (schemaMap == null) {
             synchronized (servletContext) {
-                schemaMap = synchronizedMap(new EnumMap<FacesSchema, Schema>(FacesSchema.class));
+                schemaMap = synchronizedMap(new EnumMap<>(FacesSchema.class));
                 servletContext.setAttribute(SCHEMA_MAP, schemaMap);
             }
         }

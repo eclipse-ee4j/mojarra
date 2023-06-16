@@ -49,14 +49,14 @@ class SelectUtils {
      * @param items Iterator over the {@link jakarta.faces.model.SelectItem}s to be checked
      * @param converter the {@link Converter} associated with this component
      */
-    static boolean matchValue(FacesContext ctx, UIComponent component, Object value, Iterator<SelectItem> items, Converter converter) {
+    static boolean matchValue(FacesContext ctx, UIComponent component, Object value, Iterator<SelectItem> items, Converter<?> converter) {
 
         while (items.hasNext()) {
             SelectItem item = items.next();
             if (item instanceof SelectItemGroup) {
-                SelectItem subitems[] = ((SelectItemGroup) item).getSelectItems();
+                SelectItem[] subitems = ((SelectItemGroup) item).getSelectItems();
                 if (subitems != null && subitems.length > 0) {
-                    if (matchValue(ctx, component, value, new ArrayIterator(subitems), converter)) {
+                    if (matchValue(ctx, component, value, new ArrayIterator<>(subitems), converter)) {
                         return true;
                     }
                 }
@@ -92,15 +92,15 @@ class SelectUtils {
      * @return
      */
 
-    static boolean valueIsNoSelectionOption(FacesContext ctx, UIComponent component, Object value, Iterator<SelectItem> items, Converter converter) {
+    static boolean valueIsNoSelectionOption(FacesContext ctx, UIComponent component, Object value, Iterator<SelectItem> items, Converter<?> converter) {
         boolean result = false;
 
         while (items.hasNext()) {
             SelectItem item = items.next();
             if (item instanceof SelectItemGroup) {
-                SelectItem subitems[] = ((SelectItemGroup) item).getSelectItems();
+                SelectItem[] subitems = ((SelectItemGroup) item).getSelectItems();
                 if (subitems != null && subitems.length > 0) {
-                    if (valueIsNoSelectionOption(ctx, component, value, new ArrayIterator(subitems), converter)) {
+                    if (valueIsNoSelectionOption(ctx, component, value, new ArrayIterator<>(subitems), converter)) {
                         result = true;
                         break;
                     }
@@ -128,7 +128,7 @@ class SelectUtils {
         return result;
     }
 
-    private static Object doConversion(FacesContext ctx, UIComponent component, SelectItem item, Object value, Converter converter)
+    private static Object doConversion(FacesContext ctx, UIComponent component, SelectItem item, Object value, Converter<?> converter)
             throws IllegalStateException {
         Object itemValue = item.getValue();
         if (itemValue == null && value == null) {
@@ -159,7 +159,7 @@ class SelectUtils {
      * @param value the value to coerce
      * @param toType the type <code>value</code> should be coerced to
      *
-     * @return the result of the Jakarta Expression Language coersion
+     * @return the result of the Jakarta Expression Language coercion
      *
      * @see ExpressionFactory#coerceToType(Object, Class)
      */
@@ -185,13 +185,13 @@ class SelectUtils {
     /**
      * Exposes an Array via an <code>Iterator</code>
      */
-    static class ArrayIterator implements Iterator {
+    static class ArrayIterator<T> implements Iterator<T> {
 
-        public ArrayIterator(Object items[]) {
+        public ArrayIterator(T[] items) {
             this.items = items;
         }
 
-        private Object items[];
+        private final T[] items;
         private int index = 0;
 
         @Override
@@ -200,7 +200,7 @@ class SelectUtils {
         }
 
         @Override
-        public Object next() {
+        public T next() {
             try {
                 return items[index++];
             } catch (IndexOutOfBoundsException e) {

@@ -20,7 +20,6 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.Set;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.ResponseStream;
@@ -64,22 +63,19 @@ public abstract class RenderKit {
      *
      * @throws NullPointerException if <code>family</code> or <code>rendererType</code> or <code>renderer</code> is null
      */
-    public abstract void addRenderer(String family, String rendererType, Renderer renderer);
+    public abstract void addRenderer(String family, String rendererType, Renderer<? extends UIComponent> renderer);
 
     /**
      * <p>
      * Return the {@link Renderer} instance most recently registered for the specified component <code>family</code> and
      * <code>rendererType</code>, if any; otherwise, return <code>null</code>.
      * </p>
-     *
-     * @param family Component family of the requested {@link Renderer} instance
+     * @param family       Component family of the requested {@link Renderer} instance
      * @param rendererType Renderer type of the requested {@link Renderer} instance
-     *
-     * @throws NullPointerException if <code>family</code> or <code>rendererType</code> is <code>null</code>
-     *
      * @return the {@link Renderer} instance
+     * @throws NullPointerException if <code>family</code> or <code>rendererType</code> is <code>null</code>
      */
-    public abstract Renderer getRenderer(String family, String rendererType);
+    public abstract Renderer<? extends UIComponent> getRenderer(String family, String rendererType);
 
     /**
      * <p>
@@ -155,10 +151,7 @@ public abstract class RenderKit {
      *
      */
     public Iterator<String> getComponentFamilies() {
-
-        Set<String> empty = Collections.emptySet();
-        return empty.iterator();
-
+        return Collections.emptyIterator();
     }
 
     /**
@@ -183,10 +176,7 @@ public abstract class RenderKit {
      *
      */
     public Iterator<String> getRendererTypes(String componentFamily) {
-
-        Set<String> empty = Collections.emptySet();
-        return empty.iterator();
-
+        return Collections.emptyIterator();
     }
 
     /**

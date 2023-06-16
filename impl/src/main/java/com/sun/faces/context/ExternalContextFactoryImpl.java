@@ -46,9 +46,7 @@ public class ExternalContextFactoryImpl extends ExternalContextFactory {
 
         ExternalContext extContext = new ExternalContextImpl((ServletContext) servletContext, (ServletRequest) request, (ServletResponse) response);
 
-        if (request instanceof ServletRequest) {
-            ((ServletRequest) request).setAttribute(DEFAULT_EXTERNAL_CONTEXT_KEY, extContext);
-        }
+        ((ServletRequest) request).setAttribute(DEFAULT_EXTERNAL_CONTEXT_KEY, extContext);
 
         return extContext;
 

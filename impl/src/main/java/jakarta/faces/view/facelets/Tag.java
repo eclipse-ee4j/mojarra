@@ -143,6 +143,6 @@ public final class Tag {
      */
     @Override
     public String toString() {
-        return location + " <" + qName + ">";
+        return location + " <" + qName + '>';
     }
 }

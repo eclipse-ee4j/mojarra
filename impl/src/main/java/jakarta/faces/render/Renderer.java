@@ -135,7 +135,7 @@ public abstract class Renderer<T extends UIComponent> {
      * @throws IOException if an input/output error occurs while rendering
      * @throws NullPointerException if <code>context</code> or <code>component</code> is <code>null</code>
      */
-    public void encodeChildren(FacesContext context, T component) throws IOException {
+    public <T extends UIComponent> void encodeChildren(FacesContext context, T component) throws IOException {
         if (context == null || component == null) {
             throw new NullPointerException();
         }

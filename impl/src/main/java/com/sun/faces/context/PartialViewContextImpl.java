@@ -65,7 +65,7 @@ import jakarta.faces.render.RenderKitFactory;
 public class PartialViewContextImpl extends PartialViewContext {
 
     // Log instance for this class
-    private static Logger LOGGER = FacesLogger.CONTEXT.getLogger();
+    private static final Logger LOGGER = FacesLogger.CONTEXT.getLogger();
 
     private boolean released;
 

@@ -17,10 +17,7 @@
 package com.sun.faces.context;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -54,8 +51,8 @@ public class SessionMap extends BaseContextMap<Object> {
     public void clear() {
         HttpSession session = getSession(false);
         if (session != null) {
-            for (Enumeration e = session.getAttributeNames(); e.hasMoreElements();) {
-                String name = (String) e.nextElement();
+            for (Enumeration<String> e = session.getAttributeNames(); e.hasMoreElements();) {
+                String name = e.nextElement();
                 session.removeAttribute(name);
             }
         }
@@ -63,20 +60,17 @@ public class SessionMap extends BaseContextMap<Object> {
 
     // Supported by maps if overridden
     @Override
-    public void putAll(Map t) {
+    public void putAll(Map<? extends String, ?> map) {
         HttpSession session = getSession(true);
-        for (Iterator i = t.entrySet().iterator(); i.hasNext();) {
-            Map.Entry entry = (Map.Entry) i.next();
-            Object v = entry.getValue();
-            Object k = entry.getKey();
-            if (ProjectStage.Development.equals(stage) && !(v instanceof Serializable)) {
+        map.forEach( (key, value) -> {
+            if (ProjectStage.Development.equals(stage) && !(value instanceof Serializable)) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.log(Level.WARNING, "faces.context.extcontext.sessionmap.nonserializable", new Object[] { k, v.getClass().getName() });
+                    LOGGER.log(Level.WARNING, "faces.context.extcontext.sessionmap.nonserializable", new Object[]{key, value.getClass().getName()});
                 }
             }
             // noinspection NonSerializableObjectBoundToHttpSession
-            session.setAttribute((String) k, v);
-        }
+            session.setAttribute(key, value);
+        });
     }
 
     @Override
@@ -133,7 +127,7 @@ public class SessionMap extends BaseContextMap<Object> {
 
     @Override
     public boolean equals(Object obj) {
-        return !(obj == null || !(obj instanceof SessionMap)) && super.equals(obj);
+        return obj instanceof SessionMap && super.equals(obj);
     }
 
     @Override
@@ -141,8 +135,8 @@ public class SessionMap extends BaseContextMap<Object> {
         HttpSession session = getSession(false);
         int hashCode = 7 * (session != null ? session.hashCode() : super.hashCode());
         if (session != null) {
-            for (Iterator i = entrySet().iterator(); i.hasNext();) {
-                hashCode += i.next().hashCode();
+            for (Map.Entry<String,Object> stringObjectEntry : entrySet()) {
+                hashCode += stringObjectEntry.hashCode();
             }
         }
         return hashCode;
@@ -156,8 +150,7 @@ public class SessionMap extends BaseContextMap<Object> {
         if (session != null) {
             return new EntryIterator(session.getAttributeNames());
         } else {
-            Map<String, Object> empty = Collections.emptyMap();
-            return empty.entrySet().iterator();
+            return Collections.emptyIterator();
         }
     }
 
@@ -167,8 +160,7 @@ public class SessionMap extends BaseContextMap<Object> {
         if (session != null) {
             return new KeyIterator(session.getAttributeNames());
         } else {
-            Map<String, Object> empty = Collections.emptyMap();
-            return empty.keySet().iterator();
+            return Collections.emptyIterator();
         }
     }
 
@@ -178,8 +170,7 @@ public class SessionMap extends BaseContextMap<Object> {
         if (session != null) {
             return new ValueIterator(session.getAttributeNames());
         } else {
-            Map<String, Object> empty = Collections.emptyMap();
-            return empty.values().iterator();
+            return Collections.emptyIterator();
         }
     }
 

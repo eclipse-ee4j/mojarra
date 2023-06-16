@@ -702,7 +702,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                     monitors.add(new Monitor(uri));
                 } catch (IOException ioe) {
                     LOGGER.log(SEVERE, () -> "Unable to setup resource monitor for " + uri.toString() + ".  Resource will not be monitored for changes.");
-                    LOGGER.log(FINE, ioe, () -> ioe.toString());
+                    LOGGER.log(FINE, ioe, ioe::toString);
                 }
             }
 

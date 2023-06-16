@@ -18,14 +18,17 @@
 package jakarta.faces.component;
 
 import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.stream.IntStream;
 
 import jakarta.el.ValueExpression;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
+import jakarta.faces.model.SelectItem;
 
 /**
  * <p>
@@ -413,9 +416,9 @@ public class UISelectMany extends UIInput {
         // it will not suffice to just compare the element position and position.
         int count1;
         int count2;
-        for (int i = 0; i < oldarray.length; ++i) {
-            count1 = countElementOccurrence(oldarray[i], oldarray);
-            count2 = countElementOccurrence(oldarray[i], newarray);
+        for (Object oldElement : oldarray) {
+            count1 = countElementOccurrence(oldElement, oldarray);
+            count2 = countElementOccurrence(oldElement, newarray);
             if (count1 != count2) {
                 valueChanged = true;
                 break;
@@ -435,8 +438,7 @@ public class UISelectMany extends UIInput {
      */
     private static int countElementOccurrence(Object element, Object[] array) {
         int count = 0;
-        for (int i = 0; i < array.length; ++i) {
-            Object arrayElement = array[i];
+        for (Object arrayElement : array) {
             if (arrayElement != null && element != null) {
                 if (arrayElement.equals(element)) {
                     count++;
@@ -523,9 +525,9 @@ public class UISelectMany extends UIInput {
         // Ensure that the values match one of the available options
         // Don't arrays cast to "Object[]", as we may now be using an array
         // of primitives
-        Converter converter = getConverter();
-        for (Iterator i = getValuesIterator(value); i.hasNext();) {
-            Iterator items = new SelectItemsIterator(context, this);
+        Converter<?> converter = getConverter();
+        for (Iterator<?> i = getValuesIterator(value); i.hasNext();) {
+            Iterator<SelectItem> items = new SelectItemsIterator(context, this);
             Object currentValue = i.next();
             if (!SelectUtils.matchValue(context, this, currentValue, items, converter)) {
                 doAddMessage = true;
@@ -536,8 +538,8 @@ public class UISelectMany extends UIInput {
         // Ensure that if the value is noSelection and a
         // value is required, a message is queued
         if (isRequired()) {
-            for (Iterator i = getValuesIterator(value); i.hasNext();) {
-                Iterator items = new SelectItemsIterator(context, this);
+            for (Iterator<?> i = getValuesIterator(value); i.hasNext();) {
+                Iterator<SelectItem> items = new SelectItemsIterator(context, this);
                 Object currentValue = i.next();
                 if (SelectUtils.valueIsNoSelectionOption(context, this, currentValue, items, converter)) {
                     doAddMessage = true;
@@ -557,12 +559,12 @@ public class UISelectMany extends UIInput {
 
     // --------------------------------------------------------- Private Methods
 
-    private Iterator getValuesIterator(Object value) {
+    private <T> Iterator<T> getValuesIterator(Object value) {
         if (value instanceof Collection) {
-            return ((Collection) value).iterator();
+            return ((Collection<T>) value).iterator();
         }
 
-        return new ArrayIterator(value);
+        return new ArrayIterator<>(value);
     }
 
     // ---------------------------------------------------------- Nested Classes
@@ -570,19 +572,17 @@ public class UISelectMany extends UIInput {
     /**
      * Exposes an Array as an Iterator.
      */
-    private static final class ArrayIterator implements Iterator {
+    private static final class ArrayIterator<T> implements Iterator<T> {
 
-        private int length;
+        private final int length;
         private int idx = 0;
-        private Object value;
+        private final Object value;
 
         // -------------------------------------------------------- Constructors
 
         ArrayIterator(Object value) {
-
             this.value = value;
             length = Array.getLength(value);
-
         }
 
         // ------------------------------------------------------------ Iterator
@@ -593,21 +593,18 @@ public class UISelectMany extends UIInput {
         }
 
         @Override
-        public Object next() {
-
+        @SuppressWarnings("unchecked")
+        public T next() {
             if (idx >= length) {
                 throw new NoSuchElementException();
             } else {
-                return Array.get(value, idx++);
+                return (T)Array.get(value, idx++);
             }
-
         }
 
         @Override
         public void remove() {
-
             throw new UnsupportedOperationException();
-
         }
 
     }

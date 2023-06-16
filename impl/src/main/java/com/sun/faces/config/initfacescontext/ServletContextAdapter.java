@@ -165,17 +165,17 @@ public class ServletContextAdapter extends ExternalContext {
 
     @Override
     public Map<String, Object> getRequestCookieMap() {
-        return unmodifiableMap(emptyMap());
+        return emptyMap();
     }
 
     @Override
     public Map<String, String> getRequestHeaderMap() {
-        return unmodifiableMap(emptyMap());
+        return emptyMap();
     }
 
     @Override
     public Map<String, String[]> getRequestHeaderValuesMap() {
-        return unmodifiableMap(emptyMap());
+        return emptyMap();
     }
 
     @Override
@@ -195,17 +195,17 @@ public class ServletContextAdapter extends ExternalContext {
 
     @Override
     public Map<String, String> getRequestParameterMap() {
-        return unmodifiableMap(emptyMap());
+        return emptyMap();
     }
 
     @Override
     public Iterator<String> getRequestParameterNames() {
-        return Collections.<String>emptyList().iterator();
+        return Collections.emptyIterator();
     }
 
     @Override
     public Map<String, String[]> getRequestParameterValuesMap() {
-        return unmodifiableMap(emptyMap());
+        return emptyMap();
     }
 
     @Override

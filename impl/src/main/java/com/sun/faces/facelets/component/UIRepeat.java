@@ -65,12 +65,12 @@ public class UIRepeat extends UINamingContainer {
 
     public static final String COMPONENT_FAMILY = "facelets";
 
-    private final static DataModel EMPTY_MODEL = new ListDataModel<>(Collections.emptyList());
+    private final static DataModel<?> EMPTY_MODEL = new ListDataModel<>(Collections.emptyList());
 
     // our data
     private Object value;
 
-    private transient DataModel model;
+    private transient DataModel<?> model;
 
     // variables
     private String var;
@@ -203,12 +203,12 @@ public class UIRepeat extends UINamingContainer {
         }
     }
 
-    private void setDataModel(DataModel model) {
+    private void setDataModel(DataModel<?> model) {
         // noinspection unchecked
         this.model = model;
     }
 
-    private DataModel getDataModel() {
+    private DataModel<?> getDataModel() {
         if (model == null) {
             Object val = getValue();
             if (val == null) {
@@ -378,9 +378,9 @@ public class UIRepeat extends UINamingContainer {
         String id = c.getId();
         c.setId(id);
 
-        Iterator itr = c.getFacetsAndChildren();
+        Iterator<UIComponent> itr = c.getFacetsAndChildren();
         while (itr.hasNext()) {
-            removeChildState(faces, (UIComponent) itr.next());
+            removeChildState(faces, itr.next());
         }
         if (childState != null) {
             childState.remove(c.getClientId(faces));
@@ -400,9 +400,9 @@ public class UIRepeat extends UINamingContainer {
         }
 
         // continue hack
-        Iterator itr = c.getFacetsAndChildren();
+        Iterator<UIComponent> itr = c.getFacetsAndChildren();
         while (itr.hasNext()) {
-            saveChildState(faces, (UIComponent) itr.next());
+            saveChildState(faces, itr.next());
         }
     }
 
@@ -433,9 +433,9 @@ public class UIRepeat extends UINamingContainer {
         }
 
         // continue hack
-        Iterator itr = c.getFacetsAndChildren();
+        Iterator<UIComponent> itr = c.getFacetsAndChildren();
         while (itr.hasNext()) {
-            restoreChildState(faces, (UIComponent) itr.next());
+            restoreChildState(faces, itr.next());
         }
     }
 
@@ -454,7 +454,7 @@ public class UIRepeat extends UINamingContainer {
 
     private void setIndex(FacesContext ctx, int index) {
 
-        DataModel localModel = getDataModel();
+        DataModel<?> localModel = getDataModel();
 
         // save child state
         if (this.index != -1 && localModel.isRowAvailable()) {
@@ -510,7 +510,7 @@ public class UIRepeat extends UINamingContainer {
         try {
             // has children
             if (getChildCount() > 0) {
-                Iterator itr;
+                Iterator<?> itr;
                 UIComponent c;
 
                 Integer begin = getBegin();
@@ -529,7 +529,7 @@ public class UIRepeat extends UINamingContainer {
 
                 // grab renderer
                 String rendererType = getRendererType();
-                Renderer renderer = null;
+                Renderer<?> renderer = null;
                 if (rendererType != null) {
                     renderer = getRenderer(faces);
                 }
@@ -701,7 +701,7 @@ public class UIRepeat extends UINamingContainer {
         if (!shouldIterate) {
             FacesContext faces = ctx.getFacesContext();
             String sourceId = BEHAVIOR_SOURCE_PARAM.getValue(faces);
-            boolean containsSource = sourceId != null ? sourceId.startsWith(super.getClientId(faces) + getSeparatorChar(faces)) : false;
+            boolean containsSource = sourceId != null && sourceId.startsWith(super.getClientId(faces) + getSeparatorChar(faces));
             return containsSource;
         } else {
             return shouldIterate;

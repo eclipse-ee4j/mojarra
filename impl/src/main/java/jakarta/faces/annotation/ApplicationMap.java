@@ -49,7 +49,7 @@ public @interface ApplicationMap {
      *
      * @since 4.0
      */
-    public static final class Literal extends AnnotationLiteral<ApplicationMap> implements ApplicationMap {
+    final class Literal extends AnnotationLiteral<ApplicationMap> implements ApplicationMap {
         private static final long serialVersionUID = 1L;
 
         /**

@@ -16,6 +16,7 @@
 
 package jakarta.faces.view.facelets;
 
+import com.sun.faces.facelets.impl.DefaultFaceletFactory;
 import jakarta.faces.FacesWrapper;
 
 /**

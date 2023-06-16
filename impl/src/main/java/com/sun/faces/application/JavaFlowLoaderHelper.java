@@ -60,7 +60,7 @@ class JavaFlowLoaderHelper {
 
         WebConfiguration config = WebConfiguration.getInstance();
         for (Producer<Flow> flowProducer : flowProducers) {
-            Flow toAdd = flowProducer.produce(beanManager.<Flow>createCreationalContext(null));
+            Flow toAdd = flowProducer.produce(beanManager.createCreationalContext(null));
             if (toAdd == null) {
                 LOGGER.log(SEVERE, "Flow producer method {0}() returned null.  Ignoring.", flowProducer.toString());
             } else {

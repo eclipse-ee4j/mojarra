@@ -331,7 +331,7 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
      * </p>
      */
     @Override
-    public Converter createConverter(String converterId) {
+    public <T> Converter<T> createConverter(String converterId) {
         return getWrapped().createConverter(converterId);
     }
 
@@ -342,7 +342,7 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
      * </p>
      */
     @Override
-    public Converter createConverter(Class<?> targetClass) {
+    public <T> Converter<T> createConverter(Class<T> targetClass) {
         return getWrapped().createConverter(targetClass);
     }
 

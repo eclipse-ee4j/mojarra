@@ -128,7 +128,7 @@ public class ELUtils {
 
         if (evaluationResult != null) {
             // fast path - this expression has already been evaluated, therefore return its evaluation result
-            return evaluationResult.booleanValue();
+            return evaluationResult;
         }
 
         // TODO we should be trying to re-use the Matcher by calling

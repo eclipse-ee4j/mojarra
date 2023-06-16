@@ -42,20 +42,8 @@ import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.AbstractCollection;
-import java.util.AbstractMap;
-import java.util.AbstractSet;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.NoSuchElementException;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
@@ -652,7 +640,7 @@ public abstract class UIComponentBase extends UIComponent {
      * @throws NullPointerException {@inheritDoc}
      */
     @Override
-    protected FacesListener[] getFacesListeners(Class clazz) {
+    protected FacesListener[] getFacesListeners(Class<?> clazz) {
 
         if (clazz == null) {
             throw new NullPointerException();
@@ -672,7 +660,7 @@ public abstract class UIComponentBase extends UIComponent {
 
         List<FacesListener> results = new ArrayList<>(listeners.length);
         for (FacesListener listener : listeners) {
-            if (((Class<?>) clazz).isAssignableFrom(listener.getClass())) {
+            if (clazz.isAssignableFrom(listener.getClass())) {
                 results.add(listener);
             }
         }
@@ -763,11 +751,7 @@ public abstract class UIComponentBase extends UIComponent {
         }
 
         SystemEventListener facesLifecycleListener = new ComponentSystemEventListenerAdapter(componentListener, this);
-        List<SystemEventListener> listenersForEventClass = listenersByEventClass.get(eventClass);
-        if (listenersForEventClass == null) {
-            listenersForEventClass = new ArrayList<>(3);
-            listenersByEventClass.put(eventClass, listenersForEventClass);
-        }
+        List<SystemEventListener> listenersForEventClass = listenersByEventClass.computeIfAbsent(eventClass, k -> new ArrayList<>(3));
 
         if (!listenersForEventClass.contains(facesLifecycleListener)) {
             listenersForEventClass.add(facesLifecycleListener);
@@ -1038,9 +1022,9 @@ public abstract class UIComponentBase extends UIComponent {
     }
 
     @Override
-    protected Renderer getRenderer(FacesContext context) {
+    protected Renderer<? extends UIComponent> getRenderer(FacesContext context) {
 
-        Renderer renderer = null;
+        Renderer<? extends UIComponent> renderer = null;
 
         String rendererType = getRendererType();
         if (rendererType != null) {
@@ -1052,7 +1036,7 @@ public abstract class UIComponentBase extends UIComponent {
         } else {
             if (LOGGER.isLoggable(FINE)) {
                 String id = getId();
-                LOGGER.fine("No renderer-type for component " + id != null ? id : getClass().getName());
+                LOGGER.fine("No renderer-type for component " + (id != null ? id : getClass().getName()) );
             }
         }
 
@@ -1272,9 +1256,7 @@ public abstract class UIComponentBase extends UIComponent {
      */
 
     public static Object saveAttachedState(FacesContext context, Object attachedObject) {
-        if (context == null) {
-            throw new NullPointerException();
-        }
+        Objects.requireNonNull(context);
 
         if (attachedObject == null) {
             return null;
@@ -1295,7 +1277,7 @@ public abstract class UIComponentBase extends UIComponent {
         }
 
         if (newWillSucceed && attachedObject instanceof Collection) {
-            Collection attachedCollection = (Collection) attachedObject;
+            Collection<?> attachedCollection = (Collection<?>) attachedObject;
             List<StateHolderSaver> resultList = new ArrayList<>(attachedCollection.size() + 1);
             resultList.add(new StateHolderSaver(context, mapOrCollectionClass));
             for (Object item : attachedCollection) {

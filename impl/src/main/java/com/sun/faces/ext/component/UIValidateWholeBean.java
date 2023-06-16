@@ -66,7 +66,7 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
     }
 
     @Override
-    public void setConverter(Converter converter) {
+    public void setConverter(Converter<?> converter) {
     }
 
     @Override

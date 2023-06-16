@@ -35,9 +35,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
 
     protected void addHint(SearchExpressionContext searchExpressionContext, SearchExpressionHint hint) {
         // It is a Set already
-        if (!searchExpressionContext.getExpressionHints().contains(hint)) {
-            searchExpressionContext.getExpressionHints().add(hint);
-        }
+        searchExpressionContext.getExpressionHints().add(hint);
     }
 
     @Override
@@ -340,6 +338,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
                 for (char separator : separators) {
                     if (c == separator) {
                         isSeparator = true;
+                        break;
                     }
                 }
 
@@ -362,7 +361,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
         // lets not forget about part after the separator
         tokens.add(buffer.toString());
 
-        return tokens.toArray(new String[tokens.size()]);
+        return tokens.toArray(new String[0]);
     }
 
     @Override

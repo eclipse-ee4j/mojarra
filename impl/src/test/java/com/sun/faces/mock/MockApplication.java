@@ -203,7 +203,7 @@ public class MockApplication extends Application {
         this.stateManager = stateManager;
     }
 
-    private Map<String, String> components = new HashMap<>();
+    private final Map<String, String> components = new HashMap<>();
 
     @Override
     public void addComponent(String componentType, String componentClass) {
@@ -234,7 +234,7 @@ public class MockApplication extends Application {
         return (components.keySet().iterator());
     }
 
-    private Map<String, String> converters = new HashMap<>();
+    private final Map<String, String> converters = new HashMap<>();
 
     @Override
     public void addConverter(String converterId, String converterClass) {
@@ -247,18 +247,18 @@ public class MockApplication extends Application {
     }
 
     @Override
-    public Converter createConverter(String converterId) {
+    public <T> Converter<T> createConverter(String converterId) {
         String converterClass = converters.get(converterId);
         try {
-            Class<?> clazz = Class.forName(converterClass);
-            return ((Converter) clazz.getDeclaredConstructor().newInstance());
+            Class<T> clazz = (Class<T>) Class.forName(converterClass);
+            return (Converter<T>) clazz.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             throw new FacesException(e);
         }
     }
 
     @Override
-    public Converter createConverter(Class<?> targetClass) {
+    public <T> Converter<T> createConverter(Class<T> targetClass) {
         throw new UnsupportedOperationException();
     }
 
@@ -284,7 +284,7 @@ public class MockApplication extends Application {
         return messageBundle;
     }
 
-    private Map<String, String> validators = new HashMap<>();
+    private final Map<String, String> validators = new HashMap<>();
 
     @Override
     public void addValidator(String validatorId, String validatorClass) {
@@ -292,11 +292,11 @@ public class MockApplication extends Application {
     }
 
     @Override
-    public Validator createValidator(String validatorId) {
+    public <T> Validator<T> createValidator(String validatorId) {
         String validatorClass = validators.get(validatorId);
         try {
-            Class<?> clazz = Class.forName(validatorClass);
-            return ((Validator) clazz.getDeclaredConstructor().newInstance());
+            Class<T> clazz = (Class<T>) Class.forName(validatorClass);
+            return ((Validator<T>) clazz.getDeclaredConstructor().newInstance());
         } catch (Exception e) {
             throw new FacesException(e);
         }

@@ -35,7 +35,7 @@ import jakarta.faces.convert.ConverterException;
  */
 public class PropertyEditorHelper {
 
-    private Application app;
+    private final Application app;
 
     public PropertyEditorHelper(Application app) {
         this.app = app;
@@ -49,7 +49,7 @@ public class PropertyEditorHelper {
      */
     public Object convertToObject(Class<?> targetClass, String textValue) {
         UIComponent component = getComponent();
-        Converter converter = app.createConverter(targetClass);
+        Converter<?> converter = app.createConverter(targetClass);
         if (null == converter) {
             // PENDING(edburns): I18N
             FacesException e = new FacesException(

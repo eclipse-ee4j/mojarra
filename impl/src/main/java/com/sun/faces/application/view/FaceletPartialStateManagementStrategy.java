@@ -392,7 +392,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
         }
 
         List<ComponentStruct> actions = stateContext.getDynamicActions();
-        HashMap<String, UIComponent> componentMap = stateContext.getDynamicComponents();
+        Map<String, UIComponent> componentMap = stateContext.getDynamicComponents();
 
         if (actions != null) {
             List<Object> savedActions = new ArrayList<>(actions.size());

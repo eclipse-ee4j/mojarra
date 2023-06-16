@@ -17,11 +17,7 @@
 package com.sun.faces.el;
 
 import java.beans.FeatureDescriptor;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.ApplicationResourceBundle;
@@ -140,17 +136,17 @@ public class FacesResourceBundleELResolver extends ELResolver {
             return null;
         }
 
-        ArrayList<FeatureDescriptor> list = new ArrayList<>();
+
 
         FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
         ApplicationAssociate associate = ApplicationAssociate.getCurrentInstance();
         Map<String, ApplicationResourceBundle> rbMap = associate.getResourceBundles();
         if (rbMap == null) {
-            return list.iterator();
+            return Collections.emptyIterator();
         }
         // iterate over the list of managed beans
-        for (Iterator<Map.Entry<String, ApplicationResourceBundle>> i = rbMap.entrySet().iterator(); i.hasNext();) {
-            Map.Entry<String, ApplicationResourceBundle> entry = i.next();
+        List<FeatureDescriptor> list = new ArrayList<>();
+        for (Map.Entry<String, ApplicationResourceBundle> entry : rbMap.entrySet()) {
             String var = entry.getKey();
             ApplicationResourceBundle bundle = entry.getValue();
             if (bundle != null) {

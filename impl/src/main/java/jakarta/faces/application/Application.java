@@ -941,7 +941,7 @@ public abstract class Application {
      * @throws FacesException if the {@link Converter} cannot be created
      * @throws NullPointerException if <code>converterId</code> is <code>null</code>
      */
-    public abstract Converter createConverter(String converterId);
+    public abstract <T> Converter<T> createConverter(String converterId);
 
     /**
      * <p>
@@ -982,7 +982,7 @@ public abstract class Application {
      * @throws FacesException if the {@link Converter} cannot be created
      * @throws NullPointerException if <code>targetClass</code> is <code>null</code>
      */
-    public abstract Converter createConverter(Class<?> targetClass);
+    public abstract <T> Converter<T> createConverter(Class<T> targetClass);
 
     /**
      * <p>
@@ -1224,7 +1224,7 @@ public abstract class Application {
      * @throws FacesException if a {@link Validator} of the specified id cannot be created
      * @throws NullPointerException if <code>validatorId</code> is <code>null</code>
      */
-    public abstract Validator createValidator(String validatorId) throws FacesException;
+    public abstract <T> Validator<T> createValidator(String validatorId) throws FacesException;
 
     /**
      * <p>

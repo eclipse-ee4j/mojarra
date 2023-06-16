@@ -80,6 +80,6 @@ public class Location implements Serializable {
 
     @Override
     public String toString() {
-        return path + " @" + line + "," + column;
+        return path + ' ' + '@' + line + ',' + column;
     }
 }

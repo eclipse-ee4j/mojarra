@@ -35,9 +35,8 @@ public class FaceletCacheFactoryImpl extends FaceletCacheFactory {
         WebConfiguration webConfig = WebConfiguration.getInstance();
         String refreshPeriod = webConfig.getOptionValue(WebConfiguration.WebContextInitParameter.FaceletsDefaultRefreshPeriod);
         long period = Long.parseLong(refreshPeriod) * 1000;
-        FaceletCache<DefaultFacelet> result = new DefaultFaceletCache(period);
+        FaceletCache result = new DefaultFaceletCache(period);
         return result;
-
     }
 
 }

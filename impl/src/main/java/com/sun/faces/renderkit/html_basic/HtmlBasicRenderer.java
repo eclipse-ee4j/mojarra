@@ -44,6 +44,7 @@ import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
 
+import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIInput;
@@ -278,7 +279,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
         if (childCount > 0) {
             return component.getChildren().iterator();
         } else {
-            return Collections.<UIComponent>emptyList().iterator();
+            return Collections.emptyIterator();
         }
 
     }
@@ -467,7 +468,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
     private static final Set<SearchExpressionHint> EXPRESSION_HINTS = EnumSet.of(SearchExpressionHint.IGNORE_NO_RESULT,
             SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
 
-    protected Iterator getMessageIter(FacesContext context, String forComponent, UIComponent component) {
+    protected Iterator<FacesMessage> getMessageIter(FacesContext context, String forComponent, UIComponent component) {
         // no "for" expression - return all messages
         if (forComponent == null) {
             return context.getMessages();
@@ -510,7 +511,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
                     }
                 }
             }
-            return parameterList.toArray(new Param[parameterList.size()]);
+            return parameterList.toArray(new Param[0]);
         } else {
             return EMPTY_PARAMS;
         }
@@ -550,7 +551,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
             }
         }
 
-        return params == null ? Collections.<ClientBehaviorContext.Parameter>emptyList() : params;
+        return params == null ? Collections.emptyList() : params;
     }
 
     protected Object getValue(UIComponent component) {
@@ -708,9 +709,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
         UIComponent retComp = null;
         if (startPoint.getChildCount() > 0) {
             List<UIComponent> children = startPoint.getChildren();
-            for (int i = 0, size = children.size(); i < size; i++) {
-                UIComponent comp = children.get(i);
-
+            for (UIComponent comp : children) {
                 if (comp instanceof NamingContainer) {
                     try {
                         retComp = comp.findComponent(forComponent);

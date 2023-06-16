@@ -446,9 +446,9 @@ final class CompilationManager {
             TagAttribute[] oa = tag.getAttributes().getAll();
             TagAttribute[] na = new TagAttribute[oa.length - 1];
             int p = 0;
-            for (int i = 0; i < oa.length; i++) {
-                if (!"jsfc".equals(oa[i].getLocalName())) {
-                    na[p++] = oa[i];
+            for (TagAttribute tagAttribute : oa) {
+                if (!"jsfc".equals(tagAttribute.getLocalName())) {
+                    na[p++] = tagAttribute;
                 }
             }
             return new Tag(tag, new TagAttributesImpl(na));
@@ -479,7 +479,7 @@ final class CompilationManager {
                 }
                 attrList.add(attr[i]);
             }
-            attr = attrList.toArray(new TagAttribute[attrList.size()]);
+            attr = attrList.toArray(new TagAttribute[0]);
             return new Tag(tag.getLocation(), tag.getNamespace(), tag.getLocalName(), tag.getQName(), new TagAttributesImpl(attr));
         }
     }
@@ -497,7 +497,7 @@ final class CompilationManager {
             if (compilationUnit instanceof TagUnit) {
                 TagUnit tagUnit = (TagUnit) compilationUnit;
                 String ns = tagUnit.getTag().getNamespace();
-                if (CoreLibrary.NAMESPACES.contains(ns) && tagUnit.getTag().getLocalName().equals("view")) {
+                if (CoreLibrary.NAMESPACES.contains(ns) && "view".equals(tagUnit.getTag().getLocalName())) {
                     result = tagUnit;
                     break;
                 }

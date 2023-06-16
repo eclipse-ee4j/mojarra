@@ -930,7 +930,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         // Always log
         if (LOGGER.isLoggable(SEVERE)) {
             UIViewRoot root = context.getViewRoot();
-            StringBuffer sb = new StringBuffer(64);
+            StringBuilder sb = new StringBuilder(64);
             sb.append("Error Rendering View");
             if (root != null) {
                 sb.append('[');
@@ -1148,7 +1148,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         // If there's no extensions array or prefixes array, then assume defaults.
         // .xhtml extension is handled by the FaceletViewHandler
         if (extensionsArray == null && prefixesArray == null) {
-            return isMatchedWithFaceletsSuffix(viewId) ? true : viewId.endsWith(DEFAULT_FACELETS_SUFFIX);
+            return isMatchedWithFaceletsSuffix(viewId) || viewId.endsWith(DEFAULT_FACELETS_SUFFIX);
         }
 
         if (extensionsArray != null) {
@@ -1231,7 +1231,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     private static final class MethodMetadataIterator implements Iterable<CompCompInterfaceMethodMetadata>, Iterator<CompCompInterfaceMethodMetadata> {
 
         private final PropertyDescriptor[] descriptors;
-        private FacesContext context;
+        private final FacesContext context;
         private int curIndex = -1;
 
         // -------------------------------------------------------- Constructors
@@ -1364,7 +1364,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         public boolean isRequired(FacesContext ctx) {
 
             ValueExpression rd = (ValueExpression) propertyDescriptor.getValue("required");
-            return rd != null ? Boolean.valueOf(rd.getValue(ctx.getELContext()).toString()) : false;
+            return rd != null && Boolean.parseBoolean(rd.getValue(ctx.getELContext()).toString());
 
         }
 
@@ -1400,8 +1400,8 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      */
     private static final class MethodRetargetHandlerManager {
 
-        private Map<String, MethodRetargetHandler> handlerMap = new HashMap<>(4, 1.0f);
-        private MethodRetargetHandler arbitraryHandler = new ArbitraryMethodRegargetHandler();
+        private final Map<String, MethodRetargetHandler> handlerMap = new HashMap<>(4, 1.0f);
+        private final MethodRetargetHandler arbitraryHandler = new ArbitraryMethodRegargetHandler();
 
         // -------------------------------------------------------- Constructors
 
@@ -1914,11 +1914,11 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             return views;
         }
 
-        return views.map(view -> toImplicitOutcome(view));
+        return views.map(this::toImplicitOutcome);
     }
 
     private boolean returnAsImplicitOutCome(ViewVisitOption... options) {
-        return stream(options).filter(option -> option == RETURN_AS_MINIMAL_IMPLICIT_OUTCOME).findAny().isPresent();
+        return stream(options).anyMatch(option -> option == RETURN_AS_MINIMAL_IMPLICIT_OUTCOME);
     }
 
     private String toImplicitOutcome(String viewId) {

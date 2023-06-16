@@ -251,9 +251,7 @@ public final class SAXCompiler extends Compiler {
                 boolean processAsXhtml = unit.getWebConfiguration().getFaceletsConfiguration().isProcessCurrentDocumentAsFaceletsXhtml(alias);
 
                 if (processAsXhtml) {
-                    StringBuffer sb = new StringBuffer(64);
-                    sb.append("<?").append(target).append(' ').append(data).append("?>\n");
-                    unit.writeInstruction(sb.toString());
+                    unit.writeInstruction("<?" + target + ' ' + data + "?>\n");
                 }
             }
         }
@@ -391,7 +389,7 @@ public final class SAXCompiler extends Compiler {
         return doCompile(mgr, handler, src, alias);
     }
 
-    protected FaceletHandler doCompile(CompilationManager mngr, CompilationHandler handler, URL src, String alias) throws IOException {
+    private FaceletHandler doCompile(CompilationManager mngr, CompilationHandler handler, URL src, String alias) throws IOException {
 
         String encoding = getEncoding();
         try (InputStream is = new BufferedInputStream(src.openStream(), 1024);) {
@@ -426,7 +424,7 @@ public final class SAXCompiler extends Compiler {
         return result;
     }
 
-    protected static void writeXmlDecl(InputStream is, String encoding, CompilationManager mngr) throws IOException {
+    private static void writeXmlDecl(InputStream is, String encoding, CompilationManager mngr) throws IOException {
         is.mark(128);
         try {
             byte[] b = new byte[128];

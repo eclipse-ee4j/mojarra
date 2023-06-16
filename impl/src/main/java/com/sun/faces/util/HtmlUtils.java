@@ -167,7 +167,7 @@ public class HtmlUtils {
                     if (ch >= 0x3f) {
                         if (ch == 's') {
                             // If putting scripts in attribute values
-                            // has been disabled (the defualt), look for
+                            // has been disabled (the default), look for
                             // script: in the attribute value.
                             // ensure the attribute value is long enough
                             // to accomodate "script:"
