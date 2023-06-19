@@ -27,10 +27,10 @@ import jakarta.faces.context.FacesContext;
  */
 class ResourceHandler extends JndiHandler {
 
-    private Field[] fields;
-    private Resource[] fieldAnnotations;
-    private Method[] methods;
-    private Resource[] methodAnnotations;
+    private final Field[] fields;
+    private final Resource[] fieldAnnotations;
+    private final Method[] methods;
+    private final Resource[] methodAnnotations;
 
     public ResourceHandler(Field[] fields, Resource[] fieldAnnotations, Method[] methods, Resource[] methodAnnotations) {
         this.fields = fields;

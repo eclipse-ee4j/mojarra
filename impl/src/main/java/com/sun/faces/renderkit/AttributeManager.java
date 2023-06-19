@@ -40,7 +40,7 @@ public class AttributeManager {
         OUTPUTBODY, OUTPUTDOCTYPE, OUTPUTHEAD;
     }
 
-    private static Map<Key, Attribute[]> ATTRIBUTE_LOOKUP = CollectionsUtils.<Key, Attribute[]>map()
+    private static final Map<Key, Attribute[]> ATTRIBUTE_LOOKUP = CollectionsUtils.<Key, Attribute[]>map()
             .add(Key.COMMANDBUTTON,
                     ar(attr("accesskey"), attr("dir"), attr("lang"), attr("onblur", "blur"), attr("onchange", "change"), attr("ondblclick", "dblclick"),
                         attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"), attr("onkeyup", "keyup"),

@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.HashMap;
@@ -118,7 +119,7 @@ public class ConverterPropertyEditorFactory {
 
         // The source template class on which to base the definition of the new
         // PropertyEditor classes.
-        private Class<? extends ConverterPropertyEditorBase> templateClass;
+        private final Class<? extends ConverterPropertyEditorBase> templateClass;
         // The bytes that define the source template class.
         private byte[] templateBytes;
         // The constant_pool_count from the template class bytecodes.
@@ -341,7 +342,7 @@ public class ConverterPropertyEditorFactory {
          */
         public byte[] generateClassBytesFor(String newClassName, String targetClassName) {
             return replaceInTemplate(new Utf8InfoReplacement(classNameConstant, newClassName),
-                    new Utf8InfoReplacement(classNameRefConstant, new StringBuilder(32).append('L').append(newClassName).append(';').toString()),
+                    new Utf8InfoReplacement(classNameRefConstant, 'L' + newClassName + ';'),
                     new Utf8InfoReplacement(targetClassConstant, targetClassName));
         }
     }
@@ -361,9 +362,9 @@ public class ConverterPropertyEditorFactory {
      */
     private class DisposableClassLoader extends ClassLoader {
         // The class loader which loaded the target class.
-        private ClassLoader targetLoader;
+        private final ClassLoader targetLoader;
         // The class loader which loaded the base class
-        private ClassLoader myLoader;
+        private final ClassLoader myLoader;
 
         public DisposableClassLoader(ClassLoader targetLoader) {
             super(targetLoader);
@@ -439,7 +440,7 @@ public class ConverterPropertyEditorFactory {
     private static final Pattern MultipleUnderscorePattern = Pattern.compile("_(_+)");
     private static ConverterPropertyEditorFactory defaultInstance;
     // Template information extracted from the source template class.
-    private ClassTemplateInfo templateInfo;
+    private final ClassTemplateInfo templateInfo;
     // Cache of DisposableClassLoaders keyed on the class loader of the target.
     private Map<ClassLoader, WeakReference<DisposableClassLoader>> classLoaderCache;
 
@@ -543,14 +544,7 @@ public class ConverterPropertyEditorFactory {
      */
     private static byte[] getUtf8InfoBytes(String text) {
         byte[] utf8;
-        try {
-            utf8 = text.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            // The DM_DEFAULT_ENCODING warning is acceptable here
-            // because we explicitly *want* to use the Java runtime's
-            // default encoding.
-            utf8 = text.getBytes();
-        }
+        utf8 = text.getBytes(StandardCharsets.UTF_8);
         byte[] info = new byte[utf8.length + 3];
         info[0] = 1;
         info[1] = (byte) (utf8.length >> 8 & 0xff);

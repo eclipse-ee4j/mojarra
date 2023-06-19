@@ -48,8 +48,8 @@ public class FacesConfigInfo {
     private static final String OTHERS = "others";
 
     private double version = 2.0;
-    private boolean isWebInfFacesConfig;
-    private boolean metadataComplete;
+    private final boolean isWebInfFacesConfig;
+    private final boolean metadataComplete;
     private List<String> absoluteOrdering;
 
     // -------------------------------------------------------- Constructors
@@ -141,7 +141,7 @@ public class FacesConfigInfo {
 
         if (isVersionGreaterOrEqual(2.0)) {
             String metadataComplete = document.getDocumentElement().getAttributeNS(document.getNamespaceURI(), "metadata-complete");
-            return metadataComplete != null ? Boolean.valueOf(metadataComplete) : false;
+            return Boolean.parseBoolean(metadataComplete);
         }
 
         // not a 2.0 application, so annotation processing will not occur

@@ -36,11 +36,11 @@ public class FaceletsConfiguration {
 
 //    private static final String CONSUME_COMMENTS_ATTRIBUTE_NAME = "com.sun.faces.config.ConsumeComments";
 
-    private static Pattern EXTENSION_PATTERN = Pattern.compile("\\.[^/]+$");
+    private static final Pattern EXTENSION_PATTERN = Pattern.compile("\\.[^/]+$");
 
-    private WebConfiguration config;
+    private final WebConfiguration config;
 
-    private Map<String, String> faceletsProcessingMappings;
+    private final Map<String, String> faceletsProcessingMappings;
 
     public FaceletsConfiguration(WebConfiguration config) {
         this.config = config;

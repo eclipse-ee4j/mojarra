@@ -43,7 +43,7 @@ public class ELContextImpl extends ELContext {
 
     private FunctionMapper functionMapper = new NoopFunctionMapper();
     private VariableMapper variableMapper;
-    private ELResolver resolver;
+    private final ELResolver resolver;
 
     // ------------------------------------------------------------ Constructors
 
@@ -66,7 +66,7 @@ public class ELContextImpl extends ELContext {
             putContext(ExpressionFactory.class, expressionFactory);
         }
 
-        if (facesContext instanceof InitFacesContext == false) {
+        if (!(facesContext instanceof InitFacesContext)) {
             UIViewRoot root = facesContext.getViewRoot();
             if (root != null) {
                 setLocale(root.getLocale());
@@ -104,7 +104,7 @@ public class ELContextImpl extends ELContext {
 
     private static class VariableMapperImpl extends VariableMapper {
 
-        private Map<String, ValueExpression> variables;
+        private final Map<String, ValueExpression> variables;
 
         public VariableMapperImpl() {
             variables = new HashMap<>();

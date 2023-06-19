@@ -39,7 +39,7 @@ public class UINamingContainer extends UIComponentBase implements NamingContaine
 
     // ------------------------------------------------------ Manifest Constants
 
-    private static Logger LOGGER = Logger.getLogger("jakarta.faces.component", "jakarta.faces.LogStrings");
+    private static final Logger LOGGER = Logger.getLogger("jakarta.faces.component", "jakarta.faces.LogStrings");
 
     /**
      * <p>

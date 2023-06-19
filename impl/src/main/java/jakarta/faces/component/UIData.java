@@ -2371,8 +2371,8 @@ class WrapperEvent extends FacesEvent {
         this.rowIndex = rowIndex;
     }
 
-    private FacesEvent event = null;
-    private int rowIndex = -1;
+    private final FacesEvent event;
+    private final int rowIndex;
 
     public FacesEvent getFacesEvent() {
         return event;

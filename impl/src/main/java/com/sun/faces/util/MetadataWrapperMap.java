@@ -32,8 +32,8 @@ public abstract class MetadataWrapperMap<K, V> implements Map<K, V> {
         return metadata;
     }
 
-    private Map<K, V> wrapped;
-    private Map<K, Map<Object, Object>> metadata;
+    private final Map<K, V> wrapped;
+    private final Map<K, Map<Object, Object>> metadata;
 
     @Override
     public void clear() {

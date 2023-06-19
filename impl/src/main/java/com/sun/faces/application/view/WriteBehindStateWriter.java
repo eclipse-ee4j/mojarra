@@ -43,12 +43,12 @@ final class WriteBehindStateWriter extends Writer {
 
     private static final ThreadLocal<WriteBehindStateWriter> CUR_WRITER = new ThreadLocal<>();
     private Writer out;
-    private Writer orig;
+    private final Writer orig;
     private FastStringWriter fWriter;
     private boolean stateWritten;
-    private int bufSize;
-    private char[] buf;
-    private FacesContext context;
+    private final int bufSize;
+    private final char[] buf;
+    private final FacesContext context;
     private Object state;
 
     // -------------------------------------------------------- Constructors
@@ -87,7 +87,7 @@ final class WriteBehindStateWriter extends Writer {
      * @see Writer#write(char[])
      */
     @Override
-    public void write(char cbuf[]) throws IOException {
+    public void write(char[] cbuf) throws IOException {
         out.write(cbuf);
     }
 
@@ -117,7 +117,7 @@ final class WriteBehindStateWriter extends Writer {
      * @see Writer#write(char[], int, int)
      */
     @Override
-    public void write(char cbuf[], int off, int len) throws IOException {
+    public void write(char[] cbuf, int off, int len) throws IOException {
         out.write(cbuf, off, len);
     }
 
@@ -207,7 +207,7 @@ final class WriteBehindStateWriter extends Writer {
                     int len = tildeIdx - pos;
                     orig.write(buf, 0, len);
                     // Now check to see if the state saving string is
-                    // at the begining of pos, if so, write our
+                    // at the beginning of pos, if so, write our
                     // state out.
                     if (builder.indexOf(RIConstants.SAVESTATE_FIELD_MARKER, pos) == tildeIdx) {
                         // buf is effectively zero'd out at this point

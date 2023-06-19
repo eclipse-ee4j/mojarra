@@ -28,8 +28,8 @@ import java.util.Map;
  */
 public class ScopeContext {
 
-    private String scopeName;
-    private Map<String, Object> scope;
+    private final String scopeName;
+    private final Map<String, Object> scope;
 
     // ------------------------------------------------------------ Constructors
 

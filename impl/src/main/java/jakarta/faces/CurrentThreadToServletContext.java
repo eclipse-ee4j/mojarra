@@ -23,6 +23,7 @@ import static java.lang.System.currentTimeMillis;
 import static java.lang.System.identityHashCode;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -39,8 +40,8 @@ final class CurrentThreadToServletContext {
     private final ServletContextFacesContextFactory servletContextFacesContextFactory = new ServletContextFacesContextFactory();
 
     ConcurrentMap<FactoryFinderCacheKey, FactoryFinderInstance> factoryFinderMap = new ConcurrentHashMap<>();
-    private AtomicBoolean logNullFacesContext = new AtomicBoolean();
-    private AtomicBoolean logNonNullFacesContext = new AtomicBoolean();
+    private final AtomicBoolean logNullFacesContext = new AtomicBoolean();
+    private final AtomicBoolean logNonNullFacesContext = new AtomicBoolean();
 
     // ------------------------------------------------------ Public Methods
 
@@ -336,11 +337,11 @@ final class CurrentThreadToServletContext {
             }
 
             final FactoryFinderCacheKey other = (FactoryFinderCacheKey) obj;
-            if (classLoader != other.classLoader && (classLoader == null || !classLoader.equals(other.classLoader))) {
+            if (!Objects.equals(classLoader, other.classLoader)) {
                 return false;
             }
 
-            if (marker != other.marker && (marker == null || !marker.equals(other.marker))) {
+            if (!Objects.equals(marker, other.marker)) {
                 return false;
             }
 

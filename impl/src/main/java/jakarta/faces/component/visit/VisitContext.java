@@ -75,7 +75,7 @@ abstract public class VisitContext {
     // Note: We cannot use Collections.emptyList() as that returns
     // a shared instance - we want to unique instance to allow for
     // identity tests.
-    static public final Collection<String> ALL_IDS = new AbstractCollection<String>() {
+    static public final Collection<String> ALL_IDS = new AbstractCollection<>() {
 
         @Override
         public Iterator<String> iterator() {

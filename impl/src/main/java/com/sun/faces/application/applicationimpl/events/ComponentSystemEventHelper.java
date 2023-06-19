@@ -26,7 +26,7 @@ import jakarta.faces.event.SystemEvent;
  */
 public class ComponentSystemEventHelper {
 
-    private Cache<Class<?>, Cache<Class<? extends SystemEvent>, EventInfo>> sourceCache;
+    private final Cache<Class<?>, Cache<Class<? extends SystemEvent>, EventInfo>> sourceCache;
 
     // -------------------------------------------------------- Constructors
 

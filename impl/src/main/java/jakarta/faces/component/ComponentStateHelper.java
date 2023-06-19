@@ -44,10 +44,10 @@ import jakarta.faces.context.FacesContext;
 @SuppressWarnings({ "unchecked" })
 class ComponentStateHelper implements StateHelper, TransientStateHelper {
 
-    private UIComponent component;
+    private final UIComponent component;
     private boolean isTransient;
-    private Map<Serializable, Object> deltaMap;
-    private Map<Serializable, Object> defaultMap;
+    private final Map<Serializable, Object> deltaMap;
+    private final Map<Serializable, Object> defaultMap;
     private Map<Object, Object> transientState;
 
     // ------------------------------------------------------------ Constructors
@@ -349,7 +349,7 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
         List<String> setAttributes = (List<String>) component.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");
         if (setAttributes == null) {
             String className = getClass().getName();
-            if (className != null && className.startsWith("jakarta.faces.component.")) {
+            if (className.startsWith("jakarta.faces.component.")) {
                 setAttributes = new ArrayList<>(6);
                 component.getAttributes().put("jakarta.faces.component.UIComponentBase.attributesThatAreSet", setAttributes);
             }

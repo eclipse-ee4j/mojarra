@@ -28,10 +28,10 @@ import jakarta.faces.context.FacesContext;
 class EJBHandler extends JndiHandler implements RuntimeAnnotationHandler {
 
     private static final String JAVA_MODULE = "java:module/";
-    private Field[] fields;
-    private EJB[] fieldAnnotations;
-    private Method[] methods;
-    private EJB[] methodAnnotations;
+    private final Field[] fields;
+    private final EJB[] fieldAnnotations;
+    private final Method[] methods;
+    private final EJB[] methodAnnotations;
 
     public EJBHandler(Field[] fields, EJB[] fieldAnnotations, Method[] methods, EJB[] methodAnnotations) {
         this.fields = fields;

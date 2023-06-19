@@ -89,7 +89,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
 
         notNull("context", context);
 
-        if (base != null && base instanceof UIComponent && UIComponent.isCompositeComponent((UIComponent) base) && property != null) {
+        if (base instanceof UIComponent && UIComponent.isCompositeComponent((UIComponent) base) && property != null) {
 
             String propertyName = property.toString();
             if (COMPOSITE_COMPONENT_ATTRIBUTES_NAME.equals(propertyName)) {
@@ -271,11 +271,11 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
      */
     private static final class ExpressionEvalMap implements Map<String, Object>, CompositeComponentExpressionHolder {
 
-        private Map<String, Object> attributesMap;
+        private final Map<String, Object> attributesMap;
         private PropertyDescriptor[] declaredAttributes;
         private Map<Object, Object> declaredDefaultValues;
         private FacesContext ctx;
-        private UIComponent cc;
+        private final UIComponent cc;
 
         // -------------------------------------------------------- Constructors
 
@@ -335,7 +335,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
                     return ((ValueExpression) v).getValue(ctx.getELContext());
                 }
             }
-            if (v != null && v instanceof MethodExpression) {
+            if (v instanceof MethodExpression) {
                 return v;
             }
             return v;
@@ -343,7 +343,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
 
         @Override
         public Object put(String key, Object value) {
-            // Unlinke AttributesMap.get() which will obtain a value from
+            // Unlike AttributesMap.get() which will obtain a value from
             // a ValueExpression, AttributesMap.put(), when passed a value,
             // will never call ValueExpression.setValue(), so we have to take
             // matters into our own hands...

@@ -117,7 +117,7 @@ public class SelectItemGroup extends SelectItem {
 
     // ------------------------------------------------------ Instance Variables
 
-    private SelectItem selectItems[] = null;
+    private SelectItem[] selectItems = null;
 
     // -------------------------------------------------------------- Properties
 
@@ -168,7 +168,7 @@ public class SelectItemGroup extends SelectItem {
         if (selectItems == null) {
             throw new NullPointerException();
         }
-        setSelectItems(selectItems.toArray(new SelectItem[selectItems.size()]));
+        setSelectItems(selectItems.toArray(new SelectItem[0]));
 
     }
 

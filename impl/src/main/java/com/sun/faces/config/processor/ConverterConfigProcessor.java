@@ -76,11 +76,11 @@ public class ConverterConfigProcessor extends AbstractConfigProcessor {
         // via config files take precedence
         processAnnotations(facesContext, FacesConverter.class);
 
-        for (int i = 0; i < documentInfos.length; i++) {
+        for (DocumentInfo documentInfo : documentInfos) {
             if (LOGGER.isLoggable(FINE)) {
-                LOGGER.log(FINE, format("Processing converter elements for document: ''{0}''", documentInfos[i].getSourceURI()));
+                LOGGER.log(FINE, format("Processing converter elements for document: ''{0}''", documentInfo.getSourceURI()));
             }
-            Document document = documentInfos[i].getDocument();
+            Document document = documentInfo.getDocument();
             String namespace = document.getDocumentElement().getNamespaceURI();
             NodeList nodes = document.getDocumentElement().getElementsByTagNameNS(namespace, CONVERTER);
             if (nodes != null && nodes.getLength() > 0) {

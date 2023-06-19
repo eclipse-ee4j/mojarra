@@ -32,7 +32,7 @@ import com.sun.faces.config.WebConfiguration;
  */
 public class ApplicationStateInfo {
 
-    private boolean partialStateSaving;
+    private final boolean partialStateSaving;
     private Set<String> fullStateViewIds;
 
     // ------------------------------------------------------------ Constructors
