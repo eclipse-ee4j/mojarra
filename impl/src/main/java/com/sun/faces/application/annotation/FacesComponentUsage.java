@@ -19,8 +19,8 @@ package com.sun.faces.application.annotation;
 import jakarta.faces.component.FacesComponent;
 
 public class FacesComponentUsage {
-    private Class<?> target;
-    private FacesComponent annotation;
+    private final Class<?> target;
+    private final FacesComponent annotation;
 
     public FacesComponentUsage(Class<?> target, FacesComponent annotation) {
         this.target = target;

@@ -165,7 +165,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     public static final String RESOURCE_LIBRARY_CONTRACT_DATA_STRUCTURE_KEY = FaceletViewHandlingStrategy.class.getName()
             + ".RESOURCE_LIBRARY_CONTRACT_DATA_STRUCTURE";
 
-    private MethodRetargetHandlerManager retargetHandlerManager = new MethodRetargetHandlerManager();
+    private final MethodRetargetHandlerManager retargetHandlerManager = new MethodRetargetHandlerManager();
 
     private int responseBufferSize;
 

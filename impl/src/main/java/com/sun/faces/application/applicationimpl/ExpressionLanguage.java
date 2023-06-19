@@ -40,8 +40,8 @@ public class ExpressionLanguage {
 
     private final ApplicationAssociate associate;
 
-    private List<ELContextListener> elContextListeners;
-    private CompositeELResolver elResolvers;
+    private final List<ELContextListener> elContextListeners;
+    private final CompositeELResolver elResolvers;
     private volatile FacesCompositeELResolver compositeELResolver;
 
     public ExpressionLanguage(ApplicationAssociate applicationAssociate) {

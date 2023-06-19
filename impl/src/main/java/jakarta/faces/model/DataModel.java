@@ -252,7 +252,7 @@ public abstract class DataModel<E> implements Iterable<E> {
     @SuppressWarnings({ "unchecked" })
     private static final class DataModelIterator<T> implements Iterator<T> {
 
-        private DataModel<T> model;
+        private final DataModel<T> model;
         private int index;
 
         // -------------------------------------------------------- Constructors

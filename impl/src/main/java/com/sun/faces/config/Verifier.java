@@ -46,7 +46,7 @@ public class Verifier {
     /**
      * Container for any messages that may be queued.
      */
-    private List<String> messages;
+    private final List<String> messages;
 
     // ------------------------------------------------------- Constructors
 

@@ -55,7 +55,7 @@ public class WebPrintWriter extends PrintWriter {
         }
 
         @Override
-        public void write(char cbuf[], int off, int len) throws IOException {
+        public void write(char[] cbuf, int off, int len) throws IOException {
             // no-op
         }
 
@@ -75,7 +75,7 @@ public class WebPrintWriter extends PrintWriter {
         }
 
         @Override
-        public void write(char cbuf[]) throws IOException {
+        public void write(char[] cbuf) throws IOException {
             // no-op
         }
 

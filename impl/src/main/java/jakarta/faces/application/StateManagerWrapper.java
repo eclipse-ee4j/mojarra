@@ -37,7 +37,7 @@ import jakarta.faces.context.FacesContext;
  */
 public abstract class StateManagerWrapper extends StateManager implements FacesWrapper<StateManager> {
 
-    private StateManager wrapped;
+    private final StateManager wrapped;
 
     /**
      * <p class="changed_added_2_3">

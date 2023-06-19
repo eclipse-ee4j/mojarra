@@ -320,7 +320,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
      */
     @Override
     public ActionListener[] getActionListeners() {
-        ActionListener al[] = (ActionListener[]) getFacesListeners(ActionListener.class);
+        ActionListener[] al = (ActionListener[]) getFacesListeners(ActionListener.class);
         return al;
     }
 
@@ -638,7 +638,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
      * A FacesContext delegator that gives us the necessary controls over the FacesContext to allow the execution of the
      * lifecycle to accomodate the UIViewAction sequence.
      */
-    private class InstrumentedFacesContext extends FacesContextWrapper {
+    private static class InstrumentedFacesContext extends FacesContextWrapper {
 
         private boolean viewRootCleared = false;
         private boolean renderedResponseControlDisabled = false;

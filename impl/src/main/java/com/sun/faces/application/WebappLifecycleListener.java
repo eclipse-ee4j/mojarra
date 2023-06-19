@@ -56,7 +56,7 @@ public class WebappLifecycleListener {
 
     private ServletContext servletContext;
     private ApplicationAssociate applicationAssociate;
-    private Set<HttpSession> activeSessions = ConcurrentHashMap.newKeySet();
+    private final Set<HttpSession> activeSessions = ConcurrentHashMap.newKeySet();
 
 
     // ------------------------------------------------------------ Constructors

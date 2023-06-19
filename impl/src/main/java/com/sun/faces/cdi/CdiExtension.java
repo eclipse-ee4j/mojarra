@@ -76,7 +76,7 @@ public class CdiExtension implements Extension {
     /**
      * Map of {@code @ManagedProperty} target types
      */
-    private Set<Type> managedPropertyTargetTypes = new HashSet<>();
+    private final Set<Type> managedPropertyTargetTypes = new HashSet<>();
 
     /**
      * Stores the logger.

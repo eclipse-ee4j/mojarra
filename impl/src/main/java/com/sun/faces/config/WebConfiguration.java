@@ -95,19 +95,19 @@ public class WebConfiguration {
     // Logging level. Defaults to FINE
     private Level loggingLevel = Level.FINE;
 
-    private Map<BooleanWebContextInitParameter, Boolean> booleanContextParameters = new EnumMap<>(BooleanWebContextInitParameter.class);
+    private final Map<BooleanWebContextInitParameter, Boolean> booleanContextParameters = new EnumMap<>(BooleanWebContextInitParameter.class);
 
-    private Map<WebContextInitParameter, String> contextParameters = new EnumMap<>(WebContextInitParameter.class);
+    private final Map<WebContextInitParameter, String> contextParameters = new EnumMap<>(WebContextInitParameter.class);
 
-    private Map<WebContextInitParameter, Map<String, String>> facesConfigParameters = new EnumMap<>(WebContextInitParameter.class);
+    private final Map<WebContextInitParameter, Map<String, String>> facesConfigParameters = new EnumMap<>(WebContextInitParameter.class);
 
-    private Map<WebEnvironmentEntry, String> envEntries = new EnumMap<>(WebEnvironmentEntry.class);
+    private final Map<WebEnvironmentEntry, String> envEntries = new EnumMap<>(WebEnvironmentEntry.class);
 
-    private Map<WebContextInitParameter, String[]> cachedListParams;
+    private final Map<WebContextInitParameter, String[]> cachedListParams;
 
-    private Set<String> setParams = new HashSet<>();
+    private final Set<String> setParams = new HashSet<>();
 
-    private ServletContext servletContext;
+    private final ServletContext servletContext;
 
     private ArrayList<DeferredLoggingAction> deferredLoggingActions;
 
@@ -315,7 +315,7 @@ public class WebConfiguration {
             return;
         }
 
-        boolean oldVal = booleanContextParameters.put(param, value);
+        boolean oldVal = Boolean.TRUE.equals(booleanContextParameters.put(param, value));
         if (LOGGER.isLoggable(FINE) && oldVal != value) {
             LOGGER.log(FINE, "Overriding init parameter {0}.  Changing from {1} to {2}.", new Object[] { param.getQualifiedName(), oldVal, value });
         }
@@ -462,8 +462,7 @@ public class WebConfiguration {
                 }
             }
         } else {
-            contractsToExpose = new ArrayList<>();
-            contractsToExpose.addAll(foundContracts);
+            contractsToExpose = new ArrayList<>(foundContracts);
             contractMappings.put("*", contractsToExpose);
         }
         extContex.getApplicationMap().put(FaceletViewHandlingStrategy.RESOURCE_LIBRARY_CONTRACT_DATA_STRUCTURE_KEY, contractMappings);
@@ -513,7 +512,7 @@ public class WebConfiguration {
      */
     private void processBooleanParameters(ServletContext servletContext, String contextName) {
 
-        // process boolean contxt parameters
+        // process boolean context parameters
         for (BooleanWebContextInitParameter param : BooleanWebContextInitParameter.values()) {
             String strValue = servletContext.getInitParameter(param.getQualifiedName());
             boolean value;
@@ -534,7 +533,7 @@ public class WebConfiguration {
 
                 if (alternate != null) {
                     if (isValueValid(param, strValue)) {
-                        value = Boolean.valueOf(strValue);
+                        value = Boolean.parseBoolean(strValue);
                     } else {
                         value = param.getDefaultValue();
                     }
@@ -555,7 +554,7 @@ public class WebConfiguration {
                     value = param.getDefaultValue();
                 } else {
                     if (isValueValid(param, strValue)) {
-                        value = Boolean.valueOf(strValue);
+                        value = Boolean.parseBoolean(strValue);
                     } else {
                         value = param.getDefaultValue();
                     }
@@ -586,8 +585,8 @@ public class WebConfiguration {
      * @param servletContext the ServletContext of interest
      */
     private void initSetList(ServletContext servletContext) {
-        for (Enumeration e = servletContext.getInitParameterNames(); e.hasMoreElements();) {
-            String name = e.nextElement().toString();
+        for (Enumeration<String> e = servletContext.getInitParameterNames(); e.hasMoreElements();) {
+            String name = e.nextElement();
             if (name.startsWith("com.sun.faces") || name.startsWith("jakarta.faces")) {
                 setParams.add(name);
             }
@@ -677,9 +676,9 @@ public class WebConfiguration {
             initialContext = new InitialContext();
         } catch (NoClassDefFoundError nde) {
             // On google app engine InitialContext is forbidden to use and GAE throws NoClassDefFoundError
-            LOGGER.log(FINE, nde, () -> nde.toString());
+            LOGGER.log(FINE, nde, nde::toString);
         } catch (NamingException ne) {
-            LOGGER.log(Level.WARNING, ne, () -> ne.toString());
+            LOGGER.log(Level.WARNING, ne, ne::toString);
         }
 
         if (initialContext != null) {
@@ -691,7 +690,7 @@ public class WebConfiguration {
                 try {
                     value = (String) initialContext.lookup(entryName);
                 } catch (NamingException root) {
-                    LOGGER.log(Level.FINE, () -> root.toString());
+                    LOGGER.log(Level.FINE, root::toString);
                 }
 
                 if (value != null) {
@@ -778,11 +777,11 @@ public class WebConfiguration {
         WebAppContractsDirectory(ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME, "/contracts"),
         ;
 
-        private String defaultValue;
-        private String qualifiedName;
-        private WebContextInitParameter alternate;
-        private boolean deprecated;
-        private DeprecationLoggingStrategy loggingStrategy;
+        private final String defaultValue;
+        private final String qualifiedName;
+        private final WebContextInitParameter alternate;
+        private final boolean deprecated;
+        private final DeprecationLoggingStrategy loggingStrategy;
 
         // ---------------------------------------------------------- Public Methods
 
@@ -888,12 +887,12 @@ public class WebConfiguration {
         UseFaceletsID("com.sun.faces.useFaceletsID",false),
         ;
 
-        private BooleanWebContextInitParameter alternate;
+        private final BooleanWebContextInitParameter alternate;
 
-        private String qualifiedName;
-        private boolean defaultValue;
-        private boolean deprecated;
-        private DeprecationLoggingStrategy loggingStrategy;
+        private final String qualifiedName;
+        private final boolean defaultValue;
+        private final boolean deprecated;
+        private final DeprecationLoggingStrategy loggingStrategy;
 
         // ---------------------------------------------------------- Public Methods
 
@@ -952,7 +951,7 @@ public class WebConfiguration {
         ProjectStage(jakarta.faces.application.ProjectStage.PROJECT_STAGE_JNDI_NAME);
 
         private static final String JNDI_PREFIX = "java:comp/env/";
-        private String qualifiedName;
+        private final String qualifiedName;
 
         // ---------------------------------------------------------- Public Methods
 
@@ -1017,10 +1016,10 @@ public class WebConfiguration {
 
     private class DeferredParameterLoggingAction implements DeferredLoggingAction {
 
-        private WebContextInitParameter parameter;
-        private Level loggingLevel;
-        private String logKey;
-        private Object[] params;
+        private final WebContextInitParameter parameter;
+        private final Level loggingLevel;
+        private final String logKey;
+        private final Object[] params;
 
         DeferredParameterLoggingAction(WebContextInitParameter parameter, Level loggingLevel, String logKey, Object[] params) {
 
@@ -1047,10 +1046,10 @@ public class WebConfiguration {
 
     private class DeferredBooleanParameterLoggingAction implements DeferredLoggingAction {
 
-        private BooleanWebContextInitParameter parameter;
-        private Level loggingLevel;
-        private String logKey;
-        private Object[] params;
+        private final BooleanWebContextInitParameter parameter;
+        private final Level loggingLevel;
+        private final String logKey;
+        private final Object[] params;
 
         DeferredBooleanParameterLoggingAction(BooleanWebContextInitParameter parameter, Level loggingLevel, String logKey, Object[] params) {
             this.parameter = parameter;

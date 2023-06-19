@@ -319,8 +319,8 @@ class MessageFactory {
             return localizedStr;
         }
 
-        private Locale locale;
-        private Object[] parameters;
+        private final Locale locale;
+        private final Object[] parameters;
         private Object[] resolvedParameters;
     }
 

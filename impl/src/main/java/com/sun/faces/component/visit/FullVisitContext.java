@@ -126,8 +126,8 @@ public class FullVisitContext extends VisitContext {
     }
 
     // The FacesContext for this request
-    private FacesContext facesContext;
+    private final FacesContext facesContext;
 
     // Our visit hints
-    private Set<VisitHint> hints;
+    private final Set<VisitHint> hints;
 }

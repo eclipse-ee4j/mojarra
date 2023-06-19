@@ -117,9 +117,9 @@ public class InstanceFactory {
     private final String[] STANDARD_BY_TYPE_CONVERTER_CLASSES = { "java.math.BigDecimal", "java.lang.Boolean", "java.lang.Byte", "java.lang.Character",
             "java.lang.Double", "java.lang.Float", "java.lang.Integer", "java.lang.Long", "java.lang.Short", "java.lang.Enum" };
 
-    private Map<Class<?>, Object> converterTypeMap;
-    private boolean registerPropertyEditors;
-    private boolean passDefaultTimeZone;
+    private final Map<Class<?>, Object> converterTypeMap;
+    private final boolean registerPropertyEditors;
+    private final boolean passDefaultTimeZone;
 
     private TimeZone systemTimeZone;
 
@@ -130,12 +130,12 @@ public class InstanceFactory {
     // These four maps store store "identifier" | "class name"
     // mappings.
     //
-    private ViewMemberInstanceFactoryMetadataMap<String, Object> componentMap;
-    private ViewMemberInstanceFactoryMetadataMap<String, Object> behaviorMap;
-    private ViewMemberInstanceFactoryMetadataMap<String, Object> converterIdMap;
-    private ViewMemberInstanceFactoryMetadataMap<String, Object> validatorMap;
+    private final ViewMemberInstanceFactoryMetadataMap<String, Object> componentMap;
+    private final ViewMemberInstanceFactoryMetadataMap<String, Object> behaviorMap;
+    private final ViewMemberInstanceFactoryMetadataMap<String, Object> converterIdMap;
+    private final ViewMemberInstanceFactoryMetadataMap<String, Object> validatorMap;
 
-    private Set<String> defaultValidatorIds;
+    private final Set<String> defaultValidatorIds;
     private volatile Map<String, String> defaultValidatorInfo;
 
     private final ApplicationAssociate associate;

@@ -153,7 +153,7 @@ public class ResourceCache {
 
     private static final class ResourceInfoCheckPeriodProxy {
 
-        private ResourceInfo resourceInfo;
+        private final ResourceInfo resourceInfo;
         private Long checkTime;
 
         // -------------------------------------------------------- Constructors

@@ -60,7 +60,7 @@ public class PhaseEvent extends EventObject {
 
     // ------------------------------------------------------------- Properties
 
-    private FacesContext context = null;
+    private final FacesContext context;
 
     /**
      * <p>
@@ -76,7 +76,7 @@ public class PhaseEvent extends EventObject {
 
     }
 
-    private PhaseId phaseId = null;
+    private final PhaseId phaseId;
 
     /**
      * <p>
