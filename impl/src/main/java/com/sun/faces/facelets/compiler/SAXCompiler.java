@@ -251,9 +251,7 @@ public final class SAXCompiler extends Compiler {
                 boolean processAsXhtml = unit.getWebConfiguration().getFaceletsConfiguration().isProcessCurrentDocumentAsFaceletsXhtml(alias);
 
                 if (processAsXhtml) {
-                    StringBuffer sb = new StringBuffer(64);
-                    sb.append("<?").append(target).append(' ').append(data).append("?>\n");
-                    unit.writeInstruction(sb.toString());
+                    unit.writeInstruction("<?" + target + ' ' + data + "?>\n");
                 }
             }
         }

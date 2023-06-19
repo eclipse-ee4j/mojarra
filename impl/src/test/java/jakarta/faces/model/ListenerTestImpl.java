@@ -27,7 +27,7 @@ public class ListenerTestImpl implements DataModelListener {
     public void rowSelected(DataModelEvent event) {
         Object rowData = event.getRowData();
         int rowIndex = event.getRowIndex();
-        trace("" + rowIndex);
+        trace(String.valueOf(rowIndex));
         if ((rowIndex >= 0) && (rowData == null)) {
             throw new IllegalArgumentException("rowIndex=" + rowIndex
                     + " but rowData is null");
@@ -51,7 +51,7 @@ public class ListenerTestImpl implements DataModelListener {
         if (value == null) {
             trace = new StringBuffer();
         } else {
-            trace.append("/");
+            trace.append('/');
             trace.append(value);
         }
     }

@@ -141,7 +141,7 @@ final class TextUnit extends CompilationUnit {
             addInstruction(new CommentInstruction(el));
         }
 
-        buffer.append("<!--" + text + "-->");
+        buffer.append("<!--").append(text).append("-->");
     }
 
     public void startTag(Tag tag) {
@@ -182,7 +182,7 @@ final class TextUnit extends CompilationUnit {
 
     private void finishStartTag() {
         if (tags.size() > 0 && startTagOpen) {
-            buffer.append(">");
+            buffer.append('>');
             startTagOpen = false;
         }
     }
@@ -285,7 +285,7 @@ final class TextUnit extends CompilationUnit {
             if (Character.isWhitespace(s.charAt(i))) {
                 i--;
             } else {
-                return s;
+                return s.substring(0,i+1);
             }
         }
         return "";
@@ -295,4 +295,6 @@ final class TextUnit extends CompilationUnit {
     public String toString() {
         return "TextUnit[" + children.size() + "]";
     }
+
+
 }

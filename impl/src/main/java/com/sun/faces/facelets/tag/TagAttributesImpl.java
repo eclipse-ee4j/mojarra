@@ -170,9 +170,9 @@ public final class TagAttributesImpl extends TagAttributes {
      */
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < attrs.length; i++) {
-            sb.append(attrs[i]);
+        StringBuilder sb = new StringBuilder();
+        for (TagAttribute attr : attrs) {
+            sb.append(attr);
             sb.append(' ');
         }
         if (sb.length() > 1) {
