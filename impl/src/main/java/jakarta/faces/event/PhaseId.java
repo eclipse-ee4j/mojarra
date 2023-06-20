@@ -16,11 +16,16 @@
 
 package jakarta.faces.event;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import jakarta.faces.FacesException;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Stream;
+
+import static java.util.Collections.unmodifiableMap;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * <p>
@@ -28,7 +33,7 @@ import jakarta.faces.FacesException;
  * <code>getPhaseId()</code> method of the {@link FacesEvent} interface.
  */
 
-public class PhaseId implements Comparable {
+public class PhaseId implements Comparable<PhaseId> {
 
     // ----------------------------------------------------------- Constructors
 
@@ -52,11 +57,16 @@ public class PhaseId implements Comparable {
 
     /**
      * <p>
-     * The (optional) name for this phase.
+     * The name for this phase. (can't be null)
+     * The constructor is private and all the values has a name, furthermore
+     * inside the method {@link PhaseId#phaseIdValueOf(String)} the phase name it's required not null
+     *
+     * Even more the name is used inside UIViewAction
+     * {@link jakarta.faces.component.UIViewAction#setPhase}
      * </p>
      */
 
-    private String phaseName = null;
+    private final String phaseName;
 
     // --------------------------------------------------------- Public Methods
 
@@ -66,12 +76,12 @@ public class PhaseId implements Comparable {
      * if this object is less than, equal to, or greater than the specified object.
      * </p>
      *
-     * @param other The other object to be compared to
+     * @param phaseId The other {@link PhaseId} to be compared to
      */
     @Override
-    public int compareTo(Object other) {
+    public int compareTo(PhaseId phaseId) {
 
-        return ordinal - ((PhaseId) other).ordinal;
+        return ordinal - phaseId.ordinal;
 
     }
 
@@ -95,11 +105,7 @@ public class PhaseId implements Comparable {
      */
     @Override
     public String toString() {
-        if (null == phaseName) {
-            return String.valueOf(ordinal);
-        }
-
-        return String.valueOf(phaseName) + ' ' + ordinal;
+        return phaseName + ' ' + ordinal;
     }
 
     /**
@@ -118,7 +124,7 @@ public class PhaseId implements Comparable {
 
     /**
      * <p class="changed_added_2_2">
-     * Return a <code>PhaseId</code> representation of the arcument <code>phase</code>.
+     * Return a <code>PhaseId</code> representation of the argument <code>phase</code>.
      * </p>
      *
      * @param phase the String for which the corresponding <code>PhaseId</code> should be returned.
@@ -133,26 +139,11 @@ public class PhaseId implements Comparable {
      */
 
     public static PhaseId phaseIdValueOf(String phase) {
-        if (null == phase) {
-            throw new NullPointerException();
-        }
-        PhaseId result = null;
+        Objects.requireNonNull(phase);
 
-        if (ANY_PHASE_NAME.equals(phase)) {
-            result = PhaseId.ANY_PHASE;
-        } else if (APPLY_REQUEST_VALUES_NAME.equalsIgnoreCase(phase)) {
-            result = PhaseId.APPLY_REQUEST_VALUES;
-        } else if (INVOKE_APPLICATION_NAME.equalsIgnoreCase(phase)) {
-            result = PhaseId.INVOKE_APPLICATION;
-        } else if (PROCESS_VALIDATIONS_NAME.equalsIgnoreCase(phase)) {
-            result = PhaseId.PROCESS_VALIDATIONS;
-        } else if (RENDER_RESPONSE_NAME.equalsIgnoreCase(phase)) {
-            result = PhaseId.RENDER_RESPONSE;
-        } else if (RESTORE_VIEW_NAME.equalsIgnoreCase(phase)) {
-            result = PhaseId.RESTORE_VIEW;
-        } else if (UPDATE_MODEL_VALUES_NAME.equalsIgnoreCase(phase)) {
-            result = PhaseId.UPDATE_MODEL_VALUES;
-        } else {
+        final PhaseId result = VALUES_BY_NAME.get( phase.toUpperCase() );
+
+        if ( result == null) {
             throw new FacesException("Not a valid phase [" + phase + "]");
         }
 
@@ -248,6 +239,13 @@ public class PhaseId implements Comparable {
      * List of valid {@link PhaseId} instances, in ascending order of their ordinal value.
      * </p>
      */
-    public static final List<PhaseId> VALUES = Collections.unmodifiableList(Arrays.asList(values));
+    public static final List<PhaseId> VALUES = List.of(values);
+
+    /**
+     * <p>
+     * Valid {@link PhaseId} instances, mapped by their uppercase name
+     * </p>
+     */
+    public static final Map<String,PhaseId> VALUES_BY_NAME = unmodifiableMap(Stream.of(values).collect(toMap( phase -> phase.getName().toUpperCase() , identity())));
 
 }
