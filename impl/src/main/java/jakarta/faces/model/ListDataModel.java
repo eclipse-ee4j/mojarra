@@ -60,7 +60,7 @@ public class ListDataModel<E> extends DataModel<E> {
     private int index = -1;
 
     // The list we are wrapping
-    private List list;
+    private List<E> list;
 
     // -------------------------------------------------------------- Properties
 
@@ -76,13 +76,7 @@ public class ListDataModel<E> extends DataModel<E> {
     @Override
     public boolean isRowAvailable() {
 
-        if (list == null) {
-            return false;
-        } else if (index >= 0 && index < list.size()) {
-            return true;
-        } else {
-            return false;
-        }
+        return list != null && index >= 0 && index < list.size();
 
     }
 
@@ -158,10 +152,9 @@ public class ListDataModel<E> extends DataModel<E> {
                 rowData = getRowData();
             }
             DataModelEvent event = new DataModelEvent(this, index, rowData);
-            int n = listeners.length;
-            for (int i = 0; i < n; i++) {
-                if (null != listeners[i]) {
-                    listeners[i].rowSelected(event);
+            for (DataModelListener listener : listeners) {
+                if (null != listener) {
+                    listener.rowSelected(event);
                 }
             }
         }
@@ -185,7 +178,7 @@ public class ListDataModel<E> extends DataModel<E> {
             list = null;
             setRowIndex(-1);
         } else {
-            list = (List) data;
+            list = (List<E>) data;
             index = -1;
             setRowIndex(0);
         }

@@ -45,8 +45,8 @@ public class ApplicationMap extends BaseContextMap<Object> {
 
     @Override
     public void clear() {
-        for (Enumeration e = servletContext.getAttributeNames(); e.hasMoreElements();) {
-            servletContext.removeAttribute((String) e.nextElement());
+        for (Enumeration<String> e = servletContext.getAttributeNames(); e.hasMoreElements();) {
+            servletContext.removeAttribute(e.nextElement());
         }
     }
 
@@ -91,14 +91,14 @@ public class ApplicationMap extends BaseContextMap<Object> {
 
     @Override
     public boolean equals(Object obj) {
-        return !(obj == null || !(obj instanceof ApplicationMap)) && super.equals(obj);
+        return obj instanceof ApplicationMap && super.equals(obj);
     }
 
     @Override
     public int hashCode() {
         int hashCode = 7 * servletContext.hashCode();
-        for (Iterator i = entrySet().iterator(); i.hasNext();) {
-            hashCode += i.next().hashCode();
+        for (Map.Entry<String, Object> stringObjectEntry : entrySet()) {
+            hashCode += stringObjectEntry.hashCode();
         }
         return hashCode;
     }

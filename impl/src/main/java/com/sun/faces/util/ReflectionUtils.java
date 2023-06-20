@@ -506,33 +506,25 @@ public final class ReflectionUtils {
 
             String name;
             this.clazz = clazz;
-            Constructor[] ctors = clazz.getConstructors();
+            Constructor<?>[] ctors = clazz.getConstructors();
             constructors = new HashMap<>(ctors.length, 1.0f);
-            for (int i = 0, len = ctors.length; i < len; i++) {
-                constructors.put(getKey(ctors[i].getParameterTypes()), ctors[i]);
+            for (Constructor<?> ctor : ctors) {
+                constructors.put(getKey(ctor.getParameterTypes()), ctor);
             }
             Method[] meths = clazz.getMethods();
             methods = new HashMap<>(meths.length, 1.0f);
-            for (int i = 0, len = meths.length; i < len; i++) {
-                name = meths[i].getName();
-                HashMap<Integer, Method> methodsMap = methods.get(name);
-                if (methodsMap == null) {
-                    methodsMap = new HashMap<>(4, 1.0f);
-                    methods.put(name, methodsMap);
-                }
-                methodsMap.put(getKey(meths[i].getParameterTypes()), meths[i]);
+            for (Method method : meths) {
+                name = method.getName();
+                methods.computeIfAbsent(name, k -> new HashMap<>(4, 1.0f))
+                       .put(getKey(method.getParameterTypes()), method);
             }
 
             meths = clazz.getDeclaredMethods();
             declaredMethods = new HashMap<>(meths.length, 1.0f);
-            for (int i = 0, len = meths.length; i < len; i++) {
-                name = meths[i].getName();
-                HashMap<Integer, Method> declaredMethodsMap = declaredMethods.get(name);
-                if (declaredMethodsMap == null) {
-                    declaredMethodsMap = new HashMap<>(4, 1.0f);
-                    declaredMethods.put(name, declaredMethodsMap);
-                }
-                declaredMethodsMap.put(getKey(meths[i].getParameterTypes()), meths[i]);
+            for (Method meth : meths) {
+                name = meth.getName();
+                declaredMethods.computeIfAbsent(name, k -> new HashMap<>(4, 1.0f))
+                               .put(getKey(meth.getParameterTypes()), meth);
             }
 
             try {
