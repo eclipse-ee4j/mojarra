@@ -16,14 +16,7 @@
 
 package com.sun.faces.context;
 
-import java.util.AbstractCollection;
-import java.util.AbstractMap;
-import java.util.AbstractSet;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * <p>
@@ -113,7 +106,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
 
     // ----------------------------------------------------------- Inner Classes
 
-    abstract class BaseSet<E> extends AbstractSet<E> {
+    abstract static class BaseSet<E> extends AbstractSet<E> {
 
         @Override
         public int size() {
@@ -163,7 +156,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
         @Override
         public int size() {
             int size = 0;
-            for (Iterator i = iterator(); i.hasNext(); size++) {
+            for (Iterator<V> i = iterator(); i.hasNext(); size++) {
                 i.next();
             }
             return size;
@@ -180,7 +173,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
         }
     }
 
-    abstract class BaseIterator<E> implements Iterator<E> {
+    abstract static class BaseIterator<E> implements Iterator<E> {
 
         protected Enumeration e;
         protected String currentKey;
@@ -312,12 +305,8 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
             Object inputKey = input.getKey();
             Object inputValue = input.getValue();
 
-            if (inputKey == key || inputKey != null && inputKey.equals(key)) {
-                if (inputValue == value || inputValue != null && inputValue.equals(value)) {
-                    return true;
-                }
-            }
-            return false;
+            return Objects.equals(inputKey, key) &&
+                   Objects.equals(inputValue, value);
         }
     }
 

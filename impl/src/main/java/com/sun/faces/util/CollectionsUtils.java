@@ -39,6 +39,7 @@ public class CollectionsUtils {
         return new HashSet<>(asList(a));
     }
 
+    @SafeVarargs
     public static <T> T[] ar(T... ts) {
         return ts;
     }

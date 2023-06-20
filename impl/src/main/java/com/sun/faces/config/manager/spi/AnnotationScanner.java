@@ -65,7 +65,7 @@ public abstract class AnnotationScanner extends AnnotationProvider {
     private static final Logger LOGGER = FacesLogger.CONFIG.getLogger();
     private static final String WILDCARD = "*";
 
-    protected static final Set<String> FACES_ANNOTATIONS = unmodifiableSet(new HashSet<>(asList(
+    protected static final Set<String> FACES_ANNOTATIONS = Set.of(
             "Ljakarta/faces/component/FacesComponent;", "Ljakarta/faces/convert/FacesConverter;",
             "Ljakarta/faces/validator/FacesValidator;", "Ljakarta/faces/render/FacesRenderer;",
             "Ljakarta/faces/event/NamedEvent;", "Ljakarta/faces/component/behavior/FacesBehavior;",
@@ -74,13 +74,13 @@ public abstract class AnnotationScanner extends AnnotationProvider {
             "jakarta.faces.component.FacesComponent", "jakarta.faces.convert.FacesConverter",
             "jakarta.faces.validator.FacesValidator", "jakarta.faces.render.FacesRenderer",
             "jakarta.faces.event.NamedEvent", "jakarta.faces.component.behavior.FacesBehavior",
-            "jakarta.faces.render.FacesBehaviorRenderer")));
+            "jakarta.faces.render.FacesBehaviorRenderer");
 
-    protected static final Set<Class<? extends Annotation>> FACES_ANNOTATION_TYPE = unmodifiableSet(new HashSet<>(asList(
+    protected static final Set<Class<? extends Annotation>> FACES_ANNOTATION_TYPE = Set.of(
             FacesComponent.class, FacesConverter.class,
             FacesValidator.class, FacesRenderer.class,
             NamedEvent.class, FacesBehavior.class,
-            FacesBehaviorRenderer.class)));
+            FacesBehaviorRenderer.class);
 
     private boolean isAnnotationScanPackagesSet;
     private String[] webInfClassesPackages;
@@ -207,11 +207,7 @@ public abstract class AnnotationScanner extends AnnotationProvider {
                     for (Annotation annotation : annotations) {
                         Class<? extends Annotation> annoType = annotation.annotationType();
                         if (FACES_ANNOTATION_TYPE.contains(annoType)) {
-                            Set<Class<?>> classes = annotatedClasses.get(annoType);
-                            if (classes == null) {
-                                classes = new HashSet<>();
-                                annotatedClasses.put(annoType, classes);
-                            }
+                            Set<Class<?>> classes = annotatedClasses.computeIfAbsent(annoType, k -> new HashSet<>());
                             classes.add(clazz);
                         }
                     }

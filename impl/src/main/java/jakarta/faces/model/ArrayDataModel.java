@@ -55,7 +55,7 @@ public class ArrayDataModel<E> extends DataModel<E> {
     // ------------------------------------------------------ Instance Variables
 
     // The array we are wrapping
-    private Object array[];
+    private Object[] array;
 
     // The current row index (zero relative)
     private int index = -1;
@@ -74,13 +74,7 @@ public class ArrayDataModel<E> extends DataModel<E> {
     @Override
     public boolean isRowAvailable() {
 
-        if (array == null) {
-            return false;
-        } else if (index >= 0 && index < array.length) {
-            return true;
-        } else {
-            return false;
-        }
+        return array != null && index >= 0 && index < array.length;
 
     }
 
@@ -158,9 +152,9 @@ public class ArrayDataModel<E> extends DataModel<E> {
             }
             DataModelEvent event = new DataModelEvent(this, index, rowData);
             int n = listeners.length;
-            for (int i = 0; i < n; i++) {
-                if (null != listeners[i]) {
-                    listeners[i].rowSelected(event);
+            for (DataModelListener listener : listeners) {
+                if (null != listener) {
+                    listener.rowSelected(event);
                 }
             }
         }

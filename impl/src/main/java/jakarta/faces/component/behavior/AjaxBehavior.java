@@ -555,7 +555,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
             return null;
         }
 
-        Object values[] = new Object[2];
+        Object[] values = new Object[2];
         values[0] = bindings.keySet().toArray(new String[bindings.size()]);
 
         Object[] bindingValues = bindings.values().toArray();
@@ -577,9 +577,9 @@ public class AjaxBehavior extends ClientBehaviorBase {
         if (state == null) {
             return null;
         }
-        Object values[] = (Object[]) state;
-        String names[] = (String[]) values[0];
-        Object states[] = (Object[]) values[1];
+        Object[] values = (Object[]) state;
+        String[] names = (String[]) values[0];
+        Object[] states = (Object[]) values[1];
         Map<String, ValueExpression> bindings = new HashMap<>(names.length);
         for (int i = 0; i < names.length; i++) {
             bindings.put(names[i], (ValueExpression) UIComponentBase.restoreAttachedState(context, states[i]));
@@ -615,7 +615,7 @@ public class AjaxBehavior extends ClientBehaviorBase {
         if (state instanceof String) {
             list = toSingletonList(propertyName, (String) state);
         } else if (state instanceof String[]) {
-            list = Collections.unmodifiableList(Arrays.asList((String[]) state));
+            list = List.of((String[]) state);
         }
 
         return list;
@@ -730,8 +730,8 @@ public class AjaxBehavior extends ClientBehaviorBase {
             // we care about removing duplicates. However, the
             // presence of duplicates does not real harm. They will
             // be consolidated during the partial view traversal. So,
-            // just create an list - garbage in, garbage out.
-            return Collections.unmodifiableList(Arrays.asList(values));
+            // just create a list - garbage in, garbage out.
+            return List.of(values);
         }
 
         // RELEASE_PENDING i18n ;
@@ -747,29 +747,25 @@ public class AjaxBehavior extends ClientBehaviorBase {
         if (value.charAt(0) == '@') {
             // These are very common, so we use shared copies
             // of these collections instead of re-creating.
-
-            if (ALL.equals(value)) {
-                return ALL_LIST;
-            } else if (FORM.equals(value)) {
-                return FORM_LIST;
-            } else if (THIS.equals(value)) {
-                return THIS_LIST;
-            } else if (NONE.equals(value)) {
-                return NONE_LIST;
+            switch (value) {
+                case ALL:  return ALL_LIST;
+                case FORM: return FORM_LIST;
+                case THIS: return THIS_LIST;
+                case NONE: return NONE_LIST;
             }
         }
 
-        return Collections.singletonList(value);
+        return List.of(value);
     }
 
     // Makes a defensive copy of the collection, converting to a List
     // (to make state saving a bit easier).
-    private List<String> copyToList(Collection<String> collection) {
+    private static List<String> copyToList(Collection<String> collection) {
         if (collection == null || collection.isEmpty()) {
             return null;
         }
 
-        return Collections.unmodifiableList(new ArrayList<>(collection));
+        return List.copyOf(collection);
     }
 
     // Property name constants
@@ -783,18 +779,18 @@ public class AjaxBehavior extends ClientBehaviorBase {
     private static final String DELAY = "delay";
 
     // Id keyword constants
-    private static String ALL = "@all";
-    private static String FORM = "@form";
-    private static String THIS = "@this";
-    private static String NONE = "@none";
+    private static final String ALL = "@all";
+    private static final String FORM = "@form";
+    private static final String THIS = "@this";
+    private static final String NONE = "@none";
 
     // Shared execute/render collections
-    private static List<String> ALL_LIST = Collections.singletonList("@all");
-    private static List<String> FORM_LIST = Collections.singletonList("@form");
-    private static List<String> THIS_LIST = Collections.singletonList("@this");
-    private static List<String> NONE_LIST = Collections.singletonList("@none");
+    private static final List<String> ALL_LIST = List.of(ALL);
+    private static final List<String> FORM_LIST = List.of(FORM);
+    private static final List<String> THIS_LIST = List.of(THIS);
+    private static final List<String> NONE_LIST = List.of(NONE);
 
     // Pattern used for execute/render string splitting
-    private static Pattern SPLIT_PATTERN = Pattern.compile(" ");
+    private static final Pattern SPLIT_PATTERN = Pattern.compile(" ");
 
 }

@@ -311,11 +311,7 @@ public class NavigationConfigProcessor extends AbstractConfigProcessor {
                 // defined navigation mappings.
                 if (navHandler instanceof ConfigurableNavigationHandler) {
                     ConfigurableNavigationHandler cnav = (ConfigurableNavigationHandler) navHandler;
-                    Set<NavigationCase> cases = cnav.getNavigationCases().get(fromViewId);
-                    if (cases == null) {
-                        cases = new LinkedHashSet<>();
-                        cnav.getNavigationCases().put(fromViewId, cases);
-                    }
+                    Set<NavigationCase> cases = cnav.getNavigationCases().computeIfAbsent(fromViewId, k -> new LinkedHashSet<>());
                     cases.add(cnc);
                 }
                 associate.addNavigationCase(cnc);
@@ -396,7 +392,7 @@ public class NavigationConfigProcessor extends AbstractConfigProcessor {
 
     private boolean isIncludeViewParams(Node n) {
 
-        return Boolean.valueOf(getNodeText(n.getAttributes().getNamedItem(INCLUDE_VIEW_PARAMS_ATTRIBUTE)));
+        return Boolean.parseBoolean(getNodeText(n.getAttributes().getNamedItem(INCLUDE_VIEW_PARAMS_ATTRIBUTE)));
 
     }
 

@@ -98,11 +98,7 @@ public class MetaInfFacesConfigResourceProvider implements ConfigurationResource
                         }
                     }
 
-                    Set<URI> uris = sortedJarMap.get(jarName);
-                    if (uris == null) {
-                        uris = new HashSet<>();
-                        sortedJarMap.put(jarName, uris);
-                    }
+                    Set<URI> uris = sortedJarMap.computeIfAbsent(jarName, k -> new HashSet<>());
                     uris.add(uri);
                 } else {
                     unsortedResourceList.add(0, uri);
@@ -141,7 +137,7 @@ public class MetaInfFacesConfigResourceProvider implements ConfigurationResource
                 urls.add(new URI(urlString));
             }
             // special case for finding taglib files in WEB-INF/classes/META-INF
-            Set paths = context.getResourcePaths(WEB_INF_CLASSES);
+            Set<String> paths = context.getResourcePaths(WEB_INF_CLASSES);
             if (paths != null) {
                 for (Object path : paths) {
                     String p = path.toString();

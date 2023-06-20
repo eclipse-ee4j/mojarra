@@ -173,7 +173,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder {
             super.clearInitialState();
 
             Converter<?> c = getConverter();
-            if (c != null && c instanceof PartialStateHolder) {
+            if (c instanceof PartialStateHolder) {
                 ((PartialStateHolder) c).clearInitialState();
             }
         }

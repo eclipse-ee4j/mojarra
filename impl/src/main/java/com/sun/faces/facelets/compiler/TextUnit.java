@@ -40,9 +40,9 @@ final class TextUnit extends CompilationUnit {
 
     private final StringBuffer textBuffer;
 
-    private final List instructionBuffer;
+    private final List<Instruction> instructionBuffer;
 
-    private final Stack tags;
+    private final Stack<Tag> tags;
 
     private final List children;
 
@@ -57,9 +57,9 @@ final class TextUnit extends CompilationUnit {
         this.id = id;
         buffer = new StringBuffer();
         textBuffer = new StringBuffer();
-        instructionBuffer = new ArrayList();
-        tags = new Stack();
-        children = new ArrayList();
+        instructionBuffer = new ArrayList<>();
+        tags = new Stack<>();
+        children = new ArrayList<>();
         startTagOpen = false;
     }
 
@@ -159,19 +159,17 @@ final class TextUnit extends CompilationUnit {
         addInstruction(new StartElementInstruction(tag.getQName()));
 
         TagAttribute[] attrs = tag.getAttributes().getAll();
-        if (attrs.length > 0) {
-            for (int i = 0; i < attrs.length; i++) {
-                String qname = attrs[i].getQName();
-                String value = attrs[i].getValue();
-                buffer.append(' ').append(qname).append("=\"").append(value).append("\"");
+        for (TagAttribute attr : attrs) {
+            String qname = attr.getQName();
+            String value = attr.getValue();
+            buffer.append(' ').append(qname).append("=\"").append(value).append("\"");
 
-                ELText txt = ELText.parse(value);
-                if (txt != null) {
-                    if (txt.isLiteral()) {
-                        addInstruction(new LiteralAttributeInstruction(qname, txt.toString()));
-                    } else {
-                        addInstruction(new AttributeInstruction(alias, qname, txt));
-                    }
+            ELText txt = ELText.parse(value);
+            if (txt != null) {
+                if (txt.isLiteral()) {
+                    addInstruction(new LiteralAttributeInstruction(qname, txt.toString()));
+                } else {
+                    addInstruction(new AttributeInstruction(alias, qname, txt));
                 }
             }
         }
@@ -225,7 +223,7 @@ final class TextUnit extends CompilationUnit {
                 }
                 ELText txt = ELText.parse(s);
                 if (txt != null) {
-                    Instruction[] instructions = (Instruction[]) instructionBuffer.toArray(new Instruction[size]);
+                    Instruction[] instructions = instructionBuffer.toArray(new Instruction[size]);
                     children.add(new UIInstructionHandler(alias, id, instructions, txt));
                     instructionBuffer.clear();
                 }
