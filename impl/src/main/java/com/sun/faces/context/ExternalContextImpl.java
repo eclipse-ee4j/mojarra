@@ -83,7 +83,8 @@ public class ExternalContextImpl extends ExternalContext {
         }
     }
 
-    static final Class theUnmodifiableMapClass = Collections.unmodifiableMap(new HashMap<>(0)).getClass();
+    // we want exactly the UnmodifiableMap.class (which is private) so do not remove the call to Collections.unmodifiableMap(...)
+    static final Class theUnmodifiableMapClass = Collections.unmodifiableMap(Collections.emptyMap()).getClass();
 
     private static final Map<String, String> fallbackContentTypeMap = Map.of(
             "js", ScriptRenderer.DEFAULT_CONTENT_TYPE,
@@ -347,7 +348,7 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public Iterator<Locale> getRequestLocales() {
-        return request.getLocales().asIterator();
+        return CollectionsUtils.unmodifiableIterator(request.getLocales());
     }
 
     /**
@@ -1055,7 +1056,7 @@ public class ExternalContextImpl extends ExternalContext {
 
     // --------------------------------------------------------- Private Methods
 
-    public static String getFallbackMimeType(String file) {
+    private static String getFallbackMimeType(String file) {
         final String extension = Util.fileExtension(file);
         return extension != null ? fallbackContentTypeMap.get(extension) : null;
     }
