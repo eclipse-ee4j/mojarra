@@ -16,20 +16,17 @@
 
 package com.sun.faces.context;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.charset.Charset;
+import java.util.*;
 
 import com.sun.faces.util.Util;
 
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.faces.render.ResponseStateManager;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * <p>
@@ -49,16 +46,16 @@ class UrlBuilder {
     public static final String PARAMETER_PAIR_SEPARATOR = "&";
     public static final String PARAMETER_NAME_VALUE_SEPARATOR = "=";
     public static final String FRAGMENT_SEPARATOR = "#";
-    public static final String DEFAULT_ENCODING = "UTF-8";
+    public static final String DEFAULT_ENCODING = UTF_8.name();
 
-    private static final List<String> NULL_LIST = Arrays.asList((String) null);
+    private static final List<String> NULL_LIST = Collections.singletonList((String) null);
 
-    private StringBuilder url;
+    private final StringBuilder url;
     private String path;
     private String queryString;
     private String fragment;
     private Map<String, List<String>> parameters;
-    private String encoding;
+    private final Charset encoding;
 
     // ------------------------------------------------------------ Constructors
 
@@ -68,7 +65,7 @@ class UrlBuilder {
         }
         this.url = new StringBuilder(url.length() * 2);
         extractSegments(url);
-        this.encoding = encoding;
+        this.encoding = encoding != null ? Charset.forName(encoding) : null;
         // PERF TL lookup per-instance
     }
 
@@ -271,11 +268,7 @@ class UrlBuilder {
             for (Iterator<String> it = valuesRef.iterator(); it.hasNext();) {
                 String string = it.next();
                 if (encoding != null) {
-                    try {
-                        values.add(URLEncoder.encode(string, encoding));
-                    } catch (UnsupportedEncodingException ex) {
-                        throw new RuntimeException(ex);
-                    }
+                    values.add(URLEncoder.encode(string, encoding));
                 } else {
                     values.add(string);
                 }
@@ -290,12 +283,8 @@ class UrlBuilder {
         if (replace) {
             parameters.put(name, values);
         } else {
-            List<String> currentValues = parameters.get(name);
-            if (currentValues == null) {
-                currentValues = new ArrayList<>(1);
-                parameters.put(name, currentValues);
-            }
-            currentValues.addAll(values);
+            parameters.computeIfAbsent(name, k -> new ArrayList<>(1))
+                      .addAll(values);
         }
     }
 
