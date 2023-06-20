@@ -35,7 +35,7 @@ public class CopyCtorCopier implements Copier {
     public Object copy(Object object) {
 
         try {
-            Constructor<? extends Object> copyConstructor = object.getClass().getConstructor(object.getClass());
+            Constructor<?> copyConstructor = object.getClass().getConstructor(object.getClass());
 
             return copyConstructor.newInstance(object);
 

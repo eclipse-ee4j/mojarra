@@ -37,7 +37,7 @@ import java.util.List;
  */
 public class MultiStrategyCopier implements Copier {
 
-    private static final List<Copier> COPIERS = asList( // Note: copier instances used here must be thread-safe!
+    private static final List<Copier> COPIERS = List.of( // Note: copier instances used here must be thread-safe!
             new SerializationCopier(), new CloneCopier(), new CopyCtorCopier(), new NewInstanceCopier());
 
     @Override
