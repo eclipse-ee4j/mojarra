@@ -19,10 +19,7 @@ package com.sun.faces.util;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableMap;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author asmirnov@exadel.com
@@ -39,6 +36,7 @@ public class CollectionsUtils {
         return new HashSet<>(asList(a));
     }
 
+    @SafeVarargs
     public static <T> T[] ar(T... ts) {
         return ts;
     }
@@ -68,4 +66,30 @@ public class CollectionsUtils {
             return unmodifiableMap(this);
         }
     }
+
+    /**
+     * @return an Iterator over the passed Iterator with no remove support
+     */
+    public static <T> Iterator<T> unmodifiableIterator(Iterator<T> iterator) {
+        return new UnmodifiableIterator<>(iterator);
+    }
+
+    /**
+     * @return an Iterator over the passed Enumeration with no remove support
+     */
+    public static <T> Iterator<T> unmodifiableIterator(Enumeration<T> enumeration) {
+        return new UnmodifiableIterator<>(enumeration.asIterator());
+    }
+
+    public static class UnmodifiableIterator<T> implements Iterator<T> {
+
+        private final Iterator<T> iterator;
+
+        public UnmodifiableIterator(Iterator<T> iterator) {this.iterator = iterator;}
+
+        @Override public boolean hasNext() {return iterator.hasNext();}
+        @Override public T next() {return iterator.next();}
+        @Override public void remove() {throw new UnsupportedOperationException();}
+    }
+
 }
