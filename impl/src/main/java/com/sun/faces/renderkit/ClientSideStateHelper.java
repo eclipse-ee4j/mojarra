@@ -23,16 +23,7 @@ import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.Clie
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.VIEW_STATE_PARAM;
 import static java.util.logging.Level.WARNING;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InvalidClassException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.Writer;
+import java.io.*;
 import java.util.Base64;
 import java.util.Map;
 import java.util.logging.Level;
@@ -59,6 +50,8 @@ import jakarta.faces.context.ResponseWriter;
 public class ClientSideStateHelper extends StateHelper {
 
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
+
+    public static final String STATELESS = "stateless";
 
     /**
      * <p>
@@ -189,8 +182,8 @@ public class ClientSideStateHelper extends StateHelper {
             return null;
         }
 
-        if ("stateless".equals(stateString)) {
-            return "stateless";
+        if (STATELESS.equals(stateString)) {
+            return STATELESS;
         }
 
         return doGetState(ctx, stateString);
@@ -206,7 +199,7 @@ public class ClientSideStateHelper extends StateHelper {
      */
     protected Object doGetState(FacesContext ctx, String stateString) {
 
-        if ("stateless".equals(stateString)) {
+        if (STATELESS.equals(stateString)) {
             return null;
         }
 
@@ -261,16 +254,11 @@ public class ClientSideStateHelper extends StateHelper {
 
             return new Object[] { structure, state };
 
-        } catch (java.io.OptionalDataException ode) {
+        } catch (OptionalDataException | ClassNotFoundException ode) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, ode.getMessage(), ode);
             }
             throw new FacesException(ode);
-        } catch (ClassNotFoundException cnfe) {
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE, cnfe.getMessage(), cnfe);
-            }
-            throw new FacesException(cnfe);
         } catch (InvalidClassException ice) {
             /*
              * Thrown when the Faces runtime is trying to deserialize a client-side state that has been saved with a previous version
@@ -306,13 +294,13 @@ public class ClientSideStateHelper extends StateHelper {
     protected void doWriteState(FacesContext facesContext, Object state, Writer writer) throws IOException {
 
         if (facesContext.getViewRoot().isTransient()) {
-            writer.write("stateless");
+            writer.write(STATELESS);
             writer.flush();
             return;
         }
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        OutputStream base = null;
+        final OutputStream base;
         if (compressViewState) {
             base = new GZIPOutputStream(baos, csBuffSize);
         } else {
@@ -494,11 +482,8 @@ public class ClientSideStateHelper extends StateHelper {
             } catch (IOException ioe) {
                 throw new IllegalStateException("Cannot determine whether or not the request is stateless", ioe);
             }
-            if (stateObject instanceof String && "stateless".equals(stateObject)) {
-                return true;
-            }
 
-            return false;
+            return STATELESS.equals(stateObject);
         }
 
         throw new IllegalStateException("Cannot determine whether or not the request is stateless");
@@ -511,7 +496,7 @@ public class ClientSideStateHelper extends StateHelper {
      */
     protected static final class StringBuilderWriter extends Writer {
 
-        private StringBuilder sb;
+        private final StringBuilder sb;
 
         // -------------------------------------------------------- Constructors
 
@@ -531,7 +516,7 @@ public class ClientSideStateHelper extends StateHelper {
         }
 
         @Override
-        public void write(char cbuf[]) throws IOException {
+        public void write(char[] cbuf) throws IOException {
 
             sb.append(cbuf);
 
@@ -576,7 +561,7 @@ public class ClientSideStateHelper extends StateHelper {
         }
 
         @Override
-        public void write(char cbuf[], int off, int len) throws IOException {
+        public void write(char[] cbuf, int off, int len) throws IOException {
 
             sb.append(cbuf, off, len);
 

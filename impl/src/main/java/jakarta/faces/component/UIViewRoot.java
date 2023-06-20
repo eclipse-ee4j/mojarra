@@ -21,15 +21,7 @@ import static java.util.logging.Level.WARNING;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -594,11 +586,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
         List<UIComponent> facetChildren = getComponentResources(context, target, true);
         String id = componentResource.getId();
         if (id != null) {
-            for (UIComponent c : facetChildren) {
-                if (id.equals(c.getId())) {
-                    facetChildren.remove(c);
-                }
-            }
+            facetChildren.removeIf(c -> id.equals(c.getId()));
         }
 
         // add the resource to the facet
@@ -655,7 +643,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
 
         List<UIComponent> resources = getComponentResources(context, target, false);
 
-        return resources != null ? resources : Collections.<UIComponent>emptyList();
+        return resources != null ? resources : Collections.emptyList();
     }
 
     /**
@@ -1628,12 +1616,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
         if (viewListeners == null) {
             viewListeners = new HashMap<>(4, 1.0f);
         }
-        List<SystemEventListener> listeners = viewListeners.get(systemEvent);
-        if (listeners == null) {
-            listeners = new CopyOnWriteArrayList<>();
-            viewListeners.put(systemEvent, listeners);
-        }
-        listeners.add(listener);
+
+        viewListeners.computeIfAbsent(systemEvent, k -> new CopyOnWriteArrayList<>()).add(listener);
 
     }
 
@@ -1795,11 +1779,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
 
     private static String getIdentifier(String target) {
         // check map
-        String id = LOCATION_IDENTIFIER_MAP.get(target);
-        if (id == null) {
-            id = LOCATION_IDENTIFIER_PREFIX + target;
-            LOCATION_IDENTIFIER_MAP.put(target, id);
-        }
+        String id = LOCATION_IDENTIFIER_MAP.computeIfAbsent(target, t -> LOCATION_IDENTIFIER_PREFIX + t);
 
         return id;
     }
@@ -1821,9 +1801,9 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
 
     private static final class ViewMap extends HashMap<String, Object> {
 
-        private static final long serialVersionUID = -1l;
+        private static final long serialVersionUID = -1L;
 
-        private ProjectStage stage;
+        private final ProjectStage stage;
 
         // -------------------------------------------------------- Constructors
 

@@ -42,7 +42,7 @@ import jakarta.servlet.ServletContext;
  */
 public final class Resource {
 
-    protected final static Logger LOGGER = FacesLogger.FACELETS_FACTORY.getLogger();
+    private final static Logger LOGGER = FacesLogger.FACELETS_FACTORY.getLogger();
 
     /**
      * Get an URL of an internal resource.
