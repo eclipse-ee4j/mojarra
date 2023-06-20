@@ -17,11 +17,7 @@
 package com.sun.faces.application.annotation;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import jakarta.faces.application.Application;
 import jakarta.faces.context.FacesContext;
@@ -34,12 +30,7 @@ import jakarta.faces.validator.FacesValidator;
  */
 public class ValidatorConfigHandler implements ConfigAnnotationHandler {
 
-    private static final Collection<Class<? extends Annotation>> HANDLES;
-    static {
-        Collection<Class<? extends Annotation>> handles = new ArrayList<>(1);
-        handles.add(FacesValidator.class);
-        HANDLES = Collections.unmodifiableCollection(handles);
-    }
+    private static final Collection<Class<? extends Annotation>> HANDLES = List.of(FacesValidator.class);
 
     private Map<ValidatorInfo, String> validators;
 

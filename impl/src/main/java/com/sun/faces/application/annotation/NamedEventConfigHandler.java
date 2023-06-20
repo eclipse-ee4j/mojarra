@@ -17,11 +17,7 @@
 package com.sun.faces.application.annotation;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.NamedEventManager;
@@ -44,13 +40,7 @@ import jakarta.faces.event.SystemEvent;
 public class NamedEventConfigHandler implements ConfigAnnotationHandler {
 
     private Map<Class<?>, Annotation> namedEvents;
-    private static final Collection<Class<? extends Annotation>> HANDLES;
-
-    static {
-        Collection<Class<? extends Annotation>> handles = new ArrayList<>(2);
-        handles.add(NamedEvent.class);
-        HANDLES = Collections.unmodifiableCollection(handles);
-    }
+    private static final Collection<Class<? extends Annotation>> HANDLES = List.of(NamedEvent.class);
 
     @Override
     public Collection<Class<? extends Annotation>> getHandledAnnotations() {

@@ -17,11 +17,7 @@
 package com.sun.faces.application.annotation;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
@@ -40,14 +36,8 @@ import jakarta.faces.render.Renderer;
  */
 public class RenderKitConfigHandler implements ConfigAnnotationHandler {
 
-    private static final Collection<Class<? extends Annotation>> HANDLES;
-
-    static {
-        Collection<Class<? extends Annotation>> handles = new ArrayList<>(2);
-        handles.add(FacesRenderer.class);
-        handles.add(FacesBehaviorRenderer.class);
-        HANDLES = Collections.unmodifiableCollection(handles);
-    }
+    private static final Collection<Class<? extends Annotation>> HANDLES = List.of(
+            FacesRenderer.class,FacesBehaviorRenderer.class);
 
     Map<Class<?>, Annotation> annotatedRenderers;
 
