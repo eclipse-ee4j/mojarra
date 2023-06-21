@@ -108,7 +108,7 @@ public class BigIntegerConverterTest {
         BigIntegerConverter converter = new BigIntegerConverter();
         FacesContext facesContext = PowerMock.createMock(FacesContext.class);
         replay(facesContext);
-        assertEquals("123", converter.getAsString(facesContext, new UIPanel(), "123"));
+        assertEquals("123", converter.getAsString(facesContext, new UIPanel(), BigInteger.valueOf(123) ));
         verify(facesContext);
     }
 

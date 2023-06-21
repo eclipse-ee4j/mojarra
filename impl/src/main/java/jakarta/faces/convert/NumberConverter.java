@@ -865,7 +865,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
             throw new NullPointerException();
         }
         if (!initialStateMarked()) {
-            Object values[] = new Object[11];
+            Object[] values = new Object[11];
             values[0] = currencyCode;
             values[1] = currencySymbol;
             values[2] = groupingUsed;
@@ -890,7 +890,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
             throw new NullPointerException();
         }
         if (state != null) {
-            Object values[] = (Object[]) state;
+            Object[] values = (Object[]) state;
             currencyCode = (String) values[0];
             currencySymbol = (String) values[1];
             groupingUsed = (Boolean) values[2];
