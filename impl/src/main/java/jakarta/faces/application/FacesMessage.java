@@ -17,17 +17,17 @@
 
 package jakarta.faces.application;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableList;
+import static java.util.Arrays.stream;
 import static java.util.Collections.unmodifiableMap;
+import static java.util.stream.Collectors.toMap;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * <p>
@@ -72,6 +72,8 @@ import java.util.Map;
 public class FacesMessage implements Serializable {
 
     // --------------------------------------------------------------- Constants
+
+    private static final long serialVersionUID = -1180773928220076822L;
 
     /**
      * <p>
@@ -135,24 +137,14 @@ public class FacesMessage implements Serializable {
      * order of their ordinal value.
      * </p>
      */
-    public static final List VALUES = unmodifiableList(asList(values));
-
-    private static Map<String, Severity> _MODIFIABLE_MAP = new HashMap<>(4, 1.0f);
-
-    static {
-        for (int i = 0, len = values.length; i < len; i++) {
-            _MODIFIABLE_MAP.put(values[i].severityName, values[i]);
-        }
-    }
+    public static final List<Severity> VALUES = List.of(values);
 
     /**
      * <p>
      * Immutable <code>Map</code> of valid {@link jakarta.faces.application.FacesMessage.Severity} instances, keyed by name.
      * </p>
      */
-    public final static Map VALUES_MAP = unmodifiableMap(_MODIFIABLE_MAP);
-
-    private static final long serialVersionUID = -1180773928220076822L;
+    public final static Map<String, Severity> VALUES_MAP = unmodifiableMap(stream(values).collect(toMap(severity -> severity.severityName , Function.identity())));
 
     // ------------------------------------------------------ Instance Variables
 
@@ -377,7 +369,7 @@ public class FacesMessage implements Serializable {
      * Class used to represent message severity levels in a typesafe enumeration.
      * </p>
      */
-    public static class Severity implements Comparable {
+    public static class Severity implements Comparable<Severity> {
 
         // ------------------------------------------------------- Constructors
 
@@ -415,11 +407,11 @@ public class FacesMessage implements Serializable {
          * object.
          * </p>
          *
-         * @param other The other object to be compared to
+         * @param severity The other object to be compared to
          */
         @Override
-        public int compareTo(Object other) {
-            return ordinal - ((Severity) other).ordinal;
+        public int compareTo(Severity severity) {
+            return ordinal - severity.ordinal;
         }
 
         /**
@@ -444,7 +436,7 @@ public class FacesMessage implements Serializable {
                 return String.valueOf(ordinal);
             }
 
-            return String.valueOf(severityName) + ' ' + ordinal;
+            return severityName + ' ' + ordinal;
         }
 
         // --------------------------------------------------- Static Variables
