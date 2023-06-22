@@ -81,7 +81,7 @@ public class CharacterConverter implements Converter<Character> {
         }
 
         try {
-            return value.charAt(0);
+            return value.trim().charAt(0);
         } catch (Exception e) {
             throw new ConverterException(MessageFactory.getMessage(context, CHARACTER_ID, value, MessageFactory.getLabel(context, component)), e);
         }

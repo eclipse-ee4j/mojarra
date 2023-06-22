@@ -81,7 +81,7 @@ public class IntegerConverter implements Converter<Integer> {
         }
 
         try {
-            return Integer.valueOf(value);
+            return Integer.valueOf(value.trim());
         } catch (NumberFormatException nfe) {
             throw new ConverterException(MessageFactory.getMessage(context, INTEGER_ID, value, "9346", MessageFactory.getLabel(context, component)), nfe);
         } catch (Exception e) {

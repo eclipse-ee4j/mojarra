@@ -83,7 +83,7 @@ public class BooleanConverter implements Converter<Boolean> {
         // Let them know that the value being converted is not specifically
         // "true" or "false".
         try {
-            return Boolean.valueOf(value);
+            return Boolean.valueOf(value.trim());
         } catch (Exception e) {
             throw new ConverterException(MessageFactory.getMessage(context, BOOLEAN_ID, value, MessageFactory.getLabel(context, component)), e);
         }

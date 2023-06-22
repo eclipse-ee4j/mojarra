@@ -82,7 +82,7 @@ public class LongConverter implements Converter<Long> {
         }
 
         try {
-            return Long.valueOf(value);
+            return Long.valueOf(value.trim());
         } catch (NumberFormatException nfe) {
             throw new ConverterException(MessageFactory.getMessage(context, LONG_ID, value, "98765432", MessageFactory.getLabel(context, component)), nfe);
         } catch (Exception e) {

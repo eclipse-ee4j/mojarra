@@ -84,7 +84,7 @@ public class BigIntegerConverter implements Converter<BigInteger> {
         }
 
         try {
-            return new BigInteger(value);
+            return new BigInteger(value.trim());
         } catch (NumberFormatException nfe) {
             throw new ConverterException(MessageFactory.getMessage(context, BIGINTEGER_ID, value, "9876", MessageFactory.getLabel(context, component)), nfe);
         } catch (Exception e) {

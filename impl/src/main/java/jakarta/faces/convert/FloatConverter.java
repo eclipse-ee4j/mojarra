@@ -82,7 +82,7 @@ public class FloatConverter implements Converter<Float> {
         }
 
         try {
-            return Float.valueOf(value);
+            return Float.valueOf(value.trim());
         } catch (NumberFormatException nfe) {
             throw new ConverterException(MessageFactory.getMessage(context, FLOAT_ID, value, "2000000000", MessageFactory.getLabel(context, component)), nfe);
         } catch (Exception e) {

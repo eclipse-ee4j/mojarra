@@ -105,7 +105,7 @@ public class EnumConverter implements Converter<Enum> {
         }
 
         try {
-            return Enum.valueOf(enumClass, value);
+            return Enum.valueOf(enumClass, value.trim());
         } catch (IllegalArgumentException iae) {
             throw new ConverterException(MessageFactory.getMessage(context, ENUM_ID, value, value, MessageFactory.getLabel(context, component)), iae);
         }

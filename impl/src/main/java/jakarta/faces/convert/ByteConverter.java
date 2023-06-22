@@ -82,7 +82,7 @@ public class ByteConverter implements Converter<Byte> {
         }
 
         try {
-            return Byte.valueOf(value);
+            return Byte.valueOf(value.trim());
         } catch (NumberFormatException nfe) {
             throw new ConverterException(MessageFactory.getMessage(context, BYTE_ID, value, "254", MessageFactory.getLabel(context, component)), nfe);
         } catch (Exception e) {

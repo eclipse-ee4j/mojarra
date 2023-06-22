@@ -84,7 +84,7 @@ public class BigDecimalConverter implements Converter<BigDecimal> {
         }
 
         try {
-            return new BigDecimal(value);
+            return new BigDecimal(value.trim());
         } catch (NumberFormatException nfe) {
             throw new ConverterException(MessageFactory.getMessage(context, DECIMAL_ID, value, "198.23", MessageFactory.getLabel(context, component)), nfe);
         } catch (Exception e) {

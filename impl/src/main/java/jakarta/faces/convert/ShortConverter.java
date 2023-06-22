@@ -82,7 +82,7 @@ public class ShortConverter implements Converter<Short> {
         }
 
         try {
-            return Short.valueOf(value);
+            return Short.valueOf(value.trim());
         } catch (NumberFormatException nfe) {
             throw new ConverterException(MessageFactory.getMessage(context, SHORT_ID, value, "32456", MessageFactory.getLabel(context, component)), nfe);
         } catch (Exception e) {
@@ -104,7 +104,7 @@ public class ShortConverter implements Converter<Short> {
         }
 
         try {
-            return Short.toString(((Number) value).shortValue());
+            return Short.toString(value);
         } catch (Exception e) {
             throw new ConverterException(MessageFactory.getMessage(context, STRING_ID, value, MessageFactory.getLabel(context, component)), e);
         }
