@@ -492,7 +492,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
     public List<PhaseListener> getPhaseListeners() {
         List<PhaseListener> result = (List<PhaseListener>) getStateHelper().get(PropertyKeys.phaseListeners);
 
-        return result != null ? unmodifiableList(result) : unmodifiableList(Collections.<PhaseListener>emptyList());
+        return result != null ? unmodifiableList(result) : Collections.emptyList();
     }
 
     /**
@@ -583,10 +583,18 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
         if (target == null) {
             target = "head";
         }
+        // this is not a normal "List" but a custom implementation called "ChildrenList"
         List<UIComponent> facetChildren = getComponentResources(context, target, true);
         String id = componentResource.getId();
         if (id != null) {
-            facetChildren.removeIf(c -> id.equals(c.getId()));
+            // normally the following code may produce a ConcurrentModificationException
+            // but probably the ChildrenList implementation knows how and when delete an UIComponent.
+            // Normally we should use "removeIf" but doing this will produce other errors during rendering
+            for (UIComponent c : facetChildren) {
+                if (id.equals(c.getId())) {
+                    facetChildren.remove(c);
+                }
+            }
         }
 
         // add the resource to the facet
@@ -1617,7 +1625,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
             viewListeners = new HashMap<>(4, 1.0f);
         }
 
-        viewListeners.computeIfAbsent(systemEvent, k -> new CopyOnWriteArrayList<>()).add(listener);
+        viewListeners.computeIfAbsent(systemEvent, k -> new CopyOnWriteArrayList<>())
+                     .add(listener);
 
     }
 
