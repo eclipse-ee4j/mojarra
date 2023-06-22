@@ -69,7 +69,8 @@ public class ELUtils {
 
     /**
      * Cache.Factory that initialize an element inside the LRUCache evaluating a Matcher against the input.
-     * We should be able to share a Matcher because the Factory it's executed atomically and this Matcher is used
+     * We should be able to share a Matcher because the Factory it's executed atomically
+     * and this Matcher is used only here
      */
     private static final Cache.Factory<String,Boolean> isCompositeExpressionInit = new Cache.Factory<>() {
 
