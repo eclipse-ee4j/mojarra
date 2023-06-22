@@ -43,7 +43,7 @@ public abstract class TagHandlerDelegate {
      *
      * @since 2.0
      */
-    public abstract MetaRuleset createMetaRuleset(Class type);
+    public abstract MetaRuleset createMetaRuleset(Class<?> type);
 
     /**
      * <p class="changed_added_2_0">

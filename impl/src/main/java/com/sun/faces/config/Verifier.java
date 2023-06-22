@@ -46,7 +46,7 @@ public class Verifier {
     /**
      * Container for any messages that may be queued.
      */
-    private List<String> messages;
+    private final List<String> messages;
 
     // ------------------------------------------------------- Constructors
 
@@ -126,7 +126,7 @@ public class Verifier {
 
         if (c != null) {
             try {
-                Constructor ctor = c.getConstructor(RIConstants.EMPTY_CLASS_ARGS);
+                Constructor<?> ctor = c.getConstructor(RIConstants.EMPTY_CLASS_ARGS);
                 if (!Modifier.isPublic(ctor.getModifiers())) {
                     messages.add(MessageUtils.getExceptionMessageString(MessageUtils.VERIFIER_CTOR_NOT_PUBLIC_ID, type, className));
                 }

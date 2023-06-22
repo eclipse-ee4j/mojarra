@@ -42,6 +42,7 @@ import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
 
+import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseStream;
 import jakarta.faces.context.ResponseWriter;
@@ -70,17 +71,17 @@ public class RenderKitImpl extends RenderKit {
      * Keys are String renderer family. Values are HashMaps. Nested HashMap keys are Strings for the rendererType, and
      * values are the Renderer instances themselves.
      */
-    private ConcurrentHashMap<String, HashMap<String, Renderer>> rendererFamilies = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, HashMap<String, Renderer<? extends UIComponent>>> rendererFamilies = new ConcurrentHashMap<>();
 
     /**
      * For Behavior Renderers: Keys are Strings for the behaviorRendererType, and values are the behaviorRenderer instances
      * themselves.
      */
-    private ConcurrentHashMap<String, ClientBehaviorRenderer> behaviorRenderers = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, ClientBehaviorRenderer> behaviorRenderers = new ConcurrentHashMap<>();
 
     private ResponseStateManager responseStateManager = new ResponseStateManagerImpl();
 
-    private WebConfiguration webConfig;
+    private final WebConfiguration webConfig;
 
     public RenderKitImpl() {
 
@@ -90,17 +91,13 @@ public class RenderKitImpl extends RenderKit {
     }
 
     @Override
-    public void addRenderer(String family, String rendererType, Renderer renderer) {
+    public void addRenderer(String family, String rendererType, Renderer<? extends UIComponent> renderer) {
 
         Util.notNull("family", family);
         Util.notNull("rendererType", rendererType);
         Util.notNull("renderer", renderer);
 
-        HashMap<String, Renderer> renderers = rendererFamilies.get(family);
-        if (renderers == null) {
-            renderers = new HashMap<>();
-            rendererFamilies.put(family, renderers);
-        }
+        Map<String, Renderer<? extends UIComponent>> renderers = rendererFamilies.computeIfAbsent(family, k -> new HashMap<>());
 
         if (LOGGER.isLoggable(Level.FINE) && renderers.containsKey(rendererType)) {
             LOGGER.log(Level.FINE, "rendererType {0} has already been registered for family {1}.  Replacing existing renderer class type {2} with {3}.",
@@ -111,14 +108,14 @@ public class RenderKitImpl extends RenderKit {
     }
 
     @Override
-    public Renderer getRenderer(String family, String rendererType) {
+    public Renderer<? extends UIComponent> getRenderer(String family, String rendererType) {
 
         Util.notNull("family", family);
         Util.notNull("rendererType", rendererType);
 
-        assert rendererFamilies != null;
+        assert rendererFamilies != null; // ??
 
-        HashMap<String, Renderer> renderers = rendererFamilies.get(family);
+        Map<String, Renderer<? extends UIComponent>> renderers = rendererFamilies.get(family);
         return renderers != null ? renderers.get(rendererType) : null;
 
     }
@@ -143,16 +140,12 @@ public class RenderKitImpl extends RenderKit {
 
         Util.notNull("behaviorRendererType", behaviorRendererType);
 
-        return behaviorRenderers != null ? behaviorRenderers.get(behaviorRendererType) : null;
+        return behaviorRenderers.get(behaviorRendererType);
 
     }
 
     @Override
     public Iterator<String> getClientBehaviorRendererTypes() {
-        if (null == behaviorRenderers) {
-            Set<String> empty = Collections.emptySet();
-            return empty.iterator();
-        }
         return behaviorRenderers.keySet().iterator();
     }
 
@@ -198,7 +191,7 @@ public class RenderKitImpl extends RenderKit {
         if (null == desiredContentTypeList || contentTypeNullFromResponse) {
             String[] typeArray = context.getExternalContext().getRequestHeaderValuesMap().get("Accept");
             if (typeArray.length > 0) {
-                StringBuffer buff = new StringBuffer();
+                StringBuilder buff = new StringBuilder();
                 buff.append(typeArray[0]);
                 for (int i = 1, len = typeArray.length; i < len; i++) {
                     buff.append(',');
@@ -279,15 +272,13 @@ public class RenderKitImpl extends RenderKit {
 
         // For each entry in the desiredTypes array, look for a match in
         // the supportedTypes array
-        for (int i = 0, ilen = desiredTypes.length; i < ilen; i++) {
-            String curDesiredType = desiredTypes[i];
-            for (int j = 0, jlen = supportedTypes.length; j < jlen; j++) {
-                String curContentType = supportedTypes[j].trim();
+        for (String curDesiredType : desiredTypes) {
+            for (String supportedType : supportedTypes) {
+                String curContentType = supportedType.trim();
                 if (curDesiredType.contains(curContentType)) {
                     if (curContentType.contains(RIConstants.HTML_CONTENT_TYPE)) {
                         contentType = RIConstants.HTML_CONTENT_TYPE;
-                    } else if (curContentType.contains(RIConstants.XHTML_CONTENT_TYPE) || curContentType.contains(RIConstants.APPLICATION_XML_CONTENT_TYPE)
-                            || curContentType.contains(RIConstants.TEXT_XML_CONTENT_TYPE)) {
+                    } else if (curContentType.contains(RIConstants.XHTML_CONTENT_TYPE) || curContentType.contains(RIConstants.APPLICATION_XML_CONTENT_TYPE) || curContentType.contains(RIConstants.TEXT_XML_CONTENT_TYPE)) {
                         contentType = RIConstants.XHTML_CONTENT_TYPE;
                     }
                     break;
@@ -310,12 +301,12 @@ public class RenderKitImpl extends RenderKit {
             }
 
             @Override
-            public void write(byte b[]) throws IOException {
+            public void write(byte[] b) throws IOException {
                 output.write(b);
             }
 
             @Override
-            public void write(byte b[], int off, int len) throws IOException {
+            public void write(byte[] b, int off, int len) throws IOException {
                 output.write(b, off, len);
             }
 
@@ -347,12 +338,11 @@ public class RenderKitImpl extends RenderKit {
     @Override
     public Iterator<String> getRendererTypes(String componentFamily) {
 
-        Map<String, Renderer> family = rendererFamilies.get(componentFamily);
+        Map<String, Renderer<? extends UIComponent>> family = rendererFamilies.get(componentFamily);
         if (family != null) {
             return family.keySet().iterator();
         } else {
-            Set<String> empty = Collections.emptySet();
-            return empty.iterator();
+            return Collections.emptyIterator();
         }
 
     }

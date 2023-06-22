@@ -52,12 +52,11 @@ public class MockRenderKit extends RenderKit {
         responseStateManager = new MockResponseStateManager();
     }
 
-    private Map<String, Renderer> renderers = new HashMap<>();
+    private final Map<String, Renderer<? extends UIComponent>> renderers = new HashMap<>();
     private ResponseStateManager responseStateManager = null;
 
     @Override
-    public void addRenderer(String family, String rendererType,
-            Renderer renderer) {
+    public void addRenderer(String family, String rendererType, Renderer<? extends UIComponent> renderer) {
         if ((family == null) || (rendererType == null) || (renderer == null)) {
             throw new NullPointerException();
         }
@@ -65,7 +64,7 @@ public class MockRenderKit extends RenderKit {
     }
 
     @Override
-    public Renderer getRenderer(String family, String rendererType) {
+    public Renderer<? extends UIComponent> getRenderer(String family, String rendererType) {
         if ((family == null) || (rendererType == null)) {
             throw new NullPointerException();
         }
@@ -115,7 +114,7 @@ public class MockRenderKit extends RenderKit {
         return responseStateManager;
     }
 
-    class TestRenderer extends Renderer<UIComponent> {
+    static class TestRenderer extends Renderer<UIComponent> {
 
         public TestRenderer() {
         }
@@ -163,12 +162,5 @@ public class MockRenderKit extends RenderKit {
             }
         }
 
-        @Override
-        public void encodeEnd(FacesContext context, UIComponent component)
-                throws IOException {
-            if ((context == null) || (component == null)) {
-                throw new NullPointerException();
-            }
-        }
     }
 }

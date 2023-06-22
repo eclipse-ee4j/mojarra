@@ -376,7 +376,7 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel implemen
         List<String> setAttributes = (List<String>) getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");
         if (setAttributes == null) {
             String cname = this.getClass().getName();
-            if (cname != null && cname.startsWith(OPTIMIZED_PACKAGE)) {
+            if (cname.startsWith(OPTIMIZED_PACKAGE)) {
                 setAttributes = new ArrayList<>(6);
                 getAttributes().put("jakarta.faces.component.UIComponentBase.attributesThatAreSet", setAttributes);
             }

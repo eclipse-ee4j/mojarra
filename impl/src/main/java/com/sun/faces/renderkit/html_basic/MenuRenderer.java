@@ -791,7 +791,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
             collectionType = (Class<? extends Collection<Object>>) collectionTypeHint;
         } else if (collectionTypeHint instanceof String) {
             try {
-                collectionType = Util.loadClass((String) collectionTypeHint, this);
+                collectionType = (Class<? extends Collection<Object>>) Util.loadClass((String) collectionTypeHint, this);
             } catch (ClassNotFoundException cnfe) {
                 throw new FacesException(cnfe);
             }
@@ -820,7 +820,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         Map<String, String[]> requestParameterValuesMap = context.getExternalContext().getRequestParameterValuesMap();
 
         if (requestParameterValuesMap.containsKey(clientId)) {
-            String newValues[] = requestParameterValuesMap.get(clientId);
+            String[] newValues = requestParameterValuesMap.get(clientId);
 
             if (newValues != null && newValues.length > 0) {
                 Set<String> disabledSelectItemValues = getDisabledSelectItemValues(context, component);
@@ -828,7 +828,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
                     List<String> newValuesList = new ArrayList<>(Arrays.asList(newValues));
 
                     if (newValuesList.removeAll(disabledSelectItemValues)) {
-                        newValues = newValuesList.toArray(new String[newValuesList.size()]);
+                        newValues = newValuesList.toArray(new String[0]);
                     }
                 }
             }

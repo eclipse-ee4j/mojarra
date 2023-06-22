@@ -16,10 +16,7 @@
 
 package jakarta.faces.component;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import jakarta.el.ELException;
 import jakarta.el.ValueExpression;
@@ -155,7 +152,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      */
     public static final String ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE = "jakarta.faces.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE";
 
-    private static final Validator[] EMPTY_VALIDATOR = new Validator[0];
+    private static final Validator<?>[] EMPTY_VALIDATOR = new Validator[0];
 
     private transient Boolean emptyStringIsNull;
 
@@ -1124,21 +1121,12 @@ public class UIInput extends UIOutput implements EditableValueHolder {
         } else if (value instanceof String && ((String) value).length() < 1) {
             return true;
         } else if (value.getClass().isArray()) {
-            if (0 == java.lang.reflect.Array.getLength(value)) {
-                return true;
-            }
+            return 0 == java.lang.reflect.Array.getLength(value);
         } else if (value instanceof List) {
-            if (((List) value).isEmpty()) {
-                return true;
-            }
+            return ((List) value).isEmpty();
         } else if (value instanceof Collection) {
-            if (((Collection) value).isEmpty()) {
-                return true;
-            }
-        } else if (value instanceof Map && ((Map) value).isEmpty()) {
-            return true;
-        }
-        return false;
+            return ((Collection) value).isEmpty();
+        } else return value instanceof Map && ((Map) value).isEmpty();
     }
 
     /**
@@ -1157,11 +1145,8 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * @throws NullPointerException if <code>validator</code> is null
      */
     @Override
-    public void addValidator(Validator validator) {
-
-        if (validator == null) {
-            throw new NullPointerException();
-        }
+    public void addValidator(Validator<?> validator) {
+        Objects.requireNonNull(validator);
 
         if (validators == null) {
             validators = new AttachedObjectListHolder<>();
@@ -1177,7 +1162,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * </p>
      */
     @Override
-    public Validator[] getValidators() {
+    public Validator<?>[] getValidators() {
 
         return validators != null ? validators.asArray(Validator.class) : EMPTY_VALIDATOR;
 
@@ -1192,7 +1177,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * @param validator The {@link Validator} to remove
      */
     @Override
-    public void removeValidator(Validator validator) {
+    public void removeValidator(Validator<?> validator) {
 
         if (validator == null) {
             return;
@@ -1291,8 +1276,8 @@ public class UIInput extends UIOutput implements EditableValueHolder {
 
     }
 
-    private Converter getConverterWithType(FacesContext context) {
-        Converter converter = getConverter();
+    private Converter<?> getConverterWithType(FacesContext context) {
+        Converter<?> converter = getConverter();
         if (converter != null) {
             return converter;
         }

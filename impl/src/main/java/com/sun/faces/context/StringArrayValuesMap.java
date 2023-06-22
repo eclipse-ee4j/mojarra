@@ -18,6 +18,7 @@ package com.sun.faces.context;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -36,15 +37,12 @@ abstract class StringArrayValuesMap extends BaseContextMap<String[]> {
             return false;
         }
 
-        Set entrySet = entrySet();
-        for (Object anEntrySet : entrySet) {
-            Map.Entry entry = (Map.Entry) anEntrySet;
-            // values will be arrays
-            if (Arrays.equals((Object[]) value, (Object[]) entry.getValue())) {
-                return true;
-            }
-        }
-        return false;
+        final Object[] array = (Object[]) value;
+
+        // values will be arrays
+        return entrySet().stream()
+                         .map(Map.Entry::getValue)
+                         .anyMatch(v -> Arrays.equals(array, v));
     }
 
     @Override
@@ -89,10 +87,9 @@ abstract class StringArrayValuesMap extends BaseContextMap<String[]> {
 
     protected int hashCode(Object someObject) {
         int hashCode = 7 * someObject.hashCode();
-        for (Object o : entrySet()) {
-            Map.Entry entry = (Map.Entry) o;
+        for ( Map.Entry<String,String[]> entry : entrySet()) {
             hashCode += entry.getKey().hashCode();
-            hashCode += Arrays.hashCode((Object[]) entry.getValue());
+            hashCode += Arrays.hashCode(entry.getValue());
         }
         return hashCode;
     }

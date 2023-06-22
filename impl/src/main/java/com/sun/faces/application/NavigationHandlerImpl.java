@@ -91,7 +91,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
     public static boolean isResetFlowHandlerState(FacesContext facesContext) {
 
-        Boolean obtainingNavigationCase = (Boolean) FacesContext.getCurrentInstance().getAttributes().get(RESET_FLOW_HANDLER_STATE_KEY);
+        Boolean obtainingNavigationCase = (Boolean) facesContext.getAttributes().get(RESET_FLOW_HANDLER_STATE_KEY);
         return obtainingNavigationCase != null && obtainingNavigationCase;
     }
 
@@ -256,8 +256,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
                         // If we are exiting all flows
                         if (caseStruct.newFlow == null) { // NOPMD
-                            parameters.put(TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME, asList(NULL_FLOW));
-                            parameters.put(FLOW_ID_REQUEST_PARAM_NAME, asList(""));
+                            parameters.put(TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME, List.of(NULL_FLOW));
+                            parameters.put(FLOW_ID_REQUEST_PARAM_NAME, List.of(""));
                             FlowHandler flowHandler = context.getApplication().getFlowHandler();
 
                             if (flowHandler instanceof FlowHandlerImpl) {
@@ -272,10 +272,10 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
                             if (!parameters.containsKey(TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME) || !parameters.containsKey(FLOW_ID_REQUEST_PARAM_NAME)) {
 
                                 // Overwrite both of them.
-                                List<String> toFlowDocumentIdParam = asList(caseStruct.navCase.getToFlowDocumentId());
+                                List<String> toFlowDocumentIdParam = Collections.singletonList(caseStruct.navCase.getToFlowDocumentId());
                                 parameters.put(TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME, toFlowDocumentIdParam);
 
-                                List<String> flowIdParam = asList(caseStruct.newFlow.getId());
+                                List<String> flowIdParam = Collections.singletonList(caseStruct.newFlow.getId());
                                 parameters.put(FLOW_ID_REQUEST_PARAM_NAME, flowIdParam);
                             }
                         }
@@ -475,9 +475,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
                 NavigationInfo info = new NavigationInfo();
                 if (!switches.isEmpty()) {
                     info.switches = new ConcurrentHashMap<>();
-                    for (Map.Entry<String, SwitchNode> cur : switches.entrySet()) {
-                        info.switches.put(cur.getKey(), cur.getValue());
-                    }
+                    info.switches.putAll(switches);
                 }
                 if (!navRules.isEmpty()) {
                     info.ruleSet = new NavigationMap();
@@ -544,7 +542,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
         // if viewIdToTest is not null, use its value to find
         // a navigation match, otherwise look for a match
-        // based soley on the fromAction and outcome
+        // based solely on the fromAction and outcome
         CaseStruct caseStruct = null;
         Map<String, Set<NavigationCase>> navMap = getNavigationMap(ctx);
 
@@ -866,8 +864,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
                 Map<String, Object> appMap = context.getExternalContext().getApplicationMap();
 
                 String[] queryElements = Util.split(appMap, queryString, "&amp;|&");
-                for (int i = 0, len = queryElements.length; i < len; i++) {
-                    String[] elements = Util.split(appMap, queryElements[i], "=", 2);
+                for (String queryElement : queryElements) {
+                    String[] elements = Util.split(appMap, queryElement, "=", 2);
                     if (elements.length == 2) {
                         String rightHandSide = elements[1];
                         String sanitized = null != rightHandSide && 2 < rightHandSide.length() ? rightHandSide.trim() : "";
@@ -877,19 +875,12 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
                             }
                             rightHandSide = "";
                         }
+
                         if (parameters == null) {
-                            parameters = new LinkedHashMap<>(len / 2, 1.0f);
-                            List<String> values = new ArrayList<>(2);
-                            values.add(rightHandSide);
-                            parameters.put(elements[0], values);
-                        } else {
-                            List<String> values = parameters.get(elements[0]);
-                            if (values == null) {
-                                values = new ArrayList<>(2);
-                                parameters.put(elements[0], values);
-                            }
-                            values.add(rightHandSide);
+                            parameters = new LinkedHashMap<>(queryElements.length / 2, 1.0f);
                         }
+
+                        parameters.computeIfAbsent(elements[0], k -> new ArrayList<>(2)).add(rightHandSide);
                     }
                 }
             }

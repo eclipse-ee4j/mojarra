@@ -63,7 +63,7 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
         boolean result = true;
 
         if (null == inner && 1 == c.size()) {
-            inner = (Set<E>) Collections.singleton(c.iterator().next());
+            inner = Collections.singleton(c.iterator().next());
         } else {
             // If we need to transition from one to more-than-one
             if (1 == inner.size()) {
@@ -126,7 +126,7 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
         if (null != inner) {
             if (1 == inner.size()) {
                 // May throw NPE per spec for Collection.removeAll()
-                Iterator incomingIter = c.iterator();
+                Iterator<?> incomingIter = c.iterator();
                 E oneAndOnlyElement = inner.iterator().next();
                 // Iterate over the incoming collection
                 // looking for a member that is equal to our one and only

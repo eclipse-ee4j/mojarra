@@ -286,11 +286,10 @@ public class DoubleRangeValidator implements Validator, PartialStateHolder {
      */
     @Override
     public int hashCode() {
-
-        int hashCode = Double.valueOf(getMinimum()).hashCode() + Double.valueOf(getMaximum()).hashCode() + Boolean.valueOf(isMinimumSet()).hashCode()
-                + Boolean.valueOf(isMaximumSet()).hashCode();
-        return hashCode;
-
+        return  Double.hashCode(getMinimum()) +
+                Double.hashCode(getMaximum()) +
+                Boolean.hashCode(isMinimumSet()) +
+                Boolean.hashCode(isMaximumSet());
     }
 
     // --------------------------------------------------------- Private Methods
@@ -315,7 +314,7 @@ public class DoubleRangeValidator implements Validator, PartialStateHolder {
 
     private static String stringValue(UIComponent component, Double toConvert, FacesContext context) {
 
-        Converter converter = context.getApplication().createConverter("jakarta.faces.Number");
+        Converter<Number> converter = context.getApplication().createConverter("jakarta.faces.Number");
         return converter.getAsString(context, component, toConvert);
 
     }
@@ -341,7 +340,7 @@ public class DoubleRangeValidator implements Validator, PartialStateHolder {
             throw new NullPointerException();
         }
         if (!initialStateMarked()) {
-            Object values[] = new Object[2];
+            Object[] values = new Object[2];
             values[0] = maximum;
             values[1] = minimum;
             return values;
@@ -357,7 +356,7 @@ public class DoubleRangeValidator implements Validator, PartialStateHolder {
             throw new NullPointerException();
         }
         if (state != null) {
-            Object values[] = (Object[]) state;
+            Object[] values = (Object[]) state;
             maximum = (Double) values[0];
             minimum = (Double) values[1];
         }

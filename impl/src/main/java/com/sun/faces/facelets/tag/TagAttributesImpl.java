@@ -44,6 +44,11 @@ public final class TagAttributesImpl extends TagAttributes {
 
     private Tag tag;
 
+    //
+    // todo: why don't use a TreeMap<String,Map<String,TagAttribute> attrsByNamespaceByLocalName ?
+    //       stream(attrs).groupingBy(TagAttribute::getNamespace,TreeMap::new , .... )
+    //
+
     /**
      *
      */
@@ -106,13 +111,14 @@ public final class TagAttributesImpl extends TagAttributes {
      */
     @Override
     public TagAttribute get(String ns, String localName) {
+        // todo: with the TreeMap would be a  map.get(namespace).get(localName)
         if (ns != null && localName != null) {
             int idx = Arrays.binarySearch(this.ns, ns);
             if (idx >= 0) {
                 TagAttribute[] uia = (TagAttribute[]) nsattrs.get(idx);
-                for (int i = 0; i < uia.length; i++) {
-                    if (localName.equals(uia[i].getLocalName())) {
-                        return uia[i];
+                for (TagAttribute tagAttribute : uia) {
+                    if (localName.equals(tagAttribute.getLocalName())) {
+                        return tagAttribute;
                     }
                 }
             }
@@ -170,9 +176,9 @@ public final class TagAttributesImpl extends TagAttributes {
      */
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < attrs.length; i++) {
-            sb.append(attrs[i]);
+        StringBuilder sb = new StringBuilder();
+        for (TagAttribute attr : attrs) {
+            sb.append(attr);
             sb.append(' ');
         }
         if (sb.length() > 1) {

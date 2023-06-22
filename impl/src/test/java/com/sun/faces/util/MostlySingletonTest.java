@@ -28,7 +28,7 @@ public class MostlySingletonTest {
     
     @Test
     public void testAdd() {
-        MostlySingletonSet<Integer> set = new MostlySingletonSet<Integer>();
+        MostlySingletonSet<Integer> set = new MostlySingletonSet<>();
         
         set.add(1);
         assertTrue(1 == set.size());
@@ -60,12 +60,12 @@ public class MostlySingletonTest {
     
     @Test
     public void testAddAll() {
-        Set<Integer> otherSet = new HashSet<Integer>();
+        Set<Integer> otherSet = new HashSet<>();
         otherSet.add(4);
         otherSet.add(5);
         otherSet.add(6);
         
-        MostlySingletonSet<Integer> set = new MostlySingletonSet<Integer>();
+        MostlySingletonSet<Integer> set = new MostlySingletonSet<>();
         
         set.add(1);
         assertTrue(1 == set.size());
@@ -112,7 +112,7 @@ public class MostlySingletonTest {
     
     @Test
     public void testRemove() {
-        MostlySingletonSet<Integer> set = new MostlySingletonSet<Integer>();
+        MostlySingletonSet<Integer> set = new MostlySingletonSet<>();
         
         set.add(1);
         assertTrue(1 == set.size());
@@ -154,7 +154,7 @@ public class MostlySingletonTest {
     
     @Test
     public void testRemoveWithNulls() {
-        MostlySingletonSet<Integer> set = new MostlySingletonSet<Integer>();
+        MostlySingletonSet<Integer> set = new MostlySingletonSet<>();
         
         set.add(1);
         assertTrue(1 == set.size());

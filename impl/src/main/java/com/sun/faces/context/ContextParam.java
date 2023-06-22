@@ -54,7 +54,7 @@ public enum ContextParam {
     /**
      * Constructor.
      */
-    ContextParam(String name, Class type, Object defaultValue) {
+    ContextParam(String name, Class<?> type, Object defaultValue) {
         this.name = name;
         this.type = type;
         this.defaultValue = defaultValue;
@@ -76,7 +76,7 @@ public enum ContextParam {
      * @param clazz the class.
      * @return the default value.
      */
-    public <T extends Object> T getDefaultValue(Class<T> clazz) {
+    public <T> T getDefaultValue(Class<T> clazz) {
         return clazz.cast(defaultValue);
     }
 
@@ -94,7 +94,7 @@ public enum ContextParam {
      *
      * @return the type.
      */
-    public Class getType() {
+    public Class<?> getType() {
         return type;
     }
 }

@@ -97,7 +97,7 @@ public class ExternalContextImpl extends ExternalContext {
     private Map<String, String> initParameterMap = null;
     private Map<String, String> fallbackContentTypeMap = null;
     private Flash flash;
-    private boolean distributable;
+    private final boolean distributable;
 
     private enum PREDEFINED_COOKIE_PROPERTIES {
         domain, maxAge, path, secure, httpOnly, attribute;
@@ -112,7 +112,7 @@ public class ExternalContextImpl extends ExternalContext {
         }
     }
 
-    static final Class theUnmodifiableMapClass = Collections.unmodifiableMap(new HashMap<>()).getClass();
+    static final Class<? extends Map> theUnmodifiableMapClass = Collections.unmodifiableMap(new HashMap<>()).getClass();
 
     // ------------------------------------------------------------ Constructors
 
@@ -130,15 +130,16 @@ public class ExternalContextImpl extends ExternalContext {
 
         boolean enabled = ContextParamUtils.getValue(servletContext, SendPoweredByHeader, Boolean.class);
         if (enabled) {
-            ((HttpServletResponse) response).addHeader("X-Powered-By", "Faces/3.0");
+            ((HttpServletResponse) response).addHeader("X-Powered-By", "Faces/4.0");
         }
 
         distributable = ContextParamUtils.getValue(servletContext, ContextParam.EnableDistributable, Boolean.class);
 
-        fallbackContentTypeMap = new HashMap<>(3, 1.0f);
-        fallbackContentTypeMap.put("js", ScriptRenderer.DEFAULT_CONTENT_TYPE);
-        fallbackContentTypeMap.put("css", StylesheetRenderer.DEFAULT_CONTENT_TYPE);
-        fallbackContentTypeMap.put("properties", "text/plain");
+        fallbackContentTypeMap = Map.of(
+                "js", ScriptRenderer.DEFAULT_CONTENT_TYPE,
+                "css", StylesheetRenderer.DEFAULT_CONTENT_TYPE,
+                "properties", "text/plain"
+        );
 
     }
 
@@ -154,10 +155,9 @@ public class ExternalContextImpl extends ExternalContext {
 
     @Override
     public String getSessionId(boolean create) {
-        HttpSession session = null;
         String id = null;
 
-        session = (HttpSession) getSession(create);
+        HttpSession session = (HttpSession) getSession(create);
         if (session != null) {
             id = session.getId();
         }
@@ -197,7 +197,6 @@ public class ExternalContextImpl extends ExternalContext {
         if (request instanceof ServletRequest) {
             this.request = (ServletRequest) request;
             requestHeaderMap = null;
-            requestHeaderValuesMap = null;
             requestHeaderValuesMap = null;
             requestMap = null;
             requestParameterMap = null;
@@ -362,9 +361,9 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public Iterator<String> getRequestParameterNames() {
-        final Enumeration namEnum = request.getParameterNames();
+        final Enumeration<String> namEnum = request.getParameterNames();
 
-        return new Iterator<String>() {
+        return new Iterator<>() {
             @Override
             public boolean hasNext() {
                 return namEnum.hasMoreElements();
@@ -372,7 +371,7 @@ public class ExternalContextImpl extends ExternalContext {
 
             @Override
             public String next() {
-                return (String) namEnum.nextElement();
+                return namEnum.nextElement();
             }
 
             @Override
@@ -535,7 +534,7 @@ public class ExternalContextImpl extends ExternalContext {
         if (null != cw) {
             appendClientWindow = cw.isClientWindowRenderModeEnabled(context);
         }
-        if (appendClientWindow && -1 == url.indexOf(ResponseStateManager.CLIENT_WINDOW_URL_PARAM)) {
+        if (appendClientWindow && !url.contains(ResponseStateManager.CLIENT_WINDOW_URL_PARAM)) {
             if (null != cw) {
                 String clientWindowId = cw.getId();
                 StringBuilder builder = new StringBuilder(url);
@@ -1042,7 +1041,6 @@ public class ExternalContextImpl extends ExternalContext {
         request = null;
         response = null;
         clientWindow = null;
-
         applicationMap = null;
         sessionMap = null;
         requestMap = null;
@@ -1126,11 +1124,11 @@ public class ExternalContextImpl extends ExternalContext {
 
     private static class LocalesIterator implements Iterator<Locale> {
 
-        public LocalesIterator(Enumeration locales) {
+        public LocalesIterator(Enumeration<Locale> locales) {
             this.locales = locales;
         }
 
-        private Enumeration locales;
+        private final Enumeration<Locale> locales;
 
         @Override
         public boolean hasNext() {
@@ -1139,7 +1137,7 @@ public class ExternalContextImpl extends ExternalContext {
 
         @Override
         public Locale next() {
-            return (Locale) locales.nextElement();
+            return locales.nextElement();
         }
 
         @Override

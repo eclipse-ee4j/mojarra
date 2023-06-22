@@ -38,9 +38,9 @@ import jakarta.faces.convert.ConverterException;
  * @since 2.2
  */
 
-public abstract class RendererWrapper extends Renderer implements FacesWrapper<Renderer> {
+public abstract class RendererWrapper<T extends UIComponent> extends Renderer<T> implements FacesWrapper<Renderer<T>> {
 
-    private Renderer wrapped;
+    private Renderer<T> wrapped;
 
     /**
      * @deprecated Use the other constructor taking the implementation being wrapped.
@@ -59,12 +59,12 @@ public abstract class RendererWrapper extends Renderer implements FacesWrapper<R
      * @param wrapped The implementation being wrapped.
      * @since 2.3
      */
-    public RendererWrapper(Renderer wrapped) {
+    public RendererWrapper(Renderer<T> wrapped) {
         this.wrapped = wrapped;
     }
 
     @Override
-    public Renderer getWrapped() {
+    public Renderer<T> getWrapped() {
         return wrapped;
     }
 
@@ -79,22 +79,22 @@ public abstract class RendererWrapper extends Renderer implements FacesWrapper<R
     }
 
     @Override
-    public void decode(FacesContext context, UIComponent component) {
+    public void decode(FacesContext context, T component) {
         getWrapped().decode(context, component);
     }
 
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
+    public void encodeBegin(FacesContext context, T component) throws IOException {
         getWrapped().encodeBegin(context, component);
     }
 
     @Override
-    public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
+    public <T extends UIComponent> void encodeChildren(FacesContext context, T component) throws IOException {
         getWrapped().encodeChildren(context, component);
     }
 
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
+    public void encodeEnd(FacesContext context, T component) throws IOException {
         getWrapped().encodeEnd(context, component);
     }
 

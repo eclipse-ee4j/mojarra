@@ -54,7 +54,7 @@ public class RequestParameterMap extends BaseContextMap<String> {
         String mapKey = key.toString();
         String mapValue = request.getParameter(mapKey);
         if (mapValue == null && !mapKey.startsWith(getNamingContainerPrefix())) {
-            // Support cases where enduser manually obtains a request parameter while in a namespaced view.
+            // Support cases where end user manually obtains a request parameter while in a namespaced view.
             mapValue = request.getParameter(getNamingContainerPrefix() + mapKey);
         }
         return mapValue;
@@ -107,8 +107,8 @@ public class RequestParameterMap extends BaseContextMap<String> {
     @Override
     public int hashCode() {
         int hashCode = 7 * request.hashCode();
-        for (Iterator i = entrySet().iterator(); i.hasNext();) {
-            hashCode += i.next().hashCode();
+        for (Map.Entry<String, String> stringStringEntry : entrySet()) {
+            hashCode += stringStringEntry.hashCode();
         }
         return hashCode;
     }

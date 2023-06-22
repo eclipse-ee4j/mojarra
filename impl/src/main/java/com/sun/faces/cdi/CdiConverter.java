@@ -24,7 +24,7 @@ import jakarta.faces.convert.Converter;
 /**
  * A delegate to the CDI managed converter.
  */
-public class CdiConverter implements Converter, StateHolder {
+public class CdiConverter<T> implements Converter<T>, StateHolder {
 
     /**
      * Stores the converter-id (if any).
@@ -34,12 +34,12 @@ public class CdiConverter implements Converter, StateHolder {
     /**
      * Stores a transient reference to the CDI managed converter.
      */
-    private transient Converter delegate;
+    private transient Converter<T> delegate;
 
     /**
      * Stores the for-class (if any).
      */
-    private Class<?> forClass;
+    private Class<T> forClass;
 
     /**
      * Constructor.
@@ -54,7 +54,7 @@ public class CdiConverter implements Converter, StateHolder {
      * @param forClass the for class.
      * @param delegate the delegate.
      */
-    public CdiConverter(String converterId, Class forClass, Converter delegate) {
+    public CdiConverter(String converterId, Class<T> forClass, Converter<T> delegate) {
         this.converterId = converterId;
         this.forClass = forClass;
         this.delegate = delegate;
@@ -69,8 +69,8 @@ public class CdiConverter implements Converter, StateHolder {
      * @return the object.
      */
     @Override
-    public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
-        return getDelegate(facesContext).getAsObject(facesContext, component, value);
+    public T getAsObject(FacesContext facesContext, UIComponent component, String value) {
+        return (T) getDelegate(facesContext).getAsObject(facesContext, component, value);
     }
 
     /**
@@ -82,8 +82,8 @@ public class CdiConverter implements Converter, StateHolder {
      * @return the string.
      */
     @Override
-    public String getAsString(FacesContext facesContext, UIComponent component, Object value) {
-        return getDelegate(facesContext).getAsString(facesContext, component, value);
+    public String getAsString(FacesContext facesContext, UIComponent component, T value) {
+        return ((Converter<T>)getDelegate(facesContext)).getAsString(facesContext, component, value);
     }
 
     /**
@@ -107,7 +107,7 @@ public class CdiConverter implements Converter, StateHolder {
     public void restoreState(FacesContext facesContext, Object state) {
         Object[] stateArray = (Object[]) state;
         converterId = (String) stateArray[0];
-        forClass = (Class<?>) stateArray[1];
+        forClass = (Class<T>) stateArray[1];
     }
 
     /**
@@ -139,9 +139,9 @@ public class CdiConverter implements Converter, StateHolder {
      * @param facesContext the Faces context.
      * @return the delegate.
      */
-    private Converter getDelegate(FacesContext facesContext) {
+    private Converter<T> getDelegate(FacesContext facesContext) {
         if (delegate == null) {
-            if (!converterId.equals("")) {
+            if (!"".equals(converterId)) {
                 delegate = facesContext.getApplication().createConverter(converterId);
             } else {
                 delegate = facesContext.getApplication().createConverter(forClass);

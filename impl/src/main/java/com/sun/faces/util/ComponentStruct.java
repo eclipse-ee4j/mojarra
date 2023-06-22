@@ -19,6 +19,8 @@ package com.sun.faces.util;
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.context.FacesContext;
 
+import java.util.Objects;
+
 /**
  * Utility class to enable partial state saving of components that have been dynamically added to the view.
  */
@@ -73,7 +75,7 @@ public class ComponentStruct implements StateHolder {
             return;
         }
 
-        Object s[] = (Object[]) state;
+        Object[] s = (Object[]) state;
         action = (String) s[0];
         parentClientId = (String) s[1];
         clientId = (String) s[2];
@@ -87,7 +89,7 @@ public class ComponentStruct implements StateHolder {
             throw new NullPointerException();
         }
 
-        Object state[] = new Object[5];
+        Object[] state = new Object[5];
         state[0] = action;
         state[1] = parentClientId;
         state[2] = clientId;

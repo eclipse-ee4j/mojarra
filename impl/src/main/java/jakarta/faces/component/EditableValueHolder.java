@@ -145,7 +145,7 @@ public interface EditableValueHolder extends ValueHolder {
      *
      * @throws NullPointerException if <code>validator</code> is null
      */
-    void addValidator(Validator validator);
+    void addValidator(Validator<?> validator);
 
     /**
      * <p>
@@ -155,7 +155,7 @@ public interface EditableValueHolder extends ValueHolder {
      *
      * @return the validators, or a zero-length array.
      */
-    Validator[] getValidators();
+    Validator<?>[] getValidators();
 
     /**
      * <p>
@@ -165,7 +165,7 @@ public interface EditableValueHolder extends ValueHolder {
      *
      * @param validator The {@link Validator} to remove
      */
-    void removeValidator(Validator validator);
+    void removeValidator(Validator<?> validator);
 
     /**
      * <p>

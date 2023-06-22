@@ -18,7 +18,6 @@ package com.sun.faces.facelets.tag.ui;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +26,7 @@ import com.sun.faces.facelets.util.FastWriter;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.renderkit.html_basic.ScriptRenderer;
 
+import com.sun.faces.util.LRUMap;
 import jakarta.faces.component.UIComponentBase;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
@@ -80,7 +80,7 @@ public final class UIDebug extends UIComponentBase {
             pushComponentToEL(facesContext, this);
             String actionId = facesContext.getApplication().getViewHandler().getActionURL(facesContext, facesContext.getViewRoot().getViewId());
 
-            StringBuffer sb = new StringBuffer(512);
+            StringBuilder sb = new StringBuilder(512);
             sb.append("//<![CDATA[\n");
             sb.append("function faceletsDebugWindow(URL) {");
             sb.append("day = new Date();");
@@ -119,27 +119,19 @@ public final class UIDebug extends UIComponentBase {
         FastWriter fw = new FastWriter();
         DevTools.debugHtml(fw, faces);
 
-        Map session = faces.getExternalContext().getSessionMap();
+        Map<String, Object> session = faces.getExternalContext().getSessionMap();
         Map debugs = (Map) session.get(KEY);
         if (debugs == null) {
-            debugs = new LinkedHashMap() {
-
-                private static final long serialVersionUID = 2541609242499547693L;
-
-                @Override
-                protected boolean removeEldestEntry(Map.Entry eldest) {
-                    return size() > 5;
-                }
-            };
+            debugs = new LRUMap<>(5);
         }
         session.put(KEY, debugs);
-        String id = "" + nextId++;
+        String id = String.valueOf(nextId++);
         debugs.put(id, fw.toString());
         return id;
     }
 
     private static String fetchDebugOutput(FacesContext faces, String id) {
-        Map session = faces.getExternalContext().getSessionMap();
+        Map<String, Object> session = faces.getExternalContext().getSessionMap();
         Map debugs = (Map) session.get(KEY);
         if (debugs != null) {
             return (String) debugs.get(id);

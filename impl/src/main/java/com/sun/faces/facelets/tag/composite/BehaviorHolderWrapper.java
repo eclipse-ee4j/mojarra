@@ -16,12 +16,9 @@
 
 package com.sun.faces.facelets.tag.composite;
 
-import static java.util.Collections.unmodifiableMap;
-
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -408,12 +405,12 @@ public class BehaviorHolderWrapper extends UIComponent implements ClientBehavior
     }
 
     @Override
-    protected FacesListener[] getFacesListeners(Class clazz) {
+    protected FacesListener[] getFacesListeners(Class<?> clazz) {
         return new FacesListener[0];
     }
 
     @Override
-    protected Renderer getRenderer(FacesContext context) {
+    protected Renderer<? extends UIComponent> getRenderer(FacesContext context) {
         return null;
     }
 
@@ -439,10 +436,7 @@ public class BehaviorHolderWrapper extends UIComponent implements ClientBehavior
     public Map<String, List<ClientBehavior>> getClientBehaviors() {
         if (parent instanceof ClientBehaviorHolder) {
             ClientBehaviorHolder parentHolder = (ClientBehaviorHolder) parent;
-            Map<String, List<ClientBehavior>> behaviors = new HashMap<>(1);
-            behaviors.put(virtualEvent, parentHolder.getClientBehaviors().get(event));
-            
-            return unmodifiableMap(behaviors);
+            return Map.of( virtualEvent, parentHolder.getClientBehaviors().get(event)  );
         } 
         
         throw new FacesException("Unable to get behaviors from non-ClientBehaviorHolder parent:" + parent);

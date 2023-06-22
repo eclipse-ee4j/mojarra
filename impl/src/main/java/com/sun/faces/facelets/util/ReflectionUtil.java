@@ -146,11 +146,11 @@ public class ReflectionUtil {
 //        return null;
 //    }
 
-    protected static final String paramString(Class[] types) {
+    protected static String paramString(Class<?>[] types) {
         if (types != null) {
-            StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < types.length; i++) {
-                sb.append(types[i].getName()).append(", ");
+            StringBuilder sb = new StringBuilder();
+            for (Class<?> type : types) {
+                sb.append(type.getName()).append(", ");
             }
             if (sb.length() > 2) {
                 sb.setLength(sb.length() - 2);
@@ -163,14 +163,12 @@ public class ReflectionUtil {
     public static Object decorateInstance(Class clazz, Class rootType, Object root) {
         Object returnObject = null;
         try {
-            if (returnObject == null) {
-                // Look for an adapter constructor if we've got
-                // an object to adapt
-                if (rootType != null && root != null) {
-                    Constructor construct = ReflectionUtils.lookupConstructor(clazz, rootType);
-                    if (construct != null) {
-                        returnObject = construct.newInstance(root);
-                    }
+            // Look for an adapter constructor if we've got
+            // an object to adapt
+            if (rootType != null && root != null) {
+                Constructor construct = ReflectionUtils.lookupConstructor(clazz, rootType);
+                if (construct != null) {
+                    returnObject = construct.newInstance(root);
                 }
             }
             if (clazz != null && returnObject == null) {

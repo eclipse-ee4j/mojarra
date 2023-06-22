@@ -479,7 +479,7 @@ public class ApplicationImpl extends Application {
      * @see jakarta.faces.application.Application#createConverter(Class)
      */
     @Override
-    public Converter<?> createConverter(Class<?> targetClass) {
+    public <T> Converter<T> createConverter(Class<T> targetClass) {
         return instanceFactory.createConverter(targetClass);
     }
 

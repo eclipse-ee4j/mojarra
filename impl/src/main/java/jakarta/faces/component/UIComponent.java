@@ -312,10 +312,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      *
      */
     public ValueExpression getValueExpression(String name) {
-
-        if (name == null) {
-            throw new NullPointerException();
-        }
+        Objects.requireNonNull(name);
 
         @SuppressWarnings("unchecked")
         Map<String, ValueExpression> map = (Map<String, ValueExpression>) getStateHelper().get(UIComponentBase.PropertyKeys.bindings);
@@ -1572,9 +1569,9 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
         if (component == null) {
             throw new NullPointerException();
         }
-        boolean result = false;
+        boolean result;
         if (null != component.isCompositeComponent) {
-            result = component.isCompositeComponent.booleanValue();
+            result = component.isCompositeComponent;
         } else {
             result = component.isCompositeComponent = component.getAttributes().containsKey(Resource.COMPONENT_RESOURCE_KEY);
         }
@@ -1705,7 +1702,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * @throws IllegalArgumentException if <code>class</code> is not, and does not implement, {@link FacesListener}
      * @throws NullPointerException if <code>clazz</code> is <code>null</code>
      */
-    protected abstract FacesListener[] getFacesListeners(Class clazz);
+    protected abstract FacesListener[] getFacesListeners(Class<?> clazz);
 
     /**
      * <p>
@@ -1980,11 +1977,10 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * Convenience method to return the {@link Renderer} instance associated with this component, if any; otherwise, return
      * <code>null</code>.
      * </p>
-     *
      * @param context {@link FacesContext} for the current request
      * @return the renderer, or <code>null</code>.
      */
-    protected abstract Renderer getRenderer(FacesContext context);
+    protected abstract Renderer<? extends UIComponent> getRenderer(FacesContext context);
 
     // --------------------------------------------------------- Package Private
 

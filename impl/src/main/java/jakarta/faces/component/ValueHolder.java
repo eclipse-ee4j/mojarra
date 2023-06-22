@@ -68,7 +68,7 @@ public interface ValueHolder {
      *
      * @return the converter.
      */
-    Converter getConverter();
+    Converter<?> getConverter();
 
     /**
      * <p>
@@ -77,5 +77,5 @@ public interface ValueHolder {
      *
      * @param converter New {@link Converter} (or <code>null</code>)
      */
-    void setConverter(Converter converter);
+    void setConverter(Converter<?> converter);
 }

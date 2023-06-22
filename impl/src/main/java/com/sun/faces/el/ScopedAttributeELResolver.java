@@ -83,11 +83,7 @@ public class ScopedAttributeELResolver extends ELResolver {
 
         // check application
         result = externalContext.getApplicationMap().get(attribute);
-        if (result != null) {
-            return result;
-        }
-
-        return null;
+        return result;
     }
 
     @Override

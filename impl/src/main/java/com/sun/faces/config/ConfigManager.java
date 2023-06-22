@@ -128,10 +128,9 @@ public class ConfigManager {
      * when the application is destroyed.
      * </p>
      */
-    private List<ServletContext> initializedContexts = new CopyOnWriteArrayList<>();
+    private final List<ServletContext> initializedContexts = new CopyOnWriteArrayList<>();
 
-    private final List<ConfigProcessor> configProcessors = unmodifiableList(
-            asList(
+    private final List<ConfigProcessor> configProcessors = List.of(
                 new FactoryConfigProcessor(),
                 new LifecycleConfigProcessor(),
                 new ApplicationConfigProcessor(),
@@ -144,7 +143,7 @@ public class ConfigManager {
                 new FacesConfigExtensionProcessor(),
                 new ProtectedViewsConfigProcessor(),
                 new FacesFlowDefinitionConfigProcessor(),
-                new ResourceLibraryContractsConfigProcessor()));
+                new ResourceLibraryContractsConfigProcessor());
 
     /**
      * <p>
@@ -152,8 +151,8 @@ public class ConfigManager {
      * Mojarra, and two other providers to satisfy the requirements of the specification.
      * </p>
      */
-    private final List<ConfigurationResourceProvider> facesConfigProviders = unmodifiableList(
-            asList(new MetaInfFacesConfigResourceProvider(), new WebAppFlowConfigResourceProvider(), new WebFacesConfigResourceProvider()));
+    private final List<ConfigurationResourceProvider> facesConfigProviders = List.of(
+            new MetaInfFacesConfigResourceProvider(), new WebAppFlowConfigResourceProvider(), new WebFacesConfigResourceProvider());
 
     /**
      * <p>
@@ -161,8 +160,8 @@ public class ConfigManager {
      * Mojarra, and one other providers to satisfy the requirements of the specification.
      * </p>
      */
-    private final List<ConfigurationResourceProvider> facesletsTagLibConfigProviders = unmodifiableList(
-            asList(new MetaInfFaceletTaglibraryConfigProvider(), new WebFaceletTaglibResourceProvider()));
+    private final List<ConfigurationResourceProvider> facesletsTagLibConfigProviders = List.of(
+            new MetaInfFaceletTaglibraryConfigProvider(), new WebFaceletTaglibResourceProvider());
 
     /**
      * <p>
@@ -260,7 +259,7 @@ public class ConfigManager {
                 // from each document.
 
                 DocumentInfo[] facesDocuments2 = facesDocuments;
-                configProcessors.subList(0, 3).stream().forEach(e -> {
+                configProcessors.subList(0, 3).forEach(e -> {
                     try {
                         e.process(servletContext, facesContext, facesDocuments2);
                     } catch (Exception e2) {
@@ -275,7 +274,7 @@ public class ConfigManager {
                 ThreadContext threadContext = getThreadContext(containerConnector);
                 Object parentWebContext = threadContext != null ? threadContext.getParentWebContext() : null;
 
-                configProcessors.subList(3, configProcessors.size()).stream().forEach(e -> {
+                configProcessors.subList(3, configProcessors.size()).forEach(e -> {
 
                     long currentThreadId = Thread.currentThread().getId();
 
@@ -403,7 +402,7 @@ public class ConfigManager {
 
         configPopulators.add(new MojarraRuntimePopulator());
 
-        ServiceLoader.load(ApplicationConfigurationPopulator.class).forEach(e -> configPopulators.add(e));
+        ServiceLoader.load(ApplicationConfigurationPopulator.class).forEach(configPopulators::add);
 
         return configPopulators;
     }
@@ -477,7 +476,7 @@ public class ConfigManager {
      * @param servletContext the <code>ServletContext</code> for the application that needs to be removed
      */
     public void destroy(ServletContext servletContext, FacesContext facesContext) {
-        configProcessors.stream().forEach(e -> e.destroy(servletContext, facesContext));
+        configProcessors.forEach(e -> e.destroy(servletContext, facesContext));
         initializedContexts.remove(servletContext);
     }
 

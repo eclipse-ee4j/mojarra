@@ -17,16 +17,18 @@
 package com.sun.faces.application.applicationimpl.events;
 
 import com.sun.faces.util.Cache;
-import com.sun.faces.util.Cache.Factory;
+
 
 import jakarta.faces.event.SystemEvent;
+
+import java.util.function.Function;
 
 /**
  * Utility class for dealing with {@link jakarta.faces.component.UIComponent} events.
  */
 public class ComponentSystemEventHelper {
 
-    private Cache<Class<?>, Cache<Class<? extends SystemEvent>, EventInfo>> sourceCache;
+    private final Cache<Class<?>, Cache<Class<? extends SystemEvent>, EventInfo>> sourceCache;
 
     // -------------------------------------------------------- Constructors
 
@@ -34,8 +36,8 @@ public class ComponentSystemEventHelper {
 
         // Initialize the 'sources' cache for, ahem, readability...
         // ~generics++
-        Factory<Class<?>, Cache<Class<? extends SystemEvent>, EventInfo>> eventCacheFactory = sourceClass -> {
-            Factory<Class<? extends SystemEvent>, EventInfo> eventInfoFactory = systemEventClass -> new EventInfo(systemEventClass, sourceClass);
+        Cache.Factory<Class<?>, Cache<Class<? extends SystemEvent>, EventInfo>> eventCacheFactory = sourceClass -> {
+            Cache.Factory<Class<? extends SystemEvent>, EventInfo> eventInfoFactory = systemEventClass -> new EventInfo(systemEventClass, sourceClass);
             return new Cache<>(eventInfoFactory);
         };
         sourceCache = new Cache<>(eventCacheFactory);

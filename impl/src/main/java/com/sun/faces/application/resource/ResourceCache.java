@@ -51,12 +51,12 @@ public class ResourceCache {
     /**
      * The <code>ResourceInfo<code> cache.
      */
-    private MultiKeyConcurrentHashMap<Object, ResourceInfoCheckPeriodProxy> resourceCache;
+    private final MultiKeyConcurrentHashMap<Object, ResourceInfoCheckPeriodProxy> resourceCache;
 
     /**
      * Resource check period in minutes.
      */
-    private long checkPeriod;
+    private final long checkPeriod;
 
     // ------------------------------------------------------------ Constructors
 
@@ -99,7 +99,7 @@ public class ResourceCache {
         if (LOGGER.isLoggable(FINE)) {
             LOGGER.log(FINE, "Caching ResourceInfo: {0}", info.toString());
         }
-        ResourceInfoCheckPeriodProxy proxy = resourceCache.putIfAbsent(info.name, info.libraryName, info.localePrefix, new ArrayList(contracts),
+        ResourceInfoCheckPeriodProxy proxy = resourceCache.putIfAbsent(info.name, info.libraryName, info.localePrefix, new ArrayList<>(contracts),
                 new ResourceInfoCheckPeriodProxy(info, checkPeriod));
         return proxy != null ? proxy.getResourceInfo() : null;
 
@@ -153,7 +153,7 @@ public class ResourceCache {
 
     private static final class ResourceInfoCheckPeriodProxy {
 
-        private ResourceInfo resourceInfo;
+        private final ResourceInfo resourceInfo;
         private Long checkTime;
 
         // -------------------------------------------------------- Constructors

@@ -371,7 +371,7 @@ public class CompositeComponentStackManager {
         @Override
         public void pop() {
 
-            Stack s = getStack(false);
+            Stack<UIComponent> s = getStack(false);
             if (s != null && !stack.isEmpty()) {
                 stack.pop();
                 if (stack.isEmpty()) {

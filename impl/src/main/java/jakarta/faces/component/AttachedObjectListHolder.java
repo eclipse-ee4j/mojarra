@@ -22,6 +22,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.faces.context.FacesContext;
 
@@ -76,10 +77,7 @@ class AttachedObjectListHolder<T> implements PartialStateHolder {
 
     @Override
     public Object saveState(FacesContext context) {
-
-        if (context == null) {
-            throw new NullPointerException();
-        }
+        Objects.requireNonNull(context);
 
         if (attachedObjects == null) {
             return null;
@@ -114,10 +112,7 @@ class AttachedObjectListHolder<T> implements PartialStateHolder {
 
     @Override
     public void restoreState(FacesContext context, Object state) {
-
-        if (context == null) {
-            throw new NullPointerException();
-        }
+        Objects.requireNonNull(context);
 
         if (state == null) {
             return;
@@ -133,8 +128,8 @@ class AttachedObjectListHolder<T> implements PartialStateHolder {
                 this.attachedObjects = new ArrayList<>(2);
             }
 
-            for (int i = 0, len = attachedObjects.length; i < len; i++) {
-                T restored = (T) ((StateHolderSaver) attachedObjects[i]).restore(context);
+            for (Object attachedObject : attachedObjects) {
+                T restored = (T) ((StateHolderSaver) attachedObject).restore(context);
                 if (restored != null) {
                     add(restored);
                 }

@@ -16,14 +16,7 @@
 
 package com.sun.faces.context;
 
-import java.util.AbstractCollection;
-import java.util.AbstractMap;
-import java.util.AbstractSet;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * <p>
@@ -46,7 +39,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
 
     // Supported by maps if overridden
     @Override
-    public void putAll(Map t) {
+    public void putAll(Map<? extends String, ? extends V> map) {
         throw new UnsupportedOperationException();
     }
 
@@ -95,8 +88,8 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
             return false;
         }
         if (containsValue(value)) {
-            for (Iterator i = entrySet().iterator(); i.hasNext();) {
-                Map.Entry e = (Map.Entry) i.next();
+            for (Iterator<Map.Entry<String, V>> i = entrySet().iterator(); i.hasNext();) {
+                Map.Entry<String, V> e = i.next();
                 if (value.equals(e.getValue())) {
                     valueRemoved = remove(e.getKey()) != null;
                 }
@@ -135,7 +128,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
 
         @Override
         public boolean remove(Object o) {
-            return o instanceof Map.Entry && removeKey(((Map.Entry) o).getKey());
+            return o instanceof Map.Entry && removeKey(((Map.Entry<?, ?>) o).getKey());
         }
 
     }
@@ -163,7 +156,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
         @Override
         public int size() {
             int size = 0;
-            for (Iterator i = iterator(); i.hasNext(); size++) {
+            for (Iterator<V> i = iterator(); i.hasNext(); size++) {
                 i.next();
             }
             return size;
@@ -180,7 +173,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
         }
     }
 
-    abstract class BaseIterator<E> implements Iterator<E> {
+    abstract static class BaseIterator<E> implements Iterator<E> {
 
         protected Enumeration e;
         protected String currentKey;
@@ -304,7 +297,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
 
         @Override
         public boolean equals(Object obj) {
-            if (obj == null || !(obj instanceof Map.Entry)) {
+            if ( !(obj instanceof Map.Entry) ) {
                 return false;
             }
 
@@ -312,12 +305,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
             Object inputKey = input.getKey();
             Object inputValue = input.getValue();
 
-            if (inputKey == key || inputKey != null && inputKey.equals(key)) {
-                if (inputValue == value || inputValue != null && inputValue.equals(value)) {
-                    return true;
-                }
-            }
-            return false;
+            return Objects.equals(inputKey, key) && Objects.equals(inputValue, value);
         }
     }
 

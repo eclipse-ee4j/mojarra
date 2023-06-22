@@ -317,7 +317,7 @@ public class Util {
         return factory;
     }
 
-    public static Class loadClass(String name, Object fallbackClass) throws ClassNotFoundException {
+    public static Class<?> loadClass(String name, Object fallbackClass) throws ClassNotFoundException {
         ClassLoader loader = Util.getCurrentLoader(fallbackClass);
 
         String[] primitiveNames = { "byte", "short", "int", "long", "float", "double", "boolean", "char" };
@@ -897,7 +897,7 @@ public class Util {
         }
 
         StackTraceElement[] stacks = e.getStackTrace();
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (StackTraceElement stack : stacks) {
             sb.append(stack.toString()).append('\n');
         }
@@ -1435,7 +1435,7 @@ public class Util {
         }
 
         @Override
-        public Iterator getPrefixes(String namespaceURI) {
+        public Iterator<String> getPrefixes(String namespaceURI) {
             return null;
         }
     }

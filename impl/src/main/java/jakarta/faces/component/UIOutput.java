@@ -19,6 +19,8 @@ package jakarta.faces.component;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 
+import java.util.Objects;
+
 /**
  * <p>
  * <strong class="changed_modified_2_0_rev_a changed_modified_2_2">UIOutput</strong> is a {@link UIComponent} that has a
@@ -98,17 +100,17 @@ public class UIOutput extends UIComponentBase implements ValueHolder {
     // --------------------------------------- EditableValueHolder Properties
 
     @Override
-    public Converter getConverter() {
+    public Converter<?> getConverter() {
 
         if (converter != null) {
             return converter;
         }
 
-        return (Converter) getStateHelper().eval(PropertyKeys.converter);
+        return (Converter<?>) getStateHelper().eval(PropertyKeys.converter);
     }
 
     @Override
-    public void setConverter(Converter converter) {
+    public void setConverter(Converter<?> converter) {
 
         clearInitialState();
         // we don't push the converter to the StateHelper
@@ -173,7 +175,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder {
             super.clearInitialState();
 
             Converter<?> c = getConverter();
-            if (c != null && c instanceof PartialStateHolder) {
+            if (c instanceof PartialStateHolder) {
                 ((PartialStateHolder) c).clearInitialState();
             }
         }
@@ -181,9 +183,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder {
 
     @Override
     public Object saveState(FacesContext context) {
-        if (context == null) {
-            throw new NullPointerException();
-        }
+        Objects.requireNonNull(context);
 
         Object converterState = null;
         if (converter != null) {
@@ -222,10 +222,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder {
 
     @Override
     public void restoreState(FacesContext context, Object state) {
-
-        if (context == null) {
-            throw new NullPointerException();
-        }
+        Objects.requireNonNull(context);
 
         if (state == null) {
             return;

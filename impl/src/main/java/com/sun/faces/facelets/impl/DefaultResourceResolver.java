@@ -24,7 +24,7 @@ import jakarta.faces.context.FacesContext;
 
 public class DefaultResourceResolver {
 
-    private ResourceHandler resourceHandler;
+    private final ResourceHandler resourceHandler;
 
     public DefaultResourceResolver(ResourceHandler resourceHandler) {
         this.resourceHandler = resourceHandler;
