@@ -47,7 +47,7 @@ public class LRUCache<K,V> {
     }
 
     /**
-     * if exists in cache -> get from cache <br>
+     * get from cache if exists
      * else init the value + save in cache + return created value
      *
      * @param key the key
@@ -132,7 +132,7 @@ public class LRUCache<K,V> {
     /**
      * A Function that delegate the initialization to a {@link Cache.Factory}
      */
-    // If at some point also the Cache will be refactored to use a Function
+    // If at some point the Cache will be refactored to use a Function
     // we can remove this class and use directly the Java Function
     static class FactoryFunction<K,V> implements Function<K,V> {
 
