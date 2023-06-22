@@ -139,7 +139,7 @@ public class ELUtils {
 
     public static boolean isCompositeComponentLookupWithArgs(String expression) {
         // TODO we should be trying to re-use the Matcher by calling
-        //      pizzi80: not sure because it will need a synchronized block if this method
+        //      pizzi80: not sure because it will require a synchronized block if this method
         //               is called by multiple threads
         // m.reset(expression);
         return COMPOSITE_COMPONENT_LOOKUP_WITH_ARGS.matcher(expression).find();
