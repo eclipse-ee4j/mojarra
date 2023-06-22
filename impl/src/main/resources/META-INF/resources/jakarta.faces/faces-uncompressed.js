@@ -127,38 +127,21 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
 
         // --- AUTOEXEC JS -----------------------------------------------------------------------------------
 
-        const autoExecTestString = "<script>var mojarra = mojarra || {};mojarra.autoExecTest = true;</script>";
-
-        let isAutoExecCache = undefined;
-
         /**
+         * Note by pizzi80:
+         * Replacing DOM element's innerHTML does not execute the (eventually) injected javascript.
+         * This is standard, and we don't need anymore to do this test.
+         * I'll leave this only as a placeholder to identify the places where
+         * it is used in the code.
+         * In the future a new and unique replace algorithm will replace all
+         * the actual code, and it will be possible to remove this and the function isAutoExec()
+         *
          * Determine if loading scripts into the page executes the script.
          * This is instead of doing a complicated browser detection algorithm.  Some do, some don't.
          * @returns {boolean} does including a script in the dom execute it?
          * @ignore
          */
-        const isAutoExec = function isAutoExec() {
-            try {
-                if (typeof isAutoExecCache !== UDEF) return isAutoExecCache;
-
-                const tempElement = document.createElement('span');
-                tempElement.innerHTML = autoExecTestString;
-                const tempNode = document.body.appendChild(tempElement);
-                if (mojarra && mojarra.autoExecTest) {
-                    isAutoExecCache = true;
-                    delete mojarra.autoExecTest;
-                } else {
-                    isAutoExecCache = false;
-                }
-                deleteNode(tempNode);
-                return isAutoExecCache;
-            } catch (ex) {
-                // OK, that didn't work, we'll have to make an assumption
-                if (typeof isAutoExecCache === UDEF) isAutoExecCache = false;
-
-                return isAutoExecCache;
-            }
-        };
+        const isAutoExec = function isAutoExec() { return false; };
 
         /**
          * Utility function that determines if a file control exists for the form.
