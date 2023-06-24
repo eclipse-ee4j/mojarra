@@ -244,7 +244,7 @@
                             </includes>
                             <outputFilename>#{path}/faces.js</outputFilename>
                             <skipMerge>true</skipMerge>
-                            <closureLanguageOut>ECMASCRIPT5_STRICT</closureLanguageOut>
+                            <closureLanguageOut>NO_TRANSPILE</closureLanguageOut>
                         </configuration>
                     </execution>
                 </executions>
