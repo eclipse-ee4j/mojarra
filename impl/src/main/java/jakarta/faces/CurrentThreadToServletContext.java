@@ -16,7 +16,6 @@
 
 package jakarta.faces;
 
-import static com.sun.faces.util.Util.coalesce;
 import static com.sun.faces.util.Util.getContextClassLoader2;
 import static com.sun.faces.util.Util.isAnyNull;
 import static java.lang.System.currentTimeMillis;
@@ -102,19 +101,19 @@ final class CurrentThreadToServletContext {
             }
 
             if (createNewFactoryFinderInstance) {
-                FactoryFinderInstance newResult;
+                final FactoryFinderInstance newResult;
                 if (toCopy != null) {
                     newResult = new FactoryFinderInstance(facesContext, toCopy);
                 } else {
                     newResult = new FactoryFinderInstance(facesContext);
                 }
-
-                factoryFinder = coalesce(factoryFinderMap.putIfAbsent(key, newResult), newResult);
+                factoryFinder = factoryFinderMap.computeIfAbsent( key , k -> newResult );
             }
         }
 
         return factoryFinder;
     }
+
 
     Object getFallbackFactory(FactoryFinderInstance brokenFactoryManager, String factoryName) {
 
