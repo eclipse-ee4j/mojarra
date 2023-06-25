@@ -16,7 +16,15 @@
 
 package com.sun.faces.context;
 
-import java.util.*;
+import java.util.AbstractCollection;
+import java.util.AbstractMap;
+import java.util.AbstractSet;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * <p>
@@ -297,16 +305,16 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
 
         @Override
         public boolean equals(Object obj) {
-            if (obj == null || !(obj instanceof Map.Entry)) {
+            if ( !(obj instanceof Map.Entry) ) {
                 return false;
             }
 
-            Map.Entry input = (Map.Entry) obj;
-            Object inputKey = input.getKey();
-            Object inputValue = input.getValue();
+            Map.Entry<String,V> input = (Map.Entry<String,V>) obj;
+            Object key = input.getKey();
+            Object value = input.getValue();
 
-            return Objects.equals(inputKey, key) &&
-                   Objects.equals(inputValue, value);
+            return Objects.equals(key, this.key) &&
+                   Objects.equals(value, this.value);
         }
     }
 

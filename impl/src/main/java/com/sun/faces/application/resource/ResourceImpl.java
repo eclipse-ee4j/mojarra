@@ -401,9 +401,7 @@ public class ResourceImpl extends Resource implements Externalizable {
                 if (LOGGER.isLoggable(Level.WARNING)) {
                     LOGGER.log(Level.WARNING, "faces.application.resource.invalid_if_modified_since_header",
                             new Object[] { extcontext.getRequestHeaderMap().get(IF_MODIFIED_SINCE) });
-                    if (ex != null) {
-                        LOGGER.log(Level.WARNING, "", ex);
-                    }
+                    LOGGER.log(Level.WARNING, "", ex);
                 }
                 return -1;
             }

@@ -19,8 +19,6 @@ package jakarta.faces.component.behavior;
 import static jakarta.faces.component.behavior.ClientBehaviorHint.SUBMITTING;
 import static java.util.Collections.unmodifiableSet;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;

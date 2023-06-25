@@ -17,8 +17,6 @@
 package com.sun.faces.config.manager.spi;
 
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.AnnotationScanPackages;
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableSet;
 import static java.util.logging.Level.WARNING;
 
 import java.lang.annotation.Annotation;
@@ -226,7 +224,7 @@ public abstract class AnnotationScanner extends AnnotationProvider {
             }
         }
 
-        return annotatedClasses != null ? annotatedClasses : Collections.<Class<? extends Annotation>, Set<Class<?>>>emptyMap();
+        return annotatedClasses != null ? annotatedClasses : Collections.emptyMap();
     }
 
     protected boolean isAnnotationScanPackagesSet() {

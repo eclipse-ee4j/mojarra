@@ -23,7 +23,6 @@ import static jakarta.faces.component.UIViewAction.isProcessingBroadcast;
 import static jakarta.faces.flow.FlowHandler.FLOW_ID_REQUEST_PARAM_NAME;
 import static jakarta.faces.flow.FlowHandler.NULL_FLOW;
 import static jakarta.faces.flow.FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME;
-import static java.util.Arrays.asList;
 import static java.util.logging.Level.FINE;
 
 import java.util.AbstractCollection;

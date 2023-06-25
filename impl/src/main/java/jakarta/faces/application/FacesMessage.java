@@ -133,7 +133,7 @@ public class FacesMessage implements Serializable {
      * order of their ordinal value.
      * </p>
      */
-    public static final List<Severity> VALUES = List.of(values);
+    public static final List VALUES = List.of(values);
 
     private static final Map<String, Severity> _MODIFIABLE_MAP = new HashMap<>(4, 1.0f);
 
@@ -148,7 +148,7 @@ public class FacesMessage implements Serializable {
      * Immutable <code>Map</code> of valid {@link jakarta.faces.application.FacesMessage.Severity} instances, keyed by name.
      * </p>
      */
-    public final static Map<String, Severity> VALUES_MAP = unmodifiableMap(_MODIFIABLE_MAP);
+    public final static Map VALUES_MAP = unmodifiableMap(_MODIFIABLE_MAP);
 
     private static final long serialVersionUID = -1180773928220076822L;
 
@@ -375,7 +375,7 @@ public class FacesMessage implements Serializable {
      * Class used to represent message severity levels in a typesafe enumeration.
      * </p>
      */
-    public static class Severity implements Comparable<Severity> {
+    public static class Severity implements Comparable {
 
         // ------------------------------------------------------- Constructors
 
@@ -416,8 +416,8 @@ public class FacesMessage implements Serializable {
          * @param severity The other object to be compared to
          */
         @Override
-        public int compareTo(Severity severity) {
-            return ordinal - severity.ordinal;
+        public int compareTo(Object severity) {
+            return ordinal - ((Severity)severity).ordinal;
         }
 
         /**

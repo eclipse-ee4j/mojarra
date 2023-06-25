@@ -18,15 +18,14 @@ package com.sun.faces.config.initfacescontext;
 
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableTransitionTimeNoOpFlash;
 import static java.lang.Boolean.parseBoolean;
+import static java.util.Collections.emptyIterator;
 import static java.util.Collections.emptyMap;
-import static java.util.Collections.unmodifiableMap;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
@@ -165,17 +164,17 @@ public class ServletContextAdapter extends ExternalContext {
 
     @Override
     public Map<String, Object> getRequestCookieMap() {
-        return unmodifiableMap(emptyMap());
+        return emptyMap();
     }
 
     @Override
     public Map<String, String> getRequestHeaderMap() {
-        return unmodifiableMap(emptyMap());
+        return emptyMap();
     }
 
     @Override
     public Map<String, String[]> getRequestHeaderValuesMap() {
-        return unmodifiableMap(emptyMap());
+        return emptyMap();
     }
 
     @Override
@@ -200,7 +199,7 @@ public class ServletContextAdapter extends ExternalContext {
 
     @Override
     public Iterator<String> getRequestParameterNames() {
-        return Collections.emptyIterator();
+        return emptyIterator();
     }
 
     @Override
