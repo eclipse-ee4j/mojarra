@@ -168,7 +168,7 @@ public class SelectItemGroup extends SelectItem {
         if (selectItems == null) {
             throw new NullPointerException();
         }
-        setSelectItems(selectItems.toArray(new SelectItem[0]));
+        setSelectItems(selectItems.toArray(new SelectItem[selectItems.size()]));
 
     }
 
