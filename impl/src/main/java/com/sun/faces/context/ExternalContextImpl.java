@@ -17,32 +17,60 @@
 
 package com.sun.faces.context;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.context.flash.ELFlash;
-import com.sun.faces.renderkit.html_basic.ScriptRenderer;
-import com.sun.faces.renderkit.html_basic.StylesheetRenderer;
-import com.sun.faces.util.*;
-import jakarta.faces.FacesException;
-import jakarta.faces.FactoryFinder;
-import jakarta.faces.application.ProjectStage;
-import jakarta.faces.context.*;
-import jakarta.faces.lifecycle.ClientWindow;
-import jakarta.faces.render.ResponseStateManager;
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import static com.sun.faces.RIConstants.PUSH_RESOURCE_URLS_KEY_NAME;
 import static com.sun.faces.context.ContextParam.SendPoweredByHeader;
 import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.Util.isEmpty;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.context.flash.ELFlash;
+import com.sun.faces.renderkit.html_basic.ScriptRenderer;
+import com.sun.faces.renderkit.html_basic.StylesheetRenderer;
+import com.sun.faces.util.CollectionsUtils;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.MessageUtils;
+import com.sun.faces.util.TypedCollections;
+import com.sun.faces.util.Util;
+
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.Flash;
+import jakarta.faces.context.FlashFactory;
+import jakarta.faces.context.PartialResponseWriter;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.lifecycle.ClientWindow;
+import jakarta.faces.render.ResponseStateManager;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.PushBuilder;
 
 /**
  * <p>
@@ -922,7 +950,7 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public boolean isSecure() {
-        return ((HttpServletRequest) request).isSecure();
+        return request.isSecure();
     }
 
     @Override
