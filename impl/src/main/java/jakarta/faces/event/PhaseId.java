@@ -16,16 +16,16 @@
 
 package jakarta.faces.event;
 
-import jakarta.faces.FacesException;
+import static java.util.Collections.unmodifiableMap;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static java.util.Collections.unmodifiableMap;
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toMap;
+import jakarta.faces.FacesException;
 
 /**
  * <p>
@@ -33,7 +33,7 @@ import static java.util.stream.Collectors.toMap;
  * <code>getPhaseId()</code> method of the {@link FacesEvent} interface.
  */
 
-public class PhaseId implements Comparable<PhaseId> {
+public class PhaseId implements Comparable {
 
     // ----------------------------------------------------------- Constructors
 
@@ -79,9 +79,9 @@ public class PhaseId implements Comparable<PhaseId> {
      * @param phaseId The other {@link PhaseId} to be compared to
      */
     @Override
-    public int compareTo(PhaseId phaseId) {
+    public int compareTo(Object phaseId) {
 
-        return ordinal - phaseId.ordinal;
+        return ordinal - ((PhaseId)phaseId).ordinal;
 
     }
 
