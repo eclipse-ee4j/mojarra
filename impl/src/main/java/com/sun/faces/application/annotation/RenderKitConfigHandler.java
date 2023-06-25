@@ -17,7 +17,10 @@
 package com.sun.faces.application.annotation;
 
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
