@@ -19,7 +19,12 @@ package com.sun.faces.util;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableMap;
 
-import java.util.*;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author asmirnov@exadel.com
