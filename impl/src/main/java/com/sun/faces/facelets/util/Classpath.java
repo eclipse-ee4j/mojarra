@@ -101,7 +101,7 @@ public final class Classpath {
                 }
             }
         }
-        URL[] urlArray = all.toArray(new URL[0]);
+        URL[] urlArray = all.toArray(new URL[all.size()]);
         return urlArray;
     }
 
