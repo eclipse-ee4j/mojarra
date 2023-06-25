@@ -17,7 +17,6 @@ package com.sun.faces.util;
 
 import java.util.Objects;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Function;
 
 /**
  * LRU Cache adapted to the code style of Faces
@@ -37,13 +36,13 @@ public class LRUCache<K,V> {
     // this is backed by a LinkedHashMap with access order
     private final LRUMap<K,V> cache;
 
-    // we wrap che old Factory<K,V> class of Faces' Cache<K,V>
+    // we wrap the old Factory<K,V> class of Faces' Cache<K,V>
     // in a Function<K,V> because it can be used natively with Maps
-    private final Function<K,V> factory;
+    private final Cache.Factory<K,V> factory;
 
     public LRUCache(Cache.Factory<K,V> factory,int capacity) {
         this.cache = new LRUMap<>(capacity);
-        this.factory = new FactoryFunction<>(factory);
+        this.factory = factory;
     }
 
     /**
@@ -126,27 +125,6 @@ public class LRUCache<K,V> {
         // always unlock
         finally {
             lock.unlock();
-        }
-    }
-
-    /**
-     * A Function that delegate the initialization to a {@link Cache.Factory}
-     */
-    // If at some point the Cache will be refactored to use a Function
-    // we can remove this class and use directly the Java Function
-    static class FactoryFunction<K,V> implements Function<K,V> {
-
-        private final Cache.Factory<K,V> factory;
-
-        FactoryFunction(Cache.Factory<K,V> factory) {this.factory = factory;}
-
-        @Override
-        public V apply(K k) {
-            try {
-                return factory.newInstance(k);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 

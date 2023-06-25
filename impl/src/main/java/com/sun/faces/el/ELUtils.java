@@ -23,7 +23,6 @@ import static com.sun.faces.util.ReflectionUtils.lookupMethod;
 import static com.sun.faces.util.ReflectionUtils.newInstance;
 import static com.sun.faces.util.Util.getCdiBeanManager;
 import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -33,9 +32,9 @@ import java.util.regex.Pattern;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.context.flash.FlashELResolver;
-
 import com.sun.faces.util.Cache;
 import com.sun.faces.util.LRUCache;
+
 import jakarta.el.ArrayELResolver;
 import jakarta.el.BeanELResolver;
 import jakarta.el.CompositeELResolver;
@@ -241,32 +240,7 @@ public class ELUtils {
 
     }
 
-
     // --------------------------------------------------------- Private Methods
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     /**
      * <p>
@@ -282,7 +256,6 @@ public class ELUtils {
                 target.add(resolver);
             }
         }
-
     }
 
     /*
@@ -309,4 +282,5 @@ public class ELUtils {
 
         return associate.getExpressionFactory();
     }
+
 }
