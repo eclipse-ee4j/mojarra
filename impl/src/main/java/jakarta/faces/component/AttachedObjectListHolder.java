@@ -22,6 +22,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
+import java.util.Spliterator;
 
 import jakarta.faces.context.FacesContext;
 
@@ -32,119 +34,110 @@ import jakarta.faces.context.FacesContext;
  * </p>
  */
 @SuppressWarnings({ "unchecked" })
-class AttachedObjectListHolder<T> implements PartialStateHolder {
+class AttachedObjectListHolder<T> implements PartialStateHolder , Iterable<T> {
 
-    private boolean initialState;
-    private List<T> attachedObjects = new ArrayList<>(2);
+    private boolean initialStateMarked;
+    private final List<T> attachedObjects = new ArrayList<>(2);
 
     // ------------------------------------- Methods from PartialStateHolder
 
     @Override
     public void markInitialState() {
 
-        if (!attachedObjects.isEmpty()) {
-            for (T t : attachedObjects) {
-                if (t instanceof PartialStateHolder) {
-                    ((PartialStateHolder) t).markInitialState();
-                }
+        for (T object : attachedObjects) {
+            if (object instanceof PartialStateHolder) {
+                ((PartialStateHolder) object).markInitialState();
             }
         }
-        initialState = true;
 
+        initialStateMarked = true;
     }
 
     @Override
     public boolean initialStateMarked() {
-        return initialState;
+        return initialStateMarked;
     }
 
     @Override
     public void clearInitialState() {
 
-        if (!attachedObjects.isEmpty()) {
-            for (T t : attachedObjects) {
-                if (t instanceof PartialStateHolder) {
-                    ((PartialStateHolder) t).clearInitialState();
-                }
+        for (T object : attachedObjects) {
+            if (object instanceof PartialStateHolder) {
+                ((PartialStateHolder) object).clearInitialState();
             }
         }
 
-        initialState = false;
+        initialStateMarked = false;
     }
 
     // -------------------------------------------- Methods from StateHolder
 
     @Override
     public Object saveState(FacesContext context) {
+        Objects.requireNonNull(context);
 
-        if (context == null) {
-            throw new NullPointerException();
-        }
+        // array containing all the saved attachedObjects
+        final Object[] stateSavedObjects = new Object[attachedObjects.size()];
 
-        if (attachedObjects == null) {
-            return null;
-        }
-
-        if (initialState) {
-            Object[] attachedObjects = new Object[this.attachedObjects.size()];
+        // if delta state changes are being tracked
+        if (initialStateMarked) {
             boolean stateWritten = false;
-            for (int i = 0, len = attachedObjects.length; i < len; i++) {
-                T attachedObject = this.attachedObjects.get(i);
-                if (attachedObject instanceof StateHolder) {
-                    StateHolder stateHolder = (StateHolder) attachedObject;
-                    if (!stateHolder.isTransient()) {
-                        attachedObjects[i] = stateHolder.saveState(context);
-                    }
-                    if (attachedObjects[i] != null) {
-                        stateWritten = true;
+            for (int i = 0; i < stateSavedObjects.length; i++) {
+                T object = attachedObjects.get(i);
+                if (object instanceof StateHolder) {
+                    StateHolder stateHolder = (StateHolder) object;
+                    // if not a transient object,
+                    if ( !stateHolder.isTransient() ) {
+                        // invoke the saveState method on every StateHolder
+                        // and save in the stateSavedObjects array
+                        stateSavedObjects[i] = stateHolder.saveState(context);
+                        // if the object is not null, the state is written
+                        stateWritten = stateSavedObjects[i] != null;
                     }
                 }
             }
 
-            return stateWritten ? attachedObjects : null;
+            return stateWritten ? stateSavedObjects : null;
         }
 
-        Object[] attachedObjects = new Object[this.attachedObjects.size()];
-        for (int i = 0, len = attachedObjects.length; i < len; i++) {
-            attachedObjects[i] = saveAttachedState(context, this.attachedObjects.get(i));
+        // else save the state of every attached object and return the array
+        else {
+            for (int i=0; i < stateSavedObjects.length; i++) {
+                stateSavedObjects[i] = saveAttachedState(context, attachedObjects.get(i));
+            }
+            return stateSavedObjects;
         }
-
-        return attachedObjects;
     }
 
     @Override
     public void restoreState(FacesContext context, Object state) {
-
-        if (context == null) {
-            throw new NullPointerException();
-        }
+        Objects.requireNonNull(context);
 
         if (state == null) {
             return;
         }
 
-        Object[] attachedObjects = (Object[]) state;
-        if (attachedObjects.length > 0 && attachedObjects[0] instanceof StateHolderSaver) {
+        final Object[] savedObjects = (Object[]) state;
+
+        if (savedObjects.length > 0 && savedObjects[0] instanceof StateHolderSaver) {
             // overwrite the existing attachedObjects with those included
             // in the full state.
-            if (this.attachedObjects != null) {
-                this.attachedObjects.clear();
-            } else {
-                this.attachedObjects = new ArrayList<>(2);
-            }
+            attachedObjects.clear();
 
-            for (int i = 0, len = attachedObjects.length; i < len; i++) {
-                T restored = (T) ((StateHolderSaver) attachedObjects[i]).restore(context);
+            for (Object object : savedObjects) {
+                T restored = (T) ((StateHolderSaver) object).restore(context);
                 if (restored != null) {
                     add(restored);
                 }
             }
-        } else if (this.attachedObjects != null && this.attachedObjects.size() == attachedObjects.length) {
+        }
+
+        else if (attachedObjects.size() == savedObjects.length) {
             // Assume 1:1 relation between existing attachedObjects and state
-            for (int i = 0, len = attachedObjects.length; i < len; i++) {
-                T attachedObject = this.attachedObjects.get(i);
+            for (int i = 0; i < savedObjects.length; i++) {
+                T attachedObject = attachedObjects.get(i);
                 if (attachedObject instanceof StateHolder) {
-                    ((StateHolder) attachedObject).restoreState(context, attachedObjects[i]);
+                    ((StateHolder) attachedObject).restoreState(context, savedObjects[i]);
                 }
             }
         }
@@ -163,22 +156,28 @@ class AttachedObjectListHolder<T> implements PartialStateHolder {
 
     // ------------------------------------------------------ Public Methods
 
-    void add(T attachedObject) {
+    public void add(T attachedObject) {
         clearInitialState();
         attachedObjects.add(attachedObject);
     }
 
-    void remove(T attachedObject) {
+    public void remove(T attachedObject) {
         clearInitialState();
         attachedObjects.remove(attachedObject);
     }
 
-    T[] asArray(Class<T> type) {
-        return new ArrayList<>(attachedObjects).toArray((T[]) Array.newInstance(type, attachedObjects.size()));
+    public T[] asArray(Class<T> type) {
+        return new ArrayList<>(attachedObjects).toArray( (T[]) Array.newInstance(type, attachedObjects.size()) );
     }
 
-    Iterator<T> iterator() {
+    @Override
+    public Iterator<T> iterator() {
         return attachedObjects.iterator();
+    }
+
+    @Override
+    public Spliterator<T> spliterator() {
+        return attachedObjects.spliterator();
     }
 
 }

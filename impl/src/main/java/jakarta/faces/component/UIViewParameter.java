@@ -17,7 +17,6 @@
 package jakarta.faces.component;
 
 import java.io.IOException;
-import java.util.Iterator;
 
 import jakarta.el.ValueExpression;
 import jakarta.faces.FactoryFinder;
@@ -273,13 +272,13 @@ public class UIViewParameter extends UIInput {
      *
      */
     private boolean isRequiredViaNestedRequiredValidator() {
-        boolean result = false;
-        if (null == validators) {
-            return result;
+        if ( validators == null ) {
+            return false;
         }
-        Iterator<Validator> iter = validators.iterator();
-        while (iter.hasNext()) {
-            if (iter.next() instanceof RequiredValidator) {
+
+        boolean result = false;
+        for (Validator<?> validator : validators) {
+            if (validator instanceof RequiredValidator) {
                 // See JAVASERVERFACES-2526. Note that we can assume
                 // that at this point the validator is not disabled,
                 // so the mere existence of the validator implies it is
@@ -384,10 +383,10 @@ public class UIViewParameter extends UIInput {
         Object currentValue = ve.getValue(context.getELContext());
 
         // If there is a converter attribute, use it to to ask application
-        // instance for a converter with this identifer.
-        Converter c = getConverter();
+        // instance for a converter with this identifier.
+        Converter converter = getConverter();
 
-        if (c == null) {
+        if (converter == null) {
             // if value is null and no converter attribute is specified, then
             // return null (null has meaning for a view parameters; it means remove it).
             if (currentValue == null) {
@@ -402,16 +401,16 @@ public class UIViewParameter extends UIInput {
             // using its class type.
 
             Class<?> converterType = currentValue.getClass();
-            c = context.getApplication().createConverter(converterType);
+            converter = context.getApplication().createConverter(converterType);
 
             // if there is no default converter available for this identifier,
             // assume the model type to be String.
-            if (c == null) {
+            if (converter == null) {
                 return currentValue.toString();
             }
         }
 
-        return c.getAsString(context, this, currentValue);
+        return converter.getAsString(context, this, currentValue);
     }
 
     /**

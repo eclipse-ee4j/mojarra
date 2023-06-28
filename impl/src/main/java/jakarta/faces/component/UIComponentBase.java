@@ -28,6 +28,7 @@ import static java.lang.Boolean.TRUE;
 import static java.lang.Character.isDigit;
 import static java.lang.Character.isLetter;
 import static java.lang.Thread.currentThread;
+import static java.util.Collections.emptyIterator;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableList;
 import static java.util.logging.Level.FINE;
@@ -435,7 +436,7 @@ public abstract class UIComponentBase extends UIComponent {
 
         // If there are neither facets nor children
         if (childCount == 0 && facetCount == 0) {
-            return EMPTY_ITERATOR;
+            return emptyIterator();
         }
 
         // If there are only facets and no children
@@ -1197,14 +1198,14 @@ public abstract class UIComponentBase extends UIComponent {
 
         Object[] values = (Object[]) state;
 
-        if (values[0] != null) {
+        if ( getElement(values,0) != null) {
             if (listeners == null) {
                 listeners = new AttachedObjectListHolder<>();
             }
             listeners.restoreState(context, values[0]);
         }
 
-        if (values[1] != null) {
+        if ( getElement(values,1) != null) {
             Map<Class<? extends SystemEvent>, List<SystemEventListener>> restoredListeners = restoreSystemEventListeners(context, values[1]);
             if (listenersByEventClass != null) {
                 listenersByEventClass.putAll(restoredListeners);
@@ -1213,20 +1214,19 @@ public abstract class UIComponentBase extends UIComponent {
             }
         }
 
-        if (values[2] != null) {
+        if ( getElement(values, 2) != null ) {
             behaviors = restoreBehaviorsState(context, values[2]);
         }
 
-        if (values[4] != null) {
+        if ( getElement(values,4) != null) {
             getStateHelper().restoreState(context, values[4]);
         }
 
-        if (values.length == 6) {
-            // This means we've saved full state and need to do a little more
-            // work to finish the job
-            if (values[5] != null) {
-                id = (String) values[5];
-            }
+
+        // This means we've saved full state and need to do a little more
+        // work to finish the job
+        if ( getElement(values,5) != null) {
+            id = (String) getElement(values,5);
         }
 
     }
@@ -1282,14 +1282,11 @@ public abstract class UIComponentBase extends UIComponent {
 
         Object result;
         Class<?> mapOrCollectionClass = attachedObject.getClass();
-        boolean newWillSucceed = true;
+        boolean newWillSucceed;
         // first, test for newability of the class.
         try {
             int modifiers = mapOrCollectionClass.getModifiers();
-            newWillSucceed = Modifier.isPublic(modifiers);
-            if (newWillSucceed) {
-                newWillSucceed = null != mapOrCollectionClass.getConstructor();
-            }
+            newWillSucceed = Modifier.isPublic(modifiers) && mapOrCollectionClass.getConstructor() != null;
         } catch (Exception e) {
             newWillSucceed = false;
         }
@@ -1441,7 +1438,7 @@ public abstract class UIComponentBase extends UIComponent {
         }
 
         int size = listenersByEventClass.size();
-        Object listeners[][] = new Object[size][2];
+        Object[][] listeners = new Object[size][2];
         int idx = 0;
         boolean savedState = false;
         for (Entry<Class<? extends SystemEvent>, List<SystemEventListener>> e : listenersByEventClass.entrySet()) {
@@ -1467,8 +1464,7 @@ public abstract class UIComponentBase extends UIComponent {
 
         Object[][] listeners = (Object[][]) state;
         Map<Class<? extends SystemEvent>, List<SystemEventListener>> m = new HashMap<>(listeners.length, 1.0f);
-        for (int i = 0, len = listeners.length; i < len; i++) {
-            Object[] source = listeners[i];
+        for (Object[] source : listeners) {
             m.put((Class<? extends SystemEvent>) source[0], (List<SystemEventListener>) restoreAttachedState(ctx, source[1]));
         }
 
@@ -1642,7 +1638,7 @@ public abstract class UIComponentBase extends UIComponent {
 
     /**
      * {@link UIComponentBase} has stub methods from the {@link ClientBehaviorHolder} interface, but these method should be
-     * used only with componets that really implement holder interface. For an any other classes this method throws
+     * used only with components that really implement holder interface. For an any other classes this method throws
      * {@link IllegalStateException}
      *
      * @throws IllegalStateException
@@ -1658,7 +1654,7 @@ public abstract class UIComponentBase extends UIComponent {
      * @return true if component implements {@link ClientBehaviorHolder} interface.
      */
     private boolean isClientBehaviorHolder() {
-        return ClientBehaviorHolder.class.isInstance(this);
+        return this instanceof ClientBehaviorHolder;
     }
 
     /**
@@ -1717,8 +1713,8 @@ public abstract class UIComponentBase extends UIComponent {
                 for (int i = 0; i < attachedBehaviors.length; i++) {
                     Object[] attachedEventBehaviors = (Object[]) attachedBehaviors[i];
                     ArrayList<ClientBehavior> eventBehaviors = new ArrayList<>(attachedBehaviors.length);
-                    for (int j = 0; j < attachedEventBehaviors.length; j++) {
-                        eventBehaviors.add((ClientBehavior) restoreAttachedState(context, attachedEventBehaviors[j]));
+                    for (Object attachedEventBehavior : attachedEventBehaviors) {
+                        eventBehaviors.add((ClientBehavior) restoreAttachedState(context, attachedEventBehavior));
                     }
 
                     modifiableMap.put(names[i], eventBehaviors);
@@ -1821,25 +1817,6 @@ public abstract class UIComponentBase extends UIComponent {
 
     // For state saving
     private final static Object[] EMPTY_ARRAY = new Object[0];
-
-    // Empty iterator for short circuiting operations
-    private final static Iterator<UIComponent> EMPTY_ITERATOR = new Iterator<>() {
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public UIComponent next() {
-            throw new NoSuchElementException("Empty Iterator");
-        }
-
-        @Override
-        public boolean hasNext() {
-            return false;
-        }
-    };
 
     // Private implementation of Map that supports the functionality
     // required by UIComponent.getFacets()
@@ -2157,7 +2134,7 @@ public abstract class UIComponentBase extends UIComponent {
 
         // ----------------------------------------------- Serialization Methods
 
-        // This is dependent on serialization occuring with in a
+        // This is dependent on serialization occurring with in a
         // a Faces request, however, since UIComponentBase.{save,restore}State()
         // doesn't actually serialize the AttributesMap, these methods are here
         // purely to be good citizens.
@@ -2480,7 +2457,7 @@ public abstract class UIComponentBase extends UIComponent {
                     iterator = c.getChildren().iterator();
                     childMode = true;
                 } else {
-                    iterator = EMPTY_ITERATOR;
+                    iterator = emptyIterator();
                     childMode = true;
                 }
             } else if (!childMode && !iterator.hasNext() && c.getChildCount() != 0) {
@@ -3405,6 +3382,17 @@ public abstract class UIComponentBase extends UIComponent {
                 ++j;
             }
         }
+    }
+
+    // --------------------------------------------------------------------------- Util methods
+
+    /**
+     * {@link ArrayIndexOutOfBoundsException}-safe return the element at index position
+     * @return the element at index position if index is not out of bounds of the array, null otherwise
+     */
+    // todo: move to Faces Util after other Pull Requests by pizzi80 will be merged
+    public static <T> T getElement( T[] array , int index ) {
+        return index > -1 && array.length > index ? array[index] : null;
     }
 
 }

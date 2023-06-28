@@ -18,8 +18,10 @@ package jakarta.faces.component;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
+import com.sun.faces.util.Util;
 
 import jakarta.el.ELException;
 import jakarta.el.ValueExpression;
@@ -155,7 +157,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      */
     public static final String ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE = "jakarta.faces.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE";
 
-    private static final Validator[] EMPTY_VALIDATOR = new Validator[0];
+    private static final Validator<?>[] EMPTY_VALIDATOR_ARRAY = new Validator[0];
 
     private transient Boolean emptyStringIsNull;
 
@@ -276,7 +278,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
 
     /**
      * <p class="changed_added_2_2">
-     * If there is a local value, return it, otherwise return the result of calling {@code super.getVaue()}.
+     * If there is a local value, return it, otherwise return the result of calling {@code super.getValue()}.
      * </p>
      *
      * @since 2.2
@@ -1013,7 +1015,6 @@ public class UIInput extends UIOutput implements EditableValueHolder {
         // If our value is valid and not empty or empty w/ validate empty fields enabled, call all validators
         if (isValid() && (!isEmpty(newValue) || validateEmptyFields(context))) {
             if (validators != null) {
-                Validator[] validators = this.validators.asArray(Validator.class);
                 for (Validator validator : validators) {
                     try {
                         validator.validate(context, this, newValue);
@@ -1118,27 +1119,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * @return true if it is, false otherwise.
      */
     public static boolean isEmpty(Object value) {
-
-        if (value == null) {
-            return true;
-        } else if (value instanceof String && ((String) value).length() < 1) {
-            return true;
-        } else if (value.getClass().isArray()) {
-            if (0 == java.lang.reflect.Array.getLength(value)) {
-                return true;
-            }
-        } else if (value instanceof List) {
-            if (((List) value).isEmpty()) {
-                return true;
-            }
-        } else if (value instanceof Collection) {
-            if (((Collection) value).isEmpty()) {
-                return true;
-            }
-        } else if (value instanceof Map && ((Map) value).isEmpty()) {
-            return true;
-        }
-        return false;
+        return Util.isEmpty(value);
     }
 
     /**
@@ -1146,7 +1127,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * The set of {@link Validator}s associated with this <code>UIComponent</code>.
      * </p>
      */
-    AttachedObjectListHolder<Validator> validators;
+    protected AttachedObjectListHolder<Validator> validators;
 
     /**
      * <p>
@@ -1158,10 +1139,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      */
     @Override
     public void addValidator(Validator validator) {
-
-        if (validator == null) {
-            throw new NullPointerException();
-        }
+        Objects.requireNonNull(validator);
 
         if (validators == null) {
             validators = new AttachedObjectListHolder<>();
@@ -1177,9 +1155,9 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * </p>
      */
     @Override
-    public Validator[] getValidators() {
+    public Validator<?>[] getValidators() {
 
-        return validators != null ? validators.asArray(Validator.class) : EMPTY_VALIDATOR;
+        return validators != null ? validators.asArray(Validator.class) : EMPTY_VALIDATOR_ARRAY;
 
     }
 
@@ -1291,8 +1269,8 @@ public class UIInput extends UIOutput implements EditableValueHolder {
 
     }
 
-    private Converter getConverterWithType(FacesContext context) {
-        Converter converter = getConverter();
+    private Converter<?> getConverterWithType(FacesContext context) {
+        Converter<?> converter = getConverter();
         if (converter != null) {
             return converter;
         }

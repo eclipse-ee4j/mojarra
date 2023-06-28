@@ -28,7 +28,7 @@ import jakarta.faces.context.FacesContext;
  * <p>
  * An implementor <strong>must</strong> implement both {@link #saveState} and {@link #restoreState} methods in this
  * class, since these two methods have a tightly coupled contract between themselves. In other words, if there is an
- * ineritance hierarchy, it is not permissable to have the {@link #saveState} and {@link #restoreState} methods reside
+ * inheritance hierarchy, it is not permissible to have the {@link #saveState} and {@link #restoreState} methods reside
  * at different levels of the hierarchy.
  * </p>
  *
