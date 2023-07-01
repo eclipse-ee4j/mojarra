@@ -897,7 +897,7 @@ public class Util {
         }
 
         StackTraceElement[] stacks = e.getStackTrace();
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (StackTraceElement stack : stacks) {
             sb.append(stack.toString()).append('\n');
         }

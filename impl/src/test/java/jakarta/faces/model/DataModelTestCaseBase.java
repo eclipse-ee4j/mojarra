@@ -106,7 +106,7 @@ public abstract class DataModelTestCaseBase extends TestCase {
 
     // Test positioning to all rows in ascending order
     public void testPositionAscending() throws Exception {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         model.setRowIndex(-1);
         model.addDataModelListener(new ListenerTestImpl());
         ListenerTestImpl.trace(null);
@@ -114,14 +114,14 @@ public abstract class DataModelTestCaseBase extends TestCase {
         int n = model.getRowCount();
         for (int i = 0; i < n; i++) {
             checkRow(i);
-            sb.append("/").append(i);
+            sb.append('/').append(i);
         }
         assertEquals(sb.toString(), ListenerTestImpl.trace());
     }
 
     // Test positioning to all rows in descending order
     public void testPositionDescending() throws Exception {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         model.setRowIndex(-1);
         model.addDataModelListener(new ListenerTestImpl());
         ListenerTestImpl.trace(null);
@@ -129,7 +129,7 @@ public abstract class DataModelTestCaseBase extends TestCase {
         int n = model.getRowCount();
         for (int i = (n - 1); i >= 0; i--) {
             checkRow(i);
-            sb.append("/").append(i);
+            sb.append('/').append(i);
         }
         assertEquals(sb.toString(), ListenerTestImpl.trace());
     }

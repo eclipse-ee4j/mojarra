@@ -930,7 +930,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         // Always log
         if (LOGGER.isLoggable(SEVERE)) {
             UIViewRoot root = context.getViewRoot();
-            StringBuffer sb = new StringBuffer(64);
+            StringBuilder sb = new StringBuilder(64);
             sb.append("Error Rendering View");
             if (root != null) {
                 sb.append('[');

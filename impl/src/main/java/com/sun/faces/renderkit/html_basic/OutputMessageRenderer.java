@@ -54,7 +54,7 @@ public class OutputMessageRenderer extends HtmlBasicInputRenderer {
         }
 
         String currentValue = getCurrentValue(context, component);
-        // If null, do not putput anything - return.
+        // If null, do not output anything - return.
         if (null == currentValue) {
             return;
         }

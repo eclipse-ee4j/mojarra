@@ -303,13 +303,14 @@ class MessageFactory {
             }
         }
 
+        // fixme: if the locale is null, the output is null!! is it expected?
         private String getFormattedString(String msgtext, Object[] params) {
             String localizedStr = null;
 
             if (params == null || msgtext == null) {
                 return msgtext;
             }
-            StringBuffer b = new StringBuffer(100);
+            StringBuilder b = new StringBuilder(100);
             MessageFormat mf = new MessageFormat(msgtext);
             if (locale != null) {
                 mf.setLocale(locale);
