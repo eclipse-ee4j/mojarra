@@ -378,9 +378,9 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                     } catch (NoClassDefFoundError nde) {
                         // On google app engine InitialContext is forbidden to use and GAE throws
                         // NoClassDefFoundError
-                        LOGGER.log(FINE, nde, () -> nde.toString());
+                        LOGGER.log(FINE, nde, nde::toString);
                     } catch (NamingException ne) {
-                        LOGGER.log(WARNING, ne, () -> ne.toString());
+                        LOGGER.log(WARNING, ne, ne::toString);
                     }
 
                     try {

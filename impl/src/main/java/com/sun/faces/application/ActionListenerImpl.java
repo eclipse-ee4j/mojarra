@@ -78,7 +78,7 @@ public class ActionListenerImpl implements ActionListener {
 
             return invokeResult.toString();
         } catch (ELException | NullPointerException e) {
-            LOGGER.log(FINE, e, () -> e.getMessage());
+            LOGGER.log(FINE, e, e::getMessage);
 
             throw new FacesException(expression.getExpressionString() + ": " + e.getMessage(), e);
         }

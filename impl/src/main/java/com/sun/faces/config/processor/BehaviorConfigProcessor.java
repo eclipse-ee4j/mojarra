@@ -78,11 +78,11 @@ public class BehaviorConfigProcessor extends AbstractConfigProcessor {
         // via config files take precedence
         processAnnotations(facesContext, FacesBehavior.class);
 
-        for (int i = 0; i < documentInfos.length; i++) {
+        for (DocumentInfo documentInfo : documentInfos) {
             if (LOGGER.isLoggable(FINE)) {
-                LOGGER.log(FINE, format("Processing behavior elements for document: ''{0}''", documentInfos[i].getSourceURI()));
+                LOGGER.log(FINE, format("Processing behavior elements for document: ''{0}''", documentInfo.getSourceURI()));
             }
-            Document document = documentInfos[i].getDocument();
+            Document document = documentInfo.getDocument();
             String namespace = document.getDocumentElement().getNamespaceURI();
             NodeList behaviors = document.getDocumentElement().getElementsByTagNameNS(namespace, BEHAVIOR);
             if (behaviors != null && behaviors.getLength() > 0) {

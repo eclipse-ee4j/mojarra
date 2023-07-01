@@ -19,8 +19,8 @@ package com.sun.faces.context;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_EXECUTE_PARAM;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_RENDER_PARAM;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_RESET_VALUES_PARAM;
-import static java.util.logging.Level.FINE;
 import static jakarta.faces.FactoryFinder.VISIT_CONTEXT_FACTORY;
+import static java.util.logging.Level.FINE;
 
 import java.io.IOException;
 import java.io.Writer;

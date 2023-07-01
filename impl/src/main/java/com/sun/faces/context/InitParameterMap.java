@@ -76,8 +76,8 @@ public class InitParameterMap extends BaseContextMap<String> {
     @Override
     public int hashCode() {
         int hashCode = 7 * servletContext.hashCode();
-        for (Iterator i = entrySet().iterator(); i.hasNext();) {
-            hashCode += i.next().hashCode();
+        for (Map.Entry<String, String> stringStringEntry : entrySet()) {
+            hashCode += stringStringEntry.hashCode();
         }
         return hashCode;
     }

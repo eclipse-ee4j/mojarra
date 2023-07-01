@@ -18,6 +18,8 @@ package com.sun.faces.application.annotation;
 
 import java.lang.annotation.Annotation;
 
+import jakarta.xml.ws.WebServiceRef;
+
 /**
  * <code>Scanner</code> implementation responsible for {@link WebServiceRef} annotations.
  *

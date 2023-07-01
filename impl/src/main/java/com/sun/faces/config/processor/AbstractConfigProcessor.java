@@ -138,8 +138,7 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
         if (list != null && !list.isEmpty()) {
             int len = list.size();
             HashMap<String, String> names = new HashMap<>(len, 1.0f);
-            for (int i = 0; i < len; i++) {
-                Node node = list.get(i);
+            for (Node node : list) {
                 String textValue = getNodeText(node);
                 if (textValue != null) {
                     if (node.hasAttributes()) {

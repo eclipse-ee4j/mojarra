@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -113,7 +114,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
 
     // ----------------------------------------------------------- Inner Classes
 
-    abstract class BaseSet<E> extends AbstractSet<E> {
+    abstract static class BaseSet<E> extends AbstractSet<E> {
 
         @Override
         public int size() {
@@ -163,7 +164,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
         @Override
         public int size() {
             int size = 0;
-            for (Iterator i = iterator(); i.hasNext(); size++) {
+            for (Iterator<V> i = iterator(); i.hasNext(); size++) {
                 i.next();
             }
             return size;
@@ -180,7 +181,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
         }
     }
 
-    abstract class BaseIterator<E> implements Iterator<E> {
+    abstract static class BaseIterator<E> implements Iterator<E> {
 
         protected Enumeration e;
         protected String currentKey;
@@ -304,20 +305,16 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
 
         @Override
         public boolean equals(Object obj) {
-            if (obj == null || !(obj instanceof Map.Entry)) {
+            if ( !(obj instanceof Map.Entry) ) {
                 return false;
             }
 
-            Map.Entry input = (Map.Entry) obj;
-            Object inputKey = input.getKey();
-            Object inputValue = input.getValue();
+            Map.Entry<String,V> input = (Map.Entry<String,V>) obj;
+            Object key = input.getKey();
+            Object value = input.getValue();
 
-            if (inputKey == key || inputKey != null && inputKey.equals(key)) {
-                if (inputValue == value || inputValue != null && inputValue.equals(value)) {
-                    return true;
-                }
-            }
-            return false;
+            return Objects.equals(key, this.key) &&
+                   Objects.equals(value, this.value);
         }
     }
 

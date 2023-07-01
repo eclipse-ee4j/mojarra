@@ -16,14 +16,14 @@
 
 package com.sun.faces.util;
 
-import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.context.FacesContext;
-
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
+
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
 
 /**
  * An <code>enum</code> of all application <code>Logger</code>s.

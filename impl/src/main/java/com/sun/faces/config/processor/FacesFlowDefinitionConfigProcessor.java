@@ -160,12 +160,12 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
 
         WebConfiguration config = WebConfiguration.getInstance(sc);
 
-        for (int i = 0; i < documentInfos.length; i++) {
-            URI definingDocumentURI = documentInfos[i].getSourceURI();
+        for (DocumentInfo documentInfo : documentInfos) {
+            URI definingDocumentURI = documentInfo.getSourceURI();
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.log(Level.FINE, MessageFormat.format("Processing factory elements for document: ''{0}''", definingDocumentURI));
             }
-            Document document = documentInfos[i].getDocument();
+            Document document = documentInfo.getDocument();
             String namespace = document.getDocumentElement().getNamespaceURI();
             NodeList flowDefinitions = document.getDocumentElement().getElementsByTagNameNS(namespace, FACES_FLOW_DEFINITION);
             if (flowDefinitions != null && flowDefinitions.getLength() > 0) {
@@ -207,7 +207,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
     private List<FlowDefinitionDocument> getSavedFlowDefinitions(FacesContext context) {
         Map<String, Object> appMap = context.getExternalContext().getApplicationMap();
         List<FlowDefinitionDocument> def = (List<FlowDefinitionDocument>) appMap.get(flowDefinitionListKey);
-        return null != def ? def : Collections.EMPTY_LIST;
+        return null != def ? def : Collections.emptyList();
     }
 
     private void clearSavedFlowDefinitions(FacesContext context) {

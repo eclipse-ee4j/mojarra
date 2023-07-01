@@ -23,9 +23,8 @@ import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.VIEW_STATE_PARAM;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.logging.Level;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 
 import com.sun.faces.RIConstants;
@@ -111,14 +110,9 @@ public abstract class StateHelper {
 
     public static void createAndStoreCryptographicallyStrongTokenInSession(HttpSession session) {
         ByteArrayGuardAESCTR guard = new ByteArrayGuardAESCTR();
-        String clearText = "" + System.currentTimeMillis();
+        String clearText = String.valueOf(System.currentTimeMillis());
         String result = guard.encrypt(clearText);
-        try {
-            result = URLEncoder.encode(result, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            LOGGER.log(Level.SEVERE, "Unable to URL encode cryptographically strong token, storing clear text in session instead.", e);
-            result = clearText;
-        }
+        result = URLEncoder.encode(result, StandardCharsets.UTF_8);
         session.setAttribute(TOKEN_NAME, result);
 
     }

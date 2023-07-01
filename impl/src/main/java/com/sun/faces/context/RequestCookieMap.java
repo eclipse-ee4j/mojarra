@@ -88,8 +88,8 @@ public class RequestCookieMap extends BaseContextMap<Object> {
     @Override
     public int hashCode() {
         int hashCode = 7 * request.hashCode();
-        for (Iterator i = entrySet().iterator(); i.hasNext();) {
-            hashCode += i.next().hashCode();
+        for (Map.Entry<String, Object> stringObjectEntry : entrySet()) {
+            hashCode += stringObjectEntry.hashCode();
         }
         return hashCode;
     }

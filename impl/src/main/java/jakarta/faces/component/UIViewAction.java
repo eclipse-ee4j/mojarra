@@ -261,7 +261,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
     public void setPhase(final String phase) {
         PhaseId myPhaseId = PhaseId.phaseIdValueOf(phase);
         if (PhaseId.ANY_PHASE.equals(myPhaseId) || PhaseId.RESTORE_VIEW.equals(myPhaseId) || PhaseId.RENDER_RESPONSE.equals(myPhaseId)) {
-            throw new FacesException("View actions cannot be executed in specified phase: [" + myPhaseId.toString() + "]");
+            throw new FacesException("View actions cannot be executed in specified phase: [" + myPhaseId + "]");
         }
         getStateHelper().put(PropertyKeys.phase, myPhaseId.getName());
     }

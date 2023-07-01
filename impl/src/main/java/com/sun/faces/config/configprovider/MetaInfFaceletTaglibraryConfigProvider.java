@@ -64,7 +64,7 @@ public class MetaInfFaceletTaglibraryConfigProvider implements ConfigurationReso
             }
 
             return resourceURLs.stream()
-                               .map(url -> transformToURI(url))
+                               .map( url -> transformToURI(url) )
                                .collect(toList());
 
         } catch (IOException ioe) {

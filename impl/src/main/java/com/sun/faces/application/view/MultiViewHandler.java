@@ -19,8 +19,8 @@ package com.sun.faces.application.view;
 
 import static com.sun.faces.RIConstants.FACELETS_ENCODING_KEY;
 import static com.sun.faces.RIConstants.SAVESTATE_FIELD_MARKER;
-import static com.sun.faces.renderkit.RenderKitUtils.getResponseStateManager;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.RENDER_KIT_ID_PARAM;
+import static com.sun.faces.renderkit.RenderKitUtils.getResponseStateManager;
 import static com.sun.faces.util.MessageUtils.ILLEGAL_VIEW_ID_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.Util.getFacesMapping;
