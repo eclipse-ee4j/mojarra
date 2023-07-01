@@ -19,10 +19,10 @@ package com.sun.faces.application.resource;
 /**
  * Metadata pertaining to versions.
  */
-public class VersionInfo implements Comparable {
+public class VersionInfo implements Comparable<VersionInfo> {
 
-    private String version;
-    private String extension;
+    private final String version;
+    private final String extension;
 
     // ------------------------------------------------------------ Constructors
 
@@ -75,7 +75,7 @@ public class VersionInfo implements Comparable {
     @Override
     public boolean equals(Object obj) {
 
-        if (obj == null || !(obj instanceof VersionInfo)) {
+        if (!(obj instanceof VersionInfo)) {
             return false;
         }
         if (this == obj) {
@@ -96,9 +96,8 @@ public class VersionInfo implements Comparable {
     // ------------------------------------------------- Methods from Comparable
 
     @Override
-    public int compareTo(Object o) {
-        assert o instanceof VersionInfo;
-        VersionInfo c = (VersionInfo) o;
-        return version.compareTo(c.version);
+    public int compareTo(VersionInfo versionInfo) {
+        assert versionInfo != null;
+        return version.compareTo(versionInfo.version);
     }
 }

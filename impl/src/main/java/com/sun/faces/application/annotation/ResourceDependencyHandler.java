@@ -35,8 +35,8 @@ import jakarta.faces.context.FacesContext;
  */
 class ResourceDependencyHandler implements RuntimeAnnotationHandler {
 
-    private ResourceDependency[] dependencies;
-    private Map<ResourceDependency, Expressions> expressionsMap;
+    private final ResourceDependency[] dependencies;
+    private final Map<ResourceDependency, Expressions> expressionsMap;
 
     // ------------------------------------------------------------ Constructors
 

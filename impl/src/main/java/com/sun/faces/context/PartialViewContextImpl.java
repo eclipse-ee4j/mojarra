@@ -65,7 +65,7 @@ import jakarta.faces.render.RenderKitFactory;
 public class PartialViewContextImpl extends PartialViewContext {
 
     // Log instance for this class
-    private static Logger LOGGER = FacesLogger.CONTEXT.getLogger();
+    private static final Logger LOGGER = FacesLogger.CONTEXT.getLogger();
 
     private boolean released;
 
@@ -161,7 +161,7 @@ public class PartialViewContextImpl extends PartialViewContext {
     @Override
     public boolean isResetValues() {
         Object value = PARTIAL_RESET_VALUES_PARAM.getValue(ctx);
-        return null != value && "true".equals(value) ? true : false;
+        return Boolean.TRUE.toString().equals(value);
     }
 
     @Override
@@ -564,8 +564,8 @@ public class PartialViewContextImpl extends PartialViewContext {
 
     private static class PhaseAwareVisitCallback implements VisitCallback {
 
-        private PhaseId curPhase;
-        private FacesContext ctx;
+        private final PhaseId curPhase;
+        private final FacesContext ctx;
 
         private PhaseAwareVisitCallback(FacesContext ctx, PhaseId curPhase) {
             this.ctx = ctx;
@@ -620,7 +620,7 @@ public class PartialViewContextImpl extends PartialViewContext {
     private static final class DelayedInitPartialResponseWriter extends PartialResponseWriter {
 
         private ResponseWriter writer;
-        private PartialViewContextImpl ctx;
+        private final PartialViewContextImpl ctx;
 
         // -------------------------------------------------------- Constructors
 

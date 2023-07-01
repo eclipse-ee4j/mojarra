@@ -39,10 +39,10 @@ import jakarta.servlet.ServletContext;
  */
 public class FindAnnotatedConfigClasses implements Callable<Map<Class<? extends Annotation>, Set<Class<?>>>> {
 
-    private InitFacesContext facesContext;
-    private AnnotationProvider provider;
-    private ProvideMetadataToAnnotationScanTask metadataGetter;
-    private Set<Class<?>> annotatedSet;
+    private final InitFacesContext facesContext;
+    private final AnnotationProvider provider;
+    private final ProvideMetadataToAnnotationScanTask metadataGetter;
+    private final Set<Class<?>> annotatedSet;
 
     // -------------------------------------------------------- Constructors
 

@@ -119,14 +119,14 @@ public class ApplicationAssociate {
 
     private final static String FacesComponentJcpNamespace = "http://xmlns.jcp.org/jsf/component";
 
-    private ApplicationImpl applicationImpl;
+    private final ApplicationImpl applicationImpl;
 
     /**
      * Overall Map containing <code>from-view-id</code> key and <code>Set</code> of <code>NavigationCase</code> objects for
      * that key; The <code>from-view-id</code> strings in this map will be stored as specified in the configuration file -
      * some of them will have a trailing asterisk "*" signifying wild card, and some may be specified as an asterisk "*".
      */
-    private Map<String, Set<NavigationCase>> navigationMap;
+    private final Map<String, Set<NavigationCase>> navigationMap;
 
     /*
      * The FacesComponentTagLibrary uses the information in this map to help it fabricate tag handlers for components
@@ -139,43 +139,38 @@ public class ApplicationAssociate {
 
     private static final String ASSOCIATE_KEY = RIConstants.FACES_PREFIX + "ApplicationAssociate";
 
-    private static ThreadLocal<ApplicationAssociate> instance = new ThreadLocal<>() {
-        @Override
-        protected ApplicationAssociate initialValue() {
-            return null;
-        }
-    };
+    private static final ThreadLocal<ApplicationAssociate> instance = ThreadLocal.withInitial(() -> null);
 
     private List<ELResolver> elResolversFromFacesConfig;
     private ExpressionFactory expressionFactory;
 
-    private InjectionProvider injectionProvider;
+    private final InjectionProvider injectionProvider;
     private ResourceCache resourceCache;
 
     private String contextName;
     private boolean requestServiced;
     private boolean errorPagePresent;
 
-    private AnnotationManager annotationManager;
-    private boolean devModeEnabled;
+    private final AnnotationManager annotationManager;
+    private final boolean devModeEnabled;
     private Compiler compiler;
     private DefaultFaceletFactory faceletFactory;
     private ResourceManager resourceManager;
-    private ApplicationStateInfo applicationStateInfo;
+    private final ApplicationStateInfo applicationStateInfo;
 
-    private PropertyEditorHelper propertyEditorHelper;
+    private final PropertyEditorHelper propertyEditorHelper;
 
-    private NamedEventManager namedEventManager;
+    private final NamedEventManager namedEventManager;
 
-    private WebConfiguration webConfig;
+    private final WebConfiguration webConfig;
 
     private FlowHandler flowHandler;
 
     private SearchExpressionHandler searchExpressionHandler;
 
-    private Map<String, String> definingDocumentIdsToTruncatedJarUrls;
+    private final Map<String, String> definingDocumentIdsToTruncatedJarUrls;
 
-    private long timeOfInstantiation;
+    private final long timeOfInstantiation;
 
     private Map<String, List<String>> resourceLibraryContracts;
 

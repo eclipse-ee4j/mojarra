@@ -46,9 +46,9 @@ import jakarta.faces.context.FacesContext;
 public class ClasspathResourceHelper extends ResourceHelper {
 
     private static final String BASE_RESOURCE_PATH = "META-INF/resources";
-    private boolean cacheTimestamp;
+    private final boolean cacheTimestamp;
     private volatile ZipDirectoryEntryScanner libraryScanner;
-    private boolean enableMissingResourceLibraryDetection;
+    private final boolean enableMissingResourceLibraryDetection;
 
     // ------------------------------------------------------------ Constructors
 

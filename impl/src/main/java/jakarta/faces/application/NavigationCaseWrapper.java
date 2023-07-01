@@ -40,7 +40,7 @@ import jakarta.faces.context.FacesContext;
  */
 public abstract class NavigationCaseWrapper extends NavigationCase implements FacesWrapper<NavigationCase> {
 
-    private NavigationCase wrapped;
+    private final NavigationCase wrapped;
 
     /**
      * @deprecated Use the other constructor taking the implementation being wrapped.

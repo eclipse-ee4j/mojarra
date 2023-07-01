@@ -53,10 +53,10 @@ public class ExceptionQueuedEventContext implements SystemEventListenerHolder {
      */
     public static final String IN_AFTER_PHASE_KEY = ExceptionQueuedEventContext.class.getName() + ".IN_AFTER_PHASE";
 
-    private FacesContext context;
-    private Throwable thrown;
-    private UIComponent component;
-    private PhaseId phaseId;
+    private final FacesContext context;
+    private final Throwable thrown;
+    private final UIComponent component;
+    private final PhaseId phaseId;
     private Map<Object, Object> attributes;
     private List<SystemEventListener> listener;
 
@@ -221,10 +221,9 @@ public class ExceptionQueuedEventContext implements SystemEventListenerHolder {
     public List<SystemEventListener> getListenersForEventClass(Class<? extends SystemEvent> facesEventClass) {
 
         if (null == listener) {
-            List<SystemEventListener> list = new ArrayList<>(1);
-            list.add(context.getExceptionHandler());
-            listener = Collections.unmodifiableList(list);
+            listener = List.of(context.getExceptionHandler());
         }
+
         return listener;
 
     }

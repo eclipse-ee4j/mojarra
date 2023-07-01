@@ -57,22 +57,22 @@ public class ResourceManager {
      */
     private static final Pattern CONFIG_MIMETYPE_PATTERN = Pattern.compile("[a-z-]*/[a-z0-9.\\*-]*");
 
-    private FaceletWebappResourceHelper faceletWebappResourceHelper = new FaceletWebappResourceHelper();
+    private final FaceletWebappResourceHelper faceletWebappResourceHelper = new FaceletWebappResourceHelper();
 
     /**
      * {@link ResourceHelper} used for looking up webapp-based resources.
      */
-    private ResourceHelper webappResourceHelper = new WebappResourceHelper();
+    private final ResourceHelper webappResourceHelper = new WebappResourceHelper();
 
     /**
      * {@link ResourceHelper} used for looking up classpath-based resources.
      */
-    private ClasspathResourceHelper classpathResourceHelper = new ClasspathResourceHelper();
+    private final ClasspathResourceHelper classpathResourceHelper = new ClasspathResourceHelper();
 
     /**
      * Cache for storing {@link ResourceInfo} instances to reduce the cost of the resource lookups.
      */
-    private ResourceCache cache;
+    private final ResourceCache cache;
 
     /**
      * Patterns used to find {@link ResourceInfo} instances that may have their content compressed.
@@ -83,7 +83,7 @@ public class ResourceManager {
      * This lock is used to ensure the lookup of compressable {@link ResourceInfo} instances are atomic to prevent theading
      * issues when writing the compressed content during a lookup.
      */
-    private ReentrantLock lock = new ReentrantLock();
+    private final ReentrantLock lock = new ReentrantLock();
 
     // ------------------------------------------------------------ Constructors
 

@@ -89,10 +89,10 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
      */
     private static final String FACES_TO_1_1_PRIVATE_XSL = "/com/sun/faces/faces1_0-1_1toSchema.xsl";
 
-    private ServletContext servletContext;
-    private URI documentURI;
+    private final ServletContext servletContext;
+    private final URI documentURI;
     private DocumentBuilderFactory factory;
-    private boolean validating;
+    private final boolean validating;
 
 
 

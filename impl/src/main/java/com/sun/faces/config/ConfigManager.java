@@ -128,10 +128,9 @@ public class ConfigManager {
      * when the application is destroyed.
      * </p>
      */
-    private List<ServletContext> initializedContexts = new CopyOnWriteArrayList<>();
+    private final List<ServletContext> initializedContexts = new CopyOnWriteArrayList<>();
 
-    private final List<ConfigProcessor> configProcessors = unmodifiableList(
-            asList(
+    private final List<ConfigProcessor> configProcessors = List.of(
                 new FactoryConfigProcessor(),
                 new LifecycleConfigProcessor(),
                 new ApplicationConfigProcessor(),
@@ -144,7 +143,7 @@ public class ConfigManager {
                 new FacesConfigExtensionProcessor(),
                 new ProtectedViewsConfigProcessor(),
                 new FacesFlowDefinitionConfigProcessor(),
-                new ResourceLibraryContractsConfigProcessor()));
+                new ResourceLibraryContractsConfigProcessor());
 
     /**
      * <p>
@@ -152,8 +151,8 @@ public class ConfigManager {
      * Mojarra, and two other providers to satisfy the requirements of the specification.
      * </p>
      */
-    private final List<ConfigurationResourceProvider> facesConfigProviders = unmodifiableList(
-            asList(new MetaInfFacesConfigResourceProvider(), new WebAppFlowConfigResourceProvider(), new WebFacesConfigResourceProvider()));
+    private final List<ConfigurationResourceProvider> facesConfigProviders = List.of(
+            new MetaInfFacesConfigResourceProvider(), new WebAppFlowConfigResourceProvider(), new WebFacesConfigResourceProvider());
 
     /**
      * <p>
@@ -161,8 +160,8 @@ public class ConfigManager {
      * Mojarra, and one other providers to satisfy the requirements of the specification.
      * </p>
      */
-    private final List<ConfigurationResourceProvider> facesletsTagLibConfigProviders = unmodifiableList(
-            asList(new MetaInfFaceletTaglibraryConfigProvider(), new WebFaceletTaglibResourceProvider()));
+    private final List<ConfigurationResourceProvider> facesletsTagLibConfigProviders = List.of(
+            new MetaInfFaceletTaglibraryConfigProvider(), new WebFaceletTaglibResourceProvider());
 
     /**
      * <p>

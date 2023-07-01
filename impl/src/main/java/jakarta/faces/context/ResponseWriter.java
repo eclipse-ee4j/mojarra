@@ -311,7 +311,7 @@ public abstract class ResponseWriter extends Writer {
      * @throws IOException if an input/output error occurs
      * @throws NullPointerException if <code>text</code> is <code>null</code>
      */
-    public abstract void writeText(char text[], int off, int len) throws IOException;
+    public abstract void writeText(char[] text, int off, int len) throws IOException;
 
     /**
      * <p>
