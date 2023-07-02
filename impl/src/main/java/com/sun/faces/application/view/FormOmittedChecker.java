@@ -42,7 +42,7 @@ class FormOmittedChecker {
     /**
      * Stores the skip hint.
      */
-    private static String SKIP_ITERATION_HINT = "jakarta.faces.visit.SKIP_ITERATION";
+    private static final String SKIP_ITERATION_HINT = "jakarta.faces.visit.SKIP_ITERATION";
 
     /**
      * Constructor.

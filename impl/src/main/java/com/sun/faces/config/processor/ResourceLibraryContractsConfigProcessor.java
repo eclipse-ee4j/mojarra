@@ -70,12 +70,12 @@ public class ResourceLibraryContractsConfigProcessor extends AbstractConfigProce
     public void process(ServletContext servletContext, FacesContext facesContext, DocumentInfo[] documentInfos) throws Exception {
 
         HashMap<String, List<String>> map = new HashMap<>();
-        for (int i = 0; i < documentInfos.length; i++) {
+        for (DocumentInfo documentInfo : documentInfos) {
             if (LOGGER.isLoggable(FINE)) {
-                LOGGER.log(FINE, MessageFormat.format("Processing factory elements for document: ''{0}''", documentInfos[i].getSourceURI()));
+                LOGGER.log(FINE, MessageFormat.format("Processing factory elements for document: ''{0}''", documentInfo.getSourceURI()));
             }
 
-            Document document = documentInfos[i].getDocument();
+            Document document = documentInfo.getDocument();
             String namespace = document.getDocumentElement().getNamespaceURI();
             NodeList resourceLibraryContracts = document.getDocumentElement().getElementsByTagNameNS(namespace, RESOURCE_LIBRARY_CONTRACTS);
             if (resourceLibraryContracts != null && resourceLibraryContracts.getLength() > 0) {
@@ -125,20 +125,18 @@ public class ResourceLibraryContractsConfigProcessor extends AbstractConfigProce
                                     if (contracts != null && contracts.getLength() > 0) {
                                         for (int j = 0; j < contracts.getLength(); j++) {
                                             String[] contractStrings = contracts.item(j).getNodeValue().trim().split(",");
-                                            for (int k = 0; k < contractStrings.length; k++) {
-                                                if (!list.contains(contractStrings[k])) {
+                                            for (String contractString : contractStrings) {
+                                                if (!list.contains(contractString)) {
                                                     if (LOGGER.isLoggable(INFO)) {
-                                                        LOGGER.log(INFO, "Added contract: {0} for url-pattern: {1}",
-                                                                new Object[] { contractStrings[k], urlPattern });
+                                                        LOGGER.log(INFO, "Added contract: {0} for url-pattern: {1}", new Object[]{contractString, urlPattern});
                                                     }
-                                                    list.add(contractStrings[k]);
+                                                    list.add(contractString);
                                                 } else {
                                                     /*
                                                      * We found the contract again in the list for the specified url-pattern.
                                                      */
                                                     if (LOGGER.isLoggable(INFO)) {
-                                                        LOGGER.log(INFO, "Duplicate contract: {0} found for url-pattern: {1}",
-                                                                new Object[] { contractStrings[k], urlPattern });
+                                                        LOGGER.log(INFO, "Duplicate contract: {0} found for url-pattern: {1}", new Object[]{contractString, urlPattern});
                                                     }
                                                 }
                                             }

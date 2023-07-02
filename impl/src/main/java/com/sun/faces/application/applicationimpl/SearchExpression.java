@@ -49,7 +49,7 @@ public class SearchExpression {
 
     private final ApplicationAssociate associate;
 
-    private CompositeSearchKeywordResolver searchKeywordResolvers;
+    private final CompositeSearchKeywordResolver searchKeywordResolvers;
 
     public SearchExpression(ApplicationAssociate applicationAssociate) {
         associate = applicationAssociate;

@@ -52,8 +52,8 @@ public class CompositeComponentStackManager {
         TreeCreation, Evaluation
     }
 
-    private StackHandler treeCreation = new TreeCreationStackHandler();
-    private StackHandler runtime = new RuntimeStackHandler();
+    private final StackHandler treeCreation = new TreeCreationStackHandler();
+    private final StackHandler runtime = new RuntimeStackHandler();
 
     // ------------------------------------------------------------ Constructors
 
@@ -281,7 +281,7 @@ public class CompositeComponentStackManager {
         @Override
         public void delete() {
 
-            Stack s = getStack(false);
+            Stack<UIComponent> s = getStack(false);
             if (s != null) {
                 s.clear();
             }
@@ -291,7 +291,7 @@ public class CompositeComponentStackManager {
         @Override
         public void pop() {
 
-            Stack s = getStack(false);
+            Stack<UIComponent> s = getStack(false);
             if (s != null && !s.isEmpty()) {
                 s.pop();
             }
@@ -371,7 +371,7 @@ public class CompositeComponentStackManager {
         @Override
         public void pop() {
 
-            Stack s = getStack(false);
+            Stack<UIComponent> s = getStack(false);
             if (s != null && !stack.isEmpty()) {
                 stack.pop();
                 if (stack.isEmpty()) {

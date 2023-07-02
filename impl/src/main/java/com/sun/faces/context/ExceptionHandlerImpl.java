@@ -56,7 +56,7 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
     private LinkedList<ExceptionQueuedEvent> unhandledExceptions;
     private LinkedList<ExceptionQueuedEvent> handledExceptions;
     private ExceptionQueuedEvent handled;
-    private boolean errorPagePresent;
+    private final boolean errorPagePresent;
 
     // ------------------------------------------------------------ Constructors
 
@@ -209,7 +209,7 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
                 LOGGER.log(Level.INFO, "Exception when handling error trying to reset the response.", wrapped);
             }
         }
-        if (null != wrapped && wrapped instanceof FacesFileNotFoundException) {
+        if (wrapped instanceof FacesFileNotFoundException) {
             extContext.setResponseStatus(404);
         } else {
             extContext.setResponseStatus(500);
@@ -225,7 +225,7 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
             if (isDevelopment) {
                 // store the view root where the exception occurred into the
                 // request scope so that the error page can display that component
-                // tree and not the one rendering the errorpage
+                // tree and not the one rendering the error page
                 ctx.getExternalContext().getRequestMap().put("com.sun.faces.error.view", ctx.getViewRoot());
             }
             throw fe;

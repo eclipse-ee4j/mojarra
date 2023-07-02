@@ -38,8 +38,8 @@ import jakarta.faces.event.SystemEvent;
  */
 public class NamedEventManager {
 
-    private Map<String, Class<? extends SystemEvent>> namedEvents = new ConcurrentHashMap<>();
-    private Map<String, Set<Class<? extends SystemEvent>>> duplicateNames = new ConcurrentHashMap<>();
+    private final Map<String, Class<? extends SystemEvent>> namedEvents = new ConcurrentHashMap<>();
+    private final Map<String, Set<Class<? extends SystemEvent>>> duplicateNames = new ConcurrentHashMap<>();
 
     public NamedEventManager() {
         namedEvents.put("jakarta.faces.event.PreRenderComponent", PreRenderComponentEvent.class);
@@ -81,12 +81,8 @@ public class NamedEventManager {
 
     public void addDuplicateName(String name, Class<? extends SystemEvent> event) {
         Class<? extends SystemEvent> registeredEvent = namedEvents.remove(name);
-        Set<Class<? extends SystemEvent>> events = duplicateNames.get(name);
+        Set<Class<? extends SystemEvent>> events = duplicateNames.computeIfAbsent(name, k -> new HashSet<>());
 
-        if (events == null) {
-            events = new HashSet<>();
-            duplicateNames.put(name, events);
-        }
         events.add(event);
 
         if (registeredEvent != null) {

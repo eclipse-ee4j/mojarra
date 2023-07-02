@@ -17,8 +17,6 @@
 
 package jakarta.faces.application;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
 
 import java.io.IOException;
@@ -135,13 +133,13 @@ public class FacesMessage implements Serializable {
      * order of their ordinal value.
      * </p>
      */
-    public static final List VALUES = unmodifiableList(asList(values));
+    public static final List VALUES = List.of(values);
 
-    private static Map<String, Severity> _MODIFIABLE_MAP = new HashMap<>(4, 1.0f);
+    private static final Map<String, Severity> _MODIFIABLE_MAP = new HashMap<>(4, 1.0f);
 
     static {
-        for (int i = 0, len = values.length; i < len; i++) {
-            _MODIFIABLE_MAP.put(values[i].severityName, values[i]);
+        for (Severity value : values) {
+            _MODIFIABLE_MAP.put(value.severityName, value);
         }
     }
 
@@ -415,11 +413,11 @@ public class FacesMessage implements Serializable {
          * object.
          * </p>
          *
-         * @param other The other object to be compared to
+         * @param severity The other object to be compared to
          */
         @Override
-        public int compareTo(Object other) {
-            return ordinal - ((Severity) other).ordinal;
+        public int compareTo(Object severity) {
+            return ordinal - ((Severity)severity).ordinal;
         }
 
         /**
@@ -441,10 +439,10 @@ public class FacesMessage implements Serializable {
         @Override
         public String toString() {
             if (severityName == null) {
-                return String.valueOf(ordinal);
+                return Integer.toString(ordinal);
             }
 
-            return String.valueOf(severityName) + ' ' + ordinal;
+            return severityName + ' ' + ordinal;
         }
 
         // --------------------------------------------------- Static Variables

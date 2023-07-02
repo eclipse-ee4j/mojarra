@@ -459,9 +459,9 @@ public class UIViewParameter extends UIInput {
 
     public static class Reference {
 
-        private StateHolderSaver saver;
-        private int indexInParent;
-        private String viewIdAtTimeOfConstruction;
+        private final StateHolderSaver saver;
+        private final int indexInParent;
+        private final String viewIdAtTimeOfConstruction;
 
         /**
          * <p class="changed_added_2_0">

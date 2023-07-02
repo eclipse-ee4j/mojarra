@@ -16,8 +16,10 @@
 
 package com.sun.faces.util;
 
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Function;
 
 /**
  * A concurrent caching mechanism.
@@ -27,11 +29,20 @@ public class Cache<K, V> {
     /**
      * Factory interface for creating various cacheable objects.
      */
-    public interface Factory<K, V> {
+    public interface Factory<K,V> extends Function<K,V> {
 
         V newInstance(final K arg) throws InterruptedException;
 
-    } // END Factory
+        @Override
+        default V apply(K key) {
+            try {
+                return newInstance( key );
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
 
     private final ConcurrentMap<K, V> cache = new ConcurrentHashMap<>();
     private final Factory<K, V> factory;
@@ -41,12 +52,11 @@ public class Cache<K, V> {
     /**
      * Constructs this cache using the specified <code>Factory</code>.
      *
-     * @param factory
+     * @param factory a factory to create or retrieve the element that need to be cached
      */
-    public Cache(Factory<K, V> factory) {
+    public Cache(Factory<K,V> factory) {
 
         this.factory = factory;
-
     }
 
     // ------------------------------------------------------ Public Methods
@@ -62,26 +72,9 @@ public class Cache<K, V> {
      * @return the value for the specified key, if any
      */
     public V get(final K key) {
-        V result = cache.get(key);
+        Objects.requireNonNull(key);
 
-        if (result == null) {
-            try {
-                result = factory.newInstance(key);
-            } catch (InterruptedException ie) {
-                // will never happen. Just for testing
-                throw new RuntimeException(ie);
-            }
-
-            // put could be used instead if it didn't matter whether we replaced
-            // an existing entry
-            V oldResult = cache.putIfAbsent(key, result);
-
-            if (oldResult != null) {
-                result = oldResult;
-            }
-        }
-
-        return result;
+        return cache.computeIfAbsent( key , factory );
     }
 
     public V remove(final K key) {
@@ -89,4 +82,4 @@ public class Cache<K, V> {
 
     }
 
-} // END Cache
+}

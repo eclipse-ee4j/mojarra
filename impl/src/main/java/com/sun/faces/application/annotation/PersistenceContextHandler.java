@@ -27,10 +27,10 @@ import jakarta.persistence.PersistenceContext;
  */
 class PersistenceContextHandler extends JndiHandler implements RuntimeAnnotationHandler {
 
-    private Method[] methods;
-    private PersistenceContext[] methodAnnotations;
-    private Field[] fields;
-    private PersistenceContext[] fieldAnnotations;
+    private final Method[] methods;
+    private final PersistenceContext[] methodAnnotations;
+    private final Field[] fields;
+    private final PersistenceContext[] fieldAnnotations;
 
     public PersistenceContextHandler(Method[] methods, PersistenceContext[] methodAnnotations, Field[] fields, PersistenceContext[] fieldAnnotations) {
         this.methods = methods;

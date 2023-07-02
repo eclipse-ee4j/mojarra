@@ -47,7 +47,7 @@ public class WebContainerInjectionProvider implements InjectionProvider {
 
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
-    private static Map<Class<?>, ConcurrentHashMap<Class<? extends Annotation>, MethodHolder>> methodsPerClazz = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, ConcurrentHashMap<Class<? extends Annotation>, MethodHolder>> methodsPerClazz = new ConcurrentHashMap<>();
 
     // ------------------------------------------ Methods from InjectionProvider
 
@@ -74,7 +74,7 @@ public class WebContainerInjectionProvider implements InjectionProvider {
 
     private static void invokeAnnotatedMethod(Method method, Object managedBean) throws InjectionProviderException {
         if (method != null) {
-            boolean accessible = method.isAccessible();
+            boolean accessible = method.canAccess(managedBean);
             method.setAccessible(true);
 
             try {

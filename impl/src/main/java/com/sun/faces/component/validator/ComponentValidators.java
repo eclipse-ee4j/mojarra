@@ -138,18 +138,14 @@ public class ComponentValidators {
         Set<String> keySet = defaultValidatorInfo.keySet();
 
         List<String> validatorIds = new ArrayList<>(keySet.size());
-        for (String key : keySet) {
-            validatorIds.add(key);
-        }
+        validatorIds.addAll(keySet);
 
         Set<String> disabledIds = (Set<String>) RequestStateManager.remove(ctx, RequestStateManager.DISABLED_VALIDATORS);
         int count = validatorStack.size();
         for (int i = count - 1; i >= 0; i--) {
             ValidatorInfo info = validatorStack.get(i);
             if (!info.isEnabled() || disabledIds != null && disabledIds.contains(info.getValidatorId())) {
-                if (validatorIds.contains(info.getValidatorId())) {
-                    validatorIds.remove(info.getValidatorId());
-                }
+                validatorIds.remove(info.getValidatorId());
             } else {
                 if (!validatorIds.contains(info.getValidatorId())) {
                     validatorIds.add(info.getValidatorId());
@@ -209,11 +205,11 @@ public class ComponentValidators {
 
         Application application = ctx.getApplication();
         Map<String, String> defaultValidatorInfo = application.getDefaultValidatorInfo();
-        Validator[] validators = editableValueHolder.getValidators();
+        Validator<?>[] validators = editableValueHolder.getValidators();
         // check to make sure that Validator instances haven't already
         // been added.
         for (Map.Entry<String, String> defaultValidator : defaultValidatorInfo.entrySet()) {
-            for (Validator validator : validators) {
+            for (Validator<?> validator : validators) {
                 if (defaultValidator.getValue().equals(validator.getClass().getName())) {
                     validatorIds.remove(defaultValidator.getKey());
                     break;
@@ -224,7 +220,7 @@ public class ComponentValidators {
         // we now have the complete List of Validator IDs to add to the
         // target EditablValueHolder
         for (String id : validatorIds) {
-            Validator v = application.createValidator(id);
+            Validator<?> v = application.createValidator(id);
             // work backwards up the stack of ValidatorInfo to find the
             // nearest matching ValidatorInfo to apply attributes
             if (validatorStack != null) {
@@ -248,10 +244,10 @@ public class ComponentValidators {
      */
     public static class ValidatorInfo {
 
-        private String validatorId;
-        private boolean enabled;
-        private ValidatorHandler owner;
-        private FaceletContext ctx;
+        private final String validatorId;
+        private final boolean enabled;
+        private final ValidatorHandler owner;
+        private final FaceletContext ctx;
 
         // ------------------------------------------------------------ Constructors
 

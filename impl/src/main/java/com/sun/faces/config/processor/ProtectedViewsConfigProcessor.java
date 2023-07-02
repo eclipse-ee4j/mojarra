@@ -64,17 +64,17 @@ public class ProtectedViewsConfigProcessor extends AbstractConfigProcessor {
 
     @Override
     public void process(ServletContext servletContext, FacesContext facesContext, DocumentInfo[] documentInfos) throws Exception {
-        for (int i = 0; i < documentInfos.length; i++) {
+        for (DocumentInfo documentInfo : documentInfos) {
             if (LOGGER.isLoggable(FINE)) {
-                LOGGER.log(FINE, format("Processing protected-views element for document: ''{0}''", documentInfos[i].getSourceURI()));
+                LOGGER.log(FINE, format("Processing protected-views element for document: ''{0}''", documentInfo.getSourceURI()));
             }
 
-            Document document = documentInfos[i].getDocument();
+            Document document = documentInfo.getDocument();
             String namespace = document.getDocumentElement().getNamespaceURI();
             NodeList protectedViews = document.getDocumentElement().getElementsByTagNameNS(namespace, PROTECTED_VIEWS);
 
             if (protectedViews != null && protectedViews.getLength() > 0) {
-                processProtectedViews(facesContext, protectedViews, namespace, documentInfos[i]);
+                processProtectedViews(facesContext, protectedViews, namespace, documentInfo);
             }
         }
 

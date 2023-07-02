@@ -687,7 +687,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
     private class WebConfigResourceMonitor implements Runnable {
 
         private List<Monitor> monitors;
-        private ServletContext servletContext;
+        private final ServletContext servletContext;
 
         // -------------------------------------------------------- Constructors
 
@@ -702,7 +702,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                     monitors.add(new Monitor(uri));
                 } catch (IOException ioe) {
                     LOGGER.log(SEVERE, () -> "Unable to setup resource monitor for " + uri.toString() + ".  Resource will not be monitored for changes.");
-                    LOGGER.log(FINE, ioe, () -> ioe.toString());
+                    LOGGER.log(FINE, ioe, ioe::toString);
                 }
             }
 
@@ -743,7 +743,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
         private class Monitor {
 
-            private URI uri;
+            private final URI uri;
             private long timestamp = -1;
 
             // ---------------------------------------------------- Constructors

@@ -25,7 +25,7 @@ public class FaceletResourceInfo extends ResourceInfo {
         this.url = url;
     }
 
-    private URL url;
+    private final URL url;
 
     public URL getUrl() {
         return url;

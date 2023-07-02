@@ -249,21 +249,14 @@ public final class FactoryFinder {
      * @return the found factory instance
      */
     public static Object getFactory(String factoryName) throws FacesException {
-        FactoryFinderInstance factoryFinder;
 
         // Bug 20458755: If the factory being requested is the special
         // SERVLET_CONTEXT_FINDER, do not lazily create the FactoryFinderInstance.
-        if (SERVLET_CONTEXT_FINDER_NAME.equals(factoryName)) {
-            factoryFinder = FACTORIES_CACHE.getFactoryFinder(false);
-        } else {
-            factoryFinder = FACTORIES_CACHE.getFactoryFinder();
-        }
+        final boolean create = ! SERVLET_CONTEXT_FINDER_NAME.equals(factoryName);
 
-        if (factoryFinder != null) {
-            return factoryFinder.getFactory(factoryName);
-        }
+        final FactoryFinderInstance factoryFinder = FACTORIES_CACHE.getFactoryFinder( create );
 
-        return null;
+        return factoryFinder != null ? factoryFinder.getFactory(factoryName) : null;
     }
 
     /**

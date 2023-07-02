@@ -2160,7 +2160,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
 
             @Override
             public String toString() {
-                StringBuffer sb = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
                 Iterator<Map.Entry<String, String>> entries = entrySet().iterator();
                 Map.Entry<String, String> cur;
                 while (entries.hasNext()) {

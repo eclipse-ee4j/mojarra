@@ -63,7 +63,7 @@ public class Events {
      * on a per-FacesContext, per-SystemEvent.class type basis.
      */
 
-    private ReentrantLisneterInvocationGuard listenerInvocationGuard = new ReentrantLisneterInvocationGuard();
+    private final ReentrantLisneterInvocationGuard listenerInvocationGuard = new ReentrantLisneterInvocationGuard();
 
     /*
      * @see jakarta.faces.application.Application#publishEvent(FacesContext, Class, Class, Object)
@@ -259,7 +259,7 @@ public class Events {
             // if original differs from copy, make a new copy.
             // The new copy consists of the original list - processed
 
-            SystemEventListener listenersCopy[] = new SystemEventListener[listeners.size()];
+            SystemEventListener[] listenersCopy = new SystemEventListener[listeners.size()];
             int i = 0;
             for (i = 0; i < listenersCopy.length; i++) {
                 listenersCopy[i] = listeners.get(i);
@@ -298,7 +298,7 @@ public class Events {
 
     }
 
-    private boolean originalDiffersFromCopy(Collection<SystemEventListener> original, SystemEventListener copy[]) {
+    private boolean originalDiffersFromCopy(Collection<SystemEventListener> original, SystemEventListener[] copy) {
         boolean foundDifference = false;
         int i = 0, originalLen = original.size(), copyLen = copy.length;
 

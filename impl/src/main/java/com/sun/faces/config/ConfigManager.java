@@ -22,9 +22,9 @@ import static com.sun.faces.config.manager.Documents.getProgrammaticDocuments;
 import static com.sun.faces.config.manager.Documents.getXMLDocuments;
 import static com.sun.faces.config.manager.Documents.mergeDocuments;
 import static com.sun.faces.config.manager.Documents.sortDocuments;
-import static com.sun.faces.spi.ConfigurationResourceProviderFactory.createProviders;
 import static com.sun.faces.spi.ConfigurationResourceProviderFactory.ProviderType.FaceletConfig;
 import static com.sun.faces.spi.ConfigurationResourceProviderFactory.ProviderType.FacesConfig;
+import static com.sun.faces.spi.ConfigurationResourceProviderFactory.createProviders;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.unmodifiableList;
@@ -128,10 +128,9 @@ public class ConfigManager {
      * when the application is destroyed.
      * </p>
      */
-    private List<ServletContext> initializedContexts = new CopyOnWriteArrayList<>();
+    private final List<ServletContext> initializedContexts = new CopyOnWriteArrayList<>();
 
-    private final List<ConfigProcessor> configProcessors = unmodifiableList(
-            asList(
+    private final List<ConfigProcessor> configProcessors = List.of(
                 new FactoryConfigProcessor(),
                 new LifecycleConfigProcessor(),
                 new ApplicationConfigProcessor(),
@@ -144,7 +143,7 @@ public class ConfigManager {
                 new FacesConfigExtensionProcessor(),
                 new ProtectedViewsConfigProcessor(),
                 new FacesFlowDefinitionConfigProcessor(),
-                new ResourceLibraryContractsConfigProcessor()));
+                new ResourceLibraryContractsConfigProcessor());
 
     /**
      * <p>
@@ -152,8 +151,8 @@ public class ConfigManager {
      * Mojarra, and two other providers to satisfy the requirements of the specification.
      * </p>
      */
-    private final List<ConfigurationResourceProvider> facesConfigProviders = unmodifiableList(
-            asList(new MetaInfFacesConfigResourceProvider(), new WebAppFlowConfigResourceProvider(), new WebFacesConfigResourceProvider()));
+    private final List<ConfigurationResourceProvider> facesConfigProviders = List.of(
+            new MetaInfFacesConfigResourceProvider(), new WebAppFlowConfigResourceProvider(), new WebFacesConfigResourceProvider());
 
     /**
      * <p>
@@ -161,8 +160,8 @@ public class ConfigManager {
      * Mojarra, and one other providers to satisfy the requirements of the specification.
      * </p>
      */
-    private final List<ConfigurationResourceProvider> facesletsTagLibConfigProviders = unmodifiableList(
-            asList(new MetaInfFaceletTaglibraryConfigProvider(), new WebFaceletTaglibResourceProvider()));
+    private final List<ConfigurationResourceProvider> facesletsTagLibConfigProviders = List.of(
+            new MetaInfFaceletTaglibraryConfigProvider(), new WebFaceletTaglibResourceProvider());
 
     /**
      * <p>
@@ -224,7 +223,7 @@ public class ConfigManager {
         if (!hasBeenInitialized(servletContext)) {
 
             initializedContexts.add(servletContext);
-            initializeConfigProcessers(servletContext, facesContext);
+            initializeConfigProcessors(servletContext, facesContext);
             ExecutorService executor = null;
 
             try {
@@ -394,7 +393,7 @@ public class ConfigManager {
         return unmodifiableList(providers);
     }
 
-    private void initializeConfigProcessers(ServletContext servletContext, FacesContext facesContext) {
+    private void initializeConfigProcessors(ServletContext servletContext, FacesContext facesContext) {
         configProcessors.stream().parallel().forEach(e -> e.initializeClassMetadataMap(servletContext, facesContext));
     }
 
@@ -403,7 +402,7 @@ public class ConfigManager {
 
         configPopulators.add(new MojarraRuntimePopulator());
 
-        ServiceLoader.load(ApplicationConfigurationPopulator.class).forEach(e -> configPopulators.add(e));
+        ServiceLoader.load(ApplicationConfigurationPopulator.class).forEach(configPopulators::add);
 
         return configPopulators;
     }
@@ -413,10 +412,10 @@ public class ConfigManager {
      * instance.
      */
     void publishPostConfigEvent() {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
+        InitFacesContext facesContext = (InitFacesContext) FacesContext.getCurrentInstance();
         Application application = facesContext.getApplication();
 
-        if (((InitFacesContext) facesContext).getELContext() == null) {
+        if ( facesContext.getELContext() == null) {
             ELContext elContext = new ELContextImpl(facesContext);
 
             ELContextListener[] listeners = application.getELContextListeners();
@@ -427,7 +426,7 @@ public class ConfigManager {
                 }
             }
 
-            ((InitFacesContext) facesContext).setELContext(elContext);
+            facesContext.setELContext(elContext);
         }
 
         application.publishEvent(facesContext, PostConstructApplicationEvent.class, Application.class, application);
@@ -477,7 +476,7 @@ public class ConfigManager {
      * @param servletContext the <code>ServletContext</code> for the application that needs to be removed
      */
     public void destroy(ServletContext servletContext, FacesContext facesContext) {
-        configProcessors.stream().forEach(e -> e.destroy(servletContext, facesContext));
+        configProcessors.forEach( processor -> processor.destroy(servletContext, facesContext) );
         initializedContexts.remove(servletContext);
     }
 

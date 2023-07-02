@@ -21,8 +21,12 @@ import jakarta.faces.model.SelectItem;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableMap;
 
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author asmirnov@exadel.com

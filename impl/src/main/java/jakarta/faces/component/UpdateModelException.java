@@ -33,7 +33,7 @@ public class UpdateModelException extends FacesException {
 
     private static final long serialVersionUID = 6081145672680351218L;
 
-    private FacesMessage facesMessage;
+    private final FacesMessage facesMessage;
 
     // ------------------------------------------------------------ Constructors
 

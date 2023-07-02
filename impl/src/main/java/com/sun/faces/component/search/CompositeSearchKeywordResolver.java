@@ -46,8 +46,7 @@ public class CompositeSearchKeywordResolver extends SearchKeywordResolver {
     public void resolve(SearchKeywordContext context, UIComponent current, String keyword) {
         context.setKeywordResolved(false);
 
-        for (int i = 0; i < resolvers.size(); i++) {
-            SearchKeywordResolver resolver = resolvers.get(i);
+        for (SearchKeywordResolver resolver : resolvers) {
             if (resolver.isResolverForKeyword(context.getSearchExpressionContext(), keyword)) {
                 resolver.resolve(context, current, keyword);
                 if (context.isKeywordResolved()) {
@@ -59,8 +58,7 @@ public class CompositeSearchKeywordResolver extends SearchKeywordResolver {
 
     @Override
     public boolean isResolverForKeyword(SearchExpressionContext searchExpressionContext, String keyword) {
-        for (int i = 0; i < resolvers.size(); i++) {
-            SearchKeywordResolver resolver = resolvers.get(i);
+        for (SearchKeywordResolver resolver : resolvers) {
             if (resolver.isResolverForKeyword(searchExpressionContext, keyword)) {
                 return true;
             }
@@ -71,8 +69,7 @@ public class CompositeSearchKeywordResolver extends SearchKeywordResolver {
 
     @Override
     public boolean isPassthrough(SearchExpressionContext searchExpressionContext, String keyword) {
-        for (int i = 0; i < resolvers.size(); i++) {
-            SearchKeywordResolver resolver = resolvers.get(i);
+        for (SearchKeywordResolver resolver : resolvers) {
             if (resolver.isResolverForKeyword(searchExpressionContext, keyword)) {
                 return resolver.isPassthrough(searchExpressionContext, keyword);
             }
@@ -83,8 +80,7 @@ public class CompositeSearchKeywordResolver extends SearchKeywordResolver {
 
     @Override
     public boolean isLeaf(SearchExpressionContext searchExpressionContext, String keyword) {
-        for (int i = 0; i < resolvers.size(); i++) {
-            SearchKeywordResolver resolver = resolvers.get(i);
+        for (SearchKeywordResolver resolver : resolvers) {
             if (resolver.isResolverForKeyword(searchExpressionContext, keyword)) {
                 return resolver.isLeaf(searchExpressionContext, keyword);
             }

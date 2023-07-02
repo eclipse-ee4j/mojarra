@@ -196,7 +196,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     @Override
     public String getRequestURI() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (contextPath != null) {
             sb.append(contextPath);
         }
@@ -330,7 +330,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     @Override
     public String getParameter(String name) {
-        String values[] = parameters.get(name);
+        String[] values = parameters.get(name);
         if (values != null) {
             return (values[0]);
         } else {

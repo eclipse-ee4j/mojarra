@@ -29,21 +29,14 @@ public class CopierUtils {
     private static final String ERROR_COPIER_NAME = "The copier name should be a Java valid simple/qualified name.";
     private static final String COPIER_PREFIX = "com.sun.faces.util.copier.";
 
-    private final static Set<String> keywords;
-
-    static {
-        Set<String> s = new HashSet<>();
-        String[] kws = { "abstract", "continue", "for", "new", "switch", "assert", "default", "if", "package", "synchronized", "boolean", "do", "goto",
-                "private", "this", "break", "double", "implements", "protected", "throw", "byte", "else", "import", "public", "throws", "case", "enum",
-                "instanceof", "return", "transient", "catch", "extends", "int", "short", "try", "char", "final", "interface", "static", "void", "class",
-                "finally", "long", "strictfp", "volatile", "const", "float", "native", "super", "while",
-                // literals
-                "null", "true", "false" };
-        for (String kw : kws) {
-            s.add(kw);
-        }
-        keywords = Collections.unmodifiableSet(s);
-    }
+    private final static Set<String> keywords = Set.of(
+        "abstract", "continue", "for", "new", "switch", "assert", "default", "if", "package", "synchronized", "boolean", "do", "goto",
+        "private", "this", "break", "double", "implements", "protected", "throw", "byte", "else", "import", "public", "throws", "case", "enum",
+        "instanceof", "return", "transient", "catch", "extends", "int", "short", "try", "char", "final", "interface", "static", "void", "class",
+        "finally", "long", "strictfp", "volatile", "const", "float", "native", "super", "while",
+        // literals
+        "null", "true", "false"
+    );
 
     public static Copier getCopier(FacesContext context, String copierType) {
         Copier copier = null;

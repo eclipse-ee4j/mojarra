@@ -134,8 +134,11 @@ public abstract class ViewMetadata {
 
     @SuppressWarnings("unchecked")
     private static <C extends UIComponent> List<C> getMetadataChildren(UIViewRoot root, Class<C> type) {
-        return (List<C>) getMetadataFacet(root).map(m -> m.getChildren()).orElseGet(Collections::emptyList).stream().filter(c -> type.isInstance(c))
-                .collect(Collectors.toList());
+        return (List<C>) getMetadataFacet(root).map(UIComponent::getChildren)
+                                               .orElseGet(Collections::emptyList)
+                                               .stream()
+                                               .filter(type::isInstance)
+                                               .collect(Collectors.toList());
     }
 
     private static Optional<UIComponent> getMetadataFacet(UIViewRoot root) {

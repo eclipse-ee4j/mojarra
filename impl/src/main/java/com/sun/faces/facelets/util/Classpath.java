@@ -23,6 +23,7 @@ import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -65,20 +66,20 @@ public final class Classpath {
     }
 
     public static URL[] search(ClassLoader cl, String prefix, String suffix, SearchAdvice advice) throws IOException {
-        Enumeration[] e = new Enumeration[] { cl.getResources(prefix), cl.getResources(prefix + "MANIFEST.MF") };
-        Set all = new LinkedHashSet();
+        Enumeration<URL>[] e = new Enumeration[] { cl.getResources(prefix), cl.getResources(prefix + "MANIFEST.MF") };
+        Set<URL> all = new LinkedHashSet<>();
         URL url;
         URLConnection conn;
         JarFile jarFile;
-        for (int i = 0, s = e.length; i < s; ++i) {
-            while (e[i].hasMoreElements()) {
-                url = (URL) e[i].nextElement();
+        for (Enumeration<URL> enumeration : e) {
+            while (enumeration.hasMoreElements()) {
+                url = enumeration.nextElement();
                 // Defensive programming. Due to issue 13045 this collection
                 // can contain URLs that have their spaces incorrectly escaped
                 // by having %20 replaced with %2520. This quick conditional
                 // check catches this particular case and averts it.
                 String str = url.getPath();
-                if (-1 != str.indexOf("%2520")) {
+                if (str.contains("%2520")) {
                     str = url.toExternalForm();
                     str = str.replace("%2520", "%20");
                     url = new URL(str);
@@ -93,18 +94,18 @@ public final class Classpath {
                 if (jarFile != null) {
                     searchJar(cl, all, jarFile, prefix, suffix, advice);
                 } else {
-                    boolean searchDone = searchDir(all, new File(URLDecoder.decode(url.getFile(), "UTF-8")), suffix);
+                    boolean searchDone = searchDir(all, new File(URLDecoder.decode(url.getFile(), StandardCharsets.UTF_8)), suffix);
                     if (!searchDone) {
                         searchFromURL(all, prefix, suffix, url);
                     }
                 }
             }
         }
-        URL[] urlArray = (URL[]) all.toArray(new URL[all.size()]);
+        URL[] urlArray = all.toArray(new URL[all.size()]);
         return urlArray;
     }
 
-    private static boolean searchDir(Set result, File file, String suffix) throws IOException {
+    private static boolean searchDir(Set<URL> result, File file, String suffix) throws IOException {
         if (file.exists() && file.isDirectory()) {
             File[] fc = file.listFiles();
             String path;
@@ -115,13 +116,13 @@ public final class Classpath {
                 return false;
             }
 
-            for (int i = 0; i < fc.length; i++) {
-                path = fc[i].getAbsolutePath();
-                if (fc[i].isDirectory()) {
-                    searchDir(result, fc[i], suffix);
+            for (File value : fc) {
+                path = value.getAbsolutePath();
+                if (value.isDirectory()) {
+                    searchDir(result, value, suffix);
                 } else if (path.endsWith(suffix)) {
                     // result.add(new URL("file:/" + path));
-                    result.add(fc[i].toURL());
+                    result.add(value.toURL());
                 }
             }
             return true;
@@ -139,7 +140,7 @@ public final class Classpath {
      *
      * @throws IOException for any error
      */
-    private static void searchFromURL(Set result, String prefix, String suffix, URL url) throws IOException {
+    private static void searchFromURL(Set<URL> result, String prefix, String suffix, URL url) throws IOException {
         boolean done = false;
         InputStream is = getInputStream(url);
         if (is != null) {
@@ -190,9 +191,9 @@ public final class Classpath {
      * @return joined tokens
      */
     private static String join(String[] tokens, boolean excludeLast) {
-        StringBuffer join = new StringBuffer();
+        StringBuilder join = new StringBuilder();
         for (int i = 0; i < tokens.length - (excludeLast ? 1 : 0); i++) {
-            join.append(tokens[i]).append("/");
+            join.append(tokens[i]).append('/');
         }
         return join.toString();
     }
@@ -244,7 +245,7 @@ public final class Classpath {
             // And trim off any "file:" prefix.
             if (jarFileUrl.startsWith("file:")) {
                 jarFileUrl = jarFileUrl.substring("file:".length());
-                jarFileUrl = URLDecoder.decode(jarFileUrl, "UTF-8");
+                jarFileUrl = URLDecoder.decode(jarFileUrl, StandardCharsets.UTF_8);
             }
             boolean foundExclusion = false;
             for (int i = 0; i < PREFIXES_TO_EXCLUDE.length; i++) {
@@ -266,19 +267,19 @@ public final class Classpath {
         return null;
     }
 
-    private static void searchJar(ClassLoader cl, Set result, JarFile file, String prefix, String suffix, SearchAdvice advice) throws IOException {
-        Enumeration e = file.entries();
+    private static void searchJar(ClassLoader cl, Set<URL> result, JarFile file, String prefix, String suffix, SearchAdvice advice) throws IOException {
+        Enumeration<JarEntry> e = file.entries();
         JarEntry entry;
         String name;
         while (e.hasMoreElements()) {
             try {
-                entry = (JarEntry) e.nextElement();
+                entry = e.nextElement();
             } catch (Throwable t) {
                 continue;
             }
             name = entry.getName();
             if (name.startsWith(prefix) && name.endsWith(suffix)) {
-                Enumeration e2 = cl.getResources(name);
+                Enumeration<URL> e2 = cl.getResources(name);
                 while (e2.hasMoreElements()) {
                     result.add(e2.nextElement());
                     if (advice == SearchAdvice.FirstMatchOnly) {

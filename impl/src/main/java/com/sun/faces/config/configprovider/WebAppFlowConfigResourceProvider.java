@@ -74,7 +74,7 @@ public class WebAppFlowConfigResourceProvider implements ConfigurationResourcePr
             }
         }
 
-        return null == list ? Collections.EMPTY_LIST : list;
+        return null == list ? Collections.emptyList() : list;
 
     }
 

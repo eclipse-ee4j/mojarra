@@ -54,7 +54,7 @@ public class WebappResourceHelper extends ResourceHelper {
 
     private final String BASE_CONTRACTS_PATH;
 
-    private boolean cacheTimestamp;
+    private final boolean cacheTimestamp;
 
     // ------------------------------------------------------------ Constructors
 
@@ -162,7 +162,7 @@ public class WebappResourceHelper extends ResourceHelper {
         Set<String> resourcePaths = ctx.getExternalContext().getResourcePaths(path);
         // it could be possible that there exists an empty directory
         // that is representing the library, but if it's empty, treat it
-        // as non-existant and return null.
+        // as non-existent and return null.
         if (resourcePaths != null && !resourcePaths.isEmpty()) {
             VersionInfo version = getVersion(resourcePaths, false);
             return new LibraryInfo(libraryName, version, localePrefix, contract, this);

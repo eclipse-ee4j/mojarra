@@ -122,9 +122,9 @@ public class ELText {
 
         @Override
         public String toString(ELContext ctx) {
-            StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < txt.length; i++) {
-                sb.append(txt[i].toString(ctx));
+            StringBuilder sb = new StringBuilder();
+            for (ELText elText : txt) {
+                sb.append(elText.toString(ctx));
             }
             return sb.toString();
         }
@@ -136,9 +136,9 @@ public class ELText {
 
         @Override
         public String toString() {
-            StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < txt.length; i++) {
-                sb.append(txt[i].toString());
+            StringBuilder sb = new StringBuilder();
+            for (ELText elText : txt) {
+                sb.append(elText.toString());
             }
             return sb.toString();
         }
@@ -324,7 +324,7 @@ public class ELText {
         boolean esc = false;
         int vlen = 0;
 
-        StringBuffer buff = new StringBuffer(128);
+        StringBuilder buff = new StringBuilder(128);
         List<ELText> text = new ArrayList<>();
         ELText t = null;
         ValueExpression ve = null;

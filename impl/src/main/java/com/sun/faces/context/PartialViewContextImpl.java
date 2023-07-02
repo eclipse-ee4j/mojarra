@@ -19,8 +19,9 @@ package com.sun.faces.context;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_EXECUTE_PARAM;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_RENDER_PARAM;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_RESET_VALUES_PARAM;
-import static java.util.logging.Level.FINE;
 import static jakarta.faces.FactoryFinder.VISIT_CONTEXT_FACTORY;
+import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.WARNING;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -65,7 +66,7 @@ import jakarta.faces.render.RenderKitFactory;
 public class PartialViewContextImpl extends PartialViewContext {
 
     // Log instance for this class
-    private static Logger LOGGER = FacesLogger.CONTEXT.getLogger();
+    private static final Logger LOGGER = FacesLogger.CONTEXT.getLogger();
 
     private boolean released;
 
@@ -161,7 +162,7 @@ public class PartialViewContextImpl extends PartialViewContext {
     @Override
     public boolean isResetValues() {
         Object value = PARTIAL_RESET_VALUES_PARAM.getValue(ctx);
-        return null != value && "true".equals(value) ? true : false;
+        return Boolean.TRUE.toString().equals(value);
     }
 
     @Override
@@ -564,8 +565,8 @@ public class PartialViewContextImpl extends PartialViewContext {
 
     private static class PhaseAwareVisitCallback implements VisitCallback {
 
-        private PhaseId curPhase;
-        private FacesContext ctx;
+        private final PhaseId curPhase;
+        private final FacesContext ctx;
 
         private PhaseAwareVisitCallback(FacesContext ctx, PhaseId curPhase) {
             this.ctx = ctx;
@@ -620,7 +621,7 @@ public class PartialViewContextImpl extends PartialViewContext {
     private static final class DelayedInitPartialResponseWriter extends PartialResponseWriter {
 
         private ResponseWriter writer;
-        private PartialViewContextImpl ctx;
+        private final PartialViewContextImpl ctx;
 
         // -------------------------------------------------------- Constructors
 
@@ -629,9 +630,15 @@ public class PartialViewContextImpl extends PartialViewContext {
             super(null);
             this.ctx = ctx;
             ExternalContext extCtx = ctx.ctx.getExternalContext();
-            extCtx.setResponseContentType(RIConstants.TEXT_XML_CONTENT_TYPE);
-            extCtx.setResponseCharacterEncoding(extCtx.getRequestCharacterEncoding());
-            extCtx.setResponseBufferSize(ctx.ctx.getExternalContext().getResponseBufferSize());
+            
+            if (extCtx.isResponseCommitted()) {
+                LOGGER.log(WARNING, "Response is already committed - cannot reconfigure it anymore");
+            }
+            else {
+                extCtx.setResponseContentType(RIConstants.TEXT_XML_CONTENT_TYPE);
+                extCtx.setResponseCharacterEncoding(extCtx.getRequestCharacterEncoding());
+                extCtx.setResponseBufferSize(extCtx.getResponseBufferSize());
+            }
         }
 
         // ---------------------------------- Methods from PartialResponseWriter

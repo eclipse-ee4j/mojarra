@@ -17,6 +17,7 @@
 package jakarta.faces.component;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 
 import jakarta.faces.context.FacesContext;
 
@@ -99,9 +100,6 @@ class StateHolderSaver implements Serializable {
      */
 
     public Object restore(FacesContext context) throws IllegalStateException {
-        Object result = null;
-        Class<?> toRestoreClass;
-
         // if the Object to save implemented Serializable but not
         // StateHolder
         if (null == className && null != savedState) {
@@ -115,6 +113,8 @@ class StateHolderSaver implements Serializable {
         }
 
         // else the object to save did implement StateHolder
+        final Object result;
+        final Class<?> toRestoreClass;
 
         try {
             toRestoreClass = loadClass(className, this);
@@ -122,17 +122,13 @@ class StateHolderSaver implements Serializable {
             throw new IllegalStateException(e);
         }
 
-        if (null != toRestoreClass) {
-            try {
-                result = toRestoreClass.newInstance();
-            } catch (InstantiationException e) {
-                throw new IllegalStateException(e);
-            } catch (IllegalAccessException a) {
-                throw new IllegalStateException(a);
-            }
+        try {
+            result = toRestoreClass.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            throw new IllegalStateException(e);
         }
 
-        if (null != result && null != savedState && result instanceof StateHolder) {
+        if (null != savedState && result instanceof StateHolder) {
             // don't need to check transient, since that was done on
             // the saving side.
             Serializable[] tuple = (Serializable[]) savedState;
