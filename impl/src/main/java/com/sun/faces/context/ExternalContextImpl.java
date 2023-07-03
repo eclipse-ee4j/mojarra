@@ -19,8 +19,8 @@ package com.sun.faces.context;
 
 import static com.sun.faces.RIConstants.PUSH_RESOURCE_URLS_KEY_NAME;
 import static com.sun.faces.context.ContextParam.SendPoweredByHeader;
-import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
-import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
+import static com.sun.faces.context.UrlBuilder.PROTOCOL_SEPARATOR;
+import static com.sun.faces.context.UrlBuilder.WEBSOCKER_PROTOCOL;
 import static com.sun.faces.util.Util.isEmpty;
 
 import java.io.IOException;
@@ -520,8 +520,7 @@ public class ExternalContextImpl extends ExternalContext {
             if (null != cw) {
                 String clientWindowId = cw.getId();
                 StringBuilder builder = new StringBuilder(url);
-                int q = url.indexOf(UrlBuilder.QUERY_STRING_SEPARATOR);
-                if (-1 == q) {
+                if ( !url.contains(UrlBuilder.QUERY_STRING_SEPARATOR) ) {
                     builder.append(UrlBuilder.QUERY_STRING_SEPARATOR);
                 } else {
                     builder.append(UrlBuilder.PARAMETER_PAIR_SEPARATOR);
@@ -547,9 +546,7 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public String encodeResourceURL(String url) {
-        if (url == null) {
-            throw new NullPointerException(getExceptionMessageString(NULL_PARAMETERS_ERROR_MESSAGE_ID, "url"));
-        }
+        Util.notNull("url", url);
 
         String result = ((HttpServletResponse) response).encodeURL(url);
         pushIfPossibleAndNecessary(result);
@@ -562,23 +559,29 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public String encodeWebsocketURL(String url) {
-        if (url == null) {
-            throw new NullPointerException(getExceptionMessageString(NULL_PARAMETERS_ERROR_MESSAGE_ID, "url"));
-        }
+        Util.notNull("url", url);
 
         HttpServletRequest request = (HttpServletRequest) getRequest();
         int port = ContextParamUtils.getValue(servletContext, ContextParam.WebsocketEndpointPort, Integer.class);
 
         try {
-            URL requestURL = new URL(request.getRequestURL().toString());
+            final URL requestURL = new URL(request.getRequestURL().toString());
 
             if (port <= 0) {
                 port = requestURL.getPort();
             }
 
-            String websocketURL = new URL(requestURL.getProtocol(), requestURL.getHost(), port, url).toExternalForm();
-            return encodeResourceURL(websocketURL.replaceFirst("http", "ws"));
-        } catch (MalformedURLException e) {
+            final String fixedPortRequestURL = new URL(requestURL.getProtocol(), requestURL.getHost(), port, url).toExternalForm();
+
+            // the index after http or https ...
+            int protocolEndIndex = fixedPortRequestURL.indexOf(PROTOCOL_SEPARATOR);
+
+            // ws://[...]
+            final String websocketURL = WEBSOCKER_PROTOCOL + fixedPortRequestURL.substring(protocolEndIndex);
+
+            return encodeResourceURL( websocketURL );
+        }
+        catch (MalformedURLException e) {
             return url;
         }
     }
