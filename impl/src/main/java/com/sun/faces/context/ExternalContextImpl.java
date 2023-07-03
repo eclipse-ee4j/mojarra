@@ -20,7 +20,7 @@ package com.sun.faces.context;
 import static com.sun.faces.RIConstants.PUSH_RESOURCE_URLS_KEY_NAME;
 import static com.sun.faces.context.ContextParam.SendPoweredByHeader;
 import static com.sun.faces.context.UrlBuilder.PROTOCOL_SEPARATOR;
-import static com.sun.faces.context.UrlBuilder.WEBSOCKER_PROTOCOL;
+import static com.sun.faces.context.UrlBuilder.WEBSOCKET_PROTOCOL;
 import static com.sun.faces.util.Util.isEmpty;
 
 import java.io.IOException;
@@ -577,7 +577,7 @@ public class ExternalContextImpl extends ExternalContext {
             int protocolEndIndex = fixedPortRequestURL.indexOf(PROTOCOL_SEPARATOR);
 
             // ws://[...]
-            final String websocketURL = WEBSOCKER_PROTOCOL + fixedPortRequestURL.substring(protocolEndIndex);
+            final String websocketURL = WEBSOCKET_PROTOCOL + fixedPortRequestURL.substring(protocolEndIndex);
 
             return encodeResourceURL( websocketURL );
         }

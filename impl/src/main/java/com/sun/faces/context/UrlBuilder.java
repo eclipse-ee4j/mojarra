@@ -52,7 +52,7 @@ class UrlBuilder {
     public static final String FRAGMENT_SEPARATOR = "#";
     public static final char FRAGMENT_SEPARATOR_CHAR = FRAGMENT_SEPARATOR.charAt(0);
     public static final String DEFAULT_ENCODING = UTF_8.name();
-    public static final String WEBSOCKER_PROTOCOL = "ws";
+    public static final String WEBSOCKET_PROTOCOL = "ws";
     public static final String PROTOCOL_SEPARATOR = "://";
 
     private final StringBuilder url;
