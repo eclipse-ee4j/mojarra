@@ -248,7 +248,7 @@ public class FacesContextImpl extends FacesContext {
     @Override
     public Iterator<String> getClientIdsWithMessages() {
         assertNotReleased();
-        return componentMessageLists == null ? Collections.<String>emptyList().iterator() : componentMessageLists.keySet().iterator();
+        return componentMessageLists == null ? Collections.emptyIterator() : componentMessageLists.keySet().iterator();
     }
 
     /**
@@ -316,15 +316,13 @@ public class FacesContextImpl extends FacesContext {
     public Iterator<FacesMessage> getMessages() {
         assertNotReleased();
         if (null == componentMessageLists) {
-            List<FacesMessage> emptyList = Collections.emptyList();
-            return emptyList.iterator();
+            return Collections.emptyIterator();
         }
 
         if (componentMessageLists.size() > 0) {
             return new ComponentMessagesIterator(componentMessageLists);
         } else {
-            List<FacesMessage> emptyList = Collections.emptyList();
-            return emptyList.iterator();
+            return Collections.emptyIterator();
         }
     }
 
@@ -338,14 +336,12 @@ public class FacesContextImpl extends FacesContext {
         // If no messages have been enqueued at all,
         // return an empty List Iterator
         if (null == componentMessageLists) {
-            List<FacesMessage> emptyList = Collections.emptyList();
-            return emptyList.iterator();
+            return Collections.emptyIterator();
         }
 
         List<FacesMessage> list = componentMessageLists.get(clientId);
         if (list == null) {
-            List<FacesMessage> emptyList = Collections.emptyList();
-            return emptyList.iterator();
+            return Collections.emptyIterator();
         }
         return list.iterator();
     }
@@ -470,12 +466,8 @@ public class FacesContextImpl extends FacesContext {
         }
 
         // Add this message to our internal queue
-        List<FacesMessage> list = componentMessageLists.get(clientId);
-        if (list == null) {
-            list = new ArrayList<>();
-            componentMessageLists.put(clientId, list);
-        }
-        list.add(message);
+        componentMessageLists.computeIfAbsent(clientId, k -> new ArrayList<>()).add(message);
+
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("Adding Message[sourceId=" + (clientId != null ? clientId : "<<NONE>>") + ",summary=" + message.getSummary() + ")");
         }
@@ -654,11 +646,11 @@ public class FacesContextImpl extends FacesContext {
 
     private static final class ComponentMessagesIterator implements Iterator<FacesMessage> {
 
-        private Map<String, List<FacesMessage>> messages;
+        private final Map<String, List<FacesMessage>> messages;
         private int outerIndex = -1;
-        private int messagesSize;
+        private final int messagesSize;
         private Iterator<FacesMessage> inner;
-        private Iterator<String> keys;
+        private final Iterator<String> keys;
 
         // ------------------------------------------------------- Constructors
 

@@ -43,7 +43,7 @@ public class CloneCopier implements Copier {
 
             Method cloneMethod = getMethod(object, "clone");
 
-            if (!cloneMethod.isAccessible()) {
+            if (!cloneMethod.canAccess(object)) {
                 cloneMethod.setAccessible(true);
             }
 

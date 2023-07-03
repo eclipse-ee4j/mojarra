@@ -51,7 +51,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
     @Override
     public Method resolveFunction(String prefix, String localName) {
         if (functions != null) {
-            Function f = (Function) functions.get(prefix + ":" + localName);
+            Function f = (Function) functions.get(prefix + ':' + localName);
             return f.getMethod();
         }
         return null;
@@ -63,7 +63,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
         }
         Function f = new Function(prefix, localName, m);
         synchronized (this) {
-            functions.put(prefix + ":" + localName, f);
+            functions.put(prefix + ':' + localName, f);
         }
     }
 
@@ -89,7 +89,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer(128);
+        StringBuilder sb = new StringBuilder(128);
         sb.append("FunctionMapper[\n");
         for (Iterator itr = functions.values().iterator(); itr.hasNext();) {
             sb.append(itr.next()).append('\n');
@@ -215,7 +215,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
 
         @Override
         public String toString() {
-            StringBuffer sb = new StringBuffer(32);
+            StringBuilder sb = new StringBuilder(32);
             sb.append("Function[");
             if (prefix != null) {
                 sb.append(prefix).append(':');

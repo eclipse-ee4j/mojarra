@@ -22,7 +22,7 @@ import jakarta.faces.context.FacesContext;
 
 public class AjaxNoAjaxExceptionHandler extends ExceptionHandlerWrapper {
 
-    private AjaxExceptionHandlerImpl ajaxExceptionHandlerImpl;
+    private final AjaxExceptionHandlerImpl ajaxExceptionHandlerImpl;
 
     public AjaxNoAjaxExceptionHandler(AjaxExceptionHandlerImpl ajaxExceptionHandlerImpl, ExceptionHandlerImpl exceptionHandlerImpl) {
         super(exceptionHandlerImpl);

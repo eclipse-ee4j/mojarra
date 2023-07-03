@@ -19,8 +19,8 @@ package com.sun.faces.application.view;
 
 import static com.sun.faces.RIConstants.FACELETS_ENCODING_KEY;
 import static com.sun.faces.RIConstants.SAVESTATE_FIELD_MARKER;
-import static com.sun.faces.renderkit.RenderKitUtils.getResponseStateManager;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.RENDER_KIT_ID_PARAM;
+import static com.sun.faces.renderkit.RenderKitUtils.getResponseStateManager;
 import static com.sun.faces.util.MessageUtils.ILLEGAL_VIEW_ID_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.Util.getFacesMapping;
@@ -85,10 +85,10 @@ public class MultiViewHandler extends ViewHandler {
     // Log instance for this class
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
-    private List<String> configuredExtensions;
-    private Set<String> protectedViews;
+    private final List<String> configuredExtensions;
+    private final Set<String> protectedViews;
 
-    private ViewDeclarationLanguageFactory vdlFactory;
+    private final ViewDeclarationLanguageFactory vdlFactory;
 
     // ------------------------------------------------------------ Constructors
 
@@ -582,11 +582,7 @@ public class MultiViewHandler extends ViewHandler {
             }
 
             if (value != null) {
-                List<String> existing = existingParameters.get(viewParam.getName());
-                if (existing == null) {
-                    existing = new ArrayList<>(4);
-                    existingParameters.put(viewParam.getName(), existing);
-                }
+                List<String> existing = existingParameters.computeIfAbsent(viewParam.getName(), k -> new ArrayList<>(4));
                 existing.add(value);
             }
         }

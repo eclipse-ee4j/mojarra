@@ -860,7 +860,7 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
     private int getProperChildIndex(UIComponent component) {
         int result = -1;
 
-        if (component.getParent().getChildren().indexOf(component) != -1) {
+        if (component.getParent().getChildren().contains(component)) {
             UIComponent parent = component.getParent();
             int index = 0;
             Iterator<UIComponent> iterator = parent.getChildren().iterator();

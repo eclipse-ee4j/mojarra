@@ -75,17 +75,17 @@ public class FacesConfigExtensionProcessor extends AbstractConfigProcessor {
     @Override
     public void process(ServletContext sc, FacesContext facesContext, DocumentInfo[] documentInfos) throws Exception {
 
-        for (int i = 0; i < documentInfos.length; i++) {
+        for (DocumentInfo documentInfo : documentInfos) {
             if (LOGGER.isLoggable(FINE)) {
-                LOGGER.log(FINE, format("Processing faces-config-extension elements for document: ''{0}''", documentInfos[i].getSourceURI()));
+                LOGGER.log(FINE, format("Processing faces-config-extension elements for document: ''{0}''", documentInfo.getSourceURI()));
             }
 
-            Document document = documentInfos[i].getDocument();
+            Document document = documentInfo.getDocument();
             String namespace = document.getDocumentElement().getNamespaceURI();
             NodeList facesConfigExtensions = document.getDocumentElement().getElementsByTagNameNS(namespace, FACES_CONFIG_EXTENSION);
 
             if (facesConfigExtensions != null && facesConfigExtensions.getLength() > 0) {
-                processFacesConfigExtensions(facesConfigExtensions, namespace, documentInfos[i]);
+                processFacesConfigExtensions(facesConfigExtensions, namespace, documentInfo);
             }
         }
 

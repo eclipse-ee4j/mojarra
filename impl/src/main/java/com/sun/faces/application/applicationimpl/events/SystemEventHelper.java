@@ -31,7 +31,7 @@ public class SystemEventHelper {
 
     public SystemEventHelper() {
 
-        systemEventInfoCache = new Cache<>(arg -> new SystemEventInfo(arg));
+        systemEventInfoCache = new Cache<>(SystemEventInfo::new);
 
     }
 

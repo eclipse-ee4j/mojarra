@@ -16,9 +16,9 @@
 
 package com.sun.faces.application.resource;
 
-import static com.sun.faces.config.WebConfiguration.META_INF_CONTRACTS_DIR;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.CacheResourceModificationTimestamp;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableMissingResourceLibraryDetection;
+import static com.sun.faces.config.WebConfiguration.META_INF_CONTRACTS_DIR;
 import static jakarta.faces.application.ProjectStage.Development;
 
 import java.io.IOException;
@@ -27,7 +27,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.util.Util;
@@ -47,9 +46,9 @@ import jakarta.faces.context.FacesContext;
 public class ClasspathResourceHelper extends ResourceHelper {
 
     private static final String BASE_RESOURCE_PATH = "META-INF/resources";
-    private boolean cacheTimestamp;
+    private final boolean cacheTimestamp;
     private volatile ZipDirectoryEntryScanner libraryScanner;
-    private boolean enableMissingResourceLibraryDetection;
+    private final boolean enableMissingResourceLibraryDetection;
 
     // ------------------------------------------------------------ Constructors
 

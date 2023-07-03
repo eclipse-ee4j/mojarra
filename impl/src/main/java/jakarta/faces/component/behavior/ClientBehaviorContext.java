@@ -18,6 +18,7 @@ package jakarta.faces.component.behavior;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -137,33 +138,24 @@ public abstract class ClientBehaviorContext {
 
     // Little static member class that provides a default implementation
     private static final class ClientBehaviorContextImpl extends ClientBehaviorContext {
-        private FacesContext context;
-        private UIComponent component;
-        private String eventName;
-        private String sourceId;
-        private Collection<ClientBehaviorContext.Parameter> parameters;
+        private final FacesContext context;
+        private final UIComponent component;
+        private final String eventName;
+        private final String sourceId;
+        private final Collection<ClientBehaviorContext.Parameter> parameters;
 
         private ClientBehaviorContextImpl(FacesContext context, UIComponent component, String eventName, String sourceId,
                 Collection<ClientBehaviorContext.Parameter> parameters) {
 
-            if (null == context) {
-                throw new NullPointerException();
-            }
-
-            if (null == component) {
-                throw new NullPointerException();
-            }
-
-            if (null == eventName) {
-                throw new NullPointerException();
-            }
+            Objects.requireNonNull(context);
+            Objects.requireNonNull(component);
+            Objects.requireNonNull(eventName);
 
             this.context = context;
             this.component = component;
             this.eventName = eventName;
             this.sourceId = sourceId;
-
-            this.parameters = parameters == null ? Collections.<ClientBehaviorContext.Parameter>emptyList() : parameters;
+            this.parameters = parameters == null ? Collections.emptyList() : parameters;
         }
 
         @Override
@@ -203,8 +195,8 @@ public abstract class ClientBehaviorContext {
      */
     public static class Parameter {
 
-        private String name;
-        private Object value;
+        private final String name;
+        private final Object value;
 
         /**
          * <p class="changed_added_2_0">

@@ -37,8 +37,8 @@ import jakarta.servlet.ServletContext;
  */
 public class FindConfigResourceURIsTask implements Callable<Collection<URI>> {
 
-    private ConfigurationResourceProvider provider;
-    private ServletContext servletContext;
+    private final ConfigurationResourceProvider provider;
+    private final ServletContext servletContext;
 
     // -------------------------------------------------------- Constructors
 
@@ -63,7 +63,7 @@ public class FindConfigResourceURIsTask implements Callable<Collection<URI>> {
     @SuppressWarnings("unchecked")
     @Override
     public Collection<URI> call() throws Exception {
-        Collection<?> untypedCollection = provider.getResources(servletContext);
+        Collection<URI> untypedCollection = provider.getResources(servletContext);
         Iterator<?> untypedCollectionIterator = untypedCollection.iterator();
 
         Collection<URI> result = emptyList();
@@ -80,7 +80,7 @@ public class FindConfigResourceURIsTask implements Callable<Collection<URI>> {
                     result.add(new URI(((URL) cur).toExternalForm()));
                 }
             } else {
-                result = (Collection<URI>) untypedCollection;
+                result = untypedCollection;
             }
         }
 

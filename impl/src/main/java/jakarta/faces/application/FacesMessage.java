@@ -433,7 +433,7 @@ public class FacesMessage implements Serializable {
         @Override
         public String toString() {
             if (severityName == null) {
-                return String.valueOf(ordinal);
+                return Integer.toString(ordinal);
             }
 
             return severityName + ' ' + ordinal;

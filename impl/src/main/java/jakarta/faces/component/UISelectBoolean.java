@@ -76,12 +76,8 @@ public class UISelectBoolean extends UIInput {
      * @return true if selected, false otherwise.
      */
     public boolean isSelected() {
-        Boolean value = (Boolean) getValue();
-        if (value != null) {
-            return value.booleanValue();
-        }
 
-        return false;
+        return Boolean.TRUE.equals(getValue());
     }
 
     /**

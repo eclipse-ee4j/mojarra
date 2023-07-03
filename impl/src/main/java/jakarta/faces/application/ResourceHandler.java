@@ -722,7 +722,7 @@ public abstract class ResourceHandler {
      */
     @SuppressWarnings("unchecked")
     public void markResourceRendered(FacesContext context, String resourceName, String libraryName) {
-        String resourceIdentifier = libraryName + ":" + resourceName;
+        String resourceIdentifier = libraryName + ':' + resourceName;
         Set<String> resourceIdentifiers = (Set<String>) context.getAttributes().computeIfAbsent(RESOURCE_IDENTIFIER, k -> new HashSet<>());
         resourceIdentifiers.add(resourceIdentifier);
     }
@@ -742,7 +742,7 @@ public abstract class ResourceHandler {
      */
     @SuppressWarnings("unchecked")
     public boolean isResourceRendered(FacesContext context, String resourceName, String libraryName) {
-        String resourceIdentifier = libraryName + ":" + resourceName;
+        String resourceIdentifier = libraryName + ':' + resourceName;
         Set<String> resourceIdentifiers = (Set<String>) context.getAttributes().get(RESOURCE_IDENTIFIER);
         return resourceIdentifiers != null && resourceIdentifiers.contains(resourceIdentifier);
     }

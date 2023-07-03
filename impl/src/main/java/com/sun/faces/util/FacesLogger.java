@@ -16,14 +16,14 @@
 
 package com.sun.faces.util;
 
-import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.context.FacesContext;
-
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
+
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
 
 /**
  * An <code>enum</code> of all application <code>Logger</code>s.
@@ -38,7 +38,7 @@ public enum FacesLogger {
 
     private static final String LOGGER_RESOURCES = "com.sun.faces.LogStrings";
     public static final String FACES_LOGGER_NAME_PREFIX = "jakarta.enterprise.resource.webcontainer.faces.";
-    private String loggerName;
+    private final String loggerName;
 
     FacesLogger(String loggerName) {
         this.loggerName = FACES_LOGGER_NAME_PREFIX + loggerName;

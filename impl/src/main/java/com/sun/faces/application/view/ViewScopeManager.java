@@ -76,9 +76,9 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
     /**
      * Stores the CDI context manager.
      */
-    private ViewScopeContextManager contextManager;
+    private final ViewScopeContextManager contextManager;
 
-    private boolean distributable;
+    private final boolean distributable;
     
     private Integer numberOfActiveViewMapsInWebXml;
 

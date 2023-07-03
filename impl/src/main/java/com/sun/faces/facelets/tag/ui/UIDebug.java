@@ -80,7 +80,7 @@ public final class UIDebug extends UIComponentBase {
             pushComponentToEL(facesContext, this);
             String actionId = facesContext.getApplication().getViewHandler().getActionURL(facesContext, facesContext.getViewRoot().getViewId());
 
-            StringBuffer sb = new StringBuffer(512);
+            StringBuilder sb = new StringBuilder(512);
             sb.append("//<![CDATA[\n");
             sb.append("function faceletsDebugWindow(URL) {");
             sb.append("day = new Date();");
@@ -89,8 +89,9 @@ public final class UIDebug extends UIComponentBase {
                     "eval(\"page\" + id + \" = window.open(URL, '\" + id + \"', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=800,height=600,left = 240,top = 212');\"); };");
             sb.append("(function() { if (typeof faceletsDebug === 'undefined') { var faceletsDebug = false; } if (!faceletsDebug) {");
             sb.append("var faceletsOrigKeyup = document.onkeyup;");
-            sb.append("document.onkeyup = function(e) { if (window.event) e = window.event; if (String.fromCharCode(e.keyCode) == '" + getHotkey()
-                    + "' & e.shiftKey & e.ctrlKey) faceletsDebugWindow('");
+            sb.append("document.onkeyup = function(e) { if (window.event) e = window.event; if (String.fromCharCode(e.keyCode) == '")
+              .append(getHotkey())
+              .append("' & e.shiftKey & e.ctrlKey) faceletsDebugWindow('");
             sb.append(actionId);
             sb.append(actionId.indexOf('?') == -1 ? '?' : '&');
             sb.append(KEY);
@@ -133,7 +134,7 @@ public final class UIDebug extends UIComponentBase {
             };
         }
         session.put(KEY, debugs);
-        String id = "" + nextId++;
+        String id = String.valueOf(nextId++);
         debugs.put(id, fw.toString());
         return id;
     }

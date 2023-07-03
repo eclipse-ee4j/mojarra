@@ -70,7 +70,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
     List<Pattern> excludePatterns;
     private long creationTime;
     private long maxAge;
-    private WebConfiguration webconfig;
+    private final WebConfiguration webconfig;
 
     // ------------------------------------------------------------ Constructors
 
@@ -203,7 +203,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
     @Override
     public boolean isResourceRequest(FacesContext context) {
 
-        Boolean isResourceRequest = (Boolean) RequestStateManager.get(context, RESOURCE_REQUEST);
+        Boolean isResourceRequest = RequestStateManager.get(context, RESOURCE_REQUEST);
         if (isResourceRequest == null) {
             String resourceId = normalizeResourceRequest(context);
             isResourceRequest = resourceId != null ? resourceId.startsWith(RESOURCE_IDENTIFIER) : FALSE;
@@ -220,9 +220,9 @@ public class ResourceHandlerImpl extends ResourceHandler {
         String contentType = getContentType(FacesContext.getCurrentInstance(), resourceName);
         if (null != contentType) {
             contentType = contentType.toLowerCase();
-            if (-1 != contentType.indexOf("javascript")) {
+            if (contentType.contains("javascript")) {
                 rendererType = "jakarta.faces.resource.Script";
-            } else if (-1 != contentType.indexOf("css")) {
+            } else if (contentType.contains("css")) {
                 rendererType = "jakarta.faces.resource.Stylesheet";
             }
         }
