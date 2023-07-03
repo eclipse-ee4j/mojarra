@@ -246,6 +246,6 @@ public class PhaseId implements Comparable {
      * Valid {@link PhaseId} instances, mapped by their uppercase name
      * </p>
      */
-    public static final Map<String,PhaseId> VALUES_BY_NAME = unmodifiableMap(Stream.of(values).collect(toMap( phase -> phase.getName().toUpperCase() , identity())));
+    private static final Map<String,PhaseId> VALUES_BY_NAME = unmodifiableMap(Stream.of(values).collect(toMap( phase -> phase.getName().toUpperCase() , identity())));
 
 }
