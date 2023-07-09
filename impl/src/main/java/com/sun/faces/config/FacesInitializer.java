@@ -27,8 +27,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.sun.faces.util.Util;
-
 import jakarta.faces.annotation.FacesConfig;
 import jakarta.faces.application.ResourceDependencies;
 import jakarta.faces.application.ResourceDependency;
@@ -106,7 +104,6 @@ public class FacesInitializer implements ServletContainerInitializer {
         if (appHasFacesContent || appHasFacesServlet) {
             addAnnotatedClasses(classes, servletContext);
             InitFacesContext initFacesContext = new InitFacesContext(servletContext);
-            Util.getCdiBeanManager(initFacesContext); // #5232 Fail fast when CDI is really not available.
 
             try {
                 if (appHasFacesContent) {
