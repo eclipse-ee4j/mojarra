@@ -404,7 +404,9 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 getSession(ctx);
             }
 
-            stateWriter = new WriteBehindStateWriter(extContext.getResponseOutputWriter(), ctx, responseBufferSize);
+            // If the buffer size is -1, use the default buffer size
+            final int bufferSize = responseBufferSize != -1 ? responseBufferSize : Integer.parseInt(FaceletsBufferSize.getDefaultValue());
+            stateWriter = new WriteBehindStateWriter(extContext.getResponseOutputWriter(), ctx, bufferSize);
 
             ResponseWriter writer = origWriter.cloneWithWriter(stateWriter);
             ctx.setResponseWriter(writer);
@@ -888,8 +890,10 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             throw new IllegalStateException("No render kit was available for id \"" + id + "\"");
         }
 
-        // set the buffer for content
-        extContext.setResponseBufferSize(responseBufferSize);
+        // set the buffer for content, -1 indicates nothing should be set.
+        if (responseBufferSize != -1) {
+            extContext.setResponseBufferSize(responseBufferSize);
+        }
 
         // get our content type
         String contentType = (String) context.getAttributes().get("facelets.ContentType");

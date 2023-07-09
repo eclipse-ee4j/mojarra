@@ -25,7 +25,9 @@ import static java.util.logging.Level.INFO;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.FutureTask;
@@ -86,17 +88,20 @@ public class Documents {
         // Load and XML parse all documents to which the URLs that we collected above point to
 
         List<FutureTask<DocumentInfo>> docTasks = new ArrayList<>(providers.size() << 1);
+        Set<URI> processedUris = new HashSet<>();
 
         for (FutureTask<Collection<URI>> uriTask : uriTasks) {
             try {
                 for (URI uri : uriTask.get()) {
-                    FutureTask<DocumentInfo> docTask = new FutureTask<>(new ParseConfigResourceToDOMTask(servletContext, validating, uri));
-                    docTasks.add(docTask);
-
-                    if (executor != null) {
-                        executor.execute(docTask);
-                    } else {
-                        docTask.run();
+                    if (processedUris.add(uri)) {
+                        FutureTask<DocumentInfo> docTask = new FutureTask<>(new ParseConfigResourceToDOMTask(servletContext, validating, uri));
+                        docTasks.add(docTask);
+                        
+                        if (executor != null) {
+                            executor.execute(docTask);
+                        } else {
+                            docTask.run();
+                        }
                     }
                 }
             } catch (InterruptedException ignored) {

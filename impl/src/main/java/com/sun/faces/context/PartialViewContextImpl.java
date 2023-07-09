@@ -20,6 +20,7 @@ import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_RENDER_PARAM;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_RESET_VALUES_PARAM;
 import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.WARNING;
 import static jakarta.faces.FactoryFinder.VISIT_CONTEXT_FACTORY;
 
 import java.io.IOException;
@@ -629,9 +630,15 @@ public class PartialViewContextImpl extends PartialViewContext {
             super(null);
             this.ctx = ctx;
             ExternalContext extCtx = ctx.ctx.getExternalContext();
-            extCtx.setResponseContentType(RIConstants.TEXT_XML_CONTENT_TYPE);
-            extCtx.setResponseCharacterEncoding(extCtx.getRequestCharacterEncoding());
-            extCtx.setResponseBufferSize(ctx.ctx.getExternalContext().getResponseBufferSize());
+            
+            if (extCtx.isResponseCommitted()) {
+                LOGGER.log(WARNING, "Response is already committed - cannot reconfigure it anymore");
+            }
+            else {
+                extCtx.setResponseContentType(RIConstants.TEXT_XML_CONTENT_TYPE);
+                extCtx.setResponseCharacterEncoding(extCtx.getRequestCharacterEncoding());
+                extCtx.setResponseBufferSize(extCtx.getResponseBufferSize());
+            }
         }
 
         // ---------------------------------- Methods from PartialResponseWriter
