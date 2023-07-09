@@ -17,15 +17,17 @@
 
 package jakarta.faces.application;
 
+import static java.util.Arrays.stream;
 import static java.util.Collections.unmodifiableMap;
+import static java.util.stream.Collectors.toMap;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * <p>
@@ -70,6 +72,8 @@ import java.util.Map;
 public class FacesMessage implements Serializable {
 
     // --------------------------------------------------------------- Constants
+
+    private static final long serialVersionUID = -1180773928220076822L;
 
     /**
      * <p>
@@ -135,22 +139,12 @@ public class FacesMessage implements Serializable {
      */
     public static final List VALUES = List.of(values);
 
-    private static final Map<String, Severity> _MODIFIABLE_MAP = new HashMap<>(4, 1.0f);
-
-    static {
-        for (Severity value : values) {
-            _MODIFIABLE_MAP.put(value.severityName, value);
-        }
-    }
-
     /**
      * <p>
      * Immutable <code>Map</code> of valid {@link jakarta.faces.application.FacesMessage.Severity} instances, keyed by name.
      * </p>
      */
-    public final static Map VALUES_MAP = unmodifiableMap(_MODIFIABLE_MAP);
-
-    private static final long serialVersionUID = -1180773928220076822L;
+    public final static Map VALUES_MAP = unmodifiableMap(stream(values).collect(toMap(severity -> severity.severityName , Function.identity())));
 
     // ------------------------------------------------------ Instance Variables
 
