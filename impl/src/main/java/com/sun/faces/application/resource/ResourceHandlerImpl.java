@@ -342,8 +342,20 @@ public class ResourceHandlerImpl extends ResourceHandler {
 
     private static boolean isConnectionAbort(IOException ioe) {
         String exceptionClassName = ioe.getClass().getCanonicalName();
-        return exceptionClassName.equals("org.apache.catalina.connector.ClientAbortException") ||
-               exceptionClassName.equals("org.eclipse.jetty.io.EofException");
+
+        if (exceptionClassName.equals("org.apache.catalina.connector.ClientAbortException") ||
+                exceptionClassName.equals("org.eclipse.jetty.io.EofException")) {
+            return true;
+        }
+
+        String exceptionMessage = ioe.getMessage();
+
+        if (exceptionMessage == null) {
+            return false;
+        }
+
+        String lowercasedExceptionMessage = exceptionMessage.toLowerCase();
+        return lowercasedExceptionMessage.contains("connection") && lowercasedExceptionMessage.contains("abort"); // #5264
     }
 
     private boolean libraryNameIsSafe(String libraryName) {
