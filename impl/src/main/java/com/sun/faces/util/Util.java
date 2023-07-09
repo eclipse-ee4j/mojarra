@@ -416,13 +416,6 @@ public class Util {
     }
 
     /**
-     * @return null if the passed String is null, empty or blank
-     */
-    public static String nullIfBlank(String s) {
-        return s == null || s.length() == 0 || s.trim().length() == 0 ? null : s;
-    }
-
-    /**
      * @return the filename extension or null. the method is null-safe
      */
     public static String fileExtension(String filename) {
@@ -528,6 +521,23 @@ public class Util {
      */
     public static boolean isEmpty(String string) {
         return string == null || string.isEmpty();
+    }
+
+    /**
+     * Returns true if the given string is null or is blank.
+     *
+     * @param string The string to be checked.
+     * @return True if the given string is null or is blank.
+     */
+    public static boolean isBlank(String string) {
+        return string == null || string.isBlank();
+    }
+
+    /**
+     * @return null if the passed String is null or blank, s otherwise
+     */
+    public static String nullIfBlank(String s) {
+        return isBlank(s) ? null : s;
     }
 
     /**

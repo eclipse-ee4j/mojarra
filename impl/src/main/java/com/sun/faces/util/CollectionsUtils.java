@@ -16,6 +16,8 @@
 
 package com.sun.faces.util;
 
+import jakarta.faces.model.SelectItem;
+
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableMap;
 
@@ -25,6 +27,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * @author asmirnov@exadel.com
@@ -73,17 +76,31 @@ public class CollectionsUtils {
     }
 
     /**
-     * @return an Iterator over the passed Iterator with no remove support
+     * @return an unmodifiable Iterator over the passed typed array
      */
-    public static <T> Iterator<T> unmodifiableIterator(Iterator<T> iterator) {
-        return new UnmodifiableIterator<>(iterator);
+    public static <T> Iterator<T> asIterator(T[] items) {
+        return unmodifiableIterator(Stream.of(items).iterator());
+    }
+
+    /**
+     * @return an unmodifiable Iterator over the passed array of SelectItem
+     */
+    public static <T extends SelectItem> Iterator<T> asIterator(T[] items) {
+        return unmodifiableIterator(Stream.of(items).iterator());
     }
 
     /**
      * @return an Iterator over the passed Enumeration with no remove support
      */
     public static <T> Iterator<T> unmodifiableIterator(Enumeration<T> enumeration) {
-        return new UnmodifiableIterator<>(enumeration.asIterator());
+        return unmodifiableIterator(enumeration.asIterator());
+    }
+
+    /**
+     * @return an Iterator over the passed Iterator with no remove support
+     */
+    public static <T> Iterator<T> unmodifiableIterator(Iterator<T> iterator) {
+        return new UnmodifiableIterator<>(iterator);
     }
 
     public static class UnmodifiableIterator<T> implements Iterator<T> {
