@@ -25,8 +25,8 @@
 "use strict";
 
 // Detect if this is already loaded, and if loaded, if it's a higher version
-if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
-    && (faces.implversion && faces.implversion >= 4)) ) {
+if ( !( (window.faces && window.faces.specversion && window.faces.specversion >= 40000 )
+    && (window.faces.implversion && window.faces.implversion >= 4)) ) {
 
     // --- JS Lang --------------------------------------------------------------------
     const UDEF = 'undefined';
@@ -36,9 +36,6 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
     const isNull = (value) => (typeof value === UDEF || (typeof value === "object" && !value));
     const isNotNull = (value) => !isNull(value);
 
-    // Chrome 47, Chrome Android 47, Edge 14, Firefox 43, Node.js 6.0.0, Opera 34, Safari 9, Safari iOS 9
-    const ES6_AVAILABLE = !!Array.prototype.includes;
-
     // --- Faces constants ------------------------------------------------------------
     const VIEW_STATE_PARAM = "jakarta.faces.ViewState";
     const CLIENT_WINDOW_PARAM = "jakarta.faces.ClientWindow";
@@ -47,6 +44,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
 
     /**
      * experimental: do partial submit during ajax request
+     * todo: add a config parameter for this, where?
      */
     const PARTIAL_SUBMIT_ENABLED = true;
 
@@ -57,10 +55,12 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
     const contains = function(stringOrArray,value) { return stringOrArray.indexOf(value) !== -1; }
 
     /**
-     * Check if a value exists in an Array
+     * Find instance of passed String via getElementById.
      * @ignore
      */
-    const isInArray = function(array,value) { return ES6_AVAILABLE ? array.includes(value) : contains(array,value) };
+    const getElemById = function getElemById( elementOrId ) {
+        return typeof elementOrId == 'string' ? document.getElementById(elementOrId) : elementOrId;
+    };
 
     /**
      * get dom element or document child by name attribute
@@ -79,28 +79,23 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
     }
 
     /**
-     * Utility function ported from Omnifaces Form.ts
-     * to identify a child element by name
-     * @param executeIds
-     * @param name
-     * @returns {boolean}
+     * append a new pair of parameter=value to a query string
      * @ignore
      */
-    const containsNamedChild = function containsNamedChild(executeIds, name) {
-        try {
-            for (const executeId of executeIds) {
-                const parent = document.getElementById(executeId); // suppose it is a naming container
-                // return true if there is a child of the naming container with name equals to the passed name
-                if (parent && getElementByName(parent, name) ) {
-                    return true;
-                }
-            }
-        }
-        catch (e) {
-            console.warn("Cannot determine if " + executeIds + " contains child " + name, e);
-        }
+    const appendToQueryString = function appendToQueryString( queryString , name, value) {
+        return queryString + ( (queryString.length > 0 ? "&" : EMPTY) + encodeURIComponent(name) + "=" + encodeURIComponent(value) );
+    };
 
-        return false;
+    /**
+     * return true if one of the dom elements contains
+     * a child with the attribute name equals to the passed name
+     * @param elements an array of DOM elements
+     * @param name the value of the attribute name
+     * @returns {boolean} true if at least one of the domElements contains a child with the attribute name equals to the passed param name
+     * @ignore
+     */
+    const containsNamedChild = function (elements,name) {
+        return elements.some( elem => !!getElementByName(elem,name) );
     }
 
     /**
@@ -109,7 +104,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
      * @name faces
      * @namespace
      */
-    var faces = {};
+    window.faces = {};
 
     /**
      * <span class="changed_modified_2_2 changed_modified_2_3">The namespace for Ajax
@@ -124,8 +119,6 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
         const errorListeners = [];
 
         let delayHandler = null;
-
-        // --- AUTOEXEC JS -----------------------------------------------------------------------------------
 
         /**
          * Note by pizzi80:
@@ -149,13 +142,8 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          */
         const hasInputFileControl = function(form) { return isNotNull(form.querySelector("input[type='file']")); };
 
-        /**
-         * Find instance of passed String via getElementById.
-         * @ignore
-         */
-        const $ = function $( elementOrId ) {
-            return typeof elementOrId == 'string' ? document.getElementById(elementOrId) : elementOrId;
-        };
+
+        // --- FACES input processing functions ---------------------------------------------------------------------------------------
 
         /**
          * Get the form element which encloses the supplied element.
@@ -164,7 +152,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * @ignore
          */
         const getForm = function(element) {
-            const form = element.closest('form');
+            const form = element.closest(FORM);
             return form ? form : document.forms[0];
         };
 
@@ -186,9 +174,10 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                         && element.method === "post"
                         && element.id
                         && element.elements
-                        && element.id.indexOf(context.namingContainerPrefix) === 0) {
-                        formsToUpdate.push(element);
-                    } else {
+                        && element.id.startsWith(context.namingContainerPrefix) ) {
+                            formsToUpdate.push(element);
+                    }
+                    else {
                         const forms = element.getElementsByTagName(FORM);
                         for ( const form of forms )
                             add(form);
@@ -270,29 +259,32 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             return targetClientIds.join(SPACE);
         };
 
+
+        // --- HTML as String processing functions ----------------------------------------------------------------------------
+
         // Regex to find all scripts in a string
-        const findscripts = /<script[^>]*>([\S\s]*?)<\/script>/igm;
+        const SCRIPT_TAG_REGEX = /<script[^>]*>([\S\s]*?)<\/script>/igm;
 
         // Regex to find one script, to isolate it's content [2] and attributes [1]
-        const findscript = /<script([^>]*)>([\S\s]*?)<\/script>/im;
+        const SINGLE_SCRIPT_TAG_REGEX = /<script([^>]*)>([\S\s]*?)<\/script>/im;
 
         // Regex to find type attribute
-        const findtype = /type="([\S]*?)"/im;
+        const TAG_ATTRIBUTE_TYPE_REGEX = /type="([\S]*?)"/im;
 
         /**
          * Get all scripts from supplied string, return them as an array for later processing.
-         * @param str
+         * @param html a String containing a portion of html
          * @returns {array} of script text
          * @ignore
          */
-        const getScripts = function getScripts(str) {
+        const getScripts = function getScripts(html) {
             const scripts = [];
-            const initialnodes = str.match(findscripts);
+            const initialnodes = html.match(SCRIPT_TAG_REGEX);
             while (!!initialnodes && initialnodes.length > 0) {
                 let scriptStr = [];
-                scriptStr = initialnodes.shift().match(findscript);
+                scriptStr = initialnodes.shift().match(SINGLE_SCRIPT_TAG_REGEX); // todo: multiple shift array ... rewrite this algo
                 // check the type - skip if specified but not text/javascript
-                const type = scriptStr[1].match(findtype);
+                const type = scriptStr[1].match(TAG_ATTRIBUTE_TYPE_REGEX);
                 if (!!type && type[1] !== "text/javascript") {
                     continue;
                 }
@@ -301,8 +293,13 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             return scripts;
         };
 
-        const removeScripts = function removeScripts(str) {
-            return str.replace(/<script[^>]*type="text\/javascript"[^>]*>([\S\s]*?)<\/script>/igm, EMPTY);
+        /**
+         * Remove all the portion of code matching the script pattern from the passed string
+         * @param html a String containing a portion of html
+         * @ignore
+         */
+        const removeScripts = function removeScripts(html) {
+            return html.replace(/<script[^>]*type="text\/javascript"[^>]*>([\S\s]*?)<\/script>/igm, EMPTY);
         };
 
         /**
@@ -318,7 +315,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             const loadedScripts = document.getElementsByTagName("script");
             const loadedScriptUrls = [];
 
-            for( const scriptNode of loadedScripts ) {
+            for ( const scriptNode of loadedScripts ) {
                 const url = scriptNode.getAttribute("src");
                 if (url) loadedScriptUrls.push(url);
             }
@@ -363,10 +360,10 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                     parserElement.innerHTML = scriptStr[0];
                     cloneAttributes(scriptNode, parserElement.firstChild);
                     deleteNode(parserElement);
-                    scriptNode.type = 'text/javascript';
+                    //scriptNode.type = 'text/javascript';
                     scriptNode.src = url; // add the src to the script node
                     scriptNode.onload = scriptNode.onreadystatechange = function(_, abort) {
-                        if (abort || !scriptNode.readyState || isInArray(scriptLoadedStates,scriptNode.readyState)) {
+                        if (abort || !scriptNode.readyState || scriptLoadedStates.includes(scriptNode.readyState) ) {
                             scriptNode = null;                                           // why?
                             runScript(head, loadedScriptUrls, scripts, index + 1); // Run next script.
                         }
@@ -381,7 +378,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 if (!!script) {
                     // create script node
                     const scriptNode = document.createElement('script');
-                    scriptNode.type = 'text/javascript';
+                    // scriptNode.type = 'text/javascript';
                     scriptNode.text = script; // add the code to the script node
                     head.appendChild(scriptNode); // add it to the head
                     head.removeChild(scriptNode); // then remove it
@@ -458,7 +455,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
         };
 
         /**
-         * Replace DOM element with a new tagname and supplied innerHTML
+         * Replace DOM element with a new tag name and supplied innerHTML
          * @param element element to replace
          * @param tempTagName new tag name to replace with
          * @param src string new content for element
@@ -475,48 +472,25 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 temp.id = element.id;
             }
 
-            let scripts = [];
             if (isAutoExec()) {
                 temp.innerHTML = src;
-            } else {
+                cloneAttributes(temp, element);
+                replaceNode(temp, element);
+            }
+            else {
                 // Get scripts from text
-                scripts = getScripts(src);
+                const scripts = getScripts(src);
                 // Remove scripts from text
                 src = removeScripts(src);
                 temp.innerHTML = src;
+                cloneAttributes(temp, element);
+                replaceNode(temp, element);
+                runScripts(scripts);
             }
-
-            replaceNode(temp, element);
-            cloneAttributes(temp, element);
-            runScripts(scripts);
 
         };
 
-        /**
-         * Get a string with the concatenated values of all string nodes under the given node
-         * @param  oNode the given DOM node
-         * @param  deep boolean - whether to recursively scan the children nodes of the given node for text as well. Default is <code>false</code>
-         * @ignore
-         * Note:  This code originally from Sarissa: http://dev.abiss.gr/sarissa
-         * It has been modified to fit into the overall codebase
-
-        const getText = function getText(oNode, deep) {
-            // TODO: in what this function differs from Node.textContent?
-            // https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent
-            let s = EMPTY;
-            const nodes = oNode.childNodes;
-            for ( const node of nodes ) {
-                const nodeType = node.nodeType;
-                if (nodeType === Node.TEXT_NODE || nodeType === Node.CDATA_SECTION_NODE) {
-                    s += node.data;
-                } else if (deep === true && (nodeType === Node.ELEMENT_NODE ||
-                    nodeType === Node.DOCUMENT_NODE ||
-                    nodeType === Node.DOCUMENT_FRAGMENT_NODE)) {
-                    s += getText(node, true);
-                }
-            }
-            return s;
-        };*/
+        // --- Faces xml errors ---------------------------------------------------------------------------
 
         const PARSED_OK = "Document contains no parsing errors";
         const PARSED_EMPTY = "Document is empty";
@@ -549,6 +523,8 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             return parseErrorText;
         };
 
+        // --- DOM Manipulation ---------------------------------------------------------------------------------------------------------
+
         // PENDING - add support for removing handlers added via DOM 2 methods
 
         const NODE_EVENTS = [
@@ -571,7 +547,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             }
             // remove the events from node
             try {
-                for (const eventName in NODE_EVENTS)
+                for (const eventName of NODE_EVENTS)
                     node[eventName] = null;
             } catch (ex) {
                 // it's OK if it fails, at least we tried
@@ -585,6 +561,16 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          */
         const deleteNode = function deleteNode(node) {
             if (node) node.remove();
+        };
+
+        /**
+         * Delete all nodes
+         * @param nodes array of node
+         * @ignore
+         */
+        const deleteNodes = function deleteNodes( nodes ) {
+            for ( const node of nodes )
+                deleteNode(node);
         };
 
         /**
@@ -634,11 +620,10 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             }
         };
 
-
         /**
          * Replace one node with another.
-         * @param node
-         * @param newNode
+         * @param node node to replace
+         * @param newNode the new node that's replace the old one
          * @ignore
          */
         const replaceNode = function replaceNode(newNode, node) {
@@ -674,7 +659,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
         // enumerate additional boolean input attributes
         const inputElementBooleanProperties = [ 'checked', 'disabled', 'readOnly' ];
 
-        const TABLE_ELEMENTS = ['td', 'th', 'tr', 'tbody', 'thead', 'tfoot'];
+        const TABLE_INNER_TAGS = ['td', 'th', 'tr', 'tbody', 'thead', 'tfoot'];
 
         /**
          * copy all attributes from one element to another - except id
@@ -688,37 +673,36 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             const propertyNames = isInputElement ? coreAndInputElementProperties : coreElementProperties;
             const isXML = !source.ownerDocument.contentType || source.ownerDocument.contentType === 'text/xml';
 
-            for ( const propertyName of propertyNames ) {
+            for (const propertyName of propertyNames) {
                 const attributeName = propertyToAttribute(propertyName);
                 const sourceValue = isXML ? source.getAttribute(attributeName) : source[propertyName];
                 if (isNotNull(sourceValue)) target[propertyName] = sourceValue;
             }
 
             const booleanPropertyNames = isInputElement ? inputElementBooleanProperties : [];
-            for ( const booleanPropertyName of booleanPropertyNames ) {
+            for (const booleanPropertyName of booleanPropertyNames) {
                 const newBooleanValue = source[booleanPropertyName];
                 if (isNotNull(newBooleanValue)) target[booleanPropertyName] = newBooleanValue;
             }
 
             //'style' attribute special case
-            if ( source.hasAttribute('style') ) {
+            if (source.hasAttribute('style')) {
                 const sourceStyle = source.getAttribute('style');
                 if (isNotNull(sourceStyle)) target.setAttribute('style', sourceStyle);
-            }
-            else if ( target.hasAttribute('style') ) {
+            } else if (target.hasAttribute('style')) {
                 target.removeAttribute('style');
             }
 
             // Special case for 'dir' attribute
             if (source.dir !== target.dir) {
-                if ( source.hasAttribute('dir') ) {
+                if (source.hasAttribute('dir')) {
                     target.dir = source.dir;
-                } else if ( target.hasAttribute('dir') ) {
+                } else if (target.hasAttribute('dir')) {
                     target.dir = '';
                 }
             }
 
-            for ( const name of LISTENER_NAMES ) {
+            for (const name of LISTENER_NAMES) {
                 target[name] = source[name] ? source[name] : null;
                 if (source[name]) {
                     source[name] = null;
@@ -738,7 +722,6 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                     targetDataset[sp] = sourceDataset[sp];
                 }
             }
-
         };
 
         /**
@@ -748,15 +731,6 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * @ignore
          */
         const elementReplace = function elementReplace(newElement, origElement) {
-
-            // // move or copy child nodes
-            // copyChildNodes(newElement, origElement);
-            //
-            // // sadly, we have to reparse all over again
-            // // to reregister the event handlers and styles
-            // // PENDING do some performance tests on large pages
-            // origElement.innerHTML = origElement.innerHTML;
-            //
 
             // copy source attributes to target node
             try {
@@ -800,6 +774,8 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
 
             return body;
         };
+
+        // --- Faces Ajax response DOM operation algorithms ----------------------------------------------------------------------------------------
 
         /**
          * Find encoded url field for a given form.
@@ -889,7 +865,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 scripts = getScripts(src);
                 runScripts(scripts);
             } else {
-                const element = $(id);
+                const element = getElemById(id);
 
                 if (context.namingContainerId && id === context.namingContainerId) {
                     // spec790: If UIViewRoot is a NamingContainer and this is currently being updated,
@@ -914,7 +890,8 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                     const docBody = document.getElementsByTagName('body')[0];
                     const bodyStart = bodyStartEx.exec(src);
 
-                    if (bodyStart !== null) { // replace body tag
+                    // replace body tag
+                    if (bodyStart !== null) {
                         // First, try with XML manipulation
                         try {
                             runStylesheets(src);
@@ -938,7 +915,9 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                             elementReplaceStr(docBody, "body", srcBody);
                         }
 
-                    } else {  // replace body contents with innerHTML - note, script handling happens within function
+                    }
+                    // replace body contents with innerHTML - note, script handling happens within function
+                    else {
                         elementReplaceStr(docBody, "body", src);
                     }
                 } else {
@@ -946,56 +925,57 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                         throw new Error("During update: " + id + " not found");
                     }
 
-                    const parent = element.parentNode;
                     // Trim space padding before assigning to innerHTML
-                    let html = src.replace(/^\s+/g, '').replace(/\s+$/g, '');
-                    let parserElement = document.createElement('div');
+                    let html = src.trim();
+                    let newElementContainer = document.createElement('div');
+
                     const tag = element.nodeName.toLowerCase();
+                    const isTableInnerElement = TABLE_INNER_TAGS.includes(tag);
 
-                    const isInTable = isInArray(TABLE_ELEMENTS,tag);
-
-                    if (isInTable) {
-
+                    if (isTableInnerElement) {
                         if (isAutoExec()) {
-                            // Create html
-                            parserElement.innerHTML = '<table>' + html + '</table>';
+                            // enclose new html inside a table
+                            newElementContainer.innerHTML = '<table>' + html + '</table>';
                         } else {
-                            // Get the scripts from the text
+                            // Get the scripts from the html
                             scripts = getScripts(html);
-                            // Remove scripts from text
+                            // Remove scripts from html
                             html = removeScripts(html);
-                            parserElement.innerHTML = '<table>' + html + '</table>';
+                            // enclose new html inside a table
+                            newElementContainer.innerHTML = '<table>' + html + '</table>';
                         }
-                        newElement = parserElement.firstChild;
+                        newElement = newElementContainer.firstChild;
                         //some browsers will also create intermediary elements such as table>tbody>tr>td
                         while ((null !== newElement) && (id !== newElement.id)) {
                             newElement = newElement.firstChild;
                         }
-                        parent.replaceChild(newElement, element);
+
+                        replaceNode(element,newElement);
                         runScripts(scripts);
+
                     } else if (element.nodeName.toLowerCase() === 'input') {
                         // special case handling for 'input' elements
                         // in order to not lose focus when updating,
                         // input elements need to be added in place.
-                        parserElement = document.createElement('div');
-                        parserElement.innerHTML = html;
-                        newElement = parserElement.firstChild;
+                        newElementContainer = document.createElement('div');
+                        newElementContainer.innerHTML = html;
+                        newElement = newElementContainer.firstChild;
 
                         cloneAttributes(element, newElement);
-                        deleteNode(parserElement);
+                        deleteNode(newElementContainer);
                     } else if (html.length > 0) {
                         if (isAutoExec()) {
                             // Create html
-                            parserElement.innerHTML = html;
+                            newElementContainer.innerHTML = html;
                         } else {
                             // Get the scripts from the text
                             scripts = getScripts(html);
                             // Remove scripts from text
                             html = removeScripts(html);
-                            parserElement.innerHTML = html;
+                            newElementContainer.innerHTML = html;
                         }
-                        replaceNode(parserElement.firstChild, element);
-                        deleteNode(parserElement);
+                        replaceNode(newElementContainer.firstChild, element);
+                        deleteNode(newElementContainer);
                         runScripts(scripts);
                     }
                 }
@@ -1008,7 +988,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          * @ignore
          */
         const doDelete = function doDelete(element) {
-            if (element) deleteNode($(element.getAttribute('id')));
+            if (element) deleteNode(getElemById(element.getAttribute('id')));
         };
 
         /**
@@ -1018,8 +998,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
          */
         const doInsert = function doInsert(element) {
 
-            let scripts = [];
-            let target = $(element.firstChild.getAttribute('id'));
+            let target = getElemById(element.firstChild.getAttribute('id'));
             const parent = target.parentNode;
             let html = element.firstChild.firstChild.nodeValue;
 
@@ -1029,9 +1008,11 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
 
             if (!isAutoExec())  {
                 // Get the scripts from the text
-                scripts = getScripts(html);
+                const scripts = getScripts(html);
                 // Remove scripts from text
                 html = removeScripts(html);
+                // execute scripts
+                runScripts(scripts);
             }
             const tempElement = document.createElement('div');
             let newElement;
@@ -1055,7 +1036,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             if (!!tempElement.innerHTML) { // check if only scripts were inserted - if so, do nothing here
                 parent.insertBefore(newElement, target);
             }
-            runScripts(scripts);
+
             deleteNode(tempElement);
         };
 
@@ -1068,7 +1049,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
 
             // Get id of element we'll act against
             const id = element.getAttribute('id');
-            const target = $(id);
+            const target = getElemById(id);
 
             if (!target) {
                 throw new Error("The specified id: " + id + " was not found in the page.");
@@ -1963,7 +1944,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                             options.execute = options.execute.replace("@this", element.id);
                             options.execute = options.execute.replace("@form", form.id);
                             const temp = options.execute.split(SPACE);
-                            if (!isInArray(temp, element.name)) {
+                            if ( ! temp.includes(element.name) ) {
                                 options.execute = element.name + SPACE + options.execute;
                             }
                             if (namingContainerPrefix) {
@@ -1974,7 +1955,9 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                         }
                         args[namingContainerPrefix + "jakarta.faces.partial.execute"] = options.execute;
                     }
-                } else { // in case of <f:ajax />
+                }
+                // in case of <f:ajax />
+                else {
                     // if id is equals to name then add only one of them to avoid duplicates inside options.execute
                     options.execute = (element.name === element.id) ? element.id : element.name+SPACE+element.id;
                     args[namingContainerPrefix + "jakarta.faces.partial.execute"] = options.execute;
@@ -2017,7 +2000,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 let ids = options.execute.split(SPACE);
 
                 // if @all -> execute only this form
-                if ( isInArray(ids,"@all") ) ids = [ form.id ];
+                if ( ids.includes("@all") ) ids = [ form.id ];
 
                 if (ids) {
                     for ( const id of ids ) {
@@ -2449,7 +2432,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
             return mojarra.projectStageCache;
         }
         // faces.js script
-        const _script = document.querySelector("script[type='text/javascript'][src*='jakarta.faces.resource/faces.js']");
+        const _script = document.querySelector("script[src*='jakarta.faces.resource/faces.js']");
         const scriptSrcSearchParam = isNotNull(_script) ? new URLSearchParams(_script.src) : null;
 
         const stage = ( isNotNull(scriptSrcSearchParam) && scriptSrcSearchParam.get('stage') === 'Development' ) ? 'Development' : 'Production';
@@ -2461,27 +2444,50 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
     };
 
     /**
-     * Partial submit adapted from OmniFaces
-     * @param form
-     * @param execute
-     * @returns {string}
+     * <p>Collect and encode state for input controls associated
+     * with the specified <code>form</code> element.  This will include
+     * all input controls of type <code>hidden</code>.</p>
+     * <p><b>Usage:</b></p>
+     * <pre><code>
+     * var state = faces.getViewState(form);
+     * </pre></code>
+     *
+     * @param form The <code>form</code> element whose contained
+     * <code>input</code> controls will be collected and encoded.
+     * Only successful controls will be collected and encoded in
+     * accordance with: <a href="http://www.w3.org/TR/html401/interact/forms.html#h-17.13.2">
+     * Section 17.13.2 of the HTML Specification</a>.
+     *
+     * @param execute The option.execute string built inside faces.ajax.request
+     *
+     * @returns String The encoded state for the specified form's input controls.
      */
     faces.getPartialViewState = function(form, execute) {
+        if (!form) throw new Error("faces.getPartialViewState:  form must be set");
 
-        // create an array which we'll use to hold all the intermediate strings
-        // this bypasses a problem in IE when repeatedly concatenating very
-        // large strings - we'll perform the concatenation once at the end
-        let qString = EMPTY;
-
-        // if execute is defined and execute is not '@all' or '@form'
-        // then we could do a partial submit
+        // if execute is defined, create an array of id
+        // that have to be included in the query string
         const partialExecuteIds = execute ? execute.split(SPACE).concat(ALWAYS_EXECUTE_IDS) : undefined;
 
+        // array of element id => array of existing dom element
+        const partialExecuteDomElements = partialExecuteIds.map(getElemById).filter( elem => !!elem );
+
+        // the query string
+        let qString = EMPTY;
+
+        // if the partialExecuteIds does not include the form.id,
+        // then add it because it's required by the spec to be always included!
+        if ( partialExecuteIds && !partialExecuteIds.includes(form.id) ) {
+            qString = appendToQueryString(qString,form.id,form.id);
+        }
+
         // add encoded name=value string to query string parts array.
-        // If partialExecuteIds is defined then add the field only if the name is inside the "partialExecuteIds" array (partial submit)
+        // If partialExecuteIds is defined
+        // then add the field only if there is a child element with his name
+        // inside one of the element identified with the id contained in "partialExecuteIds" array (partial submit)
         const addField = function(name, value) {
-            const add = !partialExecuteIds || isInArray(partialExecuteIds, name) || containsNamedChild(partialExecuteIds,name);
-            if (add) qString += ( (qString.length > 0 ? "&" : EMPTY) + encodeURIComponent(name) + "=" + encodeURIComponent(value) );
+            const add = !partialExecuteIds || partialExecuteIds.includes(name) || containsNamedChild(partialExecuteDomElements,name);
+            if (add) qString = appendToQueryString(qString,name,value);
         };
 
         const els = form.elements;
@@ -2526,8 +2532,10 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
                 }
             }
         }
+
         return qString;
     }
+
 
 
     /**
@@ -2545,17 +2553,13 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
      * accordance with: <a href="http://www.w3.org/TR/html401/interact/forms.html#h-17.13.2">
      * Section 17.13.2 of the HTML Specification</a>.
      *
-     * @param execute The option.execute string built inside faces.ajax.request
-     *
      * @returns String The encoded state for the specified form's input controls.
      * @function faces.getViewState
      */
     faces.getViewState = function(form) {
         if (!form) throw new Error("faces.getViewState:  form must be set");
 
-        // create an array which we'll use to hold all the intermediate strings
-        // this bypasses a problem in IE when repeatedly concatenating very
-        // large strings - we'll perform the concatenation once at the end
+        // the query string
         let qString = EMPTY;
 
         // add encoded name=value string to query string parts array.
@@ -3004,7 +3008,7 @@ if ( !( (faces && faces.specversion && faces.specversion >= 40000 )
 /*
  * Create our top level namespaces - mojarra
  */
-var mojarra = mojarra || {};
+window.mojarra = window.mojarra || {};
 
 
 /**
@@ -3133,3 +3137,4 @@ mojarra.l = function l(l) {
     }
 
 };
+
