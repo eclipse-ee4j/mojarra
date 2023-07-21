@@ -114,6 +114,8 @@ public class WebConfiguration {
     private FaceletsConfiguration faceletsConfig;
 
     private boolean hasFlows;
+    
+    private String specificationVersion;
 
     // ------------------------------------------------------------ Constructors
 
@@ -134,6 +136,8 @@ public class WebConfiguration {
         getOptionValue(WebContextInitParameter.ResourceExcludes, " ");
         getOptionValue(WebContextInitParameter.FaceletsViewMappings, ";");
         getOptionValue(WebContextInitParameter.FaceletsSuffix, " ");
+        
+        specificationVersion = getClass().getPackage().getSpecificationVersion();
     }
 
     // ---------------------------------------------------------- Public Methods
@@ -198,6 +202,10 @@ public class WebConfiguration {
 
     public void setHasFlows(boolean hasFlows) {
         this.hasFlows = hasFlows;
+    }
+
+    public String getSpecificationVersion() {
+        return specificationVersion;
     }
 
     /**
