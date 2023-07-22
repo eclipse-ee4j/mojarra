@@ -33,3 +33,7 @@ In below example we assume 4.0.3.
 19. Verify that it's present in [Maven Central](https://repo1.maven.org/maven2/org/glassfish/jakarta.faces/) (might take up to a hour)
 20. If everything is OK, then merge 4.0.3 branch into 4.0 via a PR
 21. Delete the 4.0.3 branch after merge
+22. Manage the [milestones](https://github.com/eclipse-ee4j/mojarra/milestones) page
+     - make sure all issues/PRs are linked to proper milestone
+     - close the milestones which were just released
+     - create new milestones for next releases
