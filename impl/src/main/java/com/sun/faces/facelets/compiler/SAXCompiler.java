@@ -47,7 +47,6 @@ import com.sun.faces.facelets.tag.TagAttributesImpl;
 import com.sun.faces.facelets.tag.faces.core.CoreLibrary;
 import com.sun.faces.util.Util;
 
-import jakarta.faces.component.html.HtmlDoctype;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.Location;
@@ -208,13 +207,7 @@ public final class SAXCompiler extends Compiler {
             boolean outputAsHtml5 = facelets.isOutputHtml5Doctype(alias);
 
             if (inDocument && (processAsXhtml || outputAsHtml5)) {
-                HtmlDoctype doctype = new HtmlDoctype();
-                doctype.setRootElement(name);
-
-                if (!outputAsHtml5) {
-                    doctype.setPublic(publicId);
-                    doctype.setSystem(systemId);
-                }
+                FaceletDoctype doctype = new FaceletDoctype(name, outputAsHtml5 ? null : publicId, outputAsHtml5 ? null : systemId);
 
                 // It is essential to save the doctype here because this is the
                 // *only* time we will have access to it.
