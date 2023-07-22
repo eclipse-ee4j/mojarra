@@ -486,6 +486,20 @@ public final class MojarraRuntimePopulator extends ApplicationConfigurationPopul
             faces_configElement.appendChild(converterElement);
         }
         {
+            Element converterElement = toPopulate.createElementNS(ns, "converter");
+            {
+                Element converter_for_classElement = toPopulate.createElementNS(ns, "converter-for-class");
+                converter_for_classElement.appendChild(toPopulate.createTextNode("java.util.UUID"));
+                converterElement.appendChild(converter_for_classElement);
+            }
+            {
+                Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
+                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.UUIDConverter"));
+                converterElement.appendChild(converter_classElement);
+            }
+            faces_configElement.appendChild(converterElement);
+        }
+        {
             Element lifecycleElement = toPopulate.createElementNS(ns, "lifecycle");
             {
                 Element phase_listenerElement = toPopulate.createElementNS(ns, "phase-listener");
