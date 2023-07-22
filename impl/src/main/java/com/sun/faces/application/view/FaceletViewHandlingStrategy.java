@@ -81,6 +81,7 @@ import java.util.stream.Stream;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.context.StateContext;
+import com.sun.faces.facelets.compiler.FaceletDoctype;
 import com.sun.faces.facelets.el.ContextualCompositeMethodExpression;
 import com.sun.faces.facelets.el.VariableMapperWrapper;
 import com.sun.faces.facelets.impl.DefaultFaceletFactory;
@@ -113,6 +114,7 @@ import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIPanel;
 import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.html.HtmlDoctype;
 import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitResult;
 import jakarta.faces.context.ExternalContext;
@@ -342,9 +344,13 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 }
             }
 
-            Doctype doctype = getDOCTYPEFromFacesContextAttributes(ctx);
+            FaceletDoctype doctype = (FaceletDoctype) getDOCTYPEFromFacesContextAttributes(ctx);
             if (doctype != null) {
-                view.setDoctype(doctype);
+                HtmlDoctype htmlDoctype = new HtmlDoctype();
+                htmlDoctype.setRootElement(doctype.getRootElement());
+                htmlDoctype.setPublic(doctype.getPublic());
+                htmlDoctype.setSystem(doctype.getSystem());
+                view.setDoctype(htmlDoctype);
             }
 
             if (!stateCtx.isPartialStateSaving(ctx, view.getViewId())) {

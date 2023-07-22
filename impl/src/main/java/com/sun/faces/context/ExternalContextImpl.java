@@ -41,6 +41,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.faces.RIConstants;
+import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.context.flash.ELFlash;
 import com.sun.faces.renderkit.html_basic.ScriptRenderer;
 import com.sun.faces.renderkit.html_basic.StylesheetRenderer;
@@ -135,7 +136,12 @@ public class ExternalContextImpl extends ExternalContext {
 
         boolean enabled = ContextParamUtils.getValue(servletContext, SendPoweredByHeader, Boolean.class);
         if (enabled) {
-            ((HttpServletResponse) response).addHeader("X-Powered-By", "Faces/4.0");
+            String poweredBy = "Faces";
+            String specificationVersion = WebConfiguration.getInstance(sc).getSpecificationVersion();
+            if (specificationVersion != null) {
+                poweredBy += "/" + specificationVersion;
+            }
+            ((HttpServletResponse) response).addHeader("X-Powered-By", poweredBy);
         }
 
         distributable = ContextParamUtils.getValue(servletContext, ContextParam.EnableDistributable, Boolean.class);
