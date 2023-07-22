@@ -20,6 +20,7 @@ import com.sun.faces.component.CompositeComponentStackManager;
 
 import jakarta.el.ELContext;
 import jakarta.el.ValueExpression;
+import jakarta.el.ValueReference;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.Location;
@@ -168,6 +169,20 @@ public final class ContextualCompositeValueExpression extends ValueExpression {
         boolean pushed = pushCompositeComponent(ctx);
         try {
             return originalVE.getExpectedType();
+        } finally {
+            if (pushed) {
+                popCompositeComponent(ctx);
+            }
+        }
+    }
+
+    @Override
+    public ValueReference getValueReference(ELContext elContext) {
+
+        FacesContext ctx = (FacesContext) elContext.getContext(FacesContext.class);
+        boolean pushed = pushCompositeComponent(ctx);
+        try {
+            return originalVE.getValueReference(elContext);
         } finally {
             if (pushed) {
                 popCompositeComponent(ctx);

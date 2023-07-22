@@ -39,7 +39,7 @@ public class Stage {
 
     private ProjectStage projectStage;
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#getProjectStage()
      */
     public ProjectStage getProjectStage(Application application) {

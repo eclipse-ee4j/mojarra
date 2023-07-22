@@ -53,11 +53,11 @@ public class HtmlResponseWriter extends ResponseWriter {
     // Character encoding of that Writer - this may be null
     // if the encoding isn't known.
     //
-    private String encoding = null;
+    private String encoding;
 
     // Writer to use for output;
     //
-    private Writer writer = null;
+    private Writer writer;
 
     // True when we need to close a start tag
     //
@@ -160,9 +160,6 @@ public class HtmlResponseWriter extends ResponseWriter {
     private static final char[] ESCAPEDSTART = ("&lt;" + BREAKCDATA + "![").toCharArray();
     private static final char[] ESCAPEDEND = ("]" + BREAKCDATA + "]>").toCharArray();
 
-    private static final int CLOSEBRACKET = ']';
-    private static final int LT = '<';
-
     static final Pattern CDATA_START_SLASH_SLASH;
 
     static final Pattern CDATA_END_SLASH_SLASH;
@@ -231,7 +228,7 @@ public class HtmlResponseWriter extends ResponseWriter {
 
         this.writer = writer;
 
-        if (null != contentType) {
+        if (contentType != null) {
             this.contentType = contentType;
         }
 
@@ -349,9 +346,7 @@ public class HtmlResponseWriter extends ResponseWriter {
     /** @return the content type such as "text/html" for this ResponseWriter. */
     @Override
     public String getContentType() {
-
         return contentType;
-
     }
 
     /**
@@ -362,7 +357,6 @@ public class HtmlResponseWriter extends ResponseWriter {
      */
     @Override
     public ResponseWriter cloneWithWriter(Writer writer) {
-
         try {
             HtmlResponseWriter responseWriter = new HtmlResponseWriter(writer, getContentType(), getCharacterEncoding(), isScriptHidingEnabled,
                     isScriptInAttributeValueEnabled, disableUnicodeEscaping, isPartial);
@@ -374,7 +368,6 @@ public class HtmlResponseWriter extends ResponseWriter {
             // This should never happen
             throw new IllegalStateException();
         }
-
     }
 
     /** Output the text for the end of a document. */
@@ -705,7 +698,6 @@ public class HtmlResponseWriter extends ResponseWriter {
      */
     @Override
     public void writeAttribute(String name, Object value, String componentPropertyName) throws IOException {
-
         if (name == null) {
             throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "name"));
         }
@@ -725,7 +717,7 @@ public class HtmlResponseWriter extends ResponseWriter {
             scriptOrStyleSrc = true;
         }
 
-        Class valueClass = value.getClass();
+        Class<?> valueClass = value.getClass();
 
         // Output Boolean values specially
         if (valueClass == Boolean.class) {
@@ -748,7 +740,7 @@ public class HtmlResponseWriter extends ResponseWriter {
             // write the attribute value
             String val = value.toString();
             ensureTextBufferCapacity(val);
-            HtmlUtils.writeAttribute(attributesBuffer, escapeUnicode, escapeIso, buffer, val, textBuffer, isScriptInAttributeValueEnabled);
+            HtmlUtils.writeAttribute(attributesBuffer, escapeUnicode, escapeIso, buffer, val, textBuffer, isScriptInAttributeValueEnabled, isPartial);
             attributesBuffer.write('"');
         }
 
@@ -767,7 +759,6 @@ public class HtmlResponseWriter extends ResponseWriter {
      */
     @Override
     public void writeComment(Object comment) throws IOException {
-
         if (comment == null) {
             throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID));
         }
@@ -777,13 +768,14 @@ public class HtmlResponseWriter extends ResponseWriter {
         }
 
         closeStartIfNecessary();
+        
         // Don't include a trailing space after the '<!--'
         // or a leading space before the '-->' to support
         // IE conditional commentsoth
         writer.write("<!--");
         String str = comment.toString();
         ensureTextBufferCapacity(str);
-        HtmlUtils.writeText(writer, true, true, buffer, str, textBuffer);
+        HtmlUtils.writeText(writer, true, true, buffer, str, textBuffer, isPartial);
         writer.write("-->");
 
     }
@@ -793,7 +785,7 @@ public class HtmlResponseWriter extends ResponseWriter {
      * Write a properly escaped single character, If there is an open element that has been created by a call to
      * <code>startElement()</code>, that element will be closed first.
      * </p>
-     * <p/>
+     * 
      * <p>
      * All angle bracket occurrences in the argument must be escaped using the &amp;gt; &amp;lt; syntax.
      * </p>
@@ -803,8 +795,8 @@ public class HtmlResponseWriter extends ResponseWriter {
      * @throws IOException if an input/output error occurs
      */
     public void writeText(char text) throws IOException {
-
         closeStartIfNecessary();
+        
         if (dontEscape) {
             if (writingCdata) {
                 charHolder[0] = text;
@@ -814,7 +806,7 @@ public class HtmlResponseWriter extends ResponseWriter {
             }
         } else if (isPartial || !writingCdata) {
             charHolder[0] = text;
-            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, buffer, charHolder);
+            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, buffer, charHolder, isPartial);
         } else { // if writingCdata
             assert writingCdata;
             charHolder[0] = text;
@@ -829,8 +821,7 @@ public class HtmlResponseWriter extends ResponseWriter {
      * <code>writeText(c, 0, c.length)</code>. If there is an open element that has been created by a call to
      * <code>startElement()</code>, that element will be closed first.
      * </p>
-     * </p>
-     * <p/>
+     * 
      * <p>
      * All angle bracket occurrences in the argument must be escaped using the &amp;gt; &amp;lt; syntax.
      * </p>
@@ -841,10 +832,10 @@ public class HtmlResponseWriter extends ResponseWriter {
      * @throws NullPointerException if <code>text</code> is <code>null</code>
      */
     public void writeText(char text[]) throws IOException {
-
         if (text == null) {
             throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "text"));
         }
+        
         closeStartIfNecessary();
 
         if (text.length == 0) return;
@@ -856,7 +847,7 @@ public class HtmlResponseWriter extends ResponseWriter {
                 writer.write(text);
             }
         } else if (isPartial || !writingCdata) {
-            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, buffer, text);
+            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, buffer, text, isPartial);
         } else { // if writingCdata
             assert writingCdata;
             writeEscaped(text, 0, text.length);
@@ -896,7 +887,7 @@ public class HtmlResponseWriter extends ResponseWriter {
             }
         } else if (isPartial || !writingCdata) {
             ensureTextBufferCapacity(textStr);
-            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, buffer, textStr, textBuffer);
+            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, buffer, textStr, textBuffer, isPartial);
         } else { // if writingCdata
             assert writingCdata;
             int textLen = textStr.length();
@@ -919,7 +910,7 @@ public class HtmlResponseWriter extends ResponseWriter {
      * Write properly escaped text from a character array. If there is an open element that has been created by a call to
      * <code>startElement()</code>, that element will be closed first.
      * </p>
-     * <p/>
+     * 
      * <p>
      * All angle bracket occurrences in the argument must be escaped using the &amp;gt; &amp;lt; syntax.
      * </p>
@@ -956,7 +947,7 @@ public class HtmlResponseWriter extends ResponseWriter {
                 writer.write(text, off, len);
             }
         } else if (isPartial || !writingCdata) {
-            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, buffer, text, off, len);
+            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, buffer, text, off, len, isPartial);
         } else { // if (writingCdata)
             assert writingCdata;
             writeEscaped(text, off, len);
@@ -1019,7 +1010,7 @@ public class HtmlResponseWriter extends ResponseWriter {
         ensureTextBufferCapacity(stringValue);
         // Javascript URLs should not be URL-encoded
         if (stringValue.startsWith("javascript:") || isPassthrough) {
-            HtmlUtils.writeAttribute(attributesBuffer, escapeUnicode, escapeIso, buffer, stringValue, textBuffer, isScriptInAttributeValueEnabled);
+            HtmlUtils.writeAttribute(attributesBuffer, escapeUnicode, escapeIso, buffer, stringValue, textBuffer, isScriptInAttributeValueEnabled, isPartial);
         } else {
             HtmlUtils.writeURL(attributesBuffer, stringValue, textBuffer, encoding);
         }

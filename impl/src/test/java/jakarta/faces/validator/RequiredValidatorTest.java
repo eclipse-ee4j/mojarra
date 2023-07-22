@@ -18,8 +18,6 @@ package jakarta.faces.validator;
 
 import org.junit.Test;
 
-import jakarta.faces.validator.RequiredValidator;
-
 /**
  * The JUnit tests for the RequiredValidator class.
  */

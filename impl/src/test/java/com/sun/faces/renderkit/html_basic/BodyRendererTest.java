@@ -16,17 +16,19 @@
 
 package com.sun.faces.renderkit.html_basic;
 
+import static org.easymock.EasyMock.expect;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.StringWriter;
 import java.util.Collections;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
-import static org.easymock.EasyMock.expect;
 import org.junit.Test;
 import org.powermock.api.easymock.PowerMock;
 
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.Doctype;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.html.HtmlBody;
 import jakarta.faces.context.FacesContext;
@@ -56,12 +58,19 @@ public class BodyRendererTest {
         StringWriter writer = new StringWriter();
         ResponseWriter testResponseWriter = new TestResponseWriter(writer);
         FacesContext facesContext = PowerMock.createPartialMock(FacesContext.class, "getResponseWriter");
+        UIViewRoot viewRoot = PowerMock.createMock(UIViewRoot.class);
+        Doctype doctype = PowerMock.createMock(Doctype.class);
         BodyRenderer bodyRenderer = new BodyRenderer();
         HtmlBody htmlBody = new HtmlBody();
         htmlBody.getAttributes().put("styleClass", "myclass");
-        
+
         expect(facesContext.getResponseWriter()).andReturn(testResponseWriter).anyTimes();
-        
+        expect(facesContext.getViewRoot()).andReturn(viewRoot).anyTimes();
+        expect(viewRoot.getDoctype()).andReturn(doctype).anyTimes();
+        expect(doctype.getRootElement()).andReturn("html").anyTimes();
+        expect(doctype.getPublic()).andReturn(null).anyTimes();
+        expect(doctype.getSystem()).andReturn(null).anyTimes();
+
         PowerMock.replay(facesContext);
         bodyRenderer.encodeBegin(facesContext, htmlBody);
         PowerMock.verify(facesContext);
@@ -101,14 +110,15 @@ public class BodyRendererTest {
         Application application = PowerMock.createMock(Application.class);
         BodyRenderer bodyRenderer = new BodyRenderer();
         HtmlBody htmlBody = new HtmlBody();
-        
+
         expect(facesContext.getApplication()).andReturn(application).anyTimes();
-        expect(facesContext.getClientIdsWithMessages()).andReturn(Collections.EMPTY_LIST.iterator()).anyTimes();
+        expect(facesContext.getClientIdsWithMessages()).andReturn(Collections.<String>emptyList().iterator())
+                .anyTimes();
         expect(facesContext.getResponseWriter()).andReturn(testResponseWriter).anyTimes();
         expect(facesContext.getViewRoot()).andReturn(viewRoot).anyTimes();
         expect(facesContext.isProjectStage(ProjectStage.Development)).andReturn(false).anyTimes();
-        expect(viewRoot.getComponentResources(facesContext, "body")).andReturn(Collections.EMPTY_LIST).anyTimes();
-       
+        expect(viewRoot.getComponentResources(facesContext, "body")).andReturn(Collections.emptyList()).anyTimes();
+
         PowerMock.replay(facesContext, viewRoot, application);
         bodyRenderer.encodeEnd(facesContext, htmlBody);
         PowerMock.verify(facesContext, viewRoot, application);

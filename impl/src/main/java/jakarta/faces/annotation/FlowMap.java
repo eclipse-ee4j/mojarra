@@ -52,6 +52,9 @@ public @interface FlowMap {
     public static final class Literal extends AnnotationLiteral<FlowMap> implements FlowMap {
         private static final long serialVersionUID = 1L;
 
+        /**
+         * Instance of the {@link FlowMap} qualifier.
+         */
         public static final Literal INSTANCE = new Literal();
     }
 }

@@ -20,6 +20,7 @@ import java.lang.reflect.Type;
 import java.util.Map;
 
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.annotation.RequestParameterMap;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
@@ -40,8 +41,8 @@ public class RequestParameterMapProducer extends CdiProducer<Map<String, String>
     private static final long serialVersionUID = 1L;
 
     public RequestParameterMapProducer() {
-        super.name("param").scope(RequestScoped.class).qualifiers(new RequestParameterMapAnnotationLiteral())
-                .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, String.class }), Map.class, Object.class).beanClass(Map.class)
+        super.name("param").scope(RequestScoped.class).qualifiers(RequestParameterMap.Literal.INSTANCE)
+                .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, String.class }), Map.class, Object.class)
                 .create(e -> FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap());
     }
 

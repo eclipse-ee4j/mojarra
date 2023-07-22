@@ -26,10 +26,8 @@ import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
 
 /**
- * <p>
  * This class backs the <code>com.sun.faces.verifyObjects</code> feature which provides basic validation of Components,
  * Converters, and Validators.
- * <p>
  */
 public class Verifier {
 
@@ -48,7 +46,7 @@ public class Verifier {
     /**
      * Container for any messages that may be queued.
      */
-    private List<String> messages;
+    private final List<String> messages;
 
     // ------------------------------------------------------- Constructors
 
@@ -99,9 +97,9 @@ public class Verifier {
     /**
      * Validate the specified faces object by:
      * <ul>
-     * <li>Ensure the class can be found and loaded</li>
-     * <li>Ensure the object has a public, no-argument constructor</li></li> Ensure the object is an instance of the class
-     * represented by <code>assignableTo</code>
+     *   <li>Ensure the class can be found and loaded
+     *   <li>Ensure the object has a public, no-argument constructor
+     *   <li> Ensure the object is an instance of the class represented by <code>assignableTo</code>
      * </ul>
      * If any of these tests fail, queue a message to be displayed at a later point in time.
      *

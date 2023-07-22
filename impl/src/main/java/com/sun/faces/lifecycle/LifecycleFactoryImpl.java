@@ -18,6 +18,10 @@
 
 package com.sun.faces.lifecycle;
 
+import static com.sun.faces.util.MessageUtils.CANT_CREATE_LIFECYCLE_ERROR_MESSAGE_ID;
+import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
+import static java.util.logging.Level.FINE;
+
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -32,18 +36,16 @@ import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.lifecycle.LifecycleFactory;
 
 /**
- * <B>LifecycleFactoryImpl</B> is the stock implementation of Lifecycle in the JSF RI.
- * <P>
+ * <B>LifecycleFactoryImpl</B> is the stock implementation of Lifecycle in Mojarra.
  *
  * @see jakarta.faces.lifecycle.LifecycleFactory
  */
-
 public class LifecycleFactoryImpl extends LifecycleFactory {
 
     // Log instance for this class
     private static Logger LOGGER = FacesLogger.LIFECYCLE.getLogger();
 
-    protected ConcurrentHashMap<String, Lifecycle> lifecycleMap = null;
+    protected ConcurrentHashMap<String, Lifecycle> lifecycleMap;
 
     // ------------------------------------------------------------ Constructors
 
@@ -53,11 +55,7 @@ public class LifecycleFactoryImpl extends LifecycleFactory {
 
         // We must have an implementation under this key.
         lifecycleMap.put(LifecycleFactory.DEFAULT_LIFECYCLE, new LifecycleImpl(FacesContext.getCurrentInstance()));
-//        lifecycleMap.put(ActionLifecycle.ACTION_LIFECYCLE,
-//                         new ActionLifecycle());
-        if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("Created Default Lifecycle");
-        }
+        LOGGER.fine("Created Default Lifecycle");
     }
 
     // -------------------------------------------------- Methods from Lifecycle
@@ -79,27 +77,26 @@ public class LifecycleFactoryImpl extends LifecycleFactory {
             throw new IllegalArgumentException(message);
         }
         lifecycleMap.put(lifecycleId, lifecycle);
-        if (LOGGER.isLoggable(Level.FINE)) {
+        if (LOGGER.isLoggable(FINE)) {
             LOGGER.fine("addedLifecycle: " + lifecycleId + " " + lifecycle);
         }
     }
 
     @Override
     public Lifecycle getLifecycle(String lifecycleId) throws FacesException {
-
-        if (null == lifecycleId) {
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "lifecycleId"));
+        if (lifecycleId == null) {
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(NULL_PARAMETERS_ERROR_MESSAGE_ID, "lifecycleId"));
         }
 
-        if (null == lifecycleMap.get(lifecycleId)) {
+        if (lifecycleMap.get(lifecycleId) == null) {
             Object[] params = { lifecycleId };
-            String message = MessageUtils.getExceptionMessageString(MessageUtils.CANT_CREATE_LIFECYCLE_ERROR_MESSAGE_ID, params);
+            String message = MessageUtils.getExceptionMessageString(CANT_CREATE_LIFECYCLE_ERROR_MESSAGE_ID, params);
             throw new IllegalArgumentException(message);
         }
 
         Lifecycle result = lifecycleMap.get(lifecycleId);
 
-        if (LOGGER.isLoggable(Level.FINE)) {
+        if (LOGGER.isLoggable(FINE)) {
             LOGGER.fine("getLifecycle: " + lifecycleId + " " + result);
         }
         return result;
@@ -112,4 +109,4 @@ public class LifecycleFactoryImpl extends LifecycleFactory {
 
 // The testcase for this class is TestLifecycleFactoryImpl.java
 
-} // end of class LifecycleFactoryImpl
+}

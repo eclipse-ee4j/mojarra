@@ -47,7 +47,7 @@ public interface ActionListener extends FacesListener {
      *
      * @param event The {@link ActionEvent} that has occurred
      *
-     * @throws AbortProcessingException Signal the Jakarta Server Faces implementation that no further processing on the
+     * @throws AbortProcessingException Signal the Jakarta Faces implementation that no further processing on the
      * current event should be performed
      */
     void processAction(ActionEvent event) throws AbortProcessingException;

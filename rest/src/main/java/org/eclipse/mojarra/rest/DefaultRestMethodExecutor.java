@@ -37,7 +37,7 @@ public class DefaultRestMethodExecutor implements RestMethodExecutor {
 
     @Override
     public Object execute(FacesContext facesContext, RestMappingMatch restMappingMatch) {
-        Instance instance = CDI.current().select(
+        Instance<?> instance = CDI.current().select(
                 restMappingMatch.getBean().getBeanClass(), Any.Literal.INSTANCE);
         Object result;
         try {

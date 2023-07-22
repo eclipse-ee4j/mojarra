@@ -15,14 +15,19 @@
  */
 package com.sun.faces.cdi.clientwindow;
 
-import com.sun.faces.util.FacesLogger;
-import jakarta.enterprise.event.Observes;
-import jakarta.enterprise.inject.spi.*;
-import jakarta.faces.lifecycle.ClientWindowScoped;
+import static com.sun.faces.cdi.CdiUtils.addAnnotatedTypes;
 
 import java.util.logging.Logger;
 
-import static com.sun.faces.cdi.CdiUtils.addAnnotatedTypes;
+import com.sun.faces.util.FacesLogger;
+
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessBean;
+import jakarta.faces.lifecycle.ClientWindowScoped;
 
 public class ClientWindowScopeExtension implements Extension
 {

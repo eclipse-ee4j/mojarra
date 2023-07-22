@@ -18,8 +18,8 @@ package com.sun.faces.config;
 
 import static com.sun.faces.RIConstants.ANNOTATED_CLASSES;
 import static com.sun.faces.RIConstants.ERROR_PAGE_PRESENT_KEY_NAME;
-import static com.sun.faces.RIConstants.FACES_INITIALIZER_MAPPINGS_ADDED;
 import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
+import static com.sun.faces.RIConstants.FACES_SERVLET_REGISTRATION;
 import static com.sun.faces.config.InitFacesContext.getInitContextServletContextMap;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableLazyBeanValidation;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableThreading;
@@ -129,13 +129,10 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         // Check to see if the FacesServlet is present in the
         // web.xml. If it is, perform faces configuration as normal,
         // otherwise, simply return.
-        Object mappingsAdded = servletContext.getAttribute(FACES_INITIALIZER_MAPPINGS_ADDED);
-        if (mappingsAdded != null) {
-            servletContext.removeAttribute(FACES_INITIALIZER_MAPPINGS_ADDED);
-        }
+        Object facesServletRegistration = servletContext.getAttribute(FACES_SERVLET_REGISTRATION); // If found by FacesInitializer.
 
         WebXmlProcessor webXmlProcessor = new WebXmlProcessor(servletContext);
-        if (mappingsAdded == null) {
+        if (facesServletRegistration == null) {
             if (!webXmlProcessor.isFacesServletPresent()) {
                 if (!webConfig.isOptionEnabled(ForceLoadFacesConfigFiles)) {
                     LOGGER.log(FINE, "No FacesServlet found in deployment descriptor - bypassing configuration");
@@ -400,7 +397,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
      * included in WEB-INF are modified.
      */
     private void reload(ServletContext servletContext) {
-        LOGGER.log(INFO, () -> format("Reloading JSF configuration for context {0}", servletContext.getContextPath()));
+        LOGGER.log(INFO, () -> format("Reloading Faces configuration for context {0}", servletContext.getContextPath()));
 
         // tear down the application
         try {
@@ -690,7 +687,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
     private class WebConfigResourceMonitor implements Runnable {
 
         private List<Monitor> monitors;
-        private ServletContext servletContext;
+        private final ServletContext servletContext;
 
         // -------------------------------------------------------- Constructors
 
@@ -705,7 +702,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                     monitors.add(new Monitor(uri));
                 } catch (IOException ioe) {
                     LOGGER.log(SEVERE, () -> "Unable to setup resource monitor for " + uri.toString() + ".  Resource will not be monitored for changes.");
-                    LOGGER.log(FINE, ioe, () -> ioe.toString());
+                    LOGGER.log(FINE, ioe, ioe::toString);
                 }
             }
 
@@ -746,7 +743,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
         private class Monitor {
 
-            private URI uri;
+            private final URI uri;
             private long timestamp = -1;
 
             // ---------------------------------------------------- Constructors

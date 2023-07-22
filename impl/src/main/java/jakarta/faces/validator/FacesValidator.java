@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021-2021 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,6 +17,9 @@
 
 package jakarta.faces.validator;
 
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -23,6 +27,7 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.inject.Qualifier;
 
 /**
@@ -33,7 +38,8 @@ import jakarta.inject.Qualifier;
  * to be the <em>validator-class</em>. 
  * 
  * The implementation must guarantee that for each class annotated with  * <code>FacesValidator</code>, found with the 
- * algorithm in section 11.5 of the spec prose document,
+ * algorithm in 
+ * section 11.4 "Annotations that correspond to and may take the place of entries in the Application Configuration Resources" of the Jakarta Faces Specification Document,
  * {@link jakarta.faces.application.Application#addValidator(java.lang.String,java.lang.String)} is called, passing the
  * derived <em>validator-id</em> as the first argument and the derived <em>validator-class</em> as the second argument.
  * The implementation must guarantee that all such calls to <code>addValidator()</code> happen during application
@@ -41,7 +47,7 @@ import jakarta.inject.Qualifier;
  * </p>
  */
 @Retention(RUNTIME)
-@Target(TYPE)
+@Target({ TYPE, FIELD, METHOD, PARAMETER })
 @Inherited
 @Qualifier
 public @interface FacesValidator {
@@ -74,12 +80,58 @@ public @interface FacesValidator {
 
     /**
      * <p class="changed_added_2_3">
-     * The value of this annotation attribute is taken to be an indicator that flags whether or not the given converter is a
-     * CDI managed converter.
+     * The value of this annotation attribute is taken to be an indicator that flags whether or not the given validator is a
+     * CDI managed validator.
      * </p>
      *
      * @return true if CDI managed, false otherwise.
      */
 
     boolean managed() default false;
+
+    /**
+     * <p class="changed_added_4_0">
+     * Supports inline instantiation of the {@link FacesValidator} qualifier.
+     * </p>
+     *
+     * @since 4.0
+     */
+    public static final class Literal extends AnnotationLiteral<FacesValidator> implements FacesValidator {
+
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * Instance of the {@link FacesValidator} qualifier.
+         */
+        public static final Literal INSTANCE = of("", false, false);
+
+        private final String value;
+        private final boolean isDefault;
+        private final boolean managed;
+
+        public static Literal of(String value, boolean isDefault, boolean managed) {
+            return new Literal(value, isDefault, managed);
+        }
+
+        private Literal(String value, boolean isDefault, boolean managed) {
+            this.value = value;
+            this.isDefault = isDefault;
+            this.managed = managed;
+        }
+
+        @Override
+        public String value() {
+            return value;
+        }
+
+        @Override
+        public boolean isDefault() {
+            return isDefault;
+        }
+
+        @Override
+        public boolean managed() {
+            return managed;
+        }
+    }
 }

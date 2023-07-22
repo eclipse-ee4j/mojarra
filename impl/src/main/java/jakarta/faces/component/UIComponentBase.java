@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2022 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -73,7 +74,6 @@ import jakarta.faces.event.BehaviorEvent;
 import jakarta.faces.event.ComponentSystemEventListener;
 import jakarta.faces.event.FacesEvent;
 import jakarta.faces.event.FacesListener;
-import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.PostAddToViewEvent;
 import jakarta.faces.event.PostValidateEvent;
 import jakarta.faces.event.PreRemoveFromViewEvent;
@@ -92,7 +92,7 @@ import jakarta.faces.render.Renderer;
  * <p>
  * By default, this class defines <code>getRendersChildren()</code> to find the renderer for this component and call its
  * <code>getRendersChildren()</code> method. The default implementation on the <code>Renderer</code> returns
- * <code>false</code>. As of version 1.2 of the Jakarta Server Faces Specification, component authors are encouraged to
+ * <code>false</code>. As of version 1.2 of the Jakarta Faces Specification, component authors are encouraged to
  * return <code>true</code> from this method and rely on the implementation of {@link #encodeChildren} in this class and
  * in the Renderer ({@link Renderer#encodeChildren}). Subclasses that wish to manage the rendering of their children
  * should override this method to return <code>true</code> instead.
@@ -102,7 +102,7 @@ public abstract class UIComponentBase extends UIComponent {
 
     // -------------------------------------------------------------- Attributes
 
-    private static Logger LOGGER = Logger.getLogger("jakarta.faces.component", "jakarta.faces.LogStrings");
+    private static final Logger LOGGER = Logger.getLogger("jakarta.faces.component", "jakarta.faces.LogStrings");
 
     private static final String ADDED = UIComponentBase.class.getName() + ".ADDED";
 
@@ -114,7 +114,7 @@ public abstract class UIComponentBase extends UIComponent {
      * Each entry is an map of <code>PropertyDescriptor</code>s describing the properties of a concrete {@link UIComponent}
      * implementation, keyed by the corresponding <code>java.lang.Class</code>.
      * </p>
-     * <p/>
+     *
      */
     private Map<Class<?>, Map<String, PropertyDescriptor>> descriptors;
 
@@ -733,8 +733,8 @@ public abstract class UIComponentBase extends UIComponent {
      * <p class="changed_modified_4_0">
      * The listener instance referenced by argument <code>componentListener</code> may not already be installed as a listener for events of type
      * <code>eventClass</code> originating from this specific instance of <code>UIComponent</code>. When doing the
-     * comparison to determine if an existing listener is equal to the argument <code>componentListener</code> (and thus
-     * must be removed), the <code>equals()</code> method on the <em>existing listener</em> must be invoked, passing the
+     * comparison to determine if an existing listener is equal to the argument <code>componentListener</code>,
+     * the <code>equals()</code> method on the <em>existing listener</em> must be invoked, passing the
      * argument <code>componentListener</code>, rather than the other way around.
      * </p>
      *
@@ -1141,10 +1141,6 @@ public abstract class UIComponentBase extends UIComponent {
             Object savedBehaviors = saveBehaviorsState(context);
             Object savedBindings = null;
 
-            if (bindings != null) {
-                savedBindings = saveBindingsState(context);
-            }
-
             Object savedHelper = null;
             if (stateHelper != null) {
                 savedHelper = stateHelper.saveState(context);
@@ -1177,10 +1173,6 @@ public abstract class UIComponentBase extends UIComponent {
             values[0] = listeners != null ? listeners.saveState(context) : null;
             values[1] = saveSystemEventListeners(context);
             values[2] = saveBehaviorsState(context);
-
-            if (bindings != null) {
-                values[3] = saveBindingsState(context);
-            }
 
             if (stateHelper != null) {
                 values[4] = stateHelper.saveState(context);
@@ -1223,10 +1215,6 @@ public abstract class UIComponentBase extends UIComponent {
 
         if (values[2] != null) {
             behaviors = restoreBehaviorsState(context, values[2]);
-        }
-
-        if (values[3] != null) {
-            bindings = restoreBindingsState(context, values[3]);
         }
 
         if (values[4] != null) {
@@ -1293,7 +1281,7 @@ public abstract class UIComponentBase extends UIComponent {
         }
 
         Object result;
-        Class mapOrCollectionClass = attachedObject.getClass();
+        Class<?> mapOrCollectionClass = attachedObject.getClass();
         boolean newWillSucceed = true;
         // first, test for newability of the class.
         try {
@@ -1375,12 +1363,12 @@ public abstract class UIComponentBase extends UIComponent {
         if (stateObj instanceof List) {
             List<StateHolderSaver> stateList = (List<StateHolderSaver>) stateObj;
             StateHolderSaver collectionSaver = stateList.get(0);
-            Class mapOrCollection = (Class) collectionSaver.restore(context);
+            Class<?> mapOrCollection = (Class<?>) collectionSaver.restore(context);
             if (Collection.class.isAssignableFrom(mapOrCollection)) {
                 Collection<Object> retCollection = null;
                 try {
-                    retCollection = (Collection<Object>) mapOrCollection.newInstance();
-                } catch (InstantiationException | IllegalAccessException e) {
+                    retCollection = (Collection<Object>) mapOrCollection.getDeclaredConstructor().newInstance();
+                } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
                         LOGGER.log(Level.SEVERE, e.toString(), e);
                     }
@@ -1401,8 +1389,8 @@ public abstract class UIComponentBase extends UIComponent {
                 // If we were doing assertions: assert(mapOrList.isAssignableFrom(Map.class));
                 Map<Object, Object> retMap = null;
                 try {
-                    retMap = (Map<Object, Object>) mapOrCollection.newInstance();
-                } catch (InstantiationException | IllegalAccessException e) {
+                    retMap = (Map<Object, Object>) mapOrCollection.getDeclaredConstructor().newInstance();
+                } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
                         LOGGER.log(Level.SEVERE, e.toString(), e);
                     }
@@ -1443,26 +1431,6 @@ public abstract class UIComponentBase extends UIComponent {
             bindings.put(names[i], (ValueExpression) restoreAttachedState(context, states[i]));
         }
         return bindings;
-
-    }
-
-    private Object saveBindingsState(FacesContext context) {
-
-        if (bindings == null) {
-            return null;
-        }
-
-        Object values[] = new Object[2];
-        values[0] = bindings.keySet().toArray(new String[bindings.size()]);
-
-        Object[] bindingValues = bindings.values().toArray();
-        for (int i = 0; i < bindingValues.length; i++) {
-            bindingValues[i] = saveAttachedState(context, bindingValues[i]);
-        }
-
-        values[1] = bindingValues;
-
-        return values;
 
     }
 
@@ -1708,7 +1676,7 @@ public abstract class UIComponentBase extends UIComponent {
             for (List<ClientBehavior> eventBehaviors : behaviors.values()) {
                 // we need to take different action depending on whether
                 // or not markInitialState() was called. If it's not called,
-                // assume Jakarta Server Faces 1.2 style state saving and call through to
+                // assume Jakarta Faces 1.2 style state saving and call through to
                 // saveAttachedState(), otherwise, call saveState() on the
                 // behaviors directly.
                 Object[] attachedEventBehaviors = new Object[eventBehaviors.size()];
@@ -1741,7 +1709,7 @@ public abstract class UIComponentBase extends UIComponent {
             Object[] attachedBehaviors = (Object[]) values[1];
             // we need to take different action depending on whether
             // or not markInitialState() was called. If it's not called,
-            // assume Jakarta Server Faces 1.2 style state saving and call through to
+            // assume Jakarta Faces 1.2 style state saving and call through to
             // restoreAttachedState(), otherwise, call restoreState() on the
             // behaviors directly.
             if (!initialStateMarked()) {
@@ -1855,7 +1823,7 @@ public abstract class UIComponentBase extends UIComponent {
     private final static Object[] EMPTY_ARRAY = new Object[0];
 
     // Empty iterator for short circuiting operations
-    private final static Iterator<UIComponent> EMPTY_ITERATOR = new Iterator<UIComponent>() {
+    private final static Iterator<UIComponent> EMPTY_ITERATOR = new Iterator<>() {
 
         @Override
         public void remove() {
@@ -2202,10 +2170,10 @@ public abstract class UIComponentBase extends UIComponent {
 
         private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
             // noinspection unchecked
-            Class clazz = (Class) in.readObject();
+            Class<?> clazz = (Class<?>) in.readObject();
             try {
-                component = (UIComponent) clazz.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
+                component = (UIComponent) clazz.getDeclaredConstructor().newInstance();
+            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
                 throw new RuntimeException(e);
             }
             component.restoreState(FacesContext.getCurrentInstance(), in.readObject());

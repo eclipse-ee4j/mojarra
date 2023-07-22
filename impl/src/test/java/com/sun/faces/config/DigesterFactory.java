@@ -16,11 +16,13 @@
 
 package com.sun.faces.config;
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.commons.digester.Digester;
 import org.apache.commons.logging.impl.NoOpLog;
 import org.xml.sax.ErrorHandler;
@@ -30,6 +32,7 @@ import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
+
 import com.sun.faces.util.ToolsUtil;
 
 /**
@@ -88,9 +91,9 @@ public class DigesterFactory {
      * The <code>ThreadLocal</code> variable used to record the VersionListener
      * instance for each processing thread.</p>
      */
-    private static ThreadLocal versionListener = new ThreadLocal() {
+    private static ThreadLocal<VersionListener> versionListener = new ThreadLocal<>() {
         @Override
-        protected Object initialValue() {
+        protected VersionListener initialValue() {
             return (null);
         }
     };
@@ -115,7 +118,6 @@ public class DigesterFactory {
      * <p>
      * Returns a new <code>DigesterFactory</code> instance that will create a
      * non-validating <code>Digester</code> instance.</p>
-     * @return 
      */
     public static DigesterFactory newInstance() {
         return DigesterFactory.newInstance(false);
@@ -157,7 +159,7 @@ public class DigesterFactory {
             VersionListener listener) {
         DigesterFactory result = new DigesterFactory(isValidating);
         if (null != listener) {
-            result.RESOLVER.setVersionListener(listener);
+            RESOLVER.setVersionListener(listener);
             versionListener.set(listener);
         }
 
@@ -166,7 +168,7 @@ public class DigesterFactory {
     } // END newInstance
 
     public static VersionListener getVersionListener() {
-        return ((VersionListener) versionListener.get());
+        return (versionListener.get());
     }
 
     public static void releaseDigester(Digester toRelease) {
@@ -177,8 +179,7 @@ public class DigesterFactory {
     /**
      * <p>
      * Creates a new <code>Digester</code> instance configured for use with
-     * JSF.</p>
-     * @return 
+     * Jakarta Faces.</p>
      */
     public Digester createDigester() {
         Digester digester = new Digester();
@@ -202,7 +203,7 @@ public class DigesterFactory {
          * Called from the EntityResolver when we know one of the XML Grammar
          * elements to which this config file conforms.</p>
          * @param grammar       */
-        public void takeActionOnGrammar(String grammar);
+        void takeActionOnGrammar(String grammar);
 
         /**
          * <p>
@@ -211,14 +212,14 @@ public class DigesterFactory {
          * parsed.</p>
          * @param artifactName
          */
-        public void takeActionOnArtifact(String artifactName);
+        void takeActionOnArtifact(String artifactName);
     }
 
     // --------------------------------------------------------- Private Methods
     /**
      * <p>
      * Configures the provided <code>Digester</code> instance appropriate for
-     * use with JSF.</p>
+     * use with Jakarta Faces.</p>
      *
      * @param digester - the <code>Digester</code> instance to configure
      */
@@ -339,7 +340,7 @@ public class DigesterFactory {
          * Contains mapping between grammar name and the local URL to the
          * physical resource.</p>
          */
-        private HashMap<String, String> entities = new HashMap<String, String>();
+        private HashMap<String, String> entities = new HashMap<>();
 
         // -------------------------------------------------------- Constructors
         public JsfEntityResolver() {

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2017, 2020 Oracle and/or its affiliates. All rights reserved.
+	Copyright (c) 2021 Contributors to Eclipse Foundation.
+    Copyright (c) 2017, 2021 Oracle and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,64 +23,69 @@
     Project to create the Mojarra implementation jar.
 
  -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"> <modelVersion>4.0.0</modelVersion>
-    
-    <parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+
+   <parent>
         <groupId>org.glassfish</groupId>
         <artifactId>mojarra-parent</artifactId>
-        <version>4.0.0-SNAPSHOT</version>
+        <version>5.0.0-SNAPSHOT</version>
     </parent>
-    
-    <artifactId>jakarta.faces</artifactId>
-    <packaging>jar</packaging>
-    
-    <name>Mojarra ${project.version}</name>
-    <description>EE4J Compatible Implementation for Jakarta Faces API</description>
-    
-    <properties>
+
+   <artifactId>jakarta.faces</artifactId>
+   <packaging>jar</packaging>
+
+   <name>Mojarra ${project.version}</name>
+   <description>EE4J Compatible Implementation for Jakarta Faces API</description>
+
+   <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <mojarra.logstrings.version>${project.version}</mojarra.logstrings.version>
     </properties>
-    
-    
-    <!-- ###  D E P E N D E N C I E S  ### --> 
-    
-    <dependencies>
+
+   <!-- ###  D E P E N D E N C I E S  ### -->
+   <dependencies>
         <!-- Jakarta EE Dependencies -->
 
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
-            <version>5.0.0</version>
+            <version>6.0.0</version>
             <scope>provided</scope>
         </dependency>
 
-        <dependency>    
+        <dependency>
             <groupId>jakarta.websocket</groupId>
             <artifactId>jakarta.websocket-api</artifactId>
-            <version>2.0.0</version>
+            <version>2.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.websocket</groupId>
+            <artifactId>jakarta.websocket-client-api</artifactId>
+            <version>2.1.0</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>jakarta.el</groupId>
             <artifactId>jakarta.el-api</artifactId>
-            <version>4.0.0</version>
+            <version>5.0.0</version>
             <scope>provided</scope>
         </dependency>
     
         <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>jakarta.enterprise.cdi-api</artifactId>
-            <version>3.0.0</version>
+            <version>4.0.0</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
-            <version>3.0.0</version>
+            <version>3.0.1</version>
             <scope>provided</scope>
         </dependency>
         
@@ -89,7 +95,7 @@
         <dependency>
             <groupId>jakarta.transaction</groupId>
             <artifactId>jakarta.transaction-api</artifactId>
-            <version>2.0.0</version>
+            <version>2.0.1-RC1</version>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
@@ -97,7 +103,7 @@
         <dependency>
             <groupId>jakarta.json</groupId>
             <artifactId>jakarta.json-api</artifactId>
-            <version>2.0.0</version>
+            <version>2.1.0</version>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
@@ -113,7 +119,7 @@
         <dependency>
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
-            <version>3.0.0</version>
+            <version>3.1.0</version>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
@@ -121,7 +127,7 @@
         <dependency>
             <groupId>jakarta.xml.ws</groupId>
             <artifactId>jakarta.xml.ws-api</artifactId>
-            <version>3.0.0</version>
+            <version>4.0.0</version>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
@@ -129,16 +135,16 @@
         <dependency>
             <groupId>jakarta.annotation</groupId>
             <artifactId>jakarta.annotation-api</artifactId>
-            <version>2.0.0</version>
+            <version>2.1.0</version>
         </dependency>
         
         
         <!-- TEST DEPENDENCIES -->
         
         <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>jakarta.el</artifactId>
-            <version>4.0.0</version>
+            <groupId>org.glassfish.expressly</groupId>
+            <artifactId>expressly</artifactId>
+            <version>5.0.0-M1</version>
             <scope>test</scope>
         </dependency>
         
@@ -176,11 +182,16 @@
             <version>2.1</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>8.0.0.Final</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
-    
-    
-    
-    <build>
+
+   <build>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -201,38 +212,39 @@
                 </includes>
             </resource>
         </resources>
-    
-    
+        <pluginManagement>
+            <plugins>
+            </plugins>
+        </pluginManagement>
         <plugins>
         
             <!-- ###  C O M P R E S S  /  M I N I F Y   faces.js  ###   -->
+            <!-- https://blutorange.github.io/closure-compiler-maven-plugin/minify-mojo.html -->
             <plugin>
-                <groupId>net.alchim31.maven</groupId>
-                <artifactId>yuicompressor-maven-plugin</artifactId>
-                <version>1.5.1</version>
+                <groupId>com.github.blutorange</groupId>
+                <artifactId>closure-compiler-maven-plugin</artifactId>
+                <version>2.23.0</version>
                 <executions>
+                    <!-- Process all files in the "includes" directory individually-->
                     <execution>
                         <id>minify-faces-js</id>
                         <phase>generate-sources</phase>
                         <goals>
-                            <goal>compress</goal>
+                            <goal>minify</goal>
                         </goals>
                         <configuration>
-                            <nosuffix>true</nosuffix>
-                            <preProcessAggregates>true</preProcessAggregates>
-                            <aggregations>
-                                <aggregation>
-                                    <includes>
-                                        <include>${project.basedir}/src/main/resources/META-INF/resources/jakarta.faces/faces-uncompressed.js</include>
-                                    </includes>
-                                    <output>${project.build.directory}/generated-resources/yui/faces.js</output>
-                                </aggregation>
-                            </aggregations>
+                            <encoding>UTF-8</encoding>
+                            <!-- Base configuration for all executions (bundles) -->
+                            <baseSourceDir>${project.basedir}/src/main/resources/META-INF/resources/</baseSourceDir>
+                            <baseTargetDir>${project.build.directory}/generated-resources/minified/META-INF/resources/</baseTargetDir>
+                            <sourceDir>jakarta.faces</sourceDir>
+                            <targetDir>jakarta.faces</targetDir>
                             <includes>
-                                <include>*.js</include>
+                                <include>faces-uncompressed.js</include>
                             </includes>
-                            <sourceDirectory>${project.build.directory}/generated-resources/yui</sourceDirectory>
-                            <outputDirectory>${project.build.directory}/generated-resources/yui/META-INF/resources/jakarta.faces/</outputDirectory>
+                            <outputFilename>#{path}/faces.js</outputFilename>
+                            <skipMerge>true</skipMerge>
+                            <closureLanguageOut>NO_TRANSPILE</closureLanguageOut>
                         </configuration>
                     </execution>
                 </executions>
@@ -243,7 +255,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.3.0</version>
                 <executions>
                     <execution>
                         <id>generate-resources</id>
@@ -254,7 +266,7 @@
                         <configuration>
                             <resources>
                                 <resource>
-                                    <directory>${project.build.directory}/generated-resources/yui</directory>
+                                    <directory>${project.build.directory}/generated-resources/minified</directory>
                                 </resource>
                             </resources>
                         </configuration>
@@ -277,7 +289,7 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>5.1.1</version>
+                <version>5.1.4</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
@@ -293,10 +305,10 @@
                         <Bundle-SymbolicName>org.glassfish.jakarta.faces</Bundle-SymbolicName>
                         <Bundle-Version>${project.version}</Bundle-Version>
                         <Bundle-Name>Mojarra Faces Implementation ${project.version}</Bundle-Name>
-                        <Bundle-Description>Eclipse Faces Implementation (jakarta.faces/3.0) ${project.version}</Bundle-Description>
+                        <Bundle-Description>Eclipse Faces Implementation (jakarta.faces/4.0) ${project.version}</Bundle-Description>
                         
-                        <Specification-Title>Jakarta Server Faces</Specification-Title>
-                        <Specification-Version>3.0</Specification-Version>
+                        <Specification-Title>Jakarta Faces</Specification-Title>
+                        <Specification-Version>4.0</Specification-Version>
                         
                         <Implementation-Title>Mojarra</Implementation-Title> 
                         <Implementation-Version>${project.version}</Implementation-Version>
@@ -306,8 +318,8 @@
                         <Extension-Name>jakarta.faces</Extension-Name>
                         
                         <Export-Package>
-                            jakarta.faces.*;version=3.0,
-                            com.sun.faces.*;version=3.0
+                            jakarta.faces.*,
+                            com.sun.faces.*
                         </Export-Package>
                         
                         <Import-Package>
@@ -361,7 +373,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
+                <version>3.2.2</version>
                 <configuration>
                     <archive>
                         <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
@@ -377,7 +389,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.0.1</version>
+                <version>3.2.1</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -394,7 +406,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.1</version>
+                <version>3.3.1</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -408,39 +420,5 @@
                 </executions>
             </plugin>
         </plugins>
-        
-        
-        <pluginManagement>
-            <plugins>
-                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-                <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>net.alchim31.maven</groupId>
-                                        <artifactId>yuicompressor-maven-plugin</artifactId>
-                                        <versionRange>[1.5,)</versionRange>
-                                        <goals>
-                                            <goal>compress</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <execute>
-                                            <runOnIncremental>false</runOnIncremental>
-                                        </execute>
-                                    </action>
-                                </pluginExecution>
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
     </build>
-    
 </project>

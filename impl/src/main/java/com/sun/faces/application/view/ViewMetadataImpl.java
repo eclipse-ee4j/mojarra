@@ -47,7 +47,7 @@ import jakarta.faces.view.ViewMetadata;
  */
 public class ViewMetadataImpl extends ViewMetadata {
 
-    private String viewId;
+    private final String viewId;
     private DefaultFaceletFactory faceletFactory;
 
     // ---------------------------------------------------------------------------------------------------- Constructors
@@ -97,8 +97,9 @@ public class ViewMetadataImpl extends ViewMetadata {
                 Map<String, Object> currentViewMap = currentViewRoot.getViewMap(false);
 
                 if (!isEmpty(currentViewMap)) {
+                    currentViewMapShallowCopy = new HashMap<>(currentViewMap);
                     metadataView.getViewMap(true)
-                                .putAll(new HashMap<>(currentViewMap));
+                                .putAll(currentViewMapShallowCopy);
                 }
             }
 

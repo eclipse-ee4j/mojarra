@@ -39,8 +39,8 @@ import jakarta.faces.view.facelets.TagAttributeException;
 import jakarta.faces.view.facelets.TagConfig;
 
 /**
- * Container for all JavaServer Faces core and custom component actions used on a page.
- * <p/>
+ * Container for all Jakarta Faces core and custom component actions used on a page.
+ * 
  * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/view.html">tag
  * documentation</a>.
  *
@@ -51,7 +51,7 @@ public final class ViewHandler extends TagHandlerImpl {
 
     private static final Logger LOGGER = FacesLogger.TAGLIB.getLogger();
 
-    private final static Class[] LISTENER_SIG = new Class[] { PhaseEvent.class };
+    private final static Class<?>[] LISTENER_SIG = new Class<?>[] { PhaseEvent.class };
 
     private final TagAttribute locale;
 

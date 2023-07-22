@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -65,6 +65,12 @@ public abstract class FaceletCacheFactory implements FacesWrapper<FaceletCacheFa
         return wrapped;
     }
 
+    /**
+     * Returns the facility by which the Facelets {@link jakarta.faces.view.ViewDeclarationLanguage} creates and
+     * caches instances of Facelets.
+     *
+     * @return the facelet cache
+     */
     public abstract FaceletCache getFaceletCache();
 
 }

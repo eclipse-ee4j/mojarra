@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
-    Copyright (c) 2009, 2020 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2009, 2021 Oracle and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,11 +17,14 @@
 
 -->
 
-<facelet-taglib id="ui" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facelettaglibrary_2_3.xsd"
-                version="2.3">
+<facelet-taglib id="ui"
+    xmlns="https://jakarta.ee/xml/ns/jakartaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-facelettaglibrary_4_0.xsd"
+    version="4.0"
+>
     <description><![CDATA[
+        <p><strong>Jakarta Faces Facelets Tag Library</strong></p>
 
         <div class="changed_added_2_0">
 
@@ -62,18 +65,11 @@
         </p>
         <div class="syntax"><div class="html4strict"
         style="font-family: monospace;"><ol><li class="li1"><div
-        class="de1"><span class="sc0">&lt;!DOCTYPE html PUBLIC
-        &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot;</div></li>
-
-        <li class="li2"><div class="de2">&nbsp; &nbsp; &nbsp;
-        &nbsp; &nbsp; &nbsp; &nbsp; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;</span></div></li>
-        <li class="li1"><div class="de1">&nbsp;</div></li>
+        class="de1"><span class="sc0">&lt;!DOCTYPE html&gt;</span></div></li>
         <li class="li2"><div class="de2"><span class="sc3"><span
-        class="re1">&lt;html</span> <span class="re0">xmlns</span>=<span
-        class="st0">&quot;http://www.w3.org/1999/xhtml&quot;</span></div></li>
-        <li class="li1"><div class="de1">&nbsp; &nbsp; &nbsp;
-        &nbsp; &nbsp; &nbsp; xmlns:<span class="re0">ui</span>=<span
-        class="st0">&quot;jakarta.faces.facelets&quot;</span></div></li>
+        class="re1">&lt;html</span> xmlns:<span
+        class="re0">ui</span>=<span class="st0">&quot;jakarta.faces.facelets&quot;</span><span
+        class="re2">&gt;</span></span></div></li>
 
         <li class="li1"><div class="de1">&nbsp; &nbsp; <span
         class="sc3"><span class="re1">&lt;head<span class="re2">&gt;</span></span></span></div></li>
@@ -154,20 +150,12 @@
 
         <div class="syntax"><div class="html4strict"
         style="font-family: monospace;"><ol><li class="li1"><div
-        class="de1"><span class="sc0">&lt;!DOCTYPE html PUBLIC
-        &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot;</div></li>
-
-        <li class="li2"><div class="de2">&nbsp; &nbsp; &nbsp;
-        &nbsp; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;</span></div></li>
-        <li class="li1"><div class="de1">&nbsp;</div></li>
+        class="de1"><span class="sc0">&lt;!DOCTYPE html&gt;</span></div></li>
         <li class="li2"><div class="de2"><span class="sc3"><span
-        class="re1">&lt;html</span> <span class="re0">xmlns</span>=<span
-        class="st0">&quot;http://www.w3.org/1999/xhtml&quot;</span></div></li>
-        <li class="li1"><div class="de1">&nbsp; &nbsp;xmlns:<span
+        class="re1">&lt;html</span> xmlns:<span
         class="re0">ui</span>=<span class="st0">&quot;jakarta.faces.facelets&quot;</span><span
         class="re2">&gt;</span></span></div></li>
 
-        <li class="li2"><div class="de2">&nbsp;</div></li>
         <li class="li1"><div class="de1">&nbsp; <span
         class="sc3"><span class="re1">&lt;body<span class="re2">&gt;</span></span></span></div></li>
         <li class="li2"><div class="de2">&nbsp; &nbsp; <span
@@ -239,20 +227,12 @@
 
         <div class="syntax"><div class="html4strict"
         style="font-family: monospace;"><ol><li class="li1"><div
-        class="de1"><span class="sc0">&lt;!DOCTYPE html PUBLIC
-        &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot;</div></li>
-
-        <li class="li2"><div class="de2">&nbsp; &nbsp; &nbsp;
-        &nbsp; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;</span></div></li>
-        <li class="li1"><div class="de1">&nbsp;</div></li>
+        class="de1"><span class="sc0">&lt;!DOCTYPE html&gt;</span></div></li>
         <li class="li2"><div class="de2"><span class="sc3"><span
-        class="re1">&lt;html</span> <span class="re0">xmlns</span>=<span
-        class="st0">&quot;http://www.w3.org/1999/xhtml&quot;</span></div></li>
-        <li class="li1"><div class="de1">&nbsp; &nbsp; &nbsp;
-        xmlns:<span class="re0">ui</span>=<span class="st0">&quot;jakarta.faces.facelets&quot;</span><span
+        class="re1">&lt;html</span> xmlns:<span
+        class="re0">ui</span>=<span class="st0">&quot;jakarta.faces.facelets&quot;</span><span
         class="re2">&gt;</span></span></div></li>
 
-        <li class="li2"><div class="de2">&nbsp;</div></li>
         <li class="li1"><div class="de1">&nbsp; <span
         class="sc3"><span class="re1">&lt;body<span class="re2">&gt;</span></span></span></div></li>
         <li class="li2"><div class="de2">&nbsp; &nbsp; <span
@@ -360,7 +340,8 @@
   <p>
 
 	Binds the component to a backing bean property, as specified in
-	the Faces specification.  <span class="changed_modified_2_2">The
+	section 3.1.5 "Component Bindings" of the Jakarta Faces Specification Document.
+    <span class="changed_modified_2_2">The
 	Java language type of this property must be a class that extends
 	<code>jakarta.faces.component.UIComponent</code>.  The scope of
 	the bean on which this property resides must be no wider than
@@ -406,17 +387,11 @@ or a browser, without including extraneous elements such as
 <code>head</code> and <code>body</code>.
 
   </p>
-	<div class="syntax"><div class="html4strict" style="font-family: monospace;"><ol><li class="li1"><div class="de1"><span class="sc0">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot;</div></li>
-
-<li class="li2"><div class="de2">&nbsp; &nbsp; &nbsp; &nbsp; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;</div></li>
-<li class="li2"><div class="de2"><span class="sc3"><span class="re1">&lt;html</span> <span class="re0">xmlns</span>=<span class="st0">&quot;http://www.w3.org/1999/xhtml&quot;</span></div></li>
-<li class="li1"><div class="de1">&nbsp; &nbsp;xmlns:<span class="re0">ui</span>=<span class="st0">&quot;jakarta.faces.facelets&quot;</span><span class="re2">&gt;</span></span></div></li>
-
-<li class="li2"><div class="de2">&nbsp;</div></li>
+	<div class="syntax"><div class="html4strict" style="font-family: monospace;"><ol><li class="li1"><div class="de1"><span class="sc0">&lt;!DOCTYPE html&gt;</span></div></li>
+<li class="li2"><div class="de2"><span class="sc3"><span class="re1">&lt;html</span> xmlns:<span class="re0">ui</span>=<span class="st0">&quot;jakarta.faces.facelets&quot;</span><span class="re2">&gt;</span></span></div></li>
 <li class="li1"><div class="de1">&nbsp; <span class="sc3"><span class="re1">&lt;body<span class="re2">&gt;</span></span></span></div></li>
 <li class="li2"><div class="de2">&nbsp;</div></li>
-<li class="li1"><div class="de1">&nbsp; &nbsp; THIS LINE, AND EVERYTHING ABOVE IT IS DISREGARDED BY Faces</div></li>
+<li class="li1"><div class="de1">&nbsp; &nbsp; THIS LINE, AND EVERYTHING ABOVE IT IS DISREGARDED BY FACELETS</div></li>
 <li class="li2"><div class="de2">&nbsp; &nbsp; <span class="sc3"><span class="re1">&lt;ui</span>:composition <span class="re0">template</span>=<span class="st0">&quot;/layout.xhtml&quot;</span><span class="re2">&gt;</span></span></div></li>
 
 <li class="li1"><div class="de1">&nbsp;</div></li>
@@ -430,7 +405,7 @@ or a browser, without including extraneous elements such as
 <li class="li1"><div class="de1">&nbsp; &nbsp; &nbsp; <span class="sc3"><span class="re1">&lt;/ui</span>:define<span class="re2">&gt;</span></span></div></li>
 <li class="li2"><div class="de2">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</div></li>
 <li class="li1"><div class="de1">&nbsp; &nbsp; <span class="sc3"><span class="re1">&lt;/ui</span>:composition<span class="re2">&gt;</span></span></div></li>
-<li class="li2"><div class="de2">&nbsp; &nbsp; THIS LINE, AND EVERYTHING BELOW IT IS DISREGARDED BY Faces</div></li>
+<li class="li2"><div class="de2">&nbsp; &nbsp; THIS LINE, AND EVERYTHING BELOW IT IS DISREGARDED BY FACELETS</div></li>
 
 <li class="li1"><div class="de1">&nbsp;</div></li>
 <li class="li2"><div class="de2">&nbsp; <span class="sc3"><span class="re1">&lt;/body<span class="re2">&gt;</span></span></span></div></li>
@@ -604,7 +579,7 @@ you might want to decorate a list of items, like this:
 	
 <div class="syntax"><div class="html4strict" style="font-family: monospace;"><ol><li class="li1"><div class="de1">
 	
-<span class="sc2">&lt;ui:decorate template=<span class="st0">&quot;/layout.xhtml&quot;</span><span class="kw2">&gt;</span></span></div></li>
+<span class="sc2">&lt;ui:decorate template=<span class="st0">&quot;/layout.xhtml&quot;</span> xmlns:<span class="re0">ui</span>=<span class="st0">&quot;jakarta.faces.facelets&quot;</span><span class="kw2">&gt;</span></span></div></li>
 <li class="li2"><div class="de2">&nbsp; <span class="sc2">&lt;ui:define <span class="kw3">name</span>=<span class="st0">&quot;listHeading&quot;</span><span class="kw2">&gt;</span></span></div></li>
 
 <li class="li1"><div class="de1">&nbsp; &nbsp; <span class="sc2">&lt;ui:include <span class="kw3">src</span>="shared/listHeading.xhtml"/<span class="kw2">&gt;</span></span></div></li>
@@ -687,7 +662,8 @@ starting with "/".</span>
 <div class="changed_added_2_0">
 
         <p>Binds the component to a backing bean property, as specified
-        in the Faces specification. <span class="changed_added_2_2">The
+        in section 3.1.5 "Component Bindings" of the Jakarta Faces Specification Document.
+        <span class="changed_added_2_2">The
 	Java language type of this property must be a class that extends
 	<code>jakarta.faces.component.UIComponent</code>.  The scope of
 	the bean on which this property resides must be no wider than
@@ -852,13 +828,8 @@ attribute must be an absolute path starting with "/".</span>
         <div class="changed_added_2_0">
 	
         <p><span class="changed_modified_2_2
-        changed_modified_2_3">Use</span> this tag as an alternative to
-        <code>h:dataTable</code> or <code>c:forEach</code>, especially
-        when you are using the <code>jsfc</code> feature of
-        Facelets. You can specify this component as the value of the
-        <code>jsfc</code> attribute, like this:
-        &lt;div... jsfc="ui:repeat" value="#{contacts}"
-        var="contact"&gt;...  </p> </div>
+        changed_modified_2_3 changed_modified_4_0">Use</span> this tag as an alternative to
+        <code>h:dataTable</code> or <code>c:forEach</code></p> </div>
         
         ]]></description>
         <tag-name>repeat</tag-name>
@@ -1033,14 +1004,7 @@ attribute must be an absolute path starting with "/".</span>
 
 
             <div class="changed_added_2_0">
-            <p>Remove content from a page. This tag is often used in
-            conjunction with the <code>jsfc</code> feature of
-            Facelets,
-            to wrap additional markup. When Facelets removes markup from a page
-            by substituting markup items that have
-            a <code>jsfc</code> attribute with the specified
-            component, Facelets also removes anything in the page that
-            is contained in a <code>ui:remove</code> tag.</p>
+            <p>Remove content from a page.</p>
             </div>
 
         ]]></description>

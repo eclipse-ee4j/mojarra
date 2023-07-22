@@ -57,22 +57,22 @@ public class ResourceManager {
      */
     private static final Pattern CONFIG_MIMETYPE_PATTERN = Pattern.compile("[a-z-]*/[a-z0-9.\\*-]*");
 
-    private FaceletWebappResourceHelper faceletWebappResourceHelper = new FaceletWebappResourceHelper();
+    private final FaceletWebappResourceHelper faceletWebappResourceHelper = new FaceletWebappResourceHelper();
 
     /**
      * {@link ResourceHelper} used for looking up webapp-based resources.
      */
-    private ResourceHelper webappResourceHelper = new WebappResourceHelper();
+    private final ResourceHelper webappResourceHelper = new WebappResourceHelper();
 
     /**
      * {@link ResourceHelper} used for looking up classpath-based resources.
      */
-    private ClasspathResourceHelper classpathResourceHelper = new ClasspathResourceHelper();
+    private final ClasspathResourceHelper classpathResourceHelper = new ClasspathResourceHelper();
 
     /**
      * Cache for storing {@link ResourceInfo} instances to reduce the cost of the resource lookups.
      */
-    private ResourceCache cache;
+    private final ResourceCache cache;
 
     /**
      * Patterns used to find {@link ResourceInfo} instances that may have their content compressed.
@@ -83,7 +83,7 @@ public class ResourceManager {
      * This lock is used to ensure the lookup of compressable {@link ResourceInfo} instances are atomic to prevent theading
      * issues when writing the compressed content during a lookup.
      */
-    private ReentrantLock lock = new ReentrantLock();
+    private final ReentrantLock lock = new ReentrantLock();
 
     // ------------------------------------------------------------ Constructors
 
@@ -100,6 +100,8 @@ public class ResourceManager {
     /**
      * Constructs a new <code>ResourceManager</code>. Note: if the current {@link ProjectStage} is
      * {@link ProjectStage#Development} caching or {@link ResourceInfo} instances will not occur.
+     * @param appMap the application map
+     * @param cache the resource cache
      */
     public ResourceManager(Map<String, Object> appMap, ResourceCache cache) {
         this.cache = cache;
@@ -110,7 +112,7 @@ public class ResourceManager {
 
     /**
      * <p>
-     * Attempt to lookup a {@link ResourceInfo} based on the specified <code>libraryName<code> and <code>resourceName</code>
+     * Attempt to lookup a {@link ResourceInfo} based on the specified <code>libraryName</code> and <code>resourceName</code>
      * </p>
      *
      * <p>
@@ -390,13 +392,13 @@ public class ResourceManager {
     /**
      * <p>
      * Attempt to lookup and return a {@link LibraryInfo} based on the specified <code>arguments</code>.
-     * <p/>
+     * 
      * <p>
      * The lookup process will first search the file system of the web application *within the resources directory*. If the
      * library is not found, then it processed to searching the classpath, if not found there, search from the webapp root
      * *excluding* the resources directory.
      * </p>
-     * <p/>
+     * 
      * <p>
      * If a library is found, this method will return a {@link LibraryInfo} instance that contains the name, version, and
      * {@link ResourceHelper}.
@@ -433,12 +435,12 @@ public class ResourceManager {
     /**
      * <p>
      * Attempt to lookup and return a {@link ResourceInfo} based on the specified <code>arguments</code>.
-     * <p/>
+     * 
      * <p>
      * The lookup process will first search the file system of the web application. If the library is not found, then it
      * processed to searching the classpath.
      * </p>
-     * <p/>
+     * 
      * <p>
      * If a library is found, this method will return a {@link LibraryInfo} instance that contains the name, version, and
      * {@link ResourceHelper}.

@@ -35,7 +35,7 @@ class ViewScopeContextObject implements Serializable {
      * Constructor.
      *
      * @param passivationCapableId the return from PassivationCapable.getId().
-     * @param creationalContext the creational context.
+     * @param name name of context.
      */
     public ViewScopeContextObject(String passivationCapableId, String name) {
         this.passivationCapableId = passivationCapableId;

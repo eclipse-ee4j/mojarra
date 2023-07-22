@@ -77,7 +77,9 @@ class SharedUtils {
                     if (isExpression(value)) {
                         value = app.evaluateExpressionGet(context, value, String.class);
                     }
-                    ret.add(value);
+                    if (value != null) {
+                        ret.add(value);
+                    }
                 }
             }
 

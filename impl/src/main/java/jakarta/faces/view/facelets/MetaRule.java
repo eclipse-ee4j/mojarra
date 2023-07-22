@@ -20,7 +20,7 @@ package jakarta.faces.view.facelets;
 /**
  * <p class="changed_added_2_0">
  * The root class of the abstraction that dictates how attributes on a markup element in a Facelets VDL page are wired
- * to the Jakarta Server Faces API object instance associated with that element. The single method on this interface,
+ * to the Jakarta Faces API object instance associated with that element. The single method on this interface,
  * {@link #applyRule}, returns an encapsulation of the behavior that actually does the work of handling the attribute
  * and its value. There are implementations of specific concrete subclasses of this class for all the basic kinds of
  * elements that appear in Facelets VDL pages: components, non-components, and attached objects.

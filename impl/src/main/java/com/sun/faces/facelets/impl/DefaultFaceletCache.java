@@ -20,11 +20,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.logging.Logger;
 
 import com.sun.faces.util.ConcurrentCache;
 import com.sun.faces.util.ExpiringConcurrentCache;
-import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
 import jakarta.faces.FacesException;
@@ -34,8 +32,6 @@ import jakarta.faces.view.facelets.FaceletCache;
  * Default FaceletCache implementation.
  */
 final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
-
-    private final static Logger LOGGER = FacesLogger.FACELETS_FACTORY.getLogger();
 
     /**
      * Constructor

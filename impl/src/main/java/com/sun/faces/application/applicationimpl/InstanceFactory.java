@@ -97,14 +97,14 @@ public class InstanceFactory {
     private static final Map<Class<?>, String> STANDARD_TYPE_TO_CONV_ID_MAP = new HashMap<>(16, 1.0f);
 
     static {
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Byte", new Class[] { Byte.TYPE, Byte.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Boolean", new Class[] { Boolean.TYPE, Boolean.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Character", new Class[] { Character.TYPE, Character.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Short", new Class[] { Short.TYPE, Short.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Integer", new Class[] { Integer.TYPE, Integer.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Long", new Class[] { Long.TYPE, Long.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Float", new Class[] { Float.TYPE, Float.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Double", new Class[] { Double.TYPE, Double.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Byte", new Class<?>[] { Byte.TYPE, Byte.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Boolean", new Class<?>[] { Boolean.TYPE, Boolean.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Character", new Class<?>[] { Character.TYPE, Character.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Short", new Class<?>[] { Short.TYPE, Short.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Integer", new Class<?>[] { Integer.TYPE, Integer.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Long", new Class<?>[] { Long.TYPE, Long.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Float", new Class<?>[] { Float.TYPE, Float.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Double", new Class<?>[] { Double.TYPE, Double.class });
         for (Map.Entry<String, Class<?>[]> entry : STANDARD_CONV_ID_TO_TYPE_MAP.entrySet()) {
             Class<?>[] types = entry.getValue();
             String key = entry.getKey();
@@ -115,11 +115,11 @@ public class InstanceFactory {
     }
 
     private final String[] STANDARD_BY_TYPE_CONVERTER_CLASSES = { "java.math.BigDecimal", "java.lang.Boolean", "java.lang.Byte", "java.lang.Character",
-            "java.lang.Double", "java.lang.Float", "java.lang.Integer", "java.lang.Long", "java.lang.Short", "java.lang.Enum" };
+            "java.lang.Double", "java.lang.Float", "java.lang.Integer", "java.lang.Long", "java.lang.Short", "java.lang.Enum", "java.util.UUID" };
 
-    private Map<Class<?>, Object> converterTypeMap;
-    private boolean registerPropertyEditors;
-    private boolean passDefaultTimeZone;
+    private final Map<Class<?>, Object> converterTypeMap;
+    private final boolean registerPropertyEditors;
+    private final boolean passDefaultTimeZone;
 
     private TimeZone systemTimeZone;
 
@@ -130,16 +130,15 @@ public class InstanceFactory {
     // These four maps store store "identifier" | "class name"
     // mappings.
     //
-    private ViewMemberInstanceFactoryMetadataMap<String, Object> componentMap;
-    private ViewMemberInstanceFactoryMetadataMap<String, Object> behaviorMap;
-    private ViewMemberInstanceFactoryMetadataMap<String, Object> converterIdMap;
-    private ViewMemberInstanceFactoryMetadataMap<String, Object> validatorMap;
+    private final ViewMemberInstanceFactoryMetadataMap<String, Object> componentMap;
+    private final ViewMemberInstanceFactoryMetadataMap<String, Object> behaviorMap;
+    private final ViewMemberInstanceFactoryMetadataMap<String, Object> converterIdMap;
+    private final ViewMemberInstanceFactoryMetadataMap<String, Object> validatorMap;
 
-    private Set<String> defaultValidatorIds;
+    private final Set<String> defaultValidatorIds;
     private volatile Map<String, String> defaultValidatorInfo;
 
     private final ApplicationAssociate associate;
-    private Version version;
 
     /**
      * Stores the bean manager.
@@ -148,7 +147,6 @@ public class InstanceFactory {
 
     public InstanceFactory(ApplicationAssociate applicationAssociate) {
         associate = applicationAssociate;
-        version = new Version();
 
         componentMap = new ViewMemberInstanceFactoryMetadataMap<>(new ConcurrentHashMap<>());
         converterIdMap = new ViewMemberInstanceFactoryMetadataMap<>(new ConcurrentHashMap<>());
@@ -166,7 +164,7 @@ public class InstanceFactory {
         }
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#addComponent(java.lang.String, java.lang.String)
      */
     public void addComponent(String componentType, String componentClass) {
@@ -256,13 +254,13 @@ public class InstanceFactory {
                     if (!associate.isDevModeEnabled()) {
                         componentMap.put(className, clazz);
                     }
-                    result = (UIComponent) clazz.newInstance();
+                    result = (UIComponent) clazz.getDeclaredConstructor().newInstance();
                 }
             } catch (ClassNotFoundException ex) {
                 if (!associate.isDevModeEnabled()) {
                     componentMap.put(className, ComponentResourceClassNotFound.class);
                 }
-            } catch (InstantiationException | IllegalAccessException | ClassCastException ie) {
+            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException ie) {
                 throw new FacesException(ie);
             }
         }
@@ -299,14 +297,14 @@ public class InstanceFactory {
         return createComponentApplyAnnotations(context, componentExpression, componentType, rendererType, true);
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#getComponentTypes()
      */
     public Iterator<String> getComponentTypes() {
         return componentMap.keySet().iterator();
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#addBehavior(String, String)
      */
     public void addBehavior(String behaviorId, String behaviorClass) {
@@ -325,7 +323,7 @@ public class InstanceFactory {
         }
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#createBehavior(String)
      */
     public Behavior createBehavior(String behaviorId) throws FacesException {
@@ -349,7 +347,7 @@ public class InstanceFactory {
         return behavior;
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#getBehaviorIds()
      */
     public Iterator<String> getBehaviorIds() {
@@ -381,7 +379,7 @@ public class InstanceFactory {
         }
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#addConverter(Class, String)
      */
     public void addConverter(Class<?> targetClass, String converterClass) {
@@ -406,7 +404,7 @@ public class InstanceFactory {
         }
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#createConverter(String)
      */
     public Converter<?> createConverter(String converterId) {
@@ -434,19 +432,17 @@ public class InstanceFactory {
         return converter;
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#createConverter(Class)
      */
     public Converter createConverter(Class<?> targetClass) {
         notNull("targetClass", targetClass);
         Converter returnVal = null;
 
-        if (version.isFaces23()) {
-            BeanManager beanManager = getBeanManager();
-            returnVal = CdiUtils.createConverter(beanManager, targetClass);
-            if (returnVal != null) {
-                return returnVal;
-            }
+        BeanManager beanManager = getBeanManager();
+        returnVal = CdiUtils.createConverter(beanManager, targetClass);
+        if (returnVal != null) {
+            return returnVal;
         }
 
         returnVal = (Converter) newConverter(targetClass, converterTypeMap, targetClass);
@@ -499,7 +495,7 @@ public class InstanceFactory {
         return returnVal;
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#getConverterIds()
      */
     public Iterator<String> getConverterIds() {
@@ -507,14 +503,14 @@ public class InstanceFactory {
 
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#getConverterTypes()
      */
     public Iterator<Class<?>> getConverterTypes() {
         return converterTypeMap.keySet().iterator();
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#addValidator(String, String)
      */
     public void addValidator(String validatorId, String validatorClass) {
@@ -534,7 +530,7 @@ public class InstanceFactory {
 
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#createValidator(String)
      */
     public Validator<?> createValidator(String validatorId) throws FacesException {
@@ -558,14 +554,14 @@ public class InstanceFactory {
         return validator;
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#getValidatorIds()
      */
     public Iterator<String> getValidatorIds() {
         return validatorMap.keySet().iterator();
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#addDefaultValidatorId(String)
      */
     public synchronized void addDefaultValidatorId(String validatorId) {
@@ -575,7 +571,7 @@ public class InstanceFactory {
         defaultValidatorIds.add(validatorId);
     }
 
-    /**
+    /*
      * @see jakarta.faces.application.Application#getDefaultValidatorInfo()
      */
     public Map<String, String> getDefaultValidatorInfo() {
@@ -590,7 +586,7 @@ public class InstanceFactory {
                             Object result = validatorMap.get(id);
                             if (null != result) {
                                 if (result instanceof Class) {
-                                    validatorClass = ((Class) result).getName();
+                                    validatorClass = ((Class<?>) result).getName();
                                 } else {
                                     validatorClass = result.toString();
                                 }
@@ -627,8 +623,8 @@ public class InstanceFactory {
             if (!associate.isDevModeEnabled()) {
                 componentMap.put(className, componentClass);
             }
-            result = (UIComponent) componentClass.newInstance();
-        } catch (IllegalAccessException | InstantiationException | ClassNotFoundException ex) {
+            result = (UIComponent) componentClass.getDeclaredConstructor().newInstance();
+        } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException ex) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, null, ex);
             }
@@ -777,11 +773,11 @@ public class InstanceFactory {
                 throw new FacesException(e.getMessage(), e);
             }
         } else {
-            clazz = (Class) value;
+            clazz = (Class<?>) value;
         }
 
         try {
-            result = clazz.newInstance();
+            result = clazz.getDeclaredConstructor().newInstance();
         } catch (Throwable t) {
             Throwable previousT;
             do {
@@ -882,7 +878,7 @@ public class InstanceFactory {
 
     /**
      * <p>
-     * To enable EL Coercion to use JSF Custom converters, this method will call
+     * To enable EL Coercion to use Faces Custom converters, this method will call
      * <code>PropertyEditorManager.registerEditor()</code>, passing the <code>ConverterPropertyEditor</code> class for the
      * <code>targetClass</code> if the target class is not one of the standard by-type converter target classes.
      *
@@ -1009,7 +1005,7 @@ public class InstanceFactory {
                 throw new FacesException(e.getMessage(), e);
             }
         } else {
-            clazz = (Class) value;
+            clazz = (Class<?>) value;
         }
 
         Constructor ctor = ReflectionUtils.lookupConstructor(clazz, Class.class);
@@ -1022,8 +1018,8 @@ public class InstanceFactory {
             }
         } else {
             try {
-                result = clazz.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
+                result = clazz.getDeclaredConstructor().newInstance();
+            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
                 cause = e;
             }
         }
@@ -1049,27 +1045,15 @@ public class InstanceFactory {
     }
 
     private Behavior createCDIBehavior(String behaviorId) {
-        if (version.isFaces23()) {
-            return CdiUtils.createBehavior(getBeanManager(), behaviorId);
-        }
-
-        return null;
+        return CdiUtils.createBehavior(getBeanManager(), behaviorId);
     }
 
     private Converter<?> createCDIConverter(String converterId) {
-        if (version.isFaces23()) {
-            return CdiUtils.createConverter(getBeanManager(), converterId);
-        }
-
-        return null;
+        return CdiUtils.createConverter(getBeanManager(), converterId);
     }
 
     private Validator<?> createCDIValidator(String validatorId) {
-        if (version.isFaces23()) {
-            return CdiUtils.createValidator(getBeanManager(), validatorId);
-        }
-
-        return null;
+        return CdiUtils.createValidator(getBeanManager(), validatorId);
     }
 
 }

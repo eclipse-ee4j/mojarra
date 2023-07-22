@@ -33,7 +33,7 @@ import jakarta.faces.context.FacesContext;
 /**
  * <p class="changed_added_2_0">
  * <span class="changed_modified_2_0_rev_a changed_modified_2_1 changed_modified_2_2">The</span> contract that a view
- * declaration language must implement to interact with the Jakarta Server Faces runtime. An implementation of this
+ * declaration language must implement to interact with the Jakarta Faces runtime. An implementation of this
  * class must be thread-safe.
  * </p>
  *
@@ -60,8 +60,9 @@ public abstract class ViewDeclarationLanguage {
 
     /**
      * <p class="changed_added_2_0">
-     * Restore a <code>UIViewRoot</code> from a previously created view. See section JSF.7.7.2 for the specification of the
-     * default implementation.
+     * Restore a <code>UIViewRoot</code> from a previously created view. 
+     * See section 7.7.2 "Default ViewDeclarationLanguage Implementation" of the Jakarta Faces Specification Document
+     * for the specification of the default implementation.
      * </p>
      *
      * @param context the <code>FacesContext</code> for this request.
@@ -76,7 +77,9 @@ public abstract class ViewDeclarationLanguage {
     /**
      * <p class="changed_added_2_0">
      * Return a reference to the view metadata for the view represented by the argument <code>viewId</code>, or
-     * <code>null</code> if the metadata cannot be found. See section JSF.7.7.2 for the specification of the default
+     * <code>null</code> if the metadata cannot be found. 
+     * See section 7.7.2 "Default ViewDeclarationLanguage Implementation" of the Jakarta Faces Specification Document
+     * for the specification of the default
      * implementation. Facelets implementation must return non-<code>null</code>.
      * </p>
      *
@@ -95,8 +98,9 @@ public abstract class ViewDeclarationLanguage {
     /**
      * <p class="changed_added_2_0">
      * <span class="changed_modified_2_2">Create</span> a <code>UIViewRoot</code> from the VDL contained in the artifact
-     * referenced by the argument <code>viewId</code>. <span class="changed_modified_2_2">See section JSF.7.7.2 for the
-     * specification of the default implementation.</span>
+     * referenced by the argument <code>viewId</code>. <span class="changed_modified_2_2">
+     * See section 7.7.2"Default ViewDeclarationLanguage Implementation" of the Jakarta Faces Specification Document
+     * for the specification of the default implementation.</span>
      * </p>
      *
      * @param context the <code>FacesContext</code> for this request.
@@ -160,8 +164,9 @@ public abstract class ViewDeclarationLanguage {
 
     /**
      * <p class="changed_added_2_0">
-     * Render a view rooted at argument<code>view</code>. See section JSF.7.7.2 for the specification of the default
-     * implementation.
+     * Render a view rooted at argument<code>view</code>. 
+     * See section 7.7.2 "Default ViewDeclarationLanguage Implementation" of the Jakarta Faces Specification Document
+     * for the specification of the default implementation.
      * </p>
      *
      * @param context the <code>FacesContext</code> for this request.
@@ -176,8 +181,9 @@ public abstract class ViewDeclarationLanguage {
     /**
      * <p class="changed_added_2_0">
      * Return a reference to the component metadata for the composite component represented by the argument
-     * <code>componentResource</code>, or <code>null</code> if the metadata cannot be found. See section JSF.7.7.2 for the
-     * specification of the default implementation. Jakarta Server Pages implementations must throw
+     * <code>componentResource</code>, or <code>null</code> if the metadata cannot be found. 
+     * See section 7.7.2 "Default ViewDeclarationLanguage Implementation" of the Jakarta Faces Specification Document
+     * for the specification of the default implementation. Jakarta Server Pages implementations must throw
      * <code>UnsupportedOperationException</code>.
      * </p>
      *
@@ -198,7 +204,9 @@ public abstract class ViewDeclarationLanguage {
     /**
      * <p class="changed_added_2_0">
      * Take implementation specific action to discover a <code>Resource</code> given the argument
-     * <code>componentResource</code>. See section JSF.7.7.2 for the specification of the default implementation. Jakarta
+     * <code>componentResource</code>. 
+     * See section 7.7.2 "Default ViewDeclarationLanguage Implementation" of the Jakarta Faces Specification Document
+     * for the specification of the default implementation. Jakarta
      * Server Pages implementations must throw <code>UnsupportedOperationException</code>.
      * </p>
      *
@@ -543,10 +551,12 @@ public abstract class ViewDeclarationLanguage {
     /**
      * <p class="changed_added_2_2">
      * Return the list of resource library contracts that will be made available for use in the view specified by the
-     * argument {@code viewId}. If no match is found, return an empty list. See section JSF.7.7.2 for the specification of
+     * argument {@code viewId}. If no match is found, return an empty list. 
+     * See section 7.7.2 "Default ViewDeclarationLanguage Implementation" of the Jakarta Faces Specification Document for the specification of
      * the default implementation. For backward compatibility with prior implementations, an implementation is provided that
      * returns {@code null}, but any implementation compliant with the version of the specification in which this method was
-     * introduced must implement it as specified in JSF.7.7.2.
+     * introduced must implement it as specified in 
+     * section 7.7.2 "Default ViewDeclarationLanguage Implementation" of the Jakarta Faces Specification Document.
      * </p>
      *
      * @param context the {@code FacesContext} for this request
@@ -566,7 +576,7 @@ public abstract class ViewDeclarationLanguage {
      * For implementations that want to control the implementation of state saving and restoring, the
      * {@link StateManagementStrategy} allows them to do so. Returning <code>null</code> indicates that the implementation
      * wishes the runtime to handle the state saving and restoring. Implementations that provide the VDL for Facelets for
-     * Jakarta Server Faces 2.0 and later must return non-<code>null</code> from this method.
+     * Jakarta Faces 2.0 and later must return non-<code>null</code> from this method.
      * </p>
      *
      * @param context the {@code FacesContext} for the current request.

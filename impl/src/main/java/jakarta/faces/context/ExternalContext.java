@@ -36,16 +36,15 @@ import jakarta.faces.lifecycle.ClientWindow;
  * <p>
  * <span class="changed_modified_2_0 changed_modified_2_1 changed_modified_2_2 changed_modified_2_3"> This</span> class
  * allows the Faces API to be unaware of the nature of its containing application environment. In particular, this class
- * allows Jakarta Server Faces based applications to run in either a Jakarta Servlet or a Portlet environment.
+ * allows Jakarta Faces based applications to run in either a Jakarta Servlet or a Portlet environment.
  * </p>
  *
  * <p class="changed_modified_2_0">
  * The documentation for this class only specifies the behavior for the <em>Jakarta Servlet</em> implementation of
  * <code>ExternalContext</code>. The <em>Portlet</em> implementation of <code>ExternalContext</code> is specified under
  * the revision of the <span style="text-decoration: underline;">Portlet Bridge Specification for JavaServer
- * Faces</span> JSR that corresponds to this version of the Jakarta Server Faces specification. See the Preface of the
- * &quot;prose document&quot;, <a href="../../../overview-summary.html#overview_description">linked from the
- * javadocs</a>, for a reference.
+ * Faces</span> JSR that corresponds to this version of the Jakarta Faces Specification. 
+ * See the Preface of the Jakarta Faces Specification Document, for a reference.
  * </p>
  *
  * <p class="changed_added_2_0">
@@ -118,7 +117,7 @@ public abstract class ExternalContext {
      *
      * <tr>
      *
-     * <th>Key in "values" <code>Map</code></th>
+     * <th>Key in "values" <code>Map</code> <span class="changed_added_4_0">(case sensitive)</span></th>
      *
      * <th>Expected type of value.</th>
      *
@@ -186,6 +185,16 @@ public abstract class ExternalContext {
      *
      * </tr>
      *
+     * <tr class="changed_added_4_0">
+     *
+     * <td><i>any other attribute</i> (e.g. SameSite)</td>
+     *
+     * <td>String</td>
+     *
+     * <td>setAttribute</td>
+     *
+     * </tr>
+     *
      * </table>
      *
      * <p>
@@ -201,9 +210,6 @@ public abstract class ExternalContext {
      *
      * @param properties A <code>Map</code> containg key/value pairs to be passed as arguments to the setter methods as
      * described above.
-     *
-     * @throws IllegalArgumentException if the <code>properties
-     * Map</code> is not-<code>null</code> and not empty and contains any keys that are not one of the keys listed above.
      *
      * @since 2.0
      */
@@ -393,7 +399,7 @@ public abstract class ExternalContext {
     /**
      * <p class="changed_added_2_0">
      * Return the threadsafe {@link Flash} for this application. The default implementation will throw
-     * <code>UnsupportedOperationException</code>. Compliant Jakarta Server Faces runtimes must provide an implementation of
+     * <code>UnsupportedOperationException</code>. Compliant Jakarta Faces runtimes must provide an implementation of
      * this method.
      * </p>
      *
@@ -2027,7 +2033,7 @@ public abstract class ExternalContext {
 
     /**
      * <p class="changed_added_2_0">
-     * Set the content length of the response.
+     * Set the content length of the response <span class="changed_modified_4_1">as an int</span>
      * </p>
      *
      * <p>
@@ -2055,12 +2061,41 @@ public abstract class ExternalContext {
     }
 
     /**
+     * <p class="changed_added_4_1">
+     * Set the content length of the response as a long.
+     * </p>
+     *
+     * <p>
+     * <em>Jakarta Servlet:</em> This must be performed by calling the <code>jakarta.servlet.http.HttpServletResponse</code>
+     * <code>setContentLengthLong</code> method.
+     * </p>
+     *
+     * <p>
+     * The default implementation throws <code>UnsupportedOperationException</code> and is provided for the sole purpose of
+     * not breaking existing applications that extend this class.
+     * </p>
+     *
+     * @param length the value to be set.
+     *
+     * @since 4.1
+     */
+    public void setResponseContentLengthLong(long length) {
+
+        if (defaultExternalContext != null) {
+            defaultExternalContext.setResponseContentLengthLong(length);
+        } else {
+            throw new UnsupportedOperationException();
+        }
+
+    }
+
+    /**
      * <p class="changed_added_2_0">
      * <span class="changed_modified_2_2">The</span> purpose of this method is to generate a query string from the
      * collection of Parameter objects provided by the parameters argument and append that query string to the baseUrl. This
      * method must be able to encode the parameters to a baseUrl that may or may not have existing query parameters. The
      * parameter values should be encoded appropriately for the environment so that the resulting URL can be used as the
-     * target of a link (e.g., in an href attribute) in a Jakarta Server Faces response. It's possible for an
+     * target of a link (e.g., in an href attribute) in a Jakarta Faces response. It's possible for an
      * ExternalContext implementation to override this method in any way that would make the URL bookmarkable in that
      * environment.
      * </p>

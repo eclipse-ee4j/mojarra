@@ -523,8 +523,8 @@ package jakarta.faces.view.facelets;
  *
  * <p>
  * The {@link Tag} instance returned from this decoration process must ultimately be passed to a {@link FaceletHandler}
- * instance as described in the spec prose document section titled, "Specification of the ViewDeclarationLanguage
- * Implementation for Facelets for Jakarta Server Faces 2.0".
+ * instance as described in 
+ * the Jakarta Faces Specification Document section 10.2.1 "Specification of the ViewDeclarationLanguage Implementation for Facelets for Jakarta Faces".
  * </p>
  *
  * </div>

@@ -40,7 +40,7 @@ import jakarta.faces.view.facelets.TagConfig;
 /**
  * Load a resource bundle localized for the Locale of the current view, and expose it (as a Map) in the request
  * attributes of the current request.
- * <p/>
+ * 
  * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/loadBundle.html">tag
  * documentation</a>.
  *

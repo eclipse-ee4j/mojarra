@@ -234,9 +234,9 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
      * {@link Application#setViewHandler(ViewHandler)} on the wrapped {@link Application} object.
      * </p>
      *
-     * @throws IllegalStateException <span class="changed_modified_2_2">if this method is called after at least one request
+     * @throws IllegalStateException if this method is called after at least one request
      * has been processed by the <code>Lifecycle</code> instance for this application.
-     * @throws NullPointerException if <code>manager</code> is <code>null</code></span>
+     * @throws NullPointerException if <code>manager</code> is <code>null</code>
      */
     @Override
     public void setViewHandler(ViewHandler handler) {
@@ -260,9 +260,9 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
      * {@link Application#setStateManager(StateManager)} on the wrapped {@link Application} object.
      * </p>
      *
-     * @throws IllegalStateException <span class="changed_added_2_2">if this method is called after at least one request has
+     * @throws IllegalStateException if this method is called after at least one request has
      * been processed by the <code>Lifecycle</code> instance for this application.
-     * @throws NullPointerException if <code>manager</code> is <code>null</code></span>
+     * @throws NullPointerException if <code>manager</code> is <code>null</code>
      */
     @Override
     public void setStateManager(StateManager manager) {
@@ -473,9 +473,13 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
      * {@link Application#setResourceHandler(ResourceHandler)} on the wrapped {@link Application} object.
      * </p>
      *
-     * @throws IllegalStateException <span class="changed_added_2_2">if this method is called after at least one request has
+     * <span class="changed_added_2_2">
+     * This method can throw <code>IllegalStateException</code> and <code>NullPointerException</code>.
+     * </span>
+     *
+     * @throws IllegalStateException if this method is called after at least one request has
      * been processed by the <code>Lifecycle</code> instance for this application.
-     * @throws NullPointerException if <code>resourceHandler</code> is <code>null</code></span>
+     * @throws NullPointerException if <code>resourceHandler</code> is <code>null</code>
      */
     @Override
     public void setResourceHandler(ResourceHandler resourceHandler) {
@@ -605,11 +609,8 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
      * {@link Application#evaluateExpressionGet(jakarta.faces.context.FacesContext, String, Class)} on the wrapped
      * {@link Application} object.
      * </p>
-     *
-     * @deprecated See superclass for alternative.
      */
     @Override
-    @Deprecated
     public <T> T evaluateExpressionGet(FacesContext context, String expression, Class<? extends T> expectedType) throws ELException {
         return getWrapped().evaluateExpressionGet(context, expression, expectedType);
     }

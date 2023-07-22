@@ -18,7 +18,7 @@ package jakarta.faces;
 
 /**
  * <p>
- * This class encapsulates general Jakarta Server Faces exceptions.
+ * This class encapsulates general Jakarta Faces exceptions.
  * </p>
  */
 

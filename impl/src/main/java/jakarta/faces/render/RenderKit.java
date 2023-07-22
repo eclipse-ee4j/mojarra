@@ -29,14 +29,14 @@ import jakarta.faces.context.ResponseWriter;
 /**
  * <p>
  * <span class="changed_modified_2_0"><strong>RenderKit</strong></span> represents a collection of {@link Renderer}
- * instances that, together, know how to render Jakarta Server Faces {@link UIComponent} instances for a specific
+ * instances that, together, know how to render Jakarta Faces {@link UIComponent} instances for a specific
  * client. Typically, {@link RenderKit}s are specialized for some combination of client device type, markup language,
  * and/or user <code>Locale</code>. A {@link RenderKit} also acts as a Factory for associated {@link Renderer}
  * instances, which perform the actual rendering process for each component.
  * </p>
  *
  * <p>
- * A typical Jakarta Server Faces implementation will configure one or more {@link RenderKit} instances at web
+ * A typical Jakarta Faces implementation will configure one or more {@link RenderKit} instances at web
  * application startup. They are made available through calls to the <code>getRenderKit()</code> methods of
  * {@link RenderKitFactory}. Because {@link RenderKit} instances are shared, they must be implemented in a thread-safe
  * manner. Due to limitations in the current specification having multiple <code>RenderKit</code> instances at play in

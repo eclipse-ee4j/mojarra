@@ -22,6 +22,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.inject.Qualifier;
 
 /**
@@ -38,4 +39,20 @@ import jakarta.inject.Qualifier;
 @Qualifier
 public @interface FlowDefinition {
 
+    /**
+     * <p class="changed_added_4_0">
+     * Supports inline instantiation of the {@link FlowDefinition} qualifier.
+     * </p>
+     *
+     * @since 4.0
+     */
+    public static final class Literal extends AnnotationLiteral<FlowDefinition> implements FlowDefinition {
+
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * Instance of the {@link FlowDefinition} qualifier.
+         */
+        public static final Literal INSTANCE = new Literal();
+    }
 }

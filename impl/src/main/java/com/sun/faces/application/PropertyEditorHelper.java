@@ -43,6 +43,9 @@ public class PropertyEditorHelper {
 
     /**
      * Convert the <code>textValue</code> to an object of type targetClass by delegating to a converter.
+     * @param targetClass the target class
+     * @param textValue the text value
+     * @return the conversion result
      */
     public Object convertToObject(Class<?> targetClass, String textValue) {
         UIComponent component = getComponent();
@@ -64,6 +67,9 @@ public class PropertyEditorHelper {
 
     /**
      * Convert an object of type targetClass to text by delegating to a converter obtained from the Faces application.
+     * @param targetClass the target class
+     * @param value the value
+     * @return the conversion result
      */
     public String convertToString(Class<?> targetClass, Object value) {
         UIComponent component = getComponent();
@@ -97,9 +103,9 @@ public class PropertyEditorHelper {
     /**
      * Add a conversion error message in the case of a PropertyEditor based conversion error.
      *
-     * @param context
-     * @param component
-     * @param ce
+     * @param context the involved faces context
+     * @param component the involved component
+     * @param ce the converter exception
      */
     protected void addConversionErrorMessage(FacesContext context, UIComponent component, ConverterException ce) {
         String converterMessageString = null;

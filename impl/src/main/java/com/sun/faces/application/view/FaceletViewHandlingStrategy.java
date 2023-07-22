@@ -81,6 +81,7 @@ import java.util.stream.Stream;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.context.StateContext;
+import com.sun.faces.facelets.compiler.FaceletDoctype;
 import com.sun.faces.facelets.el.ContextualCompositeMethodExpression;
 import com.sun.faces.facelets.el.VariableMapperWrapper;
 import com.sun.faces.facelets.impl.DefaultFaceletFactory;
@@ -105,6 +106,7 @@ import jakarta.el.VariableMapper;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Resource;
+import jakarta.faces.application.ViewHandler;
 import jakarta.faces.application.ViewVisitOption;
 import jakarta.faces.component.ActionSource2;
 import jakarta.faces.component.Doctype;
@@ -112,6 +114,7 @@ import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIPanel;
 import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.html.HtmlDoctype;
 import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitResult;
 import jakarta.faces.context.ExternalContext;
@@ -164,10 +167,9 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     public static final String RESOURCE_LIBRARY_CONTRACT_DATA_STRUCTURE_KEY = FaceletViewHandlingStrategy.class.getName()
             + ".RESOURCE_LIBRARY_CONTRACT_DATA_STRUCTURE";
 
-    private MethodRetargetHandlerManager retargetHandlerManager = new MethodRetargetHandlerManager();
+    private final MethodRetargetHandlerManager retargetHandlerManager = new MethodRetargetHandlerManager();
 
     private int responseBufferSize;
-    private boolean responseBufferSizeSet;
 
     private Cache<Resource, BeanInfo> metadataCache;
     private Map<String, List<String>> contractMappings;
@@ -342,9 +344,13 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 }
             }
 
-            Doctype doctype = getDOCTYPEFromFacesContextAttributes(ctx);
+            FaceletDoctype doctype = (FaceletDoctype) getDOCTYPEFromFacesContextAttributes(ctx);
             if (doctype != null) {
-                view.setDoctype(doctype);
+                HtmlDoctype htmlDoctype = new HtmlDoctype();
+                htmlDoctype.setRootElement(doctype.getRootElement());
+                htmlDoctype.setPublic(doctype.getPublic());
+                htmlDoctype.setSystem(doctype.getSystem());
+                view.setDoctype(htmlDoctype);
             }
 
             if (!stateCtx.isPartialStateSaving(ctx, view.getViewId())) {
@@ -404,19 +410,16 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 getSession(ctx);
             }
 
-            stateWriter = new WriteBehindStateWriter(extContext.getResponseOutputWriter(), ctx, responseBufferSize);
+            // If the buffer size is -1, use the default buffer size
+            final int bufferSize = responseBufferSize != -1 ? responseBufferSize : Integer.parseInt(FaceletsBufferSize.getDefaultValue());
+            stateWriter = new WriteBehindStateWriter(extContext.getResponseOutputWriter(), ctx, bufferSize);
 
             ResponseWriter writer = origWriter.cloneWithWriter(stateWriter);
             ctx.setResponseWriter(writer);
 
-            // Don't call startDoc and endDoc on a partial response
             if (ctx.getPartialViewContext().isPartialRequest()) {
+                // Any pre/post processing logic such as startDocument(), doPostPhaseActions() and endDocument() must be done in PartialViewContextImpl, see also #4977
                 viewToRender.encodeAll(ctx);
-                try {
-                    ctx.getExternalContext().getFlash().doPostPhaseActions(ctx);
-                } catch (UnsupportedOperationException uoe) {
-                    LOGGER.fine("ExternalContext.getFlash() throw UnsupportedOperationException -> Flash unavailable");
-                }
             } else {
                 if (ctx.isProjectStage(Development)) {
                     FormOmittedChecker.check(ctx);
@@ -493,7 +496,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * 1. tmp: a jakarta.faces.NamingContainer to serve as the temporary top level component
      *
      * 2. facetComponent: a jakarta.faces.Panel to serve as the parent UIComponent that is passed to Facelets so that the
-     * <cc:interface> section can be parsed and understood.
+     * <code>&lt;cc:interface&gt;</code> section can be parsed and understood.
      *
      * Per the compcomp spec, tmp has the compcomp Resource stored in its attr set under the key
      * Resource.COMPONENT_RESOURCE_KEY. tmp has the facetComponent added as its UIComponent.COMPOSITE_FACET_NAME facet.
@@ -747,7 +750,6 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public boolean viewExists(FacesContext context, String viewId) {
         if (handlesViewId(viewId)) {
             return getFaceletFactory().getResourceResolver().resolveUrl(viewId) != null;
@@ -756,17 +758,11 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         return false;
     }
 
-    /**
-     * @see jakarta.faces.view.ViewDeclarationLanguage#getViews(FacesContext, String)
-     */
     @Override
     public Stream<String> getViews(FacesContext context, String path, ViewVisitOption... options) {
         return mapIfNeeded(super.getViews(context, path).filter(viewId -> handlesViewId(viewId)), options);
     }
 
-    /**
-     * @see jakarta.faces.view.ViewDeclarationLanguage#getViews(FacesContext, String, int)
-     */
     @Override
     public Stream<String> getViews(FacesContext context, String path, int maxDepth, ViewVisitOption... options) {
         return mapIfNeeded(super.getViews(context, path, maxDepth).filter(viewId -> handlesViewId(viewId)), options);
@@ -778,9 +774,10 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
     /**
      * @param viewId the view ID to check
-     * @return <code>true</code> if assuming a default configuration and the view ID's extension is <code>.xhtml</code>
-     * Otherwise try to match the view ID based on the configured extendsion and prefixes.
+     * @return <code>true</code> if assuming a default configuration and the view ID's extension in {@link ViewHandler#FACELETS_SUFFIX_PARAM_NAME}
+     * Otherwise try to match the view ID based on the configured extensions and prefixes in {@link ViewHandler#FACELETS_VIEW_MAPPINGS_PARAM_NAME}
      *
+     * @see com.sun.faces.config.WebConfiguration.WebContextInitParameter#FaceletsSuffix
      * @see com.sun.faces.config.WebConfiguration.WebContextInitParameter#FaceletsViewMappings
      */
     @Override
@@ -822,7 +819,6 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         });
 
         try {
-            responseBufferSizeSet = webConfig.isSet(FaceletsBufferSize);
             responseBufferSize = Integer.parseInt(webConfig.getOptionValue(FaceletsBufferSize));
         } catch (NumberFormatException nfe) {
             responseBufferSize = Integer.parseInt(FaceletsBufferSize.getDefaultValue());
@@ -900,8 +896,8 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             throw new IllegalStateException("No render kit was available for id \"" + id + "\"");
         }
 
-        if (responseBufferSizeSet) {
-            // set the buffer for content
+        // set the buffer for content, -1 indicates nothing should be set.
+        if (responseBufferSize != -1) {
             extContext.setResponseBufferSize(responseBufferSize);
         }
 
@@ -944,7 +940,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         // Always log
         if (LOGGER.isLoggable(SEVERE)) {
             UIViewRoot root = context.getViewRoot();
-            StringBuffer sb = new StringBuffer(64);
+            StringBuilder sb = new StringBuilder(64);
             sb.append("Error Rendering View");
             if (root != null) {
                 sb.append('[');
@@ -1455,7 +1451,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
          */
         private static abstract class AbstractRetargetHandler implements MethodRetargetHandler {
 
-            protected static final Class[] NO_ARGS = new Class[0];
+            protected static final Class<?>[] NO_ARGS = new Class[0];
 
         } // END AbstractRetargetHandler
 
@@ -1493,7 +1489,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         private static final class ActionListenerRegargetHandler extends AbstractRetargetHandler {
 
             private static final String ACTION_LISTENER = "actionListener";
-            private static final Class[] ACTION_LISTENER_ARGS = new Class[] { ActionEvent.class };
+            private static final Class<?>[] ACTION_LISTENER_ARGS = new Class<?>[] { ActionEvent.class };
 
             // ------------------------------ Methods from MethodRetargetHandler
 
@@ -1523,7 +1519,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         private static final class ValidatorRegargetHandler extends AbstractRetargetHandler {
 
             private static final String VALIDATOR = "validator";
-            private static final Class[] VALIDATOR_ARGS = new Class[] { FacesContext.class, UIComponent.class, Object.class };
+            private static final Class<?>[] VALIDATOR_ARGS = new Class<?>[] { FacesContext.class, UIComponent.class, Object.class };
 
             // ------------------------------ Methods from MethodRetargetHandler
 
@@ -1551,7 +1547,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         private static final class ValueChangeListenerRegargetHandler extends AbstractRetargetHandler {
 
             private static final String VALUE_CHANGE_LISTENER = "valueChangeListener";
-            private static final Class[] VALUE_CHANGE_LISTENER_ARGS = new Class[] { ValueChangeEvent.class };
+            private static final Class<?>[] VALUE_CHANGE_LISTENER_ARGS = new Class<?>[] { ValueChangeEvent.class };
 
             // ------------------------------ Methods from MethodRetargetHandler
 

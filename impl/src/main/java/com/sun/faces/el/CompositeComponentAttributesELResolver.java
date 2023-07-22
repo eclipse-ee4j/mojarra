@@ -18,6 +18,7 @@ package com.sun.faces.el;
 
 import static com.sun.faces.component.CompositeComponentStackManager.StackType.Evaluation;
 import static com.sun.faces.component.CompositeComponentStackManager.StackType.TreeCreation;
+import static com.sun.faces.util.Util.notNull;
 
 import java.beans.BeanInfo;
 import java.beans.FeatureDescriptor;
@@ -27,11 +28,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import com.sun.faces.component.CompositeComponentStackManager;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
 
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
@@ -48,9 +46,6 @@ import jakarta.faces.el.CompositeComponentExpressionHolder;
  * </p>
  */
 public class CompositeComponentAttributesELResolver extends ELResolver {
-
-    // Log instance for this class
-    private static final Logger LOGGER = FacesLogger.CONTEXT.getLogger();
 
     /**
      * Implicit object related only to the cc implicitObject.
@@ -92,9 +87,9 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
     @Override
     public Object getValue(ELContext context, Object base, Object property) {
 
-        Util.notNull("context", context);
+        notNull("context", context);
 
-        if (base != null && base instanceof UIComponent && UIComponent.isCompositeComponent((UIComponent) base) && property != null) {
+        if (base instanceof UIComponent && UIComponent.isCompositeComponent((UIComponent) base) && property != null) {
 
             String propertyName = property.toString();
             if (COMPOSITE_COMPONENT_ATTRIBUTES_NAME.equals(propertyName)) {
@@ -130,7 +125,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
      */
     @Override
     public Class<?> getType(ELContext context, Object base, Object property) {
-        Util.notNull("context", context);
+        notNull("context", context);
         if (!(base instanceof ExpressionEvalMap && property instanceof String)) {
             return null;
         }
@@ -155,7 +150,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
                         Object type = cur.getValue("type");
                         if (null != type) {
                             assert type instanceof Class;
-                            metaType = (Class) type;
+                            metaType = (Class<?>) type;
                             break;
                         }
                     }
@@ -182,7 +177,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
     @Override
     public void setValue(ELContext context, Object base, Object property, Object value) {
 
-        Util.notNull("context", context);
+        notNull("context", context);
 
     }
 
@@ -196,7 +191,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
     @Override
     public boolean isReadOnly(ELContext context, Object base, Object property) {
 
-        Util.notNull("context", context);
+        notNull("context", context);
         return true;
 
     }
@@ -211,25 +206,22 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
      */
     @Override
     public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
-
-        Util.notNull("context", context);
+        notNull("context", context);
         return null;
 
     }
 
     /**
      * <p>
-     * <code>attrs<code> is considered a <code>String</code> property.
+     * <code>attrs</code> is considered a <code>String</code> property.
      * </p>
      *
      * @see jakarta.el.ELResolver#getCommonPropertyType(jakarta.el.ELContext, Object)
      */
     @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base) {
-
-        Util.notNull("context", context);
+        notNull("context", context);
         return String.class;
-
     }
 
     // --------------------------------------------------------- Private Methods
@@ -266,6 +258,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
                 ((ExpressionEvalMap) evalMap).updateFacesContext(ctx);
             }
         }
+        
         return evalMap;
 
     }
@@ -278,11 +271,11 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
      */
     private static final class ExpressionEvalMap implements Map<String, Object>, CompositeComponentExpressionHolder {
 
-        private Map<String, Object> attributesMap;
+        private final Map<String, Object> attributesMap;
         private PropertyDescriptor[] declaredAttributes;
         private Map<Object, Object> declaredDefaultValues;
         private FacesContext ctx;
-        private UIComponent cc;
+        private final UIComponent cc;
 
         // -------------------------------------------------------- Constructors
 
@@ -342,7 +335,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
                     return ((ValueExpression) v).getValue(ctx.getELContext());
                 }
             }
-            if (v != null && v instanceof MethodExpression) {
+            if (v instanceof MethodExpression) {
                 return v;
             }
             return v;
@@ -350,7 +343,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
 
         @Override
         public Object put(String key, Object value) {
-            // Unlinke AttributesMap.get() which will obtain a value from
+            // Unlike AttributesMap.get() which will obtain a value from
             // a ValueExpression, AttributesMap.put(), when passed a value,
             // will never call ValueExpression.setValue(), so we have to take
             // matters into our own hands...

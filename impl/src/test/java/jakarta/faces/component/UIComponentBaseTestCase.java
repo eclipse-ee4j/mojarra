@@ -18,13 +18,13 @@ package jakarta.faces.component;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import com.sun.faces.mock.MockExternalContext;
+import java.util.concurrent.ConcurrentHashMap;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.context.FacesContext;
@@ -307,17 +307,17 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         testComponent.getChildren().add(child3);
 
         // make sure children are stored in naming container properly
-        Iterator kidItr = null;
+        Iterator<UIComponent> kidItr = null;
 
         kidItr = testComponent.getFacetsAndChildren();
 
-        child = (UIComponent) kidItr.next();
+        child = kidItr.next();
         assertTrue(child.equals(child1));
 
-        child = (UIComponent) kidItr.next();
+        child = kidItr.next();
         assertTrue(child.equals(child2));
 
-        child = (UIComponent) kidItr.next();
+        child = kidItr.next();
         assertTrue(child.equals(child3));
 
         // make sure child is removed from component and naming container
@@ -326,10 +326,10 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
 
         kidItr = testComponent.getFacetsAndChildren();
 
-        child = (UIComponent) kidItr.next();
+        child = kidItr.next();
         assertTrue(child.equals(child2));
 
-        child = (UIComponent) kidItr.next();
+        child = kidItr.next();
         assertTrue(child.equals(child3));
 
         // make sure child is removed from component and naming container
@@ -338,7 +338,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
 
         kidItr = testComponent.getFacetsAndChildren();
 
-        child = (UIComponent) kidItr.next();
+        child = kidItr.next();
         assertTrue(child.equals(child3));
 
         // make sure child is removed from component and naming container
@@ -360,6 +360,21 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         c.popComponentFromEL(facesContext);
         assertTrue(c.getListenersForEventClass(PostAddToViewEvent.class).size() == 1);
 
+    }
+
+    public void testAttributesThatAreSetStateHolder() throws Exception {
+        ComponentTestImpl c = new ComponentTestImpl();
+        c.getAttributes().put("attr1", "value1");
+        c.markInitialState();
+        c.getAttributes().put("attr2", "value2");
+        assertEquals(Arrays.asList("attr1", "attr2"), c.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet"));
+
+        Object state = c.saveState(facesContext);
+        c = new ComponentTestImpl();
+        c.pushComponentToEL(facesContext, c);
+        c.restoreState(facesContext, state);
+        c.popComponentFromEL(facesContext);
+        assertEquals(Arrays.asList("attr1", "attr2"), c.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet"));
     }
 
     public void testValueExpressions() throws Exception {
@@ -720,40 +735,40 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
      * @return
      */
     protected String lifecycleTrace(String lmethod, String cmethod) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         lifecycleTrace(lmethod, cmethod, component, sb);
         return sb.toString();
     }
 
-    protected void lifecycleTrace(String lmethod, String cmethod, UIComponent component, StringBuffer sb) {
+    protected void lifecycleTrace(String lmethod, String cmethod, UIComponent component, StringBuilder sb) {
 
         // Append the call for this lifecycle method
         String id = component.getId();
-        sb.append("/").append(lmethod).append("-").append(id);
+        sb.append('/').append(lmethod).append('-').append(id);
         if (!component.isRendered()) {
             return;
         }
 
         // Append the calls for each facet
-        Iterator names = component.getFacets().keySet().iterator();
+        Iterator<String> names = component.getFacets().keySet().iterator();
         while (names.hasNext()) {
-            String name = (String) names.next();
-            sb.append("/").append(lmethod).append("-").append(name);
+            String name = names.next();
+            sb.append('/').append(lmethod).append('-').append(name);
             if (cmethod != null && component.getFacets().get(name).isRendered()) {
-                sb.append("/").append(cmethod).append("-").append(name);
+                sb.append('/').append(cmethod).append('-').append(name);
             }
         }
 
         // Append the calls for each child
-        Iterator kids = component.getChildren().iterator();
+        Iterator<UIComponent> kids = component.getChildren().iterator();
         while (kids.hasNext()) {
-            UIComponent kid = (UIComponent) kids.next();
+            UIComponent kid = kids.next();
             lifecycleTrace(lmethod, cmethod, kid, sb);
         }
 
         // Append the call for this component's component method
         if (cmethod != null && component.isRendered()) {
-            sb.append("/").append(cmethod).append("-").append(id);
+            sb.append('/').append(cmethod).append('-').append(id);
         }
 
     }
@@ -775,7 +790,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         testComponent.getFacets().put("facet2", facet2);
         testComponent.getFacets().put("facet3", facet3);
 
-        Iterator iter = testComponent.getFacetsAndChildren();
+        Iterator<UIComponent> iter = testComponent.getFacetsAndChildren();
         Object cur = null;
         boolean exceptionThrown = false;
         assertTrue(iter.hasNext());
@@ -815,21 +830,21 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
      * </p>
      * <code><pre>
      * root: id: root
-     * <p/>
+     * 
      *   form1: id: form1
-     * <p/>
+     * 
      *     panel1: id: panel
-     * <p/>
+     * 
      *       input1: id: input1
-     * <p/>
+     * 
      *       input2: id: input2
-     * <p/>
+     * 
      *   form2: id: form2
-     * <p/>
+     * 
      *     panel2: id: panel
-     * <p/>
+     * 
      *       input3: id: input1
-     * <p/>
+     * 
      *       input4: id: input2
      * </pre></code>
      *

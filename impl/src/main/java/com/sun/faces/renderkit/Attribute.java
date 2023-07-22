@@ -17,8 +17,6 @@
 package com.sun.faces.renderkit;
 
 /**
- * <p class="changed_added_2_0">
- * </p>
  *
  * @author asmirnov@exadel.com
  *
@@ -30,8 +28,6 @@ public class Attribute implements Comparable<Attribute> {
     private final String[] events;
 
     /**
-     * <p class="changed_added_2_0">
-     * </p>
      *
      * @param name
      * @param events
@@ -50,8 +46,6 @@ public class Attribute implements Comparable<Attribute> {
     }
 
     /**
-     * <p class="changed_added_2_0">
-     * </p>
      *
      * @return the name
      */
@@ -60,8 +54,6 @@ public class Attribute implements Comparable<Attribute> {
     }
 
     /**
-     * <p class="changed_added_2_0">
-     * </p>
      *
      * @return the events
      */

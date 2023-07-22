@@ -16,6 +16,9 @@
 
 package jakarta.faces.component;
 
+import static com.sun.faces.util.Util.extractFirstNumericSegment;
+import static com.sun.faces.util.Util.isNestedInIterator;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.ResultSet;
@@ -792,7 +795,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         // - create an empty StringBuilder that will be used to build
         // this instance's ID
         if (baseClientId == null && clientIdBuilder == null) {
-            if (!isNestedWithinIterator()) {
+            if (!isNestedWithinIterator(context)) {
                 clientIdBuilder = new StringBuilder(super.getClientId(context));
                 baseClientId = clientIdBuilder.toString();
                 baseClientIdLength = baseClientId.length() + 1;
@@ -805,7 +808,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         int rowIndex = getRowIndex();
         if (rowIndex >= 0) {
             String cid;
-            if (!isNestedWithinIterator()) {
+            if (!isNestedWithinIterator(context)) {
                 // we're not nested, so the clientIdBuilder is already
                 // primed with clientID +
                 // UINamingContainer.getSeparatorChar(). Append the
@@ -823,7 +826,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             }
             return cid;
         } else {
-            if (!isNestedWithinIterator()) {
+            if (!isNestedWithinIterator(context)) {
                 // Not nested and no row available, so just return our baseClientId
                 return baseClientId;
             } else {
@@ -935,27 +938,19 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         // clientId will be something like form:outerData:3:outerColumn
         // for a non-nested table. clientId will be something like
         // outerData:3:data:3:input for a nested table.
+        // We need to find the first occurring client ID segment which is parseable as a number.
         if (clientId.startsWith(myId)) {
             try {
-                int preRowIndexSep, postRowIndexSep;
-
-                if (-1 != (preRowIndexSep = clientId.indexOf(sepChar, myId.length()))) {
-                    // Check the length
-                    if (++preRowIndexSep < clientId.length()) {
-                        if (-1 != (postRowIndexSep = clientId.indexOf(sepChar, preRowIndexSep + 1))) {
-                            try {
-                                newRow = Integer.parseInt(clientId.substring(preRowIndexSep, postRowIndexSep));
-                            } catch (NumberFormatException ex) {
-                                // PENDING(edburns): I18N
-                                String message = "Trying to extract rowIndex from clientId \'" + clientId + "\' " + ex.getMessage();
-                                throw new NumberFormatException(message);
-                            }
-                            setRowIndex(newRow);
-                            if (isRowAvailable()) {
-                                found = super.invokeOnComponent(context, clientId, callback);
-                            }
-                        }
-                    }
+                try {
+                    newRow = extractFirstNumericSegment(clientId.substring(myId.length()), sepChar);
+                } catch (NumberFormatException ex) {
+                    // PENDING(edburns): I18N
+                    String message = "Trying to extract rowIndex from clientId \'" + clientId + "\' " + ex.getMessage();
+                    throw new NumberFormatException(message);
+                }
+                setRowIndex(newRow);
+                if (isRowAvailable()) {
+                    found = super.invokeOnComponent(context, clientId, callback);
                 }
             } catch (FacesException fe) {
                 throw fe;
@@ -995,7 +990,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      *
      * @param event The {@link FacesEvent} to be broadcast
      *
-     * @throws AbortProcessingException Signal the Jakarta Server Faces implementation that no further processing on the
+     * @throws AbortProcessingException Signal the Jakarta Faces implementation that no further processing on the
      * current event should be performed
      * @throws IllegalArgumentException if the implementation class of this {@link FacesEvent} is not supported by this
      * component
@@ -1011,7 +1006,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         FacesContext context = event.getFacesContext();
         // Set up the correct context and fire our wrapped event
         WrapperEvent revent = (WrapperEvent) event;
-        if (isNestedWithinIterator()) {
+        if (isNestedWithinIterator(context)) {
             setDataModel(null);
         }
         int oldRowIndex = getRowIndex();
@@ -1831,7 +1826,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     // initialization may be performed either during a normal validation
     // (ie. processValidators()) or during a tree visit (ie. visitTree()).
     private void preValidate(FacesContext context) {
-        if (isNestedWithinIterator()) {
+        if (isNestedWithinIterator(context)) {
             setDataModel(null);
         }
     }
@@ -1840,7 +1835,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     // initialization may be performed either during normal update
     // (ie. processUpdates()) or during a tree visit (ie. visitTree()).
     private void preUpdate(FacesContext context) {
-        if (isNestedWithinIterator()) {
+        if (isNestedWithinIterator(context)) {
             setDataModel(null);
         }
     }
@@ -2116,26 +2111,15 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      */
     private boolean keepSaved(FacesContext context) {
 
-        return contextHasErrorMessages(context) || isNestedWithinIterator();
+        return contextHasErrorMessages(context) || isNestedWithinIterator(context);
 
     }
 
-    private Boolean isNestedWithinIterator() {
+    private Boolean isNestedWithinIterator(FacesContext context) {
         if (isNested == null) {
-            UIComponent parent = this;
-            while (null != (parent = parent.getParent())) {
-                if (parent instanceof UIData || parent.getClass().getName().endsWith("UIRepeat")) {
-                    isNested = Boolean.TRUE;
-                    break;
-                }
-            }
-            if (isNested == null) {
-                isNested = Boolean.FALSE;
-            }
-            return isNested;
-        } else {
-            return isNested;
+            isNested = isNestedInIterator(context, this);
         }
+        return isNested;
     }
 
     private boolean contextHasErrorMessages(FacesContext context) {
@@ -2387,8 +2371,8 @@ class WrapperEvent extends FacesEvent {
         this.rowIndex = rowIndex;
     }
 
-    private FacesEvent event = null;
-    private int rowIndex = -1;
+    private final FacesEvent event;
+    private final int rowIndex;
 
     public FacesEvent getFacesEvent() {
         return event;

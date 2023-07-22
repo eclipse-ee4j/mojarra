@@ -16,12 +16,9 @@
 
 package jakarta.faces.event;
 
-import junit.framework.TestCase;
 import java.util.Iterator;
 
-import jakarta.faces.event.PhaseId;
-
-import static junit.framework.Assert.assertTrue;
+import junit.framework.TestCase;
 
 public class PhaseIdTest extends TestCase {
 //
@@ -37,7 +34,7 @@ public class PhaseIdTest extends TestCase {
 // Attribute Instance Variables
 // Relationship Instance Variables
 //
-// Constructors and Initializers    
+// Constructors and Initializers
 //
     public PhaseIdTest() {
         super();
@@ -50,10 +47,10 @@ public class PhaseIdTest extends TestCase {
 // General Methods
 //
     public void testToString() {
-        Iterator valueIter = PhaseId.VALUES.iterator();
+        Iterator<PhaseId> valueIter = PhaseId.VALUES.iterator();
         String cur = null;
         while (valueIter.hasNext()) {
-            cur = (String) valueIter.next().toString();
+            cur = valueIter.next().toString();
             System.out.println(cur);
             assertTrue(cur.length() > 3);
         }

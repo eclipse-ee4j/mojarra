@@ -70,7 +70,7 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
      * Iterator over the children of the parent component.
      * </p>
      */
-    private ListIterator<UIComponent> kids;
+    private final ListIterator<UIComponent> kids;
 
     /**
      * Expose single SelectItems via an Iterator. This iterator will be reset/reused for each individual SelectItem instance
@@ -81,7 +81,7 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
     /**
      * The {@link FacesContext} for the current request.
      */
-    private FacesContext ctx;
+    private final FacesContext ctx;
 
     // -------------------------------------------------------- Iterator Methods
 
@@ -120,7 +120,6 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
      *
      * @throws NoSuchElementException if there are no more elements
      */
-    @SuppressWarnings({ "unchecked" })
     @Override
     public SelectItem next() {
 
@@ -275,8 +274,8 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
      */
     private static final class MapIterator implements Iterator<SelectItem> {
 
-        private SelectItem item = new SelectItem();
-        private Iterator iterator;
+        private final SelectItem item = new SelectItem();
+        private final Iterator iterator;
 
         // -------------------------------------------------------- Constructors
 
@@ -361,7 +360,6 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
          * A <code>SelectItem</code> implementation to support generating unique <code>SelectItem</code> values based on
          * <code>ValueExpressions</code> from the owning {@link UISelectItems} instance.
          */
-        @SuppressWarnings({ "serial" })
         private static final class GenericObjectSelectItem extends SelectItem {
 
             private static final String VAR = "var";
@@ -405,9 +403,9 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
             /**
              * The request-scoped variable under which the current object will be exposed.
              */
-            private String var;
+            private final String var;
 
-            private UISelectItems sourceComponent;
+            private final UISelectItems sourceComponent;
 
             // -------------------------------------------------------- Constructors
 
@@ -491,9 +489,9 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
      */
     private static final class ArrayIterator extends GenericObjectSelectItemIterator {
 
-        private FacesContext ctx;
-        private Object array;
-        private int count;
+        private final FacesContext ctx;
+        private final Object array;
+        private final int count;
         private int index;
 
         // -------------------------------------------------------- Constructors
@@ -547,8 +545,8 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
      */
     private static final class IterableItemIterator extends GenericObjectSelectItemIterator {
 
-        private FacesContext ctx;
-        private Iterator<?> iterator;
+        private final FacesContext ctx;
+        private final Iterator<?> iterator;
 
         // -------------------------------------------------------- Constructors
 

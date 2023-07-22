@@ -16,6 +16,8 @@
 
 package com.sun.faces.util.copier;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * Copier that doesn't actually copy an object fully, but just returns a new instance of the same type.
  * <p>
@@ -30,8 +32,8 @@ public class NewInstanceCopier implements Copier {
     @Override
     public Object copy(Object object) {
         try {
-            return object.getClass().newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+            return object.getClass().getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new IllegalStateException(e);
         }
     }

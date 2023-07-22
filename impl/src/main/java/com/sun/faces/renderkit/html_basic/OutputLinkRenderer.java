@@ -18,14 +18,16 @@
 
 package com.sun.faces.renderkit.html_basic;
 
+import static com.sun.faces.util.Util.componentIsDisabled;
+import static java.util.logging.Level.FINE;
+
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.logging.Level;
+import java.nio.charset.StandardCharsets;
 
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
-import com.sun.faces.util.Util;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIOutput;
@@ -34,12 +36,10 @@ import jakarta.faces.context.ResponseWriter;
 
 /**
  * <B>OutputLinkRenderer</B> is a class ...
- * <p/>
+ * 
  * <B>Lifetime And Scope</B>
- * <P>
  *
  */
-
 public class OutputLinkRenderer extends LinkRenderer {
 
     private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTPUTLINK);
@@ -48,7 +48,6 @@ public class OutputLinkRenderer extends LinkRenderer {
 
     @Override
     public void decode(FacesContext context, UIComponent component) {
-
         rendererParamsNotNull(context, component);
 
         if (shouldDecode(component)) {
@@ -58,7 +57,6 @@ public class OutputLinkRenderer extends LinkRenderer {
 
     @Override
     public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
-
         rendererParamsNotNull(context, component);
 
         UIOutput output = (UIOutput) component;
@@ -78,7 +76,6 @@ public class OutputLinkRenderer extends LinkRenderer {
 
     @Override
     public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
-
         rendererParamsNotNull(context, component);
 
         if (!shouldEncodeChildren(component)) {
@@ -95,7 +92,6 @@ public class OutputLinkRenderer extends LinkRenderer {
 
     @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-
         rendererParamsNotNull(context, component);
 
         if (!shouldEncode(component)) {
@@ -117,9 +113,7 @@ public class OutputLinkRenderer extends LinkRenderer {
 
     @Override
     public boolean getRendersChildren() {
-
         return true;
-
     }
 
     // ------------------------------------------------------- Protected Methods
@@ -137,27 +131,24 @@ public class OutputLinkRenderer extends LinkRenderer {
 
     @Override
     protected Object getValue(UIComponent component) {
-
-        if (Util.componentIsDisabled(component)) {
+        if (componentIsDisabled(component)) {
             return null;
-        } else {
-            return ((UIOutput) component).getValue();
         }
-
+        
+        return ((UIOutput) component).getValue();
     }
 
     @Override
     protected void renderAsActive(FacesContext context, UIComponent component) throws IOException {
-
         String hrefVal = getCurrentValue(context, component);
-        if (logger.isLoggable(Level.FINE)) {
+        if (logger.isLoggable(FINE)) {
             logger.fine("Value to be rendered " + hrefVal);
         }
 
         // suppress rendering if "rendered" property on the output is
         // false
         if (!component.isRendered()) {
-            if (logger.isLoggable(Level.FINE)) {
+            if (logger.isLoggable(FINE)) {
                 logger.fine("End encoding component " + component.getId() + " since " + "rendered attribute is set to false ");
             }
             return;
@@ -176,20 +167,20 @@ public class OutputLinkRenderer extends LinkRenderer {
 
         // Write Anchor attributes
 
-        Param paramList[] = getParamList(component);
-        StringBuffer sb = new StringBuffer();
+        Param[] paramList = getParamList(component);
+        StringBuilder sb = new StringBuilder();
         sb.append(hrefVal);
         boolean paramWritten = hrefVal.indexOf('?') > 0;
 
-        for (int i = 0, len = paramList.length; i < len; i++) {
-            String pn = paramList[i].name;
+        for (Param param : paramList) {
+            String pn = param.name;
             if (pn != null && pn.length() != 0) {
-                String pv = paramList[i].value;
+                String pv = param.value;
                 sb.append(paramWritten ? '&' : '?');
-                sb.append(URLEncoder.encode(pn, "UTF-8"));
+                sb.append(URLEncoder.encode(pn, StandardCharsets.UTF_8));
                 sb.append('=');
                 if (pv != null && pv.length() != 0) {
-                    sb.append(URLEncoder.encode(pv, "UTF-8"));
+                    sb.append(URLEncoder.encode(pv, StandardCharsets.UTF_8));
                 }
                 paramWritten = true;
             }
@@ -210,4 +201,4 @@ public class OutputLinkRenderer extends LinkRenderer {
 
     }
 
-} // end of class OutputLinkRenderer
+}

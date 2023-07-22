@@ -51,7 +51,7 @@ import jakarta.servlet.ServletContext;
  */
 public class InitFacesContext extends NoOpFacesContext {
 
-    private static Logger LOGGER = FacesLogger.CONFIG.getLogger();
+    private static final Logger LOGGER = FacesLogger.CONFIG.getLogger();
     private static final String INIT_FACES_CONTEXT_ATTR_NAME = RIConstants.FACES_PREFIX + "InitFacesContext";
 
     private ServletContextAdapter servletContextAdapter;
@@ -173,7 +173,7 @@ public class InitFacesContext extends NoOpFacesContext {
      * entry(s) with matching ServletContext from initContextServletContext map. Then remove entries from threadInitContext
      * map where the entry value(s) match the initFacesContext (associated with the ServletContext).
      *
-     * @param servletContext
+     * @param servletContext the involved servlet context
      */
     public static void cleanupInitMaps(ServletContext servletContext) {
 

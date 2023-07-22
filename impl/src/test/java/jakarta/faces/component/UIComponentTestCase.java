@@ -73,7 +73,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
     // The expected rendersChildren on a pristine component instance
     protected boolean expectedRendersChildren = false;
 
-    private Map.Entry<String, UIComponent> bogusEntry = new Map.Entry<String, UIComponent>() {
+    private Map.Entry<String, UIComponent> bogusEntry = new Map.Entry<>() {
         @Override
         public boolean equals(Object r) {
             return false;
@@ -205,7 +205,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
     public void testAttributesMap() {
 
         // Initialize some attributes
-        Map attributes = component.getAttributes();
+        Map<String, Object> attributes = component.getAttributes();
         attributes.put("foo", "bar");
         attributes.put("baz", "bop");
 
@@ -234,12 +234,6 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
             attributes.put(null, "dummy");
             fail("Should have thrown NullPointerException");
         } catch (NullPointerException e) {
-            // Expected result
-        }
-        try {
-            attributes.put(new java.util.Date(), "dummy");
-            fail("Should have thrown ClassCastException");
-        } catch (ClassCastException e) {
             // Expected result
         }
         try {
@@ -280,7 +274,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
 
         // getAttributes().get() - null
         try {
-            Object value = component.getAttributes().get(null);
+            component.getAttributes().get(null);
             fail("should have thrown NullPointerException");
         } catch (NullPointerException e) {
             // Expected result
@@ -362,7 +356,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
     // Test getChildren().iterator()
     public void testChildrenIterator() {
 
-        Iterator kids;
+        Iterator<UIComponent> kids;
 
         // Construct components we will need
         UIComponent comp0 = new ComponentTestImpl(null);
@@ -371,7 +365,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         UIComponent comp3 = new ComponentTestImpl("comp3");
         UIComponent comp4 = new ComponentTestImpl("comp4");
         UIComponent comp5 = new ComponentTestImpl("comp5");
-        List comps = new ArrayList();
+        List<UIComponent> comps = new ArrayList<>();
         comps.add(comp0);
         comps.add(comp1);
         comps.add(comp2);
@@ -397,7 +391,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         component.getChildren().addAll(comps);
         kids = component.getChildren().iterator();
         while (kids.hasNext()) {
-            UIComponent kid = (UIComponent) kids.next();
+            UIComponent kid = kids.next();
             if (kid == comp2 || kid == comp4) {
                 kids.remove();
             }
@@ -415,7 +409,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
     // Test getChildren().listIterator()
     public void testChildrenListIterator() {
 
-        ListIterator kids;
+        ListIterator<UIComponent> kids;
 
         // Construct components we will need
         UIComponent comp0 = new ComponentTestImpl(null);
@@ -425,7 +419,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         UIComponent comp4 = new ComponentTestImpl("comp4");
         UIComponent comp5 = new ComponentTestImpl("comp5");
         UIComponent comp6 = new ComponentTestImpl("comp6");
-        List comps = new ArrayList();
+        List<UIComponent> comps = new ArrayList<>();
         comps.add(comp0);
         comps.add(comp1);
         comps.add(comp2);
@@ -475,7 +469,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         component.getChildren().addAll(comps);
         kids = component.getChildren().listIterator();
         while (kids.hasNext()) {
-            UIComponent kid = (UIComponent) kids.next();
+            UIComponent kid = kids.next();
             if (kid == comp2 || kid == comp4) {
                 kids.remove();
             }
@@ -493,7 +487,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         component.getChildren().addAll(comps);
         kids = component.getChildren().listIterator();
         while (kids.hasNext()) {
-            UIComponent kid = (UIComponent) kids.next();
+            UIComponent kid = kids.next();
             if (kid == comp2) {
                 kids.set(comp6);
             }
@@ -520,7 +514,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         component.getChildren().addAll(comps);
         kids = component.getChildren().listIterator();
         while (kids.hasNext()) {
-            UIComponent kid = (UIComponent) kids.next();
+            UIComponent kid = kids.next();
             if (kid == comp2) {
                 kids.add(comp6);
             }
@@ -596,23 +590,10 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         UIComponent comp3 = new ComponentTestImpl("comp3");
 
         // Set up and verify initial state
-        List children = component.getChildren();
+        List<UIComponent> children = component.getChildren();
         children.add(comp0);
         children.add(comp1);
         children.add(comp2);
-        checkChildCount(component, 3);
-        checkChildPresent(component, comp0, 0);
-        checkChildPresent(component, comp1, 1);
-        checkChildPresent(component, comp2, 2);
-        checkChildMissing(component, comp3);
-
-        // add(Object) - ClassCastException
-        try {
-            children.add("String");
-            fail("Should have thrown ClassCastException");
-        } catch (ClassCastException e) {
-            // Expected result
-        }
         checkChildCount(component, 3);
         checkChildPresent(component, comp0, 0);
         checkChildPresent(component, comp1, 1);
@@ -624,19 +605,6 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
             children.add(null);
             fail("Should have thrown NullPointerException");
         } catch (NullPointerException e) {
-            // Expected result
-        }
-        checkChildCount(component, 3);
-        checkChildPresent(component, comp0, 0);
-        checkChildPresent(component, comp1, 1);
-        checkChildPresent(component, comp2, 2);
-        checkChildMissing(component, comp3);
-
-        // add(int,Object) - ClassCastException
-        try {
-            children.add(1, "String");
-            fail("Should have thrown ClassCastException");
-        } catch (ClassCastException e) {
             // Expected result
         }
         checkChildCount(component, 3);
@@ -676,19 +644,6 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
             children.add(1, null);
             fail("Should have thrown NullPointerException");
         } catch (NullPointerException e) {
-            // Expected result
-        }
-        checkChildCount(component, 3);
-        checkChildPresent(component, comp0, 0);
-        checkChildPresent(component, comp1, 1);
-        checkChildPresent(component, comp2, 2);
-        checkChildMissing(component, comp3);
-
-        // set(int,Object) - ClassCastException
-        try {
-            children.set(1, "String");
-            fail("Should have thrown ClassCastException");
-        } catch (ClassCastException e) {
             // Expected result
         }
         checkChildCount(component, 3);
@@ -751,7 +706,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         UIComponent comp6 = new ComponentTestImpl("comp6");
 
         // Verify initial state
-        List children = component.getChildren();
+        List<UIComponent> children = component.getChildren();
         checkChildMissing(component, comp0);
         checkChildCount(component, 0);
         checkChildMissing(component, comp1);
@@ -784,7 +739,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         checkChildMissing(component, comp6);
 
         // addAll(Collection)
-        ArrayList list1 = new ArrayList();
+        ArrayList<UIComponent> list1 = new ArrayList<>();
         list1.add(comp4);
         list1.add(comp5);
         children.addAll(list1);
@@ -798,7 +753,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         checkChildMissing(component, comp6);
 
         // addAll(int, Collection)
-        ArrayList list2 = new ArrayList();
+        ArrayList<UIComponent> list2 = new ArrayList<>();
         list2.add(comp2);
         list2.add(comp3);
         children.addAll(2, list2);
@@ -822,7 +777,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         // iterator() is tested in testChildrenIterator
         // listIterator() is tested in testChildrenListIterator
         // toArray(Object[])
-        UIComponent kids[] = (UIComponent[]) children.toArray(new UIComponent[0]);
+        UIComponent kids[] = children.toArray(new UIComponent[0]);
         assertEquals(comp0, kids[0]);
         assertEquals(comp1, kids[1]);
         assertEquals(comp2, kids[2]);
@@ -831,7 +786,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         assertEquals(comp5, kids[5]);
 
         // subList(int,int)
-        List subList = children.subList(3, 5);
+        List<UIComponent> subList = children.subList(3, 5);
         assertEquals(2, subList.size());
         assertEquals(comp3, subList.get(0));
         assertEquals(comp4, subList.get(1));
@@ -876,7 +831,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         assertTrue(!children.containsAll(list2));
 
         // retainAll()
-        ArrayList list3 = new ArrayList();
+        ArrayList<UIComponent> list3 = new ArrayList<>();
         list3.add(comp1);
         list3.add(comp3);
         list3.add(comp5);
@@ -928,10 +883,10 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
     // Test Set returned by getFacets().entrySet()
     public void testFacetsMapEntrySet() {
 
-        Map facets;
-        Set matches;
-        Set entrySet;
-        Iterator entries;
+        Map<String, UIComponent> facets;
+        Set<Map.Entry<String, UIComponent>> matches;
+        Set<Map.Entry<String, UIComponent>> entrySet;
+        Iterator<Map.Entry<String, UIComponent>> entries;
 
         // Construct the pre-load set of facets we will need
         UIComponent facet1 = new ComponentTestImpl("facet1");
@@ -940,7 +895,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         UIComponent facet4 = new ComponentTestImpl("facet4");
         UIComponent facet5 = new ComponentTestImpl("facet5");
         UIComponent facet6 = new ComponentTestImpl("facet6"); // Not normally added
-        Map preload = new HashMap<String, UIComponent>();
+        Map<String, UIComponent> preload = new HashMap<>();
         preload.put("a", facet1);
         preload.put("b", facet2);
         preload.put("c", facet3);
@@ -954,18 +909,6 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         entrySet = facets.entrySet();
         try {
             entrySet.add(bogusEntry);
-            fail("Should have thrown UnsupportedOperationExcepton");
-        } catch (UnsupportedOperationException e) {
-            // Expected result
-        }
-
-        // Test addAll()
-        facets = component.getFacets();
-        facets.clear();
-        facets.putAll(preload);
-        entrySet = facets.entrySet();
-        try {
-            entrySet.addAll(preload.values());
             fail("Should have thrown UnsupportedOperationExcepton");
         } catch (UnsupportedOperationException e) {
             // Expected result
@@ -1009,12 +952,12 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         facets.clear();
         facets.putAll(preload);
         entrySet = facets.entrySet();
-        matches = new HashSet();
+        matches = new HashSet<>();
         matches.add(new TestMapEntry("a", facet1));
         matches.add(new TestMapEntry("c", facet3));
         matches.add(new TestMapEntry("d", facet4));
         assertTrue(entrySet.containsAll(matches));
-        matches = new HashSet();
+        matches = new HashSet<>();
         matches.add(new TestMapEntry("a", facet1));
         matches.add(new TestMapEntry("c", facet3));
         matches.add(new TestMapEntry("f", facet6));
@@ -1025,7 +968,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         facets.clear();
         facets.putAll(preload);
         entrySet = facets.entrySet();
-        matches = new HashSet();
+        matches = new HashSet<>();
         entries = entrySet.iterator();
         while (entries.hasNext()) {
             matches.add(entries.next());
@@ -1039,7 +982,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         entrySet = facets.entrySet();
         entries = entrySet.iterator();
         while (entries.hasNext()) {
-            Map.Entry entry = (Map.Entry) entries.next();
+            var entry = entries.next();
             if ("b".equals(entry.getKey()) || "d".equals(entry.getKey())) {
                 entries.remove();
             }
@@ -1059,7 +1002,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         entrySet = facets.entrySet();
         entries = entrySet.iterator();
         while (entries.hasNext()) {
-            Map.Entry entry = (Map.Entry) entries.next();
+            var entry = entries.next();
             if ("c".equals(entry.getKey())) {
                 entry.setValue(facet6);
             }
@@ -1091,7 +1034,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         facets.clear();
         facets.putAll(preload);
         entrySet = facets.entrySet();
-        matches = new HashSet();
+        matches = new HashSet<>();
         matches.add(new TestMapEntry("b", facet2));
         matches.add(new TestMapEntry("d", facet4));
         entrySet.removeAll(matches);
@@ -1108,7 +1051,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         facets.clear();
         facets.putAll(preload);
         entrySet = facets.entrySet();
-        matches = new HashSet();
+        matches = new HashSet<>();
         matches.add(new TestMapEntry("b", facet2));
         matches.add(new TestMapEntry("d", facet4));
         matches.add(new TestMapEntry("f", facet6));
@@ -1126,10 +1069,10 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
     // Test Set returned by getFacets().keySet()
     public void testFacetsMapKeySet() {
 
-        Map facets;
-        Set matches;
-        Set keySet;
-        Iterator keys;
+        Map<String, UIComponent> facets;
+        Set<Object> matches;
+        Set<String> keySet;
+        Iterator<String> keys;
 
         // Construct the pre-load set of facets we will need
         UIComponent facet1 = new ComponentTestImpl("facet1");
@@ -1137,37 +1080,12 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         UIComponent facet3 = new ComponentTestImpl("facet3");
         UIComponent facet4 = new ComponentTestImpl("facet4");
         UIComponent facet5 = new ComponentTestImpl("facet5");
-        UIComponent facet6 = new ComponentTestImpl("facet6"); // Not normally added
-        Map preload = new HashMap();
+        Map<String, UIComponent> preload = new HashMap<>();
         preload.put("a", facet1);
         preload.put("b", facet2);
         preload.put("c", facet3);
         preload.put("d", facet4);
         preload.put("e", facet5);
-
-        // Test add()
-        facets = component.getFacets();
-        facets.clear();
-        facets.putAll(preload);
-        keySet = facets.keySet();
-        try {
-            keySet.add("bogusEntry");
-            fail("Should have thrown UnsupportedOperationExcepton");
-        } catch (UnsupportedOperationException e) {
-            // Expected result
-        }
-
-        // Test addAll()
-        facets = component.getFacets();
-        facets.clear();
-        facets.putAll(preload);
-        keySet = facets.keySet();
-        try {
-            keySet.addAll(preload.values());
-            fail("Should have thrown UnsupportedOperationExcepton");
-        } catch (UnsupportedOperationException e) {
-            // Expected result
-        }
 
         // Test clear()
         facets = component.getFacets();
@@ -1207,12 +1125,12 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         facets.clear();
         facets.putAll(preload);
         keySet = facets.keySet();
-        matches = new HashSet();
+        matches = new HashSet<>();
         matches.add("a");
         matches.add("c");
         matches.add("d");
         assertTrue(keySet.containsAll(matches));
-        matches = new HashSet();
+        matches = new HashSet<>();
         matches.add("a");
         matches.add("c");
         matches.add("f");
@@ -1223,7 +1141,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         facets.clear();
         facets.putAll(preload);
         keySet = facets.keySet();
-        matches = new HashSet();
+        matches = new HashSet<>();
         keys = keySet.iterator();
         while (keys.hasNext()) {
             matches.add(keys.next());
@@ -1237,7 +1155,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         keySet = facets.keySet();
         keys = keySet.iterator();
         while (keys.hasNext()) {
-            String key = (String) keys.next();
+            String key = keys.next();
             if ("b".equals(key) || "d".equals(key)) {
                 keys.remove();
             }
@@ -1269,7 +1187,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         facets.clear();
         facets.putAll(preload);
         keySet = facets.keySet();
-        matches = new HashSet();
+        matches = new HashSet<>();
         matches.add("b");
         matches.add("d");
         keySet.removeAll(matches);
@@ -1286,7 +1204,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         facets.clear();
         facets.putAll(preload);
         keySet = facets.keySet();
-        matches = new HashSet();
+        matches = new HashSet<>();
         matches.add("b");
         matches.add("d");
         matches.add("f");
@@ -1304,10 +1222,10 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
     // Test Collection returned by getFacets().values()
     public void testFacetsMapValues() {
 
-        Map facets;
-        Collection matches;
-        Collection values;
-        Iterator vals;
+        Map<String, UIComponent> facets;
+        Collection<UIComponent> matches;
+        Collection<UIComponent> values;
+        Iterator<UIComponent> vals;
 
         // Construct the pre-load set of facets we will need
         UIComponent facet1 = new ComponentTestImpl("facet1");
@@ -1316,7 +1234,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         UIComponent facet4 = new ComponentTestImpl("facet4");
         UIComponent facet5 = new ComponentTestImpl("facet5");
         UIComponent facet6 = new ComponentTestImpl("facet6"); // Not normally added
-        Map preload = new HashMap();
+        Map<String, UIComponent> preload = new HashMap<>();
         preload.put("a", facet1);
         preload.put("b", facet2);
         preload.put("c", facet3);
@@ -1385,12 +1303,12 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         facets.clear();
         facets.putAll(preload);
         values = facets.values();
-        matches = new ArrayList();
+        matches = new ArrayList<>();
         matches.add(facet1);
         matches.add(facet3);
         matches.add(facet4);
         assertTrue(values.containsAll(matches));
-        matches = new ArrayList();
+        matches = new ArrayList<>();
         matches.add(facet1);
         matches.add(facet3);
         matches.add(facet6);
@@ -1401,7 +1319,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         facets.clear();
         facets.putAll(preload);
         values = facets.values();
-        matches = new ArrayList();
+        matches = new ArrayList<>();
         vals = values.iterator();
         while (vals.hasNext()) {
             matches.add(vals.next());
@@ -1415,7 +1333,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         values = facets.values();
         vals = values.iterator();
         while (vals.hasNext()) {
-            UIComponent val = (UIComponent) vals.next();
+            UIComponent val = vals.next();
             if (facet2.equals(val) || facet4.equals(val)) {
                 vals.remove();
             }
@@ -1447,7 +1365,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         facets.clear();
         facets.putAll(preload);
         values = facets.values();
-        matches = new ArrayList();
+        matches = new ArrayList<>();
         matches.add(facet2);
         matches.add(facet4);
         values.removeAll(matches);
@@ -1464,7 +1382,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         facets.clear();
         facets.putAll(preload);
         values = facets.values();
-        matches = new ArrayList();
+        matches = new ArrayList<>();
         matches.add(facet2);
         matches.add(facet4);
         matches.add(facet6);
@@ -1488,7 +1406,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         UIComponent facet3 = new ComponentTestImpl("facet3");
 
         // Set up and verify initial conditions
-        Map facets = component.getFacets();
+        Map<String, UIComponent> facets = component.getFacets();
         facets.put("facet1", facet1);
         facets.put("facet2", facet2);
         checkFacetCount(component, 2);
@@ -1520,30 +1438,6 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         checkFacetPresent(component, "facet2", facet2);
         checkFacetMissing(component, "facet3", facet3);
 
-        // put(Object,Object) - non-String first argument
-        try {
-            facets.put(facet3, facet3);
-            fail("Should have thrown ClassCastException");
-        } catch (ClassCastException e) {
-            // Expected result
-        }
-        checkFacetCount(component, 2);
-        checkFacetPresent(component, "facet1", facet1);
-        checkFacetPresent(component, "facet2", facet2);
-        checkFacetMissing(component, "facet3", facet3);
-
-        // put(Object,Object) - non-UIComponent second argument
-        try {
-            facets.put("facet3", "facet3");
-            fail("Should have thrown ClassCastException");
-        } catch (ClassCastException e) {
-            // Expected result
-        }
-        checkFacetCount(component, 2);
-        checkFacetPresent(component, "facet1", facet1);
-        checkFacetPresent(component, "facet2", facet2);
-        checkFacetMissing(component, "facet3", facet3);
-
     }
 
     // Positive tests on facet methods
@@ -1555,10 +1449,9 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         UIComponent facet3 = new ComponentTestImpl("facet3");
         UIComponent facet4 = new ComponentTestImpl("facet4");
         UIComponent facet5 = new ComponentTestImpl("facet5");
-        UIComponent facet6 = new ComponentTestImpl("facet6");
 
         // Verify initial conditions
-        Map facets = component.getFacets();
+        Map<String, UIComponent> facets = component.getFacets();
         checkFacetCount(component, 0);
         checkFacetMissing(component, "facet1", facet1);
         checkFacetMissing(component, "facet2", facet2);
@@ -1591,7 +1484,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         checkFacetMissing(component, "facet5", facet5);
 
         // putAll(Map)
-        Map map = new HashMap();
+        Map<String, UIComponent> map = new HashMap<>();
         map.put("facet2", facet2);
         map.put("facet3", facet3);
         facets.putAll(map);
@@ -1644,7 +1537,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         checkChildCount(component, 0);
         checkFacetCount(component, 0);
         int n = 0;
-        Iterator items = component.getFacetsAndChildren();
+        Iterator<?> items = component.getFacetsAndChildren();
         assertNotNull("iterator returned", items);
         while (items.hasNext()) {
             items.next();
@@ -1729,7 +1622,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
     // Validate that the specified number of attributes are present.
     protected void checkAttributeCount(UIComponent component, int count) {
         int result = 0;
-        Iterator names = component.getAttributes().keySet().iterator();
+        Iterator<?> names = component.getAttributes().keySet().iterator();
         while (names.hasNext()) {
             names.next();
             result++;
@@ -1740,7 +1633,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
     // Validate that the specified attribute name is not present
     protected void checkAttributeMissing(UIComponent component, String name) {
         assertNull("Attribute " + name + " should be missing", component.getAttributes().get(name));
-        Iterator keys = component.getAttributes().keySet().iterator();
+        Iterator<?> keys = component.getAttributes().keySet().iterator();
         while (keys.hasNext()) {
             String key = (String) keys.next();
             if (name.equals(key)) {
@@ -1756,7 +1649,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         if (value != null) {
             assertEquals("attribute " + name + " value should be equal", value, component.getAttributes().get(name));
         }
-        Iterator keys = component.getAttributes().keySet().iterator();
+        Iterator<?> keys = component.getAttributes().keySet().iterator();
         while (keys.hasNext()) {
             String key = (String) keys.next();
             if (name.equals(key)) {
@@ -1785,7 +1678,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
     // Validate that the specified child is not present
     protected void checkChildMissing(UIComponent component, UIComponent child) {
         assertNull("child " + child + " has no parent", child.getParent());
-        List children = component.getChildren();
+        List<?> children = component.getChildren();
         assertTrue("child " + child + " should not be contained", !children.contains(child));
         assertEquals("child " + child + " should not be found by indexOf", -1, children.indexOf(child));
         for (int i = 0; i < children.size(); i++) {
@@ -1797,10 +1690,10 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
 
     // Validate that the specified child is present at the specified index
     protected void checkChildPresent(UIComponent component, UIComponent child, int index) {
-        List children = component.getChildren();
+        List<UIComponent> children = component.getChildren();
         assertTrue("child " + child + " should be contained", children.contains(child));
         assertEquals("child " + child + " should be found by indexOf", index, children.indexOf(child));
-        UIComponent kid = (UIComponent) children.get(index);
+        UIComponent kid = children.get(index);
         assertEquals("child " + child + " should be present", child, kid);
         assertEquals("child " + child + " has correct parent", component, kid.getParent());
     }
@@ -1818,21 +1711,21 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
     // Validate that the specified facet is not present
     protected void checkFacetMissing(UIComponent component, String name, UIComponent facet) {
         assertNull("facet " + name + " has no parent", facet.getParent());
-        Map facets = component.getFacets();
+        Map<String, UIComponent> facets = component.getFacets();
         assertTrue("facet " + name + " key not present", !facets.containsKey(name));
         assertTrue("facet " + name + " value not present", !facets.containsValue(facet));
         assertNull("facet " + name + " key not found by get", facets.get(name));
         assertNull("facet " + name + " not returned by getFacet(String)", component.getFacet(name));
-        Iterator keys = facets.keySet().iterator();
+        Iterator<String> keys = facets.keySet().iterator();
         while (keys.hasNext()) {
-            String key = (String) keys.next();
+            String key = keys.next();
             if (name.equals(key)) {
                 fail("facet " + name + " found in keys");
             }
         }
-        Iterator values = facets.values().iterator();
+        Iterator<UIComponent> values = facets.values().iterator();
         while (values.hasNext()) {
-            UIComponent value = (UIComponent) values.next();
+            UIComponent value = values.next();
             if (facet.equals(value)) {
                 fail("facet " + name + " found in values");
             }
@@ -1843,15 +1736,15 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
     protected void checkFacetPresent(UIComponent component, String name, UIComponent facet) {
 
         assertEquals("facet " + name + " has correct parent", component, facet.getParent());
-        Map facets = component.getFacets();
+        Map<String, UIComponent> facets = component.getFacets();
         assertTrue("facet " + name + " key is present", facets.containsKey(name));
         assertTrue("facet " + name + " value is present", facets.containsValue(facet));
         assertEquals("facet " + name + " has correct value", facet, facets.get(name));
         assertTrue("facet " + name + " returned by getFacet(String)", facet == component.getFacet(name));
         boolean found = false;
-        Iterator keys = facets.keySet().iterator();
+        Iterator<String> keys = facets.keySet().iterator();
         while (keys.hasNext()) {
-            String key = (String) keys.next();
+            String key = keys.next();
             if (name.equals(key)) {
                 found = true;
                 break;
@@ -1861,9 +1754,9 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
             fail("facet " + name + " not found in keys");
         }
         found = false;
-        Iterator values = facets.values().iterator();
+        Iterator<UIComponent> values = facets.values().iterator();
         while (values.hasNext()) {
-            UIComponent value = (UIComponent) values.next();
+            UIComponent value = values.next();
             if (facet.equals(value)) {
                 found = true;
                 break;
@@ -1876,15 +1769,15 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
 
     // --------------------------------------------------------- Private Classes
     // Test Implementation of Map.Entry
-    private class TestMapEntry implements Map.Entry {
+    private class TestMapEntry implements Map.Entry<String, UIComponent> {
 
-        public TestMapEntry(Object key, Object value) {
+        private TestMapEntry(String key, UIComponent value) {
             this.key = key;
             this.value = value;
         }
 
-        private Object key;
-        private Object value;
+        private String key;
+        private UIComponent value;
 
         @Override
         public boolean equals(Object o) {
@@ -1894,7 +1787,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
             if (!(o instanceof Map.Entry)) {
                 return false;
             }
-            Map.Entry e = (Map.Entry) o;
+            Map.Entry<?, ?> e = (Map.Entry<?, ?>) o;
             if (key == null) {
                 if (e.getKey() != null) {
                     return false;
@@ -1917,12 +1810,12 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         }
 
         @Override
-        public Object getKey() {
+        public String getKey() {
             return key;
         }
 
         @Override
-        public Object getValue() {
+        public UIComponent getValue() {
             return value;
         }
 
@@ -1932,8 +1825,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         }
 
         @Override
-        public Object setValue(Object value) {
-            Object previous = this.value;
+        public UIComponent setValue(UIComponent value) {
+            UIComponent previous = this.value;
             this.value = value;
             return previous;
         }
@@ -1942,9 +1835,6 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
 
     public static class Listener implements ComponentSystemEventListener, Serializable {
 
-        /**
-         *
-         */
         private static final long serialVersionUID = 1L;
         private StringBuilder sb = new StringBuilder();
 
@@ -1963,7 +1853,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         }
     }
 
-    public static class ValidationSignal implements Validator {
+    public static class ValidationSignal implements Validator<Object> {
 
         @Override
         public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {

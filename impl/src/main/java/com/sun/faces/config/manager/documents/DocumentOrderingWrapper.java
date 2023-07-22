@@ -54,7 +54,7 @@ public class DocumentOrderingWrapper {
     /**
      * {@link Comparator} implementation to aid in sorting <code>faces-config</code> documents.
      */
-    private static Comparator<DocumentOrderingWrapper> COMPARATOR = new DocumentOrderingComparator();
+    private static final Comparator<DocumentOrderingWrapper> COMPARATOR = new DocumentOrderingComparator();
 
     /**
      * This is the limit on the number of attempts made to sort the documents. Any attempt to exceed this limit will result
@@ -105,7 +105,7 @@ public class DocumentOrderingWrapper {
     /**
      * The wrapped Document.
      */
-    private DocumentInfo documentInfo;
+    private final DocumentInfo documentInfo;
 
     /**
      * The wrapped Document's ID.
@@ -125,7 +125,8 @@ public class DocumentOrderingWrapper {
     // -------------------------------------------------------- Constructors
 
     /**
-     * Constructs a new <code>DocumentOrderingWrapper</code> for the specified <code>Document<code>.
+     * Constructs a new <code>DocumentOrderingWrapper</code> for the specified <code>Document</code>.
+     * @param document the document info
      */
     public DocumentOrderingWrapper(DocumentInfo document) {
         documentInfo = document;
@@ -149,7 +150,7 @@ public class DocumentOrderingWrapper {
     }
 
     /**
-     * @return this <code>Document<code>'s before IDs, if any
+     * @return this <code>Document</code>'s before IDs, if any
      */
     public String[] getBeforeIds() {
         return beforeIds;
@@ -184,6 +185,7 @@ public class DocumentOrderingWrapper {
     }
 
     /**
+     * @param id the id to search for
      * @return <code>true</code> if this document is before the specified <code>id</code>, otherwise <code>false</code>
      */
     public boolean isBefore(String id) {
@@ -191,6 +193,7 @@ public class DocumentOrderingWrapper {
     }
 
     /**
+     * @param id the id to search for
      * @return <code>true</code> if this document is after the specified <code>id</code>, otherwise <code>false</code>
      */
     public boolean isAfter(String id) {
@@ -226,8 +229,7 @@ public class DocumentOrderingWrapper {
      */
     public static DocumentOrderingWrapper[] sort(DocumentOrderingWrapper[] documents, List<String> absoluteOrder) {
 
-        List<DocumentOrderingWrapper> sourceList = new CopyOnWriteArrayList<>();
-        sourceList.addAll(Arrays.asList(documents));
+        List<DocumentOrderingWrapper> sourceList = new CopyOnWriteArrayList<>(Arrays.asList(documents));
 
         List<DocumentOrderingWrapper> targetList = new ArrayList<>();
         for (String name : absoluteOrder) {
@@ -270,6 +272,7 @@ public class DocumentOrderingWrapper {
     /**
      * Sort the provided array of <code>Document</code>s per the requirements of the 2.0 specification. Note, that this
      * method only provides partial ordering and not absolute ordering.
+     * @param documents the documents to sort
      */
     public static void sort(DocumentOrderingWrapper[] documents) {
 
@@ -358,8 +361,8 @@ public class DocumentOrderingWrapper {
 
     public static LinkedList<String> getIds(DocumentOrderingWrapper[] documents) {
         LinkedList<String> ids = new LinkedList<>();
-        for (int i = 0; i < documents.length; i++) {
-            ids.add(documents[i].getDocumentId());
+        for (DocumentOrderingWrapper document : documents) {
+            ids.add(document.getDocumentId());
         }
         return ids;
     }
@@ -373,11 +376,11 @@ public class DocumentOrderingWrapper {
             numberOfPasses++;
             if (numberOfPasses == MAX_SORT_PASSED) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
-                    String msg = "Exceeded maximum number of attempts to sort the application's faces-config documents.\nDocument Info\n==================";
+                    StringBuilder msg = new StringBuilder("Exceeded maximum number of attempts to sort the application's faces-config documents.\nDocument Info\n==================");
                     for (DocumentOrderingWrapper w : documents) {
-                        msg += "  " + w.toString() + '\n';
+                        msg.append("  ").append(w.toString()).append('\n');
                     }
-                    LOGGER.severe(msg);
+                    LOGGER.severe(msg.toString());
                 }
                 throw new ConfigurationException("Exceeded maximum number of attempts to sort the faces-config documents.");
             }
@@ -443,8 +446,7 @@ public class DocumentOrderingWrapper {
                 if (OTHERS_KEY.equals(id)) {
                     continue;
                 }
-                for (int ii = 0; ii < wrappers.length; ii++) {
-                    DocumentOrderingWrapper other = wrappers[ii];
+                for (DocumentOrderingWrapper other : wrappers) {
                     if (id.equals(other.id)) {
                         String[] afterIds = other.getAfterIds();
                         if (Arrays.binarySearch(afterIds, w.id) < 0) {
@@ -459,8 +461,7 @@ public class DocumentOrderingWrapper {
                         if (otherBeforeIds.length > 0) {
 
                             String[] currentBeforeIds = w.getBeforeIds();
-                            Set<String> newBeforeIds = new HashSet<>();
-                            newBeforeIds.addAll(Arrays.asList(currentBeforeIds));
+                            Set<String> newBeforeIds = new HashSet<>(Arrays.asList(currentBeforeIds));
                             for (String bid : otherBeforeIds) {
                                 if (OTHERS_KEY.equals(bid)) {
                                     continue;
@@ -484,8 +485,7 @@ public class DocumentOrderingWrapper {
                 if (OTHERS_KEY.equals(id)) {
                     continue;
                 }
-                for (int ii = 0; ii < wrappers.length; ii++) {
-                    DocumentOrderingWrapper other = wrappers[ii];
+                for (DocumentOrderingWrapper other : wrappers) {
                     if (id.equals(other.id)) {
                         String[] beforeIds = other.getBeforeIds();
                         if (Arrays.binarySearch(beforeIds, w.id) < 0) {
@@ -498,8 +498,7 @@ public class DocumentOrderingWrapper {
                         String[] otherAfterIds = other.getAfterIds();
                         if (otherAfterIds.length > 0) {
                             String[] currentAfterIds = w.getAfterIds();
-                            Set<String> newAfterIds = new HashSet<>();
-                            newAfterIds.addAll(Arrays.asList(currentAfterIds));
+                            Set<String> newAfterIds = new HashSet<>(Arrays.asList(currentAfterIds));
                             for (String bid : otherAfterIds) {
                                 if (OTHERS_KEY.equals(bid)) {
                                     continue;
@@ -754,7 +753,6 @@ public class DocumentOrderingWrapper {
 
     } // END FacesConfigComparator
 
-    @SuppressWarnings({ "serial" })
     private static final class CircularDependencyException extends Exception {
 
         // -------------------------------------------------------- Constructors

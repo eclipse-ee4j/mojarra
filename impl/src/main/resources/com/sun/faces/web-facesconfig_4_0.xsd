@@ -5,12 +5,12 @@
             targetNamespace="https://jakarta.ee/xml/ns/jakartaee"
             version="4.0"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <xsd:include schemaLocation="jakartaee_9.xsd"/>
+  <xsd:include schemaLocation="jakartaee_10.xsd"/>
 
   <xsd:annotation>
     <xsd:documentation>
 
-      Copyright (c) 2009, 2020 Oracle and/or its affiliates. All rights reserved.
+      Copyright (c) 2009, 2021 Oracle and/or its affiliates. All rights reserved.
       
       This program and the accompanying materials are made available under the
       terms of the Eclipse Public License v. 2.0, which is available at
@@ -30,12 +30,12 @@
   <xsd:annotation>
     <xsd:documentation>
       <![CDATA[
-      <p>The XML Schema for the Jakarta Server Faces Application
+      <p>The XML Schema for the Jakarta Faces Application
       Configuration File (Version 4.0).</p>
       
-      <p>All JavaServer Faces configuration files must indicate
-      the JavaServer Faces schema by indicating the JavaServer
-      Faces namespace:</p>
+      <p>All Jakarta Faces configuration files must indicate
+      the Jakarta Faces schema by indicating the
+      Jakarta Faces namespace:</p>
       
       <p>https://jakarta.ee/xml/ns/jakartaee</p>
       
@@ -167,7 +167,7 @@
             element declares the name of this application
             configuration resource.  Such names are used
             in the document ordering scheme specified in section
-            JSF.11.4.6.</p>
+            11.3.8 "Ordering of Artifacts" of the Jakarta Faces Specification Document.</p>
             
             <p class="changed_added_2_2">This value is taken to be the 
             defining document id of any &lt;flow-definition&gt; elements 
@@ -276,7 +276,9 @@
     <xsd:annotation>
       <xsd:documentation>
         <![CDATA[
-        <p> Please see section JSF.11.4.6 for the specification of this element.</p>
+        <p> Please see section 
+        11.3.8 "Ordering of Artifacts" of the Jakarta Faces Specification Document
+        for the specification of this element.</p>
         
         ]]>
       </xsd:documentation>
@@ -332,7 +334,8 @@
         <p> This element indicates that the ordering sub-element in which
         it was placed should take special action regarding the ordering
         of this application resource relative to other
-        application configuration resources.  See section JSF.11.4.6
+        application configuration resources.
+        See section 11.3.8 "Ordering of Artifacts" of the Jakarta Faces Specification Document
         for the complete specification.</p>
         
         ]]>
@@ -350,7 +353,9 @@
       <xsd:documentation>
         <![CDATA[
         <p> Only relevant if this is placed within the /WEB-INF/faces-config.xml.
-        Please see section JSF.11.4.6 for the specification for details.</p>
+        Please see 
+        section 11.3.8 "Ordering of Artifacts" of the Jakarta Faces Specification Document
+        for the specification for details.</p>
         
         ]]>
       </xsd:documentation>
@@ -379,8 +384,8 @@
         <p> The "application" element provides a mechanism to define the
         various per-application-singleton implementation artifacts for
         a particular web application that is utilizing
-        JavaServer Faces.  For nested elements that are not specified,
-        the Jakarta Server Faces implementation must provide a suitable 
+        Jakarta Faces.  For nested elements that are not specified,
+        the Jakarta Faces implementation must provide a suitable 
         default.</p>
         
         ]]>
@@ -441,8 +446,8 @@
             NavigationHandler implementation class that will
             be called during the Invoke Application phase
             of the request processing lifecycle, if the
-            default ActionListener (provided by the Jakarta Server 
-            Faces implementation) is used.</p>
+            default ActionListener (provided by the Jakarta Faces 
+            implementation) is used.</p>
             
             ]]>
           </xsd:documentation>
@@ -752,8 +757,8 @@
         <![CDATA[
         <p> The "factory" element provides a mechanism to define the
         various Factories that comprise parts of the implementation
-        of JavaServer Faces.  For nested elements that are not
-        specified, the Jakarta Server Faces implementation must provide a 
+        of Jakarta Faces.  For nested elements that are not
+        specified, the Jakarta Faces implementation must provide a 
         suitable default.</p>
         
         ]]>
@@ -2424,7 +2429,8 @@
         <xsd:annotation>
           <xsd:documentation>
             <![CDATA[
-            <p> Please see section JSF.7.4.2 for the specification of this element.</p>
+            <p> Please see section 7.4.2 "Default NavigationHandler Algorithm" of the Jakarta Faces Specification Document
+            for the specification of this element.</p>
             
             ]]>
           </xsd:documentation>
@@ -2628,8 +2634,8 @@
       <xsd:documentation>
         <![CDATA[
         <p class="changed_added_2_2">Any view that matches any of the
-        url-patterns in this element may only be reached from another Jakarta Server 
-        Faces view in the same web application. Because the runtime is aware of
+        url-patterns in this element may only be reached from another Jakarta Faces 
+        view in the same web application. Because the runtime is aware of
         which views are protected, any navigation from an unprotected
         view to a protected view is automatically subject to
         protection.</p>
@@ -2761,7 +2767,7 @@
         used by design time tools to construct user interface dialogs
         based on the properties of the specified class.  The presence
         or absence of a referenced bean element has no impact on the
-        JavaServer Faces runtime environment inside a web application.</p>
+        Jakarta Faces runtime environment inside a web application.</p>
         
         ]]>
       </xsd:documentation>

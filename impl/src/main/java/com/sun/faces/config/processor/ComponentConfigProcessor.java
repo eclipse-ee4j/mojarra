@@ -20,7 +20,6 @@ import static java.text.MessageFormat.format;
 import static java.util.logging.Level.FINE;
 
 import java.text.MessageFormat;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.xpath.XPathExpressionException;
@@ -72,11 +71,6 @@ public class ComponentConfigProcessor extends AbstractConfigProcessor {
 
     // -------------------------------------------- Methods from ConfigProcessor
 
-    /**
-     * @see ConfigProcessor#process(jakarta.servlet.ServletContext,com.sun.faces.config.manager.documents.DocumentInfo[]) @param
-     * sc
-     * @param documentInfos
-     */
     @Override
     public void process(ServletContext sc, FacesContext facesContext, DocumentInfo[] documentInfos) throws Exception {
 
@@ -84,12 +78,12 @@ public class ComponentConfigProcessor extends AbstractConfigProcessor {
         // via config files take precedence
         processAnnotations(facesContext, FacesComponent.class);
 
-        for (int i = 0; i < documentInfos.length; i++) {
+        for (DocumentInfo documentInfo : documentInfos) {
             if (LOGGER.isLoggable(FINE)) {
-                LOGGER.log(FINE, format("Processing component elements for document: ''{0}''", documentInfos[i].getSourceURI()));
+                LOGGER.log(FINE, format("Processing component elements for document: ''{0}''", documentInfo.getSourceURI()));
             }
 
-            Document document = documentInfos[i].getDocument();
+            Document document = documentInfo.getDocument();
             String namespace = document.getDocumentElement().getNamespaceURI();
             NodeList components = document.getDocumentElement().getElementsByTagNameNS(namespace, COMPONENT);
             if (components != null && components.getLength() > 0) {
@@ -102,7 +96,6 @@ public class ComponentConfigProcessor extends AbstractConfigProcessor {
     // --------------------------------------------------------- Private Methods
 
     private void addComponents(NodeList components, String namespace) throws XPathExpressionException {
-
         Application app = getApplication();
         Verifier verifier = Verifier.getCurrentInstance();
         for (int i = 0, size = components.getLength(); i < size; i++) {
@@ -123,8 +116,8 @@ public class ComponentConfigProcessor extends AbstractConfigProcessor {
             }
 
             if (componentType != null && componentClass != null) {
-                if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.log(Level.FINE, MessageFormat.format("Calling Application.addComponent({0},{1})", componentType, componentClass));
+                if (LOGGER.isLoggable(FINE)) {
+                    LOGGER.log(FINE, MessageFormat.format("Calling Application.addComponent({0},{1})", componentType, componentClass));
                 }
                 if (verifier != null) {
                     verifier.validateObject(Verifier.ObjectType.COMPONENT, componentClass, UIComponent.class);

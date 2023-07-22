@@ -253,11 +253,11 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
                 }
             }
 
-            UIComponent component = (UIComponent) clazz.newInstance();
+            UIComponent component = (UIComponent) clazz.getDeclaredConstructor().newInstance();
             component.setId(treeNode.id);
 
             return component;
-        } catch (ClassNotFoundException | NullPointerException | InstantiationException | IllegalAccessException e) {
+        } catch (NullPointerException | IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
             throw new FacesException(e);
         }
     }
@@ -860,7 +860,7 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
     private int getProperChildIndex(UIComponent component) {
         int result = -1;
 
-        if (component.getParent().getChildren().indexOf(component) != -1) {
+        if (component.getParent().getChildren().contains(component)) {
             UIComponent parent = component.getParent();
             int index = 0;
             Iterator<UIComponent> iterator = parent.getChildren().iterator();

@@ -71,9 +71,7 @@ public class StateContext {
     // ------------------------------------------------------------ Constructors
 
     private StateContext(ApplicationStateInfo stateInfo) {
-
         this.stateInfo = stateInfo;
-
     }
 
     // ---------------------------------------------------------- Public Methods
@@ -98,7 +96,6 @@ public class StateContext {
      * @return <code>StateContext</code> for this request
      */
     public static StateContext getStateContext(FacesContext ctx) {
-
         StateContext stateCtx = (StateContext) ctx.getAttributes().get(KEY);
         if (stateCtx == null) {
             ApplicationAssociate associate = ApplicationAssociate.getCurrentInstance();
@@ -106,8 +103,8 @@ public class StateContext {
             stateCtx = new StateContext(info);
             ctx.getAttributes().put(KEY, stateCtx);
         }
+        
         return stateCtx;
-
     }
 
     /**
@@ -149,22 +146,22 @@ public class StateContext {
             partial = stateInfo.usePartialStateSaving(viewId);
             partialLocked = true;
         }
+        
         return partial;
-
     }
 
     /**
      * @return <code>true</code> if view modifications outside of the initial construction of the view are being tracked.
      */
     public boolean trackViewModifications() {
-
         return trackMods;
-
     }
 
     /**
      * Installs a <code>SystemEventListener</code> on the <code>UIViewRoot</code> to track components added to or removed
      * from the view.
+     * @param ctx the involved faces context
+     * @param root the involved view root
      */
     public void startTrackViewModifications(FacesContext ctx, UIViewRoot root) {
         if (modListener == null) {
@@ -183,13 +180,11 @@ public class StateContext {
      * Toggles the current modification tracking status.
      *
      * @param trackMods if <code>true</code> and the listener installed by
-     * {@link #startTrackViewModifications(jakarta.faces.context.FacesContext, jakarta.faces.component.UIViewRoot) is
-     * present, then view modifications will be tracked. If <code>false</code>, then modification events will be ignored.
+     * <code>startTrackViewModifications</code> is* present, then view modifications will be tracked. 
+     * If <code>false</code>, then modification events will be ignored.
      */
     public void setTrackViewModifications(boolean trackMods) {
-
         this.trackMods = trackMods;
-
     }
 
     /**
@@ -246,6 +241,7 @@ public class StateContext {
 
     /**
      * Get the dynamic list (of adds and removes).
+     * @return the dynamic list
      */
     public List<ComponentStruct> getDynamicActions() {
         return modListener != null ? modListener.getDynamicActions() : null;
@@ -558,6 +554,7 @@ public class StateContext {
                     dynamicActions = new ArrayList<>();
                 }
             }
+            
             return dynamicActions;
         }
 
@@ -573,6 +570,7 @@ public class StateContext {
                     dynamicComponents = new HashMap<>();
                 }
             }
+            
             return dynamicComponents;
         }
 
@@ -687,7 +685,6 @@ public class StateContext {
          * @param struct the dynamic action.
          */
         private void handleAddRemoveWithAutoPrune(UIComponent component, ComponentStruct struct) {
-
             List<ComponentStruct> actionList = getDynamicActions();
             HashMap<String, UIComponent> componentMap = getDynamicComponents();
 
@@ -727,7 +724,6 @@ public class StateContext {
                 }
             }
         }
-
-    } // END AddRemoveListener
+    }
 
 }

@@ -62,20 +62,6 @@ public interface Validator<T> extends EventListener {
 
     /**
      * <p>
-     * The message identifier of the {@link jakarta.faces.application.FacesMessage} to be created if the maximum or minimum
-     * value check fails, and both the maximum and minimum values for this validator have been set. The message format
-     * string for this message may optionally include a <code>{0}</code> placeholder, which will be replaced by the
-     * configured minimum value, and a <code>{1}</code> placeholder, which will be replaced by the configured maximum value.
-     * </p>
-     *
-     * @deprecated Use {@link DoubleRangeValidator#NOT_IN_RANGE_MESSAGE_ID} or
-     * {@link LongRangeValidator#NOT_IN_RANGE_MESSAGE_ID} instead.
-     */
-    @Deprecated
-    String NOT_IN_RANGE_MESSAGE_ID = "jakarta.faces.validator.NOT_IN_RANGE";
-
-    /**
-     * <p>
      * <span class="changed_modified_2_0">Perform</span> the correctness checks implemented by this {@link Validator}
      * against the specified {@link UIComponent}. If any violations are found, a {@link ValidatorException} will be thrown
      * containing the {@link jakarta.faces.application.FacesMessage} describing the failure.
@@ -85,8 +71,8 @@ public interface Validator<T> extends EventListener {
      * <p>
      * For a validator to be fully compliant with Version 2 and later of the specification, it must not fail validation on
      * <code>null</code> or empty values unless it is specifically intended to address <code>null</code> or empty values. An
-     * application-wide <code>&lt;context-param&gt;</code> is provided to allow validators designed for Jakarta Server Faces
-     * 1.2 to work with Jakarta Server Faces 2 and later. The <code>jakarta.faces.VALIDATE_EMPTY_FIELDS</code>
+     * application-wide <code>&lt;context-param&gt;</code> is provided to allow validators designed for Jakarta Faces
+     * 1.2 to work with Jakarta Faces 2 and later. The <code>jakarta.faces.VALIDATE_EMPTY_FIELDS</code>
      * <code>&lt;context-param&gt;</code> must be set to <code>false</code> to enable this backwards compatibility behavior.
      * </p>
      *

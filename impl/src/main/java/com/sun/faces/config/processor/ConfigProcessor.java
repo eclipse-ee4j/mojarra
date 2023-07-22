@@ -23,13 +23,15 @@ import jakarta.servlet.ServletContext;
 
 /**
  * <p>
- * This interface provides a CoR structure for processing JSF configuration resources.
+ * This interface provides a CoR structure for processing Faces configuration resources.
  * </p>
  */
 public interface ConfigProcessor {
 
     /**
      * Called to initialize the per-application metadata used by the ConfigProcessor
+     * @param servletContext the involved servlet context
+     * @param facesContext the involved faces context
      */
     void initializeClassMetadataMap(ServletContext servletContext, FacesContext facesContext);
 
@@ -38,8 +40,10 @@ public interface ConfigProcessor {
      * Process the array of <code>Document</code>s.
      * </p>
      *
-     * @param sc the <code>ServletContext</code> for the application being configured
-     * @param documentInfos @throws Exception if an error occurs during processing
+     * @param servletContext the <code>ServletContext</code> for the application being configured
+     * @param facesContext the current faces context
+     * @param documentInfos the document infos
+     * @throws Exception if an error occurs during processing
      */
     void process(ServletContext servletContext, FacesContext facesContext, DocumentInfo[] documentInfos) throws Exception;
 

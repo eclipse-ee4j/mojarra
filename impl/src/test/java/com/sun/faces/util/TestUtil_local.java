@@ -19,13 +19,11 @@ package com.sun.faces.util;
 
 import junit.framework.TestCase;
 
-import java.util.Locale;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.fail;
+import java.util.HashMap;
 
 /**
  * <B>TestUtil_local.java</B> is a class ...
- * <p/>
+ * 
  * <B>Lifetime And Scope</B>
  * <P>
  *
@@ -60,13 +58,11 @@ public class TestUtil_local extends TestCase {
 // General Methods
 //
     public void testGetLocaleFromString() {
-        Locale result = null;
-
         // positive tests
-        assertNotNull(result = Util.getLocaleFromString("ps"));
-        assertNotNull(result = Util.getLocaleFromString("tg_AF"));
-        assertNotNull(result = Util.getLocaleFromString("tk_IQ-Traditional"));
-        assertNotNull(result = Util.getLocaleFromString("tk-IQ_Traditional"));
+        assertNotNull(Util.getLocaleFromString("ps"));
+        assertNotNull(Util.getLocaleFromString("tg_AF"));
+        assertNotNull(Util.getLocaleFromString("tk_IQ-Traditional"));
+        assertNotNull(Util.getLocaleFromString("tk-IQ_Traditional"));
 
         try {
             Util.getLocaleFromString("aoeuhoentuhtnhtnhoaenhnhu");
@@ -94,5 +90,47 @@ public class TestUtil_local extends TestCase {
         } catch (Exception exception) {
         }
     }
+    
+    public void testSplit() {
+        String[] result = null;
+        
+        result = Util.split(new HashMap<String,Object>(), "fooBarKey=Zm9vQmFyVmFsdWU====", "=", 2);
+        assertEquals(2, result.length);
+        assertEquals(result[1], "Zm9vQmFyVmFsdWU====");
+        
+        result = Util.split(new HashMap<String,Object>(), "fooBarKey=Zm9vQmFyVmFsdWU=", "=", 2);
+        assertEquals(2, result.length);
+        assertEquals(result[1], "Zm9vQmFyVmFsdWU=");
+        
+        result = Util.split(new HashMap<String,Object>(), "fooBarKey2=Zm9vQmFyVmFsdWUy", "=", 2);
+        assertEquals(2, result.length);
+        assertEquals(result[1], "Zm9vQmFyVmFsdWUy");
+    }
 
+    public void testExtractFirstNumericSegment() {
+        char separatorChar = ':';
+
+        assertEquals(1, Util.extractFirstNumericSegment("form:table:1:button", separatorChar));
+        assertEquals(2, Util.extractFirstNumericSegment("form:table:nested:2:button", separatorChar));
+        assertEquals(3, Util.extractFirstNumericSegment("form:table:3", separatorChar));
+        assertEquals(4, Util.extractFirstNumericSegment("4:button", separatorChar));
+        assertEquals(5, Util.extractFirstNumericSegment("5", separatorChar));
+
+        try {
+            Util.extractFirstNumericSegment("none", separatorChar);
+            fail();
+        }
+        catch (NumberFormatException e) {
+            assertEquals("there is no numeric segment", e.getMessage());
+        }
+
+        try {
+            Util.extractFirstNumericSegment("", separatorChar);
+            fail();
+        }
+        catch (NumberFormatException e) {
+            assertEquals("there is no numeric segment", e.getMessage());
+        }
+    }
+    
 } // end of class TestUtil_local

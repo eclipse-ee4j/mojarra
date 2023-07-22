@@ -116,7 +116,7 @@ public abstract class SystemEvent extends EventObject {
      *
      * @param listener {@link FacesListener} to send this {@link FacesEvent} to
      *
-     * @throws AbortProcessingException Signal the Jakarta Server Faces implementation that no further processing on the
+     * @throws AbortProcessingException Signal the Jakarta Faces implementation that no further processing on the
      * current event should be performed
      */
     public void processListener(FacesListener listener) {

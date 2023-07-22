@@ -52,6 +52,9 @@ public @interface HeaderMap {
     public static final class Literal extends AnnotationLiteral<HeaderMap> implements HeaderMap {
         private static final long serialVersionUID = 1L;
 
+        /**
+         * Instance of the {@link HeaderMap} qualifier.
+         */
         public static final Literal INSTANCE = new Literal();
     }
 }

@@ -85,7 +85,7 @@ public class AjaxBehaviors implements Serializable {
      * <p>
      * Push the {@link AjaxBehavior} instance onto the <code>List</code>.
      * </p>
-     *
+     * @param context the faces context
      * @param ajaxBehavior the {@link AjaxBehavior} instance
      * @param eventName the name of the event that the behavior is associated with.
      *

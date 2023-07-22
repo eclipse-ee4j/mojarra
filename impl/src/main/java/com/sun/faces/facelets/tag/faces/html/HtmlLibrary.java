@@ -20,6 +20,39 @@ import static com.sun.faces.util.Util.unmodifiableSet;
 
 import java.util.Set;
 
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.html.HtmlBody;
+import jakarta.faces.component.html.HtmlColumn;
+import jakarta.faces.component.html.HtmlCommandButton;
+import jakarta.faces.component.html.HtmlCommandLink;
+import jakarta.faces.component.html.HtmlCommandScript;
+import jakarta.faces.component.html.HtmlDataTable;
+import jakarta.faces.component.html.HtmlDoctype;
+import jakarta.faces.component.html.HtmlForm;
+import jakarta.faces.component.html.HtmlGraphicImage;
+import jakarta.faces.component.html.HtmlInputFile;
+import jakarta.faces.component.html.HtmlInputHidden;
+import jakarta.faces.component.html.HtmlInputSecret;
+import jakarta.faces.component.html.HtmlInputText;
+import jakarta.faces.component.html.HtmlInputTextarea;
+import jakarta.faces.component.html.HtmlMessage;
+import jakarta.faces.component.html.HtmlMessages;
+import jakarta.faces.component.html.HtmlOutcomeTargetButton;
+import jakarta.faces.component.html.HtmlOutcomeTargetLink;
+import jakarta.faces.component.html.HtmlOutputFormat;
+import jakarta.faces.component.html.HtmlOutputLabel;
+import jakarta.faces.component.html.HtmlOutputLink;
+import jakarta.faces.component.html.HtmlOutputText;
+import jakarta.faces.component.html.HtmlPanelGrid;
+import jakarta.faces.component.html.HtmlPanelGroup;
+import jakarta.faces.component.html.HtmlSelectBooleanCheckbox;
+import jakarta.faces.component.html.HtmlSelectManyCheckbox;
+import jakarta.faces.component.html.HtmlSelectManyListbox;
+import jakarta.faces.component.html.HtmlSelectManyMenu;
+import jakarta.faces.component.html.HtmlSelectOneListbox;
+import jakarta.faces.component.html.HtmlSelectOneMenu;
+import jakarta.faces.component.html.HtmlSelectOneRadio;
+
 /**
  * @author Jacob Hookom
  */
@@ -35,77 +68,77 @@ public final class HtmlLibrary extends AbstractHtmlLibrary {
     public HtmlLibrary(String namespace) {
         super(namespace);
 
-        addHtmlComponent("body", "jakarta.faces.OutputBody", "jakarta.faces.Body");
+        addHtmlComponent("body", HtmlBody.COMPONENT_TYPE, "jakarta.faces.Body");
 
-        addHtmlComponent("button", "jakarta.faces.HtmlOutcomeTargetButton", "jakarta.faces.Button");
+        addHtmlComponent("button", HtmlOutcomeTargetButton.COMPONENT_TYPE, "jakarta.faces.Button");
 
-        addHtmlComponent("column", "jakarta.faces.Column", null);
+        addHtmlComponent("column", HtmlColumn.COMPONENT_TYPE, null);
 
-        addHtmlComponent("commandButton", "jakarta.faces.HtmlCommandButton", "jakarta.faces.Button");
+        addHtmlComponent("commandButton", HtmlCommandButton.COMPONENT_TYPE, "jakarta.faces.Button");
 
-        addHtmlComponent("commandLink", "jakarta.faces.HtmlCommandLink", "jakarta.faces.Link");
+        addHtmlComponent("commandLink", HtmlCommandLink.COMPONENT_TYPE, "jakarta.faces.Link");
 
-        addHtmlComponent("commandScript", "jakarta.faces.HtmlCommandScript", "jakarta.faces.Script");
+        addHtmlComponent("commandScript", HtmlCommandScript.COMPONENT_TYPE, "jakarta.faces.Script");
 
-        addHtmlComponent("dataTable", "jakarta.faces.HtmlDataTable", "jakarta.faces.Table");
+        addHtmlComponent("dataTable", HtmlDataTable.COMPONENT_TYPE, "jakarta.faces.Table");
 
-        addHtmlComponent("form", "jakarta.faces.HtmlForm", "jakarta.faces.Form");
+        addHtmlComponent("form", HtmlForm.COMPONENT_TYPE, "jakarta.faces.Form");
 
-        addHtmlComponent("graphicImage", "jakarta.faces.HtmlGraphicImage", "jakarta.faces.Image");
+        addHtmlComponent("graphicImage", HtmlGraphicImage.COMPONENT_TYPE, "jakarta.faces.Image");
 
-        addHtmlComponent("head", "jakarta.faces.Output", "jakarta.faces.Head");
+        addHtmlComponent("head", UIOutput.COMPONENT_TYPE, "jakarta.faces.Head");
 
-        addHtmlComponent("html", "jakarta.faces.Output", "jakarta.faces.Html");
+        addHtmlComponent("html", UIOutput.COMPONENT_TYPE, "jakarta.faces.Html");
 
-        addHtmlComponent("doctype", "jakarta.faces.Output", "jakarta.faces.Doctype");
+        addHtmlComponent("doctype", HtmlDoctype.COMPONENT_TYPE, "jakarta.faces.Doctype");
 
-        addHtmlComponent("inputFile", "jakarta.faces.HtmlInputFile", "jakarta.faces.File");
+        addHtmlComponent("inputFile", HtmlInputFile.COMPONENT_TYPE, "jakarta.faces.File");
 
-        addHtmlComponent("inputHidden", "jakarta.faces.HtmlInputHidden", "jakarta.faces.Hidden");
+        addHtmlComponent("inputHidden", HtmlInputHidden.COMPONENT_TYPE, "jakarta.faces.Hidden");
 
-        addHtmlComponent("inputSecret", "jakarta.faces.HtmlInputSecret", "jakarta.faces.Secret");
+        addHtmlComponent("inputSecret", HtmlInputSecret.COMPONENT_TYPE, "jakarta.faces.Secret");
 
-        addHtmlComponent("inputText", "jakarta.faces.HtmlInputText", "jakarta.faces.Text");
+        addHtmlComponent("inputText", HtmlInputText.COMPONENT_TYPE, "jakarta.faces.Text");
 
-        addHtmlComponent("inputTextarea", "jakarta.faces.HtmlInputTextarea", "jakarta.faces.Textarea");
+        addHtmlComponent("inputTextarea", HtmlInputTextarea.COMPONENT_TYPE, "jakarta.faces.Textarea");
 
-        addHtmlComponent("link", "jakarta.faces.HtmlOutcomeTargetLink", "jakarta.faces.Link");
+        addHtmlComponent("link", HtmlOutcomeTargetLink.COMPONENT_TYPE, "jakarta.faces.Link");
 
-        addHtmlComponent("message", "jakarta.faces.HtmlMessage", "jakarta.faces.Message");
+        addHtmlComponent("message", HtmlMessage.COMPONENT_TYPE, "jakarta.faces.Message");
 
-        addHtmlComponent("messages", "jakarta.faces.HtmlMessages", "jakarta.faces.Messages");
+        addHtmlComponent("messages", HtmlMessages.COMPONENT_TYPE, "jakarta.faces.Messages");
 
-        addHtmlComponent("outputFormat", "jakarta.faces.HtmlOutputFormat", "jakarta.faces.Format");
+        addHtmlComponent("outputFormat", HtmlOutputFormat.COMPONENT_TYPE, "jakarta.faces.Format");
 
-        addHtmlComponent("outputLabel", "jakarta.faces.HtmlOutputLabel", "jakarta.faces.Label");
+        addHtmlComponent("outputLabel", HtmlOutputLabel.COMPONENT_TYPE, "jakarta.faces.Label");
 
-        addHtmlComponent("outputLink", "jakarta.faces.HtmlOutputLink", "jakarta.faces.Link");
+        addHtmlComponent("outputLink", HtmlOutputLink.COMPONENT_TYPE, "jakarta.faces.Link");
 
-        addHtmlComponent("outputText", "jakarta.faces.HtmlOutputText", "jakarta.faces.Text");
+        addHtmlComponent("outputText", HtmlOutputText.COMPONENT_TYPE, "jakarta.faces.Text");
 
-        this.addComponent("outputScript", "jakarta.faces.Output", "jakarta.faces.resource.Script", ScriptResourceHandler.class);
+        this.addComponent("outputScript", UIOutput.COMPONENT_TYPE, "jakarta.faces.resource.Script", ScriptResourceHandler.class);
 
-        this.addComponent("outputStylesheet", "jakarta.faces.Output", "jakarta.faces.resource.Stylesheet", StylesheetResourceHandler.class);
+        this.addComponent("outputStylesheet", UIOutput.COMPONENT_TYPE, "jakarta.faces.resource.Stylesheet", StylesheetResourceHandler.class);
 
-        addHtmlComponent("panelGrid", "jakarta.faces.HtmlPanelGrid", "jakarta.faces.Grid");
+        addHtmlComponent("panelGrid", HtmlPanelGrid.COMPONENT_TYPE, "jakarta.faces.Grid");
 
-        addHtmlComponent("panelGroup", "jakarta.faces.HtmlPanelGroup", "jakarta.faces.Group");
+        addHtmlComponent("panelGroup", HtmlPanelGroup.COMPONENT_TYPE, "jakarta.faces.Group");
 
-        addHtmlComponent("selectBooleanCheckbox", "jakarta.faces.HtmlSelectBooleanCheckbox", "jakarta.faces.Checkbox");
+        addHtmlComponent("selectBooleanCheckbox", HtmlSelectBooleanCheckbox.COMPONENT_TYPE, "jakarta.faces.Checkbox");
 
-        addHtmlComponent("selectManyCheckbox", "jakarta.faces.HtmlSelectManyCheckbox", "jakarta.faces.Checkbox");
+        addHtmlComponent("selectManyCheckbox", HtmlSelectManyCheckbox.COMPONENT_TYPE, "jakarta.faces.Checkbox");
 
-        addHtmlComponent("selectManyListbox", "jakarta.faces.HtmlSelectManyListbox", "jakarta.faces.Listbox");
+        addHtmlComponent("selectManyListbox", HtmlSelectManyListbox.COMPONENT_TYPE, "jakarta.faces.Listbox");
 
-        addHtmlComponent("selectManyMenu", "jakarta.faces.HtmlSelectManyMenu", "jakarta.faces.Menu");
+        addHtmlComponent("selectManyMenu", HtmlSelectManyMenu.COMPONENT_TYPE, "jakarta.faces.Menu");
 
-        addHtmlComponent("selectOneListbox", "jakarta.faces.HtmlSelectOneListbox", "jakarta.faces.Listbox");
+        addHtmlComponent("selectOneListbox", HtmlSelectOneListbox.COMPONENT_TYPE, "jakarta.faces.Listbox");
 
-        addHtmlComponent("selectOneMenu", "jakarta.faces.HtmlSelectOneMenu", "jakarta.faces.Menu");
+        addHtmlComponent("selectOneMenu", HtmlSelectOneMenu.COMPONENT_TYPE, "jakarta.faces.Menu");
 
-        addHtmlComponent("selectOneRadio", "jakarta.faces.HtmlSelectOneRadio", "jakarta.faces.Radio");
+        addHtmlComponent("selectOneRadio", HtmlSelectOneRadio.COMPONENT_TYPE, "jakarta.faces.Radio");
 
-        addHtmlComponent("title", "jakarta.faces.Output", "jakarta.faces.Title");
+        addHtmlComponent("title", UIOutput.COMPONENT_TYPE, "jakarta.faces.Title");
     }
 
 }

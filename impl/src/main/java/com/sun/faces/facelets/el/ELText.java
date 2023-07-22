@@ -44,9 +44,6 @@ public class ELText {
 
     private static final class LiteralValueExpression extends ValueExpression {
 
-        /**
-         *
-         */
         private static final long serialVersionUID = 1L;
 
         private final String text;
@@ -85,7 +82,7 @@ public class ELText {
         }
 
         @Override
-        public Object getValue(ELContext context) {
+        public <T> T getValue(ELContext context) {
             return null;
         }
 
@@ -125,9 +122,9 @@ public class ELText {
 
         @Override
         public String toString(ELContext ctx) {
-            StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < txt.length; i++) {
-                sb.append(txt[i].toString(ctx));
+            StringBuilder sb = new StringBuilder();
+            for (ELText elText : txt) {
+                sb.append(elText.toString(ctx));
             }
             return sb.toString();
         }
@@ -139,9 +136,9 @@ public class ELText {
 
         @Override
         public String toString() {
-            StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < txt.length; i++) {
-                sb.append(txt[i].toString());
+            StringBuilder sb = new StringBuilder();
+            for (ELText elText : txt) {
+                sb.append(elText.toString());
             }
             return sb.toString();
         }
@@ -246,8 +243,8 @@ public class ELText {
      *
      * @param out Writer to write to
      * @param ctx current ELContext state
-     * @throws ELException
-     * @throws IOException
+     * @throws ELException when an EL exception occurs
+     * @throws IOException when an I/O exception occurs
      */
     public void write(Writer out, ELContext ctx) throws ELException, IOException {
         out.write(literal);
@@ -261,7 +258,7 @@ public class ELText {
      * Evaluates the ELText to a String
      *
      * @param ctx current ELContext state
-     * @throws ELException
+     * @throws ELException when an EL exception occurs
      * @return the evaluated String
      */
     public String toString(ELContext ctx) throws ELException {
@@ -291,7 +288,7 @@ public class ELText {
      *
      * @param in String to parse
      * @return ELText instance that knows if the String was literal or not
-     * @throws jakarta.el.ELException
+     * @throws ELException when an EL exception occurs
      */
     public static ELText parse(String in) throws ELException {
         return parse(null, null, in);
@@ -308,14 +305,15 @@ public class ELText {
     /**
      * Factory method for creating a validated ELText instance. When an Expression is hit, it will use the ExpressionFactory
      * to create a ValueExpression instance, resolving any functions at that time.
-     * <p/>
+     * 
      * Variables and properties will not be evaluated.
      *
      * @param fact ExpressionFactory to use
      * @param ctx ELContext to validate against
      * @param in String to parse
+     * @param alias the alias
      * @return ELText that can be re-applied later
-     * @throws jakarta.el.ELException
+     * @throws ELException when an EL exception occurs
      */
     public static ELText parse(ExpressionFactory fact, ELContext ctx, String in, String alias) throws ELException {
         char[] ca = in.toCharArray();
@@ -326,8 +324,8 @@ public class ELText {
         boolean esc = false;
         int vlen = 0;
 
-        StringBuffer buff = new StringBuffer(128);
-        List text = new ArrayList();
+        StringBuilder buff = new StringBuilder(128);
+        List<ELText> text = new ArrayList<>();
         ELText t = null;
         ValueExpression ve = null;
 
@@ -387,9 +385,9 @@ public class ELText {
         if (text.isEmpty()) {
             return new ELText("");
         } else if (text.size() == 1) {
-            return (ELText) text.get(0);
+            return text.get(0);
         } else {
-            ELText[] ta = (ELText[]) text.toArray(new ELText[text.size()]);
+            ELText[] ta = text.toArray(new ELText[text.size()]);
             return new ELTextComposite(ta);
         }
     }

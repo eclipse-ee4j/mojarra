@@ -39,7 +39,7 @@ import jakarta.faces.model.SelectItem;
 import jakarta.faces.model.SelectItemGroup;
 
 /**
- * <B>SelectManyCheckboxListRenderer</B> is a class that renders the current value of <code>UISelectMany<code> component
+ * <B>SelectManyCheckboxListRenderer</B> is a class that renders the current value of <code>UISelectMany</code> component
  * as a list of checkboxes.
  */
 

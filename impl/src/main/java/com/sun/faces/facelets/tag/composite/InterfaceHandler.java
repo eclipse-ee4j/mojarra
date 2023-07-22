@@ -23,12 +23,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import com.sun.faces.application.view.FaceletViewHandlingStrategy;
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 import com.sun.faces.facelets.tag.faces.ComponentSupport;
-import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 
 import jakarta.el.ValueExpression;
@@ -45,8 +43,6 @@ import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagException;
 
 public class InterfaceHandler extends TagHandlerImpl {
-
-    private final Logger LOGGER = FacesLogger.TAGLIB.getLogger();
 
     private static final String[] ATTRIBUTES_DEV = { "displayName", "expert", "hidden", "preferred", "shortDescription", "name", "componentType" };
 
@@ -94,7 +90,7 @@ public class InterfaceHandler extends TagHandlerImpl {
         String key;
         Object requiredValue;
         boolean found = false, required = false;
-        StringBuffer buf = null;
+        StringBuilder buf = null;
         String attrMessage = "", facetMessage = "";
 
         // Traverse the attributes of this component
@@ -125,10 +121,10 @@ public class InterfaceHandler extends TagHandlerImpl {
                 }
                 if (!found) {
                     if (null == buf) {
-                        buf = new StringBuffer();
+                        buf = new StringBuilder();
                         buf.append(key);
                     } else {
-                        buf.append(", " + key);
+                        buf.append(", ").append(key);
                     }
                 }
             }
@@ -156,10 +152,10 @@ public class InterfaceHandler extends TagHandlerImpl {
                     key = cur.getName();
                     if (!cc.getFacets().containsKey(key)) {
                         if (null == buf) {
-                            buf = new StringBuffer();
+                            buf = new StringBuilder();
                             buf.append(key);
                         } else {
-                            buf.append(", " + key);
+                            buf.append(", ").append(key);
                         }
                     }
                 }

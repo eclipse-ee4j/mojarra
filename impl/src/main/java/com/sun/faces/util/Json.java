@@ -57,10 +57,12 @@ import jakarta.json.stream.JsonGenerator;
  * can if necessary just pass the value straight to <code>new Date(value)</code> in JavaScript.
  * <p>
  * Below encoding options are available:
+ * <ul>
  * <li>{@link Option#SKIP_NULL_VALUES}: skip null values in arrays, collections, maps and beans. This may reduce an
  * unnecessarily bloated JSON object.
  * <li>{@link Option#USE_RFC1123_DATE}: format dates as RFC1123 via {@link DateTimeFormatter#RFC_1123_DATE_TIME}. This
  * may improve compatibility with older web browsers.
+ * </ul>
  *
  * @author Bauke Scholtz
  * @since 2.3

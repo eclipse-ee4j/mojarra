@@ -100,7 +100,6 @@ public class UIGraphicTestCase extends UIComponentBaseTestCase {
     @Override
     public void testPropertiesInvalid() throws Exception {
         super.testPropertiesInvalid();
-        UIGraphic graphic = (UIGraphic) component;
     }
 
     // --------------------------------------------------------- Support Methods

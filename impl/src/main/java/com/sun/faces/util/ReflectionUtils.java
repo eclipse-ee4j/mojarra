@@ -109,13 +109,13 @@ public final class ReflectionUtils {
      * be used to attempt a conversion.
      *
      * <p>
-     * Note 2: This method operates somewhat as the reverse of {@link Reflection#setProperties(Object, Map)}. Here only the
+     * Note 2: This method operates somewhat as the reverse of <code>Reflection#setProperties(Object, Map)</code> Here only the
      * available writable properties of the object are matched against the map with properties to set. Properties in the map
      * for which there isn't a corresponding writable property on the object are ignored.
      *
      * <p>
      * Following the above two notes, use this method when attempting to set properties on an object in a lenient best
-     * effort basis. Use {@link Reflection#setProperties(Object, Map)} when all properties need to be set with the exact
+     * effort basis. Use <code>Reflection#setProperties(Object, Map)</code> when all properties need to be set with the exact
      * type as the value appears in the map.
      *
      *
@@ -249,8 +249,8 @@ public final class ReflectionUtils {
      */
     public static <T> T instance(Class<T> clazz) {
         try {
-            return clazz.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+            return clazz.getDeclaredConstructor().newInstance();
+        } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
             throw new IllegalStateException(e);
         }
     }
@@ -347,14 +347,15 @@ public final class ReflectionUtils {
      * @throws InstantiationException if the class cannot be instantiated
      * @throws IllegalAccessException if there is a security violation
      */
-    public static Object newInstance(String className) throws InstantiationException, IllegalAccessException {
+    public static Object newInstance(String className)
+            throws IllegalArgumentException, ReflectiveOperationException, SecurityException {
 
         ClassLoader loader = Util.getCurrentLoader(null);
         if (loader == null) {
             return null;
         }
 
-        return getMetaData(loader, className).lookupClass().newInstance();
+        return getMetaData(loader, className).lookupClass().getDeclaredConstructor().newInstance();
     }
 
     /**
@@ -505,33 +506,25 @@ public final class ReflectionUtils {
 
             String name;
             this.clazz = clazz;
-            Constructor[] ctors = clazz.getConstructors();
+            Constructor<?>[] ctors = clazz.getConstructors();
             constructors = new HashMap<>(ctors.length, 1.0f);
-            for (int i = 0, len = ctors.length; i < len; i++) {
-                constructors.put(getKey(ctors[i].getParameterTypes()), ctors[i]);
+            for (Constructor<?> ctor : ctors) {
+                constructors.put(getKey(ctor.getParameterTypes()), ctor);
             }
             Method[] meths = clazz.getMethods();
             methods = new HashMap<>(meths.length, 1.0f);
-            for (int i = 0, len = meths.length; i < len; i++) {
-                name = meths[i].getName();
-                HashMap<Integer, Method> methodsMap = methods.get(name);
-                if (methodsMap == null) {
-                    methodsMap = new HashMap<>(4, 1.0f);
-                    methods.put(name, methodsMap);
-                }
-                methodsMap.put(getKey(meths[i].getParameterTypes()), meths[i]);
+            for (Method method : meths) {
+                name = method.getName();
+                methods.computeIfAbsent(name, k -> new HashMap<>(4, 1.0f))
+                       .put(getKey(method.getParameterTypes()), method);
             }
 
             meths = clazz.getDeclaredMethods();
             declaredMethods = new HashMap<>(meths.length, 1.0f);
-            for (int i = 0, len = meths.length; i < len; i++) {
-                name = meths[i].getName();
-                HashMap<Integer, Method> declaredMethodsMap = declaredMethods.get(name);
-                if (declaredMethodsMap == null) {
-                    declaredMethodsMap = new HashMap<>(4, 1.0f);
-                    declaredMethods.put(name, declaredMethodsMap);
-                }
-                declaredMethodsMap.put(getKey(meths[i].getParameterTypes()), meths[i]);
+            for (Method meth : meths) {
+                name = meth.getName();
+                declaredMethods.computeIfAbsent(name, k -> new HashMap<>(4, 1.0f))
+                               .put(getKey(meth.getParameterTypes()), meth);
             }
 
             try {

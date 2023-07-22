@@ -32,11 +32,11 @@ public abstract class Metadata {
 
     /**
      * <p class="changed_added_2_0">
-     * Take the action prescribed in the Jakarta Server Faces specification for this particular VDL element attribute.
+     * Take the action prescribed in the Jakarta Faces Specification for this particular VDL element attribute.
      * </p>
      *
      * @param ctx The FaceletContext for this request.
-     * @param instance The instance from the Jakarta Server Faces Java API on which the action should be taken. For example,
+     * @param instance The instance from the Jakarta Faces Java API on which the action should be taken. For example,
      * an instance of {@link jakarta.faces.component.EditableValueHolder}.
      */
     public abstract void applyMetadata(FaceletContext ctx, Object instance);

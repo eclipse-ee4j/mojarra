@@ -38,7 +38,7 @@ public class CompositeComponentProducer extends CdiProducer<Object> {
     private static final long serialVersionUID = 1L;
 
     public CompositeComponentProducer() {
-        super.name("cc").beanClassAndType(UIComponent.class).create(e -> {
+        super.name("cc").types(UIComponent.class).create(e -> {
 
             FacesContext context = getCurrentInstance();
 

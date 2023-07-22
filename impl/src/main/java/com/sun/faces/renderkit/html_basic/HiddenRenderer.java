@@ -25,7 +25,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
 /**
- * <B>HiddenRenderer</B> is a class that renders the current value of <code>UIInput<code> component as a HTML hidden
+ * <B>HiddenRenderer</B> is a class that renders the current value of <code>UIInput</code> component as a HTML hidden
  * variable.
  */
 public class HiddenRenderer extends HtmlBasicInputRenderer {
@@ -34,16 +34,13 @@ public class HiddenRenderer extends HtmlBasicInputRenderer {
 
     @Override
     public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
-
         rendererParamsNotNull(context, component);
-
     }
 
     // ------------------------------------------------------- Protected Methods
 
     @Override
     protected void getEndTextToRender(FacesContext context, UIComponent component, String currentValue) throws IOException {
-
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
 
@@ -63,4 +60,4 @@ public class HiddenRenderer extends HtmlBasicInputRenderer {
 
     // The testcase for this class is TestRenderers_3.java
 
-} // end of class HiddenRenderer
+}

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.sun.faces.config.InitFacesContext;
 import jakarta.el.ELContext;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
@@ -38,7 +39,7 @@ import jakarta.faces.render.RenderKit;
 /**
  * <p>
  * <strong class="changed_modified_2_0 changed_modified_2_1 changed_modified_2_2">FacesContext</strong> contains all of
- * the per-request state information related to the processing of a single Jakarta Server Faces request, and the
+ * the per-request state information related to the processing of a single Jakarta Faces request, and the
  * rendering of the corresponding response. It is passed to, and potentially modified by, each phase of the request
  * processing lifecycle.
  * </p>
@@ -62,8 +63,8 @@ public abstract class FacesContext {
     private boolean processingEvents = true;
     private boolean isCreatedFromValidFactory = true;
 
-    private static ConcurrentHashMap threadInitContext = new ConcurrentHashMap(2);
-    private static ConcurrentHashMap initContextServletContext = new ConcurrentHashMap(2);
+    private static final ConcurrentHashMap<Thread,FacesContext> threadInitContext = new ConcurrentHashMap<>(2);
+    private static final ConcurrentHashMap<Thread,InitFacesContext> initContextServletContext = new ConcurrentHashMap<>(2);
 
     /**
      * Default constructor.
@@ -74,19 +75,16 @@ public abstract class FacesContext {
     public FacesContext() {
         Thread curThread = Thread.currentThread();
         StackTraceElement[] callstack = curThread.getStackTrace();
-        if (null != callstack) {
-            String declaringClassName = callstack[3].getClassName();
-            try {
-                ClassLoader curLoader = curThread.getContextClassLoader();
-                Class declaringClass = curLoader.loadClass(declaringClassName);
-                if (!FacesContextFactory.class.isAssignableFrom(declaringClass)) {
-                    isCreatedFromValidFactory = false;
-                }
-            } catch (ClassNotFoundException cnfe) {
-
+        String declaringClassName = callstack[3].getClassName();
+        try {
+            ClassLoader curLoader = curThread.getContextClassLoader();
+            Class<?> declaringClass = curLoader.loadClass(declaringClassName);
+            if (!FacesContextFactory.class.isAssignableFrom(declaringClass)) {
+                isCreatedFromValidFactory = false;
             }
-        }
+        } catch (ClassNotFoundException ignored) {
 
+        }
     }
 
     // -------------------------------------------------------------- Properties
@@ -671,7 +669,7 @@ public abstract class FacesContext {
 
     /**
      * <p>
-     * Signal the Jakarta Server Faces implementation that, as soon as the current phase of the request processing lifecycle
+     * Signal the Jakarta Faces implementation that, as soon as the current phase of the request processing lifecycle
      * has been completed, control should be passed to the <em>Render Response</em> phase, bypassing any phases that have
      * not been executed yet.
      * </p>
@@ -709,7 +707,7 @@ public abstract class FacesContext {
 
     /**
      * <p>
-     * Signal the Jakarta Server Faces implementation that the HTTP response for this request has already been generated
+     * Signal the Jakarta Faces implementation that the HTTP response for this request has already been generated
      * (such as an HTTP redirect), and that the request processing lifecycle should be terminated as soon as the current
      * phase is completed.
      * </p>
@@ -838,12 +836,7 @@ public abstract class FacesContext {
      * The <code>ThreadLocal</code> variable used to record the {@link FacesContext} instance for each processing thread.
      * </p>
      */
-    private static ThreadLocal<FacesContext> instance = new ThreadLocal<FacesContext>() {
-        @Override
-        protected FacesContext initialValue() {
-            return null;
-        }
-    };
+    private static final ThreadLocal<FacesContext> instance = ThreadLocal.withInitial(() -> null);
 
     /**
      * <p class="changed_modified_2_0">
@@ -859,7 +852,7 @@ public abstract class FacesContext {
         FacesContext facesContext = instance.get();
 
         if (null == facesContext) {
-            facesContext = (FacesContext) threadInitContext.get(Thread.currentThread());
+            facesContext = threadInitContext.get(Thread.currentThread());
         }
         // Bug 20458755: If not found in the threadInitContext, use
         // a special FacesContextFactory implementation that knows how to
@@ -868,7 +861,7 @@ public abstract class FacesContext {
         // to obtain the init FacesContext corresponding to that ServletContext.
         if (null == facesContext) {
             // In the non-init case, this will immediately return null.
-            // In the init case, this will return null if Jakarta Server Faces hasn't been
+            // In the init case, this will return null if Jakarta Faces hasn't been
             // initialized in the ServletContext corresponding to this
             // Thread's context ClassLoader.
             ClassLoader cl = Thread.currentThread().getContextClassLoader();

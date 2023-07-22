@@ -40,7 +40,7 @@ public class ProjectStageJndiFactory implements ObjectFactory {
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
     /**
-     * Lookup the configured stage by looking for the parameter <code>stage<code>.
+     * Lookup the configured stage by looking for the parameter <code>stage</code>.
      * If the value of <code>stage</code> cannot be determined, the default
      * {@link jakarta.faces.application.ProjectStage#Production} is returned.
      *
@@ -48,7 +48,6 @@ public class ProjectStageJndiFactory implements ObjectFactory {
      */
     @Override
     public Object getObjectInstance(Object obj, Name name, Context nameCtx, Hashtable<?, ?> environment) throws Exception {
-
         if (obj instanceof Reference) {
             Reference ref = (Reference) obj;
             RefAddr addr = ref.get("stage");

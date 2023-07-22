@@ -35,9 +35,13 @@ import jakarta.faces.view.ValueHolderAttachedObjectHandler;
 public class ConverterHandler extends FaceletsAttachedObjectHandler implements ValueHolderAttachedObjectHandler {
 
     private String converterId;
-
     private TagHandlerDelegate helper;
 
+    /**
+     * Creates a new ConverterHandler using the given config.
+     *
+     * @param config converter config where the converter Id is taken from.
+     */
     public ConverterHandler(ConverterConfig config) {
         super(config);
         converterId = config.getConverterId();
@@ -45,22 +49,32 @@ public class ConverterHandler extends FaceletsAttachedObjectHandler implements V
 
     @Override
     protected TagHandlerDelegate getTagHandlerDelegate() {
-        if (null == helper) {
+        if (helper == null) {
             helper = delegateFactory.createConverterHandlerDelegate(this);
         }
-        return helper;
 
+        return helper;
     }
 
+    /**
+     * Returns the converter Id.
+     *
+     * <p>
+     * The converter Id is taken from the attribute "converterId"
+     *
+     * @param ctx facelet context used to resolve the converter Id from an attribute.
+     * @return the converter Id.
+     */
     public String getConverterId(FaceletContext ctx) {
         if (converterId == null) {
             TagAttribute idAttr = getAttribute("converterId");
             if (idAttr == null) {
                 return null;
-            } else {
-                return idAttr.getValue(ctx);
             }
+
+            return idAttr.getValue(ctx);
         }
+
         return converterId;
     }
 

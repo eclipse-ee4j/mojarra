@@ -19,9 +19,9 @@ package jakarta.faces.view.facelets;
 
 /**
  * <p class="changed_added_2_0">
- * Every kind of markup element in Facelets VDL that has attributes that need to take action on a Jakarta Server Faces
+ * Every kind of markup element in Facelets VDL that has attributes that need to take action on a Jakarta Faces
  * Java API artifact is associated with an instance of this class. This class is an abstraction to enable a rule based
- * method for directing how different kinds of elements take different kinds of actions in the Jakarta Server Faces Java
+ * method for directing how different kinds of elements take different kinds of actions in the Jakarta Faces Java
  * API. For example, consider this markup:
  * </p>
  *
@@ -42,7 +42,7 @@ package jakarta.faces.view.facelets;
  *
  * <p>
  * Facelets employes the strategy pattern to allow the manner in which all possible attributes are handled based on the
- * nature of the Jakarta Server Faces Java API artifact associated with the markup element.
+ * nature of the Jakarta Faces Java API artifact associated with the markup element.
  * </p>
  *
  * <p>
@@ -60,7 +60,7 @@ public abstract class MetaTagHandler extends TagHandler {
     /**
      * Stores the last type.
      */
-    private Class lastType = Object.class;
+    private Class<?> lastType = Object.class;
 
     /**
      * Stores the mapper.
@@ -93,7 +93,7 @@ public abstract class MetaTagHandler extends TagHandler {
      */
     protected void setAttributes(FaceletContext ctx, Object instance) {
         if (instance != null) {
-            Class type = instance.getClass();
+            Class<?> type = instance.getClass();
             if (mapper == null || !lastType.equals(type)) {
                 lastType = type;
                 mapper = createMetaRuleset(type).finish();

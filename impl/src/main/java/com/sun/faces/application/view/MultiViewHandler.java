@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2022, 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -18,8 +19,8 @@ package com.sun.faces.application.view;
 
 import static com.sun.faces.RIConstants.FACELETS_ENCODING_KEY;
 import static com.sun.faces.RIConstants.SAVESTATE_FIELD_MARKER;
-import static com.sun.faces.renderkit.RenderKitUtils.getResponseStateManager;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.RENDER_KIT_ID_PARAM;
+import static com.sun.faces.renderkit.RenderKitUtils.getResponseStateManager;
 import static com.sun.faces.util.MessageUtils.ILLEGAL_VIEW_ID_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.Util.getFacesMapping;
@@ -84,11 +85,10 @@ public class MultiViewHandler extends ViewHandler {
     // Log instance for this class
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
-    private List<String> configuredExtensions;
-    private Set<String> protectedViews;
-    private boolean extensionsSet; // For legacy JSF 1.2 support
+    private final List<String> configuredExtensions;
+    private final Set<String> protectedViews;
 
-    private ViewDeclarationLanguageFactory vdlFactory;
+    private final ViewDeclarationLanguageFactory vdlFactory;
 
     // ------------------------------------------------------------ Constructors
 
@@ -96,7 +96,6 @@ public class MultiViewHandler extends ViewHandler {
         WebConfiguration config = WebConfiguration.getInstance();
 
         configuredExtensions = config.getConfiguredExtensions();
-        extensionsSet = config.isSet(WebConfiguration.WebContextInitParameter.DefaultSuffix);
         vdlFactory = (ViewDeclarationLanguageFactory) FactoryFinder.getFactory(VIEW_DECLARATION_LANGUAGE_FACTORY);
         protectedViews = new CopyOnWriteArraySet<>();
     }
@@ -440,9 +439,20 @@ public class MultiViewHandler extends ViewHandler {
         HttpServletMapping mapping = getFacesMapping(ctx);
         String physicalViewId;
 
-        if (mapping.getMappingMatch() == EXACT || mapping.getMappingMatch() == EXTENSION) {
-            // Exact mapping, e.g. /foo or Prefix mapping, e.g. /foo.xhtml
+        if (mapping.getMappingMatch() == EXTENSION) {
+            // Suffix mapping, e.g. /foo.xhtml
             physicalViewId = convertViewId(ctx, requestViewId);
+        } else if (mapping.getMappingMatch() == EXACT) {
+            if (requestViewId.equals(mapping.getPattern())) {
+                // Fuzzy logic: if request equals the view ID we're asking for
+                // this is a call from MultiViewHandler.createView. In that case instead
+                // of /foo we want /foo.xhtml.
+                return convertViewId(ctx, requestViewId);
+            }
+
+            // Exact mapping, e.g. /foo
+            // We're likely called here by derive*ViewId, which wants /foo
+            physicalViewId = requestViewId;
         } else {
             // Prefix mapping, e.g. /faces/foo.xhtml
             physicalViewId = normalizeRequestURI(requestViewId, mapping.getPattern().replace("/*", ""));
@@ -505,19 +515,10 @@ public class MultiViewHandler extends ViewHandler {
 
             appendOrReplaceExtension(viewId, ext, length, extIdx, buffer);
 
-            String convertedViewId = buffer.toString();
-
-            ViewDeclarationLanguage vdl = getViewDeclarationLanguage(context, convertedViewId);
-
-            if (vdl.viewExists(context, convertedViewId)) {
-                // RELEASE_PENDING (rlubke,driscoll) cache the lookup
-                return convertedViewId;
-            }
+            return buffer.toString();
         }
 
-        // unable to find any resource match that the default ViewHandler
-        // can deal with. Fall back to legacy (JSF 1.2) id conversion.
-        return legacyConvertViewId(viewId, length, extIdx, buffer);
+        return viewId;
     }
 
     protected Map<String, List<String>> getFullParameterList(FacesContext ctx, String viewId, Map<String, List<String>> existingParameters) {
@@ -581,11 +582,7 @@ public class MultiViewHandler extends ViewHandler {
             }
 
             if (value != null) {
-                List<String> existing = existingParameters.get(viewParam.getName());
-                if (existing == null) {
-                    existing = new ArrayList<>(4);
-                    existingParameters.put(viewParam.getName(), existing);
-                }
+                List<String> existing = existingParameters.computeIfAbsent(viewParam.getName(), k -> new ArrayList<>(4));
                 existing.add(value);
             }
         }
@@ -767,24 +764,4 @@ public class MultiViewHandler extends ViewHandler {
         }
     }
 
-    private String legacyConvertViewId(String viewId, int length, int extensionIndex, StringBuilder buffer) {
-
-        // In 1.2, the viewId was converted by replacing the extension
-        // with the single extension specified by jakarta.faces.DEFAULT_SUFFIX,
-        // which defaulted to ".jsp". In 2.0, jakarta.faces.DEFAULT_SUFFIX
-        // may specify multiple extensions. If jakarta.faces.DEFAULT_SUFFIX is
-        // explicitly set, we honor it and pick off the first specified
-        // extension. If jakarta.faces.DEFAULT_SUFFIX is not explicitly set,
-        // we honor the default 1.2 behavior and use ".jsp" as the suffix.
-
-        String extension = extensionsSet && !configuredExtensions.isEmpty() ? configuredExtensions.get(0) : ".xhtml";
-
-        if (viewId.endsWith(extension)) {
-            return viewId;
-        }
-
-        appendOrReplaceExtension(viewId, extension, length, extensionIndex, buffer);
-
-        return buffer.toString();
-    }
 }

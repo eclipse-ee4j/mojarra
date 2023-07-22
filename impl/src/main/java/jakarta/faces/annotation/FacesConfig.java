@@ -47,8 +47,9 @@ import jakarta.inject.Qualifier;
 
 /**
  * <p class="changed_added_2_3">
- * The presence of this annotation on a managed bean deployed within an application causes version specific features to
- * be enabled as specified in the enum {@link Version}
+ * The presence of this annotation on <span class="changed_modified_4_0">a class</span> deployed within an application 
+ * <span class="changed_modified_4_0">guarantees activation of Jakarta Faces and its CDI specific features, even when 
+ * <code>/WEB-INF/faces-config.xml</code> is absent and <code>FacesServlet</code> is not explicitly registered</span>.
  * </p>
  */
 @Qualifier
@@ -66,11 +67,14 @@ public @interface FacesConfig {
     public static final class Literal extends AnnotationLiteral<FacesConfig> implements FacesConfig {
         private static final long serialVersionUID = 1L;
 
+        /**
+         * Instance of the {@link FacesConfig} qualifier.
+         */
         public static final Literal INSTANCE = new Literal();
 
         @Override
         public Version version() {
-            return null; // non binding, so not used
+            return Version.JSF_2_3;
         }
 
         @Override
@@ -94,8 +98,10 @@ public @interface FacesConfig {
 
     /**
      * The Faces spec version
-     *
+     * 
+     * @deprecated It has no effect anymore as per Jakarta Faces version 4.0; the actual impl version should be leading. 
      */
+    @Deprecated(forRemoval = true, since = "4.0")
     public static enum Version {
 
         /**
@@ -414,8 +420,11 @@ public @interface FacesConfig {
      * </p>
      *
      * @return the spec version for which the features must be enabled.
+     * 
+     * @deprecated It has no effect anymore as per Jakarta Faces version 4.0; the actual impl version should be leading. 
      */
     @Nonbinding
+    @Deprecated(forRemoval = true, since = "4.0")
     Version version() default Version.JSF_2_3;
 
     /**

@@ -31,15 +31,19 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import jakarta.el.PropertyNotFoundException;
 import jakarta.el.ValueExpression;
 import jakarta.el.ValueReference;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.PartialStateHolder;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIInput;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.CompositeComponentExpressionHolder;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.MessageInterpolator;
 import jakarta.validation.Validation;
@@ -90,7 +94,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
 
     /**
      * <p class="changed_added_2_0">
-     * The name of the Jakarta Servlet context attribute which holds the object used by Jakarta Server Faces to obtain
+     * The name of the Jakarta Servlet context attribute which holds the object used by Jakarta Faces to obtain
      * Validator instances. If the Jakarta Servlet context attribute is missing or contains a null value, Jakarta Server
      * Faces is free to use this Jakarta Servlet context attribute to store the ValidatorFactory bootstrapped by this
      * validator.
@@ -293,21 +297,21 @@ public class BeanValidator implements Validator, PartialStateHolder {
         }
 
         ValueExpression valueExpression = component.getValueExpression("value");
+
         if (valueExpression == null) {
             return;
         }
 
-        jakarta.validation.Validator beanValidator = getBeanValidator(context);
+        ValueReference valueReference = getValueReference(context, component, valueExpression);
 
-        Class<?>[] validationGroupsArray = parseValidationGroups(getValidationGroups());
-
-        ValueReference valueReference = valueExpression.getValueReference(context.getELContext());
-
-        if (valueReference == null) {
+        if (valueReference == null || valueReference.getBase() == null) {
             return;
         }
 
+        Class<?>[] validationGroupsArray = parseValidationGroups(getValidationGroups());
+        
         if (isResolvable(valueReference, valueExpression)) {
+            jakarta.validation.Validator beanValidator = getBeanValidator(context);
 
             @SuppressWarnings("rawtypes")
             Set violationsRaw = null;
@@ -352,6 +356,36 @@ public class BeanValidator implements Validator, PartialStateHolder {
         }
     }
 
+    private static ValueReference getValueReference(FacesContext context, UIComponent component, ValueExpression valueExpression) {
+        try {
+            ValueReference reference = valueExpression.getValueReference(context.getELContext());
+            if (reference != null) {
+                Object base = reference.getBase();
+                if (base instanceof CompositeComponentExpressionHolder) {
+                    ValueExpression ve = ((CompositeComponentExpressionHolder) base).getExpression(String.valueOf(reference.getProperty()));
+                    if (ve != null) {
+                        reference = getValueReference(context, component, ve);
+                    }
+                }
+            }
+            return reference;
+        }
+        catch (PropertyNotFoundException e) {
+            if (component instanceof UIInput && ((UIInput) component).getSubmittedValue() == null) {
+                if (LOGGER.isLoggable(Level.FINE)) {
+                    LOGGER.log(Level.FINE,
+                               "Property of value expression {0} of component {1} could not be found, but submitted value is null in first place, so not attempting to validate", // See Mojarra issue 4734
+                               new Object[]{
+                                       valueExpression.getExpressionString(),
+                                       component.getId() });
+                }
+                return null;
+            } else {
+                throw e;
+            }
+        }
+    }
+
     private boolean isResolvable(jakarta.el.ValueReference valueReference, ValueExpression valueExpression) {
         Boolean resolvable = null;
         String failureMessage = null;
@@ -391,7 +425,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
         }
 
         if (validationGroupsStr == null) {
-            cachedValidationGroups = new Class[] { Default.class };
+            cachedValidationGroups = new Class<?>[] { Default.class };
             return cachedValidationGroups;
         }
 

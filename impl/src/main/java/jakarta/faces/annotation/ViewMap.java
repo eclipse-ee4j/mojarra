@@ -51,6 +51,9 @@ public @interface ViewMap {
     public static final class Literal extends AnnotationLiteral<ViewMap> implements ViewMap {
         private static final long serialVersionUID = 1L;
 
+        /**
+         * Instance of the {@link ViewMap} qualifier.
+         */
         public static final Literal INSTANCE = new Literal();
     }
 }

@@ -145,7 +145,6 @@ public abstract class AbstractTagLibrary implements TagLibrary {
          * <p class="changed_added_2_0">
          * </p>
          *
-         * @return
          * @see jakarta.faces.view.facelets.TagConfig#getNextHandler()
          */
         @Override
@@ -157,7 +156,6 @@ public abstract class AbstractTagLibrary implements TagLibrary {
          * <p class="changed_added_2_0">
          * </p>
          *
-         * @return
          * @see jakarta.faces.view.facelets.TagConfig#getTag()
          */
         @Override
@@ -169,7 +167,6 @@ public abstract class AbstractTagLibrary implements TagLibrary {
          * <p class="changed_added_2_0">
          * </p>
          *
-         * @return
          * @see jakarta.faces.view.facelets.TagConfig#getTagId()
          */
         @Override
@@ -314,7 +311,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
         protected final Class type;
 
-        protected final Constructor constructor;
+        protected final Constructor<?> constructor;
 
         public UserComponentHandlerFactory(String componentType, String renderType, Class type) {
             this.componentType = componentType;
@@ -394,7 +391,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
         protected final Class type;
 
-        protected final Constructor constructor;
+        protected final Constructor<?> constructor;
 
         public UserConverterHandlerFactory(String converterId, Class type) {
             this.converterId = converterId;
@@ -426,7 +423,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
         protected final Class type;
 
-        protected final Constructor constructor;
+        protected final Constructor<?> constructor;
 
         public UserValidatorHandlerFactory(String validatorId, Class type) {
             this.validatorId = validatorId;
@@ -458,7 +455,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
         protected final Class type;
 
-        protected final Constructor constructor;
+        protected final Constructor<?> constructor;
 
         public UserBehaviorHandlerFactory(String behaviorId, Class type) {
             this.behaviorId = behaviorId;
@@ -483,23 +480,23 @@ public abstract class AbstractTagLibrary implements TagLibrary {
         }
     }
 
-    private final Map factories;
+    private final Map<String, TagHandlerFactory> factories;
 
     private final String namespace;
 
-    private final Map functions;
+    private final Map<String, Method> functions;
 
     public AbstractTagLibrary(String namespace) {
         this.namespace = namespace;
-        factories = new HashMap();
-        functions = new HashMap();
+        factories = new HashMap<String, TagHandlerFactory>();
+        functions = new HashMap<String, Method>();
     }
 
     /**
      * Add a ComponentHandlerImpl with the specified componentType and rendererType, aliased by the tag name.
      *
      * @see jakarta.faces.application.Application#createComponent(java.lang.String)
-     * @param name name to use, "foo" would be &lt;my:foo />
+     * @param name name to use, "foo" would be {@code <my:foo />}
      * @param componentType componentType to use
      * @param rendererType rendererType to use
      */
@@ -511,7 +508,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      * Add a ComponentHandlerImpl with the specified componentType and rendererType, aliased by the tag name. The Facelet
      * will be compiled with the specified HandlerType (which must extend AbstractComponentHandler).
      *
-     * @param name name to use, "foo" would be &lt;my:foo />
+     * @param name name to use, "foo" would be {@code <my:foo />}
      * @param componentType componentType to use
      * @param rendererType rendererType to use
      * @param handlerType a Class that extends ComponentHandler
@@ -525,7 +522,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      *
      * @see ConverterHandler
      * @see jakarta.faces.application.Application#createConverter(java.lang.String)
-     * @param name name to use, "foo" would be &lt;my:foo />
+     * @param name name to use, "foo" would be {@code <my:foo />}
      * @param converterId id to pass to Application instance
      */
     protected final void addConverter(String name, String converterId) {
@@ -538,7 +535,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      * @see ConverterHandler
      * @see ConverterConfig
      * @see jakarta.faces.application.Application#createConverter(java.lang.String)
-     * @param name name to use, "foo" would be &lt;my:foo />
+     * @param name name to use, "foo" would be {@code <my:foo />}
      * @param converterId id to pass to Application instance
      * @param type TagHandler type that takes in a ConverterConfig
      */
@@ -551,7 +548,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      *
      * @see ValidatorHandler
      * @see jakarta.faces.application.Application#createValidator(java.lang.String)
-     * @param name name to use, "foo" would be &lt;my:foo />
+     * @param name name to use, "foo" would be {@code <my:foo />}
      * @param validatorId id to pass to Application instance
      */
     protected final void addValidator(String name, String validatorId) {
@@ -564,7 +561,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      * @see ValidatorHandler
      * @see ValidatorConfig
      * @see jakarta.faces.application.Application#createValidator(java.lang.String)
-     * @param name name to use, "foo" would be &lt;my:foo />
+     * @param name name to use, "foo" would be {@code <my:foo />}
      * @param validatorId id to pass to Application instance
      * @param type TagHandler type that takes in a ValidatorConfig
      */
@@ -591,7 +588,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      * Use the specified HandlerType in compiling Facelets. HandlerType must extend TagHandler.
      *
      * @see TagHandler
-     * @param name name to use, "foo" would be &lt;my:foo />
+     * @param name name to use, "foo" would be {@code <my:foo />}
      * @param handlerType must extend TagHandler
      */
     protected final void addTagHandler(String name, Class handlerType) {
@@ -602,7 +599,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      * Add a UserTagHandler specified a the URL source.
      *
      * @see UserTagHandler
-     * @param name name to use, "foo" would be &lt;my:foo />
+     * @param name name to use, "foo" would be {@code <my:foo />}
      * @param source source where the Facelet (Tag) source is
      */
     protected final void addUserTag(String name, URL source) {
@@ -613,7 +610,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      * Add a CompositeComponentTagHandler for the specified resource.
      *
      * @see UserTagHandler
-     * @param name name to use, "foo" would be &lt;my:foo />
+     * @param name name to use, "foo" would be {@code <my:foo />}
      * @param resourceId source where the Facelet (Tag) source is
      */
     protected final void addCompositeComponentTag(String name, String resourceId) {
@@ -665,7 +662,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
     @Override
     public TagHandler createTagHandler(String ns, String localName, TagConfig tag) throws FacesException {
         if (namespace.equals(ns)) {
-            TagHandlerFactory f = (TagHandlerFactory) factories.get(localName);
+            TagHandlerFactory f = factories.get(localName);
             if (f != null) {
                 return f.createHandler(tag);
             }
@@ -694,7 +691,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
     @Override
     public Method createFunction(String ns, String name) {
         if (namespace.equals(ns)) {
-            return (Method) functions.get(name);
+            return functions.get(name);
         }
         return null;
     }

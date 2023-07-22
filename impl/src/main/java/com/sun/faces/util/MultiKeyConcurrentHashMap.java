@@ -137,7 +137,7 @@ public class MultiKeyConcurrentHashMap<K, V> {
 
     /**
      * ConcurrentHashMap list entry. Note that this is never exported out as a user-visible Map.Entry.
-     * <p/>
+     * 
      * Because the value field is volatile, not final, it is legal wrt the Java Memory Model for an unsynchronized reader to
      * see null instead of initial value when read via a data race. Although a reordering leading to this is not likely to
      * ever actually occur, the Segment.readValueUnderLock method is used as a backup in case a null (pre-initialized) value
@@ -167,7 +167,6 @@ public class MultiKeyConcurrentHashMap<K, V> {
      * Segments are specialized versions of hash tables. This subclasses from ReentrantLock opportunistically, just to
      * simplify some locking and avoid separate construction.
      */
-    @SuppressWarnings({ "serial" })
     static final class Segment<K, V> extends ReentrantLock {
         /*
          * Segments maintain a table of entry lists that are ALWAYS kept in a consistent state, so can be read without locking.
@@ -673,10 +672,10 @@ public class MultiKeyConcurrentHashMap<K, V> {
      *
      * @param key a key in the table.
      *
-     * @return the value to which the key is mapped in this table; <tt>null</tt> if the key is not mapped to any value in
+     * @return the value to which the key is mapped in this table; <code>null</code> if the key is not mapped to any value in
      * this table.
      *
-     * @throws NullPointerException if the key is <tt>null</tt>.
+     * @throws NullPointerException if the key is <code>null</code>.
      */
     public V get(Object key) {
         int hash = hash(key, null, null, null);
@@ -712,10 +711,10 @@ public class MultiKeyConcurrentHashMap<K, V> {
      *
      * @param key possible key.
      *
-     * @return <tt>true</tt> if and only if the specified object is a key in this table, as determined by the
-     * <tt>equals</tt> method; <tt>false</tt> otherwise.
+     * @return <code>true</code> if and only if the specified object is a key in this table, as determined by the
+     * <code>equals</code> method; <code>false</code> otherwise.
      *
-     * @throws NullPointerException if the key is <tt>null</tt>.
+     * @throws NullPointerException if the key is <code>null</code>.
      */
     public boolean containsKey(Object key) {
         int hash = hash(key, null, null, null);
@@ -747,14 +746,14 @@ public class MultiKeyConcurrentHashMap<K, V> {
     }
 
     /**
-     * Returns <tt>true</tt> if this map maps one or more keys to the specified value. Note: This method requires a full
-     * internal traversal of the hash table, and so is much slower than method <tt>containsKey</tt>.
+     * Returns <code>true</code> if this map maps one or more keys to the specified value. Note: This method requires a full
+     * internal traversal of the hash table, and so is much slower than method <code>containsKey</code>.
      *
      * @param value value whose presence in this map is to be tested.
      *
-     * @return <tt>true</tt> if this map maps one or more keys to the specified value.
+     * @return <code>true</code> if this map maps one or more keys to the specified value.
      *
-     * @throws NullPointerException if the value is <tt>null</tt>.
+     * @throws NullPointerException if the value is <code>null</code>.
      */
     public boolean containsValue(Object value) {
         if (value == null) {
@@ -815,28 +814,28 @@ public class MultiKeyConcurrentHashMap<K, V> {
      *
      * @param value a value to search for.
      *
-     * @return <tt>true</tt> if and only if some key maps to the <tt>value</tt> argument in this table as determined by the
-     * <tt>equals</tt> method; <tt>false</tt> otherwise.
+     * @return <code>true</code> if and only if some key maps to the <code>value</code> argument in this table as determined by the
+     * <code>equals</code> method; <code>false</code> otherwise.
      *
-     * @throws NullPointerException if the value is <tt>null</tt>.
+     * @throws NullPointerException if the value is <code>null</code>.
      */
     public boolean contains(Object value) {
         return containsValue(value);
     }
 
     /**
-     * Maps the specified <tt>key</tt> to the specified <tt>value</tt> in this table. Neither the key nor the value can be
-     * <tt>null</tt>.
-     * <p/>
+     * Maps the specified <code>key</code> to the specified <code>value</code> in this table. Neither the key nor the value can be
+     * <code>null</code>.
+     * 
      * <p>
-     * The value can be retrieved by calling the <tt>get</tt> method with a key that is equal to the original key.
+     * The value can be retrieved by calling the <code>get</code> method with a key that is equal to the original key.
      *
      * @param key the table key.
      * @param value the value.
      *
-     * @return the previous value of the specified key in this table, or <tt>null</tt> if it did not have one.
+     * @return the previous value of the specified key in this table, or <code>null</code> if it did not have one.
      *
-     * @throws NullPointerException if the key or value is <tt>null</tt>.
+     * @throws NullPointerException if the key or value is <code>null</code>.
      */
     public V put(K key, V value) {
         if (value == null) {
@@ -894,9 +893,9 @@ public class MultiKeyConcurrentHashMap<K, V> {
      * @param key key with which the specified value is to be associated.
      * @param value value to be associated with the specified key.
      *
-     * @return previous value associated with specified key, or <tt>null</tt> if there was no mapping for key.
+     * @return previous value associated with specified key, or <code>null</code> if there was no mapping for key.
      *
-     * @throws NullPointerException if the specified key or value is <tt>null</tt>.
+     * @throws NullPointerException if the specified key or value is <code>null</code>.
      */
     public V putIfAbsent(K key, V value) {
         if (value == null) {
@@ -992,7 +991,7 @@ public class MultiKeyConcurrentHashMap<K, V> {
      *
      * @return true if the value was replaced
      *
-     * @throws NullPointerException if the specified key or values are <tt>null</tt>.
+     * @throws NullPointerException if the specified key or values are <code>null</code>.
      */
     public boolean replace(K key, V oldValue, V newValue) {
         if (oldValue == null || newValue == null) {
@@ -1016,9 +1015,9 @@ public class MultiKeyConcurrentHashMap<K, V> {
      * @param key key with which the specified value is associated.
      * @param value value to be associated with the specified key.
      *
-     * @return previous value associated with specified key, or <tt>null</tt> if there was no mapping for key.
+     * @return previous value associated with specified key, or <code>null</code> if there was no mapping for key.
      *
-     * @throws NullPointerException if the specified key or value is <tt>null</tt>.
+     * @throws NullPointerException if the specified key or value is <code>null</code>.
      */
     public V replace(K key, V value) {
         if (value == null) {

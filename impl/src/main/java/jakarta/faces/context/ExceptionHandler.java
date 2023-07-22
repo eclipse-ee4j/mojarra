@@ -32,7 +32,7 @@ import jakarta.faces.event.SystemEventListener;
  * <div class="changed_added_2_0">
  *
  * <p>
- * See the specification prose document for the requirements for the default implementation. <code>Exception</code>s may
+ * See the Jakarta Faces Specification Document for the requirements for the default implementation. <code>Exception</code>s may
  * be passed to the <code>ExceptionHandler</code> in one of two ways:
  * </p>
  *
@@ -44,7 +44,8 @@ import jakarta.faces.event.SystemEventListener;
  * </p>
  *
  * <p>
- * This approach allows the <code>ExceptionHandler</code> facility specified in section 6.2 of the spec prose document to 
+ * This approach allows the <code>ExceptionHandler</code> facility specified in 
+ * section 6.2 "ExceptionHandler" of the Jakarta Faces Specification Document to 
  * operate on the <code>Exception</code>.
  * </p>
  *
@@ -84,8 +85,8 @@ import jakarta.faces.event.SystemEventListener;
  *
  * <p>
  * With either approach, any <code>ExceptionQueuedEvent</code> instances that are published in this way are accessible
- * to the {@link #handle} method, which is called at the end of each lifecycle phase, as specified in section 6.2 of the 
- * spec prose document.
+ * to the {@link #handle} method, which is called at the end of each lifecycle phase, as specified in 
+ * section 6.2 "ExceptionHandler" of the Jakarta Faces Specification Document.
  * </p>
  *
  * <p class="changed_added_2_3">
@@ -109,8 +110,8 @@ public abstract class ExceptionHandler implements SystemEventListener {
      * <p class="changed_added_2_0">
      * Take action to handle the <code>Exception</code> instances residing inside the {@link ExceptionQueuedEvent} instances
      * that have been queued by calls to <code>Application().publishEvent(ExceptionQueuedEvent.class,
-     * <em>eventContext</em>)</code>. The requirements of the default implementation are detailed in section 6.2.1 of the 
-     * spec prose document.
+     * <em>eventContext</em>)</code>. The requirements of the default implementation are detailed in 
+     * section 6.2.1 "Default ExceptionHandler implementation" of the Jakarta Faces Specification Document.
      * </p>
      *
      * @throws FacesException if and only if a problem occurs while performing the algorithm to handle the

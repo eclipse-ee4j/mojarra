@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2021 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -17,6 +18,7 @@ package com.sun.faces.application;
 
 import static com.sun.faces.RIConstants.FACES_CONFIG_VERSION;
 import static com.sun.faces.RIConstants.FACES_PREFIX;
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.AutomaticExtensionlessMapping;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.FaceletsSkipComments;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsDecorators;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsDefaultRefreshPeriod;
@@ -26,12 +28,13 @@ import static com.sun.faces.facelets.util.ReflectionUtil.forName;
 import static com.sun.faces.util.MessageUtils.APPLICATION_ASSOCIATE_EXISTS_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.Util.getFacesConfigXmlVersion;
-import static com.sun.faces.util.Util.isCdiAvailable;
+import static com.sun.faces.util.Util.getFacesServletRegistration;
 import static com.sun.faces.util.Util.split;
 import static jakarta.faces.FactoryFinder.FACELET_CACHE_FACTORY;
 import static jakarta.faces.FactoryFinder.FLOW_HANDLER_FACTORY;
 import static jakarta.faces.application.ProjectStage.Development;
 import static jakarta.faces.application.ProjectStage.Production;
+import static jakarta.faces.application.ViewVisitOption.RETURN_AS_MINIMAL_IMPLICIT_OUTCOME;
 import static java.lang.Long.parseLong;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
@@ -98,14 +101,13 @@ import jakarta.faces.view.facelets.FaceletCache;
 import jakarta.faces.view.facelets.FaceletCacheFactory;
 import jakarta.faces.view.facelets.TagDecorator;
 import jakarta.servlet.ServletContext;
-import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * <p>
  * Break out the things that are associated with the Application, but need to be present even when the user has replaced
  * the Application instance.
  * </p>
- * <p/>
+ *
  * <p>
  * For example: the user replaces ApplicationFactory, and wants to intercept calls to createValueExpression() and
  * createMethodExpression() for certain kinds of expressions, but allow the existing application to handle the rest.
@@ -117,14 +119,14 @@ public class ApplicationAssociate {
 
     private final static String FacesComponentJcpNamespace = "http://xmlns.jcp.org/jsf/component";
 
-    private ApplicationImpl applicationImpl;
+    private final ApplicationImpl applicationImpl;
 
     /**
      * Overall Map containing <code>from-view-id</code> key and <code>Set</code> of <code>NavigationCase</code> objects for
      * that key; The <code>from-view-id</code> strings in this map will be stored as specified in the configuration file -
      * some of them will have a trailing asterisk "*" signifying wild card, and some may be specified as an asterisk "*".
      */
-    private Map<String, Set<NavigationCase>> navigationMap;
+    private final Map<String, Set<NavigationCase>> navigationMap;
 
     /*
      * The FacesComponentTagLibrary uses the information in this map to help it fabricate tag handlers for components
@@ -137,44 +139,38 @@ public class ApplicationAssociate {
 
     private static final String ASSOCIATE_KEY = RIConstants.FACES_PREFIX + "ApplicationAssociate";
 
-    private static ThreadLocal<ApplicationAssociate> instance = new ThreadLocal<ApplicationAssociate>() {
-        @Override
-        protected ApplicationAssociate initialValue() {
-            return null;
-        }
-    };
+    private static final ThreadLocal<ApplicationAssociate> instance = ThreadLocal.withInitial(() -> null);
 
     private List<ELResolver> elResolversFromFacesConfig;
     private ExpressionFactory expressionFactory;
 
-    private InjectionProvider injectionProvider;
+    private final InjectionProvider injectionProvider;
     private ResourceCache resourceCache;
 
     private String contextName;
     private boolean requestServiced;
     private boolean errorPagePresent;
 
-    private AnnotationManager annotationManager;
-    private boolean devModeEnabled;
-    private boolean hasPushBuilder;
+    private final AnnotationManager annotationManager;
+    private final boolean devModeEnabled;
     private Compiler compiler;
     private DefaultFaceletFactory faceletFactory;
     private ResourceManager resourceManager;
-    private ApplicationStateInfo applicationStateInfo;
+    private final ApplicationStateInfo applicationStateInfo;
 
-    private PropertyEditorHelper propertyEditorHelper;
+    private final PropertyEditorHelper propertyEditorHelper;
 
-    private NamedEventManager namedEventManager;
+    private final NamedEventManager namedEventManager;
 
-    private WebConfiguration webConfig;
+    private final WebConfiguration webConfig;
 
     private FlowHandler flowHandler;
 
     private SearchExpressionHandler searchExpressionHandler;
 
-    private Map<String, String> definingDocumentIdsToTruncatedJarUrls;
+    private final Map<String, String> definingDocumentIdsToTruncatedJarUrls;
 
-    private long timeOfInstantiation;
+    private final long timeOfInstantiation;
 
     private Map<String, List<String>> resourceLibraryContracts;
 
@@ -251,7 +247,6 @@ public class ApplicationAssociate {
         annotationManager = new AnnotationManager();
 
         devModeEnabled = appImpl.getProjectStage() == Development;
-        hasPushBuilder = checkForPushBuilder();
 
         if (!devModeEnabled) {
             resourceCache = new ResourceCache();
@@ -265,14 +260,6 @@ public class ApplicationAssociate {
 
         definingDocumentIdsToTruncatedJarUrls = new ConcurrentHashMap<>();
         timeOfInstantiation = System.currentTimeMillis();
-    }
-
-    private boolean checkForPushBuilder() {
-        try {
-            return HttpServletRequest.class.getMethod("newPushBuilder", (Class[]) null) != null;
-        } catch (NoSuchMethodException | SecurityException ex) {
-            return false;
-        }
     }
 
     public Application getApplication() {
@@ -304,12 +291,11 @@ public class ApplicationAssociate {
             }
 
             FacesContext context = FacesContext.getCurrentInstance();
-            if (isCdiAvailable(context)) {
-                try {
-                    new JavaFlowLoaderHelper().loadFlows(context, flowHandler);
-                } catch (IOException ex) {
-                    LOGGER.log(SEVERE, null, ex);
-                }
+
+            try {
+                new JavaFlowLoaderHelper().loadFlows(context, flowHandler);
+            } catch (IOException ex) {
+                LOGGER.log(SEVERE, null, ex);
             }
 
             // cause the Facelet VDL to be instantiated eagerly, so it can
@@ -323,6 +309,14 @@ public class ApplicationAssociate {
 
             String facesConfigVersion = getFacesConfigXmlVersion(context);
             context.getExternalContext().getApplicationMap().put(FACES_CONFIG_VERSION, facesConfigVersion);
+
+            if (webConfig.isOptionEnabled(AutomaticExtensionlessMapping)) {
+                getFacesServletRegistration(context)
+                    .ifPresent(registration ->
+                        viewHandler.getViews(context, "/", RETURN_AS_MINIMAL_IMPLICIT_OUTCOME)
+                                   .forEach(view -> registration.addMapping(view)));
+            }
+
         }
 
     }
@@ -420,10 +414,6 @@ public class ApplicationAssociate {
 
     public boolean isDevModeEnabled() {
         return devModeEnabled;
-    }
-
-    public boolean isPushBuilderSupported() {
-        return hasPushBuilder;
     }
 
     /**
@@ -572,10 +562,13 @@ public class ApplicationAssociate {
     }
 
     /**
-     * keys: <var> element from faces-config
+     * keys: element from faces-config
      * <p>
-     * <p/>
+     *
      * values: ResourceBundleBean instances.
+     *
+     * @param var the variable name
+     * @param bundle the application resource bundle
      */
 
     public void addResourceBundle(String var, ApplicationResourceBundle bundle) {
@@ -670,12 +663,13 @@ public class ApplicationAssociate {
         if (decoratorsParamValue != null) {
             for (String decorator : split(appMap, decoratorsParamValue.trim(), ";")) {
                 try {
-                    newCompiler.addTagDecorator((TagDecorator) forName(decorator).newInstance());
+                    newCompiler
+                            .addTagDecorator((TagDecorator) forName(decorator).getDeclaredConstructor().newInstance());
 
                     if (LOGGER.isLoggable(FINE)) {
                         LOGGER.log(FINE, "Successfully Loaded Decorator: {0}", decorator);
                     }
-                } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+                } catch (ReflectiveOperationException | IllegalArgumentException | SecurityException e) {
                     if (LOGGER.isLoggable(SEVERE)) {
                         LOGGER.log(SEVERE, "Error Loading Decorator: " + decorator, e);
                     }

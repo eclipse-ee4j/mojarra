@@ -20,6 +20,7 @@ import java.lang.reflect.Type;
 import java.util.Map;
 
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.annotation.InitParameterMap;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
@@ -39,8 +40,8 @@ public class InitParameterMapProducer extends CdiProducer<Map<String, String>> {
     private static final long serialVersionUID = 1L;
 
     public InitParameterMapProducer() {
-        super.name("initParam").scope(RequestScoped.class).qualifiers(new InitParameterMapAnnotationLiteral())
-                .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, String.class }), Map.class, Object.class).beanClass(Map.class)
+        super.name("initParam").scope(RequestScoped.class).qualifiers(InitParameterMap.Literal.INSTANCE)
+                .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, String.class }), Map.class, Object.class)
                 .create(e -> FacesContext.getCurrentInstance().getExternalContext().getInitParameterMap());
     }
 

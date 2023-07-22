@@ -32,30 +32,31 @@ import jakarta.faces.lifecycle.Lifecycle;
 
 public class MockFacesContextFactory extends FacesContextFactory {
     public MockFacesContextFactory(FacesContextFactory oldImpl) {
-	System.setProperty(FactoryFinder.FACES_CONTEXT_FACTORY, 
-			   this.getClass().getName());
+        super(oldImpl);
+        System.setProperty(FactoryFinder.FACES_CONTEXT_FACTORY, this.getClass().getName());
     }
     public MockFacesContextFactory() {}
     
+
     @Override
     public FacesContext getFacesContext(Object context, Object request,
-					Object response, 
+					Object response,
 					Lifecycle lifecycle) throws FacesException {
 	MockFacesContext result = new MockFacesContext();
-        
+
         ExternalContext externalContext =
-                new MockExternalContext((ServletContext) context, 
+                new MockExternalContext((ServletContext) context,
                 (ServletRequest) request, (ServletResponse) response);
         result.setExternalContext(externalContext);
         ApplicationFactory applicationFactory = (ApplicationFactory)
                 FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-        Application application = (MockApplication) applicationFactory.getApplication();
+        Application application = applicationFactory.getApplication();
         result.setApplication(application);
-        
+
 	ELContext elContext = new MockELContext(new MockELResolver());
 	elContext.putContext(FacesContext.class, result);
         result.setELContext(elContext);
-        
+
         return result;
     }
 }

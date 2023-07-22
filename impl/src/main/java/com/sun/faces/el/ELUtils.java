@@ -16,25 +16,24 @@
 package com.sun.faces.el;
 
 import static com.sun.faces.RIConstants.EMPTY_CLASS_ARGS;
-import static com.sun.faces.cdi.CdiUtils.getBeanReference;
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.InterpretEmptyStringSubmittedValuesAsNull;
 import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.ReflectionUtils.lookupMethod;
 import static com.sun.faces.util.ReflectionUtils.newInstance;
 import static com.sun.faces.util.Util.getCdiBeanManager;
-import static com.sun.faces.util.Util.getFacesConfigXmlVersion;
-import static com.sun.faces.util.Util.getWebXmlVersion;
+import static java.lang.Boolean.FALSE;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.cdi.CdiExtension;
+import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.context.flash.FlashELResolver;
+import com.sun.faces.util.Cache;
+import com.sun.faces.util.LRUCache;
 
 import jakarta.el.ArrayELResolver;
 import jakarta.el.BeanELResolver;
@@ -47,7 +46,6 @@ import jakarta.el.MapELResolver;
 import jakarta.el.ResourceBundleELResolver;
 import jakarta.el.ValueExpression;
 import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.faces.FacesException;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
@@ -57,34 +55,37 @@ import jakarta.faces.context.FacesContext;
 public class ELUtils {
 
     /**
-     * Private cache for storing evaluation results for composite components checks.
-     */
-    private static final HashMap<String, Boolean> compositeComponentEvaluationCache = new HashMap<String, Boolean>();
-
-    /**
      * The maximum size of the <code>compositeComponentEvaluationCache</code>.
      */
     private static final int compositeComponentEvaluationCacheMaxSize = 1000;
 
     /**
-     * FIFO queue, holding access information about the <code>compositeComponentEvaluationCache</code>.
-     */
-    private static final LinkedList<String> evaluationCacheFifoQueue = new LinkedList<String>();
-
-    /**
-     * Class member, indicating a <I>positive</I> evaluation result.
-     */
-    private static final Boolean IS_COMPOSITE_COMPONENT = Boolean.TRUE;
-
-    /**
-     * Class member, indicating a <I>negative</I> evaluation result.
-     */
-    private static final Boolean IS_NOT_A_COMPOSITE_COMPONENT = Boolean.FALSE;
-
-    /**
      * Helps to determine if a EL expression represents a composite component EL expression.
      */
     private static final Pattern COMPOSITE_COMPONENT_EXPRESSION = Pattern.compile(".(?:[ ]+|[\\[{,(])cc[.].+[}]");
+    // do not use this Matcher, it's only for the Cache Factory
+    private static final Matcher COMPOSITE_COMPONENT_EXPRESSION_MATCHER = COMPOSITE_COMPONENT_EXPRESSION.matcher("");
+
+    /**
+     * Cache.Factory that initialize an element inside the LRUCache evaluating a Matcher against the input.
+     * We should be able to share a Matcher because the Factory it's executed atomically
+     * and this Matcher is used only here
+     */
+    private static final Cache.Factory<String,Boolean> isCompositeExpressionInit = new Cache.Factory<>() {
+
+        // it would be safer to declare the shared Matcher here, but it requires Java 16+ ... Faces 5.0 ?
+        // private static final Matcher COMPOSITE_COMPONENT_EXPRESSION_MATCHER = COMPOSITE_COMPONENT_EXPRESSION.matcher("");
+
+        @Override
+        public Boolean newInstance(String expression) {
+            return expression == null ? FALSE : COMPOSITE_COMPONENT_EXPRESSION_MATCHER.reset(expression).find();
+        }
+    };
+
+    /**
+     * Private cache for storing evaluation results for composite components checks.
+     */
+    private static final LRUCache<String, Boolean> compositeComponentEvaluationCache = new LRUCache<>(isCompositeExpressionInit, compositeComponentEvaluationCacheMaxSize);
 
     /**
      * Used to determine if EL method arguments are being passed to a composite component lookup expression.
@@ -110,7 +111,6 @@ public class ELUtils {
     public static final ArrayELResolver ARRAY_RESOLVER = new ArrayELResolver();
     public static final BeanELResolver BEAN_RESOLVER = new BeanELResolver();
     public static final FacesResourceBundleELResolver FACES_BUNDLE_RESOLVER = new FacesResourceBundleELResolver();
-    public static final ImplicitObjectELResolver IMPLICIT_RESOLVER = new ImplicitObjectELResolver();
     public static final FlashELResolver FLASH_RESOLVER = new FlashELResolver();
     public static final ListELResolver LIST_RESOLVER = new ListELResolver();
     public static final MapELResolver MAP_RESOLVER = new MapELResolver();
@@ -118,6 +118,7 @@ public class ELUtils {
     public static final ScopedAttributeELResolver SCOPED_RESOLVER = new ScopedAttributeELResolver();
     public static final ResourceELResolver RESOURCE_RESOLVER = new ResourceELResolver();
     public static final CompositeComponentAttributesELResolver COMPOSITE_COMPONENT_ATTRIBUTES_EL_RESOLVER = new CompositeComponentAttributesELResolver();
+    public static final EmptyStringToNullELResolver EMPTY_STRING_TO_NULL_RESOLVER = new EmptyStringToNullELResolver();
 
     // ------------------------------------------------------------ Constructors
 
@@ -128,23 +129,7 @@ public class ELUtils {
     // ---------------------------------------------------------- Public Methods
 
     public static boolean isCompositeComponentExpr(String expression) {
-        Boolean evaluationResult = compositeComponentEvaluationCache.get(expression);
-
-        if (evaluationResult != null) {
-            // fast path - this expression has already been evaluated, therefore return its evaluation result
-            return evaluationResult.booleanValue();
-        }
-
-        // TODO we should be trying to re-use the Matcher by calling
-        // m.reset(expression);
-        boolean returnValue = COMPOSITE_COMPONENT_EXPRESSION
-                .matcher(expression)
-                .find();
-
-        // remember the evaluation result for this expression
-        rememberEvaluationResult(expression, returnValue);
-
-        return returnValue;
+        return compositeComponentEvaluationCache.get(expression);
     }
 
     public static boolean isCompositeComponentMethodExprLookup(String expression) {
@@ -153,6 +138,8 @@ public class ELUtils {
 
     public static boolean isCompositeComponentLookupWithArgs(String expression) {
         // TODO we should be trying to re-use the Matcher by calling
+        //      pizzi80: not sure because it will require a synchronized block if this method
+        //               is called by multiple threads
         // m.reset(expression);
         return COMPOSITE_COMPONENT_LOOKUP_WITH_ARGS.matcher(expression).find();
     }
@@ -167,17 +154,16 @@ public class ELUtils {
      */
     public static void buildFacesResolver(FacesCompositeELResolver composite, ApplicationAssociate associate) {
         checkNotNull(composite, associate);
-
-        if (!tryAddCDIELResolver(composite)) {
-            // The CDI ELResolver that among others takes care of handling the implicit objects
-            // was not added. Add the old native implicit resolver.
-            composite.addRootELResolver(IMPLICIT_RESOLVER);
-        }
-
+        addCDIELResolver(composite);
         composite.add(FLASH_RESOLVER);
         composite.addPropertyELResolver(COMPOSITE_COMPONENT_ATTRIBUTES_EL_RESOLVER);
         addELResolvers(composite, associate.getELResolversFromFacesConfig());
         composite.add(associate.getApplicationELResolvers());
+
+        if (WebConfiguration.getInstance().isOptionEnabled(InterpretEmptyStringSubmittedValuesAsNull)) {
+            composite.addPropertyELResolver(EMPTY_STRING_TO_NULL_RESOLVER);
+        }
+
         composite.addPropertyELResolver(RESOURCE_RESOLVER);
         composite.addPropertyELResolver(BUNDLE_RESOLVER);
         composite.addRootELResolver(FACES_BUNDLE_RESOLVER);
@@ -199,25 +185,10 @@ public class ELUtils {
         }
     }
 
-    private static boolean tryAddCDIELResolver(FacesCompositeELResolver composite) {
+    private static void addCDIELResolver(FacesCompositeELResolver composite) {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-
         BeanManager beanManager = getCdiBeanManager(facesContext);
-
-        if (beanManager == null) {
-            // TODO: use version enum and >=
-            if (getFacesConfigXmlVersion(facesContext).equals("2.3") || getWebXmlVersion(facesContext).equals("4.0")) {
-                throw new FacesException("Unable to find CDI BeanManager");
-            }
-        } else {
-            CdiExtension cdiExtension = getBeanReference(beanManager, CdiExtension.class);
-            if (cdiExtension.isAddBeansForJSFImplicitObjects()) {
-                composite.add(beanManager.getELResolver());
-                return true;
-            }
-        }
-
-        return false;
+        composite.add(beanManager.getELResolver());
     }
 
     private static void addEL3_0_Resolvers(FacesCompositeELResolver composite, ApplicationAssociate associate) {
@@ -235,7 +206,7 @@ public class ELUtils {
                     // jakarta.el.staticFieldELResolver
                     composite.addRootELResolver((ELResolver) newInstance("jakarta.el.StaticFieldELResolver"));
                 }
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException t) {
+            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException t) {
                 // This is normal on containers that do not have these ELResolvers
             }
         }
@@ -269,39 +240,7 @@ public class ELUtils {
 
     }
 
-
     // --------------------------------------------------------- Private Methods
-
-    /**
-     * Adds the specified <code>expression</code> with its evaluation result <code>isCompositeComponent</code> to the <code>compositeComponentEvaluationCache</code>,
-     * taking into account the maximum cache size.
-     */
-    private static void rememberEvaluationResult(String expression, boolean isCompositeComponent) {
-        // validity check
-        if (compositeComponentEvaluationCacheMaxSize <= 0) {
-            return;
-        }
-
-        synchronized (compositeComponentEvaluationCache) {
-            if (compositeComponentEvaluationCache.size() >= compositeComponentEvaluationCacheMaxSize) {
-                // obtain the oldest cached element
-                String oldestExpression = evaluationCacheFifoQueue.removeFirst();
-
-                // remove the mapping for this element
-                compositeComponentEvaluationCache.remove(oldestExpression);
-            }
-
-            // add the mapping to the cache
-            if (isCompositeComponent) {
-                compositeComponentEvaluationCache.put(expression, IS_COMPOSITE_COMPONENT);
-            } else {
-                compositeComponentEvaluationCache.put(expression, IS_NOT_A_COMPOSITE_COMPONENT);
-            }
-
-            // remember the sequence of the hash map "put" operations
-            evaluationCacheFifoQueue.add(expression);
-        }
-    }
 
     /**
      * <p>
@@ -317,7 +256,6 @@ public class ELUtils {
                 target.add(resolver);
             }
         }
-
     }
 
     /*
@@ -344,4 +282,5 @@ public class ELUtils {
 
         return associate.getExpressionFactory();
     }
+
 }

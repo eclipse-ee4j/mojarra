@@ -127,7 +127,7 @@ public final class DevTools {
         if (e != null) {
             String msg = e.getMessage();
             if (msg != null) {
-                writer.write(msg.replaceAll("<", TS));
+                writer.write(msg.replace("<", TS));
             } else {
                 writer.write(e.getClass().getName());
             }
@@ -142,7 +142,7 @@ public final class DevTools {
             PrintWriter pstr = new PrintWriter(str);
             e.printStackTrace(pstr);
             pstr.close();
-            writer.write(str.toString().replaceAll("<", TS));
+            writer.write(str.toString().replace("<", TS));
         }
 
     }
@@ -317,9 +317,9 @@ public final class DevTools {
                 String key = entry.getKey();
                 if (key.indexOf('.') == -1) {
                     writer.write("<tr style=\"padding: 10px 6px;\"><td style=\"padding: 10px 6px;\">");
-                    writer.write(key.replaceAll("<", TS));
+                    writer.write(key.replace("<", TS));
                     writer.write("</td><td>");
-                    writer.write(entry.getValue() == null ? "null" : entry.getValue().toString().replaceAll("<", TS));
+                    writer.write(entry.getValue() == null ? "null" : entry.getValue().toString().replace("<", TS));
                     writer.write("</td></tr>");
                     written = true;
                 }
@@ -368,7 +368,7 @@ public final class DevTools {
                             } else {
                                 str = v.toString();
                             }
-                            writer.write(str.replaceAll("<", TS));
+                            writer.write(str.replace("<", TS));
                             writer.write("\"");
                         }
                     } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | IOException e) {
@@ -392,7 +392,7 @@ public final class DevTools {
     private static void writeStart(Writer writer, UIComponent c, boolean children) throws IOException {
         if (isText(c)) {
             String str = c.toString().trim();
-            writer.write(str.replaceAll("<", TS));
+            writer.write(str.replace("<", TS));
         } else {
             writer.write(TS);
             writer.write(getName(c));

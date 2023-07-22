@@ -213,9 +213,6 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
 
     // -------------------------------------------- Methods from ConfigProcessor
 
-    /**
-     * @see ConfigProcessor#process(jakarta.servlet.ServletContext,com.sun.faces.config.manager.documents.DocumentInfo[])
-     */
     @Override
     public void process(ServletContext servletContext, FacesContext facesContext, DocumentInfo[] documentInfos) throws Exception {
         Application application = getApplication();
@@ -381,9 +378,9 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                     } catch (NoClassDefFoundError nde) {
                         // On google app engine InitialContext is forbidden to use and GAE throws
                         // NoClassDefFoundError
-                        LOGGER.log(FINE, nde, () -> nde.toString());
+                        LOGGER.log(FINE, nde, nde::toString);
                     } catch (NamingException ne) {
-                        LOGGER.log(WARNING, ne, () -> ne.toString());
+                        LOGGER.log(WARNING, ne, ne::toString);
                     }
 
                     try {
@@ -472,7 +469,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
             String handler = getNodeText(navigationHandler);
             if (handler != null) {
                 Class<?> rootType = findRootType(servletContext, facesContext, handler, navigationHandler,
-                        new Class[] { ConfigurableNavigationHandler.class, NavigationHandler.class });
+                        new Class<?>[] { ConfigurableNavigationHandler.class, NavigationHandler.class });
                 boolean[] didPerformInjection = { false };
                 NavigationHandler instance = (NavigationHandler) createInstance(servletContext, facesContext, handler,
                         rootType != null ? rootType : NavigationHandler.class, application.getNavigationHandler(), navigationHandler, true,
@@ -576,7 +573,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
 
             String handler = getNodeText(searchExpressionHandler);
             if (handler != null) {
-                Class<?> rootType = findRootType(sc, facesContext, handler, searchExpressionHandler, new Class[] { SearchExpressionHandler.class });
+                Class<?> rootType = findRootType(sc, facesContext, handler, searchExpressionHandler, new Class<?>[] { SearchExpressionHandler.class });
                 boolean[] didPerformInjection = { false };
 
                 SearchExpressionHandler instance = (SearchExpressionHandler) createInstance(sc, facesContext, handler,

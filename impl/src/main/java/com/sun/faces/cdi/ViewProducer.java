@@ -36,7 +36,7 @@ public class ViewProducer extends CdiProducer<UIViewRoot> {
     private static final long serialVersionUID = 1L;
 
     public ViewProducer() {
-        super.name("view").scope(RequestScoped.class).types(UIViewRoot.class).beanClass(UIViewRoot.class)
+        super.name("view").scope(RequestScoped.class).types(UIViewRoot.class)
                 .create(e -> FacesContext.getCurrentInstance().getViewRoot());
     }
 

@@ -51,6 +51,9 @@ public @interface RequestParameterMap {
     public static final class Literal extends AnnotationLiteral<RequestParameterMap> implements RequestParameterMap {
         private static final long serialVersionUID = 1L;
 
+        /**
+         * Instance of the {@link RequestParameterMap} qualifier.
+         */
         public static final Literal INSTANCE = new Literal();
     }
 }

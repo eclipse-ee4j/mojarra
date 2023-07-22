@@ -38,9 +38,10 @@ import static jakarta.faces.FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY;
 import static jakarta.faces.FactoryFinder.VISIT_CONTEXT_FACTORY;
 import static jakarta.faces.ServletContextFacesContextFactory.SERVLET_CONTEXT_FINDER_NAME;
 import static jakarta.faces.ServletContextFacesContextFactory.SERVLET_CONTEXT_FINDER_REMOVAL_NAME;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.text.MessageFormat.format;
 import static java.util.Collections.binarySearch;
-import static java.util.Collections.unmodifiableMap;
+import static java.util.Map.entry;
 import static java.util.logging.Level.SEVERE;
 
 import java.io.BufferedReader;
@@ -54,15 +55,14 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import com.sun.faces.config.ConfigManager;
 import com.sun.faces.spi.InjectionProvider;
@@ -84,12 +84,12 @@ final class FactoryFinderInstance {
 
     /**
      * <p>
-     * The set of Jakarta Server Faces factory classes for which the factory discovery mechanism is supported. The entries
+     * The set of Jakarta Faces factory classes for which the factory discovery mechanism is supported. The entries
      * in this list must be alphabetically ordered according to the entire string of the *value* of each of the literals,
      * not just the last part of the literal!
      * </p>
      */
-    private final List<String> factoryNames = asSortedList(APPLICATION_FACTORY, VISIT_CONTEXT_FACTORY, EXCEPTION_HANDLER_FACTORY, EXTERNAL_CONTEXT_FACTORY,
+    private static final List<String> factoryNames = asSortedList(APPLICATION_FACTORY, VISIT_CONTEXT_FACTORY, EXCEPTION_HANDLER_FACTORY, EXTERNAL_CONTEXT_FACTORY,
             FACES_CONTEXT_FACTORY, FLASH_FACTORY, FLOW_HANDLER_FACTORY, PARTIAL_VIEW_CONTEXT_FACTORY, CLIENT_WINDOW_FACTORY, LIFECYCLE_FACTORY,
             RENDER_KIT_FACTORY, VIEW_DECLARATION_LANGUAGE_FACTORY, FACELET_CACHE_FACTORY, TAG_HANDLER_DELEGATE_FACTORY, SEARCH_EXPRESSION_CONTEXT_FACTORY);
 
@@ -98,7 +98,7 @@ final class FactoryFinderInstance {
      * Map of Class instances for our factory names.
      * </p>
      */
-    private final Map<String, Class<?>> factoryClasses = buildFactoryClassesMap();
+    private static final Map<String, Class<?>> factoryClasses = buildFactoryClassesMap();
 
     // -------------------------------------------------------- Constructors
 
@@ -261,9 +261,9 @@ final class FactoryFinderInstance {
      * <p>
      * Load and return an instance of the specified implementation class using the following algorithm.
      * </p>
-     * <p/>
+     * 
      * <ol>
-     * <p/>
+     * 
      * <li>
      * <p>
      * If the argument <code>implementations</code> list has more than one element, or exactly one element, interpret the
@@ -272,7 +272,7 @@ final class FactoryFinderInstance {
      * this step.
      * </p>
      * </li>
-     * <p/>
+     * 
      * <li>
      * <p>
      * Look for a resource called <code>/META-INF/services/&lt;factoryName&gt;</code>. If found, interpret it as a
@@ -284,7 +284,7 @@ final class FactoryFinderInstance {
      * step.
      * </p>
      * </li>
-     * <p/>
+     * 
      * <li>
      * <p>
      * Treat each remaining element in the <code>implementations</code> list as a fully qualified class name of a class
@@ -294,13 +294,13 @@ final class FactoryFinderInstance {
      * the previous step or iteration.
      * </p>
      * </li>
-     * <p/>
+     * 
      * <li>
      * <p>
      * Return the saved factory
      * </p>
      * </li>
-     * <p/>
+     * 
      * </ol>
      *
      * @param classLoader Class loader for the web application that will be loading the implementation class
@@ -380,12 +380,12 @@ final class FactoryFinderInstance {
      * <p>
      * Implement the decorator pattern for the factory implementation.
      * </p>
-     * <p/>
+     * 
      * <p>
      * If <code>previousImpl</code> is non-<code>null</code> and the class named by the argument <code>implName</code> has a
      * one arg contstructor of type <code>factoryName</code>, instantiate it, passing previousImpl to the constructor.
      * </p>
-     * <p/>
+     * 
      * <p>
      * Otherwise, we just instantiate and return <code>implName</code>.
      * </p>
@@ -428,9 +428,10 @@ final class FactoryFinderInstance {
                 // Since this is the hard coded implementation default, there is no preceding implementation,
                 // so don't bother with a non-zero-argument ctor.
 
-                factoryImplementation = Class.forName(factoryImplClassName, false, classLoader).newInstance();
+                factoryImplementation = Class.forName(factoryImplClassName, false, classLoader).getDeclaredConstructor()
+                        .newInstance();
 
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
                 throw new FacesException(factoryImplClassName, e);
             }
         }
@@ -450,7 +451,7 @@ final class FactoryFinderInstance {
     private String readLineFromStream(InputStream stream) throws IOException {
         // Deal with systems whose native encoding is possibly
         // different from the way that the services entry was created
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream, UTF_8))) {
             return reader.readLine();
         } catch (UnsupportedEncodingException uee) {
             // The DM_DEFAULT_ENCODING warning is acceptable here
@@ -512,34 +513,29 @@ final class FactoryFinderInstance {
         }
     }
 
-    private Map<String, Class<?>> buildFactoryClassesMap() {
-        Map<String, Class<?>> buildUpFactoryClasses;
-
-        buildUpFactoryClasses = new HashMap<>();
-        buildUpFactoryClasses.put(APPLICATION_FACTORY, jakarta.faces.application.ApplicationFactory.class);
-        buildUpFactoryClasses.put(VISIT_CONTEXT_FACTORY, jakarta.faces.component.visit.VisitContextFactory.class);
-        buildUpFactoryClasses.put(EXCEPTION_HANDLER_FACTORY, jakarta.faces.context.ExceptionHandlerFactory.class);
-        buildUpFactoryClasses.put(EXTERNAL_CONTEXT_FACTORY, jakarta.faces.context.ExternalContextFactory.class);
-        buildUpFactoryClasses.put(FACES_CONTEXT_FACTORY, jakarta.faces.context.FacesContextFactory.class);
-        buildUpFactoryClasses.put(FLASH_FACTORY, jakarta.faces.context.FlashFactory.class);
-        buildUpFactoryClasses.put(PARTIAL_VIEW_CONTEXT_FACTORY, jakarta.faces.context.PartialViewContextFactory.class);
-        buildUpFactoryClasses.put(LIFECYCLE_FACTORY, jakarta.faces.lifecycle.LifecycleFactory.class);
-        buildUpFactoryClasses.put(CLIENT_WINDOW_FACTORY, jakarta.faces.lifecycle.ClientWindowFactory.class);
-        buildUpFactoryClasses.put(RENDER_KIT_FACTORY, jakarta.faces.render.RenderKitFactory.class);
-        buildUpFactoryClasses.put(VIEW_DECLARATION_LANGUAGE_FACTORY, jakarta.faces.view.ViewDeclarationLanguageFactory.class);
-        buildUpFactoryClasses.put(FACELET_CACHE_FACTORY, jakarta.faces.view.facelets.FaceletCacheFactory.class);
-        buildUpFactoryClasses.put(TAG_HANDLER_DELEGATE_FACTORY, jakarta.faces.view.facelets.TagHandlerDelegateFactory.class);
-        buildUpFactoryClasses.put(FLOW_HANDLER_FACTORY, jakarta.faces.flow.FlowHandlerFactory.class);
-        buildUpFactoryClasses.put(SEARCH_EXPRESSION_CONTEXT_FACTORY, jakarta.faces.component.search.SearchExpressionContextFactory.class);
-
-        return unmodifiableMap(buildUpFactoryClasses);
+    private static Map<String, Class<?>> buildFactoryClassesMap() {
+        return Map.ofEntries(
+            entry(APPLICATION_FACTORY, jakarta.faces.application.ApplicationFactory.class),
+            entry(VISIT_CONTEXT_FACTORY, jakarta.faces.component.visit.VisitContextFactory.class),
+            entry(EXCEPTION_HANDLER_FACTORY, jakarta.faces.context.ExceptionHandlerFactory.class),
+            entry(EXTERNAL_CONTEXT_FACTORY, jakarta.faces.context.ExternalContextFactory.class),
+            entry(FACES_CONTEXT_FACTORY, jakarta.faces.context.FacesContextFactory.class),
+            entry(FLASH_FACTORY, jakarta.faces.context.FlashFactory.class),
+            entry(PARTIAL_VIEW_CONTEXT_FACTORY, jakarta.faces.context.PartialViewContextFactory.class),
+            entry(LIFECYCLE_FACTORY, jakarta.faces.lifecycle.LifecycleFactory.class),
+            entry(CLIENT_WINDOW_FACTORY, jakarta.faces.lifecycle.ClientWindowFactory.class),
+            entry(RENDER_KIT_FACTORY, jakarta.faces.render.RenderKitFactory.class),
+            entry(VIEW_DECLARATION_LANGUAGE_FACTORY, jakarta.faces.view.ViewDeclarationLanguageFactory.class),
+            entry(FACELET_CACHE_FACTORY, jakarta.faces.view.facelets.FaceletCacheFactory.class),
+            entry(TAG_HANDLER_DELEGATE_FACTORY, jakarta.faces.view.facelets.TagHandlerDelegateFactory.class),
+            entry(FLOW_HANDLER_FACTORY, jakarta.faces.flow.FlowHandlerFactory.class),
+            entry(SEARCH_EXPRESSION_CONTEXT_FACTORY, jakarta.faces.component.search.SearchExpressionContextFactory.class)
+        );
     }
 
-    private List<String> asSortedList(String... names) {
-        List<String> list = Arrays.asList(names);
-        Collections.sort(list);
-
-        return list;
+    @SafeVarargs // todo: move to CollectionUtil
+    private static <T extends Comparable<T>> List<T> asSortedList(T... elements) {
+        return Arrays.stream(elements).sorted().collect(Collectors.toList());
     }
 
 }

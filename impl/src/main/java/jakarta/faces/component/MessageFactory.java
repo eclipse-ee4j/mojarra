@@ -116,7 +116,7 @@ class MessageFactory {
 
         // see if we have a user-provided bundle
         Application app = getApplication();
-        Class appClass = app.getClass();
+        Class<?> appClass = app.getClass();
         if (null != (bundleName = app.getMessageBundle())) {
             if (null != (bundle = ResourceBundle.getBundle(bundleName, locale, getCurrentLoader(appClass)))) {
                 // see if we have a hit
@@ -307,7 +307,7 @@ class MessageFactory {
             if (params == null || msgtext == null) {
                 return msgtext;
             }
-            StringBuffer b = new StringBuffer(100);
+            StringBuilder b = new StringBuilder(100);
             MessageFormat mf = new MessageFormat(msgtext);
             if (locale != null) {
                 mf.setLocale(locale);
@@ -317,8 +317,8 @@ class MessageFactory {
             return localizedStr;
         }
 
-        private Locale locale;
-        private Object[] parameters;
+        private final Locale locale;
+        private final Object[] parameters;
         private Object[] resolvedParameters;
     }
 

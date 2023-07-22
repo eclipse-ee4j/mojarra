@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021 Contributors to Eclipse Foundation.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -58,7 +59,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * <p>
  * <strong class="changed_modified_2_0 changed_modified_2_0_rev_a changed_modified_2_1 changed_modified_2_2
  * changed_modified_2_3">FacesServlet</strong> is a Jakarta Servlet servlet that manages the request processing
- * lifecycle for web applications that are utilizing Jakarta Server Faces to construct the user interface.
+ * lifecycle for web applications that are utilizing Jakarta Faces to construct the user interface.
  * </p>
  *
  * <div class="changed_added_2_1">
@@ -167,7 +168,7 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * <p>
  * This class must be annotated with {@code jakarta.servlet.annotation.MultipartConfig}. This causes the Jakarta Servlet
- * container in which the Jakarta Server Faces implementation is running to correctly handle multipart form data.
+ * container in which the Jakarta Faces implementation is running to correctly handle multipart form data.
  * </p>
  *
  * <p>
@@ -201,7 +202,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * </p>
  *
  * <p>
- * The Jakarta Server Faces specification only requires the use of the GET and POST http methods. If your web
+ * The Jakarta Faces Specification only requires the use of the GET and POST http methods. If your web
  * application does not require any other http methods, such as PUT and DELETE, please consider restricting the
  * allowable http methods using the &lt;http-method&gt; and &lt;http-method-omission&gt; elements. Please see the
  * <strong>Security</strong> sections of the Jakarta Servlet Specification for more information about the use of these
@@ -219,7 +220,7 @@ public final class FacesServlet implements Servlet {
     /**
      * <p>
      * Context initialization parameter name for a comma delimited list of context-relative resource paths (in addition to
-     * <code>/WEB-INF/faces-config.xml</code> which is loaded automatically if it exists) containing Jakarta Server Faces
+     * <code>/WEB-INF/faces-config.xml</code> which is loaded automatically if it exists) containing Jakarta Faces
      * configuration information.
      * </p>
      */
@@ -246,6 +247,19 @@ public final class FacesServlet implements Servlet {
     public static final String DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME = "jakarta.faces.DISABLE_FACESSERVLET_TO_XHTML";
 
     /**
+     * <p class="changed_added_4_0">
+     * The <code>ServletContext</code> init parameter consulted by the runtime to tell if the automatic mapping of the
+     * {@code FacesServlet} to the extensionless variant (without {@code *.xhtml}) should be enabled. The implementation
+     * must enable this automatic mapping if and only if the value of this parameter is equal, ignoring case, to {@code true}.
+     * </p>
+     *
+     * <p>
+     * If this parameter is not specified, this automatic mapping is not enabled.
+     * </p>
+     */
+    public static final String AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME = "jakarta.faces.AUTOMATIC_EXTENSIONLESS_MAPPING";
+
+    /**
      * The <code>Logger</code> for this class.
      */
     private static final Logger LOGGER = Logger.getLogger("jakarta.faces.webapp", "jakarta.faces.LogStrings");
@@ -263,7 +277,7 @@ public final class FacesServlet implements Servlet {
 
         OPTIONS("OPTIONS"), GET("GET"), HEAD("HEAD"), POST("POST"), PUT("PUT"), DELETE("DELETE"), TRACE("TRACE"), CONNECT("CONNECT");
 
-        private String name;
+        private final String name;
 
         HttpMethod(String name) {
             this.name = name;
@@ -396,7 +410,7 @@ public final class FacesServlet implements Servlet {
      *
      * <p class="changed_modified_2_0_rev_a">
      * The implementation must make it so {@link jakarta.faces.context.FacesContext#release} is called within a finally
-     * block as late as possible in the processing for the Jakarta Server Faces related portion of this request.
+     * block as late as possible in the processing for the Jakarta Faces related portion of this request.
      * </p>
      *
      * </div>
@@ -418,7 +432,7 @@ public final class FacesServlet implements Servlet {
             return;
         }
 
-        logIfThreadInterruped();
+        logIfThreadInterrupted();
 
         // If prefix mapped, then ensure requests for /WEB-INF are not processed.
         if (notProcessWebInfIfPrefixMapped(request, response)) {
@@ -559,10 +573,8 @@ public final class FacesServlet implements Servlet {
 
                     logUnknownHttpMethod(httpMethod);
 
-                    // prevent duplicates
-                    if (!allowedUnknownHttpMethods.contains(httpMethod)) {
-                        allowedUnknownHttpMethods.add(httpMethod);
-                    }
+                    // we use a Set to prevent duplicates
+                    allowedUnknownHttpMethods.add(httpMethod);
                 } else {
                     // prevent duplicates
                     if (!allowedKnownHttpMethodsStringList.contains(httpMethod)) {
@@ -612,7 +624,7 @@ public final class FacesServlet implements Servlet {
         }
     }
 
-    private void logIfThreadInterruped() {
+    private void logIfThreadInterrupted() {
         if (Thread.currentThread().isInterrupted()) {
             if (LOGGER.isLoggable(FINER)) {
                 LOGGER.log(FINE, "Thread {0} given to FacesServlet.service() in interrupted state", Thread.currentThread().getName());

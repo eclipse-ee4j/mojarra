@@ -111,6 +111,10 @@ public class ResourceImpl extends Resource implements Externalizable {
 
     /**
      * Creates a new instance of ResourceBase
+     * @param resourceInfo the resource info
+     * @param contentType the resource content type
+     * @param initialTime the resource initial time
+     * @param maxAge the resource max age
      */
     public ResourceImpl(ResourceInfo resourceInfo, String contentType, long initialTime, long maxAge) {
 
@@ -397,9 +401,7 @@ public class ResourceImpl extends Resource implements Externalizable {
                 if (LOGGER.isLoggable(Level.WARNING)) {
                     LOGGER.log(Level.WARNING, "faces.application.resource.invalid_if_modified_since_header",
                             new Object[] { extcontext.getRequestHeaderMap().get(IF_MODIFIED_SINCE) });
-                    if (ex != null) {
-                        LOGGER.log(Level.WARNING, "", ex);
-                    }
+                    LOGGER.log(Level.WARNING, "", ex);
                 }
                 return -1;
             }

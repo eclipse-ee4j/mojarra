@@ -52,6 +52,9 @@ public @interface ApplicationMap {
     public static final class Literal extends AnnotationLiteral<ApplicationMap> implements ApplicationMap {
         private static final long serialVersionUID = 1L;
 
+        /**
+         * Instance of the {@link ApplicationMap} qualifier.
+         */
         public static final Literal INSTANCE = new Literal();
     }
 }

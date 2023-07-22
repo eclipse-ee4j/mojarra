@@ -102,7 +102,7 @@ public class AnnotationManager {
         Renderer(RENDERER_SCANNERS),
         SystemEvent(EVENTS_SCANNERS);
 
-        private Scanner[] scanners;
+        private final Scanner[] scanners;
 
         ProcessingTarget(Scanner[] scanners) {
             this.scanners = scanners;
@@ -113,7 +113,7 @@ public class AnnotationManager {
     /**
      * The backing cache for all annotation metadata.
      */
-    private ConcurrentMap<Class<?>, Future<Map<Class<? extends Annotation>, RuntimeAnnotationHandler>>> cache;
+    private final ConcurrentMap<Class<?>, Future<Map<Class<? extends Annotation>, RuntimeAnnotationHandler>>> cache;
 
     // ------------------------------------------------------------ Constructors
 
@@ -132,6 +132,7 @@ public class AnnotationManager {
      * </p>
      *
      * @param ctx FacesContext available during application initialization
+     * @param annotationType the involved annotation type
      * @param annotatedClasses <code>Collection</code> of class names known to contain one or more Faces configuration
      * annotations
      */
@@ -316,8 +317,8 @@ public class AnnotationManager {
 
         @SuppressWarnings({ "unchecked" })
         private static final Map<Class<? extends Annotation>, RuntimeAnnotationHandler> EMPTY = Collections.EMPTY_MAP;
-        private Class<?> clazz;
-        private Scanner[] scanners;
+        private final Class<?> clazz;
+        private final Scanner[] scanners;
 
         // -------------------------------------------------------- Constructors
 

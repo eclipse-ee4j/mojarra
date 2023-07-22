@@ -65,7 +65,6 @@ import jakarta.faces.render.Renderer;
 /**
  * <B>HtmlBasicRenderer</B> is a base class for implementing renderers for HtmlBasicRenderKit.
  */
-
 public abstract class HtmlBasicRenderer extends Renderer {
 
     // Log instance for this class
@@ -76,23 +75,18 @@ public abstract class HtmlBasicRenderer extends Renderer {
     // ------------------------------------------------------------ Constructors
 
     public HtmlBasicRenderer() {
-
         super();
-
     }
 
     // ---------------------------------------------------------- Public Methods
 
     @Override
     public String convertClientId(FacesContext context, String clientId) {
-
         return clientId;
-
     }
 
     @Override
     public void decode(FacesContext context, UIComponent component) {
-
         rendererParamsNotNull(context, component);
 
         if (!shouldDecode(component)) {
@@ -129,7 +123,6 @@ public abstract class HtmlBasicRenderer extends Renderer {
 
     @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-
         rendererParamsNotNull(context, component);
 
         if (!shouldEncode(component)) {
@@ -149,9 +142,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
 
     @Override
     public boolean getRendersChildren() {
-
         return true;
-
     }
 
     // ------------------------------------------------------- Protected Methods
@@ -217,12 +208,11 @@ public abstract class HtmlBasicRenderer extends Renderer {
      * </p>
      *
      * @param forValue - the basic id-reference value.
-     * @param fromComponent - the component that holds the code>forValue</code>.
+     * @param fromComponent - the component that holds the <code>forValue</code>.
      *
-     * @return the (possibly augmented) <code>forValue<code>.
+     * @return the (possibly augmented) <code>forValue</code>.
      */
     protected String augmentIdReference(String forValue, UIComponent fromComponent) {
-
         int forSuffix = forValue.lastIndexOf(UIViewRoot.UNIQUE_ID_PREFIX);
         if (forSuffix <= 0) {
             // if the for-value doesn't already have a suffix present
@@ -238,8 +228,8 @@ public abstract class HtmlBasicRenderer extends Renderer {
                 }
             }
         }
+        
         return forValue;
-
     }
 
     /**
@@ -311,9 +301,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
 
         String currentValue = null;
         Object currentObj = getValue(component);
-        if (currentObj != null) {
-            currentValue = getFormattedValue(context, component, currentObj);
-        }
+        currentValue = getFormattedValue(context, component, currentObj);
         return currentValue;
 
     }
@@ -360,12 +348,11 @@ public abstract class HtmlBasicRenderer extends Renderer {
      * @param forComponent - the component to search for
      * @param component - the starting point in which to begin the search
      *
-     * @return the component with the the <code>id</code that matches
-     *         <code>forComponent</code> otheriwse null if no match is found.
+     * @return the component with the the <code>id</code> that matches
+     * <code>forComponent</code> otherwise null if no match is found.
      */
     protected UIComponent getForComponent(FacesContext context, String forComponent, UIComponent component) {
-
-        if (null == forComponent || forComponent.length() == 0) {
+        if (forComponent == null || forComponent.length() == 0) {
             return null;
         }
 
@@ -449,7 +436,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
             // if converter attribute set, try to acquire a converter
             // using its class type.
 
-            Class converterType = currentValue.getClass();
+            Class<?> converterType = currentValue.getClass();
             converter = Util.getConverterForClass(converterType, context);
 
             // if there is no default converter available for this identifier,

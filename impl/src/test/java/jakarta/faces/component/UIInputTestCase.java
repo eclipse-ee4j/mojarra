@@ -166,7 +166,6 @@ public class UIInputTestCase extends UIOutputTestCase {
     // Test listener registration and deregistration
     public void testListeners() {
         InputTestImpl input = new InputTestImpl();
-        ValueChangeListenerTestImpl listener = null;
 
         input.addValueChangeListener(new ValueChangeListenerTestImpl("ARV0"));
         input.addValueChangeListener(new ValueChangeListenerTestImpl("ARV1"));
@@ -184,7 +183,6 @@ public class UIInputTestCase extends UIOutputTestCase {
     // Test empty listener list
     public void testEmptyListeners() {
         InputTestImpl input = new InputTestImpl();
-        ValueChangeListenerTestImpl listener = null;
 
         // No listeners added, should be empty
         ValueChangeListener listeners[] = input.getValueChangeListeners();
@@ -231,9 +229,9 @@ public class UIInputTestCase extends UIOutputTestCase {
         checkMessages(1);
         assertTrue(!input.isValid());
 
-        Iterator messages = facesContext.getMessages();
+        Iterator<FacesMessage> messages = facesContext.getMessages();
         while (messages.hasNext()) {
-            FacesMessage message = (FacesMessage) messages.next();
+            FacesMessage message = messages.next();
             assertTrue(message.getSummary().indexOf("mylabel") >= 0);
         }
 
@@ -259,6 +257,7 @@ public class UIInputTestCase extends UIOutputTestCase {
         ValueChangeListener[] listeners = command.getValueChangeListeners();
         assertEquals(2, listeners.length);
         ValueChangeListenerTestImpl[] taListeners = (ValueChangeListenerTestImpl[]) command.getFacesListeners(ValueChangeListenerTestImpl.class);
+        assertTrue(taListeners != null);
     }
 
     // --------------------------------------------------------- Support Methods
@@ -267,9 +266,9 @@ public class UIInputTestCase extends UIOutputTestCase {
     protected void checkMessages(int expected) {
         facesContext.getExceptionHandler().handle();
         int n = 0;
-        Iterator messages = facesContext.getMessages();
+        Iterator<FacesMessage> messages = facesContext.getMessages();
         while (messages.hasNext()) {
-            FacesMessage message = (FacesMessage) messages.next();
+            FacesMessage message = messages.next();
             assertEquals("Severity == ERROR", FacesMessage.SEVERITY_ERROR, message.getSeverity());
             n++;
             // System.err.println(message.getSummary());

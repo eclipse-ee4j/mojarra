@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021 Contributors to Eclipse Foundation.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,7 +17,6 @@
 
 package com.sun.faces.config;
 
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.DefaultSuffix;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsSuffix;
 import static com.sun.faces.util.Util.split;
 import static java.util.Arrays.asList;
@@ -95,25 +95,27 @@ public class WebConfiguration {
     // Logging level. Defaults to FINE
     private Level loggingLevel = Level.FINE;
 
-    private Map<BooleanWebContextInitParameter, Boolean> booleanContextParameters = new EnumMap<>(BooleanWebContextInitParameter.class);
+    private final Map<BooleanWebContextInitParameter, Boolean> booleanContextParameters = new EnumMap<>(BooleanWebContextInitParameter.class);
 
-    private Map<WebContextInitParameter, String> contextParameters = new EnumMap<>(WebContextInitParameter.class);
+    private final Map<WebContextInitParameter, String> contextParameters = new EnumMap<>(WebContextInitParameter.class);
 
-    private Map<WebContextInitParameter, Map<String, String>> facesConfigParameters = new EnumMap<>(WebContextInitParameter.class);
+    private final Map<WebContextInitParameter, Map<String, String>> facesConfigParameters = new EnumMap<>(WebContextInitParameter.class);
 
-    private Map<WebEnvironmentEntry, String> envEntries = new EnumMap<>(WebEnvironmentEntry.class);
+    private final Map<WebEnvironmentEntry, String> envEntries = new EnumMap<>(WebEnvironmentEntry.class);
 
-    private Map<WebContextInitParameter, String[]> cachedListParams;
+    private final Map<WebContextInitParameter, String[]> cachedListParams;
 
-    private Set<String> setParams = new HashSet<>();
+    private final Set<String> setParams = new HashSet<>();
 
-    private ServletContext servletContext;
+    private final ServletContext servletContext;
 
     private ArrayList<DeferredLoggingAction> deferredLoggingActions;
 
     private FaceletsConfiguration faceletsConfig;
 
     private boolean hasFlows;
+    
+    private String specificationVersion;
 
     // ------------------------------------------------------------ Constructors
 
@@ -132,9 +134,10 @@ public class WebConfiguration {
         // build the cache of list type params
         cachedListParams = new HashMap<>(3);
         getOptionValue(WebContextInitParameter.ResourceExcludes, " ");
-        getOptionValue(WebContextInitParameter.DefaultSuffix, " ");
         getOptionValue(WebContextInitParameter.FaceletsViewMappings, ";");
         getOptionValue(WebContextInitParameter.FaceletsSuffix, " ");
+        
+        specificationVersion = getClass().getPackage().getSpecificationVersion();
     }
 
     // ---------------------------------------------------------- Public Methods
@@ -199,6 +202,10 @@ public class WebConfiguration {
 
     public void setHasFlows(boolean hasFlows) {
         this.hasFlows = hasFlows;
+    }
+
+    public String getSpecificationVersion() {
+        return specificationVersion;
     }
 
     /**
@@ -316,7 +323,7 @@ public class WebConfiguration {
             return;
         }
 
-        boolean oldVal = booleanContextParameters.put(param, value);
+        boolean oldVal = Boolean.TRUE.equals(booleanContextParameters.put(param, value));
         if (LOGGER.isLoggable(FINE) && oldVal != value) {
             LOGGER.log(FINE, "Overriding init parameter {0}.  Changing from {1} to {2}.", new Object[] { param.getQualifiedName(), oldVal, value });
         }
@@ -324,18 +331,14 @@ public class WebConfiguration {
     }
 
     /**
-     * To include the facelets suffix into the supported suffixes.
-     *
-     * @return merged suffixes including both default suffixes and the facelet suffixes.
+     * @return the facelet suffixes.
      */
     public List<String> getConfiguredExtensions() {
-        String[] defaultSuffix = getOptionValue(DefaultSuffix, " ");
         String[] faceletsSuffix = getOptionValue(FaceletsSuffix, " ");
 
-        Set<String> mergedSet = new LinkedHashSet<>(asList(defaultSuffix));
-        mergedSet.addAll(asList(faceletsSuffix));
+        Set<String> deduplicatedFaceletsSuffixes = new LinkedHashSet<>(asList(faceletsSuffix));
 
-        return new ArrayList<>(mergedSet);
+        return new ArrayList<>(deduplicatedFaceletsSuffixes);
     }
 
     public void overrideContextInitParameter(WebContextInitParameter param, String value) {
@@ -467,8 +470,7 @@ public class WebConfiguration {
                 }
             }
         } else {
-            contractsToExpose = new ArrayList<>();
-            contractsToExpose.addAll(foundContracts);
+            contractsToExpose = new ArrayList<>(foundContracts);
             contractMappings.put("*", contractsToExpose);
         }
         extContex.getApplicationMap().put(FaceletViewHandlingStrategy.RESOURCE_LIBRARY_CONTRACT_DATA_STRUCTURE_KEY, contractMappings);
@@ -518,7 +520,7 @@ public class WebConfiguration {
      */
     private void processBooleanParameters(ServletContext servletContext, String contextName) {
 
-        // process boolean contxt parameters
+        // process boolean context parameters
         for (BooleanWebContextInitParameter param : BooleanWebContextInitParameter.values()) {
             String strValue = servletContext.getInitParameter(param.getQualifiedName());
             boolean value;
@@ -539,7 +541,7 @@ public class WebConfiguration {
 
                 if (alternate != null) {
                     if (isValueValid(param, strValue)) {
-                        value = Boolean.valueOf(strValue);
+                        value = Boolean.parseBoolean(strValue);
                     } else {
                         value = param.getDefaultValue();
                     }
@@ -560,7 +562,7 @@ public class WebConfiguration {
                     value = param.getDefaultValue();
                 } else {
                     if (isValueValid(param, strValue)) {
-                        value = Boolean.valueOf(strValue);
+                        value = Boolean.parseBoolean(strValue);
                     } else {
                         value = param.getDefaultValue();
                     }
@@ -591,8 +593,8 @@ public class WebConfiguration {
      * @param servletContext the ServletContext of interest
      */
     private void initSetList(ServletContext servletContext) {
-        for (Enumeration e = servletContext.getInitParameterNames(); e.hasMoreElements();) {
-            String name = e.nextElement().toString();
+        for (Enumeration<String> e = servletContext.getInitParameterNames(); e.hasMoreElements();) {
+            String name = e.nextElement();
             if (name.startsWith("com.sun.faces") || name.startsWith("jakarta.faces")) {
                 setParams.add(name);
             }
@@ -682,9 +684,9 @@ public class WebConfiguration {
             initialContext = new InitialContext();
         } catch (NoClassDefFoundError nde) {
             // On google app engine InitialContext is forbidden to use and GAE throws NoClassDefFoundError
-            LOGGER.log(FINE, nde, () -> nde.toString());
+            LOGGER.log(FINE, nde, nde::toString);
         } catch (NamingException ne) {
-            LOGGER.log(Level.WARNING, ne, () -> ne.toString());
+            LOGGER.log(Level.WARNING, ne, ne::toString);
         }
 
         if (initialContext != null) {
@@ -696,7 +698,7 @@ public class WebConfiguration {
                 try {
                     value = (String) initialContext.lookup(entryName);
                 } catch (NamingException root) {
-                    LOGGER.log(Level.FINE, () -> root.toString());
+                    LOGGER.log(Level.FINE, root::toString);
                 }
 
                 if (value != null) {
@@ -749,18 +751,17 @@ public class WebConfiguration {
         ManagedBeanFactoryDecorator("com.sun.faces.managedBeanFactoryDecoratorClass", ""),
         StateSavingMethod(StateManager.STATE_SAVING_METHOD_PARAM_NAME, "server"),
         FaceletsSuffix(ViewHandler.FACELETS_SUFFIX_PARAM_NAME, ViewHandler.DEFAULT_FACELETS_SUFFIX),
-        DefaultSuffix(ViewHandler.DEFAULT_SUFFIX_PARAM_NAME, ViewHandler.DEFAULT_SUFFIX),
         JakartaFacesConfigFiles(FacesServlet.CONFIG_FILES_ATTR, ""),
         JakartaFacesProjectStage(ProjectStage.PROJECT_STAGE_PARAM_NAME, "Production"),
         AlternateLifecycleId(FacesServlet.LIFECYCLE_ID_ATTR, ""),
         ResourceExcludes(ResourceHandler.RESOURCE_EXCLUDES_PARAM_NAME, ResourceHandler.RESOURCE_EXCLUDES_DEFAULT_VALUE),
         NumberOfViews("com.sun.faces.numberOfViewsInSession", "15"),
         NumberOfLogicalViews("com.sun.faces.numberOfLogicalViews", "15"),
+        NumberOfActiveViewMaps("com.sun.faces.numberOfActiveViewMaps", "25"),
         NumberOfConcurrentFlashUsers("com.sun.faces.numberOfConcerrentFlashUsers", "5000"),
         NumberOfFlashesBetweenFlashReapings("com.sun.faces.numberOfFlashesBetweenFlashReapings", "5000"),
         InjectionProviderClass("com.sun.faces.injectionProvider", ""),
         SerializationProviderClass("com.sun.faces.serializationProvider", ""),
-        ResponseBufferSize("com.sun.faces.responseBufferSize", "1024"),
         FaceletsBufferSize(ViewHandler.FACELETS_BUFFER_SIZE_PARAM_NAME, "1024"),
         ClientStateWriteBufferSize("com.sun.faces.clientStateWriteBufferSize", "8192"),
         ResourceBufferSize("com.sun.faces.resourceBufferSize", "2048"),
@@ -784,11 +785,11 @@ public class WebConfiguration {
         WebAppContractsDirectory(ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME, "/contracts"),
         ;
 
-        private String defaultValue;
-        private String qualifiedName;
-        private WebContextInitParameter alternate;
-        private boolean deprecated;
-        private DeprecationLoggingStrategy loggingStrategy;
+        private final String defaultValue;
+        private final String qualifiedName;
+        private final WebContextInitParameter alternate;
+        private final boolean deprecated;
+        private final DeprecationLoggingStrategy loggingStrategy;
 
         // ---------------------------------------------------------- Public Methods
 
@@ -854,6 +855,7 @@ public class WebConfiguration {
         ForceLoadFacesConfigFiles("com.sun.faces.forceLoadConfiguration", false),
         DisableClientStateEncryption("com.sun.faces.disableClientStateEncryption", false),
         DisableFacesServletAutomaticMapping(FacesServlet.DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME, false),
+        AutomaticExtensionlessMapping(FacesServlet.AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME, false),
         EnableClientStateDebugging("com.sun.faces.enableClientStateDebugging", false),
         EnableHtmlTagLibraryValidator("com.sun.faces.enableHtmlTagLibValidator", false),
         EnableCoreTagLibraryValidator("com.sun.faces.enableCoreTagLibValidator", false),
@@ -893,12 +895,12 @@ public class WebConfiguration {
         UseFaceletsID("com.sun.faces.useFaceletsID",false),
         ;
 
-        private BooleanWebContextInitParameter alternate;
+        private final BooleanWebContextInitParameter alternate;
 
-        private String qualifiedName;
-        private boolean defaultValue;
-        private boolean deprecated;
-        private DeprecationLoggingStrategy loggingStrategy;
+        private final String qualifiedName;
+        private final boolean defaultValue;
+        private final boolean deprecated;
+        private final DeprecationLoggingStrategy loggingStrategy;
 
         // ---------------------------------------------------------- Public Methods
 
@@ -957,7 +959,7 @@ public class WebConfiguration {
         ProjectStage(jakarta.faces.application.ProjectStage.PROJECT_STAGE_JNDI_NAME);
 
         private static final String JNDI_PREFIX = "java:comp/env/";
-        private String qualifiedName;
+        private final String qualifiedName;
 
         // ---------------------------------------------------------- Public Methods
 
@@ -1022,10 +1024,10 @@ public class WebConfiguration {
 
     private class DeferredParameterLoggingAction implements DeferredLoggingAction {
 
-        private WebContextInitParameter parameter;
-        private Level loggingLevel;
-        private String logKey;
-        private Object[] params;
+        private final WebContextInitParameter parameter;
+        private final Level loggingLevel;
+        private final String logKey;
+        private final Object[] params;
 
         DeferredParameterLoggingAction(WebContextInitParameter parameter, Level loggingLevel, String logKey, Object[] params) {
 
@@ -1052,10 +1054,10 @@ public class WebConfiguration {
 
     private class DeferredBooleanParameterLoggingAction implements DeferredLoggingAction {
 
-        private BooleanWebContextInitParameter parameter;
-        private Level loggingLevel;
-        private String logKey;
-        private Object[] params;
+        private final BooleanWebContextInitParameter parameter;
+        private final Level loggingLevel;
+        private final String logKey;
+        private final Object[] params;
 
         DeferredBooleanParameterLoggingAction(BooleanWebContextInitParameter parameter, Level loggingLevel, String logKey, Object[] params) {
             this.parameter = parameter;

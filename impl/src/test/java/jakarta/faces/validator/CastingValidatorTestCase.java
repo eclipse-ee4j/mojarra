@@ -16,7 +16,6 @@
 
 package jakarta.faces.validator;
 
-import jakarta.faces.validator.Validator;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -44,10 +43,10 @@ public class CastingValidatorTestCase extends ValidatorTestCase {
 
     // ------------------------------------------------- Individual Test Methods
     public void testWithGenericCanCastToRaw() {
-    	
-    	Validator<?> validatorWithGeneric = (context, component, value) -> {};
-    	
-    	Validator validatorRaw = validatorWithGeneric;
+        Validator<?> validatorWithGeneric = (context, component, value) -> {
+        };
+        Validator<?> validatorRaw = validatorWithGeneric;
+        assertNotNull(validatorRaw);
     }
-    
+
 }

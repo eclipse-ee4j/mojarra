@@ -33,8 +33,8 @@ import jakarta.faces.context.FacesContext;
  * <p class="changed_added_2_0">
  * <code>ViewMetadata</code> is reponsible for extracting and providing view parameter metadata from VDL views. Because
  * {@link ViewDeclarationLanguage#getViewMetadata} is required to return <code>null</code> for Jakarta Server Pages
- * views and non-<code>null</code> for views authored in Facelets for Jakarta Server Faces 2, this specification only
- * applies to Facelets for Jakarta Server Faces 2.
+ * views and non-<code>null</code> for views authored in Facelets for Jakarta Faces 2, this specification only
+ * applies to Facelets for Jakarta Faces 2.
  * </p>
  *
  * @since 2.0
@@ -134,8 +134,11 @@ public abstract class ViewMetadata {
 
     @SuppressWarnings("unchecked")
     private static <C extends UIComponent> List<C> getMetadataChildren(UIViewRoot root, Class<C> type) {
-        return (List<C>) getMetadataFacet(root).map(m -> m.getChildren()).orElseGet(Collections::emptyList).stream().filter(c -> type.isInstance(c))
-                .collect(Collectors.toList());
+        return (List<C>) getMetadataFacet(root).map(UIComponent::getChildren)
+                                               .orElseGet(Collections::emptyList)
+                                               .stream()
+                                               .filter(type::isInstance)
+                                               .collect(Collectors.toList());
     }
 
     private static Optional<UIComponent> getMetadataFacet(UIViewRoot root) {

@@ -95,13 +95,6 @@ public class UIParameterTestCase extends UIComponentBaseTestCase {
         assertNull("no name", parameter.getName());
     }
 
-    // Test setting properties to invalid values
-    @Override
-    public void testPropertiesInvalid() throws Exception {
-        super.testPropertiesInvalid();
-        UIParameter parameter = (UIParameter) component;
-    }
-
     // Test setting properties to valid values
     @Override
     public void testPropertiesValid() throws Exception {

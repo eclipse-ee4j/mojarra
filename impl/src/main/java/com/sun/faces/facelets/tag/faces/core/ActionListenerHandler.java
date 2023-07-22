@@ -35,7 +35,7 @@ import jakarta.faces.view.facelets.TagConfig;
 
 /**
  * Register an ActionListener instance on the UIComponent associated with the closest parent UIComponent custom action.
- * <p/>
+ *
  * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/actionListener.html">tag
  * documentation</a>.
  *
@@ -69,9 +69,9 @@ public final class ActionListenerHandler extends ActionListenerHandlerBase imple
             }
             if (instance == null && type != null) {
                 try {
-                    instance = (ActionListener) ReflectionUtil.forName(type).newInstance();
+                    instance = (ActionListener) ReflectionUtil.newInstance(type);
                 } catch (Exception e) {
-                    throw new AbortProcessingException("Couldn't Lazily instantiate ValueChangeListener", e);
+                    throw new AbortProcessingException("Could not instantiate ActionListener of type " + type, e);
                 }
                 if (binding != null) {
                     binding.setValue(faces.getELContext(), instance);

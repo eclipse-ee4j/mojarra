@@ -16,27 +16,27 @@
 
 package com.sun.faces.el;
 
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.beans.BeanDescriptor;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.easymock.EasyMock;
+import org.junit.Test;
+
 import com.sun.faces.facelets.tag.composite.CompositeComponentBeanInfo;
 
+import jakarta.el.ELContext;
 import jakarta.faces.application.Resource;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIPanel;
 import jakarta.faces.context.FacesContext;
-
-import java.beans.BeanDescriptor;
-import java.beans.BeanInfo;
-import java.beans.PropertyDescriptor;
-import java.beans.SimpleBeanInfo;
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-import jakarta.el.ELContext;
-import jakarta.el.MapELResolver;
-
-import org.easymock.EasyMock;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import static org.easymock.EasyMock.*;
 
 /**
  * The JUnit tests for the CompositeComponentAttributesELResolver class.
@@ -54,8 +54,8 @@ public class CompositeComponentAttributesELResolverTest {
         FacesContext facesContext1 = EasyMock.createNiceMock(FacesContext.class);
         ELContext elContext2 = EasyMock.createNiceMock(ELContext.class);
         FacesContext facesContext2 = EasyMock.createNiceMock(FacesContext.class);
-        
-        HashMap<Object, Object> ctxAttributes1 = new HashMap<Object, Object>();
+
+        HashMap<Object, Object> ctxAttributes1 = new HashMap<>();
         UIPanel composite = new UIPanel();
         CompositeComponentBeanInfo compositeBeanInfo = new CompositeComponentBeanInfo();
         BeanDescriptor beanDescriptor = new BeanDescriptor(composite.getClass());
@@ -69,15 +69,17 @@ public class CompositeComponentAttributesELResolverTest {
         expect(elContext2.getContext(FacesContext.class)).andReturn(facesContext2);
         expect(facesContext2.getAttributes()).andReturn(ctxAttributes1);
         replay(elContext1, facesContext1, elContext2, facesContext2);
-        
+
         CompositeComponentAttributesELResolver elResolver = new CompositeComponentAttributesELResolver();
+        @SuppressWarnings("unchecked")
         Map<String, Object> evalMap1 = (Map<String, Object>) elResolver.getValue(elContext1, composite, property);
         assertNotNull(evalMap1);
+        @SuppressWarnings("unchecked")
         Map<String, Object> evalMap2 = (Map<String, Object>) elResolver.getValue(elContext2, composite, property);
         assertNotNull(evalMap2);
-        
+
         Field ctxField1 = evalMap1.getClass().getDeclaredField("ctx");
-        ctxField1.setAccessible(true);       
+        ctxField1.setAccessible(true);
         Field ctxField2 = evalMap2.getClass().getDeclaredField("ctx");
         ctxField2.setAccessible(true);
 
@@ -86,7 +88,7 @@ public class CompositeComponentAttributesELResolverTest {
         assertTrue(facesContext2 == ctxField1.get(evalMap1));
         assertTrue(facesContext1 != ctxField2.get(evalMap2));
         assertTrue(facesContext2 == ctxField2.get(evalMap2));
-        
+
         verify(elContext1, facesContext1, elContext2, facesContext2);
     }
 }

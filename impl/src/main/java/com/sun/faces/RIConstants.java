@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021 Contributors to Eclipse Foundation.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -15,6 +16,8 @@
  */
 
 package com.sun.faces;
+
+import com.sun.faces.config.manager.FacesSchema;
 
 import jakarta.faces.render.RenderKitFactory;
 
@@ -42,7 +45,7 @@ public class RIConstants {
 
     public static final String NO_VALUE = "";
 
-    public static final Class[] EMPTY_CLASS_ARGS = new Class[0];
+    public static final Class<?>[] EMPTY_CLASS_ARGS = new Class[0];
     public static final Object[] EMPTY_METH_ARGS = new Object[0];
 
     /**
@@ -61,8 +64,6 @@ public class RIConstants {
     public static final String DEFAULT_STATEMANAGER = FACES_PREFIX + "DefaultStateManager";
 
     public static final String ERROR_PAGE_PRESENT_KEY_NAME = FACES_PREFIX + "errorPagePresent";
-
-    public static final String FACES_INITIALIZER_MAPPINGS_ADDED = FACES_PREFIX + "facesInitializerMappingsAdded";
 
     public static final String VIEWID_KEY_NAME = FACES_PREFIX + "viewId";
 
@@ -98,12 +99,9 @@ public class RIConstants {
 
     public static final String FLOW_DISCOVERY_CDI_HELPER_BEAN_NAME = "csfFLOWDISCOVERYCDIHELPER";
 
-    public static final String JAVAEE_XMLNS = "http://xmlns.jcp.org/xml/ns/javaee";
+    public static final String DOCUMENT_NAMESPACE = FacesSchema.Schemas.JAKARTAEE_SCHEMA_DEFAULT_NS;
 
-    /**
-     * Convenience key to determine if CDI is available.
-     */
-    public static final String CDI_AVAILABLE = FACES_PREFIX + "cdi.AvailableFlag";
+    public static final String DOCUMENT_VERSION = "4.0";
 
     /**
      * Convenience key to store / get BeanManager.
@@ -126,6 +124,13 @@ public class RIConstants {
      * So this key will store the mappings during the initialization.
      */
     public static final String FACES_SERVLET_MAPPINGS = FACES_PREFIX + "FacesServletMappings";
+
+    /**
+     * Key to annotate the registration for the FacesServlet. Since servlet 3.0 the ConfigureListener
+     * cannot access the servlet registration because it is initialized by a TLD and it is programmatic.
+     * So this key will store the registration during the initialization.
+     */
+    public static final String FACES_SERVLET_REGISTRATION = FACES_PREFIX + "FacesServletRegistration";
 
     private RIConstants() {
         throw new IllegalStateException();

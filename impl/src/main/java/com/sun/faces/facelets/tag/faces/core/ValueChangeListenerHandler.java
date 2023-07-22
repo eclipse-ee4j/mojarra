@@ -42,7 +42,7 @@ import jakarta.faces.view.facelets.TagException;
 /**
  * Register an ValueChangeListener instance on the UIComponent associated with the closest parent UIComponent custom
  * action.
- * <p/>
+ *
  * See
  * <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/valueChangeListener.html">tag
  * documentation</a>.
@@ -76,9 +76,9 @@ public final class ValueChangeListenerHandler extends TagHandlerImpl implements 
             }
             if (instance == null && type != null) {
                 try {
-                    instance = (ValueChangeListener) ReflectionUtil.forName(type).newInstance();
-                } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-                    throw new AbortProcessingException("Couldn't Lazily instantiate ValueChangeListener", e);
+                    instance = (ValueChangeListener) ReflectionUtil.newInstance(type);
+                } catch (Exception e) {
+                    throw new AbortProcessingException("Could not instantiate ValueChangeListener of type " + type, e);
                 }
                 if (binding != null) {
                     binding.setValue(faces.getELContext(), instance);
@@ -171,7 +171,7 @@ public final class ValueChangeListenerHandler extends TagHandlerImpl implements 
         try {
             ReflectionUtil.forName(type);
         } catch (ClassNotFoundException e) {
-            throw new TagAttributeException(typeAttribute, "Couldn't qualify ActionListener", e);
+            throw new TagAttributeException(typeAttribute, "Couldn't qualify ValueChangeListener", e);
         }
     }
 

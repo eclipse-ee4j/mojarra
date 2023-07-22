@@ -16,7 +16,8 @@
 
 package com.sun.faces.config.manager;
 
-import static com.sun.faces.RIConstants.JAVAEE_XMLNS;
+import static com.sun.faces.RIConstants.DOCUMENT_NAMESPACE;
+import static com.sun.faces.RIConstants.DOCUMENT_VERSION;
 import static com.sun.faces.util.Util.isEmpty;
 import static java.util.Arrays.asList;
 import static java.util.logging.Level.INFO;
@@ -24,7 +25,9 @@ import static java.util.logging.Level.INFO;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.FutureTask;
@@ -85,17 +88,20 @@ public class Documents {
         // Load and XML parse all documents to which the URLs that we collected above point to
 
         List<FutureTask<DocumentInfo>> docTasks = new ArrayList<>(providers.size() << 1);
+        Set<URI> processedUris = new HashSet<>();
 
         for (FutureTask<Collection<URI>> uriTask : uriTasks) {
             try {
                 for (URI uri : uriTask.get()) {
-                    FutureTask<DocumentInfo> docTask = new FutureTask<>(new ParseConfigResourceToDOMTask(servletContext, validating, uri));
-                    docTasks.add(docTask);
-
-                    if (executor != null) {
-                        executor.execute(docTask);
-                    } else {
-                        docTask.run();
+                    if (processedUris.add(uri)) {
+                        FutureTask<DocumentInfo> docTask = new FutureTask<>(new ParseConfigResourceToDOMTask(servletContext, validating, uri));
+                        docTasks.add(docTask);
+                        
+                        if (executor != null) {
+                            executor.execute(docTask);
+                        } else {
+                            docTask.run();
+                        }
                     }
                 }
             } catch (InterruptedException ignored) {
@@ -232,10 +238,10 @@ public class Documents {
     }
 
     private static Document createEmptyFacesConfigDocument(DOMImplementation domImpl) {
-        Document document = domImpl.createDocument(JAVAEE_XMLNS, "faces-config", null);
+        Document document = domImpl.createDocument(DOCUMENT_NAMESPACE, "faces-config", null);
 
         Attr versionAttribute = document.createAttribute("version");
-        versionAttribute.setValue("2.2");
+        versionAttribute.setValue(DOCUMENT_VERSION);
         document.getDocumentElement().getAttributes().setNamedItem(versionAttribute);
 
         return document;

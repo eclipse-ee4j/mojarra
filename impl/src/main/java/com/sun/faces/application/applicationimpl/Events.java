@@ -35,7 +35,6 @@ import com.sun.faces.application.applicationimpl.events.ReentrantLisneterInvocat
 import com.sun.faces.application.applicationimpl.events.SystemEventHelper;
 import com.sun.faces.util.FacesLogger;
 
-import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
@@ -64,17 +63,10 @@ public class Events {
      * on a per-FacesContext, per-SystemEvent.class type basis.
      */
 
-    private ReentrantLisneterInvocationGuard listenerInvocationGuard = new ReentrantLisneterInvocationGuard();
+    private final ReentrantLisneterInvocationGuard listenerInvocationGuard = new ReentrantLisneterInvocationGuard();
 
-    /**
-     * @see jakarta.faces.application.Application#publishEvent(FacesContext, Class, Object)
-     */
-    public void publishEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass, Object source, ProjectStage projectStage) {
-        publishEvent(context, systemEventClass, null, source, projectStage);
-    }
-
-    /**
-     * @see jakarta.faces.application.Application#publishEvent(FacesContext, Class, Object)
+    /*
+     * @see jakarta.faces.application.Application#publishEvent(FacesContext, Class, Class, Object)
      */
     public void publishEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source,
             ProjectStage projectStage) {
@@ -118,14 +110,14 @@ public class Events {
         }
     }
 
-    /**
+    /*
      * @see Application#subscribeToEvent(Class, jakarta.faces.event.SystemEventListener)
      */
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener) {
         subscribeToEvent(systemEventClass, null, listener);
     }
 
-    /**
+    /*
      * @see Application#subscribeToEvent(Class, Class, jakarta.faces.event.SystemEventListener)
      */
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass, SystemEventListener listener) {
@@ -136,7 +128,7 @@ public class Events {
         getListeners(systemEventClass, sourceClass).add(listener);
     }
 
-    /**
+    /*
      * @see Application#unsubscribeFromEvent(Class, Class, jakarta.faces.event.SystemEventListener)
      */
     public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass, SystemEventListener listener) {
@@ -267,7 +259,7 @@ public class Events {
             // if original differs from copy, make a new copy.
             // The new copy consists of the original list - processed
 
-            SystemEventListener listenersCopy[] = new SystemEventListener[listeners.size()];
+            SystemEventListener[] listenersCopy = new SystemEventListener[listeners.size()];
             int i = 0;
             for (i = 0; i < listenersCopy.length; i++) {
                 listenersCopy[i] = listeners.get(i);
@@ -306,7 +298,7 @@ public class Events {
 
     }
 
-    private boolean originalDiffersFromCopy(Collection<SystemEventListener> original, SystemEventListener copy[]) {
+    private boolean originalDiffersFromCopy(Collection<SystemEventListener> original, SystemEventListener[] copy) {
         boolean foundDifference = false;
         int i = 0, originalLen = original.size(), copyLen = copy.length;
 

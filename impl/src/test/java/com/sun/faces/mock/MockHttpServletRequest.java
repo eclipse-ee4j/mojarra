@@ -25,9 +25,11 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletConnection;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletInputStream;
@@ -66,10 +68,10 @@ public class MockHttpServletRequest implements HttpServletRequest {
         setHttpSession(session);
     }
 
-    protected HashMap attributes = new HashMap();
+    protected HashMap<String, Object> attributes = new HashMap<>();
     protected String contextPath = null;
     protected Locale locale = null;
-    protected HashMap parameters = new HashMap();
+    protected HashMap<String, String[]> parameters = new HashMap<>();
     protected String pathInfo = null;
     protected Principal principal = null;
     protected String queryString = null;
@@ -79,7 +81,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     // --------------------------------------------------------- Public Methods
     public void addParameter(String name, String value) {
-        String values[] = (String[]) parameters.get(name);
+        String values[] = parameters.get(name);
         if (values == null) {
             String results[] = new String[]{value};
             parameters.put(name, results);
@@ -144,13 +146,13 @@ public class MockHttpServletRequest implements HttpServletRequest {
     }
 
     @Override
-    public Enumeration getHeaderNames() {
-        return Collections.enumeration(Collections.EMPTY_LIST);
+    public Enumeration<String> getHeaderNames() {
+        return Collections.enumeration(Collections.emptyList());
     }
 
     @Override
-    public Enumeration getHeaders(String name) {
-        return Collections.enumeration(Collections.EMPTY_LIST);
+    public Enumeration<String> getHeaders(String name) {
+        return Collections.enumeration(Collections.emptyList());
     }
 
     @Override
@@ -194,7 +196,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     @Override
     public String getRequestURI() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (contextPath != null) {
             sb.append(contextPath);
         }
@@ -244,11 +246,6 @@ public class MockHttpServletRequest implements HttpServletRequest {
     }
 
     @Override
-    public boolean isRequestedSessionIdFromUrl() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public boolean isRequestedSessionIdFromURL() {
         throw new UnsupportedOperationException();
     }
@@ -274,8 +271,8 @@ public class MockHttpServletRequest implements HttpServletRequest {
     }
 
     @Override
-    public Enumeration getAttributeNames() {
-        return (new MockEnumeration(attributes.keySet().iterator()));
+    public Enumeration<String> getAttributeNames() {
+        return (new MockEnumeration<>(attributes.keySet().iterator()));
     }
 
     @Override
@@ -305,7 +302,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     //
     // Servlet 2.4 methods
-    // 
+    //
     @Override
     public int getRemotePort() {
         throw new UnsupportedOperationException();
@@ -327,13 +324,13 @@ public class MockHttpServletRequest implements HttpServletRequest {
     }
 
     @Override
-    public Enumeration getLocales() {
+    public Enumeration<Locale> getLocales() {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public String getParameter(String name) {
-        String values[] = (String[]) parameters.get(name);
+        String[] values = parameters.get(name);
         if (values != null) {
             return (values[0]);
         } else {
@@ -342,18 +339,18 @@ public class MockHttpServletRequest implements HttpServletRequest {
     }
 
     @Override
-    public Map getParameterMap() {
+    public Map<String, String[]> getParameterMap() {
         return (parameters);
     }
 
     @Override
-    public Enumeration getParameterNames() {
-        return (new MockEnumeration(parameters.keySet().iterator()));
+    public Enumeration<String> getParameterNames() {
+        return (new MockEnumeration<>(parameters.keySet().iterator()));
     }
 
     @Override
     public String[] getParameterValues(String name) {
-        return ((String[]) parameters.get(name));
+        return (parameters.get(name));
     }
 
     @Override
@@ -363,11 +360,6 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     @Override
     public BufferedReader getReader() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public String getRealPath(String path) {
         throw new UnsupportedOperationException();
     }
 
@@ -427,57 +419,57 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     @Override
     public boolean authenticate(HttpServletResponse hsr) throws IOException, ServletException {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void login(String string, String string1) throws ServletException {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void logout() throws ServletException {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public Collection<Part> getParts() throws IOException, ServletException {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public Part getPart(String string) throws IOException, ServletException {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public ServletContext getServletContext() {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public AsyncContext startAsync() throws IllegalStateException {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public AsyncContext startAsync(ServletRequest sr, ServletResponse sr1) throws IllegalStateException {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public boolean isAsyncStarted() {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public boolean isAsyncSupported() {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public AsyncContext getAsyncContext() {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -485,15 +477,33 @@ public class MockHttpServletRequest implements HttpServletRequest {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public String changeSessionId() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
     public <T extends HttpUpgradeHandler> T upgrade(Class<T> handlerClass) throws IOException, ServletException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
     public long getContentLengthLong() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String getRequestId() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String getProtocolRequestId() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public ServletConnection getServletConnection() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

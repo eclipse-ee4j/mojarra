@@ -36,6 +36,9 @@ import com.sun.faces.util.Util;
 import jakarta.el.ELContext;
 import jakarta.el.ELContextEvent;
 import jakarta.el.ELContextListener;
+import jakarta.enterprise.context.spi.AlterableContext;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationFactory;
@@ -245,7 +248,7 @@ public class FacesContextImpl extends FacesContext {
     @Override
     public Iterator<String> getClientIdsWithMessages() {
         assertNotReleased();
-        return componentMessageLists == null ? Collections.<String>emptyList().iterator() : componentMessageLists.keySet().iterator();
+        return componentMessageLists == null ? Collections.emptyIterator() : componentMessageLists.keySet().iterator();
     }
 
     /**
@@ -313,15 +316,13 @@ public class FacesContextImpl extends FacesContext {
     public Iterator<FacesMessage> getMessages() {
         assertNotReleased();
         if (null == componentMessageLists) {
-            List<FacesMessage> emptyList = Collections.emptyList();
-            return emptyList.iterator();
+            return Collections.emptyIterator();
         }
 
         if (componentMessageLists.size() > 0) {
             return new ComponentMessagesIterator(componentMessageLists);
         } else {
-            List<FacesMessage> emptyList = Collections.emptyList();
-            return emptyList.iterator();
+            return Collections.emptyIterator();
         }
     }
 
@@ -335,14 +336,12 @@ public class FacesContextImpl extends FacesContext {
         // If no messages have been enqueued at all,
         // return an empty List Iterator
         if (null == componentMessageLists) {
-            List<FacesMessage> emptyList = Collections.emptyList();
-            return emptyList.iterator();
+            return Collections.emptyIterator();
         }
 
         List<FacesMessage> list = componentMessageLists.get(clientId);
         if (list == null) {
-            List<FacesMessage> emptyList = Collections.emptyList();
-            return emptyList.iterator();
+            return Collections.emptyIterator();
         }
         return list.iterator();
     }
@@ -467,12 +466,8 @@ public class FacesContextImpl extends FacesContext {
         }
 
         // Add this message to our internal queue
-        List<FacesMessage> list = componentMessageLists.get(clientId);
-        if (list == null) {
-            list = new ArrayList<>();
-            componentMessageLists.put(clientId, list);
-        }
-        list.add(message);
+        componentMessageLists.computeIfAbsent(clientId, k -> new ArrayList<>()).add(message);
+
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("Adding Message[sourceId=" + (clientId != null ? clientId : "<<NONE>>") + ",summary=" + message.getSummary() + ")");
         }
@@ -506,6 +501,7 @@ public class FacesContextImpl extends FacesContext {
      */
     @Override
     public void release() {
+        BeanManager beanManager = Util.getCdiBeanManager(this);
 
         released = true;
         if (externalContext != null) {
@@ -551,6 +547,9 @@ public class FacesContextImpl extends FacesContext {
         // remove our private ThreadLocal instance.
         DEFAULT_FACES_CONTEXT.remove();
 
+        // Destroy our instance produced by FacesContextProducer.
+        Bean<?> bean = beanManager.resolve(beanManager.getBeans(FacesContext.class));
+        ((AlterableContext) beanManager.getContext(bean.getScope())).destroy(bean);
     }
 
     /**
@@ -647,11 +646,11 @@ public class FacesContextImpl extends FacesContext {
 
     private static final class ComponentMessagesIterator implements Iterator<FacesMessage> {
 
-        private Map<String, List<FacesMessage>> messages;
+        private final Map<String, List<FacesMessage>> messages;
         private int outerIndex = -1;
-        private int messagesSize;
+        private final int messagesSize;
         private Iterator<FacesMessage> inner;
-        private Iterator<String> keys;
+        private final Iterator<String> keys;
 
         // ------------------------------------------------------- Constructors
 

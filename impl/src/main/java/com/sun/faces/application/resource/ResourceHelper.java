@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -212,6 +213,7 @@ public abstract class ResourceHelper {
      * @param contract the name of the contract
      * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request @return a {@link LibraryInfo} if a
      * matching library based off the inputs can be found, otherwise returns <code>null</code>
+     * @return library info
      */
     public abstract LibraryInfo findLibrary(String libraryName, String localePrefix, String contract, FacesContext ctx);
 
@@ -383,13 +385,13 @@ public abstract class ResourceHelper {
      * </p>
      *
      * <p>
-     * See <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html>RFC 2616, sec. 14</a> for details on the
+     * See http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html RFC 2616, sec. 14 for details on the
      * accept-encoding header.
      * </p>
      *
      * <p>
      * Implementation Note: It is safe to cast to a <code>HttpServletResponse</code> as this method will only be called when
-     * handling a resource request. Resource serving is outside of the JSF and Portlet lifecycle.
+     * handling a resource request. Resource serving is outside of the Faces and Portlet lifecycle.
      * </p>
      *
      * @param ctx the {@link FacesContext} for the current request
@@ -531,12 +533,12 @@ public abstract class ResourceHelper {
     private static final class ELEvaluatingInputStream extends InputStream {
 
         // Premature optimization is the root of all evil. Blah blah.
-        private List<Integer> buf = new ArrayList<>(1024);
+        private final List<Integer> buf = new ArrayList<>(1024);
         private boolean failedExpressionTest = false;
         private boolean writingExpression = false;
-        private InputStream inner;
-        private ClientResourceInfo info;
-        private FacesContext ctx;
+        private final InputStream inner;
+        private final ClientResourceInfo info;
+        private final FacesContext ctx;
         private boolean expressionEvaluated;
         private boolean endOfStreamReached;
 
@@ -630,7 +632,7 @@ public abstract class ResourceHelper {
          * a String, turn the String into a ValueExpression, evaluate it, store the toString() of it in expressionResult;
          */
         private void evaluateExpressionIntoBuffer() {
-            char chars[] = new char[buf.size()];
+            char[] chars = new char[buf.size()];
             for (int i = 0, len = buf.size(); i < len; i++) {
                 chars[i] = (char) (int) buf.get(i);
             }
@@ -703,5 +705,25 @@ public abstract class ResourceHelper {
         }
 
     } // END ELEvaluatingInputStream
+
+    protected List<String> getLocalizedPaths(String path, FacesContext ctx) {
+    	Locale loc = (ctx != null && ctx.getViewRoot() != null) ? ctx.getViewRoot().getLocale() : null;
+    	if (!path.endsWith(".properties") || loc == null) {
+    		return Collections.singletonList(path);
+    	}
+    	List<String> list = new ArrayList<>();
+    	String base = path.substring(0, path.lastIndexOf(".properties"));
+    	if (!loc.getVariant().isEmpty()) {
+    		list.add(String.format("%s_%s_%s_%s.properties", base, loc.getLanguage(), loc.getCountry(), loc.getVariant()));
+    	}
+    	if (!loc.getCountry().isEmpty()) {
+    		list.add(String.format("%s_%s_%s.properties", base, loc.getLanguage(), loc.getCountry()));
+    	}
+    	if (!loc.getLanguage().isEmpty()) {
+    		list.add(String.format("%s_%s.properties", base, loc.getLanguage()));
+    	}
+    	list.add(path);
+    	return list;
+    }
 
 }

@@ -131,24 +131,24 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
         dbf.setNamespaceAware(true);
         DocumentBuilder builder = dbf.newDocumentBuilder();
         DOMImplementation domImpl = builder.getDOMImplementation();
-        newDoc = domImpl.createDocument(RIConstants.JAVAEE_XMLNS, "faces-config", null);
+        newDoc = domImpl.createDocument(RIConstants.DOCUMENT_NAMESPACE, "faces-config", null);
         Node documentElement = newDoc.getDocumentElement();
         Attr versionAttribute = newDoc.createAttribute("version");
-        versionAttribute.setValue("2.2");
+        versionAttribute.setValue(RIConstants.DOCUMENT_VERSION);
         documentElement.getAttributes().setNamedItem(versionAttribute);
 
         Node facesConfig = newDoc.getFirstChild();
 
-        Element flowDefinition = newDoc.createElementNS(RIConstants.JAVAEE_XMLNS, "flow-definition");
+        Element flowDefinition = newDoc.createElementNS(RIConstants.DOCUMENT_NAMESPACE, "flow-definition");
         flowDefinition.setAttribute("id", flowName);
         facesConfig.appendChild(flowDefinition);
         final String flowReturnStr = flowName + "-return";
 
-        Element flowReturn = newDoc.createElementNS(RIConstants.JAVAEE_XMLNS, "flow-return");
+        Element flowReturn = newDoc.createElementNS(RIConstants.DOCUMENT_NAMESPACE, "flow-return");
         flowReturn.setAttribute("id", flowReturnStr);
         flowDefinition.appendChild(flowReturn);
 
-        Element fromOutcome = newDoc.createElementNS(RIConstants.JAVAEE_XMLNS, "from-outcome");
+        Element fromOutcome = newDoc.createElementNS(RIConstants.DOCUMENT_NAMESPACE, "from-outcome");
         flowReturn.appendChild(fromOutcome);
         fromOutcome.setTextContent("/" + flowReturnStr);
 
@@ -160,12 +160,12 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
 
         WebConfiguration config = WebConfiguration.getInstance(sc);
 
-        for (int i = 0; i < documentInfos.length; i++) {
-            URI definingDocumentURI = documentInfos[i].getSourceURI();
+        for (DocumentInfo documentInfo : documentInfos) {
+            URI definingDocumentURI = documentInfo.getSourceURI();
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.log(Level.FINE, MessageFormat.format("Processing factory elements for document: ''{0}''", definingDocumentURI));
             }
-            Document document = documentInfos[i].getDocument();
+            Document document = documentInfo.getDocument();
             String namespace = document.getDocumentElement().getNamespaceURI();
             NodeList flowDefinitions = document.getDocumentElement().getElementsByTagNameNS(namespace, FACES_FLOW_DEFINITION);
             if (flowDefinitions != null && flowDefinitions.getLength() > 0) {
@@ -207,7 +207,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
     private List<FlowDefinitionDocument> getSavedFlowDefinitions(FacesContext context) {
         Map<String, Object> appMap = context.getExternalContext().getApplicationMap();
         List<FlowDefinitionDocument> def = (List<FlowDefinitionDocument>) appMap.get(flowDefinitionListKey);
-        return null != def ? def : Collections.EMPTY_LIST;
+        return null != def ? def : Collections.emptyList();
     }
 
     private void clearSavedFlowDefinitions(FacesContext context) {
@@ -599,7 +599,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
 
             NodeList params = (NodeList) xpath.evaluate(".//ns1:parameter", methodCallNode, XPathConstants.NODESET);
             if (null != params) {
-                List<Class> paramTypes = Collections.emptyList();
+                List<Class<?>> paramTypes = Collections.emptyList();
                 if (0 < params.getLength()) {
                     paramTypes = new ArrayList<>();
                     List<Parameter> paramList = new ArrayList<>();
@@ -624,7 +624,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
                         if (null != classList && 1 == classList.getLength()) {
                             classStr = classList.item(0).getNodeValue().trim();
                         }
-                        Class clazz = String.class;
+                        Class<?> clazz = String.class;
                         if (null != classStr) {
                             try {
                                 clazz = ReflectionUtil.forName(classStr);
@@ -640,7 +640,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
                     }
                     methodCallBuilder.parameters(paramList);
                 }
-                Class[] paramArray = new Class[paramTypes.size()];
+                Class<?>[] paramArray = new Class[paramTypes.size()];
                 paramTypes.toArray(paramArray);
                 methodCallBuilder.expression(methodStr, paramArray);
             }

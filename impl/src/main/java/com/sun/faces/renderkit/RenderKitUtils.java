@@ -150,6 +150,8 @@ public class RenderKitUtils {
 
     protected static final Logger LOGGER = FacesLogger.RENDERKIT.getLogger();
 
+    public static final String DEVELOPMENT_STAGE_MESSAGES_ID = "jakarta_faces_developmentstage_messages";
+
     /**
      * @see UIViewRoot#encodeChildren(FacesContext)
      */
@@ -979,7 +981,7 @@ public class RenderKitUtils {
 
     /**
      * <p>
-     * Only install the JSF script resource if it doesn't exist. The resource component will be installed with the target
+     * Only install the Faces script resource if it doesn't exist. The resource component will be installed with the target
      * "head".
      *
      * @param context the <code>FacesContext</code> for the current request
@@ -1048,7 +1050,7 @@ public class RenderKitUtils {
         if (ctx.isProjectStage(ProjectStage.Development)) {
             Application app = ctx.getApplication();
             HtmlMessages messages = (HtmlMessages) app.createComponent(HtmlMessages.COMPONENT_TYPE);
-            messages.setId("javax_faces_developmentstage_messages");
+            messages.setId(DEVELOPMENT_STAGE_MESSAGES_ID);
             Renderer messagesRenderer = ctx.getRenderKit().getRenderer(HtmlMessages.COMPONENT_FAMILY, "jakarta.faces.Messages");
             messages.setErrorStyle("Color: red");
             messages.setWarnStyle("Color: orange");

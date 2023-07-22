@@ -18,6 +18,7 @@ package com.sun.faces.facelets.component;
 
 import static com.sun.faces.cdi.CdiUtils.createDataModel;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.BEHAVIOR_SOURCE_PARAM;
+import static com.sun.faces.util.Util.isNestedInIterator;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -38,7 +39,6 @@ import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.ContextCallback;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UIData;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.visit.VisitCallback;
 import jakarta.faces.component.visit.VisitContext;
@@ -78,6 +78,9 @@ public class UIRepeat extends UINamingContainer {
     private String varStatus;
 
     private int index = -1;
+
+    private Integer originalBegin;
+    private Integer originalEnd;
 
     private Integer begin;
     private Integer end;
@@ -194,9 +197,9 @@ public class UIRepeat extends UINamingContainer {
         this.varStatus = varStatus;
     }
 
-    private void resetDataModel() {
-        if (isNestedInIterator()) {
-            setDataModel(null);
+    private void resetDataModel(FacesContext context) {
+        if (isNestedInIterator(context, this)) {
+            this.setDataModel(null);
         }
     }
 
@@ -209,8 +212,15 @@ public class UIRepeat extends UINamingContainer {
         if (model == null) {
             Object val = getValue();
             if (val == null) {
-                Integer begin = getBegin();
-                Integer end = getEnd();
+                if (originalBegin == null) {
+                    originalBegin = getBegin();
+                }
+                if (originalEnd == null) {
+                    originalEnd = getEnd();
+                }
+
+                Integer begin = originalBegin;
+                Integer end = originalEnd;
 
                 if (end == null) {
                     if (begin == null) {
@@ -329,18 +339,6 @@ public class UIRepeat extends UINamingContainer {
         }
     }
 
-    private void clearValue(FacesContext ctx) {
-        if (var != null || varStatus != null) {
-            Map<String,Object> attrs = ctx.getExternalContext().getRequestMap();
-            if (var != null) {
-                attrs.remove(var);
-            }
-            if (varStatus != null) {
-                attrs.remove(varStatus);
-            }
-        }
-    }
-
     private Map<String, SavedState> childState;
 
     private Map<String, SavedState> getChildState() {
@@ -443,7 +441,7 @@ public class UIRepeat extends UINamingContainer {
 
     private boolean keepSaved(FacesContext context) {
 
-        return hasErrorMessages(context) || isNestedInIterator();
+        return hasErrorMessages(context) || isNestedInIterator(context, this);
 
     }
 
@@ -452,17 +450,6 @@ public class UIRepeat extends UINamingContainer {
         FacesMessage.Severity sev = context.getMaximumSeverity();
         return sev != null && FacesMessage.SEVERITY_ERROR.compareTo(sev) <= 0;
 
-    }
-
-    private boolean isNestedInIterator() {
-        UIComponent parent = getParent();
-        while (parent != null) {
-            if (parent instanceof UIData || parent instanceof UIRepeat) {
-                return true;
-            }
-            parent = parent.getParent();
-        }
-        return false;
     }
 
     private void setIndex(FacesContext ctx, int index) {
@@ -509,7 +496,7 @@ public class UIRepeat extends UINamingContainer {
         }
 
         // clear datamodel
-        resetDataModel();
+        resetDataModel(faces);
 
         // We must clear the child state if we just entered the Render Phase, and there are no error messages
         if (PhaseId.RENDER_RESPONSE.equals(phase) && !hasErrorMessages(faces)) {
@@ -656,9 +643,10 @@ public class UIRepeat extends UINamingContainer {
         FacesContext facesContext = context.getFacesContext();
         boolean visitRows = requiresRowIteration(context);
 
-        int oldRowIndex = -1;
+        int oldIndex = -1;
         if (visitRows) {
-            oldRowIndex = getDataModel().getRowIndex();
+            oldIndex = index;
+            captureOrigValue(facesContext);        
             setIndex(facesContext, -1);
         }
 
@@ -699,9 +687,9 @@ public class UIRepeat extends UINamingContainer {
             // Clean up - pop EL and restore old row index
             popComponentFromEL(facesContext);
             if (visitRows) {
-                setIndex(facesContext, oldRowIndex);
+                setIndex(facesContext, oldIndex);
+                restoreOrigValue(facesContext);
             }
-            clearValue(facesContext);
         }
 
         // Return false to allow the visit to continue
@@ -805,7 +793,7 @@ public class UIRepeat extends UINamingContainer {
         if (!isRendered()) {
             return;
         }
-        resetDataModel();
+        resetDataModel(faces);
         process(faces, PhaseId.UPDATE_MODEL_VALUES);
     }
 
@@ -814,7 +802,7 @@ public class UIRepeat extends UINamingContainer {
         if (!isRendered()) {
             return;
         }
-        resetDataModel();
+        resetDataModel(faces);
         Application app = faces.getApplication();
         app.publishEvent(faces, PreValidateEvent.class, this);
         process(faces, PhaseId.PROCESS_VALIDATIONS);
@@ -947,10 +935,10 @@ public class UIRepeat extends UINamingContainer {
     public void broadcast(FacesEvent event) throws AbortProcessingException {
         if (event instanceof IndexedEvent) {
             IndexedEvent idxEvent = (IndexedEvent) event;
-            resetDataModel();
-            int prevIndex = index;
             FacesEvent target = idxEvent.getTarget();
             FacesContext ctx = target.getFacesContext();
+            resetDataModel(ctx);
+            int prevIndex = index;
             UIComponent source = target.getComponent();
             UIComponent compositeParent = null;
             try {
@@ -1011,6 +999,8 @@ public class UIRepeat extends UINamingContainer {
         var = (String) state[5];
         varStatus = (String) state[6];
         value = state[7];
+        originalBegin = (Integer) state[8];
+        originalEnd = (Integer) state[9];
     }
 
     @Override
@@ -1020,7 +1010,7 @@ public class UIRepeat extends UINamingContainer {
         if (faces == null) {
             throw new NullPointerException();
         }
-        Object[] state = new Object[8];
+        Object[] state = new Object[10];
         state[0] = super.saveState(faces);
         state[1] = childState;
         state[2] = begin;
@@ -1029,6 +1019,8 @@ public class UIRepeat extends UINamingContainer {
         state[5] = var;
         state[6] = varStatus;
         state[7] = value;
+        state[8] = originalBegin;
+        state[9] = originalEnd;
         return state;
     }
 

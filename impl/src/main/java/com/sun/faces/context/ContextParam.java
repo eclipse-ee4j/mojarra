@@ -49,7 +49,7 @@ public enum ContextParam {
     /**
      * Stores the type.
      */
-    private final Class type;
+    private final Class<?> type;
 
     /**
      * Constructor.

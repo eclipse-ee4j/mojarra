@@ -26,6 +26,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.inject.Qualifier;
 
 /**
@@ -43,4 +44,20 @@ import jakarta.inject.Qualifier;
 @Documented
 public @interface FlowBuilderParameter {
 
+    /**
+     * <p class="changed_added_4_0">
+     * Supports inline instantiation of the {@link FlowBuilderParameter} qualifier.
+     * </p>
+     *
+     * @since 4.0
+     */
+    public static final class Literal extends AnnotationLiteral<FlowBuilderParameter> implements FlowBuilderParameter {
+
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * Instance of the {@link FlowBuilderParameter} qualifier.
+         */
+        public static final Literal INSTANCE = new Literal();
+    }
 }

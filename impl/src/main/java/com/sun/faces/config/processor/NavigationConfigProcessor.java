@@ -175,12 +175,8 @@ public class NavigationConfigProcessor extends AbstractConfigProcessor {
 
     // -------------------------------------------- Methods from ConfigProcessor
 
-    /**
-     * @see ConfigProcessor#process(jakarta.servlet.ServletContext,com.sun.faces.config.manager.documents.DocumentInfo[])
-     */
     @Override
     public void process(ServletContext sc, FacesContext facesContext, DocumentInfo[] documentInfos) throws Exception {
-
         NavigationHandler handler = getApplication().getNavigationHandler();
         for (DocumentInfo documentInfo : documentInfos) {
             if (LOGGER.isLoggable(FINE)) {
@@ -201,7 +197,6 @@ public class NavigationConfigProcessor extends AbstractConfigProcessor {
     // --------------------------------------------------------- Private Methods
 
     private void addNavigationRules(NodeList navigationRules, NavigationHandler navHandler, ServletContext sc) throws XPathExpressionException {
-
         for (int i = 0, size = navigationRules.getLength(); i < size; i++) {
             Node navigationRule = navigationRules.item(i);
             if (!"flow-definition".equals(navigationRule.getParentNode().getLocalName()) && navigationRule.getNodeType() == Node.ELEMENT_NODE) {
@@ -241,7 +236,6 @@ public class NavigationConfigProcessor extends AbstractConfigProcessor {
     }
 
     private void addNavigationCasesForRule(String fromViewId, List<Node> navigationCases, NavigationHandler navHandler, ServletContext sc) {
-
         if (navigationCases != null && !navigationCases.isEmpty()) {
             ApplicationAssociate associate = ApplicationAssociate.getInstance(sc);
 
@@ -317,11 +311,7 @@ public class NavigationConfigProcessor extends AbstractConfigProcessor {
                 // defined navigation mappings.
                 if (navHandler instanceof ConfigurableNavigationHandler) {
                     ConfigurableNavigationHandler cnav = (ConfigurableNavigationHandler) navHandler;
-                    Set<NavigationCase> cases = cnav.getNavigationCases().get(fromViewId);
-                    if (cases == null) {
-                        cases = new LinkedHashSet<>();
-                        cnav.getNavigationCases().put(fromViewId, cases);
-                    }
+                    Set<NavigationCase> cases = cnav.getNavigationCases().computeIfAbsent(fromViewId, k -> new LinkedHashSet<>());
                     cases.add(cnc);
                 }
                 associate.addNavigationCase(cnc);
@@ -402,7 +392,7 @@ public class NavigationConfigProcessor extends AbstractConfigProcessor {
 
     private boolean isIncludeViewParams(Node n) {
 
-        return Boolean.valueOf(getNodeText(n.getAttributes().getNamedItem(INCLUDE_VIEW_PARAMS_ATTRIBUTE)));
+        return Boolean.parseBoolean(getNodeText(n.getAttributes().getNamedItem(INCLUDE_VIEW_PARAMS_ATTRIBUTE)));
 
     }
 

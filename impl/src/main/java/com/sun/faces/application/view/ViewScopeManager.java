@@ -17,9 +17,8 @@
 package com.sun.faces.application.view;
 
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
-import static java.util.logging.Level.FINE;
+import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.NumberOfActiveViewMaps;
 import static java.util.logging.Level.FINEST;
-import static java.util.logging.Level.INFO;
 import static java.util.logging.Level.WARNING;
 
 import java.util.Collections;
@@ -77,9 +76,11 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
     /**
      * Stores the CDI context manager.
      */
-    private ViewScopeContextManager contextManager;
+    private final ViewScopeContextManager contextManager;
 
-    private boolean distributable;
+    private final boolean distributable;
+    
+    private Integer numberOfActiveViewMapsInWebXml;
 
     /**
      * Constructor.
@@ -89,6 +90,18 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
         contextManager = new ViewScopeContextManager();
         WebConfiguration config = WebConfiguration.getInstance(context.getExternalContext());
         distributable = config.isOptionEnabled(EnableDistributable);
+
+        String numberOfActiveViewMapsAsString = config.getOptionValue(NumberOfActiveViewMaps);
+        if (numberOfActiveViewMapsAsString != null) {
+            try {
+                numberOfActiveViewMapsInWebXml = Integer.parseInt(numberOfActiveViewMapsAsString);
+            }
+            catch (NumberFormatException e) {
+                if (LOGGER.isLoggable(WARNING)) {
+                    LOGGER.log(WARNING, "Cannot parse " + NumberOfActiveViewMaps.getQualifiedName(), e);
+                }
+            }
+        }
     }
     
     /**
@@ -98,7 +111,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
      *
      * @param facesContext The faces context
      * @param viewMap The view to locate
-     * @return
+     * @return located ID
      */
     protected static String locateViewMapId(FacesContext facesContext, Map<String, Object> viewMap) {
         Object session = facesContext.getExternalContext().getSession(true);
@@ -202,6 +215,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
      * Get our instance.
      *
      * @param facesContext the FacesContext.
+     * @return our instance.
      */
     public static ViewScopeManager getInstance(FacesContext facesContext) {
         if (!facesContext.getExternalContext().getApplicationMap().containsKey(VIEW_SCOPE_MANAGER)) {
@@ -225,7 +239,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
      * Process the system event.
      *
      * @param systemEvent the system event.
-     * @throws AbortProcessingException when processing needs to be aborter.
+     * @throws AbortProcessingException when processing needs to be aborted.
      */
     @Override
     public void processEvent(SystemEvent systemEvent) throws AbortProcessingException {
@@ -266,7 +280,11 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
                 Map<String, Object> sessionMap = facesContext.getExternalContext().getSessionMap();
                 Integer size = (Integer) sessionMap.get(ACTIVE_VIEW_MAPS_SIZE);
                 if (size == null) {
-                    size = 25;
+                    size = numberOfActiveViewMapsInWebXml;
+                    
+                    if (size == null) {
+                        size = Integer.parseInt(NumberOfActiveViewMaps.getDefaultValue());
+                    }
                 }
 
                 if (sessionMap.get(ACTIVE_VIEW_MAPS) == null) {

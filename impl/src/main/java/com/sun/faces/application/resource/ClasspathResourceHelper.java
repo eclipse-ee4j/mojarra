@@ -16,9 +16,9 @@
 
 package com.sun.faces.application.resource;
 
-import static com.sun.faces.config.WebConfiguration.META_INF_CONTRACTS_DIR;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.CacheResourceModificationTimestamp;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableMissingResourceLibraryDetection;
+import static com.sun.faces.config.WebConfiguration.META_INF_CONTRACTS_DIR;
 import static jakarta.faces.application.ProjectStage.Development;
 
 import java.io.IOException;
@@ -38,7 +38,7 @@ import jakarta.faces.context.FacesContext;
 /**
  * <p>
  * A {@link ResourceHelper} implementation for finding/serving resources found on the classpath within the
- * <code>META-INF/resources directory.
+ * <code>META-INF/resources directory</code>.
  * </p>
  *
  * @since 2.0
@@ -46,14 +46,13 @@ import jakarta.faces.context.FacesContext;
 public class ClasspathResourceHelper extends ResourceHelper {
 
     private static final String BASE_RESOURCE_PATH = "META-INF/resources";
-    private boolean cacheTimestamp;
+    private final boolean cacheTimestamp;
     private volatile ZipDirectoryEntryScanner libraryScanner;
-    private boolean enableMissingResourceLibraryDetection;
+    private final boolean enableMissingResourceLibraryDetection;
 
     // ------------------------------------------------------------ Constructors
 
     public ClasspathResourceHelper() {
-
         WebConfiguration webconfig = WebConfiguration.getInstance();
         cacheTimestamp = webconfig.isOptionEnabled(CacheResourceModificationTimestamp);
         enableMissingResourceLibraryDetection = webconfig.isOptionEnabled(EnableMissingResourceLibraryDetection);
@@ -113,19 +112,14 @@ public class ClasspathResourceHelper extends ResourceHelper {
         if (ctx.isProjectStage(Development)) {
             ClassLoader loader = Util.getCurrentLoader(getClass());
             String path = resource.getPath();
-            if (loader.getResource(path) != null) {
-                in = loader.getResource(path).openStream();
-            }
-            if (in == null && getClass().getClassLoader().getResource(path) != null) {
-                in = getClass().getClassLoader().getResource(path).openStream();
+            URL url = getResourceURL(loader, path, ctx);
+            if (url != null) {
+            	in = url.openStream();
             }
         } else {
             ClassLoader loader = Util.getCurrentLoader(getClass());
             String path = resource.getPath();
-            in = loader.getResourceAsStream(path);
-            if (in == null) {
-                in = getClass().getClassLoader().getResourceAsStream(path);
-            }
+            in = getResourceAsStream(loader, path, ctx);
         }
         return in;
     }
@@ -331,4 +325,44 @@ public class ClasspathResourceHelper extends ResourceHelper {
         return result;
     }
 
+    private InputStream getResourceAsStream(ClassLoader loader, String path, FacesContext ctx) {
+    	InputStream in = null;
+      	List<String> localizedPaths = getLocalizedPaths(path, ctx);
+      	for (String path_: localizedPaths) {
+      		in = getResourceAsStream(loader, path_);
+      		if (in != null) {
+      			break;
+      		}
+      	}
+      	return in;
+    }
+    
+    private URL getResourceURL(ClassLoader loader, String path, FacesContext ctx) {
+    	List<String> localizedPaths = getLocalizedPaths(path, ctx);
+    	URL url = null;
+    	for (String path_: localizedPaths) {
+    		url = getResource_(loader, path_);
+    		if (url != null) {
+    			break;
+    		}
+    	}
+    	return url;
+    }
+    
+    private InputStream getResourceAsStream(ClassLoader loader, String path) {
+    	InputStream in = loader.getResourceAsStream(path);
+    	if (in == null) {
+    		in = getClass().getClassLoader().getResourceAsStream(path);
+    	}
+    	return in;
+    }
+
+    private URL getResource_(ClassLoader loader, String path) {
+    	URL res = loader.getResource(path);
+    	if (res == null) {
+    		res = getClass().getClassLoader().getResource(path);
+    	}
+    	return res;
+    }
+    
 }

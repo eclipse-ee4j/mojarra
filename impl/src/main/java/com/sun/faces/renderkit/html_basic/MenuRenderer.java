@@ -82,7 +82,7 @@ import jakarta.faces.model.SelectItem;
 import jakarta.faces.model.SelectItemGroup;
 
 /**
- * <B>MenuRenderer</B> is a class that renders the current value of <code>UISelectOne<code> or <code>UISelectMany<code>
+ * <B>MenuRenderer</B> is a class that renders the current value of <code>UISelectOne</code> or <code>UISelectMany</code>
  * component as a list of menu options.
  */
 public class MenuRenderer extends HtmlBasicInputRenderer {
@@ -689,13 +689,18 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
      */
     protected Collection<Object> createCollection(Collection<Object> collection, Class<? extends Collection<Object>> fallBackType) {
 
-        @SuppressWarnings("unchecked")
-        Class<? extends Collection<Object>> lookupClass = collection != null ? (Class<? extends Collection<Object>>) collection.getClass() : fallBackType;
+        Class<?> lookupClass = fallBackType;
+        if (collection != null) {
+            lookupClass = collection.getClass();
+            if (lookupClass.getName().equals(Arrays.class.getName() + "$ArrayList")) {
+                lookupClass = ArrayList.class;
+            }
+        }
 
         if (!lookupClass.isInterface() && !isAbstract(lookupClass.getModifiers())) {
             try {
-                return lookupClass.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
+                return (Collection<Object>) lookupClass.getDeclaredConstructor().newInstance();
+            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
                 if (logger.isLoggable(SEVERE)) {
                     logger.log(SEVERE, "Unable to create new Collection instance for type " + lookupClass.getName(), e);
                 }

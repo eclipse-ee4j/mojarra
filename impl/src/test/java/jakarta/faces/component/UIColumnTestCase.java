@@ -59,37 +59,9 @@ public class UIColumnTestCase extends UIComponentBaseTestCase {
     }
 
     // ------------------------------------------------- Individual Test Methods
-    // Test attribute-property transparency
-    @Override
-    public void testAttributesTransparency() {
-        super.testAttributesTransparency();
-        UIColumn column = (UIColumn) component;
-    }
-
     // Suppress lifecycle tests since we do not have a renderer
     @Override
     public void testLifecycleManagement() {
-    }
-
-    // Test a pristine UIColumn instance
-    @Override
-    public void testPristine() {
-        super.testPristine();
-        UIColumn column = (UIColumn) component;
-    }
-
-    // Test setting properties to invalid values
-    @Override
-    public void testPropertiesInvalid() throws Exception {
-        super.testPropertiesInvalid();
-        UIColumn column = (UIColumn) component;
-    }
-
-    // Test setting properties to valid values
-    @Override
-    public void testPropertiesValid() throws Exception {
-        super.testPropertiesValid();
-        UIColumn column = (UIColumn) component;
     }
 
     // --------------------------------------------------------- Support Methods

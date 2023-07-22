@@ -70,7 +70,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
     List<Pattern> excludePatterns;
     private long creationTime;
     private long maxAge;
-    private WebConfiguration webconfig;
+    private final WebConfiguration webconfig;
 
     // ------------------------------------------------------------ Constructors
 
@@ -203,7 +203,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
     @Override
     public boolean isResourceRequest(FacesContext context) {
 
-        Boolean isResourceRequest = (Boolean) RequestStateManager.get(context, RESOURCE_REQUEST);
+        Boolean isResourceRequest = RequestStateManager.get(context, RESOURCE_REQUEST);
         if (isResourceRequest == null) {
             String resourceId = normalizeResourceRequest(context);
             isResourceRequest = resourceId != null ? resourceId.startsWith(RESOURCE_IDENTIFIER) : FALSE;
@@ -220,9 +220,9 @@ public class ResourceHandlerImpl extends ResourceHandler {
         String contentType = getContentType(FacesContext.getCurrentInstance(), resourceName);
         if (null != contentType) {
             contentType = contentType.toLowerCase();
-            if (-1 != contentType.indexOf("javascript")) {
+            if (contentType.contains("javascript")) {
                 rendererType = "jakarta.faces.resource.Script";
-            } else if (-1 != contentType.indexOf("css")) {
+            } else if (contentType.contains("css")) {
                 rendererType = "jakarta.faces.resource.Stylesheet";
             }
         }
@@ -312,7 +312,11 @@ public class ResourceHandlerImpl extends ResourceHandler {
                     }
 
                 } catch (IOException ioe) {
-                    send404(context, resourceName, libraryName, ioe, true);
+                    if (isConnectionAbort(ioe)) { // to be removed, when the exception is standardised in servlet.
+                        send404(context, resourceName, libraryName, false);
+                    } else {
+                        send404(context, resourceName, libraryName, ioe, true);
+                    }
                 } finally {
                     if (out != null) {
                         try {
@@ -334,6 +338,24 @@ public class ResourceHandlerImpl extends ResourceHandler {
             send404(context, resourceName, libraryName, true);
         }
 
+    }
+
+    private static boolean isConnectionAbort(IOException ioe) {
+        String exceptionClassName = ioe.getClass().getCanonicalName();
+
+        if (exceptionClassName.equals("org.apache.catalina.connector.ClientAbortException") ||
+                exceptionClassName.equals("org.eclipse.jetty.io.EofException")) {
+            return true;
+        }
+
+        String exceptionMessage = ioe.getMessage();
+
+        if (exceptionMessage == null) {
+            return false;
+        }
+
+        String lowercasedExceptionMessage = exceptionMessage.toLowerCase();
+        return lowercasedExceptionMessage.contains("connection") && lowercasedExceptionMessage.contains("abort"); // #5264
     }
 
     private boolean libraryNameIsSafe(String libraryName) {

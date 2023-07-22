@@ -401,7 +401,7 @@ public class UIViewParameter extends UIInput {
             // if converter attribute set, try to acquire a converter
             // using its class type.
 
-            Class converterType = currentValue.getClass();
+            Class<?> converterType = currentValue.getClass();
             c = context.getApplication().createConverter(converterType);
 
             // if there is no default converter available for this identifier,
@@ -459,9 +459,9 @@ public class UIViewParameter extends UIInput {
 
     public static class Reference {
 
-        private StateHolderSaver saver;
-        private int indexInParent;
-        private String viewIdAtTimeOfConstruction;
+        private final StateHolderSaver saver;
+        private final int indexInParent;
+        private final String viewIdAtTimeOfConstruction;
 
         /**
          * <p class="changed_added_2_0">

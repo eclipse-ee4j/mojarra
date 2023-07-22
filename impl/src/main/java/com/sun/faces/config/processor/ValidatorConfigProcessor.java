@@ -74,9 +74,6 @@ public class ValidatorConfigProcessor extends AbstractConfigProcessor {
 
     // -------------------------------------------- Methods from ConfigProcessor
 
-    /**
-     * @see ConfigProcessor#process(jakarta.servlet.ServletContext,com.sun.faces.config.manager.documents.DocumentInfo[])
-     */
     @Override
     public void process(ServletContext servletContext, FacesContext facesContext, DocumentInfo[] documentInfos) throws Exception {
 
@@ -84,12 +81,12 @@ public class ValidatorConfigProcessor extends AbstractConfigProcessor {
         // via config files take precedence
         processAnnotations(facesContext, FacesValidator.class);
 
-        for (int i = 0; i < documentInfos.length; i++) {
+        for (DocumentInfo documentInfo : documentInfos) {
             if (LOGGER.isLoggable(FINE)) {
-                LOGGER.log(FINE, format("Processing validator elements for document: ''{0}''", documentInfos[i].getSourceURI()));
+                LOGGER.log(FINE, format("Processing validator elements for document: ''{0}''", documentInfo.getSourceURI()));
             }
 
-            Document document = documentInfos[i].getDocument();
+            Document document = documentInfo.getDocument();
             String namespace = document.getDocumentElement().getNamespaceURI();
             NodeList validators = document.getDocumentElement().getElementsByTagNameNS(namespace, VALIDATOR);
 
@@ -104,7 +101,6 @@ public class ValidatorConfigProcessor extends AbstractConfigProcessor {
     // --------------------------------------------------------- Private Methods
 
     private void processDefaultValidatorIds() {
-
         Application app = getApplication();
         Map<String, String> defaultValidatorInfo = app.getDefaultValidatorInfo();
         for (Map.Entry<String, String> info : defaultValidatorInfo.entrySet()) {
@@ -125,7 +121,6 @@ public class ValidatorConfigProcessor extends AbstractConfigProcessor {
     }
 
     private void addValidators(FacesContext facesContext, NodeList validators, String namespace) throws XPathExpressionException {
-
         Application application = getApplication();
         Verifier verifier = Verifier.getCurrentInstance();
         for (int i = 0, size = validators.getLength(); i < size; i++) {

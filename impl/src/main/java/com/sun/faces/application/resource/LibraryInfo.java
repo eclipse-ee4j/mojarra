@@ -20,15 +20,15 @@ package com.sun.faces.application.resource;
  * <p>
  * <code>LibraryInfo</code> is a simple wrapper class for information pertinent to building a complete resource path
  * using a Library and/or Contract.
- * <p>
+ * </p>
  */
 public class LibraryInfo {
 
-    private String name;
-    private VersionInfo version;
+    private final String name;
+    private final VersionInfo version;
     private String localePrefix;
     private String contract;
-    private ResourceHelper helper;
+    private final ResourceHelper helper;
     private String path;
     private String nonLocalizedPath;
 

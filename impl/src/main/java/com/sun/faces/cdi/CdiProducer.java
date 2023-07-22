@@ -33,6 +33,7 @@ import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.enterprise.inject.spi.PassivationCapable;
+import jakarta.faces.context.FacesContext;
 
 /**
  * An abstract base class used by the CDI producers for some common functionality.
@@ -48,7 +49,8 @@ abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializab
 
     private String id = this.getClass().getName();
     private String name;
-    private Class<?> beanClass = Object.class;
+    // for synthetic beans, the beanClass defaults to the extension that registers them
+    private final Class<?> beanClass = CdiExtension.class;
     private Set<Type> types = singleton(Object.class);
     private Set<Annotation> qualifiers = unmodifiableSet(asSet(new DefaultAnnotationLiteral(), new AnyAnnotationLiteral()));
     private Class<? extends Annotation> scope = Dependent.class;
@@ -100,14 +102,14 @@ abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializab
 
     @Override
     public T create(CreationalContext<T> creationalContext) {
-        return create.apply(creationalContext);
+        return FacesContext.getCurrentInstance() != null ? create.apply(creationalContext) : null;
     }
 
     /**
      * Destroy the instance.
      *
      * <p>
-     * Since most artifact that the sub classes are producing are artifacts that the JSF runtime really is managing the
+     * Since most artifact that the sub classes are producing are artifacts that the Faces runtime really is managing the
      * destroy method here does not need to do anything.
      * </p>
      *
@@ -163,19 +165,8 @@ abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializab
         return this;
     }
 
-    protected CdiProducer<T> beanClass(Class<?> beanClass) {
-        this.beanClass = beanClass;
-        return this;
-    }
-
     protected CdiProducer<T> types(Type... types) {
         this.types = asSet(types);
-        return this;
-    }
-
-    protected CdiProducer<T> beanClassAndType(Class<?> beanClass) {
-        beanClass(beanClass);
-        types(beanClass);
         return this;
     }
 
@@ -195,7 +186,7 @@ abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializab
     }
 
     @SafeVarargs
-    protected static <T> Set<T> asSet(T... a) {
+    private static <T> Set<T> asSet(T... a) {
         return new HashSet<>(asList(a));
     }
 

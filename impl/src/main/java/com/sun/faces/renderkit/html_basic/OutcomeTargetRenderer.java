@@ -127,7 +127,10 @@ public abstract class OutcomeTargetRenderer extends HtmlBasicRenderer {
         }
 
         if (navCase == null && logger.isLoggable(Level.WARNING)) {
-            logger.log(Level.WARNING, "faces.outcometarget.navigation.case.not.resolved", component.getId());
+            String componentId = component.getId();
+            String viewId = context.getViewRoot().getViewId();
+            Object[] logParams = new Object[] {componentId, outcome, viewId};
+            logger.log(Level.WARNING, "faces.outcometarget.navigation.case.not.resolved", logParams);
         }
         return navCase;
     }

@@ -52,10 +52,10 @@ public class ApplicationResourceBundle {
      * resource
      */
     public ApplicationResourceBundle(String baseName, Map<String, String> displayNames, Map<String, String> descriptions) {
-
         if (baseName == null) {
             throw new IllegalArgumentException();
         }
+        
         this.baseName = baseName;
         this.displayNames = displayNames;
         this.descriptions = descriptions;
@@ -74,10 +74,9 @@ public class ApplicationResourceBundle {
 
     /**
      * @param locale a <code>Locale</code>
-     * @return return the <code>ResourceBundle</code> associated with the specified </code>locale</code>
+     * @return return the <code>ResourceBundle</code> associated with the specified <code>locale</code>
      */
     public ResourceBundle getResourceBundle(Locale locale) {
-
         if (locale == null) {
             locale = Locale.getDefault();
         }
@@ -99,10 +98,9 @@ public class ApplicationResourceBundle {
 
     /**
      * @param locale a <code>Locale</code>
-     * @return a text of a <code>display-name</code> element associated with the specified </code>locale</code>
+     * @return a text of a <code>display-name</code> element associated with the specified <code>locale</code>
      */
     public String getDisplayName(Locale locale) {
-
         String displayName = null;
         if (displayNames != null) {
             displayName = queryMap(locale, displayNames);
@@ -113,10 +111,9 @@ public class ApplicationResourceBundle {
 
     /**
      * @param locale a <code>Locale</code>
-     * @return a text of a <code>description</code> element associated with the specified </code>locale</code>
+     * @return a text of a <code>description</code> element associated with the specified <code>locale</code>
      */
     public String getDescription(Locale locale) {
-
         String description = null;
         if (descriptions != null) {
             description = queryMap(locale, descriptions);
@@ -137,7 +134,6 @@ public class ApplicationResourceBundle {
      * @return localized text, if any
      */
     private String queryMap(Locale locale, Map<String, String> map) {
-
         if (locale == null) {
             return map.get(DEFAULT_KEY);
         }

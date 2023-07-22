@@ -18,6 +18,7 @@ package com.sun.faces.facelets;
 
 import java.io.IOException;
 
+import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
@@ -40,11 +41,13 @@ public interface TemplateClient {
      * @param ctx the FaceletContext of <i>your</i> instance, not the templates'
      * @param parent current UIComponent instance to be applied
      * @param name the String name or null if the whole body should be included
+     * 
      * @return true if this client matched/applied the definition for the passed name
-     * @throws IOException
-     * @throws FacesException
-     * @throws FaceletException
-     * @throws ELException
+     * 
+     * @throws IOException when an I/O exception occurs
+     * @throws FaceletException when a Facelet exception occurs
+     * @throws FacesException when a Faces exception occurs
+     * @throws ELException when an EL exception occurs
      */
     boolean apply(FaceletContext ctx, UIComponent parent, String name) throws IOException;
 

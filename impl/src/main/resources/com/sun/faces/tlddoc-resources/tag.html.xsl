@@ -125,13 +125,13 @@
             Tag <xsl:value-of select="javaee:name"/></h2>
             <hr/>
             <xsl:value-of select="javaee:description" disable-output-escaping="yes"/><br/>
-            <p/>
+            
             <xsl:if test="javaee:example!=''">
               <b>Example:</b><br/>
               <pre>
 <xsl:value-of select="javaee:example"/>              
               </pre>
-              <p/>
+              
             </xsl:if>
             <hr/>
             
@@ -198,7 +198,7 @@
               </tr>
             </table>
             <br/>
-            <p/>
+            
             
             <!-- Attribute Information -->
             <table border="1" cellpadding="3" cellspacing="0" width="100%">
@@ -226,7 +226,7 @@
               </xsl:choose>
             </table>
             <br/>
-            <p/>
+            
 
             <!-- Variable Information -->
             <table border="1" cellpadding="3" cellspacing="0" width="100%">
@@ -254,7 +254,7 @@
               </xsl:choose>
             </table>
             <br/>
-            <p/>
+            
             
             <!-- =========== START OF NAVBAR =========== -->
             <a name="navbar_bottom"><!-- --></a>

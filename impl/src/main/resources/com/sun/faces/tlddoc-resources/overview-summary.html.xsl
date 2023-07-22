@@ -95,7 +95,7 @@
             </tr>
             <xsl:apply-templates select="/javaee:tlds/javaee:taglib"/>
           </table>
-          <p/>
+          
           <hr/>
           <!-- =========== START OF NAVBAR =========== -->
           <a name="navbar_bottom"><!-- --></a>

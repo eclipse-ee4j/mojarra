@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2022 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -301,7 +302,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * </p>
      *
      * <p>
-     * This method must be overridden and implemented for components that comply with Jakarta Server Faces 1.2 and later.
+     * This method must be overridden and implemented for components that comply with Jakarta Faces 1.2 and later.
      * </p>
      *
      * @param name Name of the attribute or property for which to retrieve a {@link ValueExpression}
@@ -339,7 +340,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * </p>
      *
      * <p>
-     * This method must be overridden and implemented for components that comply with Jakarta Server Faces 1.2 and later.
+     * This method must be overridden and implemented for components that comply with Jakarta Faces 1.2 and later.
      * </p>
      *
      * @since 1.2
@@ -776,7 +777,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * Return a flag indicating whether this component is responsible for rendering its child components. The default
      * implementation in {@link UIComponentBase#getRendersChildren} tries to find the renderer for this component. If it
      * does, it calls {@link Renderer#getRendersChildren} and returns the result. If it doesn't, it returns false. As of
-     * version 1.2 of the Jakarta Server Faces Specification, component authors are encouraged to return <code>true</code>
+     * version 1.2 of the Jakarta Faces Specification, component authors are encouraged to return <code>true</code>
      * from this method and rely on {@link UIComponentBase#encodeChildren}.
      * </p>
      *
@@ -797,7 +798,8 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * {@link jakarta.faces.application.ResourceHandler#createResource(java.lang.String,java.lang.String)}, passing the
      * derived <em>resourceName</em> and <em>libraryName</em>. Note that this will automatically allow for the localization
      * of the <code>ResourceBundle</code> due to the localization facility implemented in <code>createResource</code>, which
-     * is specified in section 2.6.1.3 of the spec prose document. If the resultant {@link Resource} exists and can be
+     * is specified in section 2.6.1.3 "Resource Identifiers" of the Jakarta Faces Specification Document.
+     * If the resultant {@link Resource} exists and can be
      * found, the <code>InputStream</code> for the resource is used to create a <code>ResourceBundle</code>. If either of
      * the two previous steps for obtaining the <code>ResourceBundle</code> for this component is successful, the
      * <code>ResourceBundle</code> is wrapped in a <code>Map&lt;String,String&gt;</code> and returned. Otherwise
@@ -836,7 +838,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
         return resourceBundleMap;
     }
 
-    // This is necessary for Jakarta Server Faces components that extend from UIComponent
+    // This is necessary for Jakarta Faces components that extend from UIComponent
     // directly rather than extending from UIComponentBase. Such components
     // may need to have implementations provided for methods that originated
     // from a spec version more recent than the version with which the component
@@ -1191,7 +1193,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      *
      * @param event The {@link FacesEvent} to be broadcast
      *
-     * @throws AbortProcessingException Signal the Jakarta Server Faces implementation that no further processing on the
+     * @throws AbortProcessingException Signal the Jakarta Faces implementation that no further processing on the
      * current event should be performed
      * @throws IllegalArgumentException if the implementation class of this {@link FacesEvent} is not supported by this
      * component
@@ -1233,6 +1235,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * UIComponent.visitTree() implementations must call UIComponent.pushComponentToEL() before performing the visit and
      * UIComponent.popComponentFromEL() after the visit.
      * </p>
+     * </div>
      *
      * @param visitContext the <code>VisitContext</code> for this visit
      * @param callback the <code>VisitCallback</code> instance whose <code>visit</code> method will be called for each node
@@ -1240,8 +1243,6 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * @return component implementations may return <code>true</code> to indicate that the tree visit is complete (eg. all
      * components that need to be visited have been visited). This results in the tree visit being short-circuited such that
      * no more components are visited.
-     *
-     * </div>
      *
      * @see VisitContext#invokeVisitCallback VisitContext.invokeVisitCallback()
      *
@@ -1450,7 +1451,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
     /**
      * <p class="changed_added_2_0">
      * Push the current <code>UIComponent</code> <code>this</code> to the {@link FacesContext} attribute map
-     * saving the previous <code>UIComponent</code> 
+     * saving the previous <code>UIComponent</code>
      * for a subsequent call to {@link #popComponentFromEL}.
      * </p>
      *
@@ -2159,7 +2160,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
 
             @Override
             public String toString() {
-                StringBuffer sb = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
                 Iterator<Map.Entry<String, String>> entries = entrySet().iterator();
                 Map.Entry<String, String> cur;
                 while (entries.hasNext()) {
@@ -2376,12 +2377,5 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
 
         return resourceBundle != null ? result : null;
     }
-
-    // The set of ValueExpressions for this component, keyed by property
-    // name This collection is lazily instantiated
-    // The set of ValueExpressions for this component, keyed by property
-    // name This collection is lazily instantiated
-    @Deprecated
-    protected Map<String, ValueExpression> bindings = null;
 
 }

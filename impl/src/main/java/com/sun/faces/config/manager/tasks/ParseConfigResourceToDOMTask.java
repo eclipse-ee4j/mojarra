@@ -17,10 +17,9 @@
 package com.sun.faces.config.manager.tasks;
 
 import static com.sun.faces.RIConstants.CHAR_ENCODING;
-import static com.sun.faces.RIConstants.JAVAEE_XMLNS;
+import static com.sun.faces.RIConstants.DOCUMENT_NAMESPACE;
 import static com.sun.faces.config.manager.DbfFactory.FACES_ENTITY_RESOLVER;
 import static com.sun.faces.config.manager.DbfFactory.FACES_ERROR_HANDLER;
-import static com.sun.faces.config.manager.FacesSchema.Schemas.FACELETS_1_0_DEFAULT_NS;
 import static com.sun.faces.config.manager.FacesSchema.Schemas.FACES_CONFIG_1_X_DEFAULT_NS;
 import static com.sun.faces.config.manager.FacesSchema.Schemas.JAKARTAEE_SCHEMA_DEFAULT_NS;
 import static com.sun.faces.config.manager.FacesSchema.Schemas.JAVAEE_SCHEMA_DEFAULT_NS;
@@ -68,8 +67,7 @@ import com.sun.faces.util.Timer;
 import jakarta.servlet.ServletContext;
 
 /**
- * This <code>Callable</code> will be used by
- * {@link ConfigManager#getXMLDocuments(jakarta.servlet.ServletContext, java.util.List, java.util.concurrent.ExecutorService, boolean)}.
+ * This <code>Callable</code> will be used by <code>getXMLDocuments</code>
  * It represents a single configuration resource (such as faces-config.xml) to be parsed into a DOM.
  */
 public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
@@ -91,15 +89,10 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
      */
     private static final String FACES_TO_1_1_PRIVATE_XSL = "/com/sun/faces/faces1_0-1_1toSchema.xsl";
 
-    /**
-     * Stylesheet to convert 1.0 facelet-taglib documents from 1.0 to 2.0 for schema validation purposes.
-     */
-    private static final String FACELETS_TO_2_0_XSL = "/com/sun/faces/facelets1_0-2_0toSchema.xsl";
-
-    private ServletContext servletContext;
-    private URI documentURI;
+    private final ServletContext servletContext;
+    private final URI documentURI;
     private DocumentBuilderFactory factory;
-    private boolean validating;
+    private final boolean validating;
 
 
 
@@ -168,7 +161,7 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
         String documentNS = null;
         if (configDocument == null) {
             if (uriIsFlowDefinition(documentURI)) {
-                documentNS = JAVAEE_XMLNS;
+                documentNS = DOCUMENT_NAMESPACE;
                 configDocument = synthesizeEmptyFlowDefinition(documentURI);
             }
         } else {
@@ -327,9 +320,6 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
         switch (documentNS) {
             case FACES_CONFIG_1_X_DEFAULT_NS:
                 xslToApply = FACES_TO_1_1_PRIVATE_XSL;
-                break;
-            case FACELETS_1_0_DEFAULT_NS:
-                xslToApply = FACELETS_TO_2_0_XSL;
                 break;
             default:
                 throw new IllegalStateException();

@@ -26,7 +26,6 @@ import java.util.Map;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.facelets.impl.DefaultResourceResolver;
 import com.sun.faces.util.Util;
 
 import jakarta.faces.FacesException;
@@ -92,7 +91,7 @@ public class FacesContextFactoryImpl extends FacesContextFactory {
                 webConfig.isOptionEnabled(ViewRootPhaseListenerQueuesException) ? Boolean.TRUE : Boolean.FALSE);
         attrs.put(EnableValidateWholeBean.getQualifiedName(), webConfig.isOptionEnabled(EnableValidateWholeBean) ? Boolean.TRUE : Boolean.FALSE);
 
-        String facesConfigVersion = "" + appMap.get(RIConstants.FACES_CONFIG_VERSION);
+        String facesConfigVersion = String.valueOf(appMap.get(RIConstants.FACES_CONFIG_VERSION));
         attrs.put(RIConstants.FACES_CONFIG_VERSION, facesConfigVersion);
     }
 

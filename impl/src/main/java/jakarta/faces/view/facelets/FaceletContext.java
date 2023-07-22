@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  * Copyright 2005-2007 The Apache Software Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,9 +21,11 @@ import java.io.IOException;
 import java.net.URL;
 
 import jakarta.el.ELContext;
+import jakarta.el.ELException;
 import jakarta.el.ExpressionFactory;
 import jakarta.el.FunctionMapper;
 import jakarta.el.VariableMapper;
+import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
@@ -37,8 +39,9 @@ import jakarta.faces.context.FacesContext;
  */
 public abstract class FaceletContext extends ELContext {
 
-    // The key in the FacesContext attribute map
-    // for the FaceletContext instance.
+    /**
+     * The key in the FacesContext attribute map for the FaceletContext instance.
+     */
     public static final String FACELET_CONTEXT_KEY = "jakarta.faces.FACELET_CONTEXT".intern();
 
     /**
@@ -74,7 +77,6 @@ public abstract class FaceletContext extends ELContext {
      *
      * @since 2.0
      */
-
     public abstract ExpressionFactory getExpressionFactory();
 
     /**
@@ -135,12 +137,9 @@ public abstract class FaceletContext extends ELContext {
      * @param relativePath the path of the resource containing the facelet markup, relative to the current markup
      *
      * @throws IOException if unable to load <code>relativePath</code>
-     *
      * @throws FaceletException if unable to parse the markup loaded from <code>relativePath</code>
-     *
-     * @throws jakarta.faces.FacesException if unable to create child <code>UIComponent</code> instances
-     *
-     * @throws jakarta.el.ELException if any of the expressions in the markup loaded from <code>relativePath</code> fail
+     * @throws FacesException if unable to create child <code>UIComponent</code> instances
+     * @throws ELException if any of the expressions in the markup loaded from <code>relativePath</code> fail
      *
      * @since 2.0
      */
@@ -152,16 +151,12 @@ public abstract class FaceletContext extends ELContext {
      * </p>
      *
      * @param parent the <code>UIComponent</code> that will be the parent of any components in the included facelet.
-     *
      * @param absolutePath the absolute path to the resource containing the facelet markup
      *
      * @throws IOException if unable to load <code>relativePath</code>
-     *
      * @throws FaceletException if unable to parse the markup loaded from <code>relativePath</code>
-     *
-     * @throws jakarta.faces.FacesException if unable to create child <code>UIComponent</code> instances
-     *
-     * @throws jakarta.el.ELException if any of the expressions in the markup loaded from <code>relativePath</code> fail
+     * @throws FacesException if unable to create child <code>UIComponent</code> instances
+     * @throws ELException if any of the expressions in the markup loaded from <code>relativePath</code> fail
      *
      */
     public abstract void includeFacelet(UIComponent parent, URL absolutePath) throws IOException;

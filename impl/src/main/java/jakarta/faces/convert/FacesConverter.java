@@ -26,6 +26,7 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.inject.Qualifier;
 
 /**
@@ -35,7 +36,9 @@ import jakarta.inject.Qualifier;
  * <em>converter-id</em>, the value of the {@link #forClass} attribute is taken to be <em>converter-for-class</em> and
  * the fully qualified class name of the class to which this annotation is attached is taken to be the
  * <em>converter-class</em>. The implementation must guarantee that for each class annotated with
- * <code>FacesConverter</code>, found with the algorithm in section 11.5 of the spec prose document, the proper variant of
+ * <code>FacesConverter</code>, found with the algorithm in 
+ * section 11.4 "Annotations that correspond to and may take the place of entries in the Application Configuration Resources" of the Jakarta Faces Specification Document,
+ * the proper variant of
  * <code>Application.addConverter()</code> is called. If <em>converter-id</em> is not the empty string,
  * {@link jakarta.faces.application.Application#addConverter(java.lang.String,java.lang.String)} is called, passing the
  * derived <em>converter-id</em> as the first argument and the derived <em>converter-class</em> as the second argument.
@@ -106,4 +109,50 @@ public @interface FacesConverter {
      */
 
     boolean managed() default false;
+
+    /**
+     * <p class="changed_added_4_0">
+     * Supports inline instantiation of the {@link FacesConverter} qualifier.
+     * </p>
+     *
+     * @since 4.0
+     */
+    public static final class Literal extends AnnotationLiteral<FacesConverter> implements FacesConverter {
+
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * Instance of the {@link FacesConverter} qualifier.
+         */
+        public static final Literal INSTANCE = of("", Object.class, false);
+
+        private final String value;
+        private final Class<?> forClass;
+        private final boolean managed;
+
+        public static Literal of(String value, Class forClass, boolean managed) {
+            return new Literal(value, forClass, managed);
+        }
+
+        private Literal(String value, Class forClass, boolean managed) {
+            this.value = value;
+            this.forClass = forClass;
+            this.managed = managed;
+        }
+
+        @Override
+        public String value() {
+            return value;
+        }
+
+        @Override
+        public Class forClass() {
+            return forClass;
+        }
+
+        @Override
+        public boolean managed() {
+            return managed;
+        }
+    }
 }

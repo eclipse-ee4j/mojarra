@@ -59,7 +59,6 @@ public final class ByteArrayGuardAESCTR {
     private static final Logger LOGGER = FacesLogger.RENDERKIT.getLogger();
 
     private static final int KEY_LENGTH = 128;
-    private static final int IV_LENGTH = 16;
 
     private static final String KEY_ALGORITHM = "AES";
     private static final String CIPHER_CODE = "AES/CTR/NoPadding";
@@ -89,8 +88,8 @@ public final class ByteArrayGuardAESCTR {
      * encrypted data Returns a byte array consisting of the following concatenated together: |MAC for cnrypted Data | MAC
      * for Init Vector | Encrypted Data |
      *
-     * @param bytes The byte array to be encrypted.
-     * @return the encrypted byte array.
+     * @param value The value to be encrypted.
+     * @return the encrypted value.
      */
     public String encrypt(String value) {
         String securedata = null;

@@ -42,8 +42,8 @@ import jakarta.faces.context.FacesContext;
  * <p>
  * ResourceHandler defines a path based packaging convention for resources. The default implementation of
  * <code>ResourceHandler</code> must support packaging resources in the classpath or in the web application root. See
- * section 2.6.1 of the spec prose document <a href="../../../overview-summary.html#prose_document">linked in the
- * overview summary</a> for the normative specification of packaging resources.
+ * section 2.6.1 "Packaging Resources" of the Jakarta Faces Specification Document
+ * for the normative specification of packaging resources.
  * </p>
  *
  * <p>
@@ -128,7 +128,7 @@ import jakarta.faces.context.FacesContext;
  * <blockquote>
  *
  * <p>
- * During the handling of resource requests, the Jakarta Server Faces run-time will be called upon to decode a resource
+ * During the handling of resource requests, the Jakarta Faces run-time will be called upon to decode a resource
  * in such a way as to serve up the bytes of the resource to the user-agent. This behavior is orchestrated by
  * {@link #handleResourceRequest}, which calls {@link Resource#getInputStream} to obtain bytes of the resource. See
  * {@link #handleResourceRequest} for the complete specification.
@@ -157,7 +157,7 @@ public abstract class ResourceHandler {
 
     /**
      * <p class="changed_added_2_3">
-     * Resource name of Jakarta Server Faces script resource.
+     * Resource name of Jakarta Faces script resource.
      * </p>
      *
      * @since 2.3
@@ -168,7 +168,7 @@ public abstract class ResourceHandler {
 
     /**
      * <p class="changed_modified_4_0">
-     * Resource name of Jakarta Server Faces script resource.
+     * Resource name of Jakarta Faces script resource.
      * </p>
      *
      * @since 2.3
@@ -177,7 +177,7 @@ public abstract class ResourceHandler {
 
     /**
      * <p class="changed_added_2_3">
-     * Library name of Jakarta Server Faces script resource.
+     * Library name of Jakarta Faces script resource.
      * </p>
      *
      * @since 2.3
@@ -188,7 +188,7 @@ public abstract class ResourceHandler {
 
     /**
      * <p class="changed_modified_4_0">
-     * Library name of Jakarta Server Faces script resource.
+     * Library name of Jakarta Faces script resource.
      * </p>
      *
      * @since 2.3
@@ -271,8 +271,8 @@ public abstract class ResourceHandler {
      * <div class="changed_added_2_0">
      *
      * <p>
-     * The algorithm specified in section 2.6.1.4 of the spec prose document
-     * <a href="../../../overview-summary.html#prose_document">linked in the overview summary</a> must be executed to create
+     * The algorithm specified in section 2.6.1.4 "Libraries of Localized and Versioned Resources" of the Jakarta Faces Specification Document
+     * must be executed to create
      * the <code>Resource</code>. <span class="changed_added_2_2">New requirements were introduced in version 2.2 of the
      * specification. For historical reasons, this method operate correctly when the argument {@code resourceName} is of the
      * form {@code libraryName/resourceName}, even when {@code resourceName} contains '/' characters. </span>
@@ -311,8 +311,8 @@ public abstract class ResourceHandler {
      *
      * <li>
      * <p>
-     * Considering resource library contracts (at the locations specified in the spec prose document section <em>Resource
-     * Library Contracts</em> in the <em>Request Processing Lifecycle</em> chapter).
+     * Considering resource library contracts (at the locations specified in the 
+     * Jakarta Faces Specification Document section 2.7 "Resource Library Contracts").
      * </p>
      * </li>
      *
@@ -324,8 +324,8 @@ public abstract class ResourceHandler {
      *
      * <li>
      * <p>
-     * Considering faces flows (at the locations specified in the spec prose document section <em>Faces Flows</em> in the
-     * <em>Using Jakarta Server Faces in Web Applications</em> chapter).
+     * Considering faces flows (at the locations specified in the 
+     * Jakarta Faces Specification Document section 11.3.3 "Faces Flows").
      * </p>
      * </li>
      *
@@ -421,8 +421,8 @@ public abstract class ResourceHandler {
      * <div class="changed_added_2_2">
      *
      * <p>
-     * The resource must be identified according to the specification in 2.6.1.3 of the spec prose document
-     * <a href="../../../overview-summary.html#prose_document">linked in the overview summary</a>. New requirements were
+     * The resource must be identified according to the specification in 
+     * section 2.6.1.3 "Resource Identifiers" of the Jakarta Faces Specification Document. New requirements were
      * introduced in version 2.2 of the specification.
      * </p>
      *
@@ -451,8 +451,8 @@ public abstract class ResourceHandler {
      * <div class="changed_added_2_0">
      *
      * <p>
-     * The algorithm specified in section 2.6.1.4 of the spec prose document
-     * <a href="../../../overview-summary.html#prose_document">linked in the overview summary</a> must be executed to create
+     * The algorithm specified in section 2.6.1.4 "Libraries of Localized and Versioned Resources" of the Jakarta Faces Specification Document
+     * must be executed to create
      * the <code>Resource</code>. <span class="changed_added_2_2">New requirements were introduced in version 2.2 of the
      * specification.</span>
      * </p>
@@ -482,8 +482,8 @@ public abstract class ResourceHandler {
      * <div class="changed_added_2_0">
      *
      * <p>
-     * The algorithm specified in section 2.6.1.4 of the spec prose document
-     * <a href="../../../overview-summary.html#prose_document">linked in the overview summary</a> must be executed to create
+     * The algorithm specified in section 2.6.1.4 "Libraries of Localized and Versioned Resources" of the Jakarta Faces Specification Document
+     * must be executed to create
      * the <code>Resource</code>. <span class="changed_added_2_2">New requirements were introduced in version 2.2 of the
      * specification.</span>
      * </p>
@@ -513,7 +513,8 @@ public abstract class ResourceHandler {
      * library is found, look for the library without the prefix. This allows developers to avoid duplication of files. For
      * example, consider the case where the developer wants to have a resource library containing a localized image resource
      * and a non-localized script resource. By checking both locations for the existence of the library, along with other
-     * spec changes in section 2.6.1.4, this scenario is enabled.</span>
+     * spec changes in section 2.6.1.4 "Libraries of Localized and Versioned Resources" of the Jakarta Faces Specification Document,
+     * this scenario is enabled.</span>
      * </p>
      *
      * @param libraryName the library name.
@@ -721,7 +722,7 @@ public abstract class ResourceHandler {
      */
     @SuppressWarnings("unchecked")
     public void markResourceRendered(FacesContext context, String resourceName, String libraryName) {
-        String resourceIdentifier = libraryName + ":" + resourceName;
+        String resourceIdentifier = libraryName + ':' + resourceName;
         Set<String> resourceIdentifiers = (Set<String>) context.getAttributes().computeIfAbsent(RESOURCE_IDENTIFIER, k -> new HashSet<>());
         resourceIdentifiers.add(resourceIdentifier);
     }
@@ -741,7 +742,7 @@ public abstract class ResourceHandler {
      */
     @SuppressWarnings("unchecked")
     public boolean isResourceRendered(FacesContext context, String resourceName, String libraryName) {
-        String resourceIdentifier = libraryName + ":" + resourceName;
+        String resourceIdentifier = libraryName + ':' + resourceName;
         Set<String> resourceIdentifiers = (Set<String>) context.getAttributes().get(RESOURCE_IDENTIFIER);
         return resourceIdentifiers != null && resourceIdentifiers.contains(resourceIdentifier);
     }

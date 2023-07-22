@@ -17,10 +17,8 @@
  */
 package jakarta.faces.component.html;
 
-import java.util.ArrayList;
-import java.util.List;
+import static jakarta.faces.component.html.HtmlComponentUtils.handleAttribute;
 
-import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIMessage;
 
 /**
@@ -31,8 +29,6 @@ import jakarta.faces.component.UIMessage;
  * </p>
  */
 public class HtmlMessage extends UIMessage {
-
-    private static final String OPTIMIZED_PACKAGE = "jakarta.faces.component.";
 
     public HtmlMessage() {
         super();
@@ -93,7 +89,7 @@ public class HtmlMessage extends UIMessage {
      */
     public void setDir(java.lang.String dir) {
         getStateHelper().put(PropertyKeys.dir, dir);
-        handleAttribute("dir", dir);
+        handleAttribute(this, "dir", dir);
     }
 
     /**
@@ -269,7 +265,7 @@ public class HtmlMessage extends UIMessage {
      */
     public void setLang(java.lang.String lang) {
         getStateHelper().put(PropertyKeys.lang, lang);
-        handleAttribute("lang", lang);
+        handleAttribute(this, "lang", lang);
     }
 
     /**
@@ -307,7 +303,7 @@ public class HtmlMessage extends UIMessage {
      */
     public void setRole(java.lang.String role) {
         getStateHelper().put(PropertyKeys.role, role);
-        handleAttribute("role", role);
+        handleAttribute(this, "role", role);
     }
 
     /**
@@ -333,7 +329,7 @@ public class HtmlMessage extends UIMessage {
      */
     public void setStyle(java.lang.String style) {
         getStateHelper().put(PropertyKeys.style, style);
-        handleAttribute("style", style);
+        handleAttribute(this, "style", style);
     }
 
     /**
@@ -385,7 +381,7 @@ public class HtmlMessage extends UIMessage {
      */
     public void setTitle(java.lang.String title) {
         getStateHelper().put(PropertyKeys.title, title);
-        handleAttribute("title", title);
+        handleAttribute(this, "title", title);
     }
 
     /**
@@ -461,27 +457,6 @@ public class HtmlMessage extends UIMessage {
      */
     public void setWarnStyle(java.lang.String warnStyle) {
         getStateHelper().put(PropertyKeys.warnStyle, warnStyle);
-    }
-
-    private void handleAttribute(String name, Object value) {
-        List<String> setAttributes = (List<String>) getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");
-        if (setAttributes == null) {
-            String cname = this.getClass().getName();
-            if (cname != null && cname.startsWith(OPTIMIZED_PACKAGE)) {
-                setAttributes = new ArrayList<>(6);
-                getAttributes().put("jakarta.faces.component.UIComponentBase.attributesThatAreSet", setAttributes);
-            }
-        }
-        if (setAttributes != null) {
-            if (value == null) {
-                ValueExpression ve = getValueExpression(name);
-                if (ve == null) {
-                    setAttributes.remove(name);
-                }
-            } else if (!setAttributes.contains(name)) {
-                setAttributes.add(name);
-            }
-        }
     }
 
 }

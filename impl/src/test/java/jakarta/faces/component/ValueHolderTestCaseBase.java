@@ -16,10 +16,6 @@
 
 package jakarta.faces.component;
 
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
-import java.util.Map;
-
 import jakarta.faces.component.html.HtmlInputText;
 import jakarta.faces.convert.LongConverter;
 import jakarta.faces.convert.NumberConverter;
@@ -90,21 +86,20 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
                         vh = (ValueHolder) newComp;
                     } else {
                         try {
-                            newComp = ValueHolderTestCaseBase.this.component.getClass().newInstance();
+                            newComp = ValueHolderTestCaseBase.this.component.getClass().getDeclaredConstructor()
+                                    .newInstance();
                             vh = (ValueHolder) newComp;
 
-                        } catch (IllegalAccessException ex) {
-                            fail("Can't instantiate class of " + ValueHolderTestCaseBase.this.component.getClass().getName());
-                        } catch (InstantiationException ex) {
+                        } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException ex) {
                             fail("Can't instantiate class of " + ValueHolderTestCaseBase.this.component.getClass().getName());
                         }
                     }
                     try {
                         boolean result = doTestAttributesTransparency(vh, newComp);
-                        outcomes[threadNum] = new Boolean(result);
+                        outcomes[threadNum] = Boolean.valueOf(result);
                     } catch (Throwable e) {
                         e.printStackTrace();
-                        outcomes[threadNum] = new Boolean(false);
+                        outcomes[threadNum] = Boolean.FALSE;
                     }
                 }
             };
@@ -124,7 +119,7 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
                     foundNull = true;
                 }
             }
-            Thread.currentThread().sleep(500);
+            Thread.sleep(500);
         }
 
         for (i = 0; i < outcomes.length; i++) {
@@ -132,13 +127,6 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
                 fail("Thread " + i + " failed");
             }
         }
-    }
-
-    private void clearDescriptors() throws Exception {
-        Field descriptorsField = UIComponentBase.class.getDeclaredField("descriptors");
-        descriptorsField.setAccessible(true);
-        Map<Class<?>, Map<String, PropertyDescriptor>> descriptors = (Map<Class<?>, Map<String, PropertyDescriptor>>) descriptorsField.get(null);
-        descriptors.clear();
     }
 
     @Override
@@ -189,13 +177,6 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
         // Validate properties
         assertNull("no value", vh.getValue());
         assertNull("no converter", vh.getConverter());
-    }
-
-    // Test setting properties to invalid values
-    @Override
-    public void testPropertiesInvalid() throws Exception {
-        super.testPropertiesInvalid();
-        ValueHolder vh = (ValueHolder) component;
     }
 
     // Test setting properties to valid values

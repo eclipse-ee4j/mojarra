@@ -28,10 +28,10 @@ import com.sun.faces.util.FacesLogger;
 import jakarta.faces.context.FacesContext;
 
 /**
- * <p/>
+ * 
  * <code>ClientResourceInfo</code> is a simple wrapper class for information pertinent to building a complete resource
  * path using a Library.
- * <p/>
+ * 
  */
 public class ClientResourceInfo extends ResourceInfo {
 
@@ -49,6 +49,7 @@ public class ClientResourceInfo extends ResourceInfo {
      * resource will be the same as the {@link ResourceHelper} of the {@link LibraryInfo}.
      *
      * @param library the library containing this resource
+     * @param contract the contract info
      * @param name the resource name
      * @param version the version of this resource (if any)
      * @param compressible if this resource should be compressed
@@ -204,7 +205,7 @@ public class ClientResourceInfo extends ResourceInfo {
         if (library == null && localePrefix != null) {
             sb.append('/').append(localePrefix);
         }
-        // Specialcasing for handling JSF script in uncompressed state
+        // Specialcasing for handling Faces script in uncompressed state
         if (isDevStage && FACES_SCRIPT_LIBRARY_NAME.equals(libraryName) && FACES_SCRIPT_RESOURCE_NAME.equals(name)) {
             sb.append('/').append("faces-uncompressed.js");
         } else {

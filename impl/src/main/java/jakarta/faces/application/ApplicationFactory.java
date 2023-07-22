@@ -21,12 +21,12 @@ import jakarta.faces.FacesWrapper;
 /**
  * <p>
  * <strong class="changed_modified_2_0 changed_modified_2_3">ApplicationFactory</strong> is a factory object that
- * creates (if needed) and returns {@link Application} instances. Implementations of Jakarta Server Faces must provide
+ * creates (if needed) and returns {@link Application} instances. Implementations of Jakarta Faces must provide
  * at least a default implementation of {@link Application}.
  * </p>
  *
  * <p>
- * There must be one {@link ApplicationFactory} instance per web application that is utilizing Jakarta Server Faces.
+ * There must be one {@link ApplicationFactory} instance per web application that is utilizing Jakarta Faces.
  * This instance can be acquired, in a portable manner, by calling:
  * </p>
  *
@@ -91,9 +91,9 @@ public abstract class ApplicationFactory implements FacesWrapper<ApplicationFact
      * Replace the {@link Application} instance that will be returned for this web application.
      * </p>
      *
-     * @throws NullPointerException if <code>application</code> is <code>null</code>.
-     *
      * @param application The replacement {@link Application} instance
+     *
+     * @throws NullPointerException if <code>application</code> is <code>null</code>.
      */
     public abstract void setApplication(Application application);
 

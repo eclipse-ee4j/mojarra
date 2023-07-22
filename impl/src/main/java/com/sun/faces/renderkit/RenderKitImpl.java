@@ -52,12 +52,10 @@ import jakarta.faces.render.ResponseStateManager;
 
 /**
  * <B>RenderKitImpl</B> is a class ...
- * <p/>
+ * 
  * <B>Lifetime And Scope</B>
- * <P>
  *
  */
-
 public class RenderKitImpl extends RenderKit {
 
     private static final Logger LOGGER = FacesLogger.RENDERKIT.getLogger();
@@ -72,14 +70,12 @@ public class RenderKitImpl extends RenderKit {
      * Keys are String renderer family. Values are HashMaps. Nested HashMap keys are Strings for the rendererType, and
      * values are the Renderer instances themselves.
      */
-
     private ConcurrentHashMap<String, HashMap<String, Renderer>> rendererFamilies = new ConcurrentHashMap<>();
 
     /**
      * For Behavior Renderers: Keys are Strings for the behaviorRendererType, and values are the behaviorRenderer instances
      * themselves.
      */
-
     private ConcurrentHashMap<String, ClientBehaviorRenderer> behaviorRenderers = new ConcurrentHashMap<>();
 
     private ResponseStateManager responseStateManager = new ResponseStateManagerImpl();
@@ -202,7 +198,7 @@ public class RenderKitImpl extends RenderKit {
         if (null == desiredContentTypeList || contentTypeNullFromResponse) {
             String[] typeArray = context.getExternalContext().getRequestHeaderValuesMap().get("Accept");
             if (typeArray.length > 0) {
-                StringBuffer buff = new StringBuffer();
+                StringBuilder buff = new StringBuilder();
                 buff.append(typeArray[0]);
                 for (int i = 1, len = typeArray.length; i < len; i++) {
                     buff.append(',');
@@ -283,15 +279,13 @@ public class RenderKitImpl extends RenderKit {
 
         // For each entry in the desiredTypes array, look for a match in
         // the supportedTypes array
-        for (int i = 0, ilen = desiredTypes.length; i < ilen; i++) {
-            String curDesiredType = desiredTypes[i];
-            for (int j = 0, jlen = supportedTypes.length; j < jlen; j++) {
-                String curContentType = supportedTypes[j].trim();
+        for (String curDesiredType : desiredTypes) {
+            for (String supportedType : supportedTypes) {
+                String curContentType = supportedType.trim();
                 if (curDesiredType.contains(curContentType)) {
                     if (curContentType.contains(RIConstants.HTML_CONTENT_TYPE)) {
                         contentType = RIConstants.HTML_CONTENT_TYPE;
-                    } else if (curContentType.contains(RIConstants.XHTML_CONTENT_TYPE) || curContentType.contains(RIConstants.APPLICATION_XML_CONTENT_TYPE)
-                            || curContentType.contains(RIConstants.TEXT_XML_CONTENT_TYPE)) {
+                    } else if (curContentType.contains(RIConstants.XHTML_CONTENT_TYPE) || curContentType.contains(RIConstants.APPLICATION_XML_CONTENT_TYPE) || curContentType.contains(RIConstants.TEXT_XML_CONTENT_TYPE)) {
                         contentType = RIConstants.XHTML_CONTENT_TYPE;
                     }
                     break;
@@ -314,12 +308,12 @@ public class RenderKitImpl extends RenderKit {
             }
 
             @Override
-            public void write(byte b[]) throws IOException {
+            public void write(byte[] b) throws IOException {
                 output.write(b);
             }
 
             @Override
-            public void write(byte b[], int off, int len) throws IOException {
+            public void write(byte[] b, int off, int len) throws IOException {
                 output.write(b, off, len);
             }
 
@@ -363,4 +357,4 @@ public class RenderKitImpl extends RenderKit {
 
     // The test for this class is in TestRenderKit.java
 
-} // end of class RenderKitImpl
+}

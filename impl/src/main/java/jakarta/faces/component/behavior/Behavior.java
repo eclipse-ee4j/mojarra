@@ -47,7 +47,7 @@ public interface Behavior {
      *
      * @param event The {@link BehaviorEvent} to be broadcast
      *
-     * @throws jakarta.faces.event.AbortProcessingException Signal the Jakarta Server Faces implementation that no further
+     * @throws jakarta.faces.event.AbortProcessingException Signal the Jakarta Faces implementation that no further
      * processing on the current event should be performed
      * @throws IllegalArgumentException if the implementation class of this {@link BehaviorEvent} is not supported by this
      * component

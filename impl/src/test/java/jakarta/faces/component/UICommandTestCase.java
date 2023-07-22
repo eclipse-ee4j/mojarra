@@ -50,8 +50,6 @@ public class UICommandTestCase extends UIComponentBaseTestCase {
         super(name);
     }
 
-    private static Class actionListenerSignature[] = { ActionEvent.class };
-
     // ---------------------------------------------------- Overall Test Methods
     // Set up instance variables required by this test case.
     @Override
@@ -87,7 +85,7 @@ public class UICommandTestCase extends UIComponentBaseTestCase {
         // Override the default action listener to test ordering
         ActionListener oldDefaultActionListener = facesContext.getApplication().getActionListener();
         facesContext.getApplication().setActionListener(new CommandActionListenerTestImpl("14"));
-        Map map = new HashMap();
+        Map<String, String> map = new HashMap<>();
         map.put(command.getClientId(facesContext), "");
         MockExternalContext econtext = (MockExternalContext) facesContext.getExternalContext();
         econtext.setRequestParameterMap(map);
@@ -177,7 +175,6 @@ public class UICommandTestCase extends UIComponentBaseTestCase {
     public void testListeners() {
 
         CommandTestImpl command = new CommandTestImpl();
-        ActionListenerTestImpl listener = null;
 
         command.addActionListener(new ActionListenerTestImpl("ARV0"));
         command.addActionListener(new ActionListenerTestImpl("ARV1"));
@@ -197,7 +194,6 @@ public class UICommandTestCase extends UIComponentBaseTestCase {
     public void testEmptyListeners() {
 
         CommandTestImpl command = new CommandTestImpl();
-        ActionListenerTestImpl listener = null;
 
         // No listeners added, should be empty
         ActionListener listeners[] = command.getActionListeners();
@@ -208,13 +204,6 @@ public class UICommandTestCase extends UIComponentBaseTestCase {
     // Suppress lifecycle tests since we do not have a renderer
     @Override
     public void testLifecycleManagement() {
-    }
-
-    // Test setting properties to invalid values
-    @Override
-    public void testPropertiesInvalid() throws Exception {
-        super.testPropertiesInvalid();
-        UICommand command = (UICommand) component;
     }
 
     public void testNestedCommands() {
@@ -303,7 +292,7 @@ public class UICommandTestCase extends UIComponentBaseTestCase {
                 return;
             }
             String clientId = component.getClientId(context);
-            Map params = context.getExternalContext().getRequestParameterMap();
+            Map<String, String> params = context.getExternalContext().getRequestParameterMap();
             if (params.containsKey(clientId)) {
                 component.queueEvent(new ActionEvent(component));
             }

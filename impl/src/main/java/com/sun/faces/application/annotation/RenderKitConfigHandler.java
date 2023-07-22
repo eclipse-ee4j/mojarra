@@ -17,10 +17,9 @@
 package com.sun.faces.application.annotation;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import jakarta.faces.FacesException;
@@ -40,14 +39,8 @@ import jakarta.faces.render.Renderer;
  */
 public class RenderKitConfigHandler implements ConfigAnnotationHandler {
 
-    private static final Collection<Class<? extends Annotation>> HANDLES;
-
-    static {
-        Collection<Class<? extends Annotation>> handles = new ArrayList<>(2);
-        handles.add(FacesRenderer.class);
-        handles.add(FacesBehaviorRenderer.class);
-        HANDLES = Collections.unmodifiableCollection(handles);
-    }
+    private static final Collection<Class<? extends Annotation>> HANDLES = List.of(
+            FacesRenderer.class,FacesBehaviorRenderer.class);
 
     Map<Class<?>, Annotation> annotatedRenderers;
 
@@ -94,8 +87,9 @@ public class RenderKitConfigHandler implements ConfigAnnotationHandler {
                             throw new IllegalStateException("Error processing annotated Renderer " + ra.toString() + " on class " + rClass.getName()
                                     + ".  Unable to find specified RenderKit.");
                         }
-                        rk.addRenderer(ra.componentFamily(), ra.rendererType(), (Renderer) rClass.newInstance());
-                    } catch (IllegalStateException | InstantiationException | IllegalAccessException e) {
+                        rk.addRenderer(ra.componentFamily(), ra.rendererType(),
+                                (Renderer) rClass.getDeclaredConstructor().newInstance());
+                    } catch (IllegalStateException | ReflectiveOperationException | SecurityException e) {
                         throw new FacesException(e);
                     }
                 } else if (entry.getValue() instanceof FacesBehaviorRenderer) {
@@ -106,8 +100,9 @@ public class RenderKitConfigHandler implements ConfigAnnotationHandler {
                             throw new IllegalStateException("Error processing annotated ClientBehaviorRenderer " + bra.toString() + " on class "
                                     + rClass.getName() + ".  Unable to find specified RenderKit.");
                         }
-                        rk.addClientBehaviorRenderer(bra.rendererType(), (ClientBehaviorRenderer) rClass.newInstance());
-                    } catch (IllegalStateException | InstantiationException | IllegalAccessException e) {
+                        rk.addClientBehaviorRenderer(bra.rendererType(),
+                                (ClientBehaviorRenderer) rClass.getDeclaredConstructor().newInstance());
+                    } catch (IllegalStateException | ReflectiveOperationException | SecurityException e) {
                         throw new FacesException(e);
                     }
                 }

@@ -87,7 +87,7 @@ public class TestHtmlUtils extends TestCase {
             char[] textBuffer = new char[1024];
             char[] buffer = new char[1024];
             StringWriter writer = new StringWriter();
-            HtmlUtils.writeAttribute(writer, false, false, buffer, stringValues[i], textBuffer, false);
+            HtmlUtils.writeAttribute(writer, false, false, buffer, stringValues[i], textBuffer, false, false);
             if (i == 9 || i == 10 || i == 12 || i == 13) {
                 assertTrue(writer.toString().length() == 3);
             } else {
@@ -99,7 +99,7 @@ public class TestHtmlUtils extends TestCase {
             char[] textBuffer = new char[1024];
             char[] buffer = new char[1024];
             StringWriter writer = new StringWriter();
-            HtmlUtils.writeAttribute(writer, false, false, buffer, largeStringValues[i], textBuffer, false);
+            HtmlUtils.writeAttribute(writer, false, false, buffer, largeStringValues[i], textBuffer, false, false);
             if (i == 9 || i == 10 || i == 12 || i == 13) {
                 assertTrue(writer.toString().length() == 34);
             } else {
@@ -111,7 +111,7 @@ public class TestHtmlUtils extends TestCase {
             char[] textBuffer = new char[1024];
             char[] buffer = new char[1024];
             StringWriter writer = new StringWriter();
-            HtmlUtils.writeText(writer, false, false, buffer, stringValues[i], textBuffer);
+            HtmlUtils.writeText(writer, false, false, buffer, stringValues[i], textBuffer, false);
             if (i == 9 || i == 10 || i == 12 || i == 13) {
                 assertTrue(writer.toString().length() == 3);
             } else {
@@ -123,7 +123,7 @@ public class TestHtmlUtils extends TestCase {
             char[] textBuffer = new char[1024];
             char[] buffer = new char[1024];
             StringWriter writer = new StringWriter();
-            HtmlUtils.writeText(writer, false, false, buffer, largeStringValues[i], textBuffer);
+            HtmlUtils.writeText(writer, false, false, buffer, largeStringValues[i], textBuffer, false);
             if (i == 9 || i == 10 || i == 12 || i == 13) {
                 assertTrue(writer.toString().length() == 34);
             } else {

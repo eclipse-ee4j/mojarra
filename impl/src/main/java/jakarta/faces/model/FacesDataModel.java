@@ -24,6 +24,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.Set;
 
+import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.faces.component.UIData;
 import jakarta.inject.Qualifier;
 
@@ -35,7 +36,7 @@ import jakarta.inject.Qualifier;
  *
  * <p>
  * The runtime must maintain a collection of these {@link DataModel}s such that {@link UIData} and other components
- * defined by the Jakarta Server Faces specification can query the runtime for a suitable {@link DataModel} wrapper
+ * defined by the Jakarta Faces Specification can query the runtime for a suitable {@link DataModel} wrapper
  * (adapter) for the type of their <code>value</code>. This has to be done after all wrappers for specific types such as
  * {@link Set} are tried, but before the {@link ScalarDataModel} is selected as the wrapper. See
  * {@link UIData#getValue()}.
@@ -45,7 +46,7 @@ import jakarta.inject.Qualifier;
  *
  * <p>
  * For an instance of type <code>Z</code> that is being bound to a <code>UIData</code> component or other component
- * defined by the Jakarta Server Faces specification that utilizes <code>DataModel</code>, the query for that type must
+ * defined by the Jakarta Faces Specification that utilizes <code>DataModel</code>, the query for that type must
  * return the <em>most specific</em> DataModel that can wrap <code>Z</code>.
  *
  * <p>
@@ -196,4 +197,36 @@ public @interface FacesDataModel {
      * @return the type that the DataModel that is annotated with this annotation is able to wrap
      */
     Class<?> forClass() default Object.class;
+
+    /**
+     * <p class="changed_added_4_0">
+     * Supports inline instantiation of the {@link FacesDataModel} qualifier.
+     * </p>
+     *
+     * @since 4.0
+     */
+    public static final class Literal extends AnnotationLiteral<FacesDataModel> implements FacesDataModel {
+
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * Instance of the {@link FacesDataModel} qualifier.
+         */
+        public static final Literal INSTANCE = of(Object.class);
+
+        private final Class<?> forClass;
+
+        public static Literal of(Class<?> forClass) {
+            return new Literal(forClass);
+        }
+
+        private Literal(Class<?> forClass) {
+            this.forClass = forClass;
+        }
+
+        @Override
+        public Class<?> forClass() {
+            return forClass;
+        }
+    }
 }

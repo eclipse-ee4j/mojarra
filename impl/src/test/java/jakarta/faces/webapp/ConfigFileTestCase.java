@@ -70,8 +70,6 @@ public class ConfigFileTestCase extends TestCase {
 
     /**
      * Return the tests included in this test suite.
-     *
-     * @return
      */
     public static Test suite() {
         return (new TestSuite(ConfigFileTestCase.class));
@@ -95,7 +93,7 @@ public class ConfigFileTestCase extends TestCase {
         assertEquals("com.mycompany.MyNavigationHandler", base.getNavigationHandler());
 
         // <component>
-        Map components = base.getComponents();
+        Map<?, ?> components = base.getComponents();
         assertNotNull(components);
         ConfigComponent ccomp1 = (ConfigComponent) components.get("Command");
         assertNotNull(ccomp1);
@@ -109,7 +107,7 @@ public class ConfigFileTestCase extends TestCase {
         assertEquals(0, ccomp1.getProperties().size());
 
         // <converter>
-        Map converters = base.getConverters();
+        Map<?, ?> converters = base.getConverters();
         assertNotNull(converters);
         ConfigConverter cc1 = (ConfigConverter) converters.get("First");
         assertNotNull(cc1);
@@ -149,7 +147,7 @@ public class ConfigFileTestCase extends TestCase {
         assertEquals("java.lang.String", cc2p1.getPropertyClass());
 
         // <validator>
-        Map validators = base.getValidators();
+        Map<?, ?> validators = base.getValidators();
         assertNotNull(validators);
         ConfigValidator cv1 = (ConfigValidator) validators.get("First");
         assertNotNull(cv1);
@@ -295,6 +293,6 @@ public class ConfigFileTestCase extends TestCase {
     // Return the URL of the specified path, relative to our base directory
     protected URL relativeURL(String relativePath) throws Exception {
         File file = new File(System.getProperty("base.dir"), relativePath);
-        return (file.toURL());
+        return (file.toURI().toURL());
     }
 }

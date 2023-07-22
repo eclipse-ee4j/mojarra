@@ -89,7 +89,7 @@ public abstract class AnnotationProvider {
 
     /**
      * The wrapped annotation provider. May be null if this class is not loaded via {@link ServiceLoader} (from a file named
-     * com.sun.faces.spi.AnnotationProvider) and is instead loaded via Mojarra's {@link ServiceFactory} (from a file named
+     * com.sun.faces.spi.AnnotationProvider) and is instead loaded via Mojarra's ServiceFactory (from a file named
      * com.sun.faces.spi.annotationprovider).
      */
     protected AnnotationProvider wrappedAnnotationProvider;

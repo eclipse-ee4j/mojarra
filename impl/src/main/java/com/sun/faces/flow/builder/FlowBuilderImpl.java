@@ -114,7 +114,7 @@ public class FlowBuilderImpl extends FlowBuilder {
     @Override
     public FlowBuilder initializer(String methodExpression) {
         Util.notNull("methodExpression", methodExpression);
-        MethodExpression me = expressionFactory.createMethodExpression(elContext, methodExpression, null, new Class[] {});
+        MethodExpression me = expressionFactory.createMethodExpression(elContext, methodExpression, null, new Class<?>[] {});
         flow.setInitializer(me);
         return this;
     }
@@ -127,7 +127,7 @@ public class FlowBuilderImpl extends FlowBuilder {
 
     @Override
     public FlowBuilder finalizer(String methodExpression) {
-        MethodExpression me = expressionFactory.createMethodExpression(elContext, methodExpression, null, new Class[] {});
+        MethodExpression me = expressionFactory.createMethodExpression(elContext, methodExpression, null, new Class<?>[] {});
         flow.setFinalizer(me);
         return this;
     }

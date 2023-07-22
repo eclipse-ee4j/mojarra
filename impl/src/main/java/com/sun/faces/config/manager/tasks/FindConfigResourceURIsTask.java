@@ -25,22 +25,20 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
 
-import com.sun.faces.config.ConfigManager;
 import com.sun.faces.spi.ConfigurationResourceProvider;
 
 import jakarta.servlet.ServletContext;
 
 /**
  * <p>
- * This <code>Callable</code> will be used by
- * {@link ConfigManager#getXMLDocuments(jakarta.servlet.ServletContext, java.util.List, java.util.concurrent.ExecutorService, boolean)}.
+ * This <code>Callable</code> will be used by <code>getXMLDocuments</code>
  * It represents one or more URIs to configuration resources that require processing.
  * </p>
  */
 public class FindConfigResourceURIsTask implements Callable<Collection<URI>> {
 
-    private ConfigurationResourceProvider provider;
-    private ServletContext servletContext;
+    private final ConfigurationResourceProvider provider;
+    private final ServletContext servletContext;
 
     // -------------------------------------------------------- Constructors
 
@@ -65,7 +63,7 @@ public class FindConfigResourceURIsTask implements Callable<Collection<URI>> {
     @SuppressWarnings("unchecked")
     @Override
     public Collection<URI> call() throws Exception {
-        Collection<?> untypedCollection = provider.getResources(servletContext);
+        Collection<URI> untypedCollection = provider.getResources(servletContext);
         Iterator<?> untypedCollectionIterator = untypedCollection.iterator();
 
         Collection<URI> result = emptyList();
@@ -82,7 +80,7 @@ public class FindConfigResourceURIsTask implements Callable<Collection<URI>> {
                     result.add(new URI(((URL) cur).toExternalForm()));
                 }
             } else {
-                result = (Collection<URI>) untypedCollection;
+                result = untypedCollection;
             }
         }
 

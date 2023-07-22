@@ -130,13 +130,13 @@
             </code>
             <hr/>
             <xsl:value-of select="javaee:description" disable-output-escaping="yes"/><br/>
-            <p/>
+            
             <xsl:if test="javaee:example!=''">
               <b>Example:</b><br/>
               <pre>
 <xsl:value-of select="javaee:example"/>              
               </pre>
-              <p/>
+              
             </xsl:if>
             <hr/>
             
@@ -190,7 +190,7 @@
               </tr>
             </table>
             <br/>
-            <p/>
+            
             
             <!-- =========== START OF NAVBAR =========== -->
             <a name="navbar_bottom"><!-- --></a>

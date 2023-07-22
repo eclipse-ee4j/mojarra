@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -46,8 +46,8 @@ import jakarta.faces.view.ViewDeclarationLanguage;
  * <p>
  * <strong class="changed_modified_2_0 changed_modified_2_0_rev_a changed_modified_2_2
  * changed_modified_2_3">Application</strong> represents a per-web-application singleton object where applications based
- * on Jakarta Server Faces (or implementations wishing to provide extended functionality) can register application-wide
- * singletons that provide functionality required by Jakarta Server Faces. Default implementations of each object are
+ * on Jakarta Faces (or implementations wishing to provide extended functionality) can register application-wide
+ * singletons that provide functionality required by Jakarta Faces. Default implementations of each object are
  * provided for cases where the application does not choose to customize the behavior.
  * </p>
  *
@@ -62,7 +62,6 @@ import jakarta.faces.view.ViewDeclarationLanguage;
  * {@link Application#createValidator}.
  * </p>
  */
-
 public abstract class Application {
 
     private Application defaultApplication;
@@ -74,8 +73,7 @@ public abstract class Application {
      * <span class="changed_modified_2_2">Return</span> the default {@link ActionListener} to be registered for all
      * {@link jakarta.faces.component.ActionSource} components in this application. If not explicitly set, a default
      * implementation must be provided that performs the <span class="changed_modified_2_2">functions as specified in the
-     * section titled "ActionListener Property" in the chapter titled "Application Integration" of the spec prose
-     * document.</span>
+     * section 7.1.1 "ActionListener Property" in the chapter 7 "Application Integration" of the Jakarta Faces Specification Document.</span>
      * </p>
      *
      * <p>
@@ -146,7 +144,7 @@ public abstract class Application {
 
     /**
      * <p>
-     * Return the fully qualified class name of the <code>ResourceBundle</code> to be used for Jakarta Server Faces messages
+     * Return the fully qualified class name of the <code>ResourceBundle</code> to be used for Jakarta Faces messages
      * for this application. If not explicitly set, <code>null</code> is returned.
      * </p>
      *
@@ -156,7 +154,7 @@ public abstract class Application {
 
     /**
      * <p>
-     * Set the fully qualified class name of the <code>ResourceBundle</code> to be used for Jakarta Server Faces messages
+     * Set the fully qualified class name of the <code>ResourceBundle</code> to be used for Jakarta Faces messages
      * for this application. See the JavaDocs for the <code>java.util.ResourceBundle</code> class for more information about
      * the syntax for resource bundle names.
      * </p>
@@ -181,7 +179,7 @@ public abstract class Application {
      * <code>&lt;application&gt;</code> element.</li>
      * </ul>
      * <p>
-     * The runtime must employ the decorator pattern as for every other pluggable artifact in Jakarta Server Faces.
+     * The runtime must employ the decorator pattern as for every other pluggable artifact in Jakarta Faces.
      * </p>
      * </div>
      *
@@ -203,7 +201,7 @@ public abstract class Application {
 
     /**
      * <p class="changed_added_2_0">
-     * Return the singleton, stateless, thread-safe {@link ResourceHandler} for this application. The Jakarta Server Faces
+     * Return the singleton, stateless, thread-safe {@link ResourceHandler} for this application. The Jakarta Faces
      * implementation must support the following techniques for declaring an alternate implementation of
      * <code>ResourceHandler</code>.
      * </p>
@@ -219,7 +217,7 @@ public abstract class Application {
      * </ul>
      * <p>
      * In all of the above cases, the runtime must employ the decorator pattern as for every other pluggable artifact in
-     * Jakarta Server Faces.
+     * Jakarta Faces.
      * </p>
      *
      * <p class="changed_added_2_0">
@@ -235,13 +233,11 @@ public abstract class Application {
      * @since 2.0
      */
     public ResourceHandler getResourceHandler() {
-
         if (defaultApplication != null) {
             return defaultApplication.getResourceHandler();
         }
 
         throw new UnsupportedOperationException();
-
     }
 
     /**
@@ -249,23 +245,20 @@ public abstract class Application {
      * Set the {@link ResourceHandler} instance that will be utilized for rendering the markup for resources, and for
      * satisfying client requests to serve up resources.
      * </p>
-     * <div class="changed_added_2_0">
      *
      * @param resourceHandler The new <code>ResourceHandler</code> instance
      *
      * @throws IllegalStateException if this method is called after at least one request has been processed by the
      * <code>Lifecycle</code> instance for this application.
-     * @throws NullPointerException if <code>resourceHandler</code> is <code>null</code> </div>
+     * @throws NullPointerException if <code>resourceHandler</code> is <code>null</code>
      * @since 2.0
      */
     public void setResourceHandler(ResourceHandler resourceHandler) {
-
         if (defaultApplication != null) {
             defaultApplication.setResourceHandler(resourceHandler);
         } else {
             throw new UnsupportedOperationException();
         }
-
     }
 
     /**
@@ -346,7 +339,6 @@ public abstract class Application {
      * @since 2.0
      */
     public ProjectStage getProjectStage() {
-
         if (defaultApplication != null) {
             return defaultApplication.getProjectStage();
         }
@@ -357,7 +349,7 @@ public abstract class Application {
     /**
      * <p>
      * <span class="changed_modified_2_0_rev_a">Cause</span> an the argument <code>resolver</code> to be added to the
-     * resolver chain as specified in section 5.5.1 of the Jakarta Server Faces Specification.
+     * resolver chain as specified in section 5.3.2 "ELResolver" of the Jakarta Faces Specification Document.
      * </p>
      *
      * <p>
@@ -378,10 +370,11 @@ public abstract class Application {
      * not breaking existing applications that extend {@link Application}.
      * </p>
      *
+     * @param resolver the Jakarta Expression Language resolver to add.
+     *
      * @throws IllegalStateException <span class="changed_modified_2_0_rev_a">if called after the first request to the
      * {@link jakarta.faces.webapp.FacesServlet} has been serviced.</span>
      *
-     * @param resolver the Jakarta Expression Language resolver to add.
      * @since 1.2
      */
     public void addELResolver(ELResolver resolver) {
@@ -467,12 +460,11 @@ public abstract class Application {
      * @since 2.2
      */
     public FlowHandler getFlowHandler() {
-
         if (defaultApplication != null) {
             return defaultApplication.getFlowHandler();
         }
-        return null;
 
+        return null;
     }
 
     /**
@@ -488,18 +480,16 @@ public abstract class Application {
      * @since 2.2
      */
     public void setFlowHandler(FlowHandler newHandler) {
-
         if (defaultApplication != null) {
             defaultApplication.setFlowHandler(newHandler);
         }
-
     }
 
     /**
      * <p>
      * Return the {@link ViewHandler} instance that will be utilized during the <em>Restore View</em> and <em>Render
      * Response</em> phases of the request processing lifecycle. If not explicitly set, a default implementation must be
-     * provided that performs the functions described in the {@link ViewHandler} description in the JJakarta Server Faces
+     * provided that performs the functions described in the {@link ViewHandler} description in the Jakarta Faces
      * Specification.
      * </p>
      *
@@ -525,7 +515,7 @@ public abstract class Application {
      * <p>
      * Return the {@link StateManager} instance that will be utilized during the <em>Restore View</em> and <em>Render
      * Response</em> phases of the request processing lifecycle. If not explicitly set, a default implementation must be
-     * provided that performs the functions described in the {@link StateManager} description in the Jakarta Server Faces
+     * provided that performs the functions described in the {@link StateManager} description in the Jakarta Faces
      * Specification.
      * </p>
      *
@@ -564,11 +554,9 @@ public abstract class Application {
      * @since 2.0
      */
     public void addBehavior(String behaviorId, String behaviorClass) {
-
         if (defaultApplication != null) {
             defaultApplication.addBehavior(behaviorId, behaviorClass);
         }
-
     }
 
     /**
@@ -583,12 +571,11 @@ public abstract class Application {
      * @throws NullPointerException if <code>behaviorId</code> is <code>null</code>
      */
     public Behavior createBehavior(String behaviorId) throws FacesException {
-
         if (defaultApplication != null) {
             return defaultApplication.createBehavior(behaviorId);
         }
-        return null;
 
+        return null;
     }
 
     /**
@@ -599,12 +586,11 @@ public abstract class Application {
      * @return an iterator with behavior ids.
      */
     public Iterator<String> getBehaviorIds() {
-
         if (defaultApplication != null) {
             return defaultApplication.getBehaviorIds();
         }
-        return Collections.EMPTY_LIST.iterator();
 
+        return Collections.<String>emptyList().iterator();
     }
 
     /**
@@ -717,13 +703,11 @@ public abstract class Application {
      * @since 2.0
      */
     public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType, String rendererType) {
-
         if (defaultApplication != null) {
             return defaultApplication.createComponent(componentExpression, context, componentType, rendererType);
         }
 
         throw new UnsupportedOperationException();
-
     }
 
     /**
@@ -757,13 +741,11 @@ public abstract class Application {
      * @since 2.0
      */
     public UIComponent createComponent(FacesContext context, String componentType, String rendererType) {
-
         if (defaultApplication != null) {
             return defaultApplication.createComponent(context, componentType, rendererType);
         }
 
         throw new UnsupportedOperationException();
-
     }
 
     /**
@@ -791,7 +773,7 @@ public abstract class Application {
      * <p>
      * Obtain a reference to the <em>composite component metadata</em> for this composite component by calling
      * {@link ViewDeclarationLanguage#getComponentMetadata}, passing the <code>facesContext</code> and
-     * <code>componentResource</code> arguments to this method. This version of the Jakarta Server Faces specification uses
+     * <code>componentResource</code> arguments to this method. This version of the Jakarta Faces Specification uses
      * JavaBeans as the API to the component metadata.
      * </p>
      * </li>
@@ -812,7 +794,7 @@ public abstract class Application {
      * <p>
      * Otherwise, determine if a script based component for this <code>Resource</code> can be found by calling
      * {@link ViewDeclarationLanguage#getScriptComponentResource}. If the result is non-<code>null</code>, and is a script
-     * written in one of the languages listed in 4.3 of the specification prose document, create a
+     * written in <span class="changed_modified_4_0">a language satisfying the content type <code>text/javascript</code></span>, create a
      * <code>UIComponent</code> instance from the script resource.
      * </p>
      * </li>
@@ -888,13 +870,11 @@ public abstract class Application {
      * @since 2.0
      */
     public UIComponent createComponent(FacesContext context, Resource componentResource) {
-
         if (defaultApplication != null) {
             return defaultApplication.createComponent(context, componentResource);
         }
 
         throw new UnsupportedOperationException();
-
     }
 
     /**
@@ -1038,11 +1018,9 @@ public abstract class Application {
      * @since 2.0
      */
     public void addDefaultValidatorId(String validatorId) {
-
         if (defaultApplication != null) {
             defaultApplication.addDefaultValidatorId(validatorId);
         }
-
     }
 
     /**
@@ -1384,13 +1362,11 @@ public abstract class Application {
      *
      */
     public void publishEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass, Object source) {
-
         if (defaultApplication != null) {
             defaultApplication.publishEvent(context, systemEventClass, source);
         } else {
             throw new UnsupportedOperationException();
         }
-
     }
 
     /**
@@ -1419,13 +1395,11 @@ public abstract class Application {
      */
 
     public void publishEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source) {
-
         if (defaultApplication != null) {
             defaultApplication.publishEvent(context, systemEventClass, sourceBaseType, source);
         } else {
             throw new UnsupportedOperationException();
         }
-
     }
 
     /**
@@ -1473,13 +1447,11 @@ public abstract class Application {
      * @since 2.0
      */
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass, SystemEventListener listener) {
-
         if (defaultApplication != null) {
             defaultApplication.subscribeToEvent(systemEventClass, sourceClass, listener);
         } else {
             throw new UnsupportedOperationException();
         }
-
     }
 
     /**
@@ -1517,13 +1489,11 @@ public abstract class Application {
      * @since 2.0
      */
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener) {
-
         if (defaultApplication != null) {
             defaultApplication.subscribeToEvent(systemEventClass, listener);
         } else {
             throw new UnsupportedOperationException();
         }
-
     }
 
     /**
@@ -1557,13 +1527,11 @@ public abstract class Application {
      * @since 2.0
      */
     public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass, SystemEventListener listener) {
-
         if (defaultApplication != null) {
             defaultApplication.unsubscribeFromEvent(systemEventClass, sourceClass, listener);
         } else {
             throw new UnsupportedOperationException();
         }
-
     }
 
     /**
@@ -1594,13 +1562,11 @@ public abstract class Application {
      * @since 2.0
      */
     public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener) {
-
         if (defaultApplication != null) {
             defaultApplication.unsubscribeFromEvent(systemEventClass, listener);
         } else {
             throw new UnsupportedOperationException();
         }
-
     }
 
     /**
@@ -1612,13 +1578,11 @@ public abstract class Application {
      * @since 2.3
      */
     public SearchExpressionHandler getSearchExpressionHandler() {
-
         if (defaultApplication != null) {
             return defaultApplication.getSearchExpressionHandler();
-        } else {
-            throw new UnsupportedOperationException();
         }
 
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -1634,13 +1598,11 @@ public abstract class Application {
      * @since 2.3
      */
     public void setSearchExpressionHandler(SearchExpressionHandler searchExpressionHandler) {
-
         if (defaultApplication != null) {
             defaultApplication.setSearchExpressionHandler(searchExpressionHandler);
         } else {
             throw new UnsupportedOperationException();
         }
-
     }
 
     /**
@@ -1662,21 +1624,20 @@ public abstract class Application {
      *
      * </div>
      *
+     * @param resolver the SearchKeywordResolver to add.
+     *
      * @throws IllegalStateException if called after the first request to the {@link jakarta.faces.webapp.FacesServlet} has
      * been serviced.
      * @throws NullPointerException when resolver is null.
      *
-     * @param resolver the SearchKeywordResolver to add.
      * @since 2.3
      */
     public void addSearchKeywordResolver(SearchKeywordResolver resolver) {
-
         if (defaultApplication != null) {
             defaultApplication.addSearchKeywordResolver(resolver);
         } else {
             throw new UnsupportedOperationException();
         }
-
     }
 
     /**
@@ -1720,11 +1681,10 @@ public abstract class Application {
      * @since 2.3
      */
     public SearchKeywordResolver getSearchKeywordResolver() {
-
         if (defaultApplication != null) {
             return defaultApplication.getSearchKeywordResolver();
         }
-        throw new UnsupportedOperationException();
 
+        throw new UnsupportedOperationException();
     }
 }

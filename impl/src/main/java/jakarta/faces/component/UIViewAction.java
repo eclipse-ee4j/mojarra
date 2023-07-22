@@ -51,12 +51,12 @@ import jakarta.faces.view.ViewMetadata;
  * <p>
  * Because this class implements {@link ActionSource2}, any actions that one would normally take on a component that
  * implements <code>ActionSource2</code>, such as {@link UICommand}, are valid for instances of this class. Instances of
- * this class participate in the regular Jakarta Server Faces lifecycle, including on Ajax requests.
+ * this class participate in the regular Jakarta Faces lifecycle, including on Ajax requests.
  * </p>
  *
  * <p>
  * The purpose of this component is to provide a light-weight front-controller solution for executing code upon the
- * loading of a Jakarta Server Faces view to support the integration of system services, content retrieval, view
+ * loading of a Jakarta Faces view to support the integration of system services, content retrieval, view
  * management, and navigation. This functionality is especially useful for non-faces (initial) requests.
  * </p>
  *
@@ -71,8 +71,9 @@ import jakarta.faces.view.ViewMetadata;
  * current viewId, the runtime must force a redirect to that matched navigation case with different viewId, regardless
  * of whether or not the matched navigation case with different viewId called for a redirect.
  * <span class="changed_added_2_3">If the navigation will result in a flow transition, the appropriate metadata must be
- * included in the query string for the redirect. See section 7.4.2 Default NavigationHandler Algorithm, for the
- * discussion of how to handle {@code &lt;redirect /&gt;} cases.</span>
+ * included in the query string for the redirect.
+ * See section 7.4.2 "Default NavigationHandler Algorithm" of the Jakarta Faces Specification Document, for the
+ * specification of how to handle {@code &lt;redirect /&gt;} cases.</span>
  * </p>
  *
  * <p>
@@ -178,7 +179,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
     /**
      * <p class="changed_added_2_2">
      * If the value of the component's <code>immediate</code> attribute is <code>true</code>, the action will be invoked
-     * during the <em>Apply Request Values</em> Jakarta Server Faces lifecycle phase. Otherwise, the action will be invoked
+     * during the <em>Apply Request Values</em> Jakarta Faces lifecycle phase. Otherwise, the action will be invoked
      * during the <em>Invoke Application</em> phase, the default behavior. The phase can be set explicitly in the
      * <code>phase</code> attribute, which takes precedence over the <code>immediate</code> attribute.
      * </p>
@@ -260,7 +261,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
     public void setPhase(final String phase) {
         PhaseId myPhaseId = PhaseId.phaseIdValueOf(phase);
         if (PhaseId.ANY_PHASE.equals(myPhaseId) || PhaseId.RESTORE_VIEW.equals(myPhaseId) || PhaseId.RENDER_RESPONSE.equals(myPhaseId)) {
-            throw new FacesException("View actions cannot be executed in specified phase: [" + myPhaseId.toString() + "]");
+            throw new FacesException("View actions cannot be executed in specified phase: [" + myPhaseId + "]");
         }
         getStateHelper().put(PropertyKeys.phase, myPhaseId.getName());
     }
@@ -319,7 +320,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
      */
     @Override
     public ActionListener[] getActionListeners() {
-        ActionListener al[] = (ActionListener[]) getFacesListeners(ActionListener.class);
+        ActionListener[] al = (ActionListener[]) getFacesListeners(ActionListener.class);
         return al;
     }
 
@@ -467,7 +468,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
      *
      * @param event {@link FacesEvent} to be broadcast
      *
-     * @throws AbortProcessingException Signal the Jakarta Server Faces implementation that no further processing on the
+     * @throws AbortProcessingException Signal the Jakarta Faces implementation that no further processing on the
      * current event should be performed
      * @throws IllegalArgumentException if the implementation class of this {@link FacesEvent} is not supported by this
      * component
@@ -516,7 +517,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
                     assert null != viewRootAfter;
 
                     // if the view id changed as a result of navigation, then
-                    // execute the Jakarta Server Faces lifecycle for the new view
+                    // execute the Jakarta Faces lifecycle for the new view
                     // id
                     String viewIdBefore = viewRootBefore.getViewId();
                     String viewIdAfter = viewRootAfter.getViewId();
@@ -637,7 +638,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
      * A FacesContext delegator that gives us the necessary controls over the FacesContext to allow the execution of the
      * lifecycle to accomodate the UIViewAction sequence.
      */
-    private class InstrumentedFacesContext extends FacesContextWrapper {
+    private static class InstrumentedFacesContext extends FacesContextWrapper {
 
         private boolean viewRootCleared = false;
         private boolean renderedResponseControlDisabled = false;

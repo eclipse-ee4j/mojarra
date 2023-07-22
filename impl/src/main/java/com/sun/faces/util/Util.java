@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021 Contributors to Eclipse Foundation.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,12 +20,15 @@
 package com.sun.faces.util;
 
 import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
+import static com.sun.faces.RIConstants.FACES_SERVLET_REGISTRATION;
 import static com.sun.faces.util.MessageUtils.ILLEGAL_ATTEMPT_SETTING_APPLICATION_ARTIFACT_ID;
 import static com.sun.faces.util.MessageUtils.NAMED_OBJECT_NOT_FOUND_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.NULL_VIEW_ID_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
+import static java.lang.Character.isDigit;
 import static java.util.Collections.emptyList;
+import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
 
 import java.beans.FeatureDescriptor;
@@ -43,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -71,6 +76,8 @@ import javax.xml.xpath.XPathFactory;
 import com.sun.faces.RIConstants;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.config.manager.FacesSchema;
+import com.sun.faces.facelets.component.UIRepeat;
 import com.sun.faces.io.FastStringWriter;
 
 import jakarta.el.ELResolver;
@@ -85,6 +92,7 @@ import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.Doctype;
 import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIData;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
@@ -101,9 +109,8 @@ import jakarta.servlet.http.MappingMatch;
 
 /**
  * <B>Util</B> is a class ...
- * <p/>
+ * 
  * <B>Lifetime And Scope</B>
- * <P>
  *
  */
 public class Util {
@@ -123,7 +130,9 @@ public class Util {
     /**
      * RegEx patterns
      */
-    private static final String PATTERN_CACKE_KEY = RIConstants.FACES_PREFIX + "patternCache";
+    private static final String PATTERN_CACHE_KEY = RIConstants.FACES_PREFIX + "patternCache";
+
+    private static final String CLIENT_ID_NESTED_IN_ITERATOR_PATTERN = "CLIENT_ID_NESTED_IN_ITERATOR_PATTERN";
 
     private static final String FACES_SERVLET_CLASS = FacesServlet.class.getName();
 
@@ -133,10 +142,10 @@ public class Util {
 
     private static Map<String, Pattern> getPatternCache(Map<String, Object> appMap) {
         @SuppressWarnings("unchecked")
-        Map<String, Pattern> result = (Map<String, Pattern>) appMap.get(PATTERN_CACKE_KEY);
+        Map<String, Pattern> result = (Map<String, Pattern>) appMap.get(PATTERN_CACHE_KEY);
         if (result == null) {
-            result = new LRUMap<>(15);
-            appMap.put(PATTERN_CACKE_KEY, result);
+            result = Collections.synchronizedMap(new LRUMap<>(15));
+            appMap.put(PATTERN_CACHE_KEY, result);
         }
 
         return result;
@@ -144,10 +153,10 @@ public class Util {
 
     private static Map<String, Pattern> getPatternCache(ServletContext sc) {
         @SuppressWarnings("unchecked")
-        Map<String, Pattern> result = (Map<String, Pattern>) sc.getAttribute(PATTERN_CACKE_KEY);
+        Map<String, Pattern> result = (Map<String, Pattern>) sc.getAttribute(PATTERN_CACHE_KEY);
         if (result == null) {
-            result = new LRUMap<>(15);
-            sc.setAttribute(PATTERN_CACKE_KEY, result);
+            result = Collections.synchronizedMap(new LRUMap<>(15));
+            sc.setAttribute(PATTERN_CACHE_KEY, result);
         }
 
         return result;
@@ -179,6 +188,15 @@ public class Util {
         }
 
         return null;
+    }
+
+    public static Optional<ServletRegistration> getFacesServletRegistration(FacesContext context) {
+        Object unKnownContext = context.getExternalContext().getContext();
+        if (unKnownContext instanceof ServletContext) {
+            return Optional.of((ServletRegistration) ((ServletContext) unKnownContext).getAttribute(FACES_SERVLET_REGISTRATION));
+        }
+
+        return Optional.empty();
     }
 
     /**
@@ -217,22 +235,22 @@ public class Util {
      *
      * @param type the <code>Listener</code> type
      * @param binding a <code>ValueExpression</code> which resolves to a <code>Listener</code> instance
-     * @return a <code>Listener</code> instance based off the provided <code>type</code> and <binding>
+     * @return a <code>Listener</code> instance based off the provided <code>type</code> and <code>binding</code>
      */
     public static Object getListenerInstance(ValueExpression type, ValueExpression binding) {
-
         FacesContext faces = FacesContext.getCurrentInstance();
         Object instance = null;
         if (faces == null) {
             return null;
         }
+
         if (binding != null) {
             instance = binding.getValue(faces.getELContext());
         }
         if (instance == null && type != null) {
             try {
                 instance = ReflectionUtils.newInstance((String) type.getValue(faces.getELContext()));
-            } catch (InstantiationException | IllegalAccessException e) {
+            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
                 throw new AbortProcessingException(e.getMessage(), e);
             }
 
@@ -242,7 +260,6 @@ public class Util {
         }
 
         return instance;
-
     }
 
     public static void setUnitTestModeEnabled(boolean enabled) {
@@ -301,19 +318,21 @@ public class Util {
         return factory;
     }
 
+
+    public static final Map<String,Class<?>> primitiveTypes = Map.of(
+            "byte" , byte.class ,
+            "short" , short.class ,
+            "int" , int.class ,
+            "long" , long.class ,
+            "float" , float.class ,
+            "double" , double.class ,
+            "boolean" , boolean.class ,
+            "char" , char.class
+    );
+
     public static Class loadClass(String name, Object fallbackClass) throws ClassNotFoundException {
         ClassLoader loader = Util.getCurrentLoader(fallbackClass);
-
-        String[] primitiveNames = { "byte", "short", "int", "long", "float", "double", "boolean", "char" };
-        Class<?>[] primitiveClasses = { byte.class, short.class, int.class, long.class, float.class, double.class, boolean.class, char.class };
-
-        for (int i = 0; i < primitiveNames.length; i++) {
-            if (primitiveNames[i].equals(name)) {
-                return primitiveClasses[i];
-            }
-        }
-
-        return Class.forName(name, true, loader);
+        return primitiveTypes.getOrDefault(name, Class.forName(name, true, loader));
     }
 
     public static Class<?> loadClass2(String name, Object fallbackClass) {
@@ -332,8 +351,8 @@ public class Util {
     @SuppressWarnings("unchecked")
     public static <T> T newInstance(Class<?> clazz) {
         try {
-            return (T) clazz.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+            return (T) clazz.getDeclaredConstructor().newInstance();
+        } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
     }
@@ -395,6 +414,17 @@ public class Util {
 
         return input;
     }
+
+    /**
+     * @return the filename extension or null. the method is null-safe
+     */
+    public static String fileExtension(String filename) {
+        final String notBlankFilename = nullIfBlank(filename);
+        if ( notBlankFilename == null ) return null;
+        int idx = notBlankFilename.lastIndexOf('.');
+        return idx == -1 ? null : notBlankFilename.substring(idx+1);
+    }
+
 
     public static String removeAllButNextToLastSlashPathSegment(String input) {
         // Trim the leading lastSlash, if any.
@@ -494,6 +524,23 @@ public class Util {
     }
 
     /**
+     * Returns true if the given string is null or is blank.
+     *
+     * @param string The string to be checked.
+     * @return True if the given string is null or is blank.
+     */
+    public static boolean isBlank(String string) {
+        return string == null || string.isBlank();
+    }
+
+    /**
+     * @return null if the passed String is null or blank, s otherwise
+     */
+    public static String nullIfBlank(String s) {
+        return isBlank(s) ? null : s;
+    }
+
+    /**
      * Returns <code>true</code> if the given array is null or is empty.
      *
      * @param array The array to be checked on emptiness.
@@ -530,7 +577,7 @@ public class Util {
         } else if (value instanceof Map<?, ?>) {
             return ((Map<?, ?>) value).isEmpty();
         } else if (value instanceof Optional<?>) {
-            return !((Optional<?>) value).isPresent();
+            return ((Optional<?>) value).isEmpty();
         } else if (value.getClass().isArray()) {
             return Array.getLength(value) == 0;
         } else {
@@ -758,12 +805,12 @@ public class Util {
     }
 
     public static boolean componentIsDisabled(UIComponent component) {
-        return Boolean.valueOf(String.valueOf(component.getAttributes().get("disabled")));
+        return Boolean.parseBoolean(String.valueOf(component.getAttributes().get("disabled")));
     }
 
     public static boolean componentIsDisabledOrReadonly(UIComponent component) {
-        return Boolean.valueOf(String.valueOf(component.getAttributes().get("disabled")))
-                || Boolean.valueOf(String.valueOf(component.getAttributes().get("readonly")));
+        return Boolean.parseBoolean(String.valueOf(component.getAttributes().get("disabled")))
+                || Boolean.parseBoolean(String.valueOf(component.getAttributes().get("readonly")));
     }
 
     // W3C XML specification refers to IETF RFC 1766 for language code
@@ -881,7 +928,7 @@ public class Util {
         }
 
         StackTraceElement[] stacks = e.getStackTrace();
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (StackTraceElement stack : stacks) {
             sb.append(stack.toString()).append('\n');
         }
@@ -947,23 +994,31 @@ public class Util {
      * @param regex the regex used for splitting
      * @return the result of <code>Pattern.spit(String, int)</code>
      */
-    public synchronized static String[] split(Map<String, Object> appMap, String toSplit, String regex) {
-        Map<String, Pattern> patternCache = getPatternCache(appMap);
-        Pattern pattern = patternCache.get(regex);
-        if (pattern == null) {
-            pattern = Pattern.compile(regex);
-            patternCache.put(regex, pattern);
-        }
-        return pattern.split(toSplit, 0);
+    public static String[] split(Map<String, Object> appMap, String toSplit, String regex) {
+        return split(appMap, toSplit, regex, 0);
     }
 
-    public synchronized static String[] split(ServletContext sc, String toSplit, String regex) {
+    /**
+     * <p>A slightly more efficient version of
+     * <code>String.split()</code> which caches
+     * the <code>Pattern</code>s in an LRUMap instead of
+     * creating a new <code>Pattern</code> on each
+     * invocation. Limited by splitLimit.</p>
+     * @param appMap the Application Map
+     * @param toSplit the string to split
+     * @param regex the regex used for splitting
+     * @param splitLimit split result threshold
+     * @return the result of <code>Pattern.spit(String, int)</code>
+     */
+    public static String[] split(Map<String, Object> appMap, String toSplit, String regex, int splitLimit) {
+        Map<String, Pattern> patternCache = getPatternCache(appMap);
+        Pattern pattern = patternCache.computeIfAbsent(regex, Pattern::compile);
+        return pattern.split(toSplit, splitLimit);
+    }
+
+    public static String[] split(ServletContext sc, String toSplit, String regex) {
         Map<String, Pattern> patternCache = getPatternCache(sc);
-        Pattern pattern = patternCache.get(regex);
-        if (pattern == null) {
-            pattern = Pattern.compile(regex);
-            patternCache.put(regex, pattern);
-        }
+        Pattern pattern = patternCache.computeIfAbsent(regex, Pattern::compile);
         return pattern.split(toSplit, 0);
     }
 
@@ -993,7 +1048,7 @@ public class Util {
     /**
      * Checks if the FacesServlet is exact mapped to the given resource.
      * <p>
-     * Not to be confused with {@link Util#isExactMapped(String)}, which checks if a string representing a mapping, not a
+     * Not to be confused with <code>isExactMapped(String)</code>, which checks if a string representing a mapping, not a
      * resource, is an exact mapping.
      *
      * @param viewId the view id to test
@@ -1006,7 +1061,7 @@ public class Util {
     /**
      * Checks if the FacesServlet is exact mapped to the given resource.
      * <p>
-     * Not to be confused with {@link Util#isExactMapped(String)}, which checks if a string representing a mapping, not a
+     * Not to be confused with <code>isExactMapped(String)</code>, which checks if a string representing a mapping, not a
      * resource, is an exact mapping.
      *
      * @param externalContext the external context for this request
@@ -1142,22 +1197,31 @@ public class Util {
     static public boolean classHasAnnotations(Class<?> clazz) {
         if (clazz != null) {
             while (clazz != Object.class) {
-                Field[] fields = clazz.getDeclaredFields();
-                if (fields != null) {
-                    for (Field field : fields) {
-                        if (field.getAnnotations().length > 0) {
-                            return true;
+                try {
+                    Field[] fields = clazz.getDeclaredFields();
+                    if (fields != null) {
+                        for (Field field : fields) {
+                            if (field.getAnnotations().length > 0) {
+                                return true;
+                            }
+                        }
+                    }
+
+                    Method[] methods = clazz.getDeclaredMethods();
+                    if (methods != null) {
+                        for (Method method : methods) {
+                            if (method.getDeclaredAnnotations().length > 0) {
+                                return true;
+                            }
                         }
                     }
                 }
-
-                Method[] methods = clazz.getDeclaredMethods();
-                if (methods != null) {
-                    for (Method method : methods) {
-                        if (method.getDeclaredAnnotations().length > 0) {
-                            return true;
-                        }
+                catch (NoClassDefFoundError e) {
+                    if (LOGGER.isLoggable(FINE)) {
+                        LOGGER.log(FINE, "Cannot inspect " + clazz + " because of missing dependency " + e.getMessage());
                     }
+
+                    return false;
                 }
 
                 clazz = clazz.getSuperclass();
@@ -1312,7 +1376,7 @@ public class Util {
             if (url != null) {
                 XPathFactory factory = XPathFactory.newInstance();
                 XPath xpath = factory.newXPath();
-                xpath.setNamespaceContext(new JavaeeNamespaceContext());
+                xpath.setNamespaceContext(new JakartaNamespaceContext());
                 stream = url.openStream();
                 DocumentBuilderFactory dbf = createDocumentBuilderFactory();
                 try {
@@ -1326,7 +1390,7 @@ public class Util {
                 dbf.setValidating(false);
                 dbf.setXIncludeAware(false);
                 dbf.setExpandEntityReferences(false);
-                result = xpath.evaluate("string(/javaee:faces-config/@version)",
+                result = xpath.evaluate("string(/" + JakartaNamespaceContext.PREFIX + ":faces-config/@version)",
                         dbf.newDocumentBuilder().parse(stream));
             }
         } catch (MalformedURLException mue) {
@@ -1357,7 +1421,7 @@ public class Util {
             if (url != null) {
                 XPathFactory factory = XPathFactory.newInstance();
                 XPath xpath = factory.newXPath();
-                xpath.setNamespaceContext(new JavaeeNamespaceContext());
+                xpath.setNamespaceContext(new JakartaNamespaceContext());
                 stream = url.openStream();
                 DocumentBuilderFactory dbf = createDocumentBuilderFactory();
                 try {
@@ -1371,7 +1435,7 @@ public class Util {
                 dbf.setValidating(false);
                 dbf.setXIncludeAware(false);
                 dbf.setExpandEntityReferences(false);
-                result = xpath.evaluate("string(/javaee:web-app/@version)", dbf.newDocumentBuilder().parse(stream));
+                result = xpath.evaluate("string(/" + JakartaNamespaceContext.PREFIX + ":web-app/@version)", dbf.newDocumentBuilder().parse(stream));
             }
         } catch (MalformedURLException mue) {
         } catch (XPathExpressionException | IOException xpee) {
@@ -1387,16 +1451,18 @@ public class Util {
         return result;
     }
 
-    public static class JavaeeNamespaceContext implements NamespaceContext {
+    public static class JakartaNamespaceContext implements NamespaceContext {
+
+        public static final String PREFIX = "jakartaee";
 
         @Override
         public String getNamespaceURI(String prefix) {
-            return "http://xmlns.jcp.org/xml/ns/javaee";
+            return FacesSchema.Schemas.JAKARTAEE_SCHEMA_DEFAULT_NS;
         }
 
         @Override
         public String getPrefix(String namespaceURI) {
-            return "javaee";
+            return PREFIX;
         }
 
         @Override
@@ -1447,52 +1513,8 @@ public class Util {
             }
         }
 
-        return result;
-    }
-
-    /**
-     * Is CDI available.
-     *
-     * @param facesContext the Faces context to consult.
-     * @return true if available, false otherwise.
-     */
-    public static boolean isCdiAvailable(FacesContext facesContext) {
-        boolean result;
-
-        if (facesContext != null && facesContext.getAttributes().containsKey(RIConstants.CDI_AVAILABLE)) {
-            result = (Boolean) facesContext.getAttributes().get(RIConstants.CDI_AVAILABLE);
-        } else if (facesContext != null && facesContext.getExternalContext().getApplicationMap().containsKey(RIConstants.CDI_AVAILABLE)) {
-            result = (Boolean) facesContext.getExternalContext().getApplicationMap().get(RIConstants.CDI_AVAILABLE);
-        } else {
-            result = getCdiBeanManager(facesContext) != null;
-
-            if (result && facesContext != null) {
-                facesContext.getAttributes().put(RIConstants.CDI_AVAILABLE, result);
-                facesContext.getExternalContext().getApplicationMap().put(RIConstants.CDI_AVAILABLE, result);
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Is CDI available (ServletContext variant)
-     *
-     * @param servletContext the servlet context.
-     * @return true if available, false otherwise.
-     */
-    public static boolean isCdiAvailable(ServletContext servletContext) {
-        boolean result;
-
-        Object value = servletContext.getAttribute(RIConstants.CDI_AVAILABLE);
-        if (value != null) {
-            result = (Boolean) value;
-        } else {
-            result = getCdiBeanManager(null) != null;
-
-            if (result) {
-                servletContext.setAttribute(RIConstants.CDI_AVAILABLE, result);
-            }
+        if (result == null) {
+            throw new IllegalStateException("CDI is not available");
         }
 
         return result;
@@ -1502,9 +1524,17 @@ public class Util {
     public static <T> Stream<T> stream(Object object) {
         if (object == null) {
             return Stream.empty();
-        } else if (object instanceof Stream) {
+        }
+        else if (object instanceof Stream) {
             return (Stream<T>) object;
-        } else if (object instanceof Iterable) {
+        }
+        else if (object instanceof Collection) {
+            return ((Collection)object).stream();   // little bonus with sized spliterator...
+        }
+        else if ( object instanceof Enumeration ) { // recursive call wrapping in an Iterator (Java 9+)
+            return stream( ((Enumeration)object).asIterator() );
+        }
+        else if (object instanceof Iterable) {
             return (Stream<T>) StreamSupport.stream(((Iterable<?>) object).spliterator(), false);
         } else if (object instanceof Map) {
             return (Stream<T>) ((Map<?, ?>) object).entrySet().stream();
@@ -1524,6 +1554,70 @@ public class Util {
     @SafeVarargs
     public static <E> Set<E> unmodifiableSet(E... elements) {
         return Collections.unmodifiableSet(new LinkedHashSet<>(Arrays.asList(elements)));
+    }
+
+
+    public static boolean isNestedInIterator(FacesContext context, UIComponent component) {
+        UIComponent parent = component.getParent();
+
+        if (parent == null) {
+            return false;
+        }
+
+        for (UIComponent p = parent; p != null; p = p.getParent()) {
+            if (p instanceof UIData || p instanceof UIRepeat) {
+                return true;
+            }
+        }
+
+        // https://github.com/eclipse-ee4j/mojarra/issues/4957
+        // We should in long term probably introduce a common interface like UIIterable.
+        // But this is solid for now as all known implementing components already follow this pattern.
+        // We could theoretically even remove the above instanceof checks.
+        Pattern clientIdNestedInIteratorPattern = getPatternCache(context.getExternalContext().getApplicationMap()).computeIfAbsent(CLIENT_ID_NESTED_IN_ITERATOR_PATTERN, k -> {
+            String separatorChar = Pattern.quote(String.valueOf(UINamingContainer.getSeparatorChar(context)));
+            return Pattern.compile(".+" + separatorChar + "[0-9]+" + separatorChar + ".+");
+        });
+
+        return clientIdNestedInIteratorPattern.matcher(parent.getClientId(context)).matches();
+    }
+
+    public static String ensureLeadingSlash(String s) {
+        if (s == null || (!s.isEmpty() && s.charAt(0) == '/')) {
+            return s;
+        }
+        else {
+            return '/' + s;
+        }
+    }
+
+    /**
+     * Extract first numeric segment from given client ID.
+     * <ul>
+     * <li>'table:1:button' should return 1</li>
+     * <li>'table:2' should return 2</li>
+     * <li>'3:button' should return 3</li>
+     * <li>'4' should return 4</li>
+     * </ul>
+     * @param clientId the client ID
+     * @param separatorChar the separator character
+     * @return first numeric segment from given client ID.
+     * @throws NumberFormatException when given client ID doesn't have any numeric segment at all.
+     */
+    public static int extractFirstNumericSegment(String clientId, char separatorChar) {
+        int nextSeparatorChar = clientId.indexOf(separatorChar);
+
+        while (clientId.length() > 0 && !isDigit(clientId.charAt(0)) && nextSeparatorChar >= 0) {
+            clientId = clientId.substring(nextSeparatorChar + 1);
+            nextSeparatorChar = clientId.indexOf(separatorChar);
+        }
+
+        if (clientId.length() > 0 && isDigit(clientId.charAt(0))) {
+            String firstNumericSegment = nextSeparatorChar >= 0 ? clientId.substring(0, nextSeparatorChar) : clientId;
+            return Integer.parseInt(firstNumericSegment);
+        }
+
+        throw new NumberFormatException("there is no numeric segment");
     }
 
 }

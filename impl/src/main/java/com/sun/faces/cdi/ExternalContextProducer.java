@@ -37,7 +37,7 @@ public class ExternalContextProducer extends CdiProducer<ExternalContext> {
     private static final long serialVersionUID = 1L;
 
     public ExternalContextProducer() {
-        super.name("externalContext").scope(RequestScoped.class).types(ExternalContext.class).beanClass(ExternalContext.class)
+        super.name("externalContext").scope(RequestScoped.class).types(ExternalContext.class)
                 .create(e -> FacesContext.getCurrentInstance().getExternalContext());
     }
 
