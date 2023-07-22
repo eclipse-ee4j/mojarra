@@ -328,14 +328,10 @@ public class FacesMessage implements Serializable {
      */
     @Override
     public boolean equals(Object object) {
-        if (object == this || object == null || object.getClass() != getClass()) {
-            return object == this;
-        }
-
-        FacesMessage other = (FacesMessage) object;
-        return Objects.equals(severity, other.severity)
-            && Objects.equals(summary, other.summary)
-            && Objects.equals(detail, other.detail);
+        return (object == this) || (object != null && object.getClass() == getClass()
+            && Objects.equals(severity, ((FacesMessage) object).severity)
+            && Objects.equals(summary, ((FacesMessage) object).summary)
+            && Objects.equals(detail, ((FacesMessage) object).detail));
     }
 
     /**
