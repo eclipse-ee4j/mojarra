@@ -27,6 +27,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -312,6 +313,41 @@ public class FacesMessage implements Serializable {
      */
     public void rendered() {
         rendered = true;
+    }
+
+    /**
+     * @since 4.1
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(severity, summary, detail);
+    }
+
+    /**
+     * @since 4.1
+     */
+    @Override
+    public boolean equals(Object object) {
+        if (object == this || object == null || object.getClass() != getClass()) {
+            return object == this;
+        }
+
+        FacesMessage other = (FacesMessage) object;
+        return Objects.equals(severity, other.severity)
+            && Objects.equals(summary, other.summary)
+            && Objects.equals(detail, other.detail);
+    }
+
+    /**
+     * @since 4.1
+     */
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "["
+            + "severity='" + severity + "', "
+            + "summary='" + summary + "', "
+            + "detail='" + detail + "']"
+        ;
     }
 
     /**
