@@ -115,7 +115,7 @@ public class InstanceFactory {
     }
 
     private final String[] STANDARD_BY_TYPE_CONVERTER_CLASSES = { "java.math.BigDecimal", "java.lang.Boolean", "java.lang.Byte", "java.lang.Character",
-            "java.lang.Double", "java.lang.Float", "java.lang.Integer", "java.lang.Long", "java.lang.Short", "java.lang.Enum" };
+            "java.lang.Double", "java.lang.Float", "java.lang.Integer", "java.lang.Long", "java.lang.Short", "java.lang.Enum", "java.util.UUID" };
 
     private final Map<Class<?>, Object> converterTypeMap;
     private final boolean registerPropertyEditors;
