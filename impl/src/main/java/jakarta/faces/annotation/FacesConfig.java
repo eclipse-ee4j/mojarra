@@ -73,11 +73,6 @@ public @interface FacesConfig {
         public static final Literal INSTANCE = new Literal();
 
         @Override
-        public Version version() {
-            return Version.JSF_2_3;
-        }
-
-        @Override
         public boolean alwaysPerformValidationWhenRequiredIsTrue() {
             return false;
         }
@@ -94,23 +89,6 @@ public @interface FacesConfig {
         
         // TODO: add the rest :X
         
-    }
-
-    /**
-     * The Faces spec version
-     * 
-     * @deprecated It has no effect anymore as per Jakarta Faces version 4.0; the actual impl version should be leading. 
-     */
-    @Deprecated(forRemoval = true, since = "4.0")
-    public static enum Version {
-
-        /**
-         * <p class="changed_added_2_3">
-         * This value indicates CDI should be used for Jakarta Expression Language resolution as well as enabling Jakarta Server
-         * Faces CDI injection, as specified in Section 5.6.3 "CDI for EL Resolution" and Section 5.9 "CDI Integration".
-         * </p>
-         */
-        JSF_2_3
     }
 
     /**
@@ -412,20 +390,6 @@ public @interface FacesConfig {
             }
         }
     }
-
-    /**
-     * <p class="changed_added_2_3">
-     * The value of this attribute indicates that features corresponding to this version must be enabled for this
-     * application.
-     * </p>
-     *
-     * @return the spec version for which the features must be enabled.
-     * 
-     * @deprecated It has no effect anymore as per Jakarta Faces version 4.0; the actual impl version should be leading. 
-     */
-    @Nonbinding
-    @Deprecated(forRemoval = true, since = "4.0")
-    Version version() default Version.JSF_2_3;
 
     /**
      * <p class="changed_added_4_0">

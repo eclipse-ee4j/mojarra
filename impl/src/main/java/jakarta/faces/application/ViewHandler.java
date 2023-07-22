@@ -79,24 +79,6 @@ public abstract class ViewHandler {
     public static final String CHARACTER_ENCODING_KEY = "jakarta.faces.request.charset";
 
     /**
-     * <p class="changed_modified_4_0">
-     * This is not anymore used since removal of support for Jakarta Pages.
-     * </p>
-     * @deprecated Use {@link #FACELETS_SUFFIX_PARAM_NAME} instead.
-     */
-    @Deprecated(since = "4.0", forRemoval = true)
-    public static final String DEFAULT_SUFFIX_PARAM_NAME = "jakarta.faces.DEFAULT_SUFFIX";
-
-    /**
-     * <p class="changed_modified_4_0">
-     * This is not anymore used since removal of support for Jakarta Pages.
-     * </p>
-     * @deprecated Use {@link #DEFAULT_FACELETS_SUFFIX} instead.
-     */
-    @Deprecated(since = "4.0", forRemoval = true)
-    public static final String DEFAULT_SUFFIX = ".xhtml";
-
-    /**
      * <p class="changed_added_2_2">
      * If this param is set, and calling toLowerCase().equals("true") on a String representation of its value returns true,
      * the runtime must ensure that any XML comments in the Facelets source page are not delivered to the client. The

@@ -50,11 +50,6 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
     protected enum PropertyKeys {
         accept, accesskey, dir, disabled, label, lang, multiple, onblur, onchange, onclick, ondblclick, onfocus, onkeydown, onkeypress, onkeyup,
         onmousedown, onmousemove, onmouseout, onmouseover, onmouseup, onselect, role, style, styleClass, tabindex, title,
-        @Deprecated(since = "4.0", forRemoval = true) alt,
-        @Deprecated(since = "4.0", forRemoval = true) autocomplete,
-        @Deprecated(since = "4.0", forRemoval = true) maxlength,
-        @Deprecated(since = "4.0", forRemoval = true) readonly,
-        @Deprecated (since = "4.0", forRemoval = true)size,
         ;
         String toString;
 
@@ -130,68 +125,6 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
     public void setAccept(java.lang.String accept) {
         getStateHelper().put(PropertyKeys.accept, accept);
         handleAttribute(this, "accept", accept);
-    }
-
-    /**
-     * <p>
-     * Return the value of the <code>alt</code> property.
-     * </p>
-     * <p>
-     * Contents: Alternate textual description of the element rendered by this component.
-     *
-     * @return the value of the property
-     * @deprecated This attribute is actually not specified in HTML. Do not use it on this component.
-     */
-    @Deprecated(since = "4.0", forRemoval = true)
-    public java.lang.String getAlt() {
-        return (java.lang.String) getStateHelper().eval(PropertyKeys.alt);
-
-    }
-
-    /**
-     * <p>
-     * Set the value of the <code>alt</code> property.
-     * </p>
-     *
-     * @param alt the new property value
-     * @deprecated This attribute is actually not specified in HTML. Do not use it on this component.
-     */
-    @Deprecated(since = "4.0", forRemoval = true)
-    public void setAlt(java.lang.String alt) {
-        getStateHelper().put(PropertyKeys.alt, alt);
-        handleAttribute(this, "alt", alt);
-    }
-
-    /**
-     * <p>
-     * Return the value of the <code>autocomplete</code> property.
-     * </p>
-     * <p>
-     * Contents: If the value of this attribute is "off", render "off" as the value of the attribute. This indicates that
-     * the browser should disable its autocomplete feature for this component. This is useful for components that perform
-     * autocompletion and do not want the browser interfering. If this attribute is not set or the value is "on", render
-     * nothing.
-     *
-     * @return the value of the property
-     * @deprecated This attribute is actually not specified in HTML. Do not use it on this component.
-     */
-    @Deprecated(since = "4.0", forRemoval = true)
-    public java.lang.String getAutocomplete() {
-        return (java.lang.String) getStateHelper().eval(PropertyKeys.autocomplete);
-
-    }
-
-    /**
-     * <p>
-     * Set the value of the <code>autocomplete</code> property.
-     * </p>
-     *
-     * @param autocomplete the new property value
-     * @deprecated This attribute is actually not specified in HTML. Do not use it on this component.
-     */
-    @Deprecated(since = "4.0", forRemoval = true)
-    public void setAutocomplete(java.lang.String autocomplete) {
-        getStateHelper().put(PropertyKeys.autocomplete, autocomplete);
     }
 
     /**
@@ -338,36 +271,6 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
     public void setMultiple(boolean multiple) {
         getStateHelper().put(PropertyKeys.multiple, multiple);
         handleAttribute(this, "multiple", multiple);
-    }
-
-    /**
-     * <p>
-     * Return the value of the <code>maxlength</code> property.
-     * </p>
-     * <p>
-     * Contents: The maximum number of characters that may be entered in this field.
-     *
-     * @return the value of the property
-     * @deprecated This attribute is actually not specified in HTML. Do not use it on this component.
-     */
-    @Deprecated(since = "4.0", forRemoval = true)
-    public int getMaxlength() {
-        return (java.lang.Integer) getStateHelper().eval(PropertyKeys.maxlength, Integer.MIN_VALUE);
-
-    }
-
-    /**
-     * <p>
-     * Set the value of the <code>maxlength</code> property.
-     * </p>
-     *
-     * @param maxlength the new property value
-     * @deprecated This attribute is actually not specified in HTML. Do not use it on this component.
-     */
-    @Deprecated(since = "4.0", forRemoval = true)
-    public void setMaxlength(int maxlength) {
-        getStateHelper().put(PropertyKeys.maxlength, maxlength);
-        handleAttribute(this, "maxlength", maxlength);
     }
 
     /**
@@ -763,37 +666,6 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
 
     /**
      * <p>
-     * Return the value of the <code>readonly</code> property.
-     * </p>
-     * <p>
-     * Contents: Flag indicating that this component will prohibit changes by the user. The element may receive focus unless
-     * it has also been disabled. A value of false causes no attribute to be rendered, while a value of true causes the
-     * attribute to be rendered as readonly="readonly".
-     *
-     * @return the value of the property
-     * @deprecated This attribute is actually not specified in HTML. Do not use it on this component.
-     */
-    @Deprecated(since = "4.0", forRemoval = true)
-    public boolean isReadonly() {
-        return (java.lang.Boolean) getStateHelper().eval(PropertyKeys.readonly, false);
-
-    }
-
-    /**
-     * <p>
-     * Set the value of the <code>readonly</code> property.
-     * </p>
-     *
-     * @param readonly the new property value
-     * @deprecated This attribute is actually not specified in HTML. Do not use it on this component.
-     */
-    @Deprecated(since = "4.0", forRemoval = true)
-    public void setReadonly(boolean readonly) {
-        getStateHelper().put(PropertyKeys.readonly, readonly);
-    }
-
-    /**
-     * <p>
      * Return the value of the <code>role</code> property.
      * </p>
      * <p>
@@ -830,36 +702,6 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
     public void setRole(java.lang.String role) {
         getStateHelper().put(PropertyKeys.role, role);
         handleAttribute(this, "role", role);
-    }
-
-    /**
-     * <p>
-     * Return the value of the <code>size</code> property.
-     * </p>
-     * <p>
-     * Contents: The number of characters used to determine the width of this field.
-     *
-     * @return the value of the property
-     * @deprecated This attribute is actually not specified in HTML. Do not use it on this component.
-     */
-    @Deprecated(since = "4.0", forRemoval = true)
-    public int getSize() {
-        return (java.lang.Integer) getStateHelper().eval(PropertyKeys.size, Integer.MIN_VALUE);
-
-    }
-
-    /**
-     * <p>
-     * Set the value of the <code>size</code> property.
-     * </p>
-     *
-     * @param size the new property value
-     * @deprecated This attribute is actually not specified in HTML. Do not use it on this component.
-     */
-    @Deprecated(since = "4.0", forRemoval = true)
-    public void setSize(int size) {
-        getStateHelper().put(PropertyKeys.size, size);
-        handleAttribute(this, "size", size);
     }
 
     /**
