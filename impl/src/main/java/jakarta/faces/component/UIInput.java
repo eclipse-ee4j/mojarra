@@ -140,6 +140,15 @@ public class UIInput extends UIOutput implements EditableValueHolder {
     public static final String VALIDATE_EMPTY_FIELDS_PARAM_NAME = "jakarta.faces.VALIDATE_EMPTY_FIELDS";
 
     /**
+     * <p class="changed_added_5_0">
+     * The default value of the {@link #VALIDATE_EMPTY_FIELDS_PARAM_NAME} context-param.
+     * </p>
+     *
+     * @since 5.0
+     */
+    public static final String VALIDATE_EMPTY_FIELDS_DEFAULT_VALUE = "auto";
+
+    /**
      * <p class="changed_modified_2_3">
      * The name of a context parameter that indicates how empty strings need to be interpreted.
      * </p>

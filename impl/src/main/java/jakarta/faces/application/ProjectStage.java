@@ -66,6 +66,15 @@ public enum ProjectStage {
     public static final String PROJECT_STAGE_PARAM_NAME = "jakarta.faces.PROJECT_STAGE";
 
     /**
+     * <p class="changed_added_5_0">
+     * The default value of the {@link #PROJECT_STAGE_PARAM_NAME} context-param.
+     * </p>
+     *
+     * @since 5.0
+     */
+    public static final ProjectStage PROJECT_STAGE_DEFAULT_VALUE = ProjectStage.Production;
+
+    /**
      * <p class="changed_added_2_0">
      * The value of this constant is the name used for JNDI lookups for setting the current value to be returned by
      * {@link Application#getProjectStage}.

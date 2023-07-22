@@ -16,6 +16,8 @@
 
 package jakarta.faces.validator;
 
+import static jakarta.faces.component.UIInput.VALIDATE_EMPTY_FIELDS_PARAM_NAME;
+
 import java.util.Map;
 
 import jakarta.el.ELContext;
@@ -37,8 +39,6 @@ import jakarta.faces.context.FacesContext;
 public class MethodExpressionValidator implements Validator, StateHolder {
 
     private static final String BEANS_VALIDATION_AVAILABLE = "jakarta.faces.private.BEANS_VALIDATION_AVAILABLE";
-
-    private static final String VALIDATE_EMPTY_FIELDS_PARAM_NAME = "jakarta.faces.VALIDATE_EMPTY_FIELDS";
 
     // ------------------------------------------------------ Instance Variables
 
