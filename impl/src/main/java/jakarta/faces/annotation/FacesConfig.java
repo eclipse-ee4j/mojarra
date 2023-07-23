@@ -137,7 +137,7 @@ public @interface FacesConfig {
 
         @Override
         public int faceletsRefreshPeriod() {
-            return 0;
+            return Integer.MIN_VALUE;
         }
 
         @Override
@@ -186,6 +186,11 @@ public @interface FacesConfig {
         }
 
         @Override
+        public String stateSavingMethod() {
+            return StateManager.STATE_SAVING_METHOD_CLIENT;
+        }
+
+        @Override
         public String validateEmptyFields() {
             return UIInput.VALIDATE_EMPTY_FIELDS_DEFAULT_VALUE;
         }
@@ -221,165 +226,145 @@ public @interface FacesConfig {
     public static enum ContextParam {
 
         /**
-         * Returns {@code jakarta.faces.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE} as {@link Boolean} with default of {@code false}.
-         * @see UIInput#ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE
+         * Returns {@value UIInput#ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE} as {@link Boolean} with default of {@code false}.
          */
         ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE(UIInput.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE, Boolean.class, false),
 
         /**
-         * Returns {@code jakarta.faces.AUTOMATIC_EXTENSIONLESS_MAPPING} as {@link Boolean} with default of {@code false}.
-         * @see FacesServlet#AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME
+         * Returns {@value FacesServlet#AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME} as {@link Boolean} with default of {@code false}.
          */
         AUTOMATIC_EXTENSIONLESS_MAPPING(FacesServlet.AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME, Boolean.class, false),
 
         /**
-         * Returns {@code jakarta.faces.CLIENT_WINDOW_MODE} as {@link String} with default of {@code none}.
-         * @see ClientWindow#CLIENT_WINDOW_MODE_PARAM_NAME
+         * Returns {@value ClientWindow#CLIENT_WINDOW_MODE_PARAM_NAME} as {@link String} with default of {@code none}.
          */
         CLIENT_WINDOW_MODE(ClientWindow.CLIENT_WINDOW_MODE_PARAM_NAME, String.class, ClientWindow.CLIENT_WINDOW_MODE_DEFAULT_VALUE),
 
         /**
-         * Returns {@code jakarta.faces.CONFIG_FILES} as {@link String} array with default of empty string array.
-         * @see FacesServlet#CONFIG_FILES_ATTR
+         * Returns {@value FacesServlet#CONFIG_FILES_ATTR} as {@link String} array with default of empty string array.
          */
         CONFIG_FILES(FacesServlet.CONFIG_FILES_ATTR, StringArray.COMMA_SEPARATED, EMPTY_STRING_ARRAY),
 
         /**
-         * Returns {@code jakarta.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE} as {@link Boolean} with default of {@code false}.
-         * @see Converter#DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME
+         * Returns {@value Converter#DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME} as {@link Boolean} with default of {@code false}.
          */
         DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE(Converter.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME, Boolean.class, false),
 
         /**
-         * Returns {@code jakarta.faces.validator.DISABLE_DEFAULT_BEAN_VALIDATOR} as {@link Boolean} with default of {@code false}.
-         * @see BeanValidator#DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME
+         * Returns {@value BeanValidator#DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME} as {@link Boolean} with default of {@code false}.
          */
         DISABLE_DEFAULT_BEAN_VALIDATOR(BeanValidator.DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME, Boolean.class, false),
 
         /**
-         * Returns {@code jakarta.faces.DISABLE_FACESSERVLET_TO_XHTML} as {@link Boolean} with default of {@code false}.
-         * @see FacesServlet#DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME
+         * Returns {@value FacesServlet#DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME} as {@link Boolean} with default of {@code false}.
          */
         DISABLE_FACESSERVLET_TO_XHTML(FacesServlet.DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME, Boolean.class, false),
 
         /** 
-         * Returns {@code jakarta.faces.validator.ENABLE_VALIDATE_WHOLE_BEAN} as {@link Boolean} with default of {@code false}.
-         * @see BeanValidator#ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME
+         * Returns {@value BeanValidator#ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME} as {@link Boolean} with default of {@code false}.
          */
         ENABLE_VALIDATE_WHOLE_BEAN(BeanValidator.ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME, Boolean.class, false),
 
         /** 
-         * Returns {@code jakarta.faces.ENABLE_WEBSOCKET_ENDPOINT} as {@link Boolean} with default of {@code false}.
-         * @see PushContext#ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME
+         * Returns {@value PushContext#ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME} as {@link Boolean} with default of {@code false}.
          */
         ENABLE_WEBSOCKET_ENDPOINT(PushContext.ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME, Boolean.class, false),
 
         /** 
-         * Returns {@code jakarta.faces.FACELETS_BUFFER_SIZE} as {@link Integer} with default of {@code 1024}.
-         * @see ViewHandler#FACELETS_BUFFER_SIZE_PARAM_NAME
+         * Returns {@value ViewHandler#FACELETS_BUFFER_SIZE_PARAM_NAME} as {@link Integer} with default of {@code 1024}.
          */
         FACELETS_BUFFER_SIZE(ViewHandler.FACELETS_BUFFER_SIZE_PARAM_NAME, Integer.class, ViewHandler.FACELETS_BUFFER_SIZE_DEFAULT_VALUE),
 
         /** 
-         * Returns {@code jakarta.faces.FACELETS_DECORATORS} as {@link String} array with default of empty string array.
-         * @see ViewHandler#FACELETS_DECORATORS_PARAM_NAME
+         * Returns {@value ViewHandler#FACELETS_DECORATORS_PARAM_NAME} as {@link String} array with default of empty string array.
          */
         FACELETS_DECORATORS(ViewHandler.FACELETS_DECORATORS_PARAM_NAME, StringArray.SEMICOLON_SEPARATED, EMPTY_STRING_ARRAY),
 
         /** 
-         * Returns {@code jakarta.faces.FACELETS_LIBRARIES} as {@link String} array with default of empty string array.
-         * @see ViewHandler#FACELETS_LIBRARIES_PARAM_NAME
+         * Returns {@value ViewHandler#FACELETS_LIBRARIES_PARAM_NAME} as {@link String} array with default of empty string array.
          */
         FACELETS_LIBRARIES(ViewHandler.FACELETS_LIBRARIES_PARAM_NAME, StringArray.SEMICOLON_SEPARATED, EMPTY_STRING_ARRAY),
 
         /**
-         * Returns {@code jakarta.faces.FACELETS_REFRESH_PERIOD} as {@link Integer} with default of {@code -1} when
+         * Returns {@value ViewHandler#FACELETS_REFRESH_PERIOD_PARAM_NAME} as {@link Integer} with default of {@code -1} when
          * {@link Application#getProjectStage()} is {@link ProjectStage#Production} else default of {@code 0}.
-         * @see ViewHandler#FACELETS_REFRESH_PERIOD_PARAM_NAME
          */
         FACELETS_REFRESH_PERIOD(ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, Integer.class, context -> context.getApplication().getProjectStage() == ProjectStage.Production ? -1 : 0),
 
         /**
-         * Returns {@code jakarta.faces.FACELETS_SKIP_COMMENTS} as {@link Boolean} with default of {@code false}.
-         * @see ViewHandler#FACELETS_SKIP_COMMENTS_PARAM_NAME
+         * Returns {@value ViewHandler#FACELETS_SKIP_COMMENTS_PARAM_NAME} as {@link Boolean} with default of {@code false}.
          */
         FACELETS_SKIP_COMMENTS(ViewHandler.FACELETS_SKIP_COMMENTS_PARAM_NAME, Boolean.class, false),
 
         /** 
-         * Returns {@code jakarta.faces.FACELETS_SUFFIX} as {@link String} with default of {@link ViewHandler#DEFAULT_FACELETS_SUFFIX}.
-         * @see ViewHandler#FACELETS_SUFFIX_PARAM_NAME
+         * Returns {@value ViewHandler#FACELETS_SUFFIX_PARAM_NAME} as {@link String} with default of {@value ViewHandler#DEFAULT_FACELETS_SUFFIX}.
          */
         FACELETS_SUFFIX(ViewHandler.FACELETS_SUFFIX_PARAM_NAME, String.class, ViewHandler.DEFAULT_FACELETS_SUFFIX),
 
         /**
-         * Returns {@code jakarta.faces.FACELETS_VIEW_MAPPINGS} as {@link String} array with default of empty string array.
-         * @see ViewHandler#FACELETS_VIEW_MAPPINGS_PARAM_NAME
+         * Returns {@value ViewHandler#FACELETS_VIEW_MAPPINGS_PARAM_NAME} as {@link String} array with default of empty string array.
          */
         FACELETS_VIEW_MAPPINGS(ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME, StringArray.SEMICOLON_SEPARATED, EMPTY_STRING_ARRAY),
 
         /**
-         * Returns {@code jakarta.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL} as {@link Boolean} with default of {@code false}.
-         * @see UIInput#EMPTY_STRING_AS_NULL_PARAM_NAME
+         * Returns {@value UIInput#EMPTY_STRING_AS_NULL_PARAM_NAME} as {@link Boolean} with default of {@code false}.
          */
         INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL(UIInput.EMPTY_STRING_AS_NULL_PARAM_NAME, Boolean.class, false),
 
         /**
-         * Returns {@code jakarta.faces.NUMBER_OF_CLIENT_WINDOWS} as {@link Integer} with default of {@code 10}.
+         * Returns {@value ClientWindow#NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME} as {@link Integer} with default of {@code 10}.
          * @see ClientWindow#NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME
          */
         NUMBER_OF_CLIENT_WINDOWS(ClientWindow.NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME, Integer.class, ClientWindow.NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE),
 
         /**
-         * Returns {@code jakarta.faces.PROJECT_STAGE} as {@link ProjectStage} with default of {@code Production}.
-         * @see ProjectStage#PROJECT_STAGE_PARAM_NAME
+         * Returns {@value ProjectStage#PROJECT_STAGE_PARAM_NAME} as {@link ProjectStage} with default of {@code Production}.
          */
         PROJECT_STAGE(ProjectStage.PROJECT_STAGE_PARAM_NAME, ProjectStage.class, ProjectStage.PROJECT_STAGE_DEFAULT_VALUE),
 
         /**
-         * Returns {@code jakarta.faces.RESOURCE_EXCLUDES} as {@link String} array with default of {@link ResourceHandler#RESOURCE_EXCLUDES_DEFAULT_VALUE}.
-         * @see ResourceHandler#RESOURCE_EXCLUDES_PARAM_NAME
+         * Returns {@value ResourceHandler#RESOURCE_EXCLUDES_PARAM_NAME} as {@link String} array with default of {@value ResourceHandler#RESOURCE_EXCLUDES_DEFAULT_VALUE}.
          */
         RESOURCE_EXCLUDES(ResourceHandler.RESOURCE_EXCLUDES_PARAM_NAME, StringArray.SPACE_SEPARATED, StringArray.SPACE_SEPARATED.split(ResourceHandler.RESOURCE_EXCLUDES_DEFAULT_VALUE)),
 
         /**
-         * Returns {@code jakarta.faces.SERIALIZE_SERVER_STATE} as {@link Boolean} with default of {@code false}.
-         * @see StateManager#SERIALIZE_SERVER_STATE_PARAM_NAME
+         * Returns {@value StateManager#SERIALIZE_SERVER_STATE_PARAM_NAME} as {@link Boolean} with default of {@code false}.
          */
         SERIALIZE_SERVER_STATE(StateManager.SERIALIZE_SERVER_STATE_PARAM_NAME, Boolean.class, false),
 
         /**
-         * Returns {@code jakarta.faces.SEPARATOR_CHAR} as {@link Character} with default of {@link NamingContainer#SEPARATOR_CHAR}.
-         * @see UINamingContainer#SEPARATOR_CHAR_PARAM_NAME
+         * Returns {@value UINamingContainer#SEPARATOR_CHAR_PARAM_NAME} as {@link Character} with default of {@value NamingContainer#SEPARATOR_CHAR}.
          */
         SEPARATOR_CHAR(UINamingContainer.SEPARATOR_CHAR_PARAM_NAME, Character.class, NamingContainer.SEPARATOR_CHAR),
 
         /**
-         * Returns {@code jakarta.faces.VALIDATE_EMPTY_FIELDS} as {@link String} with default of {@code auto}.
-         * @see UIInput#VALIDATE_EMPTY_FIELDS_PARAM_NAME
+         * Returns {@value StateManager#STATE_SAVING_METHOD_PARAM_NAME} as {@link String} with default of {@value StateManager#STATE_SAVING_METHOD_CLIENT}.
+         * @see StateManager#STATE_SAVING_METHOD_PARAM_NAME
+         */
+        STATE_SAVING_METHOD(StateManager.STATE_SAVING_METHOD_PARAM_NAME, String.class, StateManager.STATE_SAVING_METHOD_CLIENT),
+
+        /**
+         * Returns {@value UIInput#VALIDATE_EMPTY_FIELDS_PARAM_NAME} as {@link String} with default of {@code auto}.
          */
         VALIDATE_EMPTY_FIELDS(UIInput.VALIDATE_EMPTY_FIELDS_PARAM_NAME, String.class, UIInput.VALIDATE_EMPTY_FIELDS_DEFAULT_VALUE),
 
         /**
-         * Returns {@code jakarta.faces.VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS} as {@link Boolean} with default of {@code false}.
-         * @see UIViewRoot#VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS_PARAM_NAME
+         * Returns {@value UIViewRoot#VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS_PARAM_NAME} as {@link Boolean} with default of {@code false}.
          */
         VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS(UIViewRoot.VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS_PARAM_NAME, Boolean.class, false),
 
         /**
-         * Returns {@code jakarta.faces.WEBAPP_CONTRACTS_DIRECTORY} as {@link Path} with default of {@link ResourceHandler#WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE}.
-         * @see ResourceHandler#WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME
+         * Returns {@value ResourceHandler#WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME} as {@link Path} with default of {@value ResourceHandler#WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE}.
          */
         WEBAPP_CONTRACTS_DIRECTORY(ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME, Path.class, Paths.get(ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE)),
 
         /**
-         * Returns {@code jakarta.faces.WEBAPP_RESOURCES_DIRECTORY} as {@link Path} with default of {@link ResourceHandler#WEBAPP_RESOURCES_DIRECTORY_DEFAULT_VALUE}.
-         * @see ResourceHandler#WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME
+         * Returns {@value ResourceHandler#WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME} as {@link Path} with default of {@value ResourceHandler#WEBAPP_RESOURCES_DIRECTORY_DEFAULT_VALUE}.
          */
         WEBAPP_RESOURCES_DIRECTORY(ResourceHandler.WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME, Path.class, Paths.get(ResourceHandler.WEBAPP_RESOURCES_DIRECTORY_DEFAULT_VALUE)),
 
         /**
-         * Returns {@code jakarta.faces.WEBSOCKET_ENDPOINT_PORT} as {@link Integer} with default of {@code 0}.
-         * @see PushContext#WEBSOCKET_ENDPOINT_PORT_PARAM_NAME
+         * Returns {@value PushContext#WEBSOCKET_ENDPOINT_PORT_PARAM_NAME} as {@link Integer} with default of {@code 0}.
          */
         WEBSOCKET_ENDPOINT_PORT(PushContext.WEBSOCKET_ENDPOINT_PORT_PARAM_NAME, Integer.class, 0),
 
@@ -518,245 +503,197 @@ public @interface FacesConfig {
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@code jakarta.faces.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE} as {@link Boolean} with default of {@code false}.
+     * Returns {@value UIInput#ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE} as {@link Boolean} with default of {@code false}.
      * </p>
-     *
-     * @see UIInput#ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE
      */
     boolean alwaysPerformValidationWhenRequiredIsTrue() default false;
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@code jakarta.faces.AUTOMATIC_EXTENSIONLESS_MAPPING} as {@link Boolean} with default of {@code false}.
+     * Returns {@value FacesServlet#AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME} as {@link Boolean} with default of {@code false}.
      * </p>
-     *
-     * @see FacesServlet#AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME
      */
     boolean automaticExtensionlessMapping() default false;
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@code jakarta.faces.CLIENT_WINDOW_MODE} as {@link String} with default of {@code none}.
+     * Returns {@value ClientWindow#CLIENT_WINDOW_MODE_PARAM_NAME} as {@link String} with default of {@code none}.
      * </p>
-     *
-     * @see ClientWindow#CLIENT_WINDOW_MODE_PARAM_NAME
      */
     String clientWindowMode() default ClientWindow.CLIENT_WINDOW_MODE_DEFAULT_VALUE;
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@code jakarta.faces.CONFIG_FILES} as {@link String} array with default of empty string array.
+     * Returns {@value FacesServlet#CONFIG_FILES_ATTR} as {@link String} array with default of empty string array.
      * </p>
-     *
-     * @see FacesServlet#CONFIG_FILES_ATTR
      */
     String[] configFiles() default {};
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@code jakarta.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE} as {@link Boolean} with default of {@code false}.
+     * Returns {@value Converter#DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME} as {@link Boolean} with default of {@code false}.
      * </p>
-     *
-     * @see Converter#DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME
      */
     boolean datetimeConverterDefaultTimezoneIsSystemTimezone() default false;
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@code jakarta.faces.validator.DISABLE_DEFAULT_BEAN_VALIDATOR} as {@link Boolean} with default of {@code false}.
+     * Returns {@value BeanValidator#DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME} as {@link Boolean} with default of {@code false}.
      * </p>
-     *
-     * @see BeanValidator#DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME
      */
     boolean disableDefaultBeanValidator() default false;
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@code jakarta.faces.DISABLE_FACESSERVLET_TO_XHTML} as {@link Boolean} with default of {@code false}.
+     * Returns {@value FacesServlet#DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME} as {@link Boolean} with default of {@code false}.
      * </p>
-     *
-     * @see FacesServlet#DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME
      */
     boolean disableFacesservletToXhtml() default false;
 
     /** 
      * <p class="changed_added_5_0">
-     * Returns {@code jakarta.faces.validator.ENABLE_VALIDATE_WHOLE_BEAN} as {@link Boolean} with default of {@code false}.
+     * Returns {@value BeanValidator#ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME} as {@link Boolean} with default of {@code false}.
      * </p>
-     *
-     * @see BeanValidator#ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME
      */
     boolean enableValidateWholeBean() default false;
 
     /** 
      * <p class="changed_added_5_0">
-     * Returns {@code jakarta.faces.ENABLE_WEBSOCKET_ENDPOINT} as {@link Boolean} with default of {@code false}.
+     * Returns {@value PushContext#ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME} as {@link Boolean} with default of {@code false}.
      * </p>
-     *
-     * @see PushContext#ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME
      */
     boolean enableWebsocketEndpoint() default false;
 
     /** 
      * <p class="changed_added_5_0">
-     * Returns {@code jakarta.faces.FACELETS_BUFFER_SIZE} as {@link Integer} with default of {@code 1024}.
+     * Returns {@value ViewHandler#FACELETS_BUFFER_SIZE_PARAM_NAME} as {@link Integer} with default of {@code 1024}.
      * </p>
-     *
-     * @see ViewHandler#FACELETS_BUFFER_SIZE_PARAM_NAME
      */
     int faceletsBufferSize() default ViewHandler.FACELETS_BUFFER_SIZE_DEFAULT_VALUE;
 
     /** 
      * <p class="changed_added_5_0">
-     * Returns {@code jakarta.faces.FACELETS_DECORATORS} as {@link String} array with default of empty string array.
+     * Returns {@value ViewHandler#FACELETS_DECORATORS_PARAM_NAME} as {@link String} array with default of empty string array.
      * </p>
-     *
-     * @see ViewHandler#FACELETS_DECORATORS_PARAM_NAME
      */
     String[] faceletsDecorators() default {};
 
     /** 
      * <p class="changed_added_5_0">
-     * Returns {@code jakarta.faces.FACELETS_LIBRARIES} as {@link String} array with default of empty string array.
+     * Returns {@value ViewHandler#FACELETS_LIBRARIES_PARAM_NAME} as {@link String} array with default of empty string array.
      * </p>
-     *
-     * @see ViewHandler#FACELETS_LIBRARIES_PARAM_NAME
      */
     String[] faceletsLibraries() default {};
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@code jakarta.faces.FACELETS_REFRESH_PERIOD} as {@link Integer} with default of {@code -1} when
-     * {@link Application#getProjectStage()} is {@link ProjectStage#Production} else default of {@code 0}.
+     * Returns {@value ViewHandler#FACELETS_REFRESH_PERIOD_PARAM_NAME} as {@link Integer} with default of {@link Integer#MIN_VALUE}.
      * </p>
-     *
-     * @see ViewHandler#FACELETS_REFRESH_PERIOD_PARAM_NAME
      */
-    int faceletsRefreshPeriod() default 0; // TODO
+    int faceletsRefreshPeriod() default Integer.MIN_VALUE;
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@code jakarta.faces.FACELETS_SKIP_COMMENTS} as {@link Boolean} with default of {@code false}.
+     * Returns {@value ViewHandler#FACELETS_SKIP_COMMENTS_PARAM_NAME} as {@link Boolean} with default of {@code false}.
      * </p>
-     *
-     * @see ViewHandler#FACELETS_SKIP_COMMENTS_PARAM_NAME
      */
     boolean faceletsSkipComments() default false;
 
     /** 
      * <p class="changed_added_5_0">
-     * Returns {@code jakarta.faces.FACELETS_SUFFIX} as {@link String} with default of {@link ViewHandler#DEFAULT_FACELETS_SUFFIX}.
+     * Returns {@value ViewHandler#FACELETS_SUFFIX_PARAM_NAME} as {@link String} with default of {@value ViewHandler#DEFAULT_FACELETS_SUFFIX}.
      * </p>
-     *
-     * @see ViewHandler#FACELETS_SUFFIX_PARAM_NAME
      */
     String faceletsSuffix() default ViewHandler.DEFAULT_FACELETS_SUFFIX;
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@code jakarta.faces.FACELETS_VIEW_MAPPINGS} as {@link String} array with default of empty string array.
+     * Returns {@value ViewHandler#FACELETS_VIEW_MAPPINGS_PARAM_NAME} as {@link String} array with default of empty string array.
      * </p>
-     *
-     * @see ViewHandler#FACELETS_VIEW_MAPPINGS_PARAM_NAME
      */
     String[] faceletsViewMappings() default {};
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@code jakarta.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL} as {@link Boolean} with default of {@code false}.
+     * Returns {@value UIInput#EMPTY_STRING_AS_NULL_PARAM_NAME} as {@link Boolean} with default of {@code false}.
      * </p>
-     *
-     * @see UIInput#EMPTY_STRING_AS_NULL_PARAM_NAME
      */
     boolean interpretEmptyStringSubmittedValuesAsNull() default false;
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@code jakarta.faces.NUMBER_OF_CLIENT_WINDOWS} as {@link Integer} with default of {@code 10}.
+     * Returns {@value ClientWindow#NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME} as {@link Integer} with default of {@code 10}.
      * </p>
-     *
-     * @see ClientWindow#NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME
      */
     int numberOfClientWindows() default ClientWindow.NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE;
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@code jakarta.faces.PROJECT_STAGE} as {@link ProjectStage} with default of {@code Production}.
+     * Returns {@value ProjectStage#PROJECT_STAGE_PARAM_NAME} as {@link ProjectStage} with default of {@value ProjectStage#PROJECT_STAGE_DEFAULT_VALUE}.
      * </p>
-     *
-     * @see ProjectStage#PROJECT_STAGE_PARAM_NAME
      */
     ProjectStage projectStage() default ProjectStage.PROJECT_STAGE_DEFAULT_VALUE;
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@code jakarta.faces.RESOURCE_EXCLUDES} as {@link String} array with default of {@link ResourceHandler#RESOURCE_EXCLUDES_DEFAULT_VALUE}.
+     * Returns {@value ResourceHandler#RESOURCE_EXCLUDES_PARAM_NAME} as {@link String} array with default of {@value ResourceHandler#RESOURCE_EXCLUDES_DEFAULT_VALUE}.
      * </p>
-     *
-     * @see ResourceHandler#RESOURCE_EXCLUDES_PARAM_NAME
      */
     String[] resourceExcludes() default { ".class", ".jsp", ".jspx", ".properties", ".xhtml", ".groovy" }; // We cannot reference ResourceHandler#RESOURCE_EXCLUDES_DEFAULT_VALUE, it had to be hardcoded.
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@code jakarta.faces.SERIALIZE_SERVER_STATE} as {@link Boolean} with default of {@code false}.
+     * Returns {@value StateManager#SERIALIZE_SERVER_STATE_PARAM_NAME} as {@link Boolean} with default of {@code false}.
      * </p>
-     *
-     * @see StateManager#SERIALIZE_SERVER_STATE_PARAM_NAME
      */
     boolean serializeServerState() default false;
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@code jakarta.faces.SEPARATOR_CHAR} as {@link Character} with default of {@link NamingContainer#SEPARATOR_CHAR}.
+     * Returns {@value UINamingContainer#SEPARATOR_CHAR_PARAM_NAME} as {@link Character} with default of {@value NamingContainer#SEPARATOR_CHAR}.
      * </p>
-     *
-     * @see UINamingContainer#SEPARATOR_CHAR_PARAM_NAME
      */
     char separatorChar() default NamingContainer.SEPARATOR_CHAR;
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@code jakarta.faces.VALIDATE_EMPTY_FIELDS} as {@link String} with default of {@code auto}.
+     * Returns {@value StateManager#STATE_SAVING_METHOD_PARAM_NAME} as {@link String} with default of {@value StateManager#STATE_SAVING_METHOD_CLIENT}.
      * </p>
-     *
-     * @see UIInput#VALIDATE_EMPTY_FIELDS_PARAM_NAME
+     */
+    String stateSavingMethod() default StateManager.STATE_SAVING_METHOD_CLIENT;
+
+    /**
+     * <p class="changed_added_5_0">
+     * Returns {@value UIInput#VALIDATE_EMPTY_FIELDS_PARAM_NAME} as {@link String} with default of {@code auto}.
+     * </p>
      */
     String validateEmptyFields() default UIInput.VALIDATE_EMPTY_FIELDS_DEFAULT_VALUE;
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@code jakarta.faces.VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS} as {@link Boolean} with default of {@code false}.
+     * Returns {@value UIViewRoot#VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS_PARAM_NAME} as {@link Boolean} with default of {@code false}.
      * </p>
-     *
-     * @see UIViewRoot#VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS_PARAM_NAME
      */
     boolean viewrootPhaseListenerQueuesExceptions() default false;
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@code jakarta.faces.WEBAPP_CONTRACTS_DIRECTORY} as {@link String} with default of {@link ResourceHandler#WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE}.
+     * Returns {@value ResourceHandler#WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME} as {@link String} with default of {@value ResourceHandler#WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE}.
      * </p>
-     *
-     * @see ResourceHandler#WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME
      */
     String webappContractsDirectory() default ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE;
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@code jakarta.faces.WEBAPP_RESOURCES_DIRECTORY} as {@link String} with default of {@link ResourceHandler#WEBAPP_RESOURCES_DIRECTORY_DEFAULT_VALUE}.
+     * Returns {@value ResourceHandler#WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME} as {@link String} with default of {@value ResourceHandler#WEBAPP_RESOURCES_DIRECTORY_DEFAULT_VALUE}.
      * </p>
-     *
-     * @see ResourceHandler#WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME
      */
     String webappResourcesDirectory() default ResourceHandler.WEBAPP_RESOURCES_DIRECTORY_DEFAULT_VALUE;
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@code jakarta.faces.WEBSOCKET_ENDPOINT_PORT} as {@link Integer} with default of {@code 0}.
+     * Returns {@value PushContext#WEBSOCKET_ENDPOINT_PORT_PARAM_NAME} as {@link Integer} with default of {@code 0}.
      * </p>
-     *
-     * @see PushContext#WEBSOCKET_ENDPOINT_PORT_PARAM_NAME
      */
     int websocketEndpointPort() default 0;
     
