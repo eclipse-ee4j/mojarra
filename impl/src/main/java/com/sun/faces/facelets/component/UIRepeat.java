@@ -967,13 +967,15 @@ public class UIRepeat extends UINamingContainer {
             FacesEvent target = idxEvent.getTarget();
             FacesContext ctx = target.getFacesContext();
             this.resetDataModel(ctx);
+            int idx = idxEvent.getIndex();
             int prevIndex = this.index;
             UIComponent source = target.getComponent();
             UIComponent compositeParent = null;
             try {
                 int rowCount = getDataModel().getRowCount();
-                int idx = idxEvent.getIndex();
-                this.setIndex(ctx, idx);
+                if (idx != prevIndex) {
+                    this.setIndex(ctx, idx);
+                }
                 Integer begin = this.getBegin();
                 Integer end = this.getEnd();
                 Integer step = this.getStep();
@@ -1005,7 +1007,9 @@ public class UIRepeat extends UINamingContainer {
                     compositeParent.popComponentFromEL(ctx);
                 }
                 this.updateIterationStatus(ctx, null);
-                this.setIndex(ctx, prevIndex);
+                if (idx != prevIndex) {
+                    this.setIndex(ctx, prevIndex);
+                }
             }
         } else {
             super.broadcast(event);
