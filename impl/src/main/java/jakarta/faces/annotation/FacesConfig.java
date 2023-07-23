@@ -167,7 +167,7 @@ public @interface FacesConfig {
 
         @Override
         public ProjectStage projectStage() {
-            return ProjectStage.PROJECT_STAGE_DEFAULT_VALUE;
+            return ProjectStage.Production;
         }
 
         @Override
@@ -289,7 +289,7 @@ public @interface FacesConfig {
          * Returns {@value ViewHandler#FACELETS_REFRESH_PERIOD_PARAM_NAME} as {@link Integer} with default of {@code -1} when
          * {@link Application#getProjectStage()} is {@link ProjectStage#Production} else default of {@code 0}.
          */
-        FACELETS_REFRESH_PERIOD(ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, Integer.class, context -> context.getApplication().getProjectStage() == ProjectStage.Production ? -1 : 0),
+        FACELETS_REFRESH_PERIOD(ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, Integer.class, (Function<FacesContext, Integer>) context -> context.getApplication().getProjectStage() == ProjectStage.Production ? -1 : 0),
 
         /**
          * Returns {@value ViewHandler#FACELETS_SKIP_COMMENTS_PARAM_NAME} as {@link Boolean} with default of {@code false}.
@@ -318,9 +318,9 @@ public @interface FacesConfig {
         NUMBER_OF_CLIENT_WINDOWS(ClientWindow.NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME, Integer.class, ClientWindow.NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE),
 
         /**
-         * Returns {@value ProjectStage#PROJECT_STAGE_PARAM_NAME} as {@link ProjectStage} with default of {@code Production}.
+         * Returns {@value ProjectStage#PROJECT_STAGE_PARAM_NAME} as {@link ProjectStage} with default of {@link ProjectStage#Production}.
          */
-        PROJECT_STAGE(ProjectStage.PROJECT_STAGE_PARAM_NAME, ProjectStage.class, ProjectStage.PROJECT_STAGE_DEFAULT_VALUE),
+        PROJECT_STAGE(ProjectStage.PROJECT_STAGE_PARAM_NAME, ProjectStage.class, ProjectStage.Production),
 
         /**
          * Returns {@value ResourceHandler#RESOURCE_EXCLUDES_PARAM_NAME} as {@link String} array with default of {@value ResourceHandler#RESOURCE_EXCLUDES_DEFAULT_VALUE}.
@@ -629,10 +629,10 @@ public @interface FacesConfig {
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@value ProjectStage#PROJECT_STAGE_PARAM_NAME} as {@link ProjectStage} with default of {@value ProjectStage#PROJECT_STAGE_DEFAULT_VALUE}.
+     * Returns {@value ProjectStage#PROJECT_STAGE_PARAM_NAME} as {@link ProjectStage} with default of {@link ProjectStage#Production}.
      * </p>
      */
-    ProjectStage projectStage() default ProjectStage.PROJECT_STAGE_DEFAULT_VALUE;
+    ProjectStage projectStage() default ProjectStage.Production;
 
     /**
      * <p class="changed_added_5_0">
