@@ -156,17 +156,6 @@ public abstract class ResourceHandler {
     public static final String RESOURCE_IDENTIFIER = "/jakarta.faces.resource";
 
     /**
-     * <p class="changed_added_2_3">
-     * Resource name of Jakarta Faces script resource.
-     * </p>
-     *
-     * @since 2.3
-     * @deprecated Use {@link #FACES_SCRIPT_RESOURCE_NAME} instead.
-     */
-    @Deprecated(since = "4.0", forRemoval = true)
-    public static final String JSF_SCRIPT_RESOURCE_NAME = "faces.js";
-
-    /**
      * <p class="changed_modified_4_0">
      * Resource name of Jakarta Faces script resource.
      * </p>
@@ -174,17 +163,6 @@ public abstract class ResourceHandler {
      * @since 2.3
      */
     public static final String FACES_SCRIPT_RESOURCE_NAME = "faces.js";
-
-    /**
-     * <p class="changed_added_2_3">
-     * Library name of Jakarta Faces script resource.
-     * </p>
-     *
-     * @since 2.3
-     * @deprecated Use {@link #FACES_SCRIPT_LIBRARY_NAME} instead.
-     */
-    @Deprecated(since = "4.0", forRemoval = true)
-    public static final String JSF_SCRIPT_LIBRARY_NAME = "jakarta.faces";
 
     /**
      * <p class="changed_modified_4_0">
