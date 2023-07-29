@@ -771,7 +771,7 @@ public class WebConfiguration {
         ResourceUpdateCheckPeriod("com.sun.faces.resourceUpdateCheckPeriod", "5"), // in minutes
         CompressableMimeTypes("com.sun.faces.compressableMimeTypes", ""),
         DisableUnicodeEscaping("com.sun.faces.disableUnicodeEscaping", "auto"),
-        FaceletsDefaultRefreshPeriod(ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, "2"),
+        FaceletsDefaultRefreshPeriod(ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, "0"), // this is default for non-prod; default for prod is set in WebConfiguration
         FaceletsViewMappings(ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME, ""),
         FaceletsLibraries(ViewHandler.FACELETS_LIBRARIES_PARAM_NAME, ""),
         FaceletsDecorators(ViewHandler.FACELETS_DECORATORS_PARAM_NAME, ""),
