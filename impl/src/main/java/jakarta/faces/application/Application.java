@@ -1521,7 +1521,7 @@ public abstract class Application {
      * @param listener the implementation of {@link jakarta.faces.event.SystemEventListener} to remove from the internal
      * data structure.
      *
-     * @throws NullPointerException if any combination of <code>context</code>, <code>systemEventClass</code>, or
+     * @throws NullPointerException if any combination of <code>systemEventClass</code>, or
      * <code>listener</code> are <code>null</code>.
      *
      * @since 2.0
@@ -1556,7 +1556,7 @@ public abstract class Application {
      * @param listener the implementation of {@link jakarta.faces.event.SystemEventListener} to remove from the internal
      * data structure.
      *
-     * @throws NullPointerException if any combination of <code>context</code>, <code>systemEventClass</code>, or
+     * @throws NullPointerException if any combination of <code>systemEventClass</code>, or
      * <code>listener</code> are <code>null</code>.
      *
      * @since 2.0
