@@ -1103,8 +1103,9 @@ public class UIData extends UIComponentBase
         }
         int currentRowIndex = getRowIndex();
         int broadcastedRowIndex = revent.getRowIndex();
+        boolean needsToSetIndex = currentRowIndex != -1 || broadcastedRowIndex != -1; // #5213
 
-        if (currentRowIndex != broadcastedRowIndex) {
+        if (needsToSetIndex) {
             setRowIndex(broadcastedRowIndex);
         }
 
@@ -1127,7 +1128,7 @@ public class UIData extends UIComponentBase
             }
         }
 
-        if (currentRowIndex != broadcastedRowIndex) {
+        if (needsToSetIndex) {
             setRowIndex(currentRowIndex);
         }
     }

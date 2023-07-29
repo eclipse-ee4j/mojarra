@@ -969,11 +969,12 @@ public class UIRepeat extends UINamingContainer {
             this.resetDataModel(ctx);
             int idx = idxEvent.getIndex();
             int prevIndex = this.index;
+            boolean needsToSetIndex = idx != -1 || prevIndex != -1; // #5213
             UIComponent source = target.getComponent();
             UIComponent compositeParent = null;
             try {
                 int rowCount = getDataModel().getRowCount();
-                if (idx != prevIndex) {
+                if (needsToSetIndex) {
                     this.setIndex(ctx, idx);
                 }
                 Integer begin = this.getBegin();
@@ -1007,7 +1008,7 @@ public class UIRepeat extends UINamingContainer {
                     compositeParent.popComponentFromEL(ctx);
                 }
                 this.updateIterationStatus(ctx, null);
-                if (idx != prevIndex) {
+                if (needsToSetIndex) {
                     this.setIndex(ctx, prevIndex);
                 }
             }
