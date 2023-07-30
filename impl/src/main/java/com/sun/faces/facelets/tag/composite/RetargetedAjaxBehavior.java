@@ -31,6 +31,8 @@ import javax.faces.event.BehaviorEvent;
 
 /**
  * Basically represents <f:ajax> which is retargeted by <cc:clientBehavior> in AjaxHandler and checked in AjaxBehaviorRenderer.
+ * 
+ * We should probably introduce AjaxBehaviorWrapper in Faces.next to reduce boilerplate like this.
  *
  * @see https://github.com/jakartaee/faces/issues/1567
  */
