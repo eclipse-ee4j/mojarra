@@ -43,7 +43,7 @@ import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.render.ClientBehaviorRenderer;
 
-import com.sun.faces.facelets.tag.composite.InsertChildrenHandler;
+import com.sun.faces.facelets.tag.composite.RetargetedAjaxBehavior;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.FacesLogger;
 
@@ -238,9 +238,9 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer  {
         ajaxCommand.append(eventName);
         ajaxCommand.append("',");
 
-        appendIds(behaviorContext.getFacesContext(), component, ajaxCommand, execute);
+        appendIds(behaviorContext.getFacesContext(), component, ajaxBehavior, ajaxCommand, execute);
         ajaxCommand.append(",");
-        appendIds(behaviorContext.getFacesContext(), component, ajaxCommand, render);
+        appendIds(behaviorContext.getFacesContext(), component, ajaxBehavior, ajaxCommand, render);
 
         if ((onevent != null) || (onerror != null) || (delay != null) ||
                 (resetValues != null) || !params.isEmpty())  {
@@ -303,6 +303,7 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer  {
     // Appends an ids argument to the ajax command
     private static void appendIds(FacesContext facesContext,
                                   UIComponent component,
+                                  AjaxBehavior ajaxBehavior,
                                   StringBuilder builder,
                                   Collection<String> ids) {
 
@@ -318,7 +319,7 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer  {
 
         boolean first = true;
 
-        UIComponent composite = UIComponent.getCompositeComponentParent(component);
+        UIComponent composite = (ajaxBehavior instanceof RetargetedAjaxBehavior) ? UIComponent.getCompositeComponentParent(component) : null;
         String separatorChar = String.valueOf(getSeparatorChar(facesContext));
 
         for (String id : ids) {
@@ -335,7 +336,7 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer  {
 
             boolean clientResolveableExpression = expression.equals("@all") || expression.equals("@none") || expression.equals("@form") || expression.equals("@this");
 
-            if (composite != null && !isHandledByInsertChildren(component, composite) && (expression.equals("@this") || expression.startsWith("@this" + separatorChar))) {
+            if (composite != null && (expression.equals("@this") || expression.startsWith("@this" + separatorChar))) {
                 expression = expression.replaceFirst("@this", separatorChar + composite.getClientId(facesContext));
                 clientResolveableExpression = false;
             }
@@ -370,16 +371,6 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer  {
             }
         }
         builder.append("'");
-    }
-
-    private static boolean isHandledByInsertChildren(UIComponent component, UIComponent composite) {
-        for (UIComponent parent = component.getParent(); parent != null && !parent.equals(composite); parent = parent.getParent()) {
-            if (parent.getAttributes().containsKey(InsertChildrenHandler.INDEX_ATTRIBUTE)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     // Returns the resolved (client id) for a particular id.
