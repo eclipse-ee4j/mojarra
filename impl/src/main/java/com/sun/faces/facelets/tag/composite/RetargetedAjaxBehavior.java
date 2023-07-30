@@ -35,6 +35,7 @@ import javax.faces.event.BehaviorEvent;
  * We should probably introduce AjaxBehaviorWrapper in Faces.next to reduce boilerplate like this.
  *
  * @see https://github.com/jakartaee/faces/issues/1567
+ * @see https://github.com/eclipse-ee4j/mojarra/issues/5032
  */
 public class RetargetedAjaxBehavior extends AjaxBehavior {
 
