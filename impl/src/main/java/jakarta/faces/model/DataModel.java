@@ -249,7 +249,6 @@ public abstract class DataModel<E> implements Iterable<E> {
 
     // ---------------------------------------------------------- Nested Classes
 
-    @SuppressWarnings({ "unchecked" })
     private static final class DataModelIterator<T> implements Iterator<T> {
 
         private final DataModel<T> model;
@@ -285,9 +284,9 @@ public abstract class DataModel<E> implements Iterable<E> {
             if (!model.isRowAvailable()) {
                 throw new NoSuchElementException();
             }
-            Object o = model.getRowData();
+            T element = model.getRowData();
             model.setRowIndex(++index);
-            return (T) o;
+            return element;
 
         }
 
