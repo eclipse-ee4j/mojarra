@@ -19,7 +19,9 @@ package jakarta.faces.application;
 
 import static java.util.Arrays.stream;
 import static java.util.Collections.unmodifiableMap;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toUnmodifiableMap;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -138,14 +140,14 @@ public class FacesMessage implements Serializable {
      * order of their ordinal value.
      * </p>
      */
-    public static final List VALUES = List.of(values);
+    public static final List<Severity> VALUES = List.of(values);
 
     /**
      * <p>
      * Immutable <code>Map</code> of valid {@link jakarta.faces.application.FacesMessage.Severity} instances, keyed by name.
      * </p>
      */
-    public final static Map VALUES_MAP = unmodifiableMap(stream(values).collect(toMap(severity -> severity.severityName , Function.identity())));
+    public final static Map<String,Severity> VALUES_MAP = stream(values).collect(toUnmodifiableMap(severity -> severity.severityName, identity()));
 
     // ------------------------------------------------------ Instance Variables
 
