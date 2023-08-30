@@ -18,9 +18,7 @@
 package jakarta.faces.application;
 
 import static java.util.Arrays.stream;
-import static java.util.Collections.unmodifiableMap;
 import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toUnmodifiableMap;
 
 import java.io.IOException;
@@ -30,7 +28,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 
 /**
  * <p>
