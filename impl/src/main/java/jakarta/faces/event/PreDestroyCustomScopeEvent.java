@@ -28,9 +28,7 @@ import jakarta.faces.context.FacesContext;
  * </p>
  *
  * @since 2.0
- * @deprecated because {@code CustomScope} has been removed from Faces in favor of CDI.
  */
-@Deprecated(since = "4.1", forRemoval = true)
 public class PreDestroyCustomScopeEvent extends SystemEvent {
 
     // ------------------------------------------------------------ Constructors
