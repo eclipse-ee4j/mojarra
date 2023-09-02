@@ -97,6 +97,10 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      */
     public static final String COMPONENT_FAMILY = "jakarta.faces.Data";
 
+    // --------------------------------------------------------------- Constants
+
+    private static final ListDataModel EMPTY_DATA_MODEL = new ListDataModel(Collections.emptyList());
+
     // ------------------------------------------------------------ Constructors
 
     /**
@@ -655,7 +659,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
     public boolean isRowStatePreserved() {
         Boolean b = (Boolean) getStateHelper().get(PropertyKeys.rowStatePreserved);
-        return b == null ? false : b.booleanValue();
+        return b != null && b.booleanValue();
     }
 
     /**
@@ -1695,7 +1699,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         // Synthesize a DataModel around our current value if possible
         Object current = getValue();
         if (current == null) {
-            setDataModel(new ListDataModel(Collections.EMPTY_LIST));
+            setDataModel(EMPTY_DATA_MODEL);
         } else if (current instanceof DataModel) {
             setDataModel((DataModel) current);
         } else if (current instanceof List) {
