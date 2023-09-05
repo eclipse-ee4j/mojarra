@@ -21,13 +21,16 @@ import java.math.BigInteger;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
+import static com.sun.faces.util.Util.EMPTY_STRING;
+import static com.sun.faces.util.Util.notNullArgs;
+
 /**
  * <p>
  * {@link Converter} implementation for <code>java.math.BigInteger</code> values.
  * </p>
  */
 
-public class BigIntegerConverter implements Converter {
+public class BigIntegerConverter implements Converter<BigInteger> {
 
     // ------------------------------------------------------ Manifest Constants
 
@@ -72,23 +75,16 @@ public class BigIntegerConverter implements Converter {
      * @throws NullPointerException {@inheritDoc}
      */
     @Override
-    public Object getAsObject(FacesContext context, UIComponent component, String value) {
-
-        if (context == null || component == null) {
-            throw new NullPointerException();
-        }
+    public BigInteger getAsObject(FacesContext context, UIComponent component, String value) {
+        notNullArgs( context , component );
 
         // If the specified value is null or zero-length, return null
-        if (value == null) {
-            return null;
-        }
-        value = value.trim();
-        if (value.length() < 1) {
+        if ( value == null || value.isBlank() ) {
             return null;
         }
 
         try {
-            return new BigInteger(value);
+            return new BigInteger(value.trim());
         } catch (NumberFormatException nfe) {
             throw new ConverterException(MessageFactory.getMessage(context, BIGINTEGER_ID, value, "9876", MessageFactory.getLabel(context, component)), nfe);
         } catch (Exception e) {
@@ -101,21 +97,12 @@ public class BigIntegerConverter implements Converter {
      * @throws NullPointerException {@inheritDoc}
      */
     @Override
-    public String getAsString(FacesContext context, UIComponent component, Object value) {
-
-        if (context == null || component == null) {
-            throw new NullPointerException();
-        }
+    public String getAsString(FacesContext context, UIComponent component, BigInteger value) {
+        notNullArgs( context , component );
 
         // If the specified value is null, return a zero-length String
         if (value == null) {
-            return "";
-        }
-
-        // If the incoming value is still a string, play nice
-        // and return the value unmodified
-        if (value instanceof String) {
-            return (String) value;
+            return EMPTY_STRING;
         }
 
         try {

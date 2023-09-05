@@ -19,13 +19,16 @@ package jakarta.faces.convert;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
+import static com.sun.faces.util.Util.EMPTY_STRING;
+import static com.sun.faces.util.Util.notNullArgs;
+
 /**
  * <p>
  * {@link Converter} implementation for <code>java.lang.Long</code> (and long primitive) values.
  * </p>
  */
 
-public class LongConverter implements Converter {
+public class LongConverter implements Converter<Long> {
 
     // ------------------------------------------------------ Manifest Constants
 
@@ -70,23 +73,16 @@ public class LongConverter implements Converter {
      * @throws NullPointerException {@inheritDoc}
      */
     @Override
-    public Object getAsObject(FacesContext context, UIComponent component, String value) {
+    public Long getAsObject(FacesContext context, UIComponent component, String value) {
+        notNullArgs( context , component );
 
-        if (context == null || component == null) {
-            throw new NullPointerException();
-        }
-
-        // If the specified value is null or zero-length, return null
-        if (value == null) {
-            return null;
-        }
-        value = value.trim();
-        if (value.length() < 1) {
+        // If the specified value is null or blank, return null
+        if ( value == null || value.isBlank() ) {
             return null;
         }
 
         try {
-            return Long.valueOf(value);
+            return Long.valueOf(value.trim());
         } catch (NumberFormatException nfe) {
             throw new ConverterException(MessageFactory.getMessage(context, LONG_ID, value, "98765432", MessageFactory.getLabel(context, component)), nfe);
         } catch (Exception e) {
@@ -99,27 +95,19 @@ public class LongConverter implements Converter {
      * @throws NullPointerException {@inheritDoc}
      */
     @Override
-    public String getAsString(FacesContext context, UIComponent component, Object value) {
+    public String getAsString(FacesContext context, UIComponent component, Long value) {
+        notNullArgs( context , component );
 
-        if (context == null || component == null) {
-            throw new NullPointerException();
-        }
-
-        // If the specified value is null, return a zero-length String
+        // If the specified value is null, return an empty String
         if (value == null) {
-            return "";
-        }
-
-        // If the incoming value is still a string, play nice
-        // and return the value unmodified
-        if (value instanceof String) {
-            return (String) value;
+            return EMPTY_STRING;
         }
 
         try {
-            return Long.toString(((Number) value).longValue());
+            return Long.toString(value);
         } catch (Exception e) {
             throw new ConverterException(MessageFactory.getMessage(context, STRING_ID, value, MessageFactory.getLabel(context, component)), e);
         }
     }
+
 }

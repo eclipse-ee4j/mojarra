@@ -19,13 +19,16 @@ package jakarta.faces.convert;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
+import static com.sun.faces.util.Util.EMPTY_STRING;
+import static com.sun.faces.util.Util.notNullArgs;
+
 /**
  * <p>
  * {@link Converter} implementation for <code>java.lang.Boolean</code> (and boolean primitive) values.
  * </p>
  */
 
-public class BooleanConverter implements Converter {
+public class BooleanConverter implements Converter<Boolean> {
 
     // ------------------------------------------------------ Manifest Constants
 
@@ -69,25 +72,18 @@ public class BooleanConverter implements Converter {
      * @throws NullPointerException {@inheritDoc}
      */
     @Override
-    public Object getAsObject(FacesContext context, UIComponent component, String value) {
-
-        if (context == null || component == null) {
-            throw new NullPointerException();
-        }
+    public Boolean getAsObject(FacesContext context, UIComponent component, String value) {
+        notNullArgs( context , component );
 
         // If the specified value is null or zero-length, return null
-        if (value == null) {
-            return null;
-        }
-        value = value.trim();
-        if (value.length() < 1) {
+        if (value == null || value.isBlank() ) {
             return null;
         }
 
         // Let them know that the value being converted is not specifically
         // "true" or "false".
         try {
-            return Boolean.valueOf(value);
+            return Boolean.valueOf(value.trim());
         } catch (Exception e) {
             throw new ConverterException(MessageFactory.getMessage(context, BOOLEAN_ID, value, MessageFactory.getLabel(context, component)), e);
         }
@@ -98,15 +94,12 @@ public class BooleanConverter implements Converter {
      * @throws NullPointerException {@inheritDoc}
      */
     @Override
-    public String getAsString(FacesContext context, UIComponent component, Object value) {
-
-        if (context == null || component == null) {
-            throw new NullPointerException();
-        }
+    public String getAsString(FacesContext context, UIComponent component, Boolean value) {
+        notNullArgs( context , component );
 
         // If the specified value is null, return a zero-length String
         if (value == null) {
-            return "";
+            return EMPTY_STRING;
         }
 
         try {
@@ -115,4 +108,5 @@ public class BooleanConverter implements Converter {
             throw new ConverterException(MessageFactory.getMessage(context, STRING_ID, value, MessageFactory.getLabel(context, component)), e);
         }
     }
+
 }

@@ -273,14 +273,14 @@ class MessageFactory {
         public String getSummary() {
             String pattern = super.getSummary();
             resolveBindings();
-            return getFormattedString(pattern, resolvedParameters);
+            return format(pattern, locale, resolvedParameters);
         }
 
         @Override
         public String getDetail() {
             String pattern = super.getDetail();
             resolveBindings();
-            return getFormattedString(pattern, resolvedParameters);
+            return format(pattern, locale, resolvedParameters);
         }
 
         private void resolveBindings() {
@@ -303,25 +303,22 @@ class MessageFactory {
             }
         }
 
-        private String getFormattedString(String msgtext, Object[] params) {
-            String localizedStr = null;
+        private final Locale locale;
+        private final Object[] parameters;
+        private Object[] resolvedParameters;
+    }
 
-            if (params == null || msgtext == null) {
-                return msgtext;
-            }
-            StringBuilder b = new StringBuilder(100);
-            MessageFormat mf = new MessageFormat(msgtext);
-            if (locale != null) {
-                mf.setLocale(locale);
-                b.append(mf.format(params));
-                localizedStr = b.toString();
-            }
-            return localizedStr;
+    // ----------------------------------------------------------------- UTILS
+
+    // todo: if approved, move to Util and use in every MessageFactory
+    public static String format(String text, Locale locale, Object... params) {
+        if ( params == null || params.length == 0 || text == null || text.isBlank() ) {
+            return text;
         }
 
-        private Locale locale;
-        private Object[] parameters;
-        private Object[] resolvedParameters;
+        final MessageFormat mf = locale == null ? new MessageFormat(text) : new MessageFormat(text,locale);
+
+        return mf.format(params);
     }
 
 } // end of class MessageFactory

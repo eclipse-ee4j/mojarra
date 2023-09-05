@@ -19,13 +19,16 @@ package jakarta.faces.convert;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
+import static com.sun.faces.util.Util.EMPTY_STRING;
+import static com.sun.faces.util.Util.notNullArgs;
+
 /**
  * <p>
  * {@link Converter} implementation for <code>java.lang.Character</code> (and char primitive) values.
  * </p>
  */
 
-public class CharacterConverter implements Converter {
+public class CharacterConverter implements Converter<Character> {
 
     // ------------------------------------------------------ Manifest Constants
 
@@ -69,23 +72,16 @@ public class CharacterConverter implements Converter {
      * @throws NullPointerException {@inheritDoc}
      */
     @Override
-    public Object getAsObject(FacesContext context, UIComponent component, String value) {
-
-        if (context == null || component == null) {
-            throw new NullPointerException();
-        }
+    public Character getAsObject(FacesContext context, UIComponent component, String value) {
+        notNullArgs( context , component );
 
         // If the specified value is null or zero-length, return null
-        if (value == null) {
-            return null;
-        }
-        value = value.trim();
-        if (value.length() < 1) {
+        if ( value == null || value.isBlank() ) {
             return null;
         }
 
         try {
-            return value.charAt(0);
+            return value.trim().charAt(0);
         } catch (Exception e) {
             throw new ConverterException(MessageFactory.getMessage(context, CHARACTER_ID, value, MessageFactory.getLabel(context, component)), e);
         }
@@ -96,15 +92,12 @@ public class CharacterConverter implements Converter {
      * @throws NullPointerException {@inheritDoc}
      */
     @Override
-    public String getAsString(FacesContext context, UIComponent component, Object value) {
-
-        if (context == null || component == null) {
-            throw new NullPointerException();
-        }
+    public String getAsString(FacesContext context, UIComponent component, Character value) {
+        notNullArgs( context , component );
 
         // If the specified value is null, return a zero-length String
         if (value == null) {
-            return "";
+            return EMPTY_STRING;
         }
 
         try {

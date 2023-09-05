@@ -106,7 +106,7 @@ public class ShortConverterTest {
         ShortConverter converter = new ShortConverter();
         FacesContext facesContext = PowerMock.createMock(FacesContext.class);
         replay(facesContext);
-        assertEquals("123", converter.getAsString(facesContext, new UIPanel(), "123"));
+        assertEquals("123", converter.getAsString(facesContext, new UIPanel(), (short)123));
         verify(facesContext);
     }
 
