@@ -89,7 +89,7 @@ public class InsertChildrenHandler extends TagHandlerImpl {
             this.ctx = ctx;
             this.component = component;
             if (!component.getAttributes().containsKey(INDEX_ATTRIBUTE)) {
-                component.getAttributes().put(INDEX_ATTRIBUTE, idx); // NOTE: this is also used by AjaxBehaviorRenderer in order to detect if f:ajax was handled by cc:insertChildren. See also #5032
+                component.getAttributes().put(INDEX_ATTRIBUTE, idx);
             }
             this.idx = idx;
             this.location = location;
