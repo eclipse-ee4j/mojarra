@@ -30,6 +30,7 @@ import static java.lang.Character.isDigit;
 import static java.util.Collections.emptyList;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
+import static java.util.logging.Level.WARNING;
 
 import java.beans.FeatureDescriptor;
 import java.io.IOException;
@@ -100,6 +101,7 @@ import jakarta.faces.convert.Converter;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.render.ResponseStateManager;
 import jakarta.faces.webapp.FacesServlet;
+import jakarta.servlet.ServletContainerInitializer;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletRegistration;
 import jakarta.servlet.http.HttpServletMapping;
@@ -1474,6 +1476,19 @@ public class Util {
             if (result == null && facesContext != null) {
                 Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
                 result = (BeanManager) applicationMap.get("org.jboss.weld.environment.servlet.jakarta.enterprise.inject.spi.BeanManager");
+
+                if (result == null && applicationMap.get("org.jboss.weld.environment.servlet.enhancedListenerUsed") == Boolean.TRUE) {
+                    LOGGER.log(WARNING, "Weld skipped initialization - forcing it to reinitialize");
+                    try {
+                        ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+                        servletContext.setInitParameter("org.jboss.weld.environment.servlet.archive.isolation", "false");
+                        ServletContainerInitializer weld = (ServletContainerInitializer) Class.forName("org.jboss.weld.environment.servlet.EnhancedListener").getConstructor().newInstance();
+                        weld.onStartup(null, servletContext);
+                        result = (BeanManager) applicationMap.get("org.jboss.weld.environment.servlet.jakarta.enterprise.inject.spi.BeanManager");
+                    } catch (Exception | LinkageError e) {
+                        LOGGER.log(WARNING, "Reinitializing Weld failed - giving up, please make sure your project contains at least one bean class with a bean defining annotation and retry", e);
+                    }
+                }
             }
 
             if (result != null && facesContext != null) {

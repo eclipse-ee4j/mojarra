@@ -121,6 +121,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         }
 
         InitFacesContext initFacesContext = new InitFacesContext(servletContext);
+        Util.getCdiBeanManager(initFacesContext); // #5232 Fail fast when CDI is really not available.
 
         LOGGER.log(FINE, () -> format("ConfigureListener.contextInitialized({0})", servletContext.getContextPath()));
 
