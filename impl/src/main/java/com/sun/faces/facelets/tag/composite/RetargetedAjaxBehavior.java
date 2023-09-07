@@ -30,12 +30,12 @@ import jakarta.faces.event.AjaxBehaviorListener;
 import jakarta.faces.event.BehaviorEvent;
 
 /**
- * Basically represents <f:ajax> which is retargeted by <cc:clientBehavior> in AjaxHandler and checked in AjaxBehaviorRenderer.
+ * Basically represents {@code <f:ajax>} which is retargeted by {@code <cc:clientBehavior>} in {@code AjaxHandler} and checked in {@code AjaxBehaviorRenderer}.
  * 
- * We should probably introduce AjaxBehaviorWrapper in Faces.next to reduce boilerplate like this.
+ * We should probably introduce {@code AjaxBehaviorWrapper} in Faces.next to reduce boilerplate like this.
  *
- * @see https://github.com/jakartaee/faces/issues/1567
- * @see https://github.com/eclipse-ee4j/mojarra/issues/5032
+ * - https://github.com/jakartaee/faces/issues/1567
+ * - https://github.com/eclipse-ee4j/mojarra/issues/5032
  */
 public class RetargetedAjaxBehavior extends AjaxBehavior {
 
