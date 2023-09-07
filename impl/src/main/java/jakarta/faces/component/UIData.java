@@ -1013,8 +1013,14 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         if (isNestedWithinIterator(context)) {
             setDataModel(null);
         }
-        int oldRowIndex = getRowIndex();
-        setRowIndex(revent.getRowIndex());
+        int currentRowIndex = getRowIndex();
+        int broadcastedRowIndex = revent.getRowIndex();
+        boolean needsToSetIndex = currentRowIndex != -1 || broadcastedRowIndex != -1; // #5213
+
+        if (needsToSetIndex) {
+            setRowIndex(broadcastedRowIndex);
+        }
+
         FacesEvent rowEvent = revent.getFacesEvent();
         UIComponent source = rowEvent.getComponent();
         UIComponent compositeParent = null;
@@ -1033,8 +1039,10 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 compositeParent.popComponentFromEL(context);
             }
         }
-        setRowIndex(oldRowIndex);
 
+        if (needsToSetIndex) {
+            setRowIndex(currentRowIndex);
+        }
     }
 
     /**
