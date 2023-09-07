@@ -67,6 +67,7 @@ import jakarta.faces.view.facelets.TagHandler;
  * values. <div class="changed_modified_2_2">The <code>events</code> attribute for this tag that can be a
  * <code>ValueExpression</code> must be evaluated at tag execution time since the event name is used in the process of
  * <code>Behavior</code> creation.</div> If this tag is nested within a single {@link ClientBehaviorHolder} component:
+ * 
  * <ul>
  * <li>If the <code>events</code> attribute value is not specified, obtain the default event name by calling
  * {@link ClientBehaviorHolder#getDefaultEventName}. If that returns <code>null</code> throw an
@@ -77,21 +78,18 @@ import jakarta.faces.view.facelets.TagHandler;
  * <li>Add the {@link AjaxBehavior} instance to the {@link ClientBehaviorHolder} component by calling
  * {@link ClientBehaviorHolder#addClientBehavior} passing <code>event</code> and the {@link AjaxBehavior} instance.</li>
  * </ul>
- * <br/>
- * <br/>
+ * <p>
  * Check for the existence of the Ajax resource by calling <code>UIViewRoot.getComponentResources()</code>. If the Ajax
  * resource does not exist, create a <code>UIOutput</code> component instance and set the renderer type to
  * <code>jakarta.faces.resource.Script</code>. Set the the following attributes in the component's attribute
- * <code>Map</code>: <code>library</code> with the value {@value ResourceHandler#JSF_SCRIPT_LIBRARY_NAME} and
- * <code>name</code> with the value {@value ResourceHandler#JSF_SCRIPT_RESOURCE_NAME}. Install the component resource
+ * <code>Map</code>: <code>library</code> with the value {@value ResourceHandler#FACES_SCRIPT_LIBRARY_NAME} and
+ * <code>name</code> with the value {@value ResourceHandler#FACES_SCRIPT_RESOURCE_NAME}. Install the component resource
  * using <code>UIViewRoot.addComponentResource()</code> and specifying <code>head</code> as the <code>target</code>
  * argument.
- * </p>
- *
+ * <p>
  * If this tag has component children, add the {@link AjaxBehavior} to {@link AjaxBehaviors} by calling
  * {@link AjaxBehaviors#pushBehavior}. As subsequent child components that implement the {@link ClientBehaviorHolder}
  * interface are evaluated this {@link AjaxBehavior} instance must be added as a behavior to the component.
- * </p>
  *
  * @version $Id: AjaxHandler.java 5369 2008-09-08 19:53:45Z rogerk $
  */
@@ -304,10 +302,10 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
 
         if (parent instanceof BehaviorHolderWrapper) {
             ValueExpression targets = ((BehaviorHolderWrapper) parent).getTargets();
-
+            
             if (targets != null) {
                 String targetClientIds = (String) targets.getValue(ctx);
-
+                
                 if (targetClientIds != null) {
                     Collection<String> executeClientIds = new ArrayList<>(behavior.getExecute());
 
@@ -324,15 +322,15 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
 
         if (null != listener) {
             behavior.addAjaxBehaviorListener(
-                    new AjaxBehaviorListenerImpl(listener.getMethodExpression(ctx, Object.class, new Class[] { AjaxBehaviorEvent.class }),
-                            listener.getMethodExpression(ctx, Object.class, new Class[] {})));
+                    new AjaxBehaviorListenerImpl(listener.getMethodExpression(ctx, Object.class, new Class<?>[] { AjaxBehaviorEvent.class }),
+                            listener.getMethodExpression(ctx, Object.class, new Class<?>[] {})));
         }
 
         return behavior;
     }
 
     // Sets the value from the TagAttribute on the behavior
-    private void setBehaviorAttribute(FaceletContext ctx, AjaxBehavior behavior, TagAttribute attr, Class type) {
+    private void setBehaviorAttribute(FaceletContext ctx, AjaxBehavior behavior, TagAttribute attr, Class<?> type) {
 
         if (attr != null) {
             behavior.setValueExpression(attr.getLocalName(), attr.getValueExpression(ctx, type));
