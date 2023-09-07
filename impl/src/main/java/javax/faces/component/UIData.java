@@ -18,7 +18,6 @@ package javax.faces.component;
 
 import static com.sun.faces.util.Util.extractFirstNumericSegment;
 import static com.sun.faces.util.Util.isNestedInIterator;
-import static java.lang.Character.isDigit;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -1105,8 +1104,14 @@ public class UIData extends UIComponentBase
         if (isNestedWithinIterator(context)) {
             setDataModel(null);
         }
-        int oldRowIndex = getRowIndex();
-        setRowIndex(revent.getRowIndex());
+        int currentRowIndex = getRowIndex();
+        int broadcastedRowIndex = revent.getRowIndex();
+        boolean needsToSetIndex = currentRowIndex != -1 || broadcastedRowIndex != -1; // #5213
+
+        if (needsToSetIndex) {
+            setRowIndex(broadcastedRowIndex);
+        }
+
         FacesEvent rowEvent = revent.getFacesEvent();
         UIComponent source = rowEvent.getComponent();
         UIComponent compositeParent = null;
@@ -1125,8 +1130,10 @@ public class UIData extends UIComponentBase
                 compositeParent.popComponentFromEL(context);
             }
         }
-        setRowIndex(oldRowIndex);
 
+        if (needsToSetIndex) {
+            setRowIndex(currentRowIndex);
+        }
     }
 
     /**
