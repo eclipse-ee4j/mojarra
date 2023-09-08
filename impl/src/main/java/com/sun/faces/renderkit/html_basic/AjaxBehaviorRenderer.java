@@ -319,7 +319,7 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer  {
 
         boolean first = true;
 
-        UIComponent composite = (ajaxBehavior instanceof RetargetedAjaxBehavior) ? UIComponent.getCompositeComponentParent(component) : null;
+        UIComponent composite = UIComponent.getCompositeComponentParent(component);
         String separatorChar = String.valueOf(getSeparatorChar(facesContext));
 
         for (String id : ids) {
@@ -336,7 +336,7 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer  {
 
             boolean clientResolveableExpression = expression.equals("@all") || expression.equals("@none") || expression.equals("@form") || expression.equals("@this");
 
-            if (composite != null && (expression.equals("@this") || expression.startsWith("@this" + separatorChar))) {
+            if (composite != null && (ajaxBehavior instanceof RetargetedAjaxBehavior) && (expression.equals("@this") || expression.startsWith("@this" + separatorChar))) {
                 expression = expression.replaceFirst("@this", separatorChar + composite.getClientId(facesContext));
                 clientResolveableExpression = false;
             }
