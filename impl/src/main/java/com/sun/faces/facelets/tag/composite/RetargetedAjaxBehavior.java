@@ -28,6 +28,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.AjaxBehaviorListener;
 import jakarta.faces.event.BehaviorEvent;
+import jakarta.faces.render.ClientBehaviorRenderer;
 
 /**
  * Basically represents {@code <f:ajax>} which is retargeted by {@code <cc:clientBehavior>} in {@code AjaxHandler} and checked in {@code AjaxBehaviorRenderer}.
@@ -47,7 +48,8 @@ public class RetargetedAjaxBehavior extends AjaxBehavior {
 
     @Override
     public String getScript(ClientBehaviorContext behaviorContext) {
-        return retargeted.getScript(behaviorContext);
+        ClientBehaviorRenderer renderer = getRenderer(behaviorContext.getFacesContext());
+        return renderer != null ? renderer.getScript(behaviorContext, this) : null;
     }
 
     @Override
