@@ -20,7 +20,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.eclipse.mojarra</groupId>
+        <groupId>org.glassfish.mojarra</groupId>
         <artifactId>mojarra-parent</artifactId>
         <version>5.0.0-SNAPSHOT</version>
     </parent>
@@ -38,8 +38,8 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>jakarta.faces</artifactId>
+            <groupId>org.glassfish.mojarra</groupId>
+            <artifactId>mojarra</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
