@@ -149,7 +149,8 @@ public class RenderKitUtils {
      * UIViewRoot attribute key of a boolean value which remembers whether the view will be rendered with a HTML5 doctype.
      */
     private static final String VIEW_ROOT_ATTRIBUTES_DOCTYPE_KEY = RenderKitUtils.class.getName() + ".isOutputHtml5Doctype";
-
+    
+    private static final String HTML5_BEHAVIOR_EVENT_ATTRIBUTE_PREFIX = "on";
 
     protected static final Logger LOGGER = FacesLogger.RENDERKIT.getLogger();
 
@@ -715,7 +716,7 @@ public class RenderKitUtils {
         }
 
         for (String eventName : behaviorEventNames) {
-            renderPassthruAttribute(context, writer, component, behaviors, isXhtml, attrMap, "on" + eventName, eventName);
+            renderPassthruAttribute(context, writer, component, behaviors, isXhtml, attrMap, HTML5_BEHAVIOR_EVENT_ATTRIBUTE_PREFIX + eventName, eventName);
         }
     }
 
@@ -738,7 +739,7 @@ public class RenderKitUtils {
     }
     
     public static boolean isHtml5BehaviorAttribute(String name) {
-        return name.startsWith("on") && name.length() > 2;
+        return name.startsWith(HTML5_BEHAVIOR_EVENT_ATTRIBUTE_PREFIX) && name.length() > 2;
     }
 
     /**
