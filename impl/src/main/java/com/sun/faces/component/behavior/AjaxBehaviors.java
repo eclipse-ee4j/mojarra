@@ -16,12 +16,17 @@
 
 package com.sun.faces.component.behavior;
 
+import static com.sun.faces.renderkit.RenderKitUtils.isHtml5BehaviorAttribute;
+import static com.sun.faces.renderkit.RenderKitUtils.isOutputHtml5Doctype;
+
 import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.sun.faces.renderkit.RenderKitUtils;
 
 import jakarta.faces.application.Application;
 import jakarta.faces.component.behavior.AjaxBehavior;
@@ -136,7 +141,7 @@ public class AjaxBehaviors implements Serializable {
             }
 
             // We only add the
-            if (shouldAddBehavior(behaviorHolder, myEventName)) {
+            if (shouldAddBehavior(context, behaviorHolder, myEventName)) {
                 ClientBehavior behavior = createBehavior(context);
                 behaviorHolder.addClientBehavior(myEventName, behavior);
             }
@@ -145,11 +150,11 @@ public class AjaxBehaviors implements Serializable {
 
         // Tests whether we should add an AjaxBehavior to the specified
         // ClientBehaviorHolder/event name.
-        private boolean shouldAddBehavior(ClientBehaviorHolder behaviorHolder, String eventName) {
+        private boolean shouldAddBehavior(FacesContext context, ClientBehaviorHolder behaviorHolder, String eventName) {
 
             // First need to make sure that this ClientBehaviorHolder
             // supports the specified event type.
-            if (!behaviorHolder.getEventNames().contains(eventName)) {
+            if (!behaviorHolder.getEventNames().contains(eventName) || !(isOutputHtml5Doctype(context) && isHtml5BehaviorAttribute(eventName))) {
                 return false;
             }
 

@@ -633,7 +633,7 @@ public class RenderKitUtils {
                     }
                 }
             }
-            else if (isHtml5 && isBehaviorAttribute(name)) {
+            else if (isHtml5 && isHtml5BehaviorAttribute(name)) {
                 Object value = attrMap.get(name);
                 if (value != null && shouldRenderAttribute(value)) {
                     if (name.substring(2).equals(behaviorEventName)) {
@@ -652,7 +652,7 @@ public class RenderKitUtils {
         if (behaviorEventName != null && !renderedBehavior) {
 
             if (isHtml5) {
-                List<String> behaviorAttributes = setAttributes.stream().filter(RenderKitUtils::isBehaviorAttribute).collect(toList());
+                List<String> behaviorAttributes = setAttributes.stream().filter(RenderKitUtils::isHtml5BehaviorAttribute).collect(toList());
 
                 for (String attrName : behaviorAttributes) {
                     String eventName = attrName.substring(2);
@@ -696,7 +696,7 @@ public class RenderKitUtils {
         boolean isXhtml = !isHtml5 && RIConstants.XHTML_CONTENT_TYPE.equals(writer.getContentType());
 
         Map<String, Object> attrMap = component.getAttributes();
-        List<String> behaviorAttributes = isHtml5 && setAttributes != null ? setAttributes.stream().filter(RenderKitUtils::isBehaviorAttribute).collect(toList()) : emptyList();
+        List<String> behaviorAttributes = isHtml5 && setAttributes != null ? setAttributes.stream().filter(RenderKitUtils::isHtml5BehaviorAttribute).collect(toList()) : emptyList();
 
         for (Attribute attribute : knownAttributes) {
             String attrName = attribute.getName();
@@ -730,7 +730,7 @@ public class RenderKitUtils {
         }
     }
     
-    private static boolean isBehaviorAttribute(String name) {
+    public static boolean isHtml5BehaviorAttribute(String name) {
         return name.startsWith("on") && name.length() > 2;
     }
 
