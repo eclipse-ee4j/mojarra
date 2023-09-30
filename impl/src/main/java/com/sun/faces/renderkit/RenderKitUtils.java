@@ -696,7 +696,7 @@ public class RenderKitUtils {
         boolean isXhtml = !isHtml5 && RIConstants.XHTML_CONTENT_TYPE.equals(writer.getContentType());
 
         Map<String, Object> attrMap = component.getAttributes();
-        List<String> behaviorAttributes = isHtml5 ? setAttributes.stream().filter(RenderKitUtils::isBehaviorAttribute).collect(toList()) : emptyList();
+        List<String> behaviorAttributes = isHtml5 && setAttributes != null ? setAttributes.stream().filter(RenderKitUtils::isBehaviorAttribute).collect(toList()) : emptyList();
 
         for (Attribute attribute : knownAttributes) {
             String attrName = attribute.getName();

@@ -67,9 +67,9 @@ public class HeadRendererTest {
         expect(doctype.getPublic()).andReturn(null).anyTimes();
         expect(doctype.getSystem()).andReturn(null).anyTimes();
         
-        PowerMock.replay(facesContext);
+        PowerMock.replay(facesContext, viewRoot, doctype);
         headRenderer.encodeBegin(facesContext, htmlHead);
-        PowerMock.verify(facesContext);
+        PowerMock.verify(facesContext, viewRoot, doctype);
         String html = writer.toString();
         assertTrue(html.contains("<head"));
     }

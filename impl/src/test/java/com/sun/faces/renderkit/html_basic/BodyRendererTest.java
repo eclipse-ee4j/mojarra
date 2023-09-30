@@ -71,9 +71,9 @@ public class BodyRendererTest {
         expect(doctype.getPublic()).andReturn(null).anyTimes();
         expect(doctype.getSystem()).andReturn(null).anyTimes();
 
-        PowerMock.replay(facesContext);
+        PowerMock.replay(facesContext, viewRoot, doctype);
         bodyRenderer.encodeBegin(facesContext, htmlBody);
-        PowerMock.verify(facesContext);
+        PowerMock.verify(facesContext, viewRoot, doctype);
         String html = writer.toString();
         assertTrue(html.contains("<body"));
         assertTrue(html.contains("class=\"myclass\""));
