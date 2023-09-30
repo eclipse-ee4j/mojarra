@@ -21,7 +21,6 @@ import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_EVENT_PARAM;
 import static jakarta.faces.application.ResourceHandler.FACES_SCRIPT_LIBRARY_NAME;
 import static jakarta.faces.application.ResourceHandler.FACES_SCRIPT_RESOURCE_NAME;
-import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
@@ -32,12 +31,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.WebConfiguration;
@@ -696,19 +696,26 @@ public class RenderKitUtils {
         boolean isXhtml = !isHtml5 && RIConstants.XHTML_CONTENT_TYPE.equals(writer.getContentType());
 
         Map<String, Object> attrMap = component.getAttributes();
-        List<String> behaviorAttributes = isHtml5 && setAttributes != null ? setAttributes.stream().filter(RenderKitUtils::isHtml5BehaviorAttribute).collect(toList()) : emptyList();
+        Set<String> behaviorEventNames = new LinkedHashSet<>(behaviors.size() + 2);
+
+        if (isHtml5) {
+            behaviorEventNames.addAll(behaviors.keySet());
+
+            if (setAttributes != null) {
+                setAttributes.stream().filter(RenderKitUtils::isHtml5BehaviorAttribute).map(a -> a.substring(2)).forEach(behaviorEventNames::add);
+            }
+        }
 
         for (Attribute attribute : knownAttributes) {
             String attrName = attribute.getName();
             String[] events = attribute.getEvents();
             String eventName = events != null && events.length > 0 ? events[0] : null;
             renderPassthruAttribute(context, writer, component, behaviors, isXhtml, attrMap, attrName, eventName);
-            behaviorAttributes.remove(attrName);
+            behaviorEventNames.remove(eventName);
         }
-        
-        for (String attrName : behaviorAttributes) {
-            String eventName = attrName.substring(2);
-            renderPassthruAttribute(context, writer, component, behaviors, isXhtml, attrMap, attrName, eventName);
+
+        for (String eventName : behaviorEventNames) {
+            renderPassthruAttribute(context, writer, component, behaviors, isXhtml, attrMap, "on" + eventName, eventName);
         }
     }
 
