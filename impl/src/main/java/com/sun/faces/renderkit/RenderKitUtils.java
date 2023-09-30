@@ -21,6 +21,8 @@ import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_EVENT_PARAM;
 import static jakarta.faces.application.ResourceHandler.FACES_SCRIPT_LIBRARY_NAME;
 import static jakarta.faces.application.ResourceHandler.FACES_SCRIPT_RESOURCE_NAME;
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -35,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.WebConfiguration;
@@ -331,18 +334,17 @@ public class RenderKitUtils {
             behaviors = Collections.emptyMap();
         }
 
-        if (canBeOptimized(component, behaviors)) {
-            List<String> setAttributes = (List<String>) component.getAttributes().get(ATTRIBUTES_THAT_ARE_SET_KEY);
-            if (setAttributes != null) {
-                renderPassThruAttributesOptimized(context, writer, component, attributes, setAttributes, behaviors);
-            }
+        List<String> setAttributes = (List<String>) component.getAttributes().get(ATTRIBUTES_THAT_ARE_SET_KEY);
+
+        if (setAttributes != null && canBeOptimized(component, behaviors)) {
+            renderPassThruAttributesOptimized(context, writer, component, attributes, setAttributes, behaviors);
         } else {
 
             // this block should only be hit by custom components leveraging
             // the RI's rendering code, or in cases where we have behaviors
             // attached to multiple events. We make no assumptions and loop
             // through
-            renderPassThruAttributesUnoptimized(context, writer, component, attributes, behaviors);
+            renderPassThruAttributesUnoptimized(context, writer, component, attributes, setAttributes, behaviors);
         }
     }
 
@@ -607,7 +609,8 @@ public class RenderKitUtils {
         boolean renderedBehavior = false;
 
         Collections.sort(setAttributes);
-        boolean isXhtml = RIConstants.XHTML_CONTENT_TYPE.equals(writer.getContentType());
+        boolean isHtml5 = isOutputHtml5Doctype(context);
+        boolean isXhtml = !isHtml5 && RIConstants.XHTML_CONTENT_TYPE.equals(writer.getContentType());
         Map<String, Object> attrMap = component.getAttributes();
         for (String name : setAttributes) {
 
@@ -630,24 +633,47 @@ public class RenderKitUtils {
                     }
                 }
             }
+            else if (isHtml5 && isBehaviorAttribute(name)) {
+                Object value = attrMap.get(name);
+                if (value != null && shouldRenderAttribute(value)) {
+                    if (name.substring(2).equals(behaviorEventName)) {
+                        renderHandler(context, component, null, name, value, behaviorEventName, null, false, false);
+
+                        renderedBehavior = true;
+                    } else {
+                        writer.writeAttribute(prefixAttribute(name, isXhtml), value, name);
+                    }
+                }
+            }
         }
 
         // We did not render out the behavior as part of our optimized
         // attribute rendering. Need to manually render it out now.
         if (behaviorEventName != null && !renderedBehavior) {
 
-            // Note that we can optimize this search by providing
-            // an event name -> Attribute inverse look up map.
-            // This would change the search time from O(n) to O(1).
-            for (int i = 0; i < knownAttributes.length; i++) {
-                Attribute attr = knownAttributes[i];
-                String[] events = attr.getEvents();
-                if (events != null && events.length > 0 && behaviorEventName.equals(events[0])) {
+            if (isHtml5) {
+                List<String> behaviorAttributes = setAttributes.stream().filter(RenderKitUtils::isBehaviorAttribute).collect(toList());
 
-                    renderHandler(context, component, null, attr.getName(), null, behaviorEventName, null, false, false);
+                for (String attrName : behaviorAttributes) {
+                    String eventName = attrName.substring(2);
+                    if (behaviorEventName.equals(eventName)) {
+                        renderPassthruAttribute(context, writer, component, behaviors, isXhtml, attrMap, attrName, behaviorEventName);
+                        return;
+                    }
                 }
             }
 
+            // Note that we can optimize this search by providing
+            // an event name -> Attribute inverse look up map.
+            // This would change the search time from O(n) to O(1).
+
+            for (Attribute attribute : knownAttributes) {
+                String attrName = attribute.getName();
+                String[] events = attribute.getEvents();
+                if (events != null && events.length > 0 && behaviorEventName.equals(events[0])) {
+                    renderHandler(context, component, null, attrName, null, behaviorEventName, null, false, false);
+                }
+            }
         }
     }
 
@@ -659,33 +685,53 @@ public class RenderKitUtils {
      * @param writer the current writer
      * @param component the component whose attributes we're rendering
      * @param knownAttributes an array of pass-through attributes supported by this component
+     * @param setAttributes a <code>List</code> of attributes that have been set on the provided component
      * @param behaviors the non-null behaviors map for this request.
      * @throws IOException if an error occurs during the write
      */
     private static void renderPassThruAttributesUnoptimized(FacesContext context, ResponseWriter writer, UIComponent component, Attribute[] knownAttributes,
-            Map<String, List<ClientBehavior>> behaviors) throws IOException {
+            List<String> setAttributes, Map<String, List<ClientBehavior>> behaviors) throws IOException {
 
-        boolean isXhtml = RIConstants.XHTML_CONTENT_TYPE.equals(writer.getContentType());
+        boolean isHtml5 = isOutputHtml5Doctype(context);
+        boolean isXhtml = !isHtml5 && RIConstants.XHTML_CONTENT_TYPE.equals(writer.getContentType());
 
         Map<String, Object> attrMap = component.getAttributes();
+        List<String> behaviorAttributes = isHtml5 ? setAttributes.stream().filter(RenderKitUtils::isBehaviorAttribute).collect(toList()) : emptyList();
 
         for (Attribute attribute : knownAttributes) {
             String attrName = attribute.getName();
             String[] events = attribute.getEvents();
-            boolean hasBehavior = events != null && events.length > 0 && behaviors.containsKey(events[0]);
-
-            Object value = attrMap.get(attrName);
-
-            if (value != null && shouldRenderAttribute(value) && !hasBehavior) {
-                writer.writeAttribute(prefixAttribute(attrName, isXhtml), value, attrName);
-            } else if (hasBehavior) {
-
-                // If we've got a behavior for this attribute,
-                // we may need to chain scripts together, so use
-                // renderHandler().
-                renderHandler(context, component, null, attrName, value, events[0], null, false, false);
-            }
+            String eventName = events != null && events.length > 0 ? events[0] : null;
+            renderPassthruAttribute(context, writer, component, behaviors, isXhtml, attrMap, attrName, eventName);
+            behaviorAttributes.remove(attrName);
         }
+        
+        for (String attrName : behaviorAttributes) {
+            String eventName = attrName.substring(2);
+            renderPassthruAttribute(context, writer, component, behaviors, isXhtml, attrMap, attrName, eventName);
+        }
+    }
+
+    private static void renderPassthruAttribute(FacesContext context, ResponseWriter writer, UIComponent component,
+            Map<String, List<ClientBehavior>> behaviors, boolean isXhtml, Map<String, Object> attrMap, String attrName,
+            String eventName) throws IOException {
+        boolean hasBehavior = eventName != null && behaviors.containsKey(eventName);
+
+        Object value = attrMap.get(attrName);
+
+        if (value != null && shouldRenderAttribute(value) && !hasBehavior) {
+            writer.writeAttribute(prefixAttribute(attrName, isXhtml), value, attrName);
+        } else if (hasBehavior) {
+
+            // If we've got a behavior for this attribute,
+            // we may need to chain scripts together, so use
+            // renderHandler().
+            renderHandler(context, component, null, attrName, value, eventName, null, false, false);
+        }
+    }
+    
+    private static boolean isBehaviorAttribute(String name) {
+        return name.startsWith("on") && name.length() > 2;
     }
 
     /**

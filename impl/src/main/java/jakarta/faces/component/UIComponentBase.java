@@ -1526,53 +1526,40 @@ public abstract class UIComponentBase extends UIComponent {
         // First, make sure that the event is supported. We don't want
         // to bother attaching behaviors for unsupported events.
 
-        Collection<String> eventNames = getEventNames();
-
-        // getClientEventNames() is spec'ed to require a non-null Set.
-        // If getClientEventNames() returns null, throw an exception
-        // to indicate that the API in not being used properly.
-        if (eventNames == null) {
-            throw new IllegalStateException(
-                    "Attempting to add a Behavior to a component " + "that does not support any event types. " + "getEventTypes() must return a non-null Set.");
-        }
-
-        if (eventNames.contains(eventName)) {
-
-            if (initialStateMarked()) {
-                // a Behavior has been added dynamically. Update existing
-                // Behaviors, if any, to save their full state.
-                if (behaviors != null) {
-                    for (Entry<String, List<ClientBehavior>> entry : behaviors.entrySet()) {
-                        for (ClientBehavior b : entry.getValue()) {
-                            if (b instanceof PartialStateHolder) {
-                                ((PartialStateHolder) behavior).clearInitialState();
-                            }
+        if (initialStateMarked()) {
+            // a Behavior has been added dynamically. Update existing
+            // Behaviors, if any, to save their full state.
+            if (behaviors != null) {
+                for (Entry<String, List<ClientBehavior>> entry : behaviors.entrySet()) {
+                    for (ClientBehavior b : entry.getValue()) {
+                        if (b instanceof PartialStateHolder) {
+                            ((PartialStateHolder) behavior).clearInitialState();
                         }
                     }
                 }
             }
-            // We've got an event that we support, create our Map
-            // if necessary
-
-            if (null == behaviors) {
-                // Typically we only have a small number of behaviors for
-                // any component - in most cases only 1. Using a very small
-                // initial capacity so that we keep the footprint to a minimum.
-                Map<String, List<ClientBehavior>> modifiableMap = new HashMap<>(5, 1.0f);
-                behaviors = new BehaviorsMap(modifiableMap);
-            }
-
-            List<ClientBehavior> eventBehaviours = behaviors.get(eventName);
-
-            if (null == eventBehaviours) {
-                // Again using small initial capacity - we typically
-                // only have 1 Behavior per event type.
-                eventBehaviours = new ArrayList<>(3);
-                behaviors.getModifiableMap().put(eventName, eventBehaviours);
-            }
-
-            eventBehaviours.add(behavior);
         }
+        // We've got an event that we support, create our Map
+        // if necessary
+
+        if (null == behaviors) {
+            // Typically we only have a small number of behaviors for
+            // any component - in most cases only 1. Using a very small
+            // initial capacity so that we keep the footprint to a minimum.
+            Map<String, List<ClientBehavior>> modifiableMap = new HashMap<>(5, 1.0f);
+            behaviors = new BehaviorsMap(modifiableMap);
+        }
+
+        List<ClientBehavior> eventBehaviours = behaviors.get(eventName);
+
+        if (null == eventBehaviours) {
+            // Again using small initial capacity - we typically
+            // only have 1 Behavior per event type.
+            eventBehaviours = new ArrayList<>(3);
+            behaviors.getModifiableMap().put(eventName, eventBehaviours);
+        }
+
+        eventBehaviours.add(behavior);
     }
 
     /**
