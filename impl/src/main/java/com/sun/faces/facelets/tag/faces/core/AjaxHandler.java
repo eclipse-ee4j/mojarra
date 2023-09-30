@@ -16,7 +16,6 @@
 
 package com.sun.faces.facelets.tag.faces.core;
 
-import static com.sun.faces.facelets.util.DevTools.isDevelopment;
 import static jakarta.faces.application.ProjectStage.Development;
 import static jakarta.faces.component.UINamingContainer.getSeparatorChar;
 import static java.util.Arrays.stream;
