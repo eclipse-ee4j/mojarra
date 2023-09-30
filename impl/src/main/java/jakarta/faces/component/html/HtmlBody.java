@@ -18,10 +18,9 @@
 package jakarta.faces.component.html;
 
 import static jakarta.faces.component.html.HtmlComponentUtils.handleAttribute;
+import static jakarta.faces.component.html.HtmlEvents.getDocumentElementEventNames;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 import jakarta.faces.component.UIOutput;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
@@ -576,12 +575,9 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
         handleAttribute(this, "xmlns", xmlns);
     }
 
-    private static final Collection<String> EVENT_NAMES = Collections.unmodifiableCollection(
-            Arrays.asList("click", "dblclick", "keydown", "keypress", "keyup", "load", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup", "unload"));
-
     @Override
     public Collection<String> getEventNames() {
-        return EVENT_NAMES;
+        return getDocumentElementEventNames(getFacesContext());
     }
 
     @Override

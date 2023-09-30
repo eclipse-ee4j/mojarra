@@ -16,7 +16,6 @@
 
 package com.sun.faces.facelets.tag.faces.core;
 
-import static jakarta.faces.application.ProjectStage.Development;
 import static jakarta.faces.component.UINamingContainer.getSeparatorChar;
 import static java.util.Arrays.stream;
 
@@ -29,27 +28,24 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
-import java.util.logging.Logger;
 
 import com.sun.faces.component.behavior.AjaxBehaviors;
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 import com.sun.faces.facelets.tag.composite.BehaviorHolderWrapper;
 import com.sun.faces.facelets.tag.composite.RetargetedAjaxBehavior;
 import com.sun.faces.facelets.tag.faces.CompositeComponentTagHandler;
-import com.sun.faces.facelets.util.DevTools;
 import com.sun.faces.renderkit.RenderKitUtils;
-import com.sun.faces.util.FacesLogger;
 
 import jakarta.el.ELContext;
 import jakarta.el.MethodExpression;
 import jakarta.el.MethodNotFoundException;
 import jakarta.el.ValueExpression;
 import jakarta.faces.application.Application;
-import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.AjaxBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.component.html.HtmlEvents;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.AjaxBehaviorEvent;
@@ -99,8 +95,6 @@ import jakarta.faces.view.facelets.TagHandler;
  * @version $Id: AjaxHandler.java 5369 2008-09-08 19:53:45Z rogerk $
  */
 public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderAttachedObjectHandler {
-
-    private static final Logger LOGGER = FacesLogger.FACELETS_COMPILER.getLogger();
 
     private final TagAttribute event;
     private final TagAttribute execute;
@@ -281,10 +275,10 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
             if (null == eventName) {
                 throw new TagException(tag, "Event attribute could not be determined: " + eventName);
             }
-        } else if (ctx.getFacesContext().isProjectStage(Development)) {
+        } else {
             Collection<String> eventNames = bHolder.getEventNames();
             if (!eventNames.contains(eventName)) {
-                LOGGER.warning(getUnsupportedEventMessage(eventName, eventNames, parent)); // TODO: improve message for faces#1507
+                throw new TagException(tag, getUnsupportedEventMessage(eventName, eventNames, parent));
             }
         }
 
@@ -369,7 +363,9 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
             }
         }
 
-        builder.append(".");
+        builder.append(".  In case you wish to add new ones, then you can specify them"
+                + " as space-separated value of context-param with name "
+                + HtmlEvents.ADDITIONAL_HTML_EVENT_NAMES_PARAM_NAME);
 
         return builder.toString();
     }

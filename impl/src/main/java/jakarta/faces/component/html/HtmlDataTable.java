@@ -18,10 +18,9 @@
 package jakarta.faces.component.html;
 
 import static jakarta.faces.component.html.HtmlComponentUtils.handleAttribute;
+import static jakarta.faces.component.html.HtmlEvents.getBodyElementEventNames;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 import jakarta.faces.component.UIData;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
@@ -934,12 +933,9 @@ public class HtmlDataTable extends UIData implements ClientBehaviorHolder {
         handleAttribute(this, "width", width);
     }
 
-    private static final Collection<String> EVENT_NAMES = Collections.unmodifiableCollection(
-            Arrays.asList("click", "dblclick", "keydown", "keypress", "keyup", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup"));
-
     @Override
     public Collection<String> getEventNames() {
-        return EVENT_NAMES;
+        return getBodyElementEventNames(getFacesContext()); 
     }
 
     @Override
