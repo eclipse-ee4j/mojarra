@@ -950,7 +950,7 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
                             newElement = newElement.firstChild;
                         }
 
-                        replaceNode(element,newElement);
+                        replaceNode(newElement,element);
                         runScripts(scripts);
 
                     } else if (element.nodeName.toLowerCase() === 'input') {
