@@ -156,6 +156,11 @@ public @interface FacesConfig {
         }
 
         @Override
+        public String[] fullStateSavingViewIds() {
+            return EMPTY_STRING_ARRAY;
+        }
+
+        @Override
         public boolean interpretEmptyStringSubmittedValuesAsNull() {
             return false;
         }
@@ -163,6 +168,11 @@ public @interface FacesConfig {
         @Override
         public int numberOfClientWindows() {
             return ClientWindow.NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE;
+        }
+        
+        @Override
+        public boolean partialStateSaving() {
+            return true;
         }
 
         @Override
@@ -307,6 +317,11 @@ public @interface FacesConfig {
         FACELETS_VIEW_MAPPINGS(ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME, StringArray.SEMICOLON_SEPARATED, EMPTY_STRING_ARRAY),
 
         /**
+         * Returns {@value StateManager#FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME} as {@link String} array with default of empty string array.
+         */
+        FULL_STATE_SAVING_VIEW_IDS(StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME, StringArray.COMMA_SEPARATED, EMPTY_STRING_ARRAY),
+
+        /**
          * Returns {@value UIInput#EMPTY_STRING_AS_NULL_PARAM_NAME} as {@link Boolean} with default of {@code false}.
          */
         INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL(UIInput.EMPTY_STRING_AS_NULL_PARAM_NAME, Boolean.class, false),
@@ -316,6 +331,11 @@ public @interface FacesConfig {
          * @see ClientWindow#NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME
          */
         NUMBER_OF_CLIENT_WINDOWS(ClientWindow.NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME, Integer.class, ClientWindow.NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE),
+
+        /**
+         * Returns {@value StateManager#PARTIAL_STATE_SAVING_PARAM_NAME} as {@link Boolean} with default of {@code true}.
+         */
+        PARTIAL_STATE_SAVING(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, Boolean.class, true),
 
         /**
          * Returns {@value ProjectStage#PROJECT_STAGE_PARAM_NAME} as {@link ProjectStage} with default of {@link ProjectStage#Production}.
@@ -615,6 +635,13 @@ public @interface FacesConfig {
 
     /**
      * <p class="changed_added_5_0">
+     * Returns {@value StateManager#FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME} as {@link String} array with default of empty string array.
+     * </p>
+     */
+    String[] fullStateSavingViewIds() default {};
+
+    /**
+     * <p class="changed_added_5_0">
      * Returns {@value UIInput#EMPTY_STRING_AS_NULL_PARAM_NAME} as {@link Boolean} with default of {@code false}.
      * </p>
      */
@@ -626,6 +653,13 @@ public @interface FacesConfig {
      * </p>
      */
     int numberOfClientWindows() default ClientWindow.NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE;
+
+    /**
+     * <p class="changed_added_5_0">
+     * Returns {@value StateManager#PARTIAL_STATE_SAVING_PARAM_NAME} as {@link Boolean} with default of {@code true}.
+     * </p>
+     */
+    boolean partialStateSaving() default true;
 
     /**
      * <p class="changed_added_5_0">
