@@ -17,7 +17,6 @@
 package com.sun.faces.application.applicationimpl;
 
 import static com.sun.faces.application.ApplicationImpl.THIS_LIBRARY;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.DateTimeConverterUsesSystemTimezone;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.RegisterConverterPropertyEditors;
 import static com.sun.faces.util.Util.isEmpty;
 import static com.sun.faces.util.Util.loadClass;
@@ -71,6 +70,7 @@ import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.FacesException;
+import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.Resource;
 import jakarta.faces.component.UIComponent;
@@ -155,10 +155,11 @@ public class InstanceFactory {
         defaultValidatorIds = new LinkedHashSet<>();
         behaviorMap = new ViewMemberInstanceFactoryMetadataMap<>(new ConcurrentHashMap<>());
 
-        WebConfiguration webConfig = WebConfiguration.getInstance(FacesContext.getCurrentInstance().getExternalContext());
+        FacesContext context = FacesContext.getCurrentInstance();
+        WebConfiguration webConfig = WebConfiguration.getInstance(context.getExternalContext());
         registerPropertyEditors = webConfig.isOptionEnabled(RegisterConverterPropertyEditors);
 
-        passDefaultTimeZone = webConfig.isOptionEnabled(DateTimeConverterUsesSystemTimezone);
+        passDefaultTimeZone = ContextParam.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE.getValue(context);
         if (passDefaultTimeZone) {
             systemTimeZone = TimeZone.getDefault();
         }

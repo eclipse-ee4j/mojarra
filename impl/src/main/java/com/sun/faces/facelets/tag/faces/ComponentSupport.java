@@ -16,8 +16,6 @@
 
 package com.sun.faces.facelets.tag.faces;
 
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.PartialStateSaving;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +32,7 @@ import com.sun.faces.facelets.tag.faces.core.FacetHandler;
 import com.sun.faces.util.Util;
 
 import jakarta.faces.FacesException;
+import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIPanel;
 import jakarta.faces.component.UIViewRoot;
@@ -216,7 +215,7 @@ public final class ComponentSupport {
     }
 
     private static boolean isPartialStateSaving(FacesContext context) {
-        return context.getAttributes().get(PartialStateSaving) == Boolean.TRUE;
+        return ContextParam.PARTIAL_STATE_SAVING.isSet(context);
     }
     
     /**

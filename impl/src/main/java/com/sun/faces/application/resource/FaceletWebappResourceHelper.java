@@ -18,8 +18,6 @@ package com.sun.faces.application.resource;
 
 import static com.sun.faces.RIConstants.FLOW_IN_JAR_PREFIX;
 import static com.sun.faces.config.WebConfiguration.META_INF_CONTRACTS_DIR;
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsSuffix;
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.WebAppContractsDirectory;
 import static jakarta.faces.application.ResourceVisitOption.TOP_LEVEL_VIEWS_ONLY;
 import static java.util.Spliterator.DISTINCT;
 import static java.util.Spliterators.spliteratorUnknownSize;
@@ -35,10 +33,10 @@ import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
 import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.util.Util;
 
 import jakarta.faces.FacesException;
+import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.application.ResourceVisitOption;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -52,9 +50,9 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
     private final String[] configuredExtensions;
 
     public FaceletWebappResourceHelper() {
-        WebConfiguration webConfig = WebConfiguration.getInstance();
-        webAppContractsDirectory = webConfig.getOptionValue(WebAppContractsDirectory);
-        configuredExtensions = webConfig.getOptionValue(FaceletsSuffix, " ");
+        FacesContext context = FacesContext.getCurrentInstance();
+        webAppContractsDirectory = ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(context);
+        configuredExtensions = new String[] { ContextParam.FACELETS_SUFFIX.getValue(context) };
     }
 
     @Override

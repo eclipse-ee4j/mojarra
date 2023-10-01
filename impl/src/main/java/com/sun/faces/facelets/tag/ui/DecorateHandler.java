@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.facelets.FaceletContextImplBase;
 import com.sun.faces.facelets.TemplateClient;
 import com.sun.faces.facelets.el.VariableMapperWrapper;
@@ -33,6 +32,7 @@ import com.sun.faces.facelets.tag.TagHandlerImpl;
 import com.sun.faces.util.FacesLogger;
 
 import jakarta.el.VariableMapper;
+import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
@@ -108,8 +108,7 @@ public final class DecorateHandler extends TagHandlerImpl implements TemplateCli
             if (path.trim().length() == 0) {
                 throw new TagAttributeException(tag, template, "Invalid path : " + path);
             }
-            WebConfiguration webConfig = WebConfiguration.getInstance();
-            if (path.startsWith(webConfig.getOptionValue(WebConfiguration.WebContextInitParameter.WebAppContractsDirectory))) {
+            if (path.startsWith(ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(ctxObj.getFacesContext()).toString())) {
                 throw new TagAttributeException(tag, template, "Invalid path, contract resources cannot be accessed this way : " + path);
             }
             ctx.includeFacelet(parent, path);

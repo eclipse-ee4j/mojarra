@@ -37,7 +37,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.faces.RIConstants;
-import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.el.ELUtils;
 import com.sun.faces.facelets.util.DevTools;
 import com.sun.faces.util.FacesLogger;
@@ -47,6 +46,7 @@ import com.sun.faces.util.Util;
 import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
+import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.application.ProjectStage;
@@ -1219,9 +1219,8 @@ public class RenderKitUtils {
         ResourceHandler handler = context.getApplication().getResourceHandler();
         if (resName != null) {
             String libName = (String) component.getAttributes().get("library");
-            WebConfiguration webConfig = WebConfiguration.getInstance();
 
-            if (libName == null && resName.startsWith(webConfig.getOptionValue(WebConfiguration.WebContextInitParameter.WebAppContractsDirectory))) {
+            if (libName == null && resName.startsWith(ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(context).toString())) {
                 if (context.isProjectStage(ProjectStage.Development)) {
                     String msg = "Illegal path, direct contract references are not allowed: " + resName;
                     context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, msg));
@@ -1246,8 +1245,7 @@ public class RenderKitUtils {
             if (value == null || value.length() == 0) {
                 return "";
             }
-            WebConfiguration webConfig = WebConfiguration.getInstance();
-            if (value.startsWith(webConfig.getOptionValue(WebConfiguration.WebContextInitParameter.WebAppContractsDirectory))) {
+            if (value.startsWith(ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(context).toString())) {
                 if (context.isProjectStage(ProjectStage.Development)) {
                     String msg = "Illegal path, direct contract references are not allowed: " + value;
                     context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, msg));
