@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -281,7 +282,7 @@ public @interface FacesConfig {
         ENABLE_WEBSOCKET_ENDPOINT(PushContext.ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME, Boolean.class, false),
 
         /** 
-         * Returns {@value ViewHandler#FACELETS_BUFFER_SIZE_PARAM_NAME} as {@link Integer} with default of {@code 1024}.
+         * Returns {@value ViewHandler#FACELETS_BUFFER_SIZE_PARAM_NAME} as {@link Integer} with default of {@value ViewHandler#FACELETS_BUFFER_SIZE_DEFAULT_VALUE}.
          */
         FACELETS_BUFFER_SIZE(ViewHandler.FACELETS_BUFFER_SIZE_PARAM_NAME, Integer.class, ViewHandler.FACELETS_BUFFER_SIZE_DEFAULT_VALUE),
 
@@ -327,8 +328,7 @@ public @interface FacesConfig {
         INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL(UIInput.EMPTY_STRING_AS_NULL_PARAM_NAME, Boolean.class, false),
 
         /**
-         * Returns {@value ClientWindow#NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME} as {@link Integer} with default of {@code 10}.
-         * @see ClientWindow#NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME
+         * Returns {@value ClientWindow#NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME} as {@link Integer} with default of {@value ClientWindow#NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE}.
          */
         NUMBER_OF_CLIENT_WINDOWS(ClientWindow.NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME, Integer.class, ClientWindow.NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE),
 
@@ -476,12 +476,47 @@ public @interface FacesConfig {
             return (T) VALUES.computeIfAbsent(this, param -> param.parseValue(context));
         }
 
+        /**
+         * <p>
+         * Returns {@code true} in case a boolean context parameter is {@code true}, or a non-boolean context parameter is explicitly set with a non-{@code null} value.
+         * @param context The involved faces context.
+         * @return {@code true} in case a boolean context parameter is {@code true}, or a non-boolean context parameter is explicitly set with a non-{@code null} value.
+         * @throws IllegalArgumentException When the value of the context parameter cannot be converted to the expected type as indicated by {@link #getType()}.
+         */
+        public boolean isSet(FacesContext context) {
+            return (getType() == Boolean.class) ? (boolean) getValue(context) : context.getExternalContext().getInitParameter(name) != null;
+        }
+
+        /**
+         * <p>
+         * Returns the default value of the context parameter, converted to the expected type as indicated by {@link #getType()}.
+         * @param <T> The expected return type.
+         * @param context The involved faces context.
+         * @return The default value of the context parameter, converted to the expected type as indicated by {@link #getType()}.
+         * @throws ClassCastException When inferred T is of wrong type. See {@link #getType()} for the correct type.
+         */
+        @SuppressWarnings("unchecked")
+        public <T> T getDefaultValue(FacesContext context) {
+            return (T) defaultValue.apply(context);
+        }
+
+        /**
+         * <p>
+         * Returns {@code true} when the value of the context parameter equals to the default value, irrespective of whether it is explicitly set.
+         * @param context The involved faces context.
+         * @return {@code true} when the value of the context parameter equals to the default value, irrespective of whether it is explicitly set.
+         * @throws IllegalArgumentException When the value of the context parameter cannot be converted to the expected type as indicated by {@link #getType()}.
+         */
+        public boolean isDefault(FacesContext context) {
+            return Objects.equals(getValue(context), defaultValue.apply(context));
+        }
+
         @SuppressWarnings("unchecked")
         private <T> T parseValue(FacesContext context) {
             String value = context.getExternalContext().getInitParameter(name);
 
             if (value == null) {
-                return (T) defaultValue.apply(context);
+                return getDefaultValue(context);
             }
             else if (type == String.class) {
                 return (T) value;
