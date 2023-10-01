@@ -49,8 +49,8 @@ import jakarta.faces.view.ViewMetadata;
  * </p>
  *
  * <p>
- * Because this class implements {@link ActionSource2}, any actions that one would normally take on a component that
- * implements <code>ActionSource2</code>, such as {@link UICommand}, are valid for instances of this class. Instances of
+ * Because this class implements {@link ActionSource}, any actions that one would normally take on a component that
+ * implements <code>ActionSource</code>, such as {@link UICommand}, are valid for instances of this class. Instances of
  * this class participate in the regular Jakarta Faces lifecycle, including on Ajax requests.
  * </p>
  *
@@ -86,7 +86,7 @@ import jakarta.faces.view.ViewMetadata;
  *
  * @since 2.2
  */
-public class UIViewAction extends UIComponentBase implements ActionSource2 {
+public class UIViewAction extends UIComponentBase implements ActionSource {
 
     // ------------------------------------------------------ Manifest Constants
 

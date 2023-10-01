@@ -16,6 +16,7 @@
 
 package jakarta.faces.component;
 
+import jakarta.el.MethodExpression;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.ActionListener;
 
@@ -86,5 +87,52 @@ public interface ActionSource {
      * @throws NullPointerException if <code>listener</code> is <code>null</code>
      */
     void removeActionListener(ActionListener listener);
+
+    // -------------------------------------------------------------- Properties
+
+    /**
+     * <p>
+     * Return the {@link MethodExpression} pointing at the application action to be invoked, if this {@link UIComponent} is
+     * activated by the user, during the <em>Apply Request Values</em> or <em>Invoke Application</em> phase of the request
+     * processing lifecycle, depending on the value of the <code>immediate</code> property.
+     * </p>
+     *
+     * <p>
+     * The default implementation throws <code>UnsupportedOperationException</code> and is provided for the sole purpose of
+     * not breaking existing applications that extend {@link ActionSource}.
+     * Historically this method was declared in {@code ActionSource2} for precisely this reason but default methods in interfaces weren't supported. 
+     * </p>
+     *
+     * @return the action expression.
+     * @since 4.1
+     */
+    default MethodExpression getActionExpression() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * <p>
+     * Set the {@link MethodExpression} pointing at the appication action to be invoked, if this {@link UIComponent} is
+     * activated by the user, during the <em>Apply Request Values</em> or <em>Invoke Application</em> phase of the request
+     * processing lifecycle, depending on the value of the <code>immediate</code> property.
+     * </p>
+     *
+     * <p>
+     * Any method referenced by such an expression must be public, with a return type of <code>String</code>, and accept no
+     * parameters.
+     * </p>
+     *
+     * <p>
+     * The default implementation throws <code>UnsupportedOperationException</code> and is provided for the sole purpose of
+     * not breaking existing applications that extend {@link ActionSource}.
+     * Historically this method was declared in {@code ActionSource2} for precisely this reason but default methods in interfaces weren't supported. 
+     * </p>
+     *
+     * @param action The new method expression
+     * @since 4.1
+     */
+    default void setActionExpression(MethodExpression action) {
+        throw new UnsupportedOperationException();
+    }
 
 }
