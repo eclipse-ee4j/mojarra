@@ -66,46 +66,18 @@ public class LifecycleImpl extends Lifecycle {
 
     // List for registered PhaseListeners
     private List<PhaseListener> listeners = new CopyOnWriteArrayList<>();
-    private boolean isClientWindowEnabled = false;
-    private WebConfiguration config;
 
     public LifecycleImpl() {
-
     }
 
     public LifecycleImpl(FacesContext context) {
-        ExternalContext extContext = context.getExternalContext();
-        config = WebConfiguration.getInstance(extContext);
-        context.getApplication().subscribeToEvent(PostConstructApplicationEvent.class, Application.class, new PostConstructApplicationListener());
-
     }
 
-    private class PostConstructApplicationListener implements SystemEventListener {
-
-        @Override
-        public boolean isListenerForSource(Object source) {
-            return source instanceof Application;
-        }
-
-        @Override
-        public void processEvent(SystemEvent event) throws AbortProcessingException {
-            postConstructApplicationInitialization();
-        }
-
-    }
-
-    private void postConstructApplicationInitialization() {
-        String optionValue = config.getOptionValue(WebConfiguration.WebContextInitParameter.ClientWindowMode);
-        isClientWindowEnabled = null != optionValue && !optionValue.equals(WebConfiguration.WebContextInitParameter.ClientWindowMode.getDefaultValue());
-    }
 
     // ------------------------------------------------------- Lifecycle Methods
 
     @Override
     public void attachWindow(FacesContext context) {
-        if (!isClientWindowEnabled) {
-            return;
-        }
         if (context == null) {
             throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
         }
