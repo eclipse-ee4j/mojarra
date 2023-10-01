@@ -14,12 +14,16 @@
 [//]: # " SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 "
 -->
 
-# Mojarra 4.0
+# Eclipse Mojarra
 
-Eclipse's implementation of the Jakarta Faces 4.0 specification
+Eclipse's implementation of the Jakarta Faces specification
 
-For Mojarra / JSF 2.3 please have a look at https://github.com/eclipse-ee4j/mojarra/blob/2.3/README.md.  
-For Mojarra / JSF 3.0 please have a look at https://github.com/eclipse-ee4j/mojarra/blob/3.0/README.md.
+* Mojarra 5.0 - under development
+* [Mojarra 4.0](https://github.com/eclipse-ee4j/mojarra/blob/4.0/README.md) - stable release
+* [Mojarra 3.0](https://github.com/eclipse-ee4j/mojarra/blob/3.0/README.md) - legacy release
+
+For Mojarra 2.3 and earlier please contact your vendor for support (RedHat, IBM,
+Oracle, Omnifish, Payara, etceteras)
 
 ## Minimum Requirements
 

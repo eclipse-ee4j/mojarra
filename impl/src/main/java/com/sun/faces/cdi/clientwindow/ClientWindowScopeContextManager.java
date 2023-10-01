@@ -18,11 +18,13 @@
 package com.sun.faces.cdi.clientwindow;
 
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
+import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.NumberOfClientWindows;
 import static java.util.logging.Level.FINEST;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.faces.config.WebConfiguration;
@@ -34,7 +36,6 @@ import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.PassivationCapable;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpSessionEvent;
 
@@ -142,12 +143,22 @@ public class ClientWindowScopeContextManager {
                 String clientWindowId = getCurrentClientWindowId(facesContext);
 
                 if (clientWindowScopeContexts == null && create) {
-                    synchronized (session) {
-                        Integer size = (Integer) sessionMap.get(ClientWindow.NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME);
-                        if (size == null) {
-                            size = 10;
+                    Integer numberOfClientWindows = null;
+
+                    try {
+                        numberOfClientWindows = Integer.parseInt(WebConfiguration.getInstance(externalContext).getOptionValue(NumberOfClientWindows));
+                    } catch (NumberFormatException nfe) {
+                        if (LOGGER.isLoggable(Level.WARNING)) {
+                            LOGGER.log(Level.WARNING, "Unable to set number of client windows.  Defaulting to {0}", NumberOfClientWindows.getDefaultValue());
                         }
-                        sessionMap.put(CLIENT_WINDOW_CONTEXTS, Collections.synchronizedMap(new LRUMap<String, Object>(size)));
+                    }
+
+                    if (numberOfClientWindows == null) {
+                        numberOfClientWindows = Integer.valueOf(NumberOfClientWindows.getDefaultValue());
+                    }
+
+                    synchronized (session) {
+                        sessionMap.put(CLIENT_WINDOW_CONTEXTS, Collections.synchronizedMap(new LRUMap<String, Object>(numberOfClientWindows)));
                     }
                 }
 

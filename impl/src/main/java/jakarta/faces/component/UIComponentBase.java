@@ -109,6 +109,8 @@ public abstract class UIComponentBase extends UIComponent {
     private static final int MY_STATE = 0;
     private static final int CHILD_STATE = 1;
 
+    private static final String FACES_COMPONENT_DESCRIPTORS_MAP_NAME = "com.sun.faces.component.COMPONENT_DESCRIPTORS_MAP";
+
     /**
      * <p>
      * Each entry is an map of <code>PropertyDescriptor</code>s describing the properties of a concrete {@link UIComponent}
@@ -131,7 +133,7 @@ public abstract class UIComponentBase extends UIComponent {
      * An EMPTY_OBJECT_ARRAY argument list to be passed to reflection methods.
      * </p>
      */
-    private static final Object EMPTY_OBJECT_ARRAY[] = new Object[0];
+    private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
     /**
      * <p>
@@ -306,7 +308,7 @@ public abstract class UIComponentBase extends UIComponent {
 
     @Override
     public boolean isRendered() {
-        return Boolean.valueOf(getStateHelper().eval(PropertyKeys.rendered, TRUE).toString());
+        return Boolean.parseBoolean(getStateHelper().eval(PropertyKeys.rendered, TRUE).toString());
     }
 
     @Override
@@ -435,7 +437,7 @@ public abstract class UIComponentBase extends UIComponent {
 
         // If there are neither facets nor children
         if (childCount == 0 && facetCount == 0) {
-            return EMPTY_ITERATOR;
+            return Collections.emptyIterator();
         }
 
         // If there are only facets and no children
@@ -957,7 +959,7 @@ public abstract class UIComponentBase extends UIComponent {
         }
 
         Object[] stateStruct = new Object[2];
-        Object[] childState = EMPTY_ARRAY;
+        Object[] childState = EMPTY_OBJECT_ARRAY;
 
         pushComponentToEL(context, null);
 
@@ -1011,7 +1013,7 @@ public abstract class UIComponentBase extends UIComponent {
             // Process all the children of this component
             int i = restoreChildState(context, childState);
 
-            // Process all of the facets of this component
+            // Process all the facets of this component
             restoreFacetsState(context, childState, i);
 
         } finally {
@@ -1264,7 +1266,7 @@ public abstract class UIComponentBase extends UIComponent {
      *
      * @param context the {@link FacesContext} for this request.
      * @param attachedObject the object, which may be a <code>List</code> instance, or an Object. The
-     * <code>attachedObject</code> (or the elements that comprise <code>attachedObject</code> may implement
+     * <code>attachedObject</code> (or the elements that comprise <code>attachedObject</code> may implement)
      * {@link StateHolder}.
      *
      * @return The state object to be saved.
@@ -1423,9 +1425,9 @@ public abstract class UIComponentBase extends UIComponent {
         if (state == null) {
             return null;
         }
-        Object values[] = (Object[]) state;
-        String names[] = (String[]) values[0];
-        Object states[] = (Object[]) values[1];
+        Object[] values = (Object[]) state;
+        String[] names = (String[]) values[0];
+        Object[] states = (Object[]) values[1];
         Map<String, ValueExpression> bindings = new HashMap<>(names.length);
         for (int i = 0; i < names.length; i++) {
             bindings.put(names[i], (ValueExpression) restoreAttachedState(context, states[i]));
@@ -1441,7 +1443,7 @@ public abstract class UIComponentBase extends UIComponent {
         }
 
         int size = listenersByEventClass.size();
-        Object listeners[][] = new Object[size][2];
+        Object[][] listeners = new Object[size][2];
         int idx = 0;
         boolean savedState = false;
         for (Entry<Class<? extends SystemEvent>, List<SystemEventListener>> e : listenersByEventClass.entrySet()) {
@@ -1642,7 +1644,7 @@ public abstract class UIComponentBase extends UIComponent {
 
     /**
      * {@link UIComponentBase} has stub methods from the {@link ClientBehaviorHolder} interface, but these method should be
-     * used only with componets that really implement holder interface. For an any other classes this method throws
+     * used only with components that really implement holder interface. For an any other classes this method throws
      * {@link IllegalStateException}
      *
      * @throws IllegalStateException
@@ -1819,38 +1821,16 @@ public abstract class UIComponentBase extends UIComponent {
 
     // --------------------------------------------------------- Private Classes
 
-    // For state saving
-    private final static Object[] EMPTY_ARRAY = new Object[0];
-
-    // Empty iterator for short circuiting operations
-    private final static Iterator<UIComponent> EMPTY_ITERATOR = new Iterator<>() {
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public UIComponent next() {
-            throw new NoSuchElementException("Empty Iterator");
-        }
-
-        @Override
-        public boolean hasNext() {
-            return false;
-        }
-    };
-
     // Private implementation of Map that supports the functionality
     // required by UIComponent.getFacets()
     // HISTORY:
-    // Versions 1.333 and older used inheritence to provide the
+    // Versions 1.333 and older used inheritance to provide the
     // basic map functionality. This was wasteful since a
     // component could be completely configured via ValueExpressions
     // or (Bindings) which means an EMPTY_OBJECT_ARRAY Map would always be
     // present when it wasn't needed. By using composition,
     // we control if and when the Map is instantiated thereby
-    // reducing uneeded object allocation. This change also
+    // reducing unneeded object allocation. This change also
     // has a nice side effect in state saving since we no
     // longer need to duplicate the map, we just provide the
     // private 'attributes' map directly to the state saving process.
@@ -2037,19 +2017,19 @@ public abstract class UIComponentBase extends UIComponent {
 
         @Override
         public int size() {
-            Map attributes = getAttributes();
+            Map<String, Object> attributes = getAttributes();
             return attributes != null ? attributes.size() : 0;
         }
 
         @Override
         public boolean isEmpty() {
-            Map attributes = getAttributes();
+            Map<String, Object> attributes = getAttributes();
             return attributes == null || attributes.isEmpty();
         }
 
         @Override
-        public boolean containsValue(java.lang.Object value) {
-            Map attributes = getAttributes();
+        public boolean containsValue(Object value) {
+            Map<String, Object> attributes = getAttributes();
             return attributes != null && attributes.containsValue(value);
         }
 
@@ -2157,7 +2137,7 @@ public abstract class UIComponentBase extends UIComponent {
 
         // ----------------------------------------------- Serialization Methods
 
-        // This is dependent on serialization occuring with in a
+        // This is dependent on serialization occurring with in a
         // a Faces request, however, since UIComponentBase.{save,restore}State()
         // doesn't actually serialize the AttributesMap, these methods are here
         // purely to be good citizens.
@@ -2480,7 +2460,7 @@ public abstract class UIComponentBase extends UIComponent {
                     iterator = c.getChildren().iterator();
                     childMode = true;
                 } else {
-                    iterator = EMPTY_ITERATOR;
+                    iterator = Collections.emptyIterator();
                     childMode = true;
                 }
             } else if (!childMode && !iterator.hasNext() && c.getChildCount() != 0) {
@@ -2686,7 +2666,7 @@ public abstract class UIComponentBase extends UIComponent {
         @Override
         public boolean retainAll(Collection c) {
             boolean result = false;
-            Iterator v = iterator();
+            Iterator<Entry<String, UIComponent>> v = iterator();
             while (v.hasNext()) {
                 if (!c.contains(v.next())) {
                     v.remove();
@@ -2878,7 +2858,7 @@ public abstract class UIComponentBase extends UIComponent {
         @Override
         public boolean retainAll(Collection c) {
             boolean result = false;
-            Iterator v = iterator();
+            Iterator<String> v = iterator();
             while (v.hasNext()) {
                 if (!c.contains(v.next())) {
                     v.remove();
@@ -3009,7 +2989,7 @@ public abstract class UIComponentBase extends UIComponent {
     // but UIComponentBase itself needs to be able to write to the Map.
     // We solve these requirements wrapping the underlying modifiable
     // Map inside of a unmodifiable map and providing private access to
-    // the underlying (modifable) Map
+    // the underlying (modifiable) Map
     private static class BehaviorsMap extends AbstractMap<String, List<ClientBehavior>> {
         private Map<String, List<ClientBehavior>> unmodifiableMap;
         private Map<String, List<ClientBehavior>> modifiableMap;
@@ -3071,11 +3051,9 @@ public abstract class UIComponentBase extends UIComponent {
 
             Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
 
-            if (!applicationMap.containsKey("com.sun.faces.compnent.COMPONENT_DESCRIPTORS_MAP")) {
-                applicationMap.put("com.sun.faces.compnent.COMPONENT_DESCRIPTORS_MAP", new ConcurrentHashMap<>());
-            }
+            applicationMap.putIfAbsent(FACES_COMPONENT_DESCRIPTORS_MAP_NAME, new ConcurrentHashMap<>());
 
-            descriptors = (Map<Class<?>, Map<String, PropertyDescriptor>>) applicationMap.get("com.sun.faces.compnent.COMPONENT_DESCRIPTORS_MAP");
+            descriptors = (Map<Class<?>, Map<String, PropertyDescriptor>>) applicationMap.get(FACES_COMPONENT_DESCRIPTORS_MAP_NAME);
             propertyDescriptorMap = descriptors.get(clazz);
         }
 
@@ -3083,7 +3061,7 @@ public abstract class UIComponentBase extends UIComponent {
 
             // We did not find the property descriptor map so we are now going to load it.
 
-            PropertyDescriptor propertyDescriptors[] = getPropertyDescriptors();
+            PropertyDescriptor[] propertyDescriptors = getPropertyDescriptors();
             if (propertyDescriptors != null) {
                 propertyDescriptorMap = new HashMap<>(propertyDescriptors.length, 1.0f);
                 for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {

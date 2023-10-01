@@ -755,6 +755,7 @@ public class WebConfiguration {
         JakartaFacesProjectStage(ProjectStage.PROJECT_STAGE_PARAM_NAME, "Production"),
         AlternateLifecycleId(FacesServlet.LIFECYCLE_ID_ATTR, ""),
         ResourceExcludes(ResourceHandler.RESOURCE_EXCLUDES_PARAM_NAME, ResourceHandler.RESOURCE_EXCLUDES_DEFAULT_VALUE),
+        NumberOfClientWindows(ClientWindow.NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME, "10"),
         NumberOfViews("com.sun.faces.numberOfViewsInSession", "15"),
         NumberOfLogicalViews("com.sun.faces.numberOfLogicalViews", "15"),
         NumberOfActiveViewMaps("com.sun.faces.numberOfActiveViewMaps", "25"),
