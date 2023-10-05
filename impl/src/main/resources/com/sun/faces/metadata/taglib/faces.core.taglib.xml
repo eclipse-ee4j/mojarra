@@ -2676,7 +2676,7 @@ public class BackingBean implements PasswordHolder, Cloneable {
             evaluates to <code>false</code> the component has no
             effect.</p>
             ]]></description>
-            <name>rendered</name>
+            <name>if</name>
             <required>false</required>
             <type>java.lang.Boolean</type>
         </attribute>
