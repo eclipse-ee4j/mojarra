@@ -27,7 +27,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.ActionListener;
-import jakarta.faces.view.ActionSource2AttachedObjectHandler;
+import jakarta.faces.view.ActionSourceAttachedObjectHandler;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagAttributeException;
@@ -43,7 +43,7 @@ import jakarta.faces.view.facelets.TagConfig;
  * @see jakarta.faces.event.ActionListener
  * @see jakarta.faces.component.ActionSource
  */
-public final class ActionListenerHandler extends ActionListenerHandlerBase implements ActionSource2AttachedObjectHandler {
+public final class ActionListenerHandler extends ActionListenerHandlerBase implements ActionSourceAttachedObjectHandler {
 
     private final static class LazyActionListener implements ActionListener, Serializable {
 

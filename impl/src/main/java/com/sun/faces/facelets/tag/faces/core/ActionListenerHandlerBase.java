@@ -25,7 +25,7 @@ import jakarta.faces.application.Resource;
 import jakarta.faces.component.ActionSource;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.view.ActionSource2AttachedObjectHandler;
+import jakarta.faces.view.ActionSourceAttachedObjectHandler;
 import jakarta.faces.view.facelets.ComponentHandler;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
@@ -42,7 +42,7 @@ import jakarta.faces.view.facelets.TagException;
  * @see jakarta.faces.event.ActionListener
  * @see jakarta.faces.component.ActionSource
  */
-public abstract class ActionListenerHandlerBase extends TagHandlerImpl implements ActionSource2AttachedObjectHandler {
+public abstract class ActionListenerHandlerBase extends TagHandlerImpl implements ActionSourceAttachedObjectHandler {
 
     /**
      * @param config

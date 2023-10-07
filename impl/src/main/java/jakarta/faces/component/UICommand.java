@@ -56,7 +56,7 @@ import jakarta.faces.render.Renderer;
  * be changed by calling the <code>setRendererType()</code> method.
  * </p>
  */
-public class UICommand extends UIComponentBase implements ActionSource2 {
+public class UICommand extends UIComponentBase implements ActionSource {
 
     // ------------------------------------------------------ Manifest Constants
 
@@ -100,7 +100,7 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
         return COMPONENT_FAMILY;
     }
 
-    // ------------------------------------------------- ActionSource/ActionSource2 Properties
+    // ------------------------------------------------- ActionSource Properties
 
     /**
      * <p>
@@ -139,7 +139,7 @@ public class UICommand extends UIComponentBase implements ActionSource2 {
         getStateHelper().put(PropertyKeys.value, value);
     }
 
-    // ---------------------------------------------------- ActionSource / ActionSource2 Methods
+    // ---------------------------------------------------- ActionSource Methods
 
     @Override
     public MethodExpression getActionExpression() {

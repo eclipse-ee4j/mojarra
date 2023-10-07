@@ -23,7 +23,6 @@ import com.sun.faces.util.MessageUtils;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.ActionSource;
-import jakarta.faces.component.ActionSource2;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIForm;
@@ -41,8 +40,8 @@ import jakarta.faces.event.SystemEventListener;
 
 /**
  * <p>
- * ValidateFormComponentNesting performs component tree validation to assure {@link ActionSource} ,
- * {@link ActionSource2} and {@link EditableValueHolder} components are placed inside a form.
+ * ValidateFormComponentNesting performs component tree validation to assure {@link ActionSource}
+ * and {@link EditableValueHolder} components are placed inside a form.
  * ValidateFormComponentNesting is installed automatically if {@link ProjectStage#Development} is active.
  * </p>
  *
@@ -94,12 +93,12 @@ public class ValidateComponentNesting implements SystemEventListener {
                 addOmittedMessage(context.getFacesContext(), target.getClientId(context.getFacesContext()), MessageUtils.MISSING_METADATA_ERROR);
                 reportedOmittedMetadataOnce = true;
 
-            } else if (target instanceof EditableValueHolder || target instanceof ActionSource || target instanceof ActionSource2) {
+            } else if (target instanceof EditableValueHolder || target instanceof ActionSource) {
                 if (reportedOmittedFormOnce) {
                     // report first detected problem only, then stop tree walk
                     result = VisitResult.COMPLETE;
                 }
-                // if we find ActionSource, ActionSource2 or EditableValueHolder, that component
+                // if we find ActionSource or EditableValueHolder, that component
                 // must be outside of a form add warning message
                 addOmittedMessage(context.getFacesContext(), target.getClientId(context.getFacesContext()), MessageUtils.MISSING_FORM_ERROR);
                 reportedOmittedFormOnce = true;
