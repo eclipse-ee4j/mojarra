@@ -385,7 +385,7 @@ public @interface FacesConfig {
         WEBAPP_RESOURCES_DIRECTORY(ResourceHandler.WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME, Path.class, Paths.get(ResourceHandler.WEBAPP_RESOURCES_DIRECTORY_DEFAULT_VALUE)),
 
         /**
-         * Returns {@value PushContext#WEBSOCKET_ENDPOINT_PORT_PARAM_NAME} as {@link Integer} with default of {@code 0}.
+         * Returns {@value PushContext#WEBSOCKET_ENDPOINT_PORT_PARAM_NAME} as {@link Integer} with default of {@code 0} (default 0 means the code will take the port from the request).
          */
         WEBSOCKET_ENDPOINT_PORT(PushContext.WEBSOCKET_ENDPOINT_PORT_PARAM_NAME, Integer.class, 0),
 
@@ -762,7 +762,7 @@ public @interface FacesConfig {
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@value PushContext#WEBSOCKET_ENDPOINT_PORT_PARAM_NAME} as {@link Integer} with default of {@code 0}.
+     * Returns {@value PushContext#WEBSOCKET_ENDPOINT_PORT_PARAM_NAME} as {@link Integer} with default of {@code 0} (default 0 means the code will take the port from the request).
      * </p>
      */
     int websocketEndpointPort() default 0;
