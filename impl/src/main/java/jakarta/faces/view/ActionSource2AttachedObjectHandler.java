@@ -24,7 +24,9 @@ package jakarta.faces.view;
  * </p>
  *
  * @since 2.0
+ * @deprecated Use {@link ActionSourceAttachedObjectHandler} instead.
  */
-public interface ActionSource2AttachedObjectHandler extends AttachedObjectHandler {
+@Deprecated(since = "4.1", forRemoval = true)
+public interface ActionSource2AttachedObjectHandler extends ActionSourceAttachedObjectHandler {
 
 }

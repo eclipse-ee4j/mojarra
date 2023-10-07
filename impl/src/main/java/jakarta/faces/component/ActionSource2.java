@@ -26,7 +26,9 @@ import jakarta.el.MethodExpression;
  * </p>
  *
  * @since 1.2
+ * @deprecated Use {@link ActionSource} instead.
  */
+@Deprecated(since = "4.1", forRemoval = true)
 public interface ActionSource2 extends ActionSource {
 
     // -------------------------------------------------------------- Properties
