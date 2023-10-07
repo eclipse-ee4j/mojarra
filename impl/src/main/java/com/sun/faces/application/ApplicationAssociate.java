@@ -25,7 +25,6 @@ import static com.sun.faces.util.MessageUtils.APPLICATION_ASSOCIATE_EXISTS_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.Util.getFacesConfigXmlVersion;
 import static com.sun.faces.util.Util.getFacesServletRegistration;
-import static com.sun.faces.util.Util.split;
 import static jakarta.faces.FactoryFinder.FACELET_CACHE_FACTORY;
 import static jakarta.faces.FactoryFinder.FLOW_HANDLER_FACTORY;
 import static jakarta.faces.application.ProjectStage.Development;
@@ -319,8 +318,7 @@ public class ApplicationAssociate {
 
         FacesContext ctx = FacesContext.getCurrentInstance();
 
-        Map<String, Object> appMap = ctx.getExternalContext().getApplicationMap();
-        compiler = createCompiler(appMap, ctx);
+        compiler = createCompiler(ctx);
         faceletFactory = createFaceletFactory(ctx, compiler);
     }
 
@@ -625,10 +623,10 @@ public class ApplicationAssociate {
         return toReturn;
     }
 
-    protected Compiler createCompiler(Map<String, Object> appMap, FacesContext context) {
+    protected Compiler createCompiler(FacesContext context) {
         Compiler newCompiler = new SAXCompiler();
 
-        loadDecorators(appMap, newCompiler);
+        loadDecorators(newCompiler);
 
         // Skip params?
         newCompiler.setTrimmingComments(ContextParam.FACELETS_SKIP_COMMENTS.isSet(context));
@@ -638,22 +636,20 @@ public class ApplicationAssociate {
         return newCompiler;
     }
 
-    protected void loadDecorators(Map<String, Object> appMap, Compiler newCompiler) {
-        String decoratorsParamValue = ContextParam.FACELETS_DECORATORS.getValue(FacesContext.getCurrentInstance());
+    protected void loadDecorators(Compiler newCompiler) {
+        String[] decorators = ContextParam.FACELETS_DECORATORS.getValue(FacesContext.getCurrentInstance());
 
-        if (decoratorsParamValue != null) {
-            for (String decorator : split(appMap, decoratorsParamValue.trim(), ";")) {
-                try {
-                    newCompiler
-                            .addTagDecorator((TagDecorator) forName(decorator).getDeclaredConstructor().newInstance());
+        for (String decorator : decorators) {
+            try {
+                newCompiler
+                        .addTagDecorator((TagDecorator) forName(decorator).getDeclaredConstructor().newInstance());
 
-                    if (LOGGER.isLoggable(FINE)) {
-                        LOGGER.log(FINE, "Successfully Loaded Decorator: {0}", decorator);
-                    }
-                } catch (ReflectiveOperationException | IllegalArgumentException | SecurityException e) {
-                    if (LOGGER.isLoggable(SEVERE)) {
-                        LOGGER.log(SEVERE, "Error Loading Decorator: " + decorator, e);
-                    }
+                if (LOGGER.isLoggable(FINE)) {
+                    LOGGER.log(FINE, "Successfully Loaded Decorator: {0}", decorator);
+                }
+            } catch (ReflectiveOperationException | IllegalArgumentException | SecurityException e) {
+                if (LOGGER.isLoggable(SEVERE)) {
+                    LOGGER.log(SEVERE, "Error Loading Decorator: " + decorator, e);
                 }
             }
         }

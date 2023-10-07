@@ -127,7 +127,7 @@ public final class CompositionHandler extends TagHandlerImpl implements Template
                 if (path.trim().length() == 0) {
                     throw new TagAttributeException(tag, template, "Invalid path : " + path);
                 }
-                if (path.startsWith(ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(facesContext).toString())) {
+                if (path.startsWith(ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(facesContext))) {
                     throw new TagAttributeException(tag, template, "Invalid path, contract resources cannot be accessed this way : " + path);
                 }
                 ctx.includeFacelet(parent, path);

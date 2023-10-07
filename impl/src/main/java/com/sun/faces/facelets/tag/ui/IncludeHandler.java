@@ -76,7 +76,7 @@ public final class IncludeHandler extends TagHandlerImpl {
         ctx.setVariableMapper(new VariableMapperWrapper(orig));
         try {
             nextHandler.apply(ctx, null);
-            if (path.startsWith(ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(ctx.getFacesContext()).toString())) {
+            if (path.startsWith(ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(ctx.getFacesContext()))) {
                 throw new TagAttributeException(tag, src, "Invalid src, contract resources cannot be accessed this way : " + path);
             }
             ctx.includeFacelet(parent, path);

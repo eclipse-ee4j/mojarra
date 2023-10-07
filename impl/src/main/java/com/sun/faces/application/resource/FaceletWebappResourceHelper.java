@@ -18,6 +18,7 @@ package com.sun.faces.application.resource;
 
 import static com.sun.faces.RIConstants.FLOW_IN_JAR_PREFIX;
 import static com.sun.faces.config.WebConfiguration.META_INF_CONTRACTS_DIR;
+import static com.sun.faces.util.Util.ensureLeadingSlash;
 import static jakarta.faces.application.ResourceVisitOption.TOP_LEVEL_VIEWS_ONLY;
 import static java.util.Spliterator.DISTINCT;
 import static java.util.Spliterators.spliteratorUnknownSize;
@@ -51,7 +52,7 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
 
     public FaceletWebappResourceHelper() {
         FacesContext context = FacesContext.getCurrentInstance();
-        webAppContractsDirectory = ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(context).toString();
+        webAppContractsDirectory = ensureLeadingSlash(ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(context));
         configuredExtensions = new String[] { ContextParam.FACELETS_SUFFIX.getValue(context) };
     }
 

@@ -94,7 +94,8 @@ public class MultiViewHandler extends ViewHandler {
     // ------------------------------------------------------------ Constructors
 
     public MultiViewHandler() {
-        configuredExtensions = asList(ContextParam.FACELETS_SUFFIX.getValue(FacesContext.getCurrentInstance()));
+        String faceletsSuffix = ContextParam.FACELETS_SUFFIX.getValue(FacesContext.getCurrentInstance());
+        configuredExtensions = asList(faceletsSuffix);
         vdlFactory = (ViewDeclarationLanguageFactory) FactoryFinder.getFactory(VIEW_DECLARATION_LANGUAGE_FACTORY);
         protectedViews = new CopyOnWriteArraySet<>();
     }

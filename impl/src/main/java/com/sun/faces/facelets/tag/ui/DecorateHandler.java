@@ -108,7 +108,7 @@ public final class DecorateHandler extends TagHandlerImpl implements TemplateCli
             if (path.trim().length() == 0) {
                 throw new TagAttributeException(tag, template, "Invalid path : " + path);
             }
-            if (path.startsWith(ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(ctxObj.getFacesContext()).toString())) {
+            if (path.startsWith(ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(ctxObj.getFacesContext()))) {
                 throw new TagAttributeException(tag, template, "Invalid path, contract resources cannot be accessed this way : " + path);
             }
             ctx.includeFacelet(parent, path);

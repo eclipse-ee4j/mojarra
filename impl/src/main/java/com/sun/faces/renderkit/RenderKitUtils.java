@@ -1219,7 +1219,7 @@ public class RenderKitUtils {
         if (resName != null) {
             String libName = (String) component.getAttributes().get("library");
 
-            if (libName == null && resName.startsWith(ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(context).toString())) {
+            if (libName == null && resName.startsWith(ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(context))) {
                 if (context.isProjectStage(ProjectStage.Development)) {
                     String msg = "Illegal path, direct contract references are not allowed: " + resName;
                     context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, msg));
@@ -1244,7 +1244,7 @@ public class RenderKitUtils {
             if (value == null || value.length() == 0) {
                 return "";
             }
-            if (value.startsWith(ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(context).toString())) {
+            if (value.startsWith(ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(context))) {
                 if (context.isProjectStage(ProjectStage.Development)) {
                     String msg = "Illegal path, direct contract references are not allowed: " + value;
                     context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, msg));

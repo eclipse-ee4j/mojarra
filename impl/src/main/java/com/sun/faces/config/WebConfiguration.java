@@ -17,6 +17,7 @@
 
 package com.sun.faces.config;
 
+import static com.sun.faces.util.Util.ensureLeadingSlash;
 import static com.sun.faces.util.Util.split;
 import static java.util.Collections.emptyMap;
 import static java.util.logging.Level.FINE;
@@ -367,7 +368,7 @@ public class WebConfiguration {
         Set<String> candidates;
 
         // Scan for "contractMappings" in the web app root
-        String contractsDirName = ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(context).toString();
+        String contractsDirName = ensureLeadingSlash(ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(context));
         assert null != contractsDirName;
         candidates = extContex.getResourcePaths(contractsDirName);
         if (null != candidates) {

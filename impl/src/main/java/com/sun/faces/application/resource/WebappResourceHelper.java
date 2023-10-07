@@ -64,8 +64,8 @@ public class WebappResourceHelper extends ResourceHelper {
         WebConfiguration webconfig = WebConfiguration.getInstance();
         FacesContext context = FacesContext.getCurrentInstance();
         cacheTimestamp = webconfig.isOptionEnabled(CacheResourceModificationTimestamp);
-        BASE_RESOURCE_PATH = ensureLeadingSlash(ContextParam.WEBAPP_RESOURCES_DIRECTORY.getValue(context).toString());
-        BASE_CONTRACTS_PATH = ensureLeadingSlash(ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(context).toString());
+        BASE_RESOURCE_PATH = ensureLeadingSlash(ContextParam.WEBAPP_RESOURCES_DIRECTORY.getValue(context));
+        BASE_CONTRACTS_PATH = ensureLeadingSlash(ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(context));
 
     }
 
