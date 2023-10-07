@@ -381,13 +381,14 @@ public class UIViewAction extends UIComponentBase implements ActionSource {
 
     /**
      * <p class="changed_added_2_2">
-     * Return <code>true</code> if this component should take the actions specified in the {@link #decode} method.
+     * <span class="changed_modified_4_1">Returns the <code>if</code> property of this component. If <code>true</code>
+     * then</span> this component should take the actions specified in the {@link #decode} method.
      * </p>
      *
-     * @return <code>true</code> if it should be rendered, <code>false</code> otherwise.
+     * @return <code>true</code> if it should <span class="changed_modified_4_1"> take the actions</span>,
+     * <code>false</code> otherwise.
      * @since 2.2
      */
-
     @Override
     public boolean isRendered() {
         return (Boolean) getStateHelper().eval(PropertyKeys.renderedAttr, true);
