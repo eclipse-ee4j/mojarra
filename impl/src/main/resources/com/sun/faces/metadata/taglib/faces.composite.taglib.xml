@@ -186,10 +186,10 @@ apply.</p>
 <p><span class="changed_modified_2_0_rev_a">Declares</span> that the
 composite component whose contract is declared by the
 <code>&lt;cc:interface&gt;</code> in which this element is nested
-exposes an implementation of <code>ActionSource2</code> suitable for use
+exposes an implementation of <code>ActionSource</code> suitable for use
 as the target of <em>attached objects</em> in <em>the using page</em>.
 Any attached objects suitable for implementations of
-<code>ActionSource2</code> may be attached to the composite component.
+<code>ActionSource</code> may be attached to the composite component.
 Consider this excerpt from <em>the using page</em>:
             </p>
 
@@ -226,7 +226,7 @@ example.</p>
 </div>]]>
         </description>
         <tag-name>actionSource</tag-name>
-        <handler-class>com.sun.faces.facelets.tag.composite.ActionSource2AttachedObjectTargetHandler</handler-class>
+        <handler-class>com.sun.faces.facelets.tag.composite.ActionSourceAttachedObjectTargetHandler</handler-class>
         <attribute>
             <description>
 

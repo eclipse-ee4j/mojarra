@@ -14,19 +14,21 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.faces.facelets.tag.composite;
+package jakarta.faces.view;
 
-import jakarta.faces.view.facelets.TagConfig;
-
-public class ActionSource2AttachedObjectTargetHandler extends AttachedObjectTargetHandler {
-
-    public ActionSource2AttachedObjectTargetHandler(TagConfig config) {
-        super(config);
-    }
-
-    @Override
-    AttachedObjectTargetImpl newAttachedObjectTargetImpl() {
-        return new ActionSource2AttachedObjectTargetImpl();
-    }
+/**
+ * <p class="changed_added_4_1">
+ * A marker interface for VDL tags that represent <code>&lt;composite:actionSource/&gt;</code> for use by the
+ * <em>composite component page author</em>.
+ * </p>
+ * 
+ * <p>
+ * Historical note: this class was previously named {@code ActionSource2AttachedObjectTarget} but since deprecation of {@code ActionSource2}
+ * this class has been renamed to drop the {@code 2}.
+ * </p>
+ *
+ * @since 4.1
+ */
+public interface ActionSourceAttachedObjectTarget extends AttachedObjectTarget {
 
 }

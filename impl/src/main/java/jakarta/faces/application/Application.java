@@ -80,7 +80,7 @@ public abstract class Application {
      * Note that the specification for the default <code>ActionListener</code> contiues to call for the use of a
      * <strong>deprecated</strong> property (<code>action</code>) and class (<code>MethodBinding</code>). Unfortunately,
      * this is necessary because the default <code>ActionListener</code> must continue to work with components that do not
-     * implement {@link jakarta.faces.component.ActionSource2}, and only implement
+     * implement {@link jakarta.faces.component.ActionSource}, and only implement
      * {@link jakarta.faces.component.ActionSource}.
      * </p>
      *

@@ -20,7 +20,6 @@ package com.sun.faces.facelets.tag.faces;
 import jakarta.el.ExpressionFactory;
 import jakarta.el.MethodExpression;
 import jakarta.faces.component.ActionSource;
-import jakarta.faces.component.ActionSource2;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.MethodExpressionActionListener;
 import jakarta.faces.view.facelets.FaceletContext;
@@ -51,7 +50,7 @@ final class ActionSourceRule extends MetaRule {
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
-            ((ActionSource2) instance).setActionExpression(attr.getMethodExpression(ctx, Object.class, ActionSourceRule.ACTION_SIG));
+            ((ActionSource) instance).setActionExpression(attr.getMethodExpression(ctx, Object.class, ActionSourceRule.ACTION_SIG));
         }
 
     }
@@ -74,7 +73,7 @@ final class ActionSourceRule extends MetaRule {
             MethodExpression methodExpressionZeroArg = expressionFactory.createMethodExpression(ctx, methodExpressionOneArg.getExpressionString(), Void.class,
                     ActionSourceRule.ACTION_LISTENER_ZEROARG_SIG);
 
-            ((ActionSource2) instance).addActionListener(new MethodExpressionActionListener(methodExpressionOneArg, methodExpressionZeroArg));
+            ((ActionSource) instance).addActionListener(new MethodExpressionActionListener(methodExpressionOneArg, methodExpressionZeroArg));
 
         }
 
