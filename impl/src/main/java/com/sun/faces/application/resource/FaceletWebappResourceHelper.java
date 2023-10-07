@@ -51,7 +51,7 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
 
     public FaceletWebappResourceHelper() {
         FacesContext context = FacesContext.getCurrentInstance();
-        webAppContractsDirectory = ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(context);
+        webAppContractsDirectory = ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(context).toString();
         configuredExtensions = new String[] { ContextParam.FACELETS_SUFFIX.getValue(context) };
     }
 

@@ -367,7 +367,7 @@ public class WebConfiguration {
         Set<String> candidates;
 
         // Scan for "contractMappings" in the web app root
-        String contractsDirName = ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(context);
+        String contractsDirName = ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(context).toString();
         assert null != contractsDirName;
         candidates = extContex.getResourcePaths(contractsDirName);
         if (null != candidates) {
