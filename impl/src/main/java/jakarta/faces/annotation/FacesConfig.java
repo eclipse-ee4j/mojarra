@@ -338,7 +338,8 @@ public @interface FacesConfig {
         PARTIAL_STATE_SAVING(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, Boolean.class, true),
 
         /**
-         * Returns {@value ProjectStage#PROJECT_STAGE_PARAM_NAME} as {@link ProjectStage} with default of {@link ProjectStage#Production}.
+         * Returns {@value ProjectStage#PROJECT_STAGE_PARAM_NAME} as {@link ProjectStage} with default of {@value ProjectStage#Production}.
+         * Note that this value can be overridden via JNDI entry {@value ProjectStage#PROJECT_STAGE_JNDI_NAME}.
          */
         PROJECT_STAGE(ProjectStage.PROJECT_STAGE_PARAM_NAME, ProjectStage.class, ProjectStage.Production),
 
@@ -364,7 +365,7 @@ public @interface FacesConfig {
         STATE_SAVING_METHOD(StateManager.STATE_SAVING_METHOD_PARAM_NAME, String.class, StateManager.STATE_SAVING_METHOD_CLIENT),
 
         /**
-         * Returns {@value UIInput#VALIDATE_EMPTY_FIELDS_PARAM_NAME} as {@link String} with default of {@code auto}.
+         * Returns {@value UIInput#VALIDATE_EMPTY_FIELDS_PARAM_NAME} as {@link String} with default of {@value UIInput#VALIDATE_EMPTY_FIELDS_DEFAULT_VALUE}.
          */
         VALIDATE_EMPTY_FIELDS(UIInput.VALIDATE_EMPTY_FIELDS_PARAM_NAME, String.class, UIInput.VALIDATE_EMPTY_FIELDS_DEFAULT_VALUE),
 
@@ -572,7 +573,7 @@ public @interface FacesConfig {
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@value ClientWindow#CLIENT_WINDOW_MODE_PARAM_NAME} as {@link String} with default of {@code none}.
+     * Returns {@value ClientWindow#CLIENT_WINDOW_MODE_PARAM_NAME} as {@link String} with default of {@value ClientWindow#CLIENT_WINDOW_MODE_DEFAULT_VALUE}.
      * </p>
      */
     String clientWindowMode() default ClientWindow.CLIENT_WINDOW_MODE_DEFAULT_VALUE;
@@ -621,7 +622,7 @@ public @interface FacesConfig {
 
     /** 
      * <p class="changed_added_5_0">
-     * Returns {@value ViewHandler#FACELETS_BUFFER_SIZE_PARAM_NAME} as {@link Integer} with default of {@code 1024}.
+     * Returns {@value ViewHandler#FACELETS_BUFFER_SIZE_PARAM_NAME} as {@link Integer} with default of {@value ViewHandler#FACELETS_BUFFER_SIZE_DEFAULT_VALUE}.
      * </p>
      */
     int faceletsBufferSize() default ViewHandler.FACELETS_BUFFER_SIZE_DEFAULT_VALUE;
@@ -684,7 +685,7 @@ public @interface FacesConfig {
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@value ClientWindow#NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME} as {@link Integer} with default of {@code 10}.
+     * Returns {@value ClientWindow#NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME} as {@link Integer} with default of {@value ClientWindow#NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE}.
      * </p>
      */
     int numberOfClientWindows() default ClientWindow.NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE;
@@ -698,7 +699,7 @@ public @interface FacesConfig {
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@value ProjectStage#PROJECT_STAGE_PARAM_NAME} as {@link ProjectStage} with default of {@link ProjectStage#Production}.
+     * Returns {@value ProjectStage#PROJECT_STAGE_PARAM_NAME} as {@link ProjectStage} with default of {@value ProjectStage#Production}.
      * </p>
      */
     ProjectStage projectStage() default ProjectStage.Production;
@@ -733,7 +734,7 @@ public @interface FacesConfig {
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@value UIInput#VALIDATE_EMPTY_FIELDS_PARAM_NAME} as {@link String} with default of {@code auto}.
+     * Returns {@value UIInput#VALIDATE_EMPTY_FIELDS_PARAM_NAME} as {@link String} with default of {@value UIInput#VALIDATE_EMPTY_FIELDS_DEFAULT_VALUE}.
      * </p>
      */
     String validateEmptyFields() default UIInput.VALIDATE_EMPTY_FIELDS_DEFAULT_VALUE;
