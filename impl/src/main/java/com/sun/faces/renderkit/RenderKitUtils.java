@@ -53,7 +53,6 @@ import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.Resource;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.component.ActionSource;
-import jakarta.faces.component.ActionSource2;
 import jakarta.faces.component.Doctype;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIComponentBase;
@@ -1545,7 +1544,7 @@ public class RenderKitUtils {
 
         String script = behavior.getScript(bContext);
 
-        boolean preventDefault = (needsSubmit || isSubmitting(behavior)) && (component instanceof ActionSource || component instanceof ActionSource2);
+        boolean preventDefault = (needsSubmit || isSubmitting(behavior)) && (component instanceof ActionSource);
 
         if (script == null) {
             if (needsSubmit) {
