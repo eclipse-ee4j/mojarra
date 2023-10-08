@@ -215,25 +215,25 @@ public class UIRepeat extends UINamingContainer {
             
             if (val != null) {
                 if (getBegin() != null) {
-                    throw new FacesException("<ui:repeat>: when 'value' attribute is set, you need 'offset' attribute instead of 'begin' attribute");
+                    throw new FacesException("UIRepeat: when 'value' attribute is set, you need 'offset' attribute instead of 'begin' attribute");
                 }
                 if (getEnd() != null) {
-                    throw new FacesException("<ui:repeat>: when 'value' attribute is set, you need 'size' attribute instead of 'end' attribute");
+                    throw new FacesException("UIRepeat: when 'value' attribute is set, you need 'size' attribute instead of 'end' attribute");
                 }
                 if (getOffset() != null && getOffset() < 0) {
-                    throw new FacesException("<ui:repeat>: 'offset' attribute may not be less than 0");
+                    throw new FacesException("UIRepeat: 'offset' attribute may not be less than 0");
                 }
                 if (getStep() != null && getStep() < 1) {
-                    throw new FacesException("<ui:repeat>: 'step' attribute may not be less than 1");
+                    throw new FacesException("UIRepeat: 'step' attribute may not be less than 1");
                 }
             }
 
             if (val == null) {
                 if (getOffset() != null) {
-                    throw new FacesException("<ui:repeat>: when 'value' attribute is not set, you need 'begin' attribute instead of 'offset' attribute");
+                    throw new FacesException("UIRepeat: when 'value' attribute is not set, you need 'begin' attribute instead of 'offset' attribute");
                 }
                 if (getSize() != null) {
-                    throw new FacesException("<ui:repeat>: when 'value' attribute is not set, you need 'end' attribute instead of 'size' attribute");
+                    throw new FacesException("UIRepeat: when 'value' attribute is not set, you need 'end' attribute instead of 'size' attribute");
                 }
                 
                 if (originalBegin == null) {
@@ -756,13 +756,13 @@ public class UIRepeat extends UINamingContainer {
         }
         // PENDING i18n
         if (begin > rowCount) {
-            throw new FacesException("<ui:repeat>: 'offset' attribute may not be greater than the number of available rows");
+            throw new FacesException("UIRepeat: 'offset' attribute may not be greater than the number of available rows");
         }
         if (begin > end) {
-            throw new FacesException("<ui:repeat>: 'size' attribute may not be less than 0");
+            throw new FacesException("UIRepeat: 'size' attribute may not be less than 0");
         }
         if (end > rowCount) {
-            throw new FacesException("<ui:repeat>: " + (getOffset() != null ? "'offset' plus " : "") + "'size' attribute may not be greater than the number of available rows");
+            throw new FacesException("UIRepeat: " + (getOffset() != null ? "'offset' plus " : "") + "'size' attribute may not be greater than the number of available rows");
         }
     }
 
