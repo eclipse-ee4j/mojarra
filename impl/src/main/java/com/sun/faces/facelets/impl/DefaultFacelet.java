@@ -230,14 +230,14 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     }
 
     /**
-     * Delegates resolution to DefaultFaceletFactory reference. Also, caches URLs for relative paths.
+     * Delegates resolution to DefaultFaceletFactory reference. Also, caches URLs for absolute paths.
      *
-     * @param path a relative url path
+     * @param relativePath a relative url path
      * @return URL pointing to destination
      * @throws IOException if there is a problem creating the URL for the path specified
      */
-    private URL getRelativePath(String path) throws IOException {
-        return factory.resolveURL(src, path);
+    private URL resolveURL(String relativePath) throws IOException {
+        return factory.resolveURL(src, relativePath);
     }
 
     /**
@@ -268,21 +268,21 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
 
     /**
      * Used for delegation by the DefaultFaceletContext. First pulls the URL from {@link #getRelativePath(String)
-     * getRelativePath(String)}, then calls
+     * getRelativePath(String)}, then validates that the path does not represent a contracts resource, then calls
      * {@link #include(DefaultFaceletContext, jakarta.faces.component.UIComponent, String)}.
      *
      * @see FaceletContext#includeFacelet(UIComponent, String)
      * @param ctx FaceletContext to pass to the included Facelet
      * @param parent UIComponent to apply changes to
-     * @param path relative path to the desired Facelet from the FaceletContext
+     * @param relativePath relative path to the desired Facelet from the FaceletContext
      * @throws IOException
      * @throws FacesException
      * @throws FaceletException
      * @throws ELException
      */
-    public void include(DefaultFaceletContext ctx, UIComponent parent, String path) throws IOException {
+    public void include(DefaultFaceletContext ctx, UIComponent parent, String relativePath) throws IOException {
         URL url;
-        if (path.equals(JAKARTA_FACES_ERROR_XHTML)) {
+        if (relativePath.equals(JAKARTA_FACES_ERROR_XHTML)) {
             if (isDevelopment(ctx)) {
                 // try using this class' ClassLoader
                 url = getErrorFacelet(DefaultFacelet.class.getClassLoader());
@@ -293,7 +293,10 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
                 return;
             }
         } else {
-            url = getRelativePath(path);
+            url = resolveURL(relativePath);
+            if (factory.isContractsResource(url)) {
+                throw new IOException("Contract resources cannot be accessed this way");
+            }
         }
         this.include(ctx, parent, url);
     }

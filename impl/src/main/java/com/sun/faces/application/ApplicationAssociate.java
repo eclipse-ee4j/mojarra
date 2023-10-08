@@ -201,12 +201,15 @@ public class ApplicationAssociate {
     }
 
     public static ApplicationAssociate getInstance() {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        if (facesContext == null) {
-           return null;
-        }
+       return getInstance(FacesContext.getCurrentInstance());
+    }
 
-        return ApplicationAssociate.getInstance(facesContext.getExternalContext());
+    public static ApplicationAssociate getInstance(FacesContext facesContext) {
+        if (facesContext == null) {
+            return null;
+         }
+
+         return ApplicationAssociate.getInstance(facesContext.getExternalContext());
     }
 
     public static ApplicationAssociate getInstance(ExternalContext externalContext) {

@@ -37,6 +37,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.faces.RIConstants;
+import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.el.ELUtils;
 import com.sun.faces.facelets.util.DevTools;
@@ -1219,9 +1220,8 @@ public class RenderKitUtils {
         ResourceHandler handler = context.getApplication().getResourceHandler();
         if (resName != null) {
             String libName = (String) component.getAttributes().get("library");
-            WebConfiguration webConfig = WebConfiguration.getInstance();
-
-            if (libName == null && resName.startsWith(webConfig.getOptionValue(WebConfiguration.WebContextInitParameter.WebAppContractsDirectory))) {
+            
+            if (libName == null && ApplicationAssociate.getInstance(context).getResourceManager().isContractsResource(resName)) {
                 if (context.isProjectStage(ProjectStage.Development)) {
                     String msg = "Illegal path, direct contract references are not allowed: " + resName;
                     context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, msg));
