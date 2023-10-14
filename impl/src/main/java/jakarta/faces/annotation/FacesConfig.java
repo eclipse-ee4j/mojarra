@@ -35,7 +35,6 @@ import java.util.regex.Pattern;
 import com.sun.faces.cdi.CdiUtils;
 import com.sun.faces.util.FacesLogger;
 
-import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.enterprise.util.Nonbinding;
 import jakarta.faces.application.Application;
@@ -695,7 +694,7 @@ public @interface FacesConfig {
          */
         @SuppressWarnings("unchecked")
         public <T> T getValue(FacesContext context) {
-            return (T) VALUES.computeIfAbsent(this, param -> getContextParamValue(context).orElseGet(() -> getAnnotatedValue().orElseGet(() -> getDefaultValue(context))));
+            return (T) VALUES.computeIfAbsent(this, param -> getContextParamValue(context).orElseGet(() -> getAnnotatedValue(context).orElseGet(() -> getDefaultValue(context))));
         }
 
         /**
@@ -775,9 +774,9 @@ public @interface FacesConfig {
         }
 
         @SuppressWarnings("unchecked")
-        private <T> Optional<T> getAnnotatedValue() {
-            Optional<FacesConfig> annotatedConfig = ANNOTATED_CONFIG.updateAndGet(config -> config != null ? config : CDI.current()
-                    .select(FacesConfig.Literal.INSTANCE).stream()
+        private <T> Optional<T> getAnnotatedValue(FacesContext context) {
+            Optional<FacesConfig> annotatedConfig = ANNOTATED_CONFIG.updateAndGet(config -> config != null ? config : CdiUtils
+                    .getBeanReferencesByQualifier(context, FacesConfig.Literal.INSTANCE).stream()
                     .sorted(CdiUtils.BEAN_PRIORITY_COMPARATOR)
                     .peek(bean -> LOGGER.info("@FacesConfig found on " + bean.getClass() + " -- if any, others are ignored"))
                     .map(bean -> bean.getClass().getAnnotation(FacesConfig.class))

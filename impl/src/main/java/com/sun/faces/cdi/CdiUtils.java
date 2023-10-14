@@ -71,8 +71,10 @@ public final class CdiUtils {
      * Same priorities ordered by FQN (for now?)
      */
     public static final Comparator<Object> BEAN_PRIORITY_COMPARATOR = (left, right) -> {
-        Priority leftPriority = left.getClass().getAnnotation(Priority.class);
-        Priority rightPriority = right.getClass().getAnnotation(Priority.class);
+        Class<?> leftClass = left.getClass();
+        Class<?> rightClass = right.getClass();
+        Priority leftPriority = leftClass.getAnnotation(Priority.class);
+        Priority rightPriority = rightClass.getAnnotation(Priority.class);
         
         int compare = leftPriority != null && rightPriority != null ? Integer.compare(leftPriority.value(), rightPriority.value()) 
                 : leftPriority != null ? -1
@@ -80,7 +82,7 @@ public final class CdiUtils {
                 : 0;
         
         if (compare == 0) {
-            return left.getClass().getName().compareTo(right.getClass().getName());
+            return leftClass.getName().compareTo(rightClass.getName());
         }
 
         return compare;
@@ -277,6 +279,19 @@ public final class CdiUtils {
         }
 
         return beanReference;
+    }
+
+    public static Set<?> getBeanReferencesByQualifier(FacesContext context, Annotation... qualifiers) {
+        if (qualifiers.length == 0) {
+            throw new IllegalArgumentException();
+        }
+        
+        BeanManager beanManager = Util.getCdiBeanManager(context);
+        return beanManager.getBeans(Object.class, qualifiers).stream().map(bean -> getBeanReference(beanManager, bean)).collect(toSet());
+    }
+
+    private static Object getBeanReference(BeanManager beanManager, Bean<?> bean) {
+        return beanManager.getReference(bean, bean.getBeanClass(), beanManager.createCreationalContext(bean));
     }
 
     private static String getBeanName(Bean<?> bean) {
