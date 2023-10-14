@@ -22,6 +22,7 @@ import static java.util.stream.Collectors.toSet;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
+import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ContextNotActiveException;
 import jakarta.enterprise.context.spi.Context;
 import jakarta.enterprise.context.spi.CreationalContext;
@@ -60,6 +62,31 @@ import jakarta.faces.validator.Validator;
  */
 public final class CdiUtils {
 
+    /**
+     * This does unfortunately not exist in cdi spec: https://stackoverflow.com/a/63653513
+     * 
+     * This basically sorts descending by priority with fallback to FQN.
+     * Highest priority first.
+     * Priotityless bean last.
+     * Same priorities ordered by FQN (for now?)
+     */
+    public static final Comparator<Object> BEAN_PRIORITY_COMPARATOR = (left, right) -> {
+        Priority leftPriority = left.getClass().getAnnotation(Priority.class);
+        Priority rightPriority = right.getClass().getAnnotation(Priority.class);
+        
+        int compare = leftPriority != null && rightPriority != null ? Integer.compare(leftPriority.value(), rightPriority.value()) 
+                : leftPriority != null ? -1
+                : rightPriority != null ? 1
+                : 0;
+        
+        if (compare == 0) {
+            return left.getClass().getName().compareTo(right.getClass().getName());
+        }
+
+        return compare;
+    };
+    
+    
     /**
      * Stores the logger.
      */

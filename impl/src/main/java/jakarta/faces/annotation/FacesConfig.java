@@ -23,14 +23,19 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import com.sun.faces.cdi.CdiUtils;
+import com.sun.faces.util.FacesLogger;
+
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.enterprise.util.Nonbinding;
 import jakarta.faces.application.Application;
@@ -62,6 +67,218 @@ import jakarta.inject.Qualifier;
 @Retention(RUNTIME)
 public @interface FacesConfig {
 
+    /**
+     * <p class="changed_added_5_0">
+     * Returns {@value UIInput#ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE} as {@link Boolean} with default of {@code false}.
+     * </p>
+     */
+    @Nonbinding boolean alwaysPerformValidationWhenRequiredIsTrue() default false;
+
+    /**
+     * <p class="changed_added_5_0">
+     * Returns {@value FacesServlet#AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME} as {@link Boolean} with default of {@code false}.
+     * </p>
+     */
+    @Nonbinding boolean automaticExtensionlessMapping() default false;
+
+    /**
+     * <p class="changed_added_5_0">
+     * Returns {@value ClientWindow#CLIENT_WINDOW_MODE_PARAM_NAME} as {@link String} with default of {@value ClientWindow#CLIENT_WINDOW_MODE_DEFAULT_VALUE}.
+     * </p>
+     */
+    @Nonbinding String clientWindowMode() default ClientWindow.CLIENT_WINDOW_MODE_DEFAULT_VALUE;
+
+    /**
+     * <p class="changed_added_5_0">
+     * Returns {@value FacesServlet#CONFIG_FILES_ATTR} as {@link String} array with default of empty string array.
+     * </p>
+     */
+    @Nonbinding String[] configFiles() default {};
+
+    /**
+     * <p class="changed_added_5_0">
+     * Returns {@value Converter#DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME} as {@link Boolean} with default of {@code false}.
+     * </p>
+     */
+    @Nonbinding boolean datetimeConverterDefaultTimezoneIsSystemTimezone() default false;
+
+    /**
+     * <p class="changed_added_5_0">
+     * Returns {@value BeanValidator#DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME} as {@link Boolean} with default of {@code false}.
+     * </p>
+     */
+    @Nonbinding boolean disableDefaultBeanValidator() default false;
+
+    /**
+     * <p class="changed_added_5_0">
+     * Returns {@value FacesServlet#DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME} as {@link Boolean} with default of {@code false}.
+     * </p>
+     */
+    @Nonbinding boolean disableFacesservletToXhtml() default false;
+
+    /** 
+     * <p class="changed_added_5_0">
+     * Returns {@value BeanValidator#ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME} as {@link Boolean} with default of {@code false}.
+     * </p>
+     */
+    @Nonbinding boolean enableValidateWholeBean() default false;
+
+    /** 
+     * <p class="changed_added_5_0">
+     * Returns {@value PushContext#ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME} as {@link Boolean} with default of {@code false}.
+     * </p>
+     */
+    @Nonbinding boolean enableWebsocketEndpoint() default false;
+
+    /** 
+     * <p class="changed_added_5_0">
+     * Returns {@value ViewHandler#FACELETS_BUFFER_SIZE_PARAM_NAME} as {@link Integer} with default of {@value ViewHandler#FACELETS_BUFFER_SIZE_DEFAULT_VALUE}.
+     * </p>
+     */
+    @Nonbinding int faceletsBufferSize() default ViewHandler.FACELETS_BUFFER_SIZE_DEFAULT_VALUE;
+
+    /** 
+     * <p class="changed_added_5_0">
+     * Returns {@value ViewHandler#FACELETS_DECORATORS_PARAM_NAME} as {@link String} array with default of empty string array.
+     * </p>
+     */
+    @Nonbinding String[] faceletsDecorators() default {};
+
+    /** 
+     * <p class="changed_added_5_0">
+     * Returns {@value ViewHandler#FACELETS_LIBRARIES_PARAM_NAME} as {@link String} array with default of empty string array.
+     * </p>
+     */
+    @Nonbinding String[] faceletsLibraries() default {};
+
+    /**
+     * <p class="changed_added_5_0">
+     * Returns {@value ViewHandler#FACELETS_REFRESH_PERIOD_PARAM_NAME} as {@link Integer} with default of {@link Integer#MIN_VALUE},
+     * meaning that the runtime then needs to determine the final default value via {@code ContextParam.FACELETS_REFRESH_PERIOD.getDefaultValue(FacesContext)}
+     * because that depends on the currently configured {@link Application#getProjectStage()}.
+     * </p>
+     */
+    @Nonbinding int faceletsRefreshPeriod() default Integer.MIN_VALUE;
+
+    /**
+     * <p class="changed_added_5_0">
+     * Returns {@value ViewHandler#FACELETS_SKIP_COMMENTS_PARAM_NAME} as {@link Boolean} with default of {@code false}.
+     * </p>
+     */
+    @Nonbinding boolean faceletsSkipComments() default false;
+
+    /** 
+     * <p class="changed_added_5_0">
+     * Returns {@value ViewHandler#FACELETS_SUFFIX_PARAM_NAME} as {@link String} with default of {@value ViewHandler#DEFAULT_FACELETS_SUFFIX}.
+     * </p>
+     */
+    @Nonbinding String faceletsSuffix() default ViewHandler.DEFAULT_FACELETS_SUFFIX;
+
+    /**
+     * <p class="changed_added_5_0">
+     * Returns {@value ViewHandler#FACELETS_VIEW_MAPPINGS_PARAM_NAME} as {@link String} array with default of empty string array.
+     * </p>
+     */
+    @Nonbinding String[] faceletsViewMappings() default {};
+
+    /**
+     * <p class="changed_added_5_0">
+     * Returns {@value StateManager#FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME} as {@link String} array with default of empty string array.
+     * </p>
+     */
+    @Nonbinding String[] fullStateSavingViewIds() default {};
+
+    /**
+     * <p class="changed_added_5_0">
+     * Returns {@value UIInput#EMPTY_STRING_AS_NULL_PARAM_NAME} as {@link Boolean} with default of {@code false}.
+     * </p>
+     */
+    @Nonbinding boolean interpretEmptyStringSubmittedValuesAsNull() default false;
+
+    /**
+     * <p class="changed_added_5_0">
+     * Returns {@value ClientWindow#NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME} as {@link Integer} with default of {@value ClientWindow#NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE}.
+     * </p>
+     */
+    @Nonbinding int numberOfClientWindows() default ClientWindow.NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE;
+
+    /**
+     * <p class="changed_added_5_0">
+     * Returns {@value StateManager#PARTIAL_STATE_SAVING_PARAM_NAME} as {@link Boolean} with default of {@code true}.
+     * </p>
+     */
+    @Nonbinding boolean partialStateSaving() default true;
+
+    /**
+     * <p class="changed_added_5_0">
+     * Returns {@value ProjectStage#PROJECT_STAGE_PARAM_NAME} as {@link ProjectStage} with default of {@link ProjectStage#Production}.
+     * Note that this value can be overridden via JNDI entry {@value ProjectStage#PROJECT_STAGE_JNDI_NAME}.
+     * </p>
+     */
+    @Nonbinding ProjectStage projectStage() default ProjectStage.Production;
+
+    /**
+     * <p class="changed_added_5_0">
+     * Returns {@value ResourceHandler#RESOURCE_EXCLUDES_PARAM_NAME} as {@link String} array with default of {@value ResourceHandler#RESOURCE_EXCLUDES_DEFAULT_VALUE}.
+     * </p>
+     */
+    @Nonbinding String[] resourceExcludes() default { ".class", ".jsp", ".jspx", ".properties", ".xhtml", ".groovy" }; // We cannot reference ResourceHandler#RESOURCE_EXCLUDES_DEFAULT_VALUE, it had to be hardcoded.
+
+    /**
+     * <p class="changed_added_5_0">
+     * Returns {@value StateManager#SERIALIZE_SERVER_STATE_PARAM_NAME} as {@link Boolean} with default of {@code false}.
+     * </p>
+     */
+    @Nonbinding boolean serializeServerState() default false;
+
+    /**
+     * <p class="changed_added_5_0">
+     * Returns {@value UINamingContainer#SEPARATOR_CHAR_PARAM_NAME} as {@link Character} with default of {@value NamingContainer#SEPARATOR_CHAR}.
+     * </p>
+     */
+    @Nonbinding char separatorChar() default NamingContainer.SEPARATOR_CHAR;
+
+    /**
+     * <p class="changed_added_5_0">
+     * Returns {@value StateManager#STATE_SAVING_METHOD_PARAM_NAME} as {@link String} with default of {@value StateManager#STATE_SAVING_METHOD_CLIENT}.
+     * </p>
+     */
+    @Nonbinding String stateSavingMethod() default StateManager.STATE_SAVING_METHOD_CLIENT;
+
+    /**
+     * <p class="changed_added_5_0">
+     * Returns {@value UIInput#VALIDATE_EMPTY_FIELDS_PARAM_NAME} as {@link String} with default of {@value UIInput#VALIDATE_EMPTY_FIELDS_DEFAULT_VALUE}.
+     * </p>
+     */
+    @Nonbinding String validateEmptyFields() default UIInput.VALIDATE_EMPTY_FIELDS_DEFAULT_VALUE;
+
+    /**
+     * <p class="changed_added_5_0">
+     * Returns {@value UIViewRoot#VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS_PARAM_NAME} as {@link Boolean} with default of {@code false}.
+     * </p>
+     */
+    @Nonbinding boolean viewrootPhaseListenerQueuesExceptions() default false;
+
+    /**
+     * <p class="changed_added_5_0">
+     * Returns {@value ResourceHandler#WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME} as {@link String} with default of {@value ResourceHandler#WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE}.
+     * </p>
+     */
+    @Nonbinding String webappContractsDirectory() default ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE;
+
+    /**
+     * <p class="changed_added_5_0">
+     * Returns {@value ResourceHandler#WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME} as {@link String} with default of {@value ResourceHandler#WEBAPP_RESOURCES_DIRECTORY_DEFAULT_VALUE}.
+     * </p>
+     */
+    @Nonbinding String webappResourcesDirectory() default ResourceHandler.WEBAPP_RESOURCES_DIRECTORY_DEFAULT_VALUE;
+
+    /**
+     * <p class="changed_added_5_0">
+     * Returns {@value PushContext#WEBSOCKET_ENDPOINT_PORT_PARAM_NAME} as {@link Integer} with default of {@code 0} (default 0 means the code will take the port from the request).
+     * </p>
+     */
+    @Nonbinding int websocketEndpointPort() default 0;
     /**
      * <p class="changed_added_4_0">
      * Supports inline instantiation of the {@link FacesConfig} qualifier.
@@ -240,159 +457,161 @@ public @interface FacesConfig {
         /**
          * Returns {@value UIInput#ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE} as {@link Boolean} with default of {@code false}.
          */
-        ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE(UIInput.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE, Boolean.class, false),
+        ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE(UIInput.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE, FacesConfig::alwaysPerformValidationWhenRequiredIsTrue),
 
         /**
          * Returns {@value FacesServlet#AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME} as {@link Boolean} with default of {@code false}.
          */
-        AUTOMATIC_EXTENSIONLESS_MAPPING(FacesServlet.AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME, Boolean.class, false),
+        AUTOMATIC_EXTENSIONLESS_MAPPING(FacesServlet.AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME, FacesConfig::automaticExtensionlessMapping),
 
         /**
          * Returns {@value ClientWindow#CLIENT_WINDOW_MODE_PARAM_NAME} as {@link String} with default of {@code none}.
          */
-        CLIENT_WINDOW_MODE(ClientWindow.CLIENT_WINDOW_MODE_PARAM_NAME, String.class, ClientWindow.CLIENT_WINDOW_MODE_DEFAULT_VALUE),
+        CLIENT_WINDOW_MODE(ClientWindow.CLIENT_WINDOW_MODE_PARAM_NAME, FacesConfig::clientWindowMode),
 
         /**
          * Returns {@value FacesServlet#CONFIG_FILES_ATTR} as {@link String} array with default of empty string array.
          */
-        CONFIG_FILES(FacesServlet.CONFIG_FILES_ATTR, StringArray.COMMA_SEPARATED, EMPTY_STRING_ARRAY),
+        CONFIG_FILES(FacesServlet.CONFIG_FILES_ATTR, FacesConfig::configFiles, StringArray.COMMA_SEPARATED),
 
         /**
          * Returns {@value Converter#DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME} as {@link Boolean} with default of {@code false}.
          */
-        DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE(Converter.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME, Boolean.class, false),
+        DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE(Converter.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME, FacesConfig::datetimeConverterDefaultTimezoneIsSystemTimezone),
 
         /**
          * Returns {@value BeanValidator#DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME} as {@link Boolean} with default of {@code false}.
          */
-        DISABLE_DEFAULT_BEAN_VALIDATOR(BeanValidator.DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME, Boolean.class, false),
+        DISABLE_DEFAULT_BEAN_VALIDATOR(BeanValidator.DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME, FacesConfig::disableDefaultBeanValidator),
 
         /**
          * Returns {@value FacesServlet#DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME} as {@link Boolean} with default of {@code false}.
          */
-        DISABLE_FACESSERVLET_TO_XHTML(FacesServlet.DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME, Boolean.class, false),
+        DISABLE_FACESSERVLET_TO_XHTML(FacesServlet.DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME, FacesConfig::disableFacesservletToXhtml),
 
         /** 
          * Returns {@value BeanValidator#ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME} as {@link Boolean} with default of {@code false}.
          */
-        ENABLE_VALIDATE_WHOLE_BEAN(BeanValidator.ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME, Boolean.class, false),
+        ENABLE_VALIDATE_WHOLE_BEAN(BeanValidator.ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME, FacesConfig::enableValidateWholeBean),
 
         /** 
          * Returns {@value PushContext#ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME} as {@link Boolean} with default of {@code false}.
          */
-        ENABLE_WEBSOCKET_ENDPOINT(PushContext.ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME, Boolean.class, false),
+        ENABLE_WEBSOCKET_ENDPOINT(PushContext.ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME, FacesConfig::enableWebsocketEndpoint),
 
         /** 
          * Returns {@value ViewHandler#FACELETS_BUFFER_SIZE_PARAM_NAME} as {@link Integer} with default of {@value ViewHandler#FACELETS_BUFFER_SIZE_DEFAULT_VALUE}.
          */
-        FACELETS_BUFFER_SIZE(ViewHandler.FACELETS_BUFFER_SIZE_PARAM_NAME, Integer.class, ViewHandler.FACELETS_BUFFER_SIZE_DEFAULT_VALUE),
+        FACELETS_BUFFER_SIZE(ViewHandler.FACELETS_BUFFER_SIZE_PARAM_NAME, FacesConfig::faceletsBufferSize),
 
         /** 
          * Returns {@value ViewHandler#FACELETS_DECORATORS_PARAM_NAME} as {@link String} array with default of empty string array.
          */
-        FACELETS_DECORATORS(ViewHandler.FACELETS_DECORATORS_PARAM_NAME, StringArray.SEMICOLON_SEPARATED, EMPTY_STRING_ARRAY),
+        FACELETS_DECORATORS(ViewHandler.FACELETS_DECORATORS_PARAM_NAME, FacesConfig::faceletsDecorators, StringArray.SEMICOLON_SEPARATED),
 
         /** 
          * Returns {@value ViewHandler#FACELETS_LIBRARIES_PARAM_NAME} as {@link String} array with default of empty string array.
          */
-        FACELETS_LIBRARIES(ViewHandler.FACELETS_LIBRARIES_PARAM_NAME, StringArray.SEMICOLON_SEPARATED, EMPTY_STRING_ARRAY),
+        FACELETS_LIBRARIES(ViewHandler.FACELETS_LIBRARIES_PARAM_NAME, FacesConfig::faceletsLibraries, StringArray.SEMICOLON_SEPARATED),
 
         /**
          * Returns {@value ViewHandler#FACELETS_REFRESH_PERIOD_PARAM_NAME} as {@link Integer} with default of {@code -1} when
          * {@link Application#getProjectStage()} is {@link ProjectStage#Production} else default of {@code 0}.
          */
-        FACELETS_REFRESH_PERIOD(ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, Integer.class, (Function<FacesContext, Integer>) context -> context.getApplication().getProjectStage() == ProjectStage.Production ? -1 : 0),
+        FACELETS_REFRESH_PERIOD(ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, FacesConfig::faceletsRefreshPeriod, (Function<FacesContext, Integer>) context -> context.getApplication().getProjectStage() == ProjectStage.Production ? -1 : 0),
 
         /**
          * Returns {@value ViewHandler#FACELETS_SKIP_COMMENTS_PARAM_NAME} as {@link Boolean} with default of {@code false}.
          */
-        FACELETS_SKIP_COMMENTS(ViewHandler.FACELETS_SKIP_COMMENTS_PARAM_NAME, Boolean.class, false),
+        FACELETS_SKIP_COMMENTS(ViewHandler.FACELETS_SKIP_COMMENTS_PARAM_NAME, FacesConfig::faceletsSkipComments),
 
         /** 
          * Returns {@value ViewHandler#FACELETS_SUFFIX_PARAM_NAME} as {@link String} with default of {@value ViewHandler#DEFAULT_FACELETS_SUFFIX}.
          */
-        FACELETS_SUFFIX(ViewHandler.FACELETS_SUFFIX_PARAM_NAME, String.class, ViewHandler.DEFAULT_FACELETS_SUFFIX),
+        FACELETS_SUFFIX(ViewHandler.FACELETS_SUFFIX_PARAM_NAME, FacesConfig::faceletsSuffix),
 
         /**
          * Returns {@value ViewHandler#FACELETS_VIEW_MAPPINGS_PARAM_NAME} as {@link String} array with default of empty string array.
          */
-        FACELETS_VIEW_MAPPINGS(ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME, StringArray.SEMICOLON_SEPARATED, EMPTY_STRING_ARRAY),
+        FACELETS_VIEW_MAPPINGS(ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME, FacesConfig::faceletsViewMappings, StringArray.SEMICOLON_SEPARATED),
 
         /**
          * Returns {@value StateManager#FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME} as {@link String} array with default of empty string array.
          */
-        FULL_STATE_SAVING_VIEW_IDS(StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME, StringArray.COMMA_SEPARATED, EMPTY_STRING_ARRAY),
+        FULL_STATE_SAVING_VIEW_IDS(StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME, FacesConfig::fullStateSavingViewIds, StringArray.COMMA_SEPARATED),
 
         /**
          * Returns {@value UIInput#EMPTY_STRING_AS_NULL_PARAM_NAME} as {@link Boolean} with default of {@code false}.
          */
-        INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL(UIInput.EMPTY_STRING_AS_NULL_PARAM_NAME, Boolean.class, false),
+        INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL(UIInput.EMPTY_STRING_AS_NULL_PARAM_NAME, FacesConfig::interpretEmptyStringSubmittedValuesAsNull),
 
         /**
          * Returns {@value ClientWindow#NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME} as {@link Integer} with default of {@value ClientWindow#NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE}.
          */
-        NUMBER_OF_CLIENT_WINDOWS(ClientWindow.NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME, Integer.class, ClientWindow.NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE),
+        NUMBER_OF_CLIENT_WINDOWS(ClientWindow.NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME, FacesConfig::numberOfClientWindows),
 
         /**
          * Returns {@value StateManager#PARTIAL_STATE_SAVING_PARAM_NAME} as {@link Boolean} with default of {@code true}.
          */
-        PARTIAL_STATE_SAVING(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, Boolean.class, true),
+        PARTIAL_STATE_SAVING(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, FacesConfig::partialStateSaving),
 
         /**
          * Returns {@value ProjectStage#PROJECT_STAGE_PARAM_NAME} as {@link ProjectStage} with default of {@link ProjectStage#Production}.
          * Note that this value can be overridden via JNDI entry {@value ProjectStage#PROJECT_STAGE_JNDI_NAME}.
          */
-        PROJECT_STAGE(ProjectStage.PROJECT_STAGE_PARAM_NAME, ProjectStage.class, ProjectStage.Production),
+        PROJECT_STAGE(ProjectStage.PROJECT_STAGE_PARAM_NAME, FacesConfig::projectStage),
 
         /**
          * Returns {@value ResourceHandler#RESOURCE_EXCLUDES_PARAM_NAME} as {@link String} array with default of {@value ResourceHandler#RESOURCE_EXCLUDES_DEFAULT_VALUE}.
          */
-        RESOURCE_EXCLUDES(ResourceHandler.RESOURCE_EXCLUDES_PARAM_NAME, StringArray.SPACE_SEPARATED, StringArray.SPACE_SEPARATED.split(ResourceHandler.RESOURCE_EXCLUDES_DEFAULT_VALUE)),
+        RESOURCE_EXCLUDES(ResourceHandler.RESOURCE_EXCLUDES_PARAM_NAME, FacesConfig::resourceExcludes, StringArray.SPACE_SEPARATED),
 
         /**
          * Returns {@value StateManager#SERIALIZE_SERVER_STATE_PARAM_NAME} as {@link Boolean} with default of {@code false}.
          */
-        SERIALIZE_SERVER_STATE(StateManager.SERIALIZE_SERVER_STATE_PARAM_NAME, Boolean.class, false),
+        SERIALIZE_SERVER_STATE(StateManager.SERIALIZE_SERVER_STATE_PARAM_NAME, FacesConfig::serializeServerState),
 
         /**
          * Returns {@value UINamingContainer#SEPARATOR_CHAR_PARAM_NAME} as {@link Character} with default of {@value NamingContainer#SEPARATOR_CHAR}.
          */
-        SEPARATOR_CHAR(UINamingContainer.SEPARATOR_CHAR_PARAM_NAME, Character.class, NamingContainer.SEPARATOR_CHAR),
+        SEPARATOR_CHAR(UINamingContainer.SEPARATOR_CHAR_PARAM_NAME, FacesConfig::separatorChar),
 
         /**
          * Returns {@value StateManager#STATE_SAVING_METHOD_PARAM_NAME} as {@link String} with default of {@value StateManager#STATE_SAVING_METHOD_CLIENT}.
          * @see StateManager#STATE_SAVING_METHOD_PARAM_NAME
          */
-        STATE_SAVING_METHOD(StateManager.STATE_SAVING_METHOD_PARAM_NAME, String.class, StateManager.STATE_SAVING_METHOD_CLIENT),
+        STATE_SAVING_METHOD(StateManager.STATE_SAVING_METHOD_PARAM_NAME, FacesConfig::stateSavingMethod),
 
         /**
          * Returns {@value UIInput#VALIDATE_EMPTY_FIELDS_PARAM_NAME} as {@link String} with default of {@value UIInput#VALIDATE_EMPTY_FIELDS_DEFAULT_VALUE}.
          */
-        VALIDATE_EMPTY_FIELDS(UIInput.VALIDATE_EMPTY_FIELDS_PARAM_NAME, String.class, UIInput.VALIDATE_EMPTY_FIELDS_DEFAULT_VALUE),
+        VALIDATE_EMPTY_FIELDS(UIInput.VALIDATE_EMPTY_FIELDS_PARAM_NAME, FacesConfig::validateEmptyFields),
 
         /**
          * Returns {@value UIViewRoot#VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS_PARAM_NAME} as {@link Boolean} with default of {@code false}.
          */
-        VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS(UIViewRoot.VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS_PARAM_NAME, Boolean.class, false),
+        VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS(UIViewRoot.VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS_PARAM_NAME, FacesConfig::viewrootPhaseListenerQueuesExceptions),
 
         /**
-         * Returns {@value ResourceHandler#WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME} as {@link Path} with default of {@value ResourceHandler#WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE}.
+         * Returns {@value ResourceHandler#WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME} as {@link String} with default of {@value ResourceHandler#WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE}.
          */
-        WEBAPP_CONTRACTS_DIRECTORY(ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME, Path.class, Paths.get("/", ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE)),
+        WEBAPP_CONTRACTS_DIRECTORY(ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME, FacesConfig::webappContractsDirectory),
 
         /**
-         * Returns {@value ResourceHandler#WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME} as {@link Path} with default of {@value ResourceHandler#WEBAPP_RESOURCES_DIRECTORY_DEFAULT_VALUE}.
+         * Returns {@value ResourceHandler#WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME} as {@link String} with default of {@value ResourceHandler#WEBAPP_RESOURCES_DIRECTORY_DEFAULT_VALUE}.
          */
-        WEBAPP_RESOURCES_DIRECTORY(ResourceHandler.WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME, Path.class, Paths.get("/", ResourceHandler.WEBAPP_RESOURCES_DIRECTORY_DEFAULT_VALUE)),
+        WEBAPP_RESOURCES_DIRECTORY(ResourceHandler.WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME, FacesConfig::webappResourcesDirectory),
 
         /**
          * Returns {@value PushContext#WEBSOCKET_ENDPOINT_PORT_PARAM_NAME} as {@link Integer} with default of {@code 0} (default 0 means the code will take the port from the request).
          */
-        WEBSOCKET_ENDPOINT_PORT(PushContext.WEBSOCKET_ENDPOINT_PORT_PARAM_NAME, Integer.class, 0),
+        WEBSOCKET_ENDPOINT_PORT(PushContext.WEBSOCKET_ENDPOINT_PORT_PARAM_NAME, FacesConfig::websocketEndpointPort),
 
         ;
 
+        private static final Logger LOGGER = FacesLogger.CONFIG.getLogger();
         private static final Map<ContextParam, Object> VALUES = new EnumMap<>(ContextParam.class);
+        private static final AtomicReference<Optional<FacesConfig>> ANNOTATED_CONFIG = new AtomicReference<>();
 
         private enum StringArray {
             SPACE_SEPARATED(Pattern.compile("\\s+")),
@@ -411,29 +630,31 @@ public @interface FacesConfig {
         }
 
         private final String name;
-        private final Class<?> type;
+        private final Function<FacesConfig, ?> annotatedValue;
+        private final Optional<Function<FacesContext, ?>> defaultValueSupplier;
         private final StringArray separated;
-        private final Function<FacesContext, ?> defaultValue;        
+        private final Object defaultAnnotatedValue;
+        private final Class<?> type;
 
-        private <T> ContextParam(String name, Class<T> type, T defaultValue) {
-            this.name = name;
-            this.type = type;
-            this.separated = null;
-            this.defaultValue = $ -> defaultValue;
+        private <T> ContextParam(String name, Function<FacesConfig, T> annotatedValue) {
+            this(name, annotatedValue, null, null);
         }
 
-        private <T> ContextParam(String name, Class<T> type, Function<FacesContext, T> defaultValue) {
-            this.name = name;
-            this.type = type;
-            this.separated = null;
-            this.defaultValue = defaultValue;
+        private ContextParam(String name, Function<FacesConfig, String[]> annotatedValue, StringArray separated) {
+            this(name, annotatedValue, null, separated);
         }
 
-        private ContextParam(String name, StringArray separated, String[] defaultValue) {
+        private <T> ContextParam(String name, Function<FacesConfig, T> annotatedValue, Function<FacesContext, T> defaultValueSupplier) {
+            this(name, annotatedValue, defaultValueSupplier, null);
+        }
+
+        private <T> ContextParam(String name, Function<FacesConfig, T> annotatedValue, Function<FacesContext, T> defaultValueSupplier, StringArray separated) {
             this.name = name;
-            this.type = String[].class;
+            this.annotatedValue = annotatedValue;
+            this.defaultValueSupplier = Optional.ofNullable(defaultValueSupplier);
             this.separated = separated;
-            this.defaultValue = $ -> defaultValue;
+            this.defaultAnnotatedValue = annotatedValue.apply(FacesConfig.Literal.INSTANCE);
+            this.type = defaultAnnotatedValue.getClass();
         }
 
         /**
@@ -455,7 +676,6 @@ public @interface FacesConfig {
          * <li>{@link Character}
          * <li>{@link Boolean}
          * <li>{@link Integer}
-         * <li>{@link Path}
          * <li>{@link Enum}
          * </ul>
          * @return The expected type of the context parameter value.
@@ -475,7 +695,7 @@ public @interface FacesConfig {
          */
         @SuppressWarnings("unchecked")
         public <T> T getValue(FacesContext context) {
-            return (T) VALUES.computeIfAbsent(this, param -> param.parseValue(context));
+            return (T) VALUES.computeIfAbsent(this, param -> getContextParamValue(context).orElseGet(() -> getAnnotatedValue().orElseGet(() -> getDefaultValue(context))));
         }
 
         /**
@@ -499,7 +719,8 @@ public @interface FacesConfig {
          */
         @SuppressWarnings("unchecked")
         public <T> T getDefaultValue(FacesContext context) {
-            return (T) defaultValue.apply(context);
+            Object supplied = defaultValueSupplier.map(supplier -> supplier.apply(context)).orElse(null);
+            return (T) (supplied != null ? supplied : defaultAnnotatedValue);
         }
 
         /**
@@ -510,265 +731,64 @@ public @interface FacesConfig {
          * @throws IllegalArgumentException When the value of the context parameter cannot be converted to the expected type as indicated by {@link #getType()}.
          */
         public boolean isDefault(FacesContext context) {
-            return Objects.equals(getValue(context), defaultValue.apply(context));
+            return Objects.equals(getValue(context), getDefaultValue(context));
         }
 
         @SuppressWarnings("unchecked")
-        private <T> T parseValue(FacesContext context) {
+        private <T> Optional<T> getContextParamValue(FacesContext context) {
             String value = context.getExternalContext().getInitParameter(name);
 
             if (value == null) {
-                return getDefaultValue(context);
+                return Optional.empty();
             }
             else if (type == String.class) {
-                return (T) value;
+                return Optional.of((T) value);
             }
             else if (type == String[].class) {
-                return (T) separated.split(value);
+                return Optional.of((T) separated.split(value));
             }
             else if (type == Character.class) {
                 if (value.length() == 1) {
-                    return (T) Character.valueOf(value.charAt(0));
+                    return Optional.of((T) Character.valueOf(value.charAt(0)));
                 }
             }
             else if (type == Boolean.class) {
-                return (T) Boolean.valueOf(value);
+                return Optional.of((T) Boolean.valueOf(value));
             }
             else if (type == Integer.class) {
                 try {
-                    return (T) Integer.valueOf(value);
+                    return Optional.of((T) Integer.valueOf(value));
                 }
                 catch (NumberFormatException e) {
                     throw new IllegalArgumentException(getName() + ": invalid value: " + value, e);
                 }
             }
-            else if (type == Path.class) {
-                if (!value.startsWith("/")) {
-                    return (T) Paths.get("/", value);
-                }
-            }
             else if (type.isEnum()) {
                 for (Object constant : type.getEnumConstants()) {
                     if (constant.toString().equalsIgnoreCase(value)) {
-                        return (T) constant;
+                        return Optional.of((T) constant);
                     }
                 }
             }
 
             throw new IllegalArgumentException(getName() + ": invalid value: " + value);
         }
+
+        @SuppressWarnings("unchecked")
+        private <T> Optional<T> getAnnotatedValue() {
+            Optional<FacesConfig> annotatedConfig = ANNOTATED_CONFIG.updateAndGet(config -> config != null ? config : CDI.current()
+                    .select(FacesConfig.Literal.INSTANCE).stream()
+                    .sorted(CdiUtils.BEAN_PRIORITY_COMPARATOR)
+                    .peek(bean -> LOGGER.info("@FacesConfig found on " + bean.getClass() + " -- if any, others are ignored"))
+                    .map(bean -> bean.getClass().getAnnotation(FacesConfig.class))
+                    .findFirst());
+            return annotatedConfig.map(config -> (T) annotatedValue.apply(config)).filter(value -> !shouldDelegateToDefaultValueSupplier(value));
+        }
+
+        private <T> boolean shouldDelegateToDefaultValueSupplier(T value) {
+            return defaultValueSupplier.isPresent() && Objects.equals(value, defaultAnnotatedValue);
+        }
+
     }
-
-
-    /**
-     * <p class="changed_added_5_0">
-     * Returns {@value UIInput#ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE} as {@link Boolean} with default of {@code false}.
-     * </p>
-     */
-    @Nonbinding boolean alwaysPerformValidationWhenRequiredIsTrue() default false;
-
-    /**
-     * <p class="changed_added_5_0">
-     * Returns {@value FacesServlet#AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME} as {@link Boolean} with default of {@code false}.
-     * </p>
-     */
-    @Nonbinding boolean automaticExtensionlessMapping() default false;
-
-    /**
-     * <p class="changed_added_5_0">
-     * Returns {@value ClientWindow#CLIENT_WINDOW_MODE_PARAM_NAME} as {@link String} with default of {@value ClientWindow#CLIENT_WINDOW_MODE_DEFAULT_VALUE}.
-     * </p>
-     */
-    @Nonbinding String clientWindowMode() default ClientWindow.CLIENT_WINDOW_MODE_DEFAULT_VALUE;
-
-    /**
-     * <p class="changed_added_5_0">
-     * Returns {@value FacesServlet#CONFIG_FILES_ATTR} as {@link String} array with default of empty string array.
-     * </p>
-     */
-    @Nonbinding String[] configFiles() default {};
-
-    /**
-     * <p class="changed_added_5_0">
-     * Returns {@value Converter#DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME} as {@link Boolean} with default of {@code false}.
-     * </p>
-     */
-    @Nonbinding boolean datetimeConverterDefaultTimezoneIsSystemTimezone() default false;
-
-    /**
-     * <p class="changed_added_5_0">
-     * Returns {@value BeanValidator#DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME} as {@link Boolean} with default of {@code false}.
-     * </p>
-     */
-    @Nonbinding boolean disableDefaultBeanValidator() default false;
-
-    /**
-     * <p class="changed_added_5_0">
-     * Returns {@value FacesServlet#DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME} as {@link Boolean} with default of {@code false}.
-     * </p>
-     */
-    @Nonbinding boolean disableFacesservletToXhtml() default false;
-
-    /** 
-     * <p class="changed_added_5_0">
-     * Returns {@value BeanValidator#ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME} as {@link Boolean} with default of {@code false}.
-     * </p>
-     */
-    @Nonbinding boolean enableValidateWholeBean() default false;
-
-    /** 
-     * <p class="changed_added_5_0">
-     * Returns {@value PushContext#ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME} as {@link Boolean} with default of {@code false}.
-     * </p>
-     */
-    @Nonbinding boolean enableWebsocketEndpoint() default false;
-
-    /** 
-     * <p class="changed_added_5_0">
-     * Returns {@value ViewHandler#FACELETS_BUFFER_SIZE_PARAM_NAME} as {@link Integer} with default of {@value ViewHandler#FACELETS_BUFFER_SIZE_DEFAULT_VALUE}.
-     * </p>
-     */
-    @Nonbinding int faceletsBufferSize() default ViewHandler.FACELETS_BUFFER_SIZE_DEFAULT_VALUE;
-
-    /** 
-     * <p class="changed_added_5_0">
-     * Returns {@value ViewHandler#FACELETS_DECORATORS_PARAM_NAME} as {@link String} array with default of empty string array.
-     * </p>
-     */
-    @Nonbinding String[] faceletsDecorators() default {};
-
-    /** 
-     * <p class="changed_added_5_0">
-     * Returns {@value ViewHandler#FACELETS_LIBRARIES_PARAM_NAME} as {@link String} array with default of empty string array.
-     * </p>
-     */
-    @Nonbinding String[] faceletsLibraries() default {};
-
-    /**
-     * <p class="changed_added_5_0">
-     * Returns {@value ViewHandler#FACELETS_REFRESH_PERIOD_PARAM_NAME} as {@link Integer} with default of {@link Integer#MIN_VALUE}.
-     * </p>
-     */
-    @Nonbinding int faceletsRefreshPeriod() default Integer.MIN_VALUE;
-
-    /**
-     * <p class="changed_added_5_0">
-     * Returns {@value ViewHandler#FACELETS_SKIP_COMMENTS_PARAM_NAME} as {@link Boolean} with default of {@code false}.
-     * </p>
-     */
-    @Nonbinding boolean faceletsSkipComments() default false;
-
-    /** 
-     * <p class="changed_added_5_0">
-     * Returns {@value ViewHandler#FACELETS_SUFFIX_PARAM_NAME} as {@link String} with default of {@value ViewHandler#DEFAULT_FACELETS_SUFFIX}.
-     * </p>
-     */
-    @Nonbinding String faceletsSuffix() default ViewHandler.DEFAULT_FACELETS_SUFFIX;
-
-    /**
-     * <p class="changed_added_5_0">
-     * Returns {@value ViewHandler#FACELETS_VIEW_MAPPINGS_PARAM_NAME} as {@link String} array with default of empty string array.
-     * </p>
-     */
-    @Nonbinding String[] faceletsViewMappings() default {};
-
-    /**
-     * <p class="changed_added_5_0">
-     * Returns {@value StateManager#FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME} as {@link String} array with default of empty string array.
-     * </p>
-     */
-    @Nonbinding String[] fullStateSavingViewIds() default {};
-
-    /**
-     * <p class="changed_added_5_0">
-     * Returns {@value UIInput#EMPTY_STRING_AS_NULL_PARAM_NAME} as {@link Boolean} with default of {@code false}.
-     * </p>
-     */
-    @Nonbinding boolean interpretEmptyStringSubmittedValuesAsNull() default false;
-
-    /**
-     * <p class="changed_added_5_0">
-     * Returns {@value ClientWindow#NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME} as {@link Integer} with default of {@value ClientWindow#NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE}.
-     * </p>
-     */
-    @Nonbinding int numberOfClientWindows() default ClientWindow.NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE;
-
-    /**
-     * <p class="changed_added_5_0">
-     * Returns {@value StateManager#PARTIAL_STATE_SAVING_PARAM_NAME} as {@link Boolean} with default of {@code true}.
-     * </p>
-     */
-    @Nonbinding boolean partialStateSaving() default true;
-
-    /**
-     * <p class="changed_added_5_0">
-     * Returns {@value ProjectStage#PROJECT_STAGE_PARAM_NAME} as {@link ProjectStage} with default of {@link ProjectStage#Production}.
-     * Note that this value can be overridden via JNDI entry {@value ProjectStage#PROJECT_STAGE_JNDI_NAME}.
-     * </p>
-     */
-    @Nonbinding ProjectStage projectStage() default ProjectStage.Production;
-
-    /**
-     * <p class="changed_added_5_0">
-     * Returns {@value ResourceHandler#RESOURCE_EXCLUDES_PARAM_NAME} as {@link String} array with default of {@value ResourceHandler#RESOURCE_EXCLUDES_DEFAULT_VALUE}.
-     * </p>
-     */
-    @Nonbinding String[] resourceExcludes() default { ".class", ".jsp", ".jspx", ".properties", ".xhtml", ".groovy" }; // We cannot reference ResourceHandler#RESOURCE_EXCLUDES_DEFAULT_VALUE, it had to be hardcoded.
-
-    /**
-     * <p class="changed_added_5_0">
-     * Returns {@value StateManager#SERIALIZE_SERVER_STATE_PARAM_NAME} as {@link Boolean} with default of {@code false}.
-     * </p>
-     */
-    @Nonbinding boolean serializeServerState() default false;
-
-    /**
-     * <p class="changed_added_5_0">
-     * Returns {@value UINamingContainer#SEPARATOR_CHAR_PARAM_NAME} as {@link Character} with default of {@value NamingContainer#SEPARATOR_CHAR}.
-     * </p>
-     */
-    @Nonbinding char separatorChar() default NamingContainer.SEPARATOR_CHAR;
-
-    /**
-     * <p class="changed_added_5_0">
-     * Returns {@value StateManager#STATE_SAVING_METHOD_PARAM_NAME} as {@link String} with default of {@value StateManager#STATE_SAVING_METHOD_CLIENT}.
-     * </p>
-     */
-    @Nonbinding String stateSavingMethod() default StateManager.STATE_SAVING_METHOD_CLIENT;
-
-    /**
-     * <p class="changed_added_5_0">
-     * Returns {@value UIInput#VALIDATE_EMPTY_FIELDS_PARAM_NAME} as {@link String} with default of {@value UIInput#VALIDATE_EMPTY_FIELDS_DEFAULT_VALUE}.
-     * </p>
-     */
-    @Nonbinding String validateEmptyFields() default UIInput.VALIDATE_EMPTY_FIELDS_DEFAULT_VALUE;
-
-    /**
-     * <p class="changed_added_5_0">
-     * Returns {@value UIViewRoot#VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS_PARAM_NAME} as {@link Boolean} with default of {@code false}.
-     * </p>
-     */
-    @Nonbinding boolean viewrootPhaseListenerQueuesExceptions() default false;
-
-    /**
-     * <p class="changed_added_5_0">
-     * Returns {@value ResourceHandler#WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME} as {@link String} with default of {@value ResourceHandler#WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE}.
-     * </p>
-     */
-    @Nonbinding String webappContractsDirectory() default ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE;
-
-    /**
-     * <p class="changed_added_5_0">
-     * Returns {@value ResourceHandler#WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME} as {@link String} with default of {@value ResourceHandler#WEBAPP_RESOURCES_DIRECTORY_DEFAULT_VALUE}.
-     * </p>
-     */
-    @Nonbinding String webappResourcesDirectory() default ResourceHandler.WEBAPP_RESOURCES_DIRECTORY_DEFAULT_VALUE;
-
-    /**
-     * <p class="changed_added_5_0">
-     * Returns {@value PushContext#WEBSOCKET_ENDPOINT_PORT_PARAM_NAME} as {@link Integer} with default of {@code 0} (default 0 means the code will take the port from the request).
-     * </p>
-     */
-    @Nonbinding int websocketEndpointPort() default 0;
     
 }
