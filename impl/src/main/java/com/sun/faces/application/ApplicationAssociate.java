@@ -629,7 +629,7 @@ public class ApplicationAssociate {
     protected Compiler createCompiler(FacesContext context) {
         Compiler newCompiler = new SAXCompiler();
 
-        loadDecorators(newCompiler);
+        loadDecorators(context, newCompiler);
 
         // Skip params?
         newCompiler.setTrimmingComments(ContextParam.FACELETS_SKIP_COMMENTS.isSet(context));
@@ -639,8 +639,8 @@ public class ApplicationAssociate {
         return newCompiler;
     }
 
-    protected void loadDecorators(Compiler newCompiler) {
-        String[] decorators = ContextParam.FACELETS_DECORATORS.getValue(FacesContext.getCurrentInstance());
+    protected void loadDecorators(FacesContext context, Compiler newCompiler) {
+        String[] decorators = ContextParam.FACELETS_DECORATORS.getValue(context);
 
         for (String decorator : decorators) {
             try {

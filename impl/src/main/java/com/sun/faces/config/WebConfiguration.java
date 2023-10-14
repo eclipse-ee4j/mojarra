@@ -17,7 +17,6 @@
 
 package com.sun.faces.config;
 
-import static com.sun.faces.util.Util.ensureLeadingSlash;
 import static com.sun.faces.util.Util.split;
 import static java.util.Collections.emptyMap;
 import static java.util.logging.Level.FINE;
@@ -52,7 +51,6 @@ import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
 import jakarta.faces.FactoryFinder;
-import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -829,7 +827,7 @@ public class WebConfiguration {
         AllowTextChildren("com.sun.faces.allowTextChildren", false),
         CacheResourceModificationTimestamp("com.sun.faces.cacheResourceModificationTimestamp", false),
         EnableAgressiveSessionDirtying("com.sun.faces.enableAgressiveSessionDirtying", false),
-        EnableDistributable("com.sun.faces.enableDistributable", false),
+        EnableDistributable("com.sun.faces.enableDistributable", false), // NOTE: this is indeed implicitly set to true when web.xml distributable is also set, see ConfigureListener.
         EnableFaceletsResourceResolverResolveCompositeComponents("com.sun.faces.enableFaceletsResourceResolverCompositeComponents", false),
         EnableMissingResourceLibraryDetection("com.sun.faces.enableMissingResourceLibraryDetection", false),
         DisableIdUniquenessCheck("com.sun.faces.disableIdUniquenessCheck", false),
