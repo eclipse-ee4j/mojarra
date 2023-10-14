@@ -376,14 +376,14 @@ public @interface FacesConfig {
         VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS(UIViewRoot.VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS_PARAM_NAME, Boolean.class, false),
 
         /**
-         * Returns {@value ResourceHandler#WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME} as {@link String} with default of {@value ResourceHandler#WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE}.
+         * Returns {@value ResourceHandler#WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME} as {@link Path} with default of {@value ResourceHandler#WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE}.
          */
-        WEBAPP_CONTRACTS_DIRECTORY(ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME, String.class, ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE),
+        WEBAPP_CONTRACTS_DIRECTORY(ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME, Path.class, Paths.get("/", ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE)),
 
         /**
-         * Returns {@value ResourceHandler#WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME} as {@link String} with default of {@value ResourceHandler#WEBAPP_RESOURCES_DIRECTORY_DEFAULT_VALUE}.
+         * Returns {@value ResourceHandler#WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME} as {@link Path} with default of {@value ResourceHandler#WEBAPP_RESOURCES_DIRECTORY_DEFAULT_VALUE}.
          */
-        WEBAPP_RESOURCES_DIRECTORY(ResourceHandler.WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME, String.class, ResourceHandler.WEBAPP_RESOURCES_DIRECTORY_DEFAULT_VALUE),
+        WEBAPP_RESOURCES_DIRECTORY(ResourceHandler.WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME, Path.class, Paths.get("/", ResourceHandler.WEBAPP_RESOURCES_DIRECTORY_DEFAULT_VALUE)),
 
         /**
          * Returns {@value PushContext#WEBSOCKET_ENDPOINT_PORT_PARAM_NAME} as {@link Integer} with default of {@code 0} (default 0 means the code will take the port from the request).
@@ -543,7 +543,9 @@ public @interface FacesConfig {
                 }
             }
             else if (type == Path.class) {
-                return (T) Paths.get(value);
+                if (!value.startsWith("/")) {
+                    return (T) Paths.get("/", value);
+                }
             }
             else if (type.isEnum()) {
                 for (Object constant : type.getEnumConstants()) {
