@@ -47,12 +47,12 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
 
     private static final String[] RESTRICTED_DIRECTORIES = { "/WEB-INF/", "/META-INF/" };
 
-    private final String webAppContractsDirectory;
+    private final ResourceHelper webappResourceHelper;
     private final String[] configuredExtensions;
 
-    public FaceletWebappResourceHelper() {
+    public FaceletWebappResourceHelper(WebappResourceHelper webappResourceHelper) {
+        this.webappResourceHelper = webappResourceHelper;
         FacesContext context = FacesContext.getCurrentInstance();
-        webAppContractsDirectory = ensureLeadingSlash(ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(context));
         configuredExtensions = new String[] { ContextParam.FACELETS_SUFFIX.getValue(context) };
     }
 
@@ -149,9 +149,9 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
 
         for (String contract : contracts) {
             if (baseResourceName.startsWith("/")) {
-                resourceName = webAppContractsDirectory + "/" + contract + baseResourceName;
+                resourceName = getBaseContractsPath() + "/" + contract + baseResourceName;
             } else {
-                resourceName = webAppContractsDirectory + "/" + contract + "/" + baseResourceName;
+                resourceName = getBaseContractsPath() + "/" + contract + "/" + baseResourceName;
             }
 
             url = Resource.getResourceUrl(ctx, resourceName);
@@ -225,7 +225,7 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
 
     @Override
     public String getBaseContractsPath() {
-        return webAppContractsDirectory;
+        return webappResourceHelper.getBaseContractsPath();
     }
 
     @Override

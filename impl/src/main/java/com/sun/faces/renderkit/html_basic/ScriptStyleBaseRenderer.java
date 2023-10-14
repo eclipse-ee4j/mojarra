@@ -21,9 +21,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.util.FacesLogger;
 
-import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.Resource;
@@ -194,7 +194,7 @@ public abstract class ScriptStyleBaseRenderer extends Renderer implements Compon
         ResponseWriter writer = context.getResponseWriter();
         startExternalElement(context, writer, component);
 
-        if (library == null && name != null && name.startsWith(ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(context))) {
+        if (library == null && name != null && ApplicationAssociate.getInstance(context).getResourceManager().isContractsResource(name)) {
             if (context.isProjectStage(ProjectStage.Development)) {
                 String msg = "Illegal path, direct contract references are not allowed: " + name;
                 context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, msg));

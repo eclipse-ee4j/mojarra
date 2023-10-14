@@ -368,7 +368,8 @@ public class WebConfiguration {
         Set<String> candidates;
 
         // Scan for "contractMappings" in the web app root
-        String contractsDirName = ensureLeadingSlash(ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(context));
+        ApplicationAssociate associate = ApplicationAssociate.getCurrentInstance();
+        String contractsDirName = associate.getResourceManager().getBaseContractsPath();
         assert null != contractsDirName;
         candidates = extContex.getResourcePaths(contractsDirName);
         if (null != candidates) {
@@ -409,7 +410,6 @@ public class WebConfiguration {
 
         Map<String, List<String>> contractMappings = new HashMap<>();
 
-        ApplicationAssociate associate = ApplicationAssociate.getCurrentInstance();
         Map<String, List<String>> contractsFromConfig = associate.getResourceLibraryContracts();
         List<String> contractsToExpose;
 
