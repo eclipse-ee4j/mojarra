@@ -16,6 +16,8 @@
 
 package com.sun.faces.application.resource;
 
+import static com.sun.faces.util.Util.ensureLeadingSlash;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -57,12 +59,15 @@ public class ResourceManager {
      */
     private static final Pattern CONFIG_MIMETYPE_PATTERN = Pattern.compile("[a-z-]*/[a-z0-9.\\*-]*");
 
-    private final FaceletWebappResourceHelper faceletWebappResourceHelper = new FaceletWebappResourceHelper();
-
     /**
      * {@link ResourceHelper} used for looking up webapp-based resources.
      */
-    private final ResourceHelper webappResourceHelper = new WebappResourceHelper();
+    private final WebappResourceHelper webappResourceHelper = new WebappResourceHelper();
+
+    /**
+     * {@link ResourceHelper} used for looking up webapp-based facelets resources.
+     */
+    private final FaceletWebappResourceHelper faceletWebappResourceHelper = new FaceletWebappResourceHelper(webappResourceHelper);
 
     /**
      * {@link ResourceHelper} used for looking up classpath-based resources.
@@ -174,6 +179,14 @@ public class ResourceManager {
 
     public Stream<String> getViewResources(FacesContext facesContext, String path, int maxDepth, ResourceVisitOption... options) {
         return faceletWebappResourceHelper.getViewResources(facesContext, path, maxDepth, options);
+    }
+    
+    public String getBaseContractsPath() {
+        return faceletWebappResourceHelper.getBaseContractsPath();
+    }
+
+    public boolean isContractsResource(String path) {
+        return ensureLeadingSlash(path).startsWith(getBaseContractsPath());
     }
 
     // ----------------------------------------------------- Private Methods
