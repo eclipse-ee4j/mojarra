@@ -38,7 +38,7 @@ import jakarta.faces.component.UIComponent;
  * <p>
  * Subinterfaces are provided for the common behavioral interfaces: {@link jakarta.faces.component.behavior.Behavior},
  * {@link jakarta.faces.component.ValueHolder}, {@link jakarta.faces.component.EditableValueHolder} and
- * {@link jakarta.faces.component.ActionSource2}. The default VDL implementation must provide a corresponding Facelets
+ * {@link jakarta.faces.component.ActionSource}. The default VDL implementation must provide a corresponding Facelets
  * tag handler for each of the subinterfaces of this interface.
  * </p>
  *

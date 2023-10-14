@@ -16,6 +16,8 @@
 
 package com.sun.faces.context;
 
+import static java.util.stream.Collectors.toSet;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,9 +26,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.sun.faces.cdi.CdiExtension;
 import com.sun.faces.el.ELContextImpl;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.FacesLogger;
@@ -548,7 +552,8 @@ public class FacesContextImpl extends FacesContext {
         DEFAULT_FACES_CONTEXT.remove();
 
         // Destroy our instance produced by FacesContextProducer.
-        Bean<?> bean = beanManager.resolve(beanManager.getBeans(FacesContext.class));
+        Set<Bean<?>> beans = beanManager.getBeans(FacesContext.class).stream().filter(bean -> CdiExtension.class.isAssignableFrom(bean.getBeanClass())).collect(toSet());
+        Bean<?> bean = beanManager.resolve(beans);
         ((AlterableContext) beanManager.getContext(bean.getScope())).destroy(bean);
     }
 

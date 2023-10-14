@@ -462,10 +462,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
     protected UIComponent findReparentedComponent(FaceletContext ctx, UIComponent parent, String tagId) {
         UIComponent facet = parent.getFacets().get(UIComponent.COMPOSITE_FACET_NAME);
         if (facet != null) {
-            UIComponent newParent = facet.findComponent((String) parent.getAttributes().get(tagId));
-            if (newParent != null) {
-                return ComponentSupport.findChildByTagId(ctx.getFacesContext(), newParent, tagId);
-            }
+            return findChild(ctx, facet, tagId);
         }
         return null;
     }

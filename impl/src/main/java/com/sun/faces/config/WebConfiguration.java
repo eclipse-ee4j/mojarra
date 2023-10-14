@@ -396,7 +396,8 @@ public class WebConfiguration {
         Set<String> candidates;
 
         // Scan for "contractMappings" in the web app root
-        String contractsDirName = getOptionValue(WebContextInitParameter.WebAppContractsDirectory);
+        ApplicationAssociate associate = ApplicationAssociate.getCurrentInstance();
+        String contractsDirName = associate.getResourceManager().getBaseContractsPath();
         assert null != contractsDirName;
         candidates = extContex.getResourcePaths(contractsDirName);
         if (null != candidates) {
@@ -437,7 +438,6 @@ public class WebConfiguration {
 
         Map<String, List<String>> contractMappings = new HashMap<>();
 
-        ApplicationAssociate associate = ApplicationAssociate.getCurrentInstance();
         Map<String, List<String>> contractsFromConfig = associate.getResourceLibraryContracts();
         List<String> contractsToExpose;
 
@@ -755,6 +755,7 @@ public class WebConfiguration {
         JakartaFacesProjectStage(ProjectStage.PROJECT_STAGE_PARAM_NAME, "Production"),
         AlternateLifecycleId(FacesServlet.LIFECYCLE_ID_ATTR, ""),
         ResourceExcludes(ResourceHandler.RESOURCE_EXCLUDES_PARAM_NAME, ResourceHandler.RESOURCE_EXCLUDES_DEFAULT_VALUE),
+        NumberOfClientWindows(ClientWindow.NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME, "10"),
         NumberOfViews("com.sun.faces.numberOfViewsInSession", "15"),
         NumberOfLogicalViews("com.sun.faces.numberOfLogicalViews", "15"),
         NumberOfActiveViewMaps("com.sun.faces.numberOfActiveViewMaps", "25"),
@@ -771,7 +772,7 @@ public class WebConfiguration {
         ResourceUpdateCheckPeriod("com.sun.faces.resourceUpdateCheckPeriod", "5"), // in minutes
         CompressableMimeTypes("com.sun.faces.compressableMimeTypes", ""),
         DisableUnicodeEscaping("com.sun.faces.disableUnicodeEscaping", "auto"),
-        FaceletsDefaultRefreshPeriod(ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, "2"),
+        FaceletsDefaultRefreshPeriod(ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, "0"), // this is default for non-prod; default for prod is set in WebConfiguration
         FaceletsViewMappings(ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME, ""),
         FaceletsLibraries(ViewHandler.FACELETS_LIBRARIES_PARAM_NAME, ""),
         FaceletsDecorators(ViewHandler.FACELETS_DECORATORS_PARAM_NAME, ""),

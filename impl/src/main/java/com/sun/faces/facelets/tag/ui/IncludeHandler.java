@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.facelets.el.VariableMapperWrapper;
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 import com.sun.faces.util.FacesLogger;
@@ -76,16 +75,12 @@ public final class IncludeHandler extends TagHandlerImpl {
         ctx.setVariableMapper(new VariableMapperWrapper(orig));
         try {
             nextHandler.apply(ctx, null);
-            WebConfiguration webConfig = WebConfiguration.getInstance();
-            if (path.startsWith(webConfig.getOptionValue(WebConfiguration.WebContextInitParameter.WebAppContractsDirectory))) {
-                throw new TagAttributeException(tag, src, "Invalid src, contract resources cannot be accessed this way : " + path);
-            }
             ctx.includeFacelet(parent, path);
         } catch (IOException e) {
             if (log.isLoggable(Level.FINE)) {
                 log.log(Level.FINE, e.toString(), e);
             }
-            throw new TagAttributeException(tag, src, "Invalid path : " + path);
+            throw new TagAttributeException(tag, src, "Invalid path : " + path, e);
         } finally {
             ctx.setVariableMapper(orig);
         }

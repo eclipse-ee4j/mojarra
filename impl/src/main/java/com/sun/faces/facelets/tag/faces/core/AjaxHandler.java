@@ -32,6 +32,7 @@ import java.util.TreeSet;
 import com.sun.faces.component.behavior.AjaxBehaviors;
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 import com.sun.faces.facelets.tag.composite.BehaviorHolderWrapper;
+import com.sun.faces.facelets.tag.composite.RetargetedAjaxBehavior;
 import com.sun.faces.facelets.tag.faces.CompositeComponentTagHandler;
 import com.sun.faces.renderkit.RenderKitUtils;
 
@@ -313,6 +314,7 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
                         executeClientIds.remove("@this");
                         stream(targetClientIds.trim().split(" +")).map(id -> "@this" + separatorChar + id).forEach(executeClientIds::add);
                         behavior.setExecute(executeClientIds);
+                        behavior = new RetargetedAjaxBehavior(behavior);
                     }
                 }
             }

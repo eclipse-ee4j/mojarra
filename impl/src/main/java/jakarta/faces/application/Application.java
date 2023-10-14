@@ -80,7 +80,7 @@ public abstract class Application {
      * Note that the specification for the default <code>ActionListener</code> contiues to call for the use of a
      * <strong>deprecated</strong> property (<code>action</code>) and class (<code>MethodBinding</code>). Unfortunately,
      * this is necessary because the default <code>ActionListener</code> must continue to work with components that do not
-     * implement {@link jakarta.faces.component.ActionSource2}, and only implement
+     * implement {@link jakarta.faces.component.ActionSource}, and only implement
      * {@link jakarta.faces.component.ActionSource}.
      * </p>
      *
@@ -1521,7 +1521,7 @@ public abstract class Application {
      * @param listener the implementation of {@link jakarta.faces.event.SystemEventListener} to remove from the internal
      * data structure.
      *
-     * @throws NullPointerException if any combination of <code>context</code>, <code>systemEventClass</code>, or
+     * @throws NullPointerException if any combination of <code>systemEventClass</code>, or
      * <code>listener</code> are <code>null</code>.
      *
      * @since 2.0
@@ -1556,7 +1556,7 @@ public abstract class Application {
      * @param listener the implementation of {@link jakarta.faces.event.SystemEventListener} to remove from the internal
      * data structure.
      *
-     * @throws NullPointerException if any combination of <code>context</code>, <code>systemEventClass</code>, or
+     * @throws NullPointerException if any combination of <code>systemEventClass</code>, or
      * <code>listener</code> are <code>null</code>.
      *
      * @since 2.0

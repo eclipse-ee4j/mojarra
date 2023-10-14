@@ -49,8 +49,8 @@ import jakarta.faces.view.ViewMetadata;
  * </p>
  *
  * <p>
- * Because this class implements {@link ActionSource2}, any actions that one would normally take on a component that
- * implements <code>ActionSource2</code>, such as {@link UICommand}, are valid for instances of this class. Instances of
+ * Because this class implements {@link ActionSource}, any actions that one would normally take on a component that
+ * implements <code>ActionSource</code>, such as {@link UICommand}, are valid for instances of this class. Instances of
  * this class participate in the regular Jakarta Faces lifecycle, including on Ajax requests.
  * </p>
  *
@@ -86,7 +86,7 @@ import jakarta.faces.view.ViewMetadata;
  *
  * @since 2.2
  */
-public class UIViewAction extends UIComponentBase implements ActionSource2 {
+public class UIViewAction extends UIComponentBase implements ActionSource {
 
     // ------------------------------------------------------ Manifest Constants
 
@@ -381,13 +381,14 @@ public class UIViewAction extends UIComponentBase implements ActionSource2 {
 
     /**
      * <p class="changed_added_2_2">
-     * Return <code>true</code> if this component should take the actions specified in the {@link #decode} method.
+     * <span class="changed_modified_4_1">Returns the <code>if</code> property of this component. If <code>true</code>
+     * then</span> this component should take the actions specified in the {@link #decode} method.
      * </p>
      *
-     * @return <code>true</code> if it should be rendered, <code>false</code> otherwise.
+     * @return <code>true</code> if it should <span class="changed_modified_4_1"> take the actions</span>,
+     * <code>false</code> otherwise.
      * @since 2.2
      */
-
     @Override
     public boolean isRendered() {
         return (Boolean) getStateHelper().eval(PropertyKeys.renderedAttr, true);

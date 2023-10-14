@@ -18,8 +18,8 @@
 package jakarta.faces.application;
 
 import static java.util.Arrays.stream;
-import static java.util.Collections.unmodifiableMap;
-import static java.util.stream.Collectors.toMap;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toUnmodifiableMap;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -27,7 +27,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.Objects;
 
 /**
  * <p>
@@ -137,14 +137,14 @@ public class FacesMessage implements Serializable {
      * order of their ordinal value.
      * </p>
      */
-    public static final List VALUES = List.of(values);
+    public static final List<Severity> VALUES = List.of(values);
 
     /**
      * <p>
      * Immutable <code>Map</code> of valid {@link jakarta.faces.application.FacesMessage.Severity} instances, keyed by name.
      * </p>
      */
-    public final static Map VALUES_MAP = unmodifiableMap(stream(values).collect(toMap(severity -> severity.severityName , Function.identity())));
+    public final static Map<String,Severity> VALUES_MAP = stream(values).collect(toUnmodifiableMap(severity -> severity.severityName, identity()));
 
     // ------------------------------------------------------ Instance Variables
 
@@ -312,6 +312,37 @@ public class FacesMessage implements Serializable {
      */
     public void rendered() {
         rendered = true;
+    }
+
+    /**
+     * @since 4.1
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(severity, summary, detail);
+    }
+
+    /**
+     * @since 4.1
+     */
+    @Override
+    public boolean equals(Object object) {
+        return (object == this) || (object != null && object.getClass() == getClass()
+            && Objects.equals(severity, ((FacesMessage) object).severity)
+            && Objects.equals(summary, ((FacesMessage) object).summary)
+            && Objects.equals(detail, ((FacesMessage) object).detail));
+    }
+
+    /**
+     * @since 4.1
+     */
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "["
+            + "severity='" + severity + "', "
+            + "summary='" + summary + "', "
+            + "detail='" + detail + "']"
+        ;
     }
 
     /**

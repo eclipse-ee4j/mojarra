@@ -20,12 +20,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.glassfish</groupId>
+        <groupId>org.glassfish.mojarra</groupId>
         <artifactId>mojarra-parent</artifactId>
-        <version>4.1.0-SNAPSHOT</version>
+        <version>5.0.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.eclipse.mojarra</groupId>
     <artifactId>mojarra-cdi</artifactId>
     <packaging>jar</packaging>
 
@@ -39,8 +38,8 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>jakarta.faces</artifactId>
+            <groupId>org.glassfish.mojarra</groupId>
+            <artifactId>mojarra</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>

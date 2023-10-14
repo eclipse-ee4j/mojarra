@@ -22,11 +22,16 @@ import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
 import static com.sun.faces.RIConstants.FACES_SERVLET_REGISTRATION;
 import static com.sun.faces.util.Util.isEmpty;
 import static java.lang.Boolean.parseBoolean;
+import static java.util.logging.Level.WARNING;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
+import com.sun.faces.util.FacesLogger;
+
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.annotation.FacesConfig;
 import jakarta.faces.application.ResourceDependencies;
 import jakarta.faces.application.ResourceDependency;
@@ -84,6 +89,8 @@ import jakarta.websocket.server.ServerContainer;
 public class FacesInitializer implements ServletContainerInitializer {
 
     // NOTE: Logging should not be used with this class.
+    // NOTE: It can, we only need to ensure that the logger is only invoked when there's a (Init)FacesContext.
+    private static final Logger LOGGER = FacesLogger.CONFIG.getLogger();
 
     public static final String FACES_PACKAGE_PREFIX = "jakarta.faces.";
     public static final String MOJARRA_PACKAGE_PREFIX = "com.sun.faces.";
@@ -112,6 +119,7 @@ public class FacesInitializer implements ServletContainerInitializer {
                 }
 
                 // Other concerns also handled if there is an existing Faces Servlet mapping
+                handleCdiConcerns(servletContext);
                 handleWebSocketConcerns(servletContext);
 
                 // The Configure listener will do the bulk of initializing (configuring) Faces in a later phase.
@@ -202,6 +210,41 @@ public class FacesInitializer implements ServletContainerInitializer {
 
         servletContext.setAttribute(FACES_SERVLET_MAPPINGS, newFacesServletRegistration.getMappings());
         servletContext.setAttribute(FACES_SERVLET_REGISTRATION, newFacesServletRegistration);
+    }
+
+    private static void handleCdiConcerns(ServletContext context) throws ServletException {
+        // If Weld is used as CDI impl then make sure it doesn't skip initialization when there's no BDA. See also #5232 and #5321
+
+        if (context.getAttribute("org.jboss.weld.environment.servlet.jakarta.enterprise.inject.spi.BeanManager") instanceof BeanManager) {
+            // Already initialized.
+            return;
+        }
+
+        ClassLoader cl = context.getClassLoader();
+        Class<?> weldInitializerClass;
+
+        try {
+            weldInitializerClass = cl.loadClass("org.jboss.weld.environment.servlet.EnhancedListener");
+        }
+        catch (ClassNotFoundException ignore) {
+            // Weld is actually not being used. That's OK for now, so just continue as usual.
+            return;
+        }
+
+        // Weld is being used so let's make sure it doesn't skip initialization when there's no BDA.
+        context.setInitParameter("org.jboss.weld.environment.servlet.archive.isolation", "false");
+
+        if (context.getAttribute("org.jboss.weld.environment.servlet.enhancedListenerUsed") == Boolean.TRUE) {
+            try {
+                LOGGER.log(WARNING, "Weld skipped initialization - forcing it to reinitialize");
+                ServletContainerInitializer weldInitializer = (ServletContainerInitializer) weldInitializerClass.getConstructor().newInstance();
+                weldInitializer.onStartup(null, context);
+            }
+            catch (Exception | LinkageError e) {
+                // Weld is being used but it failed for unclear reason while CDI should be enabled. That's not OK, so rethrow as ServletException.
+                throw new ServletException("Reinitializing Weld failed - giving up, please make sure your project contains at least one bean class with a bean defining annotation and retry", e);
+            }
+        }
     }
 
     private static void handleWebSocketConcerns(ServletContext context) throws ServletException {
