@@ -46,12 +46,12 @@ public class ELUtilsTest {
                 "com.sun.faces.mock.MockRenderKitFactory");
 
         new FacesContextImpl(externalContext, new LifecycleImpl());
+        FacesContext.getCurrentInstance().getAttributes().put(RIConstants.CDI_BEAN_MANAGER, new MockBeanManager());
         new ApplicationImpl();
 
         applicationAssociate = (ApplicationAssociate) externalContext.getApplicationMap()
                 .get(RIConstants.FACES_PREFIX + "ApplicationAssociate");
         
-        FacesContext.getCurrentInstance().getAttributes().put(RIConstants.CDI_BEAN_MANAGER, new MockBeanManager());
     }
 
     @Test

@@ -16,6 +16,8 @@
 
 package com.sun.faces.mock;
 
+import static java.util.Collections.emptySet;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -71,12 +73,12 @@ public class MockBeanManager implements BeanManager {
 
     @Override
     public Set<Bean<?>> getBeans(Type beanType, Annotation... qualifiers) {
-        return null;
+        return emptySet();
     }
 
     @Override
     public Set<Bean<?>> getBeans(String name) {
-        return null;
+        return emptySet();
     }
 
     @Override
@@ -156,12 +158,12 @@ public class MockBeanManager implements BeanManager {
 
     @Override
     public Set<Annotation> getInterceptorBindingDefinition(Class<? extends Annotation> bindingType) {
-        return null;
+        return emptySet();
     }
 
     @Override
     public Set<Annotation> getStereotypeDefinition(Class<? extends Annotation> stereotype) {
-        return null;
+        return emptySet();
     }
 
     @Override
