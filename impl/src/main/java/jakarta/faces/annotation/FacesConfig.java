@@ -613,14 +613,14 @@ public @interface FacesConfig {
         private static final AtomicReference<Optional<FacesConfig>> ANNOTATED_CONFIG = new AtomicReference<>();
 
         private enum StringArray {
-            SPACE_SEPARATED(Pattern.compile("\\s+")),
-            SEMICOLON_SEPARATED(Pattern.compile("\\s*;\\s*")),
-            COMMA_SEPARATED(Pattern.compile("\\s*,\\s*"));
+            SPACE_SEPARATED("\\s+"),
+            SEMICOLON_SEPARATED("\\s*;\\s*"),
+            COMMA_SEPARATED("\\s*,\\s*");
 
             private Pattern pattern;
             
-            private StringArray(Pattern pattern) {
-                this.pattern = pattern;
+            private StringArray(String pattern) {
+                this.pattern = Pattern.compile(pattern);
             }
 
             public String[] split(String value) {
