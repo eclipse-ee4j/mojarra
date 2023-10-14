@@ -44,6 +44,8 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import com.sun.faces.RIConstants;
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.application.resource.ResourceManager;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.context.FacesFileNotFoundException;
 import com.sun.faces.facelets.compiler.Compiler;
@@ -81,7 +83,9 @@ public class DefaultFaceletFactory {
     // provides a custom one. The DefaultResourceResolver simply uses
     // the ResourceHandler to do its work.
     private DefaultResourceResolver resolver;
+    private ResourceManager manager;
     private URL baseUrl;
+    private String baseUrlAsString;
     private long refreshPeriod;
     private FaceletCache<DefaultFacelet> cache;
     private ConcurrentMap<String, FaceletCache<DefaultFacelet>> cachePerContract;
@@ -104,7 +108,9 @@ public class DefaultFaceletFactory {
         this.compiler = compiler;
         cachePerContract = new ConcurrentHashMap<>();
         this.resolver = resolver;
+        this.manager = ApplicationAssociate.getInstance(externalContext).getResourceManager();
         baseUrl = resolver.resolveUrl("/");
+        baseUrlAsString = baseUrl.toExternalForm();
         this.idMappers = config.isOptionEnabled(UseFaceletsID) ? null : new Cache<>(new IdMapperFactory());
         refreshPeriod = refreshPeriod >= 0 ? refreshPeriod * 1000 : -1;
         this.refreshPeriod = refreshPeriod;
@@ -165,6 +171,22 @@ public class DefaultFaceletFactory {
         }
 
         return new URL(source, path);
+    }
+
+    /**
+     * Returns true if given url is a contracts resource.
+     * @param url source url
+     * @return true if given url is a contracts resource.
+     */
+    public boolean isContractsResource(URL url) {
+        String urlAsString = url.toExternalForm();
+        
+        if (!urlAsString.startsWith(baseUrlAsString)) {
+            return false;
+        }
+
+        String path = urlAsString.substring(baseUrlAsString.length());
+        return manager.isContractsResource(path);
     }
 
     /**
