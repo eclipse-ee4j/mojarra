@@ -69,12 +69,12 @@ import jakarta.faces.component.behavior.ClientBehaviorContext;
 import jakarta.faces.component.behavior.ClientBehaviorHint;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.component.html.HtmlEvents.DocumentElementEvent;
-import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 import jakarta.faces.component.html.HtmlMessages;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.PartialViewContext;
 import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 import jakarta.faces.model.SelectItem;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
@@ -147,11 +147,6 @@ public class RenderKitUtils {
      */
     private static final String ATTRIBUTES_THAT_ARE_SET_KEY = UIComponentBase.class.getName() + ".attributesThatAreSet";
 
-    /**
-     * UIViewRoot attribute key of a boolean value which remembers whether the view will be rendered with a HTML5 doctype.
-     */
-    private static final String VIEW_ROOT_ATTRIBUTES_DOCTYPE_KEY = RenderKitUtils.class.getName() + ".isOutputHtml5Doctype";
-    
     private static final String HTML5_BEHAVIOR_EVENT_ATTRIBUTE_PREFIX = "on";
 
     protected static final Logger LOGGER = FacesLogger.RENDERKIT.getLogger();
@@ -615,8 +610,8 @@ public class RenderKitUtils {
         boolean renderedBehavior = false;
 
         Collections.sort(setAttributes);
+        boolean isXhtml = RIConstants.XHTML_CONTENT_TYPE.equals(writer.getContentType());
         boolean isHtml5 = isOutputHtml5Doctype(context);
-        boolean isXhtml = !isHtml5 && RIConstants.XHTML_CONTENT_TYPE.equals(writer.getContentType());
         Map<String, Object> attrMap = component.getAttributes();
         for (String name : setAttributes) {
 
@@ -698,8 +693,8 @@ public class RenderKitUtils {
     private static void renderPassThruAttributesUnoptimized(FacesContext context, ResponseWriter writer, UIComponent component, Attribute[] knownAttributes,
             List<String> setAttributes, Map<String, List<ClientBehavior>> behaviors) throws IOException {
 
+        boolean isXhtml = RIConstants.XHTML_CONTENT_TYPE.equals(writer.getContentType());
         boolean isHtml5 = isOutputHtml5Doctype(context);
-        boolean isXhtml = !isHtml5 && RIConstants.XHTML_CONTENT_TYPE.equals(writer.getContentType());
 
         Map<String, Object> attrMap = component.getAttributes();
         Set<String> behaviorEventNames = new LinkedHashSet<>(behaviors.size() + 2);
