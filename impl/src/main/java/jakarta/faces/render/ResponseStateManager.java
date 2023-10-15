@@ -18,6 +18,7 @@ package jakarta.faces.render;
 
 import java.io.IOException;
 
+import jakarta.faces.application.StateManager.StateSavingMethod;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
@@ -117,15 +118,15 @@ public abstract class ResponseStateManager {
      *
      * <p>
      * If the state saving method for this application is
-     * {@link jakarta.faces.application.StateManager#STATE_SAVING_METHOD_CLIENT}, the implementation
+     * <span class="changed_modified_5_0">{@link StateSavingMethod#CLIENT}</span>, the implementation
      * <span class="changed_modified_2_2">must</span> encrypt the state to be saved to the client
      * <span class="changed_modified_2_2">in a tamper evident manner</span>.
      * </p>
      *
      * <p>
      * If the state saving method for this application is
-     * {@link jakarta.faces.application.StateManager#STATE_SAVING_METHOD_SERVER}, and the current request is an
-     * <code>Ajax</code> request {@link jakarta.faces.context.PartialViewContext#isAjaxRequest} returns <code>true</code>),
+     * <span class="changed_modified_5_0">{@link StateSavingMethod#SERVER}</span>, and the current request is an
+     * <code>Ajax</code> request ({@link jakarta.faces.context.PartialViewContext#isAjaxRequest} returns <code>true</code>),
      * use the current view state identifier if it is available (do not generate a new identifier).
      * </p>
      *
@@ -207,7 +208,7 @@ public abstract class ResponseStateManager {
      *
      * <p class="changed_added_2_2">
      * If the state saving method for this application is
-     * {@link jakarta.faces.application.StateManager#STATE_SAVING_METHOD_CLIENT}, <code>writeState()</code> will have
+     * <span class="changed_modified_5_0">{@link StateSavingMethod#CLIENT}</span>, <code>writeState()</code> will have
      * encrypted the state in a tamper evident manner. If the state fails to decrypt, or decrypts but indicates evidence of
      * tampering, a {@link jakarta.faces.application.ProtectedViewException} must be thrown.
      * </p>
