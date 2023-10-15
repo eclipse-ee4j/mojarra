@@ -225,7 +225,7 @@ public abstract class StateManager {
      * @param context the Faces context.
      * @return <code>true</code> if and only if the value of the <code>ServletContext</code> init parameter named by the
      * value of the constant {@link #STATE_SAVING_METHOD_PARAM_NAME} is equal <span class="changed_modified_2_3">(ignoring
-     * case)</span> to the value of the constant <span class="changed_modified_5_0">{@link StateSavingMethod#CLIENT}</code>. <code>false</code> otherwise.
+     * case)</span> to the value of the constant <span class="changed_modified_5_0">{@link StateSavingMethod#CLIENT}</span>. <code>false</code> otherwise.
      *
      * @throws NullPointerException if <code>context</code> is <code>null</code>.
      */
