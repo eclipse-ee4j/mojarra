@@ -133,7 +133,8 @@ public class UIInput extends UIOutput implements EditableValueHolder {
     /**
      * <p class="changed_added_2_0">
      * The name of a context parameter that indicates how empty values should be handled with respect to validation. See
-     * {@link #validateValue} for the allowable values and specification of how they should be interpreted.
+     * <span class="changed_modified_5_0">{@link ValidateEmptyFields} enum</span> for the allowable values and <span class="changed_modified_5_0">the {@link #validateValue}</span> specification of how they should be interpreted.
+     * <span class="changed_added_5_0">If this parameter is not specified, the default value is {@link ValidateEmptyFields#AUTO}.</span>
      * </p>
      */
 
@@ -154,6 +155,37 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * </p>
      */
     public static final String ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE = "jakarta.faces.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE";
+    
+    /**
+     * <p class="changed_added_5_0">
+     * Allowed values for the initialization parameter named by the {@value UIInput#VALIDATE_EMPTY_FIELDS_PARAM_NAME} constant.
+     * </p>
+     * 
+     * @since 5.0
+     */
+    public enum ValidateEmptyFields {
+
+        /**
+         * <p>
+         * Indicates that empty fields should only be validated when Bean Validation is present.
+         * </p>
+         */
+        AUTO,
+        
+        /**
+         * <p>
+         * Indicates that empty fields should always be validated.
+         * </p>
+         */
+        TRUE,
+        
+        /**
+         * <p>
+         * Indicates that empty fields should never be validated.
+         * </p>
+         */
+        FALSE;
+    }
 
     private static final Validator[] EMPTY_VALIDATOR = new Validator[0];
 
@@ -973,10 +1005,11 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      * implementation must obtain the init parameter <code>Map</code> from the <code>ExternalContext</code> and inspect the
      * value for the key given by the value of the symbolic constant {@link #VALIDATE_EMPTY_FIELDS_PARAM_NAME}. If there is
      * no value under that key, use the same key and look in the application map from the <code>ExternalContext</code>. If
-     * the value is <code>null</code> or equal to the string &#8220;<code>auto</code>&#8221; (without the quotes) take
+     * the value is <code>null</code> or equal <span class="changed_modified_5_0">(ignoring case) to the enum constant {@link ValidateEmptyFields#AUTO}</span> take
      * appropriate action to determine if Bean Validation is present in the runtime environment. If not, validation should
      * not proceed. If so, validation should proceed. If the value is equal (ignoring case) to
-     * &#8220;<code>true</code>&#8221; (without the quotes) validation should proceed. Otherwise, validation should not
+     * <span class="changed_modified_5_0">the enum constant {@link ValidateEmptyFields#TRUE}</span> validation should proceed. Otherwise, 
+     * <span class="changed_added_5_0">if the value is equal (ignoring case) to the enum constant {@link ValidateEmptyFields#FALSE}</span> validation should not
      * proceed.
      * </p>
      * </li>
@@ -1363,7 +1396,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
             if (null == val) {
                 val = (String) extCtx.getApplicationMap().get(VALIDATE_EMPTY_FIELDS_PARAM_NAME);
             }
-            if (val == null || "auto".equals(val)) {
+            if (val == null || ValidateEmptyFields.AUTO.name().equalsIgnoreCase(val)) {
                 validateEmptyFields = isBeansValidationAvailable(ctx);
             } else {
                 validateEmptyFields = Boolean.valueOf(val);
