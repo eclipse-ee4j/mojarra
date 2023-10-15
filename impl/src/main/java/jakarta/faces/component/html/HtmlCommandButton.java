@@ -18,12 +18,13 @@
 package jakarta.faces.component.html;
 
 import static jakarta.faces.component.html.HtmlComponentUtils.handleAttribute;
-import static jakarta.faces.component.html.HtmlEvents.getBodyElementEventNames;
+import static jakarta.faces.component.html.HtmlEvents.getFacesActionSourceEventNames;
 
 import java.util.Collection;
 
 import jakarta.faces.component.UICommand;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 
 /**
  * <p>
@@ -824,12 +825,12 @@ public class HtmlCommandButton extends UICommand implements ClientBehaviorHolder
 
     @Override
     public Collection<String> getEventNames() {
-        return getBodyElementEventNames(getFacesContext()); 
+        return getFacesActionSourceEventNames(getFacesContext()); 
     }
 
     @Override
     public String getDefaultEventName() {
-        return "action";
+        return FacesComponentEvent.action.name();
     }
 
 }

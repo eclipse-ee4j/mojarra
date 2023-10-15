@@ -35,6 +35,8 @@ import jakarta.faces.component.UICommand;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
+import jakarta.faces.component.html.HtmlEvents.DocumentElementEvent;
+import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.ActionEvent;
@@ -242,7 +244,7 @@ public class ButtonRenderer extends HtmlBasicRenderer {
     // which allows us to take a more optimized code path.
     private static Map<String, List<ClientBehavior>> getNonOnClickBehaviors(UIComponent component) {
 
-        return getPassThruBehaviors(component, "click", "action");
+        return getPassThruBehaviors(component, DocumentElementEvent.click.name(), FacesComponentEvent.action.name());
     }
 
 } // end of class ButtonRenderer

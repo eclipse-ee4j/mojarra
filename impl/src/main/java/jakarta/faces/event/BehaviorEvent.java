@@ -16,6 +16,8 @@
 
 package jakarta.faces.event;
 
+import jakarta.faces.component.ActionSource;
+import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.Behavior;
 import jakarta.faces.context.FacesContext;
@@ -32,6 +34,27 @@ public abstract class BehaviorEvent extends FacesEvent {
 
     private static final long serialVersionUID = 6516644738910462065L;
 
+    /**
+     * <p class="changed_added_5_0">
+     * Behavior events supported by Faces components.
+     * </p>
+     * 
+     * @since 5.0
+     */
+    public enum FacesComponentEvent {
+
+        /**
+         * Default event of {@link ActionSource} components.
+         */
+        action,
+
+        /**
+         * Default event of {@link EditableValueHolder} components. 
+         */
+        valueChange;
+
+    }
+    
     private final Behavior behavior;
 
     /**

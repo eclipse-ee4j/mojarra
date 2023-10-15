@@ -34,7 +34,7 @@ public interface ClientBehaviorHolder {
     /**
      * <p class="changed_added_2_0">
      * Attaches a {@link ClientBehavior} to the component implementing this interface for the specified event. Valid event
-     * names for a UIComponent implementation are defined by {@code ClientBehaviorHolder.getEventNames()}.
+     * names for a UIComponent implementation are defined by {@link ClientBehaviorHolder#getEventNames()}.
      * </p>
      *
      * @param eventName the logical name of the client-side event to attach the behavior to.

@@ -18,7 +18,7 @@
 package jakarta.faces.component.html;
 
 import static jakarta.faces.component.html.HtmlComponentUtils.handleAttribute;
-import static jakarta.faces.component.html.HtmlEvents.getBodyElementEventNames;
+import static jakarta.faces.component.html.HtmlEvents.getHtmlBodyElementEventNames;
 
 import java.util.Collection;
 
@@ -960,7 +960,7 @@ public class HtmlPanelGrid extends UIPanel implements ClientBehaviorHolder {
 
     @Override
     public Collection<String> getEventNames() {
-        return getBodyElementEventNames(getFacesContext()); 
+        return getHtmlBodyElementEventNames(getFacesContext()); 
     }
 
     @Override

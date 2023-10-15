@@ -18,12 +18,13 @@
 package jakarta.faces.component.html;
 
 import static jakarta.faces.component.html.HtmlComponentUtils.handleAttribute;
-import static jakarta.faces.component.html.HtmlEvents.getBodyElementEventNames;
+import static jakarta.faces.component.html.HtmlEvents.getFacesEditableValueHolderEventNames;
 
 import java.util.Collection;
 
 import jakarta.faces.component.UISelectMany;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 
 /**
  * <p>
@@ -762,12 +763,12 @@ public class HtmlSelectManyMenu extends UISelectMany implements ClientBehaviorHo
 
     @Override
     public Collection<String> getEventNames() {
-        return getBodyElementEventNames(getFacesContext()); 
+        return getFacesEditableValueHolderEventNames(getFacesContext()); 
     }
 
     @Override
     public String getDefaultEventName() {
-        return "valueChange";
+        return FacesComponentEvent.valueChange.name();
     }
 
 }

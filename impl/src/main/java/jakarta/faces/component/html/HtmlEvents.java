@@ -1,20 +1,22 @@
 package jakarta.faces.component.html;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toUnmodifiableList;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import jakarta.faces.component.ActionSource;
+import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 
 /**
- * https://html.spec.whatwg.org/multipage/webappapis.html#event-handlers-on-elements,-document-objects,-and-window-objects
- * 
- * 
+ * <p class="changed_added_5_0">
+ * Events supported by HTML elements as per <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-handlers-on-elements,-document-objects,-and-window-objects">current spec</a>.
+ * </p>
  * 
  * @since 5.0
  */
@@ -111,35 +113,65 @@ public final class HtmlEvents {
      */
     public static final String ADDITIONAL_HTML_EVENT_NAMES_PARAM_NAME = "jakarta.faces.ADDITIONAL_HTML_EVENT_NAMES";
 
-    private static final Collection<String> DOCUMENT_ELEMENT_EVENT_NAMES = Arrays.stream(DocumentElementEvent.values()).map(e -> e.name()).sorted().distinct().collect(toList());
-    private static final Collection<String> BODY_ELEMENT_EVENT_NAMES = Stream.concat(DOCUMENT_ELEMENT_EVENT_NAMES.stream(), Arrays.stream(BodyElementEvent.values()).map(e -> e.name())).sorted().distinct().collect(toList());
-
     private HtmlEvents() {
         throw new AssertionError();
     }
 
     /**
      * @param context The involved faces context.
-     * @return All supported event names for document elements.
+     * @return All additional HTML event names specified via {@link #ADDITIONAL_HTML_EVENT_NAMES_PARAM_NAME}.
      */
-    public static Collection<String> getDocumentElementEventNames(FacesContext context) {
-        return mergeAdditionalHtmlEventNamesIfNecessary(context, "jakarta.faces.component.html.HtmlEvents.DOCUMENT_ELEMENT_EVENT_NAMES", DOCUMENT_ELEMENT_EVENT_NAMES, Collections.emptyList());
+    public static Collection<String> getAdditionalHtmlEventNames(FacesContext context) {
+        return collect(Arrays.stream(Optional.ofNullable(context.getExternalContext().getInitParameter(ADDITIONAL_HTML_EVENT_NAMES_PARAM_NAME)).map(p -> p.split("\\s+")).orElse(new String[0])));
     }
 
     /**
      * @param context The involved faces context.
-     * @return All supported event names for body elements.
+     * @return All supported event names for HTML document elements, including additional HTML event names.
      */
-    public static Collection<String> getBodyElementEventNames(FacesContext context) {
-        return mergeAdditionalHtmlEventNamesIfNecessary(context, "jakarta.faces.component.html.HtmlEvents.BODY_ELEMENT_EVENT_NAMES", DOCUMENT_ELEMENT_EVENT_NAMES, BODY_ELEMENT_EVENT_NAMES);
+    public static Collection<String> getHtmlDocumentElementEventNames(FacesContext context) {
+        return cache(context, "HtmlEvents.DOCUMENT_ELEMENT_EVENT_NAMES", () -> merge(DocumentElementEvent.values(), getAdditionalHtmlEventNames(context)));
+    }
+
+    /**
+     * @param context The involved faces context.
+     * @return All supported event names for HTML body elements, including HTML document element event names.
+     */
+    public static Collection<String> getHtmlBodyElementEventNames(FacesContext context) {
+        return cache(context, "HtmlEvents.BODY_ELEMENT_EVENT_NAMES", () -> merge(BodyElementEvent.values(), getHtmlDocumentElementEventNames(context)));
+    }
+
+    /**
+     * @param context The involved faces context.
+     * @return All supported event names for HTML implementations of Faces {@link ActionSource} components, including HTML body element event names.
+     */
+    public static Collection<String> getFacesActionSourceEventNames(FacesContext context) {
+        return cache(context, "HtmlEvents.FACES_ACTION_SOURCE_EVENT_NAMES", () -> merge(FacesComponentEvent.action, getHtmlBodyElementEventNames(context)));
+    }
+
+    /**
+     * @param context The involved faces context.
+     * @return All supported event names for HTML implementations of Faces {@link EditableValueHolder} components, including HTML body element event names.
+     */
+    public static Collection<String> getFacesEditableValueHolderEventNames(FacesContext context) {
+        return cache(context, "HtmlEvents.FACES_EDITABLE_VALUE_HOLDER_EVENT_NAMES", () -> merge(FacesComponentEvent.valueChange, getHtmlBodyElementEventNames(context)));
+    }
+
+    private static Collection<String> collect(Stream<String> stream) {
+        return stream.sorted().distinct().collect(toUnmodifiableList());
+    }
+
+    private static Collection<String> merge(Enum<?> enumValue, Collection<String> eventNames) {
+        return merge(new Enum[] { enumValue }, eventNames);
+    }
+
+    private static Collection<String> merge(Enum<?>[] enumValues, Collection<String> eventNames) {
+        return collect(Stream.concat(Arrays.stream(enumValues).map(e -> e.name()), eventNames.stream()));
     }
 
     @SuppressWarnings("unchecked")
-    private static Collection<String> mergeAdditionalHtmlEventNamesIfNecessary(FacesContext context, String applicationKey, Collection<String> documentEventNames, Collection<String> bodyEventNames) {
-        return (Collection<String>) context.getExternalContext().getApplicationMap().computeIfAbsent(applicationKey, $ -> {
-            String[] additionalHtmlEventNames = Optional.ofNullable(context.getExternalContext().getInitParameter(ADDITIONAL_HTML_EVENT_NAMES_PARAM_NAME)).map(p -> p.split("\\s+")).orElse(new String[0]);
-            return Stream.concat(Stream.concat(documentEventNames.stream(), bodyEventNames.stream()), Arrays.stream(additionalHtmlEventNames)).sorted().distinct().collect(toList());
-        });
+    private static Collection<String> cache(FacesContext context, String applicationKey, Supplier<Collection<String>> supplier) {
+        return (Collection<String>) context.getExternalContext().getApplicationMap().computeIfAbsent(applicationKey, $ -> supplier.get());
     }
-    
+
 }

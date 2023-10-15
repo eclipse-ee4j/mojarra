@@ -17,12 +17,13 @@
 package jakarta.faces.component.html;
 
 import static jakarta.faces.component.html.HtmlComponentUtils.handleAttribute;
-import static jakarta.faces.component.html.HtmlEvents.getBodyElementEventNames;
+import static jakarta.faces.component.html.HtmlEvents.getFacesEditableValueHolderEventNames;
 
 import java.util.Collection;
 
 import jakarta.faces.component.UIInput;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 
 /**
  * Represents an HTML <code>input</code> element of type <code>file</code>.
@@ -818,12 +819,12 @@ public class HtmlInputFile extends UIInput implements ClientBehaviorHolder {
 
     @Override
     public Collection<String> getEventNames() {
-        return getBodyElementEventNames(getFacesContext()); 
+        return getFacesEditableValueHolderEventNames(getFacesContext()); 
     }
 
     @Override
     public String getDefaultEventName() {
-        return "valueChange";
+        return FacesComponentEvent.valueChange.name();
     }
 
 }

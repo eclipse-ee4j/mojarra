@@ -18,7 +18,7 @@
 package jakarta.faces.component.html;
 
 import static jakarta.faces.component.html.HtmlComponentUtils.handleAttribute;
-import static jakarta.faces.component.html.HtmlEvents.getDocumentElementEventNames;
+import static jakarta.faces.component.html.HtmlEvents.getHtmlDocumentElementEventNames;
 
 import java.util.Collection;
 
@@ -577,7 +577,7 @@ public class HtmlBody extends UIOutput implements ClientBehaviorHolder {
 
     @Override
     public Collection<String> getEventNames() {
-        return getDocumentElementEventNames(getFacesContext());
+        return getHtmlDocumentElementEventNames(getFacesContext());
     }
 
     @Override

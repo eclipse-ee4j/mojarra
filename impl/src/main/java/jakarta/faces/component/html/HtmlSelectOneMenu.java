@@ -18,12 +18,13 @@
 package jakarta.faces.component.html;
 
 import static jakarta.faces.component.html.HtmlComponentUtils.handleAttribute;
-import static jakarta.faces.component.html.HtmlEvents.getBodyElementEventNames;
+import static jakarta.faces.component.html.HtmlEvents.getFacesEditableValueHolderEventNames;
 
 import java.util.Collection;
 
 import jakarta.faces.component.UISelectOne;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 
 /**
  * <p>
@@ -763,12 +764,12 @@ public class HtmlSelectOneMenu extends UISelectOne implements ClientBehaviorHold
 
     @Override
     public Collection<String> getEventNames() {
-        return getBodyElementEventNames(getFacesContext()); 
+        return getFacesEditableValueHolderEventNames(getFacesContext()); 
     }
 
     @Override
     public String getDefaultEventName() {
-        return "valueChange";
+        return FacesComponentEvent.valueChange.name();
     }
 
 }

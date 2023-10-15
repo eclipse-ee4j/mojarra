@@ -16,7 +16,7 @@
 
 package com.sun.faces.component;
 
-import static jakarta.faces.component.html.HtmlEvents.getBodyElementEventNames;
+import static jakarta.faces.component.html.HtmlEvents.getHtmlBodyElementEventNames;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,7 +24,7 @@ import java.util.List;
 
 import jakarta.el.ValueExpression;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
-import jakarta.faces.component.html.HtmlEvents;
+import jakarta.faces.component.html.HtmlEvents.DocumentElementEvent;
 
 /**
  * <p>
@@ -360,12 +360,12 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel implemen
 
     @Override
     public Collection<String> getEventNames() {
-        return getBodyElementEventNames(getFacesContext()); 
+        return getHtmlBodyElementEventNames(getFacesContext()); 
     }
 
     @Override
     public String getDefaultEventName() {
-        return "click";
+        return DocumentElementEvent.click.name();
     }
 
     // TODO The same as jakarta.faces.component.html.HtmlComponentUtils#handleAttribute

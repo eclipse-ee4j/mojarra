@@ -68,6 +68,8 @@ import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
 import jakarta.faces.component.behavior.ClientBehaviorHint;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.component.html.HtmlEvents.DocumentElementEvent;
+import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 import jakarta.faces.component.html.HtmlMessages;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -356,11 +358,12 @@ public class RenderKitUtils {
 
         final String handlerName = "onchange";
         final Object userHandler = component.getAttributes().get(handlerName);
-        String behaviorEventName = "valueChange";
+        String behaviorEventName = FacesComponentEvent.valueChange.name();
+        String domEventName = DocumentElementEvent.change.name();
         if (component instanceof ClientBehaviorHolder) {
             Map<?, ?> behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
-            if (null != behaviors && behaviors.containsKey("change")) {
-                behaviorEventName = "change";
+            if (null != behaviors && behaviors.containsKey(domEventName)) {
+                behaviorEventName = domEventName;
             }
         }
 
@@ -379,11 +382,12 @@ public class RenderKitUtils {
 
         final String handlerName = "onclick";
         final Object userHandler = component.getAttributes().get(handlerName);
-        String behaviorEventName = "valueChange";
+        String behaviorEventName = FacesComponentEvent.valueChange.name();
+        String domEventName = DocumentElementEvent.click.name();
         if (component instanceof ClientBehaviorHolder) {
             Map<?, ?> behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
-            if (null != behaviors && behaviors.containsKey("click")) {
-                behaviorEventName = "click";
+            if (null != behaviors && behaviors.containsKey(domEventName)) {
+                behaviorEventName = domEventName;
             }
         }
 
@@ -405,18 +409,19 @@ public class RenderKitUtils {
 
         final String handlerName = "onclick";
         final Object userHandler = component.getAttributes().get(handlerName);
-        String behaviorEventName = "action";
+        String behaviorEventName = FacesComponentEvent.action.name();
+        String domEventName = DocumentElementEvent.click.name();
         if (component instanceof ClientBehaviorHolder) {
             Map<String, List<ClientBehavior>> behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
-            boolean mixed = null != behaviors && behaviors.containsKey("click") && behaviors.containsKey("action");
+            boolean mixed = null != behaviors && behaviors.containsKey(domEventName) && behaviors.containsKey(behaviorEventName);
             if (mixed) {
-                behaviorEventName = "click";
-                List<ClientBehavior> clickBehaviors = behaviors.get("click");
-                List<ClientBehavior> actionBehaviors = behaviors.get("action");
+                List<ClientBehavior> actionBehaviors = behaviors.get(behaviorEventName);
+                behaviorEventName = domEventName;
+                List<ClientBehavior> clickBehaviors = behaviors.get(domEventName);
                 clickBehaviors.addAll(actionBehaviors);
                 actionBehaviors.clear();
-            } else if (null != behaviors && behaviors.containsKey("click")) {
-                behaviorEventName = "click";
+            } else if (null != behaviors && behaviors.containsKey(domEventName)) {
+                behaviorEventName = domEventName;
             }
         }
 
@@ -427,7 +432,7 @@ public class RenderKitUtils {
     public static void renderFunction(FacesContext context, UIComponent component, Collection<ClientBehaviorContext.Parameter> params, String submitTarget)
             throws IOException {
 
-        ClientBehaviorContext behaviorContext = ClientBehaviorContext.createClientBehaviorContext(context, component, "action", submitTarget, params);
+        ClientBehaviorContext behaviorContext = ClientBehaviorContext.createClientBehaviorContext(context, component, FacesComponentEvent.action.name(), submitTarget, params);
         AjaxBehavior behavior = (AjaxBehavior) context.getApplication().createBehavior(AjaxBehavior.BEHAVIOR_ID);
         mapAttributes(component, behavior, "execute", "render", "onerror", "onevent", "resetValues");
 
@@ -1199,14 +1204,14 @@ public class RenderKitUtils {
         // First check for a Behavior action event.
         String behaviorEvent = BEHAVIOR_EVENT_PARAM.getValue(context);
         if (null != behaviorEvent) {
-            return "action".equals(behaviorEvent);
+            return FacesComponentEvent.action.name().equals(behaviorEvent);
         }
 
         // Not a Behavior-related request. Check for faces.ajax.request()
         // request params.
         String partialEvent = PARTIAL_EVENT_PARAM.getValue(context);
 
-        return "click".equals(partialEvent);
+        return DocumentElementEvent.click.name().equals(partialEvent);
     }
 
     /**
@@ -1585,7 +1590,7 @@ public class RenderKitUtils {
         // If we're submitting (either via a behavior, or by rendering
         // a submit script), we need to return false to prevent the
         // default button/link action.
-        if (submitting && ("action".equals(behaviorEventName) || "click".equals(behaviorEventName))) {
+        if (submitting && (FacesComponentEvent.action.name().equals(behaviorEventName) || DocumentElementEvent.click.name().equals(behaviorEventName))) {
             builder.append(";return false");
         }
 
