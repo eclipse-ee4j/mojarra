@@ -96,8 +96,7 @@ public abstract class StateManager {
      * </div>
      *
      * @since 2.0
-     * @deprecated Full state saving is widely considered to be a historical mistake in Faces.
-     * Full state saving will be removed in favor of partial state saving in order to keep the spec simple.
+     * @deprecated Full state saving will be removed in favor of partial state saving in order to keep the spec simple.
      * Therefore disabling partial state saving via this context parameter will not anymore be an option.
      */
     @Deprecated(forRemoval = true, since = "4.1")
@@ -109,8 +108,7 @@ public abstract class StateManager {
      * their state saved using the state saving mechanism specified in Jakarta Faces 1.2.
      * </p>
      * 
-     * @deprecated Full state saving is widely considered to be a historical mistake in Faces.
-     * Full state saving will be removed in favor of partial state saving in order to keep the spec simple.
+     * @deprecated Full state saving will be removed in favor of partial state saving in order to keep the spec simple.
      * Therefore specifying full state saving view IDs via this context parameter will not anymore be an option.
      */
     @Deprecated(forRemoval = true, since = "4.1")
