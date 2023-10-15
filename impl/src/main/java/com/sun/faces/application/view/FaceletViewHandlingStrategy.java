@@ -38,7 +38,6 @@ import static jakarta.faces.FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY;
 import static jakarta.faces.application.ProjectStage.Development;
 import static jakarta.faces.application.Resource.COMPONENT_RESOURCE_KEY;
 import static jakarta.faces.application.StateManager.IS_BUILDING_INITIAL_STATE;
-import static jakarta.faces.application.StateManager.STATE_SAVING_METHOD_SERVER;
 import static jakarta.faces.application.ViewHandler.CHARACTER_ENCODING_KEY;
 import static jakarta.faces.application.ViewHandler.DEFAULT_FACELETS_SUFFIX;
 import static jakarta.faces.application.ViewVisitOption.RETURN_AS_MINIMAL_IMPLICIT_OUTCOME;
@@ -102,6 +101,7 @@ import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.application.Resource;
+import jakarta.faces.application.StateManager.StateSavingMethod;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.application.ViewVisitOption;
 import jakarta.faces.component.ActionSource;
@@ -1843,7 +1843,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * @return true if we are, false otherwise.
      */
     private boolean isServerStateSaving() {
-        if (STATE_SAVING_METHOD_SERVER.equals(ContextParam.STATE_SAVING_METHOD.getValue(FacesContext.getCurrentInstance()))) {
+        if (StateSavingMethod.SERVER.name().equals(ContextParam.STATE_SAVING_METHOD.getValue(FacesContext.getCurrentInstance()))) {
             return true;
         }
 
