@@ -47,13 +47,12 @@ public abstract class StateManager {
     /**
      * <p>
      * The <code>ServletContext</code> init parameter consulted by the <code>StateManager</code> to tell where the state
-     * should be saved. Valid values are given as the values of the constants: {@link #STATE_SAVING_METHOD_CLIENT} or
-     * {@link #STATE_SAVING_METHOD_SERVER}.
+     * should be saved. Valid values are given as the values of the <span class="changed_modified_5_0">enum constants
+     * {@link StateSavingMethod}, case insensitive</span>.
      * </p>
      *
      * <p>
-     * If this parameter is not specified, the default value is the value of the constant
-     * {@link #STATE_SAVING_METHOD_CLIENT}.
+     * If this parameter is not specified, the default value is {@link StateSavingMethod#CLIENT}
      * </p>
      */
     public static final String STATE_SAVING_METHOD_PARAM_NAME = "jakarta.faces.STATE_SAVING_METHOD";
@@ -146,7 +145,10 @@ public abstract class StateManager {
      * Constant value for the initialization parameter named by the <code>STATE_SAVING_METHOD_PARAM_NAME</code> that
      * indicates state saving should take place on the client.
      * </p>
+     * 
+     * @deprecated Use {@link StateSavingMethod#CLIENT} instead.
      */
+    @Deprecated(since = "5.0", forRemoval = true)
     public static final String STATE_SAVING_METHOD_CLIENT = "client";
 
     /**
@@ -154,9 +156,36 @@ public abstract class StateManager {
      * Constant value for the initialization parameter named by the <code>STATE_SAVING_METHOD_PARAM_NAME</code> that
      * indicates state saving should take place on the server.
      * </p>
+     * 
+     * @deprecated Use {@link StateSavingMethod#SERVER} instead.
      */
+    @Deprecated(since = "5.0", forRemoval = true)
     public static final String STATE_SAVING_METHOD_SERVER = "server";
 
+    /**
+     * <p class="changed_added_5_0">
+     * Allowed values for the initialization parameter named by the {@value StateManager#STATE_SAVING_METHOD_PARAM_NAME}.
+     * </p>
+     * 
+     * @since 5.0
+     */
+    public enum StateSavingMethod {
+        
+        /**
+         * <p>
+         * Indicates that state saving should take place on the client.
+         * </p>
+         */
+        CLIENT,
+        
+        /**
+         * <p>
+         * Indicates that state saving should take place on the server.
+         * </p>
+         */
+        SERVER;
+    }
+    
 
     private Boolean savingStateInClient;
 
@@ -196,7 +225,7 @@ public abstract class StateManager {
      * @param context the Faces context.
      * @return <code>true</code> if and only if the value of the <code>ServletContext</code> init parameter named by the
      * value of the constant {@link #STATE_SAVING_METHOD_PARAM_NAME} is equal <span class="changed_modified_2_3">(ignoring
-     * case)</span> to the value of the constant {@link #STATE_SAVING_METHOD_CLIENT}. <code>false</code> otherwise.
+     * case)</span> to the value of the constant <span class="changed_modified_5_0">{@link StateSavingMethod#CLIENT}</code>. <code>false</code> otherwise.
      *
      * @throws NullPointerException if <code>context</code> is <code>null</code>.
      */
@@ -207,7 +236,7 @@ public abstract class StateManager {
         savingStateInClient = false;
 
         String saveStateParam = context.getExternalContext().getInitParameter(STATE_SAVING_METHOD_PARAM_NAME);
-        if (saveStateParam != null && saveStateParam.equalsIgnoreCase(STATE_SAVING_METHOD_CLIENT)) {
+        if (StateSavingMethod.CLIENT.name().equalsIgnoreCase(saveStateParam)) {
             savingStateInClient = true;
         }
 

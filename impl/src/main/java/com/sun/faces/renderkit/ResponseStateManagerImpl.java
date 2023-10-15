@@ -16,17 +16,17 @@
 
 package com.sun.faces.renderkit;
 
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.StateSavingMethod;
 import static com.sun.faces.util.RequestStateManager.FACES_VIEW_STATE;
-import static jakarta.faces.application.StateManager.STATE_SAVING_METHOD_CLIENT;
 
 import java.io.IOException;
 
 import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
 import com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter;
 import com.sun.faces.util.RequestStateManager;
 
 import jakarta.faces.FacesException;
+import jakarta.faces.application.StateManager.StateSavingMethod;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.render.ResponseStateManager;
 
@@ -40,8 +40,8 @@ public class ResponseStateManagerImpl extends ResponseStateManager {
 
     public ResponseStateManagerImpl() {
         WebConfiguration webConfig = WebConfiguration.getInstance();
-        String stateMode = webConfig.getOptionValue(StateSavingMethod);
-        helper = STATE_SAVING_METHOD_CLIENT.equalsIgnoreCase(stateMode) ? new ClientSideStateHelper() : new ServerSideStateHelper();
+        String stateMode = webConfig.getOptionValue(WebContextInitParameter.StateSavingMethod);
+        helper = StateSavingMethod.CLIENT.name().equalsIgnoreCase(stateMode) ? new ClientSideStateHelper() : new ServerSideStateHelper();
     }
 
     // --------------------------------------- Methods from ResponseStateManager
