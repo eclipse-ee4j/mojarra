@@ -23,9 +23,10 @@ import java.util.Map;
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.MethodExpression;
+import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.context.ExternalContext;
+import jakarta.faces.component.UIInput.ValidateEmptyFields;
 import jakarta.faces.context.FacesContext;
 
 /**
@@ -137,16 +138,24 @@ public class MethodExpressionValidator implements Validator, StateHolder {
     private boolean validateEmptyFields(FacesContext ctx) {
 
         if (validateEmptyFields == null) {
-            ExternalContext extCtx = ctx.getExternalContext();
-            String val = extCtx.getInitParameter(VALIDATE_EMPTY_FIELDS_PARAM_NAME);
+            ValidateEmptyFields val = null;
 
-            if (null == val) {
-                val = (String) extCtx.getApplicationMap().get(VALIDATE_EMPTY_FIELDS_PARAM_NAME);
+            if (!ContextParam.VALIDATE_EMPTY_FIELDS.isSet(ctx)) {
+                String appVal = (String) ctx.getExternalContext().getApplicationMap().get(VALIDATE_EMPTY_FIELDS_PARAM_NAME);
+                
+                if (appVal != null) {
+                    val = ValidateEmptyFields.valueOf(appVal.toUpperCase());
+                }
             }
-            if (val == null || "auto".equals(val)) {
+
+            if (val == null) {
+                val = ContextParam.VALIDATE_EMPTY_FIELDS.getValue(ctx);
+            }
+
+            if (val == ValidateEmptyFields.AUTO) {
                 validateEmptyFields = isBeansValidationAvailable(ctx);
             } else {
-                validateEmptyFields = Boolean.valueOf(val);
+                validateEmptyFields = val == ValidateEmptyFields.TRUE;
             }
         }
 

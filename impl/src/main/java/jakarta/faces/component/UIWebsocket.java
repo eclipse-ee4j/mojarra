@@ -25,8 +25,8 @@ import java.util.Collection;
 import java.util.regex.Pattern;
 
 import jakarta.el.ValueExpression;
+import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
-import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.push.Push;
 import jakarta.faces.push.PushContext;
@@ -97,9 +97,7 @@ public class UIWebsocket extends UIComponentBase implements ClientBehaviorHolder
      * @throws IllegalStateException When Websocket endpoint is not enabled.
      */
     public UIWebsocket() {
-        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-
-        if (!Boolean.parseBoolean(externalContext.getInitParameter(ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME))) {
+        if (!ContextParam.ENABLE_WEBSOCKET_ENDPOINT.isSet(FacesContext.getCurrentInstance())) {
             throw new IllegalStateException(ERROR_ENDPOINT_NOT_ENABLED);
         }
     }

@@ -1843,7 +1843,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * @return true if we are, false otherwise.
      */
     private boolean isServerStateSaving() {
-        if (StateSavingMethod.SERVER.name().equals(ContextParam.STATE_SAVING_METHOD.getValue(FacesContext.getCurrentInstance()))) {
+        if (StateSavingMethod.SERVER == ContextParam.STATE_SAVING_METHOD.getValue(FacesContext.getCurrentInstance())) {
             return true;
         }
 

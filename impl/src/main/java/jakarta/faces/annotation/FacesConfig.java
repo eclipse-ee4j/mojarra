@@ -41,9 +41,11 @@ import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.application.StateManager;
+import jakarta.faces.application.StateManager.StateSavingMethod;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UIInput.ValidateEmptyFields;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
@@ -239,17 +241,17 @@ public @interface FacesConfig {
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@value StateManager#STATE_SAVING_METHOD_PARAM_NAME} as {@link String} with default of {@value StateManager#STATE_SAVING_METHOD_CLIENT}.
+     * Returns {@value StateManager#STATE_SAVING_METHOD_PARAM_NAME} as {@link String} with default of {@link StateSavingMethod#CLIENT}.
      * </p>
      */
-    @Nonbinding String stateSavingMethod() default StateManager.STATE_SAVING_METHOD_CLIENT;
+    @Nonbinding StateSavingMethod stateSavingMethod() default StateSavingMethod.CLIENT;
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@value UIInput#VALIDATE_EMPTY_FIELDS_PARAM_NAME} as {@link String} with default of {@value UIInput#VALIDATE_EMPTY_FIELDS_DEFAULT_VALUE}.
+     * Returns {@value UIInput#VALIDATE_EMPTY_FIELDS_PARAM_NAME} as {@link String} with default of {@link ValidateEmptyFields#AUTO}.
      * </p>
      */
-    @Nonbinding String validateEmptyFields() default UIInput.VALIDATE_EMPTY_FIELDS_DEFAULT_VALUE;
+    @Nonbinding ValidateEmptyFields validateEmptyFields() default ValidateEmptyFields.AUTO;
 
     /**
      * <p class="changed_added_5_0">
@@ -414,13 +416,13 @@ public @interface FacesConfig {
         }
 
         @Override
-        public String stateSavingMethod() {
-            return StateManager.STATE_SAVING_METHOD_CLIENT;
+        public StateSavingMethod stateSavingMethod() {
+            return StateSavingMethod.CLIENT;
         }
 
         @Override
-        public String validateEmptyFields() {
-            return UIInput.VALIDATE_EMPTY_FIELDS_DEFAULT_VALUE;
+        public ValidateEmptyFields validateEmptyFields() {
+            return ValidateEmptyFields.AUTO;
         }
 
         @Override
@@ -576,13 +578,13 @@ public @interface FacesConfig {
         SEPARATOR_CHAR(UINamingContainer.SEPARATOR_CHAR_PARAM_NAME, FacesConfig::separatorChar),
 
         /**
-         * Returns {@value StateManager#STATE_SAVING_METHOD_PARAM_NAME} as {@link String} with default of {@value StateManager#STATE_SAVING_METHOD_CLIENT}.
+         * Returns {@value StateManager#STATE_SAVING_METHOD_PARAM_NAME} as {@link String} with default of {@link StateSavingMethod#CLIENT}..
          * @see StateManager#STATE_SAVING_METHOD_PARAM_NAME
          */
         STATE_SAVING_METHOD(StateManager.STATE_SAVING_METHOD_PARAM_NAME, FacesConfig::stateSavingMethod),
 
         /**
-         * Returns {@value UIInput#VALIDATE_EMPTY_FIELDS_PARAM_NAME} as {@link String} with default of {@value UIInput#VALIDATE_EMPTY_FIELDS_DEFAULT_VALUE}.
+         * Returns {@value UIInput#VALIDATE_EMPTY_FIELDS_PARAM_NAME} as {@link String} with default of {@link ValidateEmptyFields#AUTO}.
          */
         VALIDATE_EMPTY_FIELDS(UIInput.VALIDATE_EMPTY_FIELDS_PARAM_NAME, FacesConfig::validateEmptyFields),
 
