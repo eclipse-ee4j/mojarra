@@ -16,11 +16,12 @@
 
 package jakarta.faces.convert;
 
+import static com.sun.faces.RIConstants.NO_VALUE;
+import static com.sun.faces.util.Util.notNullArgs;
+import static com.sun.faces.util.Util.trimToNull;
+
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
-
-import static com.sun.faces.util.Util.EMPTY_STRING;
-import static com.sun.faces.util.Util.notNullArgs;
 
 /**
  * <p>
@@ -77,12 +78,11 @@ public class ShortConverter implements Converter<Short> {
         notNullArgs( context , component );
 
         // If the specified value is null or blank, return null
-        if ( value == null || value.isBlank() ) {
-            return null;
-        }
+        value = trimToNull(value);
+        if ( value == null ) return null;
 
         try {
-            return Short.valueOf(value.trim());
+            return Short.valueOf(value);
         } catch (NumberFormatException nfe) {
             throw new ConverterException(MessageFactory.getMessage(context, SHORT_ID, value, "32456", MessageFactory.getLabel(context, component)), nfe);
         } catch (Exception e) {
@@ -100,7 +100,7 @@ public class ShortConverter implements Converter<Short> {
 
         // If the specified value is null, return an empty string
         if (value == null) {
-            return EMPTY_STRING;
+            return NO_VALUE;
         }
 
         try {
@@ -109,4 +109,5 @@ public class ShortConverter implements Converter<Short> {
             throw new ConverterException(MessageFactory.getMessage(context, STRING_ID, value, MessageFactory.getLabel(context, component)), e);
         }
     }
+
 }

@@ -16,6 +16,10 @@
 
 package jakarta.faces.convert;
 
+import static com.sun.faces.RIConstants.NO_VALUE;
+import static com.sun.faces.util.Util.notNullArgs;
+import static com.sun.faces.util.Util.trimToNull;
+
 import java.util.UUID;
 
 import jakarta.faces.component.UIComponent;
@@ -69,14 +73,11 @@ public class UUIDConverter implements Converter<UUID> {
      */
     @Override
     public UUID getAsObject(FacesContext context, UIComponent component, String value) {
+        notNullArgs(context,component);
 
-        if (context == null || component == null) {
-            throw new NullPointerException();
-        }
-
-        if (value == null || value.isBlank()) {
-            return null;
-        }
+        // If the specified value is null or blank, return null
+        value = trimToNull(value);
+        if ( value == null ) return null;
 
         try {
             return UUID.fromString(value);
@@ -93,13 +94,10 @@ public class UUIDConverter implements Converter<UUID> {
      */
     @Override
     public String getAsString(FacesContext context, UIComponent component, UUID value) {
-
-        if (context == null || component == null) {
-            throw new NullPointerException();
-        }
+        notNullArgs(context,component);
 
         if (value == null) {
-            return "";
+            return NO_VALUE;
         }
 
         try {
@@ -108,4 +106,5 @@ public class UUIDConverter implements Converter<UUID> {
             throw new ConverterException(MessageFactory.getMessage(context, STRING_ID, value, MessageFactory.getLabel(context, component)), e);
         }
     }
+
 }

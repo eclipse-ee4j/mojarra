@@ -16,6 +16,10 @@
 
 package jakarta.faces.convert;
 
+import static com.sun.faces.RIConstants.NO_VALUE;
+import static com.sun.faces.util.Util.notNullArgs;
+import static com.sun.faces.util.Util.trimToNull;
+
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -23,6 +27,8 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Locale;
+
+import com.sun.faces.util.Util;
 
 import jakarta.el.ValueExpression;
 import jakarta.faces.component.PartialStateHolder;
@@ -90,8 +96,7 @@ import jakarta.faces.context.FacesContext;
  * </li>
  * </ul>
  */
-
-public class NumberConverter implements Converter, PartialStateHolder {
+public class NumberConverter implements Converter<Number>, PartialStateHolder {
 
     // ------------------------------------------------------ Manifest Constants
 
@@ -513,32 +518,24 @@ public class NumberConverter implements Converter, PartialStateHolder {
      * @throws NullPointerException {@inheritDoc}
      */
     @Override
-    public Object getAsObject(FacesContext context, UIComponent component, String value) {
+    public Number getAsObject(FacesContext context, UIComponent component, String value) {
+        Util.notNullArgs(context,component);
 
-        if (context == null || component == null) {
-            throw new NullPointerException();
-        }
-
-        Object returnValue = null;
+        Number returnValue = null;
         NumberFormat parser = null;
 
         try {
 
             // If the specified value is null or zero-length, return null
-            if (value == null) {
-                return null;
-            }
-            value = value.trim();
-            if (value.length() < 1) {
-                return null;
-            }
+            value = trimToNull(value);
+            if ( value == null ) return null;
 
             // Identify the Locale to use for parsing
             Locale locale = getLocale(context);
 
             // Create and configure the parser to be used
             parser = getNumberFormat(locale);
-            if (pattern != null && pattern.length() != 0 || "currency".equals(type)) {
+            if (pattern != null && !pattern.isEmpty() || "currency".equals(type)) {
                 configureCurrency(parser);
             }
             parser.setParseIntegerOnly(isIntegerOnly());
@@ -608,23 +605,14 @@ public class NumberConverter implements Converter, PartialStateHolder {
      * @throws NullPointerException {@inheritDoc}
      */
     @Override
-    public String getAsString(FacesContext context, UIComponent component, Object value) {
-
-        if (context == null || component == null) {
-            throw new NullPointerException();
-        }
+    public String getAsString(FacesContext context, UIComponent component, Number value) {
+        notNullArgs(context,component);
 
         try {
 
             // If the specified value is null, return a zero-length String
             if (value == null) {
-                return "";
-            }
-
-            // If the incoming value is still a string, play nice
-            // and return the value unmodified
-            if (value instanceof String) {
-                return (String) value;
+                return NO_VALUE;
             }
 
             // Identify the Locale to use for formatting
@@ -632,7 +620,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
 
             // Create and configure the formatter to be used
             NumberFormat formatter = getNumberFormat(locale);
-            if (pattern != null && pattern.length() != 0 || "currency".equals(type)) {
+            if (pattern != null && !pattern.isEmpty() || "currency".equals(type)) {
                 configureCurrency(formatter);
             }
             configureFormatter(formatter);
@@ -640,8 +628,6 @@ public class NumberConverter implements Converter, PartialStateHolder {
             // Perform the requested formatting
             return formatter.format(value);
 
-        } catch (ConverterException e) {
-            throw new ConverterException(MessageFactory.getMessage(context, STRING_ID, value, MessageFactory.getLabel(context, component)), e);
         } catch (Exception e) {
             throw new ConverterException(MessageFactory.getMessage(context, STRING_ID, value, MessageFactory.getLabel(context, component)), e);
         }

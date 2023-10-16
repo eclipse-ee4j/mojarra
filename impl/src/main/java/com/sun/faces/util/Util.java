@@ -119,9 +119,6 @@ public class Util {
     // Log instance for this class
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
-    public static final String EMPTY_STRING = "";
-    public static final String SPACE_STRING = " ";
-
     // README - make sure to add the message identifier constant
     // (ex: Util.CONVERSION_ERROR_MESSAGE_ID) and the number of substitution
     // parameters to test/com/sun/faces/util/TestUtil_messages (see comment there).
@@ -529,9 +526,8 @@ public class Util {
         Objects.requireNonNull(arg5);
     }
 
-    public static void notNullArgs( Object... objets ) {
-        Objects.requireNonNull(objets);
-        for ( Object obj : objets)
+    public static void notNullArgs( Object... objects ) {
+        for ( Object obj : objects )
             Objects.requireNonNull(obj);
     }
 
@@ -568,6 +564,19 @@ public class Util {
      */
     public static String nullIfBlank(String s) {
         return isBlank(s) ? null : s;
+    }
+
+    /**
+     * @return null if the input is null or contains only white spaces; otherwise, it returns the input with leading and trailing spaces removed.
+     */
+    public static String trimToNull( String value ) {
+        if ( value == null ) return null;
+
+        // todo: consider replacing String.trim with the new String.strip method which also supports unicode spaces
+        //       https://stackoverflow.com/questions/51266582/difference-between-string-trim-and-strip-methods-in-java-11
+        value = value.trim();
+
+        return value.isEmpty() ? null : value;
     }
 
     /**

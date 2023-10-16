@@ -16,11 +16,12 @@
 
 package jakarta.faces.convert;
 
+import static com.sun.faces.RIConstants.NO_VALUE;
+import static com.sun.faces.util.Util.notNullArgs;
+import static com.sun.faces.util.Util.trimToNull;
+
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
-
-import static com.sun.faces.util.Util.EMPTY_STRING;
-import static com.sun.faces.util.Util.notNullArgs;
 
 /**
  * <p>
@@ -77,12 +78,11 @@ public class FloatConverter implements Converter<Float> {
         notNullArgs( context , component );
 
         // If the specified value is null or blank, return null
-        if ( value == null || value.isBlank() ) {
-            return null;
-        }
+        value = trimToNull(value);
+        if ( value == null ) return null;
 
         try {
-            return Float.valueOf(value.trim());
+            return Float.valueOf(value);
         } catch (NumberFormatException nfe) {
             throw new ConverterException(MessageFactory.getMessage(context, FLOAT_ID, value, "2000000000", MessageFactory.getLabel(context, component)), nfe);
         } catch (Exception e) {
@@ -100,7 +100,7 @@ public class FloatConverter implements Converter<Float> {
 
         // If the specified value is null, return a zero-length String
         if (value == null) {
-            return EMPTY_STRING;
+            return NO_VALUE;
         }
 
         try {
