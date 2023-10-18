@@ -35,6 +35,7 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -257,7 +258,7 @@ public class DefaultFaceletFactory {
         try {
 
             // create a temporary file in that directory
-            tempFile = File.createTempFile("mojarra", ".tmp", tmpDir);
+            tempFile = Files.createTempFile(tmpDir.toPath(), "mojarra", ".tmp").toFile();
             osw = new OutputStreamWriter(new FileOutputStream(tempFile), RIConstants.CHAR_ENCODING);
             osw.append("<?xml version='1.0' encoding='");
             osw.append(RIConstants.CHAR_ENCODING);
