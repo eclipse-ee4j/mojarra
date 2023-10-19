@@ -32,6 +32,7 @@ import com.sun.faces.config.initfacescontext.NoOpELContext;
 import com.sun.faces.config.initfacescontext.NoOpFacesContext;
 import com.sun.faces.config.initfacescontext.ServletContextAdapter;
 import com.sun.faces.context.ApplicationMap;
+import com.sun.faces.context.ExceptionHandlerImpl;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
@@ -41,6 +42,7 @@ import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationFactory;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExceptionHandler;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletContext;
@@ -107,6 +109,11 @@ public class InitFacesContext extends NoOpFacesContext {
     public Application getApplication() {
         ApplicationFactory factory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
         return factory.getApplication();
+    }
+
+    @Override
+    public ExceptionHandler getExceptionHandler() {
+        return new ExceptionHandlerImpl(false);
     }
 
     @Override
