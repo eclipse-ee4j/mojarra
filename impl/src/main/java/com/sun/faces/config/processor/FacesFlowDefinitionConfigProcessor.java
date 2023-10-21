@@ -16,6 +16,7 @@
 
 package com.sun.faces.config.processor;
 
+import static com.sun.faces.util.Util.createLocalDocumentBuilderFactory;
 import static com.sun.faces.util.Util.notNull;
 
 import java.net.MalformedURLException;
@@ -127,7 +128,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
         }
         String flowName = segments[segments.length - 2];
 
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilderFactory dbf = createLocalDocumentBuilderFactory();
         dbf.setNamespaceAware(true);
         DocumentBuilder builder = dbf.newDocumentBuilder();
         DOMImplementation domImpl = builder.getDOMImplementation();

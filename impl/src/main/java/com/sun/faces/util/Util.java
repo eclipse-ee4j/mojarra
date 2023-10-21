@@ -62,6 +62,7 @@ import java.util.stream.StreamSupport;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -269,12 +270,27 @@ public class Util {
         return unitTestModeEnabled;
     }
 
+    public static interface ThrowingBiConsumer<T, U> {
+        void accept(T t, U u) throws Exception;
+    }
+
+    private static <F> void setPossiblyUnsupportedFeature(ThrowingBiConsumer<F, Boolean> setter, F feature, Boolean flag) {
+        try {
+            setter.accept(feature, flag);
+        } catch (Exception e) {
+            throw new IllegalStateException("The feature '" + feature + "' is not supported by your XML processor.", e);
+        }
+    }
+
     public static TransformerFactory createTransformerFactory() {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         TransformerFactory factory;
         try {
             Thread.currentThread().setContextClassLoader(Util.class.getClassLoader());
             factory = TransformerFactory.newInstance();
+            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+            setPossiblyUnsupportedFeature(factory::setFeature, XMLConstants.FEATURE_SECURE_PROCESSING, true);
         } finally {
             Thread.currentThread().setContextClassLoader(cl);
         }
@@ -298,10 +314,22 @@ public class Util {
         DocumentBuilderFactory factory;
         try {
             Thread.currentThread().setContextClassLoader(Util.class.getClassLoader());
-            factory = DocumentBuilderFactory.newInstance();
+            factory = createLocalDocumentBuilderFactory();
         } finally {
             Thread.currentThread().setContextClassLoader(cl);
         }
+        return factory;
+    }
+
+    public static DocumentBuilderFactory createLocalDocumentBuilderFactory() {
+        DocumentBuilderFactory factory;
+        factory = DocumentBuilderFactory.newInstance();
+        setPossiblyUnsupportedFeature(factory::setFeature, "http://xml.org/sax/features/external-parameter-entities", false);
+        setPossiblyUnsupportedFeature(factory::setFeature, "http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        setPossiblyUnsupportedFeature(factory::setFeature, "http://xml.org/sax/features/external-general-entities", false);
+        factory.setXIncludeAware(false);
+        factory.setExpandEntityReferences(false);
+        setPossiblyUnsupportedFeature(factory::setFeature, XMLConstants.FEATURE_SECURE_PROCESSING, true);
         return factory;
     }
 
