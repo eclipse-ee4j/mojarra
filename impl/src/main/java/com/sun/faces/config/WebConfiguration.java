@@ -749,7 +749,6 @@ public class WebConfiguration {
         // if a parameter is to be deprecated, then the <name>Deprecated enum element *must* appear after the one that is taking
         // its place. The reporting logic depends on this.
 
-        ManagedBeanFactoryDecorator("com.sun.faces.managedBeanFactoryDecoratorClass", ""),
         StateSavingMethod(StateManager.STATE_SAVING_METHOD_PARAM_NAME, "server"),
         FaceletsSuffix(ViewHandler.FACELETS_SUFFIX_PARAM_NAME, ViewHandler.DEFAULT_FACELETS_SUFFIX),
         JakartaFacesConfigFiles(FacesServlet.CONFIG_FILES_ATTR, ""),
@@ -767,7 +766,6 @@ public class WebConfiguration {
         FaceletsBufferSize(ViewHandler.FACELETS_BUFFER_SIZE_PARAM_NAME, "1024"),
         ClientStateWriteBufferSize("com.sun.faces.clientStateWriteBufferSize", "8192"),
         ResourceBufferSize("com.sun.faces.resourceBufferSize", "2048"),
-        ExpressionFactory("com.sun.faces.expressionFactory", "com.sun.el.ExpressionFactoryImpl"),
         ClientStateTimeout("com.sun.faces.clientStateTimeout", ""),
         DefaultResourceMaxAge("com.sun.faces.defaultResourceMaxAge", "604800000"), // 7 days
         ResourceUpdateCheckPeriod("com.sun.faces.resourceUpdateCheckPeriod", "5"), // in minutes
@@ -859,16 +857,12 @@ public class WebConfiguration {
         DisableFacesServletAutomaticMapping(FacesServlet.DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME, false),
         AutomaticExtensionlessMapping(FacesServlet.AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME, false),
         EnableClientStateDebugging("com.sun.faces.enableClientStateDebugging", false),
-        EnableHtmlTagLibraryValidator("com.sun.faces.enableHtmlTagLibValidator", false),
-        EnableCoreTagLibraryValidator("com.sun.faces.enableCoreTagLibValidator", false),
         PreferXHTMLContentType("com.sun.faces.preferXHTML", false),
         CompressViewState("com.sun.faces.compressViewState", true),
-        CompressJavaScript("com.sun.faces.compressJavaScript", true),
         EnableJSStyleHiding("com.sun.faces.enableJSStyleHiding", false),
         EnableScriptInAttributeValue("com.sun.faces.enableScriptsInAttributeValues", true),
         WriteStateAtFormEnd("com.sun.faces.writeStateAtFormEnd", true),
         EnableLazyBeanValidation("com.sun.faces.enableLazyBeanValidation", true),
-        EnableLoadBundle11Compatibility("com.sun.faces.enabledLoadBundle11Compatibility", false),
         SerializeServerState(StateManager.SERIALIZE_SERVER_STATE_PARAM_NAME, false),
         EnableViewStateIdRendering("com.sun.faces.enableViewStateIdRendering", true),
         RegisterConverterPropertyEditors("com.sun.faces.registerConverterPropertyEditors", false),
@@ -883,9 +877,7 @@ public class WebConfiguration {
         EnableThreading("com.sun.faces.enableThreading", false),
         AllowTextChildren("com.sun.faces.allowTextChildren", false),
         CacheResourceModificationTimestamp("com.sun.faces.cacheResourceModificationTimestamp", false),
-        EnableAgressiveSessionDirtying("com.sun.faces.enableAgressiveSessionDirtying", false),
         EnableDistributable("com.sun.faces.enableDistributable", false),
-        EnableFaceletsResourceResolverResolveCompositeComponents("com.sun.faces.enableFaceletsResourceResolverCompositeComponents", false),
         EnableMissingResourceLibraryDetection("com.sun.faces.enableMissingResourceLibraryDetection", false),
         DisableIdUniquenessCheck("com.sun.faces.disableIdUniquenessCheck", false),
         EnableTransitionTimeNoOpFlash("com.sun.faces.enableTransitionTimeNoOpFlash", false),
