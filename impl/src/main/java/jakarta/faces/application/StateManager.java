@@ -95,7 +95,10 @@ public abstract class StateManager {
      * </div>
      *
      * @since 2.0
+     * @deprecated Full state saving will be removed in favor of partial state saving in order to keep the spec simple.
+     * Therefore disabling partial state saving via this context parameter will not anymore be an option.
      */
+    @Deprecated(forRemoval = true, since = "4.1")
     public static final String PARTIAL_STATE_SAVING_PARAM_NAME = "jakarta.faces.PARTIAL_STATE_SAVING";
 
     /**
@@ -103,7 +106,11 @@ public abstract class StateManager {
      * The runtime must interpret the value of this parameter as a comma separated list of view IDs, each of which must have
      * their state saved using the state saving mechanism specified in Jakarta Faces 1.2.
      * </p>
+     * 
+     * @deprecated Full state saving will be removed in favor of partial state saving in order to keep the spec simple.
+     * Therefore specifying full state saving view IDs via this context parameter will not anymore be an option.
      */
+    @Deprecated(forRemoval = true, since = "4.1")
     public static final String FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME = "jakarta.faces.FULL_STATE_SAVING_VIEW_IDS";
 
     /**
