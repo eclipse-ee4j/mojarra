@@ -718,7 +718,6 @@ public class WebConfiguration {
         // if a parameter is to be deprecated, then the <name>Deprecated enum element *must* appear after the one that is taking
         // its place. The reporting logic depends on this.
 
-        ManagedBeanFactoryDecorator("com.sun.faces.managedBeanFactoryDecoratorClass", ""),
         NumberOfViews("com.sun.faces.numberOfViewsInSession", "15"),
         NumberOfLogicalViews("com.sun.faces.numberOfLogicalViews", "15"),
         NumberOfActiveViewMaps("com.sun.faces.numberOfActiveViewMaps", "25"),
@@ -728,7 +727,6 @@ public class WebConfiguration {
         SerializationProviderClass("com.sun.faces.serializationProvider", ""),
         ClientStateWriteBufferSize("com.sun.faces.clientStateWriteBufferSize", "8192"),
         ResourceBufferSize("com.sun.faces.resourceBufferSize", "2048"),
-        ExpressionFactory("com.sun.faces.expressionFactory", "com.sun.el.ExpressionFactoryImpl"),
         ClientStateTimeout("com.sun.faces.clientStateTimeout", ""),
         DefaultResourceMaxAge("com.sun.faces.defaultResourceMaxAge", "604800000"), // 7 days
         ResourceUpdateCheckPeriod("com.sun.faces.resourceUpdateCheckPeriod", "5"), // in minutes
@@ -808,16 +806,12 @@ public class WebConfiguration {
         ForceLoadFacesConfigFiles("com.sun.faces.forceLoadConfiguration", false),
         DisableClientStateEncryption("com.sun.faces.disableClientStateEncryption", false),
         EnableClientStateDebugging("com.sun.faces.enableClientStateDebugging", false),
-        EnableHtmlTagLibraryValidator("com.sun.faces.enableHtmlTagLibValidator", false),
-        EnableCoreTagLibraryValidator("com.sun.faces.enableCoreTagLibValidator", false),
         PreferXHTMLContentType("com.sun.faces.preferXHTML", false),
         CompressViewState("com.sun.faces.compressViewState", true),
-        CompressJavaScript("com.sun.faces.compressJavaScript", true),
         EnableJSStyleHiding("com.sun.faces.enableJSStyleHiding", false),
         EnableScriptInAttributeValue("com.sun.faces.enableScriptsInAttributeValues", true),
         WriteStateAtFormEnd("com.sun.faces.writeStateAtFormEnd", true),
         EnableLazyBeanValidation("com.sun.faces.enableLazyBeanValidation", true),
-        EnableLoadBundle11Compatibility("com.sun.faces.enabledLoadBundle11Compatibility", false),
         EnableViewStateIdRendering("com.sun.faces.enableViewStateIdRendering", true),
         RegisterConverterPropertyEditors("com.sun.faces.registerConverterPropertyEditors", false),
         EnableHttpMethodRestrictionPhaseListener("com.sun.faces.ENABLE_HTTP_METHOD_RESTRICTION_PHASE_LISTENER", false),
@@ -826,9 +820,7 @@ public class WebConfiguration {
         EnableThreading("com.sun.faces.enableThreading", false),
         AllowTextChildren("com.sun.faces.allowTextChildren", false),
         CacheResourceModificationTimestamp("com.sun.faces.cacheResourceModificationTimestamp", false),
-        EnableAgressiveSessionDirtying("com.sun.faces.enableAgressiveSessionDirtying", false),
         EnableDistributable("com.sun.faces.enableDistributable", false), // NOTE: this is indeed implicitly set to true when web.xml distributable is also set, see ConfigureListener.
-        EnableFaceletsResourceResolverResolveCompositeComponents("com.sun.faces.enableFaceletsResourceResolverCompositeComponents", false),
         EnableMissingResourceLibraryDetection("com.sun.faces.enableMissingResourceLibraryDetection", false),
         DisableIdUniquenessCheck("com.sun.faces.disableIdUniquenessCheck", false),
         EnableTransitionTimeNoOpFlash("com.sun.faces.enableTransitionTimeNoOpFlash", false),

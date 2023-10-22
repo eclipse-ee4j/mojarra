@@ -21,8 +21,12 @@ import static java.util.Arrays.asList;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Logger;
+
+import com.sun.faces.util.FacesLogger;
 
 import jakarta.faces.annotation.FacesConfig.ContextParam;
+import jakarta.faces.application.StateManager;
 import jakarta.faces.context.FacesContext;
 
 /**
@@ -30,6 +34,8 @@ import jakarta.faces.context.FacesContext;
  * state saving with some views using full state saving.
  */
 public class ApplicationStateInfo {
+
+    private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
     private final boolean partialStateSaving;
     private Set<String> fullStateViewIds;
@@ -44,6 +50,10 @@ public class ApplicationStateInfo {
             String[] viewIds = ContextParam.FULL_STATE_SAVING_VIEW_IDS.getValue(context);
             fullStateViewIds = new HashSet<>(viewIds.length, 1.0f);
             fullStateViewIds.addAll(asList(viewIds));
+        }
+        else {
+            LOGGER.warning("The configuration '" + StateManager.PARTIAL_STATE_SAVING_PARAM_NAME
+                + "' is deprecated as of Faces 4.1 and should not longer be used.");
         }
 
     }
