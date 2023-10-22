@@ -17,6 +17,7 @@
 package com.sun.faces.context;
 
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.ForceAlwaysWriteFlashCookie;
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.PartialStateSaving;
 
 import java.util.Map;
 
@@ -78,7 +79,7 @@ public class FacesContextFactoryImpl extends FacesContextFactory {
         Map<String, Object> appMap = extContext.getApplicationMap();
         Map<Object, Object> attrs = context.getAttributes();
         attrs.put(ContextParam.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE.getName(), ContextParam.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE.getValue(context));
-        attrs.put(ContextParam.PARTIAL_STATE_SAVING.getName(), ContextParam.PARTIAL_STATE_SAVING.getValue(context));
+        attrs.put(PartialStateSaving, webConfig.isOptionEnabled(PartialStateSaving) ? Boolean.TRUE : Boolean.FALSE);
         attrs.put(ForceAlwaysWriteFlashCookie, webConfig.isOptionEnabled(ForceAlwaysWriteFlashCookie) ? Boolean.TRUE : Boolean.FALSE);
         attrs.put(ContextParam.VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS.getName(), ContextParam.VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS.getValue(context));
         attrs.put(ContextParam.ENABLE_VALIDATE_WHOLE_BEAN.getName(), ContextParam.ENABLE_VALIDATE_WHOLE_BEAN.getValue(context));

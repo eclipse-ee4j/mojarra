@@ -184,13 +184,6 @@ public @interface FacesConfig {
 
     /**
      * <p class="changed_added_5_0">
-     * Returns {@value StateManager#FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME} as {@link String} array with default of empty string array.
-     * </p>
-     */
-    @Nonbinding String[] fullStateSavingViewIds() default {};
-
-    /**
-     * <p class="changed_added_5_0">
      * Returns {@value UIInput#EMPTY_STRING_AS_NULL_PARAM_NAME} as {@link Boolean} with default of {@code false}.
      * </p>
      */
@@ -202,13 +195,6 @@ public @interface FacesConfig {
      * </p>
      */
     @Nonbinding int numberOfClientWindows() default ClientWindow.NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE;
-
-    /**
-     * <p class="changed_added_5_0">
-     * Returns {@value StateManager#PARTIAL_STATE_SAVING_PARAM_NAME} as {@link Boolean} with default of {@code true}.
-     * </p>
-     */
-    @Nonbinding boolean partialStateSaving() default true;
 
     /**
      * <p class="changed_added_5_0">
@@ -376,11 +362,6 @@ public @interface FacesConfig {
         }
 
         @Override
-        public String[] fullStateSavingViewIds() {
-            return EMPTY_STRING_ARRAY;
-        }
-
-        @Override
         public boolean interpretEmptyStringSubmittedValuesAsNull() {
             return false;
         }
@@ -390,11 +371,6 @@ public @interface FacesConfig {
             return ClientWindow.NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE;
         }
         
-        @Override
-        public boolean partialStateSaving() {
-            return true;
-        }
-
         @Override
         public ProjectStage projectStage() {
             return ProjectStage.Production;
@@ -537,11 +513,6 @@ public @interface FacesConfig {
         FACELETS_VIEW_MAPPINGS(ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME, FacesConfig::faceletsViewMappings, StringArray.SEMICOLON_SEPARATED),
 
         /**
-         * Returns {@value StateManager#FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME} as {@link String} array with default of empty string array.
-         */
-        FULL_STATE_SAVING_VIEW_IDS(StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME, FacesConfig::fullStateSavingViewIds, StringArray.COMMA_SEPARATED),
-
-        /**
          * Returns {@value UIInput#EMPTY_STRING_AS_NULL_PARAM_NAME} as {@link Boolean} with default of {@code false}.
          */
         INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL(UIInput.EMPTY_STRING_AS_NULL_PARAM_NAME, FacesConfig::interpretEmptyStringSubmittedValuesAsNull),
@@ -550,11 +521,6 @@ public @interface FacesConfig {
          * Returns {@value ClientWindow#NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME} as {@link Integer} with default of {@value ClientWindow#NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE}.
          */
         NUMBER_OF_CLIENT_WINDOWS(ClientWindow.NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME, FacesConfig::numberOfClientWindows),
-
-        /**
-         * Returns {@value StateManager#PARTIAL_STATE_SAVING_PARAM_NAME} as {@link Boolean} with default of {@code true}.
-         */
-        PARTIAL_STATE_SAVING(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, FacesConfig::partialStateSaving),
 
         /**
          * Returns {@value ProjectStage#PROJECT_STAGE_PARAM_NAME} as {@link ProjectStage} with default of {@link ProjectStage#Production}.
@@ -688,6 +654,7 @@ public @interface FacesConfig {
         /**
          * <p>
          * Returns the value of the context parameter, converted to the expected type as indicated by {@link #getType()}.
+         * This method never returns {@code null}. When the context parameter is not set, a default value is returned.
          * @param <T> The expected return type.
          * @param context The involved faces context.
          * @return The value of the context parameter, converted to the expected type as indicated by {@link #getType()}.

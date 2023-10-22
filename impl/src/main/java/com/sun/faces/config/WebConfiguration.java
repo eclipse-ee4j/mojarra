@@ -52,6 +52,7 @@ import com.sun.faces.util.Util;
 
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.application.StateManager;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PhaseListener;
@@ -733,6 +734,7 @@ public class WebConfiguration {
         CompressableMimeTypes("com.sun.faces.compressableMimeTypes", ""),
         DisableUnicodeEscaping("com.sun.faces.disableUnicodeEscaping", "auto"),
         DuplicateJARPattern("com.sun.faces.duplicateJARPattern", ""),
+        FullStateSavingViewIds(StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME, ""),
         AnnotationScanPackages("com.sun.faces.annotationScanPackages", ""),
         FaceletsProcessingFileExtensionProcessAs("", ""),
         ;
@@ -815,6 +817,7 @@ public class WebConfiguration {
         EnableViewStateIdRendering("com.sun.faces.enableViewStateIdRendering", true),
         RegisterConverterPropertyEditors("com.sun.faces.registerConverterPropertyEditors", false),
         EnableHttpMethodRestrictionPhaseListener("com.sun.faces.ENABLE_HTTP_METHOD_RESTRICTION_PHASE_LISTENER", false),
+        PartialStateSaving(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, true),
         GenerateUniqueServerStateIds("com.sun.faces.generateUniqueServerStateIds", true),
         AutoCompleteOffOnViewState("com.sun.faces.autoCompleteOffOnViewState", true),
         EnableThreading("com.sun.faces.enableThreading", false),
