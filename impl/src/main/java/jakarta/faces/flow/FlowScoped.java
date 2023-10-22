@@ -41,6 +41,10 @@ import jakarta.enterprise.context.NormalScope;
  * is necessary to also replace the CDI extension that implements the specified behavior regarding
  * <code>FlowScoped</code> beans.
  * </p>
+ * 
+ * <p class="changed_added_4_1">
+ * Events with qualifiers  {@code @Initialized}, {@code @BeforeDestroyed}, and {@code @Destroyed} as defined by the CDI specification  must fire for this built-in scope. 
+ * </p>
  *
  * @since 2.2
  */

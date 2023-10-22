@@ -21,7 +21,6 @@ import static com.sun.faces.RIConstants.FACELETS_ENCODING_KEY;
 import static com.sun.faces.RIConstants.FLOW_DEFINITION_ID_SUFFIX;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsBufferSize;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsViewMappings;
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.StateSavingMethod;
 import static com.sun.faces.context.StateContext.getStateContext;
 import static com.sun.faces.facelets.tag.ui.UIDebug.debugRequest;
 import static com.sun.faces.renderkit.RenderKitUtils.getResponseStateManager;
@@ -42,7 +41,6 @@ import static jakarta.faces.FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY;
 import static jakarta.faces.application.ProjectStage.Development;
 import static jakarta.faces.application.Resource.COMPONENT_RESOURCE_KEY;
 import static jakarta.faces.application.StateManager.IS_BUILDING_INITIAL_STATE;
-import static jakarta.faces.application.StateManager.STATE_SAVING_METHOD_SERVER;
 import static jakarta.faces.application.ViewHandler.CHARACTER_ENCODING_KEY;
 import static jakarta.faces.application.ViewHandler.DEFAULT_FACELETS_SUFFIX;
 import static jakarta.faces.application.ViewVisitOption.RETURN_AS_MINIMAL_IMPLICIT_OUTCOME;
@@ -80,6 +78,7 @@ import java.util.stream.Stream;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
 import com.sun.faces.context.StateContext;
 import com.sun.faces.facelets.compiler.FaceletDoctype;
 import com.sun.faces.facelets.el.ContextualCompositeMethodExpression;
@@ -106,6 +105,7 @@ import jakarta.el.VariableMapper;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Resource;
+import jakarta.faces.application.StateManager.StateSavingMethod;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.application.ViewVisitOption;
 import jakarta.faces.component.ActionSource;
@@ -1854,7 +1854,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * @return true if we are, false otherwise.
      */
     private boolean isServerStateSaving() {
-        if (STATE_SAVING_METHOD_SERVER.equals(webConfig.getOptionValue(StateSavingMethod))) {
+        if (StateSavingMethod.SERVER.name().equalsIgnoreCase(webConfig.getOptionValue(WebContextInitParameter.StateSavingMethod))) {
             return true;
         }
 
