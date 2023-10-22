@@ -40,7 +40,7 @@ public class TestResponseWriter extends ResponseWriter {
 
     @Override
     public String getContentType() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return "text/html";
     }
 
     @Override
