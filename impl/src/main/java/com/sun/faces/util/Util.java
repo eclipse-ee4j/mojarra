@@ -21,6 +21,7 @@ package com.sun.faces.util;
 
 import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
 import static com.sun.faces.RIConstants.FACES_SERVLET_REGISTRATION;
+import static com.sun.faces.RIConstants.NO_VALUE;
 import static com.sun.faces.util.MessageUtils.ILLEGAL_ATTEMPT_SETTING_APPLICATION_ARTIFACT_ID;
 import static com.sun.faces.util.MessageUtils.NAMED_OBJECT_NOT_FOUND_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
@@ -274,11 +275,19 @@ public class Util {
         void accept(T t, U u) throws Exception;
     }
 
-    private static <F> void setPossiblyUnsupportedFeature(ThrowingBiConsumer<F, Boolean> setter, F feature, Boolean flag) {
+    private static <F> void setFeature(ThrowingBiConsumer<F, Boolean> setter, F feature, Boolean flag) {
         try {
             setter.accept(feature, flag);
         } catch (Exception e) {
-            throw new IllegalStateException("The feature '" + feature + "' is not supported by your XML processor.", e);
+            throw new IllegalArgumentException("The feature '" + feature + "' is not supported by your XML processor.", e);
+        }
+    }
+
+    private static <F> void setPossiblyUnsupportedFeature(ThrowingBiConsumer<F, Boolean> setter, F feature, Boolean flag) {
+        try {
+            setFeature(setter, feature, flag);
+        } catch (IllegalArgumentException e) {
+            LOGGER.log(Level.FINE, e.getMessage(), e);
         }
     }
 
@@ -288,9 +297,9 @@ public class Util {
         try {
             Thread.currentThread().setContextClassLoader(Util.class.getClassLoader());
             factory = TransformerFactory.newInstance();
-            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
-            setPossiblyUnsupportedFeature(factory::setFeature, XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, NO_VALUE);
+            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, NO_VALUE);
+            setFeature(factory::setFeature, XMLConstants.FEATURE_SECURE_PROCESSING, true);
         } finally {
             Thread.currentThread().setContextClassLoader(cl);
         }
@@ -324,12 +333,12 @@ public class Util {
     public static DocumentBuilderFactory createLocalDocumentBuilderFactory() {
         DocumentBuilderFactory factory;
         factory = DocumentBuilderFactory.newInstance();
-        setPossiblyUnsupportedFeature(factory::setFeature, "http://xml.org/sax/features/external-parameter-entities", false);
-        setPossiblyUnsupportedFeature(factory::setFeature, "http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-        setPossiblyUnsupportedFeature(factory::setFeature, "http://xml.org/sax/features/external-general-entities", false);
         factory.setXIncludeAware(false);
         factory.setExpandEntityReferences(false);
-        setPossiblyUnsupportedFeature(factory::setFeature, XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        setFeature(factory::setFeature, XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        setPossiblyUnsupportedFeature(factory::setFeature, "http://xml.org/sax/features/external-general-entities", false);
+        setPossiblyUnsupportedFeature(factory::setFeature, "http://xml.org/sax/features/external-parameter-entities", false);
+        setPossiblyUnsupportedFeature(factory::setFeature, "http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
         return factory;
     }
 
