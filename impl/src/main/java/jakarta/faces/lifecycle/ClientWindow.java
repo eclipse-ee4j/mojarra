@@ -94,7 +94,7 @@ public abstract class ClientWindow {
      * <p class="changed_added_2_2">
      * The context-param that controls the operation of the <code>ClientWindow</code> feature. The runtime must support the
      * values "none" and "url", without the quotes, but other values are possible. If not specified, or the value is not
-     * understood by the implementation, "none" is assumed.
+     * understood by the implementation, {@value #CLIENT_WINDOW_MODE_DEFAULT_VALUE} is assumed.
      * </p>
      *
      * @since 2.2
@@ -102,14 +102,33 @@ public abstract class ClientWindow {
     public static final String CLIENT_WINDOW_MODE_PARAM_NAME = "jakarta.faces.CLIENT_WINDOW_MODE";
 
     /**
+     * <p class="changed_added_5_0">
+     * The default value of the {@link #CLIENT_WINDOW_MODE_PARAM_NAME} context-param.
+     * </p>
+     *
+     * @since 5.0
+     */
+    public static final String CLIENT_WINDOW_MODE_DEFAULT_VALUE = "none";
+
+    /**
      * <p class="changed_added_4_0">
      * Indicate the max number of ClientWindows, which is used by {@link ClientWindowScoped}.
+     * <span class="changed_added_5_0">By default the value is {@link #NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE}.</span>
      * It is only active when jakarta.faces.CLIENT_WINDOW_MODE is enabled.
      * </p>
      *
      * @since 4.0
      */
     public static final String NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME = "jakarta.faces.NUMBER_OF_CLIENT_WINDOWS";
+
+    /**
+     * <p class="changed_added_5_0">
+     * The default value of the {@link #NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME} context-param.
+     * </p>
+     *
+     * @since 5.0
+     */
+    public static final int NUMBER_OF_CLIENT_WINDOWS_DEFAULT_VALUE = 10;
 
     /**
      * <p class="changed_added_2_2">

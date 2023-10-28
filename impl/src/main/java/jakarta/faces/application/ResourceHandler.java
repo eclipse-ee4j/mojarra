@@ -191,7 +191,7 @@ public abstract class ResourceHandler {
      * {@link #WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME} exists, the runtime must interpret its value as a path, relative to
      * the web app root, where resources are to be located. This param value must not start with a "/", though it may
      * contain "/" characters. If no such <code>&lt;context-param&gt;</code> exists, or its value is invalid, the value
-     * "resources", without the quotes, must be used by the runtime as the value.
+     * {@value #WEBAPP_RESOURCES_DIRECTORY_DEFAULT_VALUE}, without the quotes, must be used by the runtime as the value.
      * </p>
      *
      * @since 2.2
@@ -199,17 +199,35 @@ public abstract class ResourceHandler {
     public static final String WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME = "jakarta.faces.WEBAPP_RESOURCES_DIRECTORY";
 
     /**
+     * <p class="changed_added_5_0">
+     * The default value of the {@link #WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME} context-param.
+     * </p>
+     *
+     * @since 5.0
+     */
+    public static final String WEBAPP_RESOURCES_DIRECTORY_DEFAULT_VALUE = "resources";
+
+    /**
      * <p class="changed_added_2_2">
      * If a <code>&lt;context-param&gt;</code> with the param name equal to the value of
      * {@link #WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME} exists, the runtime must interpret its value as a path, relative to
      * the web app root, where resource library contracts are to be located. This param value must not start with a "/",
      * though it may contain "/" characters. If no such <code>&lt;context-param&gt;</code> exists, or its value is invalid,
-     * the value "contracts", without the quotes, must be used by the runtime as the value.
+     * the value {@value #WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE}, without the quotes, must be used by the runtime as the value.
      * </p>
      *
      * @since 2.2
      */
     public static final String WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME = "jakarta.faces.WEBAPP_CONTRACTS_DIRECTORY";
+
+    /**
+     * <p class="changed_added_5_0">
+     * The default value of the {@link #WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME} context-param.
+     * </p>
+     *
+     * @since 5.0
+     */
+    public static final String WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE = "contracts";
 
     /**
      * <p class="changed_added_2_0">
@@ -235,7 +253,7 @@ public abstract class ResourceHandler {
      * The default value for the {@link #RESOURCE_EXCLUDES_PARAM_NAME} init param.
      * </p>
      */
-    public static final String RESOURCE_EXCLUDES_DEFAULT_VALUE = ".class .jsp .jspx .properties .xhtml .groovy";
+    public static final String RESOURCE_EXCLUDES_DEFAULT_VALUE = ".class .jsp .jspx .properties .xhtml .groovy"; // NOTE: when changing, ensure {@link FacesConfig#resourceExcludes()} is also adjusted.
 
     // ---------------------------------------------------------- Public Methods
 

@@ -127,7 +127,8 @@ public abstract class ViewHandler {
 
     /**
      * <p class="changed_added_2_2 changed_modified_4_1">
-     * The buffer size to set on the response when the ResponseWriter is generated. By default the value is 1024. A value of
+     * The buffer size to set on the response when the ResponseWriter is generated. By default the value is 
+     * {@value #FACELETS_BUFFER_SIZE_DEFAULT_VALUE}. A value of
      * -1 will not assign a buffer size on the response. This should be increased if you are using development mode in order
      * to guarantee that the response isn't partially rendered when an error is generated.
      * </p>
@@ -135,6 +136,15 @@ public abstract class ViewHandler {
      * @since 2.0
      */
     public static final String FACELETS_BUFFER_SIZE_PARAM_NAME = "jakarta.faces.FACELETS_BUFFER_SIZE";
+
+    /**
+     * <p class="changed_added_5_0">
+     * The default value of the {@link #FACELETS_BUFFER_SIZE_PARAM_NAME} context-param.
+     * </p>
+     *
+     * @since 5.0
+     */
+    public static final int FACELETS_BUFFER_SIZE_DEFAULT_VALUE = 1024;
 
     /**
      * <p class="changed_added_2_2 changed_modified_4_1">
