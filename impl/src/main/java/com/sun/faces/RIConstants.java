@@ -44,6 +44,7 @@ public class RIConstants {
     public static final String TLV_RESOURCE_LOCATION = FACES_PREFIX + "resources.Resources";
 
     public static final String NO_VALUE = "";
+    public static final String[] EMPTY_STRING_ARRAY = {};
 
     public static final Class<?>[] EMPTY_CLASS_ARGS = new Class[0];
     public static final Object[] EMPTY_METH_ARGS = new Object[0];
