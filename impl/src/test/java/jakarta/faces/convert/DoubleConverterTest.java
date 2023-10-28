@@ -106,7 +106,7 @@ public class DoubleConverterTest {
         DoubleConverter converter = new DoubleConverter();
         FacesContext facesContext = PowerMock.createMock(FacesContext.class);
         replay(facesContext);
-        assertEquals("12.3", converter.getAsString(facesContext, new UIPanel(), "12.3"));
+        assertEquals("12.3", converter.getAsString(facesContext, new UIPanel(), 12.3D));
         verify(facesContext);
     }
 

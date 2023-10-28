@@ -54,6 +54,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
@@ -542,6 +543,31 @@ public class Util {
         }
     }
 
+    public static void notNullArgs( Object arg1 , Object arg2 ) {
+        if ( arg1 == null || arg2 == null )
+            throw new NullPointerException();
+    }
+
+    public static void notNullArgs( Object arg1 , Object arg2 , Object arg3 ) {
+        notNullArgs(arg1,arg2);
+        Objects.requireNonNull(arg3);
+    }
+
+    public static void notNullArgs( Object arg1 , Object arg2 , Object arg3 , Object arg4 ) {
+        notNullArgs(arg1,arg2,arg3);
+        Objects.requireNonNull(arg4);
+    }
+
+    public static void notNullArgs( Object arg1 , Object arg2 , Object arg3 , Object arg4 , Object arg5 ) {
+        notNullArgs(arg1,arg2,arg3,arg4);
+        Objects.requireNonNull(arg5);
+    }
+
+    public static void notNullArgs( Object... objects ) {
+        for ( Object obj : objects )
+            Objects.requireNonNull(obj);
+    }
+
     public static ValueExpression getValueExpressionNullSafe(UIComponent component, String name) {
         ValueExpression valueExpression = component.getValueExpression(name);
 
@@ -575,6 +601,19 @@ public class Util {
      */
     public static String nullIfBlank(String s) {
         return isBlank(s) ? null : s;
+    }
+
+    /**
+     * @return null if the input is null or contains only white spaces; otherwise, it returns the input with leading and trailing spaces removed.
+     */
+    public static String trimToNull( String value ) {
+        if ( value == null ) return null;
+
+        // todo: consider replacing String.trim with the new String.strip method which also supports unicode spaces
+        //       https://stackoverflow.com/questions/51266582/difference-between-string-trim-and-strip-methods-in-java-11
+        value = value.trim();
+
+        return value.isEmpty() ? null : value;
     }
 
     /**

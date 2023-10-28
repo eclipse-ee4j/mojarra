@@ -16,6 +16,11 @@
 
 package jakarta.faces.convert;
 
+import static com.sun.faces.util.Util.notNullArgs;
+import static com.sun.faces.util.Util.trimToNull;
+
+import com.sun.faces.RIConstants;
+
 import jakarta.faces.component.PartialStateHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -28,7 +33,7 @@ import jakarta.faces.context.FacesContext;
  *
  * @since 1.2
  */
-public class EnumConverter implements Converter, PartialStateHolder {
+public class EnumConverter implements Converter<Enum>, PartialStateHolder {
 
     /**
      * <p>
@@ -70,9 +75,9 @@ public class EnumConverter implements Converter, PartialStateHolder {
     private boolean isTransient;
     private boolean initialState;
 
-   /**
-    *  For StateHolder
-    */
+    /**
+     *  For StateHolder
+     */
     public EnumConverter() {
 
     }
@@ -82,7 +87,7 @@ public class EnumConverter implements Converter, PartialStateHolder {
      *
      * @param targetClass Class where the enum constants are taken from by the converter methods.
      */
-    public EnumConverter(Class targetClass) {
+    public EnumConverter(Class<? extends Enum> targetClass) {
         this.targetClass = targetClass;
     }
 
@@ -107,24 +112,16 @@ public class EnumConverter implements Converter, PartialStateHolder {
      * @throws NullPointerException {@inheritDoc}
      */
     @Override
-    public Object getAsObject(FacesContext context, UIComponent component, String value) {
-        if (context == null || component == null) {
-            throw new NullPointerException();
-        }
+    public Enum getAsObject(FacesContext context, UIComponent component, String value) {
+        notNullArgs(context,component);
 
         if (targetClass == null) {
             throw new ConverterException(MessageFactory.getMessage(context, ENUM_NO_CLASS_ID, value, MessageFactory.getLabel(context, component)));
         }
 
-        // If the specified value is null or zero-length, return null
-        if (value == null) {
-            return null;
-        }
-
-        value = value.trim();
-        if (value.length() < 1) {
-            return null;
-        }
+        // If the specified value is null or blank, return null
+        value = trimToNull(value);
+        if ( value == null ) return null;
 
         try {
             return Enum.valueOf(targetClass, value);
@@ -148,10 +145,8 @@ public class EnumConverter implements Converter, PartialStateHolder {
      * @throws NullPointerException {@inheritDoc}
      */
     @Override
-    public String getAsString(FacesContext context, UIComponent component, Object value) {
-        if (context == null || component == null) {
-            throw new NullPointerException();
-        }
+    public String getAsString(FacesContext context, UIComponent component, Enum value) {
+        notNullArgs(context,component);
 
         if (targetClass == null) {
             throw new ConverterException(MessageFactory.getMessage(context, ENUM_NO_CLASS_ID, value, MessageFactory.getLabel(context, component)));
@@ -159,11 +154,11 @@ public class EnumConverter implements Converter, PartialStateHolder {
 
         // If the specified value is null, return the empty string.
         if (value == null) {
-            return "";
+            return RIConstants.NO_VALUE;
         }
 
         if (targetClass.isInstance(value)) {
-            return ((Enum) value).name();
+            return value.name();
         }
 
         throw new ConverterException(MessageFactory.getMessage(context, ENUM_ID, value, value, MessageFactory.getLabel(context, component)));
@@ -217,4 +212,5 @@ public class EnumConverter implements Converter, PartialStateHolder {
     public void clearInitialState() {
         initialState = false;
     }
+
 }

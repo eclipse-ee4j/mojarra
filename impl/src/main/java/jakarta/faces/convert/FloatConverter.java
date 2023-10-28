@@ -16,6 +16,10 @@
 
 package jakarta.faces.convert;
 
+import static com.sun.faces.RIConstants.NO_VALUE;
+import static com.sun.faces.util.Util.notNullArgs;
+import static com.sun.faces.util.Util.trimToNull;
+
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
@@ -25,7 +29,7 @@ import jakarta.faces.context.FacesContext;
  * </p>
  */
 
-public class FloatConverter implements Converter {
+public class FloatConverter implements Converter<Float> {
 
     // ------------------------------------------------------ Manifest Constants
 
@@ -70,20 +74,12 @@ public class FloatConverter implements Converter {
      * @throws NullPointerException {@inheritDoc}
      */
     @Override
-    public Object getAsObject(FacesContext context, UIComponent component, String value) {
+    public Float getAsObject(FacesContext context, UIComponent component, String value) {
+        notNullArgs( context , component );
 
-        if (context == null || component == null) {
-            throw new NullPointerException();
-        }
-
-        // If the specified value is null or zero-length, return null
-        if (value == null) {
-            return null;
-        }
-        value = value.trim();
-        if (value.length() < 1) {
-            return null;
-        }
+        // If the specified value is null or blank, return null
+        value = trimToNull(value);
+        if ( value == null ) return null;
 
         try {
             return Float.valueOf(value);
@@ -99,27 +95,19 @@ public class FloatConverter implements Converter {
      * @throws NullPointerException {@inheritDoc}
      */
     @Override
-    public String getAsString(FacesContext context, UIComponent component, Object value) {
-
-        if (context == null || component == null) {
-            throw new NullPointerException();
-        }
+    public String getAsString(FacesContext context, UIComponent component, Float value) {
+        notNullArgs( context , component );
 
         // If the specified value is null, return a zero-length String
         if (value == null) {
-            return "";
-        }
-
-        // If the incoming value is still a string, play nice
-        // and return the value unmodified
-        if (value instanceof String) {
-            return (String) value;
+            return NO_VALUE;
         }
 
         try {
-            return Float.toString(((Number) value).floatValue());
+            return Float.toString(value);
         } catch (Exception e) {
             throw new ConverterException(MessageFactory.getMessage(context, STRING_ID, value, MessageFactory.getLabel(context, component)), e);
         }
     }
+
 }

@@ -106,7 +106,7 @@ public class LongConverterTest {
         LongConverter converter = new LongConverter();
         FacesContext facesContext = PowerMock.createMock(FacesContext.class);
         replay(facesContext);
-        assertEquals("123", converter.getAsString(facesContext, new UIPanel(), "123"));
+        assertEquals("123", converter.getAsString(facesContext, new UIPanel(), 123L));
         verify(facesContext);
     }
 
