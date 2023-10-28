@@ -29,33 +29,6 @@
             standard HTML RenderKit.  Please see the spec for additional
             details for the standard render-kit.
 
-     <div class="changed_added_2_0">
-     <p>The following new renderers have been
-     added in this release of the specification.</p>
-
-<dl>
-<dt>jakarta.faces.Output</dt>
-
-<dd>jakarta.faces.Body
-</dd>
-
-<dd>jakarta.faces.Head
-</dd>
-
-<dd>jakarta.faces.resource.Script
-</dd>
-
-<dd>jakarta.faces.resource.Stylesheet
-</dd>
-
-<dd>jakarta.faces.Composite
-</dd>
-
-
-</dl>
-
-     </div>
-
      <p><a name="general_decoding">General</a> notes on decoding</p>
 
      <ul>
@@ -191,11 +164,13 @@
        rendered content.  Components may obtain script from multiple sources.  Event handler scripts may be specified 
        by page authors, scripts may be produced by client behaviors and renderers may produce ther own scripts.
        When multiple scripts are present, the scripts must be chained together in this order:
+       </p>
        <ul>
        <li>User specified event handler scripts</li>
        <li>client behavior scripts</li>
        <li>renderer specific scripts</li>
        </ul>
+       <p>
        If any of the scripts in the chain returns <code>false</code>, subsequent script must not be executed.
        The specification provides a utility function <code>faces.util.chain</code> to handle this capability.  If there
        are <code>UIParameter</code> children the parameter names and values must be passed into the client behavior
@@ -205,7 +180,7 @@
      </div>
 
      <div class="changed_added_2_2">
-     <p><a name="general_behavior_encoding">Rendering</a> Pass Through Attributes.</p>
+     <p><a name="pass_through_attributes">Rendering</a> Pass Through Attributes.</p>
 
      <ul>
 
@@ -230,6 +205,20 @@
        <code>ResponseWriter.writeURIAttribute()</code>.</p>
 
 
+     </ul>
+     </div>
+
+     <div class="changed_added_5_0">
+     <p><a name="behavior_event_attributes">Rendering</a> Behavior Event Attributes.</p>
+
+     <ul>
+       <p>
+         When the component is an instance of <code>ClientBehaviorHolder</code>
+         and the attribute name starts with 'on'
+         and the substring after 'on' is contained in <code>ClientBehaviorHolder#getEventNames()</code>
+         and it is not available as a <em>renderer specific attribute</em>,
+         then it must be rendered the same way as a <em>pass through attribute</em>.
+       </p>
      </ul>
      </div>
 
