@@ -62,8 +62,9 @@ import jakarta.inject.Qualifier;
  * The presence of this annotation on <span class="changed_modified_4_0">a class</span> deployed within an application 
  * <span class="changed_modified_4_0">guarantees activation of Jakarta Faces and its CDI specific features, even when 
  * {@code /WEB-INF/faces-config.xml} is absent and {@code FacesServlet} is not explicitly registered</span>.
- * <span class="changed_added_5_0">The attributes can be used to preconfigure the context parameters of your Jakarta Faces application.
- * The {@link ContextParam} can be used to obtain the context parameters of your Jakarta Faces application.</span>
+ * <p class="changed_added_5_0">
+ * The attributes can be used to preconfigure the context parameters of your Jakarta Faces application.
+ * The {@link ContextParam} can be used to obtain the context parameters of your Jakarta Faces application.
  * </p>
  */
 @Qualifier
@@ -428,6 +429,7 @@ public @interface FacesConfig {
     /**
      * <p class="changed_added_5_0">
      * Enumeration of all available {@code jakarta.faces.*} context parameters.
+     * The {@link ContextParam#getValue(FacesContext)} can be used to obtain the value of the context parameter. 
      * </p>
      * 
      * @since 5.0
@@ -659,12 +661,12 @@ public @interface FacesConfig {
          * Returns the value of the context parameter, converted to the expected type as indicated by {@link #getType()}.
          * This method never returns {@code null}. When the context parameter is not set, a default value is returned.
          * <p>
-         * The implementation must first look for {@link ExternalContext#getInitParameter(String)} . If it is non-{@code null}, then return it.
+         * The implementation must first look for {@link ExternalContext#getInitParameter(String)}. If it is non-{@code null}, then return it.
          * Else look for any {@link FacesConfig} annotation. If present, then return it. Else return the default value.
          * @param <T> The expected return type.
          * @param context The involved faces context.
          * @return The value of the context parameter, converted to the expected type as indicated by {@link #getType()}.
-         * @throws ClassCastException When inferred T is of wrong type. See {@link #getType()} for the correct type.
+         * @throws ClassCastException When inferred {@code T} is of wrong type. See {@link #getType()} for the correct type.
          * @throws IllegalArgumentException When the value of the context parameter cannot be converted to the expected type as indicated by {@link #getType()}.
          */
         @SuppressWarnings("unchecked")
@@ -689,7 +691,7 @@ public @interface FacesConfig {
          * @param <T> The expected return type.
          * @param context The involved faces context.
          * @return The default value of the context parameter, converted to the expected type as indicated by {@link #getType()}.
-         * @throws ClassCastException When inferred T is of wrong type. See {@link #getType()} for the correct type.
+         * @throws ClassCastException When inferred {@code T} is of wrong type. See {@link #getType()} for the correct type.
          */
         @SuppressWarnings("unchecked")
         public <T> T getDefaultValue(FacesContext context) {

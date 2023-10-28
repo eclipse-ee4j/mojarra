@@ -53,6 +53,7 @@ import com.sun.faces.util.Util;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
+import jakarta.faces.annotation.FacesConfig;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -568,7 +569,7 @@ public class ExternalContextImpl extends ExternalContext {
         Util.notNull("url", url);
 
         HttpServletRequest request = (HttpServletRequest) getRequest();
-        int port = ContextParamUtils.getValue(servletContext, ContextParam.WebsocketEndpointPort, Integer.class);
+        int port = FacesConfig.ContextParam.WEBSOCKET_ENDPOINT_PORT.getValue(FacesContext.getCurrentInstance());
 
         try {
             final URL requestURL = new URL(request.getRequestURL().toString());

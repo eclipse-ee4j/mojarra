@@ -16,8 +16,6 @@
 
 package com.sun.faces.context;
 
-import jakarta.faces.push.PushContext;
-
 /**
  * The enumeration of all our context-param entries.
  */
@@ -30,11 +28,7 @@ public enum ContextParam {
     /**
      * Send the "X-Powered-By" header.
      */
-    SendPoweredByHeader("com.sun.faces.sendPoweredByHeader", Boolean.class, false),
-    /**
-     * The websocket endpoint port (default 0 means the code will take the port from the request)
-     */
-    WebsocketEndpointPort(PushContext.WEBSOCKET_ENDPOINT_PORT_PARAM_NAME, Integer.class, 0);
+    SendPoweredByHeader("com.sun.faces.sendPoweredByHeader", Boolean.class, false);
 
     /**
      * Stores the default value.

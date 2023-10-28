@@ -21,6 +21,7 @@ import static java.lang.Boolean.TRUE;
 import java.io.IOException;
 import java.util.Map;
 
+import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.render.RenderKit;
@@ -237,16 +238,9 @@ public abstract class StateManager {
      * @throws NullPointerException if <code>context</code> is <code>null</code>.
      */
     public boolean isSavingStateInClient(FacesContext context) {
-        if (savingStateInClient != null) {
-            return savingStateInClient;
+        if (savingStateInClient == null) {
+            savingStateInClient = ContextParam.STATE_SAVING_METHOD.isDefault(context);
         }
-        savingStateInClient = false;
-
-        String saveStateParam = context.getExternalContext().getInitParameter(STATE_SAVING_METHOD_PARAM_NAME);
-        if (StateSavingMethod.CLIENT.name().equalsIgnoreCase(saveStateParam)) {
-            savingStateInClient = true;
-        }
-
         return savingStateInClient;
     }
 

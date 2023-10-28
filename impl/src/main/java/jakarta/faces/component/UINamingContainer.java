@@ -24,6 +24,7 @@ import static java.util.logging.Level.SEVERE;
 import java.util.Collection;
 import java.util.logging.Logger;
 
+import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.component.visit.VisitCallback;
 import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.context.FacesContext;
@@ -113,15 +114,7 @@ public class UINamingContainer extends UIComponentBase implements NamingContaine
 
         Character separatorChar = (Character) context.getAttributes().get(SEPARATOR_CHAR_PARAM_NAME);
         if (separatorChar == null) {
-            String initParam = context.getExternalContext().getInitParameter(SEPARATOR_CHAR_PARAM_NAME);
-            separatorChar = SEPARATOR_CHAR;
-            if (initParam != null) {
-                initParam = initParam.trim();
-                if (initParam.length() != 0) {
-                    separatorChar = initParam.charAt(0);
-                }
-            }
-
+            separatorChar = ContextParam.SEPARATOR_CHAR.getValue(context);
             context.getAttributes().put(SEPARATOR_CHAR_PARAM_NAME, separatorChar);
         }
 

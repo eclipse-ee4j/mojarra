@@ -18,7 +18,6 @@ package com.sun.faces.application.resource;
 
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.DefaultResourceMaxAge;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.ResourceBufferSize;
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.ResourceExcludes;
 import static com.sun.faces.util.RequestStateManager.RESOURCE_REQUEST;
 import static com.sun.faces.util.Util.getFacesMapping;
 import static com.sun.faces.util.Util.notNegative;
@@ -50,8 +49,8 @@ import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.RequestStateManager;
-import com.sun.faces.util.Util;
 
+import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.application.Resource;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.application.ResourceVisitOption;
@@ -80,9 +79,10 @@ public class ResourceHandlerImpl extends ResourceHandler {
     public ResourceHandlerImpl() {
         creationTime = System.currentTimeMillis();
         webconfig = WebConfiguration.getInstance();
-        ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
+        FacesContext context = FacesContext.getCurrentInstance();
+        ExternalContext extContext = context.getExternalContext();
         manager = ApplicationAssociate.getInstance(extContext).getResourceManager();
-        initExclusions(extContext.getApplicationMap());
+        initExclusions(context);
         initMaxAge();
     }
 
@@ -554,9 +554,8 @@ public class ResourceHandlerImpl extends ResourceHandler {
      * <ul>
      * will be used.
      */
-    private void initExclusions(Map<String, Object> appMap) {
-        String excludesParam = webconfig.getOptionValue(ResourceExcludes);
-        String[] patterns = Util.split(appMap, excludesParam, " ");
+    private void initExclusions(FacesContext context) {
+        String[] patterns = ContextParam.RESOURCE_EXCLUDES.getValue(context);
 
         excludePatterns = new ArrayList<>(patterns.length);
         for (String pattern : patterns) {

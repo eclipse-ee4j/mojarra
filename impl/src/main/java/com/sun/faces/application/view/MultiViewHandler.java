@@ -19,8 +19,8 @@ package com.sun.faces.application.view;
 
 import static com.sun.faces.RIConstants.FACELETS_ENCODING_KEY;
 import static com.sun.faces.RIConstants.SAVESTATE_FIELD_MARKER;
-import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.RENDER_KIT_ID_PARAM;
 import static com.sun.faces.renderkit.RenderKitUtils.getResponseStateManager;
+import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.RENDER_KIT_ID_PARAM;
 import static com.sun.faces.util.MessageUtils.ILLEGAL_VIEW_ID_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.Util.getFacesMapping;
@@ -36,6 +36,7 @@ import static jakarta.servlet.http.MappingMatch.EXACT;
 import static jakarta.servlet.http.MappingMatch.EXTENSION;
 import static jakarta.servlet.http.MappingMatch.PATH;
 import static java.text.MessageFormat.format;
+import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 import static java.util.logging.Level.FINE;
@@ -59,12 +60,12 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
-import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
+import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.application.ViewVisitOption;
 import jakarta.faces.component.UIViewParameter;
@@ -93,9 +94,8 @@ public class MultiViewHandler extends ViewHandler {
     // ------------------------------------------------------------ Constructors
 
     public MultiViewHandler() {
-        WebConfiguration config = WebConfiguration.getInstance();
-
-        configuredExtensions = config.getConfiguredExtensions();
+        String faceletsSuffix = ContextParam.FACELETS_SUFFIX.getValue(FacesContext.getCurrentInstance());
+        configuredExtensions = asList(faceletsSuffix);
         vdlFactory = (ViewDeclarationLanguageFactory) FactoryFinder.getFactory(VIEW_DECLARATION_LANGUAGE_FACTORY);
         protectedViews = new CopyOnWriteArraySet<>();
     }
