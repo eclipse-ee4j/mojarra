@@ -147,7 +147,7 @@ public class RenderKitUtils {
      */
     private static final String ATTRIBUTES_THAT_ARE_SET_KEY = UIComponentBase.class.getName() + ".attributesThatAreSet";
 
-    private static final String HTML5_BEHAVIOR_EVENT_ATTRIBUTE_PREFIX = "on";
+    private static final String BEHAVIOR_EVENT_ATTRIBUTE_PREFIX = "on";
 
     protected static final Logger LOGGER = FacesLogger.RENDERKIT.getLogger();
 
@@ -611,7 +611,6 @@ public class RenderKitUtils {
 
         Collections.sort(setAttributes);
         boolean isXhtml = RIConstants.XHTML_CONTENT_TYPE.equals(writer.getContentType());
-        boolean isHtml5 = isOutputHtml5Doctype(context);
         Map<String, Object> attrMap = component.getAttributes();
         for (String name : setAttributes) {
 
@@ -634,7 +633,7 @@ public class RenderKitUtils {
                     }
                 }
             }
-            else if (isHtml5 && isHtml5BehaviorAttribute(name)) {
+            else if (isBehaviorEventAttribute(name)) {
                 Object value = attrMap.get(name);
                 if (value != null && shouldRenderAttribute(value)) {
                     if (name.substring(2).equals(behaviorEventName)) {
@@ -652,15 +651,13 @@ public class RenderKitUtils {
         // attribute rendering. Need to manually render it out now.
         if (behaviorEventName != null && !renderedBehavior) {
 
-            if (isHtml5) {
-                List<String> behaviorAttributes = setAttributes.stream().filter(RenderKitUtils::isHtml5BehaviorAttribute).collect(toList());
+            List<String> behaviorAttributes = setAttributes.stream().filter(RenderKitUtils::isBehaviorEventAttribute).collect(toList());
 
-                for (String attrName : behaviorAttributes) {
-                    String eventName = attrName.substring(2);
-                    if (behaviorEventName.equals(eventName)) {
-                        renderPassthruAttribute(context, writer, component, behaviors, isXhtml, attrMap, attrName, behaviorEventName);
-                        return;
-                    }
+            for (String attrName : behaviorAttributes) {
+                String eventName = attrName.substring(2);
+                if (behaviorEventName.equals(eventName)) {
+                    renderPassthruAttribute(context, writer, component, behaviors, isXhtml, attrMap, attrName, behaviorEventName);
+                    return;
                 }
             }
 
@@ -694,17 +691,14 @@ public class RenderKitUtils {
             List<String> setAttributes, Map<String, List<ClientBehavior>> behaviors) throws IOException {
 
         boolean isXhtml = RIConstants.XHTML_CONTENT_TYPE.equals(writer.getContentType());
-        boolean isHtml5 = isOutputHtml5Doctype(context);
 
         Map<String, Object> attrMap = component.getAttributes();
         Set<String> behaviorEventNames = new LinkedHashSet<>(behaviors.size() + 2);
 
-        if (isHtml5) {
-            behaviorEventNames.addAll(behaviors.keySet());
+        behaviorEventNames.addAll(behaviors.keySet());
 
-            if (setAttributes != null) {
-                setAttributes.stream().filter(RenderKitUtils::isHtml5BehaviorAttribute).map(a -> a.substring(2)).forEach(behaviorEventNames::add);
-            }
+        if (setAttributes != null) {
+            setAttributes.stream().filter(RenderKitUtils::isBehaviorEventAttribute).map(a -> a.substring(BEHAVIOR_EVENT_ATTRIBUTE_PREFIX.length())).forEach(behaviorEventNames::add);
         }
 
         for (Attribute attribute : knownAttributes) {
@@ -716,7 +710,7 @@ public class RenderKitUtils {
         }
 
         for (String eventName : behaviorEventNames) {
-            renderPassthruAttribute(context, writer, component, behaviors, isXhtml, attrMap, HTML5_BEHAVIOR_EVENT_ATTRIBUTE_PREFIX + eventName, eventName);
+            renderPassthruAttribute(context, writer, component, behaviors, isXhtml, attrMap, BEHAVIOR_EVENT_ATTRIBUTE_PREFIX + eventName, eventName);
         }
     }
 
@@ -737,9 +731,9 @@ public class RenderKitUtils {
             renderHandler(context, component, null, attrName, value, eventName, null, false, false);
         }
     }
-    
-    public static boolean isHtml5BehaviorAttribute(String name) {
-        return name.startsWith(HTML5_BEHAVIOR_EVENT_ATTRIBUTE_PREFIX) && name.length() > 2;
+
+    public static boolean isBehaviorEventAttribute(String name) {
+        return name.startsWith(BEHAVIOR_EVENT_ATTRIBUTE_PREFIX) && name.length() > 2;
     }
 
     /**
@@ -1273,7 +1267,7 @@ public class RenderKitUtils {
         ResourceHandler handler = context.getApplication().getResourceHandler();
         if (resName != null) {
             String libName = (String) component.getAttributes().get("library");
-            
+
             if (libName == null && ApplicationAssociate.getInstance(context).getResourceManager().isContractsResource(resName)) {
                 if (context.isProjectStage(ProjectStage.Development)) {
                     String msg = "Illegal path, direct contract references are not allowed: " + resName;
