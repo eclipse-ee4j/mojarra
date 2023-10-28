@@ -4,28 +4,32 @@ import static java.util.stream.Collectors.toUnmodifiableList;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import jakarta.faces.component.ActionSource;
 import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 
 /**
  * <p class="changed_added_5_0">
  * Events supported by HTML elements as per <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-handlers-on-elements,-document-objects,-and-window-objects">current spec</a>.
+ * These can be used to supply {@link ClientBehaviorHolder#getEventNames()} and {@link ClientBehaviorHolder#getDefaultEventName()}.
  * </p>
- * 
+ *
  * @since 5.0
  */
 public final class HtmlEvents {
 
     /**
-     * Events supported by all document elements.
+     * Events supported by all HTML document elements.
      */
-    public enum DocumentElementEvent {
+    public enum HtmlDocumentElementEvent {
         abort,
         auxclick,
         beforeinput,
@@ -90,13 +94,13 @@ public final class HtmlEvents {
         volumechange,
         waiting,
         wheel,
-        
+
     }
 
     /**
-     * Events supported by all body elements, in addition to the events supported by all document elements.
+     * Events supported by all HTML body elements, in addition to the events supported by all HTML document elements.
      */
-    public enum BodyElementEvent {
+    public enum HtmlBodyElementEvent {
         blur,
         error,
         focus,
@@ -108,10 +112,20 @@ public final class HtmlEvents {
 
     /**
      * The name of the context-param whose value must represent a space-separated list of additional HTML event names.
-     * All supported HTML event names are defined in the enums {@link DocumentElementEvent} and {@link BodyElementEvent}.
+     * All supported HTML event names are defined in the enums {@link HtmlDocumentElementEvent} and {@link HtmlBodyElementEvent}.
      * Any HTML event name which you wish to add to these enums can be supplied via this context-param.
+     * Duplicates will be automatically filtered, case sensitive.
      */
     public static final String ADDITIONAL_HTML_EVENT_NAMES_PARAM_NAME = "jakarta.faces.ADDITIONAL_HTML_EVENT_NAMES";
+
+    private enum CacheKey {
+        HTML_DOCUMENT_ELEMENT_EVENT_NAMES,
+        HTML_BODY_ELEMENT_EVENT_NAMES,
+        FACES_ACTION_SOURCE_EVENT_NAMES,
+        FACES_EDITABLE_VALUE_HOLDER_EVENT_NAMES;
+    }
+
+    private static final Map<CacheKey, Collection<String>> CACHE = new EnumMap<>(CacheKey.class);
 
     private HtmlEvents() {
         throw new AssertionError();
@@ -130,7 +144,7 @@ public final class HtmlEvents {
      * @return All supported event names for HTML document elements, including additional HTML event names.
      */
     public static Collection<String> getHtmlDocumentElementEventNames(FacesContext context) {
-        return cache(context, "HtmlEvents.DOCUMENT_ELEMENT_EVENT_NAMES", () -> merge(DocumentElementEvent.values(), getAdditionalHtmlEventNames(context)));
+        return cache(CacheKey.HTML_DOCUMENT_ELEMENT_EVENT_NAMES, () -> merge(getAdditionalHtmlEventNames(context), HtmlDocumentElementEvent.values()));
     }
 
     /**
@@ -138,7 +152,7 @@ public final class HtmlEvents {
      * @return All supported event names for HTML body elements, including HTML document element event names.
      */
     public static Collection<String> getHtmlBodyElementEventNames(FacesContext context) {
-        return cache(context, "HtmlEvents.BODY_ELEMENT_EVENT_NAMES", () -> merge(BodyElementEvent.values(), getHtmlDocumentElementEventNames(context)));
+        return cache(CacheKey.HTML_BODY_ELEMENT_EVENT_NAMES, () -> merge(getHtmlDocumentElementEventNames(context), HtmlBodyElementEvent.values()));
     }
 
     /**
@@ -146,7 +160,7 @@ public final class HtmlEvents {
      * @return All supported event names for HTML implementations of Faces {@link ActionSource} components, including HTML body element event names.
      */
     public static Collection<String> getFacesActionSourceEventNames(FacesContext context) {
-        return cache(context, "HtmlEvents.FACES_ACTION_SOURCE_EVENT_NAMES", () -> merge(FacesComponentEvent.action, getHtmlBodyElementEventNames(context)));
+        return cache(CacheKey.FACES_ACTION_SOURCE_EVENT_NAMES, () -> merge(getHtmlBodyElementEventNames(context), FacesComponentEvent.action));
     }
 
     /**
@@ -154,24 +168,18 @@ public final class HtmlEvents {
      * @return All supported event names for HTML implementations of Faces {@link EditableValueHolder} components, including HTML body element event names.
      */
     public static Collection<String> getFacesEditableValueHolderEventNames(FacesContext context) {
-        return cache(context, "HtmlEvents.FACES_EDITABLE_VALUE_HOLDER_EVENT_NAMES", () -> merge(FacesComponentEvent.valueChange, getHtmlBodyElementEventNames(context)));
+        return cache(CacheKey.FACES_EDITABLE_VALUE_HOLDER_EVENT_NAMES, () -> merge(getHtmlBodyElementEventNames(context), FacesComponentEvent.valueChange));
     }
 
     private static Collection<String> collect(Stream<String> stream) {
         return stream.sorted().distinct().collect(toUnmodifiableList());
     }
 
-    private static Collection<String> merge(Enum<?> enumValue, Collection<String> eventNames) {
-        return merge(new Enum[] { enumValue }, eventNames);
-    }
-
-    private static Collection<String> merge(Enum<?>[] enumValues, Collection<String> eventNames) {
+    private static Collection<String> merge(Collection<String> eventNames, Enum<?>... enumValues) {
         return collect(Stream.concat(Arrays.stream(enumValues).map(e -> e.name()), eventNames.stream()));
     }
 
-    @SuppressWarnings("unchecked")
-    private static Collection<String> cache(FacesContext context, String applicationKey, Supplier<Collection<String>> supplier) {
-        return (Collection<String>) context.getExternalContext().getApplicationMap().computeIfAbsent(applicationKey, $ -> supplier.get());
+    private static Collection<String> cache(CacheKey key, Supplier<Collection<String>> supplier) {
+        return CACHE.computeIfAbsent(key, $ -> supplier.get());
     }
-
 }

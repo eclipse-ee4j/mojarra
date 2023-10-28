@@ -24,7 +24,7 @@ import java.util.Collection;
 
 import jakarta.faces.component.UIOutcomeTarget;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
-import jakarta.faces.component.html.HtmlEvents.DocumentElementEvent;
+import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
 
 /**
  * <p>
@@ -700,7 +700,7 @@ public class HtmlOutcomeTargetButton extends UIOutcomeTarget implements ClientBe
 
     @Override
     public String getDefaultEventName() {
-        return DocumentElementEvent.click.name();
+        return HtmlDocumentElementEvent.click.name();
     }
 
 }

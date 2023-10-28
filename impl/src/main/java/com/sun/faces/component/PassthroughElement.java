@@ -24,7 +24,7 @@ import java.util.List;
 
 import jakarta.el.ValueExpression;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
-import jakarta.faces.component.html.HtmlEvents.DocumentElementEvent;
+import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
 
 /**
  * <p>
@@ -365,7 +365,7 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel implemen
 
     @Override
     public String getDefaultEventName() {
-        return DocumentElementEvent.click.name();
+        return HtmlDocumentElementEvent.click.name();
     }
 
     // TODO The same as jakarta.faces.component.html.HtmlComponentUtils#handleAttribute

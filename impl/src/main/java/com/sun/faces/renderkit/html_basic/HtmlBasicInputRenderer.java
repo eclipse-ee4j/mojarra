@@ -33,7 +33,7 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.component.ValueHolder;
 import jakarta.faces.component.behavior.ClientBehavior;
-import jakarta.faces.component.html.HtmlEvents.DocumentElementEvent;
+import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
 import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
@@ -180,7 +180,7 @@ public abstract class HtmlBasicInputRenderer extends HtmlBasicRenderer {
     // we pass a null Behaviors map into renderPassThruAttributes(),
     // which allows us to take a more optimized code path.
     protected static Map<String, List<ClientBehavior>> getNonOnChangeBehaviors(UIComponent component) {
-        return getPassThruBehaviors(component, DocumentElementEvent.change.name(), FacesComponentEvent.valueChange.name());
+        return getPassThruBehaviors(component, HtmlDocumentElementEvent.change.name(), FacesComponentEvent.valueChange.name());
     }
 
     // Returns the Behaviors map, but only if it contains some entry other
@@ -190,7 +190,7 @@ public abstract class HtmlBasicInputRenderer extends HtmlBasicRenderer {
     // we pass a null Behaviors map into renderPassThruAttributes(),
     // which allows us to take a more optimized code path.
     protected static Map<String, List<ClientBehavior>> getNonOnClickSelectBehaviors(UIComponent component) {
-        return getPassThruBehaviors(component, DocumentElementEvent.click.name(), FacesComponentEvent.valueChange.name());
+        return getPassThruBehaviors(component, HtmlDocumentElementEvent.click.name(), FacesComponentEvent.valueChange.name());
     }
 
     // --------------------------------------------------------- Private Methods
