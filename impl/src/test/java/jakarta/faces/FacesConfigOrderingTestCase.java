@@ -16,6 +16,8 @@
 
 package jakarta.faces;
 
+import static com.sun.faces.util.Util.createLocalDocumentBuilderFactory;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,10 +27,6 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -36,6 +34,9 @@ import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.config.manager.documents.DocumentOrderingWrapper;
 
 import jakarta.faces.context.FacesContext;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 public class FacesConfigOrderingTestCase extends TestCase {
 
@@ -391,7 +392,7 @@ public class FacesConfigOrderingTestCase extends TestCase {
 
 	private Document newDocument() throws ParserConfigurationException {
 
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilderFactory factory = createLocalDocumentBuilderFactory();
 		factory.setValidating(false);
 		factory.setNamespaceAware(true);
 		return factory.newDocumentBuilder().newDocument();
