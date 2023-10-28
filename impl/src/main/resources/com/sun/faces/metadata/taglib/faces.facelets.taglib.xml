@@ -837,11 +837,12 @@ attribute must be an absolute path starting with "/".</span>
         <attribute>
             <description>
             <![CDATA[
-                <div class="changed_modified_2_3">
+                <div class="changed_modified_4_1">
                     <p>
-                        If value specified: Iteration begins at the item located at the specified index.
-                        First item of the collection has index 0.
-                        If value not specified: Iteration begins with index set at the specified value.
+                        If the <code>value</code> attribute is <em>not</em> specified: iteration begins with the specified number (inclusive) as item.
+                        If the <code>value</code> attribute is specified: a <code>FacesException</code> must be thrown.
+                        If the corresponding <code>end</code> attribute is <em>not</em> specified: use <code>0</code> as default.
+                        The corresponding <code>end</code> attribute may be less than the begin<code>begin</code> attribute: iteration will take place in a reversed manner.
                     </p>
                 </div>
             ]]>
@@ -853,10 +854,12 @@ attribute must be an absolute path starting with "/".</span>
         <attribute>
             <description>
             <![CDATA[
-                <div class="changed_modified_2_3">
+                <div class="changed_modified_4_1">
                     <p>
-                        If value specified: Iteration ends at the item located at the specified index (inclusive).
-                        If value not specified: Iteration ends when index reaches the specified value (inclusive).
+                        If the <code>value</code> attribute is <em>not</em> specified: iteration ends with the specified number (inclusive) as item.
+                        If the <code>value</code> attribute is specified: a <code>FacesException</code> must be thrown.
+                        If the corresponding <code>begin</code> attribute is <em>not</em> specified: use <code>0</code> as default.
+                        The corresponding <code>begin</code> attribute may be greater than the <code>end</code> attribute: iteration will take place in a reversed manner.
                     </p>
                 </div>
             ]]>
@@ -866,52 +869,51 @@ attribute must be an absolute path starting with "/".</span>
             <type>int</type>
         </attribute>
         <attribute>
-            <description><![CDATA[
-
-
-                <div class="changed_added_2_0">
-
-                <p>Read-write property setting the offset from the
-                beginning of the
-                collection from which to start the iteration. If not set, this
-                offset
-                is not considered and iteration will start at the beginning of
-                the
-                collection.</p>
-
+            <description>
+            <![CDATA[
+                <div class="changed_modified_4_1">
+                    <p>
+                        If the <code>value</code> attribute is specified: iteration begins with the specified number as index.
+                        If the <code>value</code> attribute is <em>not</em> specified: a <code>FacesException</code> must be thrown.
+                        If the <code>offset</code> attribute is <em>not</em> specified: use <code>0</code> as default.
+                        If the <code>offset</code> attribute is less than <code>0</code> or is greater than the size of the actual collection behind the <code>value</code> attribute: a <code>FacesException</code> must be thrown.
+                    </p>
                 </div>
-
-            ]]></description>
+            ]]>
+            </description>
             <name>offset</name>
             <required>false</required>
             <type>int</type>
         </attribute>
         <attribute>
-            <description><![CDATA[
-
-
-                <div class="changed_added_2_0">
-
-                <p>Read-write property setting the size of the collection
-                to iterate.
-                If this value is less than the actual size of the collection, a
-                <code>FacesException</code> must be thrown.</p>
-
+            <description>
+            <![CDATA[
+                <div class="changed_modified_4_1">
+                    <p>
+                        If the <code>value</code> attribute is specified: iteration ends when the specified number of times has been iterated (inclusive).
+                        If the <code>value</code> attribute is <em>not</em> specified: a <code>FacesException</code> must be thrown.
+                        If the <code>size</code> attribute is <em>not</em> specified: use the size of the actual collection behind the value attribute as default.
+                        If the sum of the <code>size</code> attribute and the <code>offset</code> attribute is less than <code>0</code> or is greater than the size of the actual collection behind the value attribute: a <code>FacesException</code> must be thrown.
+                        If the <code>step</code> attribute is specified: each skipped item must also be counted for the <code>size</code> attribute.
+                    </p>
                 </div>
-
-            ]]></description>
+            ]]>
+            </description>
             <name>size</name>
             <required>false</required>
             <type>int</type>
         </attribute>
         <attribute>
-            <description><![CDATA[
-
-                <div class="changed_added_2_0"><p>Iteration
-                will only process every step items of the collection,
-                starting with the first one.</p></div>
-
-            ]]></description>
+            <description>
+            <![CDATA[
+                <div class="changed_modified_4_1">
+                    <p>
+                        Iteration will only process every step items of the collection, starting with the first one.
+                        If the <code>step</code> attribute is less than <code>1</code>: a <code>FacesException</code> must be thrown.
+                    </p>
+                </div>
+            ]]>
+            </description>
             <name>step</name>
             <required>false</required>
             <type>int</type>
