@@ -16,6 +16,7 @@
 
 package com.sun.faces.config.processor;
 
+import static com.sun.faces.util.Util.createLocalDocumentBuilderFactory;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -79,7 +80,7 @@ public class FacesConfigNamespaceContextTest {
 
 	private Document createFacesConfig(String flowName, String namespace, String version)
 			throws ParserConfigurationException {
-		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilderFactory documentBuilderFactory = createLocalDocumentBuilderFactory();
 		documentBuilderFactory.setNamespaceAware(true);
 		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 		Document docFlowConfig = documentBuilder.newDocument();
