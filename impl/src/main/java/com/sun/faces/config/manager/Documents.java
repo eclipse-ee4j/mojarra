@@ -18,6 +18,7 @@ package com.sun.faces.config.manager;
 
 import static com.sun.faces.RIConstants.DOCUMENT_NAMESPACE;
 import static com.sun.faces.RIConstants.DOCUMENT_VERSION;
+import static com.sun.faces.util.Util.createLocalDocumentBuilderFactory;
 import static com.sun.faces.util.Util.isEmpty;
 import static java.util.Arrays.asList;
 import static java.util.logging.Level.INFO;
@@ -231,7 +232,7 @@ public class Documents {
     }
 
     private static DOMImplementation createDOMImplementation() throws ParserConfigurationException {
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilderFactory documentBuilderFactory = createLocalDocumentBuilderFactory();
         documentBuilderFactory.setNamespaceAware(true);
 
         return documentBuilderFactory.newDocumentBuilder().getDOMImplementation();
