@@ -46,6 +46,12 @@
 
    <!-- ###  D E P E N D E N C I E S  ### -->
    <dependencies>
+       <dependency>
+           <groupId>jakarta.faces</groupId>
+           <artifactId>jakarta.faces-api</artifactId>
+           <version>${project.version}</version>
+       </dependency>
+       
         <!-- Jakarta EE Dependencies -->
 
         <dependency>
