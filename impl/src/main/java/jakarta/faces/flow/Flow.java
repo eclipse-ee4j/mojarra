@@ -31,6 +31,9 @@ import jakarta.faces.lifecycle.ClientWindow;
  * all usages of the flow within the application.
  * </p>
  *
+ * <p class="changed_added_4_1">
+ * The current {@code Flow} can be injected into a CDI managed bean using {@code @Inject Flow currentFlow;}
+ * </p>
  *
  * @since 2.2
  */
