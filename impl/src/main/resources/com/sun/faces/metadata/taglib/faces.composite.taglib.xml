@@ -730,17 +730,11 @@ example.</p>
     </tag>
     <tag>
         <description><![CDATA[
-
-
-            <div class="changed_added_2_0">
-            <p>Used within a <code>&lt;cc:interface&gt;</code>
-            section,
-            within any sub-element of that section, to include XML content not
-            defined by this specification. This element can be used to
-            incorporate
-            <a target="_" href="http://jcp.org/en/jsr/detail?id=276">JSR-276</a>
-            metadata into a composite component.</p>
-
+            <div class="changed_modified_4_1">
+                <p>
+                    The use of this tag has been deprecated in Faces 5.0, without replacement.
+                    The reason is that the <a target="_" href="http://jcp.org/en/jsr/detail?id=276">JSR-276</a> went dormant.
+                </p>
             </div>
         ]]></description>
         <tag-name>extension</tag-name>
