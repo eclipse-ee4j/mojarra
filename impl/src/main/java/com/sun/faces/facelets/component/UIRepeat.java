@@ -17,6 +17,11 @@
 package com.sun.faces.facelets.component;
 
 import static com.sun.faces.cdi.CdiUtils.createDataModel;
+import static com.sun.faces.facelets.tag.faces.ComponentSupport.restoreFullDescendantComponentDeltaStates;
+import static com.sun.faces.facelets.tag.faces.ComponentSupport.restoreFullDescendantComponentStates;
+import static com.sun.faces.facelets.tag.faces.ComponentSupport.restoreTransientDescendantComponentStates;
+import static com.sun.faces.facelets.tag.faces.ComponentSupport.saveDescendantComponentStates;
+import static com.sun.faces.facelets.tag.faces.ComponentSupport.saveDescendantInitialComponentStates;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.BEHAVIOR_SOURCE_PARAM;
 import static com.sun.faces.util.Util.isNestedInIterator;
 
@@ -36,6 +41,7 @@ import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
+import jakarta.faces.application.StateManager;
 import jakarta.faces.component.ContextCallback;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
@@ -86,6 +92,11 @@ public class UIRepeat extends UINamingContainer {
     private Integer end;
     private Integer step;
     private Integer size;
+
+    private Boolean rowStatePreserved;
+    private Object initialDescendantFullComponentState = null;
+    private Map<String, Object> preservedRowStates = new HashMap<>();
+    private Map<String, Object> transientRowStates = new HashMap<>();
 
     public UIRepeat() {
         setRendererType("facelets.ui.Repeat");
@@ -179,6 +190,22 @@ public class UIRepeat extends UINamingContainer {
         }
         return null;
 
+    }
+
+    public void setRowStatePreserved(boolean rowStatePreserved) {
+        this.rowStatePreserved = rowStatePreserved;
+    }
+
+    public boolean isRowStatePreserved() {
+
+        if (rowStatePreserved != null) {
+            return rowStatePreserved;
+        }
+        ValueExpression ve = getValueExpression("rowStatePreserved");
+        if (ve != null) {
+            return (Boolean) ve.getValue(getFacesContext().getELContext());
+        }
+        return false;
     }
 
     public String getVar() {
@@ -453,6 +480,73 @@ public class UIRepeat extends UINamingContainer {
     }
 
     private void setIndex(FacesContext ctx, int index) {
+        if (isRowStatePreserved()) {
+            setRowIndexWithRowStatePreserved(ctx, index);
+        } else {
+            setRowIndexWithoutRowStatePreserved(ctx, index);
+        }
+    }
+
+    private void setRowIndexWithRowStatePreserved(FacesContext ctx, int index) {
+        if (index < -1) {
+            throw new IllegalArgumentException("index is less than -1");
+        }
+
+        if (this.index == index) {
+            return;
+        }
+
+        if (initialDescendantFullComponentState != null) {
+            // Just save the row
+            Map<String, Object> sm = saveDescendantComponentStates(ctx, null, getChildren().iterator(), UIComponent::saveState, false);
+            if (sm != null && !sm.isEmpty()) {
+                preservedRowStates.put(getContainerClientId(ctx), sm);
+            }
+            if (this.index != -1) {
+                sm = saveDescendantComponentStates(ctx, null, getChildren().iterator(), UIComponent::saveTransientState, false);
+                transientRowStates.put(getContainerClientId(ctx), sm);
+            }
+        }
+
+        // Update to the new row index
+        this.index = index;
+        DataModel localModel = getDataModel();
+        localModel.setRowIndex(index);
+
+        // if rowIndex is -1, clear the cache
+        if (this.index == -1) {
+            setDataModel(null);
+        }
+
+        // Clear or expose the current row data as a request scope attribute
+        if (this.index != -1 && var != null && localModel.isRowAvailable()) {
+            Map<String, Object> attrs = ctx.getExternalContext().getRequestMap();
+            attrs.put(var, localModel.getRowData());
+        }
+
+        if (initialDescendantFullComponentState != null) {
+            Object rowState = preservedRowStates.get(getContainerClientId(ctx));
+            if (rowState == null) {
+                // Restore as original
+                restoreFullDescendantComponentStates(ctx, getChildren().iterator(), initialDescendantFullComponentState, false);
+            } else {
+                // Restore first original and then delta
+                restoreFullDescendantComponentDeltaStates(ctx, getChildren().iterator(), rowState, initialDescendantFullComponentState, false);
+            }
+            if (this.index == -1) {
+                restoreTransientDescendantComponentStates(ctx, getChildren().iterator(), null, false);
+            } else {
+                rowState = transientRowStates.get(getContainerClientId(ctx));
+                if (rowState == null) {
+                    restoreTransientDescendantComponentStates(ctx, getChildren().iterator(), null, false);
+                } else {
+                    restoreTransientDescendantComponentStates(ctx, getChildren().iterator(), (Map<String, Object>) rowState, false);
+                }
+            }
+        }
+    }
+
+    private void setRowIndexWithoutRowStatePreserved(FacesContext ctx, int index) {
 
         DataModel localModel = getDataModel();
 
@@ -646,7 +740,7 @@ public class UIRepeat extends UINamingContainer {
         int oldIndex = -1;
         if (visitRows) {
             oldIndex = index;
-            captureOrigValue(facesContext);        
+            captureOrigValue(facesContext);
             setIndex(facesContext, -1);
         }
 
@@ -986,6 +1080,30 @@ public class UIRepeat extends UINamingContainer {
         super.queueEvent(new IndexedEvent(this, event, index));
     }
 
+    /**
+     * <p class="changed_added_4_1">
+     * Override the base class method to take special action if the method is being invoked when
+     * {@link StateManager#IS_BUILDING_INITIAL_STATE} is true <strong>and</strong> the <code>rowStatePreserved</code>
+     * property for this instance is <code>true</code>.
+     * </p>
+     * <p>
+     * The additional action taken is to traverse the descendents and save their state without regard to any particular row
+     * value.
+     * </p>
+     *
+     * @since 4.1
+     */
+
+    @Override
+    public void markInitialState() {
+        if (isRowStatePreserved()) {
+            if (getFacesContext().getAttributes().containsKey(StateManager.IS_BUILDING_INITIAL_STATE)) {
+                initialDescendantFullComponentState = saveDescendantInitialComponentStates(getFacesContext(), getChildren().iterator(), false);
+            }
+        }
+        super.markInitialState();
+    }
+
     @Override
     public void restoreState(FacesContext faces, Object object) {
         if (faces == null) {
@@ -1006,6 +1124,7 @@ public class UIRepeat extends UINamingContainer {
         value = state[7];
         originalBegin = (Integer) state[8];
         originalEnd = (Integer) state[9];
+        preservedRowStates = (Map<String, Object>) state[10];
     }
 
     @Override
@@ -1015,7 +1134,7 @@ public class UIRepeat extends UINamingContainer {
         if (faces == null) {
             throw new NullPointerException();
         }
-        Object[] state = new Object[10];
+        Object[] state = new Object[11];
         state[0] = super.saveState(faces);
         state[1] = childState;
         state[2] = begin;
@@ -1026,6 +1145,7 @@ public class UIRepeat extends UINamingContainer {
         state[7] = value;
         state[8] = originalBegin;
         state[9] = originalEnd;
+        state[10] = preservedRowStates;
         return state;
     }
 
