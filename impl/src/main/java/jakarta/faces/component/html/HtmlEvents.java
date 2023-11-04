@@ -34,7 +34,7 @@ public final class HtmlEvents {
         auxclick,
         beforeinput,
         beforematch,
-        eforetoggle,
+        beforetoggle,
         cancel,
         canplay,
         canplaythrough,
