@@ -45,6 +45,7 @@ import jakarta.faces.application.StateManager;
 import jakarta.faces.component.ContextCallback;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIForm;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.visit.VisitCallback;
 import jakarta.faces.component.visit.VisitContext;
@@ -192,10 +193,33 @@ public class UIRepeat extends UINamingContainer {
 
     }
 
+    /**
+     * <p class="changed_added_4_1">
+     * Boolean flag directing how the per-row component state of {@link EditableValueHolder} children should be handled across requests on the same view.
+     * If set to {@code true}, then state for {@link EditableValueHolder} components in each row will not be discarded before a new row is rendered.
+     * If not specified, the default value is {@code false}.
+     * </p>
+     * <p>
+     * This attribute should be set only when the current repeat component contains {@link UIForm} children which in turn contains {@link EditableValueHolder} children.
+     * This will only work reliably when the data model of the current repeat component does not change across requests on the same view by e.g. sorting, adding or removing rows.
+     * The alternative is to use <code>c:forEach</code> instead.
+     * </p>
+     *
+     * @param rowStatePreserved Whether to preserve row state while rendering
+     * @since 4.1
+     */
     public void setRowStatePreserved(boolean rowStatePreserved) {
         this.rowStatePreserved = rowStatePreserved;
     }
 
+    /**
+     * <p class="changed_added_4_1">
+     * Returns whether row state is preserved as per {@link #setRowStatePreserved(boolean)}.
+     * </p>
+     *
+     * @return Whether row state is preserved.
+     * @since 4.1
+     */
     public boolean isRowStatePreserved() {
 
         if (rowStatePreserved != null) {
