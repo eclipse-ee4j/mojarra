@@ -998,6 +998,27 @@ attribute must be an absolute path starting with "/".</span>
             <required>false</required>
             <type>java.lang.String</type>
         </attribute>
+        <attribute>
+            <description>
+            <![CDATA[
+                <div class="changed_added_4_1">
+                    <p>
+                        Boolean flag directing how the per-row component state of <code>EditableValueHolder</code> children should be handled across requests on the same view.
+                        If set to <code>true</code>, then state for a <code>EditableValueHolder</code> component in each row will not be discarded before a new row is rendered.
+                        If not specified, the default value is <code>false</code>.
+                    </p>
+                    <p>
+                        This attribute should be set only when the current repeat component contains <code>UIForm</code> children which in turn contains <code>EditableValueHolder</code> children.
+                        This will only work reliably when the data model of the current repeat component does not change across requests on the same view by e.g. sorting, adding or removing rows.
+                        The alternative is to use <code>c:forEach</code> instead.
+                    </p>
+                </div>
+            ]]>
+            </description>
+            <name>rowStatePreserved</name>
+            <required>false</required>
+            <type>boolean</type>
+        </attribute>
     </tag>
     <tag>
         <description><![CDATA[
