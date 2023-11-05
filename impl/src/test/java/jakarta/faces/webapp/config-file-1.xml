@@ -1,0 +1,225 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+
+    Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd"
+    version="1.2">
+
+    <!-- Initial application element with partial values -->
+    <application id="applicationElement">
+        <action-listener>com.mycompany.MyActionListener</action-listener>
+        <variable-resolver>com.mycompany.OldVariableResolver</variable-resolver>
+    </application>
+
+
+    <!-- Second validator -->
+    <validator>
+        <description>Second Validator Description</description>
+        <display-name>Second Validator Display Name</display-name>
+        <icon>
+            <small-icon>secondValidator.jpg</small-icon>
+            <large-icon>secondValidator.gif</large-icon>
+        </icon>
+        <validator-id>Second</validator-id>
+        <validator-class>com.mycompany.MySecondValidator</validator-class>
+        <property>
+            <description>Second Validator Property 1 Description</description>
+            <display-name>Second Validator Property 1 Display Name</display-name>
+            <property-name>prop1</property-name>
+            <property-class>java.lang.String</property-class>
+        </property>
+    </validator>
+
+
+    <!-- First validator -->
+    <validator>
+        <description>First Validator Description</description>
+        <display-name>First Validator Display Name</display-name>
+        <icon>
+            <small-icon>firstValidator.jpg</small-icon>
+            <large-icon>firstValidator.gif</large-icon>
+        </icon>
+        <validator-id>First</validator-id>
+        <validator-class>com.mycompany.MyFirstValidator</validator-class>
+        <attribute>
+            <description>First Validator Attribute 1 Description</description>
+            <display-name>First Validator Attribute 1 Display Name</display-name>
+            <attribute-name>attr1</attribute-name>
+            <attribute-class>java.lang.String</attribute-class>
+        </attribute>
+    </validator>
+
+
+    <!-- First component -->
+    <component>
+        <description>User Interface Command Component</description>
+        <display-name>User Interface Command</display-name>
+        <component-type>Command</component-type>
+        <component-class>jakarta.faces.component.UICommand</component-class>
+    </component>
+
+
+    <!-- First converter -->
+    <converter>
+        <description>First Converter Description</description>
+        <display-name>First Converter Display Name</display-name>
+        <icon>
+            <small-icon>firstConverter.jpg</small-icon>
+            <large-icon>firstConverter.gif</large-icon>
+        </icon>
+        <converter-id>First</converter-id>
+        <converter-class>com.mycompany.MyFirstConverter</converter-class>
+        <attribute>
+            <description>First Converter Attribute 1 Description</description>
+            <display-name>First Converter Attribute 1 Display Name</display-name>
+            <attribute-name>attr1</attribute-name>
+            <attribute-class>java.lang.String</attribute-class>
+        </attribute>
+    </converter>
+
+
+    <!-- Second application element with overapping values -->
+    <application>
+        <navigation-handler>com.mycompany.MyNavigationHandler</navigation-handler>
+        <property-resolver>com.mycompany.MyPropertyResolver</property-resolver>
+        <variable-resolver>com.mycompany.MyVariableResolver</variable-resolver>
+    </application>
+
+
+    <!-- Second converter -->
+    <converter>
+        <description>Second Converter Description</description>
+        <display-name>Second Converter Display Name</display-name>
+        <icon>
+            <small-icon>secondConverter.jpg</small-icon>
+            <large-icon>secondConverter.gif</large-icon>
+        </icon>
+        <converter-id>Second</converter-id>
+        <converter-class>com.mycompany.MySecondConverter</converter-class>
+        <property>
+            <description>Second Converter Property 1 Description</description>
+            <display-name>Second Converter Property 1 Display Name</display-name>
+            <property-name>prop1</property-name>
+            <property-class>java.lang.String</property-class>
+        </property>
+    </converter>
+
+    <!-- Third converter (by-type) -->
+    <converter>
+        <description>Third Converter Description</description>
+        <display-name>Third Converter Display Name</display-name>
+        <icon>
+            <small-icon>thirdConverter.jpg</small-icon>
+            <large-icon>thirdConverter.gif</large-icon>
+        </icon>
+        <converter-for-class>java.util.Date</converter-for-class>
+        <converter-class>com.mycompany.MyThirdConverter</converter-class>
+        <property>
+            <description>Third Converter Property 1 Description</description>
+            <display-name>Third Converter Property 1 Display Name</display-name>
+            <property-name>prop1</property-name>
+            <property-class>java.lang.String</property-class>
+        </property>
+    </converter>
+
+
+    <!-- First navigation rule (global) -->
+    <navigation-rule>
+        <description>
+      This is the set of rules that provides default navigation
+      independent of the request view.
+    </description>
+        <display-name>Default Navigation Rules</display-name>
+        <!-- Can also be omitted, since this is the default -->
+        <from-view-id>*</from-view-id>
+        <!-- Logout button on every page -->
+        <navigation-case>
+            <from-action>#{UserBean.Logout}</from-action>
+            <to-view-id>/logout.jsp</to-view-id>
+        </navigation-case>
+        <!-- Generic "not logged in" handler -->
+        <navigation-case>
+            <from-outcome>loginRequired</from-outcome>
+            <to-view-id>/must-login-first.jsp</to-view-id>
+            <redirect />
+        </navigation-case>
+    </navigation-rule>
+
+
+    <!-- Second navigation rule (login page only) -->
+    <navigation-rule>
+        <from-view-id>/login.jsp</from-view-id>
+        <!-- Login action was invoked successfully -->
+        <navigation-case>
+            <from-action>#{UserBean.login}</from-action>
+            <from-outcome>success</from-outcome>
+            <to-view-id>/home.jsp</to-view-id>
+        </navigation-case>
+        <!-- User registration required -->
+        <navigation-case>
+            <from-action>#{UserBean.register}</from-action>
+            <from-outcome>success</from-outcome>
+            <to-view-id>/get-user-info.jsp</to-view-id>
+        </navigation-case>
+        <!-- User registration failed -->
+        <navigation-case>
+            <from-action>#{UserBean.register}</from-action>
+            <from-outcome>duplicate</from-outcome>
+            <to-view-id>/try-another-name.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+
+    <!-- Third navigation rule (more global stuff) -->
+    <navigation-rule>
+        <!-- Omit the request view id this time -->
+        <!-- General search form handling -->
+        <navigation-case>
+            <from-action>#{SearchForm.go}</from-action>
+            <to-view-id>/search-results.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+
+    <!-- Fourth navigation rule (special search handling) -->
+    <navigation-rule>
+        <!-- Search works differently for part of the app -->
+        <from-view-id>/movies/*</from-view-id>
+        <!-- Special search form handling -->
+        <navigation-case>
+            <from-action>#{SearchForm.go}</from-action>
+            <to-view-id>/movies/movie-search-results.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+
+    <!-- First referenced bean -->
+    <referenced-bean>
+        <description>
+          This element represents a JDBC DataSource that will be
+          initialized through some external means, and made available
+          in some scope (most likely application).
+        </description>
+        <display-name>Database Connection Pool</display-name>
+        <referenced-bean-name>connectionPool</referenced-bean-name>
+        <referenced-bean-class>javax.sql.DataSource</referenced-bean-class>
+    </referenced-bean>
+
+</faces-config>
