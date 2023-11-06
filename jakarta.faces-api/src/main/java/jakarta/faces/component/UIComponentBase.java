@@ -17,12 +17,12 @@
 
 package jakarta.faces.component;
 
-import static com.sun.faces.facelets.tag.faces.ComponentSupport.addToDescendantMarkIdCache;
-import static com.sun.faces.facelets.tag.faces.ComponentSupport.isNotRenderingResponse;
-import static com.sun.faces.facelets.tag.faces.ComponentSupport.removeFromDescendantMarkIdCache;
-import static com.sun.faces.util.Util.isAllNull;
-import static com.sun.faces.util.Util.isAnyNull;
-import static com.sun.faces.util.Util.isEmpty;
+import static jakarta.faces.component.PackageUtils.addToDescendantMarkIdCache;
+import static jakarta.faces.component.PackageUtils.isNotRenderingResponse;
+import static jakarta.faces.component.PackageUtils.removeFromDescendantMarkIdCache;
+import static jakarta.faces.component.PackageUtils.isAllNull;
+import static jakarta.faces.component.PackageUtils.isAnyNull;
+import static jakarta.faces.component.PackageUtils.isEmpty;
 import static java.beans.Introspector.getBeanInfo;
 import static java.lang.Boolean.TRUE;
 import static java.lang.Character.isDigit;

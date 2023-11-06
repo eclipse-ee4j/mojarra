@@ -16,8 +16,8 @@
 
 package jakarta.faces.component;
 
-import static com.sun.faces.util.SelectItemUtils.collectSelectItems;
-import static com.sun.faces.util.SelectItemUtils.createSelectItem;
+import static jakarta.faces.component.PackageUtils.collectSelectItems;
+import static jakarta.faces.component.PackageUtils.createSelectItem;
 
 import jakarta.faces.model.SelectItem;
 import jakarta.faces.model.SelectItemGroup;

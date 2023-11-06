@@ -23,7 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.sun.faces.config.InitFacesContext;
+// RESOLVE THIS
+// import com.sun.faces.config.InitFacesContext;
 import jakarta.el.ELContext;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
@@ -64,7 +65,8 @@ public abstract class FacesContext {
     private boolean isCreatedFromValidFactory = true;
 
     private static final ConcurrentHashMap<Thread,FacesContext> threadInitContext = new ConcurrentHashMap<>(2);
-    private static final ConcurrentHashMap<Thread,InitFacesContext> initContextServletContext = new ConcurrentHashMap<>(2);
+// RESOLVE THIS    
+//    private static final ConcurrentHashMap<Thread,InitFacesContext> initContextServletContext = new ConcurrentHashMap<>(2);
 
     /**
      * Default constructor.

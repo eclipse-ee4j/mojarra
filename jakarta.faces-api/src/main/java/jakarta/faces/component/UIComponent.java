@@ -17,10 +17,10 @@
 
 package jakarta.faces.component;
 
-import static com.sun.faces.util.Util.isAnyNull;
-import static com.sun.faces.util.Util.isOneOf;
+import static jakarta.faces.component.PackageUtils.isAnyNull;
+import static jakarta.faces.component.PackageUtils.isOneOf;
 import static jakarta.faces.application.Resource.COMPONENT_RESOURCE_KEY;
-import static jakarta.faces.component.visit.VisitHint.SKIP_TRANSIENT;
+ import static jakarta.faces.component.visit.VisitHint.SKIP_TRANSIENT;
 import static jakarta.faces.component.visit.VisitHint.SKIP_UNRENDERED;
 import static jakarta.faces.component.visit.VisitResult.ACCEPT;
 import static jakarta.faces.component.visit.VisitResult.COMPLETE;

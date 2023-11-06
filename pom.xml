@@ -51,7 +51,8 @@
         <module>impl</module>
         <module>action</module>
         <module>rest</module>
-    </modules>
+        <module>jakarta.faces-api</module>
+   </modules>
 
    <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

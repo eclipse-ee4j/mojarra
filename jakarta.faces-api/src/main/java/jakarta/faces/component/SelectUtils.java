@@ -25,7 +25,8 @@ import jakarta.faces.convert.Converter;
 import jakarta.faces.model.SelectItem;
 import jakarta.faces.model.SelectItemGroup;
 
-import static com.sun.faces.util.CollectionsUtils.asIterator;
+// RESOLVE THIS
+import static jakarta.faces.component.PackageUtils.asIterator;
 
 /**
  * Contains common utility methods used by both {@link UISelectOne} and {@link UISelectMany}.

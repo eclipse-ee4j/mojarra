@@ -16,8 +16,8 @@
 
 package jakarta.faces;
 
-import static com.sun.faces.util.Util.getContextClassLoader2;
-import static com.sun.faces.util.Util.isAnyNull;
+import static jakarta.faces.PackageUtils.getContextClassLoader2;
+import static jakarta.faces.PackageUtils.isAnyNull;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.System.identityHashCode;
 

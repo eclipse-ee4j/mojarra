@@ -16,10 +16,10 @@
 
 package jakarta.faces;
 
-import static com.sun.faces.util.Util.generateCreatedBy;
-import static com.sun.faces.util.Util.getContextClassLoader2;
-import static com.sun.faces.util.Util.isAnyNull;
-import static com.sun.faces.util.Util.isOneOf;
+import static jakarta.faces.PackageUtils.generateCreatedBy;
+import static jakarta.faces.PackageUtils.getContextClassLoader2;
+import static jakarta.faces.PackageUtils.isAnyNull;
+import static jakarta.faces.PackageUtils.isOneOf;
 import static jakarta.faces.FactoryFinder.APPLICATION_FACTORY;
 import static jakarta.faces.FactoryFinder.CLIENT_WINDOW_FACTORY;
 import static jakarta.faces.FactoryFinder.EXCEPTION_HANDLER_FACTORY;
@@ -58,14 +58,14 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import com.sun.faces.config.ConfigManager;
-import com.sun.faces.spi.InjectionProvider;
+// RESOLVE THIS
+//import com.sun.faces.config.ConfigManager;
+//import com.sun.faces.spi.InjectionProvider;
 
 import jakarta.faces.context.FacesContext;
 
@@ -199,43 +199,45 @@ final class FactoryFinderInstance {
         }
     }
 
-    InjectionProvider getInjectionProvider() {
-        return (InjectionProvider) factories.get(INJECTION_PROVIDER_KEY);
-    }
+// RESOLVE THIS
+//    InjectionProvider getInjectionProvider() {
+//        return (InjectionProvider) factories.get(INJECTION_PROVIDER_KEY);
+//    }
 
     void clearInjectionProvider() {
         factories.remove(INJECTION_PROVIDER_KEY);
     }
 
     void releaseFactories() {
-        InjectionProvider provider = getInjectionProvider();
-
-        if (provider != null) {
-            lock.writeLock().lock();
-            try {
-                for (Entry<String, Object> entry : factories.entrySet()) {
-                    Object curFactory = entry.getValue();
-
-                    // If the current entry is not the injectionProvider itself
-                    // and the current entry has a non-null value
-                    // and the value is not a string...
-                    if (!INJECTION_PROVIDER_KEY.equals(entry.getKey()) && curFactory != null && !(curFactory instanceof String)) {
-                        try {
-                            provider.invokePreDestroy(curFactory);
-                        } catch (Exception ex) {
-                            logPreDestroyFail(entry.getValue(), ex);
-                        }
-                    }
-                }
-            } finally {
-                factories.clear();
-                lock.writeLock().unlock();
-            }
-
-        } else {
-            LOGGER.log(SEVERE,
-                    "Unable to call @PreDestroy annotated methods because no InjectionProvider can be found. Does this container implement the Mojarra Injection SPI?");
-        }
+// RESOLVE THIS
+//        InjectionProvider provider = getInjectionProvider();
+//
+//        if (provider != null) {
+//            lock.writeLock().lock();
+//            try {
+//                for (Entry<String, Object> entry : factories.entrySet()) {
+//                    Object curFactory = entry.getValue();
+//
+//                    // If the current entry is not the injectionProvider itself
+//                    // and the current entry has a non-null value
+//                    // and the value is not a string...
+//                    if (!INJECTION_PROVIDER_KEY.equals(entry.getKey()) && curFactory != null && !(curFactory instanceof String)) {
+//                        try {
+//                            provider.invokePreDestroy(curFactory);
+//                        } catch (Exception ex) {
+//                            logPreDestroyFail(entry.getValue(), ex);
+//                        }
+//                    }
+//                }
+//            } finally {
+//                factories.clear();
+//                lock.writeLock().unlock();
+//            }
+//
+//        } else {
+//            LOGGER.log(SEVERE,
+//                    "Unable to call @PreDestroy annotated methods because no InjectionProvider can be found. Does this container implement the Mojarra Injection SPI?");
+//        }
     }
 
     Collection<Object> getFactories() {
@@ -245,16 +247,19 @@ final class FactoryFinderInstance {
     // -------------------------------------------------------- Private methods
 
     private void copyInjectionProviderFromFacesContext(FacesContext facesContext) {
-        InjectionProvider injectionProvider = null;
-        if (facesContext != null) {
-            injectionProvider = (InjectionProvider) facesContext.getAttributes().get(ConfigManager.INJECTION_PROVIDER_KEY);
-        }
 
-        if (injectionProvider != null) {
-            factories.put(INJECTION_PROVIDER_KEY, injectionProvider);
-        } else {
+// RESOLVE THIS
+
+//        InjectionProvider injectionProvider = null;
+//        if (facesContext != null) {
+//            injectionProvider = (InjectionProvider) facesContext.getAttributes().get(ConfigManager.INJECTION_PROVIDER_KEY);
+//        }
+//
+//        if (injectionProvider != null) {
+//            factories.put(INJECTION_PROVIDER_KEY, injectionProvider);
+//        } else {
             LOGGER.log(SEVERE, "Unable to obtain InjectionProvider from init time FacesContext. Does this container implement the Mojarra Injection SPI?");
-        }
+//        }
     }
 
     /**
@@ -465,19 +470,21 @@ final class FactoryFinderInstance {
 
     private void injectImplementation(String implementationName, Object implementation) {
         if (implementation != null) {
-            InjectionProvider provider = getInjectionProvider();
-            if (provider != null) {
-                try {
-                    provider.inject(implementation);
-                    provider.invokePostConstruct(implementation);
-                } catch (Exception e) {
-                    throw new FacesException(implementationName, e);
-                }
-            } else {
+
+// RESOLVE THIS
+//            InjectionProvider provider = getInjectionProvider();
+//            if (provider != null) {
+//                try {
+//                    provider.inject(implementation);
+//                    provider.invokePostConstruct(implementation);
+//                } catch (Exception e) {
+//                    throw new FacesException(implementationName, e);
+//                }
+//            } else {
                 LOGGER.log(SEVERE, "Unable to inject {0} because no InjectionProvider can be found. Does this container implement the Mojarra Injection SPI?",
                         implementation);
             }
-        }
+//        }
     }
 
     private void logNoFactory(String factoryName) {

@@ -16,8 +16,9 @@
 
 package jakarta.faces.component;
 
-import static com.sun.faces.util.Util.extractFirstNumericSegment;
-import static com.sun.faces.util.Util.isNestedInIterator;
+// RESOLVE THIS
+import static jakarta.faces.component.PackageUtils.extractFirstNumericSegment;
+import static jakarta.faces.component.PackageUtils.isNestedInIterator;
 
 import java.io.IOException;
 import java.io.Serializable;

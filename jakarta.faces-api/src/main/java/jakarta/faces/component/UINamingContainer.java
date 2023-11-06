@@ -16,7 +16,7 @@
 
 package jakarta.faces.component;
 
-import static com.sun.faces.util.Util.coalesce;
+import static jakarta.faces.component.PackageUtils.coalesce;
 import static jakarta.faces.component.UIViewRoot.UNIQUE_ID_PREFIX;
 import static jakarta.faces.component.visit.VisitResult.COMPLETE;
 import static java.util.logging.Level.SEVERE;
