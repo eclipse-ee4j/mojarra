@@ -20,6 +20,7 @@ import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParamet
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +28,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.BiFunction;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.context.StateContext;
@@ -218,7 +220,7 @@ public final class ComponentSupport {
     private static boolean isPartialStateSaving(FacesContext context) {
         return context.getAttributes().get(PartialStateSaving) == Boolean.TRUE;
     }
-    
+
     /**
      * By TagId, find Child
      *
@@ -254,7 +256,7 @@ public final class ComponentSupport {
                 if (id.equals(cid)) {
                     return c;
                 }
-            } 
+            }
         }
         if (0 < parent.getFacetCount()) {
             components = new ArrayList<>();
@@ -636,6 +638,163 @@ public final class ComponentSupport {
             }
         }
     }
+
+    public static Collection<Object[]> saveDescendantInitialComponentStates(FacesContext facesContext, Iterator<UIComponent> childIterator, boolean saveChildFacets) {
+        Collection<Object[]> childStates = null;
+        while (childIterator.hasNext()) {
+            if (childStates == null) {
+                childStates = new ArrayList<>();
+            }
+
+            UIComponent child = childIterator.next();
+            if (!child.isTransient()) {
+                // Add an entry to the collection, being an array of two
+                // elements. The first element is the state of the children
+                // of this component; the second is the state of the current
+                // child itself.
+
+                Iterator<UIComponent> childsIterator;
+                if (saveChildFacets) {
+                    childsIterator = child.getFacetsAndChildren();
+                } else {
+                    childsIterator = child.getChildren().iterator();
+                }
+                Object descendantState = saveDescendantInitialComponentStates(facesContext, childsIterator, true);
+                Object state = child.saveState(facesContext);
+                childStates.add(new Object[] { state, descendantState });
+            }
+        }
+        return childStates;
+    }
+
+    public static Map<String, Object> saveDescendantComponentStates(FacesContext facesContext, Map<String, Object> stateMap, Iterator<UIComponent> childIterator, BiFunction<UIComponent, FacesContext, Object> stateSaver, boolean saveChildFacets) {
+        while (childIterator.hasNext()) {
+            UIComponent child = childIterator.next();
+            if (!child.isTransient()) {
+                Iterator<UIComponent> childsIterator;
+                if (saveChildFacets) {
+                    childsIterator = child.getFacetsAndChildren();
+                } else {
+                    childsIterator = child.getChildren().iterator();
+                }
+                stateMap = saveDescendantComponentStates(facesContext, stateMap, childsIterator, stateSaver, true);
+                Object state = stateSaver.apply(child, facesContext);
+                if (state != null) {
+                    if (stateMap == null) {
+                        stateMap = new HashMap<>();
+                    }
+                    stateMap.put(child.getClientId(facesContext), state);
+                }
+            }
+        }
+        return stateMap;
+    }
+
+    public static void restoreFullDescendantComponentStates(FacesContext facesContext, Iterator<UIComponent> childIterator, Object state, boolean restoreChildFacets) {
+        Iterator<? extends Object[]> descendantStateIterator = null;
+        while (childIterator.hasNext()) {
+            if (descendantStateIterator == null && state != null) {
+                descendantStateIterator = ((Collection<? extends Object[]>) state).iterator();
+            }
+            UIComponent component = childIterator.next();
+
+            // reset the client id (see spec 3.1.6)
+            component.setId(component.getId());
+            if (!component.isTransient()) {
+                Object childState = null;
+                Object descendantState = null;
+                if (descendantStateIterator != null && descendantStateIterator.hasNext()) {
+                    Object[] object = descendantStateIterator.next();
+                    childState = object[0];
+                    descendantState = object[1];
+                }
+
+                component.clearInitialState();
+                component.restoreState(facesContext, childState);
+                component.markInitialState();
+
+                Iterator<UIComponent> childsIterator;
+                if (restoreChildFacets) {
+                    childsIterator = component.getFacetsAndChildren();
+                } else {
+                    childsIterator = component.getChildren().iterator();
+                }
+                restoreFullDescendantComponentStates(facesContext, childsIterator, descendantState, true);
+            }
+        }
+    }
+
+    public static void restoreFullDescendantComponentDeltaStates(FacesContext facesContext, Iterator<UIComponent> childIterator, Object state, Object initialState, boolean restoreChildFacets) {
+        Map<String, Object> descendantStateIterator = null;
+        Iterator<? extends Object[]> descendantFullStateIterator = null;
+        while (childIterator.hasNext()) {
+            if (descendantStateIterator == null && state != null) {
+                descendantStateIterator = (Map<String, Object>) state;
+            }
+            if (descendantFullStateIterator == null && initialState != null) {
+                descendantFullStateIterator = ((Collection<? extends Object[]>) initialState).iterator();
+            }
+            UIComponent component = childIterator.next();
+
+            // reset the client id (see spec 3.1.6)
+            component.setId(component.getId());
+            if (!component.isTransient()) {
+                Object childInitialState = null;
+                Object descendantInitialState = null;
+                Object childState = null;
+                if (descendantStateIterator != null && descendantStateIterator.containsKey(component.getClientId(facesContext))) {
+                    // Object[] object = (Object[]) descendantStateIterator.get(component.getClientId(facesContext));
+                    // childState = object[0];
+                    childState = descendantStateIterator.get(component.getClientId(facesContext));
+                }
+                if (descendantFullStateIterator != null && descendantFullStateIterator.hasNext()) {
+                    Object[] object = descendantFullStateIterator.next();
+                    childInitialState = object[0];
+                    descendantInitialState = object[1];
+                }
+
+                component.clearInitialState();
+                if (childInitialState != null) {
+                    component.restoreState(facesContext, childInitialState);
+                    component.markInitialState();
+                    component.restoreState(facesContext, childState);
+                } else {
+                    component.restoreState(facesContext, childState);
+                    component.markInitialState();
+                }
+
+                Iterator<UIComponent> childsIterator;
+                if (restoreChildFacets) {
+                    childsIterator = component.getFacetsAndChildren();
+                } else {
+                    childsIterator = component.getChildren().iterator();
+                }
+                restoreFullDescendantComponentDeltaStates(facesContext, childsIterator, state, descendantInitialState, true);
+            }
+        }
+    }
+
+    public static void restoreTransientDescendantComponentStates(FacesContext facesContext, Iterator<UIComponent> childIterator, Map<String, Object> state, boolean restoreChildFacets) {
+        while (childIterator.hasNext()) {
+            UIComponent component = childIterator.next();
+
+            // reset the client id (see spec 3.1.6)
+            component.setId(component.getId());
+            if (!component.isTransient()) {
+                component.restoreTransientState(facesContext, state == null ? null : state.get(component.getClientId(facesContext)));
+
+                Iterator<UIComponent> childsIterator;
+                if (restoreChildFacets) {
+                    childsIterator = component.getFacetsAndChildren();
+                } else {
+                    childsIterator = component.getChildren().iterator();
+                }
+                restoreTransientDescendantComponentStates(facesContext, childsIterator, state, true);
+            }
+        }
+
+    }
+
 
     // --------------------------------------------------------- private classes
 
