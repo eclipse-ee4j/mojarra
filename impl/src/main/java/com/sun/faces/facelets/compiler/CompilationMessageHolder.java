@@ -26,8 +26,6 @@ import jakarta.faces.context.FacesContext;
  * to store compilation messages for later use.  During page compilation,
  * if any messages need to be shown to the user, they will be
  * added using this interface.  If, during page execution,
- * the messages turn out not to be needed, as is the case with
- * a foreign xml element nested within a <composite:extension> element,
  * this interface can be used to remove the messages.
  *
  * Currently the messages are keyed by namespace prefix.
@@ -42,6 +40,7 @@ public interface CompilationMessageHolder {
 
     List<FacesMessage> getNamespacePrefixMessages(FacesContext context, String prefix);
 
+    @Deprecated(since = "4.1", forRemoval = true)
     void removeNamespacePrefixMessages(String prefix);
 
     void processCompilationMessages(FacesContext context);
