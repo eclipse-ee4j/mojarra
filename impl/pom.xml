@@ -39,8 +39,6 @@
    <description>EE4J Compatible Implementation for Jakarta Faces API</description>
 
    <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
         <mojarra.logstrings.version>${project.version}</mojarra.logstrings.version>
     </properties>
 
