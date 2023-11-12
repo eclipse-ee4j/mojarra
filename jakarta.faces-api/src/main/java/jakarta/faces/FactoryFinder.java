@@ -16,8 +16,6 @@
 
 package jakarta.faces;
 
-import static jakarta.faces.ServletContextFacesContextFactory.SERVLET_CONTEXT_FINDER_NAME;
-
 /**
  * <p>
  * <strong class="changed_modified_2_0 changed_modified_2_1 changed_modified_2_2
@@ -250,11 +248,7 @@ public final class FactoryFinder {
      */
     public static Object getFactory(String factoryName) throws FacesException {
 
-        // Bug 20458755: If the factory being requested is the special
-        // SERVLET_CONTEXT_FINDER, do not lazily create the FactoryFinderInstance.
-        final boolean create = ! SERVLET_CONTEXT_FINDER_NAME.equals(factoryName);
-
-        final FactoryFinderInstance factoryFinder = FACTORIES_CACHE.getFactoryFinder( create );
+        final FactoryFinderInstance factoryFinder = FACTORIES_CACHE.getFactoryFinder( true );
 
         return factoryFinder != null ? factoryFinder.getFactory(factoryName) : null;
     }

@@ -79,11 +79,9 @@ public class WebappLifecycleListener {
     public void requestInitialized(ServletRequestEvent event) {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (facesContext instanceof InitFacesContext) {
+            // NOTE: this should never happen. We should probably log a WARN line for diagnostic?
             InitFacesContext initFacesContext = (InitFacesContext) facesContext;
-            initFacesContext.releaseCurrentInstance();
-            // Bug 20458755 Clean up the entry for the InitContext corresponding
-            // to this ServletContext
-            initFacesContext.removeServletContextEntryForInitContext();
+            initFacesContext.release();
         }
         ApplicationAssociate.setCurrentInstance(getAssociate());
     }

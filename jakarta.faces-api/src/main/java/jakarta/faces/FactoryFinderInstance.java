@@ -16,10 +16,6 @@
 
 package jakarta.faces;
 
-import static jakarta.faces.PackageUtils.generateCreatedBy;
-import static jakarta.faces.PackageUtils.getContextClassLoader2;
-import static jakarta.faces.PackageUtils.isAnyNull;
-import static jakarta.faces.PackageUtils.isOneOf;
 import static jakarta.faces.FactoryFinder.APPLICATION_FACTORY;
 import static jakarta.faces.FactoryFinder.CLIENT_WINDOW_FACTORY;
 import static jakarta.faces.FactoryFinder.EXCEPTION_HANDLER_FACTORY;
@@ -36,11 +32,13 @@ import static jakarta.faces.FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY;
 import static jakarta.faces.FactoryFinder.TAG_HANDLER_DELEGATE_FACTORY;
 import static jakarta.faces.FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY;
 import static jakarta.faces.FactoryFinder.VISIT_CONTEXT_FACTORY;
-import static jakarta.faces.ServletContextFacesContextFactory.SERVLET_CONTEXT_FINDER_NAME;
-import static jakarta.faces.ServletContextFacesContextFactory.SERVLET_CONTEXT_FINDER_REMOVAL_NAME;
+import static jakarta.faces.PackageUtils.generateCreatedBy;
+import static jakarta.faces.PackageUtils.getContextClassLoader2;
+import static jakarta.faces.PackageUtils.isAnyNull;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.text.MessageFormat.format;
 import static java.util.Collections.binarySearch;
+import static java.util.Collections.singleton;
 import static java.util.Map.entry;
 import static java.util.logging.Level.SEVERE;
 
@@ -52,35 +50,37 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-// RESOLVE THIS
-//import com.sun.faces.config.ConfigManager;
-//import com.sun.faces.spi.InjectionProvider;
-
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.InjectionTarget;
 import jakarta.faces.context.FacesContext;
 
 final class FactoryFinderInstance {
 
     private static final Logger LOGGER = Logger.getLogger("jakarta.faces", "jakarta.faces.LogStrings");
 
-    private static final String INJECTION_PROVIDER_KEY = FactoryFinder.class.getPackage().getName() + "INJECTION_PROVIDER_KEY";
-
     private final Map<String, Object> factories = new ConcurrentHashMap<>();
     private final Map<String, List<String>> savedFactoryNames = new ConcurrentHashMap<>();
+    private final List<Entry<InjectionTarget<Object>, Object>> injectedImplementations = new ArrayList<>();
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock(true);
     private final String createdBy;
-
-    private ServletContextFacesContextFactory servletContextFinder = new ServletContextFacesContextFactory();
 
     /**
      * <p>
@@ -106,13 +106,11 @@ final class FactoryFinderInstance {
         for (String name : factoryNames) {
             factories.put(name, new ArrayList<>(4)); // NOPMD
         }
-        copyInjectionProviderFromFacesContext(facesContext);
         createdBy = generateCreatedBy(facesContext);
     }
 
     FactoryFinderInstance(FacesContext facesContext, FactoryFinderInstance toCopy) {
         factories.putAll(toCopy.savedFactoryNames);
-        copyInjectionProviderFromFacesContext(facesContext);
         createdBy = generateCreatedBy(facesContext);
     }
 
@@ -140,20 +138,6 @@ final class FactoryFinderInstance {
     @SuppressWarnings("unchecked")
     Object getFactory(String factoryName) {
         validateFactoryName(factoryName);
-
-        if (factoryName.equals(SERVLET_CONTEXT_FINDER_NAME)) {
-            return servletContextFinder;
-        }
-
-        if (factoryName.equals(SERVLET_CONTEXT_FINDER_REMOVAL_NAME)) {
-            try {
-                lock.writeLock().lock();
-                servletContextFinder = null;
-                return null;
-            } finally {
-                lock.writeLock().unlock();
-            }
-        }
 
         Object factoryOrList;
         lock.readLock().lock();
@@ -199,45 +183,26 @@ final class FactoryFinderInstance {
         }
     }
 
-// RESOLVE THIS
-//    InjectionProvider getInjectionProvider() {
-//        return (InjectionProvider) factories.get(INJECTION_PROVIDER_KEY);
-//    }
-
-    void clearInjectionProvider() {
-        factories.remove(INJECTION_PROVIDER_KEY);
-    }
-
     void releaseFactories() {
-// RESOLVE THIS
-//        InjectionProvider provider = getInjectionProvider();
-//
-//        if (provider != null) {
-//            lock.writeLock().lock();
-//            try {
-//                for (Entry<String, Object> entry : factories.entrySet()) {
-//                    Object curFactory = entry.getValue();
-//
-//                    // If the current entry is not the injectionProvider itself
-//                    // and the current entry has a non-null value
-//                    // and the value is not a string...
-//                    if (!INJECTION_PROVIDER_KEY.equals(entry.getKey()) && curFactory != null && !(curFactory instanceof String)) {
-//                        try {
-//                            provider.invokePreDestroy(curFactory);
-//                        } catch (Exception ex) {
-//                            logPreDestroyFail(entry.getValue(), ex);
-//                        }
-//                    }
-//                }
-//            } finally {
-//                factories.clear();
-//                lock.writeLock().unlock();
-//            }
-//
-//        } else {
-//            LOGGER.log(SEVERE,
-//                    "Unable to call @PreDestroy annotated methods because no InjectionProvider can be found. Does this container implement the Mojarra Injection SPI?");
-//        }
+        lock.writeLock().lock();
+        try {
+            Collections.reverse(injectedImplementations);
+            for (Entry<InjectionTarget<Object>, Object> injectedImplementation : injectedImplementations) {
+                InjectionTarget<Object> injectionTarget = injectedImplementation.getKey();
+                Object instance = injectedImplementation.getValue();
+
+                try {
+                    injectionTarget.preDestroy(instance);
+                    injectionTarget.dispose(instance);
+                } catch (Exception ex) {
+                    logPreDestroyFail(injectedImplementation, ex);
+                }
+            }
+        } finally {
+            injectedImplementations.clear();
+            factories.clear();
+            lock.writeLock().unlock();
+        }
     }
 
     Collection<Object> getFactories() {
@@ -246,29 +211,13 @@ final class FactoryFinderInstance {
 
     // -------------------------------------------------------- Private methods
 
-    private void copyInjectionProviderFromFacesContext(FacesContext facesContext) {
-
-// RESOLVE THIS
-
-//        InjectionProvider injectionProvider = null;
-//        if (facesContext != null) {
-//            injectionProvider = (InjectionProvider) facesContext.getAttributes().get(ConfigManager.INJECTION_PROVIDER_KEY);
-//        }
-//
-//        if (injectionProvider != null) {
-//            factories.put(INJECTION_PROVIDER_KEY, injectionProvider);
-//        } else {
-            LOGGER.log(SEVERE, "Unable to obtain InjectionProvider from init time FacesContext. Does this container implement the Mojarra Injection SPI?");
-//        }
-    }
-
     /**
      * <p>
      * Load and return an instance of the specified implementation class using the following algorithm.
      * </p>
-     * 
+     *
      * <ol>
-     * 
+     *
      * <li>
      * <p>
      * If the argument <code>implementations</code> list has more than one element, or exactly one element, interpret the
@@ -277,7 +226,7 @@ final class FactoryFinderInstance {
      * this step.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * Look for a resource called <code>/META-INF/services/&lt;factoryName&gt;</code>. If found, interpret it as a
@@ -289,7 +238,7 @@ final class FactoryFinderInstance {
      * step.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * Treat each remaining element in the <code>implementations</code> list as a fully qualified class name of a class
@@ -299,13 +248,13 @@ final class FactoryFinderInstance {
      * the previous step or iteration.
      * </p>
      * </li>
-     * 
+     *
      * <li>
      * <p>
      * Return the saved factory
      * </p>
      * </li>
-     * 
+     *
      * </ol>
      *
      * @param classLoader Class loader for the web application that will be loading the implementation class
@@ -385,12 +334,12 @@ final class FactoryFinderInstance {
      * <p>
      * Implement the decorator pattern for the factory implementation.
      * </p>
-     * 
+     *
      * <p>
      * If <code>previousImpl</code> is non-<code>null</code> and the class named by the argument <code>implName</code> has a
      * one arg contstructor of type <code>factoryName</code>, instantiate it, passing previousImpl to the constructor.
      * </p>
-     * 
+     *
      * <p>
      * Otherwise, we just instantiate and return <code>implName</code>.
      * </p>
@@ -441,7 +390,7 @@ final class FactoryFinderInstance {
             }
         }
 
-        injectImplementation(factoryImplClassName, factoryImplementation);
+        injectImplementation(classLoader, factoryImplClassName, factoryImplementation);
 
         return factoryImplementation;
     }
@@ -468,23 +417,38 @@ final class FactoryFinderInstance {
         }
     }
 
-    private void injectImplementation(String implementationName, Object implementation) {
-        if (implementation != null) {
-
-// RESOLVE THIS
-//            InjectionProvider provider = getInjectionProvider();
-//            if (provider != null) {
-//                try {
-//                    provider.inject(implementation);
-//                    provider.invokePostConstruct(implementation);
-//                } catch (Exception e) {
-//                    throw new FacesException(implementationName, e);
-//                }
-//            } else {
-                LOGGER.log(SEVERE, "Unable to inject {0} because no InjectionProvider can be found. Does this container implement the Mojarra Injection SPI?",
-                        implementation);
+    private <T> void injectImplementation(ClassLoader classLoader, String implementationName, T implementationInstance) {
+        if (implementationInstance != null) {
+            Class<T> implementationClass;
+            try {
+                implementationClass = (Class<T>) Class.forName(implementationName, false, classLoader);
+            } catch (ClassNotFoundException e) {
+                throw new FacesException(e);
             }
-//        }
+
+            BeanManager beanManager = CDI.current().getBeanManager();
+            AnnotatedType<T> type = beanManager.createAnnotatedType(implementationClass);
+
+            if (type != null) {
+                Bean<T> bean = (Bean<T>) beanManager.resolve(getBeansWithExactClassPreferred(beanManager, implementationClass));
+                InjectionTarget<T> injectionTarget = beanManager.getInjectionTargetFactory(type).createInjectionTarget(bean);
+                injectionTarget.inject(implementationInstance, beanManager.createCreationalContext(bean));
+                injectionTarget.postConstruct(implementationInstance);
+                injectedImplementations.add(new AbstractMap.SimpleEntry(injectionTarget, implementationInstance));
+            }
+        }
+    }
+
+    private static Set<Bean<?>> getBeansWithExactClassPreferred(BeanManager beanManager, Class<?> beanClass) {
+        Set<Bean<?>> beans = beanManager.getBeans(beanClass);
+
+        for (Bean<?> bean : beans) {
+            if (bean.getBeanClass() == beanClass) {
+                return singleton(bean);
+            }
+        }
+
+        return beans;
     }
 
     private void logNoFactory(String factoryName) {
@@ -509,10 +473,6 @@ final class FactoryFinderInstance {
 
         if (factoryName == null) {
             throw new NullPointerException();
-        }
-
-        if (isOneOf(factoryName, SERVLET_CONTEXT_FINDER_NAME, SERVLET_CONTEXT_FINDER_REMOVAL_NAME)) {
-            return;
         }
 
         if (binarySearch(factoryNames, factoryName) < 0) {
