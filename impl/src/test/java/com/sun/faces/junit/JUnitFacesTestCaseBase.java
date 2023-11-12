@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.sun.faces.mock.MockApplication;
+import com.sun.faces.mock.MockCDIProvider;
 import com.sun.faces.mock.MockExternalContext;
 import com.sun.faces.mock.MockFacesContext;
 import com.sun.faces.mock.MockHttpServletRequest;
@@ -30,6 +31,7 @@ import com.sun.faces.mock.MockLifecycle;
 import com.sun.faces.mock.MockServletConfig;
 import com.sun.faces.mock.MockServletContext;
 
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.ApplicationFactory;
 import jakarta.faces.context.FacesContextFactory;
@@ -55,6 +57,9 @@ public class JUnitFacesTestCaseBase extends TestCase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
+
+        // Set up CDI
+        CDI.setCDIProvider(new MockCDIProvider());
 
         // Set up Servlet API Objects
         servletContext = new MockServletContext();
