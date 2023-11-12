@@ -33,11 +33,6 @@ import jakarta.faces.context.FacesContext;
 
 final class CurrentThreadToServletContext {
 
-    // Bug 20458755: This instance provides a method to look up the current FacesContext
-    // that bypasses the additional check for the InitFacesContext introduced
-    // by the fix for 20458755
-    private final ServletContextFacesContextFactory servletContextFacesContextFactory = new ServletContextFacesContextFactory();
-
     ConcurrentMap<FactoryFinderCacheKey, FactoryFinderInstance> factoryFinderMap = new ConcurrentHashMap<>();
     private final AtomicBoolean logNullFacesContext = new AtomicBoolean();
     private final AtomicBoolean logNonNullFacesContext = new AtomicBoolean();
@@ -54,7 +49,7 @@ final class CurrentThreadToServletContext {
 
     private FactoryFinderInstance getFactoryFinder(ClassLoader classLoader, boolean create) {
 
-        FacesContext facesContext = servletContextFacesContextFactory.getFacesContextWithoutServletContextLookup();
+        FacesContext facesContext = FacesContext.getCurrentInstance();
 
         boolean isSpecialInitializationCase = detectSpecialInitializationCase(facesContext);
         FactoryFinderCacheKey key = new FactoryFinderCacheKey(facesContext, classLoader, factoryFinderMap);
@@ -158,12 +153,7 @@ final class CurrentThreadToServletContext {
 
     void removeFactoryFinder() {
         ClassLoader classLoader = getContextClassLoader2();
-        FactoryFinderInstance factoryFinder = getFactoryFinder(classLoader, false);
-        if (factoryFinder != null) {
-            factoryFinder.clearInjectionProvider();
-        }
-
-        FacesContext facesContext = servletContextFacesContextFactory.getFacesContextWithoutServletContextLookup();
+        FacesContext facesContext = FacesContext.getCurrentInstance();
         boolean isSpecialInitializationCase = detectSpecialInitializationCase(facesContext);
 
         factoryFinderMap.remove(new FactoryFinderCacheKey(facesContext, classLoader, factoryFinderMap));

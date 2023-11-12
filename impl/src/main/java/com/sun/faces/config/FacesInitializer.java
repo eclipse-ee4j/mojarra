@@ -126,10 +126,6 @@ public class FacesInitializer implements ServletContainerInitializer {
                 servletContext.addListener(ConfigureListener.class);
             }
             finally {
-                // Bug 20458755: The InitFacesContext was not being cleaned up, resulting in
-                // a partially constructed FacesContext being made available
-                // to other code that re-uses this Thread at init time.
-                initFacesContext.releaseCurrentInstance();
                 initFacesContext.release();
             }
         } else {

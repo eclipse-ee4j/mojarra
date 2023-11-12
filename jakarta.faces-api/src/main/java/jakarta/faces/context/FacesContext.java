@@ -21,10 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-// RESOLVE THIS
-// import com.sun.faces.config.InitFacesContext;
 import jakarta.el.ELContext;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
@@ -63,10 +60,6 @@ public abstract class FacesContext {
     private FacesContext defaultFacesContext;
     private boolean processingEvents = true;
     private boolean isCreatedFromValidFactory = true;
-
-    private static final ConcurrentHashMap<Thread,FacesContext> threadInitContext = new ConcurrentHashMap<>(2);
-// RESOLVE THIS    
-//    private static final ConcurrentHashMap<Thread,InitFacesContext> initContextServletContext = new ConcurrentHashMap<>(2);
 
     /**
      * Default constructor.
@@ -851,32 +844,7 @@ public abstract class FacesContext {
      * @return the instance of <code>FacesContext</code>.
      */
     public static FacesContext getCurrentInstance() {
-        FacesContext facesContext = instance.get();
-
-        if (null == facesContext) {
-            facesContext = threadInitContext.get(Thread.currentThread());
-        }
-        // Bug 20458755: If not found in the threadInitContext, use
-        // a special FacesContextFactory implementation that knows how to
-        // use the initContextServletContext map to obtain current ServletContext
-        // out of thin air (actually, using the current ClassLoader), and use it
-        // to obtain the init FacesContext corresponding to that ServletContext.
-        if (null == facesContext) {
-            // In the non-init case, this will immediately return null.
-            // In the init case, this will return null if Jakarta Faces hasn't been
-            // initialized in the ServletContext corresponding to this
-            // Thread's context ClassLoader.
-            ClassLoader cl = Thread.currentThread().getContextClassLoader();
-            if (cl == null) {
-                return null;
-            }
-
-            FacesContextFactory privateFacesContextFactory = (FacesContextFactory) FactoryFinder.getFactory("com.sun.faces.ServletContextFacesContextFactory");
-            if (null != privateFacesContextFactory) {
-                facesContext = privateFacesContextFactory.getFacesContext(null, null, null, null);
-            }
-        }
-        return facesContext;
+        return instance.get();
     }
 
     /**
