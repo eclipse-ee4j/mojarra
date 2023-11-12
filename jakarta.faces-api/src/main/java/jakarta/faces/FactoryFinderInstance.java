@@ -54,6 +54,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -184,6 +185,7 @@ final class FactoryFinderInstance {
     void releaseFactories() {
         lock.writeLock().lock();
         try {
+            Collections.reverse(injectedImplementations);
             for (Object injectedImplementation : injectedImplementations) {
                 try {
                     invokeAnnotatedMethod(injectedImplementation, PreDestroy.class);
