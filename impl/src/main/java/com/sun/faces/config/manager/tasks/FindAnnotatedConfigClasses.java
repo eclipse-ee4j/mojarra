@@ -64,8 +64,6 @@ public class FindAnnotatedConfigClasses implements Callable<Map<Class<? extends 
             t.startTiming();
         }
 
-        // We are executing on a different thread.
-        facesContext.addInitContextEntryForCurrentThread();
         Set<URI> scanUris = null;
         com.sun.faces.spi.AnnotationScanner annotationScanner = metadataGetter.getAnnotationScanner();
 

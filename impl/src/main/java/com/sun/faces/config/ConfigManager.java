@@ -22,9 +22,9 @@ import static com.sun.faces.config.manager.Documents.getProgrammaticDocuments;
 import static com.sun.faces.config.manager.Documents.getXMLDocuments;
 import static com.sun.faces.config.manager.Documents.mergeDocuments;
 import static com.sun.faces.config.manager.Documents.sortDocuments;
+import static com.sun.faces.spi.ConfigurationResourceProviderFactory.createProviders;
 import static com.sun.faces.spi.ConfigurationResourceProviderFactory.ProviderType.FaceletConfig;
 import static com.sun.faces.spi.ConfigurationResourceProviderFactory.ProviderType.FacesConfig;
-import static com.sun.faces.spi.ConfigurationResourceProviderFactory.createProviders;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.unmodifiableList;
@@ -298,6 +298,7 @@ public class ConfigManager {
                     } finally {
                         if (currentThreadId != parentThreadId) {
                             Thread.currentThread().setContextClassLoader(null);
+                            initFacesContext.releaseCurrentInstance();
                             if (parentWebContext != null) {
                                 threadContext.clearChildContext();
                             }

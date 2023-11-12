@@ -20,7 +20,6 @@ import static com.sun.faces.RIConstants.ANNOTATED_CLASSES;
 import static com.sun.faces.RIConstants.ERROR_PAGE_PRESENT_KEY_NAME;
 import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
 import static com.sun.faces.RIConstants.FACES_SERVLET_REGISTRATION;
-import static com.sun.faces.config.InitFacesContext.getInitContextServletContextMap;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableLazyBeanValidation;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableThreading;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.ForceLoadFacesConfigFiles;
@@ -45,7 +44,6 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -141,7 +139,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                     WebConfiguration.clear(servletContext);
                     configManager.destroy(servletContext, initFacesContext);
                     ConfigManager.removeInstance(servletContext);
-                    InitFacesContext.cleanupInitMaps(servletContext);
+                    initFacesContext.release();
 
                     return;
                 }
@@ -150,8 +148,11 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
             }
         }
 
-        if (webXmlProcessor.isDistributablePresent()) {
-            webConfig.setOptionEnabled(WebConfiguration.BooleanWebContextInitParameter.EnableDistributable, true);
+        // Do not override if already defined
+        if (!webConfig.isSet(WebConfiguration.BooleanWebContextInitParameter.EnableDistributable)) {
+            webConfig.setOptionEnabled(WebConfiguration.BooleanWebContextInitParameter.EnableDistributable, webXmlProcessor.isDistributablePresent());
+        }
+        if (webConfig.isOptionEnabled(WebConfiguration.BooleanWebContextInitParameter.EnableDistributable)) {
             servletContext.setAttribute(WebConfiguration.BooleanWebContextInitParameter.EnableDistributable.getQualifiedName(), TRUE);
         }
 
@@ -269,11 +270,11 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
         InitFacesContext initContext = null;
         try {
-            initContext = getInitFacesContext(context);
-            if (initContext == null) {
-                initContext = new InitFacesContext(context);
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            if (facesContext instanceof InitFacesContext) {
+                initContext = (InitFacesContext) facesContext;
             } else {
-                InitFacesContext.getThreadInitContextMap().put(Thread.currentThread(), initContext);
+                initContext = new InitFacesContext(context);
             }
 
             if (webAppListener != null) {
@@ -320,7 +321,9 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
             FactoryFinder.releaseFactories();
             ReflectionUtils.clearCache(Thread.currentThread().getContextClassLoader());
             WebConfiguration.clear(context);
-            InitFacesContext.cleanupInitMaps(context);
+            if (initContext != null) {
+                initContext.release();
+            }
         }
 
     }
@@ -473,16 +476,6 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         }
 
         LOGGER.log(INFO, () -> format("Reload complete. ({0})", servletContext.getContextPath()));
-    }
-
-    private InitFacesContext getInitFacesContext(ServletContext context) {
-        for (Entry<InitFacesContext, ServletContext> entry : getInitContextServletContextMap().entrySet()) {
-            if (context == entry.getValue()) {
-                return entry.getKey();
-            }
-        }
-
-        return null;
     }
 
 

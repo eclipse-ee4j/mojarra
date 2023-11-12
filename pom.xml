@@ -51,25 +51,25 @@
         <module>impl</module>
         <module>action</module>
         <module>rest</module>
-    </modules>
+        <module>jakarta.faces-api</module>
+   </modules>
 
    <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
    <build>
         <plugins>
-            <!-- Sets minimal Maven version to 3.6.0 -->
+            <!-- Sets minimal Maven version to 3.6.0 and minimal Java version to 17 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.0.0</version>
                 <executions>
                     <execution>
-                        <id>enforce-maven</id>
+                        <id>enforce-versions</id>
                         <goals>
                             <goal>enforce</goal>
                         </goals>
@@ -78,6 +78,9 @@
                                 <requireMavenVersion>
                                     <version>3.6.0</version>
                                 </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <version>[17,)</version>
+                                </requireJavaVersion>
                             </rules>
                         </configuration>
                     </execution>
