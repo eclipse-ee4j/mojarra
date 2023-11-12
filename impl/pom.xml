@@ -39,13 +39,17 @@
    <description>EE4J Compatible Implementation for Jakarta Faces API</description>
 
    <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
         <mojarra.logstrings.version>${project.version}</mojarra.logstrings.version>
     </properties>
 
    <!-- ###  D E P E N D E N C I E S  ### -->
    <dependencies>
+       <dependency>
+           <groupId>jakarta.faces</groupId>
+           <artifactId>jakarta.faces-api</artifactId>
+           <version>${project.version}</version>
+       </dependency>
+       
         <!-- Jakarta EE Dependencies -->
 
         <dependency>
