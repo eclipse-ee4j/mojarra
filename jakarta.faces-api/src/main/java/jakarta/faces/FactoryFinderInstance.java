@@ -37,8 +37,8 @@ import static jakarta.faces.PackageUtils.getContextClassLoader2;
 import static jakarta.faces.PackageUtils.isAnyNull;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.text.MessageFormat.format;
-import static java.util.Arrays.stream;
 import static java.util.Collections.binarySearch;
+import static java.util.Collections.singleton;
 import static java.util.Map.entry;
 import static java.util.logging.Level.SEVERE;
 
@@ -48,9 +48,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -58,17 +58,18 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.InjectionTarget;
 import jakarta.faces.context.FacesContext;
 
 final class FactoryFinderInstance {
@@ -77,7 +78,7 @@ final class FactoryFinderInstance {
 
     private final Map<String, Object> factories = new ConcurrentHashMap<>();
     private final Map<String, List<String>> savedFactoryNames = new ConcurrentHashMap<>();
-    private final List<Object> injectedImplementations = new ArrayList<>();
+    private final List<Entry<InjectionTarget<Object>, Object>> injectedImplementations = new ArrayList<>();
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock(true);
     private final String createdBy;
 
@@ -186,16 +187,20 @@ final class FactoryFinderInstance {
         lock.writeLock().lock();
         try {
             Collections.reverse(injectedImplementations);
-            for (Object injectedImplementation : injectedImplementations) {
+            for (Entry<InjectionTarget<Object>, Object> injectedImplementation : injectedImplementations) {
+                InjectionTarget<Object> injectionTarget = injectedImplementation.getKey();
+                Object instance = injectedImplementation.getValue();
+
                 try {
-                    invokeAnnotatedMethod(injectedImplementation, PreDestroy.class);
+                    injectionTarget.preDestroy(instance);
+                    injectionTarget.dispose(instance);
                 } catch (Exception ex) {
                     logPreDestroyFail(injectedImplementation, ex);
                 }
             }
         } finally {
-            factories.clear();
             injectedImplementations.clear();
+            factories.clear();
             lock.writeLock().unlock();
         }
     }
@@ -425,31 +430,25 @@ final class FactoryFinderInstance {
             AnnotatedType<T> type = beanManager.createAnnotatedType(implementationClass);
 
             if (type != null) {
-                Bean<T> bean = (Bean<T>) beanManager.resolve(beanManager.getBeans(implementationClass));
-                beanManager.getInjectionTargetFactory(type).createInjectionTarget(bean).inject(implementationInstance, beanManager.createCreationalContext(bean));
-                invokeAnnotatedMethod(implementationInstance, PostConstruct.class);
-                injectedImplementations.add(implementationInstance);
+                Bean<T> bean = (Bean<T>) beanManager.resolve(getBeansWithExactClassPreferred(beanManager, implementationClass));
+                InjectionTarget<T> injectionTarget = beanManager.getInjectionTargetFactory(type).createInjectionTarget(bean);
+                injectionTarget.inject(implementationInstance, beanManager.createCreationalContext(bean));
+                injectionTarget.postConstruct(implementationInstance);
+                injectedImplementations.add(new AbstractMap.SimpleEntry(injectionTarget, implementationInstance));
             }
         }
     }
 
-    private void invokeAnnotatedMethod(Object instance, Class annotationType) {
-        stream(instance.getClass().getDeclaredMethods())
-            .filter(method -> method.getAnnotation(annotationType) != null)
-            .forEach(method -> invokeMethod(instance, method));
-    }
+    private static Set<Bean<?>> getBeansWithExactClassPreferred(BeanManager beanManager, Class<?> beanClass) {
+        Set<Bean<?>> beans = beanManager.getBeans(beanClass);
 
-    private void invokeMethod(Object instance, Method method) {
-        boolean accessible = method.canAccess(instance);
-        method.setAccessible(true);
-
-        try {
-            method.invoke(instance);
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            throw new FacesException(e);
-        } finally {
-            method.setAccessible(accessible);
+        for (Bean<?> bean : beans) {
+            if (bean.getBeanClass() == beanClass) {
+                return singleton(bean);
+            }
         }
+
+        return beans;
     }
 
     private void logNoFactory(String factoryName) {
