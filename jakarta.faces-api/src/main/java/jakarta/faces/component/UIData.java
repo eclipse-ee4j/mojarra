@@ -16,7 +16,6 @@
 
 package jakarta.faces.component;
 
-// RESOLVE THIS
 import static jakarta.faces.component.PackageUtils.extractFirstNumericSegment;
 import static jakarta.faces.component.PackageUtils.isNestedInIterator;
 
@@ -111,7 +110,6 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      */
     public UIData() {
 
-        super();
         setRendererType("jakarta.faces.Table");
 
     }

@@ -16,6 +16,8 @@
 
 package jakarta.faces.component;
 
+import static jakarta.faces.component.PackageUtils.asIterator;
+
 import java.util.Iterator;
 
 import jakarta.el.ELException;
@@ -24,9 +26,6 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.model.SelectItem;
 import jakarta.faces.model.SelectItemGroup;
-
-// RESOLVE THIS
-import static jakarta.faces.component.PackageUtils.asIterator;
 
 /**
  * Contains common utility methods used by both {@link UISelectOne} and {@link UISelectMany}.
