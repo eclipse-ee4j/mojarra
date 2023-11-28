@@ -38,6 +38,7 @@ import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.util.Util;
 
 import jakarta.faces.FacesException;
+import jakarta.faces.annotation.View;
 import jakarta.faces.application.ResourceVisitOption;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -113,9 +114,14 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
     }
 
     public Stream<String> getViewResources(FacesContext facesContext, String path, int maxDepth, ResourceVisitOption... options) {
-        return stream(spliteratorUnknownSize(
+        Stream<String> physicalViewResources = stream(spliteratorUnknownSize(
                 new ResourcePathsIterator(path, maxDepth, configuredExtensions, getRestrictedDirectories(options), facesContext.getExternalContext()),
                 DISTINCT), false);
+        Stream<String> programmaticViewResources = Util.getCdiBeanManager(facesContext)
+                .getBeans(Object.class, View.Literal.INSTANCE).stream()
+                .map(bean -> bean.getBeanClass().getAnnotation(View.class).value());
+
+        return Stream.concat(physicalViewResources, programmaticViewResources);
     }
 
     private static String[] getRestrictedDirectories(final ResourceVisitOption... options) {
