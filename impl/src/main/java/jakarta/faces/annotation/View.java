@@ -26,7 +26,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import jakarta.enterprise.util.AnnotationLiteral;
-import jakarta.enterprise.util.Nonbinding;
 import jakarta.faces.component.ActionSource;
 import jakarta.inject.Qualifier;
 
@@ -62,7 +61,6 @@ public @interface View {
      *
      * @return the Faces View Id pattern
      */
-    @Nonbinding
     String value() default "";
 
     /**
