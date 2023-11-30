@@ -120,7 +120,7 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
                 new ResourcePathsIterator(path, maxDepth, configuredExtensions, getRestrictedDirectories(options), facesContext.getExternalContext()),
                 DISTINCT), false);
         Stream<String> programmaticViewResources = Util.getCdiBeanManager(facesContext)
-                .getBeans(Object.class, Any.Literal.INSTANCE).stream() // The value is not @Nonbinding. Only in 4.1 we can use View.Literal.INSTANCE as qualifier.
+                .getBeans(Object.class, Any.Literal.INSTANCE).stream()
                 .map(bean -> bean.getBeanClass().getAnnotation(View.class))
                 .filter(Objects::nonNull)
                 .map(View::value);
