@@ -25,6 +25,7 @@ import static com.sun.faces.util.MessageUtils.RESTORE_VIEW_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.Util.getViewHandler;
 import static com.sun.faces.util.Util.isOneOf;
+import static jakarta.faces.component.visit.VisitHint.SKIP_ITERATION;
 import static jakarta.faces.event.PhaseId.RESTORE_VIEW;
 import static jakarta.faces.render.ResponseStateManager.NON_POSTBACK_VIEW_TOKEN_PARAM;
 import static jakarta.faces.view.ViewMetadata.hasMetadata;
@@ -80,7 +81,7 @@ public class RestoreViewPhase extends Phase {
     private static final String WEBAPP_ERROR_PAGE_MARKER = "jakarta.servlet.error.message";
     private static final Logger LOGGER = FacesLogger.LIFECYCLE.getLogger();
 
-    private static String SKIP_ITERATION_HINT = "jakarta.faces.visit.SKIP_ITERATION";
+    private static final Set<VisitHint> SKIP_ITERATION_HINT = EnumSet.of(SKIP_ITERATION);
 
     // ---------------------------------------------------------- Public Methods
 
@@ -101,7 +102,7 @@ public class RestoreViewPhase extends Phase {
     /**
      * PRECONDITION: the necessary factories have been installed in the ServletContext attr set.
      * <P>
-     * 
+     *
      * POSTCONDITION: The facesContext has been initialized with a tree.
      */
 
@@ -382,14 +383,8 @@ public class RestoreViewPhase extends Phase {
         UIViewRoot root = facesContext.getViewRoot();
         PostRestoreStateEvent postRestoreStateEvent = new PostRestoreStateEvent(root);
         try {
-            // PENDING: This is included for those component frameworks that don't utilize the
-            // new VisitHint(s) yet - but still wish to know that they should be non-iterating
-            // during state saving. It should be removed at some point.
-            facesContext.getAttributes().put(SKIP_ITERATION_HINT, true);
             facesContext.getApplication().publishEvent(facesContext, PostRestoreStateEvent.class, root);
-
-            Set<VisitHint> hints = EnumSet.of(VisitHint.SKIP_ITERATION);
-            VisitContext visitContext = VisitContext.createVisitContext(facesContext, null, hints);
+            VisitContext visitContext = VisitContext.createVisitContext(facesContext, null, SKIP_ITERATION_HINT);
             root.visitTree(visitContext, (context, target) -> {
                 postRestoreStateEvent.setComponent(target);
                 target.processEvent(postRestoreStateEvent);
@@ -401,11 +396,6 @@ public class RestoreViewPhase extends Phase {
                         .publishEvent(
                             facesContext, ExceptionQueuedEvent.class,
                             new ExceptionQueuedEventContext(facesContext, e, null, PhaseId.RESTORE_VIEW));
-        } finally {
-            // PENDING: This is included for those component frameworks that don't utilize the
-            // new VisitHint(s) yet - but still wish to know that they should be non-iterating
-            // during state saving. It should be removed at some point.
-            facesContext.getAttributes().remove(SKIP_ITERATION_HINT);
         }
     }
 

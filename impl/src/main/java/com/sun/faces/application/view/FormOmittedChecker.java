@@ -16,6 +16,8 @@
 
 package com.sun.faces.application.view;
 
+import static jakarta.faces.component.visit.VisitHint.SKIP_ITERATION;
+
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -41,7 +43,7 @@ class FormOmittedChecker {
     /**
      * Stores the skip hint.
      */
-    private static final String SKIP_ITERATION_HINT = "jakarta.faces.visit.SKIP_ITERATION";
+    private static final Set<VisitHint> SKIP_ITERATION_HINT = EnumSet.of(SKIP_ITERATION);
 
     /**
      * Constructor.
@@ -60,24 +62,17 @@ class FormOmittedChecker {
         List<UIComponent> children = viewRoot.getChildren();
 
         for (UIComponent child : children) {
-            try {
-                context.getAttributes().put(SKIP_ITERATION_HINT, true);
-                Set<VisitHint> hints = EnumSet.of(VisitHint.SKIP_ITERATION);
+            VisitContext visitContext = VisitContext.createVisitContext(context, null, SKIP_ITERATION_HINT);
+            child.visitTree(visitContext, (visitContext1, component) -> {
+                VisitResult result = VisitResult.ACCEPT;
 
-                VisitContext visitContext = VisitContext.createVisitContext(context, null, hints);
-                child.visitTree(visitContext, (visitContext1, component) -> {
-                    VisitResult result = VisitResult.ACCEPT;
-
-                    if (isForm(component)) {
-                        result = VisitResult.REJECT;
-                    } else if (isInNeedOfForm(component)) {
-                        addFormOmittedMessage(finalContext, component);
-                    }
-                    return result;
-                });
-            } finally {
-                context.getAttributes().remove(SKIP_ITERATION_HINT);
-            }
+                if (isForm(component)) {
+                    result = VisitResult.REJECT;
+                } else if (isInNeedOfForm(component)) {
+                    addFormOmittedMessage(finalContext, component);
+                }
+                return result;
+            });
         }
     }
 
