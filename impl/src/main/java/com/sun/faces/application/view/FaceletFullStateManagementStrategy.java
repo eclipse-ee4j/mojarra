@@ -82,7 +82,7 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
     /**
      * Stores the skip hint.
      */
-    private static final String SKIP_ITERATION_HINT = "jakarta.faces.visit.SKIP_ITERATION";
+    private static final Set<VisitHint> SKIP_ITERATION_HINT = EnumSet.of(SKIP_ITERATION);
 
     /**
      * Stores the class map.
@@ -185,41 +185,34 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
         final List<UIComponent> found = new ArrayList<>();
         UIComponent result = null;
 
-        try {
-            context.getAttributes().put(SKIP_ITERATION_HINT, true);
-            Set<VisitHint> hints = EnumSet.of(VisitHint.SKIP_ITERATION);
-
-            VisitContext visitContext = VisitContext.createVisitContext(context, null, hints);
-            subTree.visitTree(visitContext, (visitContext1, component) -> {
-                VisitResult result1 = ACCEPT;
-                if (component.getClientId(visitContext1.getFacesContext()).equals(clientId)) {
-                    /*
-                     * If the client id matches up we have found our match.
-                     */
-                    found.add(component);
-                    result1 = COMPLETE;
-                } else if (component instanceof UIForm) {
-                    /*
-                     * If the component is a UIForm and it is prepending its id then we can short circuit out of here if the the client id
-                     * of the component we are trying to find does not begin with the id of the UIForm.
-                     */
-                    UIForm form = (UIForm) component;
-                    if (form.isPrependId() && !clientId.startsWith(form.getClientId(visitContext1.getFacesContext()))) {
-                        result1 = REJECT;
-                    }
-                } else if (component instanceof NamingContainer && !clientId.startsWith(component.getClientId(visitContext1.getFacesContext()))) {
-                    /*
-                     * If the component is a naming container then assume it is prepending its id so if our client id we are looking for
-                     * does not start with the naming container id we can skip visiting this tree.
-                     */
+        VisitContext visitContext = VisitContext.createVisitContext(context, null, SKIP_ITERATION_HINT);
+        subTree.visitTree(visitContext, (visitContext1, component) -> {
+            VisitResult result1 = ACCEPT;
+            if (component.getClientId(visitContext1.getFacesContext()).equals(clientId)) {
+                /*
+                 * If the client id matches up we have found our match.
+                 */
+                found.add(component);
+                result1 = COMPLETE;
+            } else if (component instanceof UIForm) {
+                /*
+                 * If the component is a UIForm and it is prepending its id then we can short circuit out of here if the the client id
+                 * of the component we are trying to find does not begin with the id of the UIForm.
+                 */
+                UIForm form = (UIForm) component;
+                if (form.isPrependId() && !clientId.startsWith(form.getClientId(visitContext1.getFacesContext()))) {
                     result1 = REJECT;
                 }
+            } else if (component instanceof NamingContainer && !clientId.startsWith(component.getClientId(visitContext1.getFacesContext()))) {
+                /*
+                 * If the component is a naming container then assume it is prepending its id so if our client id we are looking for
+                 * does not start with the naming container id we can skip visiting this tree.
+                 */
+                result1 = REJECT;
+            }
 
-                return result1;
-            });
-        } finally {
-            context.getAttributes().remove(SKIP_ITERATION_HINT);
-        }
+            return result1;
+        });
 
         if (!found.isEmpty()) {
             result = found.get(0);
@@ -311,36 +304,30 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
         final StateContext stateContext = StateContext.getStateContext(context);
         final UIViewRoot viewRoot = context.getViewRoot();
 
-        try {
-            context.getAttributes().put(SKIP_ITERATION_HINT, true);
-            Set<VisitHint> hints = EnumSet.of(SKIP_ITERATION);
-            VisitContext visitContext = VisitContext.createVisitContext(context, null, hints);
+        VisitContext visitContext = VisitContext.createVisitContext(context, null, SKIP_ITERATION_HINT);
 
-            viewRoot.visitTree(visitContext, (visitContext1, component) -> {
-                VisitResult result = ACCEPT;
+        viewRoot.visitTree(visitContext, (visitContext1, component) -> {
+            VisitResult result = ACCEPT;
 
-                String clientId = component.getClientId(context);
-                Object stateObj = state.get(clientId);
+            String clientId = component.getClientId(context);
+            Object stateObj = state.get(clientId);
 
-                if (stateObj != null && !stateContext.componentAddedDynamically(component)) {
-                    boolean restoreStateNow = true;
-                    if (stateObj instanceof StateHolderSaver) {
-                        restoreStateNow = !((StateHolderSaver) stateObj).componentAddedDynamically();
-                    }
-                    if (restoreStateNow) {
-                        try {
-                            component.restoreState(context, stateObj);
-                        } catch (Exception e) {
-                            throw new FacesException(e);
-                        }
+            if (stateObj != null && !stateContext.componentAddedDynamically(component)) {
+                boolean restoreStateNow = true;
+                if (stateObj instanceof StateHolderSaver) {
+                    restoreStateNow = !((StateHolderSaver) stateObj).componentAddedDynamically();
+                }
+                if (restoreStateNow) {
+                    try {
+                        component.restoreState(context, stateObj);
+                    } catch (Exception e) {
+                        throw new FacesException(e);
                     }
                 }
+            }
 
-                return result;
-            });
-        } finally {
-            context.getAttributes().remove(SKIP_ITERATION_HINT);
-        }
+            return result;
+        });
     }
 
     /**
@@ -592,33 +579,27 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
         final UIViewRoot viewRoot = context.getViewRoot();
         final FacesContext finalContext = context;
 
-        context.getAttributes().put(SKIP_ITERATION_HINT, true);
-        Set<VisitHint> hints = EnumSet.of(SKIP_ITERATION);
-        VisitContext visitContext = VisitContext.createVisitContext(context, null, hints);
+        VisitContext visitContext = VisitContext.createVisitContext(context, null, SKIP_ITERATION_HINT);
 
-        try {
-            viewRoot.visitTree(visitContext, (context1, component) -> {
-                VisitResult result = ACCEPT;
-                Object stateObj;
-                if (!component.isTransient()) {
-                    if (stateContext.componentAddedDynamically(component)) {
-                        component.getAttributes().put(DYNAMIC_COMPONENT, new Integer(getProperChildIndex(component)));
-                        stateObj = new StateHolderSaver(finalContext, component);
-                    } else {
-                        stateObj = component.saveState(finalContext);
-                    }
-                    if (stateObj != null) {
-                        stateMap.put(component.getClientId(finalContext), stateObj);
-                    }
+        viewRoot.visitTree(visitContext, (context1, component) -> {
+            VisitResult result = ACCEPT;
+            Object stateObj;
+            if (!component.isTransient()) {
+                if (stateContext.componentAddedDynamically(component)) {
+                    component.getAttributes().put(DYNAMIC_COMPONENT, new Integer(getProperChildIndex(component)));
+                    stateObj = new StateHolderSaver(finalContext, component);
                 } else {
-                    result = REJECT;
+                    stateObj = component.saveState(finalContext);
                 }
+                if (stateObj != null) {
+                    stateMap.put(component.getClientId(finalContext), stateObj);
+                }
+            } else {
+                result = REJECT;
+            }
 
-                return result;
-            });
-        } finally {
-            context.getAttributes().remove(SKIP_ITERATION_HINT);
-        }
+            return result;
+        });
 
         return stateMap;
     }

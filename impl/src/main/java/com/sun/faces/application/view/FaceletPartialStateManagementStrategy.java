@@ -68,10 +68,16 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
      * Stores the logger.
      */
     private static final Logger LOGGER = FacesLogger.APPLICATION_VIEW.getLogger();
+
     /**
      * Stores the skip hint.
      */
-    private static final String SKIP_ITERATION_HINT = "jakarta.faces.visit.SKIP_ITERATION";
+    private static final Set<VisitHint> SKIP_ITERATION_HINT = EnumSet.of(SKIP_ITERATION);
+
+    /**
+     * Stores the skip and lifecycle hints.
+     */
+    private static final Set<VisitHint> SKIP_ITERATION_AND_EXECUTE_LIFECYCLE_HINTS = EnumSet.of(VisitHint.SKIP_ITERATION, VisitHint.EXECUTE_LIFECYCLE);
 
     /**
      * Constructor.
@@ -102,41 +108,34 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
         final List<UIComponent> found = new ArrayList<>();
         UIComponent result = null;
 
-        try {
-            context.getAttributes().put(SKIP_ITERATION_HINT, true);
-            Set<VisitHint> hints = EnumSet.of(SKIP_ITERATION);
-
-            VisitContext visitContext = VisitContext.createVisitContext(context, null, hints);
-            subTree.visitTree(visitContext, (visitContext1, component) -> {
-                VisitResult result1 = ACCEPT;
-                if (component.getClientId(visitContext1.getFacesContext()).equals(clientId)) {
-                    /*
-                     * If the client id matches up we have found our match.
-                     */
-                    found.add(component);
-                    result1 = COMPLETE;
-                } else if (component instanceof UIForm) {
-                    /*
-                     * If the component is a UIForm and it is prepending its id then we can short circuit out of here if the the client id
-                     * of the component we are trying to find does not begin with the id of the UIForm.
-                     */
-                    UIForm form = (UIForm) component;
-                    if (form.isPrependId() && !clientId.startsWith(form.getClientId(visitContext1.getFacesContext()))) {
-                        result1 = REJECT;
-                    }
-                } else if (component instanceof NamingContainer && !clientId.startsWith(component.getClientId(visitContext1.getFacesContext()))) {
-                    /*
-                     * If the component is a naming container then assume it is prepending its id so if our client id we are looking for
-                     * does not start with the naming container id we can skip visiting this tree.
-                     */
+        VisitContext visitContext = VisitContext.createVisitContext(context, null, SKIP_ITERATION_HINT);
+        subTree.visitTree(visitContext, (visitContext1, component) -> {
+            VisitResult result1 = ACCEPT;
+            if (component.getClientId(visitContext1.getFacesContext()).equals(clientId)) {
+                /*
+                 * If the client id matches up we have found our match.
+                 */
+                found.add(component);
+                result1 = COMPLETE;
+            } else if (component instanceof UIForm) {
+                /*
+                 * If the component is a UIForm and it is prepending its id then we can short circuit out of here if the the client id
+                 * of the component we are trying to find does not begin with the id of the UIForm.
+                 */
+                UIForm form = (UIForm) component;
+                if (form.isPrependId() && !clientId.startsWith(form.getClientId(visitContext1.getFacesContext()))) {
                     result1 = REJECT;
                 }
+            } else if (component instanceof NamingContainer && !clientId.startsWith(component.getClientId(visitContext1.getFacesContext()))) {
+                /*
+                 * If the component is a naming container then assume it is prepending its id so if our client id we are looking for
+                 * does not start with the naming container id we can skip visiting this tree.
+                 */
+                result1 = REJECT;
+            }
 
-                return result1;
-            });
-        } finally {
-            context.getAttributes().remove(SKIP_ITERATION_HINT);
-        }
+            return result1;
+        });
 
         if (!found.isEmpty()) {
             result = found.get(0);
@@ -343,9 +342,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
             try {
                 stateContext.setTrackViewModifications(false);
 
-                context.getAttributes().put(SKIP_ITERATION_HINT, true);
-                Set<VisitHint> hints = EnumSet.of(VisitHint.SKIP_ITERATION, VisitHint.EXECUTE_LIFECYCLE);
-                VisitContext visitContext = VisitContext.createVisitContext(context, null, hints);
+                VisitContext visitContext = VisitContext.createVisitContext(context, null, SKIP_ITERATION_AND_EXECUTE_LIFECYCLE_HINTS);
                 viewRoot.visitTree(visitContext, (context1, target) -> {
                     VisitResult result = VisitResult.ACCEPT;
                     String cid = target.getClientId(context1.getFacesContext());
@@ -370,7 +367,6 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
                 restoreDynamicActions(context, stateContext, state);
             } finally {
                 stateContext.setTrackViewModifications(true);
-                context.getAttributes().remove(SKIP_ITERATION_HINT);
             }
         } else {
             viewRoot = null;
@@ -436,33 +432,27 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
         final Map<String, Object> stateMap = new HashMap<>();
         final StateContext stateContext = StateContext.getStateContext(context);
 
-        context.getAttributes().put(SKIP_ITERATION_HINT, true);
-        Set<VisitHint> hints = EnumSet.of(VisitHint.SKIP_ITERATION);
-        VisitContext visitContext = VisitContext.createVisitContext(context, null, hints);
+        VisitContext visitContext = VisitContext.createVisitContext(context, null, SKIP_ITERATION_HINT);
         final FacesContext finalContext = context;
 
-        try {
-            viewRoot.visitTree(visitContext, (context1, target) -> {
-                VisitResult result = VisitResult.ACCEPT;
-                Object stateObj;
-                if (!target.isTransient()) {
-                    if (stateContext.componentAddedDynamically(target)) {
-                        target.getAttributes().put(DYNAMIC_COMPONENT, target.getParent().getChildren().indexOf(target));
-                        stateObj = new StateHolderSaver(finalContext, target);
-                    } else {
-                        stateObj = target.saveState(context1.getFacesContext());
-                    }
-                    if (stateObj != null) {
-                        stateMap.put(target.getClientId(context1.getFacesContext()), stateObj);
-                    }
+        viewRoot.visitTree(visitContext, (context1, target) -> {
+            VisitResult result = VisitResult.ACCEPT;
+            Object stateObj;
+            if (!target.isTransient()) {
+                if (stateContext.componentAddedDynamically(target)) {
+                    target.getAttributes().put(DYNAMIC_COMPONENT, target.getParent().getChildren().indexOf(target));
+                    stateObj = new StateHolderSaver(finalContext, target);
                 } else {
-                    return VisitResult.REJECT;
+                    stateObj = target.saveState(context1.getFacesContext());
                 }
-                return result;
-            });
-        } finally {
-            context.getAttributes().remove(SKIP_ITERATION_HINT);
-        }
+                if (stateObj != null) {
+                    stateMap.put(target.getClientId(context1.getFacesContext()), stateObj);
+                }
+            } else {
+                return VisitResult.REJECT;
+            }
+            return result;
+        });
 
         saveDynamicActions(context, stateContext, stateMap);
         StateContext.release(context);
