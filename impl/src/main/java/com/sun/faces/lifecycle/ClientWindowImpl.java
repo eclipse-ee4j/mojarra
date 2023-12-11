@@ -19,7 +19,6 @@ package com.sun.faces.lifecycle;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.CLIENT_WINDOW_PARAM;
 
 import java.util.Map;
-
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -28,9 +27,11 @@ import jakarta.faces.render.ResponseStateManager;
 
 public class ClientWindowImpl extends ClientWindow {
 
+    private final TokenGenerator tokenGenerator;
     String id;
 
-    public ClientWindowImpl() {
+    public ClientWindowImpl(TokenGenerator tokenGenerator) {
+        this.tokenGenerator = tokenGenerator;
     }
 
     @Override
@@ -64,9 +65,9 @@ public class ClientWindowImpl extends ClientWindow {
                 counter = Integer.valueOf(0);
             }
             char sep = UINamingContainer.getSeparatorChar(context);
-            id = extContext.getSessionId(true) + sep + +counter;
+            id = tokenGenerator.getNextToken() + sep + ++counter;
 
-            sessionAttrs.put(clientWindowCounterKey, ++counter);
+            sessionAttrs.put(clientWindowCounterKey, counter);
         }
         return id;
     }
