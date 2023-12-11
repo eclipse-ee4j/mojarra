@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -56,9 +57,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * <p>
  * Implementations of this class contain the knowledge for finding and serving web application resources.
- * <p>
  *
  * @since 2.0
  */

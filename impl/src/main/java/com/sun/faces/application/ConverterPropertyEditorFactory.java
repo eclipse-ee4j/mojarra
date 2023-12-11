@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -20,14 +21,12 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.WARNING;
 
+import com.sun.faces.util.FacesLogger;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.nio.charset.StandardCharsets;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
@@ -36,8 +35,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.sun.faces.util.FacesLogger;
 
 /**
  * <p>
@@ -510,14 +507,10 @@ public class ConverterPropertyEditorFactory {
             DisposableClassLoader loader;
             WeakReference<DisposableClassLoader> loaderRef = classLoaderCache.get(targetClass.getClassLoader());
             if (loaderRef == null || (loader = loaderRef.get()) == null) {
-                loader = (DisposableClassLoader) AccessController.doPrivileged((PrivilegedAction<Object>) () -> new DisposableClassLoader(targetClass.getClassLoader()));
-
-                if (loader == null) {
-                    return null;
-                }
-
+                loader = new DisposableClassLoader(targetClass.getClassLoader());
                 classLoaderCache.put(targetClass.getClassLoader(), new WeakReference<>(loader));
             }
+
             return (Class<? extends ConverterPropertyEditorBase>) loader.loadClass(className);
         } catch (ClassNotFoundException e) {
             if (LOGGER.isLoggable(WARNING)) {

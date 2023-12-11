@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -571,6 +572,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
     /**
      * <p class="changed_added_2_0">
+     * Adds a named behavior
      * </p>
      *
      * @param name
