@@ -223,6 +223,15 @@
             </plugins>
         </pluginManagement>
         <plugins>
+            <!-- Restricts the Java version to 17 - API remains at Java 17 for now. -->
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <release>17</release>
+                    <compilerArgument>-Xlint:unchecked</compilerArgument>
+                </configuration>
+            </plugin>
+            
         
             <!-- ###  C O M P R E S S  /  M I N I F Y   faces.js  ###   -->
             <!-- https://blutorange.github.io/closure-compiler-maven-plugin/minify-mojo.html -->
