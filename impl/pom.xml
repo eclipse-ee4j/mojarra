@@ -226,6 +226,7 @@
             <!-- Restricts the Java version to 17 - API remains at Java 17 for now. -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
                 <configuration>
                     <release>17</release>
                     <compilerArgument>-Xlint:unchecked</compilerArgument>
