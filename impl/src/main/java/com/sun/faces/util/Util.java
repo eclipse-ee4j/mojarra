@@ -1,6 +1,6 @@
 /*
+ * Copyright (c) 2021, 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
- * Copyright (c) 2021 Contributors to Eclipse Foundation.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,6 +19,7 @@
 
 package com.sun.faces.util;
 
+import static com.sun.faces.RIConstants.CDI_BEAN_MANAGER;
 import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
 import static com.sun.faces.RIConstants.FACES_SERVLET_REGISTRATION;
 import static com.sun.faces.RIConstants.NO_VALUE;
@@ -32,60 +33,16 @@ import static java.util.Collections.emptyList;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
 
-import java.beans.FeatureDescriptor;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.JarURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.security.PrivilegedAction;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.xml.XMLConstants;
-import javax.xml.namespace.NamespaceContext;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
 import com.sun.faces.RIConstants;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.manager.FacesSchema;
 import com.sun.faces.facelets.component.UIRepeat;
 import com.sun.faces.io.FastStringWriter;
-
-import jakarta.el.ELResolver;
 import jakarta.el.ValueExpression;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.el.ELAwareBeanManager;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
@@ -108,10 +65,49 @@ import jakarta.servlet.ServletRegistration;
 import jakarta.servlet.http.HttpServletMapping;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.MappingMatch;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.JarURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.xml.XMLConstants;
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 /**
  * <B>Util</B> is a class ...
- * 
+ *
  * <B>Lifetime And Scope</B>
  *
  */
@@ -403,11 +399,7 @@ public class Util {
     }
 
     private static ClassLoader getContextClassLoader() {
-        if (System.getSecurityManager() == null) {
-            return Thread.currentThread().getContextClassLoader();
-        } else {
-            return (ClassLoader) java.security.AccessController.doPrivileged((PrivilegedAction) () -> Thread.currentThread().getContextClassLoader());
-        }
+        return Thread.currentThread().getContextClassLoader();
     }
 
     /**
@@ -1005,21 +997,6 @@ public class Util {
         return result;
     }
 
-    public static FeatureDescriptor getFeatureDescriptor(String name, String displayName, String desc, boolean expert, boolean hidden, boolean preferred,
-            Object type, Boolean designTime) {
-
-        FeatureDescriptor fd = new FeatureDescriptor();
-        fd.setName(name);
-        fd.setDisplayName(displayName);
-        fd.setShortDescription(desc);
-        fd.setExpert(expert);
-        fd.setHidden(hidden);
-        fd.setPreferred(preferred);
-        fd.setValue(ELResolver.TYPE, type);
-        fd.setValue(ELResolver.RESOLVABLE_AT_DESIGN_TIME, designTime);
-        return fd;
-    }
-
     /**
      * <p>
      * A slightly more efficient version of <code>String.split()</code> which caches the <code>Pattern</code>s in an LRUMap
@@ -1514,25 +1491,22 @@ public class Util {
      * @param facesContext the Faces context to consult
      * @return the CDI bean manager.
      */
-    public static BeanManager getCdiBeanManager(FacesContext facesContext) {
-        BeanManager result = null;
+    public static ELAwareBeanManager getCdiBeanManager(FacesContext facesContext) {
+        ELAwareBeanManager result = null;
 
-        if (facesContext != null && facesContext.getAttributes().containsKey(RIConstants.CDI_BEAN_MANAGER)) {
-            result = (BeanManager) facesContext.getAttributes().get(RIConstants.CDI_BEAN_MANAGER);
-        } else if (facesContext != null && facesContext.getExternalContext().getApplicationMap().containsKey(RIConstants.CDI_BEAN_MANAGER)) {
-            result = (BeanManager) facesContext.getExternalContext().getApplicationMap().get(RIConstants.CDI_BEAN_MANAGER);
+        if (facesContext != null && facesContext.getAttributes().containsKey(CDI_BEAN_MANAGER)) {
+            result = (ELAwareBeanManager) facesContext.getAttributes().get(CDI_BEAN_MANAGER);
+        } else if (facesContext != null && facesContext.getExternalContext().getApplicationMap().containsKey(CDI_BEAN_MANAGER)) {
+            result = (ELAwareBeanManager) facesContext.getExternalContext().getApplicationMap().get(CDI_BEAN_MANAGER);
         } else {
             try {
-                InitialContext initialContext = new InitialContext();
-                result = (BeanManager) initialContext.lookup("java:comp/BeanManager");
+                result =  wrapIfNeeded(InitialContext.doLookup("java:comp/BeanManager"));
             } catch (NamingException ne) {
                 try {
-                    InitialContext initialContext = new InitialContext();
-                    result = (BeanManager) initialContext.lookup("java:comp/env/BeanManager");
+                    result = wrapIfNeeded(InitialContext.doLookup("java:comp/env/BeanManager"));
                 } catch (NamingException ne2) {
                     try {
-                        CDI<Object> cdi = CDI.current();
-                        result = cdi.getBeanManager();
+                        result = (ELAwareBeanManager) CDI.current().getBeanManager();
                     }
                     catch (Exception | LinkageError e) {
                     }
@@ -1541,12 +1515,12 @@ public class Util {
 
             if (result == null && facesContext != null) {
                 Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
-                result = (BeanManager) applicationMap.get("org.jboss.weld.environment.servlet.jakarta.enterprise.inject.spi.BeanManager");
+                result = wrapIfNeeded(applicationMap.get("org.jboss.weld.environment.servlet.jakarta.enterprise.inject.spi.BeanManager"));
             }
 
             if (result != null && facesContext != null) {
-                facesContext.getAttributes().put(RIConstants.CDI_BEAN_MANAGER, result);
-                facesContext.getExternalContext().getApplicationMap().put(RIConstants.CDI_BEAN_MANAGER, result);
+                facesContext.getAttributes().put(CDI_BEAN_MANAGER, result);
+                facesContext.getExternalContext().getApplicationMap().put(CDI_BEAN_MANAGER, result);
             }
         }
 
@@ -1555,6 +1529,16 @@ public class Util {
         }
 
         return result;
+    }
+
+    private static ELAwareBeanManager wrapIfNeeded(Object untypedBeanManager) {
+        BeanManager beanManager = (BeanManager) untypedBeanManager;
+
+        if (beanManager instanceof ELAwareBeanManager elAwareBeanManager) {
+            return elAwareBeanManager;
+        }
+
+        return new ELAwareBeanManagerWrapper(beanManager);
     }
 
     @SuppressWarnings("unchecked")

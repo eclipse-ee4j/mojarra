@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -16,13 +17,8 @@
 
 package com.sun.faces.el;
 
-import java.beans.FeatureDescriptor;
-import java.util.Iterator;
-import java.util.Map;
-
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
-
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
@@ -32,6 +28,7 @@ import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+import java.util.Map;
 
 /**
  * ELResolver to resolve expressions like the following:
@@ -152,32 +149,18 @@ public class ResourceELResolver extends ELResolver {
     }
 
     /**
-     * @return <code>null</code> - there is no way to query the <code>ResourceManager</code> for all known resources
-     */
-    @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
-
-        return null;
-
-    }
-
-    /**
      * @return <code>String.class</code> - getType() expects String properties
      */
     @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base) {
-
         return String.class;
-
     }
 
     // --------------------------------------------------------- Private Methods
 
     private boolean isPropertyValid(String property) {
-
         int idx = property.indexOf(':');
         return property.indexOf(':', idx + 1) == -1;
-
     }
 
 }
