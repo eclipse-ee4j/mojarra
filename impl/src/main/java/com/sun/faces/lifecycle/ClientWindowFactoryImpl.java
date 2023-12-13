@@ -32,6 +32,7 @@ public class ClientWindowFactoryImpl extends ClientWindowFactory {
 
     private boolean isClientWindowEnabled = false;
     private WebConfiguration config = null;
+    private final TokenGenerator tokenGenerator = new TokenGenerator();
 
     public ClientWindowFactoryImpl() {
         super(null);
@@ -42,6 +43,16 @@ public class ClientWindowFactoryImpl extends ClientWindowFactory {
     public ClientWindowFactoryImpl(boolean ignored) {
         super(null);
         isClientWindowEnabled = false;
+    }
+
+
+    @Override
+    public ClientWindow getClientWindow(FacesContext context) {
+        if (!isClientWindowEnabled) {
+            return null;
+        }
+
+        return new ClientWindowImpl(tokenGenerator);
     }
 
     private class PostConstructApplicationListener implements SystemEventListener {
@@ -65,14 +76,5 @@ public class ClientWindowFactoryImpl extends ClientWindowFactory {
         String optionValue = config.getOptionValue(WebConfiguration.WebContextInitParameter.ClientWindowMode);
 
         isClientWindowEnabled = null != optionValue && "url".equals(optionValue);
-    }
-
-    @Override
-    public ClientWindow getClientWindow(FacesContext context) {
-        if (!isClientWindowEnabled) {
-            return null;
-        }
-
-        return new ClientWindowImpl();
     }
 }
