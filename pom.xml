@@ -48,10 +48,7 @@
 
    <modules>
         <module>faces/api</module>
-        <module>cdi</module>
         <module>impl</module>
-        <module>action</module>
-        <module>rest</module>
    </modules>
 
    <properties>
