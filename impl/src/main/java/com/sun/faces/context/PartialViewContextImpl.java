@@ -19,9 +19,9 @@ package com.sun.faces.context;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_EXECUTE_PARAM;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_RENDER_PARAM;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_RESET_VALUES_PARAM;
+import static jakarta.faces.FactoryFinder.VISIT_CONTEXT_FACTORY;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.WARNING;
-import static jakarta.faces.FactoryFinder.VISIT_CONTEXT_FACTORY;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -281,11 +281,6 @@ public class PartialViewContextImpl extends PartialViewContext {
                 exContext.setResponseContentType(RIConstants.TEXT_XML_CONTENT_TYPE);
                 exContext.addResponseHeader("Cache-Control", "no-cache");
 
-//                String encoding = writer.getCharacterEncoding( );
-//                if( encoding == null ) {
-//                    encoding = "UTF-8";
-//                }
-//                writer.writePreamble("<?xml version='1.0' encoding='" + encoding + "'?>\n");
                 writer.startDocument();
 
                 if (isResetValues()) {
@@ -322,7 +317,7 @@ public class PartialViewContextImpl extends PartialViewContext {
             }
         }
     }
-    
+
     private void doFlashPostPhaseActions(FacesContext ctx) {
         try {
             ctx.getExternalContext().getFlash().doPostPhaseActions(ctx);
@@ -630,7 +625,7 @@ public class PartialViewContextImpl extends PartialViewContext {
             super(null);
             this.ctx = ctx;
             ExternalContext extCtx = ctx.ctx.getExternalContext();
-            
+
             if (extCtx.isResponseCommitted()) {
                 LOGGER.log(WARNING, "Response is already committed - cannot reconfigure it anymore");
             }

@@ -18,8 +18,8 @@ package com.sun.faces.context.flash;
 
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.ForceAlwaysWriteFlashCookie;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.InvalidKeyException;
@@ -640,7 +640,7 @@ public class ELFlash extends Flash {
      * necessary because the call to extContext.flushBuffer() is too late, the response has already been committed by that
      * point. outgoingResponseIsRedirect is false.
      * </p>
-     * 
+     *
      * @param context the involved faces context
      * @param outgoingResponseIsRedirect whether outgoing response is redirect
      */
@@ -1313,15 +1313,7 @@ public class ELFlash extends Flash {
         void decode(FacesContext context, ELFlash flash, Cookie cookie) throws InvalidKeyException {
             String temp;
             String value;
-
-            String urlDecodedValue = null;
-
-            try {
-                urlDecodedValue = URLDecoder.decode(cookie.getValue(), "UTF-8");
-            } catch (UnsupportedEncodingException uee) {
-                urlDecodedValue = cookie.getValue();
-            }
-
+            String urlDecodedValue = URLDecoder.decode(cookie.getValue(), UTF_8);
             value = guard.decrypt(urlDecodedValue);
 
             try {
@@ -1390,16 +1382,10 @@ public class ELFlash extends Flash {
          * </p>
          */
         Cookie encode() {
-            Cookie result = null;
-
             String value = (null != previousRequestFlashInfo ? previousRequestFlashInfo.encode() : "") + "_"
                     + (null != nextRequestFlashInfo ? nextRequestFlashInfo.encode() : "");
             String encryptedValue = guard.encrypt(value);
-            try {
-                result = new Cookie(FLASH_COOKIE_NAME, URLEncoder.encode(encryptedValue, "UTF-8"));
-            } catch (UnsupportedEncodingException uee) {
-                result = new Cookie(FLASH_COOKIE_NAME, encryptedValue);
-            }
+            Cookie result = new Cookie(FLASH_COOKIE_NAME, URLEncoder.encode(encryptedValue, UTF_8));
 
             if (1 == value.length()) {
                 result.setMaxAge(0);
