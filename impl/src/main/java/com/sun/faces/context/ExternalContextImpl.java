@@ -966,7 +966,7 @@ public class ExternalContextImpl extends ExternalContext {
     public String encodeBookmarkableURL(String baseUrl, Map<String, List<String>> parameters) {
         FacesContext context = FacesContext.getCurrentInstance();
         String encodingFromContext = (String) context.getAttributes().get(RIConstants.FACELETS_ENCODING_KEY);
-        if (null == encodingFromContext) {
+        if (null == encodingFromContext && context.getViewRoot() != null) {
             encodingFromContext = (String) context.getViewRoot().getAttributes().get(RIConstants.FACELETS_ENCODING_KEY);
         }
 
@@ -982,7 +982,7 @@ public class ExternalContextImpl extends ExternalContext {
     public String encodeRedirectURL(String baseUrl, Map<String, List<String>> parameters) {
         FacesContext context = FacesContext.getCurrentInstance();
         String encodingFromContext = (String) context.getAttributes().get(RIConstants.FACELETS_ENCODING_KEY);
-        if (null == encodingFromContext) {
+        if (null == encodingFromContext && context.getViewRoot() != null) {
             encodingFromContext = (String) context.getViewRoot().getAttributes().get(RIConstants.FACELETS_ENCODING_KEY);
         }
 
@@ -1005,7 +1005,7 @@ public class ExternalContextImpl extends ExternalContext {
         }
         FacesContext context = FacesContext.getCurrentInstance();
         String encodingFromContext = (String) context.getAttributes().get(RIConstants.FACELETS_ENCODING_KEY);
-        if (null == encodingFromContext) {
+        if (null == encodingFromContext && context.getViewRoot() != null) {
             encodingFromContext = (String) context.getViewRoot().getAttributes().get(RIConstants.FACELETS_ENCODING_KEY);
         }
 
