@@ -17,7 +17,6 @@
 
 package com.sun.faces.application.view;
 
-import static com.sun.faces.RIConstants.FACELETS_ENCODING_KEY;
 import static com.sun.faces.RIConstants.SAVESTATE_FIELD_MARKER;
 import static com.sun.faces.renderkit.RenderKitUtils.getResponseStateManager;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.RENDER_KIT_ID_PARAM;
@@ -35,10 +34,8 @@ import static jakarta.faces.render.ResponseStateManager.NON_POSTBACK_VIEW_TOKEN_
 import static jakarta.servlet.http.MappingMatch.EXACT;
 import static jakarta.servlet.http.MappingMatch.EXTENSION;
 import static jakarta.servlet.http.MappingMatch.PATH;
-import static java.text.MessageFormat.format;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
-import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
 
@@ -350,24 +347,7 @@ public class MultiViewHandler extends ViewHandler {
      */
     @Override
     public String getRedirectURL(FacesContext context, String viewId, Map<String, List<String>> parameters, boolean includeViewParams) {
-        String encodingFromContext = (String) context.getAttributes().get(FACELETS_ENCODING_KEY);
-        if (encodingFromContext == null) {
-            encodingFromContext = (String) context.getViewRoot().getAttributes().get(FACELETS_ENCODING_KEY);
-        }
-
-        String responseEncoding;
-
-        if (encodingFromContext == null) {
-            try {
-                responseEncoding = context.getExternalContext().getResponseCharacterEncoding();
-            } catch (Exception e) {
-                LOGGER.log(FINE, e, () ->
-                    format("Unable to obtain response character encoding from ExternalContext {0}.  Using UTF-8.", context.getExternalContext()));
-                responseEncoding = "UTF-8";
-            }
-        } else {
-            responseEncoding = encodingFromContext;
-        }
+        String responseEncoding = Util.getResponseEncoding(context);
 
         if (parameters != null) {
             Map<String, List<String>> decodedParameters = new HashMap<>();
