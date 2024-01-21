@@ -1642,11 +1642,13 @@ public class Util {
 
             if (encoding != null) {
                 // If found, then immediately return it, this represents either the encoding explicitly set via <f:view encoding> or the one actually set on response.
+                // See also ViewHandler#apply() and FaceletViewHandlingStrategy#createResponseWriter().
                 return encoding;
             }
         }
 
         // 2. If none found then get it from context (this is usually set during compile/buildtime based on request character encoding).
+        //    See also SAXCompiler#doCompile() and EncodingHandler#apply().
         String encoding = (String) context.getAttributes().get(FACELETS_ENCODING_KEY);
 
         if (encoding != null && LOGGER.isLoggable(FINEST)) {
@@ -1655,6 +1657,7 @@ public class Util {
 
         if (encoding == null) {
             // 3. If none found (this is unexpected! could only happen with a broken Facelets Compiler or ViewHandler) then get it from request.
+            //    See also ViewHandler#initView() and ViewHandler#calculateCharacterEncoding().
             encoding = context.getExternalContext().getRequestCharacterEncoding();
 
             if (encoding != null && LOGGER.isLoggable(FINEST)) {
@@ -1664,6 +1667,7 @@ public class Util {
 
         if (encoding == null && context.getExternalContext().getSession(false) != null) {
             // 4. If still none found (also unexpected! could only happen with a broken HttpServletRequestWrapper) then get previously known request encoding from session.
+            //    See also ViewHandler#initView().
             encoding = (String) context.getExternalContext().getSessionMap().get(CHARACTER_ENCODING_KEY);
 
             if (encoding != null && LOGGER.isLoggable(FINEST)) {
