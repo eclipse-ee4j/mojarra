@@ -252,7 +252,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      */
     @Override
     public Object getSubmittedValue() {
-        if (submittedValue == null && !isValid() && considerEmptyStringNull(FacesContext.getCurrentInstance())) { // JAVASERVERFACES_SPEC_PUBLIC-671
+        if (submittedValue == null && !isValid() && !isLocalValueSet() && considerEmptyStringNull(FacesContext.getCurrentInstance())) { // JAVASERVERFACES_SPEC_PUBLIC-671
             return "";
         } else {
             return submittedValue;
