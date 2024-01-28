@@ -20,6 +20,7 @@
 package com.sun.faces.util;
 
 import static com.sun.faces.RIConstants.CDI_BEAN_MANAGER;
+import static com.sun.faces.RIConstants.FACELETS_ENCODING_KEY;
 import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
 import static com.sun.faces.RIConstants.FACES_SERVLET_REGISTRATION;
 import static com.sun.faces.RIConstants.NO_VALUE;
@@ -28,43 +29,13 @@ import static com.sun.faces.util.MessageUtils.NAMED_OBJECT_NOT_FOUND_ERROR_MESSA
 import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.NULL_VIEW_ID_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
+import static jakarta.faces.application.ViewHandler.CHARACTER_ENCODING_KEY;
 import static java.lang.Character.isDigit;
 import static java.util.Collections.emptyList;
 import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.SEVERE;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.config.manager.FacesSchema;
-import com.sun.faces.facelets.component.UIRepeat;
-import com.sun.faces.io.FastStringWriter;
-import jakarta.el.ValueExpression;
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.enterprise.inject.spi.CDI;
-import jakarta.enterprise.inject.spi.el.ELAwareBeanManager;
-import jakarta.faces.FacesException;
-import jakarta.faces.application.Application;
-import jakarta.faces.application.ProjectStage;
-import jakarta.faces.application.StateManager;
-import jakarta.faces.application.ViewHandler;
-import jakarta.faces.component.Doctype;
-import jakarta.faces.component.NamingContainer;
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UIData;
-import jakarta.faces.component.UINamingContainer;
-import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.context.ExternalContext;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.convert.Converter;
-import jakarta.faces.event.AbortProcessingException;
-import jakarta.faces.render.ResponseStateManager;
-import jakarta.faces.webapp.FacesServlet;
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletRegistration;
-import jakarta.servlet.http.HttpServletMapping;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.MappingMatch;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
@@ -92,6 +63,7 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.xml.XMLConstants;
@@ -104,6 +76,40 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.config.manager.FacesSchema;
+import com.sun.faces.facelets.component.UIRepeat;
+import com.sun.faces.io.FastStringWriter;
+
+import jakarta.el.ValueExpression;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.el.ELAwareBeanManager;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.Doctype;
+import jakarta.faces.component.NamingContainer;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIData;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.render.ResponseStateManager;
+import jakarta.faces.webapp.FacesServlet;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRegistration;
+import jakarta.servlet.http.HttpServletMapping;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.MappingMatch;
 
 /**
  * <B>Util</B> is a class ...
@@ -1639,6 +1645,82 @@ public class Util {
         }
 
         throw new NumberFormatException("there is no numeric segment");
+    }
+
+    /**
+     * @param context the {@link FacesContext} for the current request
+     * @return the encoding to be used for the response
+     */
+    public static String getResponseEncoding(FacesContext context) {
+        return getResponseEncoding(context, Optional.empty());
+    }
+
+    /**
+     * @param context the {@link FacesContext} for the current request
+     * @param defaultEncoding the default encoding, if any
+     * @return the encoding to be used for the response
+     */
+    public static String getResponseEncoding(FacesContext context, Optional<String> defaultEncoding) {
+
+        // 1. First get it from viewroot, if any.
+        if (context.getViewRoot() != null) {
+            String encoding = (String) context.getViewRoot().getAttributes().get(FACELETS_ENCODING_KEY);
+
+            if (encoding != null) {
+                // If found, then immediately return it, this represents either the encoding explicitly set via <f:view encoding> or the one actually set on response.
+                // See also ViewHandler#apply() and FaceletViewHandlingStrategy#createResponseWriter().
+                return encoding;
+            }
+        }
+
+        // 2. If none found then get it from context (this is usually set during compile/buildtime based on request character encoding).
+        //    See also SAXCompiler#doCompile() and EncodingHandler#apply().
+        String encoding = (String) context.getAttributes().get(FACELETS_ENCODING_KEY);
+
+        if (encoding != null && LOGGER.isLoggable(FINEST)) {
+            LOGGER.log(FINEST, "Using Facelet encoding {0}", encoding);
+        }
+
+        if (encoding == null) {
+            // 3. If none found then get it from request (could happen when the view isn't built yet).
+            //    See also ViewHandler#initView() and ViewHandler#calculateCharacterEncoding().
+            encoding = context.getExternalContext().getRequestCharacterEncoding();
+
+            if (encoding != null && LOGGER.isLoggable(FINEST)) {
+                LOGGER.log(FINEST, "Using Request encoding {0}", encoding);
+            }
+        }
+
+        if (encoding == null && context.getExternalContext().getSession(false) != null) {
+            // 4. If still none found then get previously known request encoding from session.
+            //    See also ViewHandler#initView().
+            encoding = (String) context.getExternalContext().getSessionMap().get(CHARACTER_ENCODING_KEY);
+
+            if (encoding != null && LOGGER.isLoggable(FINEST)) {
+                LOGGER.log(FINEST, "Using Session encoding {0}", encoding);
+            }
+        }
+
+        if (encoding == null) {
+            // 5. If still none found then fall back to specified default.
+            encoding = defaultEncoding.get();
+
+            if (encoding != null && !encoding.isBlank()) {
+                if (LOGGER.isLoggable(FINEST)) {
+                    LOGGER.log(FINEST, "Using specified default encoding {0}", encoding);
+                }
+            }
+            else {
+                // 6. If specified default is null or blank then finally fall back to hardcoded default.
+                encoding = RIConstants.CHAR_ENCODING;
+
+                if (LOGGER.isLoggable(FINEST)) {
+                    LOGGER.log(FINEST, "No encoding found, defaulting to {0}", encoding);
+                }
+            }
+        }
+
+        return encoding;
     }
 
 }

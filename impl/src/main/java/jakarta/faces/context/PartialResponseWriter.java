@@ -19,6 +19,8 @@ package jakarta.faces.context;
 import java.io.IOException;
 import java.util.Map;
 
+import com.sun.faces.RIConstants;
+
 import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.render.ResponseStateManager;
@@ -97,7 +99,7 @@ public class PartialResponseWriter extends ResponseWriterWrapper {
         ResponseWriter writer = getWrapped();
         String encoding = writer.getCharacterEncoding();
         if (encoding == null) {
-            encoding = "utf-8";
+            encoding = RIConstants.CHAR_ENCODING;
         }
         writer.writePreamble("<?xml version='1.0' encoding='" + encoding + "'?>\n");
         writer.startElement("partial-response", null);

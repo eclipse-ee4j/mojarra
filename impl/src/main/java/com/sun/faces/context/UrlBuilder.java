@@ -16,8 +16,6 @@
 
 package com.sun.faces.context;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -51,7 +49,6 @@ class UrlBuilder {
     public static final String PARAMETER_NAME_VALUE_SEPARATOR = "=";
     public static final String FRAGMENT_SEPARATOR = "#";
     public static final char FRAGMENT_SEPARATOR_CHAR = FRAGMENT_SEPARATOR.charAt(0);
-    public static final String DEFAULT_ENCODING = UTF_8.name();
     public static final String WEBSOCKET_PROTOCOL = "ws";
     public static final String PROTOCOL_SEPARATOR = "://";
 
@@ -75,7 +72,7 @@ class UrlBuilder {
     }
 
     public UrlBuilder(String url) {
-        this(url, DEFAULT_ENCODING);
+        this(url, CHAR_ENCODING);
     }
 
     // ---------------------------------------------------------- Public Methods

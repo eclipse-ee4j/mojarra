@@ -17,16 +17,15 @@
 
 package com.sun.faces.application;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.WARNING;
 
-import com.sun.faces.util.FacesLogger;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
@@ -35,6 +34,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.sun.faces.util.FacesLogger;
 
 /**
  * <p>
@@ -78,7 +79,6 @@ public class ConverterPropertyEditorFactory {
             int length;
 
             public Utf8InfoRef(int index, int length) {
-                super();
                 this.index = index;
                 this.length = length;
             }
@@ -100,7 +100,6 @@ public class ConverterPropertyEditorFactory {
             byte[] replacement;
 
             public Utf8InfoReplacement(Utf8InfoRef ref, String replacement) {
-                super();
                 this.ref = ref;
                 this.replacement = getUtf8InfoBytes(replacement);
             }
@@ -536,8 +535,7 @@ public class ConverterPropertyEditorFactory {
      * @return the bytes for the UTF8Info constant pool entry, including the tag, length, and utf8 content.
      */
     private static byte[] getUtf8InfoBytes(String text) {
-        byte[] utf8;
-        utf8 = text.getBytes(StandardCharsets.UTF_8);
+        byte[] utf8 = text.getBytes(UTF_8);
         byte[] info = new byte[utf8.length + 3];
         info[0] = 1;
         info[1] = (byte) (utf8.length >> 8 & 0xff);
