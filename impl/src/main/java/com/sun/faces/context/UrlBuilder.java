@@ -16,6 +16,8 @@
 
 package com.sun.faces.context;
 
+import static com.sun.faces.RIConstants.CHAR_ENCODING;
+
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
