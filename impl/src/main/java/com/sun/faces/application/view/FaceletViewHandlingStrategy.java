@@ -43,7 +43,6 @@ import static jakarta.faces.application.ProjectStage.Development;
 import static jakarta.faces.application.Resource.COMPONENT_RESOURCE_KEY;
 import static jakarta.faces.application.StateManager.IS_BUILDING_INITIAL_STATE;
 import static jakarta.faces.application.StateManager.STATE_SAVING_METHOD_SERVER;
-import static jakarta.faces.application.ViewHandler.CHARACTER_ENCODING_KEY;
 import static jakarta.faces.application.ViewHandler.DEFAULT_FACELETS_SUFFIX;
 import static jakarta.faces.application.ViewVisitOption.RETURN_AS_MINIMAL_IMPLICIT_OUTCOME;
 import static jakarta.faces.component.UIComponent.BEANINFO_KEY;
@@ -72,6 +71,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
@@ -908,22 +908,25 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         String encoding = (String) context.getAttributes().get(FACELETS_ENCODING_KEY);
 
         // Create a dummy ResponseWriter with a bogus writer,
-        // so we can figure out what content type the ReponseWriter
+        // so we can figure out what content type and encoding the ReponseWriter
         // is really going to ask for
-        ResponseWriter writer = renderKit.createResponseWriter(NullWriter.INSTANCE, contentType, encoding);
+        ResponseWriter initWriter = renderKit.createResponseWriter(NullWriter.INSTANCE, contentType, encoding);
 
-        contentType = getResponseContentType(context, writer.getContentType());
-        encoding = getResponseEncoding(context, writer.getCharacterEncoding());
+        contentType = getResponseContentType(context, initWriter.getContentType());
+        encoding = Util.getResponseEncoding(context, Optional.ofNullable(initWriter.getCharacterEncoding()));
 
         // apply them to the response
         char[] buffer = new char[1028];
-        HtmlUtils.writeTextForXML(writer, contentType, buffer);
+        HtmlUtils.writeTextForXML(initWriter, contentType, buffer);
         String str = String.valueOf(buffer).trim();
         extContext.setResponseContentType(str);
         extContext.setResponseCharacterEncoding(encoding);
 
+        // Save encoding in UIViewRoot for faster consult when Util#getResponseEncoding() is invoked again elsewhere.
+        context.getViewRoot().getAttributes().put(FACELETS_ENCODING_KEY, encoding);
+
         // Now, clone with the real writer
-        writer = writer.cloneWithWriter(extContext.getResponseOutputWriter());
+        ResponseWriter writer = initWriter.cloneWithWriter(extContext.getResponseOutputWriter());
 
         return writer;
     }
@@ -972,58 +975,6 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         context.getExternalContext().responseSendError(SC_NOT_FOUND, message != null ? viewId + ": " + message : viewId);
 
         context.responseComplete();
-    }
-
-    /**
-     * @param context the {@link FacesContext} for the current request
-     * @param orig the original encoding
-     * @return the encoding to be used for this response
-     */
-    protected String getResponseEncoding(FacesContext context, String orig) {
-        String encoding = orig;
-
-        // 1. get it from request
-        encoding = context.getExternalContext().getRequestCharacterEncoding();
-
-        // 2. get it from the session
-        if (encoding == null) {
-            if (context.getExternalContext().getSession(false) != null) {
-                Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
-                encoding = (String) sessionMap.get(CHARACTER_ENCODING_KEY);
-                if (LOGGER.isLoggable(FINEST)) {
-                    LOGGER.log(FINEST, "Session specified alternate encoding {0}", encoding);
-                }
-            }
-        }
-
-        // see if we need to override the encoding
-        Map<Object, Object> ctxAttributes = context.getAttributes();
-
-        // 3. check the request attribute
-        if (ctxAttributes.containsKey(FACELETS_ENCODING_KEY)) {
-            encoding = (String) ctxAttributes.get(FACELETS_ENCODING_KEY);
-            if (LOGGER.isLoggable(FINEST)) {
-                LOGGER.log(FINEST, "Facelet specified alternate encoding {0}", encoding);
-            }
-            if (null != context.getExternalContext().getSession(false)) {
-                Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
-                sessionMap.put(CHARACTER_ENCODING_KEY, encoding);
-            }
-        }
-
-        // 4. default it
-        if (encoding == null) {
-            if (null != orig && 0 < orig.length()) {
-                encoding = orig;
-            } else {
-                encoding = "UTF-8";
-            }
-            if (LOGGER.isLoggable(FINEST)) {
-                LOGGER.log(FINEST, "ResponseWriter created had a null CharacterEncoding, defaulting to {0}", orig);
-            }
-        }
-
-        return encoding;
     }
 
     /**

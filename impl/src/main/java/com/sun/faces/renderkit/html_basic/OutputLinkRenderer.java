@@ -19,6 +19,7 @@
 package com.sun.faces.renderkit.html_basic;
 
 import static com.sun.faces.util.Util.componentIsDisabled;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.logging.Level.FINE;
 
 import java.io.IOException;
@@ -35,7 +36,7 @@ import jakarta.faces.context.ResponseWriter;
 
 /**
  * <B>OutputLinkRenderer</B> is a class ...
- * 
+ *
  * <B>Lifetime And Scope</B>
  *
  */
@@ -133,7 +134,7 @@ public class OutputLinkRenderer extends LinkRenderer {
         if (componentIsDisabled(component)) {
             return null;
         }
-        
+
         return ((UIOutput) component).getValue();
     }
 
@@ -176,10 +177,10 @@ public class OutputLinkRenderer extends LinkRenderer {
             if (pn != null && pn.length() != 0) {
                 String pv = paramList[i].value;
                 sb.append(paramWritten ? '&' : '?');
-                sb.append(URLEncoder.encode(pn, "UTF-8"));
+                sb.append(URLEncoder.encode(pn, UTF_8));
                 sb.append('=');
                 if (pv != null && pv.length() != 0) {
-                    sb.append(URLEncoder.encode(pv, "UTF-8"));
+                    sb.append(URLEncoder.encode(pv, UTF_8));
                 }
                 paramWritten = true;
             }

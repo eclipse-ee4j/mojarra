@@ -29,10 +29,10 @@ import static jakarta.faces.component.visit.VisitHint.SKIP_ITERATION;
 import static jakarta.faces.event.PhaseId.RESTORE_VIEW;
 import static jakarta.faces.render.ResponseStateManager.NON_POSTBACK_VIEW_TOKEN_PARAM;
 import static jakarta.faces.view.ViewMetadata.hasMetadata;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
@@ -249,16 +249,7 @@ public class RestoreViewPhase extends Phase {
 
             String incomingSecretKeyValue = extContext.getRequestParameterMap().get(NON_POSTBACK_VIEW_TOKEN_PARAM);
             if (incomingSecretKeyValue != null) {
-                try {
-                    incomingSecretKeyValue = URLEncoder.encode(incomingSecretKeyValue, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    if (LOGGER.isLoggable(SEVERE)) {
-                        LOGGER.log(SEVERE,
-                            "Unable to re-encode value of request parameter " + NON_POSTBACK_VIEW_TOKEN_PARAM + ":"
-                                + incomingSecretKeyValue, e);
-                    }
-                    incomingSecretKeyValue = null;
-                }
+                incomingSecretKeyValue = URLEncoder.encode(incomingSecretKeyValue, UTF_8);
             }
 
             String correctSecretKeyValue = rsm.getCryptographicallyStrongTokenFromSession(context);

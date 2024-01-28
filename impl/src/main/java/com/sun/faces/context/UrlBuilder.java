@@ -16,6 +16,8 @@
 
 package com.sun.faces.context;
 
+import static com.sun.faces.RIConstants.CHAR_ENCODING;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -49,7 +51,6 @@ class UrlBuilder {
     public static final String PARAMETER_PAIR_SEPARATOR = "&";
     public static final String PARAMETER_NAME_VALUE_SEPARATOR = "=";
     public static final String FRAGMENT_SEPARATOR = "#";
-    public static final String DEFAULT_ENCODING = "UTF-8";
 
     private static final List<String> NULL_LIST = Arrays.asList((String) null);
 
@@ -73,7 +74,7 @@ class UrlBuilder {
     }
 
     public UrlBuilder(String url) {
-        this(url, DEFAULT_ENCODING);
+        this(url, CHAR_ENCODING);
     }
 
     // ---------------------------------------------------------- Public Methods

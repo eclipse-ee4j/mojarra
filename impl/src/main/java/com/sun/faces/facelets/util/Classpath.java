@@ -16,6 +16,8 @@
 
 package com.sun.faces.facelets.util;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,13 +46,6 @@ public final class Classpath {
     // as these should not be looked at for Faces related content.
     private static final String[] PREFIXES_TO_EXCLUDE = { "rar:", "sar:" };
     private static final String[] EXTENSIONS_TO_EXCLUDE = { ".rar", ".sar" };
-
-    /**
-     *
-     */
-    public Classpath() {
-        super();
-    }
 
     public enum SearchAdvice {
         FirstMatchOnly, AllMatches
@@ -93,7 +88,7 @@ public final class Classpath {
                 if (jarFile != null) {
                     searchJar(cl, all, jarFile, prefix, suffix, advice);
                 } else {
-                    boolean searchDone = searchDir(all, new File(URLDecoder.decode(url.getFile(), "UTF-8")), suffix);
+                    boolean searchDone = searchDir(all, new File(URLDecoder.decode(url.getFile(), UTF_8)), suffix);
                     if (!searchDone) {
                         searchFromURL(all, prefix, suffix, url);
                     }
@@ -244,7 +239,7 @@ public final class Classpath {
             // And trim off any "file:" prefix.
             if (jarFileUrl.startsWith("file:")) {
                 jarFileUrl = jarFileUrl.substring("file:".length());
-                jarFileUrl = URLDecoder.decode(jarFileUrl, "UTF-8");
+                jarFileUrl = URLDecoder.decode(jarFileUrl, UTF_8);
             }
             boolean foundExclusion = false;
             for (int i = 0; i < PREFIXES_TO_EXCLUDE.length; i++) {

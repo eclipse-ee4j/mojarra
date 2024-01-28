@@ -228,12 +228,17 @@ public abstract class ViewHandler {
      *
      */
     public void initView(FacesContext context) throws FacesException {
-        String encoding = context.getExternalContext().getRequestCharacterEncoding();
-        if (encoding != null) {
+        String originalEncoding = context.getExternalContext().getRequestCharacterEncoding();
+        String encoding = (originalEncoding != null) ? originalEncoding : calculateCharacterEncoding(context);
+
+        if (encoding != null && context.getExternalContext().getSession(false) != null) {
+            context.getExternalContext().getSessionMap().put(CHARACTER_ENCODING_KEY, encoding);
+        }
+
+        if (originalEncoding != null) {
             return;
         }
 
-        encoding = calculateCharacterEncoding(context);
         if (encoding != null) {
             try {
                 context.getExternalContext().setRequestCharacterEncoding(encoding);
@@ -491,7 +496,7 @@ public abstract class ViewHandler {
      * <p class="changed_added_2_0">
      * Return a Jakarta Faces action URL derived from the <code>viewId</code> argument that is suitable to be used by
      * the {@link NavigationHandler} to issue a redirect request to the URL using a NonFaces request. Compliant
-     * implementations must implement this method as specified in 
+     * implementations must implement this method as specified in
      * section 7.6.2 "Default ViewHandler Implementation" of the Jakarta Faces Specification Document.
      * The default implementation simply calls
      * through to {@link #getActionURL}, passing the arguments <code>context</code> and <code>viewId</code>.

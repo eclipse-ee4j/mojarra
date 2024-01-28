@@ -21,11 +21,10 @@ import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParamet
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.CLIENT_WINDOW_PARAM;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.RENDER_KIT_ID_PARAM;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.VIEW_STATE_PARAM;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.faces.RIConstants;
@@ -113,12 +112,7 @@ public abstract class StateHelper {
         ByteArrayGuardAESCTR guard = new ByteArrayGuardAESCTR();
         String clearText = "" + System.currentTimeMillis();
         String result = guard.encrypt(clearText);
-        try {
-            result = URLEncoder.encode(result, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            LOGGER.log(Level.SEVERE, "Unable to URL encode cryptographically strong token, storing clear text in session instead.", e);
-            result = clearText;
-        }
+        result = URLEncoder.encode(result, UTF_8);
         session.setAttribute(TOKEN_NAME, result);
 
     }
@@ -173,7 +167,7 @@ public abstract class StateHelper {
         if (pValue != null && pValue.length() == 0) {
             pValue = null;
         }
-        
+
         return pValue;
     }
 
