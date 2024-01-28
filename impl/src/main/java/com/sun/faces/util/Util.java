@@ -1656,7 +1656,7 @@ public class Util {
         }
 
         if (encoding == null) {
-            // 3. If none found (this is unexpected! could only happen with a broken Facelets Compiler or ViewHandler) then get it from request.
+            // 3. If none found then get it from request (could happen when the view isn't built yet).
             //    See also ViewHandler#initView() and ViewHandler#calculateCharacterEncoding().
             encoding = context.getExternalContext().getRequestCharacterEncoding();
 
@@ -1666,7 +1666,7 @@ public class Util {
         }
 
         if (encoding == null && context.getExternalContext().getSession(false) != null) {
-            // 4. If still none found (also unexpected! could only happen with a broken HttpServletRequestWrapper) then get previously known request encoding from session.
+            // 4. If still none found then get previously known request encoding from session.
             //    See also ViewHandler#initView().
             encoding = (String) context.getExternalContext().getSessionMap().get(CHARACTER_ENCODING_KEY);
 
