@@ -267,8 +267,8 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     }
 
     /**
-     * Used for delegation by the DefaultFaceletContext. First pulls the URL from {@link #getRelativePath(String)
-     * getRelativePath(String)}, then validates that the path does not represent a contracts resource, then calls
+     * Used for delegation by the DefaultFaceletContext. First validates that the path does not represent
+     * a contracts resource, then pulls the URL from {@link #resolveURL(String)}, then calls
      * {@link #include(DefaultFaceletContext, jakarta.faces.component.UIComponent, String)}.
      *
      * @see FaceletContext#includeFacelet(UIComponent, String)
@@ -293,10 +293,10 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
                 return;
             }
         } else {
-            url = resolveURL(relativePath);
-            if (factory.isContractsResource(url)) {
+            if (factory.isContractsResource(new URL(src, relativePath))) {
                 throw new IOException("Contract resources cannot be accessed this way");
             }
+            url = resolveURL(relativePath);
         }
         this.include(ctx, parent, url);
     }
