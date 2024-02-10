@@ -31,6 +31,7 @@ import jakarta.faces.lifecycle.ClientWindowFactory;
 public class ClientWindowFactoryImpl extends ClientWindowFactory {
 
     private boolean isClientWindowEnabled = false;
+    private final TokenGenerator tokenGenerator = new TokenGenerator();
 
     public ClientWindowFactoryImpl() {
         super(null);
@@ -41,6 +42,16 @@ public class ClientWindowFactoryImpl extends ClientWindowFactory {
     public ClientWindowFactoryImpl(boolean ignored) {
         super(null);
         isClientWindowEnabled = false;
+    }
+
+
+    @Override
+    public ClientWindow getClientWindow(FacesContext context) {
+        if (!isClientWindowEnabled) {
+            return null;
+        }
+
+        return new ClientWindowImpl(tokenGenerator);
     }
 
     private class PostConstructApplicationListener implements SystemEventListener {
@@ -61,14 +72,5 @@ public class ClientWindowFactoryImpl extends ClientWindowFactory {
         FacesContext context = FacesContext.getCurrentInstance();
         String optionValue = ContextParam.CLIENT_WINDOW_MODE.getValue(context);
         isClientWindowEnabled = "url".equals(optionValue) || JavaFlowLoaderHelper.isClientWindowModeForciblyEnabled(context);
-    }
-
-    @Override
-    public ClientWindow getClientWindow(FacesContext context) {
-        if (!isClientWindowEnabled) {
-            return null;
-        }
-
-        return new ClientWindowImpl();
     }
 }

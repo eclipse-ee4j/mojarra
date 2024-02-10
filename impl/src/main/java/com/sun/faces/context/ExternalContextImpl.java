@@ -639,9 +639,8 @@ public class ExternalContextImpl extends ExternalContext {
                 pwriter = ctx.getPartialViewContext().getPartialResponseWriter();
             }
             setResponseContentType(RIConstants.TEXT_XML_CONTENT_TYPE);
-            setResponseCharacterEncoding("UTF-8");
+            setResponseCharacterEncoding(RIConstants.CHAR_ENCODING);
             addResponseHeader("Cache-Control", "no-cache");
-//            pwriter.writePreamble("<?xml version='1.0' encoding='UTF-8'?>\n");
             pwriter.startDocument();
             pwriter.redirect(requestURI);
             pwriter.endDocument();
@@ -965,14 +964,7 @@ public class ExternalContextImpl extends ExternalContext {
 
     @Override
     public String encodeBookmarkableURL(String baseUrl, Map<String, List<String>> parameters) {
-        FacesContext context = FacesContext.getCurrentInstance();
-        String encodingFromContext = (String) context.getAttributes().get(RIConstants.FACELETS_ENCODING_KEY);
-        if (null == encodingFromContext) {
-            encodingFromContext = (String) context.getViewRoot().getAttributes().get(RIConstants.FACELETS_ENCODING_KEY);
-        }
-
-        String currentResponseEncoding = null != encodingFromContext ? encodingFromContext : getResponseCharacterEncoding();
-
+        String currentResponseEncoding = Util.getResponseEncoding(FacesContext.getCurrentInstance());
         UrlBuilder builder = new UrlBuilder(baseUrl, currentResponseEncoding);
         builder.addParameters(parameters);
         return builder.createUrl();
@@ -981,14 +973,7 @@ public class ExternalContextImpl extends ExternalContext {
 
     @Override
     public String encodeRedirectURL(String baseUrl, Map<String, List<String>> parameters) {
-        FacesContext context = FacesContext.getCurrentInstance();
-        String encodingFromContext = (String) context.getAttributes().get(RIConstants.FACELETS_ENCODING_KEY);
-        if (null == encodingFromContext) {
-            encodingFromContext = (String) context.getViewRoot().getAttributes().get(RIConstants.FACELETS_ENCODING_KEY);
-        }
-
-        String currentResponseEncoding = null != encodingFromContext ? encodingFromContext : getResponseCharacterEncoding();
-
+        String currentResponseEncoding = Util.getResponseEncoding(FacesContext.getCurrentInstance());
         UrlBuilder builder = new UrlBuilder(baseUrl, currentResponseEncoding);
         builder.addParameters(parameters);
         return builder.createUrl();
@@ -1004,14 +989,7 @@ public class ExternalContextImpl extends ExternalContext {
             String message = MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "url");
             throw new NullPointerException(message);
         }
-        FacesContext context = FacesContext.getCurrentInstance();
-        String encodingFromContext = (String) context.getAttributes().get(RIConstants.FACELETS_ENCODING_KEY);
-        if (null == encodingFromContext) {
-            encodingFromContext = (String) context.getViewRoot().getAttributes().get(RIConstants.FACELETS_ENCODING_KEY);
-        }
-
-        String currentResponseEncoding = null != encodingFromContext ? encodingFromContext : getResponseCharacterEncoding();
-
+        String currentResponseEncoding = Util.getResponseEncoding(FacesContext.getCurrentInstance());
         UrlBuilder builder = new UrlBuilder(url, currentResponseEncoding);
         return ((HttpServletResponse) response).encodeURL(builder.createUrl());
     }
@@ -1069,7 +1047,7 @@ public class ExternalContextImpl extends ExternalContext {
 
     private PushBuilder getPushBuilder(FacesContext context) {
         ExternalContext extContext = context.getExternalContext();
-        
+
         if (extContext.getRequest() instanceof HttpServletRequest) {
             HttpServletRequest hreq = (HttpServletRequest) extContext.getRequest();
 

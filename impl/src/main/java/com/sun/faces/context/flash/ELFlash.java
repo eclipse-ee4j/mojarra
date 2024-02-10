@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -18,8 +19,8 @@ package com.sun.faces.context.flash;
 
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.ForceAlwaysWriteFlashCookie;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.InvalidKeyException;
@@ -96,7 +97,8 @@ import jakarta.servlet.http.HttpServletRequest;
 
 public class ELFlash extends Flash {
 
-    // <editor-fold defaultstate="collapsed" desc="ivars">
+    private static final String ELEMENT_TYPE_MISMATCH = "element-type-mismatch";
+    private static final Logger LOGGER = FacesLogger.FLASH.getLogger();
 
     /**
      * <p>
@@ -118,13 +120,6 @@ public class ELFlash extends Flash {
 
     private final ByteArrayGuardAESCTR guard;
 
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="class vars">
-
-    private static final String ELEMENT_TYPE_MISMATCH = "element-type-mismatch";
-
-    private static final Logger LOGGER = FacesLogger.FLASH.getLogger();
 
     /**
      * <p>
@@ -203,10 +198,6 @@ public class ELFlash extends Flash {
         ForceSetMaxAgeZero,
 
     }
-
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="Constructors and instance accessors">
 
     /** Creates a new instance of ELFlash */
     private ELFlash(ExternalContext extContext) {
@@ -340,11 +331,6 @@ public class ELFlash extends Flash {
     public void setRedirect(boolean newValue) {
     }
 
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="Map overrides">
-
-    @SuppressWarnings(ELEMENT_TYPE_MISMATCH)
     @Override
     public Object get(Object key) {
         Object result = null;
@@ -418,7 +404,6 @@ public class ELFlash extends Flash {
         return result;
     }
 
-    @SuppressWarnings(ELEMENT_TYPE_MISMATCH)
     @Override
     public Object remove(Object key) {
         Object result = null;
@@ -430,7 +415,6 @@ public class ELFlash extends Flash {
         return result;
     }
 
-    @SuppressWarnings(ELEMENT_TYPE_MISMATCH)
     @Override
     public boolean containsKey(Object key) {
         boolean result = false;
@@ -442,46 +426,29 @@ public class ELFlash extends Flash {
 
     @Override
     public boolean containsValue(Object value) {
-        boolean result = false;
-
-        result = getPhaseMapForReading().containsValue(value);
-
-        return result;
+        return getPhaseMapForReading().containsValue(value);
     }
 
     @Override
     public void putAll(Map<? extends String, ?> t) {
-
         getPhaseMapForWriting().putAll(t);
-
     }
 
     @Override
     public Collection<Object> values() {
-        Collection<Object> result = null;
-
-        result = getPhaseMapForReading().values();
-
-        return result;
+        return getPhaseMapForReading().values();
     }
 
     @Override
     public int size() {
-        int result = 0;
-
-        result = getPhaseMapForReading().size();
-
-        return result;
+        return getPhaseMapForReading().size();
     }
 
     @Override
     public void clear() {
-
         getPhaseMapForWriting().clear();
-
     }
 
-    @SuppressWarnings({ "CloneDoesntCallSuperClone" })
     @Override
     protected Object clone() throws CloneNotSupportedException {
         throw new CloneNotSupportedException();
@@ -518,10 +485,6 @@ public class ELFlash extends Flash {
 
         return result;
     }
-
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="Flash overrides">
 
     @Override
     public void keep(String key) {
@@ -640,7 +603,7 @@ public class ELFlash extends Flash {
      * necessary because the call to extContext.flushBuffer() is too late, the response has already been committed by that
      * point. outgoingResponseIsRedirect is false.
      * </p>
-     * 
+     *
      * @param context the involved faces context
      * @param outgoingResponseIsRedirect whether outgoing response is redirect
      */
@@ -676,10 +639,6 @@ public class ELFlash extends Flash {
         setCookie(context, flashManager, flashManager.encode(), false);
 
     }
-
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="Helpers">
 
     void setFlashInnerMap(Map<String, Map<String, Object>> flashInnerMap) {
         this.flashInnerMap = flashInnerMap;
@@ -988,12 +947,9 @@ public class ELFlash extends Flash {
                     flashManager.expirePrevious();
                 }
             } else {
-                Map<String, Object> properties = new HashMap();
+                Map<String, Object> properties = new HashMap<>();
                 Object val;
 
-                if (null != (val = toSet.getComment())) {
-                    properties.put("comment", val);
-                }
                 if (null != (val = toSet.getDomain())) {
                     properties.put("domain", val);
                 }
@@ -1022,13 +978,10 @@ public class ELFlash extends Flash {
         if (extContext.isResponseCommitted()) {
             return;
         }
-        Map<String, Object> properties = new HashMap();
+        Map<String, Object> properties = new HashMap<>();
         Object val;
         toRemove.setMaxAge(0);
 
-        if (null != (val = toRemove.getComment())) {
-            properties.put("comment", val);
-        }
         if (null != (val = toRemove.getDomain())) {
             properties.put("domain", val);
         }
@@ -1048,10 +1001,6 @@ public class ELFlash extends Flash {
         properties = null;
 
     }
-
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="Inner classes">
 
     private enum LifetimeMarker {
 
@@ -1313,15 +1262,7 @@ public class ELFlash extends Flash {
         void decode(FacesContext context, ELFlash flash, Cookie cookie) throws InvalidKeyException {
             String temp;
             String value;
-
-            String urlDecodedValue = null;
-
-            try {
-                urlDecodedValue = URLDecoder.decode(cookie.getValue(), "UTF-8");
-            } catch (UnsupportedEncodingException uee) {
-                urlDecodedValue = cookie.getValue();
-            }
-
+            String urlDecodedValue = URLDecoder.decode(cookie.getValue(), UTF_8);
             value = guard.decrypt(urlDecodedValue);
 
             try {
@@ -1390,16 +1331,10 @@ public class ELFlash extends Flash {
          * </p>
          */
         Cookie encode() {
-            Cookie result = null;
-
             String value = (null != previousRequestFlashInfo ? previousRequestFlashInfo.encode() : "") + "_"
                     + (null != nextRequestFlashInfo ? nextRequestFlashInfo.encode() : "");
             String encryptedValue = guard.encrypt(value);
-            try {
-                result = new Cookie(FLASH_COOKIE_NAME, URLEncoder.encode(encryptedValue, "UTF-8"));
-            } catch (UnsupportedEncodingException uee) {
-                result = new Cookie(FLASH_COOKIE_NAME, encryptedValue);
-            }
+            Cookie result = new Cookie(FLASH_COOKIE_NAME, URLEncoder.encode(encryptedValue, UTF_8));
 
             if (1 == value.length()) {
                 result.setMaxAge(0);
@@ -1601,7 +1536,5 @@ public class ELFlash extends Flash {
         }
 
     }
-
-    // </editor-fold>
 
 }

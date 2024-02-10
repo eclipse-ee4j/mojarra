@@ -1,6 +1,6 @@
 /*
+ * Copyright (c) 2021, 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
- * Copyright (c) 2021 Contributors to Eclipse Foundation.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,6 +19,8 @@
 
 package com.sun.faces.util;
 
+import static com.sun.faces.RIConstants.CDI_BEAN_MANAGER;
+import static com.sun.faces.RIConstants.FACELETS_ENCODING_KEY;
 import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
 import static com.sun.faces.RIConstants.FACES_SERVLET_REGISTRATION;
 import static com.sun.faces.RIConstants.NO_VALUE;
@@ -27,12 +29,13 @@ import static com.sun.faces.util.MessageUtils.NAMED_OBJECT_NOT_FOUND_ERROR_MESSA
 import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.NULL_VIEW_ID_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
+import static jakarta.faces.application.ViewHandler.CHARACTER_ENCODING_KEY;
 import static java.lang.Character.isDigit;
 import static java.util.Collections.emptyList;
 import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.SEVERE;
 
-import java.beans.FeatureDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
@@ -43,7 +46,6 @@ import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -82,10 +84,10 @@ import com.sun.faces.config.manager.FacesSchema;
 import com.sun.faces.facelets.component.UIRepeat;
 import com.sun.faces.io.FastStringWriter;
 
-import jakarta.el.ELResolver;
 import jakarta.el.ValueExpression;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.el.ELAwareBeanManager;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
@@ -111,7 +113,7 @@ import jakarta.servlet.http.MappingMatch;
 
 /**
  * <B>Util</B> is a class ...
- * 
+ *
  * <B>Lifetime And Scope</B>
  *
  */
@@ -403,11 +405,7 @@ public class Util {
     }
 
     private static ClassLoader getContextClassLoader() {
-        if (System.getSecurityManager() == null) {
-            return Thread.currentThread().getContextClassLoader();
-        } else {
-            return (ClassLoader) java.security.AccessController.doPrivileged((PrivilegedAction) () -> Thread.currentThread().getContextClassLoader());
-        }
+        return Thread.currentThread().getContextClassLoader();
     }
 
     /**
@@ -1005,21 +1003,6 @@ public class Util {
         return result;
     }
 
-    public static FeatureDescriptor getFeatureDescriptor(String name, String displayName, String desc, boolean expert, boolean hidden, boolean preferred,
-            Object type, Boolean designTime) {
-
-        FeatureDescriptor fd = new FeatureDescriptor();
-        fd.setName(name);
-        fd.setDisplayName(displayName);
-        fd.setShortDescription(desc);
-        fd.setExpert(expert);
-        fd.setHidden(hidden);
-        fd.setPreferred(preferred);
-        fd.setValue(ELResolver.TYPE, type);
-        fd.setValue(ELResolver.RESOLVABLE_AT_DESIGN_TIME, designTime);
-        return fd;
-    }
-
     /**
      * <p>
      * A slightly more efficient version of <code>String.split()</code> which caches the <code>Pattern</code>s in an LRUMap
@@ -1514,25 +1497,22 @@ public class Util {
      * @param facesContext the Faces context to consult
      * @return the CDI bean manager.
      */
-    public static BeanManager getCdiBeanManager(FacesContext facesContext) {
-        BeanManager result = null;
+    public static ELAwareBeanManager getCdiBeanManager(FacesContext facesContext) {
+        ELAwareBeanManager result = null;
 
-        if (facesContext != null && facesContext.getAttributes().containsKey(RIConstants.CDI_BEAN_MANAGER)) {
-            result = (BeanManager) facesContext.getAttributes().get(RIConstants.CDI_BEAN_MANAGER);
-        } else if (facesContext != null && facesContext.getExternalContext().getApplicationMap().containsKey(RIConstants.CDI_BEAN_MANAGER)) {
-            result = (BeanManager) facesContext.getExternalContext().getApplicationMap().get(RIConstants.CDI_BEAN_MANAGER);
+        if (facesContext != null && facesContext.getAttributes().containsKey(CDI_BEAN_MANAGER)) {
+            result = (ELAwareBeanManager) facesContext.getAttributes().get(CDI_BEAN_MANAGER);
+        } else if (facesContext != null && facesContext.getExternalContext().getApplicationMap().containsKey(CDI_BEAN_MANAGER)) {
+            result = (ELAwareBeanManager) facesContext.getExternalContext().getApplicationMap().get(CDI_BEAN_MANAGER);
         } else {
             try {
-                InitialContext initialContext = new InitialContext();
-                result = (BeanManager) initialContext.lookup("java:comp/BeanManager");
+                result =  wrapIfNeeded(InitialContext.doLookup("java:comp/BeanManager"));
             } catch (NamingException ne) {
                 try {
-                    InitialContext initialContext = new InitialContext();
-                    result = (BeanManager) initialContext.lookup("java:comp/env/BeanManager");
+                    result = wrapIfNeeded(InitialContext.doLookup("java:comp/env/BeanManager"));
                 } catch (NamingException ne2) {
                     try {
-                        CDI<Object> cdi = CDI.current();
-                        result = cdi.getBeanManager();
+                        result = (ELAwareBeanManager) CDI.current().getBeanManager();
                     }
                     catch (Exception | LinkageError e) {
                     }
@@ -1541,12 +1521,12 @@ public class Util {
 
             if (result == null && facesContext != null) {
                 Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
-                result = (BeanManager) applicationMap.get("org.jboss.weld.environment.servlet.jakarta.enterprise.inject.spi.BeanManager");
+                result = wrapIfNeeded(applicationMap.get("org.jboss.weld.environment.servlet.jakarta.enterprise.inject.spi.BeanManager"));
             }
 
             if (result != null && facesContext != null) {
-                facesContext.getAttributes().put(RIConstants.CDI_BEAN_MANAGER, result);
-                facesContext.getExternalContext().getApplicationMap().put(RIConstants.CDI_BEAN_MANAGER, result);
+                facesContext.getAttributes().put(CDI_BEAN_MANAGER, result);
+                facesContext.getExternalContext().getApplicationMap().put(CDI_BEAN_MANAGER, result);
             }
         }
 
@@ -1555,6 +1535,16 @@ public class Util {
         }
 
         return result;
+    }
+
+    private static ELAwareBeanManager wrapIfNeeded(Object untypedBeanManager) {
+        BeanManager beanManager = (BeanManager) untypedBeanManager;
+
+        if (beanManager instanceof ELAwareBeanManager elAwareBeanManager) {
+            return elAwareBeanManager;
+        }
+
+        return new ELAwareBeanManagerWrapper(beanManager);
     }
 
     @SuppressWarnings("unchecked")
@@ -1655,6 +1645,82 @@ public class Util {
         }
 
         throw new NumberFormatException("there is no numeric segment");
+    }
+
+    /**
+     * @param context the {@link FacesContext} for the current request
+     * @return the encoding to be used for the response
+     */
+    public static String getResponseEncoding(FacesContext context) {
+        return getResponseEncoding(context, Optional.empty());
+    }
+
+    /**
+     * @param context the {@link FacesContext} for the current request
+     * @param defaultEncoding the default encoding, if any
+     * @return the encoding to be used for the response
+     */
+    public static String getResponseEncoding(FacesContext context, Optional<String> defaultEncoding) {
+
+        // 1. First get it from viewroot, if any.
+        if (context.getViewRoot() != null) {
+            String encoding = (String) context.getViewRoot().getAttributes().get(FACELETS_ENCODING_KEY);
+
+            if (encoding != null) {
+                // If found, then immediately return it, this represents either the encoding explicitly set via <f:view encoding> or the one actually set on response.
+                // See also ViewHandler#apply() and FaceletViewHandlingStrategy#createResponseWriter().
+                return encoding;
+            }
+        }
+
+        // 2. If none found then get it from context (this is usually set during compile/buildtime based on request character encoding).
+        //    See also SAXCompiler#doCompile() and EncodingHandler#apply().
+        String encoding = (String) context.getAttributes().get(FACELETS_ENCODING_KEY);
+
+        if (encoding != null && LOGGER.isLoggable(FINEST)) {
+            LOGGER.log(FINEST, "Using Facelet encoding {0}", encoding);
+        }
+
+        if (encoding == null) {
+            // 3. If none found then get it from request (could happen when the view isn't built yet).
+            //    See also ViewHandler#initView() and ViewHandler#calculateCharacterEncoding().
+            encoding = context.getExternalContext().getRequestCharacterEncoding();
+
+            if (encoding != null && LOGGER.isLoggable(FINEST)) {
+                LOGGER.log(FINEST, "Using Request encoding {0}", encoding);
+            }
+        }
+
+        if (encoding == null && context.getExternalContext().getSession(false) != null) {
+            // 4. If still none found then get previously known request encoding from session.
+            //    See also ViewHandler#initView().
+            encoding = (String) context.getExternalContext().getSessionMap().get(CHARACTER_ENCODING_KEY);
+
+            if (encoding != null && LOGGER.isLoggable(FINEST)) {
+                LOGGER.log(FINEST, "Using Session encoding {0}", encoding);
+            }
+        }
+
+        if (encoding == null) {
+            // 5. If still none found then fall back to specified default.
+            encoding = defaultEncoding.get();
+
+            if (encoding != null && !encoding.isBlank()) {
+                if (LOGGER.isLoggable(FINEST)) {
+                    LOGGER.log(FINEST, "Using specified default encoding {0}", encoding);
+                }
+            }
+            else {
+                // 6. If specified default is null or blank then finally fall back to hardcoded default.
+                encoding = RIConstants.CHAR_ENCODING;
+
+                if (LOGGER.isLoggable(FINEST)) {
+                    LOGGER.log(FINEST, "No encoding found, defaulting to {0}", encoding);
+                }
+            }
+        }
+
+        return encoding;
     }
 
 }

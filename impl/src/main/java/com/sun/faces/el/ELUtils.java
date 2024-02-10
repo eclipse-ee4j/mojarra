@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -23,16 +24,10 @@ import static com.sun.faces.util.ReflectionUtils.newInstance;
 import static com.sun.faces.util.Util.getCdiBeanManager;
 import static java.lang.Boolean.FALSE;
 
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.context.flash.FlashELResolver;
 import com.sun.faces.util.Cache;
 import com.sun.faces.util.LRUCache;
-
 import jakarta.el.ArrayELResolver;
 import jakarta.el.BeanELResolver;
 import jakarta.el.CompositeELResolver;
@@ -43,10 +38,13 @@ import jakarta.el.ListELResolver;
 import jakarta.el.MapELResolver;
 import jakarta.el.ResourceBundleELResolver;
 import jakarta.el.ValueExpression;
-import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Utility class for EL related methods.
@@ -185,9 +183,7 @@ public class ELUtils {
     }
 
     private static void addCDIELResolver(FacesCompositeELResolver composite) {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        BeanManager beanManager = getCdiBeanManager(facesContext);
-        composite.add(beanManager.getELResolver());
+        composite.add(getCdiBeanManager(FacesContext.getCurrentInstance()).getELResolver());
     }
 
     private static void addEL3_0_Resolvers(FacesCompositeELResolver composite, ApplicationAssociate associate) {
