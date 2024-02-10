@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -17,17 +18,8 @@
 package com.sun.faces.el;
 
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
-import static com.sun.faces.util.Util.getFeatureDescriptor;
-
-import java.beans.FeatureDescriptor;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import com.sun.faces.util.MessageUtils;
-
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
@@ -35,6 +27,7 @@ import jakarta.el.PropertyNotFoundException;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+import java.util.Map;
 
 public class ScopedAttributeELResolver extends ELResolver {
 
@@ -149,54 +142,6 @@ public class ScopedAttributeELResolver extends ELResolver {
 
         context.setPropertyResolved(true);
         return false;
-    }
-
-    @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
-        ArrayList<FeatureDescriptor> list = new ArrayList<>();
-
-        FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
-        ExternalContext externalContext = facesContext.getExternalContext();
-
-        // add attributes in request scope.
-        Set<Entry<String, Object>> attrs = externalContext.getRequestMap().entrySet();
-        for (Entry<String, Object> entry : attrs) {
-            String attrName = entry.getKey();
-            Object attrValue = entry.getValue();
-            list.add(getFeatureDescriptor(attrName, attrName, "request scope attribute", false, false, true, attrValue.getClass(), Boolean.TRUE));
-        }
-
-        // add attributes in view scope.
-        UIViewRoot root = facesContext.getViewRoot();
-        if (root != null) {
-            Map<String, Object> viewMap = root.getViewMap(false);
-            if (viewMap != null && viewMap.size() != 0) {
-                attrs = viewMap.entrySet();
-                for (Entry<String, Object> entry : attrs) {
-                    String attrName = entry.getKey();
-                    Object attrValue = entry.getValue();
-                    list.add(getFeatureDescriptor(attrName, attrName, "view scope attribute", false, false, true, attrValue.getClass(), Boolean.TRUE));
-                }
-            }
-        }
-
-        // add attributes in session scope.
-        attrs = externalContext.getSessionMap().entrySet();
-        for (Entry<String, Object> entry : attrs) {
-            String attrName = entry.getKey();
-            Object attrValue = entry.getValue();
-            list.add(getFeatureDescriptor(attrName, attrName, "session scope attribute", false, false, true, attrValue.getClass(), Boolean.TRUE));
-        }
-
-        // add attributes in application scope.
-        attrs = externalContext.getApplicationMap().entrySet();
-        for (Entry<String, Object> entry : attrs) {
-            String attrName = entry.getKey();
-            Object attrValue = entry.getValue();
-            list.add(getFeatureDescriptor(attrName, attrName, "application scope attribute", false, false, true, attrValue.getClass(), Boolean.TRUE));
-        }
-
-        return list.iterator();
     }
 
     @Override

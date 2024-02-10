@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -16,11 +17,6 @@
 
 package com.sun.faces.context.flash;
 
-import java.beans.FeatureDescriptor;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
 import jakarta.el.PropertyNotFoundException;
@@ -30,6 +26,7 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.Flash;
 import jakarta.faces.context.FlashFactory;
+import java.util.Map;
 
 /**
  * <p>
@@ -37,18 +34,18 @@ import jakarta.faces.context.FlashFactory;
  * <a target="_" href="http://api.rubyonrails.com/classes/ActionController/Flash.html"> "flash" concept in Ruby on
  * Rails</a>.
  * </p>
- * 
+ *
  * <p>
  * The feature is exposed to users via a custom <code>ELResolver</code> which introduces a new implicit object,
  * <code>flash</code>. The flash functions as <code>Map</code> and can be used in <code>getValue( )</code> or
  * <code>setValue(
  * )</code> expressions.
  * </p>
- * 
+ *
  * <p>
  * Usage
  * </p>
- * 
+ *
  * <p>
  * Consider three Faces views: viewA, viewB, and viewC. The user first views viewA, then clicks a button and is shown
  * viewB, where she clicks a button and is shown viewC. If values are stored into the flash during the rendering or
@@ -56,18 +53,18 @@ import jakarta.faces.context.FlashFactory;
  * rendering or postback phases of viewC. In other words, values stored into the flash on "this" request are accessible
  * for the "next" request, but not thereafter.
  * </p>
- * 
+ *
  * <p>
  * There are three ways to access the flash.
  * </p>
- * 
+ *
  * <ol>
  *   <li>
  *     Using an Expression Language Expression, such as using <code>#{flash.foo}</code> as the value of an attribute in a page.
  *   </li>
  *   <li>
  *     Using the EL API, such as:
- * 
+ *
  *     <p>
  * <code>
  * FacesContext context = FacesContext.getCurrentInstance();
@@ -77,13 +74,13 @@ import jakarta.faces.context.FlashFactory;
  * flashExpression.setValue(context.getELContext(), "Foo's new value");
  * </code>
  *     </p>
- * 
+ *
  *   </li>
  *   <li>
  *     <p>
  *       Using getting the {@link ELFlash} directly, such as:
  *     </p>
- * 
+ *
  *     <p>
  * <code>
  * Map&lt;String,Object&gt; flash = ELFlash.getFlash();
@@ -92,48 +89,48 @@ import jakarta.faces.context.FlashFactory;
  *     </p>
  *   </li>
  * </ol>
- * 
+ *
  * <p>
  * The main entry point to this feature is the first one. This library includes a simple custom tag, <code><a target="_"
  * href="../../../../tlddoc/jsfExt/set.html">jsfExt:set</a></code>, that evaluates an expression and sets its value into
  * another expression. <code>jsfExt:set</code> can be used to store values into the flash from JSP pages, like this:
  * </p>
- * 
+ *
  * <p>
  * <code>&lt;jsfExt:set var="#{flash.foo}" value="fooValue"
  * /&gt;</code>
  * </p>
- * 
+ *
  * <p>
  * or this:
  * </p>
- * 
+ *
  * <p>
  * <code>&lt;jsfExt:set var="#{flash.keep.bar}" value="#{user.name}"
  * /&gt;</code>
  * </p>
- * 
+ *
  * <p>
  * or even this:
  * </p>
- * 
+ *
  * <p>
  * <code>
  * &lt;jsfExt:set var="#{flash.now.baz}" value="#{cookie.userCookie}" /&gt;
- * 
+ *
  * &lt;h:outputText value="#{flash.now.baz}" /&gt;
- * 
+ *
  * </code>
  * </p>
- * 
+ *
  * <p>
  * Related Classes
  * </p>
- * 
+ *
  * <p>
  * The complete list of classes that make up this feature is
  * </p>
- * 
+ *
  * <ul>
  *   <li><code>FlashELResolver</code></li>
  *   <li><code>{@link ELFlash}</code></li>
@@ -258,7 +255,7 @@ public class FlashELResolver extends ELResolver {
      * and a <code>property</code> value equal to the literal string "flash". This is because set operations normally go
      * through the <code>MapELResolver</code> via the <code>ELFlash</code> <code>Map</code>.
      * </p>
-     * 
+     *
      * <p>
      * In other words, do not call this method directly to set a value into the flash! The only way to access the flash is
      * via the EL API.
@@ -295,7 +292,6 @@ public class FlashELResolver extends ELResolver {
      * @throws PropertyNotFoundException if <code>base</code> is <code>null</code> and <code>property</code> is
      * <code>null</code>.
      */
-
     @Override
     public boolean isReadOnly(ELContext elContext, Object base, Object property) {
         if (base != null) {
@@ -316,47 +312,9 @@ public class FlashELResolver extends ELResolver {
 
     /**
      * <p>
-     * Returns an iterator of <code>FeatureDescriptors</code> for the current contents of the flash.
-     * </p>
-     */
-
-    @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext elContext, Object base) {
-        if (null != base) {
-            return null;
-        }
-        Iterator<FeatureDescriptor> result = null;
-        Map<String, Object> flash;
-        FacesContext facesContext = (FacesContext) elContext.getContext(FacesContext.class);
-        ExternalContext extCtx = facesContext.getExternalContext();
-
-        // noinspection unchecked
-        if (null != (flash = extCtx.getFlash())) {
-            Iterator<Map.Entry<String, Object>> iter = flash.entrySet().iterator();
-            Map.Entry<String, Object> cur;
-            ArrayList<FeatureDescriptor> fds;
-            FeatureDescriptor fd;
-            if (iter.hasNext()) {
-                fds = new ArrayList<>(flash.size());
-                while (iter.hasNext()) {
-                    cur = iter.next();
-                    fd = new FeatureDescriptor();
-                    fd.setName(cur.getKey());
-                    fds.add(fd);
-                }
-                result = fds.iterator();
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * <p>
      * If <code>base</code> is non-<code>null</code> and is the literal string "flash", return <code>Object.class</code>.
      * </p>
      */
-
     @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base) {
         Class<?> result = null;
@@ -365,6 +323,7 @@ public class FlashELResolver extends ELResolver {
                 result = Object.class;
             }
         }
+
         return result;
     }
 

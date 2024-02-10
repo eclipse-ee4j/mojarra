@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -15,11 +16,6 @@
  */
 
 package com.sun.faces.mock;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Set;
 
 import jakarta.el.ELResolver;
 import jakarta.el.ExpressionFactory;
@@ -45,15 +41,21 @@ import jakarta.enterprise.inject.spi.InterceptionType;
 import jakarta.enterprise.inject.spi.Interceptor;
 import jakarta.enterprise.inject.spi.ObserverMethod;
 import jakarta.enterprise.inject.spi.ProducerFactory;
+import jakarta.enterprise.inject.spi.el.ELAwareBeanManager;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
-public class MockBeanManager implements BeanManager {
+public class MockBeanManager implements BeanManager, ELAwareBeanManager {
 
     private ELResolver elResolver;
-    
+
     public MockBeanManager() {
         this.elResolver = new MockELResolver();
     }
-    
+
     @Override
     public Object getReference(Bean<?> bean, Type beanType, CreationalContext<?> ctx) {
         return null;
@@ -136,7 +138,7 @@ public class MockBeanManager implements BeanManager {
 
     @Override
     public void validate(InjectionPoint injectionPoint) {
-        
+
     }
 
     @Override
@@ -253,6 +255,11 @@ public class MockBeanManager implements BeanManager {
 
     @Override
     public <T> InterceptionFactory<T> createInterceptionFactory(CreationalContext<T> ctx, Class<T> clazz) {
+        return null;
+    }
+
+    @Override
+    public Collection<Context> getContexts(Class<? extends Annotation> scopeType) {
         return null;
     }
 

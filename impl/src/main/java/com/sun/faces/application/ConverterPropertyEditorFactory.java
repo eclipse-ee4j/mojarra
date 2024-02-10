@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -16,6 +17,7 @@
 
 package com.sun.faces.application;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.WARNING;
@@ -23,11 +25,7 @@ import static java.util.logging.Level.WARNING;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
-import java.nio.charset.StandardCharsets;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
@@ -81,7 +79,6 @@ public class ConverterPropertyEditorFactory {
             int length;
 
             public Utf8InfoRef(int index, int length) {
-                super();
                 this.index = index;
                 this.length = length;
             }
@@ -103,7 +100,6 @@ public class ConverterPropertyEditorFactory {
             byte[] replacement;
 
             public Utf8InfoReplacement(Utf8InfoRef ref, String replacement) {
-                super();
                 this.ref = ref;
                 this.replacement = getUtf8InfoBytes(replacement);
             }
@@ -510,14 +506,10 @@ public class ConverterPropertyEditorFactory {
             DisposableClassLoader loader;
             WeakReference<DisposableClassLoader> loaderRef = classLoaderCache.get(targetClass.getClassLoader());
             if (loaderRef == null || (loader = loaderRef.get()) == null) {
-                loader = (DisposableClassLoader) AccessController.doPrivileged((PrivilegedAction<Object>) () -> new DisposableClassLoader(targetClass.getClassLoader()));
-
-                if (loader == null) {
-                    return null;
-                }
-
+                loader = new DisposableClassLoader(targetClass.getClassLoader());
                 classLoaderCache.put(targetClass.getClassLoader(), new WeakReference<>(loader));
             }
+
             return (Class<? extends ConverterPropertyEditorBase>) loader.loadClass(className);
         } catch (ClassNotFoundException e) {
             if (LOGGER.isLoggable(WARNING)) {
@@ -543,8 +535,7 @@ public class ConverterPropertyEditorFactory {
      * @return the bytes for the UTF8Info constant pool entry, including the tag, length, and utf8 content.
      */
     private static byte[] getUtf8InfoBytes(String text) {
-        byte[] utf8;
-        utf8 = text.getBytes(StandardCharsets.UTF_8);
+        byte[] utf8 = text.getBytes(UTF_8);
         byte[] info = new byte[utf8.length + 3];
         info[0] = 1;
         info[1] = (byte) (utf8.length >> 8 & 0xff);
