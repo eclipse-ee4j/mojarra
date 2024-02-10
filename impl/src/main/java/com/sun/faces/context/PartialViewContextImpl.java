@@ -408,10 +408,15 @@ public class PartialViewContextImpl extends PartialViewContext {
     }
 
     private static void resetValues(UIComponent component, Collection<String> clientIds, FacesContext context) {
+
+        // NOTE: this is indeed a copy of the one in UIViewRoot#resetValues().
+        // The difference is that we want to be able to control the visit hints.
+        // This isn't possible via the UIViewRoot#resetValues() API in its current form.
         component.visitTree(createPartialVisitContext(context, clientIds), new DoResetValues());
     }
 
     private static class DoResetValues implements VisitCallback {
+
         @Override
         public VisitResult visit(VisitContext context, UIComponent target) {
             if (target instanceof EditableValueHolder) {
