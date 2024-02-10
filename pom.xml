@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-	Copyright (c) 2021 Contributors to Eclipse Foundation.
+	Copyright (c) 2021, 2023 Contributors to Eclipse Foundation.
     Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
@@ -24,7 +24,7 @@
    <parent>
         <groupId>org.eclipse.ee4j</groupId>
         <artifactId>project</artifactId>
-        <version>1.0.8</version>
+        <version>1.0.9</version>
     </parent>
 
    <groupId>org.glassfish.mojarra</groupId>
@@ -47,25 +47,20 @@
     </licenses>
 
    <modules>
-        <module>cdi</module>
+        <module>faces/api</module>
         <module>impl</module>
-        <module>action</module>
-        <module>rest</module>
-        <module>jakarta.faces-api</module>
    </modules>
 
    <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.release>17</maven.compiler.release>
     </properties>
 
    <build>
         <plugins>
             <!-- Sets minimal Maven version to 3.6.0 and minimal Java version to 17 -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <executions>
                     <execution>
@@ -85,6 +80,16 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            
+            <!-- Restricts the Java version to 17 - API remains at Java 17 for now. -->
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <release>17</release>
+                    <compilerArgument>-Xlint:unchecked</compilerArgument>
+                </configuration>
             </plugin>
         </plugins>
     </build>
