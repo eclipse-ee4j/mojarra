@@ -203,7 +203,7 @@ public class SessionMap extends BaseContextMap<Object> {
     }
 
     public static Object getMutex(Object session) {
-        return session instanceof HttpSession httpSession ? ofNullable(httpSession.getAttribute(MUTEX)).orElse(session) : session;
+        return session instanceof HttpSession ? ofNullable(((HttpSession) session).getAttribute(MUTEX)).orElse(session) : session;
     }
 
     public static void removeMutex(HttpSession session) {
