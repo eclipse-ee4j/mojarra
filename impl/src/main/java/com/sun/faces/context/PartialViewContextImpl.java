@@ -44,6 +44,7 @@ import com.sun.faces.util.Util;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
@@ -284,7 +285,7 @@ public class PartialViewContextImpl extends PartialViewContext {
                 writer.startDocument();
 
                 if (isResetValues()) {
-                    viewRoot.resetValues(ctx, myRenderIds);
+                    resetValues(viewRoot, myRenderIds, ctx);
                 }
 
                 if (isRenderAll()) {
@@ -379,11 +380,8 @@ public class PartialViewContextImpl extends PartialViewContext {
         // We use the tree visitor mechanism to locate the components to
         // process. Create our (partial) VisitContext and the
         // VisitCallback that will be invoked for each component that
-        // is visited. Note that we use the SKIP_UNRENDERED hint as we
-        // only want to visit the rendered subtree.
-        EnumSet<VisitHint> hints = EnumSet.of(VisitHint.SKIP_UNRENDERED, VisitHint.EXECUTE_LIFECYCLE);
-        VisitContextFactory visitContextFactory = (VisitContextFactory) FactoryFinder.getFactory(VISIT_CONTEXT_FACTORY);
-        VisitContext visitContext = visitContextFactory.getVisitContext(context, phaseClientIds, hints);
+        // is visited.
+        VisitContext visitContext = createPartialVisitContext(context, phaseClientIds);
         PhaseAwareVisitCallback visitCallback = new PhaseAwareVisitCallback(ctx, phaseId);
         component.visitTree(visitContext, visitCallback);
 
@@ -397,6 +395,29 @@ public class PartialViewContextImpl extends PartialViewContext {
                 }
                 LOGGER.log(Level.FINER, "faces.context.partial_visit_context_unvisited_children", new Object[] { builder.toString() });
             }
+        }
+    }
+
+    private static VisitContext createPartialVisitContext(FacesContext context, Collection<String> clientIds) {
+
+        // Note that we use the SKIP_UNRENDERED hint as
+        // we only want to visit the rendered subtree.
+        EnumSet<VisitHint> hints = EnumSet.of(VisitHint.SKIP_UNRENDERED, VisitHint.EXECUTE_LIFECYCLE);
+        VisitContextFactory visitContextFactory = (VisitContextFactory) FactoryFinder.getFactory(VISIT_CONTEXT_FACTORY);
+        return visitContextFactory.getVisitContext(context, clientIds, hints);
+    }
+
+    private static void resetValues(UIComponent component, Collection<String> clientIds, FacesContext context) {
+        component.visitTree(createPartialVisitContext(context, clientIds), new DoResetValues());
+    }
+
+    private static class DoResetValues implements VisitCallback {
+        @Override
+        public VisitResult visit(VisitContext context, UIComponent target) {
+            if (target instanceof EditableValueHolder) {
+                ((EditableValueHolder) target).resetValue();
+            }
+            return VisitResult.ACCEPT;
         }
     }
 
