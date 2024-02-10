@@ -16,6 +16,8 @@
 
 package com.sun.faces.context;
 
+import static java.util.Optional.ofNullable;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -201,7 +203,7 @@ public class SessionMap extends BaseContextMap<Object> {
     }
 
     public static Object getMutex(Object session) {
-        return session instanceof HttpSession ? ((HttpSession) session).getAttribute(MUTEX) : session;
+        return session instanceof HttpSession httpSession ? ofNullable(httpSession.getAttribute(MUTEX)).orElse(session) : session;
     }
 
     public static void removeMutex(HttpSession session) {
