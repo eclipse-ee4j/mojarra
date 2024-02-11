@@ -651,10 +651,13 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
         const coreElementProperties = ['className', 'title', 'lang', 'xmllang'];
 
         // enumerate additional input element attributes
-        const inputElementProperties = [ 'name', 'value', 'size', 'maxLength', 'src', 'alt', 'useMap', 'tabIndex', 'accessKey', 'accept', 'type' ];
+        const inputElementProperties = [ 'name', 'value', 'src', 'alt', 'useMap', 'tabIndex', 'accessKey', 'accept', 'type' ];
 
         // core + input element properties
         const coreAndInputElementProperties = coreElementProperties.concat(inputElementProperties);
+
+        // enumerate additional integer input attributes
+        const inputElementPositiveIntegerProperties = [ 'size', 'maxLength' ];
 
         // enumerate additional boolean input attributes
         const inputElementBooleanProperties = [ 'checked', 'disabled', 'readOnly' ];
@@ -679,10 +682,17 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
                 if (isNotNull(sourceValue)) target[propertyName] = sourceValue;
             }
 
-            const booleanPropertyNames = isInputElement ? inputElementBooleanProperties : [];
-            for (const booleanPropertyName of booleanPropertyNames) {
-                const newBooleanValue = source[booleanPropertyName];
-                if (isNotNull(newBooleanValue)) target[booleanPropertyName] = newBooleanValue;
+            if (isInputElement) {
+                for (const propertyName of inputElementPositiveIntegerProperties) {
+                    const attributeName = propertyToAttribute(propertyName);
+                    const sourceValue = isXML ? source.getAttribute(attributeName) : source[propertyName];
+                    if (parseInt(sourceValue) >= 0) target[propertyName] = sourceValue;
+                }
+
+                for (const booleanPropertyName of inputElementBooleanProperties) {
+                    const newBooleanValue = source[booleanPropertyName];
+                    if (isNotNull(newBooleanValue)) target[booleanPropertyName] = newBooleanValue;
+                }
             }
 
             //'style' attribute special case
