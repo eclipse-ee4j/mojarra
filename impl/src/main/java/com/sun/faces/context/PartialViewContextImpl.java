@@ -20,6 +20,8 @@ import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_RENDER_PARAM;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_RESET_VALUES_PARAM;
 import static jakarta.faces.FactoryFinder.VISIT_CONTEXT_FACTORY;
+import static jakarta.faces.component.visit.VisitHint.EXECUTE_LIFECYCLE;
+import static jakarta.faces.component.visit.VisitHint.SKIP_UNRENDERED;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.WARNING;
 
@@ -31,6 +33,7 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -68,6 +71,11 @@ public class PartialViewContextImpl extends PartialViewContext {
 
     // Log instance for this class
     private static Logger LOGGER = FacesLogger.CONTEXT.getLogger();
+
+    private static final Set<VisitHint> SKIP_UNRENDERED_HINT = EnumSet.of(SKIP_UNRENDERED);
+
+    private static final Set<VisitHint> SKIP_UNRENDERED_AND_EXECUTE_LIFECYCLE_HINTS = EnumSet.of(SKIP_UNRENDERED, EXECUTE_LIFECYCLE);
+
 
     private boolean released;
 
@@ -381,7 +389,7 @@ public class PartialViewContextImpl extends PartialViewContext {
         // process. Create our (partial) VisitContext and the
         // VisitCallback that will be invoked for each component that
         // is visited.
-        VisitContext visitContext = createPartialVisitContext(context, phaseClientIds);
+        VisitContext visitContext = createPartialVisitContext(context, phaseClientIds, true);
         PhaseAwareVisitCallback visitCallback = new PhaseAwareVisitCallback(ctx, phaseId);
         component.visitTree(visitContext, visitCallback);
 
@@ -398,11 +406,11 @@ public class PartialViewContextImpl extends PartialViewContext {
         }
     }
 
-    private static VisitContext createPartialVisitContext(FacesContext context, Collection<String> clientIds) {
+    private static VisitContext createPartialVisitContext(FacesContext context, Collection<String> clientIds, boolean executeLifecycle) {
 
         // Note that we use the SKIP_UNRENDERED hint as
         // we only want to visit the rendered subtree.
-        EnumSet<VisitHint> hints = EnumSet.of(VisitHint.SKIP_UNRENDERED, VisitHint.EXECUTE_LIFECYCLE);
+        Set<VisitHint> hints = executeLifecycle ? SKIP_UNRENDERED_AND_EXECUTE_LIFECYCLE_HINTS : SKIP_UNRENDERED_HINT;
         VisitContextFactory visitContextFactory = (VisitContextFactory) FactoryFinder.getFactory(VISIT_CONTEXT_FACTORY);
         return visitContextFactory.getVisitContext(context, clientIds, hints);
     }
@@ -412,7 +420,7 @@ public class PartialViewContextImpl extends PartialViewContext {
         // NOTE: this is indeed a copy of the one in UIViewRoot#resetValues().
         // The difference is that we want to be able to control the visit hints.
         // This isn't possible via the UIViewRoot#resetValues() API in its current form.
-        component.visitTree(createPartialVisitContext(context, clientIds), new DoResetValues());
+        component.visitTree(createPartialVisitContext(context, clientIds, false), new DoResetValues());
     }
 
     private static class DoResetValues implements VisitCallback {
