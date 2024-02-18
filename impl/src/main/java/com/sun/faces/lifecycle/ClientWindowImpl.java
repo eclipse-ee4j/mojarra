@@ -16,6 +16,7 @@
 
 package com.sun.faces.lifecycle;
 
+import static com.sun.faces.context.SessionMap.getMutex;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.CLIENT_WINDOW_PARAM;
 
 import java.util.Map;
@@ -55,7 +56,7 @@ public class ClientWindowImpl extends ClientWindow {
     }
 
     private String calculateClientWindow(FacesContext context) {
-        synchronized (context.getExternalContext().getSession(true)) {
+        synchronized (getMutex(context.getExternalContext().getSession(true))) {
             final String clientWindowCounterKey = "com.sun.faces.lifecycle.ClientWindowCounterKey";
             ExternalContext extContext = context.getExternalContext();
             Map<String, Object> sessionAttrs = extContext.getSessionMap();

@@ -263,7 +263,7 @@ public class ServerSideStateHelper extends StateHelper {
         }
 
         // noinspection SynchronizationOnLocalVariableOrMethodParameter
-        synchronized (sessionObj) {
+        synchronized (getMutex(sessionObj)) {
             Map logicalMap = (Map) externalCtx.getSessionMap().get(LOGICAL_VIEW_MAP);
             if (logicalMap != null) {
                 Map actualMap = (Map) logicalMap.get(idInLogicalMap);
