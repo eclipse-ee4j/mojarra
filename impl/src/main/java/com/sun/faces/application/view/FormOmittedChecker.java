@@ -26,7 +26,6 @@ import com.sun.faces.util.MessageUtils;
 
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.ActionSource;
-import jakarta.faces.component.ActionSource2;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIForm;
@@ -100,7 +99,7 @@ class FormOmittedChecker {
      * @return true if the component is in need of a form, false otherwise.
      */
     private static boolean isInNeedOfForm(UIComponent component) {
-        return component instanceof ActionSource || component instanceof ActionSource2 || component instanceof EditableValueHolder;
+        return component instanceof ActionSource || component instanceof EditableValueHolder;
     }
 
     /**

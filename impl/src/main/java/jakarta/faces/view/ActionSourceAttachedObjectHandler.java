@@ -14,10 +14,22 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.faces.facelets.tag.composite;
+package jakarta.faces.view;
 
-import jakarta.faces.view.ActionSource2AttachedObjectTarget;
-
-public class ActionSource2AttachedObjectTargetImpl extends AttachedObjectTargetImpl implements ActionSource2AttachedObjectTarget {
+/**
+ * <p class="changed_added_4_1">
+ * A VDL handler that exposes {@link jakarta.faces.event.ActionListener} to a <em>page author</em>. The default
+ * implementation of Facelets must provide an implemention of this in the handler for the
+ * <code>&lt;f:actionListener&gt;</code> tag.
+ * </p>
+ * 
+ * <p>
+ * Historical note: this class was previously named {@code ActionSource2AttachedObjectHandler} but since deprecation of {@code ActionSource2}
+ * this class has been renamed to drop the {@code 2}.
+ * </p>
+ *
+ * @since 4.1
+ */
+public interface ActionSourceAttachedObjectHandler extends AttachedObjectHandler {
 
 }

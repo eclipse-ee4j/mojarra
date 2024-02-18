@@ -167,15 +167,15 @@ public class OutputLinkRenderer extends LinkRenderer {
 
         // Write Anchor attributes
 
-        Param paramList[] = getParamList(component);
-        StringBuffer sb = new StringBuffer();
+        Param[] paramList = getParamList(component);
+        StringBuilder sb = new StringBuilder();
         sb.append(hrefVal);
         boolean paramWritten = hrefVal.indexOf('?') > 0;
 
-        for (int i = 0, len = paramList.length; i < len; i++) {
-            String pn = paramList[i].name;
+        for (Param param : paramList) {
+            String pn = param.name;
             if (pn != null && pn.length() != 0) {
-                String pv = paramList[i].value;
+                String pv = param.value;
                 sb.append(paramWritten ? '&' : '?');
                 sb.append(URLEncoder.encode(pn, UTF_8));
                 sb.append('=');

@@ -24,11 +24,11 @@ package com.sun.faces.application.resource;
  */
 public class LibraryInfo {
 
-    private String name;
-    private VersionInfo version;
+    private final String name;
+    private final VersionInfo version;
     private String localePrefix;
     private String contract;
-    private ResourceHelper helper;
+    private final ResourceHelper helper;
     private String path;
     private String nonLocalizedPath;
 

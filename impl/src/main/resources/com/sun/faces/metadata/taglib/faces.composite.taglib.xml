@@ -186,10 +186,10 @@ apply.</p>
 <p><span class="changed_modified_2_0_rev_a">Declares</span> that the
 composite component whose contract is declared by the
 <code>&lt;cc:interface&gt;</code> in which this element is nested
-exposes an implementation of <code>ActionSource2</code> suitable for use
+exposes an implementation of <code>ActionSource</code> suitable for use
 as the target of <em>attached objects</em> in <em>the using page</em>.
 Any attached objects suitable for implementations of
-<code>ActionSource2</code> may be attached to the composite component.
+<code>ActionSource</code> may be attached to the composite component.
 Consider this excerpt from <em>the using page</em>:
             </p>
 
@@ -226,7 +226,7 @@ example.</p>
 </div>]]>
         </description>
         <tag-name>actionSource</tag-name>
-        <handler-class>com.sun.faces.facelets.tag.composite.ActionSource2AttachedObjectTargetHandler</handler-class>
+        <handler-class>com.sun.faces.facelets.tag.composite.ActionSourceAttachedObjectTargetHandler</handler-class>
         <attribute>
             <description>
 
@@ -730,17 +730,11 @@ example.</p>
     </tag>
     <tag>
         <description><![CDATA[
-
-
-            <div class="changed_added_2_0">
-            <p>Used within a <code>&lt;cc:interface&gt;</code>
-            section,
-            within any sub-element of that section, to include XML content not
-            defined by this specification. This element can be used to
-            incorporate
-            <a target="_" href="http://jcp.org/en/jsr/detail?id=276">JSR-276</a>
-            metadata into a composite component.</p>
-
+            <div class="changed_modified_4_1">
+                <p>
+                    The use of this tag has been deprecated in Faces 4.1, without replacement, and is subject to be removed in Faces 5.0.
+                    The reason is that the <a target="_" href="http://jcp.org/en/jsr/detail?id=276">JSR-276</a> went dormant and therefore this tag has never been of use.
+                </p>
             </div>
         ]]></description>
         <tag-name>extension</tag-name>

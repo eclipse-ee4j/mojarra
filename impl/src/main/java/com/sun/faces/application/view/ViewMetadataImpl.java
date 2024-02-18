@@ -47,7 +47,7 @@ import jakarta.faces.view.ViewMetadata;
  */
 public class ViewMetadataImpl extends ViewMetadata {
 
-    private String viewId;
+    private final String viewId;
     private DefaultFaceletFactory faceletFactory;
 
     // ---------------------------------------------------------------------------------------------------- Constructors

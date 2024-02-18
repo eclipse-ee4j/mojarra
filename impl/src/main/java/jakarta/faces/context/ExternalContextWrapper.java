@@ -232,7 +232,7 @@ public abstract class ExternalContextWrapper extends ExternalContext implements 
      * @see jakarta.faces.context.ExternalContext#getInitParameterMap()
      */
     @Override
-    public Map getInitParameterMap() {
+    public Map<String, String> getInitParameterMap() {
         return getWrapped().getInitParameterMap();
     }
 
@@ -1034,6 +1034,20 @@ public abstract class ExternalContextWrapper extends ExternalContext implements 
     @Override
     public void setResponseContentLength(int length) {
         getWrapped().setResponseContentLength(length);
+    }
+
+    /**
+     * <p class="changed_added_4_1">
+     * The default behavior of this method is to call
+     * {@link jakarta.faces.context.ExternalContext#setResponseContentLengthLong(long)} on the wrapped {@link ExternalContext}
+     * object.
+     * </p>
+     *
+     * @see jakarta.faces.context.ExternalContext#setResponseContentLengthLong(long)
+     */
+    @Override
+    public void setResponseContentLengthLong(long length) {
+        getWrapped().setResponseContentLengthLong(length);
     }
 
     /**

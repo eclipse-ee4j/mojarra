@@ -16,13 +16,13 @@
 
 package com.sun.faces.cdi.clientwindow;
 
-import jakarta.faces.context.FacesContext;
-import jakarta.servlet.http.HttpSessionEvent;
-import jakarta.servlet.http.HttpSessionListener;
+import static java.util.logging.Level.FINEST;
 
 import java.util.logging.Logger;
 
-import static java.util.logging.Level.*;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.http.HttpSessionEvent;
+import jakarta.servlet.http.HttpSessionListener;
 
 /**
  * The manager that deals with non-CDI and CDI ClientWindowScoped beans.

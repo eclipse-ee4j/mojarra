@@ -15,6 +15,13 @@
  */
 package com.sun.faces.cdi.clientwindow;
 
+import static java.util.logging.Level.FINEST;
+import static java.util.logging.Level.SEVERE;
+
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.util.logging.Logger;
+
 import jakarta.enterprise.context.ContextNotActiveException;
 import jakarta.enterprise.context.spi.Context;
 import jakarta.enterprise.context.spi.Contextual;
@@ -22,13 +29,6 @@ import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.Typed;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.lifecycle.ClientWindowScoped;
-
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.util.logging.Logger;
-
-import static java.util.logging.Level.FINEST;
-import static java.util.logging.Level.SEVERE;
 
 /**
  * The CDI context for CDI ClientWindowScoped beans.

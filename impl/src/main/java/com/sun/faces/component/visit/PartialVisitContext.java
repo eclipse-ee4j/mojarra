@@ -230,7 +230,7 @@ public class PartialVisitContext extends VisitContext {
         // Initialize ids collection
         ids = new HashSet<>();
 
-        // Intialize subtreeClientIds collection
+        // Initialize subtreeClientIds collection
         subtreeClientIds = new HashMap<>();
 
         // Initialize the clientIds collection. Note that we proxy
@@ -265,8 +265,8 @@ public class PartialVisitContext extends VisitContext {
         return clientIds.contains(clientId) ? clientId : null;
     }
 
-    // Converts an client id into a plain old id by ripping
-    // out the trailing id segmetn.
+    // Converts a client id into a plain old id by ripping
+    // out the trailing id segment.
     private String getIdFromClientId(String clientId) {
         FacesContext facesContext = getFacesContext();
         char separator = UINamingContainer.getSeparatorChar(facesContext);
@@ -309,12 +309,7 @@ public class PartialVisitContext extends VisitContext {
                 // NamingContainer client id. If not, create the
                 // Collection for this NamingContainer client id and
                 // stash it away in our map
-                Collection<String> c = subtreeClientIds.get(namingContainerClientId);
-
-                if (c == null) {
-                    c = new ArrayList<>();
-                    subtreeClientIds.put(namingContainerClientId, c);
-                }
+                Collection<String> c = subtreeClientIds.computeIfAbsent(namingContainerClientId, k -> new ArrayList<>());
 
                 // Stash away the client id
                 c.add(clientId);
@@ -373,7 +368,7 @@ public class PartialVisitContext extends VisitContext {
             return added;
         }
 
-        private Collection<E> wrapped;
+        private final Collection<E> wrapped;
     }
 
     // Little proxy iterator implementation used by CollectionProxy
@@ -405,7 +400,7 @@ public class PartialVisitContext extends VisitContext {
             wrapped.remove();
         }
 
-        private Iterator<E> wrapped;
+        private final Iterator<E> wrapped;
 
         private E current = null;
     }
@@ -426,8 +421,8 @@ public class PartialVisitContext extends VisitContext {
     private Map<String, Collection<String>> subtreeClientIds;
 
     // The FacesContext for this request
-    private FacesContext facesContext;
+    private final FacesContext facesContext;
 
     // Our visit hints
-    private Set<VisitHint> hints;
+    private final Set<VisitHint> hints;
 }

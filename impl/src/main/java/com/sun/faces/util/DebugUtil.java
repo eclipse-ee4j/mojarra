@@ -33,8 +33,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-// DebugUtil.java
-
 import com.sun.faces.RIConstants;
 import com.sun.faces.io.FastStringWriter;
 import com.sun.faces.renderkit.RenderKitUtils;
@@ -77,7 +75,7 @@ public class DebugUtil {
      * 
      * Place a call to this method in the earliest possible entry point of your servlet app. It will cause the app to enter
      * into an infinite loop, sleeping until the static var keepWaiting is set to false. The idea is that you attach your
-     * debugger to the servlet, then, set a breakpont in this method. When it is hit, you use the debugger to set the
+     * debugger to the servlet, then, set a breakpoint in this method. When it is hit, you use the debugger to set the
      * keepWaiting class var to false.
      */
     public static void waitForDebugger() {

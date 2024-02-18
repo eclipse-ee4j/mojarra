@@ -23,8 +23,12 @@ import static java.util.Arrays.asList;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.util.FacesLogger;
+
+import jakarta.faces.application.StateManager;
 
 /**
  * This class maintains per-application information pertaining to partail or full state saving as a whole or partial
@@ -32,7 +36,9 @@ import com.sun.faces.config.WebConfiguration;
  */
 public class ApplicationStateInfo {
 
-    private boolean partialStateSaving;
+    private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
+
+    private final boolean partialStateSaving;
     private Set<String> fullStateViewIds;
 
     // ------------------------------------------------------------ Constructors
@@ -46,6 +52,10 @@ public class ApplicationStateInfo {
             String[] viewIds = config.getOptionValue(FullStateSavingViewIds, ",");
             fullStateViewIds = new HashSet<>(viewIds.length, 1.0f);
             fullStateViewIds.addAll(asList(viewIds));
+        }
+        else {
+            LOGGER.warning("The configuration '" + StateManager.PARTIAL_STATE_SAVING_PARAM_NAME
+                + "' is deprecated as of Faces 4.1 and should not longer be used.");
         }
 
     }

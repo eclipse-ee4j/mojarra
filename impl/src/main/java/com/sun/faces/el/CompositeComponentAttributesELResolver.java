@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -20,17 +21,7 @@ import static com.sun.faces.component.CompositeComponentStackManager.StackType.E
 import static com.sun.faces.component.CompositeComponentStackManager.StackType.TreeCreation;
 import static com.sun.faces.util.Util.notNull;
 
-import java.beans.BeanInfo;
-import java.beans.FeatureDescriptor;
-import java.beans.PropertyDescriptor;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 import com.sun.faces.component.CompositeComponentStackManager;
-
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
 import jakarta.el.MethodExpression;
@@ -38,6 +29,12 @@ import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.CompositeComponentExpressionHolder;
+import java.beans.BeanInfo;
+import java.beans.PropertyDescriptor;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * <p>
@@ -89,7 +86,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
 
         notNull("context", context);
 
-        if (base != null && base instanceof UIComponent && UIComponent.isCompositeComponent((UIComponent) base) && property != null) {
+        if (base instanceof UIComponent && UIComponent.isCompositeComponent((UIComponent) base) && property != null) {
 
             String propertyName = property.toString();
             if (COMPOSITE_COMPONENT_ATTRIBUTES_NAME.equals(propertyName)) {
@@ -198,21 +195,6 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
 
     /**
      * <p>
-     * This <code>ELResolver</code> currently returns no feature descriptors as we have no way to effectively iterate over
-     * the UIComponent attributes Map.
-     * </p>
-     *
-     * @see jakarta.el.ELResolver#getFeatureDescriptors(jakarta.el.ELContext, Object)
-     */
-    @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
-        notNull("context", context);
-        return null;
-
-    }
-
-    /**
-     * <p>
      * <code>attrs</code> is considered a <code>String</code> property.
      * </p>
      *
@@ -258,7 +240,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
                 ((ExpressionEvalMap) evalMap).updateFacesContext(ctx);
             }
         }
-        
+
         return evalMap;
 
     }
@@ -271,11 +253,11 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
      */
     private static final class ExpressionEvalMap implements Map<String, Object>, CompositeComponentExpressionHolder {
 
-        private Map<String, Object> attributesMap;
+        private final Map<String, Object> attributesMap;
         private PropertyDescriptor[] declaredAttributes;
         private Map<Object, Object> declaredDefaultValues;
         private FacesContext ctx;
-        private UIComponent cc;
+        private final UIComponent cc;
 
         // -------------------------------------------------------- Constructors
 
@@ -335,7 +317,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
                     return ((ValueExpression) v).getValue(ctx.getELContext());
                 }
             }
-            if (v != null && v instanceof MethodExpression) {
+            if (v instanceof MethodExpression) {
                 return v;
             }
             return v;
@@ -343,7 +325,7 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
 
         @Override
         public Object put(String key, Object value) {
-            // Unlinke AttributesMap.get() which will obtain a value from
+            // Unlike AttributesMap.get() which will obtain a value from
             // a ValueExpression, AttributesMap.put(), when passed a value,
             // will never call ValueExpression.setValue(), so we have to take
             // matters into our own hands...

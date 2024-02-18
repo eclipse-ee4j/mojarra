@@ -73,13 +73,7 @@ public class ScalarDataModel<E> extends DataModel<E> {
     @Override
     public boolean isRowAvailable() {
 
-        if (scalar == null) {
-            return false;
-        } else if (index == 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return scalar != null && index == 0;
 
     }
 
@@ -116,7 +110,6 @@ public class ScalarDataModel<E> extends DataModel<E> {
         } else if (!isRowAvailable()) {
             throw new NoRowAvailableException();
         } else {
-            // noinspection unchecked
             return scalar;
         }
 
@@ -154,10 +147,9 @@ public class ScalarDataModel<E> extends DataModel<E> {
                 rowData = getRowData();
             }
             DataModelEvent event = new DataModelEvent(this, index, rowData);
-            int n = listeners.length;
-            for (int i = 0; i < n; i++) {
-                if (null != listeners[i]) {
-                    listeners[i].rowSelected(event);
+            for (DataModelListener listener : listeners) {
+                if (null != listener) {
+                    listener.rowSelected(event);
                 }
             }
         }

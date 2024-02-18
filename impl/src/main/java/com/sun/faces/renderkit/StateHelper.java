@@ -110,7 +110,7 @@ public abstract class StateHelper {
 
     public static void createAndStoreCryptographicallyStrongTokenInSession(HttpSession session) {
         ByteArrayGuardAESCTR guard = new ByteArrayGuardAESCTR();
-        String clearText = "" + System.currentTimeMillis();
+        String clearText = String.valueOf(System.currentTimeMillis());
         String result = guard.encrypt(clearText);
         result = URLEncoder.encode(result, UTF_8);
         session.setAttribute(TOKEN_NAME, result);

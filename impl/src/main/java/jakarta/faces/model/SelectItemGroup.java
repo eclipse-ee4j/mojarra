@@ -117,7 +117,7 @@ public class SelectItemGroup extends SelectItem {
 
     // ------------------------------------------------------ Instance Variables
 
-    private SelectItem selectItems[] = null;
+    private SelectItem[] selectItems = null;
 
     // -------------------------------------------------------------- Properties
 

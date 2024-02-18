@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -25,8 +26,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
@@ -116,7 +115,7 @@ public class ConverterPropertyEditorFactory {
 
         // The source template class on which to base the definition of the new
         // PropertyEditor classes.
-        private Class<? extends ConverterPropertyEditorBase> templateClass;
+        private final Class<? extends ConverterPropertyEditorBase> templateClass;
         // The bytes that define the source template class.
         private byte[] templateBytes;
         // The constant_pool_count from the template class bytecodes.
@@ -339,7 +338,7 @@ public class ConverterPropertyEditorFactory {
          */
         public byte[] generateClassBytesFor(String newClassName, String targetClassName) {
             return replaceInTemplate(new Utf8InfoReplacement(classNameConstant, newClassName),
-                    new Utf8InfoReplacement(classNameRefConstant, new StringBuilder(32).append('L').append(newClassName).append(';').toString()),
+                    new Utf8InfoReplacement(classNameRefConstant, 'L' + newClassName + ';'),
                     new Utf8InfoReplacement(targetClassConstant, targetClassName));
         }
     }
@@ -359,9 +358,9 @@ public class ConverterPropertyEditorFactory {
      */
     private class DisposableClassLoader extends ClassLoader {
         // The class loader which loaded the target class.
-        private ClassLoader targetLoader;
+        private final ClassLoader targetLoader;
         // The class loader which loaded the base class
-        private ClassLoader myLoader;
+        private final ClassLoader myLoader;
 
         public DisposableClassLoader(ClassLoader targetLoader) {
             super(targetLoader);
@@ -437,7 +436,7 @@ public class ConverterPropertyEditorFactory {
     private static final Pattern MultipleUnderscorePattern = Pattern.compile("_(_+)");
     private static ConverterPropertyEditorFactory defaultInstance;
     // Template information extracted from the source template class.
-    private ClassTemplateInfo templateInfo;
+    private final ClassTemplateInfo templateInfo;
     // Cache of DisposableClassLoaders keyed on the class loader of the target.
     private Map<ClassLoader, WeakReference<DisposableClassLoader>> classLoaderCache;
 
@@ -507,14 +506,10 @@ public class ConverterPropertyEditorFactory {
             DisposableClassLoader loader;
             WeakReference<DisposableClassLoader> loaderRef = classLoaderCache.get(targetClass.getClassLoader());
             if (loaderRef == null || (loader = loaderRef.get()) == null) {
-                loader = (DisposableClassLoader) AccessController.doPrivileged((PrivilegedAction<Object>) () -> new DisposableClassLoader(targetClass.getClassLoader()));
-
-                if (loader == null) {
-                    return null;
-                }
-
+                loader = new DisposableClassLoader(targetClass.getClassLoader());
                 classLoaderCache.put(targetClass.getClassLoader(), new WeakReference<>(loader));
             }
+
             return (Class<? extends ConverterPropertyEditorBase>) loader.loadClass(className);
         } catch (ClassNotFoundException e) {
             if (LOGGER.isLoggable(WARNING)) {

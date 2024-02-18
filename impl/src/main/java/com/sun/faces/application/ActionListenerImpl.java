@@ -28,7 +28,6 @@ import jakarta.el.MethodExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.component.ActionSource;
-import jakarta.faces.component.ActionSource2;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.ActionEvent;
@@ -57,7 +56,7 @@ public class ActionListenerImpl implements ActionListener {
         UIComponent source = event.getComponent();
         FacesContext context = event.getFacesContext();
 
-        MethodExpression expression = ((ActionSource2) source).getActionExpression();
+        MethodExpression expression = ((ActionSource) source).getActionExpression();
 
         invokeNavigationHandling(context, source, expression, getNavigationOutcome(context, expression));
 
@@ -78,7 +77,7 @@ public class ActionListenerImpl implements ActionListener {
 
             return invokeResult.toString();
         } catch (ELException | NullPointerException e) {
-            LOGGER.log(FINE, e, () -> e.getMessage());
+            LOGGER.log(FINE, e, e::getMessage);
 
             throw new FacesException(expression.getExpressionString() + ": " + e.getMessage(), e);
         }

@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -69,9 +70,7 @@ final class ServletContextFacesContextFactory extends FacesContextFactory {
             initContextServletContextMap = (ConcurrentHashMap<FacesContext, ServletContext>) initContextServletContextMapField.get(null);
 
         } catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException | SecurityException ex) {
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE, "Unable to access instance field of FacesContext", ex);
-            }
+            LOGGER.log(Level.SEVERE, "Unable to access instance field of FacesContext", ex);
         }
     }
 

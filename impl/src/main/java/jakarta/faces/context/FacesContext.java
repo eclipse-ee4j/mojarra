@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.sun.faces.config.InitFacesContext;
 import jakarta.el.ELContext;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
@@ -62,8 +63,8 @@ public abstract class FacesContext {
     private boolean processingEvents = true;
     private boolean isCreatedFromValidFactory = true;
 
-    private static ConcurrentHashMap threadInitContext = new ConcurrentHashMap(2);
-    private static ConcurrentHashMap initContextServletContext = new ConcurrentHashMap(2);
+    private static final ConcurrentHashMap<Thread,FacesContext> threadInitContext = new ConcurrentHashMap<>(2);
+    private static final ConcurrentHashMap<Thread,InitFacesContext> initContextServletContext = new ConcurrentHashMap<>(2);
 
     /**
      * Default constructor.
@@ -74,19 +75,16 @@ public abstract class FacesContext {
     public FacesContext() {
         Thread curThread = Thread.currentThread();
         StackTraceElement[] callstack = curThread.getStackTrace();
-        if (null != callstack) {
-            String declaringClassName = callstack[3].getClassName();
-            try {
-                ClassLoader curLoader = curThread.getContextClassLoader();
-                Class<?> declaringClass = curLoader.loadClass(declaringClassName);
-                if (!FacesContextFactory.class.isAssignableFrom(declaringClass)) {
-                    isCreatedFromValidFactory = false;
-                }
-            } catch (ClassNotFoundException cnfe) {
-
+        String declaringClassName = callstack[3].getClassName();
+        try {
+            ClassLoader curLoader = curThread.getContextClassLoader();
+            Class<?> declaringClass = curLoader.loadClass(declaringClassName);
+            if (!FacesContextFactory.class.isAssignableFrom(declaringClass)) {
+                isCreatedFromValidFactory = false;
             }
-        }
+        } catch (ClassNotFoundException ignored) {
 
+        }
     }
 
     // -------------------------------------------------------------- Properties
@@ -838,12 +836,7 @@ public abstract class FacesContext {
      * The <code>ThreadLocal</code> variable used to record the {@link FacesContext} instance for each processing thread.
      * </p>
      */
-    private static ThreadLocal<FacesContext> instance = new ThreadLocal<>() {
-        @Override
-        protected FacesContext initialValue() {
-            return null;
-        }
-    };
+    private static final ThreadLocal<FacesContext> instance = ThreadLocal.withInitial(() -> null);
 
     /**
      * <p class="changed_modified_2_0">
@@ -859,7 +852,7 @@ public abstract class FacesContext {
         FacesContext facesContext = instance.get();
 
         if (null == facesContext) {
-            facesContext = (FacesContext) threadInitContext.get(Thread.currentThread());
+            facesContext = threadInitContext.get(Thread.currentThread());
         }
         // Bug 20458755: If not found in the threadInitContext, use
         // a special FacesContextFactory implementation that knows how to

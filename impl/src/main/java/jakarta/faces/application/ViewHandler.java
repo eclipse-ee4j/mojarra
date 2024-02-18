@@ -97,11 +97,9 @@ public abstract class ViewHandler {
     public static final String DEFAULT_SUFFIX = ".xhtml";
 
     /**
-     * <p class="changed_added_2_2">
+     * <p class="changed_added_2_2 changed_modified_4_1">
      * If this param is set, and calling toLowerCase().equals("true") on a String representation of its value returns true,
-     * the runtime must ensure that any XML comments in the Facelets source page are not delivered to the client. The
-     * runtime must also consider the facelets.SKIP_COMMENTS param name as an alias to this param name for backwards
-     * compatibility with existing facelets tag libraries.
+     * the runtime must ensure that any XML comments in the Facelets source page are not delivered to the client.
      * </p>
      *
      * @since 2.0
@@ -146,12 +144,10 @@ public abstract class ViewHandler {
     public static final String FACELETS_VIEW_MAPPINGS_PARAM_NAME = "jakarta.faces.FACELETS_VIEW_MAPPINGS";
 
     /**
-     * <p class="changed_added_2_2">
+     * <p class="changed_added_2_2 changed_modified_4_1">
      * The buffer size to set on the response when the ResponseWriter is generated. By default the value is 1024. A value of
      * -1 will not assign a buffer size on the response. This should be increased if you are using development mode in order
-     * to guarantee that the response isn't partially rendered when an error is generated. The runtime must also consider
-     * the facelets.BUFFER_SIZE param name as an alias to this param name for backwards compatibility with existing facelets
-     * tag libraries.
+     * to guarantee that the response isn't partially rendered when an error is generated.
      * </p>
      *
      * @since 2.0
@@ -159,14 +155,14 @@ public abstract class ViewHandler {
     public static final String FACELETS_BUFFER_SIZE_PARAM_NAME = "jakarta.faces.FACELETS_BUFFER_SIZE";
 
     /**
-     * <p class="changed_added_2_2">
+     * <p class="changed_added_2_2 changed_modified_4_1">
      * <span class="changed_modified_2_3">When</span> a page is requested, what interval in seconds should the compiler
      * check for changes. If you don't want the compiler to check for changes once the page is compiled, then use a value of
-     * -1. Setting a low refresh period helps during development to be able to edit pages in a running application.The
-     * runtime must also consider the facelets.REFRESH_PERIOD param name as an alias to this param name for backwards
-     * compatibility with existing facelets tag libraries. <span class="changed_added_2_3">If
-     * {@link jakarta.faces.application.ProjectStage} is set to {@code Production} and this value is not otherwise
-     * specified, the runtime must act as if it is set to -1.</span>
+     * -1. Setting a low refresh period helps during development to be able to edit pages in a running application. 
+     * <span class="changed_added_2_3 changed_modified_4_1">If this value
+     * is not specified, then the default depends on {@link jakarta.faces.application.ProjectStage}. If it is {@code Production},
+     * then runtime must act as if it is set to -1</span><span class="changed_added_4_1">, else the runtime must act as if it is
+     * set to 0.</span>
      * </p>
      *
      * @since 2.0
@@ -174,13 +170,11 @@ public abstract class ViewHandler {
     public static final String FACELETS_REFRESH_PERIOD_PARAM_NAME = "jakarta.faces.FACELETS_REFRESH_PERIOD";
 
     /**
-     * <p class="changed_added_2_2">
+     * <p class="changed_added_2_2 changed_modified_4_1">
      * If this param is set, the runtime must interpret it as a semicolon (;) separated list of paths, starting with "/"
      * (without the quotes). The runtime must interpret each entry in the list as a path relative to the web application
      * root and interpret the file found at that path as a facelet tag library, conforming to the facelet taglibrary schema
-     * and expose the tags therein according to Section "Facelet Tag Library mechanism". The runtime must also consider the
-     * facelets.LIBRARIES param name as an alias to this param name for backwards compatibility with existing facelets tag
-     * libraries.
+     * and expose the tags therein according to Section "Facelet Tag Library mechanism".
      * </p>
      *
      *
@@ -189,11 +183,10 @@ public abstract class ViewHandler {
     public static final String FACELETS_LIBRARIES_PARAM_NAME = "jakarta.faces.FACELETS_LIBRARIES";
 
     /**
-     * <p class="changed_added_2_2">
+     * <p class="changed_added_2_2 changed_modified_4_1">
      * A semicolon (;) delimitted list of class names of type jakarta.faces.view.facelets.TagDecorator, with a no-argument
      * constructor. These decorators will be loaded when the first request for a Facelets VDL view hits the ViewHandler for
-     * page compilation.The runtime must also consider the facelets.DECORATORS param name as an alias to this param name for
-     * backwards compatibility with existing facelets tag libraries.
+     * page compilation.
      * </p>
      *
      * @since 2.0

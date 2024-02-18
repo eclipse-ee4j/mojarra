@@ -108,7 +108,7 @@ import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Resource;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.application.ViewVisitOption;
-import jakarta.faces.component.ActionSource2;
+import jakarta.faces.component.ActionSource;
 import jakarta.faces.component.Doctype;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
@@ -127,8 +127,8 @@ import jakarta.faces.event.PostAddToViewEvent;
 import jakarta.faces.event.ValueChangeEvent;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.validator.MethodExpressionValidator;
-import jakarta.faces.view.ActionSource2AttachedObjectHandler;
-import jakarta.faces.view.ActionSource2AttachedObjectTarget;
+import jakarta.faces.view.ActionSourceAttachedObjectHandler;
+import jakarta.faces.view.ActionSourceAttachedObjectTarget;
 import jakarta.faces.view.AttachedObjectHandler;
 import jakarta.faces.view.AttachedObjectTarget;
 import jakarta.faces.view.BehaviorHolderAttachedObjectHandler;
@@ -167,7 +167,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     public static final String RESOURCE_LIBRARY_CONTRACT_DATA_STRUCTURE_KEY = FaceletViewHandlingStrategy.class.getName()
             + ".RESOURCE_LIBRARY_CONTRACT_DATA_STRUCTURE";
 
-    private MethodRetargetHandlerManager retargetHandlerManager = new MethodRetargetHandlerManager();
+    private final MethodRetargetHandlerManager retargetHandlerManager = new MethodRetargetHandlerManager();
 
     private int responseBufferSize;
 
@@ -573,7 +573,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 curTargetName = curTarget.getName();
                 targetComponents = curTarget.getTargets(topLevelComponent);
 
-                if (curHandler instanceof ActionSource2AttachedObjectHandler && curTarget instanceof ActionSource2AttachedObjectTarget) {
+                if (curHandler instanceof ActionSourceAttachedObjectHandler && curTarget instanceof ActionSourceAttachedObjectTarget) {
                     if (forAttributeValue.equals(curTargetName)) {
                         for (UIComponent curTargetComponent : targetComponents) {
                             retargetHandler(context, curHandler, curTargetComponent);
@@ -943,7 +943,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         // Always log
         if (LOGGER.isLoggable(SEVERE)) {
             UIViewRoot root = context.getViewRoot();
-            StringBuffer sb = new StringBuffer(64);
+            StringBuilder sb = new StringBuilder(64);
             sb.append("Error Rendering View");
             if (root != null) {
                 sb.append('[');
@@ -1421,7 +1421,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 String expr = sourceValue instanceof ValueExpression ? ((ValueExpression) sourceValue).getExpressionString() : sourceValue.toString();
                 ExpressionFactory f = ctx.getApplication().getExpressionFactory();
                 MethodExpression me = f.createMethodExpression(ctx.getELContext(), expr, Object.class, NO_ARGS);
-                ((ActionSource2) target).setActionExpression(
+                ((ActionSource) target).setActionExpression(
                         new ContextualCompositeMethodExpression(sourceValue instanceof ValueExpression ? (ValueExpression) sourceValue : null, me));
 
             }
@@ -1451,7 +1451,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 MethodExpression me = f.createMethodExpression(ctx.getELContext(), ve.getExpressionString(), Void.TYPE, ACTION_LISTENER_ARGS);
                 MethodExpression noArg = f.createMethodExpression(ctx.getELContext(), ve.getExpressionString(), Void.TYPE, NO_ARGS);
 
-                ((ActionSource2) target).addActionListener(new MethodExpressionActionListener(new ContextualCompositeMethodExpression(ve, me),
+                ((ActionSource) target).addActionListener(new MethodExpressionActionListener(new ContextualCompositeMethodExpression(ve, me),
                         new ContextualCompositeMethodExpression(ve, noArg)));
 
             }

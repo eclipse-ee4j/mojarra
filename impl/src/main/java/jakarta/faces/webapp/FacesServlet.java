@@ -277,7 +277,7 @@ public final class FacesServlet implements Servlet {
 
         OPTIONS("OPTIONS"), GET("GET"), HEAD("HEAD"), POST("POST"), PUT("PUT"), DELETE("DELETE"), TRACE("TRACE"), CONNECT("CONNECT");
 
-        private String name;
+        private final String name;
 
         HttpMethod(String name) {
             this.name = name;
@@ -432,7 +432,7 @@ public final class FacesServlet implements Servlet {
             return;
         }
 
-        logIfThreadInterruped();
+        logIfThreadInterrupted();
 
         // If prefix mapped, then ensure requests for /WEB-INF are not processed.
         if (notProcessWebInfIfPrefixMapped(request, response)) {
@@ -573,10 +573,8 @@ public final class FacesServlet implements Servlet {
 
                     logUnknownHttpMethod(httpMethod);
 
-                    // prevent duplicates
-                    if (!allowedUnknownHttpMethods.contains(httpMethod)) {
-                        allowedUnknownHttpMethods.add(httpMethod);
-                    }
+                    // we use a Set to prevent duplicates
+                    allowedUnknownHttpMethods.add(httpMethod);
                 } else {
                     // prevent duplicates
                     if (!allowedKnownHttpMethodsStringList.contains(httpMethod)) {
@@ -626,7 +624,7 @@ public final class FacesServlet implements Servlet {
         }
     }
 
-    private void logIfThreadInterruped() {
+    private void logIfThreadInterrupted() {
         if (Thread.currentThread().isInterrupted()) {
             if (LOGGER.isLoggable(FINER)) {
                 LOGGER.log(FINE, "Thread {0} given to FacesServlet.service() in interrupted state", Thread.currentThread().getName());

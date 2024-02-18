@@ -17,7 +17,6 @@
 package jakarta.faces.context;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import com.sun.faces.RIConstants;

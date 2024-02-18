@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -586,7 +587,7 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
             Object stateObj;
             if (!component.isTransient()) {
                 if (stateContext.componentAddedDynamically(component)) {
-                    component.getAttributes().put(DYNAMIC_COMPONENT, new Integer(getProperChildIndex(component)));
+                    component.getAttributes().put(DYNAMIC_COMPONENT, getProperChildIndex(component));
                     stateObj = new StateHolderSaver(finalContext, component);
                 } else {
                     stateObj = component.saveState(finalContext);
@@ -841,7 +842,7 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
     private int getProperChildIndex(UIComponent component) {
         int result = -1;
 
-        if (component.getParent().getChildren().indexOf(component) != -1) {
+        if (component.getParent().getChildren().contains(component)) {
             UIComponent parent = component.getParent();
             int index = 0;
             Iterator<UIComponent> iterator = parent.getChildren().iterator();

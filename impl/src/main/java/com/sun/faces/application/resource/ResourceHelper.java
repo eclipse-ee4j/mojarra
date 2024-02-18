@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -56,9 +57,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * <p>
  * Implementations of this class contain the knowledge for finding and serving web application resources.
- * <p>
  *
  * @since 2.0
  */
@@ -533,12 +532,12 @@ public abstract class ResourceHelper {
     private static final class ELEvaluatingInputStream extends InputStream {
 
         // Premature optimization is the root of all evil. Blah blah.
-        private List<Integer> buf = new ArrayList<>(1024);
+        private final List<Integer> buf = new ArrayList<>(1024);
         private boolean failedExpressionTest = false;
         private boolean writingExpression = false;
-        private InputStream inner;
-        private ClientResourceInfo info;
-        private FacesContext ctx;
+        private final InputStream inner;
+        private final ClientResourceInfo info;
+        private final FacesContext ctx;
         private boolean expressionEvaluated;
         private boolean endOfStreamReached;
 
@@ -632,7 +631,7 @@ public abstract class ResourceHelper {
          * a String, turn the String into a ValueExpression, evaluate it, store the toString() of it in expressionResult;
          */
         private void evaluateExpressionIntoBuffer() {
-            char chars[] = new char[buf.size()];
+            char[] chars = new char[buf.size()];
             for (int i = 0, len = buf.size(); i < len; i++) {
                 chars[i] = (char) (int) buf.get(i);
             }

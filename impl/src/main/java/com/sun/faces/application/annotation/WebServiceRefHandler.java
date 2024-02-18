@@ -27,10 +27,10 @@ import jakarta.xml.ws.WebServiceRef;
  */
 class WebServiceRefHandler extends JndiHandler implements RuntimeAnnotationHandler {
 
-    private Field[] fields;
-    private WebServiceRef[] fieldAnnotations;
-    private Method[] methods;
-    private WebServiceRef[] methodAnnotations;
+    private final Field[] fields;
+    private final WebServiceRef[] fieldAnnotations;
+    private final Method[] methods;
+    private final WebServiceRef[] methodAnnotations;
 
     public WebServiceRefHandler(Field[] fields, WebServiceRef[] fieldAnnotations, Method[] methods, WebServiceRef[] methodAnnotations) {
         this.fields = fields;

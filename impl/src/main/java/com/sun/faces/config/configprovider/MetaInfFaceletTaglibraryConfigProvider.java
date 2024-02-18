@@ -64,7 +64,7 @@ public class MetaInfFaceletTaglibraryConfigProvider implements ConfigurationReso
             }
 
             return resourceURLs.stream()
-                               .map(url -> transformToURI(url))
+                               .map( url -> transformToURI(url) )
                                .collect(toList());
 
         } catch (IOException ioe) {
@@ -74,9 +74,9 @@ public class MetaInfFaceletTaglibraryConfigProvider implements ConfigurationReso
 
     // --------------------------------------------------------- Private Methods
 
-    private URI transformToURI(URL url) {
+    private static URI transformToURI(URL url) {
         try {
-            return new URI(url.toExternalForm().replaceAll(" ", "%20"));
+            return new URI(url.toExternalForm().replace(" ", "%20"));
         } catch (URISyntaxException ex) {
             throw new FacesException(ex);
         }

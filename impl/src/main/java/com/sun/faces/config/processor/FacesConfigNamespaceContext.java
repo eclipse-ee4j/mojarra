@@ -23,7 +23,7 @@ import javax.xml.namespace.NamespaceContext;
 
 class FacesConfigNamespaceContext implements NamespaceContext {
 
-    private String defaultNamespace = null;
+    private final String defaultNamespace;
 
     FacesConfigNamespaceContext() {
         this.defaultNamespace = "https://jakarta.ee/xml/ns/jakartaee";
@@ -45,7 +45,7 @@ class FacesConfigNamespaceContext implements NamespaceContext {
 
     @Override
     public Iterator getPrefixes(String namespaceURI) {
-        return Collections.emptyList().iterator();
+        return Collections.emptyIterator();
     }
 
 }

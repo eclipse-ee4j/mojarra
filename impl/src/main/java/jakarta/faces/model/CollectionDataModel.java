@@ -76,13 +76,7 @@ public class CollectionDataModel<E> extends DataModel<E> {
     @Override
     public boolean isRowAvailable() {
 
-        if (arrayFromInner == null) {
-            return false;
-        } else if (index >= 0 && index < arrayFromInner.length) {
-            return true;
-        } else {
-            return false;
-        }
+        return arrayFromInner != null && index >= 0 && index < arrayFromInner.length;
     }
 
     /**
@@ -158,9 +152,9 @@ public class CollectionDataModel<E> extends DataModel<E> {
             }
             DataModelEvent event = new DataModelEvent(this, index, rowData);
             int n = listeners.length;
-            for (int i = 0; i < n; i++) {
-                if (null != listeners[i]) {
-                    listeners[i].rowSelected(event);
+            for (DataModelListener listener : listeners) {
+                if (null != listener) {
+                    listener.rowSelected(event);
                 }
             }
         }

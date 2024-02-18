@@ -221,7 +221,7 @@ public abstract class Renderer<T extends UIComponent> {
      *
      * @return the converted value
      */
-    public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue) throws ConverterException {
+    public Object getConvertedValue(FacesContext context, T component, Object submittedValue) throws ConverterException {
         if (context == null || component == null) {
             throw new NullPointerException();
         }

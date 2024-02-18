@@ -237,7 +237,7 @@ public class MessageFactory {
         return afactory.getApplication();
     }
 
-    protected static ClassLoader getCurrentLoader(Class fallbackClass) {
+    protected static ClassLoader getCurrentLoader(Class<?> fallbackClass) {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         if (loader == null) {
             loader = fallbackClass.getClassLoader();
@@ -309,7 +309,7 @@ public class MessageFactory {
             if (params == null || msgtext == null) {
                 return msgtext;
             }
-            StringBuffer b = new StringBuffer(100);
+            StringBuilder b = new StringBuilder(100);
             MessageFormat mf = new MessageFormat(msgtext);
             if (locale != null) {
                 mf.setLocale(locale);
@@ -319,8 +319,8 @@ public class MessageFactory {
             return localizedStr;
         }
 
-        private Locale locale;
-        private Object[] parameters;
+        private final Locale locale;
+        private final Object[] parameters;
         private Object[] resolvedParameters;
     }
 

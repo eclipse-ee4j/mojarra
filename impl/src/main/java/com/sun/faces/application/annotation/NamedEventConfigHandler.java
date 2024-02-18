@@ -17,10 +17,9 @@
 package com.sun.faces.application.annotation;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.sun.faces.application.ApplicationAssociate;
@@ -43,14 +42,9 @@ import jakarta.faces.event.SystemEvent;
  */
 public class NamedEventConfigHandler implements ConfigAnnotationHandler {
 
-    private Map<Class<?>, Annotation> namedEvents;
-    private static final Collection<Class<? extends Annotation>> HANDLES;
+    private static final Collection<Class<? extends Annotation>> HANDLES = List.of(NamedEvent.class);
 
-    static {
-        Collection<Class<? extends Annotation>> handles = new ArrayList<>(2);
-        handles.add(NamedEvent.class);
-        HANDLES = Collections.unmodifiableCollection(handles);
-    }
+    private Map<Class<?>, Annotation> namedEvents;
 
     @Override
     public Collection<Class<? extends Annotation>> getHandledAnnotations() {
@@ -88,12 +82,13 @@ public class NamedEventConfigHandler implements ConfigAnnotationHandler {
             name = name.substring(0, index);
         }
 
-        name = annotatedClass.getPackage().getName() + ("." + name.charAt(0)).toLowerCase() + name.substring(1);
+        name = annotatedClass.getPackage().getName() + '.' + Character.toLowerCase(name.charAt(0)) + name.substring(1);
+
         nem.addNamedEvent(name, (Class<? extends SystemEvent>) annotatedClass);
 
         String shortName = ((NamedEvent) annotation).shortName();
 
-        if (!"".equals(shortName)) {
+        if ( !shortName.isEmpty() ) {
             if (nem.isDuplicateNamedEvent(shortName)) {
                 nem.addDuplicateName(shortName, (Class<? extends SystemEvent>) annotatedClass);
             } else {

@@ -17,9 +17,7 @@
 package com.sun.faces.component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import jakarta.el.ValueExpression;
@@ -357,8 +355,8 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel implemen
         getStateHelper().put(PropertyKeys.styleClass, styleClass);
     }
 
-    private static final Collection<String> EVENT_NAMES = Collections.unmodifiableCollection(
-            Arrays.asList("click", "dblclick", "keydown", "keypress", "keyup", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup"));
+    private static final List<String> EVENT_NAMES = List.of(
+            "click", "dblclick", "keydown", "keypress", "keyup", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup");
 
     @Override
     public Collection<String> getEventNames() {
@@ -376,7 +374,7 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel implemen
         List<String> setAttributes = (List<String>) getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");
         if (setAttributes == null) {
             String cname = this.getClass().getName();
-            if (cname != null && cname.startsWith(OPTIMIZED_PACKAGE)) {
+            if (cname.startsWith(OPTIMIZED_PACKAGE)) {
                 setAttributes = new ArrayList<>(6);
                 getAttributes().put("jakarta.faces.component.UIComponentBase.attributesThatAreSet", setAttributes);
             }

@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 /**
  * <p class="changed_added_2_0">The presence of this annotation on a
  * class automatically registers the class with the runtime as a {@link
- * UIComponent}.  The value of the {@link #value} attribute is taken to
+ * jakarta.faces.component.UIComponent}.  The value of the {@link #value} attribute is taken to
  * be the <em>component-type</em> and the fully qualified class name of
  * the class to which this annotation is attached is taken to be the
  * <em>component-class</em>.  The implementation must guarantee that for

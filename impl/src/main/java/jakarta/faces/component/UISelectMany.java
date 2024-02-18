@@ -26,6 +26,7 @@ import jakarta.el.ValueExpression;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
+import jakarta.faces.model.SelectItem;
 
 /**
  * <p>
@@ -304,7 +305,7 @@ public class UISelectMany extends UIInput {
      *
      * @param selectedValues The new selected values (if any)
      */
-    public void setSelectedValues(Object selectedValues[]) {
+    public void setSelectedValues(Object[] selectedValues) {
         setValue(selectedValues);
     }
 
@@ -378,8 +379,8 @@ public class UISelectMany extends UIInput {
         }
 
         boolean valueChanged = false;
-        Object oldarray[];
-        Object newarray[];
+        Object[] oldarray;
+        Object[] newarray;
 
         // The arrays may be arrays of primitives; for simplicity,
         // perform the boxing here.
@@ -413,9 +414,9 @@ public class UISelectMany extends UIInput {
         // it will not suffice to just compare the element position and position.
         int count1;
         int count2;
-        for (int i = 0; i < oldarray.length; ++i) {
-            count1 = countElementOccurrence(oldarray[i], oldarray);
-            count2 = countElementOccurrence(oldarray[i], newarray);
+        for (Object element : oldarray) {
+            count1 = countElementOccurrence(element, oldarray);
+            count2 = countElementOccurrence(element, newarray);
             if (count1 != count2) {
                 valueChanged = true;
                 break;
@@ -435,8 +436,7 @@ public class UISelectMany extends UIInput {
      */
     private static int countElementOccurrence(Object element, Object[] array) {
         int count = 0;
-        for (int i = 0; i < array.length; ++i) {
-            Object arrayElement = array[i];
+        for (Object arrayElement : array) {
             if (arrayElement != null && element != null) {
                 if (arrayElement.equals(element)) {
                     count++;
@@ -525,7 +525,7 @@ public class UISelectMany extends UIInput {
         // of primitives
         Converter converter = getConverter();
         for (Iterator i = getValuesIterator(value); i.hasNext();) {
-            Iterator items = new SelectItemsIterator(context, this);
+            Iterator<SelectItem> items = new SelectItemsIterator(context, this);
             Object currentValue = i.next();
             if (!SelectUtils.matchValue(context, this, currentValue, items, converter)) {
                 doAddMessage = true;
@@ -537,7 +537,7 @@ public class UISelectMany extends UIInput {
         // value is required, a message is queued
         if (isRequired()) {
             for (Iterator i = getValuesIterator(value); i.hasNext();) {
-                Iterator items = new SelectItemsIterator(context, this);
+                Iterator<SelectItem> items = new SelectItemsIterator(context, this);
                 Object currentValue = i.next();
                 if (SelectUtils.valueIsNoSelectionOption(context, this, currentValue, items, converter)) {
                     doAddMessage = true;
@@ -572,9 +572,9 @@ public class UISelectMany extends UIInput {
      */
     private static final class ArrayIterator implements Iterator {
 
-        private int length;
+        private final int length;
+        private final Object value;
         private int idx = 0;
-        private Object value;
 
         // -------------------------------------------------------- Constructors
 

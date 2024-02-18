@@ -26,7 +26,6 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
-import jakarta.faces.render.Renderer;
 
 /**
  * /**
@@ -35,7 +34,7 @@ import jakarta.faces.render.Renderer;
  * resources that should be output before the <code>head</code> tag is closed.
  * </p>
  */
-public class HeadRenderer extends Renderer {
+public class HeadRenderer extends HtmlBasicRenderer {
 
     private static final Attribute[] HEAD_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTPUTHEAD);
 
@@ -48,12 +47,10 @@ public class HeadRenderer extends Renderer {
     public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         writer.startElement("head", component);
-        RenderKitUtils.renderPassThruAttributes(context, writer, component, HEAD_ATTRIBUTES);
-
         if (RenderKitUtils.isOutputHtml5Doctype(context)) {
-            String clientId = component.getClientId(context);
-            writer.writeAttribute("id", clientId, "clientId");
+            writeIdAttributeIfNecessary(context, writer, component);
         }
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, HEAD_ATTRIBUTES);
     }
 
     @Override
@@ -66,6 +63,16 @@ public class HeadRenderer extends Renderer {
         ResponseWriter writer = context.getResponseWriter();
         encodeHeadResources(context);
         writer.endElement("head");
+    }
+
+    /**
+     * Do we render our children.
+     *
+     * @return false.
+     */
+    @Override
+    public boolean getRendersChildren() {
+        return false;
     }
 
     // --------------------------------------------------------- Private Methods

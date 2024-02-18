@@ -45,7 +45,7 @@ class ByteArrayWebOutputStream extends ServletOutputStream {
     // Log instance for this class
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
-    private DirectByteArrayOutputStream baos;
+    private final DirectByteArrayOutputStream baos;
     private boolean committed;
 
     public ByteArrayWebOutputStream() {

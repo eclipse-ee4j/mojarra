@@ -98,11 +98,7 @@ public class MetaInfFacesConfigResourceProvider implements ConfigurationResource
                         }
                     }
 
-                    Set<URI> uris = sortedJarMap.get(jarName);
-                    if (uris == null) {
-                        uris = new HashSet<>();
-                        sortedJarMap.put(jarName, uris);
-                    }
+                    Set<URI> uris = sortedJarMap.computeIfAbsent(jarName, k -> new HashSet<>());
                     uris.add(uri);
                 } else {
                     unsortedResourceList.add(0, uri);
@@ -131,23 +127,23 @@ public class MetaInfFacesConfigResourceProvider implements ConfigurationResource
         try {
             for (Enumeration<URL> e = Util.getCurrentLoader(this).getResources(META_INF_RESOURCES); e.hasMoreElements();) {
                 String urlString = e.nextElement().toExternalForm();
-                urlString = urlString.replaceAll(" ", "%20");
+                urlString = urlString.replace(" ", "%20");
                 urls.add(new URI(urlString));
             }
             URL[] urlArray = Classpath.search("META-INF/", FACES_CONFIG_EXTENSION);
             for (URL cur : urlArray) {
                 String urlString = cur.toExternalForm();
-                urlString = urlString.replaceAll(" ", "%20");
+                urlString = urlString.replace(" ", "%20");
                 urls.add(new URI(urlString));
             }
             // special case for finding taglib files in WEB-INF/classes/META-INF
-            Set paths = context.getResourcePaths(WEB_INF_CLASSES);
+            Set<String> paths = context.getResourcePaths(WEB_INF_CLASSES);
             if (paths != null) {
                 for (Object path : paths) {
                     String p = path.toString();
                     if (p.endsWith(FACES_CONFIG_EXTENSION)) {
                         String urlString = context.getResource(p).toExternalForm();
-                        urlString = urlString.replaceAll(" ", "%20");
+                        urlString = urlString.replace(" ", "%20");
                         urls.add(new URI(urlString));
                     }
                 }

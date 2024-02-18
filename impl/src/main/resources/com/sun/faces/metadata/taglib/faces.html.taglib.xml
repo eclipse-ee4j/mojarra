@@ -1190,6 +1190,20 @@
         </component>
         <attribute>
             <description>
+                <![CDATA[
+                    <span class="changed_added_2_2">
+                        The component identifier for this component.
+                        This value must be unique within the closest parent component that is a naming container.
+                        The attribute is only rendered when the current doctype is a HTML5 doctype.
+                    </span>
+                ]]>
+            </description>
+            <name>id</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
                 <![CDATA[Direction indication for text that does not inherit directionality.
               Valid values are "LTR" (left-to-right) and "RTL" (right-to-left).]]>
             </description>
@@ -1278,6 +1292,20 @@
             <component-type>jakarta.faces.Output</component-type>
             <renderer-type>jakarta.faces.Body</renderer-type>
         </component>
+        <attribute>
+            <description>
+                <![CDATA[
+                    <span class="changed_added_2_2">
+                        The component identifier for this component.
+                        This value must be unique within the closest parent component that is a naming container.
+                        The attribute is only rendered when the current doctype is a HTML5 doctype.
+                    </span>
+                ]]>
+            </description>
+            <name>id</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
         <attribute>
             <description>
                 <![CDATA[Direction indication for text that does not inherit directionality.
@@ -3125,6 +3153,27 @@
             <name>rowClasses</name>
             <required>false</required>
             <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
+            <![CDATA[
+                <div class="changed_added_2_1">
+                    <p>
+                        Boolean flag directing how the per-row component state of <code>EditableValueHolder</code> children should be handled across requests on the same view.
+                        If set to <code>true</code>, then state for <code>EditableValueHolder</code> components in each row will not be discarded before a new row is rendered.
+                        If not specified, the default value is <code>false</code>.
+                    </p>
+                    <p>
+                        This attribute should be set only when the current dataTable component contains <code>UIForm</code> children which in turn contains <code>EditableValueHolder</code> children.
+                        This will only work reliably when the data model of the current dataTable component does not change across requests on the same view by e.g. sorting, adding or removing rows.
+                        The alternative is to use <code>c:forEach</code> instead.
+                    </p>
+                </div>
+            ]]>
+            </description>
+            <name>rowStatePreserved</name>
+            <required>false</required>
+            <type>boolean</type>
         </attribute>
         <attribute>
             <description>

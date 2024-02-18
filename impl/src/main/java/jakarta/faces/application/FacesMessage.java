@@ -17,17 +17,17 @@
 
 package jakarta.faces.application;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
+import static java.util.Arrays.stream;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toUnmodifiableMap;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * <p>
@@ -72,6 +72,8 @@ import java.util.Map;
 public class FacesMessage implements Serializable {
 
     // --------------------------------------------------------------- Constants
+
+    private static final long serialVersionUID = -1180773928220076822L;
 
     /**
      * <p>
@@ -135,24 +137,14 @@ public class FacesMessage implements Serializable {
      * order of their ordinal value.
      * </p>
      */
-    public static final List VALUES = unmodifiableList(asList(values));
-
-    private static Map<String, Severity> _MODIFIABLE_MAP = new HashMap<>(4, 1.0f);
-
-    static {
-        for (int i = 0, len = values.length; i < len; i++) {
-            _MODIFIABLE_MAP.put(values[i].severityName, values[i]);
-        }
-    }
+    public static final List<Severity> VALUES = List.of(values);
 
     /**
      * <p>
      * Immutable <code>Map</code> of valid {@link jakarta.faces.application.FacesMessage.Severity} instances, keyed by name.
      * </p>
      */
-    public final static Map VALUES_MAP = unmodifiableMap(_MODIFIABLE_MAP);
-
-    private static final long serialVersionUID = -1180773928220076822L;
+    public final static Map<String,Severity> VALUES_MAP = stream(values).collect(toUnmodifiableMap(severity -> severity.severityName, identity()));
 
     // ------------------------------------------------------ Instance Variables
 
@@ -323,6 +315,37 @@ public class FacesMessage implements Serializable {
     }
 
     /**
+     * @since 4.1
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(severity, summary, detail);
+    }
+
+    /**
+     * @since 4.1
+     */
+    @Override
+    public boolean equals(Object object) {
+        return (object == this) || (object != null && object.getClass() == getClass()
+            && Objects.equals(severity, ((FacesMessage) object).severity)
+            && Objects.equals(summary, ((FacesMessage) object).summary)
+            && Objects.equals(detail, ((FacesMessage) object).detail));
+    }
+
+    /**
+     * @since 4.1
+     */
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "["
+            + "severity='" + severity + "', "
+            + "summary='" + summary + "', "
+            + "detail='" + detail + "']"
+        ;
+    }
+
+    /**
      * <p>
      * Persist {@link jakarta.faces.application.FacesMessage} artifacts, including the non serializable
      * <code>Severity</code>.
@@ -415,11 +438,11 @@ public class FacesMessage implements Serializable {
          * object.
          * </p>
          *
-         * @param other The other object to be compared to
+         * @param severity The other object to be compared to
          */
         @Override
-        public int compareTo(Object other) {
-            return ordinal - ((Severity) other).ordinal;
+        public int compareTo(Object severity) {
+            return ordinal - ((Severity)severity).ordinal;
         }
 
         /**
@@ -441,10 +464,10 @@ public class FacesMessage implements Serializable {
         @Override
         public String toString() {
             if (severityName == null) {
-                return String.valueOf(ordinal);
+                return Integer.toString(ordinal);
             }
 
-            return String.valueOf(severityName) + ' ' + ordinal;
+            return severityName + ' ' + ordinal;
         }
 
         // --------------------------------------------------- Static Variables

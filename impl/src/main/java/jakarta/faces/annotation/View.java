@@ -26,7 +26,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import jakarta.enterprise.util.AnnotationLiteral;
-import jakarta.faces.component.ActionSource2;
+import jakarta.faces.component.ActionSource;
 import jakarta.inject.Qualifier;
 
 /**
@@ -57,7 +57,7 @@ public @interface View {
      * or a pattern like "/foo/bar/*". Though the exact interpretation of the Faces View Id
      * for a single view is ultimately defined by the annotated element, in general it should
      * align with the return value from an action expression
-     * (see {@link ActionSource2#setActionExpression(jakarta.el.MethodExpression)}
+     * (see {@link ActionSource#setActionExpression(jakarta.el.MethodExpression)}
      *
      * @return the Faces View Id pattern
      */

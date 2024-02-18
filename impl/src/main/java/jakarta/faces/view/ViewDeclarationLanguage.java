@@ -323,8 +323,8 @@ public abstract class ViewDeclarationLanguage {
      *
      * <li>
      * <p>
-     * If <em>curHandler</em> is an instance of {@link ActionSource2AttachedObjectHandler} and <em>curTarget</em> is an
-     * instance of {@link ActionSource2AttachedObjectTarget}, and <em>curTarget.getName()</em> is equal to
+     * If <em>curHandler</em> is an instance of {@link ActionSourceAttachedObjectHandler} and <em>curTarget</em> is an
+     * instance of {@link ActionSourceAttachedObjectTarget}, and <em>curTarget.getName()</em> is equal to
      * <em>curTargetName</em>, consider it a match.
      * </p>
      * </li>
@@ -450,7 +450,7 @@ public abstract class ViewDeclarationLanguage {
      * <li>
      * <p>
      * If <em>name</em> is equal to the string "action", or "actionListener" without the quotes, assume <em>target</em> is
-     * an {@link jakarta.faces.component.ActionSource2}.
+     * an {@link jakarta.faces.component.ActionSource}.
      * </p>
      * </li>
      *
@@ -486,7 +486,7 @@ public abstract class ViewDeclarationLanguage {
      * <li>
      * <p>
      * If <em>name</em> is equal to the string "action" without the quotes, call
-     * {@link jakarta.faces.component.ActionSource2#setActionExpression} on <em>target</em>, passing
+     * {@link jakarta.faces.component.ActionSource#setActionExpression} on <em>target</em>, passing
      * <em>attributeMethodExpression</em>.
      * </p>
      * </li>

@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -15,10 +16,6 @@
  */
 
 package com.sun.faces.el;
-
-import java.beans.FeatureDescriptor;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
@@ -250,81 +247,6 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
         }
 
         return _isReadOnly(resolverCount, resolvers, context, base, property);
-    }
-
-    @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
-        return new DescriptorIterator(context, base, _allELResolvers, _allELResolverCount);
-    }
-
-    private final static class DescriptorIterator implements Iterator<FeatureDescriptor> {
-        // snapshot the ELResolver array to avoid using a non-static inner class that needs to
-        // make function calls
-        public DescriptorIterator(ELContext context, Object base, ELResolver[] resolvers, int resolverCount) {
-            _context = context;
-            _base = base;
-            _resolvers = resolvers;
-            _resolverCount = resolverCount;
-        }
-
-        @Override
-        public boolean hasNext() {
-            do {
-                // A null return does *not* mean hasNext() should return false.
-                Iterator<FeatureDescriptor> currIterator = _getCurrIterator();
-
-                if (null != currIterator) {
-                    if (currIterator.hasNext()) {
-                        return true;
-                    } else {
-                        _currIterator = null;
-                        _currResolverIndex++;
-                    }
-                } else {
-                    if (_currResolverIndex < _resolverCount) {
-                        continue;
-                    } else {
-                        return false;
-                    }
-                }
-
-            } while (true);
-        }
-
-        private Iterator<FeatureDescriptor> _getCurrIterator() {
-            Iterator<FeatureDescriptor> currIterator = _currIterator;
-
-            if (currIterator == null) {
-                if (_currResolverIndex < _resolverCount) {
-                    currIterator = _resolvers[_currResolverIndex].getFeatureDescriptors(_context, _base);
-                    _currResolverIndex++;
-                    _currIterator = currIterator;
-                }
-            }
-
-            return currIterator;
-        }
-
-        @Override
-        public FeatureDescriptor next() {
-            if (hasNext()) {
-                return _getCurrIterator().next();
-            } else {
-                throw new NoSuchElementException();
-            }
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException();
-        }
-
-        private final ELContext _context;
-        private final Object _base;
-        private final ELResolver[] _resolvers;
-        private final int _resolverCount;
-        private int _currResolverIndex;
-        private Iterator<FeatureDescriptor> _currIterator;
     }
 
     @Override

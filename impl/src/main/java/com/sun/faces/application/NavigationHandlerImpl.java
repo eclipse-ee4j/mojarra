@@ -23,7 +23,6 @@ import static jakarta.faces.component.UIViewAction.isProcessingBroadcast;
 import static jakarta.faces.flow.FlowHandler.FLOW_ID_REQUEST_PARAM_NAME;
 import static jakarta.faces.flow.FlowHandler.NULL_FLOW;
 import static jakarta.faces.flow.FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME;
-import static java.util.Arrays.asList;
 import static java.util.logging.Level.FINE;
 
 import java.util.AbstractCollection;
@@ -256,8 +255,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
                         // If we are exiting all flows
                         if (caseStruct.newFlow == null) { // NOPMD
-                            parameters.put(TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME, asList(NULL_FLOW));
-                            parameters.put(FLOW_ID_REQUEST_PARAM_NAME, asList(""));
+                            parameters.put(TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME, List.of(NULL_FLOW));
+                            parameters.put(FLOW_ID_REQUEST_PARAM_NAME, List.of(""));
                             FlowHandler flowHandler = context.getApplication().getFlowHandler();
 
                             if (flowHandler instanceof FlowHandlerImpl) {
@@ -272,10 +271,10 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
                             if (!parameters.containsKey(TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME) || !parameters.containsKey(FLOW_ID_REQUEST_PARAM_NAME)) {
 
                                 // Overwrite both of them.
-                                List<String> toFlowDocumentIdParam = asList(caseStruct.navCase.getToFlowDocumentId());
+                                List<String> toFlowDocumentIdParam = Collections.singletonList(caseStruct.navCase.getToFlowDocumentId());
                                 parameters.put(TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME, toFlowDocumentIdParam);
 
-                                List<String> flowIdParam = asList(caseStruct.newFlow.getId());
+                                List<String> flowIdParam = Collections.singletonList(caseStruct.newFlow.getId());
                                 parameters.put(FLOW_ID_REQUEST_PARAM_NAME, flowIdParam);
                             }
                         }
@@ -866,8 +865,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
                 Map<String, Object> appMap = context.getExternalContext().getApplicationMap();
 
                 String[] queryElements = Util.split(appMap, queryString, "&amp;|&");
-                for (int i = 0, len = queryElements.length; i < len; i++) {
-                    String[] elements = Util.split(appMap, queryElements[i], "=", 2);
+                for (String queryElement : queryElements) {
+                    String[] elements = Util.split(appMap, queryElement, "=", 2);
                     if (elements.length == 2) {
                         String rightHandSide = elements[1];
                         String sanitized = null != rightHandSide && 2 < rightHandSide.length() ? rightHandSide.trim() : "";
@@ -877,19 +876,13 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
                             }
                             rightHandSide = "";
                         }
+
                         if (parameters == null) {
-                            parameters = new LinkedHashMap<>(len / 2, 1.0f);
-                            List<String> values = new ArrayList<>(2);
-                            values.add(rightHandSide);
-                            parameters.put(elements[0], values);
-                        } else {
-                            List<String> values = parameters.get(elements[0]);
-                            if (values == null) {
-                                values = new ArrayList<>(2);
-                                parameters.put(elements[0], values);
-                            }
-                            values.add(rightHandSide);
+                            parameters = new LinkedHashMap<>(queryElements.length / 2, 1.0f);
                         }
+
+                        parameters.computeIfAbsent(elements[0], k -> new ArrayList<>(2))
+                                  .add(rightHandSide);
                     }
                 }
             }
@@ -1278,7 +1271,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
         Flow currentFlow = flowHandler.getCurrentFlow(context);
         if (null != currentFlow) {
             FlowNode node = currentFlow.getNode(outcome);
-            if (null != node && node instanceof ViewNode) {
+            if (node instanceof ViewNode) {
                 result = synthesizeCaseStruct(context, currentFlow, fromAction, outcome);
             }
         }
@@ -1418,8 +1411,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
     private static final class NavigationMap extends AbstractMap<String, Set<NavigationCase>> {
 
-        private HashMap<String, Set<NavigationCase>> mapToLookForNavCase = new HashMap<>();
-        private TreeSet<String> wildcardMatchList = new TreeSet<>((fromViewId1, fromViewId2) -> -fromViewId1.compareTo(fromViewId2));
+        private final HashMap<String, Set<NavigationCase>> mapToLookForNavCase = new HashMap<>();
+        private final TreeSet<String> wildcardMatchList = new TreeSet<>((fromViewId1, fromViewId2) -> -fromViewId1.compareTo(fromViewId2));
 
         // ---------------------------------------------------- Methods from Map
 
@@ -1472,11 +1465,11 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
         @Override
         public Set<String> keySet() {
-            return new AbstractSet<String>() {
+            return new AbstractSet<>() {
 
                 @Override
                 public Iterator<String> iterator() {
-                    return new Iterator<String>() {
+                    return new Iterator<>() {
 
                         Iterator<Map.Entry<String, Set<NavigationCase>>> i = entrySet().iterator();
 
@@ -1506,11 +1499,11 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
         @Override
         public Collection<Set<NavigationCase>> values() {
-            return new AbstractCollection<Set<NavigationCase>>() {
+            return new AbstractCollection<>() {
 
                 @Override
                 public Iterator<Set<NavigationCase>> iterator() {
-                    return new Iterator<Set<NavigationCase>>() {
+                    return new Iterator<>() {
 
                         Iterator<Map.Entry<String, Set<NavigationCase>>> i = entrySet().iterator();
 
@@ -1540,12 +1533,12 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
         @Override
         public Set<Entry<String, Set<NavigationCase>>> entrySet() {
-            return new AbstractSet<Entry<String, Set<NavigationCase>>>() {
+            return new AbstractSet<>() {
 
                 @Override
                 public Iterator<Entry<String, Set<NavigationCase>>> iterator() {
 
-                    return new Iterator<Entry<String, Set<NavigationCase>>>() {
+                    return new Iterator<>() {
 
                         Iterator<Entry<String, Set<NavigationCase>>> i = mapToLookForNavCase.entrySet().iterator();
 

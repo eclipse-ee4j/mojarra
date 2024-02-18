@@ -17,7 +17,6 @@
 package jakarta.faces.component;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 import jakarta.el.ELException;
 import jakarta.el.ExpressionFactory;
@@ -25,6 +24,8 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.model.SelectItem;
 import jakarta.faces.model.SelectItemGroup;
+
+import static com.sun.faces.util.CollectionsUtils.asIterator;
 
 /**
  * Contains common utility methods used by both {@link UISelectOne} and {@link UISelectMany}.
@@ -54,9 +55,9 @@ class SelectUtils {
         while (items.hasNext()) {
             SelectItem item = items.next();
             if (item instanceof SelectItemGroup) {
-                SelectItem subitems[] = ((SelectItemGroup) item).getSelectItems();
+                SelectItem[] subitems = ((SelectItemGroup) item).getSelectItems();
                 if (subitems != null && subitems.length > 0) {
-                    if (matchValue(ctx, component, value, new ArrayIterator(subitems), converter)) {
+                    if (matchValue(ctx, component, value, asIterator(subitems), converter)) {
                         return true;
                     }
                 }
@@ -98,9 +99,9 @@ class SelectUtils {
         while (items.hasNext()) {
             SelectItem item = items.next();
             if (item instanceof SelectItemGroup) {
-                SelectItem subitems[] = ((SelectItemGroup) item).getSelectItems();
+                SelectItem[] subitems = ((SelectItemGroup) item).getSelectItems();
                 if (subitems != null && subitems.length > 0) {
-                    if (valueIsNoSelectionOption(ctx, component, value, new ArrayIterator(subitems), converter)) {
+                    if (valueIsNoSelectionOption(ctx, component, value, asIterator(subitems), converter)) {
                         result = true;
                         break;
                     }
@@ -179,40 +180,5 @@ class SelectUtils {
         return newValue;
 
     }
-
-    // ---------------------------------------------------------- Nested Classes
-
-    /**
-     * Exposes an Array via an <code>Iterator</code>
-     */
-    static class ArrayIterator implements Iterator {
-
-        public ArrayIterator(Object items[]) {
-            this.items = items;
-        }
-
-        private Object items[];
-        private int index = 0;
-
-        @Override
-        public boolean hasNext() {
-            return index < items.length;
-        }
-
-        @Override
-        public Object next() {
-            try {
-                return items[index++];
-            } catch (IndexOutOfBoundsException e) {
-                throw new NoSuchElementException();
-            }
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException();
-        }
-
-    } // END ArrayIterator
 
 }
