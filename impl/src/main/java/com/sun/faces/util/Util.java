@@ -1512,7 +1512,7 @@ public class Util {
                     result = wrapIfNeeded(InitialContext.doLookup("java:comp/env/BeanManager"));
                 } catch (NamingException ne2) {
                     try {
-                        result = (ELAwareBeanManager) CDI.current().getBeanManager();
+                        result = wrapIfNeeded(CDI.current().getBeanManager());
                     }
                     catch (Exception | LinkageError e) {
                     }
@@ -1521,7 +1521,7 @@ public class Util {
 
             if (result == null && facesContext != null) {
                 Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
-                result = wrapIfNeeded(applicationMap.get("org.jboss.weld.environment.servlet.jakarta.enterprise.inject.spi.BeanManager"));
+                result = wrapIfNeeded((BeanManager) applicationMap.get("org.jboss.weld.environment.servlet.jakarta.enterprise.inject.spi.BeanManager"));
             }
 
             if (result != null && facesContext != null) {
@@ -1537,8 +1537,10 @@ public class Util {
         return result;
     }
 
-    private static ELAwareBeanManager wrapIfNeeded(Object untypedBeanManager) {
-        BeanManager beanManager = (BeanManager) untypedBeanManager;
+    private static ELAwareBeanManager wrapIfNeeded(BeanManager beanManager) {
+        if (beanManager == null) {
+            return null;
+        }
 
         if (beanManager instanceof ELAwareBeanManager elAwareBeanManager) {
             return elAwareBeanManager;
