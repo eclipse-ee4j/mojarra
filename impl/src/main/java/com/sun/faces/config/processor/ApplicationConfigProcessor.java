@@ -334,7 +334,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
 
     /**
      * If defaultValidatorIds is null, then no &lt;default-validators&gt; element appeared in any configuration file. In
-     * that case, add jakarta.faces.Bean if Bean Validation is available. If the &lt;default-validators&gt; appeared at
+     * that case, add jakarta.faces.Bean if Jakarta Validation is available. If the &lt;default-validators&gt; appeared at
      * least once, don't add the default (and empty &lt;default-validator&gt; element disabled default validators)
      */
     private void registerDefaultValidatorIds(FacesContext facesContext, Application application, LinkedHashSet<String> defaultValidatorIds) {
@@ -391,7 +391,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                             result = true;
                         }
                     } catch (NamingException root) {
-                        LOGGER.fine(() -> "Could not build a default Bean Validator factory: " + root.getMessage());
+                        LOGGER.fine(() -> "Could not build a default Jakarta Validation ValidatorFactory: " + root.getMessage());
                     }
 
                     if (!result) {
@@ -403,7 +403,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                 }
 
             } catch (Throwable t) { // CNFE or ValidationException or any other
-                LOGGER.fine("Unable to load Beans Validation");
+                LOGGER.fine("Unable to load Jakarta Validation");
             }
 
             appMap.put(beansValidationAvailabilityCacheKey, result);
