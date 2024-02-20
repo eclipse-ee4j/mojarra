@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2024 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -394,13 +395,10 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                     }
 
                     if (!result) {
-                        try {
-                            ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-                            factory.getValidator();
-                            appMap.put(BeanValidator.VALIDATOR_FACTORY_KEY, factory);
-                            result = true;
-                        } catch (Throwable throwable) {
-                        }
+                        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+                        factory.getValidator();
+                        appMap.put(BeanValidator.VALIDATOR_FACTORY_KEY, factory);
+                        result = true;
                     }
                 }
 
