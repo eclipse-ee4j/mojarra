@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2024 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -333,7 +334,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
 
     /**
      * If defaultValidatorIds is null, then no &lt;default-validators&gt; element appeared in any configuration file. In
-     * that case, add jakarta.faces.Bean if Bean Validation is available. If the &lt;default-validators&gt; appeared at
+     * that case, add jakarta.faces.Bean if Jakarta Validation is available. If the &lt;default-validators&gt; appeared at
      * least once, don't add the default (and empty &lt;default-validator&gt; element disabled default validators)
      */
     private void registerDefaultValidatorIds(FacesContext facesContext, Application application, LinkedHashSet<String> defaultValidatorIds) {
@@ -390,22 +391,19 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                             result = true;
                         }
                     } catch (NamingException root) {
-                        LOGGER.fine(() -> "Could not build a default Bean Validator factory: " + root.getMessage());
+                        LOGGER.fine(() -> "Could not build a default Jakarta Validation ValidatorFactory: " + root.getMessage());
                     }
 
                     if (!result) {
-                        try {
-                            ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-                            factory.getValidator();
-                            appMap.put(BeanValidator.VALIDATOR_FACTORY_KEY, factory);
-                            result = true;
-                        } catch (Throwable throwable) {
-                        }
+                        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+                        factory.getValidator();
+                        appMap.put(BeanValidator.VALIDATOR_FACTORY_KEY, factory);
+                        result = true;
                     }
                 }
 
             } catch (Throwable t) { // CNFE or ValidationException or any other
-                LOGGER.fine("Unable to load Beans Validation");
+                LOGGER.fine("Unable to load Jakarta Validation");
             }
 
             appMap.put(beansValidationAvailabilityCacheKey, result);
