@@ -308,10 +308,10 @@
                         <Bundle-SymbolicName>org.glassfish.jakarta.faces</Bundle-SymbolicName>
                         <Bundle-Version>${project.version}</Bundle-Version>
                         <Bundle-Name>Mojarra Faces Implementation ${project.version}</Bundle-Name>
-                        <Bundle-Description>Eclipse Faces Implementation (jakarta.faces/4.0) ${project.version}</Bundle-Description>
+                        <Bundle-Description>Eclipse Faces Implementation (jakarta.faces/4.1) ${project.version}</Bundle-Description>
                         
                         <Specification-Title>Jakarta Faces</Specification-Title>
-                        <Specification-Version>4.0</Specification-Version>
+                        <Specification-Version>4.1</Specification-Version>
                         
                         <Implementation-Title>Mojarra</Implementation-Title> 
                         <Implementation-Version>${project.version}</Implementation-Version>
