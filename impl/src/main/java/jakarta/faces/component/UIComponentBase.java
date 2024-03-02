@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Contributors to Eclipse Foundation.
+ * Copyright (c) 2022, 2024 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -1141,6 +1141,10 @@ public abstract class UIComponentBase extends UIComponent {
             Object savedBehaviors = saveBehaviorsState(context);
             Object savedBindings = null;
 
+            if (bindings != null) {
+                savedBindings = saveBindingsState(context);
+            }
+
             Object savedHelper = null;
             if (stateHelper != null) {
                 savedHelper = stateHelper.saveState(context);
@@ -1173,6 +1177,10 @@ public abstract class UIComponentBase extends UIComponent {
             values[0] = listeners != null ? listeners.saveState(context) : null;
             values[1] = saveSystemEventListeners(context);
             values[2] = saveBehaviorsState(context);
+
+            if (bindings != null) {
+                values[3] = saveBindingsState(context);
+            }
 
             if (stateHelper != null) {
                 values[4] = stateHelper.saveState(context);
@@ -1215,6 +1223,10 @@ public abstract class UIComponentBase extends UIComponent {
 
         if (values[2] != null) {
             behaviors = restoreBehaviorsState(context, values[2]);
+        }
+
+        if (values[3] != null) {
+            bindings = restoreBindingsState(context, values[3]);
         }
 
         if (values[4] != null) {
@@ -1431,6 +1443,26 @@ public abstract class UIComponentBase extends UIComponent {
             bindings.put(names[i], (ValueExpression) restoreAttachedState(context, states[i]));
         }
         return bindings;
+
+    }
+
+    private Object saveBindingsState(FacesContext context) {
+
+        if (bindings == null) {
+            return null;
+        }
+
+        Object values[] = new Object[2];
+        values[0] = bindings.keySet().toArray(new String[bindings.size()]);
+
+        Object[] bindingValues = bindings.values().toArray();
+        for (int i = 0; i < bindingValues.length; i++) {
+            bindingValues[i] = saveAttachedState(context, bindingValues[i]);
+        }
+
+        values[1] = bindingValues;
+
+        return values;
 
     }
 
