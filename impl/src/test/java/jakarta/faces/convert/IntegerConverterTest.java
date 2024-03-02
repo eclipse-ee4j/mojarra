@@ -16,12 +16,13 @@
 
 package jakarta.faces.convert;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.powermock.api.easymock.PowerMock;
 
 import jakarta.faces.component.UIPanel;
@@ -35,10 +36,10 @@ public class IntegerConverterTest {
     /**
      * Test getAsObject method.
      */
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testGetAsObject() {
         IntegerConverter converter = new IntegerConverter();
-        converter.getAsObject(null, null, null);
+        assertThrows(NullPointerException.class, () -> converter.getAsObject(null, null, null));
     }
 
     /**
@@ -80,10 +81,10 @@ public class IntegerConverterTest {
     /**
      * Test getAsString method.
      */
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testGetAsString() {
         IntegerConverter converter = new IntegerConverter();
-        converter.getAsString(null, null, null);
+        assertThrows(NullPointerException.class, () -> converter.getAsString(null, null, null));
     }
 
     /**

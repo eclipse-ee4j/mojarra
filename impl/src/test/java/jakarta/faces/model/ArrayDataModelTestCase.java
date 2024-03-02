@@ -16,8 +16,7 @@
 
 package jakarta.faces.model;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * <p>
@@ -25,20 +24,10 @@ import junit.framework.TestSuite;
  */
 public class ArrayDataModelTestCase extends DataModelTestCaseBase {
 
-    // ------------------------------------------------------------ Constructors
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public ArrayDataModelTestCase(String name) {
-        super(name);
-    }
-
     // ------------------------------------------------------ Instance Variables
     // ---------------------------------------------------- Overall Test Methods
     // Set up instance variables required by this test case.
-    @Override
+    @BeforeEach
     public void setUp() throws Exception {
         beans = new BeanTestImpl[5];
         for (int i = 0; i < beans.length; i++) {
@@ -46,12 +35,6 @@ public class ArrayDataModelTestCase extends DataModelTestCaseBase {
         }
         configure();
         model = new ArrayDataModel<BeanTestImpl>(beans);
-        super.setUp();
-    }
-
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return (new TestSuite(ArrayDataModelTestCase.class));
     }
 
     // ------------------------------------------------- Individual Test Methods

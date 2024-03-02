@@ -16,8 +16,11 @@
 
 package jakarta.faces.component;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * <p>
@@ -26,19 +29,10 @@ import junit.framework.TestSuite;
  */
 public class UIGraphicTestCase extends UIComponentBaseTestCase {
 
-    // ------------------------------------------------------------ Constructors
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public UIGraphicTestCase(String name) {
-        super(name);
-    }
-
     // ---------------------------------------------------- Overall Test Methods
     // Set up instance variables required by this test case.
     @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         component = new UIGraphic();
@@ -47,14 +41,10 @@ public class UIGraphicTestCase extends UIComponentBaseTestCase {
         expectedRendererType = "jakarta.faces.Image";
     }
 
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return new TestSuite(UIGraphicTestCase.class);
-    }
-
     // ------------------------------------------------- Individual Test Methods
     // Test attribute-property transparency
     @Override
+    @Test
     public void testAttributesTransparency() {
 
         super.testAttributesTransparency();
@@ -62,7 +52,7 @@ public class UIGraphicTestCase extends UIComponentBaseTestCase {
 
         assertEquals(graphic.getValue(), component.getAttributes().get("value"));
         graphic.setValue("foo");
-        assertEquals("foo", (String) component.getAttributes().get("value"));
+        assertEquals("foo", component.getAttributes().get("value"));
         graphic.setValue(null);
         assertNull(component.getAttributes().get("value"));
         component.getAttributes().put("value", "bar");
@@ -70,9 +60,9 @@ public class UIGraphicTestCase extends UIComponentBaseTestCase {
         component.getAttributes().put("value", null);
         assertNull(graphic.getValue());
 
-        assertEquals(graphic.getUrl(), (String) graphic.getAttributes().get("url"));
+        assertEquals(graphic.getUrl(), graphic.getAttributes().get("url"));
         graphic.setUrl("foo");
-        assertEquals("foo", (String) graphic.getAttributes().get("url"));
+        assertEquals("foo", graphic.getAttributes().get("url"));
         graphic.setUrl(null);
         assertNull(graphic.getAttributes().get("url"));
         graphic.getAttributes().put("url", "bar");
@@ -83,21 +73,24 @@ public class UIGraphicTestCase extends UIComponentBaseTestCase {
 
     // Suppress lifecycle tests since we do not have a renderer
     @Override
+    @Test
     public void testLifecycleManagement() {
     }
 
     // Test a pristine UIGraphic instance
     @Override
+    @Test
     public void testPristine() {
         super.testPristine();
         UIGraphic graphic = (UIGraphic) component;
 
-        assertNull("no value", graphic.getValue());
-        assertNull("no url", graphic.getUrl());
+        assertNull(graphic.getValue());
+        assertNull(graphic.getUrl());
     }
 
     // Test setting properties to invalid values
     @Override
+    @Test
     public void testPropertiesInvalid() throws Exception {
         super.testPropertiesInvalid();
     }

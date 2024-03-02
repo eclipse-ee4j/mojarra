@@ -16,8 +16,8 @@
 
 package jakarta.faces.component;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * <p>
@@ -26,19 +26,10 @@ import junit.framework.TestSuite;
  */
 public class UIPanelTestCase extends UIComponentBaseTestCase {
 
-    // ------------------------------------------------------------ Constructors
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public UIPanelTestCase(String name) {
-        super(name);
-    }
-
     // ---------------------------------------------------- Overall Test Methods
     // Set up instance variables required by this test case.
     @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         component = new UIPanel();
@@ -48,14 +39,10 @@ public class UIPanelTestCase extends UIComponentBaseTestCase {
         expectedRendersChildren = false;
     }
 
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return new TestSuite(UIPanelTestCase.class);
-    }
-
     // ------------------------------------------------- Individual Test Methods
     // Suppress lifecycle tests since we do not have a renderer
     @Override
+    @Test
     public void testLifecycleManagement() {
     }
 

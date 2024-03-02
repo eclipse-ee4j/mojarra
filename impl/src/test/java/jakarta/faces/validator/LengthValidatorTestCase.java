@@ -16,12 +16,14 @@
 
 package jakarta.faces.validator;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.Locale;
 
-import jakarta.faces.component.UIInput;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import jakarta.faces.component.UIInput;
 
 /**
  * <p>
@@ -29,23 +31,8 @@ import junit.framework.TestSuite;
  */
 public class LengthValidatorTestCase extends ValidatorTestCase {
 
-    // ------------------------------------------------------------ Constructors
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public LengthValidatorTestCase(String name) {
-        super(name);
-    }
-
-    // ---------------------------------------------------- Overall Test Methods
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return (new TestSuite(LengthValidatorTestCase.class));
-    }
-
     // ------------------------------------------------- Individual Test Methods
+    @Test
     public void testLocaleHonored() {
         LengthValidator validator = new LengthValidator();
         validator.setMinimum(1000);
@@ -63,8 +50,8 @@ public class LengthValidatorTestCase extends ValidatorTestCase {
         } catch (ValidatorException e) {
             exceptionThrown = true;
             message = e.getMessage();
-            assertTrue("message: \"" + message + "\" missing localized chars.",
-                    -1 != message.indexOf("1,000"));
+            assertTrue(
+                    -1 != message.indexOf("1,000"), "message: \"" + message + "\" missing localized chars.");
         }
         assertTrue(exceptionThrown);
 
@@ -79,12 +66,13 @@ public class LengthValidatorTestCase extends ValidatorTestCase {
         } catch (ValidatorException e) {
             exceptionThrown = true;
             message = e.getMessage();
-            assertTrue("message: \"" + message + "\" missing localized chars.",
-                    -1 != message.indexOf("1.000"));
+            assertTrue(
+                    -1 != message.indexOf("1.000"), "message: \"" + message + "\" missing localized chars.");
         }
         assertTrue(exceptionThrown);
     }
 
+    @Test
     public void testHashCode() {
         LengthValidator validator1 = new LengthValidator();
         LengthValidator validator2 = new LengthValidator();

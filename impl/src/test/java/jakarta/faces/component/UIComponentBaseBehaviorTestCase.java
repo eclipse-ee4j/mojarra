@@ -16,6 +16,10 @@
 
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,6 +27,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.junit.jupiter.api.Test;
 
 import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
@@ -138,10 +144,6 @@ public class UIComponentBaseBehaviorTestCase extends UIComponentTestCase {
         }
     }
 
-    public UIComponentBaseBehaviorTestCase(String name) {
-        super(name);
-    }
-
     /**
      * Test method for {@link jakarta.faces.component.UIComponentBase#saveState(jakarta.faces.context.FacesContext)}.
      */
@@ -173,6 +175,7 @@ public class UIComponentBaseBehaviorTestCase extends UIComponentTestCase {
         assertEquals(behavior2, behaviors.get(ONCLICK).get(1));
     }
 
+    @Test
     public void testNonClientBehaviorHolder() throws Exception {
         UIInput input = new UIInput();
         try {

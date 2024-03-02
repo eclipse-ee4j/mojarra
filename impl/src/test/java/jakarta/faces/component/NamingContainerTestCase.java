@@ -16,8 +16,16 @@
 
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.HashMap;
 import java.util.Map;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.sun.faces.junit.JUnitFacesTestCaseBase;
 import com.sun.faces.mock.MockRenderKit;
@@ -25,8 +33,6 @@ import com.sun.faces.mock.MockRenderKit;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * <p>
@@ -39,15 +45,10 @@ public class NamingContainerTestCase extends JUnitFacesTestCaseBase {
     // The root of the component tree to be tested
     private UIViewRoot root = null;
 
-    // ------------------------------------------------------------ Constructors
-    // Construct a new instance of this test case.
-    public NamingContainerTestCase(String name) {
-        super(name);
-    }
-
     // ---------------------------------------------------- Overall Test Methods
     // Set up instance variables required by this test case.
     @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 
@@ -67,15 +68,9 @@ public class NamingContainerTestCase extends JUnitFacesTestCaseBase {
 
     }
 
-    // Return the tests included in this test case.
-    public static Test suite() {
-
-        return new TestSuite(NamingContainerTestCase.class);
-
-    }
-
     // Tear down instance variables required by this test case.
     @Override
+    @AfterEach
     public void tearDown() throws Exception {
 
         root = null;
@@ -84,6 +79,7 @@ public class NamingContainerTestCase extends JUnitFacesTestCaseBase {
 
     // ------------------------------------------------- Individual Test Methods
     // Test nested NamingContainer callbacks
+    @Test
     public void testNested() {
 
         NamingContainerTestImpl a = new NamingContainerTestImpl();
@@ -134,6 +130,7 @@ public class NamingContainerTestCase extends JUnitFacesTestCaseBase {
     }
 
     // Test nested NamingContainer callbacks
+    @Test
     public void testNested2() {
 
         NamingContainerTestImpl a = new NamingContainerTestImpl();
@@ -184,6 +181,7 @@ public class NamingContainerTestCase extends JUnitFacesTestCaseBase {
     }
 
     // Test standard NamingContainer functionality
+    @Test
     public void testStandard() {
 
         // Set up a component hierarchy as follows (component ids in quotes):

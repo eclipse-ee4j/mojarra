@@ -16,17 +16,20 @@
 
 // TestHtmlUtils.java
 package com.sun.faces.util;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.StringWriter;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 /**
  * <B>TestHtmlUtils</B> is a class ...
  */
-public class TestHtmlUtils extends TestCase {
+public class TestHtmlUtils {
 
+    @Test
     public void testWriteURL() throws IOException {
         //Test url with no params
         testURLEncoding("http://www.google.com",
@@ -66,6 +69,7 @@ public class TestHtmlUtils extends TestCase {
         		"/index.jsf?greek=%CE%B5%CE%BB&amp;cyrillic=%D0%BA%D0%B8&amp;hebrew=%D7%99%D7%AA&amp;arabic=%D9%8A%D8%A9%D9%8F%E2%80%8E%E2%80%8E&amp;korean=%ED%95%9C%EA%B8%80");
     }
 
+    @Test
     public void testControlCharacters() throws IOException {
 
         final char[] controlCharacters = new char[32];

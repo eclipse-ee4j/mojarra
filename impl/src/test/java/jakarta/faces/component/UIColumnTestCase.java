@@ -16,8 +16,9 @@
 
 package jakarta.faces.component;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * <p>
@@ -26,19 +27,10 @@ import junit.framework.TestSuite;
  */
 public class UIColumnTestCase extends UIComponentBaseTestCase {
 
-    // ------------------------------------------------------------ Constructors
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public UIColumnTestCase(String name) {
-        super(name);
-    }
-
     // ---------------------------------------------------- Overall Test Methods
     // Set up instance variables required by this test case.
     @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         component = new UIColumn();
@@ -47,13 +39,9 @@ public class UIColumnTestCase extends UIComponentBaseTestCase {
         expectedRendererType = null;
     }
 
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return new TestSuite(UIColumnTestCase.class);
-    }
-
     // Tear down instance variables required by ths test case
     @Override
+    @AfterEach
     public void tearDown() throws Exception {
         super.tearDown();
     }
@@ -61,6 +49,7 @@ public class UIColumnTestCase extends UIComponentBaseTestCase {
     // ------------------------------------------------- Individual Test Methods
     // Suppress lifecycle tests since we do not have a renderer
     @Override
+    @Test
     public void testLifecycleManagement() {
     }
 

@@ -16,10 +16,12 @@
 
 package jakarta.faces.model;
 
-import java.util.ArrayList;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import static org.junit.Assert.*;
+import java.util.ArrayList;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * The JUnit tests for CollectionDataModel.

@@ -21,14 +21,11 @@ import static jakarta.faces.component.UINamingContainer.SEPARATOR_CHAR_PARAM_NAM
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.powermock.api.easymock.PowerMock.createNicePartialMockAndInvokeDefaultConstructor;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.powermock.reflect.Whitebox;
 
 import jakarta.faces.context.FacesContext;
@@ -96,6 +93,6 @@ public class UIDataTest {
         data.invokeOnComponent(context, "differentId", (contextInLambda, target) -> {
         });
 
-        assertThat(context.getAttributes().get("setRowIndexCalled"), is(nullValue()));
+        assertNull(context.getAttributes().get("setRowIndexCalled"));
     }
 }

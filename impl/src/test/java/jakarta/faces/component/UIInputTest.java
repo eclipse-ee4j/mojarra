@@ -18,12 +18,13 @@ package jakarta.faces.component;
 
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.easymock.EasyMock;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.LengthValidator;
@@ -44,10 +45,10 @@ public class UIInputTest {
         verify(context);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testSaveState2() {
         UIInput input = new UIInput();
-        input.saveState(null);
+        assertThrows(NullPointerException.class, () -> input.saveState(null));
     }
 
     @Test
@@ -89,12 +90,12 @@ public class UIInputTest {
         verify(context);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testRestoreState2() {
         FacesContext context = EasyMock.createMock(FacesContext.class);
         UIInput input = new UIInput();
         replay(context);
-        input.restoreState(null, null);
+        assertThrows(NullPointerException.class, () -> input.restoreState(null, null));
         verify(context);
     }
 

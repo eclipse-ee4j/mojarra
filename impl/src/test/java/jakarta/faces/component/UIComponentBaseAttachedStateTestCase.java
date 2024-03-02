@@ -16,12 +16,21 @@
 
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.sun.faces.mock.MockExternalContext;
 import com.sun.faces.mock.MockFacesContext;
@@ -34,29 +43,16 @@ import jakarta.faces.FactoryFinder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.FacesListener;
 import jakarta.faces.event.ValueChangeListener;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
-public class UIComponentBaseAttachedStateTestCase extends TestCase {
+public class UIComponentBaseAttachedStateTestCase {
 
     private MockFacesContext facesContext = null;
     private MockServletContext servletContext;
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
 
-    public UIComponentBaseAttachedStateTestCase(String arg0) {
-        super(arg0);
-    }
-
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return new TestSuite(UIComponentBaseAttachedStateTestCase.class);
-    }
-
-    @Override
+    @BeforeEach
     public void setUp() throws Exception {
-        super.setUp();
         facesContext = new MockFacesContext();
 
         servletContext = new MockServletContext();
@@ -71,9 +67,8 @@ public class UIComponentBaseAttachedStateTestCase extends TestCase {
 
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    @AfterEach
+    public void tearDown() throws Exception {
         FactoryFinder.releaseFactories();
         Method reInitializeFactoryManager = FactoryFinder.class.getDeclaredMethod("reInitializeFactoryManager", (Class<?>[]) null);
         reInitializeFactoryManager.setAccessible(true);
@@ -81,6 +76,7 @@ public class UIComponentBaseAttachedStateTestCase extends TestCase {
     }
 
 
+    @Test
     public void testAttachedObjectsSet() throws Exception {
         Set<ValueChangeListener> attachedObjects = new HashSet<>();
         ValueChangeListener toAdd = new ValueChangeListenerTestImpl();
@@ -96,6 +92,7 @@ public class UIComponentBaseAttachedStateTestCase extends TestCase {
         assertNotNull(returnedAttachedObjects);
     }
 
+    @Test
     public void testAttachedObjectsStack() throws Exception {
         Stack<ValueChangeListener> attachedObjects = new Stack<>();
         ValueChangeListener toAdd = new ValueChangeListenerTestImpl();
@@ -111,6 +108,7 @@ public class UIComponentBaseAttachedStateTestCase extends TestCase {
         assertNotNull(returnedAttachedObjects);
     }
 
+    @Test
     public void testAttachedObjectsMap() throws Exception {
         Map<String, ValueChangeListener> attachedObjects = new HashMap<>();
         ValueChangeListener toAdd = new ValueChangeListenerTestImpl();
@@ -144,6 +142,7 @@ public class UIComponentBaseAttachedStateTestCase extends TestCase {
         assertEquals(firstSize, secondSize);
     }
 
+    @Test
     public void testFacesListenerState() {
         UIComponent component = new UIOutput();
         TestFacesListener listener = new TestFacesListener();
@@ -171,7 +170,7 @@ public class UIComponentBaseAttachedStateTestCase extends TestCase {
         component.addFacesListener(listener);
         listener.setValue("newinitial");
         component.restoreState(facesContext, state);
-        assertTrue("newvalue".equals(listener.getValue()));
+        assertEquals("newvalue", listener.getValue());
 
         // verify listeners are overwritten when using full state saving
         component = new UIOutput();
@@ -185,9 +184,10 @@ public class UIComponentBaseAttachedStateTestCase extends TestCase {
         component.restoreState(facesContext, state);
         TestFacesListener l = (TestFacesListener) component.getFacesListeners(TestFacesListener.class)[0];
         assertTrue(l != listener);
-        assertTrue("initial".equals(l.getValue()));
+        assertEquals("initial", l.getValue());
     }
 
+    @Test
     public void testTransientListenersState() {
         UIComponent output = new UIOutput();
         output.markInitialState();
@@ -227,6 +227,7 @@ public class UIComponentBaseAttachedStateTestCase extends TestCase {
         assertTrue(listeners.length == 0);
     }
 
+    @Test
     public void testTransientListenersState2() {
         UIComponent output = new UIOutput();
         TestFacesListener l1 = new TestFacesListener();

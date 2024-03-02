@@ -19,7 +19,6 @@ package jakarta.faces.component;
 public class UISelectItemSub extends UISelectItem {
 
     public UISelectItemSub(String value, String label, String description) {
-        super();
         setItemValue(value);
         setItemLabel(label);
         setItemDescription(description);

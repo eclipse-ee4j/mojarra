@@ -16,13 +16,14 @@
 
 package com.sun.faces.renderkit.html_basic;
 
+import static org.easymock.EasyMock.expect;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.StringWriter;
 import java.util.Collections;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.easymock.EasyMock.expect;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.powermock.api.easymock.PowerMock;
 
 import jakarta.faces.application.Application;

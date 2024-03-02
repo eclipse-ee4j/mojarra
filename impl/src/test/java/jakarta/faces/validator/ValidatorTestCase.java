@@ -16,6 +16,9 @@
 
 package jakarta.faces.validator;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import com.sun.faces.junit.JUnitFacesTestCaseBase;
 import com.sun.faces.mock.MockRenderKit;
 
@@ -23,8 +26,6 @@ import jakarta.faces.FactoryFinder;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * <p>
@@ -32,19 +33,10 @@ import junit.framework.TestSuite;
  */
 public class ValidatorTestCase extends JUnitFacesTestCaseBase {
 
-    // ------------------------------------------------------------ Constructors
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public ValidatorTestCase(String name) {
-        super(name);
-    }
-
     // ---------------------------------------------------- Overall Test Methods
     // Set up instance variables required by this test case.
     @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         UIViewRoot root = facesContext.getApplication().getViewHandler().createView(facesContext, null);
@@ -60,11 +52,7 @@ public class ValidatorTestCase extends JUnitFacesTestCaseBase {
 
     }
 
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return (new TestSuite(ValidatorTestCase.class));
-    }
-
+    @Test
     public void testNoOp() {
     }
 }

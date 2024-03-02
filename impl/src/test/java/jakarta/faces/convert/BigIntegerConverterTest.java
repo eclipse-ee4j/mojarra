@@ -16,14 +16,15 @@
 
 package jakarta.faces.convert;
 
-import java.math.BigInteger;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import java.math.BigInteger;
+
+import org.junit.jupiter.api.Test;
 import org.powermock.api.easymock.PowerMock;
 
 import jakarta.faces.component.UIPanel;
@@ -37,10 +38,10 @@ public class BigIntegerConverterTest {
     /**
      * Test getAsObject method.
      */
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testGetAsObject() {
         BigIntegerConverter converter = new BigIntegerConverter();
-        converter.getAsObject(null, null, null);
+        assertThrows(NullPointerException.class, () -> converter.getAsObject(null, null, null));
     }
 
     /**
@@ -82,10 +83,10 @@ public class BigIntegerConverterTest {
     /**
      * Test getAsString method.
      */
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testGetAsString() {
         BigIntegerConverter converter = new BigIntegerConverter();
-        converter.getAsString(null, null, null);
+        assertThrows(NullPointerException.class, () -> converter.getAsString(null, null, null));
     }
 
     /**

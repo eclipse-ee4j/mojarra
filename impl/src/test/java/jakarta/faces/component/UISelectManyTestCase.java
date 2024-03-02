@@ -16,6 +16,12 @@
 
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,14 +33,15 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import com.sun.faces.renderkit.SelectItemsIterator;
 
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.model.ListDataModel;
 import jakarta.faces.model.SelectItem;
 import jakarta.faces.model.SelectItemGroup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * <p>
@@ -43,19 +50,10 @@ import junit.framework.TestSuite;
  */
 public class UISelectManyTestCase extends UIInputTestCase {
 
-    // ------------------------------------------------------------ Constructors
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public UISelectManyTestCase(String name) {
-        super(name);
-    }
-
     // ---------------------------------------------------- Overall Test Methods
     // Set up instance variables required by this test case.
     @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         component = new UISelectMany();
@@ -63,14 +61,10 @@ public class UISelectManyTestCase extends UIInputTestCase {
         expectedRendererType = "jakarta.faces.Listbox";
     }
 
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return new TestSuite(UISelectManyTestCase.class);
-    }
-
     // ------------------------------------------------- Individual Test Methods
     // Test the compareValues() method
     @Override
+    @Test
     public void testCompareValues() {
         SelectManyTestImpl selectMany = new SelectManyTestImpl();
         Object values1a[] = new Object[] { "foo", "bar", "baz" };
@@ -99,20 +93,23 @@ public class UISelectManyTestCase extends UIInputTestCase {
 
     // Test a pristine UISelectMany instance
     @Override
+    @Test
     public void testPristine() {
         super.testPristine();
         UISelectMany selectMany = (UISelectMany) component;
 
-        assertNull("no selectedValues", selectMany.getSelectedValues());
+        assertNull(selectMany.getSelectedValues());
     }
 
     // Test setting properties to invalid values
     @Override
+    @Test
     public void testPropertiesInvalid() throws Exception {
         super.testPropertiesInvalid();
     }
 
     // Test validation of value against the valid list
+    @Test
     public void testValidation() throws Exception {
         // Put our component under test in a tree under a UIViewRoot
         UIViewRoot root = facesContext.getApplication().getViewHandler().createView(facesContext, null);
@@ -146,6 +143,7 @@ public class UISelectManyTestCase extends UIInputTestCase {
     }
 
     // Test validation of component with UISelectItems pointing to map
+    @Test
     public void testValidation2() throws Exception {
         // Put our component under test in a tree under a UIViewRoot
         UIViewRoot root = facesContext.getApplication().getViewHandler().createView(facesContext, null);
@@ -177,6 +175,7 @@ public class UISelectManyTestCase extends UIInputTestCase {
 
     // Test validation of component with UISelectItems pointing to Set and the
     // value of the component is Set
+    @Test
     public void testValidation3() throws Exception {
         Set<SelectItem> items = new HashSet<>();
         items.add(new SelectItem("foo"));
@@ -192,6 +191,7 @@ public class UISelectManyTestCase extends UIInputTestCase {
     }
 
     // Test validation of component with UISelectItems pointing to List
+    @Test
     public void testValidation4() throws Exception {
         List<SelectItem> items = new ArrayList<>();
         items.add(new SelectItem("foo"));
@@ -207,6 +207,7 @@ public class UISelectManyTestCase extends UIInputTestCase {
     }
 
     // Test validation of component with UISelectItems pointing to an Array
+    @Test
     public void testValidation5() throws Exception {
         // Put our component under test in a tree under a UIViewRoot
         UIViewRoot root = facesContext.getApplication().getViewHandler().createView(facesContext, null);
@@ -260,6 +261,7 @@ public class UISelectManyTestCase extends UIInputTestCase {
     private String illegalValues[] = { "D1", "D2", "Group A", "Group B", "Group C" };
 
     // Test validation against a nested list of available options
+    @Test
     public void testValidateNested() throws Exception {
         // Set up UISelectMany with nested UISelectItems
         UIViewRoot root = facesContext.getApplication().getViewHandler().createView(facesContext, null);
@@ -276,7 +278,7 @@ public class UISelectManyTestCase extends UIInputTestCase {
             selectMany.setValid(true);
             selectMany.setSubmittedValue(new Object[] { legalValues[0], legalValues[i] });
             selectMany.validate(facesContext);
-            assertTrue("Value '" + legalValues[i] + "' found", selectMany.isValid());
+            assertTrue(selectMany.isValid(), "Value '" + legalValues[i] + "' found");
             checkMessages(0);
         }
 
@@ -285,12 +287,13 @@ public class UISelectManyTestCase extends UIInputTestCase {
             selectMany.setValid(true);
             selectMany.setSubmittedValue(new Object[] { legalValues[0], illegalValues[i] });
             selectMany.validate(facesContext);
-            assertTrue("Value '" + illegalValues[i] + "' not found", !selectMany.isValid());
+            assertTrue(!selectMany.isValid(), "Value '" + illegalValues[i] + "' not found");
             checkMessages(i + 1);
         }
     }
 
     // Test validation against a nested Set of available options
+    @Test
     public void testValidateNestedSet() throws Exception {
         // Set up UISelectMany with nested UISelectItems
         UIViewRoot root = facesContext.getApplication().getViewHandler().createView(facesContext, null);
@@ -307,7 +310,7 @@ public class UISelectManyTestCase extends UIInputTestCase {
             selectMany.setValid(true);
             selectMany.setSubmittedValue(new Object[] { legalValues[0], legalValues[i] });
             selectMany.validate(facesContext);
-            assertTrue("Value '" + legalValues[i] + "' found", selectMany.isValid());
+            assertTrue(selectMany.isValid(), "Value '" + legalValues[i] + "' found");
             checkMessages(0);
         }
 
@@ -316,13 +319,14 @@ public class UISelectManyTestCase extends UIInputTestCase {
             selectMany.setValid(true);
             selectMany.setSubmittedValue(new Object[] { legalValues[0], illegalValues[i] });
             selectMany.validate(facesContext);
-            assertTrue("Value '" + illegalValues[i] + "' not found", !selectMany.isValid());
+            assertTrue(!selectMany.isValid(), "Value '" + illegalValues[i] + "' not found");
             checkMessages(i + 1);
         }
     }
 
     // Test validation of a required field
     @Override
+    @Test
     public void testValidateRequired() throws Exception {
         UIViewRoot root = facesContext.getApplication().getViewHandler().createView(facesContext, null);
         root.getChildren().add(component);
@@ -361,6 +365,7 @@ public class UISelectManyTestCase extends UIInputTestCase {
         assertTrue(selectMany.isValid());
     }
 
+    @Test
     public void testSelectItemsIterator() {
         // sub test 1: non-selectitem at end
         UISelectMany selectMany = (UISelectMany) component;

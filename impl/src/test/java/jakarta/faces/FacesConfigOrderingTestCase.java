@@ -17,6 +17,7 @@
 package jakarta.faces;
 
 import static com.sun.faces.util.Util.createLocalDocumentBuilderFactory;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -27,6 +28,8 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -34,29 +37,13 @@ import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.config.manager.documents.DocumentOrderingWrapper;
 
 import jakarta.faces.context.FacesContext;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
-public class FacesConfigOrderingTestCase extends TestCase {
-
-	// ------------------------------------------------------------ Constructors
-	/**
-	 * Construct a new instance of this test case.
-	 *
-	 * @param name
-	 *            Name of the test case
-	 */
-	public FacesConfigOrderingTestCase(String name) {
-		super(name);
-	}
+public class FacesConfigOrderingTestCase {
 
 	// ---------------------------------------------------- Overall Test Methods
 	// Set up instance variables required by this test case.
-	@Override
+	@BeforeEach
 	public void setUp() throws Exception {
-		super.setUp();
-
 		Method method = FacesContext.class.getDeclaredMethod(
 				"setCurrentInstance", FacesContext.class);
 		method.setAccessible(true);
@@ -64,17 +51,6 @@ public class FacesConfigOrderingTestCase extends TestCase {
 
 	}
 
-	// Return the tests included in this test case.
-	public static Test suite() {
-		return (new TestSuite(FacesConfigOrderingTestCase.class));
-	}
-
-	// Tear down instance variables required by ths test case
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
-	}
-	
 	// ------------------------------------------------- Individual Test Methods
 	/**
 	 * <p>
@@ -84,6 +60,7 @@ public class FacesConfigOrderingTestCase extends TestCase {
 	 *
 	 * @throws java.lang.Exception
 	 */
+    @Test
 	public void testNoOrderingStartWithCab() throws Exception {
 		DocumentInfo docC = createDocument("C", null, null);
 		DocumentInfo doca = createDocument("a", null, null);
@@ -113,10 +90,11 @@ public class FacesConfigOrderingTestCase extends TestCase {
 		boolean assertion = (actually.equals(possibility1));
 		String message = "\n original: " + original + "\n expected: "
 				+ possibility1 + "\n actually: " + actually + "\n";
-		assertTrue(message, assertion);
+		assertTrue(assertion, message);
 		System.out.println("testNoOrderingStartWithCab: Passed" + message);
 	}
-	
+
+    @Test
 	public void testCafteraStartWithCab() throws Exception {
 		List<String> docCAfterIds = new ArrayList<String>();
 		Collections.addAll(docCAfterIds, "a");
@@ -150,10 +128,11 @@ public class FacesConfigOrderingTestCase extends TestCase {
 		boolean assertion = (actually.equals(possibility1));
 		String message = "\n original: " + original + "\n expected: " + possibility1 +
 			"\n actually: " + actually + "\n";
-		assertTrue(message, assertion);
+		assertTrue(assertion, message);
 		System.out.println("testCafteraStartWithCab: Passed" + message);
 	}
-	
+
+    @Test
 	public void testAafterD_BafterCbeforeOthers_CafterDbeforeB_startWithABCD() throws Exception {
 		List<String> docAAfterIds = new ArrayList<String>();
 		Collections.addAll(docAAfterIds, "D");
@@ -203,10 +182,11 @@ public class FacesConfigOrderingTestCase extends TestCase {
 				);
 		String message = "\n original: " + original + "\n expected: " + possibility1 +
 			"\n actually: " + actually + "\n";
-		assertTrue(message, assertion);
+		assertTrue(assertion, message);
 		System.out.println("testAafterD_BafterCbeforeOthers_CafterDbeforeB_startWithABCD: Passed" + message);
 	}
-	
+
+    @Test
 	public void testAafterD_BafterCbeforeOthers_CafterDbeforeB_startWithADBC() throws Exception {
 
 		List<String> docAAfterIds = new ArrayList<String>();
@@ -257,11 +237,12 @@ public class FacesConfigOrderingTestCase extends TestCase {
 				);
 		String message = "\n original: " + original + "\n expected: " + possibility1 +
 			"\n actually: " + actually + "\n";
-		assertTrue(message, assertion);
+		assertTrue(assertion, message);
 		System.out.println("testAafterD_BafterCbeforeOthers_CafterDbeforeB_startWithADBC: Passed" + message);
 
 	}
-	
+
+    @Test
 	public void testAafterD_BafterCbeforeOthers_CafterDbeforeB_shuffle() throws Exception {
 
 		List<String> docAAfterIds = new ArrayList<String>();
@@ -294,38 +275,38 @@ public class FacesConfigOrderingTestCase extends TestCase {
 			new DocumentOrderingWrapper(docD)
 		);
 		//J+
-		
+
 		int number = 100;
 		for (int i = 0; i < number; i++) {
-			
+
 			Collections.shuffle(documents);
-	
+
 			DocumentOrderingWrapper[] wrappers = documents.toArray(new DocumentOrderingWrapper[documents.size()]);
 			String[] originalOrder = extractNames(wrappers);
 			DocumentOrderingWrapper.sort(wrappers);
-	
+
 			String[] orderedNames = extractNames(wrappers);
-	
+
 			// some solutions:
 			// [D, C, B, A]
 			// [D, A, C, B]
 			List<String> original = Arrays.asList(originalOrder);
 			List<String> actually = Arrays.asList(orderedNames);
-	
+
 			List<String> possibility1 = Arrays.asList("D", "C", "B", "A");
 			List<String> possibility2 = Arrays.asList("D", "A", "C", "B");
-	
+
 			boolean assertion = (actually.equals(possibility1)
 					|| actually.equals(possibility2)
 				);
-			String message = "\n original: " + original + 
+			String message = "\n original: " + original +
 				"\n expected: " + possibility1 +
 				"\n       or: " + possibility2 +
 				"\n actually: " + actually + "\n";
-			assertTrue(message, assertion);
-			
+			assertTrue(assertion, message);
+
 		}
-		
+
 		System.out.println("testAafterD_BafterCbeforeOthers_CafterDbeforeB_shuffle: " + number + " shuffles passed.");
 
 	}
@@ -359,7 +340,7 @@ public class FacesConfigOrderingTestCase extends TestCase {
 		return new DocumentInfo(document, null);
 
 	}
-	
+
 	public static String[] extractNames(DocumentOrderingWrapper[] documents) {
 		String[] extractedNames = new String[documents.length];
 		int i = 0;

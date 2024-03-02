@@ -16,12 +16,14 @@
 
 package jakarta.faces.validator;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.Locale;
 
-import jakarta.faces.component.UIInput;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import jakarta.faces.component.UIInput;
 
 /**
  * <p>
@@ -29,23 +31,8 @@ import junit.framework.TestSuite;
  */
 public class LongRangeValidatorTestCase extends ValidatorTestCase {
 
-    // ------------------------------------------------------------ Constructors
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public LongRangeValidatorTestCase(String name) {
-        super(name);
-    }
-
-    // ---------------------------------------------------- Overall Test Methods
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return (new TestSuite(LongRangeValidatorTestCase.class));
-    }
-
     // ------------------------------------------------- Individual Test Methods
+    @Test
     public void testLocaleHonored() {
         LongRangeValidator validator = new LongRangeValidator();
         validator.setMinimum(10100);
@@ -62,10 +49,10 @@ public class LongRangeValidatorTestCase extends ValidatorTestCase {
         } catch (ValidatorException e) {
             exceptionThrown = true;
             message = e.getMessage();
-            assertTrue("message: \"" + message + "\" missing localized chars.",
-                    -1 != message.indexOf("10,100"));
-            assertTrue("message: \"" + message + "\" missing localized chars.",
-                    -1 != message.indexOf("20,100"));
+            assertTrue(
+                    -1 != message.indexOf("10,100"), "message: \"" + message + "\" missing localized chars.");
+            assertTrue(
+                    -1 != message.indexOf("20,100"), "message: \"" + message + "\" missing localized chars.");
         }
         assertTrue(exceptionThrown);
 
@@ -79,14 +66,15 @@ public class LongRangeValidatorTestCase extends ValidatorTestCase {
         } catch (ValidatorException e) {
             exceptionThrown = true;
             message = e.getMessage();
-            assertTrue("message: \"" + message + "\" missing localized chars.",
-                    -1 != message.indexOf("10.100"));
-            assertTrue("message: \"" + message + "\" missing localized chars.",
-                    -1 != message.indexOf("20.100"));
+            assertTrue(
+                    -1 != message.indexOf("10.100"), "message: \"" + message + "\" missing localized chars.");
+            assertTrue(
+                    -1 != message.indexOf("20.100"), "message: \"" + message + "\" missing localized chars.");
         }
         assertTrue(exceptionThrown);
     }
 
+    @Test
     public void testHashCode() {
         LongRangeValidator validator1 = new LongRangeValidator();
         LongRangeValidator validator2 = new LongRangeValidator();

@@ -16,11 +16,13 @@
 
 package com.sun.faces.config;
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.commons.digester.Digester;
 import org.apache.commons.logging.impl.NoOpLog;
 import org.xml.sax.ErrorHandler;
@@ -30,6 +32,7 @@ import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
+
 import com.sun.faces.util.ToolsUtil;
 
 /**

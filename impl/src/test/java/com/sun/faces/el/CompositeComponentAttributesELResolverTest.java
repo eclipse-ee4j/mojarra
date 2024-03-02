@@ -16,23 +16,27 @@
 
 package com.sun.faces.el;
 
-import com.sun.faces.facelets.tag.composite.CompositeComponentBeanInfo;
-
-import jakarta.faces.application.Resource;
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UIPanel;
-import jakarta.faces.context.FacesContext;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.beans.BeanDescriptor;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import jakarta.el.ELContext;
 
 import org.easymock.EasyMock;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import static org.easymock.EasyMock.*;
+import org.junit.jupiter.api.Test;
+
+import com.sun.faces.facelets.tag.composite.CompositeComponentBeanInfo;
+
+import jakarta.el.ELContext;
+import jakarta.faces.application.Resource;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.context.FacesContext;
 
 /**
  * The JUnit tests for the CompositeComponentAttributesELResolver class.

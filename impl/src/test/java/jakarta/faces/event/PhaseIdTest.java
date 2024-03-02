@@ -16,40 +16,20 @@
 
 package jakarta.faces.event;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Iterator;
 
-public class PhaseIdTest extends TestCase {
-//
-// Protected Constants
-//
+import org.junit.jupiter.api.Test;
 
-//
-// Class Variables
-//
-//
-// Instance Variables
-//
-// Attribute Instance Variables
-// Relationship Instance Variables
-//
-// Constructors and Initializers    
-//
-    public PhaseIdTest() {
-        super();
-    }
+public class PhaseIdTest {
 
-//
-// Class methods
-//
-//
-// General Methods
-//
+    @Test
     public void testToString() {
         Iterator valueIter = PhaseId.VALUES.iterator();
         String cur = null;
         while (valueIter.hasNext()) {
-            cur = (String) valueIter.next().toString();
+            cur = valueIter.next().toString();
             System.out.println(cur);
             assertTrue(cur.length() > 3);
         }
