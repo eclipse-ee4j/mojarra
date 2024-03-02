@@ -18,6 +18,7 @@
 package com.sun.faces.cdi.clientwindow;
 
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
+import static com.sun.faces.context.SessionMap.getMutex;
 import static java.util.logging.Level.FINEST;
 
 import java.util.Collections;
@@ -144,7 +145,7 @@ public class ClientWindowScopeContextManager {
                 if (clientWindowScopeContexts == null && create) {
                     int numberOfClientWindows = ContextParam.NUMBER_OF_CLIENT_WINDOWS.getValue(facesContext);
 
-                    synchronized (session) {
+                    synchronized (getMutex(session)) {
                         sessionMap.put(CLIENT_WINDOW_CONTEXTS, Collections.synchronizedMap(new LRUMap<String, Object>(numberOfClientWindows)));
                     }
                 }

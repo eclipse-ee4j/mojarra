@@ -16,9 +16,12 @@
 
 package com.sun.faces.lifecycle;
 
+import static com.sun.faces.context.SessionMap.getMutex;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.CLIENT_WINDOW_PARAM;
 
 import java.util.Map;
+import java.util.UUID;
+
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -27,11 +30,9 @@ import jakarta.faces.render.ResponseStateManager;
 
 public class ClientWindowImpl extends ClientWindow {
 
-    private final TokenGenerator tokenGenerator;
     String id;
 
-    public ClientWindowImpl(TokenGenerator tokenGenerator) {
-        this.tokenGenerator = tokenGenerator;
+    public ClientWindowImpl() {
     }
 
     @Override
@@ -56,7 +57,7 @@ public class ClientWindowImpl extends ClientWindow {
     }
 
     private String calculateClientWindow(FacesContext context) {
-        synchronized (context.getExternalContext().getSession(true)) {
+        synchronized (getMutex(context.getExternalContext().getSession(true))) {
             final String clientWindowCounterKey = "com.sun.faces.lifecycle.ClientWindowCounterKey";
             ExternalContext extContext = context.getExternalContext();
             Map<String, Object> sessionAttrs = extContext.getSessionMap();
@@ -65,9 +66,9 @@ public class ClientWindowImpl extends ClientWindow {
                 counter = Integer.valueOf(0);
             }
             char sep = UINamingContainer.getSeparatorChar(context);
-            id = tokenGenerator.getNextToken() + sep + ++counter;
+            id = UUID.randomUUID().toString() + sep + +counter;
 
-            sessionAttrs.put(clientWindowCounterKey, counter);
+            sessionAttrs.put(clientWindowCounterKey, ++counter);
         }
         return id;
     }
