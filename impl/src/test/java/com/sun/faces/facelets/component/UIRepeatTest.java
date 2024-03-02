@@ -16,15 +16,15 @@
 
 package com.sun.faces.facelets.component;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
 
-import org.easymock.EasyMock;
-import org.easymock.IAnswer;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.application.FacesMessage.Severity;
@@ -40,14 +40,13 @@ public class UIRepeatTest {
 
 	@Test
 	public void testHasErrorMessages() throws Exception {
-		ctx = EasyMock.createMock(FacesContext.class);
-		expect(ctx.getMaximumSeverity()).andAnswer(new IAnswer<Severity>() {
-			@Override
-			public Severity answer() throws Throwable {
-				return maximumSeverity;
-			}
-		}).anyTimes();
-		replay(ctx);
+		ctx = Mockito.mock(FacesContext.class);
+		when(ctx.getMaximumSeverity()).thenAnswer(new Answer<Severity>() {
+		    @Override
+		    public Severity answer(InvocationOnMock invocation) throws Throwable {
+                return maximumSeverity;
+		    }
+		});
 
 		maximumSeverity = FacesMessage.SEVERITY_WARN;
 		assertEquals(false, hasErrorMessages(ctx));

@@ -16,8 +16,6 @@
 
 package jakarta.faces.convert;
 
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -25,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.math.BigInteger;
 
 import org.junit.jupiter.api.Test;
-import org.powermock.api.easymock.PowerMock;
+import org.mockito.Mockito;
 
 import jakarta.faces.component.UIPanel;
 import jakarta.faces.context.FacesContext;
@@ -50,10 +48,8 @@ public class BigIntegerConverterTest {
     @Test
     public void testGetAsObject2() {
         BigIntegerConverter converter = new BigIntegerConverter();
-        FacesContext facesContext = PowerMock.createMock(FacesContext.class);
-        replay(facesContext);
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
         assertNull(converter.getAsObject(facesContext, new UIPanel(), null));
-        verify(facesContext);
     }
 
     /**
@@ -62,10 +58,8 @@ public class BigIntegerConverterTest {
     @Test
     public void testGetAsObject3() {
         BigIntegerConverter converter = new BigIntegerConverter();
-        FacesContext facesContext = PowerMock.createMock(FacesContext.class);
-        replay(facesContext);
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
         assertNull(converter.getAsObject(facesContext, new UIPanel(), "     "));
-        verify(facesContext);
     }
 
     /**
@@ -74,10 +68,8 @@ public class BigIntegerConverterTest {
     @Test
     public void testGetAsObject4() {
         BigIntegerConverter converter = new BigIntegerConverter();
-        FacesContext facesContext = PowerMock.createMock(FacesContext.class);
-        replay(facesContext);
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
         assertEquals(BigInteger.valueOf(123), converter.getAsObject(facesContext, new UIPanel(), "123"));
-        verify(facesContext);
     }
 
     /**
@@ -95,10 +87,8 @@ public class BigIntegerConverterTest {
     @Test
     public void testGetAsString2() {
         BigIntegerConverter converter = new BigIntegerConverter();
-        FacesContext facesContext = PowerMock.createMock(FacesContext.class);
-        replay(facesContext);
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
         assertEquals("", converter.getAsString(facesContext, new UIPanel(), null));
-        verify(facesContext);
     }
 
     /**
@@ -107,10 +97,8 @@ public class BigIntegerConverterTest {
     @Test
     public void testGetAsString3() {
         BigIntegerConverter converter = new BigIntegerConverter();
-        FacesContext facesContext = PowerMock.createMock(FacesContext.class);
-        replay(facesContext);
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
         assertEquals("123", converter.getAsString(facesContext, new UIPanel(), "123"));
-        verify(facesContext);
     }
 
     /**
@@ -119,9 +107,7 @@ public class BigIntegerConverterTest {
     @Test
     public void testGetAsString4() {
         BigIntegerConverter converter = new BigIntegerConverter();
-        FacesContext facesContext = PowerMock.createMock(FacesContext.class);
-        replay(facesContext);
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
         assertEquals("123", converter.getAsString(facesContext, new UIPanel(), BigInteger.valueOf(123)));
-        verify(facesContext);
     }
 }

@@ -2,9 +2,9 @@ package com.sun.faces.util;
 
 import java.util.Locale;
 
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import com.sun.faces.mock.MockApplication;
 import com.sun.faces.mock.MockFacesContext;
@@ -18,7 +18,7 @@ public class FacesLoggerTest {
     public void unresolvedNavigationUS() {
         MockFacesContext facesContext = new MockFacesContext();
         facesContext.setApplication(new MockApplication());
-        facesContext.setELContext(EasyMock.createMock(ELContext.class));
+        facesContext.setELContext(Mockito.mock(ELContext.class));
         UIViewRoot root = facesContext.getApplication().getViewHandler().createView(facesContext, null);
         root.setLocale(Locale.US);
         facesContext.setViewRoot(root);
@@ -33,7 +33,7 @@ public class FacesLoggerTest {
     public void unresolvedNavigationGermany() {
         MockFacesContext facesContext = new MockFacesContext();
         facesContext.setApplication(new MockApplication());
-        facesContext.setELContext(EasyMock.createMock(ELContext.class));
+        facesContext.setELContext(Mockito.mock(ELContext.class));
         UIViewRoot root = facesContext.getApplication().getViewHandler().createView(facesContext, null);
         root.setLocale(Locale.GERMANY);
         facesContext.setViewRoot(root);

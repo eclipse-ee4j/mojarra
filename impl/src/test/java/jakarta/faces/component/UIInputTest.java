@@ -16,15 +16,13 @@
 
 package jakarta.faces.component;
 
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.LengthValidator;
@@ -38,11 +36,9 @@ public class UIInputTest {
 
     @Test
     public void testSaveState() {
-        FacesContext context = EasyMock.createMock(FacesContext.class);
+        FacesContext context = Mockito.mock(FacesContext.class);
         UIInput input = new UIInput();
-        replay(context);
         assertNotNull(input.saveState(context));
-        verify(context);
     }
 
     @Test
@@ -53,21 +49,18 @@ public class UIInputTest {
 
     @Test
     public void testSaveState3() {
-        FacesContext context = EasyMock.createMock(FacesContext.class);
+        FacesContext context = Mockito.mock(FacesContext.class);
         UIInput input = new UIInput();
-        replay(context);
         input.markInitialState();
         assertNull(input.saveState(context));
-        verify(context);
     }
 
     @Test
     public void testSaveState4() {
-        FacesContext context = EasyMock.createMock(FacesContext.class);
+        FacesContext context = Mockito.mock(FacesContext.class);
         UIInput input = new UIInput();
         LengthValidator l1 = new LengthValidator();
         LengthValidator l2 = new LengthValidator();
-        replay(context);
         input.addValidator(l1);
         input.addValidator(l2);
         l1.setMinimum(1);
@@ -78,58 +71,48 @@ public class UIInputTest {
         assertTrue(l2.initialStateMarked());
         Object state = input.saveState(context);
         assertNull(state);
-        verify(context);
     }
 
     @Test
     public void testRestoreState() {
-        FacesContext context = EasyMock.createMock(FacesContext.class);
+        FacesContext context = Mockito.mock(FacesContext.class);
         UIInput input = new UIInput();
-        replay(context);
         input.restoreState(context, null);
-        verify(context);
     }
 
     @Test
     public void testRestoreState2() {
-        FacesContext context = EasyMock.createMock(FacesContext.class);
+        FacesContext context = Mockito.mock(FacesContext.class);
         UIInput input = new UIInput();
-        replay(context);
         assertThrows(NullPointerException.class, () -> input.restoreState(null, null));
-        verify(context);
     }
 
     @Test
     public void testRestoreState3() {
-        FacesContext context = EasyMock.createMock(FacesContext.class);
+        FacesContext context = Mockito.mock(FacesContext.class);
         UIInput input = new UIInput();
-        replay(context);
         Object state = input.saveState(context);
         assertNotNull(state);
         input.restoreState(context, state);
-        verify(context);
     }
 
     @Test
     public void testRestoreState4() {
-        FacesContext context = EasyMock.createMock(FacesContext.class);
+        FacesContext context = Mockito.mock(FacesContext.class);
         UIInput input = new UIInput();
         input.addValidator(new LongRangeValidator());
-        replay(context);
         Object state = input.saveState(context);
         assertNotNull(state);
         input = new UIInput();
         input.restoreState(context, state);
-        verify(context);
     }
 
     @Test
     public void testRestoreState5() {
-        FacesContext context = EasyMock.createMock(FacesContext.class);
+        FacesContext context = Mockito.mock(FacesContext.class);
         UIInput input = new UIInput();
         LengthValidator l1 = new LengthValidator();
         LengthValidator l2 = new LengthValidator();
-        replay(context);
         input.addValidator(l1);
         input.addValidator(l2);
         l1.setMinimum(1);
@@ -206,6 +189,5 @@ public class UIInputTest {
             assertTrue(v.getMinimum() == i + 1);
         }
 
-        verify(context);
     }
 }
