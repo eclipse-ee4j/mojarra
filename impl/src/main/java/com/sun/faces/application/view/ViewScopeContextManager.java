@@ -20,6 +20,7 @@ package com.sun.faces.application.view;
 import static com.sun.faces.application.view.ViewScopeManager.VIEW_MAP_ID;
 import static com.sun.faces.cdi.CdiUtils.getBeanReference;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
+import static com.sun.faces.context.SessionMap.getMutex;
 import static com.sun.faces.util.Util.getCdiBeanManager;
 import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.WARNING;
@@ -95,7 +96,7 @@ public class ViewScopeContextManager {
             LOGGER.log(WARNING, "Cannot locate the view map to clear in the active maps: {0}", viewMap);
         }
     }
-    
+
     /**
      * Clear the given view map.
      *
@@ -247,7 +248,7 @@ public class ViewScopeContextManager {
                 String viewMapId = (String) facesContext.getViewRoot().getTransientStateHelper().getTransient(VIEW_MAP_ID);
 
                 if (activeViewScopeContexts == null && create) {
-                    synchronized (session) {
+                    synchronized (getMutex(session)) {
                         activeViewScopeContexts = new ConcurrentHashMap<>();
                         sessionMap.put(ACTIVE_VIEW_CONTEXTS, activeViewScopeContexts);
                     }
@@ -332,7 +333,7 @@ public class ViewScopeContextManager {
 
         HttpSession session = httpSessionEvent.getSession();
 
-        Map<Object, Map<String, ViewScopeContextObject>> activeViewScopeContexts = (Map<Object, Map<String, ViewScopeContextObject>>) 
+        Map<Object, Map<String, ViewScopeContextObject>> activeViewScopeContexts = (Map<Object, Map<String, ViewScopeContextObject>>)
                 session.getAttribute(ACTIVE_VIEW_CONTEXTS);
         if (activeViewScopeContexts != null) {
             Map<String, Object> activeViewMaps = (Map<String, Object>) session.getAttribute(ViewScopeManager.ACTIVE_VIEW_MAPS);
