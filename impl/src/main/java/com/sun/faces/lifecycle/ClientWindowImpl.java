@@ -19,6 +19,7 @@ package com.sun.faces.lifecycle;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.CLIENT_WINDOW_PARAM;
 
 import java.util.Map;
+import java.util.UUID;
 
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.context.ExternalContext;
@@ -64,7 +65,7 @@ public class ClientWindowImpl extends ClientWindow {
                 counter = Integer.valueOf(0);
             }
             char sep = UINamingContainer.getSeparatorChar(context);
-            id = extContext.getSessionId(true) + sep + +counter;
+            id = UUID.randomUUID().toString() + sep + +counter;
 
             sessionAttrs.put(clientWindowCounterKey, ++counter);
         }
