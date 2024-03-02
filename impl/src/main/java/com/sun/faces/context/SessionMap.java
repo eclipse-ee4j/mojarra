@@ -16,6 +16,8 @@
 
 package com.sun.faces.context;
 
+import static java.util.Optional.ofNullable;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -37,6 +39,7 @@ import jakarta.servlet.http.HttpSession;
 public class SessionMap extends BaseContextMap<Object> {
 
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
+    private static final String MUTEX = Mutex.class.getName();
 
     private final HttpServletRequest request;
     private final ProjectStage stage;
@@ -184,6 +187,24 @@ public class SessionMap extends BaseContextMap<Object> {
 
     protected HttpSession getSession(boolean createNew) {
         return request.getSession(createNew);
+    }
+
+    // ----------------------------------------------------------- Session Mutex
+
+    private static final class Mutex implements Serializable {
+        private static final long serialVersionUID = 1L;
+    }
+
+    public static void createMutex(HttpSession session) {
+        session.setAttribute(MUTEX, new Mutex());
+    }
+
+    public static Object getMutex(Object session) {
+        return session instanceof HttpSession ? ofNullable(((HttpSession) session).getAttribute(MUTEX)).orElse(session) : session;
+    }
+
+    public static void removeMutex(HttpSession session) {
+        session.removeAttribute(MUTEX);
     }
 
 } // END SessionMap
