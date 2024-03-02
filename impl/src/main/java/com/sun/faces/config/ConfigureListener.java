@@ -27,6 +27,8 @@ import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParamet
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.ForceLoadFacesConfigFiles;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.VerifyFacesConfigObjects;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.JakartaFacesProjectStage;
+import static com.sun.faces.context.SessionMap.createMutex;
+import static com.sun.faces.context.SessionMap.removeMutex;
 import static com.sun.faces.push.WebsocketEndpoint.URI_TEMPLATE;
 import static java.lang.Boolean.TRUE;
 import static java.text.MessageFormat.format;
@@ -350,6 +352,8 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
     @Override
     public void sessionCreated(HttpSessionEvent event) {
+        createMutex(event.getSession());
+
         if (webAppListener != null) {
             webAppListener.sessionCreated(event);
         }
@@ -357,6 +361,8 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
     @Override
     public void sessionDestroyed(HttpSessionEvent event) {
+        removeMutex(event.getSession());
+
         if (webAppListener != null) {
             webAppListener.sessionDestroyed(event);
         }
