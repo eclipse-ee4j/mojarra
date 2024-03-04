@@ -30,6 +30,8 @@ import static com.sun.faces.config.manager.FacesSchema.Schemas.FACES_3_0_XSD;
 import static com.sun.faces.config.manager.FacesSchema.Schemas.FACES_3_0_XSD_FILE;
 import static com.sun.faces.config.manager.FacesSchema.Schemas.FACES_4_0_XSD;
 import static com.sun.faces.config.manager.FacesSchema.Schemas.FACES_4_0_XSD_FILE;
+import static com.sun.faces.config.manager.FacesSchema.Schemas.FACES_4_1_XSD;
+import static com.sun.faces.config.manager.FacesSchema.Schemas.FACES_4_1_XSD_FILE;
 import static com.sun.faces.config.manager.FacesSchema.Schemas.FACES_CONFIG_1_X_DEFAULT_NS;
 import static com.sun.faces.config.manager.FacesSchema.Schemas.JAKARTAEE_SCHEMA_DEFAULT_NS;
 import static com.sun.faces.config.manager.FacesSchema.Schemas.JAVAEE_SCHEMA_DEFAULT_NS;
@@ -63,13 +65,15 @@ public enum FacesSchema {
         FACES_23(FACES_2_3_XSD, FACES_2_3_XSD_FILE),
         FACES_30(FACES_3_0_XSD, FACES_3_0_XSD_FILE),
         FACES_40(FACES_4_0_XSD, FACES_4_0_XSD_FILE),
+        FACES_41(FACES_4_1_XSD, FACES_4_1_XSD_FILE),
 
         // taglib.xml
         FACELET_TAGLIB_20(Schemas.FACELET_TAGLIB_2_0_XSD, Schemas.FACELET_TAGLIB_2_0_XSD_FILE),
         FACELET_TAGLIB_22(Schemas.FACELET_TAGLIB_2_2_XSD, Schemas.FACELET_TAGLIB_2_2_XSD_FILE),
         FACELET_TAGLIB_23(Schemas.FACELET_TAGLIB_2_3_XSD, Schemas.FACELET_TAGLIB_2_3_XSD_FILE),
         FACELET_TAGLIB_30(Schemas.FACELET_TAGLIB_3_0_XSD, Schemas.FACELET_TAGLIB_3_0_XSD_FILE),
-        FACELET_TAGLIB_40(Schemas.FACELET_TAGLIB_4_0_XSD, Schemas.FACELET_TAGLIB_4_0_XSD_FILE);
+        FACELET_TAGLIB_40(Schemas.FACELET_TAGLIB_4_0_XSD, Schemas.FACELET_TAGLIB_4_0_XSD_FILE),
+        FACELET_TAGLIB_41(Schemas.FACELET_TAGLIB_4_1_XSD, Schemas.FACELET_TAGLIB_4_1_XSD_FILE);
 
         /**
          * Constants for individual schema files
@@ -90,6 +94,7 @@ public enum FacesSchema {
             public static final String FACELET_TAGLIB_2_3_XSD = "/com/sun/faces/web-facelettaglibrary_2_3.xsd";
             public static final String FACELET_TAGLIB_3_0_XSD = "/com/sun/faces/web-facelettaglibrary_3_0.xsd";
             public static final String FACELET_TAGLIB_4_0_XSD = "/com/sun/faces/web-facelettaglibrary_4_0.xsd";
+            public static final String FACELET_TAGLIB_4_1_XSD = "/com/sun/faces/web-facelettaglibrary_4_1.xsd";
 
             public static final String FACES_1_2_XSD = "/com/sun/faces/web-facesconfig_1_2.xsd";
             public static final String FACES_1_1_XSD = "/com/sun/faces/web-facesconfig_1_1.xsd";
@@ -99,12 +104,14 @@ public enum FacesSchema {
             public static final String FACES_2_3_XSD = "/com/sun/faces/web-facesconfig_2_3.xsd";
             public static final String FACES_3_0_XSD = "/com/sun/faces/web-facesconfig_3_0.xsd";
             public static final String FACES_4_0_XSD = "/com/sun/faces/web-facesconfig_4_0.xsd";
+            public static final String FACES_4_1_XSD = "/com/sun/faces/web-facesconfig_4_1.xsd";
 
             public static final String FACELET_TAGLIB_2_0_XSD_FILE = AS_SCHEMA_DIR + "web-facelettaglibrary_2_0.xsd";
             public static final String FACELET_TAGLIB_2_2_XSD_FILE = AS_SCHEMA_DIR + "web-facelettaglibrary_2_2.xsd";
             public static final String FACELET_TAGLIB_2_3_XSD_FILE = AS_SCHEMA_DIR + "web-facelettaglibrary_2_3.xsd";
             public static final String FACELET_TAGLIB_3_0_XSD_FILE = AS_SCHEMA_DIR + "web-facelettaglibrary_3_0.xsd";
             public static final String FACELET_TAGLIB_4_0_XSD_FILE = AS_SCHEMA_DIR + "web-facelettaglibrary_4_0.xsd";
+            public static final String FACELET_TAGLIB_4_1_XSD_FILE = AS_SCHEMA_DIR + "web-facelettaglibrary_4_1.xsd";
 
             // #### faces-config.xml XSDs within GlassFish
 
@@ -115,6 +122,7 @@ public enum FacesSchema {
             public static final String FACES_2_3_XSD_FILE = AS_SCHEMA_DIR + "web-facesconfig_2_3.xsd";
             public static final String FACES_3_0_XSD_FILE = AS_SCHEMA_DIR + "web-facesconfig_3_0.xsd";
             public static final String FACES_4_0_XSD_FILE = AS_SCHEMA_DIR + "web-facesconfig_4_0.xsd";
+            public static final String FACES_4_1_XSD_FILE = AS_SCHEMA_DIR + "web-facesconfig_4_1.xsd";
 
             /**
              * Contains associations between grammar name and the physical resource.
@@ -161,6 +169,11 @@ public enum FacesSchema {
                       FACES_4_0_XSD_FILE
                  },
                  {
+                     "web-facesconfig_4_1.xsd",
+                      FACES_4_1_XSD,
+                      FACES_4_1_XSD_FILE
+                 },
+                 {
                      "facelet-taglib_1_0.dtd",
                      "/com/sun/faces/facelet-taglib_1_0.dtd",
                      null
@@ -189,6 +202,11 @@ public enum FacesSchema {
                      "web-facelettaglibrary_4_0.xsd",
                       FACELET_TAGLIB_4_0_XSD,
                       FACELET_TAGLIB_4_0_XSD_FILE
+                 },
+                 {
+                     "web-facelettaglibrary_4_1.xsd",
+                      FACELET_TAGLIB_4_1_XSD,
+                      FACELET_TAGLIB_4_1_XSD_FILE
                  },
                  {
                      "web-facesconfig_1_2.xsd",
@@ -229,6 +247,11 @@ public enum FacesSchema {
                      "jakartaee_10.xsd",
                      "/com/sun/faces/jakartaee_10.xsd",
                      AS_SCHEMA_DIR + "jakartaee_10.xsd"
+                 },
+                 {
+                     "jakartaee_11.xsd",
+                     "/com/sun/faces/jakartaee_11.xsd",
+                     AS_SCHEMA_DIR + "jakartaee_11.xsd"
                  },
                  {
                      "javaee_web_services_client_1_2.xsd",
@@ -293,6 +316,12 @@ public enum FacesSchema {
             switch (documentNS) {
                 case JAKARTAEE_SCHEMA_DEFAULT_NS: {
                     switch (version) {
+                        case "4.1":
+                            if ("facelet-taglib".equals(localName)) {
+                                return FACELET_TAGLIB_41;
+                            } else {
+                                return FACES_41;
+                            }
                         case "4.0":
                             if ("facelet-taglib".equals(localName)) {
                                 return FACELET_TAGLIB_40;
