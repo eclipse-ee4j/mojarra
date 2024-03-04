@@ -16,6 +16,10 @@
 
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,6 +27,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.junit.jupiter.api.Test;
 
 import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
@@ -138,13 +144,10 @@ public class UIComponentBaseBehaviorTestCase extends UIComponentTestCase {
         }
     }
 
-    public UIComponentBaseBehaviorTestCase(String name) {
-        super(name);
-    }
-
     /**
      * Test method for {@link jakarta.faces.component.UIComponentBase#saveState(jakarta.faces.context.FacesContext)}.
      */
+    @Test
     public void testSaveState() {
         BehaviorComponent comp = new BehaviorComponent();
         // Cast component to the interface, to be sure about method definition.
@@ -173,6 +176,7 @@ public class UIComponentBaseBehaviorTestCase extends UIComponentTestCase {
         assertEquals(behavior2, behaviors.get(ONCLICK).get(1));
     }
 
+    @Test
     public void testNonClientBehaviorHolder() throws Exception {
         UIInput input = new UIInput();
         try {
@@ -187,24 +191,25 @@ public class UIComponentBaseBehaviorTestCase extends UIComponentTestCase {
      * Test method for
      * {@link jakarta.faces.component.UIComponentBase#addClientBehavior(java.lang.String, jakarta.faces.component.behavior.ClientBehavior)}.
      */
+    @Test
     public void testAddBehavior() {
         BehaviorComponent comp = new BehaviorComponent();
         // Cast component to the interface, to be sure about method definition.
         ClientBehaviorHolder holder = comp;
         holder.addClientBehavior(ONCLICK, new TestBehavior());
+        assertTrue(holder.getClientBehaviors().containsKey(ONCLICK));
         holder.addClientBehavior(ONCLICK, new TestBehavior());
+        assertTrue(holder.getClientBehaviors().containsKey(ONCLICK));
         holder.addClientBehavior(ONCHANGE, new TestBehavior());
-        try {
-            holder.addClientBehavior("foo", new TestBehavior());
-        } catch (IllegalArgumentException e) {
-            return;
-        }
-        assertFalse(true);
+        assertTrue(holder.getClientBehaviors().containsKey(ONCHANGE));
+        holder.addClientBehavior("foo", new TestBehavior());
+        assertFalse(holder.getClientBehaviors().containsKey("foo"));
     }
 
     /**
      * Test method for {@link jakarta.faces.component.UIComponentBase#getEventNames()}.
      */
+    @Test
     public void testGetEventNames() {
         BehaviorComponent comp = new BehaviorComponent();
         ClientBehaviorHolder holder = comp;
@@ -214,6 +219,7 @@ public class UIComponentBaseBehaviorTestCase extends UIComponentTestCase {
     /**
      * Test method for {@link jakarta.faces.component.UIComponentBase#getClientBehaviors()}.
      */
+    @Test
     public void testGetBehaviors() {
         BehaviorComponent comp = new BehaviorComponent();
         // Cast component to the interface, to be sure about method definition.
@@ -226,6 +232,7 @@ public class UIComponentBaseBehaviorTestCase extends UIComponentTestCase {
         holder.addClientBehavior(ONCLICK, new TestBehavior());
         holder.addClientBehavior(ONCLICK, new TestBehavior());
         holder.addClientBehavior(ONCHANGE, new TestBehavior());
+        behaviors = holder.getClientBehaviors();
         assertFalse(behaviors.isEmpty());
         assertTrue(behaviors.containsKey(ONCLICK));
         assertTrue(behaviors.containsKey(ONCHANGE));
@@ -240,6 +247,7 @@ public class UIComponentBaseBehaviorTestCase extends UIComponentTestCase {
     /**
      * Test method for {@link jakarta.faces.component.UIComponentBase#getDefaultEventName()}.
      */
+    @Test
     public void testGetDefaultEventName() {
         BehaviorComponent comp = new BehaviorComponent();
         // Cast component to the interface, to be sure about method definition.

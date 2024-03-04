@@ -16,13 +16,22 @@
 
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.sun.faces.component.search.CompositeSearchKeywordResolver;
 import com.sun.faces.component.search.SearchExpressionContextFactoryImpl;
@@ -57,11 +66,8 @@ import jakarta.faces.render.RenderKitFactory;
 
 public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
 
-    public SearchExpressionHandlerTest(String name) {
-        super(name);
-    }
-
     @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 
@@ -99,6 +105,7 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
     }
 
     @Override
+    @AfterEach
     public void tearDown() throws Exception {
         super.tearDown();
     }
@@ -153,6 +160,7 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         }
     }
 
+    @Test
     public void test_ResolveComponent_Parent() {
 
         UIComponent root = new UIPanel();
@@ -172,9 +180,10 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         UIComponent source = new UICommand();
         innerContainer.getChildren().add(source);
 
-        assertSame("Failed", innerContainer, resolveComponent(source, "@parent"));
+        assertSame(innerContainer, resolveComponent(source, "@parent"));
     }
 
+    @Test
     public void test_ResolveComponent_ParentParent() {
 
         UIComponent root = new UIPanel();
@@ -194,9 +203,10 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         UIComponent source = new UICommand();
         innerContainer.getChildren().add(source);
 
-        assertSame("Failed", outerContainer, resolveComponent(source, "@parent:@parent"));
+        assertSame(outerContainer, resolveComponent(source, "@parent:@parent"));
     }
 
+    @Test
     public void test_ResolveComponent_Form() {
 
         UIComponent root = new UIPanel();
@@ -216,9 +226,10 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         UIComponent source = new UICommand();
         innerContainer.getChildren().add(source);
 
-        assertSame("Failed", form, resolveComponent(source, "@form"));
+        assertSame(form, resolveComponent(source, "@form"));
     }
 
+    @Test
     public void test_ResolveComponent_FormParent() {
 
         UIComponent root = new UIPanel();
@@ -238,9 +249,10 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         UIComponent source = new UICommand();
         innerContainer.getChildren().add(source);
 
-        assertSame("Failed", root, resolveComponent(source, "@form:@parent"));
+        assertSame(root, resolveComponent(source, "@form:@parent"));
     }
 
+    @Test
     public void test_ResolveComponent_All() {
 
         UIComponent root = new UIPanel();
@@ -260,9 +272,10 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         UIComponent source = new UICommand();
         innerContainer.getChildren().add(source);
 
-        assertSame("Failed", root, resolveComponent(source, "@all"));
+        assertSame(root, resolveComponent(source, "@all"));
     }
 
+    @Test
     public void test_ResolveComponent_This() {
 
         UIComponent root = new UIPanel();
@@ -282,9 +295,10 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         UIComponent source = new UICommand();
         innerContainer.getChildren().add(source);
 
-        assertSame("Failed", source, resolveComponent(source, "@this"));
+        assertSame(source, resolveComponent(source, "@this"));
     }
 
+    @Test
     public void test_ResolveComponent_ThisParent() {
 
         UIComponent root = new UIPanel();
@@ -304,9 +318,10 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         UIComponent source = new UICommand();
         innerContainer.getChildren().add(source);
 
-        assertSame("Failed", innerContainer, resolveComponent(source, "@this:@parent"));
+        assertSame(innerContainer, resolveComponent(source, "@this:@parent"));
     }
 
+    @Test
     public void test_ResolveComponent_Namingcontainer() {
 
         UIComponent root = new UIPanel();
@@ -326,9 +341,10 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         UIComponent source = new UICommand();
         innerContainer.getChildren().add(source);
 
-        assertSame("Failed", innerContainer, resolveComponent(source, "@namingcontainer"));
+        assertSame(innerContainer, resolveComponent(source, "@namingcontainer"));
     }
 
+    @Test
     public void test_ResolveComponent_Absolute() {
 
         UIComponent root = new UIPanel();
@@ -353,9 +369,10 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         source.setId("source");
         innerContainer.getChildren().add(source);
 
-        assertSame("Failed", source, resolveComponent(source, " :form:outerContainer:innerContainer:source "));
+        assertSame(source, resolveComponent(source, " :form:outerContainer:innerContainer:source "));
     }
 
+    @Test
     public void test_ResolveComponent_Relative() {
 
         UIComponent root = new UIPanel();
@@ -380,9 +397,10 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         source.setId("source");
         innerContainer.getChildren().add(source);
 
-        assertSame("Failed", component, resolveComponent(source, " other "));
+        assertSame(component, resolveComponent(source, " other "));
     }
 
+    @Test
     public void test_ResolveComponent_AbsoluteForm() {
 
         UIComponent root = new UIPanel();
@@ -408,9 +426,10 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         source.setId("source");
         innerContainer.getChildren().add(source);
 
-        assertSame("Failed", root, resolveComponent(source, " :form:@parent "));
+        assertSame(root, resolveComponent(source, " :form:@parent "));
     }
 
+    @Test
     public void test_ResolveComponent_ParentChild() {
 
         UIComponent root = new UIPanel();
@@ -436,10 +455,11 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         source.setId("source");
         innerContainer.getChildren().add(source);
 
-        assertSame("Failed", component, resolveComponent(source, " @parent:@child(0) "));
-        assertSame("Failed", source, resolveComponent(source, " @parent:@child(1) "));
+        assertSame(component, resolveComponent(source, " @parent:@child(0) "));
+        assertSame(source, resolveComponent(source, " @parent:@child(1) "));
     }
 
+    @Test
     public void test_ResolveComponent_AbsoluteNamingcontainer() {
 
         UIComponent root = new UIPanel();
@@ -465,9 +485,10 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         source.setId("source");
         innerContainer.getChildren().add(source);
 
-        assertSame("Failed", form, resolveComponent(source, " :form:outerContainer:@namingcontainer "));
+        assertSame(form, resolveComponent(source, " :form:outerContainer:@namingcontainer "));
     }
 
+    @Test
     public void test_ResolveClientId_This() {
 
         UIComponent root = new UIPanel();
@@ -491,9 +512,10 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         source.setId("source");
         innerContainer.getChildren().add(source);
 
-        assertEquals("Failed", "form:outerContainer:innerContainer:source", resolveClientId(source, " @this "));
+        assertEquals("form:outerContainer:innerContainer:source", resolveClientId(source, " @this "));
     }
 
+    @Test
     public void test_ResolveClientId_Form() {
 
         UIComponent root = new UIPanel();
@@ -517,9 +539,10 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         source.setId("source");
         innerContainer.getChildren().add(source);
 
-        assertEquals("Failed", "form", resolveClientId(source, " @form "));
+        assertEquals("form", resolveClientId(source, " @form "));
     }
 
+    @Test
     public void test_ResolveClientId_AbsoluteId() {
 
         UIComponent root = new UIPanel();
@@ -543,9 +566,10 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         UIComponent source = new UICommand();
         innerContainer.getChildren().add(source);
 
-        assertEquals("Failed", "form", resolveClientId(source, " :form "));
+        assertEquals("form", resolveClientId(source, " :form "));
     }
 
+    @Test
     public void test_ResolveClientId_Relative() {
 
         UIComponent root = new UIPanel();
@@ -570,9 +594,10 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         source.setId("source");
         innerContainer.getChildren().add(source);
 
-        assertEquals("Failed", "form:outerContainer:innerContainer:other", resolveClientId(source, " other "));
+        assertEquals("form:outerContainer:innerContainer:other", resolveClientId(source, " other "));
     }
 
+    @Test
     public void test_ResolveComponents_RelativeAndParentParent() {
 
         UIComponent root = new UIPanel();
@@ -598,11 +623,12 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         innerContainer.getChildren().add(source);
 
         List<UIComponent> resolvedComponents = resolveComponents(source, " other @parent:@parent ");
-        assertTrue("Failed", resolvedComponents.contains(component));
-        assertTrue("Failed", resolvedComponents.contains(outerContainer));
-        assertEquals("Failed", 2, resolvedComponents.size());
+        assertTrue(resolvedComponents.contains(component));
+        assertTrue(resolvedComponents.contains(outerContainer));
+        assertEquals(2, resolvedComponents.size());
     }
 
+    @Test
     public void test_ResolveComponents_RelativeAndThisParent() {
 
         UIComponent root = new UIPanel();
@@ -628,11 +654,12 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         innerContainer.getChildren().add(source);
 
         List<UIComponent> resolvedComponents = resolveComponents(source, " other,@this:@parent  @none ");
-        assertTrue("Failed", resolvedComponents.contains(component));
-        assertTrue("Failed", resolvedComponents.contains(innerContainer));
-        assertEquals("Failed", 2, resolvedComponents.size());
+        assertTrue(resolvedComponents.contains(component));
+        assertTrue(resolvedComponents.contains(innerContainer));
+        assertEquals(2, resolvedComponents.size());
     }
 
+    @Test
     public void test_ResolveComponent_Next() {
 
         UIComponent root = new UIPanel();
@@ -650,8 +677,8 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         command3.setId("command3");
         root.getChildren().add(command3);
 
-        assertSame("Failed", command2, resolveComponent(command1, " @next "));
-        assertSame("Failed", command3, resolveComponent(command2, " @next "));
+        assertSame(command2, resolveComponent(command1, " @next "));
+        assertSame(command3, resolveComponent(command2, " @next "));
 
         try {
             resolveComponent(command3, " @next");
@@ -661,6 +688,7 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         }
     }
 
+    @Test
     public void test_ResolveComponent_NextNext() {
 
         UIComponent root = new UIPanel();
@@ -678,7 +706,7 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         command3.setId("command3");
         root.getChildren().add(command3);
 
-        assertSame("Failed", command3, resolveComponent(command1, " @next:@next "));
+        assertSame(command3, resolveComponent(command1, " @next:@next "));
 
         try {
             resolveComponent(command2, " @next:@next");
@@ -695,6 +723,7 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         }
     }
 
+    @Test
     public void test_ResolveComponent_Previous() {
 
         UIComponent root = new UIPanel();
@@ -712,8 +741,8 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         command3.setId("command3");
         root.getChildren().add(command3);
 
-        assertSame("Failed", command1, resolveComponent(command2, " @previous "));
-        assertSame("Failed", command2, resolveComponent(command3, " @previous "));
+        assertSame(command1, resolveComponent(command2, " @previous "));
+        assertSame(command2, resolveComponent(command3, " @previous "));
 
         try {
             resolveComponent(command1, " @previous");
@@ -723,6 +752,7 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         }
     }
 
+    @Test
     public void test_ResolveComponent_Root() {
 
         UIComponent root = new UIPanel();
@@ -740,9 +770,10 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         command3.setId("command3");
         root.getChildren().add(command3);
 
-        assertSame("Failed", facesContext.getViewRoot(), resolveComponent(command2, " @root "));
+        assertSame(facesContext.getViewRoot(), resolveComponent(command2, " @root "));
     }
 
+    @Test
     public void test_ResolveComponent_FormChildNextNext() {
 
         UIForm root = new UIForm();
@@ -760,9 +791,10 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         command3.setId("command3");
         root.getChildren().add(command3);
 
-        assertSame("Failed", command3, resolveComponent(command1, " @form:@child(0):@next:@next "));
+        assertSame(command3, resolveComponent(command1, " @form:@child(0):@next:@next "));
     }
 
+    @Test
     public void test_ResolveComponent_IgnoreNoResult() {
         UIForm root = new UIForm();
         root.setId("form");
@@ -775,9 +807,10 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         command2.setId("command2");
         root.getChildren().add(command2);
 
-        assertSame("Failed", null, resolveComponent(command1, " command3 ", SearchExpressionHint.IGNORE_NO_RESULT));
+        assertSame(null, resolveComponent(command1, " command3 ", SearchExpressionHint.IGNORE_NO_RESULT));
     }
 
+    @Test
     public void test_ResolveClientId_AbsoluteWithFormPrependIdFalse() {
 
         UIComponent root = new UIPanel();
@@ -803,9 +836,10 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         source.setId("source");
         innerContainer.getChildren().add(source);
 
-        assertEquals("Failed", "outerContainer:innerContainer:source", resolveClientId(source, " :form:outerContainer:innerContainer:source "));
+        assertEquals("outerContainer:innerContainer:source", resolveClientId(source, " :form:outerContainer:innerContainer:source "));
     }
 
+    @Test
     public void test_ResolveClientId_AbsoluteWithFormPrependIdFalse_InvokeOnComponent() {
 
         UIComponent root = new UIPanel();
@@ -831,76 +865,79 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         source.setId("source");
         innerContainer.getChildren().add(source);
 
-        assertEquals("Failed", "outerContainer:innerContainer:source", resolveClientId(source, " outerContainer:innerContainer:source "));
+        assertEquals("outerContainer:innerContainer:source", resolveClientId(source, " outerContainer:innerContainer:source "));
     }
 
+    @Test
     public void test_Passthrough() {
         SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
 
         SearchExpressionContext searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(facesContext, null);
 
-        Assert.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "mainForm:showName"));
-        Assert.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "mainForm:table:3:nested:1:nestedText"));
-        Assert.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "mainForm:table:3:baseText"));
-        Assert.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "mainForm:table:0:baseText"));
-        Assert.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "mainForm:table:3:nested:0:nestedText"));
-        Assert.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "mainForm:table:3:nested"));
-        Assert.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "mainForm:table:1:nested:0:nestedText"));
+        Assertions.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "mainForm:showName"));
+        Assertions.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "mainForm:table:3:nested:1:nestedText"));
+        Assertions.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "mainForm:table:3:baseText"));
+        Assertions.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "mainForm:table:0:baseText"));
+        Assertions.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "mainForm:table:3:nested:0:nestedText"));
+        Assertions.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "mainForm:table:3:nested"));
+        Assertions.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "mainForm:table:1:nested:0:nestedText"));
 
-        Assert.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "@this"));
-        Assert.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "@this:@parent:showName"));
-        Assert.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "@parent:showName:@parent:showName"));
-        Assert.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "@form"));
-        Assert.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "@form:showName"));
-        Assert.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "@namingcontainer:showName"));
-        Assert.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "@previous"));
-        Assert.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "@next"));
-        Assert.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "@parent:@id(msgName)"));
+        Assertions.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "@this"));
+        Assertions.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "@this:@parent:showName"));
+        Assertions.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "@parent:showName:@parent:showName"));
+        Assertions.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "@form"));
+        Assertions.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "@form:showName"));
+        Assertions.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "@namingcontainer:showName"));
+        Assertions.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "@previous"));
+        Assertions.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "@next"));
+        Assertions.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "@parent:@id(msgName)"));
 
-        Assert.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "@whoNows"));
-        Assert.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "@parent:@whoNows"));
-        Assert.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "mainForm:@whoNows"));
-        Assert.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "!whoNows"));
+        Assertions.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "@whoNows"));
+        Assertions.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "@parent:@whoNows"));
+        Assertions.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "mainForm:@whoNows"));
+        Assertions.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "!whoNows"));
 
         Set<SearchExpressionHint> hints = new HashSet<>();
         hints.add(SearchExpressionHint.RESOLVE_CLIENT_SIDE);
         searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(facesContext, null, hints, null);
 
-        Assert.assertTrue(handler.isPassthroughExpression(searchExpressionContext, "@form"));
-        Assert.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "@form:showName"));
-        Assert.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "@form:@child(0)"));
+        Assertions.assertTrue(handler.isPassthroughExpression(searchExpressionContext, "@form"));
+        Assertions.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "@form:showName"));
+        Assertions.assertFalse(handler.isPassthroughExpression(searchExpressionContext, "@form:@child(0)"));
     }
 
+    @Test
     public void test_Valid() {
         SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
 
         SearchExpressionContext searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(facesContext, null);
 
-        Assert.assertTrue(handler.isValidExpression(searchExpressionContext, "mainForm:showName"));
-        Assert.assertTrue(handler.isValidExpression(searchExpressionContext, "mainForm:table:3:nested:1:nestedText"));
-        Assert.assertTrue(handler.isValidExpression(searchExpressionContext, "mainForm:table:3:baseText"));
-        Assert.assertTrue(handler.isValidExpression(searchExpressionContext, "mainForm:table:0:baseText"));
-        Assert.assertTrue(handler.isValidExpression(searchExpressionContext, "mainForm:table:3:nested:0:nestedText"));
-        Assert.assertTrue(handler.isValidExpression(searchExpressionContext, "mainForm:table:3:nested"));
-        Assert.assertTrue(handler.isValidExpression(searchExpressionContext, "mainForm:table:1:nested:0:nestedText"));
+        Assertions.assertTrue(handler.isValidExpression(searchExpressionContext, "mainForm:showName"));
+        Assertions.assertTrue(handler.isValidExpression(searchExpressionContext, "mainForm:table:3:nested:1:nestedText"));
+        Assertions.assertTrue(handler.isValidExpression(searchExpressionContext, "mainForm:table:3:baseText"));
+        Assertions.assertTrue(handler.isValidExpression(searchExpressionContext, "mainForm:table:0:baseText"));
+        Assertions.assertTrue(handler.isValidExpression(searchExpressionContext, "mainForm:table:3:nested:0:nestedText"));
+        Assertions.assertTrue(handler.isValidExpression(searchExpressionContext, "mainForm:table:3:nested"));
+        Assertions.assertTrue(handler.isValidExpression(searchExpressionContext, "mainForm:table:1:nested:0:nestedText"));
 
-        Assert.assertTrue(handler.isValidExpression(searchExpressionContext, "@this"));
-        Assert.assertTrue(handler.isValidExpression(searchExpressionContext, "@this:@parent:showName"));
-        Assert.assertTrue(handler.isValidExpression(searchExpressionContext, "@parent:showName:@parent:showName"));
-        Assert.assertTrue(handler.isValidExpression(searchExpressionContext, "@form:showName"));
-        Assert.assertTrue(handler.isValidExpression(searchExpressionContext, "@namingcontainer:showName"));
-        Assert.assertTrue(handler.isValidExpression(searchExpressionContext, "@previous"));
-        Assert.assertTrue(handler.isValidExpression(searchExpressionContext, "@next"));
-        Assert.assertTrue(handler.isValidExpression(searchExpressionContext, "@parent:@id(msgName)"));
+        Assertions.assertTrue(handler.isValidExpression(searchExpressionContext, "@this"));
+        Assertions.assertTrue(handler.isValidExpression(searchExpressionContext, "@this:@parent:showName"));
+        Assertions.assertTrue(handler.isValidExpression(searchExpressionContext, "@parent:showName:@parent:showName"));
+        Assertions.assertTrue(handler.isValidExpression(searchExpressionContext, "@form:showName"));
+        Assertions.assertTrue(handler.isValidExpression(searchExpressionContext, "@namingcontainer:showName"));
+        Assertions.assertTrue(handler.isValidExpression(searchExpressionContext, "@previous"));
+        Assertions.assertTrue(handler.isValidExpression(searchExpressionContext, "@next"));
+        Assertions.assertTrue(handler.isValidExpression(searchExpressionContext, "@parent:@id(msgName)"));
 
-        Assert.assertFalse(handler.isValidExpression(searchExpressionContext, "@whoNows"));
-        Assert.assertFalse(handler.isValidExpression(searchExpressionContext, "@parent:@whoNows"));
-        Assert.assertFalse(handler.isValidExpression(searchExpressionContext, "mainForm:@whoNows"));
+        Assertions.assertFalse(handler.isValidExpression(searchExpressionContext, "@whoNows"));
+        Assertions.assertFalse(handler.isValidExpression(searchExpressionContext, "@parent:@whoNows"));
+        Assertions.assertFalse(handler.isValidExpression(searchExpressionContext, "mainForm:@whoNows"));
 
-        Assert.assertFalse(handler.isValidExpression(searchExpressionContext, "@none:@parent"));
-        Assert.assertFalse(handler.isValidExpression(searchExpressionContext, "@all:@parent"));
+        Assertions.assertFalse(handler.isValidExpression(searchExpressionContext, "@none:@parent"));
+        Assertions.assertFalse(handler.isValidExpression(searchExpressionContext, "@all:@parent"));
     }
 
+    @Test
     public void test_ResolveComponents_Id() {
         UIComponent root = new UIPanel();
         FacesContext.getCurrentInstance().getViewRoot().getChildren().add(root);
@@ -938,6 +975,7 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
      * The SearchExpression API was inspired by PrimeFaces. This test only tests, if PFS (PrimeFaces Selectors -> jQuery
      * like selectors; like @(#myId > .myStyle)) can be correctly handled by the API+IMPL as a passthrough expression.
      */
+    @Test
     public void test_PFS() {
         CompositeSearchKeywordResolver s = (CompositeSearchKeywordResolver) application.getSearchKeywordResolver();
         s.add(new SearchKeywordResolver() {
@@ -970,10 +1008,11 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
 
         SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
         SearchExpressionContext searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(facesContext, null);
-        Assert.assertTrue(handler.isValidExpression(searchExpressionContext, "@(.myPanel #id)"));
-        Assert.assertFalse(handler.isValidExpression(searchExpressionContext, "@(.myPanel #id):test"));
+        Assertions.assertTrue(handler.isValidExpression(searchExpressionContext, "@(.myPanel #id)"));
+        Assertions.assertFalse(handler.isValidExpression(searchExpressionContext, "@(.myPanel #id):test"));
     }
 
+    @Test
     public void test_chainOfResponsability() {
         CompositeSearchKeywordResolver s = (CompositeSearchKeywordResolver) application.getSearchKeywordResolver();
         s.add(new CustomSearchKeywordResolverImplForm()); // drop in new @form resolver
@@ -995,8 +1034,8 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         UIComponent source = new UICommand();
         innerContainer.getChildren().add(source);
 
-        assertSame("Failed", source, resolveComponent(source, "@form"));
-        assertNotSame("Failed", form, resolveComponent(source, "@form"));
+        assertSame(source, resolveComponent(source, "@form"));
+        assertNotSame(form, resolveComponent(source, "@form"));
     }
 
     class CustomSearchKeywordResolverImplForm extends SearchKeywordResolverImplForm {
@@ -1006,6 +1045,7 @@ public class SearchExpressionHandlerTest extends JUnitFacesTestCaseBase {
         }
     }
 
+    @Test
     public void test_ResolveComponent_LeafErrorHandling() {
 
         UIComponent root = new UIPanel();

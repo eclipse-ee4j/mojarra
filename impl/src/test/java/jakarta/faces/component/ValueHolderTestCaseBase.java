@@ -16,12 +16,19 @@
 
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import jakarta.faces.component.html.HtmlInputText;
 import jakarta.faces.convert.LongConverter;
 import jakarta.faces.convert.NumberConverter;
 import jakarta.faces.convert.ShortConverter;
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * <p>
@@ -31,19 +38,10 @@ import junit.framework.TestSuite;
  */
 public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
 
-    // ------------------------------------------------------------ Constructors
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public ValueHolderTestCaseBase(String name) {
-        super(name);
-    }
-
     // ---------------------------------------------------- Overall Test Methods
     // Set up instance variables required by this test case.
     @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         component = new UIOutput();
@@ -51,12 +49,8 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
         expectedRendererType = "Text";
     }
 
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return new TestSuite(ValueHolderTestCaseBase.class);
-    }
-
     // ------------------------------------------------- Individual Test Methods
+    @Test
     public void testAttributesTransparencyNonDeterministic() throws Exception {
         final int numThreads = 30;
         final Boolean outcomes[] = new Boolean[numThreads];
@@ -130,6 +124,7 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
     }
 
     @Override
+    @Test
     public void testAttributesTransparency() {
         super.testAttributesTransparency();
         ValueHolder vh = (ValueHolder) component;
@@ -140,7 +135,7 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
     public boolean doTestAttributesTransparency(ValueHolder vh, UIComponent newComp) {
         assertEquals(vh.getValue(), newComp.getAttributes().get("value"));
         vh.setValue("foo");
-        assertEquals("foo", (String) newComp.getAttributes().get("value"));
+        assertEquals("foo", newComp.getAttributes().get("value"));
         vh.setValue(null);
         assertNull(newComp.getAttributes().get("value"));
         newComp.getAttributes().put("value", "bar");
@@ -165,37 +160,40 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
 
     // Suppress lifecycle tests since we do not have a renderer
     @Override
+    @Test
     public void testLifecycleManagement() {
     }
 
     // Test a pristine ValueHolderBase instance
     @Override
+    @Test
     public void testPristine() {
         super.testPristine();
         ValueHolder vh = (ValueHolder) component;
 
         // Validate properties
-        assertNull("no value", vh.getValue());
-        assertNull("no converter", vh.getConverter());
+        assertNull(vh.getValue());
+        assertNull(vh.getConverter());
     }
 
     // Test setting properties to valid values
     @Override
+    @Test
     public void testPropertiesValid() throws Exception {
         super.testPropertiesValid();
         ValueHolder vh = (ValueHolder) component;
 
         // value
         vh.setValue("foo.bar");
-        assertEquals("expected value", "foo.bar", vh.getValue());
+        assertEquals("foo.bar", vh.getValue());
         vh.setValue(null);
-        assertNull("erased value", vh.getValue());
+        assertNull(vh.getValue());
 
         // converter
         vh.setConverter(new LongConverter());
-        assertTrue("expected converter", vh.getConverter() instanceof LongConverter);
+        assertTrue(vh.getConverter() instanceof LongConverter);
         vh.setConverter(null);
-        assertNull("erased converter", vh.getConverter());
+        assertNull(vh.getConverter());
     }
 
     // --------------------------------------------------------- Support Methods

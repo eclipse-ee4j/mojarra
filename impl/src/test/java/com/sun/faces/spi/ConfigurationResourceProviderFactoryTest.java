@@ -1,13 +1,16 @@
 package com.sun.faces.spi;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
+import org.junit.jupiter.api.Test;
+
 import com.sun.faces.spi.ConfigurationResourceProviderFactory.ProviderType;
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * Tests {@link ConfigurationResourceProviderFactory}.
@@ -52,7 +55,7 @@ public class ConfigurationResourceProviderFactoryTest {
      * @throws FileNotFoundException
      *         Thrown when the test service file can't be written.
      */
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testCreateProvidersWrongService() throws FileNotFoundException {
         ProviderType facesConfig = ProviderType.FacesConfig;
 
@@ -65,7 +68,7 @@ public class ConfigurationResourceProviderFactoryTest {
         }
 
         try {
-            ConfigurationResourceProviderFactory.createProviders(facesConfig);
+            assertThrows(IllegalStateException.class, () -> ConfigurationResourceProviderFactory.createProviders(facesConfig));
         } finally {
             servicesFile.delete();
         }

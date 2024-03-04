@@ -16,13 +16,12 @@
 
 package jakarta.faces.convert;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
-import org.powermock.api.easymock.PowerMock;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import jakarta.faces.component.UIPanel;
 import jakarta.faces.context.FacesContext;
@@ -35,10 +34,10 @@ public class LongConverterTest {
     /**
      * Test getAsObject method.
      */
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testGetAsObject() {
         LongConverter converter = new LongConverter();
-        converter.getAsObject(null, null, null);
+        assertThrows(NullPointerException.class, () -> converter.getAsObject(null, null, null));
     }
 
     /**
@@ -47,10 +46,8 @@ public class LongConverterTest {
     @Test
     public void testGetAsObject2() {
         LongConverter converter = new LongConverter();
-        FacesContext facesContext = PowerMock.createMock(FacesContext.class);
-        replay(facesContext);
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
         assertNull(converter.getAsObject(facesContext, new UIPanel(), null));
-        verify(facesContext);
     }
 
     /**
@@ -59,10 +56,8 @@ public class LongConverterTest {
     @Test
     public void testGetAsObject3() {
         LongConverter converter = new LongConverter();
-        FacesContext facesContext = PowerMock.createMock(FacesContext.class);
-        replay(facesContext);
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
         assertNull(converter.getAsObject(facesContext, new UIPanel(), "     "));
-        verify(facesContext);
     }
 
     /**
@@ -71,19 +66,17 @@ public class LongConverterTest {
     @Test
     public void testGetAsObject4() {
         LongConverter converter = new LongConverter();
-        FacesContext facesContext = PowerMock.createMock(FacesContext.class);
-        replay(facesContext);
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
         assertEquals(Long.valueOf("123"), converter.getAsObject(facesContext, new UIPanel(), "123"));
-        verify(facesContext);
     }
 
     /**
      * Test getAsString method.
      */
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testGetAsString() {
         LongConverter converter = new LongConverter();
-        converter.getAsString(null, null, null);
+        assertThrows(NullPointerException.class, () -> converter.getAsString(null, null, null));
     }
 
     /**
@@ -92,10 +85,8 @@ public class LongConverterTest {
     @Test
     public void testGetAsString2() {
         LongConverter converter = new LongConverter();
-        FacesContext facesContext = PowerMock.createMock(FacesContext.class);
-        replay(facesContext);
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
         assertEquals("", converter.getAsString(facesContext, new UIPanel(), null));
-        verify(facesContext);
     }
 
     /**
@@ -104,10 +95,8 @@ public class LongConverterTest {
     @Test
     public void testGetAsString3() {
         LongConverter converter = new LongConverter();
-        FacesContext facesContext = PowerMock.createMock(FacesContext.class);
-        replay(facesContext);
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
         assertEquals("123", converter.getAsString(facesContext, new UIPanel(), "123"));
-        verify(facesContext);
     }
 
     /**
@@ -116,9 +105,7 @@ public class LongConverterTest {
     @Test
     public void testGetAsString4() {
         LongConverter converter = new LongConverter();
-        FacesContext facesContext = PowerMock.createMock(FacesContext.class);
-        replay(facesContext);
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
         assertEquals("123", converter.getAsString(facesContext, new UIPanel(), Long.valueOf("123")));
-        verify(facesContext);
     }
 }

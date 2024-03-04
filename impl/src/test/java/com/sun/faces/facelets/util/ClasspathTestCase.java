@@ -16,17 +16,15 @@
 
 package com.sun.faces.facelets.util;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.util.jar.JarFile;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
-public class ClasspathTestCase extends TestCase {
+import org.junit.jupiter.api.Test;
 
-    public static Test suite() {
-        return (new TestSuite(ClasspathTestCase.class));
-    }
+public class ClasspathTestCase {
 
+    @Test
     public void testGetAlternativeJarFile() throws Exception {
         String input = "rar:/scratch/fleme/fmwhome/AS11gR1SOA/soa/connectors/FileAdapter.rar!fileAdapter.jar!/META-INF/";
 

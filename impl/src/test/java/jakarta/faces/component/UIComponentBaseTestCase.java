@@ -16,6 +16,12 @@
 
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +30,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.context.FacesContext;
@@ -35,8 +45,6 @@ import jakarta.faces.event.PostConstructViewMapEvent;
 import jakarta.faces.event.PreRenderComponentEvent;
 import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * <p>
@@ -45,21 +53,10 @@ import junit.framework.TestSuite;
  */
 public class UIComponentBaseTestCase extends UIComponentTestCase {
 
-    // ------------------------------------------------------ Instance Variables
-    // Mock object instances for our tests
-    // ------------------------------------------------------------ Constructors
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public UIComponentBaseTestCase(String name) {
-        super(name);
-    }
-
     // ---------------------------------------------------- Overall Test Methods
     // Set up instance variables required by this test case.
     @Override
+    @BeforeEach
     public void setUp() throws Exception {
 
         // Set up the component under test
@@ -68,13 +65,9 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
 
     }
 
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return new TestSuite(UIComponentBaseTestCase.class);
-    }
-
     // Tear down instance variables required by ths test case
     @Override
+    @AfterEach
     public void tearDown() throws Exception {
         externalContext.setRequestParameterMap(null);
 
@@ -84,6 +77,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
 
     // ------------------------------------------------- Individual Test Methods
     // Test lifecycle management methods
+    @Test
     public void testLifecycleManagement() {
 
         checkLifecycleParentRendered();
@@ -93,6 +87,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
 
     }
 
+    @Test
     public void testComponentToFromEL2() throws Exception {
 
         final FacesContext ctx = facesContext;
@@ -165,6 +160,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
 
     }
 
+    @Test
     public void testEncodeChildren() throws Exception {
         ComponentTestImpl.trace(null);
         UIComponent comp1 = new ComponentTestImpl("one");
@@ -184,6 +180,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
     }
 
     // Test recursive adding and removing child trees with ids
+    @Test
     public void testChildrenRecursive() {
 
         // Create the components we will need
@@ -219,6 +216,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
 
     }
 
+    @Test
     public void testChildrenAndFacetsWithNullGetParent() throws Exception {
         ComponentTestImpl child = new ComponentTestImpl() {
             @Override
@@ -239,6 +237,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
     }
 
     // Test reconnecting a child or facet to a different component
+    @Test
     public void testComponentReconnect() {
 
         UIComponent parent1 = new ComponentTestImpl();
@@ -292,6 +291,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
     }
 
     // Test removing components from our naming container.
+    @Test
     public void testComponentRemoval() {
 
         UIComponent testComponent = new ComponentTestImpl();
@@ -348,6 +348,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         assertTrue(!kidItr.hasNext());
     }
 
+    @Test
     public void testStateHolder2() throws Exception {
 
         UIComponent c = new UIComponentListener();
@@ -361,6 +362,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
 
     }
 
+    @Test
     public void testAttributesThatAreSetStateHolder() throws Exception {
         ComponentTestImpl c = new ComponentTestImpl();
         c.getAttributes().put("attr1", "value1");
@@ -376,6 +378,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         assertEquals(Arrays.asList("attr1", "attr2"), c.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet"));
     }
 
+    @Test
     public void testValueExpressions() throws Exception {
 
         UIComponentBase test = (UIComponentBase) component;
@@ -504,17 +507,17 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         // Test processDecodes()
         ComponentTestImpl.trace(null);
         component.processDecodes(facesContext);
-        assertEquals("processDecodes", lifecycleTrace("pD", "d"), ComponentTestImpl.trace());
+        assertEquals(lifecycleTrace("pD", "d"), ComponentTestImpl.trace());
 
         // Test processValidators()
         ComponentTestImpl.trace(null);
         component.processValidators(facesContext);
-        assertEquals("processValidators", lifecycleTrace("pV", null), ComponentTestImpl.trace());
+        assertEquals(lifecycleTrace("pV", null), ComponentTestImpl.trace());
 
         // Test processUpdates()
         ComponentTestImpl.trace(null);
         component.processUpdates(facesContext);
-        assertEquals("processUpdates", lifecycleTrace("pU", null), ComponentTestImpl.trace());
+        assertEquals(lifecycleTrace("pU", null), ComponentTestImpl.trace());
 
     }
 
@@ -567,17 +570,17 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         // Test processDecodes()
         ComponentTestImpl.trace(null);
         component.processDecodes(facesContext);
-        assertEquals("processDecodes", lifecycleTrace("pD", "d"), ComponentTestImpl.trace());
+        assertEquals(lifecycleTrace("pD", "d"), ComponentTestImpl.trace());
 
         // Test processValidators()
         ComponentTestImpl.trace(null);
         component.processValidators(facesContext);
-        assertEquals("processValidators", lifecycleTrace("pV", null), ComponentTestImpl.trace());
+        assertEquals(lifecycleTrace("pV", null), ComponentTestImpl.trace());
 
         // Test processUpdates()
         ComponentTestImpl.trace(null);
         component.processUpdates(facesContext);
-        assertEquals("processUpdates", lifecycleTrace("pU", null), ComponentTestImpl.trace());
+        assertEquals(lifecycleTrace("pU", null), ComponentTestImpl.trace());
 
     }
 
@@ -627,17 +630,17 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         // Test processDecodes()
         ComponentTestImpl.trace(null);
         component.processDecodes(facesContext);
-        assertEquals("processDecodes", lifecycleTrace("pD", "d"), ComponentTestImpl.trace());
+        assertEquals(lifecycleTrace("pD", "d"), ComponentTestImpl.trace());
 
         // Test processValidators()
         ComponentTestImpl.trace(null);
         component.processValidators(facesContext);
-        assertEquals("processValidators", lifecycleTrace("pV", null), ComponentTestImpl.trace());
+        assertEquals(lifecycleTrace("pV", null), ComponentTestImpl.trace());
 
         // Test processUpdates()
         ComponentTestImpl.trace(null);
         component.processUpdates(facesContext);
-        assertEquals("processUpdates", lifecycleTrace("pU", null), ComponentTestImpl.trace());
+        assertEquals(lifecycleTrace("pU", null), ComponentTestImpl.trace());
 
     }
 
@@ -687,17 +690,17 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         // Test processDecodes()
         ComponentTestImpl.trace(null);
         component.processDecodes(facesContext);
-        assertEquals("processDecodes", lifecycleTrace("pD", "d"), ComponentTestImpl.trace());
+        assertEquals(lifecycleTrace("pD", "d"), ComponentTestImpl.trace());
 
         // Test processValidators()
         ComponentTestImpl.trace(null);
         component.processValidators(facesContext);
-        assertEquals("processValidators", lifecycleTrace("pV", null), ComponentTestImpl.trace());
+        assertEquals(lifecycleTrace("pV", null), ComponentTestImpl.trace());
 
         // Test processUpdates()
         ComponentTestImpl.trace(null);
         component.processUpdates(facesContext);
-        assertEquals("processUpdates", lifecycleTrace("pU", null), ComponentTestImpl.trace());
+        assertEquals(lifecycleTrace("pU", null), ComponentTestImpl.trace());
 
     }
 
@@ -772,6 +775,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
 
     }
 
+    @Test
     public void testGetFacetsAndChildren() {
 
         UIComponent testComponent = new ComponentTestImpl();
@@ -829,21 +833,21 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
      * </p>
      * <code><pre>
      * root: id: root
-     * 
+     *
      *   form1: id: form1
-     * 
+     *
      *     panel1: id: panel
-     * 
+     *
      *       input1: id: input1
-     * 
+     *
      *       input2: id: input2
-     * 
+     *
      *   form2: id: form2
-     * 
+     *
      *     panel2: id: panel
-     * 
+     *
      *       input3: id: input1
-     * 
+     *
      *       input4: id: input2
      * </pre></code>
      *
@@ -895,6 +899,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         return result;
     }
 
+    @Test
     public void testInvokeOnComponentPositive() throws Exception {
 
         Map<String, UIComponent> tree = setupInvokeOnComponentTree();
@@ -910,8 +915,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         result = root.invokeOnComponent(facesContext, input1.getClientId(facesContext), new ContextCallback() {
             @Override
             public void invokeContextCallback(FacesContext context, UIComponent component) {
-                assertEquals("getCurrentComponent does not return the current component during" + "invokeOnComponent", UIComponent.getCurrentComponent(context),
-                        component);
+                assertEquals(UIComponent.getCurrentComponent(context), component);
                 foundComponent = component;
             }
         });
@@ -921,6 +925,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
 
     }
 
+    @Test
     public void testInvokeOnComponentNegative() throws Exception {
         Map<String, UIComponent> tree = setupInvokeOnComponentTree();
 
@@ -1012,6 +1017,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
 
     }
 
+    @Test
     public void testInvokeOnComponentWithPrependId() throws Exception {
         Map<String, UIComponent> tree = setupInvokeOnComponentTree();
 
@@ -1160,6 +1166,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
 
     }
 
+    @Test
     public void testChildrenListAfterAddPublish() {
 
         Listener listener = new Listener();
@@ -1197,6 +1204,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
 
     }
 
+    @Test
     public void testFacetMapAfterAddViewPublish() {
 
         QueueingListener listener = new QueueingListener();
@@ -1209,11 +1217,11 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         List<SystemEvent> e = listener.getEvents();
         Map<String, UIComponent> facets = c1.getFacets();
         facets.put("c2", c2);
-        assertTrue("Expected Event queue size of 0, found: " + e.size(), e.isEmpty());
+        assertEquals(0, e.size());
 
         UIViewRoot root = new UIViewRoot();
         root.getChildren().add(c1);
-        assertTrue("Expected Event queue size of 2, found: " + e.size(), e.size() == 2);
+        assertEquals(2, e.size());
         assertTrue(e.get(0).getSource() == c1);
         assertTrue(e.get(1).getSource() == c2);
 
@@ -1223,13 +1231,13 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         root.getChildren().remove(c1);
         facets = c1.getFacets();
         facets.put("c3", c3);
-        assertTrue("Expected Event queue size of 0, found: " + e.size(), e.isEmpty());
+        assertEquals(0, e.size());
 
         // reorganize the facet structure to ensure nested facets work
         facets.remove("c3");
         c2.getFacets().put("c3", c3);
         root.getChildren().add(c1);
-        assertTrue("Expected Event queue size of 3, found: " + e.size(), e.size() == 3);
+        assertEquals(3, e.size());
         assertTrue(e.get(0).getSource() == c1);
         assertTrue(e.get(1).getSource() == c2);
         assertTrue(e.get(2).getSource() == c3);
@@ -1239,12 +1247,13 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         facets.clear();
         c2.getFacets().remove("c3");
         c2.getFacets().put("c3", c3);
-        assertTrue("Expected Event queue size of 0, found: " + e.size(), e.isEmpty());
+        assertEquals(0, e.size());
 
         application.unsubscribeFromEvent(PostAddToViewEvent.class, listener);
 
     }
 
+    @Test
     public void testChildrenListAfterAddViewPublish() {
 
         QueueingListener listener = new QueueingListener();
@@ -1265,11 +1274,11 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         // sub-tree has been added to the view. Ensure that subsequent additions
         // to that sub-tree cause the PostAddToViewEvent to fire.
         c2.getChildren().add(c4);
-        assertTrue("Expected Event queue size of 4, found: " + e.size(), e.size() == 4);
+        assertEquals(4, e.size());
 
         UIComponent[] comps = { c1, c2, c3, c4 };
         for (int i = 0; i < comps.length; i++) {
-            assertTrue("Index " + i + " invalid", e.get(i).getSource() == comps[i]);
+            assertTrue(e.get(i).getSource() == comps[i], "Index " + i + " invalid");
         }
 
         // remove c1 and it's children from the subview, then remove and
@@ -1279,18 +1288,18 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         root.getChildren().remove(c1);
         c2.getChildren().remove(c4);
         c2.getChildren().add(c4);
-        assertTrue("AfterAddToView events queued after a sub-tree was removed from the view, and a child added to the sub-view", e.isEmpty());
+        assertEquals(0, e.size());
 
         c2.getChildren().remove(c4);
         c1.getChildren().add(c4);
-        assertTrue("AfterAddToView events queued after a sub-tree was removed from the view, and a child added to the sub-view", e.isEmpty());
+        assertEquals(0, e.size());
 
         // re-wire c1 as a child of root and ensure all children get re-notified
         root.getChildren().add(c1);
-        assertTrue("Expected Event queue size of 4, found: " + e.size(), e.size() == 4);
+        assertEquals(4, e.size());
 
         for (int i = 0; i < comps.length; i++) {
-            assertTrue("Index " + i + " invalid", e.get(i).getSource() == comps[i]);
+            assertTrue(e.get(i).getSource() == comps[i], "Index " + i + " invalid");
         }
 
         // validate clearing c1's children (effectively removing them from the view
@@ -1302,24 +1311,24 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         UIComponent temp = createComponent();
         e.clear();
         c2.getChildren().add(temp);
-        assertTrue("AfterAddToView events queued after a sub-tree was removed from the view, and a child added to the sub-view", e.isEmpty());
+        assertEquals(0, e.size());
         c2.getChildren().remove(temp);
         c3.getChildren().add(temp);
-        assertTrue("AfterAddToView events queued after a sub-tree was removed from the view, and a child added to the sub-view", e.isEmpty());
+        assertEquals(0, e.size());
         c3.getChildren().remove(temp);
         c4.getChildren().add(temp);
-        assertTrue("AfterAddToView events queued after a sub-tree was removed from the view, and a child added to the sub-view", e.isEmpty());
+        assertEquals(0, e.size());
         c4.getChildren().remove(temp);
 
         // now add c2 and c4 as children of c1. This should cause three
         // events to fire
         c1.getChildren().add(c2);
         c1.getChildren().add(c4);
-        assertTrue("Expected Event queue size of 3, found: " + e.size(), e.size() == 3);
+        assertEquals(3, e.size());
 
         UIComponent[] comps2 = { c2, c3, c4 };
         for (int i = 0; i < comps2.length; i++) {
-            assertTrue("Index " + i + " invalid", e.get(i).getSource() == comps2[i]);
+            assertTrue(e.get(i).getSource() == comps2[i], "Index " + i + " invalid");
         }
 
         // validate add(int, UIComponent) fires events
@@ -1329,7 +1338,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
 
         assertTrue(c1.getChildren().get(0) == c4);
         assertTrue(c1.getChildren().get(1) == c2);
-        assertTrue("Expected Event queue size of 1, found: " + e.size(), e.size() == 1);
+        assertEquals(1, e.size());
         assertTrue(e.get(0).getSource() == c4);
 
         // validate addAll(Collection<UIComponent>) fires events
@@ -1340,7 +1349,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         c1.getChildren().addAll(children);
         assertTrue(c1.getChildren().get(0) == c2);
         assertTrue(c1.getChildren().get(1) == c4);
-        assertTrue("Expected Event queue size of 3, found: " + e.size(), e.size() == 3);
+        assertEquals(3, e.size());
         assertTrue(e.get(0).getSource() == c2);
         assertTrue(e.get(2).getSource() == c4);
 
@@ -1355,7 +1364,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         assertTrue(c1.getChildren().get(1) == t2);
         assertTrue(c1.getChildren().get(2) == c2);
         assertTrue(c1.getChildren().get(3) == c4);
-        assertTrue("Expected Event queue size of 2, found: " + e.size(), e.size() == 2);
+        assertEquals(2, e.size());
         assertTrue(e.get(0).getSource() == t1);
         assertTrue(e.get(1).getSource() == t2);
 
@@ -1370,7 +1379,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         assertTrue(c1.getChildren().get(0) == c2);
         assertTrue(c1.getChildren().get(1) == c4);
         t1.getChildren().add(t2);
-        assertTrue("Expected Event queue size of 0, found: " + e.size(), e.isEmpty());
+        assertEquals(0, e.size());
 
         // test set(int, UIComponent) properly fires an event if the parent
         // the component is being added to is wired to the view
@@ -1379,7 +1388,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         assertTrue(c1.getChildren().size() == 2);
         assertTrue(c1.getChildren().get(0) == t1);
         assertTrue(c1.getChildren().get(1) == c4);
-        assertTrue("Expected Event queue size of 2, found: " + e.size(), e.size() == 2);
+        assertEquals(2, e.size());
         assertTrue(e.get(0).getSource() == t1);
         assertTrue(e.get(1).getSource() == t2);
 
@@ -1388,7 +1397,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         e.clear();
         UIComponent t3 = createComponent();
         c2.getChildren().add(t3);
-        assertTrue("Expected Event queue size of 0, found: " + e.size(), e.isEmpty());
+        assertEquals(0, e.size());
 
         application.unsubscribeFromEvent(PostAddToViewEvent.class, listener);
 
@@ -1403,17 +1412,18 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         // to t1, t2, or c4 should result in no events being fired
         e.clear();
         t1.getChildren().add(temp);
-        assertTrue("AfterAddToView events queued after a sub-tree was removed from the view, and a child added to the sub-view", e.isEmpty());
+        assertEquals(0, e.size());
         t1.getChildren().remove(temp);
         t2.getChildren().add(temp);
-        assertTrue("AfterAddToView events queued after a sub-tree was removed from the view, and a child added to the sub-view", e.isEmpty());
+        assertEquals(0, e.size());
         t2.getChildren().remove(temp);
         c4.getChildren().add(temp);
-        assertTrue("AfterAddToView events queued after a sub-tree was removed from the view, and a child added to the sub-view", e.isEmpty());
+        assertEquals(0, e.size());
         c4.getChildren().remove(temp);
 
     }
 
+    @Test
     public void testEncodeBeginPublish() throws Exception {
 
         Listener listener = new Listener();
@@ -1537,7 +1547,6 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         private static final long serialVersionUID = 1L;
 
         public CustomAbortProcessingException() {
-            super();
         }
 
         public CustomAbortProcessingException(String message) {

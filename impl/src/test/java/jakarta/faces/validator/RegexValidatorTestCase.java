@@ -16,11 +16,14 @@
 
 package jakarta.faces.validator;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.Locale;
 
+import org.junit.jupiter.api.Test;
+
 import jakarta.faces.component.UIInput;
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * <p>
@@ -28,23 +31,8 @@ import junit.framework.TestSuite;
  */
 public class RegexValidatorTestCase extends ValidatorTestCase {
 
-    // ------------------------------------------------------------ Constructors
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public RegexValidatorTestCase(String name) {
-        super(name);
-    }
-
-    // ---------------------------------------------------- Overall Test Methods
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return (new TestSuite(RegexValidatorTestCase.class));
-    }
-
     // ------------------------------------------------- Individual Test Methods
+    @Test
     public void testPatternMatch() {
         String patternStr = "t.*";
         RegexValidator validator = new RegexValidator();
@@ -59,6 +47,7 @@ public class RegexValidatorTestCase extends ValidatorTestCase {
         }
     }
 
+    @Test
     public void testPatterMismatch() {
         String patternStr = "t.*";
         facesContext.getViewRoot().setLocale(Locale.US);

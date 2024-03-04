@@ -19,8 +19,7 @@ package jakarta.faces.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * <p>
@@ -28,22 +27,10 @@ import junit.framework.TestSuite;
  */
 public class ListDataModelTestCase extends DataModelTestCaseBase {
 
-    // ------------------------------------------------------------ Constructors
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public ListDataModelTestCase(String name) {
-
-        super(name);
-
-    }
-
     // ------------------------------------------------------ Instance Variables
     // ---------------------------------------------------- Overall Test Methods
     // Set up instance variables required by this test case.
-    @Override
+    @BeforeEach
     public void setUp() throws Exception {
         List<BeanTestImpl> list = new ArrayList<BeanTestImpl>();
         for (int i = 0; i < 5; i++) {
@@ -52,12 +39,6 @@ public class ListDataModelTestCase extends DataModelTestCaseBase {
         beans = list.toArray(new BeanTestImpl[5]);
         configure();
         model = new ListDataModel<BeanTestImpl>(list);
-        super.setUp();
-    }
-
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return (new TestSuite(ListDataModelTestCase.class));
     }
 
     // ------------------------------------------------- Individual Test Methods

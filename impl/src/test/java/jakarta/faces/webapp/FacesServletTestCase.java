@@ -16,6 +16,11 @@
 
 package jakarta.faces.webapp;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import com.sun.faces.junit.JUnitFacesTestCaseBase;
 import com.sun.faces.mock.MockRenderKit;
 
@@ -24,8 +29,6 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
 import jakarta.servlet.http.HttpServletResponse;
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 public class FacesServletTestCase extends JUnitFacesTestCaseBase {
 
@@ -33,15 +36,8 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
     private static final String ALLOWED_HTTP_METHODS_ATTR_COPY
             = "com.sun.faces.allowedHttpMethods";
 
-    public FacesServletTestCase(String name) {
-        super(name);
-    }
-
-    public static Test suite() {
-        return (new TestSuite(FacesServletTestCase.class));
-    }
-
     @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         // Set up Servlet API Objects
@@ -62,6 +58,7 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
         }
     }
 
+    @Test
     public void testPositiveInitWithNoContextParams() throws Exception {
         FacesServlet me = new FacesServlet();
         me.init(config);
@@ -83,6 +80,7 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
     }
 
+    @Test
     public void testPositiveInitWithContextParamsOfKnownHttpMethods() throws Exception {
         FacesServlet me = new FacesServlet();
         servletContext.addInitParameter(ALLOWED_HTTP_METHODS_ATTR_COPY, "GET   POST");
@@ -105,6 +103,7 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
         assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
     }
 
+    @Test
     public void testNegativeInitWithContextParamsOfKnownHttpMethods() throws Exception {
         FacesServlet me = new FacesServlet();
         servletContext.addInitParameter(ALLOWED_HTTP_METHODS_ATTR_COPY, "GET   POST GET  POST");
@@ -127,6 +126,7 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
         assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
     }
 
+    @Test
     public void testPositiveInitWithContextParamsOfWildcardHttpMethods() throws Exception {
         FacesServlet me = new FacesServlet();
         servletContext.addInitParameter(ALLOWED_HTTP_METHODS_ATTR_COPY, "*");
@@ -151,6 +151,7 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
     }
 
+    @Test
     public void testNegativeInitWithContextParamsOfWildcardHttpMethods() throws Exception {
         FacesServlet me = new FacesServlet();
         servletContext.addInitParameter(ALLOWED_HTTP_METHODS_ATTR_COPY, "* * * *");
@@ -175,6 +176,7 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
     }
 
+    @Test
     public void testPositiveInitWithContextParamsOfUnknownAndKnownHttpMethods() throws Exception {
         FacesServlet me = new FacesServlet();
         servletContext.addInitParameter(ALLOWED_HTTP_METHODS_ATTR_COPY, "GET\tPOST\tGETAAAAA");

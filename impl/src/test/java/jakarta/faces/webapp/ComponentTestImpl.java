@@ -27,11 +27,9 @@ import jakarta.faces.context.ResponseWriter;
 public class ComponentTestImpl extends UIComponentBase {
 
     public ComponentTestImpl() {
-        super();
     }
 
     public ComponentTestImpl(String id) {
-        super();
         setId(id);
     }
 

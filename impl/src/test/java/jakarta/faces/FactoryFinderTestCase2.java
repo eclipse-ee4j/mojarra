@@ -16,59 +16,44 @@
 
 package jakarta.faces;
 
-import junit.framework.TestCase;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class FactoryFinderTestCase2 extends TestCase {
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-    // ------------------------------------------------------------ Constructors
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public FactoryFinderTestCase2(String name) {
-        super(name);
-    }
-    
+public class FactoryFinderTestCase2 {
+
         public static String FACTORIES[][] = {
-	{ FactoryFinder.APPLICATION_FACTORY, 
+	{ FactoryFinder.APPLICATION_FACTORY,
 	  "com.sun.faces.mock.MockApplicationFactory"
 	},
-	{ FactoryFinder.EXTERNAL_CONTEXT_FACTORY, 
+	{ FactoryFinder.EXTERNAL_CONTEXT_FACTORY,
 	  "com.sun.faces.mock.MockExternalContextFactory"
 	},
-	{ FactoryFinder.FACES_CONTEXT_FACTORY, 
+	{ FactoryFinder.FACES_CONTEXT_FACTORY,
 	  "com.sun.faces.mock.MockFacesContextFactory"
 	},
-	{ FactoryFinder.LIFECYCLE_FACTORY, 
+	{ FactoryFinder.LIFECYCLE_FACTORY,
 	  "com.sun.faces.mock.MockLifecycleFactory"
 	},
-	{ FactoryFinder.RENDER_KIT_FACTORY, 
+	{ FactoryFinder.RENDER_KIT_FACTORY,
 	  "com.sun.faces.mock.MockRenderKitFactory"
 	}
     };
 
     // ---------------------------------------------------- Overall Test Methods
     // Set up instance variables required by this test case.
-    @Override
+    @BeforeEach
     public void setUp() throws Exception {
-        super.setUp();
         for (int i = 0, len = FactoryFinderTestCase2.FACTORIES.length; i < len; i++) {
             System.getProperties().remove(FactoryFinderTestCase2.FACTORIES[i][0]);
         }
     }
 
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return (new TestSuite(FactoryFinderTestCase2.class));
-    }
-
     // Tear down instance variables required by ths test case
-    @Override
+    @AfterEach
     public void tearDown() throws Exception {
-        super.tearDown();
         FactoryFinder.releaseFactories();
         for (int i = 0, len = FactoryFinderTestCase2.FACTORIES.length; i < len; i++) {
             System.getProperties().remove(FactoryFinderTestCase2.FACTORIES[i][0]);
@@ -83,6 +68,7 @@ public class FactoryFinderTestCase2 extends TestCase {
      * precedence.</p>
      * @throws java.lang.Exception
      */
+    @Test
     public void testJSFImplCase() throws Exception {
         Object factory = null;
         Class<?> clazz = null;
@@ -100,12 +86,12 @@ public class FactoryFinderTestCase2 extends TestCase {
         for (i = 0, len = FactoryFinderTestCase2.FACTORIES.length; i < len; i++) {
             clazz = Class.forName(FactoryFinderTestCase2.FACTORIES[i][0]);
             factory = FactoryFinder.getFactory(FactoryFinderTestCase2.FACTORIES[i][0]);
-            assertTrue("Factory for " + clazz.getName()
-                    + " not of expected type.",
-                    clazz.isAssignableFrom(factory.getClass()));
+            assertTrue(
+                    clazz.isAssignableFrom(factory.getClass()), "Factory for " + clazz.getName()
+                    + " not of expected type.");
             clazz = Class.forName(FactoryFinderTestCase2.FACTORIES[i][1]);
-            assertTrue("Factory " + FactoryFinderTestCase2.FACTORIES[i][1] + " not of expected type",
-                    clazz.isAssignableFrom(factory.getClass()));
+            assertTrue(
+                    clazz.isAssignableFrom(factory.getClass()), "Factory " + FactoryFinderTestCase2.FACTORIES[i][1] + " not of expected type");
         }
     }
 }

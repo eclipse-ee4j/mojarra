@@ -16,42 +16,37 @@
 
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+
 import jakarta.faces.convert.IntegerConverter;
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 public class StateHolderSaverTestCase extends UIComponentBaseTestCase {
 
-    // ------------------------------------------------------ Instance Variables
-    // ------------------------------------------------------------ Constructors
-    // Construct a new instance of this test case.
-    public StateHolderSaverTestCase(String name) {
-        super(name);
-    }
-
-    // ---------------------------------------------------- Overall Test Methods
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return new TestSuite(StateHolderSaverTestCase.class);
-    }
-
     // ------------------------------------------------- Individual Test Methods
     @Override
+    @Test
     public void testLifecycleManagement() {
     }
 
     @Override
+    @Test
     public void testChildrenRecursive() {
     }
 
     @Override
+    @Test
     public void testComponentReconnect() {
     }
 
     @Override
+    @Test
     public void testComponentRemoval() {
     }
 
+    @Test
     public void testImplementsStateHolder() throws Exception {
         StateHolderSaver saver = null;
         UIInput postSave, preSave = new UIInput();
@@ -63,6 +58,7 @@ public class StateHolderSaverTestCase extends UIComponentBaseTestCase {
         assertEquals(postSave.getId(), preSave.getId());
     }
 
+    @Test
     public void testImplementsSerializable() throws Exception {
         StateHolderSaver saver = null;
         String preSave = "hello";
@@ -73,6 +69,7 @@ public class StateHolderSaverTestCase extends UIComponentBaseTestCase {
         assertTrue(preSave.equals(postSave));
     }
 
+    @Test
     public void testImplementsNeither() throws Exception {
         StateHolderSaver saver = null;
         IntegerConverter preSave = new IntegerConverter(), postSave = null;

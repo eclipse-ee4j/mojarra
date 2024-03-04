@@ -16,9 +16,15 @@
 
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.sun.faces.mock.MockExternalContext;
 
@@ -30,8 +36,6 @@ import jakarta.faces.event.PhaseId;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
 import jakarta.faces.render.Renderer;
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * <p>
@@ -40,30 +44,16 @@ import junit.framework.TestSuite;
  */
 public class UICommandTestCase extends UIComponentBaseTestCase {
 
-    // ------------------------------------------------------------ Constructors
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public UICommandTestCase(String name) {
-        super(name);
-    }
-
     // ---------------------------------------------------- Overall Test Methods
     // Set up instance variables required by this test case.
     @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         component = new UICommand();
         expectedFamily = UICommand.COMPONENT_FAMILY;
         expectedId = null;
         expectedRendererType = "jakarta.faces.Button";
-    }
-
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return new TestSuite(UICommandTestCase.class);
     }
 
     // ------------------------------------------------- Individual Test Methods
@@ -98,6 +88,7 @@ public class UICommandTestCase extends UIComponentBaseTestCase {
     }
 
     // Test event queuing and broadcasting (any phase listeners)
+    @Test
     public void testEventsGeneric() {
 
         UICommand command = (UICommand) component;
@@ -122,6 +113,7 @@ public class UICommandTestCase extends UIComponentBaseTestCase {
     }
 
     // Test event queuing and broadcasting (mixed phase listeners)
+    @Test
     public void testEventsMixed() {
 
         UICommand command = (UICommand) component;
@@ -147,6 +139,7 @@ public class UICommandTestCase extends UIComponentBaseTestCase {
 
     // Test event queuing and broadcasting (mixed phase listeners), with
     // immediate set.
+    @Test
     public void testEventsMixedImmediate() {
 
         UICommand command = (UICommand) component;
@@ -172,6 +165,7 @@ public class UICommandTestCase extends UIComponentBaseTestCase {
     }
 
     // Test listener registration and deregistration
+    @Test
     public void testListeners() {
 
         CommandTestImpl command = new CommandTestImpl();
@@ -191,6 +185,7 @@ public class UICommandTestCase extends UIComponentBaseTestCase {
     }
 
     // Test empty listener list
+    @Test
     public void testEmptyListeners() {
 
         CommandTestImpl command = new CommandTestImpl();
@@ -203,9 +198,11 @@ public class UICommandTestCase extends UIComponentBaseTestCase {
 
     // Suppress lifecycle tests since we do not have a renderer
     @Override
+    @Test
     public void testLifecycleManagement() {
     }
 
+    @Test
     public void testNestedCommands() {
         UIViewRoot root = new UIViewRoot();
         UICommand c1 = new UICommand();
@@ -229,6 +226,7 @@ public class UICommandTestCase extends UIComponentBaseTestCase {
         assertTrue(ae.getPhaseId().equals(PhaseId.INVOKE_APPLICATION));
     }
 
+    @Test
     public void testGetActionListeners() throws Exception {
         UICommand command = (UICommand) component;
         UIViewRoot root = facesContext.getApplication().getViewHandler().createView(facesContext, null);

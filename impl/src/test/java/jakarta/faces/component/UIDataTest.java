@@ -18,20 +18,16 @@ package jakarta.faces.component;
 
 import static jakarta.faces.component.NamingContainer.SEPARATOR_CHAR;
 import static jakarta.faces.component.UINamingContainer.SEPARATOR_CHAR_PARAM_NAME;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.powermock.api.easymock.PowerMock.createNicePartialMockAndInvokeDefaultConstructor;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import org.junit.Test;
-import org.powermock.reflect.Whitebox;
+import org.junit.jupiter.api.Test;
 
+import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.render.RenderKit;
 
 /**
  * @author Manfred Riem (manfred.riem@oracle.com)
@@ -43,12 +39,10 @@ public class UIDataTest {
      */
     @Test
     public void testSaveState() {
-        FacesContext context = createMock(FacesContext.class);
+        FacesContext context = mock(FacesContext.class);
         UIData data = new UIData();
         data.markInitialState();
-        replay(context);
         assertNull(data.saveState(context));
-        verify(context);
     }
 
     /**
@@ -56,11 +50,9 @@ public class UIDataTest {
      */
     @Test
     public void testSaveState2() {
-        FacesContext context = createMock(FacesContext.class);
+        FacesContext context = mock(FacesContext.class);
         UIData data = new UIData();
-        replay(context);
         assertNotNull(data.saveState(context));
-        verify(context);
     }
 
     /**
@@ -68,18 +60,20 @@ public class UIDataTest {
      */
     @Test
     public void testSaveState3() {
-        FacesContext context = createMock(FacesContext.class);
+        FacesContext context = mock(FacesContext.class);
         UIData data = new UIData();
         data.markInitialState();
         data.setRowIndex(4);
-        replay(context);
         assertNotNull(data.saveState(context));
-        verify(context);
     }
 
     @Test
     public void testInvokeOnComponentMustNotCallSetRowIndexIfNotTouched() throws Exception {
-        FacesContext context = createNicePartialMockAndInvokeDefaultConstructor(FacesContext.class, "getRenderKit");
+        FacesContext context = mock(FacesContext.class);
+        ExternalContext externalContext = mock(ExternalContext.class);
+        when(context.getExternalContext()).thenReturn(externalContext);
+        RenderKit renderKit = mock(RenderKit.class);
+        when(context.getRenderKit()).thenReturn(renderKit);
         context.getAttributes().put(SEPARATOR_CHAR_PARAM_NAME, SEPARATOR_CHAR);
 
         UIData data = new UIData() {
@@ -90,12 +84,10 @@ public class UIDataTest {
         };
 
         data.setId("data");
-        // simple way. otherwise, we have to mock the renderkit and whatever.
-        Whitebox.setInternalState(data, "clientId", data.getId());
 
         data.invokeOnComponent(context, "differentId", (contextInLambda, target) -> {
         });
 
-        assertThat(context.getAttributes().get("setRowIndexCalled"), is(nullValue()));
+        assertNull(context.getAttributes().get("setRowIndexCalled"));
     }
 }

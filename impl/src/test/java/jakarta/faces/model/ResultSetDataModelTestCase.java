@@ -16,16 +16,23 @@
 
 package jakarta.faces.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import com.sun.faces.mock.MockResultSet;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.sun.faces.mock.MockResultSet;
 
 /**
  * <p>
@@ -33,23 +40,13 @@ import junit.framework.TestSuite;
  */
 public class ResultSetDataModelTestCase extends DataModelTestCaseBase {
 
-    // ------------------------------------------------------------ Constructors
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public ResultSetDataModelTestCase(String name) {
-        super(name);
-    }
-
     // ------------------------------------------------------ Instance Variables
     // The ResultSet passed to our ResultSetDataModel
     protected MockResultSet result = null;
 
     // ---------------------------------------------------- Overall Test Methods
     // Set up instance variables required by this test case.
-    @Override
+    @BeforeEach
     public void setUp() throws Exception {
         beans = new BeanTestImpl[5];
         for (int i = 0; i < beans.length; i++) {
@@ -58,16 +55,11 @@ public class ResultSetDataModelTestCase extends DataModelTestCaseBase {
         configure();
         result = new MockResultSet(beans);
         model = new ResultSetDataModel(result);
-        super.setUp();
-    }
-
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return (new TestSuite(ResultSetDataModelTestCase.class));
     }
 
     // ------------------------------------------------- Individual Test Methods
     // Test ((Map) getRowData()).containsKey()
+    @Test
     public void testRowDataContainsKey() throws Exception {
         // Position to row 1 and retrieve the corresponding Map
         model.setRowIndex(1);
@@ -105,6 +97,7 @@ public class ResultSetDataModelTestCase extends DataModelTestCaseBase {
     }
 
     // Test ((Map) getRowData()).containsValue()
+    @Test
     public void testRowDataContainsValue() throws Exception {
         // Position to row 1 and retrieve the corresponding Map
         model.setRowIndex(1);
@@ -130,6 +123,7 @@ public class ResultSetDataModelTestCase extends DataModelTestCaseBase {
     }
 
     // Test ((Map) getRowData()).entrySet()
+    @Test
     public void testRowDataEntrySet() throws Exception {
         // Position to row 1 and retrieve the corresponding Map
         model.setRowIndex(1);
@@ -180,15 +174,16 @@ public class ResultSetDataModelTestCase extends DataModelTestCaseBase {
         assertEquals("This is string 1 modified",
                 beans[1].getStringProperty());
         assertEquals("This is string 1 modified",
-                (String) map.get("stringProperty"));
+                map.get("stringProperty"));
         assertEquals("This is string 1 modified",
-                (String) map.get("stringPROPERTY"));
+                map.get("stringPROPERTY"));
         result.absolute(2); // ResultSet indexing is one-relative
         assertEquals("This is string 1 modified",
-                (String) result.getObject("stringProperty"));
+                result.getObject("stringProperty"));
     }
 
     // Test ((Map) getRowData()).get()
+    @Test
     public void testRowDataGet() throws Exception {
         // Position to row 1 and retrieve the corresponding Map
         model.setRowIndex(1);
@@ -206,7 +201,7 @@ public class ResultSetDataModelTestCase extends DataModelTestCaseBase {
         assertEquals(Float.valueOf((float) 10.0), map.get("floatProperty"));
         assertEquals(Integer.valueOf(1000), map.get("intProperty"));
         assertEquals(Long.valueOf(10000l), map.get("longProperty"));
-        assertEquals("This is string 1", (String) map.get("stringProperty"));
+        assertEquals("This is string 1", map.get("stringProperty"));
 
         // Test inexact match on column names
         assertEquals(Boolean.FALSE, map.get("booleanPROPERTY"));
@@ -216,7 +211,7 @@ public class ResultSetDataModelTestCase extends DataModelTestCaseBase {
         assertEquals(Float.valueOf((float) 10.0), map.get("floatPROPERTY"));
         assertEquals(Integer.valueOf(1000), map.get("intPROPERTY"));
         assertEquals(Long.valueOf(10000l), map.get("longPROPERTY"));
-        assertEquals("This is string 1", (String) map.get("stringPROPERTY"));
+        assertEquals("This is string 1", map.get("stringPROPERTY"));
 
         // Test null return on non-existent column names
         assertNull(map.get("foo"));
@@ -226,6 +221,7 @@ public class ResultSetDataModelTestCase extends DataModelTestCaseBase {
     }
 
     // Test ((Map) getRowData()).keySet()
+    @Test
     public void testRowDataKeySet() throws Exception {
         // Position to row 1 and retrieve the corresponding Map
         model.setRowIndex(1);
@@ -267,6 +263,7 @@ public class ResultSetDataModelTestCase extends DataModelTestCaseBase {
     }
 
     // Test ((Map) getRowData()).put()
+    @Test
     public void testRowDataPut() throws Exception {
         // Position to row 1 and retrieve the corresponding Map
         model.setRowIndex(1);
@@ -278,6 +275,7 @@ public class ResultSetDataModelTestCase extends DataModelTestCaseBase {
     }
 
     // Test unsupported operations on ((Map) getRowData())
+    @Test
     public void testRowDataUnsupported() throws Exception {
         // Position to row 1 and retrieve the corresponding Map
         model.setRowIndex(1);
@@ -456,6 +454,7 @@ public class ResultSetDataModelTestCase extends DataModelTestCaseBase {
     }
 
     // Test ((Map) getRowData()).values()
+    @Test
     public void testRowDataValues() throws Exception {
         // Position to row 1 and retrieve the corresponding Map
         model.setRowIndex(1);

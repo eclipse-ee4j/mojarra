@@ -16,8 +16,7 @@
 
 package jakarta.faces.model;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * <p>
@@ -25,31 +24,15 @@ import junit.framework.TestSuite;
  */
 public class ScalarDataModelTestCase extends DataModelTestCaseBase {
 
-    // ------------------------------------------------------------ Constructors
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public ScalarDataModelTestCase(String name) {
-        super(name);
-    }
-
     // ------------------------------------------------------ Instance Variables
     // ---------------------------------------------------- Overall Test Methods
     // Set up instance variables required by this test case.
-    @Override
+    @BeforeEach
     public void setUp() throws Exception {
         beans = new BeanTestImpl[1];
         beans[0] = new BeanTestImpl();
         configure();
         model = new ScalarDataModel<BeanTestImpl>(beans[0]);
-        super.setUp();
-    }
-
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return (new TestSuite(ScalarDataModelTestCase.class));
     }
 
     // ------------------------------------------------- Individual Test Methods
