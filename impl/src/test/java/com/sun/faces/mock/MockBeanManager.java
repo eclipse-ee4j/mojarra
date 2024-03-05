@@ -263,4 +263,14 @@ public class MockBeanManager implements BeanManager, ELAwareBeanManager {
         return null;
     }
 
+    @Override
+    public boolean isMatchingBean(Set<Type> beanTypes, Set<Annotation> beanQualifiers, Type requiredType, Set<Annotation> requiredQualifiers) {
+        return false;
+    }
+
+    @Override
+    public boolean isMatchingEvent(Type specifiedType, Set<Annotation> specifiedQualifiers, Type observedEventType, Set<Annotation> observedEventQualifiers) {
+        return false;
+    }
+
 }
