@@ -16,7 +16,16 @@
 
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.lang.reflect.Method;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.sun.faces.mock.MockExternalContext;
 import com.sun.faces.mock.MockFacesContext;
@@ -28,29 +37,16 @@ import com.sun.faces.mock.MockServletContext;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.DateTimeConverter;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
-public class UIOutputAttachedObjectStateTestCase extends TestCase {
+public class UIOutputAttachedObjectStateTestCase {
 
     private MockFacesContext facesContext = null;
     private MockServletContext servletContext;
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
 
-    public UIOutputAttachedObjectStateTestCase(String arg0) {
-        super(arg0);
-    }
-
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return new TestSuite(UIOutputAttachedObjectStateTestCase.class);
-    }
-
-    @Override
+    @BeforeEach
     public void setUp() throws Exception {
-        super.setUp();
         facesContext = new MockFacesContext();
         facesContext = new MockFacesContext();
 
@@ -66,9 +62,8 @@ public class UIOutputAttachedObjectStateTestCase extends TestCase {
 
     }
 
-    @Override
+    @AfterEach
     protected void tearDown() throws Exception {
-        super.tearDown();
         FactoryFinder.releaseFactories();
         Method reInitializeFactoryManager = FactoryFinder.class.getDeclaredMethod("reInitializeFactoryManager", (Class<?>[]) null);
         reInitializeFactoryManager.setAccessible(true);
@@ -76,6 +71,8 @@ public class UIOutputAttachedObjectStateTestCase extends TestCase {
     }
 
     // ------------------------------------------------------------ Test Methods
+
+    @Test
     public void testConverterState() {
         UIOutput output = new UIOutput();
         DateTimeConverter converter = new DateTimeConverter();
@@ -124,7 +121,7 @@ public class UIOutputAttachedObjectStateTestCase extends TestCase {
         // for the component.
         output.restoreState(facesContext, state);
         assertTrue(output.getConverter() != null);
-        assertTrue("dd-MM-yy".equals(converter.getPattern()));
+        assertEquals("dd-MM-yy", converter.getPattern());
 
         // now validate the case where UIOutput has some event
         // that adds a converter *after* initial state has been
@@ -154,6 +151,6 @@ public class UIOutputAttachedObjectStateTestCase extends TestCase {
         assertNotNull(c);
         assertTrue(c instanceof DateTimeConverter);
         converter = (DateTimeConverter) c;
-        assertTrue("dd-MM-yy".equals(converter.getPattern()));
+        assertEquals("dd-MM-yy", converter.getPattern());
     }
 }

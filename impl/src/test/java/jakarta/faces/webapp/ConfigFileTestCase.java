@@ -16,26 +16,28 @@
 
 package jakarta.faces.webapp;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Map;
 
 import org.apache.commons.digester.Digester;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.InputSource;
 
 import com.sun.faces.config.DigesterFactory;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * <p>
  * Unit tests for Configuration File processing.
  * </p>
  */
-public class ConfigFileTestCase extends TestCase {
+public class ConfigFileTestCase {
 
     // The public identifier of our DTD
     protected String CONFIG_DTD_PUBLIC_ID = "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.0//EN";
@@ -46,43 +48,28 @@ public class ConfigFileTestCase extends TestCase {
      */
     protected Digester digester = null;
 
-    // ----------------------------------------------------------- Constructors
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public ConfigFileTestCase(String name) {
-        super(name);
-    }
-
     // --------------------------------------------------- Overall Test Methods
     /**
      * Set up instance variables required by this test case.
      *
      * @throws java.lang.Exception
      */
-    @Override
+    @BeforeEach
     public void setUp() throws Exception {
         digester = createDigester();
         configureRules(digester);
     }
 
-    /**
-     * Return the tests included in this test suite.
-     */
-    public static Test suite() {
-        return (new TestSuite(ConfigFileTestCase.class));
-    }
-
     // ------------------------------------------------ Individual Test Methods
     // Test parsing an empty configuration file
+    @Test
     public void testEmpty() throws Exception {
         ConfigBase base = parseConfig(relativeURL("src/test/java/jakarta/faces/webapp/config-file-0.xml"));
         assertNotNull(base);
     }
 
     // Test parsing a full configuration file
+    @Test
     public void testFull() throws Exception {
         // Retrieve entire configuration metadata instance
         ConfigBase base = parseConfig(relativeURL("src/test/java/jakarta/faces/webapp/config-file-1.xml"));
@@ -185,10 +172,6 @@ public class ConfigFileTestCase extends TestCase {
         assertNull(cv2p1.getSmallIcon());
         assertEquals("prop1", cv2p1.getPropertyName());
         assertEquals("java.lang.String", cv2p1.getPropertyClass());
-    }
-
-    // Test a pristine Digester instance
-    public void testPristine() {
     }
 
     // ------------------------------------------------------ Protected Methods

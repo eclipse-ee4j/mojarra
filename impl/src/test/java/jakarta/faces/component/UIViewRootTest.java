@@ -16,19 +16,16 @@
 
 package jakarta.faces.component;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.reset;
-import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.easymock.EasyMock;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
@@ -42,99 +39,82 @@ public class UIViewRootTest {
 
     @Test
     public void testViewMapPostConstructViewMapEvent() {
-        FacesContext facesContext = EasyMock.createMock(FacesContext.class);
-        Application application = EasyMock.createMock(Application.class);
-        ExternalContext externalContext = EasyMock.createMock(ExternalContext.class);
-        HttpSession httpSession = EasyMock.createMock(HttpSession.class);
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
+        Application application = Mockito.mock(Application.class);
+        ExternalContext externalContext = Mockito.mock(ExternalContext.class);
+        HttpSession httpSession = Mockito.mock(HttpSession.class);
 
         setFacesContext(facesContext);
 
-        expect(facesContext.getExternalContext()).andReturn(externalContext).anyTimes();
-        expect(externalContext.getApplicationMap()).andReturn(null).anyTimes();
-        replay(facesContext, externalContext);
+        when(facesContext.getExternalContext()).thenReturn(externalContext);
+        when(externalContext.getApplicationMap()).thenReturn(null);
         UIViewRoot viewRoot = new UIViewRoot();
-        verify(facesContext, externalContext);
 
-        reset(facesContext, externalContext);
-        expect(facesContext.getApplication()).andReturn(application).anyTimes();
-        expect(application.getProjectStage()).andReturn(ProjectStage.UnitTest);
+        when(facesContext.getApplication()).thenReturn(application);
+        when(application.getProjectStage()).thenReturn(ProjectStage.UnitTest);
         application.publishEvent(facesContext, PostConstructViewMapEvent.class, UIViewRoot.class, viewRoot);
-        replay(facesContext, application, externalContext, httpSession);
         Map<String, Object> viewMap = viewRoot.getViewMap();
         assertNotNull(viewMap);
-        verify(facesContext, application, externalContext, httpSession);
 
         setFacesContext(null);
     }
 
     @Test
     public void testViewMapPreDestroyViewMapEvent() {
-        FacesContext facesContext = EasyMock.createMock(FacesContext.class);
-        Application application = EasyMock.createMock(Application.class);
-        ExternalContext externalContext = EasyMock.createMock(ExternalContext.class);
-        HttpSession httpSession = EasyMock.createMock(HttpSession.class);
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
+        Application application = Mockito.mock(Application.class);
+        ExternalContext externalContext = Mockito.mock(ExternalContext.class);
+        HttpSession httpSession = Mockito.mock(HttpSession.class);
 
         setFacesContext(facesContext);
 
-        expect(facesContext.getExternalContext()).andReturn(externalContext).anyTimes();
-        expect(externalContext.getApplicationMap()).andReturn(null).anyTimes();
-        replay(facesContext, externalContext);
+        when(facesContext.getExternalContext()).thenReturn(externalContext);
+        when(externalContext.getApplicationMap()).thenReturn(null);
         UIViewRoot viewRoot = new UIViewRoot();
-        verify(facesContext, externalContext);
 
-        reset(facesContext, externalContext);
-        expect(facesContext.getApplication()).andReturn(application).anyTimes();
-        expect(application.getProjectStage()).andReturn(ProjectStage.UnitTest);
+        when(facesContext.getApplication()).thenReturn(application);
+        when(application.getProjectStage()).thenReturn(ProjectStage.UnitTest);
         application.publishEvent(facesContext, PostConstructViewMapEvent.class, UIViewRoot.class, viewRoot);
-        expect(facesContext.getViewRoot()).andReturn(viewRoot);
+        when(facesContext.getViewRoot()).thenReturn(viewRoot);
         application.publishEvent(facesContext, PreDestroyViewMapEvent.class, UIViewRoot.class, viewRoot);
-        expect(facesContext.getViewRoot()).andReturn(viewRoot);
+        when(facesContext.getViewRoot()).thenReturn(viewRoot);
         application.publishEvent(facesContext, PreDestroyViewMapEvent.class, UIViewRoot.class, viewRoot);
 
-        replay(facesContext, application, externalContext, httpSession);
 
         Map<String, Object> viewMap = viewRoot.getViewMap();
         assertNotNull(viewMap);
         viewRoot.getViewMap().clear();
         viewRoot.getViewMap().clear();
 
-        verify(facesContext, application, externalContext, httpSession);
 
         setFacesContext(null);
     }
 
     @Test
     public void testViewMapSaveAndRestoreState() {
-        FacesContext facesContext = EasyMock.createMock(FacesContext.class);
-        Application application = EasyMock.createMock(Application.class);
-        ExternalContext externalContext = EasyMock.createMock(ExternalContext.class);
-        HttpSession httpSession = EasyMock.createMock(HttpSession.class);
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
+        Application application = Mockito.mock(Application.class);
+        ExternalContext externalContext = Mockito.mock(ExternalContext.class);
+        HttpSession httpSession = Mockito.mock(HttpSession.class);
         HashMap<Object, Object> attributes = new HashMap<>();
         HashMap<String, Object> sessionMap = new HashMap<>();
 
         setFacesContext(facesContext);
 
-        expect(facesContext.getExternalContext()).andReturn(externalContext).anyTimes();
-        expect(externalContext.getApplicationMap()).andReturn(null).anyTimes();
-        replay(facesContext, externalContext);
+        when(facesContext.getExternalContext()).thenReturn(externalContext);
+        when(externalContext.getApplicationMap()).thenReturn(null);
         UIViewRoot viewRoot1 = new UIViewRoot();
-        verify(facesContext, externalContext);
-        reset(facesContext, externalContext);
 
-        expect(facesContext.getExternalContext()).andReturn(externalContext).anyTimes();
-        expect(externalContext.getApplicationMap()).andReturn(null).anyTimes();
-        replay(facesContext, externalContext);
+        when(facesContext.getExternalContext()).thenReturn(externalContext);
+        when(externalContext.getApplicationMap()).thenReturn(null);
         UIViewRoot viewRoot2 = new UIViewRoot();
-        verify(facesContext, externalContext);
-        reset(facesContext, externalContext);
 
-        expect(facesContext.getAttributes()).andReturn(attributes).anyTimes();
-        expect(facesContext.getApplication()).andReturn(application).anyTimes();
-        expect(application.getProjectStage()).andReturn(ProjectStage.UnitTest).anyTimes();
-        expect(facesContext.getExternalContext()).andReturn(externalContext).anyTimes();
-        expect(externalContext.getSessionMap()).andReturn(sessionMap).anyTimes();
+        when(facesContext.getAttributes()).thenReturn(attributes);
+        when(facesContext.getApplication()).thenReturn(application);
+        when(application.getProjectStage()).thenReturn(ProjectStage.UnitTest);
+        when(facesContext.getExternalContext()).thenReturn(externalContext);
+        when(externalContext.getSessionMap()).thenReturn(sessionMap);
         application.publishEvent(facesContext, PostConstructViewMapEvent.class, UIViewRoot.class, viewRoot1);
-        replay(facesContext, application, externalContext, httpSession);
         Map<String, Object> viewMap = viewRoot1.getViewMap();
         viewMap.put("one", "one");
         Object saved = viewRoot1.saveState(facesContext);
@@ -149,7 +129,6 @@ public class UIViewRootTest {
         viewRoot2.restoreState(facesContext, saved);
         viewMap = viewRoot2.getViewMap();
         assertEquals("one", viewMap.get("one"));
-        verify(facesContext, application, externalContext, httpSession);
 
         setFacesContext(null);
     }

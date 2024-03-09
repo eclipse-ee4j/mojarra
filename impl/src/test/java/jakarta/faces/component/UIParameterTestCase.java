@@ -16,8 +16,11 @@
 
 package jakarta.faces.component;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * <p>
@@ -26,19 +29,10 @@ import junit.framework.TestSuite;
  */
 public class UIParameterTestCase extends UIComponentBaseTestCase {
 
-    // ------------------------------------------------------------ Constructors
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public UIParameterTestCase(String name) {
-        super(name);
-    }
-
     // ---------------------------------------------------- Overall Test Methods
     // Set up instance variables required by this test case.
     @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         component = new UIParameter();
@@ -47,21 +41,17 @@ public class UIParameterTestCase extends UIComponentBaseTestCase {
         expectedRendererType = null;
     }
 
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return new TestSuite(UIParameterTestCase.class);
-    }
-
     // ------------------------------------------------- Individual Test Methods
     // Test attribute-property transparency
     @Override
+    @Test
     public void testAttributesTransparency() {
         super.testAttributesTransparency();
         UIParameter parameter = (UIParameter) component;
 
         assertEquals(parameter.getValue(), component.getAttributes().get("value"));
         parameter.setValue("foo");
-        assertEquals("foo", (String) component.getAttributes().get("value"));
+        assertEquals("foo", component.getAttributes().get("value"));
         parameter.setValue(null);
         assertNull(component.getAttributes().get("value"));
         component.getAttributes().put("value", "bar");
@@ -69,9 +59,9 @@ public class UIParameterTestCase extends UIComponentBaseTestCase {
         component.getAttributes().put("value", null);
         assertNull(parameter.getValue());
 
-        assertEquals(parameter.getName(), (String) parameter.getAttributes().get("name"));
+        assertEquals(parameter.getName(), parameter.getAttributes().get("name"));
         parameter.setName("foo");
-        assertEquals("foo", (String) parameter.getAttributes().get("name"));
+        assertEquals("foo", parameter.getAttributes().get("name"));
         parameter.setName(null);
         assertNull(parameter.getAttributes().get("name"));
         parameter.getAttributes().put("name", "bar");
@@ -82,30 +72,33 @@ public class UIParameterTestCase extends UIComponentBaseTestCase {
 
     // Suppress lifecycle tests since we do not have a renderer
     @Override
+    @Test
     public void testLifecycleManagement() {
     }
 
     // Test a pristine UIParameter instance
     @Override
+    @Test
     public void testPristine() {
         super.testPristine();
         UIParameter parameter = (UIParameter) component;
 
-        assertNull("no value", parameter.getValue());
-        assertNull("no name", parameter.getName());
+        assertNull(parameter.getValue());
+        assertNull(parameter.getName());
     }
 
     // Test setting properties to valid values
     @Override
+    @Test
     public void testPropertiesValid() throws Exception {
         super.testPropertiesValid();
         UIParameter parameter = (UIParameter) component;
 
         // value
         parameter.setValue("foo.bar");
-        assertEquals("expected value", "foo.bar", parameter.getValue());
+        assertEquals("foo.bar", parameter.getValue());
         parameter.setValue(null);
-        assertNull("erased value", parameter.getValue());
+        assertNull(parameter.getValue());
 
         parameter.setName("foo");
         assertEquals("foo", parameter.getName());

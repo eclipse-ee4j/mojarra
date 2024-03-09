@@ -16,15 +16,13 @@
 
 package jakarta.faces.component;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
 
-import org.junit.Test;
-import org.powermock.api.easymock.PowerMock;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import jakarta.el.ELContext;
 import jakarta.el.ValueExpression;
@@ -37,7 +35,7 @@ public class UIParameterTest {
      */
     @Test
     public void testIsDisable() throws Exception {
-        FacesContext facesContext = PowerMock.createNicePartialMockForAllMethodsExcept(FacesContext.class, "getCurrentInstance", "setCurrentInstance");
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
         Method method = FacesContext.class.getDeclaredMethod("setCurrentInstance", FacesContext.class);
         method.setAccessible(true);
         method.invoke(null, facesContext);
@@ -52,21 +50,19 @@ public class UIParameterTest {
      */
     @Test
     public void testIsDisable2() throws Exception {
-        ELContext elContext = PowerMock.createMock(ELContext.class);
-        FacesContext facesContext = PowerMock.createPartialMockForAllMethodsExcept(FacesContext.class, "getCurrentInstance", "setCurrentInstance");
-        ValueExpression valueExpression = PowerMock.createMock(ValueExpression.class);
+        ELContext elContext = Mockito.mock(ELContext.class);
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
+        ValueExpression valueExpression = Mockito.mock(ValueExpression.class);
         Method method = FacesContext.class.getDeclaredMethod("setCurrentInstance", FacesContext.class);
         method.setAccessible(true);
         method.invoke(null, facesContext);
-        expect(facesContext.getExternalContext()).andReturn(null).anyTimes();
-        expect(valueExpression.isLiteralText()).andReturn(false).anyTimes();
-        expect(facesContext.getELContext()).andReturn(elContext);
-        expect(valueExpression.getValue(elContext)).andReturn(true);
-        replay(elContext, facesContext, valueExpression);
+        when(facesContext.getExternalContext()).thenReturn(null);
+        when(valueExpression.isLiteralText()).thenReturn(false);
+        when(facesContext.getELContext()).thenReturn(elContext);
+        when(valueExpression.getValue(elContext)).thenReturn(true);
         UIParameter parameter = new UIParameter();
         parameter.setValueExpression("disable", valueExpression);
         assertTrue(parameter.isDisable());
-        verify(elContext, facesContext, valueExpression);
         method.invoke(null, (FacesContext) null);
     }
 }

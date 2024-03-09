@@ -16,32 +16,24 @@
 
 package jakarta.faces.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.Test;
 
 /**
  * <p>
  * Abstract base class for {@link DataModel} tests.</p>
  */
-public abstract class DataModelTestCaseBase extends TestCase {
-
-    // ------------------------------------------------------------ Constructors
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public DataModelTestCaseBase(String name) {
-
-        super(name);
-
-    }
+public abstract class DataModelTestCaseBase {
 
     // ------------------------------------------------------ Instance Variables
     // The array of beans we will be wrapping (must be initialized before setUp)
@@ -66,28 +58,10 @@ public abstract class DataModelTestCaseBase extends TestCase {
         }
     }
 
-    // Set up instance variables required by this test case.
-    @Override
-    public void setUp() throws Exception {
-        // Subclasses must create "beans", call "configure()", create "model"
-        super.setUp();
-    }
-
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return (new TestSuite(DataModelTestCaseBase.class));
-    }
-
-    // Tear down instance variables required by ths test case
-    @Override
-    public void tearDown() throws Exception {
-        super.tearDown();
-        beans = null;
-        model = null;
-    }
-
     // ------------------------------------------------- Individual Test Methods
+
     // Test invalid arguments to listener methods
+    @Test
     public void testInvalidListeners() throws Exception {
         try {
             model.addDataModelListener(null);
@@ -105,6 +79,7 @@ public abstract class DataModelTestCaseBase extends TestCase {
     }
 
     // Test positioning to all rows in ascending order
+    @Test
     public void testPositionAscending() throws Exception {
         StringBuilder sb = new StringBuilder();
         model.setRowIndex(-1);
@@ -120,6 +95,7 @@ public abstract class DataModelTestCaseBase extends TestCase {
     }
 
     // Test positioning to all rows in descending order
+    @Test
     public void testPositionDescending() throws Exception {
         StringBuilder sb = new StringBuilder();
         model.setRowIndex(-1);
@@ -135,24 +111,26 @@ public abstract class DataModelTestCaseBase extends TestCase {
     }
 
     // Test a pristine DataModel instance
+    @Test
     public void testPristine() throws Exception {
         // Unopened instance
-        assertNotNull("beans exists", beans);
-        assertNotNull("model exists", model);
+        assertNotNull(beans);
+        assertNotNull(model);
 
         // Correct row count
         if (model instanceof ResultSetDataModel) {
-            assertEquals("correct row count", -1, model.getRowCount());
+            assertEquals(-1, model.getRowCount());
         } else {
-            assertEquals("correct row count", beans.length,
+            assertEquals(beans.length,
                     model.getRowCount());
         }
 
         // Correct row index
-        assertEquals("correct row index", 0, model.getRowIndex());
+        assertEquals(0, model.getRowIndex());
     }
 
     // Test removing listener
+    @Test
     public void testRemoveListener() throws Exception {
         ListenerTestImpl listener = new ListenerTestImpl();
         ListenerTestImpl.trace(null);
@@ -167,6 +145,7 @@ public abstract class DataModelTestCaseBase extends TestCase {
     }
 
     // Test resetting the wrapped data (should trigger an event
+    @Test
     public void testReset() throws Exception {
         ListenerTestImpl listener = new ListenerTestImpl();
         ListenerTestImpl.trace(null);
@@ -178,6 +157,7 @@ public abstract class DataModelTestCaseBase extends TestCase {
     }
 
     // Test row available manipulations
+    @Test
     public void testRowAvailable() throws Exception {
         // Position to the "no current row" position
         model.setRowIndex(-1);
@@ -193,6 +173,7 @@ public abstract class DataModelTestCaseBase extends TestCase {
     }
 
     // Test the ability to update through the Map returned by getRowData()
+    @Test
     @SuppressWarnings("unchecked")
     public void testRowData() throws Exception {
         // Retrieve the row data for row zero
@@ -248,8 +229,9 @@ public abstract class DataModelTestCaseBase extends TestCase {
     }
 
     // Test row index manipulations
+    @Test
     public void testRowIndex() throws Exception {
-        assertEquals("correct row index", 0, model.getRowIndex());
+        assertEquals(0, model.getRowIndex());
 
         // Positive setRowIndex() tests
         model.setRowIndex(0);
@@ -264,6 +246,7 @@ public abstract class DataModelTestCaseBase extends TestCase {
         }
     }
 
+    @Test
     public void testIterator() {
         Iterator<?> iterator = model.iterator();
         if (!(model instanceof ScalarDataModel)) {
@@ -287,6 +270,7 @@ public abstract class DataModelTestCaseBase extends TestCase {
     }
 
     // Test resetting the wrapped data to null
+    @Test
     public void testWrapped() throws Exception {
         model.setWrappedData(null);
         assertTrue(!model.isRowAvailable());
@@ -308,42 +292,42 @@ public abstract class DataModelTestCaseBase extends TestCase {
         model.setRowIndex(i);
         String prompt = "Row " + i + " property ";
         BeanTestImpl bean = data();
-        assertNotNull("Row " + i + " data", bean);
-        assertEquals(prompt + "booleanProperty",
+        assertNotNull(bean, "Row " + i + " data");
+        assertEquals(
                 beans[i].getBooleanProperty(),
-                bean.getBooleanProperty());
-        assertEquals(prompt + "booleanSecond",
+                bean.getBooleanProperty(), prompt + "booleanProperty");
+        assertEquals(
                 beans[i].isBooleanSecond(),
-                bean.isBooleanSecond());
-        assertEquals(prompt + "byteProperty",
+                bean.isBooleanSecond(), prompt + "booleanSecond");
+        assertEquals(
                 beans[i].getByteProperty(),
-                bean.getByteProperty());
-        assertEquals(prompt + "doubleProperty",
+                bean.getByteProperty(), prompt + "byteProperty");
+        assertEquals(
                 "" + beans[i].getDoubleProperty(),
-                "" + bean.getDoubleProperty());
-        assertEquals(prompt + "floatProperty",
+                "" + bean.getDoubleProperty(), prompt + "doubleProperty");
+        assertEquals(
                 "" + beans[i].getFloatProperty(),
-                "" + bean.getFloatProperty());
-        assertEquals(prompt + "intProperty",
+                "" + bean.getFloatProperty(), prompt + "floatProperty");
+        assertEquals(
                 beans[i].getIntProperty(),
-                bean.getIntProperty());
-        assertEquals(prompt + "longProperty",
+                bean.getIntProperty(), prompt + "intProperty");
+        assertEquals(
                 beans[i].getLongProperty(),
-                bean.getLongProperty());
-        assertEquals(prompt + "nullProperty",
+                bean.getLongProperty(), prompt + "longProperty");
+        assertEquals(
                 beans[i].getNullProperty(),
-                bean.getNullProperty());
-        assertEquals(prompt + "readOnlyProperty",
+                bean.getNullProperty(), prompt + "nullProperty");
+        assertEquals(
                 beans[i].getReadOnlyProperty(),
-                bean.getReadOnlyProperty());
-        assertEquals(prompt + "shortProperty",
+                bean.getReadOnlyProperty(), prompt + "readOnlyProperty");
+        assertEquals(
                 beans[i].getShortProperty(),
-                bean.getShortProperty());
-        assertEquals(prompt + "stringProperty",
+                bean.getShortProperty(), prompt + "shortProperty");
+        assertEquals(
                 beans[i].getStringProperty(),
-                bean.getStringProperty());
-        assertEquals(prompt + "writeOnlyProperty",
+                bean.getStringProperty(), prompt + "stringProperty");
+        assertEquals(
                 beans[i].getWriteOnlyPropertyValue(),
-                bean.getWriteOnlyPropertyValue());
+                bean.getWriteOnlyPropertyValue(), prompt + "writeOnlyProperty");
     }
 }

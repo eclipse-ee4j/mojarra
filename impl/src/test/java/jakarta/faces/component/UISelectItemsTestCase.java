@@ -16,9 +16,13 @@
 
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import jakarta.faces.model.SelectItem;
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * <p>
@@ -27,19 +31,10 @@ import junit.framework.TestSuite;
  */
 public class UISelectItemsTestCase extends UIComponentBaseTestCase {
 
-    // ------------------------------------------------------------ Constructors
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public UISelectItemsTestCase(String name) {
-        super(name);
-    }
-
     // ---------------------------------------------------- Overall Test Methods
     // Set up instance variables required by this test case.
     @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         component = new UISelectItems();
@@ -48,14 +43,10 @@ public class UISelectItemsTestCase extends UIComponentBaseTestCase {
         expectedRendererType = null;
     }
 
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return new TestSuite(UISelectItemsTestCase.class);
-    }
-
     // ------------------------------------------------- Individual Test Methods
     // Test attribute-property transparency
     @Override
+    @Test
     public void testAttributesTransparency() {
         super.testAttributesTransparency();
         UISelectItems selectItems = (UISelectItems) component;
@@ -74,19 +65,22 @@ public class UISelectItemsTestCase extends UIComponentBaseTestCase {
 
     // Suppress lifecycle tests since we do not have a renderer
     @Override
+    @Test
     public void testLifecycleManagement() {
     }
 
     // Test a pristine UISelectItems instance
     @Override
+    @Test
     public void testPristine() {
         super.testPristine();
         UISelectItems selectItems = (UISelectItems) component;
-        assertNull("no value", selectItems.getValue());
+        assertNull(selectItems.getValue());
     }
 
     // Test setting properties to valid values
     @Override
+    @Test
     public void testPropertiesValid() throws Exception {
         super.testPropertiesValid();
         UISelectItems selectItems = (UISelectItems) component;
@@ -94,9 +88,9 @@ public class UISelectItemsTestCase extends UIComponentBaseTestCase {
         // value
         SelectItem item = new SelectItem("foo");
         selectItems.setValue(item);
-        assertEquals("expected value", item, selectItems.getValue());
+        assertEquals(item, selectItems.getValue());
         selectItems.setValue(null);
-        assertNull("erased value", selectItems.getValue());
+        assertNull(selectItems.getValue());
     }
 
     // --------------------------------------------------------- Support Methods

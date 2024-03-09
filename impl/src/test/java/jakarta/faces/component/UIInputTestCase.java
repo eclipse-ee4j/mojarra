@@ -16,7 +16,15 @@
 
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Iterator;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -24,8 +32,6 @@ import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.ValueChangeEvent;
 import jakarta.faces.event.ValueChangeListener;
 import jakarta.faces.validator.Validator;
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * <p>
@@ -34,19 +40,10 @@ import junit.framework.TestSuite;
  */
 public class UIInputTestCase extends UIOutputTestCase {
 
-    // ------------------------------------------------------------ Constructors
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public UIInputTestCase(String name) {
-        super(name);
-    }
-
     // ---------------------------------------------------- Overall Test Methods
     // Set up instance variables required by this test case.
     @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         component = new UIInput();
@@ -54,21 +51,17 @@ public class UIInputTestCase extends UIOutputTestCase {
         expectedRendererType = "jakarta.faces.Text";
     }
 
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return new TestSuite(UIInputTestCase.class);
-    }
-
     // ------------------------------------------------- Individual Test Methods
     // Test attribute-property transparency
     @Override
+    @Test
     public void testAttributesTransparency() {
         super.testAttributesTransparency();
         UIInput input = (UIInput) component;
 
         assertEquals(input.getSubmittedValue(), input.getAttributes().get("submittedValue"));
         input.setSubmittedValue("foo");
-        assertEquals("foo", (String) input.getAttributes().get("submittedValue"));
+        assertEquals("foo", input.getAttributes().get("submittedValue"));
         input.setSubmittedValue(null);
         assertNull(input.getAttributes().get("submittedValue"));
         input.getAttributes().put("submittedValue", "bar");
@@ -95,6 +88,7 @@ public class UIInputTestCase extends UIOutputTestCase {
     }
 
     // Test the compareValues() method
+    @Test
     public void testCompareValues() {
         InputTestImpl input = new InputTestImpl();
         Object value1a = "foo";
@@ -115,6 +109,7 @@ public class UIInputTestCase extends UIOutputTestCase {
     }
 
     // Test event queuing and broadcasting (any phase listeners)
+    @Test
     public void testEventsGeneric() {
         UIInput input = (UIInput) component;
         ValueChangeEvent event = new ValueChangeEvent(input, null, null);
@@ -131,6 +126,7 @@ public class UIInputTestCase extends UIOutputTestCase {
     }
 
     // Test event queuing and broadcasting (mixed phase listeners)
+    @Test
     public void testEventsMixed() {
         UIInput input = (UIInput) component;
         input.setRendererType(null);
@@ -164,6 +160,7 @@ public class UIInputTestCase extends UIOutputTestCase {
     }
 
     // Test listener registration and deregistration
+    @Test
     public void testListeners() {
         InputTestImpl input = new InputTestImpl();
 
@@ -181,6 +178,7 @@ public class UIInputTestCase extends UIOutputTestCase {
     }
 
     // Test empty listener list
+    @Test
     public void testEmptyListeners() {
         InputTestImpl input = new InputTestImpl();
 
@@ -191,24 +189,27 @@ public class UIInputTestCase extends UIOutputTestCase {
 
     // Test a pristine UIInput instance
     @Override
+    @Test
     public void testPristine() {
         super.testPristine();
         UIInput input = (UIInput) component;
 
-        assertNull("no submittedValue", input.getSubmittedValue());
-        assertTrue("not required", !input.isRequired());
-        assertTrue("is valid", input.isValid());
-        assertTrue("is not immediate", !input.isImmediate());
+        assertNull(input.getSubmittedValue());
+        assertTrue(!input.isRequired());
+        assertTrue(input.isValid());
+        assertTrue(!input.isImmediate());
     }
 
     // Test setting properties to invalid values
     @Override
+    @Test
     public void testPropertiesInvalid() throws Exception {
         super.testPropertiesInvalid();
         UIInput input = (UIInput) component;
     }
 
     // Test validation of a required field
+    @Test
     public void testValidateRequired() throws Exception {
         UIViewRoot root = facesContext.getApplication().getViewHandler().createView(facesContext, null);
         root.getChildren().add(component);
@@ -245,6 +246,7 @@ public class UIInputTestCase extends UIOutputTestCase {
         assertTrue(input.isValid());
     }
 
+    @Test
     public void testGetValueChangeListeners() throws Exception {
         UIInput command = (UIInput) component;
         UIViewRoot root = facesContext.getApplication().getViewHandler().createView(facesContext, null);
@@ -269,11 +271,11 @@ public class UIInputTestCase extends UIOutputTestCase {
         Iterator<FacesMessage> messages = facesContext.getMessages();
         while (messages.hasNext()) {
             FacesMessage message = messages.next();
-            assertEquals("Severity == ERROR", FacesMessage.SEVERITY_ERROR, message.getSeverity());
+            assertEquals(FacesMessage.SEVERITY_ERROR, message.getSeverity());
             n++;
             // System.err.println(message.getSummary());
         }
-        assertEquals("expected message count", expected, n);
+        assertEquals(expected, n);
     }
 
     // Create a pristine component of the type to be used in state holder tests

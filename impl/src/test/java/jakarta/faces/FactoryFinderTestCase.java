@@ -16,9 +16,16 @@
 
 package jakarta.faces;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.sun.faces.mock.MockHttpServletRequest;
 import com.sun.faces.mock.MockHttpServletResponse;
@@ -30,21 +37,8 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.FacesContextFactory;
 import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.lifecycle.LifecycleFactory;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
-public class FactoryFinderTestCase extends TestCase {
-
-    // ------------------------------------------------------------ Constructors
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public FactoryFinderTestCase(String name) {
-        super(name);
-    }
+public class FactoryFinderTestCase {
 
     public static String FACTORIES[][] = {
         {FactoryFinder.APPLICATION_FACTORY,
@@ -66,10 +60,8 @@ public class FactoryFinderTestCase extends TestCase {
 
     // ---------------------------------------------------- Overall Test Methods
     // Set up instance variables required by this test case.
-    @Override
+    @BeforeEach
     public void setUp() throws Exception {
-        super.setUp();
-
         Method method = FacesContext.class.getDeclaredMethod("setCurrentInstance", FacesContext.class);
         method.setAccessible(true);
         method.invoke(null, new Object[]{null});
@@ -79,15 +71,9 @@ public class FactoryFinderTestCase extends TestCase {
         }
     }
 
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return (new TestSuite(FactoryFinderTestCase.class));
-    }
-
     // Tear down instance variables required by ths test case
-    @Override
+    @AfterEach
     public void tearDown() throws Exception {
-        super.tearDown();
         FactoryFinder.releaseFactories();
         for (int i = 0, len = FACTORIES.length; i < len; i++) {
             System.getProperties().remove(FACTORIES[i][0]);
@@ -102,6 +88,7 @@ public class FactoryFinderTestCase extends TestCase {
      *
      * @throws java.lang.Exception
      */
+    @Test
     public void testFacesConfigCase() throws Exception {
         Object factory = null;
         Class<?> clazz = null;
@@ -150,12 +137,12 @@ public class FactoryFinderTestCase extends TestCase {
         for (i = 0, len = FACTORIES.length; i < len; i++) {
             clazz = Class.forName(FACTORIES[i][0]);
             factory = FactoryFinder.getFactory(FACTORIES[i][0]);
-            assertTrue("Factory for " + clazz.getName()
-                    + " not of expected type.",
-                    clazz.isAssignableFrom(factory.getClass()));
+            assertTrue(
+                    clazz.isAssignableFrom(factory.getClass()), "Factory for " + clazz.getName()
+                    + " not of expected type.");
             clazz = Class.forName(FACTORIES[i][1]);
-            assertTrue("Factory " + FACTORIES[i][1] + " not of expected type",
-                    clazz.isAssignableFrom(factory.getClass()));
+            assertTrue(
+                    clazz.isAssignableFrom(factory.getClass()), "Factory " + FACTORIES[i][1] + " not of expected type");
 
         }
         // verify that the delegation works
@@ -181,6 +168,7 @@ public class FactoryFinderTestCase extends TestCase {
     }
 
     // TODO re-enable
+    @Test
     public void testNoFacesContext() throws Exception {
 //        assertNull(FacesContext.getCurrentInstance());
 //        Object result = FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
@@ -195,6 +183,7 @@ public class FactoryFinderTestCase extends TestCase {
      *
      * @throws java.lang.Exception
      */
+    @Test
     public void testServicesCase() throws Exception {
         Object factory = null;
         Class<?> clazz = null;
@@ -242,12 +231,12 @@ public class FactoryFinderTestCase extends TestCase {
         for (i = 0, len = FACTORIES.length; i < len; i++) {
             clazz = Class.forName(FACTORIES[i][0]);
             factory = FactoryFinder.getFactory(FACTORIES[i][0]);
-            assertTrue("Factory for " + clazz.getName()
-                    + " not of expected type.",
-                    clazz.isAssignableFrom(factory.getClass()));
+            assertTrue(
+                    clazz.isAssignableFrom(factory.getClass()), "Factory for " + clazz.getName()
+                    + " not of expected type.");
             clazz = Class.forName(FACTORIES[i][1]);
-            assertTrue("Factory " + FACTORIES[i][1] + " not of expected type",
-                    clazz.isAssignableFrom(factory.getClass()));
+            assertTrue(
+                    clazz.isAssignableFrom(factory.getClass()), "Factory " + FACTORIES[i][1] + " not of expected type");
 
         }
         // verify that the delegation works
@@ -258,6 +247,7 @@ public class FactoryFinderTestCase extends TestCase {
         cServicesFile.delete();
     }
 
+    @Test
     public void testNoFacesContextInitially() throws Exception {
         assertNull(FacesContext.getCurrentInstance());
 

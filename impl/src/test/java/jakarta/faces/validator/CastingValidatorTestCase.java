@@ -16,8 +16,9 @@
 
 package jakarta.faces.validator;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * <p>
@@ -25,27 +26,12 @@ import junit.framework.TestSuite;
  */
 public class CastingValidatorTestCase extends ValidatorTestCase {
 
-    // ------------------------------------------------------------ Constructors
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public CastingValidatorTestCase(String name) {
-        super(name);
-    }
-
-    // ---------------------------------------------------- Overall Test Methods
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return (new TestSuite(CastingValidatorTestCase.class));
-    }
-
     // ------------------------------------------------- Individual Test Methods
+    @Test
+    @SuppressWarnings("rawtypes")
     public void testWithGenericCanCastToRaw() {
-        Validator<?> validatorWithGeneric = (context, component, value) -> {
-        };
-        Validator<?> validatorRaw = validatorWithGeneric;
+        Validator<?> validatorWithGeneric = (context, component, value) -> {};
+        Validator validatorRaw = validatorWithGeneric;
         assertNotNull(validatorRaw);
     }
 

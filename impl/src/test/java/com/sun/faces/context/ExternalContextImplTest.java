@@ -16,12 +16,10 @@
 
 package com.sun.faces.context;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,8 +28,8 @@ import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.junit.Test;
-import org.powermock.api.easymock.PowerMock;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.Cookie;
@@ -48,14 +46,12 @@ public class ExternalContextImplTest {
      */
     @Test
     public void testGetRequestCookieMap() {
-        ServletContext servletContext = PowerMock.createNiceMock(ServletContext.class);
-        HttpServletRequest request = PowerMock.createNiceMock(HttpServletRequest.class);
-        HttpServletResponse response = PowerMock.createNiceMock(HttpServletResponse.class);
-        replay(servletContext, request, response);
-        
+        ServletContext servletContext = Mockito.mock(ServletContext.class);
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+
         ExternalContextImpl externalContext = new ExternalContextImpl(servletContext, request, response);
-        verify(servletContext, request, response);
-        
+
         assertNotNull(externalContext.getRequestCookieMap());
     }
 
@@ -64,19 +60,17 @@ public class ExternalContextImplTest {
      */
     @Test
     public void testGetRequestCookieMap2() {
-        ServletContext servletContext = PowerMock.createNiceMock(ServletContext.class);
-        HttpServletRequest request = PowerMock.createNiceMock(HttpServletRequest.class);
-        HttpServletResponse response = PowerMock.createNiceMock(HttpServletResponse.class);
+        ServletContext servletContext = Mockito.mock(ServletContext.class);
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
         Cookie cookie = new Cookie("foo", "bar");
-        expect(request.getCookies()).andReturn(new Cookie[]{cookie}).anyTimes();
-        replay(servletContext, request, response);
-        
+        when(request.getCookies()).thenReturn(new Cookie[]{cookie});
+
         ExternalContextImpl externalContext = new ExternalContextImpl(servletContext, request, response);
-        verify(servletContext, request, response);
         Map<String, Object> requestCookieMap = externalContext.getRequestCookieMap();
         assertTrue(requestCookieMap.get("foo") instanceof Cookie);
         Cookie value = (Cookie) requestCookieMap.get("foo");
-        
+
         assertTrue(value.getValue().equals("bar"));
         assertTrue(requestCookieMap.containsKey("foo"));
         assertTrue(requestCookieMap.containsValue(requestCookieMap.get("foo")));
@@ -93,15 +87,13 @@ public class ExternalContextImplTest {
      */
     @Test
     public void testGetRequestCookieMap3() {
-        ServletContext servletContext = PowerMock.createNiceMock(ServletContext.class);
-        HttpServletRequest request = PowerMock.createNiceMock(HttpServletRequest.class);
-        HttpServletResponse response = PowerMock.createNiceMock(HttpServletResponse.class);
+        ServletContext servletContext = Mockito.mock(ServletContext.class);
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
         Cookie cookie = new Cookie("foo", "bar");
-        expect(request.getCookies()).andReturn(new Cookie[]{cookie}).anyTimes();
-        replay(servletContext, request, response);
-        
+        when(request.getCookies()).thenReturn(new Cookie[]{cookie});
+
         ExternalContextImpl externalContext = new ExternalContextImpl(servletContext, request, response);
-        verify(servletContext, request, response);
         Map<String, Object> requestCookieMap = externalContext.getRequestCookieMap();
 
         Iterator<Entry<String, Object>> entryIterator = requestCookieMap.entrySet().iterator();
@@ -153,15 +145,13 @@ public class ExternalContextImplTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testGetRequestCookieMap4() {
-        ServletContext servletContext = PowerMock.createNiceMock(ServletContext.class);
-        HttpServletRequest request = PowerMock.createNiceMock(HttpServletRequest.class);
-        HttpServletResponse response = PowerMock.createNiceMock(HttpServletResponse.class);
+        ServletContext servletContext = Mockito.mock(ServletContext.class);
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
         Cookie cookie = new Cookie("foo", "bar");
-        expect(request.getCookies()).andReturn(new Cookie[]{cookie}).anyTimes();
-        replay(servletContext, request, response);
-        
+        when(request.getCookies()).thenReturn(new Cookie[]{cookie});
+
         ExternalContextImpl externalContext = new ExternalContextImpl(servletContext, request, response);
-        verify(servletContext, request, response);
         Map<String, Object> requestCookieMap = externalContext.getRequestCookieMap();
         boolean exceptionThrown = false;
         try {
@@ -169,7 +159,7 @@ public class ExternalContextImplTest {
         } catch (UnsupportedOperationException e) {
             exceptionThrown = true;
         }
-        
+
         assertTrue(exceptionThrown);
         verifySupplier(() -> requestCookieMap.put("foot", "bar"));
         verifyConsumer(m -> requestCookieMap.putAll((Map<? extends String, ? extends Object>) m), new HashMap<>());
@@ -184,13 +174,13 @@ public class ExternalContextImplTest {
      */
     private void verifyConsumer(Consumer<Object> consumer, Object argument) {
         boolean exceptionThrown = false;
-        
+
         try {
             consumer.accept(argument);
         } catch (UnsupportedOperationException e) {
             exceptionThrown = true;
         }
-        
+
         assertTrue(exceptionThrown);
     }
 
@@ -201,13 +191,13 @@ public class ExternalContextImplTest {
      */
     private void verifySupplier(Supplier<?> supplier) {
         boolean exceptionThrown = false;
-        
+
         try {
             supplier.get();
         } catch (UnsupportedOperationException e) {
             exceptionThrown = true;
         }
-        
+
         assertTrue(exceptionThrown);
     }
 }

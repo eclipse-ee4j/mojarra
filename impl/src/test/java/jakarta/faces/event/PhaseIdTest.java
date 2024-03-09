@@ -16,36 +16,15 @@
 
 package jakarta.faces.event;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Iterator;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class PhaseIdTest extends TestCase {
-//
-// Protected Constants
-//
+public class PhaseIdTest {
 
-//
-// Class Variables
-//
-//
-// Instance Variables
-//
-// Attribute Instance Variables
-// Relationship Instance Variables
-//
-// Constructors and Initializers
-//
-    public PhaseIdTest() {
-        super();
-    }
-
-//
-// Class methods
-//
-//
-// General Methods
-//
+    @Test
     public void testToString() {
         Iterator<PhaseId> valueIter = PhaseId.VALUES.iterator();
         String cur = null;

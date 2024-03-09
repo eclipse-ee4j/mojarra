@@ -16,11 +16,14 @@
 
 package jakarta.faces.validator;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.Locale;
 
+import org.junit.jupiter.api.Test;
+
 import jakarta.faces.component.UIInput;
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * <p>
@@ -28,23 +31,8 @@ import junit.framework.TestSuite;
  */
 public class DoubleRangeValidatorTestCase extends ValidatorTestCase {
 
-    // ------------------------------------------------------------ Constructors
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public DoubleRangeValidatorTestCase(String name) {
-        super(name);
-    }
-
-    // ---------------------------------------------------- Overall Test Methods
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return (new TestSuite(DoubleRangeValidatorTestCase.class));
-    }
-
     // ------------------------------------------------- Individual Test Methods
+    @Test
     public void testLocaleHonored() {
         DoubleRangeValidator validator = new DoubleRangeValidator();
         validator.setMinimum(10.1);
@@ -61,10 +49,10 @@ public class DoubleRangeValidatorTestCase extends ValidatorTestCase {
         } catch (ValidatorException e) {
             exceptionThrown = true;
             message = e.getMessage();
-            assertTrue("message: \"" + message + "\" missing localized chars.",
-                    -1 != message.indexOf("10.1"));
-            assertTrue("message: \"" + message + "\" missing localized chars.",
-                    -1 != message.indexOf("20.1"));
+            assertTrue(
+                    -1 != message.indexOf("10.1"), "message: \"" + message + "\" missing localized chars.");
+            assertTrue(
+                    -1 != message.indexOf("20.1"), "message: \"" + message + "\" missing localized chars.");
         }
         assertTrue(exceptionThrown);
 
@@ -78,14 +66,15 @@ public class DoubleRangeValidatorTestCase extends ValidatorTestCase {
         } catch (ValidatorException e) {
             exceptionThrown = true;
             message = e.getMessage();
-            assertTrue("message: \"" + message + "\" missing localized chars.",
-                    -1 != message.indexOf("10,1"));
-            assertTrue("message: \"" + message + "\" missing localized chars.",
-                    -1 != message.indexOf("20,1"));
+            assertTrue(
+                    -1 != message.indexOf("10,1"), "message: \"" + message + "\" missing localized chars.");
+            assertTrue(
+                    -1 != message.indexOf("20,1"), "message: \"" + message + "\" missing localized chars.");
         }
         assertTrue(exceptionThrown);
     }
 
+    @Test
     public void testHashCode() {
         DoubleRangeValidator validator1 = new DoubleRangeValidator();
         DoubleRangeValidator validator2 = new DoubleRangeValidator();

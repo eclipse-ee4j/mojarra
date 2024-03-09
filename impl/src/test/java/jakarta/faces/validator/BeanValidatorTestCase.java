@@ -16,13 +16,14 @@
 
 package jakarta.faces.validator;
 
+import java.util.Locale;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import jakarta.faces.component.UIInput;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.util.Locale;
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import org.junit.Assert;
 
 /**
  * <p>Unit tests for {@link BeanValidator}.</p>
@@ -49,23 +50,8 @@ public class BeanValidatorTestCase extends ValidatorTestCase {
         }
     }
 
-    // ------------------------------------------------------------ Constructors
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public BeanValidatorTestCase(String name) {
-        super(name);
-    }
-
-    // ---------------------------------------------------- Overall Test Methods
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return (new TestSuite(BeanValidatorTestCase.class));
-    }
-
     // ------------------------------------------------- Individual Test Methods
+    @Test
     public void testMessageOK() {
         BeanValidator validator = new BeanValidator();
         Locale.setDefault(Locale.US);
@@ -77,6 +63,7 @@ public class BeanValidatorTestCase extends ValidatorTestCase {
         validator.validate(facesContext, component, "something");
     }
 
+    @Test
     public void testMessageKO() {
         BeanValidator validator = new BeanValidator();
         Locale.setDefault(Locale.US);
@@ -87,12 +74,13 @@ public class BeanValidatorTestCase extends ValidatorTestCase {
 
         try {
             validator.validate(facesContext, component, "");
-            Assert.fail("ValidatorException expected");
+            Assertions.fail("ValidatorException expected");
         } catch (ValidatorException e) {
-            Assert.assertEquals("size must be between 1 and 64", e.getMessage());
+            Assertions.assertEquals("size must be between 1 and 64", e.getMessage());
         }
     }
 
+    @Test
     public void testNoBase() {
         BeanValidator validator = new BeanValidator();
         Locale.setDefault(Locale.US);

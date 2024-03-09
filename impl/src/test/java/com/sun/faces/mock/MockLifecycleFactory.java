@@ -16,13 +16,12 @@
 
 package com.sun.faces.mock;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.lifecycle.LifecycleFactory;
-
-import java.util.ArrayList;
 
 public class MockLifecycleFactory extends LifecycleFactory {
 

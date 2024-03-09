@@ -16,16 +16,19 @@
 
 package com.sun.faces.util;
 
-import java.security.InvalidKeyException;
-import jakarta.xml.bind.DatatypeConverter;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import java.security.InvalidKeyException;
+
+import org.junit.jupiter.api.Test;
+
+import jakarta.xml.bind.DatatypeConverter;
 
 
 public class ByteArrayGuardAESCTRTest {
-    
+
     @Test
     public void testSmallerSizeBytes() throws Exception {
         ByteArrayGuardAESCTR guard = new ByteArrayGuardAESCTR();
@@ -34,22 +37,22 @@ public class ByteArrayGuardAESCTRTest {
         String value = "1fX_2vX";
         String encrypted = guard.encrypt(value);
         assertTrue(encrypted.length() < 33);
-        
+
         String decryptedValue = guard.decrypt(encrypted);
         assertEquals(decryptedValue, value);
 
-        
+
     }
-    
-    @Test(expected = InvalidKeyException.class)
+
+    @Test
     public void testDecryptValueWithoutIvBytes() throws InvalidKeyException {
         ByteArrayGuardAESCTR sut = new ByteArrayGuardAESCTR();
-        
+
         String value = "noIV";
         byte[] bytes = DatatypeConverter.parseBase64Binary(value);
         assertTrue(bytes.length < 16);
 
-        sut.decrypt(value);
+        assertThrows(InvalidKeyException.class, () -> sut.decrypt(value));
     }
 
 }

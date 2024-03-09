@@ -16,8 +16,11 @@
 
 package jakarta.faces.component;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * <p>
@@ -26,19 +29,10 @@ import junit.framework.TestSuite;
  */
 public class UISelectBooleanTestCase extends UIInputTestCase {
 
-    // ------------------------------------------------------------ Constructors
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public UISelectBooleanTestCase(String name) {
-        super(name);
-    }
-
     // ---------------------------------------------------- Overall Test Methods
     // Set up instance variables required by this test case.
     @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         component = new UISelectBoolean();
@@ -46,14 +40,10 @@ public class UISelectBooleanTestCase extends UIInputTestCase {
         expectedRendererType = "jakarta.faces.Checkbox";
     }
 
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return new TestSuite(UISelectBooleanTestCase.class);
-    }
-
     // ------------------------------------------------- Individual Test Methods
     // Test attribute-property transparency
     @Override
+    @Test
     public void testAttributesTransparency() {
         super.testAttributesTransparency();
         UISelectBoolean selectBoolean = (UISelectBoolean) component;
@@ -70,10 +60,11 @@ public class UISelectBooleanTestCase extends UIInputTestCase {
 
     // Test a pristine UISelectBoolean instance
     @Override
+    @Test
     public void testPristine() {
         super.testPristine();
         UISelectBoolean selectBoolean = (UISelectBoolean) component;
-        assertTrue("not selected", !selectBoolean.isSelected());
+        assertTrue(!selectBoolean.isSelected());
     }
 
     // --------------------------------------------------------- Support Methods

@@ -16,9 +16,15 @@
 
 package jakarta.faces.component;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import jakarta.faces.model.SelectItem;
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * <p>
@@ -27,19 +33,10 @@ import junit.framework.TestSuite;
  */
 public class UISelectItemTestCase extends UIComponentBaseTestCase {
 
-    // ------------------------------------------------------------ Constructors
-    /**
-     * Construct a new instance of this test case.
-     *
-     * @param name Name of the test case
-     */
-    public UISelectItemTestCase(String name) {
-        super(name);
-    }
-
     // ---------------------------------------------------- Overall Test Methods
     // Set up instance variables required by this test case.
     @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         component = new UISelectItem();
@@ -48,19 +45,16 @@ public class UISelectItemTestCase extends UIComponentBaseTestCase {
         expectedRendererType = null;
     }
 
-    // Return the tests included in this test case.
-    public static Test suite() {
-        return new TestSuite(UISelectItemTestCase.class);
-    }
-
     // ------------------------------------------------- Individual Test Methods
     // Suppress lifecycle tests since we do not have a renderer
     @Override
+    @Test
     public void testLifecycleManagement() {
     }
 
     // Test attribute-property transparency
     @Override
+    @Test
     public void testAttributesTransparency() {
         super.testAttributesTransparency();
         UISelectItem selectItem = (UISelectItem) component;
@@ -77,9 +71,9 @@ public class UISelectItemTestCase extends UIComponentBaseTestCase {
         component.getAttributes().put("value", null);
         assertNull(selectItem.getValue());
 
-        assertEquals(selectItem.getItemDescription(), (String) selectItem.getAttributes().get("itemDescription"));
+        assertEquals(selectItem.getItemDescription(), selectItem.getAttributes().get("itemDescription"));
         selectItem.setItemDescription("foo");
-        assertEquals("foo", (String) selectItem.getAttributes().get("itemDescription"));
+        assertEquals("foo", selectItem.getAttributes().get("itemDescription"));
         selectItem.setItemDescription(null);
         assertNull(selectItem.getAttributes().get("itemDescription"));
         selectItem.getAttributes().put("itemDescription", "bar");
@@ -97,9 +91,9 @@ public class UISelectItemTestCase extends UIComponentBaseTestCase {
         selectItem.getAttributes().put("itemDisabled", Boolean.TRUE);
         assertTrue(selectItem.isItemDisabled());
 
-        assertEquals(selectItem.getItemLabel(), (String) selectItem.getAttributes().get("itemLabel"));
+        assertEquals(selectItem.getItemLabel(), selectItem.getAttributes().get("itemLabel"));
         selectItem.setItemLabel("foo");
-        assertEquals("foo", (String) selectItem.getAttributes().get("itemLabel"));
+        assertEquals("foo", selectItem.getAttributes().get("itemLabel"));
         selectItem.setItemLabel(null);
         assertNull(selectItem.getAttributes().get("itemLabel"));
         selectItem.getAttributes().put("itemLabel", "bar");
@@ -109,7 +103,7 @@ public class UISelectItemTestCase extends UIComponentBaseTestCase {
 
         assertEquals(selectItem.getItemValue(), selectItem.getAttributes().get("itemValue"));
         selectItem.setItemValue("foo");
-        assertEquals("foo", (String) selectItem.getAttributes().get("itemValue"));
+        assertEquals("foo", selectItem.getAttributes().get("itemValue"));
         selectItem.setItemValue(null);
         assertNull(selectItem.getAttributes().get("itemValue"));
         selectItem.getAttributes().put("itemValue", "bar");
@@ -120,19 +114,21 @@ public class UISelectItemTestCase extends UIComponentBaseTestCase {
 
     // Test a pristine UISelectItem instance
     @Override
+    @Test
     public void testPristine() {
         super.testPristine();
         UISelectItem selectItem = (UISelectItem) component;
 
-        assertNull("no value", selectItem.getValue());
-        assertNull("no itemDescription", selectItem.getItemDescription());
-        assertFalse("no itemDisabled", selectItem.isItemDisabled());
-        assertNull("no itemLabel", selectItem.getItemLabel());
-        assertNull("no itemValue", selectItem.getItemValue());
+        assertNull(selectItem.getValue());
+        assertNull(selectItem.getItemDescription());
+        assertFalse(selectItem.isItemDisabled());
+        assertNull(selectItem.getItemLabel());
+        assertNull(selectItem.getItemValue());
     }
 
     // Test setting properties to valid values
     @Override
+    @Test
     public void testPropertiesValid() throws Exception {
         super.testPropertiesValid();
         UISelectItem selectItem = (UISelectItem) component;
@@ -140,9 +136,9 @@ public class UISelectItemTestCase extends UIComponentBaseTestCase {
         // value
         SelectItem item = new SelectItem("foo");
         selectItem.setValue(item);
-        assertEquals("expected value", item, selectItem.getValue());
+        assertEquals(item, selectItem.getValue());
         selectItem.setValue(null);
-        assertNull("erased value", selectItem.getValue());
+        assertNull(selectItem.getValue());
 
         selectItem.setItemDescription("foo");
         assertEquals("foo", selectItem.getItemDescription());

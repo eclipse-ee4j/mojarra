@@ -16,7 +16,7 @@
 
 package jakarta.faces.validator;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * The JUnit tests for the RequiredValidator class.

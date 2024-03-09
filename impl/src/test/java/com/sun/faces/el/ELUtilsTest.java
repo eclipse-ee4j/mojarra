@@ -2,8 +2,8 @@ package com.sun.faces.el;
 
 import java.net.URL;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.sun.el.ExpressionFactoryImpl;
 import com.sun.faces.RIConstants;
@@ -25,7 +25,7 @@ public class ELUtilsTest {
 
     private ApplicationAssociate applicationAssociate;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockServletContext mockServletContext = new MockServletContext() {
             @Override
@@ -50,7 +50,7 @@ public class ELUtilsTest {
 
         applicationAssociate = (ApplicationAssociate) externalContext.getApplicationMap()
                 .get(RIConstants.FACES_PREFIX + "ApplicationAssociate");
-        
+
         FacesContext.getCurrentInstance().getAttributes().put(RIConstants.CDI_BEAN_MANAGER, new MockBeanManager());
     }
 
