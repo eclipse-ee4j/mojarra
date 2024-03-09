@@ -20,6 +20,9 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
 import com.sun.faces.mock.MockApplication;
 import com.sun.faces.mock.MockCDIProvider;
 import com.sun.faces.mock.MockExternalContext;
@@ -36,9 +39,8 @@ import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.ApplicationFactory;
 import jakarta.faces.context.FacesContextFactory;
 import jakarta.faces.lifecycle.LifecycleFactory;
-import junit.framework.TestCase;
 
-public class JUnitFacesTestCaseBase extends TestCase {
+public class JUnitFacesTestCaseBase {
 
     protected MockApplication application = null;
     protected MockServletConfig config = null;
@@ -50,14 +52,8 @@ public class JUnitFacesTestCaseBase extends TestCase {
     protected MockLifecycle lifecycle = null;
     protected MockHttpSession session = null;
 
-    public JUnitFacesTestCaseBase(String name) {
-        super(name);
-    }
-
-    @Override
+    @BeforeEach
     public void setUp() throws Exception {
-        super.setUp();
-
         // Set up CDI
         CDI.setCDIProvider(new MockCDIProvider());
 
@@ -104,7 +100,7 @@ public class JUnitFacesTestCaseBase extends TestCase {
 
     }
 
-    @Override
+    @AfterEach
     public void tearDown() throws Exception {
         FactoryFinder.releaseFactories();
         Method reInitializeFactoryManager = FactoryFinder.class.getDeclaredMethod("reInitializeFactoryManager", (Class<?>[]) null);
@@ -120,7 +116,5 @@ public class JUnitFacesTestCaseBase extends TestCase {
         response = null;
         servletContext = null;
         session = null;
-
-        super.tearDown();
     }
 }
