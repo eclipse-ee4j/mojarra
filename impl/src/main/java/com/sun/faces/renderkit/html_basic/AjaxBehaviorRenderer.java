@@ -18,17 +18,15 @@ package com.sun.faces.renderkit.html_basic;
 
 import static jakarta.faces.component.UINamingContainer.getSeparatorChar;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.sun.faces.facelets.tag.composite.RetargetedAjaxBehavior;
-import com.sun.faces.renderkit.RenderKitUtils;
-import com.sun.faces.util.FacesLogger;
 
 import jakarta.faces.component.ActionSource;
 import jakarta.faces.component.EditableValueHolder;
@@ -46,6 +44,10 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AjaxBehaviorEvent;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.render.ClientBehaviorRenderer;
+
+import com.sun.faces.facelets.tag.composite.RetargetedAjaxBehavior;
+import com.sun.faces.renderkit.RenderKitUtils;
+import com.sun.faces.util.FacesLogger;
 
 /*
  *<b>AjaxBehaviorRenderer</b> renders Ajax behavior for a component.
@@ -280,9 +282,24 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer {
             SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
 
     // Appends an ids argument to the ajax command
-    private static void appendIds(FacesContext facesContext, UIComponent component, AjaxBehavior ajaxBehavior, StringBuilder builder, Collection<String> ids) {
+    private static void appendIds(FacesContext facesContext, UIComponent component, AjaxBehavior ajaxBehavior, StringBuilder builder, Collection<String> idsOrNull) {
 
-        if (null == ids || ids.isEmpty()) {
+        if (idsOrNull == null) {
+            builder.append('0');
+            return;
+        }
+
+        Collection<String> ids = new ArrayList<>(idsOrNull);
+        UIComponent composite = UIComponent.getCompositeComponentParent(component);
+        String separatorChar = String.valueOf(getSeparatorChar(facesContext));
+
+        if (composite != null && (ajaxBehavior instanceof RetargetedAjaxBehavior) && (ids.isEmpty() || ids.contains("@this"))) {
+            List<String> targetClientIds = ((RetargetedAjaxBehavior) ajaxBehavior).getTargetClientIds();
+            ids.remove("@this");
+            targetClientIds.stream().map(id -> "@this" + separatorChar + id).forEach(ids::add);
+        }
+
+        if (ids.isEmpty()) {
             builder.append('0');
             return;
         }
@@ -293,9 +310,6 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer {
         SearchExpressionContext searchExpressionContext = null;
 
         boolean first = true;
-
-        UIComponent composite = UIComponent.getCompositeComponentParent(component);
-        String separatorChar = String.valueOf(getSeparatorChar(facesContext));
 
         for (String id : ids) {
             String expression = id.trim();
