@@ -17,6 +17,7 @@
 package com.sun.faces.facelets.tag.composite;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.el.ValueExpression;
@@ -32,7 +33,7 @@ import jakarta.faces.render.ClientBehaviorRenderer;
 
 /**
  * Basically represents {@code <f:ajax>} which is retargeted by {@code <cc:clientBehavior>} in {@code AjaxHandler} and checked in {@code AjaxBehaviorRenderer}.
- * 
+ *
  * We should probably introduce {@code AjaxBehaviorWrapper} in Faces.next to reduce boilerplate like this.
  *
  * - https://github.com/jakartaee/faces/issues/1567
@@ -41,9 +42,15 @@ import jakarta.faces.render.ClientBehaviorRenderer;
 public class RetargetedAjaxBehavior extends AjaxBehavior {
 
     private AjaxBehavior retargeted;
+    private List<String> targetClientIds;
 
-    public RetargetedAjaxBehavior(AjaxBehavior retargeted) {
+    public RetargetedAjaxBehavior(AjaxBehavior retargeted, List<String> targetClientIds) {
         this.retargeted = retargeted;
+        this.targetClientIds = targetClientIds;
+    }
+
+    public List<String> getTargetClientIds() {
+        return targetClientIds;
     }
 
     @Override
