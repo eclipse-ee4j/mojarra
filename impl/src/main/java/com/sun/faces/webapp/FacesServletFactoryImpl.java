@@ -23,7 +23,7 @@ import java.util.HashMap;
 
 /**
  * The implementation of the FacesServletFactory.
- * 
+ *
  * @author Manfred Riem
  */
 public class FacesServletFactoryImpl extends FacesServletFactory {
@@ -32,7 +32,7 @@ public class FacesServletFactoryImpl extends FacesServletFactory {
      * Stores the map of FacesServlet instances keyed by ServletConfig.
      */
     private HashMap<ServletConfig, Servlet> servlets = new HashMap<>();
-    
+
     @Override
     public Servlet getFacesServlet(ServletConfig config) {
         Servlet servlet = servlets.get(config);
@@ -41,5 +41,10 @@ public class FacesServletFactoryImpl extends FacesServletFactory {
             servlet = new FacesServletImpl();
         }
         return servlet;
+    }
+
+    @Override
+    public FacesServletFactory getWrapped() {
+        return null; // we don't actually wrap anything
     }
 }
