@@ -47,7 +47,6 @@
     </licenses>
 
    <modules>
-        <module>faces/api</module>
         <module>impl</module>
    </modules>
 
@@ -93,4 +92,19 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>api</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+
+            <modules>
+                <module>faces/api</module>
+            </modules>
+        </profile>
+    </profiles>
+    
+     
 </project>
