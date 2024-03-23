@@ -2,8 +2,8 @@ package com.sun.faces.el;
 
 import java.net.URL;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.sun.el.ExpressionFactoryImpl;
 import com.sun.faces.RIConstants;
@@ -25,7 +25,7 @@ public class ELUtilsTest {
 
     private ApplicationAssociate applicationAssociate;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         CDI.setCDIProvider(new MockCDIProvider());
 

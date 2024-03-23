@@ -17,46 +17,23 @@
 // TestUtil_local.java
 package com.sun.faces.util;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.HashMap;
 
+import org.junit.jupiter.api.Test;
 /**
  * <B>TestUtil_local.java</B> is a class ...
- * 
+ *
  * <B>Lifetime And Scope</B>
  * <P>
  *
  */
-public class TestUtil_local extends TestCase {
+public class TestUtil_local {
 
-//
-// Protected Constants
-//
-// Class Variables
-//
-//
-// Instance Variables
-//
-// Attribute Instance Variables
-// Relationship Instance Variables
-//
-// Constructors and Initializers    
-//
-    public TestUtil_local() {
-        super("TestUtil_local.java");
-    }
-
-    public TestUtil_local(String name) {
-        super(name);
-    }
-
-//
-// Class methods
-//
-//
-// General Methods
-//
+    @Test
     public void testGetLocaleFromString() {
         // positive tests
         assertNotNull(Util.getLocaleFromString("ps"));
@@ -90,23 +67,25 @@ public class TestUtil_local extends TestCase {
         } catch (Exception exception) {
         }
     }
-    
+
+    @Test
     public void testSplit() {
         String[] result = null;
-        
+
         result = Util.split(new HashMap<String,Object>(), "fooBarKey=Zm9vQmFyVmFsdWU====", "=", 2);
         assertEquals(2, result.length);
         assertEquals(result[1], "Zm9vQmFyVmFsdWU====");
-        
+
         result = Util.split(new HashMap<String,Object>(), "fooBarKey=Zm9vQmFyVmFsdWU=", "=", 2);
         assertEquals(2, result.length);
         assertEquals(result[1], "Zm9vQmFyVmFsdWU=");
-        
+
         result = Util.split(new HashMap<String,Object>(), "fooBarKey2=Zm9vQmFyVmFsdWUy", "=", 2);
         assertEquals(2, result.length);
         assertEquals(result[1], "Zm9vQmFyVmFsdWUy");
     }
 
+    @Test
     public void testExtractFirstNumericSegment() {
         char separatorChar = ':';
 
@@ -132,5 +111,5 @@ public class TestUtil_local extends TestCase {
             assertEquals("there is no numeric segment", e.getMessage());
         }
     }
-    
+
 } // end of class TestUtil_local
