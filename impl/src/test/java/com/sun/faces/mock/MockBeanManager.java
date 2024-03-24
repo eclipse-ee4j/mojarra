@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Contributors to Eclipse Foundation.
+ * Copyright (c) 2023, 2024 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -18,6 +18,12 @@
 package com.sun.faces.mock;
 
 import static java.util.Collections.emptySet;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 import jakarta.el.ELResolver;
 import jakarta.el.ExpressionFactory;
@@ -44,11 +50,6 @@ import jakarta.enterprise.inject.spi.Interceptor;
 import jakarta.enterprise.inject.spi.ObserverMethod;
 import jakarta.enterprise.inject.spi.ProducerFactory;
 import jakarta.enterprise.inject.spi.el.ELAwareBeanManager;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
 
 public class MockBeanManager implements BeanManager, ELAwareBeanManager {
 
@@ -263,6 +264,16 @@ public class MockBeanManager implements BeanManager, ELAwareBeanManager {
     @Override
     public Collection<Context> getContexts(Class<? extends Annotation> scopeType) {
         return null;
+    }
+
+    @Override
+    public boolean isMatchingBean(Set<Type> beanTypes, Set<Annotation> beanQualifiers, Type requiredType, Set<Annotation> requiredQualifiers) {
+        return false;
+    }
+
+    @Override
+    public boolean isMatchingEvent(Type specifiedType, Set<Annotation> specifiedQualifiers, Type observedEventType, Set<Annotation> observedEventQualifiers) {
+        return false;
     }
 
 }

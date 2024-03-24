@@ -16,6 +16,8 @@
 
 package com.sun.faces.xml;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
@@ -24,34 +26,19 @@ import java.util.List;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.junit.jupiter.api.Test;
 import org.xml.sax.InputSource;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-public class ParseXMLTestCase extends TestCase {
+public class ParseXMLTestCase {
 
     List<File> list = new ArrayList<>();
     private final static String xmlDir = "/conf/share";
-
-    public ParseXMLTestCase(String name) {
-        super(name);
-    }
-
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-    }
-
-    public static Test suite() {
-        return (new TestSuite(ParseXMLTestCase.class));
-    }
 
     // ------------------------------------------------------------ Test Methods
     /**
      * Added for issue 904.
      */
+    @Test
     public void testParseXML() throws Exception {
 
         String curDir = System.getProperty("user.dir");
@@ -81,7 +68,7 @@ public class ParseXMLTestCase extends TestCase {
     }
 
     // Process all files and directories under dir
-    public void visitAllDirsAndFiles(File dir) {
+    private void visitAllDirsAndFiles(File dir) {
 
         if (dir.isFile()) {
             if (isXML(dir)) {
@@ -96,7 +83,7 @@ public class ParseXMLTestCase extends TestCase {
         }
     }
 
-    public boolean isXML(File file) {
+    private boolean isXML(File file) {
         String name = file.getName();
         return name.endsWith(".xml");
     }

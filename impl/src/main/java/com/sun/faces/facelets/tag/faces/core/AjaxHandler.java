@@ -16,25 +16,16 @@
 
 package com.sun.faces.facelets.tag.faces.core;
 
-import static jakarta.faces.component.UINamingContainer.getSeparatorChar;
-import static java.util.Arrays.stream;
+import static java.util.Arrays.asList;
 
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
-
-import com.sun.faces.component.behavior.AjaxBehaviors;
-import com.sun.faces.facelets.tag.TagHandlerImpl;
-import com.sun.faces.facelets.tag.composite.BehaviorHolderWrapper;
-import com.sun.faces.facelets.tag.composite.RetargetedAjaxBehavior;
-import com.sun.faces.facelets.tag.faces.CompositeComponentTagHandler;
-import com.sun.faces.renderkit.RenderKitUtils;
 
 import jakarta.el.ELContext;
 import jakarta.el.MethodExpression;
@@ -60,6 +51,13 @@ import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagException;
 import jakarta.faces.view.facelets.TagHandler;
 
+import com.sun.faces.component.behavior.AjaxBehaviors;
+import com.sun.faces.facelets.tag.TagHandlerImpl;
+import com.sun.faces.facelets.tag.composite.BehaviorHolderWrapper;
+import com.sun.faces.facelets.tag.composite.RetargetedAjaxBehavior;
+import com.sun.faces.facelets.tag.faces.CompositeComponentTagHandler;
+import com.sun.faces.renderkit.RenderKitUtils;
+
 /**
  * <p class="changed_added_2_0">
  * <span class="changed_modified_2_2">Enable</span> one or more components in the view to perform Ajax operations. This
@@ -67,7 +65,7 @@ import jakarta.faces.view.facelets.TagHandler;
  * values. <div class="changed_modified_2_2">The <code>events</code> attribute for this tag that can be a
  * <code>ValueExpression</code> must be evaluated at tag execution time since the event name is used in the process of
  * <code>Behavior</code> creation.</div> If this tag is nested within a single {@link ClientBehaviorHolder} component:
- * 
+ *
  * <ul>
  * <li>If the <code>events</code> attribute value is not specified, obtain the default event name by calling
  * {@link ClientBehaviorHolder#getDefaultEventName}. If that returns <code>null</code> throw an
@@ -302,20 +300,12 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
 
         if (parent instanceof BehaviorHolderWrapper) {
             ValueExpression targets = ((BehaviorHolderWrapper) parent).getTargets();
-            
+
             if (targets != null) {
                 String targetClientIds = (String) targets.getValue(ctx);
-                
-                if (targetClientIds != null) {
-                    Collection<String> executeClientIds = new ArrayList<>(behavior.getExecute());
 
-                    if (executeClientIds.isEmpty() || executeClientIds.contains("@this")) {
-                        String separatorChar = String.valueOf(getSeparatorChar(ctx.getFacesContext()));
-                        executeClientIds.remove("@this");
-                        stream(targetClientIds.trim().split(" +")).map(id -> "@this" + separatorChar + id).forEach(executeClientIds::add);
-                        behavior.setExecute(executeClientIds);
-                        behavior = new RetargetedAjaxBehavior(behavior);
-                    }
+                if (targetClientIds != null) {
+                    behavior = new RetargetedAjaxBehavior(behavior, asList(targetClientIds.trim().split(" +")));
                 }
             }
         }
