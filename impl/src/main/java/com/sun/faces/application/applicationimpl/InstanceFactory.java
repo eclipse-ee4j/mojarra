@@ -27,7 +27,6 @@ import static jakarta.faces.application.Resource.COMPONENT_RESOURCE_KEY;
 import static jakarta.faces.component.UIComponent.ATTRS_WITH_DECLARED_DEFAULT_VALUES;
 import static jakarta.faces.component.UIComponent.BEANINFO_KEY;
 import static jakarta.faces.component.UIComponent.COMPOSITE_COMPONENT_TYPE_KEY;
-import static java.beans.Introspector.getBeanInfo;
 import static java.beans.PropertyEditorManager.findEditor;
 import static java.text.MessageFormat.format;
 import static java.util.Collections.unmodifiableMap;
@@ -37,7 +36,6 @@ import static java.util.logging.Level.WARNING;
 
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
@@ -816,21 +814,12 @@ public class InstanceFactory {
             ExpressionFactory expressionFactory) {
 
         Collection<String> attributesWithDeclaredDefaultValues = null;
-        PropertyDescriptor[] propertyDescriptors = null;
 
         for (PropertyDescriptor propertyDescriptor : componentMetadata.getPropertyDescriptors()) {
             Object defaultValue = propertyDescriptor.getValue("default");
 
             if (defaultValue != null) {
                 String key = propertyDescriptor.getName();
-                boolean isLiteralText = false;
-
-                if (defaultValue instanceof ValueExpression) {
-                    isLiteralText = ((ValueExpression) defaultValue).isLiteralText();
-                    if (isLiteralText) {
-                        defaultValue = ((ValueExpression) defaultValue).getValue(context.getELContext());
-                    }
-                }
 
                 // Ensure this attribute is not a method-signature. method-signature
                 // declared default values are handled in retargetMethodExpressions.
@@ -845,24 +834,6 @@ public class InstanceFactory {
                         }
                     }
                     attributesWithDeclaredDefaultValues.add(key);
-
-                    // Only store the attribute if it is literal text. If it
-                    // is a ValueExpression, it will be handled explicitly in
-                    // CompositeComponentAttributesELResolver.ExpressionEvalMap.get().
-                    // If it is a MethodExpression, it will be dealt with in
-                    // retargetMethodExpressions.
-                    if (isLiteralText) {
-                        try {
-                            if (propertyDescriptors == null) {
-                                propertyDescriptors = getBeanInfo(component.getClass()).getPropertyDescriptors();
-                            }
-                        } catch (IntrospectionException e) {
-                            throw new FacesException(e);
-                        }
-
-                        defaultValue = convertValueToTypeIfNecessary(key, defaultValue, propertyDescriptors, expressionFactory);
-                        attrs.put(key, defaultValue);
-                    }
                 }
             }
         }
