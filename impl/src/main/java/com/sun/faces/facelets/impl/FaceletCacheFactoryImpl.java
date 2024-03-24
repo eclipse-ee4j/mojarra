@@ -16,8 +16,8 @@
 
 package com.sun.faces.facelets.impl;
 
-import com.sun.faces.config.WebConfiguration;
-
+import jakarta.faces.annotation.FacesConfig.ContextParam;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.FaceletCache;
 import jakarta.faces.view.facelets.FaceletCacheFactory;
 
@@ -32,9 +32,7 @@ public class FaceletCacheFactoryImpl extends FaceletCacheFactory {
 
     @Override
     public FaceletCache getFaceletCache() {
-        WebConfiguration webConfig = WebConfiguration.getInstance();
-        String refreshPeriod = webConfig.getOptionValue(WebConfiguration.WebContextInitParameter.FaceletsDefaultRefreshPeriod);
-        long period = Long.parseLong(refreshPeriod) * 1000;
+        int period = ContextParam.FACELETS_REFRESH_PERIOD.getValue(FacesContext.getCurrentInstance());
         FaceletCache<DefaultFacelet> result = new DefaultFaceletCache(period);
         return result;
 

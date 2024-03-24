@@ -16,13 +16,10 @@
 
 package com.sun.faces.config.configprovider;
 
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.JakartaFacesConfigFiles;
-
 import java.net.URI;
 import java.util.Collection;
 
-import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
-
+import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.servlet.ServletContext;
 
 /**
@@ -66,8 +63,8 @@ public class WebFacesConfigResourceProvider extends BaseWebConfigResourceProvide
     // ------------------------------ Methods from BaseWebConfigResourceProvider
 
     @Override
-    protected WebContextInitParameter getParameter() {
-        return JakartaFacesConfigFiles;
+    protected ContextParam getParameter() {
+        return ContextParam.CONFIG_FILES;
     }
 
     @Override

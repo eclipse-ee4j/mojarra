@@ -17,7 +17,6 @@
 package com.sun.faces.el;
 
 import static com.sun.faces.RIConstants.EMPTY_CLASS_ARGS;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.InterpretEmptyStringSubmittedValuesAsNull;
 import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.ReflectionUtils.lookupMethod;
@@ -26,7 +25,6 @@ import static com.sun.faces.util.Util.getCdiBeanManager;
 import static java.lang.Boolean.FALSE;
 
 import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.context.flash.FlashELResolver;
 import com.sun.faces.util.Cache;
 import com.sun.faces.util.LRUCache;
@@ -40,6 +38,7 @@ import jakarta.el.ListELResolver;
 import jakarta.el.MapELResolver;
 import jakarta.el.ResourceBundleELResolver;
 import jakarta.el.ValueExpression;
+import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import java.lang.reflect.Method;
@@ -158,7 +157,7 @@ public class ELUtils {
         addELResolvers(composite, associate.getELResolversFromFacesConfig());
         composite.add(associate.getApplicationELResolvers());
 
-        if (WebConfiguration.getInstance().isOptionEnabled(InterpretEmptyStringSubmittedValuesAsNull)) {
+        if (ContextParam.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL.isSet(FacesContext.getCurrentInstance())) {
             composite.addPropertyELResolver(EMPTY_STRING_TO_NULL_RESOLVER);
         }
 
