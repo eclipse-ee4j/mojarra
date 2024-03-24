@@ -51,8 +51,8 @@ public class UpdateModelValuesPhase extends Phase {
         } catch (RuntimeException re) {
             String exceptionMessage = re.getMessage();
             if (null != exceptionMessage) {
-                if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.log(Level.WARNING, exceptionMessage, re);
+                if (LOGGER.isLoggable(Level.FINE)) {
+                    LOGGER.log(Level.FINE, exceptionMessage, re);
                 }
             }
             throw new FacesException(exceptionMessage, re);

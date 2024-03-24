@@ -16,10 +16,12 @@
 
 package com.sun.faces.util;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.HashSet;
 import java.util.Set;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import org.junit.jupiter.api.Test;
 
 public class MostlySingletonTest {
     

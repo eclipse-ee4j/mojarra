@@ -22,6 +22,7 @@ import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParamet
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.SerializeServerState;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.NumberOfLogicalViews;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.NumberOfViews;
+import static com.sun.faces.context.SessionMap.getMutex;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.VIEW_STATE_PARAM;
 import static com.sun.faces.util.Util.notNull;
 import static java.util.logging.Level.FINE;
@@ -149,7 +150,7 @@ public class ServerSideStateHelper extends StateHelper {
                 Object sessionObj = externalContext.getSession(true);
                 Map<String, Object> sessionMap = externalContext.getSessionMap();
 
-                synchronized (sessionObj) {
+                synchronized (getMutex(sessionObj)) {
                     Map<String, Map> logicalMap = TypedCollections.dynamicallyCastMap((Map) sessionMap.get(LOGICAL_VIEW_MAP), String.class, Map.class);
                     if (logicalMap == null) {
                         logicalMap = Collections.synchronizedMap(new LRUMap<String, Map>(numberOfLogicalViews));
@@ -262,7 +263,7 @@ public class ServerSideStateHelper extends StateHelper {
         }
 
         // noinspection SynchronizationOnLocalVariableOrMethodParameter
-        synchronized (sessionObj) {
+        synchronized (getMutex(sessionObj)) {
             Map logicalMap = (Map) externalCtx.getSessionMap().get(LOGICAL_VIEW_MAP);
             if (logicalMap != null) {
                 Map actualMap = (Map) logicalMap.get(idInLogicalMap);
@@ -328,7 +329,7 @@ public class ServerSideStateHelper extends StateHelper {
         if (!webConfig.isOptionEnabled(SerializeServerState)) {
             return state;
         }
-        
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
         ObjectOutputStream oas = null;
         try {
@@ -346,7 +347,7 @@ public class ServerSideStateHelper extends StateHelper {
                 }
             }
         }
-        
+
         return baos.toByteArray();
     }
 
@@ -359,7 +360,7 @@ public class ServerSideStateHelper extends StateHelper {
         if (!webConfig.isOptionEnabled(SerializeServerState)) {
             return state;
         }
-        
+
         try (ByteArrayInputStream bais = new ByteArrayInputStream((byte[]) state);
             ObjectInputStream ois = serialProvider.createObjectInputStream(compressViewState ? new GZIPInputStream(bais, 1024) : bais);) {
             return ois.readObject();
@@ -402,7 +403,7 @@ public class ServerSideStateHelper extends StateHelper {
         if (!facesContext.isPostback()) {
             throw new IllegalStateException("Cannot determine whether or not the request is stateless");
         }
-        
+
         String compoundId = getStateParamValue(facesContext);
         return compoundId != null && "stateless".equals(compoundId);
     }

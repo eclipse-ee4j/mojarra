@@ -420,7 +420,7 @@ public class FacesContextImpl extends FacesContext {
         if (viewRoot != null && !viewRoot.equals(root)) {
             Map<String, Object> viewMap = viewRoot.getViewMap(false);
             if (viewMap != null) {
-                viewRoot.getViewMap().clear();
+                viewMap.clear();
             }
             RequestStateManager.clearAttributesOnChangeOfView(this);
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Contributors to Eclipse Foundation.
+ * Copyright (c) 2023, 2024 Contributors to Eclipse Foundation.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -487,6 +487,16 @@ public class ELAwareBeanManagerWrapper implements ELAwareBeanManager {
     @Override
     public <T> InterceptionFactory<T> createInterceptionFactory(CreationalContext<T> ctx, Class<T> clazz) {
         return wrapped.createInterceptionFactory(ctx, clazz);
+    }
+
+    @Override
+    public boolean isMatchingBean(Set<Type> beanTypes, Set<Annotation> beanQualifiers, Type requiredType, Set<Annotation> requiredQualifiers) {
+        return wrapped.isMatchingBean(beanTypes, beanQualifiers, requiredType, requiredQualifiers);
+    }
+
+    @Override
+    public boolean isMatchingEvent(Type specifiedType, Set<Annotation> specifiedQualifiers, Type observedEventType, Set<Annotation> observedEventQualifiers) {
+        return wrapped.isMatchingEvent(specifiedType, specifiedQualifiers, observedEventType, observedEventQualifiers);
     }
 
 }

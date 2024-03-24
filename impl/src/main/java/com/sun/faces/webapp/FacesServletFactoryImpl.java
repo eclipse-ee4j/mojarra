@@ -16,14 +16,17 @@
  */
 package com.sun.faces.webapp;
 
+import java.util.HashMap;
+
+import jakarta.faces.FacesException;
 import jakarta.faces.webapp.FacesServletFactory;
 import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletConfig;
-import java.util.HashMap;
+import jakarta.servlet.ServletException;
 
 /**
  * The implementation of the FacesServletFactory.
- * 
+ *
  * @author Manfred Riem
  */
 public class FacesServletFactoryImpl extends FacesServletFactory {
@@ -32,14 +35,24 @@ public class FacesServletFactoryImpl extends FacesServletFactory {
      * Stores the map of FacesServlet instances keyed by ServletConfig.
      */
     private HashMap<ServletConfig, Servlet> servlets = new HashMap<>();
-    
+
     @Override
     public Servlet getFacesServlet(ServletConfig config) {
         Servlet servlet = servlets.get(config);
         if (servlet == null) {
-            servlets.put(config, servlet);
             servlet = new FacesServletImpl();
+            try {
+                servlet.init(config);
+            } catch (ServletException e) {
+                throw new FacesException(e);
+            }
+            servlets.put(config, servlet);
         }
         return servlet;
+    }
+
+    @Override
+    public FacesServletFactory getWrapped() {
+        return null; // we don't actually wrap anything
     }
 }

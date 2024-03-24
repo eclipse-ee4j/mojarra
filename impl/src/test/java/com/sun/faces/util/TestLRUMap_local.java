@@ -15,31 +15,24 @@
  */
 
 package com.sun.faces.util;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Collections;
+import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 /**
  * Validate LRU functionality of LRUMap
  */
-public class TestLRUMap_local extends TestCase {
-
-    // ------------------------------------------------------------ Constructors
-    public TestLRUMap_local() {
-        super("TestLRUMap_local");
-    }
-
-    public TestLRUMap_local(String name) {
-        super(name);
-    }
+public class TestLRUMap_local {
 
     // ------------------------------------------------------------ Test Methods
     /**
      * Ensure that LRUMap works as advertised.
      */
+    @Test
     public void testLRUMap() {
 
         LRUMap<String, String> map = new LRUMap<String, String>(5);
