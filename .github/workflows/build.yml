@@ -24,7 +24,7 @@ jobs:
       uses: actions/checkout@v4
       with:
           repository: jakartaee/faces
-          ref: 5.0
+          ref: '5.0'
           path: './faces'
     - name: Setup Java
       uses: actions/setup-java@v1
