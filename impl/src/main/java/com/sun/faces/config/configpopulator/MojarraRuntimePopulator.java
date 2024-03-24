@@ -1,9 +1,9 @@
 package com.sun.faces.config.configpopulator;
 
+import jakarta.faces.application.ApplicationConfigurationPopulator;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import jakarta.faces.application.ApplicationConfigurationPopulator;
 
 public final class MojarraRuntimePopulator extends ApplicationConfigurationPopulator {
     @Override
@@ -12,6 +12,11 @@ public final class MojarraRuntimePopulator extends ApplicationConfigurationPopul
         Element faces_configElement = toPopulate.getDocumentElement();
         {
             Element factoryElement = toPopulate.createElementNS(ns, "factory");
+            {
+                Element faces_servlet_factoryElement = toPopulate.createElementNS(ns, "faces-servlet-factory");
+                faces_servlet_factoryElement.appendChild(toPopulate.createTextNode("com.sun.faces.webapp.FacesServletFactoryImpl"));
+                factoryElement.appendChild(faces_servlet_factoryElement);
+            }
             {
                 Element application_factoryElement = toPopulate.createElementNS(ns, "application-factory");
                 application_factoryElement.appendChild(toPopulate.createTextNode("com.sun.faces.application.ApplicationFactoryImpl"));
