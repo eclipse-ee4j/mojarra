@@ -16,10 +16,13 @@
  */
 package com.sun.faces.webapp;
 
+import java.util.HashMap;
+
+import jakarta.faces.FacesException;
 import jakarta.faces.webapp.FacesServletFactory;
 import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletConfig;
-import java.util.HashMap;
+import jakarta.servlet.ServletException;
 
 /**
  * The implementation of the FacesServletFactory.
@@ -37,8 +40,13 @@ public class FacesServletFactoryImpl extends FacesServletFactory {
     public Servlet getFacesServlet(ServletConfig config) {
         Servlet servlet = servlets.get(config);
         if (servlet == null) {
-            servlets.put(config, servlet);
             servlet = new FacesServletImpl();
+            try {
+                servlet.init(config);
+            } catch (ServletException e) {
+                throw new FacesException(e);
+            }
+            servlets.put(config, servlet);
         }
         return servlet;
     }
