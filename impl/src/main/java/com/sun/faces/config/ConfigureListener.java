@@ -22,10 +22,8 @@ import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
 import static com.sun.faces.RIConstants.FACES_SERVLET_REGISTRATION;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableLazyBeanValidation;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableThreading;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableWebsocketEndpoint;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.ForceLoadFacesConfigFiles;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.VerifyFacesConfigObjects;
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.JakartaFacesProjectStage;
 import static com.sun.faces.context.SessionMap.createMutex;
 import static com.sun.faces.context.SessionMap.removeMutex;
 import static com.sun.faces.push.WebsocketEndpoint.URI_TEMPLATE;
@@ -73,7 +71,9 @@ import com.sun.faces.util.Util;
 
 import jakarta.el.ELManager;
 import jakarta.faces.FactoryFinder;
+import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.application.Application;
+import jakarta.faces.application.ProjectStage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PreDestroyApplicationEvent;
 import jakarta.servlet.ServletContext;
@@ -215,7 +215,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
             // Register websocket endpoint if explicitly enabled.
             // Note: websocket channel filter is registered in FacesInitializer.
-            if (webConfig.isOptionEnabled(EnableWebsocketEndpoint)) {
+            if (ContextParam.ENABLE_WEBSOCKET_ENDPOINT.isSet(initFacesContext)) {
                 ServerContainer serverContainer = (ServerContainer) servletContext.getAttribute(ServerContainer.class.getName());
 
                 if (serverContainer == null) {
@@ -399,7 +399,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
     private boolean isDevModeEnabled() {
         // interrogate the init parameter directly vs looking up the application
-        return "Development".equals(webConfig.getOptionValue(JakartaFacesProjectStage));
+        return ContextParam.PROJECT_STAGE.getValue(FacesContext.getCurrentInstance()) == ProjectStage.Development;
     }
 
     /**

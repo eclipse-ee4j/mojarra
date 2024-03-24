@@ -18,14 +18,12 @@
 package com.sun.faces.cdi.clientwindow;
 
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.NumberOfClientWindows;
 import static com.sun.faces.context.SessionMap.getMutex;
 import static java.util.logging.Level.FINEST;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.faces.config.WebConfiguration;
@@ -35,6 +33,7 @@ import com.sun.faces.util.LRUMap;
 import jakarta.enterprise.context.spi.Contextual;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.PassivationCapable;
+import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.http.HttpSession;
@@ -144,19 +143,7 @@ public class ClientWindowScopeContextManager {
                 String clientWindowId = getCurrentClientWindowId(facesContext);
 
                 if (clientWindowScopeContexts == null && create) {
-                    Integer numberOfClientWindows = null;
-
-                    try {
-                        numberOfClientWindows = Integer.parseInt(WebConfiguration.getInstance(externalContext).getOptionValue(NumberOfClientWindows));
-                    } catch (NumberFormatException nfe) {
-                        if (LOGGER.isLoggable(Level.WARNING)) {
-                            LOGGER.log(Level.WARNING, "Unable to set number of client windows.  Defaulting to {0}", NumberOfClientWindows.getDefaultValue());
-                        }
-                    }
-
-                    if (numberOfClientWindows == null) {
-                        numberOfClientWindows = Integer.valueOf(NumberOfClientWindows.getDefaultValue());
-                    }
+                    int numberOfClientWindows = ContextParam.NUMBER_OF_CLIENT_WINDOWS.getValue(facesContext);
 
                     synchronized (getMutex(session)) {
                         sessionMap.put(CLIENT_WINDOW_CONTEXTS, Collections.synchronizedMap(new LRUMap<String, Object>(numberOfClientWindows)));

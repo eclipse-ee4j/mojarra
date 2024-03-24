@@ -161,12 +161,12 @@ public class MockBeanManager implements BeanManager, ELAwareBeanManager {
 
     @Override
     public Set<Annotation> getInterceptorBindingDefinition(Class<? extends Annotation> bindingType) {
-        return null;
+        return emptySet();
     }
 
     @Override
     public Set<Annotation> getStereotypeDefinition(Class<? extends Annotation> stereotype) {
-        return null;
+        return emptySet();
     }
 
     @Override

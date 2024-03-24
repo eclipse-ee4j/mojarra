@@ -48,13 +48,13 @@ import org.w3c.dom.NodeList;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.ApplicationResourceBundle;
 import com.sun.faces.config.ConfigurationException;
-import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
 import jakarta.el.ELResolver;
 import jakarta.faces.FacesException;
+import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ConfigurableNavigationHandler;
 import jakarta.faces.application.NavigationHandler;
@@ -341,8 +341,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
         if (defaultValidatorIds == null) {
             defaultValidatorIds = new LinkedHashSet<>();
             if (isBeanValidatorAvailable(facesContext)) {
-                WebConfiguration webConfig = WebConfiguration.getInstance();
-                if (!webConfig.isOptionEnabled(WebConfiguration.BooleanWebContextInitParameter.DisableDefaultBeanValidator)) {
+                if (!ContextParam.DISABLE_DEFAULT_BEAN_VALIDATOR.isSet(facesContext)) {
                     defaultValidatorIds.add(BeanValidator.VALIDATOR_ID);
                 }
             }
