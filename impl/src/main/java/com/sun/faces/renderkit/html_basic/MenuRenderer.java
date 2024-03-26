@@ -223,7 +223,12 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         }
 
         if (Object.class.equals(modelType)) {
-            return convertSelectManyValuesForArray(context, uiSelectMany, modelType, newValues);
+            if (uiSelectMany.getAttributes().get("collectionType") != null) {
+                return convertSelectManyValuesForCollection(context, uiSelectMany, null, newValues);
+            }
+            else {
+                return convertSelectManyValuesForArray(context, uiSelectMany, modelType, newValues);
+            }
         }
 
         throw new FacesException("Target model Type is no a Collection or Array");
