@@ -1677,7 +1677,9 @@ public class Util {
 
         if (encoding == null) {
             // 5. If still none found then fall back to specified default.
-            encoding = defaultEncoding.get();
+            if (defaultEncoding.isPresent()) {
+                encoding = defaultEncoding.get();
+            }
 
             if (encoding != null && !encoding.isBlank()) {
                 if (LOGGER.isLoggable(FINEST)) {
