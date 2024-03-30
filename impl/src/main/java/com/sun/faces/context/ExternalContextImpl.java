@@ -40,17 +40,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.context.flash.ELFlash;
-import com.sun.faces.renderkit.html_basic.ScriptRenderer;
-import com.sun.faces.renderkit.html_basic.StylesheetRenderer;
-import com.sun.faces.util.CollectionsUtils;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.MessageUtils;
-import com.sun.faces.util.TypedCollections;
-import com.sun.faces.util.Util;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.ProjectStage;
@@ -72,6 +61,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.PushBuilder;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.context.flash.ELFlash;
+import com.sun.faces.renderkit.html_basic.ScriptRenderer;
+import com.sun.faces.renderkit.html_basic.StylesheetRenderer;
+import com.sun.faces.util.CollectionsUtils;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.MessageUtils;
+import com.sun.faces.util.TypedCollections;
+import com.sun.faces.util.Util;
 
 /**
  * <p>
@@ -554,10 +554,10 @@ public class ExternalContextImpl extends ExternalContext {
     public String encodeResourceURL(String url) {
         Util.notNull("url", url);
 
-        String result = ((HttpServletResponse) response).encodeURL(url);
-        pushIfPossibleAndNecessary(result);
+        String encodedURL = ((HttpServletResponse) response).encodeURL(url);
+        pushIfPossibleAndNecessary(encodedURL);
 
-        return result;
+        return encodedURL;
     }
 
     /**
@@ -1022,26 +1022,25 @@ public class ExternalContextImpl extends ExternalContext {
         flash = null;
     }
 
-    private void pushIfPossibleAndNecessary(String result) {
+    @SuppressWarnings("unchecked")
+    private void pushIfPossibleAndNecessary(String encodedURL) {
         FacesContext context = FacesContext.getCurrentInstance();
 
-        // 1. Don't bother trying to push if we've already pushed this URL for this request
-        @SuppressWarnings("unchecked")
-        Set<String> resourceUrls = (Set<String>) context.getAttributes().computeIfAbsent(PUSH_RESOURCE_URLS_KEY_NAME,
-                k -> new HashSet<>());
-
-        if (resourceUrls.contains(result)) {
+        if (!context.getApplication().getResourceHandler().isResourceURL(encodedURL)) {
             return;
         }
-        resourceUrls.add(result);
 
-        // 2. At this point we know we haven't pushed this URL for this request before
-        PushBuilder pushBuilder = getPushBuilder(context);
-        if (pushBuilder != null) {
-            // and now we also know there was no If-Modified-Since header
-            pushBuilder.path(result).push();
+        Set<String> resourceUrls = (Set<String>) context.getAttributes().computeIfAbsent(PUSH_RESOURCE_URLS_KEY_NAME, k -> new HashSet<>());
+
+        if (!resourceUrls.add(encodedURL)) {
+            return;
         }
 
+        PushBuilder pushBuilder = getPushBuilder(context);
+
+        if (pushBuilder != null) {
+            pushBuilder.path(encodedURL).push();
+        }
     }
 
     private PushBuilder getPushBuilder(FacesContext context) {
