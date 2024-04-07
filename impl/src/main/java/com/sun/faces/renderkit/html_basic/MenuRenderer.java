@@ -57,15 +57,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.io.FastStringWriter;
-import com.sun.faces.renderkit.Attribute;
-import com.sun.faces.renderkit.AttributeManager;
-import com.sun.faces.renderkit.RenderKitUtils;
-import com.sun.faces.renderkit.SelectItemsIterator;
-import com.sun.faces.util.RequestStateManager;
-import com.sun.faces.util.Util;
-
 import jakarta.el.ELException;
 import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
@@ -74,12 +65,23 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UISelectMany;
 import jakarta.faces.component.UISelectOne;
 import jakarta.faces.component.ValueHolder;
+import jakarta.faces.component.html.HtmlSelectManyListbox;
+import jakarta.faces.component.html.HtmlSelectOneListbox;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.ConverterException;
 import jakarta.faces.model.SelectItem;
 import jakarta.faces.model.SelectItemGroup;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.io.FastStringWriter;
+import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.AttributeManager;
+import com.sun.faces.renderkit.RenderKitUtils;
+import com.sun.faces.renderkit.SelectItemsIterator;
+import com.sun.faces.util.RequestStateManager;
+import com.sun.faces.util.Util;
 
 /**
  * <B>MenuRenderer</B> is a class that renders the current value of <code>UISelectOne</code> or <code>UISelectMany</code>
@@ -652,7 +654,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         context.setResponseWriter(writer);
 
         // If "size" is *not* set explicitly, we have to default it correctly
-        Integer size = (Integer) component.getAttributes().get("size");
+        Integer size = getSizeAttribute(component);
         if (size == null || size == MIN_VALUE) {
             size = count;
         }
@@ -668,6 +670,18 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         writer.write(bufferedWriter.toString());
 
         writer.endElement("select");
+    }
+
+    protected Integer getSizeAttribute(UIComponent component) {
+        if (component instanceof HtmlSelectOneListbox) {
+            return ((HtmlSelectOneListbox) component).getSize();
+        }
+        else if (component instanceof HtmlSelectManyListbox) {
+            return ((HtmlSelectManyListbox) component).getSize();
+        }
+        else {
+            return null;
+        }
     }
 
     protected Object coerceToModelType(FacesContext ctx, Object value, Class<?> itemValueType) {
