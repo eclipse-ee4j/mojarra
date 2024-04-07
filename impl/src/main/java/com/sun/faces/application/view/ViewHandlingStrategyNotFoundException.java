@@ -20,7 +20,7 @@ import jakarta.faces.FacesException;
 
 /**
  * Indicates that no {@link com.sun.faces.application.view.ViewHandlingStrategy} instances were found appropriate to a
- * particulare view ID.
+ * particular view ID.
  */
 public class ViewHandlingStrategyNotFoundException extends FacesException {
 
@@ -31,9 +31,9 @@ public class ViewHandlingStrategyNotFoundException extends FacesException {
     /**
      * @see FacesException#FacesException()
      */
-    public ViewHandlingStrategyNotFoundException() {
+    public ViewHandlingStrategyNotFoundException(String viewId) {
 
-        super();
+        super("Strategy not found for viewId: " + viewId);
 
     }
 
