@@ -54,7 +54,7 @@ public class ViewHandlingStrategyManager {
         return Arrays.stream(strategies)
                      .filter(strategy -> strategy.handlesViewId(viewId))
                      .findFirst()
-                     .orElseThrow(ViewHandlingStrategyNotFoundException::new);
+                     .orElseThrow(()-> new ViewHandlingStrategyNotFoundException(viewId));
     }
 
     /**
