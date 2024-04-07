@@ -46,13 +46,6 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.application.view.FaceletViewHandlingStrategy;
-import com.sun.faces.facelets.util.Classpath;
-import com.sun.faces.lifecycle.HttpMethodRestrictionsPhaseListener;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
-
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.ResourceHandler;
@@ -71,6 +64,13 @@ import jakarta.faces.push.PushContext;
 import jakarta.faces.validator.BeanValidator;
 import jakarta.faces.webapp.FacesServlet;
 import jakarta.servlet.ServletContext;
+
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.application.view.FaceletViewHandlingStrategy;
+import com.sun.faces.facelets.util.Classpath;
+import com.sun.faces.lifecycle.HttpMethodRestrictionsPhaseListener;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
 
 /**
  * Class Documentation
@@ -114,7 +114,7 @@ public class WebConfiguration {
     private FaceletsConfiguration faceletsConfig;
 
     private boolean hasFlows;
-    
+
     private String specificationVersion;
 
     // ------------------------------------------------------------ Constructors
@@ -136,7 +136,7 @@ public class WebConfiguration {
         getOptionValue(WebContextInitParameter.ResourceExcludes, " ");
         getOptionValue(WebContextInitParameter.FaceletsViewMappings, ";");
         getOptionValue(WebContextInitParameter.FaceletsSuffix, " ");
-        
+
         specificationVersion = getClass().getPackage().getSpecificationVersion();
     }
 
@@ -873,7 +873,7 @@ public class WebConfiguration {
         PartialStateSaving(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, true),
         GenerateUniqueServerStateIds("com.sun.faces.generateUniqueServerStateIds", true),
         InterpretEmptyStringSubmittedValuesAsNull(UIInput.EMPTY_STRING_AS_NULL_PARAM_NAME, false),
-        AutoCompleteOffOnViewState("com.sun.faces.autoCompleteOffOnViewState", true),
+        AutoCompleteOffOnViewState("com.sun.faces.autoCompleteOffOnViewState", false),
         EnableThreading("com.sun.faces.enableThreading", false),
         AllowTextChildren("com.sun.faces.allowTextChildren", false),
         CacheResourceModificationTimestamp("com.sun.faces.cacheResourceModificationTimestamp", false),
