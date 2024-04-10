@@ -1655,8 +1655,8 @@ public class Util {
         }
 
         if (encoding == null) {
-        // 3. If none found then get it from request (could happen when the view isn't built yet).
-        //    See also ViewHandler#initView() and ViewHandler#calculateCharacterEncoding().
+            // 3. If none found then get it from request (could happen when the view isn't built yet).
+            //    See also ViewHandler#initView() and ViewHandler#calculateCharacterEncoding().
             encoding = context.getExternalContext().getRequestCharacterEncoding();
 
             if (encoding != null && LOGGER.isLoggable(FINEST)) {
@@ -1665,8 +1665,8 @@ public class Util {
         }
 
         if (encoding == null && context.getExternalContext().getSession(false) != null) {
-        // 4. If still none found then get previously known request encoding from session.
-        //    See also ViewHandler#initView().
+            // 4. If still none found then get previously known request encoding from session.
+            //    See also ViewHandler#initView().
             encoding = (String) context.getExternalContext().getSessionMap().get(CHARACTER_ENCODING_KEY);
 
             if (encoding != null && LOGGER.isLoggable(FINEST)) {
@@ -1686,7 +1686,7 @@ public class Util {
             }
         }
         else {
-                // 6. If specified default is null or blank then finally fall back to hardcoded default.
+            // 6. If specified default is null or blank then finally fall back to hardcoded default.
             encoding = RIConstants.CHAR_ENCODING;
 
             if (LOGGER.isLoggable(FINEST)) {
