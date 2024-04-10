@@ -1678,19 +1678,19 @@ public class Util {
             // 5. If still none found then fall back to specified default.
             if (defaultEncoding.isPresent()) {
                 encoding = defaultEncoding.get();
-        }
-
-        if ( encoding != null && !encoding.isBlank() ) {
-            if (LOGGER.isLoggable(FINEST)) {
-                LOGGER.log(FINEST, "Using specified default encoding {0}", encoding);
             }
-        }
-        else {
-            // 6. If specified default is null or blank then finally fall back to hardcoded default.
-            encoding = RIConstants.CHAR_ENCODING;
 
-            if (LOGGER.isLoggable(FINEST)) {
-                LOGGER.log(FINEST, "No encoding found, defaulting to {0}", encoding);
+            if ( encoding != null && !encoding.isBlank() ) {
+                if (LOGGER.isLoggable(FINEST)) {
+                    LOGGER.log(FINEST, "Using specified default encoding {0}", encoding);
+                }
+            }
+            else {
+                // 6. If specified default is null or blank then finally fall back to hardcoded default.
+                encoding = RIConstants.CHAR_ENCODING;
+
+                if (LOGGER.isLoggable(FINEST)) {
+                    LOGGER.log(FINEST, "No encoding found, defaulting to {0}", encoding);
                 }
             }
         }
