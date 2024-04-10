@@ -1626,7 +1626,7 @@ public class Util {
      * @return the encoding to be used for the response
      */
     public static String getResponseEncoding(FacesContext context) {
-        return getResponseEncoding(context, RIConstants.CHAR_ENCODING);
+        return getResponseEncoding(context, null);
     }
 
     /**
@@ -1680,20 +1680,20 @@ public class Util {
         // 5. If still none found then fall back to specified default.
         if (encoding == null) {
             encoding = defaultEncoding;
+        }
 
-            // 6. If specified default is null or blank then finally fall back to hardcoded default.
-            if (encoding != null && !encoding.isBlank()) {
-                if (LOGGER.isLoggable(FINEST)) {
-                    LOGGER.log(FINEST, "Using specified default encoding {0}", encoding);
-                }
+        // 6. If specified default is null or blank then finally fall back to hardcoded default.
+        if (encoding != null && !encoding.isBlank()) {
+            if (LOGGER.isLoggable(FINEST)) {
+                LOGGER.log(FINEST, "Using specified default encoding {0}", encoding);
             }
-            else {
+        }
+        else {
 
-                encoding = RIConstants.CHAR_ENCODING;
+            encoding = RIConstants.CHAR_ENCODING;
 
-                if (LOGGER.isLoggable(FINEST)) {
-                    LOGGER.log(FINEST, "No encoding found, defaulting to {0}", encoding);
-                }
+            if (LOGGER.isLoggable(FINEST)) {
+                LOGGER.log(FINEST, "No encoding found, defaulting to {0}", encoding);
             }
         }
 
