@@ -908,12 +908,12 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         String encoding = (String) context.getAttributes().get(FACELETS_ENCODING_KEY);
 
         // Create a dummy ResponseWriter with a bogus writer,
-        // so we can figure out what content type and encoding the ReponseWriter
+        // so we can figure out what content type and encoding the ResponseWriter
         // is really going to ask for
         ResponseWriter initWriter = renderKit.createResponseWriter(NullWriter.INSTANCE, contentType, encoding);
 
         contentType = getResponseContentType(context, initWriter.getContentType());
-        encoding = Util.getResponseEncoding(context, Optional.ofNullable(initWriter.getCharacterEncoding()));
+        encoding = Util.getResponseEncoding(context, initWriter.getCharacterEncoding());
 
         // apply them to the response
         char[] buffer = new char[1028];
