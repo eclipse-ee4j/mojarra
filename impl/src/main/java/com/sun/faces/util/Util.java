@@ -1680,7 +1680,7 @@ public class Util {
                 encoding = defaultEncoding.get();
             }
 
-            if ( encoding != null && !encoding.isBlank() ) {
+            if (encoding != null && !encoding.isBlank()) {
                 if (LOGGER.isLoggable(FINEST)) {
                     LOGGER.log(FINEST, "Using specified default encoding {0}", encoding);
                 }
