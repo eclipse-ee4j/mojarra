@@ -46,16 +46,19 @@ import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
@@ -107,6 +110,7 @@ import jakarta.faces.render.ResponseStateManager;
 import jakarta.faces.webapp.FacesServlet;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletRegistration;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletMapping;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.MappingMatch;
@@ -145,7 +149,7 @@ public class Util {
     }
 
     private static Map<String, Pattern> getPatternCache(Map<String, Object> appMap) {
-        @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
         Map<String, Pattern> result = (Map<String, Pattern>) appMap.get(PATTERN_CACHE_KEY);
         if (result == null) {
             result = Collections.synchronizedMap(new LRUMap<>(15));
@@ -223,7 +227,7 @@ public class Util {
             // ignore
         }
 
-        return applicationContextPath + " " + Thread.currentThread().toString() + " " + System.currentTimeMillis();
+        return applicationContextPath + " " + Thread.currentThread() + " " + System.currentTimeMillis();
 
     }
 
@@ -253,7 +257,7 @@ public class Util {
         }
         if (instance == null && type != null) {
             try {
-                instance = ReflectionUtils.newInstance((String) type.getValue(faces.getELContext()));
+                instance = ReflectionUtils.newInstance(type.getValue(faces.getELContext()));
             } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
                 throw new AbortProcessingException(e.getMessage(), e);
             }
@@ -357,18 +361,25 @@ public class Util {
         return factory;
     }
 
+
+    public static final Map<String,Class<?>> primitiveTypes = Map.of(
+            "byte",     byte.class,
+            "short",    short.class,
+            "int",      int.class,
+            "long",     long.class,
+            "float",    float.class,
+            "double",   double.class,
+            "boolean",  boolean.class,
+            "char",     char.class
+    );
+
     public static Class loadClass(String name, Object fallbackClass) throws ClassNotFoundException {
-        ClassLoader loader = Util.getCurrentLoader(fallbackClass);
+        // Primitive Type
+        Class primitiveType = primitiveTypes.get(name);
+        if (primitiveType != null) return primitiveType;
 
-        String[] primitiveNames = { "byte", "short", "int", "long", "float", "double", "boolean", "char" };
-        Class<?>[] primitiveClasses = { byte.class, short.class, int.class, long.class, float.class, double.class, boolean.class, char.class };
-
-        for (int i = 0; i < primitiveNames.length; i++) {
-            if (primitiveNames[i].equals(name)) {
-                return primitiveClasses[i];
-            }
-        }
-
+        // Class.forName
+        ClassLoader loader = getCurrentLoader(fallbackClass);
         return Class.forName(name, true, loader);
     }
 
@@ -403,11 +414,8 @@ public class Util {
     }
 
     private static ClassLoader getContextClassLoader() {
-        if (System.getSecurityManager() == null) {
-            return Thread.currentThread().getContextClassLoader();
-        } else {
-            return (ClassLoader) java.security.AccessController.doPrivileged((PrivilegedAction) () -> Thread.currentThread().getContextClassLoader());
-        }
+        // todo: remove this check when on Java 17
+        return System.getSecurityManager() == null ? Thread.currentThread().getContextClassLoader() : AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader());
     }
 
     /**
@@ -550,6 +558,31 @@ public class Util {
     }
 
     /**
+     * Returns true if the given string is not null and not empty.
+     *
+     * @param string The string to be checked on emptiness.
+     * @return True if the given string is not null and not empty.
+     */
+    public static boolean isNotEmpty(String string) { return !isEmpty(string); }
+
+    /**
+     * Returns true if the given string is null or is blank.
+     *
+     * @param string The string to be checked.
+     * @return True if the given string is null or is blank.
+     */
+    public static boolean isBlank(String string) {
+        return string == null || string.isBlank();
+    }
+
+    /**
+     * @return null if the passed String is null or blank, s otherwise
+     */
+    public static String nullIfBlank(String s) {
+        return isBlank(s) ? null : s;
+    }
+
+    /**
      * Returns <code>true</code> if the given array is null or is empty.
      *
      * @param array The array to be checked on emptiness.
@@ -569,6 +602,8 @@ public class Util {
         return collection == null || collection.isEmpty();
     }
 
+    public static boolean isNotEmpty(Collection<?> collection) { return !isEmpty(collection); }
+
     /**
      * Returns <code>true</code> if the given value is null or is empty. Types of String, Collection, Map, Optional and
      * Array are recognized. If none is recognized, then examine the emptiness of the toString() representation instead.
@@ -586,7 +621,7 @@ public class Util {
         } else if (value instanceof Map<?, ?>) {
             return ((Map<?, ?>) value).isEmpty();
         } else if (value instanceof Optional<?>) {
-            return !((Optional<?>) value).isPresent();
+            return ((Optional<?>) value).isEmpty();
         } else if (value.getClass().isArray()) {
             return Array.getLength(value) == 0;
         } else {
@@ -657,7 +692,7 @@ public class Util {
     @SafeVarargs
     public static <T> boolean isOneOf(T object, T... objects) {
         for (Object other : objects) {
-            if (object == null ? other == null : object.equals(other)) {
+            if (Objects.equals(object, other)) {
                 return true;
             }
         }
@@ -744,7 +779,7 @@ public class Util {
         }
     }
 
-    public static Converter getConverterForIdentifer(String converterId, FacesContext context) {
+    public static Converter getConverterForIdentifier(String converterId, FacesContext context) {
         if (converterId == null) {
             return null;
         }
@@ -760,44 +795,17 @@ public class Util {
         return context.getApplication().getStateManager();
     }
 
-    public static Class getTypeFromString(String type) throws ClassNotFoundException {
-        Class result;
-        switch (type) {
-        case "byte":
-            result = Byte.TYPE;
-            break;
-        case "short":
-            result = Short.TYPE;
-            break;
-        case "int":
-            result = Integer.TYPE;
-            break;
-        case "long":
-            result = Long.TYPE;
-            break;
-        case "float":
-            result = Float.TYPE;
-            break;
-        case "double":
-            result = Double.TYPE;
-            break;
-        case "boolean":
-            result = Boolean.TYPE;
-            break;
-        case "char":
-            result = Character.TYPE;
-            break;
-        case "void":
-            result = Void.TYPE;
-            break;
-        default:
-            if (type.indexOf('.') == -1) {
-                type = "java.lang." + type;
-            }
-            result = Util.loadClass(type, Void.TYPE);
-            break;
+    public static Class<?> getTypeFromString(String type) throws ClassNotFoundException {
+        if ( type == null ) throw new ClassNotFoundException("Type is required");
+
+        Class<?> primitiveClass = primitiveTypes.get(type);
+        if ( primitiveClass != null ) return primitiveClass;
+
+        if (type.indexOf('.') == -1) {
+            type = "java.lang." + type;
         }
 
+        Class<?> result = loadClass(type, Void.TYPE);
         return result;
     }
 
@@ -814,12 +822,12 @@ public class Util {
     }
 
     public static boolean componentIsDisabled(UIComponent component) {
-        return Boolean.valueOf(String.valueOf(component.getAttributes().get("disabled")));
+        return Boolean.parseBoolean(String.valueOf(component.getAttributes().get("disabled")));
     }
 
     public static boolean componentIsDisabledOrReadonly(UIComponent component) {
-        return Boolean.valueOf(String.valueOf(component.getAttributes().get("disabled")))
-                || Boolean.valueOf(String.valueOf(component.getAttributes().get("readonly")));
+        return Boolean.parseBoolean(String.valueOf(component.getAttributes().get("disabled")))
+                || Boolean.parseBoolean(String.valueOf(component.getAttributes().get("readonly")));
     }
 
     // W3C XML specification refers to IETF RFC 1766 for language code
@@ -832,19 +840,10 @@ public class Util {
         if (null == localeStr || localeStr.length() < 2) {
             throw new IllegalArgumentException("Illegal locale String: " + localeStr);
         }
-        Locale result = null;
 
-        try {
-            Method method = Locale.class.getMethod("forLanguageTag", String.class);
-            if (method != null) {
-                result = (Locale) method.invoke(null, localeStr);
-            }
-        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException throwable) {
-            // if we are NOT running JavaSE 7 we end up here and we will
-            // default to the previous way of determining the Locale below.
-        }
+        Locale result = Locale.forLanguageTag(localeStr);
 
-        if (result == null || result.getLanguage().equals("")) {
+        if (result == null || result.getLanguage().isEmpty()) {
             String lang = null;
             String country = null;
             String variant = null;
@@ -907,8 +906,8 @@ public class Util {
     public static int indexOfSet(String str, char[] set, int fromIndex) {
         int result = -1;
         for (int i = fromIndex, len = str.length(); i < len; i++) {
-            for (int j = 0, innerLen = set.length; j < innerLen; j++) {
-                if (str.charAt(i) == set[j]) {
+            for (char c : set) {
+                if (str.charAt(i) == c) {
                     result = i;
                     break;
                 }
@@ -928,7 +927,7 @@ public class Util {
      *
      * @param e the Throwable to obtain the stacktrace from
      *
-     * @return the String representation ofthe stack trace obtained by calling getStackTrace() on the passed in exception.
+     * @return the String representation of the stack trace obtained by calling getStackTrace() on the passed in exception.
      * If null is passed in, we return the empty String.
      */
     public static String getStackTraceString(Throwable e) {
@@ -937,11 +936,11 @@ public class Util {
         }
 
         StackTraceElement[] stacks = e.getStackTrace();
-        StringBuffer sb = new StringBuffer();
+        StringBuilder builder = new StringBuilder(1024);
         for (StackTraceElement stack : stacks) {
-            sb.append(stack.toString()).append('\n');
+            builder.append(stack).append('\n');
         }
-        return sb.toString();
+        return builder.toString();
     }
 
     /**
@@ -959,26 +958,26 @@ public class Util {
      * @return the content type of the response
      */
     public static String getContentTypeFromResponse(Object response) {
-        String result = null;
-        if (null != response) {
+        if ( response == null ) return null;
+        if ( response instanceof ServletResponse ) return ((ServletResponse)response).getContentType();
 
-            try {
-                Method method = ReflectionUtils.lookupMethod(response.getClass(), "getContentType", RIConstants.EMPTY_CLASS_ARGS);
-                if (null != method) {
-                    Object obj = method.invoke(response, RIConstants.EMPTY_METH_ARGS);
-                    if (null != obj) {
-                        result = obj.toString();
-                    }
+        String result = null;
+        try {
+            Method method = ReflectionUtils.lookupMethod(response.getClass(), "getContentType", RIConstants.EMPTY_CLASS_ARGS);
+            if (null != method) {
+                Object obj = method.invoke(response, RIConstants.EMPTY_METH_ARGS);
+                if (null != obj) {
+                    result = obj.toString();
                 }
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                throw new FacesException(e);
             }
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            throw new FacesException(e);
         }
         return result;
     }
 
     public static FeatureDescriptor getFeatureDescriptor(String name, String displayName, String desc, boolean expert, boolean hidden, boolean preferred,
-            Object type, Boolean designTime) {
+                                                         Object type, Boolean designTime) {
 
         FeatureDescriptor fd = new FeatureDescriptor();
         fd.setName(name);
@@ -1049,9 +1048,9 @@ public class Util {
      * @throws NullPointerException if <code>context</code> is null
      */
     public static HttpServletMapping getFacesMapping(FacesContext context) {
-       notNull("context", context);
+        notNull("context", context);
 
-       return ((HttpServletRequest) context.getExternalContext().getRequest()).getHttpServletMapping();
+        return ((HttpServletRequest) context.getExternalContext().getRequest()).getHttpServletMapping();
     }
 
     /**
@@ -1208,20 +1207,16 @@ public class Util {
             while (clazz != Object.class) {
                 try {
                     Field[] fields = clazz.getDeclaredFields();
-                    if (fields != null) {
-                        for (Field field : fields) {
-                            if (field.getAnnotations().length > 0) {
-                                return true;
-                            }
+                    for (Field field : fields) {
+                        if (field.getAnnotations().length > 0) {
+                            return true;
                         }
                     }
 
                     Method[] methods = clazz.getDeclaredMethods();
-                    if (methods != null) {
-                        for (Method method : methods) {
-                            if (method.getDeclaredAnnotations().length > 0) {
-                                return true;
-                            }
+                    for (Method method : methods) {
+                        if (method.getDeclaredAnnotations().length > 0) {
+                            return true;
                         }
                     }
                 }
@@ -1262,29 +1257,29 @@ public class Util {
     }
 
     public static String getViewStateId(FacesContext context) {
-        String result = null;
+        final String result;
         final String viewStateCounterKey = "com.sun.faces.util.ViewStateCounterKey";
         Map<Object, Object> contextAttrs = context.getAttributes();
         Integer counter = (Integer) contextAttrs.get(viewStateCounterKey);
         if (null == counter) {
-            counter = Integer.valueOf(0);
+            counter = 0;
         }
 
         char sep = UINamingContainer.getSeparatorChar(context);
         UIViewRoot root = context.getViewRoot();
-        result = root.getContainerClientId(context) + sep + ResponseStateManager.VIEW_STATE_PARAM + sep + +counter;
+        result = root.getContainerClientId(context) + sep + ResponseStateManager.VIEW_STATE_PARAM + sep + counter;
         contextAttrs.put(viewStateCounterKey, ++counter);
 
         return result;
     }
 
     public static String getClientWindowId(FacesContext context) {
-        String result = null;
+        final String result;
         final String clientWindowIdCounterKey = "com.sun.faces.util.ClientWindowCounterKey";
         Map<Object, Object> contextAttrs = context.getAttributes();
         Integer counter = (Integer) contextAttrs.get(clientWindowIdCounterKey);
         if (null == counter) {
-            counter = Integer.valueOf(0);
+            counter = 0;
         }
 
         char sep = UINamingContainer.getSeparatorChar(context);
@@ -1393,7 +1388,7 @@ public class Util {
                     dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
                     dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 
-                } catch (ParserConfigurationException pce) {
+                } catch (ParserConfigurationException ignored) {
                 }
                 dbf.setNamespaceAware(true);
                 dbf.setValidating(false);
@@ -1409,8 +1404,7 @@ public class Util {
             if (stream != null) {
                 try {
                     stream.close();
-                } catch (IOException ioe) {
-                }
+                } catch (IOException ignored) {}
             }
         }
         return result;
@@ -1437,9 +1431,7 @@ public class Util {
                     dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
                     dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
                     dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-
-                } catch (ParserConfigurationException e) {
-                }
+                } catch (ParserConfigurationException ignored) {}
                 dbf.setNamespaceAware(true);
                 dbf.setValidating(false);
                 dbf.setXIncludeAware(false);
@@ -1453,8 +1445,7 @@ public class Util {
             if (stream != null) {
                 try {
                     stream.close();
-                } catch (IOException ioe) {
-                }
+                } catch (IOException ignored) {}
             }
         }
         return result;
@@ -1475,7 +1466,7 @@ public class Util {
         }
 
         @Override
-        public Iterator getPrefixes(String namespaceURI) {
+        public Iterator<String> getPrefixes(String namespaceURI) {
             return null;
         }
     }
@@ -1533,9 +1524,17 @@ public class Util {
     public static <T> Stream<T> stream(Object object) {
         if (object == null) {
             return Stream.empty();
-        } else if (object instanceof Stream) {
+        }
+        else if (object instanceof Stream) {
             return (Stream<T>) object;
-        } else if (object instanceof Iterable) {
+        }
+        else if (object instanceof Collection) {
+            return ((Collection)object).stream();   // little bonus with sized spliterator...
+        }
+        else if ( object instanceof Enumeration ) { // recursive call wrapping in an Iterator (Java 9+)
+            return stream( ((Enumeration)object).asIterator() );
+        }
+        else if (object instanceof Iterable) {
             return (Stream<T>) StreamSupport.stream(((Iterable<?>) object).spliterator(), false);
         } else if (object instanceof Map) {
             return (Stream<T>) ((Map<?, ?>) object).entrySet().stream();
@@ -1608,12 +1607,12 @@ public class Util {
     public static int extractFirstNumericSegment(String clientId, char separatorChar) {
         int nextSeparatorChar = clientId.indexOf(separatorChar);
 
-        while (clientId.length() > 0 && !isDigit(clientId.charAt(0)) && nextSeparatorChar >= 0) {
+        while ( !clientId.isEmpty() && !isDigit(clientId.charAt(0)) && nextSeparatorChar >= 0 ) {
             clientId = clientId.substring(nextSeparatorChar + 1);
             nextSeparatorChar = clientId.indexOf(separatorChar);
         }
 
-        if (clientId.length() > 0 && isDigit(clientId.charAt(0))) {
+        if ( !clientId.isEmpty() && isDigit(clientId.charAt(0)) ) {
             String firstNumericSegment = nextSeparatorChar >= 0 ? clientId.substring(0, nextSeparatorChar) : clientId;
             return Integer.parseInt(firstNumericSegment);
         }
@@ -1656,8 +1655,8 @@ public class Util {
         }
 
         if (encoding == null) {
-            // 3. If none found then get it from request (could happen when the view isn't built yet).
-            //    See also ViewHandler#initView() and ViewHandler#calculateCharacterEncoding().
+        // 3. If none found then get it from request (could happen when the view isn't built yet).
+        //    See also ViewHandler#initView() and ViewHandler#calculateCharacterEncoding().
             encoding = context.getExternalContext().getRequestCharacterEncoding();
 
             if (encoding != null && LOGGER.isLoggable(FINEST)) {
@@ -1666,8 +1665,8 @@ public class Util {
         }
 
         if (encoding == null && context.getExternalContext().getSession(false) != null) {
-            // 4. If still none found then get previously known request encoding from session.
-            //    See also ViewHandler#initView().
+        // 4. If still none found then get previously known request encoding from session.
+        //    See also ViewHandler#initView().
             encoding = (String) context.getExternalContext().getSessionMap().get(CHARACTER_ENCODING_KEY);
 
             if (encoding != null && LOGGER.isLoggable(FINEST)) {
@@ -1679,19 +1678,19 @@ public class Util {
             // 5. If still none found then fall back to specified default.
             if (defaultEncoding.isPresent()) {
                 encoding = defaultEncoding.get();
-            }
+        }
 
-            if (encoding != null && !encoding.isBlank()) {
-                if (LOGGER.isLoggable(FINEST)) {
-                    LOGGER.log(FINEST, "Using specified default encoding {0}", encoding);
-                }
+        if ( encoding != null && !encoding.isBlank() ) {
+            if (LOGGER.isLoggable(FINEST)) {
+                LOGGER.log(FINEST, "Using specified default encoding {0}", encoding);
             }
-            else {
+        }
+        else {
                 // 6. If specified default is null or blank then finally fall back to hardcoded default.
-                encoding = RIConstants.CHAR_ENCODING;
+            encoding = RIConstants.CHAR_ENCODING;
 
-                if (LOGGER.isLoggable(FINEST)) {
-                    LOGGER.log(FINEST, "No encoding found, defaulting to {0}", encoding);
+            if (LOGGER.isLoggable(FINEST)) {
+                LOGGER.log(FINEST, "No encoding found, defaulting to {0}", encoding);
                 }
             }
         }
