@@ -798,8 +798,8 @@ public class Util {
     public static Class<?> getTypeFromString(String type) throws ClassNotFoundException {
         if ( type == null ) throw new ClassNotFoundException("Type is required");
 
-        Class<?> primitiveClass = primitiveTypes.get(type);
-        if ( primitiveClass != null ) return primitiveClass;
+        Class<?> primitiveType = primitiveTypes.get(type);
+        if ( primitiveType != null ) return primitiveType;
 
         if (type.indexOf('.') == -1) {
             type = "java.lang." + type;
