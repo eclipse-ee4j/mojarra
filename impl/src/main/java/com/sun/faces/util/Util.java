@@ -1626,7 +1626,7 @@ public class Util {
      * @return the encoding to be used for the response
      */
     public static String getResponseEncoding(FacesContext context) {
-        return getResponseEncoding(context, Optional.empty());
+        return getResponseEncoding(context, RIConstants.CHAR_ENCODING);
     }
 
     /**
@@ -1634,7 +1634,7 @@ public class Util {
      * @param defaultEncoding the default encoding, if any
      * @return the encoding to be used for the response
      */
-    public static String getResponseEncoding(FacesContext context, Optional<String> defaultEncoding) {
+    public static String getResponseEncoding(FacesContext context, String defaultEncoding) {
 
         // 1. First get it from viewroot, if any.
         if (context.getViewRoot() != null) {
@@ -1655,9 +1655,10 @@ public class Util {
             LOGGER.log(FINEST, "Using Facelet encoding {0}", encoding);
         }
 
+        // 3. If none found then get it from request (could happen when the view isn't built yet).
+        //    See also ViewHandler#initView() and ViewHandler#calculateCharacterEncoding().
         if (encoding == null) {
-            // 3. If none found then get it from request (could happen when the view isn't built yet).
-            //    See also ViewHandler#initView() and ViewHandler#calculateCharacterEncoding().
+
             encoding = context.getExternalContext().getRequestCharacterEncoding();
 
             if (encoding != null && LOGGER.isLoggable(FINEST)) {
@@ -1665,9 +1666,10 @@ public class Util {
             }
         }
 
+        // 4. If still none found then get previously known request encoding from session.
+        //    See also ViewHandler#initView().
         if (encoding == null && context.getExternalContext().getSession(false) != null) {
-            // 4. If still none found then get previously known request encoding from session.
-            //    See also ViewHandler#initView().
+
             encoding = (String) context.getExternalContext().getSessionMap().get(CHARACTER_ENCODING_KEY);
 
             if (encoding != null && LOGGER.isLoggable(FINEST)) {
@@ -1675,19 +1677,18 @@ public class Util {
             }
         }
 
+        // 5. If still none found then fall back to specified default.
         if (encoding == null) {
-            // 5. If still none found then fall back to specified default.
-            if (defaultEncoding.isPresent()) {
-                encoding = defaultEncoding.get();
-            }
+            encoding = defaultEncoding;
 
+            // 6. If specified default is null or blank then finally fall back to hardcoded default.
             if (encoding != null && !encoding.isBlank()) {
                 if (LOGGER.isLoggable(FINEST)) {
                     LOGGER.log(FINEST, "Using specified default encoding {0}", encoding);
                 }
             }
             else {
-                // 6. If specified default is null or blank then finally fall back to hardcoded default.
+
                 encoding = RIConstants.CHAR_ENCODING;
 
                 if (LOGGER.isLoggable(FINEST)) {
