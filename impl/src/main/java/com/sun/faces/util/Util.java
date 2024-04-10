@@ -61,6 +61,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -1524,18 +1526,12 @@ public class Util {
     public static <T> Stream<T> stream(Object object) {
         if (object == null) {
             return Stream.empty();
-        }
-        else if (object instanceof Stream) {
+        } else if (object instanceof Stream) {
             return (Stream<T>) object;
-        }
-        else if (object instanceof Collection) {
-            return ((Collection)object).stream();   // little bonus with sized spliterator...
-        }
-        else if ( object instanceof Enumeration ) { // recursive call wrapping in an Iterator (Java 9+)
-            return stream( ((Enumeration)object).asIterator() );
-        }
-        else if (object instanceof Iterable) {
-            return (Stream<T>) StreamSupport.stream(((Iterable<?>) object).spliterator(), false);
+        } else if (object instanceof Collection) {
+            return ((Collection<T>)object).stream();   // little bonus with sized spliterator...
+        } else if (object instanceof Iterable) {
+            return StreamSupport.stream(((Iterable<T>) object).spliterator(), false);
         } else if (object instanceof Map) {
             return (Stream<T>) ((Map<?, ?>) object).entrySet().stream();
         } else if (object instanceof int[]) {
@@ -1546,6 +1542,10 @@ public class Util {
             return (Stream<T>) Arrays.stream((double[]) object).boxed();
         } else if (object instanceof Object[]) {
             return (Stream<T>) Arrays.stream((Object[]) object);
+        } else if ( object instanceof Enumeration) {   // recursive call using Enumeration.asIterator() (Java 9+)
+            return stream( ((Enumeration<T>)object).asIterator() );
+        } else if ( object instanceof Iterator) {      // Iterator<T> => Stream<T>
+            return StreamSupport.stream( Spliterators.spliteratorUnknownSize((Iterator<T>)object, Spliterator.ORDERED), false);
         } else {
             return (Stream<T>) Stream.of(object);
         }
