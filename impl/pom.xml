@@ -29,7 +29,7 @@
    <parent>
         <groupId>org.glassfish</groupId>
         <artifactId>mojarra-parent</artifactId>
-        <version>4.0.7</version>
+        <version>4.0.8-SNAPSHOT</version>
     </parent>
 
    <artifactId>jakarta.faces</artifactId>
