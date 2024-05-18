@@ -53,7 +53,7 @@ public class MockExternalContext extends ExternalContext {
 
     @Override
     public Object getSession(boolean create) {
-        return request instanceof HttpServletRequest ? ((HttpServletRequest) request).getSession(create) : null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
