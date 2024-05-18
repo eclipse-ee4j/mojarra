@@ -876,6 +876,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
 
         String myId = super.getClientId(context);
+        boolean found = false;
         if (clientId.equals(myId)) {
             try {
                 pushComponentToEL(context, compositeParent);
@@ -888,18 +889,24 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             }
         }
 
-        // check the facets and children, if any, of UIData
-        Iterator<UIComponent> facetsAndChildrenIterator = getFacetsAndChildren();
-
-        while (facetsAndChildrenIterator.hasNext()) {
-            if (facetsAndChildrenIterator.next().invokeOnComponent(context, clientId, callback)) {
-            	return true;
+        // check the facets, if any, of UIData
+        if (getFacetCount() > 0) {
+            for (UIComponent c : getFacets().values()) {
+                if (clientId.equals(c.getClientId(context))) {
+                    callback.invokeContextCallback(context, c);
+                    return true;
+                }
             }
         }
 
-        // check column level facets, if any
+        // Check if we are looking for a component that is part of the actual skeleton.
         if (getChildCount() > 0) {
             for (UIComponent column : getChildren()) {
+                if (column.invokeOnComponent(context, clientId, callback)) {
+                    return true;
+                }
+
+            	// check column level facets, if any
                 if (column instanceof UIColumn) {
                     if (column.getFacetCount() > 0) {
                         for (UIComponent facet : column.getFacets().values()) {
@@ -939,7 +946,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 }
                 setRowIndex(newRow);
                 if (isRowAvailable()) {
-                    return super.invokeOnComponent(context, clientId, callback);
+                    found = super.invokeOnComponent(context, clientId, callback);
                 }
             } catch (FacesException fe) {
                 throw fe;
@@ -949,7 +956,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 setRowIndex(savedRowIndex);
             }
         }
-        return false;
+        return found;
     }
 
     /**
