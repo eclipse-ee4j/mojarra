@@ -69,6 +69,7 @@ public class MockApplication extends Application {
     private final ComponentSystemEventHelper compSysEventHelper = new ComponentSystemEventHelper();
 
     public MockApplication() {
+        addComponent("jakarta.faces.ViewRoot", "jakarta.faces.component.UIViewRoot");
         addComponent("TestNamingContainer",
                 "jakarta.faces.webapp.TestNamingContainer");
         addComponent("TestComponent", "jakarta.faces.webapp.TestComponent");
