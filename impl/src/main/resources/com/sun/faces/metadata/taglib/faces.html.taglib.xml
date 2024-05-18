@@ -2883,7 +2883,6 @@
             </description>
             <name>var</name>
             <required>false</required>
-            <type>java.lang.String</type>
         </attribute>
         <attribute>
             <description>
