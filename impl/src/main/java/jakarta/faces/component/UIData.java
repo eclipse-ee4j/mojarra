@@ -899,9 +899,14 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             }
         }
 
-        // check column level facets, if any
+        // Check if we are looking for a component that is part of the actual skeleton.
         if (getChildCount() > 0) {
             for (UIComponent column : getChildren()) {
+                if (column.invokeOnComponent(context, clientId, callback)) {
+                    return true;
+                }
+
+            	// check column level facets, if any
                 if (column instanceof UIColumn) {
                     if (column.getFacetCount() > 0) {
                         for (UIComponent facet : column.getFacets().values()) {
@@ -909,19 +914,6 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                                 return true;
                             }
                         }
-                    }
-                }
-            }
-        }
-
-        /*
-         * Check if we are looking for a component that is part of the actual skeleton.
-         */
-        if (getChildCount() > 0) {
-            for (UIComponent column : getChildren()) {
-                if (column instanceof UIColumn) {
-                    if (column.invokeOnComponent(context, clientId, callback)) {
-                        return true;
                     }
                 }
             }
