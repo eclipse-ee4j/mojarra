@@ -16,12 +16,15 @@
 
 package com.sun.faces.component;
 
+import static jakarta.faces.component.html.HtmlEvents.getHtmlBodyElementEventNames;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import jakarta.el.ValueExpression;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
 
 /**
  * <p>
@@ -355,17 +358,14 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel implemen
         getStateHelper().put(PropertyKeys.styleClass, styleClass);
     }
 
-    private static final List<String> EVENT_NAMES = List.of(
-            "click", "dblclick", "keydown", "keypress", "keyup", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup");
-
     @Override
     public Collection<String> getEventNames() {
-        return EVENT_NAMES;
+        return getHtmlBodyElementEventNames(getFacesContext()); 
     }
 
     @Override
     public String getDefaultEventName() {
-        return "click";
+        return HtmlDocumentElementEvent.click.name();
     }
 
     // TODO The same as jakarta.faces.component.html.HtmlComponentUtils#handleAttribute
