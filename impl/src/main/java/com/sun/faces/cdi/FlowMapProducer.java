@@ -44,9 +44,9 @@ public class FlowMapProducer extends CdiProducer<Map<Object, Object>> {
 
     public FlowMapProducer(BeanManager beanManager) {
         super.name("flowScope")
-        	.scope(FlowScoped.class)
-        	.qualifiers(FlowMap.Literal.INSTANCE)
-        	.beanClass(beanManager, Map.class)
+            .scope(FlowScoped.class)
+            .qualifiers(FlowMap.Literal.INSTANCE)
+            .beanClass(beanManager, Map.class)
             .types(new ParameterizedTypeImpl(Map.class, new Type[] { Object.class, Object.class }), Map.class, Object.class)
             .create(e -> FacesContext.getCurrentInstance().getApplication().getFlowHandler().getCurrentFlowScope());
     }

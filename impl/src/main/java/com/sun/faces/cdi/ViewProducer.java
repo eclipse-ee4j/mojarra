@@ -38,9 +38,9 @@ public class ViewProducer extends CdiProducer<UIViewRoot> {
 
     public ViewProducer(BeanManager beanManager) {
         super.name("view")
-        	.scope(RequestScoped.class)
-        	.beanClass(beanManager, UIViewRoot.class)
-        	.types(UIViewRoot.class)
+            .scope(RequestScoped.class)
+            .beanClass(beanManager, UIViewRoot.class)
+            .types(UIViewRoot.class)
             .create(e -> FacesContext.getCurrentInstance().getViewRoot());
     }
 

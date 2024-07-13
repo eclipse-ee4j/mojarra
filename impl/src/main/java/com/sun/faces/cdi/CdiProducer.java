@@ -166,13 +166,13 @@ abstract class CdiProducer<T> implements Bean<T>, PassivationCapable, Serializab
     }
 
     protected CdiProducer<T> beanClass(BeanManager beanManager, Class<?> beanClass) {
-    	if (CdiUtils.isWeld(beanManager)) {
-    		this.beanClass = CdiExtension.class; // See #5457 and #5157
-    	} else {
-    		this.beanClass = beanClass;
-    	}
+        if (CdiUtils.isWeld(beanManager)) {
+            this.beanClass = CdiExtension.class; // See #5457 and #5157
+        } else {
+            this.beanClass = beanClass;
+        }
 
-    	return this;
+        return this;
     }
 
     protected CdiProducer<T> types(Type... types) {

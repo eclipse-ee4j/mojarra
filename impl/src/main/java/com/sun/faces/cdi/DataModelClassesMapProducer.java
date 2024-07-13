@@ -45,12 +45,12 @@ public class DataModelClassesMapProducer extends CdiProducer<Map<Class<?>, Class
     private static final long serialVersionUID = 1L;
 
     public DataModelClassesMapProducer(BeanManager beanManager) {
-		super.name("comSunFacesDataModelClassesMap")
-			.scope(ApplicationScoped.class)
-			.qualifiers(new DataModelClassesAnnotationLiteral())
-			.beanClass(beanManager, Map.class)
-			.types(Map.class, Object.class)
-			.create(e -> CDI.current().select(CdiExtension.class).get().getForClassToDataModelClass());
+        super.name("comSunFacesDataModelClassesMap")
+            .scope(ApplicationScoped.class)
+            .qualifiers(new DataModelClassesAnnotationLiteral())
+            .beanClass(beanManager, Map.class)
+            .types(Map.class, Object.class)
+            .create(e -> CDI.current().select(CdiExtension.class).get().getForClassToDataModelClass());
     }
 
 }

@@ -43,10 +43,10 @@ public class ResourceHandlerProducer extends CdiProducer<ResourceHandler> {
 
     public ResourceHandlerProducer(BeanManager beanManager) {
         super.name("resource")
-        	.scope(RequestScoped.class)
-        	.beanClass(beanManager, ResourceHandler.class)
-        	.types(ResourceHandler.class)
-    		.create(e -> FacesContext.getCurrentInstance().getApplication().getResourceHandler());
+            .scope(RequestScoped.class)
+            .beanClass(beanManager, ResourceHandler.class)
+            .types(ResourceHandler.class)
+            .create(e -> FacesContext.getCurrentInstance().getApplication().getResourceHandler());
     }
 
 }

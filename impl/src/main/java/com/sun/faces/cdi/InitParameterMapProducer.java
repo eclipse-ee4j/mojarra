@@ -42,11 +42,11 @@ public class InitParameterMapProducer extends CdiProducer<Map<String, String>> {
 
     public InitParameterMapProducer(BeanManager beanManager) {
         super.name("initParam")
-	        .scope(RequestScoped.class)
-	        .qualifiers(InitParameterMap.Literal.INSTANCE)
-	        .beanClass(beanManager, Map.class)
-	        .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, String.class }), Map.class, Object.class)
-	        .create(e -> FacesContext.getCurrentInstance().getExternalContext().getInitParameterMap());
+            .scope(RequestScoped.class)
+            .qualifiers(InitParameterMap.Literal.INSTANCE)
+            .beanClass(beanManager, Map.class)
+            .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, String.class }), Map.class, Object.class)
+            .create(e -> FacesContext.getCurrentInstance().getExternalContext().getInitParameterMap());
     }
 
 }

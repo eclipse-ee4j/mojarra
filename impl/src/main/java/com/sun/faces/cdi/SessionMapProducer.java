@@ -42,9 +42,9 @@ public class SessionMapProducer extends CdiProducer<Map<String, Object>> {
 
     public SessionMapProducer(BeanManager beanManager) {
         super.name("sessionScope")
-        	.scope(RequestScoped.class)
-        	.qualifiers(SessionMap.Literal.INSTANCE)
-        	.beanClass(beanManager, Map.class)
+            .scope(RequestScoped.class)
+            .qualifiers(SessionMap.Literal.INSTANCE)
+            .beanClass(beanManager, Map.class)
             .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, Object.class }), Map.class, Object.class)
             .create(e -> FacesContext.getCurrentInstance().getExternalContext().getSessionMap());
     }

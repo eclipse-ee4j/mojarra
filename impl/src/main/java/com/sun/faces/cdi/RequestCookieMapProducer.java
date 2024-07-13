@@ -43,10 +43,10 @@ public class RequestCookieMapProducer extends CdiProducer<Map<String, Object>> {
 
     public RequestCookieMapProducer(BeanManager beanManager) {
         super.name("cookie")
-        	.scope(RequestScoped.class)
-        	.qualifiers(RequestCookieMap.Literal.INSTANCE)
-        	.beanClass(beanManager, Map.class)
-        	.types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, Object.class }), Map.class, Object.class)
+            .scope(RequestScoped.class)
+            .qualifiers(RequestCookieMap.Literal.INSTANCE)
+            .beanClass(beanManager, Map.class)
+            .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, Object.class }), Map.class, Object.class)
             .create(e -> FacesContext.getCurrentInstance().getExternalContext().getRequestCookieMap());
     }
 

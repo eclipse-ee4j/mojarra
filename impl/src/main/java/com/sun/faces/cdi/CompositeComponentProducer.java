@@ -40,9 +40,9 @@ public class CompositeComponentProducer extends CdiProducer<Object> {
 
     public CompositeComponentProducer(BeanManager beanManager) {
         super.name("cc")
-        	.beanClass(beanManager, UIComponent.class)
-        	.types(UIComponent.class)
-        	.create(e -> {
+            .beanClass(beanManager, UIComponent.class)
+            .types(UIComponent.class)
+            .create(e -> {
 
             FacesContext context = getCurrentInstance();
 

@@ -42,11 +42,11 @@ public class HeaderValuesMapProducer extends CdiProducer<Map<String, String[]>> 
 
     public HeaderValuesMapProducer(BeanManager beanManager) {
         super.name("headerValues")
-			.scope(RequestScoped.class)
-			.qualifiers(HeaderValuesMap.Literal.INSTANCE)
-			.beanClass(beanManager, Map.class)
+            .scope(RequestScoped.class)
+            .qualifiers(HeaderValuesMap.Literal.INSTANCE)
+            .beanClass(beanManager, Map.class)
             .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, String[].class }), Map.class, Object.class)
-			.create(e -> FacesContext.getCurrentInstance().getExternalContext().getRequestHeaderValuesMap());
+            .create(e -> FacesContext.getCurrentInstance().getExternalContext().getRequestHeaderValuesMap());
     }
 
 }

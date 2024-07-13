@@ -42,9 +42,9 @@ public class RequestMapProducer extends CdiProducer<Map<String, Object>> {
 
     public RequestMapProducer(BeanManager beanManager) {
         super.name("requestScope")
-        	.scope(RequestScoped.class)
-        	.qualifiers(RequestMap.Literal.INSTANCE)
-        	.beanClass(beanManager, Map.class)
+            .scope(RequestScoped.class)
+            .qualifiers(RequestMap.Literal.INSTANCE)
+            .beanClass(beanManager, Map.class)
             .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, Object.class }), Map.class, Object.class)
             .create(e -> FacesContext.getCurrentInstance().getExternalContext().getRequestMap());
     }

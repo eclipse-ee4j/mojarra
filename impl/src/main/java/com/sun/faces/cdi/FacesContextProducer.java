@@ -38,9 +38,9 @@ public class FacesContextProducer extends CdiProducer<FacesContext> {
 
     public FacesContextProducer(BeanManager beanManager) {
         super.name("facesContext")
-        	.scope(RequestScoped.class)
-        	.beanClass(beanManager, FacesContext.class)
-        	.types(FacesContext.class)
+            .scope(RequestScoped.class)
+            .beanClass(beanManager, FacesContext.class)
+            .types(FacesContext.class)
             .create(e -> FacesContext.getCurrentInstance());
     }
 

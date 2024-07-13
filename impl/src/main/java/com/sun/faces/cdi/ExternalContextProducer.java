@@ -39,9 +39,9 @@ public class ExternalContextProducer extends CdiProducer<ExternalContext> {
 
     public ExternalContextProducer(BeanManager beanManager) {
         super.name("externalContext")
-        	.scope(RequestScoped.class)
-        	.beanClass(beanManager, ExternalContext.class)
-        	.types(ExternalContext.class)
+            .scope(RequestScoped.class)
+            .beanClass(beanManager, ExternalContext.class)
+            .types(ExternalContext.class)
             .create(e -> FacesContext.getCurrentInstance().getExternalContext());
     }
 

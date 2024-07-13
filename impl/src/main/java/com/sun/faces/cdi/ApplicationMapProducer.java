@@ -43,9 +43,9 @@ public class ApplicationMapProducer extends CdiProducer<Map<String, Object>> {
 
     public ApplicationMapProducer(BeanManager beanManager) {
         super.name("applicationScope")
-    		.scope(ApplicationScoped.class)
-    		.qualifiers(ApplicationMap.Literal.INSTANCE)
-    		.beanClass(beanManager, Map.class)
+            .scope(ApplicationScoped.class)
+            .qualifiers(ApplicationMap.Literal.INSTANCE)
+            .beanClass(beanManager, Map.class)
             .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, Object.class }), Map.class, Object.class)
             .create(e -> FacesContext.getCurrentInstance().getExternalContext().getApplicationMap());
     }

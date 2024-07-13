@@ -39,9 +39,9 @@ public class ComponentProducer extends CdiProducer<UIComponent> {
 
     public ComponentProducer(BeanManager beanManager) {
         super.name("component")
-        	.beanClass(beanManager, UIComponent.class)
-        	.types(UIComponent.class)
-        	.create(e -> getCurrentComponent(FacesContext.getCurrentInstance()));
+            .beanClass(beanManager, UIComponent.class)
+            .types(UIComponent.class)
+            .create(e -> getCurrentComponent(FacesContext.getCurrentInstance()));
     }
 
 }
