@@ -180,27 +180,27 @@ public class CdiExtension implements Extension {
         // but this is not detectable as ServletContext is not necessarily available at this moment.
 
         afterBeanDiscovery.addBean(new ApplicationProducer());
-        afterBeanDiscovery.addBean(new ApplicationMapProducer());
-        afterBeanDiscovery.addBean(new CompositeComponentProducer());
-        afterBeanDiscovery.addBean(new ComponentProducer());
-        afterBeanDiscovery.addBean(new FlashProducer());
-        afterBeanDiscovery.addBean(new FlowMapProducer());
-        afterBeanDiscovery.addBean(new HeaderMapProducer());
-        afterBeanDiscovery.addBean(new HeaderValuesMapProducer());
-        afterBeanDiscovery.addBean(new InitParameterMapProducer());
-        afterBeanDiscovery.addBean(new RequestParameterMapProducer());
-        afterBeanDiscovery.addBean(new RequestParameterValuesMapProducer());
+        afterBeanDiscovery.addBean(new ApplicationMapProducer(beanManager));
+        afterBeanDiscovery.addBean(new CompositeComponentProducer(beanManager));
+        afterBeanDiscovery.addBean(new ComponentProducer(beanManager));
+        afterBeanDiscovery.addBean(new FlashProducer(beanManager));
+        afterBeanDiscovery.addBean(new FlowMapProducer(beanManager));
+        afterBeanDiscovery.addBean(new HeaderMapProducer(beanManager));
+        afterBeanDiscovery.addBean(new HeaderValuesMapProducer(beanManager));
+        afterBeanDiscovery.addBean(new InitParameterMapProducer(beanManager));
+        afterBeanDiscovery.addBean(new RequestParameterMapProducer(beanManager));
+        afterBeanDiscovery.addBean(new RequestParameterValuesMapProducer(beanManager));
         afterBeanDiscovery.addBean(new RequestProducer());
-        afterBeanDiscovery.addBean(new RequestMapProducer());
-        afterBeanDiscovery.addBean(new ResourceHandlerProducer());
-        afterBeanDiscovery.addBean(new ExternalContextProducer());
-        afterBeanDiscovery.addBean(new FacesContextProducer());
-        afterBeanDiscovery.addBean(new RequestCookieMapProducer());
+        afterBeanDiscovery.addBean(new RequestMapProducer(beanManager));
+        afterBeanDiscovery.addBean(new ResourceHandlerProducer(beanManager));
+        afterBeanDiscovery.addBean(new ExternalContextProducer(beanManager));
+        afterBeanDiscovery.addBean(new FacesContextProducer(beanManager));
+        afterBeanDiscovery.addBean(new RequestCookieMapProducer(beanManager));
         afterBeanDiscovery.addBean(new SessionProducer());
-        afterBeanDiscovery.addBean(new SessionMapProducer());
-        afterBeanDiscovery.addBean(new ViewMapProducer());
-        afterBeanDiscovery.addBean(new ViewProducer());
-        afterBeanDiscovery.addBean(new DataModelClassesMapProducer());
+        afterBeanDiscovery.addBean(new SessionMapProducer(beanManager));
+        afterBeanDiscovery.addBean(new ViewMapProducer(beanManager));
+        afterBeanDiscovery.addBean(new ViewProducer(beanManager));
+        afterBeanDiscovery.addBean(new DataModelClassesMapProducer(beanManager));
 
         for (Type type : managedPropertyTargetTypes) {
             afterBeanDiscovery.addBean(new ManagedPropertyProducer(type, beanManager));
