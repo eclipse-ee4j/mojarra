@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2023, 2024 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -30,18 +31,12 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.application.ResolversRegistry;
 import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.context.flash.FlashELResolver;
-
-import jakarta.el.ArrayELResolver;
-import jakarta.el.BeanELResolver;
 import jakarta.el.CompositeELResolver;
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
 import jakarta.el.ExpressionFactory;
-import jakarta.el.ListELResolver;
-import jakarta.el.MapELResolver;
-import jakarta.el.ResourceBundleELResolver;
 import jakarta.el.ValueExpression;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.context.ExternalContext;
@@ -103,18 +98,6 @@ public class ELUtils {
      */
     private static final Pattern METHOD_EXPRESSION_LOOKUP = Pattern.compile(".[{]cc[.]attrs[.]\\w+[}]");
 
-    public static final ArrayELResolver ARRAY_RESOLVER = new ArrayELResolver();
-    public static final BeanELResolver BEAN_RESOLVER = new BeanELResolver();
-    public static final FacesResourceBundleELResolver FACES_BUNDLE_RESOLVER = new FacesResourceBundleELResolver();
-    public static final FlashELResolver FLASH_RESOLVER = new FlashELResolver();
-    public static final ListELResolver LIST_RESOLVER = new ListELResolver();
-    public static final MapELResolver MAP_RESOLVER = new MapELResolver();
-    public static final ResourceBundleELResolver BUNDLE_RESOLVER = new ResourceBundleELResolver();
-    public static final ScopedAttributeELResolver SCOPED_RESOLVER = new ScopedAttributeELResolver();
-    public static final ResourceELResolver RESOURCE_RESOLVER = new ResourceELResolver();
-    public static final CompositeComponentAttributesELResolver COMPOSITE_COMPONENT_ATTRIBUTES_EL_RESOLVER = new CompositeComponentAttributesELResolver();
-    public static final EmptyStringToNullELResolver EMPTY_STRING_TO_NULL_RESOLVER = new EmptyStringToNullELResolver();
-
     // ------------------------------------------------------------ Constructors
 
     private ELUtils() {
@@ -164,24 +147,25 @@ public class ELUtils {
     public static void buildFacesResolver(FacesCompositeELResolver composite, ApplicationAssociate associate) {
         checkNotNull(composite, associate);
         addCDIELResolver(composite);
-        composite.add(FLASH_RESOLVER);
-        composite.addPropertyELResolver(COMPOSITE_COMPONENT_ATTRIBUTES_EL_RESOLVER);
+        ResolversRegistry elRegistry = associate.getGlobalResolversRegistry();
+        composite.add(elRegistry.FLASH_RESOLVER);
+        composite.addPropertyELResolver(elRegistry.COMPOSITE_COMPONENT_ATTRIBUTES_EL_RESOLVER);
         addELResolvers(composite, associate.getELResolversFromFacesConfig());
         composite.add(associate.getApplicationELResolvers());
 
         if (WebConfiguration.getInstance().isOptionEnabled(InterpretEmptyStringSubmittedValuesAsNull)) {
-            composite.addPropertyELResolver(EMPTY_STRING_TO_NULL_RESOLVER);
+            composite.addPropertyELResolver(elRegistry.EMPTY_STRING_TO_NULL_RESOLVER);
         }
 
-        composite.addPropertyELResolver(RESOURCE_RESOLVER);
-        composite.addPropertyELResolver(BUNDLE_RESOLVER);
-        composite.addRootELResolver(FACES_BUNDLE_RESOLVER);
+        composite.addPropertyELResolver(elRegistry.RESOURCE_RESOLVER);
+        composite.addPropertyELResolver(elRegistry.BUNDLE_RESOLVER);
+        composite.addRootELResolver(elRegistry.FACES_BUNDLE_RESOLVER);
         addEL3_0_Resolvers(composite, associate);
-        composite.addPropertyELResolver(MAP_RESOLVER);
-        composite.addPropertyELResolver(LIST_RESOLVER);
-        composite.addPropertyELResolver(ARRAY_RESOLVER);
-        composite.addPropertyELResolver(BEAN_RESOLVER);
-        composite.addRootELResolver(SCOPED_RESOLVER);
+        composite.addPropertyELResolver(elRegistry.MAP_RESOLVER);
+        composite.addPropertyELResolver(elRegistry.LIST_RESOLVER);
+        composite.addPropertyELResolver(elRegistry.ARRAY_RESOLVER);
+        composite.addPropertyELResolver(elRegistry.BEAN_RESOLVER);
+        composite.addRootELResolver(elRegistry.SCOPED_RESOLVER);
     }
 
     private static void checkNotNull(FacesCompositeELResolver composite, ApplicationAssociate associate) {
