@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Contributors to Eclipse Foundation.
+ * Copyright (c) 2021, 2024 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -79,8 +79,8 @@ import com.sun.faces.facelets.util.DevTools;
 import com.sun.faces.facelets.util.FunctionLibrary;
 import com.sun.faces.spi.InjectionProvider;
 import com.sun.faces.util.FacesLogger;
-
 import jakarta.el.CompositeELResolver;
+
 import jakarta.el.ELResolver;
 import jakarta.el.ExpressionFactory;
 import jakarta.faces.FacesException;
@@ -175,7 +175,6 @@ public class ApplicationAssociate {
     private Map<String, List<String>> resourceLibraryContracts;
 
     Map<String, ApplicationResourceBundle> resourceBundles = new HashMap<>();
-
 
     public static void setCurrentInstance(ApplicationAssociate associate) {
         if (associate == null) {
@@ -468,6 +467,10 @@ public class ApplicationAssociate {
         return injectionProvider;
     }
 
+    public ResolversRegistry getGlobalResolversRegistry() {
+        return applicationImpl.getGlobalResolversRegistry();
+    }
+
     public void setContextName(String contextName) {
         this.contextName = contextName;
     }
@@ -562,6 +565,14 @@ public class ApplicationAssociate {
         }
 
         return bundle.getResourceBundle(locale);
+    }
+
+    /**
+     * Returns a container with EL resolvers global to this application associate
+     * @return global EL resolvers for the current application
+     */
+    public ResolversRegistry getApplicationResolvers() {
+        return applicationImpl.getGlobalResolversRegistry();
     }
 
     /**
