@@ -829,25 +829,6 @@ public class InstanceFactory {
     }
 
     /**
-     * Helper method to convert a value to a type as defined in PropertyDescriptor(s)
-     *
-     * @param name
-     * @param value
-     * @param propertyDescriptors
-     * @return value
-     */
-    private Object convertValueToTypeIfNecessary(String name, Object value, PropertyDescriptor[] propertyDescriptors, ExpressionFactory expressionFactory) {
-        for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
-            if (propertyDescriptor.getName().equals(name)) {
-                value = expressionFactory.coerceToType(value, propertyDescriptor.getPropertyType());
-                break;
-            }
-        }
-
-        return value;
-    }
-
-    /**
      * <p>
      * To enable EL Coercion to use Faces Custom converters, this method will call
      * <code>PropertyEditorManager.registerEditor()</code>, passing the <code>ConverterPropertyEditor</code> class for the
