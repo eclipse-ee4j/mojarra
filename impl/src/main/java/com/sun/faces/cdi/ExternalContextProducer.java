@@ -17,6 +17,7 @@
 package com.sun.faces.cdi;
 
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
@@ -36,9 +37,12 @@ public class ExternalContextProducer extends CdiProducer<ExternalContext> {
      */
     private static final long serialVersionUID = 1L;
 
-    public ExternalContextProducer() {
-        super.name("externalContext").scope(RequestScoped.class).types(ExternalContext.class)
-                .create(e -> FacesContext.getCurrentInstance().getExternalContext());
+    public ExternalContextProducer(BeanManager beanManager) {
+        super.name("externalContext")
+            .scope(RequestScoped.class)
+            .beanClass(beanManager, ExternalContext.class)
+            .types(ExternalContext.class)
+            .create(e -> FacesContext.getCurrentInstance().getExternalContext());
     }
 
 }

@@ -19,6 +19,7 @@ package com.sun.faces.cdi;
 import java.util.Map;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.faces.model.DataModel;
 
@@ -43,9 +44,13 @@ public class DataModelClassesMapProducer extends CdiProducer<Map<Class<?>, Class
      */
     private static final long serialVersionUID = 1L;
 
-    public DataModelClassesMapProducer() {
-        super.name("comSunFacesDataModelClassesMap").scope(ApplicationScoped.class).qualifiers(new DataModelClassesAnnotationLiteral())
-                .types(Map.class, Object.class).create(e -> CDI.current().select(CdiExtension.class).get().getForClassToDataModelClass());
+    public DataModelClassesMapProducer(BeanManager beanManager) {
+        super.name("comSunFacesDataModelClassesMap")
+            .scope(ApplicationScoped.class)
+            .qualifiers(new DataModelClassesAnnotationLiteral())
+            .beanClass(beanManager, Map.class)
+            .types(Map.class, Object.class)
+            .create(e -> CDI.current().select(CdiExtension.class).get().getForClassToDataModelClass());
     }
 
 }
