@@ -1311,7 +1311,7 @@ public class ELFlash extends Flash {
          */
 
         void decode(FacesContext context, ELFlash flash, Cookie cookie) throws InvalidKeyException {
-            String value;
+            String value = null;
             try {
                 String urlDecodedValue = URLDecoder.decode(cookie.getValue(), UTF_8);
                 value = guard.decrypt(urlDecodedValue);
