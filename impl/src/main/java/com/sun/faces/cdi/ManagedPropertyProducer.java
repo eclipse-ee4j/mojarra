@@ -44,7 +44,11 @@ public class ManagedPropertyProducer extends CdiProducer<Object> {
     private Class<?> expectedClass;
 
     public ManagedPropertyProducer(Type type, BeanManager beanManager) {
-        super.types(type).qualifiers(ManagedProperty.Literal.INSTANCE).addToId(type).create(creationalContext -> {
+        super.qualifiers(ManagedProperty.Literal.INSTANCE)
+            .beanClass(beanManager, ManagedPropertyProducer.class)
+            .types(type)
+            .addToId(type)
+            .create(creationalContext -> {
 
             // TODO: handle no InjectionPoint available
             String expression = getCurrentInjectionPoint(beanManager, creationalContext).getAnnotated().getAnnotation(ManagedProperty.class).value();

@@ -418,4 +418,11 @@ public final class CdiUtils {
         }
     }
 
+    /**
+     * Returns true if Weld is used as CDI impl.
+     */
+    public static boolean isWeld(BeanManager beanManager) {
+        return beanManager.getClass().getPackageName().startsWith("org.jboss.weld.");
+    }
+
 }

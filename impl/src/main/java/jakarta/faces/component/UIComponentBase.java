@@ -32,6 +32,7 @@ import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableList;
 import static java.util.logging.Level.FINE;
 
+import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
@@ -1979,8 +1980,33 @@ public abstract class UIComponentBase extends UIComponent {
                     }
                 }
             }
-
+            if (result == null && attributes != null && isCompositeComponent(component)) {
+                result = getCompositeComponentAttributeDefaultValue(key, attributes);
+            }
             return result;
+        }
+
+        private Object getCompositeComponentAttributeDefaultValue(String name, Map<String, Object> attributes) {
+            var metadata = (BeanInfo) attributes.get(UIComponent.BEANINFO_KEY);
+
+            if (metadata != null) {
+                for (var propertyDescriptor : metadata.getPropertyDescriptors()) {
+                    if (propertyDescriptor.getName().equals(name)) {
+                        var defaultValue = propertyDescriptor.getValue("default");
+
+                        if (defaultValue != null) {
+                            if (defaultValue instanceof ValueExpression) {
+                                defaultValue = ((ValueExpression) defaultValue).getValue(component.getFacesContext().getELContext());
+                            }
+                            
+                            var expressionFactory = component.getFacesContext().getApplication().getExpressionFactory();
+                            return expressionFactory.coerceToType(defaultValue, propertyDescriptor.getPropertyType());
+                        }
+                    }
+                }
+            }
+            
+            return null;
         }
 
         @Override

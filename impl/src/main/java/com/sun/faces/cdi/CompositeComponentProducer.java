@@ -20,6 +20,7 @@ import static com.sun.faces.component.CompositeComponentStackManager.getManager;
 import static jakarta.faces.component.UIComponent.getCurrentCompositeComponent;
 import static jakarta.faces.context.FacesContext.getCurrentInstance;
 
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
@@ -37,8 +38,11 @@ public class CompositeComponentProducer extends CdiProducer<Object> {
      */
     private static final long serialVersionUID = 1L;
 
-    public CompositeComponentProducer() {
-        super.name("cc").types(UIComponent.class).create(e -> {
+    public CompositeComponentProducer(BeanManager beanManager) {
+        super.name("cc")
+            .beanClass(beanManager, UIComponent.class)
+            .types(UIComponent.class)
+            .create(e -> {
 
             FacesContext context = getCurrentInstance();
 
