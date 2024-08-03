@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en"
+    xmlns:h="jakarta.faces.html"
+    xmlns:f="jakarta.faces.core"
+    xmlns:ui="jakarta.faces.facelets"
+>
+    <h:head>
+        <title>issue5464</title>
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <div>
+                <h:inputText id="input" value="#{issue5464Bean.input}" />
+            </div>
+            <div>
+                <h:commandButton id="submit" value="submit" action="#{issue5464Bean.submit}">
+                    <f:ajax execute="@form" render="@form" />
+                </h:commandButton>
+            </div>
+            <div>
+                <h:outputText id="output" value="#{issue5464Bean.output}" />
+            </div>
+        </h:form>
+    </h:body>
+</html>
