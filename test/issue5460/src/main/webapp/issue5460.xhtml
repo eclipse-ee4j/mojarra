@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en"
+    xmlns:h="jakarta.faces.html"
+    xmlns:f="jakarta.faces.core"
+    xmlns:ui="jakarta.faces.facelets"
+    xmlns:my="jakarta.faces.composite/components"
+>
+    <h:head>
+        <title>issue5460</title>
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <div>
+                <my:component id="cc1" value="#{issue5460Bean.cc1}" />
+            </div>
+            <div>
+                <my:component id="cc2" value="#{issue5460Bean.cc2}" styleClass="randomClass" />
+            </div>
+            <div>
+                <my:component id="cc3" value="#{issue5460Bean.cc3}" required="true" />
+            </div>
+            <div>
+                <my:component id="cc4" value="#{issue5460Bean.cc4}" required="true" styleClass="randomClass" />
+            </div>
+            <div>
+                <my:component id="cc5" value="#{issue5460Bean.cc5}" required="#{true}" />
+            </div>
+            <div>
+                <my:component id="cc6" value="#{issue5460Bean.cc6}" required="#{true}" styleClass="randomClass" />
+            </div>
+            <div>
+                <h:commandButton id="submit" value="submit">
+                    <f:ajax execute="@form" render="@form" />
+                </h:commandButton>
+            </div>
+        </h:form>
+    </h:body>
+</html>
