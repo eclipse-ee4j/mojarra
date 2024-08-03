@@ -1260,22 +1260,20 @@ public class ELFlash extends Flash {
          */
 
         void decode(FacesContext context, ELFlash flash, Cookie cookie) throws InvalidKeyException {
-            String temp;
-            String value;
-            String urlDecodedValue = URLDecoder.decode(cookie.getValue(), UTF_8);
-            value = guard.decrypt(urlDecodedValue);
-
+            String value = null;
             try {
+                String urlDecodedValue = URLDecoder.decode(cookie.getValue(), UTF_8);
+                value = guard.decrypt(urlDecodedValue);
                 int i = value.indexOf("_");
 
                 // IMPORTANT: what was "next" when the cookie was
                 // encoded is now "previous". Therefore decode "next" first.
-                temp = value.substring(0, i++);
-
+                String temp = value.substring(0, i++);
                 if (0 < temp.length()) {
                     nextRequestFlashInfo = new FlashInfo();
                     nextRequestFlashInfo.decode(temp);
                 }
+
                 // invariant we must always have something after the _
                 previousRequestFlashInfo = new FlashInfo();
                 previousRequestFlashInfo.decode(value.substring(i));

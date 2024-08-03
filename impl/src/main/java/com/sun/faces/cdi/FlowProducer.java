@@ -17,6 +17,7 @@
 package com.sun.faces.cdi;
 
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.Flow;
 import jakarta.faces.flow.FlowHandler;
@@ -33,8 +34,8 @@ public class FlowProducer extends CdiProducer<Flow> {
 
     private static final long serialVersionUID = 1L;
 
-    public FlowProducer() {
-        super.name("flow").scope(RequestScoped.class).types(Flow.class)
+    public FlowProducer(BeanManager beanManager) {
+        super.name("flow").scope(RequestScoped.class).beanClass(beanManager, Flow.class).types(Flow.class)
             .create(e -> FacesContext.getCurrentInstance().getApplication().getFlowHandler().getCurrentFlow());
     }
 

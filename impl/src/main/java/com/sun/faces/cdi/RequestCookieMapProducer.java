@@ -20,6 +20,7 @@ import java.lang.reflect.Type;
 import java.util.Map;
 
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.annotation.RequestCookieMap;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -40,10 +41,13 @@ public class RequestCookieMapProducer extends CdiProducer<Map<String, Object>> {
      */
     private static final long serialVersionUID = 1L;
 
-    public RequestCookieMapProducer() {
-        super.name("cookie").scope(RequestScoped.class).qualifiers(RequestCookieMap.Literal.INSTANCE)
-                .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, Object.class }), Map.class, Object.class)
-                .create(e -> FacesContext.getCurrentInstance().getExternalContext().getRequestCookieMap());
+    public RequestCookieMapProducer(BeanManager beanManager) {
+        super.name("cookie")
+            .scope(RequestScoped.class)
+            .qualifiers(RequestCookieMap.Literal.INSTANCE)
+            .beanClass(beanManager, Map.class)
+            .types(new ParameterizedTypeImpl(Map.class, new Type[] { String.class, Object.class }), Map.class, Object.class)
+            .create(e -> FacesContext.getCurrentInstance().getExternalContext().getRequestCookieMap());
     }
 
 }

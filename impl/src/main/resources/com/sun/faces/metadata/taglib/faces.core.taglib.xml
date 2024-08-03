@@ -1409,7 +1409,6 @@ of POJOs.
             ]]></description>
             <name>var</name>
             <required>false</required>
-            <type>java.lang.String</type>
         </attribute>
     </tag>
 
@@ -1490,7 +1489,6 @@ of POJOs.
                 so that it may be referred to in EL for the value of other attributes of any nested component.
             ]]></description>
             <name>var</name>
-            <type>java.lang.String</type>
         </attribute>
         <attribute>
             <description><![CDATA[
@@ -2906,7 +2904,6 @@ public class BackingBean implements PasswordHolder, Cloneable {
             ]]></description>
             <name>channel</name>
             <required>true</required>
-            <type>java.lang.String</type>
         </attribute>
 
         <attribute>
@@ -2923,7 +2920,6 @@ public class BackingBean implements PasswordHolder, Cloneable {
             ]]></description>
             <name>scope</name>
             <required>false</required>
-            <type>java.lang.String</type>
         </attribute>
 
         <attribute>
