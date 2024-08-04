@@ -660,15 +660,15 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
     }
 
     private void callRightLifecycleMethodGivenPhaseId(UIViewRoot root, PhaseId phaseId) throws Exception {
-        if (phaseId.ordinal() == PhaseId.APPLY_REQUEST_VALUES.ordinal()) {
+        if (phaseId == PhaseId.APPLY_REQUEST_VALUES) {
             root.processDecodes(facesContext);
-        } else if (phaseId.ordinal() == PhaseId.PROCESS_VALIDATIONS.ordinal()) {
+        } else if (phaseId == PhaseId.PROCESS_VALIDATIONS) {
             root.processValidators(facesContext);
-        } else if (phaseId.ordinal() == PhaseId.UPDATE_MODEL_VALUES.ordinal()) {
+        } else if (phaseId == PhaseId.UPDATE_MODEL_VALUES) {
             root.processUpdates(facesContext);
-        } else if (phaseId.ordinal() == PhaseId.INVOKE_APPLICATION.ordinal()) {
+        } else if (phaseId == PhaseId.INVOKE_APPLICATION) {
             root.processApplication(facesContext);
-        } else if (phaseId.ordinal() == PhaseId.RENDER_RESPONSE.ordinal()) {
+        } else if (phaseId == PhaseId.RENDER_RESPONSE) {
             root.encodeBegin(facesContext);
             root.encodeEnd(facesContext);
         }
