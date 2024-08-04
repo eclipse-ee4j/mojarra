@@ -762,7 +762,7 @@ public class ELFlash extends Flash {
             FlashInfo flashInfo;
             boolean isDebugLog = loggingEnabled && LOGGER.isLoggable(Level.FINEST);
 
-            if (currentPhase.getOrdinal() < PhaseId.RENDER_RESPONSE.getOrdinal()) {
+            if (currentPhase.ordinal() < PhaseId.RENDER_RESPONSE.ordinal()) {
                 flashInfo = flashManager.getPreviousRequestFlashInfo();
                 if (isDebugLog) {
                     LOGGER.log(Level.FINEST, "{0}previous[{1}]", new Object[] { getLogPrefix(context), flashInfo.getSequenceNumber() });
