@@ -26,8 +26,6 @@ public class Issue5464Bean {
     private String output;
 
     public void submit() {
-        
-        System.out.println("====> retrieved input " + input);
         output = "Result: " + input;
     }
 
