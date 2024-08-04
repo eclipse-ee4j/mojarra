@@ -29,7 +29,6 @@ import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.Util;
 
-import jakarta.faces.application.ConfigurableNavigationHandler;
 import jakarta.faces.application.NavigationCase;
 import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.application.ViewHandler;
@@ -99,13 +98,6 @@ public abstract class OutcomeTargetRenderer extends HtmlBasicRenderer {
      */
     protected NavigationCase getNavigationCase(FacesContext context, UIComponent component) {
         NavigationHandler navHandler = context.getApplication().getNavigationHandler();
-        if (!(navHandler instanceof ConfigurableNavigationHandler)) {
-            if (logger.isLoggable(Level.WARNING)) {
-                logger.log(Level.WARNING, "faces.outcome.target.invalid.navigationhandler.type", component.getId());
-            }
-            return null;
-        }
-
         String outcome = ((UIOutcomeTarget) component).getOutcome();
         if (outcome == null) {
             outcome = context.getViewRoot().getViewId();
@@ -118,9 +110,9 @@ public abstract class OutcomeTargetRenderer extends HtmlBasicRenderer {
         NavigationHandlerImpl.setResetFlowHandlerStateIfUnset(context, false);
         try {
             if (null == toFlowDocumentId) {
-                navCase = ((ConfigurableNavigationHandler) navHandler).getNavigationCase(context, null, outcome);
+                navCase = navHandler.getNavigationCase(context, null, outcome);
             } else {
-                navCase = ((ConfigurableNavigationHandler) navHandler).getNavigationCase(context, null, outcome, toFlowDocumentId);
+                navCase = navHandler.getNavigationCase(context, null, outcome, toFlowDocumentId);
             }
         } finally {
             NavigationHandlerImpl.unsetResetFlowHandlerState(context);
