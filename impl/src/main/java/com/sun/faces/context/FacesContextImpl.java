@@ -461,7 +461,7 @@ public class FacesContextImpl extends FacesContext {
             maxSeverity = message.getSeverity();
         } else {
             Severity sev = message.getSeverity();
-            if (sev.getOrdinal() > maxSeverity.getOrdinal()) {
+            if (sev.ordinal() > maxSeverity.ordinal()) {
                 maxSeverity = sev;
             }
         }
