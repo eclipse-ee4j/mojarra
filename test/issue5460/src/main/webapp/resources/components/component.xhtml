@@ -1,0 +1,42 @@
+<!--
+
+    Copyright (c) Contributors to Eclipse Foundation.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<ui:component
+    xmlns:h="jakarta.faces.html"
+    xmlns:f="jakarta.faces.core"
+    xmlns:ui="jakarta.faces.facelets"
+    xmlns:cc="jakarta.faces.composite"
+    xmlns:c="jakarta.tags.core"
+>
+    <cc:interface componentType="issue5460Component">
+        <cc:attribute name="value" required="true" />
+        <cc:attribute name="label" required="false" type="java.lang.String" />
+        <cc:attribute name="required" type="java.lang.Boolean" required="false" default="false" />
+        <cc:attribute name="styleClass" type="java.lang.String" required="false" default="defaultClass" />
+    </cc:interface>
+    <cc:implementation>
+        <c:set var="errorClass" value="#{cc.valid ? '' : 'ui-state-error'}"/>
+        <div id="#{cc.clientId}" class="#{cc.attrs.styleClass}">
+            <h:outputLabel id="label" for="input" value="#{cc.attrs.label}" styleClass="#{errorClass}" />
+            <h:inputText id="input" value="#{cc.attrs.value}" label="#{cc.attrs.label}" styleClass="#{errorClass}" />
+            <h:outputText id="required" value="#{cc.required}" />
+            <h:outputText id="valid" value="#{cc.valid}" />
+            <h:outputText id="attributeResults" value="#{cc.attributeResults}" />
+            <h:message id="message" for="#{cc.id}" />
+        </div>
+    </cc:implementation>
+</ui:component>

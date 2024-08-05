@@ -128,6 +128,10 @@ public class HtmlUtils {
                 // UNICODE entities: encode as needed
                 nextIndex = _writeDecRef(out, buff, buffIndex, buffLength, ch);
             } else {
+                if (forXml && !isAllowedXmlCharacter(ch)) {
+                    return buffIndex;
+                }
+
                 nextIndex = addToBuffer(out, buff, buffIndex, buffLength, ch);
             }
         }
