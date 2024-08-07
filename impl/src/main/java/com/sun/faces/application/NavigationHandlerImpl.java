@@ -57,9 +57,9 @@ import jakarta.el.ELContext;
 import jakarta.el.MethodExpression;
 import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
-import jakarta.faces.application.ConfigurableNavigationHandler;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.application.NavigationCase;
+import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
@@ -83,7 +83,7 @@ import jakarta.faces.flow.ViewNode;
  * 7.4.2 of the specification for more details. PENDING: Make independent of ApplicationAssociate.
  */
 
-public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
+public class NavigationHandlerImpl extends NavigationHandler {
 
     // Private Constants
     private static final String RESET_FLOW_HANDLER_STATE_KEY = NavigationHandlerImpl.class.getName() + "_RESET_FLOW_HANDLER_STATE_KEY";
@@ -142,10 +142,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
     }
 
-    // ------------------------------ Methods from ConfigurableNavigationHandler
-
     /**
-     * @see jakarta.faces.application.ConfigurableNavigationHandler#getNavigationCase(jakarta.faces.context.FacesContext,
+     * @see jakarta.faces.application.NavigationHandler#getNavigationCase(jakarta.faces.context.FacesContext,
      * String, String)
      */
     @Override
@@ -172,7 +170,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
     }
 
     /**
-     * @see jakarta.faces.application.ConfigurableNavigationHandler#getNavigationCases()
+     * @see jakarta.faces.application.NavigationHandler#getNavigationCases()
      */
     @Override
     public Map<String, Set<NavigationCase>> getNavigationCases() {

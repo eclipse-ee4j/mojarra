@@ -32,7 +32,6 @@ import com.sun.faces.util.Util;
 import jakarta.el.ELContext;
 import jakarta.el.MethodExpression;
 import jakarta.el.ValueExpression;
-import jakarta.faces.application.ConfigurableNavigationHandler;
 import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -113,10 +112,7 @@ public class FlowHandlerImpl extends FlowHandler {
         }
         flowsWithId.add(toAdd);
 
-        NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
-        if (navigationHandler instanceof ConfigurableNavigationHandler) {
-            ((ConfigurableNavigationHandler) navigationHandler).inspectFlow(context, toAdd);
-        }
+        context.getApplication().getNavigationHandler().inspectFlow(context, toAdd);
         flowFeatureIsEnabled = true;
     }
 
