@@ -526,13 +526,13 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
 
     private void checkEventQueuesSizes(List<List> events, int applyEventsSize, int valEventsSize, int updateEventsSize,
             int appEventsSize) {
-        List<?> applyEvents = events.get(PhaseId.APPLY_REQUEST_VALUES.getOrdinal());
+        List<?> applyEvents = events.get(PhaseId.APPLY_REQUEST_VALUES.ordinal());
         assertEquals(applyEventsSize, applyEvents.size());
-        List<?> valEvents = events.get(PhaseId.PROCESS_VALIDATIONS.getOrdinal());
+        List<?> valEvents = events.get(PhaseId.PROCESS_VALIDATIONS.ordinal());
         assertEquals(valEventsSize, valEvents.size());
-        List<?> updateEvents = events.get(PhaseId.UPDATE_MODEL_VALUES.getOrdinal());
+        List<?> updateEvents = events.get(PhaseId.UPDATE_MODEL_VALUES.ordinal());
         assertEquals(updateEventsSize, updateEvents.size());
-        List<?> appEvents = events.get(PhaseId.INVOKE_APPLICATION.getOrdinal());
+        List<?> appEvents = events.get(PhaseId.INVOKE_APPLICATION.ordinal());
         assertEquals(appEventsSize, appEvents.size());
     }
 
@@ -660,15 +660,15 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
     }
 
     private void callRightLifecycleMethodGivenPhaseId(UIViewRoot root, PhaseId phaseId) throws Exception {
-        if (phaseId.getOrdinal() == PhaseId.APPLY_REQUEST_VALUES.getOrdinal()) {
+        if (phaseId == PhaseId.APPLY_REQUEST_VALUES) {
             root.processDecodes(facesContext);
-        } else if (phaseId.getOrdinal() == PhaseId.PROCESS_VALIDATIONS.getOrdinal()) {
+        } else if (phaseId == PhaseId.PROCESS_VALIDATIONS) {
             root.processValidators(facesContext);
-        } else if (phaseId.getOrdinal() == PhaseId.UPDATE_MODEL_VALUES.getOrdinal()) {
+        } else if (phaseId == PhaseId.UPDATE_MODEL_VALUES) {
             root.processUpdates(facesContext);
-        } else if (phaseId.getOrdinal() == PhaseId.INVOKE_APPLICATION.getOrdinal()) {
+        } else if (phaseId == PhaseId.INVOKE_APPLICATION) {
             root.processApplication(facesContext);
-        } else if (phaseId.getOrdinal() == PhaseId.RENDER_RESPONSE.getOrdinal()) {
+        } else if (phaseId == PhaseId.RENDER_RESPONSE) {
             root.encodeBegin(facesContext);
             root.encodeEnd(facesContext);
         }
