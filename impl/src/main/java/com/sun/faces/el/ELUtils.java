@@ -16,13 +16,11 @@
  */
 package com.sun.faces.el;
 
-import static com.sun.faces.RIConstants.EMPTY_CLASS_ARGS;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.InterpretEmptyStringSubmittedValuesAsNull;
 import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
-import static com.sun.faces.util.ReflectionUtils.lookupMethod;
-import static com.sun.faces.util.ReflectionUtils.newInstance;
 import static com.sun.faces.util.Util.getCdiBeanManager;
+import static com.sun.faces.util.Util.isEmpty;
 import static java.lang.Boolean.FALSE;
 
 import com.sun.faces.application.ApplicationAssociate;
@@ -37,7 +35,6 @@ import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -56,6 +53,7 @@ public class ELUtils {
      * Helps to determine if a EL expression represents a composite component EL expression.
      */
     private static final Pattern COMPOSITE_COMPONENT_EXPRESSION = Pattern.compile(".(?:[ ]+|[\\[{,(])cc[.].+[}]");
+
     // do not use this Matcher, it's only for the Cache Factory
     private static final Matcher COMPOSITE_COMPONENT_EXPRESSION_MATCHER = COMPOSITE_COMPONENT_EXPRESSION.matcher("");
 
@@ -136,6 +134,7 @@ public class ELUtils {
     public static void buildFacesResolver(FacesCompositeELResolver composite, ApplicationAssociate associate) {
         checkNotNull(composite, associate);
         addCDIELResolver(composite);
+
         ResolversRegistry elRegistry = associate.getGlobalResolversRegistry();
         composite.add(elRegistry.FLASH_RESOLVER);
         composite.addPropertyELResolver(elRegistry.COMPOSITE_COMPONENT_ATTRIBUTES_EL_RESOLVER);
@@ -148,48 +147,25 @@ public class ELUtils {
 
         composite.addPropertyELResolver(elRegistry.RESOURCE_RESOLVER);
         composite.addPropertyELResolver(elRegistry.BUNDLE_RESOLVER);
+
         composite.addRootELResolver(elRegistry.FACES_BUNDLE_RESOLVER);
-        addEL3_0_Resolvers(composite, associate);
+
+        // Not sure when/why this would ever be null, but Thomas Hoffman believes it can be null.
+        ELResolver streamELResolver = associate.getExpressionFactory().getStreamELResolver();
+        if (streamELResolver != null) {
+            composite.addRootELResolver(streamELResolver);
+        }
+
+        composite.addRootELResolver(elRegistry.STATIC_FIELD_RESOLVER);
+
         composite.addPropertyELResolver(elRegistry.MAP_RESOLVER);
         composite.addPropertyELResolver(elRegistry.LIST_RESOLVER);
         composite.addPropertyELResolver(elRegistry.ARRAY_RESOLVER);
+        composite.addPropertyELResolver(elRegistry.OPTIONAL_RESOLVER);
+        composite.addPropertyELResolver(elRegistry.RECORD_RESOLVER);
         composite.addPropertyELResolver(elRegistry.BEAN_RESOLVER);
+
         composite.addRootELResolver(elRegistry.SCOPED_RESOLVER);
-    }
-
-    private static void checkNotNull(FacesCompositeELResolver composite, ApplicationAssociate associate) {
-        if (associate == null) {
-            throw new NullPointerException(getExceptionMessageString(NULL_PARAMETERS_ERROR_MESSAGE_ID, "associate"));
-        }
-
-        if (composite == null) {
-            throw new NullPointerException(getExceptionMessageString(NULL_PARAMETERS_ERROR_MESSAGE_ID, "composite"));
-        }
-    }
-
-    private static void addCDIELResolver(FacesCompositeELResolver composite) {
-        composite.add(getCdiBeanManager(FacesContext.getCurrentInstance()).getELResolver());
-    }
-
-    private static void addEL3_0_Resolvers(FacesCompositeELResolver composite, ApplicationAssociate associate) {
-        ExpressionFactory expressionFactory = associate.getExpressionFactory();
-
-        Method getStreamELResolverMethod = lookupMethod(ExpressionFactory.class, "getStreamELResolver", EMPTY_CLASS_ARGS);
-
-        if (getStreamELResolverMethod != null) {
-            try {
-                ELResolver streamELResolver = (ELResolver) getStreamELResolverMethod.invoke(expressionFactory, (Object[]) null);
-                if (streamELResolver != null) {
-                    composite.addRootELResolver(streamELResolver);
-
-                    // Assume that if we have getStreamELResolver, then we must have
-                    // jakarta.el.staticFieldELResolver
-                    composite.addRootELResolver((ELResolver) newInstance("jakarta.el.StaticFieldELResolver"));
-                }
-            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException t) {
-                // This is normal on containers that do not have these ELResolvers
-            }
-        }
     }
 
     public static Object evaluateValueExpression(ValueExpression expression, ELContext elContext) {
@@ -231,12 +207,27 @@ public class ELUtils {
      * @param resolvers a <code>List</code> of <code>ELResolver</code>s
      */
     private static void addELResolvers(CompositeELResolver target, List<ELResolver> resolvers) {
-        if (resolvers != null && !resolvers.isEmpty()) {
+        if (!isEmpty(resolvers)) {
             for (ELResolver resolver : resolvers) {
                 target.add(resolver);
             }
         }
     }
+
+    private static void addCDIELResolver(FacesCompositeELResolver composite) {
+        composite.add(getCdiBeanManager(FacesContext.getCurrentInstance()).getELResolver());
+    }
+
+    private static void checkNotNull(FacesCompositeELResolver composite, ApplicationAssociate associate) {
+        if (associate == null) {
+            throw new NullPointerException(getExceptionMessageString(NULL_PARAMETERS_ERROR_MESSAGE_ID, "associate"));
+        }
+
+        if (composite == null) {
+            throw new NullPointerException(getExceptionMessageString(NULL_PARAMETERS_ERROR_MESSAGE_ID, "composite"));
+        }
+    }
+
 
     /*
      * First look in the ApplicationAssociate. If that fails, return null;
@@ -247,12 +238,12 @@ public class ELUtils {
             return null;
         }
 
-        ExternalContext extContext = facesContext.getExternalContext();
-        if (extContext == null) {
+        ExternalContext externalContext = facesContext.getExternalContext();
+        if (externalContext == null) {
             return null;
         }
 
-        return getDefaultExpressionFactory(ApplicationAssociate.getInstance(extContext), facesContext);
+        return getDefaultExpressionFactory(ApplicationAssociate.getInstance(externalContext), facesContext);
     }
 
     public static ExpressionFactory getDefaultExpressionFactory(ApplicationAssociate associate, FacesContext facesContext) {
