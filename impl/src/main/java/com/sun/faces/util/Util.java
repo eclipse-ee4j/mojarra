@@ -560,31 +560,6 @@ public class Util {
     }
 
     /**
-     * Returns true if the given string is not null and not empty.
-     *
-     * @param string The string to be checked on emptiness.
-     * @return True if the given string is not null and not empty.
-     */
-    public static boolean isNotEmpty(String string) { return !isEmpty(string); }
-
-    /**
-     * Returns true if the given string is null or is blank.
-     *
-     * @param string The string to be checked.
-     * @return True if the given string is null or is blank.
-     */
-    public static boolean isBlank(String string) {
-        return string == null || string.isBlank();
-    }
-
-    /**
-     * @return null if the passed String is null or blank, s otherwise
-     */
-    public static String nullIfBlank(String s) {
-        return isBlank(s) ? null : s;
-    }
-
-    /**
      * Returns <code>true</code> if the given array is null or is empty.
      *
      * @param array The array to be checked on emptiness.
@@ -798,7 +773,7 @@ public class Util {
     }
 
     public static Class<?> getTypeFromString(String type) throws ClassNotFoundException {
-        if ( type == null ) throw new ClassNotFoundException("Type is required");
+        Objects.requireNonNull(type);
 
         Class<?> primitiveType = primitiveTypes.get(type);
         if ( primitiveType != null ) return primitiveType;
