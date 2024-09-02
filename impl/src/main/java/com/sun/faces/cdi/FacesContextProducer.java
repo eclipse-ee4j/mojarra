@@ -17,6 +17,7 @@
 package com.sun.faces.cdi;
 
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.context.FacesContext;
 
 /**
@@ -35,9 +36,12 @@ public class FacesContextProducer extends CdiProducer<FacesContext> {
      */
     private static final long serialVersionUID = 1L;
 
-    public FacesContextProducer() {
-        super.name("facesContext").scope(RequestScoped.class).types(FacesContext.class)
-                .create(e -> FacesContext.getCurrentInstance());
+    public FacesContextProducer(BeanManager beanManager) {
+        super.name("facesContext")
+            .scope(RequestScoped.class)
+            .beanClass(beanManager, FacesContext.class)
+            .types(FacesContext.class)
+            .create(e -> FacesContext.getCurrentInstance());
     }
 
 }

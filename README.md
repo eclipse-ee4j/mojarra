@@ -14,29 +14,28 @@
 [//]: # " SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 "
 -->
 
-# Eclipse Mojarra
+# Mojarra 5.0
 
-Eclipse's implementation of the Jakarta Faces specification
+Eclipse's implementation of the Jakarta Faces 5.0 specification
 
-* Mojarra 5.0 - under development
+* Mojarra 5.0 - this branch, under development
+* [Mojarra 4.1](https://github.com/eclipse-ee4j/mojarra/blob/4.1/README.md) - stable release
 * [Mojarra 4.0](https://github.com/eclipse-ee4j/mojarra/blob/4.0/README.md) - stable release
 * [Mojarra 3.0](https://github.com/eclipse-ee4j/mojarra/blob/3.0/README.md) - legacy release
+* [Mojarra 2.3](https://github.com/eclipse-ee4j/mojarra/blob/2.3/README.md) - legacy release
 
-For Mojarra 2.3 and earlier please contact your vendor for support (RedHat, IBM,
+For support on Mojarra 2.3 and earlier please contact your vendor for support (RedHat, IBM,
 Oracle, Omnifish, Payara, etceteras)
 
 ## Minimum Requirements
 
-- Java 11
-- Jakarta Servlet 6.0
-- Jakarta Expression Language 5.0
-- CDI 4.0
-- Jakarta Standard Tag Library 2.0
-- Jakarta Web Socket 2.0 (optional, only when `<f:websocket>` is used)
-- Jakarta JSON Processing  2.0 (optional, only when `<f:websocket>` is used)
-- Jakarta Validation 3.0 (optional, only when `<f:validateBean>` or `<f:validateWholeBean>` is used)
-
-CDI is explicitly required because since Jakarta Faces 2.3 the `javax.faces.bean.*` annotations such as `@ManagedBean` are deprecated, and in 4.0 these have been removed. Several implicit Jakarta Expression Language objects are produced via CDI producers, and `<f:websocket>` manages the Jakarta WebSocket sessions and events via CDI.
+- Java 17
+- Jakarta Servlet 6.1
+- Jakarta Expression Language 6.0
+- Jakarta CDI 4.1
+- Jakarta Web Socket 2.2 (optional, only when `<f:websocket>` is used)
+- Jakarta JSON Processing  2.1 (optional, only when `<f:websocket>` is used)
+- Jakarta Validation 3.1 (optional, only when `<f:validateBean>` or `<f:validateWholeBean>` is used)
 
 
 ## Installation
@@ -56,12 +55,11 @@ In case you're manually carrying around JARs:
 
     Add below JARs to `/WEB-INF/lib`:
 
-    - [`jakarta.faces.4.0.x.jar`][9]
-    - [`weld-servlet-shaded-4.0.0.Final.jar`][10]
-    - [`jstl-2.0.jar`][11]
-    - [`jakarta.json-api-2.0.jar`][12] (optional, only when `<f:websocket>` is used)
-    - [`jakarta.json-2.0.jar`][12a] (optional, only when `<f:websocket>` is used)
-    - [`validation-api-3.0.0.Final.jar`][13] (optional, only when `<f:validateBean|validateWholeBean>` is used)
+    - [`jakarta.faces.4.1.x.jar`][9]
+    - [`weld-servlet-shaded-4.1.0.Final.jar`][10]
+    - [`jakarta.json-api-2.1.0.jar`][12] (optional, only when `<f:websocket>` is used)
+    - [`jakarta.json-2.1.0.jar`][12a] (optional, only when `<f:websocket>` is used)
+    - [`jakarta.validation-api-3.1.0.jar`][13] (optional, only when `<f:validateBean|validateWholeBean>` is used)
     - [`hibernate-validator-8.0.x.Final.jar`][14] (optional, only when `<f:validateBean|validateWholeBean>` is used)
 
     Substitute `x` with latest version number available.
@@ -76,7 +74,7 @@ In case you're using Maven, you can find below the necessary coordinates:
     <dependency>
        <groupId>jakarta.platform</groupId>
        <artifactId>jakarta.jakartaee-api</artifactId>
-       <version>10.0.0</version>
+       <version>11.0.0</version>
        <scope>provided</scope>
     </dependency>
     ```
@@ -94,17 +92,12 @@ In case of WildFly/JBoss EAP, [you need to manually package `jsf-api.jar` and `j
     <dependency>
         <groupId>org.jboss.weld.servlet</groupId>
         <artifactId>weld-servlet-shaded</artifactId>
-        <version>4.0.0.Final</version>
-    </dependency>
-    <dependency>
-        <groupId>jakarta.servlet.jsp.jstl</groupId>
-        <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
-        <version>2.0.0</version>
+        <version>4.1.0.Final</version>
     </dependency>
     <dependency> <!-- Optional, only when <f:websocket> is used. -->
         <groupId>org.glassfish</groupId>
         <artifactId>jakarta.json</artifactId>
-        <version>2.0.0</version>
+        <version>2.1.0</version>
     </dependency>
     <dependency> <!-- Optional, only when <f:validateBean> or <f:validateWholeBean> is used. -->
         <groupId>org.hibernate.validator</groupId>
@@ -232,9 +225,9 @@ Finally create a [Facelets][20] file `/hello.xhtml` as below:
 
 Start the server and open it by `http://localhost:8080/contextname/hello.xhtml`.
 
-## Activating CDI in Jakarta Faces 4.0
+## Activating CDI in Jakarta Faces 4.1
 
-CDI is activated by default in Jakarta Faces 4.0 and can´t be deactivated.  
+CDI is activated by default in Jakarta Faces 4.1 and can´t be deactivated.  
 It´s not required anymore to add `@FacesConfig` to a CDI managed bean to accomplish this.
 As of Jakarta Faces 4.0 `@FacesConfig` still removes the need to explicitly add a `FacesServlet` entry to `web.xml`.
 
@@ -244,7 +237,7 @@ In case you want to checkout this repository and manually build from source your
 
 ### Jakarta Faces.Next
 
-1. Make sure that you have JDK 11, Ant and Maven installed.
+1. Make sure that you have JDK 17, Ant and Maven installed.
 2. Checkout branch [`master`][28].
 3. Run the following commands from the root directory of the project:
 

@@ -21,11 +21,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.security.InvalidKeyException;
+import java.util.Base64;
 
 import org.junit.jupiter.api.Test;
-
-import jakarta.xml.bind.DatatypeConverter;
-
 
 public class ByteArrayGuardAESCTRTest {
 
@@ -49,7 +47,7 @@ public class ByteArrayGuardAESCTRTest {
         ByteArrayGuardAESCTR sut = new ByteArrayGuardAESCTR();
 
         String value = "noIV";
-        byte[] bytes = DatatypeConverter.parseBase64Binary(value);
+        byte[] bytes = Base64.getDecoder().decode(value);
         assertTrue(bytes.length < 16);
 
         assertThrows(InvalidKeyException.class, () -> sut.decrypt(value));

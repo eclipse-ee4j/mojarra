@@ -43,13 +43,6 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.application.view.FaceletViewHandlingStrategy;
-import com.sun.faces.facelets.util.Classpath;
-import com.sun.faces.lifecycle.HttpMethodRestrictionsPhaseListener;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
-
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.application.StateManager;
@@ -59,6 +52,13 @@ import jakarta.faces.event.PhaseListener;
 import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.lifecycle.LifecycleFactory;
 import jakarta.servlet.ServletContext;
+
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.application.view.FaceletViewHandlingStrategy;
+import com.sun.faces.facelets.util.Classpath;
+import com.sun.faces.lifecycle.HttpMethodRestrictionsPhaseListener;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
 
 /**
  * Class Documentation
@@ -102,7 +102,7 @@ public class WebConfiguration {
     private FaceletsConfiguration faceletsConfig;
 
     private boolean hasFlows;
-    
+
     private String specificationVersion;
 
     // ------------------------------------------------------------ Constructors
@@ -118,7 +118,7 @@ public class WebConfiguration {
         if (canProcessJndiEntries()) {
             processJndiEntries(contextName);
         }
-        
+
         specificationVersion = getClass().getPackage().getSpecificationVersion();
     }
 
@@ -722,7 +722,8 @@ public class WebConfiguration {
         NumberOfViews("com.sun.faces.numberOfViewsInSession", "15"),
         NumberOfLogicalViews("com.sun.faces.numberOfLogicalViews", "15"),
         NumberOfActiveViewMaps("com.sun.faces.numberOfActiveViewMaps", "25"),
-        NumberOfConcurrentFlashUsers("com.sun.faces.numberOfConcerrentFlashUsers", "5000"),
+        NumberOfConcurrentFlashUsers("com.sun.faces.numberOfConcurrentFlashUsers", "5000"),
+        NumberOfConcerrentFlashUsers("com.sun.faces.numberOfConcerrentFlashUsers", "5000", true, NumberOfConcurrentFlashUsers),
         NumberOfFlashesBetweenFlashReapings("com.sun.faces.numberOfFlashesBetweenFlashReapings", "5000"),
         InjectionProviderClass("com.sun.faces.injectionProvider", ""),
         SerializationProviderClass("com.sun.faces.serializationProvider", ""),
@@ -819,7 +820,7 @@ public class WebConfiguration {
         EnableHttpMethodRestrictionPhaseListener("com.sun.faces.ENABLE_HTTP_METHOD_RESTRICTION_PHASE_LISTENER", false),
         PartialStateSaving(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, true),
         GenerateUniqueServerStateIds("com.sun.faces.generateUniqueServerStateIds", true),
-        AutoCompleteOffOnViewState("com.sun.faces.autoCompleteOffOnViewState", true),
+        AutoCompleteOffOnViewState("com.sun.faces.autoCompleteOffOnViewState", false),
         EnableThreading("com.sun.faces.enableThreading", false),
         AllowTextChildren("com.sun.faces.allowTextChildren", false),
         CacheResourceModificationTimestamp("com.sun.faces.cacheResourceModificationTimestamp", false),

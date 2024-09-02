@@ -247,8 +247,11 @@ public class ServerSideStateHelper extends StateHelper {
         }
 
         int sep = compoundId.indexOf(':');
-        assert sep != -1;
-        assert sep < compoundId.length();
+
+        if (sep == -1) {
+            LOGGER.log(FINE, "Unable to restore server side state for view ID {0} as no state ID is available", viewId);
+            return null;
+        }
 
         String idInLogicalMap = compoundId.substring(0, sep);
         String idInActualMap = compoundId.substring(sep + 1);

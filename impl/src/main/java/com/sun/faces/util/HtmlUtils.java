@@ -217,6 +217,10 @@ public class HtmlUtils {
                         // UNICODE entities: encode as needed
                         buffIndex = _writeDecRef(out, buff, buffIndex, buffLength, ch);
                     } else {
+                        if (forXml && !isAllowedXmlCharacter(ch)) {
+                            continue;
+                        }
+
                         buffIndex = addToBuffer(out, buff, buffIndex, buffLength, ch);
                     }
                 }
@@ -302,6 +306,10 @@ public class HtmlUtils {
                     // UNICODE entities: encode as needed
                     buffIndex = _writeDecRef(out, buff, buffIndex, buffLength, ch);
                 } else {
+                    if (forXml && !isAllowedXmlCharacter(ch)) {
+                        continue;
+                    }
+
                     buffIndex = addToBuffer(out, buff, buffIndex, buffLength, ch);
                 }
             }
@@ -314,6 +322,11 @@ public class HtmlUtils {
 
         return (ch == 0x09 || ch == 0x0A || (ch == 0x0C && !forXml) || ch == 0x0D);
 
+    }
+
+    public static boolean isAllowedXmlCharacter(int ch) {
+        // See https://www.w3.org/TR/xml/#charsets Character Range
+        return ch < 0x20 ? isPrintableControlChar(ch, true) : ch <= 0xD7FF || ch >= 0xE000 && ch <= 0xFFFD; 
     }
 
     /**
@@ -550,8 +563,7 @@ public class HtmlUtils {
         for (int i = 0; i < length; i++) {
             final char ch = text.charAt(i);
 
-            if (ch < 0x20 ? isPrintableControlChar(ch, true) : ch <= 0xD7FF || ch >= 0xE000 && ch <= 0xFFFD) {
-                // Only those chars are allowed in XML. https://www.w3.org/TR/xml/#charsets Character Range
+            if (isAllowedXmlCharacter(ch)) {
                 out.write(ch);
             }
         }
