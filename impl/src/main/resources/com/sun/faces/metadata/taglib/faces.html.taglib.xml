@@ -5606,6 +5606,24 @@
         </attribute>
         <attribute>
             <description>
+                CSS style class to apply to any message
+                with a severity class of "SUCCESS".
+            </description>
+            <name>successClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
+                CSS style(s) to apply to any message
+                with a severity class of "SUCCESS".
+            </description>
+            <name>successStyle</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
                 Advisory title information about markup elements generated
                 for this component.
             </description>

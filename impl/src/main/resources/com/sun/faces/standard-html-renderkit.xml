@@ -5116,6 +5116,26 @@
       </attribute>
       <attribute>
         <description>
+          CSS style class to apply to any message
+          with a severity class of "SUCCESS".
+        </description>
+        <display-name>Success Class</display-name>
+        <icon/>
+        <attribute-name>successClass</attribute-name>
+        <attribute-class>java.lang.String</attribute-class>
+      </attribute>
+      <attribute>
+        <description>
+          CSS style(s) to apply to any message
+          with a severity class of "SUCCESS".
+        </description>
+        <display-name>Success Styles</display-name>
+        <icon/>
+        <attribute-name>successStyle</attribute-name>
+        <attribute-class>java.lang.String</attribute-class>
+      </attribute>
+      <attribute>
+        <description>
           Flag indicating whether the detail portion of the
           message should be displayed as a tooltip.
         </description>

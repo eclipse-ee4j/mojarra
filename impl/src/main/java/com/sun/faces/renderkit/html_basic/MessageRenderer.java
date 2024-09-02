@@ -134,18 +134,10 @@ public class MessageRenderer extends HtmlBasicRenderer {
         // Default to summary if we have no detail
         String detail = null != (detail = curMessage.getDetail()) ? detail : summary;
 
-        if (curMessage.getSeverity() == FacesMessage.SEVERITY_INFO) {
-            severityStyle = (String) component.getAttributes().get("infoStyle");
-            severityStyleClass = (String) component.getAttributes().get("infoClass");
-        } else if (curMessage.getSeverity() == FacesMessage.SEVERITY_WARN) {
-            severityStyle = (String) component.getAttributes().get("warnStyle");
-            severityStyleClass = (String) component.getAttributes().get("warnClass");
-        } else if (curMessage.getSeverity() == FacesMessage.SEVERITY_ERROR) {
-            severityStyle = (String) component.getAttributes().get("errorStyle");
-            severityStyleClass = (String) component.getAttributes().get("errorClass");
-        } else if (curMessage.getSeverity() == FacesMessage.SEVERITY_FATAL) {
-            severityStyle = (String) component.getAttributes().get("fatalStyle");
-            severityStyleClass = (String) component.getAttributes().get("fatalClass");
+        if (curMessage.getSeverity() != null) {
+            String severityPrefix = curMessage.getSeverity().name().toLowerCase();
+            severityStyle = (String) component.getAttributes().get(severityPrefix + "Style");
+            severityStyleClass = (String) component.getAttributes().get(severityPrefix + "Class");
         }
 
         String style = (String) component.getAttributes().get("style");
