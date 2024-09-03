@@ -3054,10 +3054,10 @@ public class BackingBean implements PasswordHolder, Cloneable {
         </attribute>
         <attribute>
             <description><![CDATA[
-          <p class="changed_added_2_0">If present, this attribute refers
-          to the value of one of the exposed attached objects within the
-          composite component inside of which this tag is nested.</p>
-          ]]></description>
+                <p class="changed_added_2_0">If present, this attribute refers
+                to the value of one of the exposed attached objects within the
+                composite component inside of which this tag is nested.</p>
+            ]]></description>
             <name>for</name>
             <required>false</required>
             <type>java.lang.String</type>
