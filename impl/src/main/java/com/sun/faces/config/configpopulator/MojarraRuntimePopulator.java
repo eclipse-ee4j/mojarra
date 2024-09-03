@@ -1,6 +1,7 @@
 package com.sun.faces.config.configpopulator;
 
 import jakarta.faces.application.ApplicationConfigurationPopulator;
+import jakarta.faces.convert.EnumConverter;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -332,6 +333,20 @@ public final class MojarraRuntimePopulator extends ApplicationConfigurationPopul
             {
                 Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
                 converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.ShortConverter"));
+                converterElement.appendChild(converter_classElement);
+            }
+            faces_configElement.appendChild(converterElement);
+        }
+        {
+            Element converterElement = toPopulate.createElementNS(ns, "converter");
+            {
+                Element converter_idElement = toPopulate.createElementNS(ns, "converter-id");
+                converter_idElement.appendChild(toPopulate.createTextNode(EnumConverter.CONVERTER_ID));
+                converterElement.appendChild(converter_idElement);
+            }
+            {
+                Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
+                converter_classElement.appendChild(toPopulate.createTextNode(EnumConverter.class.getName()));
                 converterElement.appendChild(converter_classElement);
             }
             faces_configElement.appendChild(converterElement);
