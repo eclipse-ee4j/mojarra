@@ -21,6 +21,7 @@ import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_EVENT_PARAM;
 import static jakarta.faces.application.ResourceHandler.FACES_SCRIPT_LIBRARY_NAME;
 import static jakarta.faces.application.ResourceHandler.FACES_SCRIPT_RESOURCE_NAME;
+import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -30,9 +31,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -64,11 +67,13 @@ import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
 import jakarta.faces.component.behavior.ClientBehaviorHint;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
 import jakarta.faces.component.html.HtmlMessages;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.PartialViewContext;
 import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 import jakarta.faces.model.SelectItem;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
@@ -141,11 +146,7 @@ public class RenderKitUtils {
      */
     private static final String ATTRIBUTES_THAT_ARE_SET_KEY = UIComponentBase.class.getName() + ".attributesThatAreSet";
 
-    /**
-     * UIViewRoot attribute key of a boolean value which remembers whether the view will be rendered with a HTML5 doctype.
-     */
-    private static final String VIEW_ROOT_ATTRIBUTES_DOCTYPE_KEY = RenderKitUtils.class.getName() + ".isOutputHtml5Doctype";
-
+    private static final String BEHAVIOR_EVENT_ATTRIBUTE_PREFIX = "on";
 
     protected static final Logger LOGGER = FacesLogger.RENDERKIT.getLogger();
 
@@ -330,18 +331,17 @@ public class RenderKitUtils {
             behaviors = Collections.emptyMap();
         }
 
-        if (canBeOptimized(component, behaviors)) {
-            List<String> setAttributes = (List<String>) component.getAttributes().get(ATTRIBUTES_THAT_ARE_SET_KEY);
-            if (setAttributes != null) {
-                renderPassThruAttributesOptimized(context, writer, component, attributes, setAttributes, behaviors);
-            }
+        List<String> setAttributes = (List<String>) component.getAttributes().get(ATTRIBUTES_THAT_ARE_SET_KEY);
+
+        if (setAttributes != null && canBeOptimized(component, behaviors)) {
+            renderPassThruAttributesOptimized(context, writer, component, attributes, setAttributes, behaviors);
         } else {
 
             // this block should only be hit by custom components leveraging
             // the RI's rendering code, or in cases where we have behaviors
             // attached to multiple events. We make no assumptions and loop
             // through
-            renderPassThruAttributesUnoptimized(context, writer, component, attributes, behaviors);
+            renderPassThruAttributesUnoptimized(context, writer, component, attributes, setAttributes, behaviors);
         }
     }
 
@@ -352,11 +352,12 @@ public class RenderKitUtils {
 
         final String handlerName = "onchange";
         final Object userHandler = component.getAttributes().get(handlerName);
-        String behaviorEventName = "valueChange";
+        String behaviorEventName = FacesComponentEvent.valueChange.name();
+        String domEventName = HtmlDocumentElementEvent.change.name();
         if (component instanceof ClientBehaviorHolder) {
             Map<?, ?> behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
-            if (null != behaviors && behaviors.containsKey("change")) {
-                behaviorEventName = "change";
+            if (null != behaviors && behaviors.containsKey(domEventName)) {
+                behaviorEventName = domEventName;
             }
         }
 
@@ -375,11 +376,12 @@ public class RenderKitUtils {
 
         final String handlerName = "onclick";
         final Object userHandler = component.getAttributes().get(handlerName);
-        String behaviorEventName = "valueChange";
+        String behaviorEventName = FacesComponentEvent.valueChange.name();
+        String domEventName = HtmlDocumentElementEvent.click.name();
         if (component instanceof ClientBehaviorHolder) {
             Map<?, ?> behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
-            if (null != behaviors && behaviors.containsKey("click")) {
-                behaviorEventName = "click";
+            if (null != behaviors && behaviors.containsKey(domEventName)) {
+                behaviorEventName = domEventName;
             }
         }
 
@@ -401,18 +403,19 @@ public class RenderKitUtils {
 
         final String handlerName = "onclick";
         final Object userHandler = component.getAttributes().get(handlerName);
-        String behaviorEventName = "action";
+        String behaviorEventName = FacesComponentEvent.action.name();
+        String domEventName = HtmlDocumentElementEvent.click.name();
         if (component instanceof ClientBehaviorHolder) {
             Map<String, List<ClientBehavior>> behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
-            boolean mixed = null != behaviors && behaviors.containsKey("click") && behaviors.containsKey("action");
+            boolean mixed = null != behaviors && behaviors.containsKey(domEventName) && behaviors.containsKey(behaviorEventName);
             if (mixed) {
-                behaviorEventName = "click";
-                List<ClientBehavior> clickBehaviors = behaviors.get("click");
-                List<ClientBehavior> actionBehaviors = behaviors.get("action");
+                List<ClientBehavior> actionBehaviors = behaviors.get(behaviorEventName);
+                behaviorEventName = domEventName;
+                List<ClientBehavior> clickBehaviors = behaviors.get(domEventName);
                 clickBehaviors.addAll(actionBehaviors);
                 actionBehaviors.clear();
-            } else if (null != behaviors && behaviors.containsKey("click")) {
-                behaviorEventName = "click";
+            } else if (null != behaviors && behaviors.containsKey(domEventName)) {
+                behaviorEventName = domEventName;
             }
         }
 
@@ -423,7 +426,7 @@ public class RenderKitUtils {
     public static void renderFunction(FacesContext context, UIComponent component, Collection<ClientBehaviorContext.Parameter> params, String submitTarget)
             throws IOException {
 
-        ClientBehaviorContext behaviorContext = ClientBehaviorContext.createClientBehaviorContext(context, component, "action", submitTarget, params);
+        ClientBehaviorContext behaviorContext = ClientBehaviorContext.createClientBehaviorContext(context, component, FacesComponentEvent.action.name(), submitTarget, params);
         AjaxBehavior behavior = (AjaxBehavior) context.getApplication().createBehavior(AjaxBehavior.BEHAVIOR_ID);
         mapAttributes(component, behavior, "execute", "render", "onerror", "onevent", "resetValues");
 
@@ -629,24 +632,45 @@ public class RenderKitUtils {
                     }
                 }
             }
+            else if (isBehaviorEventAttribute(name)) {
+                Object value = attrMap.get(name);
+                if (value != null && shouldRenderAttribute(value)) {
+                    if (name.substring(2).equals(behaviorEventName)) {
+                        renderHandler(context, component, null, name, value, behaviorEventName, null, false, false);
+
+                        renderedBehavior = true;
+                    } else {
+                        writer.writeAttribute(prefixAttribute(name, isXhtml), value, name);
+                    }
+                }
+            }
         }
 
         // We did not render out the behavior as part of our optimized
         // attribute rendering. Need to manually render it out now.
         if (behaviorEventName != null && !renderedBehavior) {
 
-            // Note that we can optimize this search by providing
-            // an event name -> Attribute inverse look up map.
-            // This would change the search time from O(n) to O(1).
-            for (int i = 0; i < knownAttributes.length; i++) {
-                Attribute attr = knownAttributes[i];
-                String[] events = attr.getEvents();
-                if (events != null && events.length > 0 && behaviorEventName.equals(events[0])) {
+            List<String> behaviorAttributes = setAttributes.stream().filter(RenderKitUtils::isBehaviorEventAttribute).collect(toList());
 
-                    renderHandler(context, component, null, attr.getName(), null, behaviorEventName, null, false, false);
+            for (String attrName : behaviorAttributes) {
+                String eventName = attrName.substring(2);
+                if (behaviorEventName.equals(eventName)) {
+                    renderPassthruAttribute(context, writer, component, behaviors, isXhtml, attrMap, attrName, behaviorEventName);
+                    return;
                 }
             }
 
+            // Note that we can optimize this search by providing
+            // an event name -> Attribute inverse look up map.
+            // This would change the search time from O(n) to O(1).
+
+            for (Attribute attribute : knownAttributes) {
+                String attrName = attribute.getName();
+                String[] events = attribute.getEvents();
+                if (events != null && events.length > 0 && behaviorEventName.equals(events[0])) {
+                    renderHandler(context, component, null, attrName, null, behaviorEventName, null, false, false);
+                }
+            }
         }
     }
 
@@ -658,33 +682,57 @@ public class RenderKitUtils {
      * @param writer the current writer
      * @param component the component whose attributes we're rendering
      * @param knownAttributes an array of pass-through attributes supported by this component
+     * @param setAttributes a <code>List</code> of attributes that have been set on the provided component
      * @param behaviors the non-null behaviors map for this request.
      * @throws IOException if an error occurs during the write
      */
     private static void renderPassThruAttributesUnoptimized(FacesContext context, ResponseWriter writer, UIComponent component, Attribute[] knownAttributes,
-            Map<String, List<ClientBehavior>> behaviors) throws IOException {
+            List<String> setAttributes, Map<String, List<ClientBehavior>> behaviors) throws IOException {
 
         boolean isXhtml = RIConstants.XHTML_CONTENT_TYPE.equals(writer.getContentType());
 
         Map<String, Object> attrMap = component.getAttributes();
+        Set<String> behaviorEventNames = new LinkedHashSet<>(behaviors.size() + 2);
+
+        behaviorEventNames.addAll(behaviors.keySet());
+
+        if (setAttributes != null) {
+            setAttributes.stream().filter(RenderKitUtils::isBehaviorEventAttribute).map(a -> a.substring(BEHAVIOR_EVENT_ATTRIBUTE_PREFIX.length())).forEach(behaviorEventNames::add);
+        }
 
         for (Attribute attribute : knownAttributes) {
             String attrName = attribute.getName();
             String[] events = attribute.getEvents();
-            boolean hasBehavior = events != null && events.length > 0 && behaviors.containsKey(events[0]);
-
-            Object value = attrMap.get(attrName);
-
-            if (value != null && shouldRenderAttribute(value) && !hasBehavior) {
-                writer.writeAttribute(prefixAttribute(attrName, isXhtml), value, attrName);
-            } else if (hasBehavior) {
-
-                // If we've got a behavior for this attribute,
-                // we may need to chain scripts together, so use
-                // renderHandler().
-                renderHandler(context, component, null, attrName, value, events[0], null, false, false);
-            }
+            String eventName = events != null && events.length > 0 ? events[0] : null;
+            renderPassthruAttribute(context, writer, component, behaviors, isXhtml, attrMap, attrName, eventName);
+            behaviorEventNames.remove(eventName);
         }
+
+        for (String eventName : behaviorEventNames) {
+            renderPassthruAttribute(context, writer, component, behaviors, isXhtml, attrMap, BEHAVIOR_EVENT_ATTRIBUTE_PREFIX + eventName, eventName);
+        }
+    }
+
+    private static void renderPassthruAttribute(FacesContext context, ResponseWriter writer, UIComponent component,
+            Map<String, List<ClientBehavior>> behaviors, boolean isXhtml, Map<String, Object> attrMap, String attrName,
+            String eventName) throws IOException {
+        boolean hasBehavior = eventName != null && behaviors.containsKey(eventName);
+
+        Object value = attrMap.get(attrName);
+
+        if (value != null && shouldRenderAttribute(value) && !hasBehavior) {
+            writer.writeAttribute(prefixAttribute(attrName, isXhtml), value, attrName);
+        } else if (hasBehavior) {
+
+            // If we've got a behavior for this attribute,
+            // we may need to chain scripts together, so use
+            // renderHandler().
+            renderHandler(context, component, null, attrName, value, eventName, null, false, false);
+        }
+    }
+
+    public static boolean isBehaviorEventAttribute(String name) {
+        return name.startsWith(BEHAVIOR_EVENT_ATTRIBUTE_PREFIX) && name.length() > 2;
     }
 
     /**
@@ -1144,14 +1192,14 @@ public class RenderKitUtils {
         // First check for a Behavior action event.
         String behaviorEvent = BEHAVIOR_EVENT_PARAM.getValue(context);
         if (null != behaviorEvent) {
-            return "action".equals(behaviorEvent);
+            return FacesComponentEvent.action.name().equals(behaviorEvent);
         }
 
         // Not a Behavior-related request. Check for faces.ajax.request()
         // request params.
         String partialEvent = PARTIAL_EVENT_PARAM.getValue(context);
 
-        return "click".equals(partialEvent);
+        return HtmlDocumentElementEvent.click.name().equals(partialEvent);
     }
 
     /**
@@ -1529,7 +1577,7 @@ public class RenderKitUtils {
         // If we're submitting (either via a behavior, or by rendering
         // a submit script), we need to return false to prevent the
         // default button/link action.
-        if (submitting && ("action".equals(behaviorEventName) || "click".equals(behaviorEventName))) {
+        if (submitting && (FacesComponentEvent.action.name().equals(behaviorEventName) || HtmlDocumentElementEvent.click.name().equals(behaviorEventName))) {
             builder.append(";return false");
         }
 
