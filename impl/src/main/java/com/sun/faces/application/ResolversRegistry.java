@@ -25,10 +25,16 @@ import jakarta.el.ArrayELResolver;
 import jakarta.el.BeanELResolver;
 import jakarta.el.ListELResolver;
 import jakarta.el.MapELResolver;
+import jakarta.el.OptionalELResolver;
+import jakarta.el.RecordELResolver;
 import jakarta.el.ResourceBundleELResolver;
+import jakarta.el.StaticFieldELResolver;
 
 public class ResolversRegistry {
     public final BeanELResolver BEAN_RESOLVER = new BeanELResolver();
+    public final OptionalELResolver OPTIONAL_RESOLVER = new OptionalELResolver();
+    public final RecordELResolver RECORD_RESOLVER = new RecordELResolver();
+    public final StaticFieldELResolver STATIC_FIELD_RESOLVER = new StaticFieldELResolver();
     public final ArrayELResolver ARRAY_RESOLVER = new ArrayELResolver();
     public final FacesResourceBundleELResolver FACES_BUNDLE_RESOLVER = new FacesResourceBundleELResolver();
     public final FlashELResolver FLASH_RESOLVER = new FlashELResolver();
