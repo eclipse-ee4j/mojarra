@@ -71,6 +71,7 @@ import jakarta.faces.convert.CharacterConverter;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.DateTimeConverter;
 import jakarta.faces.convert.DoubleConverter;
+import jakarta.faces.convert.EnumConverter;
 import jakarta.faces.convert.FloatConverter;
 import jakarta.faces.convert.IntegerConverter;
 import jakarta.faces.convert.LongConverter;
@@ -113,6 +114,7 @@ public class InstanceFactory {
         STANDARD_CONV_ID_TO_TYPE_MAP.put(LongConverter.CONVERTER_ID, new Class<?>[] { Long.TYPE, Long.class });
         STANDARD_CONV_ID_TO_TYPE_MAP.put(FloatConverter.CONVERTER_ID, new Class<?>[] { Float.TYPE, Float.class });
         STANDARD_CONV_ID_TO_TYPE_MAP.put(DoubleConverter.CONVERTER_ID, new Class<?>[] { Double.TYPE, Double.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put(EnumConverter.CONVERTER_ID, new Class<?>[] { Enum.class });
         STANDARD_CONV_ID_TO_TYPE_MAP.put(UUIDConverter.CONVERTER_ID, new Class<?>[] { UUID.class });
         for (Map.Entry<String, Class<?>[]> entry : STANDARD_CONV_ID_TO_TYPE_MAP.entrySet()) {
             Class<?>[] types = entry.getValue();
