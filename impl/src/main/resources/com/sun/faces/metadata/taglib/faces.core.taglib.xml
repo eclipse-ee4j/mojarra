@@ -3026,6 +3026,41 @@ public class BackingBean implements PasswordHolder, Cloneable {
         </attribute>
     </tag>
 
-
-
+    <tag>
+        <description><![CDATA[
+            <p class="changed_added_2_2">Reset specific input values.
+            Interpret the value of the <code>render</code> attribute as
+            a space separated list of client identifiers suitable for
+            passing directly to <code>UIViewRoot.resetValues()</code>.
+            The implementation must cause an <code>ActionListener</code>
+            to be attached to the <code>ActionSource</code> component
+            in which this tag is nested that calls
+            <code>UIViewRoot.resetValues()</code> passing the value of
+            the <code>render</code> attribute as the argument.</p>
+        ]]></description>
+        <tag-name>resetValues</tag-name>
+        <handler-class>com.sun.faces.facelets.tag.faces.core.ResetValuesHandler</handler-class>
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_2_2">Evaluates to
+                Collection&lt;String&gt;. The clientIds of components
+                that will be passed to
+                <code>UIViewRoot.resetValues()</code>.  The identifiers
+                must be space delimited.</p>
+            ]]></description>
+            <name>render</name>
+            <required>true</required>
+            <type>java.util.Collection</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p class="changed_added_2_0">If present, this attribute refers
+                to the value of one of the exposed attached objects within the
+                composite component inside of which this tag is nested.</p>
+            ]]></description>
+            <name>for</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
 </facelet-taglib>
