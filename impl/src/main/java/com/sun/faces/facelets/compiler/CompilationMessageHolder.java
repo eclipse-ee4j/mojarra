@@ -40,9 +40,6 @@ public interface CompilationMessageHolder {
 
     List<FacesMessage> getNamespacePrefixMessages(FacesContext context, String prefix);
 
-    @Deprecated(since = "4.1", forRemoval = true)
-    void removeNamespacePrefixMessages(String prefix);
-
     void processCompilationMessages(FacesContext context);
 
 }

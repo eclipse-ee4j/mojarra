@@ -730,18 +730,6 @@ example.</p>
     </tag>
     <tag>
         <description><![CDATA[
-            <div class="changed_modified_4_1">
-                <p>
-                    The use of this tag has been deprecated in Faces 4.1, without replacement, and is subject to be removed in Faces 5.0.
-                    The reason is that the <a target="_" href="http://jcp.org/en/jsr/detail?id=276">JSR-276</a> went dormant and therefore this tag has never been of use.
-                </p>
-            </div>
-        ]]></description>
-        <tag-name>extension</tag-name>
-        <handler-class>com.sun.faces.facelets.tag.composite.ExtensionHandler</handler-class>
-    </tag>
-    <tag>
-        <description><![CDATA[
 
 
             <div class="changed_added_2_0">
