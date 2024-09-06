@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2024 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -81,6 +82,7 @@ public class ApplicationImpl extends Application {
     private final InstanceFactory instanceFactory;
     private final SearchExpression searchExpression;
     private final Stage stage;
+    private final ResolversRegistry globalResolversRegistry = new ResolversRegistry();
 
     /**
      * Constructor
@@ -210,6 +212,10 @@ public class ApplicationImpl extends Application {
 
     public CompositeELResolver getApplicationELResolvers() {
         return expressionLanguage.getApplicationELResolvers();
+    }
+
+    public ResolversRegistry getGlobalResolversRegistry() {
+        return globalResolversRegistry;
     }
 
     public FacesCompositeELResolver getCompositeELResolver() {
