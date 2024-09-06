@@ -560,7 +560,7 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
          * @ignore
          */
         const deleteNode = function deleteNode(node) {
-            if (node) node.remove();
+            if (node && node.parentNode) node.remove();
         };
 
         /**
