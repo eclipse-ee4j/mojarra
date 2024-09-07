@@ -51,6 +51,7 @@
         <module>impl</module>
         <module>action</module>
         <module>rest</module>
+        <module>test</module>
     </modules>
 
    <properties>
