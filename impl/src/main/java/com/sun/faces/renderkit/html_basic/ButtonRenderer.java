@@ -173,29 +173,17 @@ public class ButtonRenderer extends HtmlBasicRenderer {
      */
     private static boolean wasClicked(FacesContext context, UIComponent component, String clientId) {
 
-        // Was our command the one that caused this submission?
-        // we don' have to worry about getting the value from request parameter
-        // because we just need to know if this command caused the submission. We
-        // can get the command name by calling currentValue. This way we can
-        // get around the IE bug.
-
         if (clientId == null) {
             clientId = component.getClientId(context);
         }
 
         if (context.getPartialViewContext().isAjaxRequest()) {
-            return BEHAVIOR_SOURCE_PARAM.getValue(context).equals(clientId);
+            return RenderKitUtils.isPartialOrBehaviorAction(context, clientId);
         } else {
             Map<String, String> requestParameterMap = context.getExternalContext().getRequestParameterMap();
 
             if (requestParameterMap.get(clientId) == null) {
-
-                // Check to see whether we've got an action event
-                // as a result of a partial/behavior postback.
-                if (RenderKitUtils.isPartialOrBehaviorAction(context, clientId)) {
-                    return true;
-                }
-
+                // Check to see whether we've got an action event from button of type="image"
                 StringBuilder builder = new StringBuilder(clientId);
                 String xValue = builder.append(".x").toString();
                 builder.setLength(clientId.length());
