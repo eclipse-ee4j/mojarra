@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.glassfish</groupId>
         <artifactId>mojarra-parent</artifactId>
-        <version>4.0.9-SNAPSHOT</version>
+        <version>4.1.2-SNAPSHOT</version>
     </parent>
 
     <groupId>org.eclipse.mojarra.test</groupId>
@@ -39,9 +39,18 @@
     </modules>
 
     <properties>
-        <glassfish.version>7.0.16</glassfish.version>
+        <glassfish.version>8.0.0-JDK17-M7</glassfish.version>
+        <glassfish.home>glassfish8</glassfish.home>
         <arquillian.browser>chrome</arquillian.browser>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>jakarta-staging</id>
+            <snapshots />
+            <url>https://jakarta.oss.sonatype.org/content/repositories/staging</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -173,7 +182,7 @@
                                             <version>${project.version}</version>
                                             <type>jar</type>
                                             <overWrite>true</overWrite>
-                                            <outputDirectory>${project.build.directory}/glassfish7/glassfish/modules</outputDirectory>
+                                            <outputDirectory>${project.build.directory}/${glassfish.home}/glassfish/modules</outputDirectory>
                                             <destFileName>jakarta.faces.jar</destFileName>
                                         </artifactItem>
                                     </artifactItems>
@@ -186,7 +195,7 @@
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <configuration>
                             <systemPropertyVariables>
-                                <glassfish.home>${project.build.directory}/glassfish7</glassfish.home>
+                                <glassfish.home>${project.build.directory}/${glassfish.home}</glassfish.home>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>
