@@ -36,6 +36,7 @@
         <module>issue5460</module>
         <module>issue5464</module>
         <module>issue5488</module>
+        <module>issue5503</module>
     </modules>
 
     <properties>
