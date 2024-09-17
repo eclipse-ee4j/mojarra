@@ -54,12 +54,6 @@ class Issue5507IT extends BaseIT {
     @Test
     void testSelectOneRadioStyleClassAttributeRendering() {
         open("issue5507.xhtml");
-        
-        String pageSource = getPageSource();
-        System.out.println("================================================");
-        System.out.println(pageSource);
-        System.out.println("================================================");
-        
         assertEquals("someStyleClass", form1Radio1.getAttribute("class"));
         assertEquals("someStyleClass", form1Radio2.getAttribute("class"));
         assertEquals("someStyleClass", form1Radio3.getAttribute("class"));
