@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
@@ -37,6 +38,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.PageFactory;
@@ -88,8 +90,29 @@ public abstract class BaseIT {
         browser.get(baseURL + resource);
     }
 
+    protected String getPageTitle() {
+        return browser.getTitle();
+    }
+
     protected String getPageSource() {
         return browser.getPageSource();
+    }
+
+    protected String getHrefURI(WebElement link) {
+        String uri = link.getAttribute("href").substring(baseURL.toExternalForm().length());
+        String uriWithoutJsessionId = uri.split(";jsessionid=", 2)[0];
+        String[] uriAndQueryString = uri.split(Pattern.quote("?"), 2);
+
+        if (uriAndQueryString.length == 2) {
+            uriWithoutJsessionId += "?" + uriAndQueryString[1]; 
+        }
+
+        return uriWithoutJsessionId;
+    }
+
+    protected void guardHttp(Runnable action) {
+        action.run();
+        waitUntil(() -> executeScript("return document.readyState=='complete'"));
     }
 
     protected void guardAjax(Runnable action) {
