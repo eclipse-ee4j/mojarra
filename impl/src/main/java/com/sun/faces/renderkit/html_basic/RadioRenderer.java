@@ -293,6 +293,16 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
             writer.writeAttribute("name", group.getClientName(), "group");
             writer.writeAttribute("id", clientId, "id");
             writer.writeAttribute("value", clientId + UINamingContainer.getSeparatorChar(context) + value, "value");
+
+            String styleClass = (String) component.getAttributes().get("styleClass");
+            if (styleClass != null) {
+                writer.writeAttribute("class", styleClass, "class");
+            }
+
+            String style = (String) component.getAttributes().get("style");
+            if (style != null) {
+                writer.writeAttribute("style", style, "style");
+            }
         }
 
         if (disabled) {
