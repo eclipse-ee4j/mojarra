@@ -1015,16 +1015,22 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor {
      * @param context the {@link FacesContext} for the request we are processing.
      * @param clientIds The client ids to be visited, on which the described action will be taken.
      */
-
     public void resetValues(FacesContext context, Collection<String> clientIds) {
-        visitTree(VisitContext.createVisitContext(context, clientIds, null), new DoResetValues());
+        visitTree(VisitContext.createVisitContext(context, clientIds, null), DoResetValues.INSTANCE);
     }
 
     private static class DoResetValues implements VisitCallback {
+
+        private static final DoResetValues INSTANCE = new DoResetValues();
+
         @Override
         public VisitResult visit(VisitContext context, UIComponent target) {
             if (target instanceof EditableValueHolder) {
                 ((EditableValueHolder) target).resetValue();
+            }
+            // If render ID didn't specifically point to an EditableValueHolder. Visit all children as well.
+            else if (!VisitContext.ALL_IDS.equals(context.getIdsToVisit())) {
+                target.visitTree(VisitContext.createVisitContext(context.getFacesContext(), null, context.getHints()), this);
             }
             return VisitResult.ACCEPT;
         }
