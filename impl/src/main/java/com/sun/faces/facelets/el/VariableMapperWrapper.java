@@ -35,7 +35,7 @@ public class VariableMapperWrapper extends VariableMapper {
 
     private final VariableMapper target;
 
-    private Map vars;
+    private Map<String,ValueExpression> vars;
 
     /**
      * @param orig the original variable mapper to be wrapped
@@ -46,22 +46,18 @@ public class VariableMapperWrapper extends VariableMapper {
     }
 
     /**
-     * First tries to resolve agains the inner Map, then the wrapped ValueExpression.
+     * First tries to resolve against the inner Map, then the wrapped ValueExpression.
      *
      * @see jakarta.el.VariableMapper#resolveVariable(java.lang.String)
      */
     @Override
     public ValueExpression resolveVariable(String variable) {
-        ValueExpression ve = null;
         try {
-            if (vars != null) {
-                ve = (ValueExpression) vars.get(variable);
-            }
-            if (ve == null) {
-                return target.resolveVariable(variable);
-            }
-            return ve;
-        } catch (StackOverflowError e) {
+            // note that vars may contain null values so we can't use vars.getOrDefault
+            final ValueExpression ve = (vars != null ? vars.get(variable) : null);
+            return ve != null ? ve : target.resolveVariable(variable);
+        }
+        catch (StackOverflowError e) {
             throw new ELException("Could not Resolve Variable [Overflow]: " + variable, e);
         }
     }
@@ -74,8 +70,8 @@ public class VariableMapperWrapper extends VariableMapper {
     @Override
     public ValueExpression setVariable(String variable, ValueExpression expression) {
         if (vars == null) {
-            vars = new HashMap();
+            vars = new HashMap<>();
         }
-        return (ValueExpression) vars.put(variable, expression);
+        return vars.put(variable, expression);
     }
 }
