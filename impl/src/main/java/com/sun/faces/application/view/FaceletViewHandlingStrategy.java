@@ -940,8 +940,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      */
     protected void handleRenderException(FacesContext context, Exception e) throws IOException {
 
-        // Always log
-        if (LOGGER.isLoggable(SEVERE)) {
+        if (LOGGER.isLoggable(FINE)) {
             UIViewRoot root = context.getViewRoot();
             StringBuilder sb = new StringBuilder(64);
             sb.append("Error Rendering View");
@@ -950,7 +949,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 sb.append(root.getViewId());
                 sb.append(']');
             }
-            LOGGER.log(SEVERE, sb.toString(), e);
+            LOGGER.log(FINE, sb.toString(), e);
         }
 
         if (e instanceof RuntimeException) {
