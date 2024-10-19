@@ -20,10 +20,17 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.ApplicationFactory;
+import jakarta.faces.context.FacesContextFactory;
+import jakarta.faces.lifecycle.LifecycleFactory;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
 import com.sun.faces.mock.MockApplication;
+import com.sun.faces.mock.MockCDIProvider;
 import com.sun.faces.mock.MockExternalContext;
 import com.sun.faces.mock.MockFacesContext;
 import com.sun.faces.mock.MockHttpServletRequest;
@@ -32,11 +39,6 @@ import com.sun.faces.mock.MockHttpSession;
 import com.sun.faces.mock.MockLifecycle;
 import com.sun.faces.mock.MockServletConfig;
 import com.sun.faces.mock.MockServletContext;
-
-import jakarta.faces.FactoryFinder;
-import jakarta.faces.application.ApplicationFactory;
-import jakarta.faces.context.FacesContextFactory;
-import jakarta.faces.lifecycle.LifecycleFactory;
 
 public class JUnitFacesTestCaseBase {
 
@@ -52,6 +54,9 @@ public class JUnitFacesTestCaseBase {
 
     @BeforeEach
     public void setUp() throws Exception {
+        // Set up CDI
+        CDI.setCDIProvider(new MockCDIProvider());
+
         // Set up Servlet API Objects
         servletContext = new MockServletContext();
         servletContext.addInitParameter("appParamName", "appParamValue");
@@ -73,6 +78,8 @@ public class JUnitFacesTestCaseBase {
         new MockFacesContext(new MockExternalContext(servletContext, request, response),
                 new MockLifecycle());
 
+        FactoryFinder.setFactory(FactoryFinder.FACES_SERVLET_FACTORY,
+                "com.sun.faces.mock.MockFacesServletFactory");
         FactoryFinder.setFactory(FactoryFinder.FACES_CONTEXT_FACTORY,
                 "com.sun.faces.mock.MockFacesContextFactory");
         FactoryFinder.setFactory(FactoryFinder.LIFECYCLE_FACTORY,
@@ -86,7 +93,7 @@ public class JUnitFacesTestCaseBase {
         lifecycle = (MockLifecycle) lFactory.getLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE);
         facesContext = (MockFacesContext) fcFactory.getFacesContext(servletContext, request, response, lifecycle);
         externalContext = (MockExternalContext) facesContext.getExternalContext();
-        Map map = new HashMap();
+        Map<String, String> map = new HashMap<>();
         externalContext.setRequestParameterMap(map);
 
         ApplicationFactory applicationFactory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);

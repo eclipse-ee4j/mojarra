@@ -13,14 +13,29 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        java: [ '11' ]
+        java: [ '17' ]
         os: [ubuntu-latest]
     steps:
     - name: Checkout Sources
-      uses: actions/checkout@v1
+      uses: actions/checkout@v4
+      with:
+        submodules: 'true'
+    - name: Checkout API
+      uses: actions/checkout@v4
+      with:
+          repository: jakartaee/faces
+          ref: '5.0'
+          path: './faces'
     - name: Setup Java
       uses: actions/setup-java@v1
       with:
         java-version: ${{ matrix.java }}
+    - name: Setup Maven Action
+      uses: s4u/setup-maven-action@v1.12.0
+      with:
+          checkout-fetch-depth: 0
+          java-version: 17
+          java-distribution: temurin
+          maven-version: 3.9.6
     - name: Build with Maven
-      run: mvn --no-transfer-progress install -Pstaging
+      run: mvn --no-transfer-progress install -Pstaging -Papi

@@ -16,8 +16,6 @@
 
 package com.sun.faces.config.configprovider;
 
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.JakartaFacesConfigFiles;
-import static com.sun.faces.util.Util.split;
 import static java.util.Arrays.binarySearch;
 import static java.util.logging.Level.WARNING;
 
@@ -30,12 +28,12 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
 import com.sun.faces.spi.ConfigurationResourceProvider;
 import com.sun.faces.util.FacesLogger;
 
 import jakarta.faces.FacesException;
+import jakarta.faces.annotation.FacesConfig.ContextParam;
+import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletContext;
 
 /**
@@ -50,24 +48,19 @@ public abstract class BaseWebConfigResourceProvider implements ConfigurationReso
     @Override
     public Collection<URI> getResources(ServletContext context) {
 
-        WebConfiguration webConfig = WebConfiguration.getInstance(context);
-        String paths = webConfig.getOptionValue(getParameter());
+        String[] paths = getParameter().getValue(FacesContext.getCurrentInstance());
         Set<URI> urls = new LinkedHashSet<>(6);
 
-        if (paths != null) {
-            for (String token : split(context, paths.trim(), getSeparatorRegex())) {
-                String path = token.trim();
-                if (!isExcluded(path) && path.length() != 0) {
-                    URI u = getContextURLForPath(context, path);
-                    if (u != null) {
-                        urls.add(u);
-                    } else {
-                        if (LOGGER.isLoggable(WARNING)) {
-                            LOGGER.log(WARNING, "faces.config.web_resource_not_found", new Object[] { path, JakartaFacesConfigFiles.getQualifiedName() });
-                        }
+        for (String path : paths) {
+            if (!isExcluded(path) && path.length() != 0) {
+                URI u = getContextURLForPath(context, path);
+                if (u != null) {
+                    urls.add(u);
+                } else {
+                    if (LOGGER.isLoggable(WARNING)) {
+                        LOGGER.log(WARNING, "faces.config.web_resource_not_found", new Object[] { path, getParameter().getName() });
                     }
                 }
-
             }
         }
 
@@ -76,7 +69,7 @@ public abstract class BaseWebConfigResourceProvider implements ConfigurationReso
 
     // ------------------------------------------------------- Protected Methods
 
-    protected abstract WebContextInitParameter getParameter();
+    protected abstract ContextParam getParameter();
 
     protected abstract String[] getExcludedResources();
 
@@ -86,7 +79,7 @@ public abstract class BaseWebConfigResourceProvider implements ConfigurationReso
         try {
             URL url = context.getResource(path);
             if (url != null) {
-                return new URI(url.toExternalForm().replaceAll(" ", "%20"));
+                return new URI(url.toExternalForm().replace(" ", "%20"));
             }
         } catch (MalformedURLException | URISyntaxException mue) {
             throw new FacesException(mue);

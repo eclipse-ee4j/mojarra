@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -15,9 +16,6 @@
  */
 
 package com.sun.faces.el;
-
-import java.beans.FeatureDescriptor;
-import java.util.Iterator;
 
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
@@ -37,11 +35,6 @@ public class EmptyStringToNullELResolver extends ELResolver {
         }
 
         return (T) value;
-    }
-
-    @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
-        return null;
     }
 
     @Override

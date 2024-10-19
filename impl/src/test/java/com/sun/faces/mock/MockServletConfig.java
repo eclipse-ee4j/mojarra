@@ -32,7 +32,7 @@ public class MockServletConfig implements ServletConfig {
         setServletContext(context);
     }
 
-    private Hashtable parameters = new Hashtable();
+    private Hashtable<String, String> parameters = new Hashtable<>();
     private ServletContext context;
 
     // --------------------------------------------------------- Public Methods
@@ -47,11 +47,11 @@ public class MockServletConfig implements ServletConfig {
     // -------------------------------------------------- ServletConfig Methods
     @Override
     public String getInitParameter(String name) {
-        return ((String) parameters.get(name));
+        return (parameters.get(name));
     }
 
     @Override
-    public Enumeration getInitParameterNames() {
+    public Enumeration<String> getInitParameterNames() {
         return (parameters.keys());
     }
 

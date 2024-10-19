@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -737,16 +738,16 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
      * @return
      */
     protected String lifecycleTrace(String lmethod, String cmethod) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         lifecycleTrace(lmethod, cmethod, component, sb);
         return sb.toString();
     }
 
-    protected void lifecycleTrace(String lmethod, String cmethod, UIComponent component, StringBuffer sb) {
+    protected void lifecycleTrace(String lmethod, String cmethod, UIComponent component, StringBuilder sb) {
 
         // Append the call for this lifecycle method
         String id = component.getId();
-        sb.append("/").append(lmethod).append("-").append(id);
+        sb.append('/').append(lmethod).append('-').append(id);
         if (!component.isRendered()) {
             return;
         }
@@ -755,9 +756,9 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         Iterator<String> names = component.getFacets().keySet().iterator();
         while (names.hasNext()) {
             String name = names.next();
-            sb.append("/").append(lmethod).append("-").append(name);
+            sb.append('/').append(lmethod).append('-').append(name);
             if (cmethod != null && component.getFacets().get(name).isRendered()) {
-                sb.append("/").append(cmethod).append("-").append(name);
+                sb.append('/').append(cmethod).append('-').append(name);
             }
         }
 
@@ -770,7 +771,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
 
         // Append the call for this component's component method
         if (cmethod != null && component.isRendered()) {
-            sb.append("/").append(cmethod).append("-").append(id);
+            sb.append('/').append(cmethod).append('-').append(id);
         }
 
     }

@@ -25,6 +25,7 @@ import java.util.Collections;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import jakarta.faces.component.Doctype;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.html.HtmlHead;
 import jakarta.faces.context.FacesContext;
@@ -51,13 +52,24 @@ public class HeadRendererTest {
      */
     @Test
     public void testEncodeBegin() throws Exception {
-        //
-        // TODO: Note we are not testing this method as its complexity is too
-        // high, because it uses WebConfiguration.getInstance to get
-        // configuration information that should be readily available to the
-        // renderer through either the FacesContext or the component being
-        // rendered.
-        //
+        StringWriter writer = new StringWriter();
+        ResponseWriter testResponseWriter = new TestResponseWriter(writer);
+        FacesContext facesContext = Mockito.mock(FacesContext.class, "getResponseWriter");
+        UIViewRoot viewRoot = Mockito.mock(UIViewRoot.class);
+        Doctype doctype = Mockito.mock(Doctype.class);
+        HeadRenderer headRenderer = new HeadRenderer();
+        HtmlHead htmlHead = new HtmlHead();
+        
+        when(facesContext.getResponseWriter()).thenReturn(testResponseWriter);
+        when(facesContext.getViewRoot()).thenReturn(viewRoot);
+        when(viewRoot.getDoctype()).thenReturn(doctype);
+        when(doctype.getRootElement()).thenReturn("html");
+        when(doctype.getPublic()).thenReturn(null);
+        when(doctype.getSystem()).thenReturn(null);
+        
+        headRenderer.encodeBegin(facesContext, htmlHead);
+        String html = writer.toString();
+        assertTrue(html.contains("<head"));
     }
 
     /**

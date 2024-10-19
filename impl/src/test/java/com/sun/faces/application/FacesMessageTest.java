@@ -69,7 +69,6 @@ public class FacesMessageTest {
         String mDetail, mDetail1 = null;
         String severity, severity1 = null;
         ByteArrayOutputStream bos = null;
-        ByteArrayInputStream bis = null;
 
         mSummary = message.getSummary();
         mDetail = message.getDetail();

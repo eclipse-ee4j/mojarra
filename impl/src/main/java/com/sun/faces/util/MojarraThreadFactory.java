@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -29,11 +30,8 @@ public class MojarraThreadFactory implements ThreadFactory {
     // -------------------------------------------------------- Constructors
 
     public MojarraThreadFactory(String factoryName) {
-
-        SecurityManager s = System.getSecurityManager();
-        group = s != null ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
+        group = Thread.currentThread().getThreadGroup();
         namePrefix = "Mojarra-" + factoryName + '-' + poolNumber.getAndIncrement() + "-thread-";
-
     }
 
     // ------------------------------------------ Methods from ThreadFactory

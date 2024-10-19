@@ -34,6 +34,7 @@ import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.util.FacesLogger;
 
 import jakarta.faces.FacesException;
+import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
@@ -54,16 +55,17 @@ public class WebappResourceHelper extends ResourceHelper {
 
     private final String BASE_CONTRACTS_PATH;
 
-    private boolean cacheTimestamp;
+    private final boolean cacheTimestamp;
 
     // ------------------------------------------------------------ Constructors
 
     public WebappResourceHelper() {
 
         WebConfiguration webconfig = WebConfiguration.getInstance();
+        FacesContext context = FacesContext.getCurrentInstance();
         cacheTimestamp = webconfig.isOptionEnabled(CacheResourceModificationTimestamp);
-        BASE_RESOURCE_PATH = ensureLeadingSlash(webconfig.getOptionValue(WebConfiguration.WebContextInitParameter.WebAppResourcesDirectory));
-        BASE_CONTRACTS_PATH = ensureLeadingSlash(webconfig.getOptionValue(WebConfiguration.WebContextInitParameter.WebAppContractsDirectory));
+        BASE_RESOURCE_PATH = ensureLeadingSlash(ContextParam.WEBAPP_RESOURCES_DIRECTORY.getValue(context));
+        BASE_CONTRACTS_PATH = ensureLeadingSlash(ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(context));
 
     }
 
@@ -162,7 +164,7 @@ public class WebappResourceHelper extends ResourceHelper {
         Set<String> resourcePaths = ctx.getExternalContext().getResourcePaths(path);
         // it could be possible that there exists an empty directory
         // that is representing the library, but if it's empty, treat it
-        // as non-existant and return null.
+        // as non-existent and return null.
         if (resourcePaths != null && !resourcePaths.isEmpty()) {
             VersionInfo version = getVersion(resourcePaths, false);
             return new LibraryInfo(libraryName, version, localePrefix, contract, this);

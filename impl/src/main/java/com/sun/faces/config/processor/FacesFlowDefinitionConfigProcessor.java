@@ -47,6 +47,7 @@ import org.w3c.dom.NodeList;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.application.JavaFlowLoaderHelper;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.facelets.util.ReflectionUtil;
@@ -161,12 +162,12 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
 
         WebConfiguration config = WebConfiguration.getInstance(sc);
 
-        for (int i = 0; i < documentInfos.length; i++) {
-            URI definingDocumentURI = documentInfos[i].getSourceURI();
+        for (DocumentInfo documentInfo : documentInfos) {
+            URI definingDocumentURI = documentInfo.getSourceURI();
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.log(Level.FINE, MessageFormat.format("Processing factory elements for document: ''{0}''", definingDocumentURI));
             }
-            Document document = documentInfos[i].getDocument();
+            Document document = documentInfo.getDocument();
             String namespace = document.getDocumentElement().getNamespaceURI();
             NodeList flowDefinitions = document.getDocumentElement().getElementsByTagNameNS(namespace, FACES_FLOW_DEFINITION);
             if (flowDefinitions != null && flowDefinitions.getLength() > 0) {
@@ -177,19 +178,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
         }
 
         if (config.isHasFlows()) {
-            String optionValue = config.getOptionValue(WebConfiguration.WebContextInitParameter.ClientWindowMode);
-            boolean clientWindowNeedsEnabling = false;
-            if ("none".equals(optionValue)) {
-                clientWindowNeedsEnabling = true;
-                String featureName = WebConfiguration.WebContextInitParameter.ClientWindowMode.getQualifiedName();
-                LOGGER.log(Level.WARNING, "{0} was set to none, but Faces Flows requires {0} is enabled.  Setting to ''url''.", new Object[] { featureName });
-            } else if (null == optionValue) {
-                clientWindowNeedsEnabling = true;
-            }
-            if (clientWindowNeedsEnabling) {
-                config.setOptionValue(WebConfiguration.WebContextInitParameter.ClientWindowMode, "url");
-            }
-
+            JavaFlowLoaderHelper.enableClientWindowModeIfNecessary(facesContext);
             facesContext.getApplication().subscribeToEvent(PostConstructApplicationEvent.class, Application.class, new PerformDeferredFlowProcessing());
         }
 
@@ -208,7 +197,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
     private List<FlowDefinitionDocument> getSavedFlowDefinitions(FacesContext context) {
         Map<String, Object> appMap = context.getExternalContext().getApplicationMap();
         List<FlowDefinitionDocument> def = (List<FlowDefinitionDocument>) appMap.get(flowDefinitionListKey);
-        return null != def ? def : Collections.EMPTY_LIST;
+        return null != def ? def : Collections.emptyList();
     }
 
     private void clearSavedFlowDefinitions(FacesContext context) {

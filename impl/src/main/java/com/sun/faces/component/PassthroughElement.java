@@ -16,14 +16,15 @@
 
 package com.sun.faces.component;
 
+import static jakarta.faces.component.html.HtmlEvents.getHtmlBodyElementEventNames;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import jakarta.el.ValueExpression;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
 
 /**
  * <p>
@@ -357,17 +358,14 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel implemen
         getStateHelper().put(PropertyKeys.styleClass, styleClass);
     }
 
-    private static final Collection<String> EVENT_NAMES = Collections.unmodifiableCollection(
-            Arrays.asList("click", "dblclick", "keydown", "keypress", "keyup", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup"));
-
     @Override
     public Collection<String> getEventNames() {
-        return EVENT_NAMES;
+        return getHtmlBodyElementEventNames(getFacesContext()); 
     }
 
     @Override
     public String getDefaultEventName() {
-        return "click";
+        return HtmlDocumentElementEvent.click.name();
     }
 
     // TODO The same as jakarta.faces.component.html.HtmlComponentUtils#handleAttribute
@@ -376,7 +374,7 @@ public class PassthroughElement extends jakarta.faces.component.UIPanel implemen
         List<String> setAttributes = (List<String>) getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet");
         if (setAttributes == null) {
             String cname = this.getClass().getName();
-            if (cname != null && cname.startsWith(OPTIMIZED_PACKAGE)) {
+            if (cname.startsWith(OPTIMIZED_PACKAGE)) {
                 setAttributes = new ArrayList<>(6);
                 getAttributes().put("jakarta.faces.component.UIComponentBase.attributesThatAreSet", setAttributes);
             }

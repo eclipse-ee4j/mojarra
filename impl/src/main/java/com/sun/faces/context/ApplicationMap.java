@@ -45,18 +45,16 @@ public class ApplicationMap extends BaseContextMap<Object> {
 
     @Override
     public void clear() {
-        for (Enumeration e = servletContext.getAttributeNames(); e.hasMoreElements();) {
-            servletContext.removeAttribute((String) e.nextElement());
+        for (Enumeration<String> e = servletContext.getAttributeNames(); e.hasMoreElements();) {
+            servletContext.removeAttribute(e.nextElement());
         }
     }
 
     // Supported by maps if overridden
     @Override
-    public void putAll(Map t) {
-        for (Iterator i = t.entrySet().iterator(); i.hasNext();) {
-            Map.Entry entry = (Map.Entry) i.next();
-            servletContext.setAttribute((String) entry.getKey(), entry.getValue());
-        }
+    public void putAll(Map map) {
+        Util.notNull("map", map);
+        map.forEach( (key, value) -> servletContext.setAttribute((String) key, value));
     }
 
     @Override
@@ -91,14 +89,14 @@ public class ApplicationMap extends BaseContextMap<Object> {
 
     @Override
     public boolean equals(Object obj) {
-        return !(obj == null || !(obj instanceof ApplicationMap)) && super.equals(obj);
+        return obj instanceof ApplicationMap && super.equals(obj);
     }
 
     @Override
     public int hashCode() {
         int hashCode = 7 * servletContext.hashCode();
-        for (Iterator i = entrySet().iterator(); i.hasNext();) {
-            hashCode += i.next().hashCode();
+        for (Map.Entry<String,Object> entry : entrySet()) {
+            hashCode += entry.hashCode();
         }
         return hashCode;
     }

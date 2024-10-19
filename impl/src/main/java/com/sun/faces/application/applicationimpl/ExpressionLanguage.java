@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -20,19 +21,17 @@ import static com.sun.faces.util.MessageUtils.ILLEGAL_ATTEMPT_SETTING_APPLICATIO
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.Util.getCdiBeanManager;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.el.FacesCompositeELResolver;
-
 import jakarta.el.CompositeELResolver;
 import jakarta.el.ELContextListener;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
 import jakarta.el.ExpressionFactory;
-import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.el.ELAwareBeanManager;
 import jakarta.faces.context.FacesContext;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ExpressionLanguage {
 
@@ -40,8 +39,8 @@ public class ExpressionLanguage {
 
     private final ApplicationAssociate associate;
 
-    private List<ELContextListener> elContextListeners;
-    private CompositeELResolver elResolvers;
+    private final List<ELContextListener> elContextListeners;
+    private final CompositeELResolver elResolvers;
     private volatile FacesCompositeELResolver compositeELResolver;
 
     public ExpressionLanguage(ApplicationAssociate applicationAssociate) {
@@ -103,7 +102,7 @@ public class ExpressionLanguage {
         }
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        BeanManager cdiBeanManager = getCdiBeanManager(facesContext);
+        ELAwareBeanManager cdiBeanManager = getCdiBeanManager(facesContext);
 
         if (!resolver.equals(cdiBeanManager.getELResolver())) {
             elResolvers.add(resolver);

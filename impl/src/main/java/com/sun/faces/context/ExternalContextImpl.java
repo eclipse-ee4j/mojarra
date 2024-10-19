@@ -19,8 +19,8 @@ package com.sun.faces.context;
 
 import static com.sun.faces.RIConstants.PUSH_RESOURCE_URLS_KEY_NAME;
 import static com.sun.faces.context.ContextParam.SendPoweredByHeader;
-import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
-import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
+import static com.sun.faces.context.UrlBuilder.PROTOCOL_SEPARATOR;
+import static com.sun.faces.context.UrlBuilder.WEBSOCKET_PROTOCOL;
 import static com.sun.faces.util.Util.isEmpty;
 
 import java.io.IOException;
@@ -31,8 +31,6 @@ import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -44,6 +42,7 @@ import java.util.logging.Logger;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
+import jakarta.faces.annotation.FacesConfig;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -69,6 +68,7 @@ import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.context.flash.ELFlash;
 import com.sun.faces.renderkit.html_basic.ScriptRenderer;
 import com.sun.faces.renderkit.html_basic.StylesheetRenderer;
+import com.sun.faces.util.CollectionsUtils;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.TypedCollections;
@@ -82,9 +82,9 @@ public class ExternalContextImpl extends ExternalContext {
 
     private static final Logger LOGGER = FacesLogger.CONTEXT.getLogger();
 
-    private ServletContext servletContext = null;
-    private ServletRequest request = null;
-    private ServletResponse response = null;
+    private ServletContext servletContext;
+    private ServletRequest request;
+    private ServletResponse response;
     private ClientWindow clientWindow = null;
 
     private Map<String, Object> applicationMap = null;
@@ -96,9 +96,9 @@ public class ExternalContextImpl extends ExternalContext {
     private Map<String, String[]> requestHeaderValuesMap = null;
     private Map<String, Object> cookieMap = null;
     private Map<String, String> initParameterMap = null;
-    private Map<String, String> fallbackContentTypeMap = null;
+
     private Flash flash;
-    private boolean distributable;
+    private final boolean distributable;
 
     private enum PREDEFINED_COOKIE_PROPERTIES {
         domain, maxAge, path, secure, httpOnly, attribute;
@@ -113,7 +113,13 @@ public class ExternalContextImpl extends ExternalContext {
         }
     }
 
-    static final Class theUnmodifiableMapClass = Collections.unmodifiableMap(new HashMap<>()).getClass();
+    // we want exactly the UnmodifiableMap.class (which is private) so do not remove the call to Collections.unmodifiableMap(...)
+    static final Class theUnmodifiableMapClass = Collections.unmodifiableMap(Collections.emptyMap()).getClass();
+
+    private static final Map<String, String> fallbackContentTypeMap = Map.of(
+            "js", ScriptRenderer.DEFAULT_CONTENT_TYPE,
+            "css", StylesheetRenderer.DEFAULT_CONTENT_TYPE,
+            "properties", "text/plain");
 
     // ------------------------------------------------------------ Constructors
 
@@ -141,11 +147,6 @@ public class ExternalContextImpl extends ExternalContext {
 
         distributable = ContextParamUtils.getValue(servletContext, ContextParam.EnableDistributable, Boolean.class);
 
-        fallbackContentTypeMap = new HashMap<>(3, 1.0f);
-        fallbackContentTypeMap.put("js", ScriptRenderer.DEFAULT_CONTENT_TYPE);
-        fallbackContentTypeMap.put("css", StylesheetRenderer.DEFAULT_CONTENT_TYPE);
-        fallbackContentTypeMap.put("properties", "text/plain");
-
     }
 
     // -------------------------------------------- Methods from ExternalContext
@@ -160,10 +161,9 @@ public class ExternalContextImpl extends ExternalContext {
 
     @Override
     public String getSessionId(boolean create) {
-        HttpSession session = null;
         String id = null;
 
-        session = (HttpSession) getSession(create);
+        final HttpSession session = (HttpSession) getSession(create);
         if (session != null) {
             id = session.getId();
         }
@@ -203,7 +203,6 @@ public class ExternalContextImpl extends ExternalContext {
         if (request instanceof ServletRequest) {
             this.request = (ServletRequest) request;
             requestHeaderMap = null;
-            requestHeaderValuesMap = null;
             requestHeaderValuesMap = null;
             requestMap = null;
             requestParameterMap = null;
@@ -368,24 +367,7 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public Iterator<String> getRequestParameterNames() {
-        final Enumeration namEnum = request.getParameterNames();
-
-        return new Iterator<String>() {
-            @Override
-            public boolean hasNext() {
-                return namEnum.hasMoreElements();
-            }
-
-            @Override
-            public String next() {
-                return (String) namEnum.nextElement();
-            }
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
-        };
+        return CollectionsUtils.unmodifiableIterator( request.getParameterNames() );
     }
 
     /**
@@ -401,7 +383,7 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public Iterator<Locale> getRequestLocales() {
-        return new LocalesIterator(request.getLocales());
+        return CollectionsUtils.unmodifiableIterator(request.getLocales());
     }
 
     /**
@@ -541,12 +523,11 @@ public class ExternalContextImpl extends ExternalContext {
         if (null != cw) {
             appendClientWindow = cw.isClientWindowRenderModeEnabled(context);
         }
-        if (appendClientWindow && -1 == url.indexOf(ResponseStateManager.CLIENT_WINDOW_URL_PARAM)) {
+        if (appendClientWindow && !url.contains(ResponseStateManager.CLIENT_WINDOW_URL_PARAM)) {
             if (null != cw) {
                 String clientWindowId = cw.getId();
                 StringBuilder builder = new StringBuilder(url);
-                int q = url.indexOf(UrlBuilder.QUERY_STRING_SEPARATOR);
-                if (-1 == q) {
+                if ( !url.contains(UrlBuilder.QUERY_STRING_SEPARATOR) ) {
                     builder.append(UrlBuilder.QUERY_STRING_SEPARATOR);
                 } else {
                     builder.append(UrlBuilder.PARAMETER_PAIR_SEPARATOR);
@@ -572,9 +553,7 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public String encodeResourceURL(String url) {
-        if (url == null) {
-            throw new NullPointerException(getExceptionMessageString(NULL_PARAMETERS_ERROR_MESSAGE_ID, "url"));
-        }
+        Util.notNull("url", url);
 
         String encodedURL = ((HttpServletResponse) response).encodeURL(url);
         pushIfPossibleAndNecessary(encodedURL);
@@ -587,23 +566,29 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public String encodeWebsocketURL(String url) {
-        if (url == null) {
-            throw new NullPointerException(getExceptionMessageString(NULL_PARAMETERS_ERROR_MESSAGE_ID, "url"));
-        }
+        Util.notNull("url", url);
 
         HttpServletRequest request = (HttpServletRequest) getRequest();
-        int port = ContextParamUtils.getValue(servletContext, ContextParam.WebsocketEndpointPort, Integer.class);
+        int port = FacesConfig.ContextParam.WEBSOCKET_ENDPOINT_PORT.getValue(FacesContext.getCurrentInstance());
 
         try {
-            URL requestURL = new URL(request.getRequestURL().toString());
+            final URL requestURL = new URL(request.getRequestURL().toString());
 
             if (port <= 0) {
                 port = requestURL.getPort();
             }
 
-            String websocketURL = new URL(requestURL.getProtocol(), requestURL.getHost(), port, url).toExternalForm();
-            return encodeResourceURL(websocketURL.replaceFirst("http", "ws"));
-        } catch (MalformedURLException e) {
+            final String fixedPortRequestURL = new URL(requestURL.getProtocol(), requestURL.getHost(), port, url).toExternalForm();
+
+            // the index after http or https ...
+            int protocolEndIndex = fixedPortRequestURL.indexOf(PROTOCOL_SEPARATOR);
+
+            // ws://[...]
+            final String websocketURL = WEBSOCKET_PROTOCOL + fixedPortRequestURL.substring(protocolEndIndex);
+
+            return encodeResourceURL( websocketURL );
+        }
+        catch (MalformedURLException e) {
             return url;
         }
     }
@@ -715,12 +700,10 @@ public class ExternalContextImpl extends ExternalContext {
             mimeType = getFallbackMimeType(file);
         }
 
-        FacesContext ctx = FacesContext.getCurrentInstance();
-        if (mimeType == null && LOGGER.isLoggable(Level.WARNING) && ctx.isProjectStage(ProjectStage.Development)) {
+        if (mimeType == null && LOGGER.isLoggable(Level.WARNING) && FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Development)) {
             LOGGER.log(Level.WARNING, "faces.externalcontext.no.mime.type.found", new Object[] { file });
         }
         return mimeType;
-
     }
 
     /**
@@ -934,6 +917,14 @@ public class ExternalContextImpl extends ExternalContext {
     }
 
     /**
+     * @see jakarta.faces.context.ExternalContext#setResponseContentLengthLong(long)
+     */
+    @Override
+    public void setResponseContentLengthLong(long length) {
+        response.setContentLengthLong(length);
+    }
+
+    /**
      * @see jakarta.faces.context.ExternalContext#setSessionMaxInactiveInterval(int)
      */
     @Override
@@ -968,7 +959,7 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public boolean isSecure() {
-        return ((HttpServletRequest) request).isSecure();
+        return request.isSecure();
     }
 
     @Override
@@ -1028,7 +1019,7 @@ public class ExternalContextImpl extends ExternalContext {
         requestHeaderValuesMap = null;
         cookieMap = null;
         initParameterMap = null;
-        fallbackContentTypeMap = null;
+
         flash = null;
     }
 
@@ -1080,48 +1071,12 @@ public class ExternalContextImpl extends ExternalContext {
 
     // --------------------------------------------------------- Private Methods
 
-    public String getFallbackMimeType(String file) {
-
-        if (file == null || file.length() == 0) {
-            return null;
-        }
-        int idx = file.lastIndexOf('.');
-        if (idx == -1) {
-            return null;
-        }
-        String extension = file.substring(idx + 1);
-        if (extension.length() == 0) {
-            return null;
-        }
-        return fallbackContentTypeMap.get(extension);
-
+    private static String getFallbackMimeType(String file) {
+        final String extension = Util.fileExtension(file);
+        return extension != null ? fallbackContentTypeMap.get(extension) : null;
     }
 
     // ----------------------------------------------------------- Inner Classes
 
-    private static class LocalesIterator implements Iterator<Locale> {
-
-        public LocalesIterator(Enumeration locales) {
-            this.locales = locales;
-        }
-
-        private Enumeration locales;
-
-        @Override
-        public boolean hasNext() {
-            return locales.hasMoreElements();
-        }
-
-        @Override
-        public Locale next() {
-            return (Locale) locales.nextElement();
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException();
-        }
-
-    }
 
 }

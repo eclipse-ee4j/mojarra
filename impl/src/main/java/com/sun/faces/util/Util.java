@@ -1,6 +1,6 @@
 /*
+ * Copyright (c) 2021, 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
- * Copyright (c) 2021 Contributors to Eclipse Foundation.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,6 +19,7 @@
 
 package com.sun.faces.util;
 
+import static com.sun.faces.RIConstants.CDI_BEAN_MANAGER;
 import static com.sun.faces.RIConstants.FACELETS_ENCODING_KEY;
 import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
 import static com.sun.faces.RIConstants.FACES_SERVLET_REGISTRATION;
@@ -35,7 +36,6 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.SEVERE;
 
-import java.beans.FeatureDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
@@ -46,11 +46,11 @@ import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -84,10 +84,10 @@ import com.sun.faces.config.manager.FacesSchema;
 import com.sun.faces.facelets.component.UIRepeat;
 import com.sun.faces.io.FastStringWriter;
 
-import jakarta.el.ELResolver;
 import jakarta.el.ValueExpression;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.el.ELAwareBeanManager;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
@@ -357,19 +357,21 @@ public class Util {
         return factory;
     }
 
+
+    public static final Map<String,Class<?>> primitiveTypes = Map.of(
+            "byte" , byte.class ,
+            "short" , short.class ,
+            "int" , int.class ,
+            "long" , long.class ,
+            "float" , float.class ,
+            "double" , double.class ,
+            "boolean" , boolean.class ,
+            "char" , char.class
+    );
+
     public static Class loadClass(String name, Object fallbackClass) throws ClassNotFoundException {
         ClassLoader loader = Util.getCurrentLoader(fallbackClass);
-
-        String[] primitiveNames = { "byte", "short", "int", "long", "float", "double", "boolean", "char" };
-        Class<?>[] primitiveClasses = { byte.class, short.class, int.class, long.class, float.class, double.class, boolean.class, char.class };
-
-        for (int i = 0; i < primitiveNames.length; i++) {
-            if (primitiveNames[i].equals(name)) {
-                return primitiveClasses[i];
-            }
-        }
-
-        return Class.forName(name, true, loader);
+        return primitiveTypes.getOrDefault(name, Class.forName(name, true, loader));
     }
 
     public static Class<?> loadClass2(String name, Object fallbackClass) {
@@ -403,11 +405,7 @@ public class Util {
     }
 
     private static ClassLoader getContextClassLoader() {
-        if (System.getSecurityManager() == null) {
-            return Thread.currentThread().getContextClassLoader();
-        } else {
-            return (ClassLoader) java.security.AccessController.doPrivileged((PrivilegedAction) () -> Thread.currentThread().getContextClassLoader());
-        }
+        return Thread.currentThread().getContextClassLoader();
     }
 
     /**
@@ -451,6 +449,17 @@ public class Util {
 
         return input;
     }
+
+    /**
+     * @return the filename extension or null. the method is null-safe
+     */
+    public static String fileExtension(String filename) {
+        final String notBlankFilename = nullIfBlank(filename);
+        if ( notBlankFilename == null ) return null;
+        int idx = notBlankFilename.lastIndexOf('.');
+        return idx == -1 ? null : notBlankFilename.substring(idx+1);
+    }
+
 
     public static String removeAllButNextToLastSlashPathSegment(String input) {
         // Trim the leading lastSlash, if any.
@@ -550,6 +559,23 @@ public class Util {
     }
 
     /**
+     * Returns true if the given string is null or is blank.
+     *
+     * @param string The string to be checked.
+     * @return True if the given string is null or is blank.
+     */
+    public static boolean isBlank(String string) {
+        return string == null || string.isBlank();
+    }
+
+    /**
+     * @return null if the passed String is null or blank, s otherwise
+     */
+    public static String nullIfBlank(String s) {
+        return isBlank(s) ? null : s;
+    }
+
+    /**
      * Returns <code>true</code> if the given array is null or is empty.
      *
      * @param array The array to be checked on emptiness.
@@ -586,7 +612,7 @@ public class Util {
         } else if (value instanceof Map<?, ?>) {
             return ((Map<?, ?>) value).isEmpty();
         } else if (value instanceof Optional<?>) {
-            return !((Optional<?>) value).isPresent();
+            return ((Optional<?>) value).isEmpty();
         } else if (value.getClass().isArray()) {
             return Array.getLength(value) == 0;
         } else {
@@ -814,12 +840,12 @@ public class Util {
     }
 
     public static boolean componentIsDisabled(UIComponent component) {
-        return Boolean.valueOf(String.valueOf(component.getAttributes().get("disabled")));
+        return Boolean.parseBoolean(String.valueOf(component.getAttributes().get("disabled")));
     }
 
     public static boolean componentIsDisabledOrReadonly(UIComponent component) {
-        return Boolean.valueOf(String.valueOf(component.getAttributes().get("disabled")))
-                || Boolean.valueOf(String.valueOf(component.getAttributes().get("readonly")));
+        return Boolean.parseBoolean(String.valueOf(component.getAttributes().get("disabled")))
+                || Boolean.parseBoolean(String.valueOf(component.getAttributes().get("readonly")));
     }
 
     // W3C XML specification refers to IETF RFC 1766 for language code
@@ -937,7 +963,7 @@ public class Util {
         }
 
         StackTraceElement[] stacks = e.getStackTrace();
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (StackTraceElement stack : stacks) {
             sb.append(stack.toString()).append('\n');
         }
@@ -975,21 +1001,6 @@ public class Util {
             }
         }
         return result;
-    }
-
-    public static FeatureDescriptor getFeatureDescriptor(String name, String displayName, String desc, boolean expert, boolean hidden, boolean preferred,
-            Object type, Boolean designTime) {
-
-        FeatureDescriptor fd = new FeatureDescriptor();
-        fd.setName(name);
-        fd.setDisplayName(displayName);
-        fd.setShortDescription(desc);
-        fd.setExpert(expert);
-        fd.setHidden(hidden);
-        fd.setPreferred(preferred);
-        fd.setValue(ELResolver.TYPE, type);
-        fd.setValue(ELResolver.RESOLVABLE_AT_DESIGN_TIME, designTime);
-        return fd;
     }
 
     /**
@@ -1486,25 +1497,22 @@ public class Util {
      * @param facesContext the Faces context to consult
      * @return the CDI bean manager.
      */
-    public static BeanManager getCdiBeanManager(FacesContext facesContext) {
-        BeanManager result = null;
+    public static ELAwareBeanManager getCdiBeanManager(FacesContext facesContext) {
+        ELAwareBeanManager result = null;
 
-        if (facesContext != null && facesContext.getAttributes().containsKey(RIConstants.CDI_BEAN_MANAGER)) {
-            result = (BeanManager) facesContext.getAttributes().get(RIConstants.CDI_BEAN_MANAGER);
-        } else if (facesContext != null && facesContext.getExternalContext().getApplicationMap().containsKey(RIConstants.CDI_BEAN_MANAGER)) {
-            result = (BeanManager) facesContext.getExternalContext().getApplicationMap().get(RIConstants.CDI_BEAN_MANAGER);
+        if (facesContext != null && facesContext.getAttributes().containsKey(CDI_BEAN_MANAGER)) {
+            result = (ELAwareBeanManager) facesContext.getAttributes().get(CDI_BEAN_MANAGER);
+        } else if (facesContext != null && facesContext.getExternalContext().getApplicationMap().containsKey(CDI_BEAN_MANAGER)) {
+            result = (ELAwareBeanManager) facesContext.getExternalContext().getApplicationMap().get(CDI_BEAN_MANAGER);
         } else {
             try {
-                InitialContext initialContext = new InitialContext();
-                result = (BeanManager) initialContext.lookup("java:comp/BeanManager");
+                result =  wrapIfNeeded(InitialContext.doLookup("java:comp/BeanManager"));
             } catch (NamingException ne) {
                 try {
-                    InitialContext initialContext = new InitialContext();
-                    result = (BeanManager) initialContext.lookup("java:comp/env/BeanManager");
+                    result = wrapIfNeeded(InitialContext.doLookup("java:comp/env/BeanManager"));
                 } catch (NamingException ne2) {
                     try {
-                        CDI<Object> cdi = CDI.current();
-                        result = cdi.getBeanManager();
+                        result = wrapIfNeeded(CDI.current().getBeanManager());
                     }
                     catch (Exception | LinkageError e) {
                     }
@@ -1513,12 +1521,12 @@ public class Util {
 
             if (result == null && facesContext != null) {
                 Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
-                result = (BeanManager) applicationMap.get("org.jboss.weld.environment.servlet.jakarta.enterprise.inject.spi.BeanManager");
+                result = wrapIfNeeded((BeanManager) applicationMap.get("org.jboss.weld.environment.servlet.jakarta.enterprise.inject.spi.BeanManager"));
             }
 
             if (result != null && facesContext != null) {
-                facesContext.getAttributes().put(RIConstants.CDI_BEAN_MANAGER, result);
-                facesContext.getExternalContext().getApplicationMap().put(RIConstants.CDI_BEAN_MANAGER, result);
+                facesContext.getAttributes().put(CDI_BEAN_MANAGER, result);
+                facesContext.getExternalContext().getApplicationMap().put(CDI_BEAN_MANAGER, result);
             }
         }
 
@@ -1529,13 +1537,33 @@ public class Util {
         return result;
     }
 
+    private static ELAwareBeanManager wrapIfNeeded(BeanManager beanManager) {
+        if (beanManager == null) {
+            return null;
+        }
+
+        if (beanManager instanceof ELAwareBeanManager elAwareBeanManager) {
+            return elAwareBeanManager;
+        }
+
+        return new ELAwareBeanManagerWrapper(beanManager);
+    }
+
     @SuppressWarnings("unchecked")
     public static <T> Stream<T> stream(Object object) {
         if (object == null) {
             return Stream.empty();
-        } else if (object instanceof Stream) {
+        }
+        else if (object instanceof Stream) {
             return (Stream<T>) object;
-        } else if (object instanceof Iterable) {
+        }
+        else if (object instanceof Collection) {
+            return ((Collection)object).stream();   // little bonus with sized spliterator...
+        }
+        else if ( object instanceof Enumeration ) { // recursive call wrapping in an Iterator (Java 9+)
+            return stream( ((Enumeration)object).asIterator() );
+        }
+        else if (object instanceof Iterable) {
             return (Stream<T>) StreamSupport.stream(((Iterable<?>) object).spliterator(), false);
         } else if (object instanceof Map) {
             return (Stream<T>) ((Map<?, ?>) object).entrySet().stream();

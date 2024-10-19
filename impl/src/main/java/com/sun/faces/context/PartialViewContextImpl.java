@@ -70,9 +70,7 @@ import jakarta.faces.render.RenderKitFactory;
 public class PartialViewContextImpl extends PartialViewContext {
 
     // Log instance for this class
-    private static Logger LOGGER = FacesLogger.CONTEXT.getLogger();
-
-    private static final Set<VisitHint> SKIP_UNRENDERED_HINT = EnumSet.of(SKIP_UNRENDERED);
+    private static final Logger LOGGER = FacesLogger.CONTEXT.getLogger();
 
     private static final Set<VisitHint> SKIP_UNRENDERED_AND_EXECUTE_LIFECYCLE_HINTS = EnumSet.of(SKIP_UNRENDERED, EXECUTE_LIFECYCLE);
 
@@ -171,7 +169,7 @@ public class PartialViewContextImpl extends PartialViewContext {
     @Override
     public boolean isResetValues() {
         Object value = PARTIAL_RESET_VALUES_PARAM.getValue(ctx);
-        return null != value && "true".equals(value) ? true : false;
+        return Boolean.TRUE.toString().equals(value);
     }
 
     @Override
@@ -293,7 +291,7 @@ public class PartialViewContextImpl extends PartialViewContext {
                 writer.startDocument();
 
                 if (isResetValues()) {
-                    resetValues(viewRoot, myRenderIds, ctx);
+                    viewRoot.resetValues(ctx, myRenderIds, SKIP_UNRENDERED);
                 }
 
                 if (isRenderAll()) {
@@ -389,7 +387,8 @@ public class PartialViewContextImpl extends PartialViewContext {
         // process. Create our (partial) VisitContext and the
         // VisitCallback that will be invoked for each component that
         // is visited.
-        VisitContext visitContext = createPartialVisitContext(context, phaseClientIds, true);
+        VisitContextFactory visitContextFactory = (VisitContextFactory) FactoryFinder.getFactory(VISIT_CONTEXT_FACTORY);
+        VisitContext visitContext = visitContextFactory.getVisitContext(context, phaseClientIds, SKIP_UNRENDERED_AND_EXECUTE_LIFECYCLE_HINTS);
         PhaseAwareVisitCallback visitCallback = new PhaseAwareVisitCallback(ctx, phaseId);
         component.visitTree(visitContext, visitCallback);
 
@@ -403,34 +402,6 @@ public class PartialViewContextImpl extends PartialViewContext {
                 }
                 LOGGER.log(Level.FINER, "faces.context.partial_visit_context_unvisited_children", new Object[] { builder.toString() });
             }
-        }
-    }
-
-    private static VisitContext createPartialVisitContext(FacesContext context, Collection<String> clientIds, boolean executeLifecycle) {
-
-        // Note that we use the SKIP_UNRENDERED hint as
-        // we only want to visit the rendered subtree.
-        Set<VisitHint> hints = executeLifecycle ? SKIP_UNRENDERED_AND_EXECUTE_LIFECYCLE_HINTS : SKIP_UNRENDERED_HINT;
-        VisitContextFactory visitContextFactory = (VisitContextFactory) FactoryFinder.getFactory(VISIT_CONTEXT_FACTORY);
-        return visitContextFactory.getVisitContext(context, clientIds, hints);
-    }
-
-    private static void resetValues(UIComponent component, Collection<String> clientIds, FacesContext context) {
-
-        // NOTE: this is indeed a copy of the one in UIViewRoot#resetValues().
-        // The difference is that we want to be able to control the visit hints.
-        // This isn't possible via the UIViewRoot#resetValues() API in its current form.
-        component.visitTree(createPartialVisitContext(context, clientIds, false), new DoResetValues());
-    }
-
-    private static class DoResetValues implements VisitCallback {
-
-        @Override
-        public VisitResult visit(VisitContext context, UIComponent target) {
-            if (target instanceof EditableValueHolder) {
-                ((EditableValueHolder) target).resetValue();
-            }
-            return VisitResult.ACCEPT;
         }
     }
 
@@ -594,8 +565,8 @@ public class PartialViewContextImpl extends PartialViewContext {
 
     private static class PhaseAwareVisitCallback implements VisitCallback {
 
-        private PhaseId curPhase;
-        private FacesContext ctx;
+        private final PhaseId curPhase;
+        private final FacesContext ctx;
 
         private PhaseAwareVisitCallback(FacesContext ctx, PhaseId curPhase) {
             this.ctx = ctx;
@@ -650,7 +621,7 @@ public class PartialViewContextImpl extends PartialViewContext {
     private static final class DelayedInitPartialResponseWriter extends PartialResponseWriter {
 
         private ResponseWriter writer;
-        private PartialViewContextImpl ctx;
+        private final PartialViewContextImpl ctx;
 
         // -------------------------------------------------------- Constructors
 

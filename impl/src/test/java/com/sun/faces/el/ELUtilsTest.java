@@ -12,14 +12,14 @@ import com.sun.faces.application.ApplicationImpl;
 import com.sun.faces.context.ExternalContextImpl;
 import com.sun.faces.context.FacesContextImpl;
 import com.sun.faces.lifecycle.LifecycleImpl;
-import com.sun.faces.mock.MockBeanManager;
+import com.sun.faces.mock.MockCDIProvider;
 import com.sun.faces.mock.MockHttpServletRequest;
 import com.sun.faces.mock.MockHttpServletResponse;
 import com.sun.faces.mock.MockServletContext;
 
 import jakarta.el.ELResolver;
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.faces.FactoryFinder;
-import jakarta.faces.context.FacesContext;
 
 public class ELUtilsTest {
 
@@ -27,6 +27,8 @@ public class ELUtilsTest {
 
     @BeforeEach
     public void setUp() {
+        CDI.setCDIProvider(new MockCDIProvider());
+
         MockServletContext mockServletContext = new MockServletContext() {
             @Override
             public URL getResource(String path) {
@@ -50,8 +52,6 @@ public class ELUtilsTest {
 
         applicationAssociate = (ApplicationAssociate) externalContext.getApplicationMap()
                 .get(RIConstants.FACES_PREFIX + "ApplicationAssociate");
-
-        FacesContext.getCurrentInstance().getAttributes().put(RIConstants.CDI_BEAN_MANAGER, new MockBeanManager());
     }
 
     @Test

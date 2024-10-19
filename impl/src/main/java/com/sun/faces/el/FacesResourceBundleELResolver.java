@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -131,38 +132,6 @@ public class FacesResourceBundleELResolver extends ELResolver {
         }
 
         return false;
-    }
-
-    @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
-
-        if (base != null) {
-            return null;
-        }
-
-        ArrayList<FeatureDescriptor> list = new ArrayList<>();
-
-        FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
-        ApplicationAssociate associate = ApplicationAssociate.getCurrentInstance();
-        Map<String, ApplicationResourceBundle> rbMap = associate.getResourceBundles();
-        if (rbMap == null) {
-            return list.iterator();
-        }
-        // iterate over the list of managed beans
-        for (Iterator<Map.Entry<String, ApplicationResourceBundle>> i = rbMap.entrySet().iterator(); i.hasNext();) {
-            Map.Entry<String, ApplicationResourceBundle> entry = i.next();
-            String var = entry.getKey();
-            ApplicationResourceBundle bundle = entry.getValue();
-            if (bundle != null) {
-                Locale curLocale = Util.getLocaleFromContextOrSystem(facesContext);
-
-                String description = bundle.getDescription(curLocale);
-                String displayName = bundle.getDisplayName(curLocale);
-
-                list.add(Util.getFeatureDescriptor(var, displayName, description, false, false, true, ResourceBundle.class, Boolean.TRUE));
-            }
-        }
-        return list.iterator();
     }
 
     @Override

@@ -261,10 +261,7 @@ public final class CdiUtils {
 
         String className = bean.getBeanClass().getSimpleName();
 
-        return new StringBuilder()
-            .append(Character.toLowerCase(className.charAt(0)))
-            .append(className.substring(1))
-            .toString();
+        return Character.toLowerCase(className.charAt(0)) + className.substring(1);
     }
 
     /**

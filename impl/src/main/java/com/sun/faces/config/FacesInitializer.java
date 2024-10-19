@@ -21,7 +21,6 @@ import static com.sun.faces.RIConstants.ANNOTATED_CLASSES;
 import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
 import static com.sun.faces.RIConstants.FACES_SERVLET_REGISTRATION;
 import static com.sun.faces.util.Util.isEmpty;
-import static java.lang.Boolean.parseBoolean;
 import static java.util.logging.Level.WARNING;
 
 import java.util.HashSet;
@@ -33,11 +32,13 @@ import com.sun.faces.util.FacesLogger;
 
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.annotation.FacesConfig;
+import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.application.ResourceDependencies;
 import jakarta.faces.application.ResourceDependency;
 import jakarta.faces.component.FacesComponent;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.FacesBehavior;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.FacesConverter;
 import jakarta.faces.event.ListenerFor;
@@ -51,7 +52,6 @@ import jakarta.faces.lifecycle.ClientWindowScoped;
 import jakarta.faces.model.DataModel;
 import jakarta.faces.model.FacesDataModel;
 import jakarta.faces.push.Push;
-import jakarta.faces.push.PushContext;
 import jakarta.faces.render.FacesBehaviorRenderer;
 import jakarta.faces.render.FacesRenderer;
 import jakarta.faces.render.Renderer;
@@ -115,21 +115,17 @@ public class FacesInitializer implements ServletContainerInitializer {
             try {
                 if (appHasFacesContent) {
                     // Only look at mapping concerns if there is Faces content
-                    handleMappingConcerns(servletContext);
+                    handleMappingConcerns(servletContext, initFacesContext);
                 }
 
                 // Other concerns also handled if there is an existing Faces Servlet mapping
                 handleCdiConcerns(servletContext);
-                handleWebSocketConcerns(servletContext);
+                handleWebSocketConcerns(servletContext, initFacesContext);
 
                 // The Configure listener will do the bulk of initializing (configuring) Faces in a later phase.
                 servletContext.addListener(ConfigureListener.class);
             }
             finally {
-                // Bug 20458755: The InitFacesContext was not being cleaned up, resulting in
-                // a partially constructed FacesContext being made available
-                // to other code that re-uses this Thread at init time.
-                initFacesContext.releaseCurrentInstance();
                 initFacesContext.release();
             }
         } else {
@@ -190,7 +186,7 @@ public class FacesInitializer implements ServletContainerInitializer {
         return null;
     }
 
-    private static void handleMappingConcerns(ServletContext servletContext) throws ServletException {
+    private static void handleMappingConcerns(ServletContext servletContext, FacesContext facesContext) throws ServletException {
         ServletRegistration existingFacesServletRegistration = getExistingFacesServletRegistration(servletContext);
 
         if (existingFacesServletRegistration != null) {
@@ -201,7 +197,7 @@ public class FacesInitializer implements ServletContainerInitializer {
 
         ServletRegistration newFacesServletRegistration = servletContext.addServlet(FacesServlet.class.getSimpleName(), FACES_SERVLET_CLASS_NAME);
 
-        if (parseBoolean(servletContext.getInitParameter(FacesServlet.DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME))) {
+        if (ContextParam.DISABLE_FACESSERVLET_TO_XHTML.isSet(facesContext)) {
             newFacesServletRegistration.addMapping(FACES_SERVLET_MAPPINGS_WITHOUT_XHTML);
         }
         else {
@@ -247,13 +243,13 @@ public class FacesInitializer implements ServletContainerInitializer {
         }
     }
 
-    private static void handleWebSocketConcerns(ServletContext context) throws ServletException {
+    private static void handleWebSocketConcerns(ServletContext context, FacesContext facesContext) throws ServletException {
         if (context.getAttribute(ServerContainer.class.getName()) != null) {
             // Already initialized
             return;
         }
 
-        if (!parseBoolean(context.getInitParameter(PushContext.ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME))) {
+        if (!ContextParam.ENABLE_WEBSOCKET_ENDPOINT.isSet(facesContext)) {
             // Register websocket endpoint is not enabled
             return;
         }

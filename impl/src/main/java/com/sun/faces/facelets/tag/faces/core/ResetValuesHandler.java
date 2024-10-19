@@ -31,12 +31,12 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.ActionListener;
-import jakarta.faces.view.ActionSource2AttachedObjectHandler;
+import jakarta.faces.view.ActionSourceAttachedObjectHandler;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
 
-public final class ResetValuesHandler extends ActionListenerHandlerBase implements ActionSource2AttachedObjectHandler {
+public final class ResetValuesHandler extends ActionListenerHandlerBase implements ActionSourceAttachedObjectHandler {
 
     private final TagAttribute render;
 

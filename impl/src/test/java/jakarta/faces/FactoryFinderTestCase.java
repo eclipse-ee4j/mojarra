@@ -264,9 +264,11 @@ public class FactoryFinderTestCase {
         Object response = new MockHttpServletResponse();
         Object containerContext = new MockServletContext();
         Lifecycle l = lFactory.getLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE);
+        @SuppressWarnings("unused")
         FacesContext context = fcFactory.getFacesContext(containerContext, request, response, l);
 
         ApplicationFactory aFactory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
+        @SuppressWarnings("unused")
         Application app = aFactory.getApplication();
         FactoryFinder.releaseFactories();
     }

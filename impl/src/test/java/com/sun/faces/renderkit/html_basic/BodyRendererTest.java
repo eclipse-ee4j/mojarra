@@ -23,15 +23,16 @@ import static org.mockito.Mockito.when;
 import java.io.StringWriter;
 import java.util.Collections;
 
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.Doctype;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.html.HtmlBody;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 /**
  * The JUnit tests for the BodyRenderer class.
@@ -57,11 +58,18 @@ public class BodyRendererTest {
         StringWriter writer = new StringWriter();
         ResponseWriter testResponseWriter = new TestResponseWriter(writer);
         FacesContext facesContext = Mockito.mock(FacesContext.class);
+        UIViewRoot viewRoot = Mockito.mock(UIViewRoot.class);
+        Doctype doctype = Mockito.mock(Doctype.class);
         BodyRenderer bodyRenderer = new BodyRenderer();
         HtmlBody htmlBody = new HtmlBody();
         htmlBody.getAttributes().put("styleClass", "myclass");
 
         when(facesContext.getResponseWriter()).thenReturn(testResponseWriter);
+        when(facesContext.getViewRoot()).thenReturn(viewRoot);
+        when(viewRoot.getDoctype()).thenReturn(doctype);
+        when(doctype.getRootElement()).thenReturn("html");
+        when(doctype.getPublic()).thenReturn(null);
+        when(doctype.getSystem()).thenReturn(null);
 
         bodyRenderer.encodeBegin(facesContext, htmlBody);
         String html = writer.toString();
@@ -102,11 +110,11 @@ public class BodyRendererTest {
         HtmlBody htmlBody = new HtmlBody();
 
         when(facesContext.getApplication()).thenReturn(application);
-        when(facesContext.getClientIdsWithMessages()).thenReturn(Collections.EMPTY_LIST.iterator());
+        when(facesContext.getClientIdsWithMessages()).thenReturn(Collections.<String>emptyList().iterator());
         when(facesContext.getResponseWriter()).thenReturn(testResponseWriter);
         when(facesContext.getViewRoot()).thenReturn(viewRoot);
         when(facesContext.isProjectStage(ProjectStage.Development)).thenReturn(false);
-        when(viewRoot.getComponentResources(facesContext, "body")).thenReturn(Collections.EMPTY_LIST);
+        when(viewRoot.getComponentResources(facesContext, "body")).thenReturn(Collections.emptyList());
 
         bodyRenderer.encodeEnd(facesContext, htmlBody);
         String html = writer.toString();

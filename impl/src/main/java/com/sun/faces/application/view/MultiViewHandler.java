@@ -34,6 +34,7 @@ import static jakarta.faces.render.ResponseStateManager.NON_POSTBACK_VIEW_TOKEN_
 import static jakarta.servlet.http.MappingMatch.EXACT;
 import static jakarta.servlet.http.MappingMatch.EXTENSION;
 import static jakarta.servlet.http.MappingMatch.PATH;
+import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 import static java.util.logging.Level.SEVERE;
@@ -56,12 +57,12 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
-import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
+import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.application.ViewVisitOption;
 import jakarta.faces.component.UIViewParameter;
@@ -82,17 +83,16 @@ public class MultiViewHandler extends ViewHandler {
     // Log instance for this class
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
-    private List<String> configuredExtensions;
-    private Set<String> protectedViews;
+    private final List<String> configuredExtensions;
+    private final Set<String> protectedViews;
 
-    private ViewDeclarationLanguageFactory vdlFactory;
+    private final ViewDeclarationLanguageFactory vdlFactory;
 
     // ------------------------------------------------------------ Constructors
 
     public MultiViewHandler() {
-        WebConfiguration config = WebConfiguration.getInstance();
-
-        configuredExtensions = config.getConfiguredExtensions();
+        String faceletsSuffix = ContextParam.FACELETS_SUFFIX.getValue(FacesContext.getCurrentInstance());
+        configuredExtensions = asList(faceletsSuffix);
         vdlFactory = (ViewDeclarationLanguageFactory) FactoryFinder.getFactory(VIEW_DECLARATION_LANGUAGE_FACTORY);
         protectedViews = new CopyOnWriteArraySet<>();
     }
@@ -562,11 +562,7 @@ public class MultiViewHandler extends ViewHandler {
             }
 
             if (value != null) {
-                List<String> existing = existingParameters.get(viewParam.getName());
-                if (existing == null) {
-                    existing = new ArrayList<>(4);
-                    existingParameters.put(viewParam.getName(), existing);
-                }
+                List<String> existing = existingParameters.computeIfAbsent(viewParam.getName(), k -> new ArrayList<>(4));
                 existing.add(value);
             }
         }

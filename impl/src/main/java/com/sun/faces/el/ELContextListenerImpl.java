@@ -53,8 +53,7 @@ public class ELContextListenerImpl implements ELContextListener {
         if (listeners == null) {
             return;
         }
-        for (int i = 0; i < listeners.length; ++i) {
-            ELContextListener elcl = listeners[i];
+        for (ELContextListener elcl : listeners) {
             elcl.contextCreated(new ELContextEvent(source));
         }
     }

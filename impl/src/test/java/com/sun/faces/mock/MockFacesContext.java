@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.sun.faces.RIConstants;
 import com.sun.faces.context.ExceptionHandlerFactoryImpl;
 import com.sun.faces.renderkit.RenderKitUtils;
 
@@ -62,6 +63,7 @@ public class MockFacesContext extends FacesContext {
     public MockFacesContext() {
         super();
         setCurrentInstance(this);
+        getAttributes().put(RIConstants.CDI_BEAN_MANAGER, new MockBeanManager());
     }
 
     public MockFacesContext(ExternalContext externalContext) {

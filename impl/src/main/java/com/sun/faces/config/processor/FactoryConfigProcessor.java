@@ -28,6 +28,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.ServletContext;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -35,14 +39,9 @@ import org.w3c.dom.NodeList;
 
 import com.sun.faces.application.InjectionApplicationFactory;
 import com.sun.faces.config.ConfigurationException;
-import com.sun.faces.config.InitFacesContext;
 import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.context.InjectionFacesContextFactory;
 import com.sun.faces.util.FacesLogger;
-
-import jakarta.faces.FactoryFinder;
-import jakarta.faces.context.FacesContext;
-import jakarta.servlet.ServletContext;
 
 /**
  * <p>
@@ -57,6 +56,11 @@ public class FactoryConfigProcessor extends AbstractConfigProcessor {
      * <code>/faces-config/factory</code>
      */
     private static final String FACTORY = "factory";
+
+    /**
+     * <code>faces-config/factory/faces-servlet-factory</code>
+     */
+    private static final String FACES_SERVLET_FACTORY = "faces-servlet-factory";
 
     /**
      * <code>/faces-config/factory/application-factory</code>
@@ -136,7 +140,7 @@ public class FactoryConfigProcessor extends AbstractConfigProcessor {
     /**
      * <code>Array of Factory names for post-configuration validation.</code>
      */
-    private final List<String> factoryNames = asList(FactoryFinder.APPLICATION_FACTORY, FactoryFinder.CLIENT_WINDOW_FACTORY,
+    private final List<String> factoryNames = asList(FactoryFinder.FACES_SERVLET_FACTORY, FactoryFinder.APPLICATION_FACTORY, FactoryFinder.CLIENT_WINDOW_FACTORY,
             FactoryFinder.EXCEPTION_HANDLER_FACTORY, FactoryFinder.EXTERNAL_CONTEXT_FACTORY, FactoryFinder.FACES_CONTEXT_FACTORY, FactoryFinder.FLASH_FACTORY,
             FactoryFinder.LIFECYCLE_FACTORY, FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY, FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY,
             FactoryFinder.RENDER_KIT_FACTORY, FactoryFinder.VISIT_CONTEXT_FACTORY, FactoryFinder.FACELET_CACHE_FACTORY,
@@ -167,12 +171,12 @@ public class FactoryConfigProcessor extends AbstractConfigProcessor {
         // for this application
         AtomicInteger applicationFactoryCount = new AtomicInteger(0);
 
-        for (int i = 0; i < documentInfos.length; i++) {
+        for (DocumentInfo documentInfo : documentInfos) {
             if (LOGGER.isLoggable(FINE)) {
-                LOGGER.log(FINE, format("Processing factory elements for document: ''{0}''", documentInfos[i].getSourceURI()));
+                LOGGER.log(FINE, format("Processing factory elements for document: ''{0}''", documentInfo.getSourceURI()));
             }
 
-            Document document = documentInfos[i].getDocument();
+            Document document = documentInfo.getDocument();
             String namespace = document.getDocumentElement().getNamespaceURI();
             NodeList factories = document.getDocumentElement().getElementsByTagNameNS(namespace, FACTORY);
             if (factories != null && factories.getLength() > 0) {
@@ -205,8 +209,11 @@ public class FactoryConfigProcessor extends AbstractConfigProcessor {
             for (int c = 0, csize = children.getLength(); c < csize; c++) {
                 Node childNode = children.item(c);
                 switch (childNode.getLocalName()) {
+                case FACES_SERVLET_FACTORY:
+                    setFactory(FactoryFinder.FACES_SERVLET_FACTORY, getNodeText(childNode));
+                    break;
                 case APPLICATION_FACTORY:
-                    int cnt = appCount.incrementAndGet();
+                    appCount.incrementAndGet();
                     setFactory(FactoryFinder.APPLICATION_FACTORY, getNodeText(childNode));
                     break;
                 case EXCEPTION_HANDLER_FACTORY:
@@ -280,7 +287,6 @@ public class FactoryConfigProcessor extends AbstractConfigProcessor {
                 factoryNames.stream().forEach(e -> {
 
                     Thread.currentThread().setContextClassLoader(contextClassLoader);
-                    InitFacesContext.getInstance(servletContext);
 
                     try {
                         FactoryFinder.getFactory(e);

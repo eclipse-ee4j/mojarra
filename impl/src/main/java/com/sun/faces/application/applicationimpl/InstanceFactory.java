@@ -17,7 +17,6 @@
 package com.sun.faces.application.applicationimpl;
 
 import static com.sun.faces.application.ApplicationImpl.THIS_LIBRARY;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.DateTimeConverterUsesSystemTimezone;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.RegisterConverterPropertyEditors;
 import static com.sun.faces.util.Util.isEmpty;
 import static com.sun.faces.util.Util.loadClass;
@@ -51,6 +50,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,13 +59,24 @@ import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.FacesException;
+import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.Resource;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.Behavior;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.BooleanConverter;
+import jakarta.faces.convert.ByteConverter;
+import jakarta.faces.convert.CharacterConverter;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.DateTimeConverter;
+import jakarta.faces.convert.DoubleConverter;
+import jakarta.faces.convert.EnumConverter;
+import jakarta.faces.convert.FloatConverter;
+import jakarta.faces.convert.IntegerConverter;
+import jakarta.faces.convert.LongConverter;
+import jakarta.faces.convert.ShortConverter;
+import jakarta.faces.convert.UUIDConverter;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.Renderer;
 import jakarta.faces.validator.Validator;
@@ -95,14 +106,16 @@ public class InstanceFactory {
     private static final Map<Class<?>, String> STANDARD_TYPE_TO_CONV_ID_MAP = new HashMap<>(16, 1.0f);
 
     static {
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Byte", new Class<?>[] { Byte.TYPE, Byte.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Boolean", new Class<?>[] { Boolean.TYPE, Boolean.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Character", new Class<?>[] { Character.TYPE, Character.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Short", new Class<?>[] { Short.TYPE, Short.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Integer", new Class<?>[] { Integer.TYPE, Integer.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Long", new Class<?>[] { Long.TYPE, Long.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Float", new Class<?>[] { Float.TYPE, Float.class });
-        STANDARD_CONV_ID_TO_TYPE_MAP.put("jakarta.faces.Double", new Class<?>[] { Double.TYPE, Double.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put(ByteConverter.CONVERTER_ID, new Class<?>[] { Byte.TYPE, Byte.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put(BooleanConverter.CONVERTER_ID, new Class<?>[] { Boolean.TYPE, Boolean.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put(CharacterConverter.CONVERTER_ID, new Class<?>[] { Character.TYPE, Character.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put(ShortConverter.CONVERTER_ID, new Class<?>[] { Short.TYPE, Short.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put(IntegerConverter.CONVERTER_ID, new Class<?>[] { Integer.TYPE, Integer.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put(LongConverter.CONVERTER_ID, new Class<?>[] { Long.TYPE, Long.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put(FloatConverter.CONVERTER_ID, new Class<?>[] { Float.TYPE, Float.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put(DoubleConverter.CONVERTER_ID, new Class<?>[] { Double.TYPE, Double.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put(EnumConverter.CONVERTER_ID, new Class<?>[] { Enum.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put(UUIDConverter.CONVERTER_ID, new Class<?>[] { UUID.class });
         for (Map.Entry<String, Class<?>[]> entry : STANDARD_CONV_ID_TO_TYPE_MAP.entrySet()) {
             Class<?>[] types = entry.getValue();
             String key = entry.getKey();
@@ -113,11 +126,11 @@ public class InstanceFactory {
     }
 
     private final String[] STANDARD_BY_TYPE_CONVERTER_CLASSES = { "java.math.BigDecimal", "java.lang.Boolean", "java.lang.Byte", "java.lang.Character",
-            "java.lang.Double", "java.lang.Float", "java.lang.Integer", "java.lang.Long", "java.lang.Short", "java.lang.Enum" };
+            "java.lang.Double", "java.lang.Float", "java.lang.Integer", "java.lang.Long", "java.lang.Short", "java.lang.Enum", "java.util.UUID" };
 
-    private Map<Class<?>, Object> converterTypeMap;
-    private boolean registerPropertyEditors;
-    private boolean passDefaultTimeZone;
+    private final Map<Class<?>, Object> converterTypeMap;
+    private final boolean registerPropertyEditors;
+    private final boolean passDefaultTimeZone;
 
     private TimeZone systemTimeZone;
 
@@ -128,12 +141,12 @@ public class InstanceFactory {
     // These four maps store store "identifier" | "class name"
     // mappings.
     //
-    private ViewMemberInstanceFactoryMetadataMap<String, Object> componentMap;
-    private ViewMemberInstanceFactoryMetadataMap<String, Object> behaviorMap;
-    private ViewMemberInstanceFactoryMetadataMap<String, Object> converterIdMap;
-    private ViewMemberInstanceFactoryMetadataMap<String, Object> validatorMap;
+    private final ViewMemberInstanceFactoryMetadataMap<String, Object> componentMap;
+    private final ViewMemberInstanceFactoryMetadataMap<String, Object> behaviorMap;
+    private final ViewMemberInstanceFactoryMetadataMap<String, Object> converterIdMap;
+    private final ViewMemberInstanceFactoryMetadataMap<String, Object> validatorMap;
 
-    private Set<String> defaultValidatorIds;
+    private final Set<String> defaultValidatorIds;
     private volatile Map<String, String> defaultValidatorInfo;
 
     private final ApplicationAssociate associate;
@@ -153,10 +166,11 @@ public class InstanceFactory {
         defaultValidatorIds = new LinkedHashSet<>();
         behaviorMap = new ViewMemberInstanceFactoryMetadataMap<>(new ConcurrentHashMap<>());
 
-        WebConfiguration webConfig = WebConfiguration.getInstance(FacesContext.getCurrentInstance().getExternalContext());
+        FacesContext context = FacesContext.getCurrentInstance();
+        WebConfiguration webConfig = WebConfiguration.getInstance(context.getExternalContext());
         registerPropertyEditors = webConfig.isOptionEnabled(RegisterConverterPropertyEditors);
 
-        passDefaultTimeZone = webConfig.isOptionEnabled(DateTimeConverterUsesSystemTimezone);
+        passDefaultTimeZone = ContextParam.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE.getValue(context);
         if (passDefaultTimeZone) {
             systemTimeZone = TimeZone.getDefault();
         }

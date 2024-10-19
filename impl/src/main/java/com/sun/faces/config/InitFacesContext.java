@@ -18,22 +18,15 @@ package com.sun.faces.config;
 
 import static com.sun.faces.RIConstants.FACES_PREFIX;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.initfacescontext.NoOpELContext;
 import com.sun.faces.config.initfacescontext.NoOpFacesContext;
 import com.sun.faces.config.initfacescontext.ServletContextAdapter;
-import com.sun.faces.context.ApplicationMap;
 import com.sun.faces.context.ExceptionHandlerImpl;
-import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
 import jakarta.el.ELContext;
@@ -44,7 +37,6 @@ import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExceptionHandler;
 import jakarta.faces.context.ExternalContext;
-import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletContext;
 
 /**
@@ -53,7 +45,6 @@ import jakarta.servlet.ServletContext;
  */
 public class InitFacesContext extends NoOpFacesContext {
 
-    private static Logger LOGGER = FacesLogger.CONFIG.getLogger();
     private static final String INIT_FACES_CONTEXT_ATTR_NAME = RIConstants.FACES_PREFIX + "InitFacesContext";
 
     private ServletContextAdapter servletContextAdapter;
@@ -65,10 +56,7 @@ public class InitFacesContext extends NoOpFacesContext {
     public InitFacesContext(ServletContext servletContext) {
         servletContextAdapter = new ServletContextAdapter(servletContext);
         servletContext.setAttribute(INIT_FACES_CONTEXT_ATTR_NAME, this);
-        InitFacesContext.cleanupInitMaps(servletContext);
-
-        addServletContextEntryForInitContext(servletContext);
-        addInitContextEntryForCurrentThread();
+        setCurrentInstance(this);
     }
 
     @Override
@@ -127,14 +115,9 @@ public class InitFacesContext extends NoOpFacesContext {
     @Override
     public void release() {
 
-        setCurrentInstance(null);
+        releaseCurrentInstance();
         if (servletContextAdapter != null) {
-            Map<String, Object> applicationMap = servletContextAdapter.getApplicationMap();
-            if (applicationMap instanceof ApplicationMap) {
-                if (((ApplicationMap) applicationMap).getContext() != null) {
-                    applicationMap.remove(INIT_FACES_CONTEXT_ATTR_NAME);
-                }
-            }
+            ((ServletContext) servletContextAdapter.getContext()).removeAttribute(INIT_FACES_CONTEXT_ATTR_NAME);
             servletContextAdapter.release();
         }
 
@@ -155,92 +138,13 @@ public class InitFacesContext extends NoOpFacesContext {
     }
 
     public void releaseCurrentInstance() {
-        removeInitContextEntryForCurrentThread();
         setCurrentInstance(null);
-    }
-
-    public void addInitContextEntryForCurrentThread() {
-        getThreadInitContextMap().put(Thread.currentThread(), this);
-    }
-
-    public void removeInitContextEntryForCurrentThread() {
-        getThreadInitContextMap().remove(Thread.currentThread());
-    }
-
-    public void addServletContextEntryForInitContext(ServletContext servletContext) {
-        getInitContextServletContextMap().put(this, servletContext);
-    }
-
-    public void removeServletContextEntryForInitContext() {
-        getInitContextServletContextMap().remove(this);
-    }
-
-    /**
-     * Clean up entries from the threadInitContext and initContextServletContext maps using a ServletContext. First remove
-     * entry(s) with matching ServletContext from initContextServletContext map. Then remove entries from threadInitContext
-     * map where the entry value(s) match the initFacesContext (associated with the ServletContext).
-     *
-     * @param servletContext the involved servlet context
-     */
-    public static void cleanupInitMaps(ServletContext servletContext) {
-
-        Map<InitFacesContext, ServletContext> facesContext2ServletContext = getInitContextServletContextMap();
-        Map<Thread, InitFacesContext> thread2FacesContext = getThreadInitContextMap();
-
-        // First remove entry(s) with matching ServletContext from the initContextServletContext map.
-
-        for (Entry<InitFacesContext, ServletContext> facesContext2ServletContextEntry : new ArrayList<>(facesContext2ServletContext.entrySet())) {
-
-            if (facesContext2ServletContextEntry.getValue() == servletContext) {
-
-                facesContext2ServletContext.remove(facesContext2ServletContextEntry.getKey());
-
-                // Then remove entries from the threadInitContext map where the entry value(s) match the initFacesContext
-                // (associated with the ServletContext).
-
-                for (Entry<Thread, InitFacesContext> thread2FacesContextEntry : new ArrayList<>(thread2FacesContext.entrySet())) {
-
-                    if (thread2FacesContextEntry.getValue() == facesContext2ServletContextEntry.getKey()) {
-                        thread2FacesContext.remove(thread2FacesContextEntry.getKey());
-                    }
-
-                }
-            }
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    static Map<Thread, InitFacesContext> getThreadInitContextMap() {
-        try {
-            Field threadMap = FacesContext.class.getDeclaredField("threadInitContext");
-            threadMap.setAccessible(true);
-
-            return (Map<Thread, InitFacesContext>) threadMap.get(null);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-            LOGGER.log(Level.FINEST, "Unable to get (thread, init context) map", e);
-        }
-
-        return null;
-    }
-
-    @SuppressWarnings("unchecked")
-    static Map<InitFacesContext, ServletContext> getInitContextServletContextMap() {
-        try {
-            Field initContextMap = FacesContext.class.getDeclaredField("initContextServletContext");
-            initContextMap.setAccessible(true);
-
-            return (Map<InitFacesContext, ServletContext>) initContextMap.get(null);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-            LOGGER.log(Level.FINEST, "Unable to get (init context, servlet context) map", e);
-        }
-
-        return null;
     }
 
     public static InitFacesContext getInstance(ServletContext servletContext) {
         InitFacesContext result = (InitFacesContext) servletContext.getAttribute(INIT_FACES_CONTEXT_ATTR_NAME);
         if (result != null) {
-            result.addInitContextEntryForCurrentThread();
+            setCurrentInstance(result);
         }
 
         return result;

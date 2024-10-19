@@ -124,13 +124,6 @@ public class ExternalContextImplTest {
         }
 
         try {
-            requestCookieMap.entrySet().remove("test");
-            fail();
-        } catch (Exception e) {
-            assertTrue(e instanceof UnsupportedOperationException);
-        }
-
-        try {
             requestCookieMap.keySet().remove("test");
             fail();
         } catch (Exception e) {

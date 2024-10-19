@@ -39,11 +39,11 @@ public class EventInfo {
 
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
-    private Class<? extends SystemEvent> systemEvent;
-    private Class<?> sourceClass;
-    private Set<SystemEventListener> listeners;
+    private final Class<? extends SystemEvent> systemEvent;
+    private final Class<?> sourceClass;
+    private final Set<SystemEventListener> listeners;
     private Constructor eventConstructor;
-    private Map<Class<?>, Constructor> constructorMap;
+    private final Map<Class<?>, Constructor> constructorMap;
 
     // -------------------------------------------------------- Constructors
 

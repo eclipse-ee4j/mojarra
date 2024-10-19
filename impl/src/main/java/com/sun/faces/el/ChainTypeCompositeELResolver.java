@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2023 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -16,16 +17,12 @@
 
 package com.sun.faces.el;
 
-import java.beans.FeatureDescriptor;
-import java.util.Iterator;
-import java.util.Map;
-
 import com.sun.faces.util.RequestStateManager;
-
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
 import jakarta.faces.context.FacesContext;
+import java.util.Map;
 
 /**
  * Maintains an ordered composite list of child <code>ELResolver for Faces</code>.
@@ -123,23 +120,6 @@ public final class ChainTypeCompositeELResolver extends FacesCompositeELResolver
             stateMap.remove(RequestStateManager.EL_RESOLVER_CHAIN_TYPE_NAME);
         }
 
-        return result;
-    }
-
-    @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
-        FacesContext ctx = getFacesContext(context);
-        Iterator<FeatureDescriptor> result = null;
-        if (ctx != null) {
-            Map<String, Object> stateMap = RequestStateManager.getStateMap(ctx);
-
-            stateMap.put(RequestStateManager.EL_RESOLVER_CHAIN_TYPE_NAME, _chainType);
-            try {
-                result = _wrapped.getFeatureDescriptors(context, base);
-            } finally {
-                stateMap.remove(RequestStateManager.EL_RESOLVER_CHAIN_TYPE_NAME);
-            }
-        }
         return result;
     }
 

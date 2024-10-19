@@ -28,7 +28,7 @@ import jakarta.faces.event.SystemEventListener;
  */
 class ListenerForHandler implements RuntimeAnnotationHandler {
 
-    private ListenerFor[] listenersFor;
+    private final ListenerFor[] listenersFor;
 
     // ------------------------------------------------------------ Constructors
 
@@ -57,18 +57,18 @@ class ListenerForHandler implements RuntimeAnnotationHandler {
         }
 
         if (listener instanceof ComponentSystemEventListener) {
-            for (int i = 0, len = listenersFor.length; i < len; i++) {
-                target.subscribeToEvent(listenersFor[i].systemEventClass(), (ComponentSystemEventListener) listener);
+            for (ListenerFor listenerFor : listenersFor) {
+                target.subscribeToEvent(listenerFor.systemEventClass(), (ComponentSystemEventListener) listener);
             }
         } else if (listener instanceof SystemEventListener) {
             Class<?> sourceClassValue = null;
             Application app = ctx.getApplication();
-            for (int i = 0, len = listenersFor.length; i < len; i++) {
-                sourceClassValue = listenersFor[i].sourceClass();
+            for (ListenerFor listenerFor : listenersFor) {
+                sourceClassValue = listenerFor.sourceClass();
                 if (sourceClassValue == Void.class) {
-                    app.subscribeToEvent(listenersFor[i].systemEventClass(), (SystemEventListener) listener);
+                    app.subscribeToEvent(listenerFor.systemEventClass(), (SystemEventListener) listener);
                 } else {
-                    app.subscribeToEvent(listenersFor[i].systemEventClass(), listenersFor[i].sourceClass(), (SystemEventListener) listener);
+                    app.subscribeToEvent(listenerFor.systemEventClass(), listenerFor.sourceClass(), (SystemEventListener) listener);
 
                 }
             }

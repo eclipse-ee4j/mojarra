@@ -39,7 +39,6 @@ import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.util.FacesLogger;
 
-import jakarta.faces.application.ConfigurableNavigationHandler;
 import jakarta.faces.application.NavigationCase;
 import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.context.FacesContext;
@@ -301,23 +300,12 @@ public class NavigationConfigProcessor extends AbstractConfigProcessor {
                     LOGGER.log(Level.FINE, MessageFormat.format("Adding NavigationCase: {0}", cnc.toString()));
                 }
 
-                // if the top-level NavigationHandler is an instance of
-                // ConfigurableNavigationHandler, add the NavigationCases to
-                // that instance as well as adding them to the application associate.
+                // Add the NavigationCases to the top level NavigationHandler
+                // as well as adding them to the application associate.
                 // We have to add them to the ApplicationAssociate in the case
                 // where the top-level NavigationHandler may be custom and delegates
-                // to the default NavigationHandler implementation. In 1.2, they
-                // could be guaranteed that the default implementation had all
-                // defined navigation mappings.
-                if (navHandler instanceof ConfigurableNavigationHandler) {
-                    ConfigurableNavigationHandler cnav = (ConfigurableNavigationHandler) navHandler;
-                    Set<NavigationCase> cases = cnav.getNavigationCases().get(fromViewId);
-                    if (cases == null) {
-                        cases = new LinkedHashSet<>();
-                        cnav.getNavigationCases().put(fromViewId, cases);
-                    }
-                    cases.add(cnc);
-                }
+                // to the default NavigationHandler implementation.
+                navHandler.getNavigationCases().computeIfAbsent(fromViewId, k -> new LinkedHashSet<>()).add(cnc);
                 associate.addNavigationCase(cnc);
 
             }
@@ -396,7 +384,7 @@ public class NavigationConfigProcessor extends AbstractConfigProcessor {
 
     private boolean isIncludeViewParams(Node n) {
 
-        return Boolean.valueOf(getNodeText(n.getAttributes().getNamedItem(INCLUDE_VIEW_PARAMS_ATTRIBUTE)));
+        return Boolean.parseBoolean(getNodeText(n.getAttributes().getNamedItem(INCLUDE_VIEW_PARAMS_ATTRIBUTE)));
 
     }
 

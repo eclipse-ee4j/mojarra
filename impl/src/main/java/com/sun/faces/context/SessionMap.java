@@ -57,8 +57,8 @@ public class SessionMap extends BaseContextMap<Object> {
     public void clear() {
         HttpSession session = getSession(false);
         if (session != null) {
-            for (Enumeration e = session.getAttributeNames(); e.hasMoreElements();) {
-                String name = (String) e.nextElement();
+            for (Enumeration<String> e = session.getAttributeNames(); e.hasMoreElements();) {
+                String name = e.nextElement();
                 session.removeAttribute(name);
             }
         }
@@ -136,7 +136,7 @@ public class SessionMap extends BaseContextMap<Object> {
 
     @Override
     public boolean equals(Object obj) {
-        return !(obj == null || !(obj instanceof SessionMap)) && super.equals(obj);
+        return obj instanceof SessionMap && super.equals(obj);
     }
 
     @Override
@@ -144,8 +144,8 @@ public class SessionMap extends BaseContextMap<Object> {
         HttpSession session = getSession(false);
         int hashCode = 7 * (session != null ? session.hashCode() : super.hashCode());
         if (session != null) {
-            for (Iterator i = entrySet().iterator(); i.hasNext();) {
-                hashCode += i.next().hashCode();
+            for (Map.Entry<String, Object> stringObjectEntry : entrySet()) {
+                hashCode += stringObjectEntry.hashCode();
             }
         }
         return hashCode;
@@ -159,8 +159,7 @@ public class SessionMap extends BaseContextMap<Object> {
         if (session != null) {
             return new EntryIterator(session.getAttributeNames());
         } else {
-            Map<String, Object> empty = Collections.emptyMap();
-            return empty.entrySet().iterator();
+            return Collections.emptyIterator();
         }
     }
 
@@ -170,8 +169,7 @@ public class SessionMap extends BaseContextMap<Object> {
         if (session != null) {
             return new KeyIterator(session.getAttributeNames());
         } else {
-            Map<String, Object> empty = Collections.emptyMap();
-            return empty.keySet().iterator();
+            return Collections.emptyIterator();
         }
     }
 
@@ -181,8 +179,7 @@ public class SessionMap extends BaseContextMap<Object> {
         if (session != null) {
             return new ValueIterator(session.getAttributeNames());
         } else {
-            Map<String, Object> empty = Collections.emptyMap();
-            return empty.values().iterator();
+            return Collections.emptyIterator();
         }
     }
 

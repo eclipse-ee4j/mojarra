@@ -76,7 +76,7 @@ public class CdiExtension implements Extension {
     /**
      * Map of {@code @ManagedProperty} target types
      */
-    private Set<Type> managedPropertyTargetTypes = new HashSet<>();
+    private final Set<Type> managedPropertyTargetTypes = new HashSet<>();
 
     /**
      * Stores the logger.
@@ -184,6 +184,7 @@ public class CdiExtension implements Extension {
         afterBeanDiscovery.addBean(new CompositeComponentProducer(beanManager));
         afterBeanDiscovery.addBean(new ComponentProducer(beanManager));
         afterBeanDiscovery.addBean(new FlashProducer(beanManager));
+        afterBeanDiscovery.addBean(new FlowProducer(beanManager));
         afterBeanDiscovery.addBean(new FlowMapProducer(beanManager));
         afterBeanDiscovery.addBean(new HeaderMapProducer(beanManager));
         afterBeanDiscovery.addBean(new HeaderValuesMapProducer(beanManager));

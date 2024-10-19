@@ -18,7 +18,6 @@ package com.sun.faces.config.processor;
 
 import static com.sun.faces.application.ApplicationResourceBundle.DEFAULT_KEY;
 import static com.sun.faces.config.ConfigManager.INJECTION_PROVIDER_KEY;
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.JakartaFacesProjectStage;
 import static com.sun.faces.util.ReflectionUtils.lookupConstructor;
 import static jakarta.faces.FactoryFinder.APPLICATION_FACTORY;
 import static jakarta.faces.application.ProjectStage.Development;
@@ -53,6 +52,7 @@ import com.sun.faces.util.Util;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
+import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationFactory;
 import jakarta.faces.application.ProjectStage;
@@ -138,8 +138,7 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
         if (list != null && !list.isEmpty()) {
             int len = list.size();
             HashMap<String, String> names = new HashMap<>(len, 1.0f);
-            for (int i = 0; i < len; i++) {
-                Node node = list.get(i);
+            for (Node node : list) {
                 String textValue = getNodeText(node);
                 if (textValue != null) {
                     if (node.hasAttributes()) {
@@ -325,21 +324,18 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
                 if (LOGGER.isLoggable(FINE)) {
                     LOGGER.log(FINE, "ProjectStage configured via JNDI: {0}", value);
                 }
-            } else {
-                value = webConfig.getOptionValue(JakartaFacesProjectStage);
-                if (value != null) {
-                    if (LOGGER.isLoggable(FINE)) {
-                        LOGGER.log(FINE, "ProjectStage configured via servlet context init parameter: {0}", value);
-                    }
-                }
-            }
-
-            if (value != null) {
                 try {
                     projectStage = ProjectStage.valueOf(value);
                 } catch (IllegalArgumentException iae) {
                     if (LOGGER.isLoggable(INFO)) {
                         LOGGER.log(INFO, "Unable to discern ProjectStage for value {0}.", value);
+                    }
+                }
+            } else {
+                projectStage = ContextParam.PROJECT_STAGE.getValue(facesContext);
+                if (projectStage != null) {
+                    if (LOGGER.isLoggable(FINE)) {
+                        LOGGER.log(FINE, "ProjectStage configured via servlet context init parameter: {0}", value);
                     }
                 }
             }
