@@ -31,7 +31,8 @@ import com.sun.faces.spi.InjectionProvider;
 
 public final class ProvideMetadataToAnnotationScanTask {
 
-    private static final Pattern JAR_PATTERN = Pattern.compile("(.*/(\\S*\\.jar)).*(/faces-config.xml|/*.\\.faces-config.xml)");
+    private static final Pattern FACES_CONFIG_XML_IN_JAR_PATTERN = Pattern.compile("(.*/(\\S*\\.jar)).*(/faces-config.xml|/*.\\.faces-config.xml)");
+    private static final Pattern CURRENT_RESOURCE_IN_JAR_PATTERN = Pattern.compile("(?<=\\.jar)[!/].*");
 
     private final DocumentInfo[] documentInfos;
     private final InjectionProvider containerConnector;
@@ -55,7 +56,7 @@ public final class ProvideMetadataToAnnotationScanTask {
         for (DocumentInfo docInfo : documentInfos) {
 
             URI sourceURI = docInfo.getSourceURI();
-            Matcher jarMatcher = JAR_PATTERN.matcher(sourceURI == null ? "" : sourceURI.toString());
+            Matcher jarMatcher = FACES_CONFIG_XML_IN_JAR_PATTERN.matcher(sourceURI == null ? "" : sourceURI.toString());
 
             if (jarMatcher.matches()) {
                 String jarName = jarMatcher.group(2);
@@ -76,14 +77,10 @@ public final class ProvideMetadataToAnnotationScanTask {
                         String sourceURIString = sourceURI.toString();
                         if (annotatedSet != null) {
                             for (Class<?> clazz : annotatedSet) {
-                                URL resource = clazz.getClassLoader().getResource(clazz.getName().replace(".", "/") + ".class");
+                                String location = CURRENT_RESOURCE_IN_JAR_PATTERN.split(clazz.getResource(".").toString(), 2)[0];
 
-                                if (resource != null) {
-                                    String location = resource.toString().split("(?<=\\.jar)[!/].*", 2)[0];
-
-                                    if (sourceURIString.startsWith(location)) {
-                                        toRemove.add(clazz);
-                                    }
+                                if (sourceURIString.startsWith(location)) {
+                                    toRemove.add(clazz);
                                 }
                             }
                             annotatedSet.removeAll(toRemove);
