@@ -55,15 +55,15 @@ public final class ProvideMetadataToAnnotationScanTask {
 
         for (DocumentInfo docInfo : documentInfos) {
 
-            URI sourceURI = docInfo.getSourceURI();
-            Matcher jarMatcher = FACES_CONFIG_XML_IN_JAR_PATTERN.matcher(sourceURI == null ? "" : sourceURI.toString());
+            URI facesConfigURI = docInfo.getSourceURI();
+            Matcher jarMatcher = FACES_CONFIG_XML_IN_JAR_PATTERN.matcher(facesConfigURI == null ? "" : facesConfigURI.toString());
 
             if (jarMatcher.matches()) {
                 String jarName = jarMatcher.group(2);
                 if (!jarNames.contains(jarName)) {
                     FacesConfigInfo configInfo = new FacesConfigInfo(docInfo);
                     if (!configInfo.isMetadataComplete()) {
-                        uris.add(sourceURI);
+                        uris.add(facesConfigURI);
                         jarNames.add(jarName);
                     } else {
                         /*
@@ -74,12 +74,12 @@ public final class ProvideMetadataToAnnotationScanTask {
                          * annotatedSet because the faces-config.xml that owns it has metadata-complete="true".
                          */
                         ArrayList<Class<?>> toRemove = new ArrayList<>(1);
-                        String sourceURIString = sourceURI.toString();
+                        String facesConfigURIString = facesConfigURI.toString();
                         if (annotatedSet != null) {
                             for (Class<?> clazz : annotatedSet) {
-                                String location = CURRENT_RESOURCE_IN_JAR_PATTERN.split(clazz.getResource(".").toString(), 2)[0];
+                                String jarURIString = CURRENT_RESOURCE_IN_JAR_PATTERN.split(clazz.getResource(".").toString(), 2)[0];
 
-                                if (sourceURIString.startsWith(location)) {
+                                if (facesConfigURIString.startsWith(jarURIString)) {
                                     toRemove.add(clazz);
                                 }
                             }
