@@ -17,6 +17,7 @@
 package com.sun.faces.config.manager.tasks;
 
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -75,8 +76,14 @@ public final class ProvideMetadataToAnnotationScanTask {
                         String sourceURIString = sourceURI.toString();
                         if (annotatedSet != null) {
                             for (Class<?> clazz : annotatedSet) {
-                                if (sourceURIString.contains(clazz.getProtectionDomain().getCodeSource().getLocation().toString())) {
-                                    toRemove.add(clazz);
+                                URL resource = clazz.getClassLoader().getResource(clazz.getName().replace(".", "/") + ".class");
+
+                                if (resource != null) {
+                                    String location = resource.toString().split("(?<=\\.jar)[!/].*", 2)[0];
+
+                                    if (sourceURIString.startsWith(location)) {
+                                        toRemove.add(clazz);
+                                    }
                                 }
                             }
                             annotatedSet.removeAll(toRemove);
