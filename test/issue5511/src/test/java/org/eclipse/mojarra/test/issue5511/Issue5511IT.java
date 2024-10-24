@@ -33,14 +33,14 @@ class Issue5511IT extends BaseIT {
     @Test
     void testJarWithMetadataCompleteFalse() {
         open("issue5511-using-jar-with-metadata-complete-false.xhtml");
-        assertEquals("span", exampleFacesComponent.getTagName().toLowerCase(), "The ex:exampleFacesComponent SHOULD be processed because of metadata-complete=false on its JAR");
+        assertEquals("span", exampleFacesComponent.getTagName().toLowerCase(), "The @FacesComponent annotation SHOULD be processed because of metadata-complete=false on its JAR");
         assertEquals("Hello World", exampleFacesComponent.getText(), "Because it renders a span via HtmlOutputText, it should output its value as well.");
     }
 
     @Test
     void testJarWithMetadataCompleteTrue() {
         open("issue5511-using-jar-with-metadata-complete-true.xhtml");
-        assertEquals("ex:examplefacescomponent", exampleFacesComponent.getTagName().toLowerCase(), "The ex:exampleFacesComponent SHOULD NOT be processed because of metadata-complete=true on its JAR");
+        assertEquals("ex:examplefacescomponent", exampleFacesComponent.getTagName().toLowerCase(), "The @FacesComponent annotation SHOULD NOT be processed because of metadata-complete=true on its JAR");
         assertEquals("", exampleFacesComponent.getText(), "Because it does not render to a valid HTML element, it should not output anything either.");
     }
 }
