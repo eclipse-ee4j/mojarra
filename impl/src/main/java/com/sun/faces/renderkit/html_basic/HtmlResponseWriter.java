@@ -500,7 +500,8 @@ public class HtmlResponseWriter extends ResponseWriter {
         } else if (!withinStyle || isStyle) {
             isStyle = false;
         }
-        if (!withinScript && !withinScript) {
+        // always turn escaping back on once an element ends
+        if (!withinScript && !withinStyle) {
             dontEscape = false;
         }
 
