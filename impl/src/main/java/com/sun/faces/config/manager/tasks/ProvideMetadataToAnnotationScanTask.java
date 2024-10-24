@@ -17,6 +17,7 @@
 package com.sun.faces.config.manager.tasks;
 
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,7 +31,8 @@ import com.sun.faces.spi.InjectionProvider;
 
 public final class ProvideMetadataToAnnotationScanTask {
 
-    private static final Pattern JAR_PATTERN = Pattern.compile("(.*/(\\S*\\.jar)).*(/faces-config.xml|/*.\\.faces-config.xml)");
+    private static final Pattern FACES_CONFIG_XML_IN_JAR_PATTERN = Pattern.compile("(.*/(\\S*\\.jar)).*(/faces-config.xml|/*.\\.faces-config.xml)");
+    private static final Pattern CURRENT_RESOURCE_IN_JAR_PATTERN = Pattern.compile("(?<=\\.jar)[!/].*");
 
     private final DocumentInfo[] documentInfos;
     private final InjectionProvider containerConnector;
@@ -53,15 +55,15 @@ public final class ProvideMetadataToAnnotationScanTask {
 
         for (DocumentInfo docInfo : documentInfos) {
 
-            URI sourceURI = docInfo.getSourceURI();
-            Matcher jarMatcher = JAR_PATTERN.matcher(sourceURI == null ? "" : sourceURI.toString());
+            URI facesConfigURI = docInfo.getSourceURI();
+            Matcher jarMatcher = FACES_CONFIG_XML_IN_JAR_PATTERN.matcher(facesConfigURI == null ? "" : facesConfigURI.toString());
 
             if (jarMatcher.matches()) {
                 String jarName = jarMatcher.group(2);
                 if (!jarNames.contains(jarName)) {
                     FacesConfigInfo configInfo = new FacesConfigInfo(docInfo);
                     if (!configInfo.isMetadataComplete()) {
-                        uris.add(sourceURI);
+                        uris.add(facesConfigURI);
                         jarNames.add(jarName);
                     } else {
                         /*
@@ -72,10 +74,13 @@ public final class ProvideMetadataToAnnotationScanTask {
                          * annotatedSet because the faces-config.xml that owns it has metadata-complete="true".
                          */
                         ArrayList<Class<?>> toRemove = new ArrayList<>(1);
-                        String sourceURIString = sourceURI.toString();
+                        String facesConfigURIString = facesConfigURI.toString();
                         if (annotatedSet != null) {
                             for (Class<?> clazz : annotatedSet) {
-                                if (sourceURIString.contains(clazz.getProtectionDomain().getCodeSource().getLocation().toString())) {
+                                URL classURI = clazz.getClassLoader().getResource(clazz.getName().replace('.', '/') + ".class");
+                                String jarURIString = CURRENT_RESOURCE_IN_JAR_PATTERN.split(classURI.toString(), 2)[0];
+
+                                if (facesConfigURIString.startsWith(jarURIString)) {
                                     toRemove.add(clazz);
                                 }
                             }
