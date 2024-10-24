@@ -77,7 +77,8 @@ public final class ProvideMetadataToAnnotationScanTask {
                         String facesConfigURIString = facesConfigURI.toString();
                         if (annotatedSet != null) {
                             for (Class<?> clazz : annotatedSet) {
-                                String jarURIString = CURRENT_RESOURCE_IN_JAR_PATTERN.split(clazz.getResource(".").toString(), 2)[0];
+                                URL classURI = clazz.getClassLoader().getResource(clazz.getName().replace('.', '/') + ".class");
+                                String jarURIString = CURRENT_RESOURCE_IN_JAR_PATTERN.split(classURI.toString(), 2)[0];
 
                                 if (facesConfigURIString.startsWith(jarURIString)) {
                                     toRemove.add(clazz);
