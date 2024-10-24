@@ -35,6 +35,7 @@
             <groupId>org.glassfish</groupId>
             <artifactId>jakarta.faces</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
