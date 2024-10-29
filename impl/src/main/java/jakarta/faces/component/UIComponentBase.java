@@ -1831,8 +1831,9 @@ public abstract class UIComponentBase extends UIComponent {
 
     private static void disconnectFromView(FacesContext context, Application application, UIComponent component) {
 
+        application.publishEvent(context, PreRemoveFromViewEvent.class, component);
         component.setInView(false);
-
+        component.compositeParent = null;
         if (component.getChildCount() > 0) {
             List<UIComponent> children = component.getChildren();
             for (UIComponent c : children) {
@@ -1846,8 +1847,6 @@ public abstract class UIComponentBase extends UIComponent {
             }
         }
 
-        application.publishEvent(context, PreRemoveFromViewEvent.class, component);
-        component.compositeParent = null;
     }
 
     // --------------------------------------------------------- Private Classes
