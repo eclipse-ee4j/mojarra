@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
 <!--
 
     Copyright (c) Contributors to Eclipse Foundation.
@@ -16,19 +16,16 @@
     SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
 
 -->
-<web-app
-    xmlns="https://jakarta.ee/xml/ns/jakartaee" 
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
-    version="5.0"
+<html lang="en"
+    xmlns:h="jakarta.faces.html"
+    xmlns:f="jakarta.faces.core"
+    xmlns:ui="jakarta.faces.facelets"
+    xmlns:ex="example_jar_with_metadata_complete_false"
 >
-    <servlet>
-        <servlet-name>facesServlet</servlet-name>
-        <servlet-class>jakarta.faces.webapp.FacesServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>facesServlet</servlet-name>
-        <url-pattern>*.xhtml</url-pattern>
-    </servlet-mapping>
-</web-app>
+    <h:head>
+        <title>issue5511 - trying to use annotated @FacesComponent from JAR with metadata-complete=false</title>
+    </h:head>
+    <h:body>
+        <ex:exampleFacesComponent id="exampleFacesComponent" value="Hello World" />
+    </h:body>
+</html>
