@@ -887,7 +887,11 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
         // set the buffer for content, -1 indicates nothing should be set.
         if (responseBufferSize != -1) {
-            extContext.setResponseBufferSize(responseBufferSize);
+            if (!extContext.isResponseCommitted()) {
+                extContext.setResponseBufferSize(responseBufferSize);
+            } else {
+                LOGGER.warning("Skipping attempt to set buffer size on a committed response");
+            }
         }
 
         // get our content type
