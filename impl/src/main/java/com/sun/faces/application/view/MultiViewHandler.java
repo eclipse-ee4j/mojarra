@@ -458,6 +458,10 @@ public class MultiViewHandler extends ViewHandler {
      * @since 1.2
      */
     protected String normalizeRequestURI(String viewId, String mapping) {
+        if (mapping.isEmpty()) {
+            return viewId;
+        }
+        
         boolean logged = false;
 
         while (viewId.startsWith(mapping)) {
