@@ -42,10 +42,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.MessageUtils;
-import com.sun.faces.util.Util;
-
 import jakarta.el.MethodExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.ProtectedViewException;
@@ -70,6 +66,10 @@ import jakarta.faces.render.ResponseStateManager;
 import jakarta.faces.view.ViewDeclarationLanguage;
 import jakarta.faces.view.ViewMetadata;
 
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.MessageUtils;
+import com.sun.faces.util.Util;
+
 /**
  * <B>Lifetime And Scope</B>
  * <P>
@@ -78,7 +78,9 @@ import jakarta.faces.view.ViewMetadata;
  */
 public class RestoreViewPhase extends Phase {
 
-    private static final String WEBAPP_ERROR_PAGE_MARKER = "jakarta.servlet.error.message";
+    private static final String WEBAPP_ERROR_MESSAGE_MARKER = "jakarta.servlet.error.message"; // RequestDispatcher.ERROR_MESSAGE
+    private static final String WEBAPP_ERROR_EXCEPTION_MARKER = "jakarta.servlet.error.exception"; // RequestDispatcher.ERROR_EXCEPTION
+
     private static final Logger LOGGER = FacesLogger.LIFECYCLE.getLogger();
 
     private static final Set<VisitHint> SKIP_ITERATION_HINT = EnumSet.of(SKIP_ITERATION);
@@ -430,11 +432,12 @@ public class RestoreViewPhase extends Phase {
      * Use this method to determine if the current request is an error page to avoid the above condition.
      *
      * @param context the FacesContext for the current request
-     * @return <code>true</code> if <code>WEBAPP_ERROR_PAGE_MARKER</code> is found in the request, otherwise return
-     * <code>false</code>
+     * @return <code>true</code> if <code>WEBAPP_ERROR_MESSAGE_MARKER</code> or <code>WEBAPP_ERROR_EXCEPTION_MARKER</code>
+     * is found in the request, otherwise return <code>false</code>
      */
     private static boolean isErrorPage(FacesContext context) {
-        return context.getExternalContext().getRequestMap().get(WEBAPP_ERROR_PAGE_MARKER) != null;
+        Map<String, Object> requestMap = context.getExternalContext().getRequestMap();
+        return requestMap.get(WEBAPP_ERROR_MESSAGE_MARKER) != null || requestMap.get(WEBAPP_ERROR_EXCEPTION_MARKER) != null;
     }
 
 }
