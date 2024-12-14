@@ -54,6 +54,25 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import jakarta.el.ELManager;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.annotation.FacesConfig.ContextParam;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PreDestroyApplicationEvent;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.ServletRegistration;
+import jakarta.servlet.ServletRequestEvent;
+import jakarta.servlet.ServletRequestListener;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSessionEvent;
+import jakarta.servlet.http.HttpSessionListener;
+import jakarta.websocket.server.ServerContainer;
+import jakarta.websocket.server.ServerEndpointConfig;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -69,24 +88,6 @@ import com.sun.faces.util.ReflectionUtils;
 import com.sun.faces.util.Timer;
 import com.sun.faces.util.Util;
 
-import jakarta.el.ELManager;
-import jakarta.faces.FactoryFinder;
-import jakarta.faces.annotation.FacesConfig.ContextParam;
-import jakarta.faces.application.Application;
-import jakarta.faces.application.ProjectStage;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.event.PreDestroyApplicationEvent;
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletContextEvent;
-import jakarta.servlet.ServletContextListener;
-import jakarta.servlet.ServletRequestEvent;
-import jakarta.servlet.ServletRequestListener;
-import jakarta.servlet.http.HttpSession;
-import jakarta.servlet.http.HttpSessionEvent;
-import jakarta.servlet.http.HttpSessionListener;
-import jakarta.websocket.server.ServerContainer;
-import jakarta.websocket.server.ServerEndpointConfig;
-
 /**
  * Parse all relevant Faces configuration resources, and configure the Mojarra runtime
  * environment.
@@ -94,6 +95,8 @@ import jakarta.websocket.server.ServerEndpointConfig;
 public class ConfigureListener implements ServletRequestListener, HttpSessionListener, ServletContextListener {
 
     private static final Logger LOGGER = FacesLogger.CONFIG.getLogger();
+    private static final String[] FACES_SERVLET_MAPPINGS_WITH_XHTML = { "/faces/*", "*.jsf", "*.faces", "*.xhtml" };
+    private static final String[] FACES_SERVLET_MAPPINGS_WITHOUT_XHTML = { "/faces/*", "*.jsf", "*.faces" };
 
     private ScheduledThreadPoolExecutor webResourcePool;
 
@@ -130,7 +133,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         // Check to see if the FacesServlet is present in the
         // web.xml. If it is, perform faces configuration as normal,
         // otherwise, simply return.
-        Object facesServletRegistration = servletContext.getAttribute(FACES_SERVLET_REGISTRATION); // If found by FacesInitializer.
+        ServletRegistration facesServletRegistration = (ServletRegistration) servletContext.getAttribute(FACES_SERVLET_REGISTRATION); // If found by FacesInitializer.
 
         WebXmlProcessor webXmlProcessor = new WebXmlProcessor(servletContext);
         if (facesServletRegistration == null) {
@@ -148,6 +151,15 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
             } else {
                 LOGGER.log(FINE, "FacesServlet found in deployment descriptor - processing configuration.");
             }
+        } else if (servletContext.getAttribute(FACES_SERVLET_MAPPINGS) != null) { // If automatic mapping needs to be handled.
+            if (ContextParam.DISABLE_FACESSERVLET_TO_XHTML.isSet(initFacesContext)) {
+                facesServletRegistration.addMapping(FACES_SERVLET_MAPPINGS_WITHOUT_XHTML);
+            }
+            else {
+                facesServletRegistration.addMapping(FACES_SERVLET_MAPPINGS_WITH_XHTML);
+            }
+
+            servletContext.setAttribute(FACES_SERVLET_MAPPINGS, facesServletRegistration.getMappings());
         }
 
         // Do not override if already defined

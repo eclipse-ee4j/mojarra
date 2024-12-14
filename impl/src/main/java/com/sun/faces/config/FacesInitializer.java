@@ -20,15 +20,13 @@ package com.sun.faces.config;
 import static com.sun.faces.RIConstants.ANNOTATED_CLASSES;
 import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
 import static com.sun.faces.RIConstants.FACES_SERVLET_REGISTRATION;
+import static com.sun.faces.util.Util.getExistingFacesServletRegistration;
 import static com.sun.faces.util.Util.isEmpty;
 import static java.util.logging.Level.WARNING;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
-
-import com.sun.faces.util.FacesLogger;
 
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.annotation.FacesConfig;
@@ -66,6 +64,8 @@ import jakarta.servlet.ServletRegistration;
 import jakarta.servlet.annotation.HandlesTypes;
 import jakarta.websocket.server.ServerContainer;
 
+import com.sun.faces.util.FacesLogger;
+
 /**
  * Initializes Jakarta Faces if at least one of the following conditions is met:
  *
@@ -98,8 +98,6 @@ public class FacesInitializer implements ServletContainerInitializer {
 
     private static final String FACES_CONFIG_RESOURCE_PATH = "/WEB-INF/faces-config.xml";
     private static final String FACES_SERVLET_CLASS_NAME = FacesServlet.class.getName();
-    private static final String[] FACES_SERVLET_MAPPINGS_WITH_XHTML = { "/faces/*", "*.jsf", "*.faces", "*.xhtml" };
-    private static final String[] FACES_SERVLET_MAPPINGS_WITHOUT_XHTML = { "/faces/*", "*.jsf", "*.faces" };
 
     // -------------------------------- Methods from ServletContainerInitializer
 
@@ -174,18 +172,6 @@ public class FacesInitializer implements ServletContainerInitializer {
         return getExistingFacesServletRegistration(context) != null;
     }
 
-    private static ServletRegistration getExistingFacesServletRegistration(ServletContext servletContext) {
-        Map<String, ? extends ServletRegistration> existing = servletContext.getServletRegistrations();
-
-        for (ServletRegistration registration : existing.values()) {
-            if (FACES_SERVLET_CLASS_NAME.equals(registration.getClassName())) {
-                return registration;
-            }
-        }
-
-        return null;
-    }
-
     private static void handleMappingConcerns(ServletContext servletContext, FacesContext facesContext) throws ServletException {
         ServletRegistration existingFacesServletRegistration = getExistingFacesServletRegistration(servletContext);
 
@@ -196,14 +182,6 @@ public class FacesInitializer implements ServletContainerInitializer {
         }
 
         ServletRegistration newFacesServletRegistration = servletContext.addServlet(FacesServlet.class.getSimpleName(), FACES_SERVLET_CLASS_NAME);
-
-        if (ContextParam.DISABLE_FACESSERVLET_TO_XHTML.isSet(facesContext)) {
-            newFacesServletRegistration.addMapping(FACES_SERVLET_MAPPINGS_WITHOUT_XHTML);
-        }
-        else {
-            newFacesServletRegistration.addMapping(FACES_SERVLET_MAPPINGS_WITH_XHTML);
-        }
-
         servletContext.setAttribute(FACES_SERVLET_MAPPINGS, newFacesServletRegistration.getMappings());
         servletContext.setAttribute(FACES_SERVLET_REGISTRATION, newFacesServletRegistration);
     }

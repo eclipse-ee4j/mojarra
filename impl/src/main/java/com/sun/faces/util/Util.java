@@ -77,13 +77,6 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.config.manager.FacesSchema;
-import com.sun.faces.facelets.component.UIRepeat;
-import com.sun.faces.io.FastStringWriter;
-
 import jakarta.el.ValueExpression;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.CDI;
@@ -110,6 +103,13 @@ import jakarta.servlet.ServletRegistration;
 import jakarta.servlet.http.HttpServletMapping;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.MappingMatch;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.config.manager.FacesSchema;
+import com.sun.faces.facelets.component.UIRepeat;
+import com.sun.faces.io.FastStringWriter;
 
 /**
  * <B>Util</B> is a class ...
@@ -183,7 +183,7 @@ public class Util {
         return emptyList();
     }
 
-    private static ServletRegistration getExistingFacesServletRegistration(ServletContext servletContext) {
+    public static ServletRegistration getExistingFacesServletRegistration(ServletContext servletContext) {
         Map<String, ? extends ServletRegistration> existing = servletContext.getServletRegistrations();
         for (ServletRegistration registration : existing.values()) {
             if (FACES_SERVLET_CLASS.equals(registration.getClassName())) {
