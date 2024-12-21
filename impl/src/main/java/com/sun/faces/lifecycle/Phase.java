@@ -60,10 +60,7 @@ public abstract class Phase {
     public void doPhase(FacesContext context, Lifecycle lifecycle, ListIterator<PhaseListener> listeners) {
 
         context.setCurrentPhaseId(getId());
-        PhaseEvent event = null;
-        if (listeners.hasNext()) {
-            event = new PhaseEvent(context, getId(), lifecycle);
-        }
+        PhaseEvent event = new PhaseEvent(context, getId(), lifecycle);
 
         // start timing - include before and after phase processing
         Timer timer = Timer.getInstance();
