@@ -345,6 +345,208 @@ public final class MojarraRuntimePopulator extends ApplicationConfigurationPopul
         appendNestedChildElements(doc, namespace, rootElement, "renderer", new String[] { "component-family", "renderer-type", "renderer-class" }, renderers);
     }
 
+    private void populateValidators(Document doc, String namespace, Element rootElement) {
+        String[][] validators = {
+                { BeanValidator.VALIDATOR_ID, BeanValidator.class.getName() },
+                { DoubleRangeValidator.VALIDATOR_ID, DoubleRangeValidator.class.getName() },
+                { LengthValidator.VALIDATOR_ID, LengthValidator.class.getName() },
+                { LongRangeValidator.VALIDATOR_ID, LongRangeValidator.class.getName() },
+                { RegexValidator.VALIDATOR_ID, RegexValidator.class.getName() },
+                { RequiredValidator.VALIDATOR_ID, RequiredValidator.class.getName() }
+        };
+
+        for (String[] validator : validators) {
+            var parentElement = doc.createElementNS(namespace, "validator");
+
+            appendChildElements(doc, namespace, parentElement, new String[][] {
+                { "validator-id", validator[0] },
+                { "validator-class", validator[1] }
+            });
+
+            rootElement.appendChild(parentElement);
+        }
+    }
+    
+    private void populateBehaviors(Document doc, String namespace, Element rootElement) {
+        String[][] behaviors = {
+                { AjaxBehavior.BEHAVIOR_ID, jakarta.faces.component.behavior.AjaxBehavior.class.getName() }
+        };
+
+        for (String[] behavior : behaviors) {
+            var parentElement = doc.createElementNS(namespace, "behavior");
+
+            appendChildElements(doc, namespace, parentElement, new String[][] {
+                { "behavior-id", behavior[0] },
+                { "behavior-class", behavior[1] }
+            });
+
+            rootElement.appendChild(parentElement);
+        }
+    }
+
+    private void populateComponents(Document doc, String namespace, Element rootElement) {
+        String[][] components = {
+                { UIValidateWholeBean.FAMILY, UIValidateWholeBean.class.getName() },
+                { UIRepeat.COMPONENT_TYPE, UIRepeat.class.getName() },
+                { ComponentRef.COMPONENT_TYPE, ComponentRef.class.getName() },
+                { UIDebug.COMPONENT_TYPE, UIDebug.class.getName() },
+                { "jakarta.faces.Composite", com.sun.faces.facelets.tag.faces.CompositeComponentImpl.class.getName() },
+                { "jakarta.faces.ComponentResourceContainer", com.sun.faces.component.ComponentResourceContainer.class.getName() },
+                { UIColumn.COMPONENT_TYPE, UIColumn.class.getName() },
+                { UICommand.COMPONENT_TYPE, UICommand.class.getName() },
+                { UIData.COMPONENT_TYPE, UIData.class.getName() },
+                { UIForm.COMPONENT_TYPE, UIForm.class.getName() },
+                { UIGraphic.COMPONENT_TYPE, UIGraphic.class.getName() },
+                { UIImportConstants.COMPONENT_TYPE, UIImportConstants.class.getName() },
+                { UIInput.COMPONENT_TYPE, UIInput.class.getName() },
+                { UIMessage.COMPONENT_TYPE, UIMessage.class.getName() },
+                { UIMessages.COMPONENT_TYPE, UIMessages.class.getName() },
+                { UINamingContainer.COMPONENT_TYPE, UINamingContainer.class.getName() },
+                { UIOutput.COMPONENT_TYPE, UIOutput.class.getName() },
+                { UIOutcomeTarget.COMPONENT_TYPE, UIOutcomeTarget.class.getName() },
+                { UIPanel.COMPONENT_TYPE, UIPanel.class.getName() },
+                { UIViewParameter.COMPONENT_TYPE, UIViewParameter.class.getName() },
+                { UIViewAction.COMPONENT_TYPE, UIViewAction.class.getName() },
+                { UISelectBoolean.COMPONENT_TYPE, UISelectBoolean.class.getName() },
+                { UISelectItem.COMPONENT_TYPE, UISelectItem.class.getName() },
+                { UISelectItems.COMPONENT_TYPE, UISelectItems.class.getName() },
+                { UISelectItemGroup.COMPONENT_TYPE, UISelectItemGroup.class.getName() },
+                { UISelectItemGroups.COMPONENT_TYPE, UISelectItemGroups.class.getName() },
+                { UISelectMany.COMPONENT_TYPE, UISelectMany.class.getName() },
+                { UISelectOne.COMPONENT_TYPE, UISelectOne.class.getName() },
+                { UIViewRoot.COMPONENT_TYPE, UIViewRoot.class.getName() },
+                { UIWebsocket.COMPONENT_TYPE, UIWebsocket.class.getName() },
+                { HtmlColumn.COMPONENT_TYPE, HtmlColumn.class.getName() },
+                { HtmlCommandButton.COMPONENT_TYPE, HtmlCommandButton.class.getName() },
+                { HtmlCommandLink.COMPONENT_TYPE, HtmlCommandLink.class.getName() },
+                { HtmlCommandScript.COMPONENT_TYPE, HtmlCommandScript.class.getName() },
+                { HtmlDataTable.COMPONENT_TYPE, HtmlDataTable.class.getName() },
+                { HtmlForm.COMPONENT_TYPE, HtmlForm.class.getName() },
+                { HtmlGraphicImage.COMPONENT_TYPE, HtmlGraphicImage.class.getName() },
+                { HtmlInputFile.COMPONENT_TYPE, HtmlInputFile.class.getName() },
+                { HtmlInputHidden.COMPONENT_TYPE, HtmlInputHidden.class.getName() },
+                { HtmlInputSecret.COMPONENT_TYPE, HtmlInputSecret.class.getName() },
+                { HtmlInputText.COMPONENT_TYPE, HtmlInputText.class.getName() },
+                { HtmlInputTextarea.COMPONENT_TYPE, HtmlInputTextarea.class.getName() },
+                { HtmlMessage.COMPONENT_TYPE, HtmlMessage.class.getName() },
+                { HtmlMessages.COMPONENT_TYPE, HtmlMessages.class.getName() },
+                { HtmlOutputFormat.COMPONENT_TYPE, HtmlOutputFormat.class.getName() },
+                { HtmlOutputLabel.COMPONENT_TYPE, HtmlOutputLabel.class.getName() },
+                { HtmlOutputLink.COMPONENT_TYPE, HtmlOutputLink.class.getName() },
+                { HtmlOutcomeTargetLink.COMPONENT_TYPE, HtmlOutcomeTargetLink.class.getName() },
+                { HtmlOutcomeTargetButton.COMPONENT_TYPE, HtmlOutcomeTargetButton.class.getName() },
+                { HtmlOutputText.COMPONENT_TYPE, HtmlOutputText.class.getName() },
+                { HtmlPanelGrid.COMPONENT_TYPE, HtmlPanelGrid.class.getName() },
+                { HtmlPanelGroup.COMPONENT_TYPE, HtmlPanelGroup.class.getName() },
+                { HtmlSelectBooleanCheckbox.COMPONENT_TYPE, HtmlSelectBooleanCheckbox.class.getName() },
+                { HtmlSelectManyCheckbox.COMPONENT_TYPE, HtmlSelectManyCheckbox.class.getName() },
+                { HtmlSelectManyListbox.COMPONENT_TYPE, HtmlSelectManyListbox.class.getName() },
+                { HtmlSelectManyMenu.COMPONENT_TYPE, HtmlSelectManyMenu.class.getName() },
+                { HtmlSelectOneListbox.COMPONENT_TYPE, HtmlSelectOneListbox.class.getName() },
+                { HtmlSelectOneMenu.COMPONENT_TYPE, HtmlSelectOneMenu.class.getName() },
+                { HtmlSelectOneRadio.COMPONENT_TYPE, HtmlSelectOneRadio.class.getName() },
+                { HtmlDoctype.COMPONENT_TYPE, HtmlDoctype.class.getName() },
+                { HtmlHead.COMPONENT_TYPE, HtmlHead.class.getName() },
+                { HtmlBody.COMPONENT_TYPE, HtmlBody.class.getName() }
+        };
+
+        for (String[] component : components) {
+            var parentElement = doc.createElementNS(namespace, "component");
+
+            appendChildElements(doc, namespace, parentElement, new String[][] {
+                { "component-type", component[0] },
+                { "component-class", component[1] }
+            });
+
+            rootElement.appendChild(parentElement);
+        }
+    }
+
+    private void populateRenderKitElements(Document doc, String namespace, Element rootElement) {
+        var renderKitElement = doc.createElementNS(namespace, "render-kit");
+
+        String[][] renderKitElements = {
+                { "render-kit-id", RenderKitFactory.HTML_BASIC_RENDER_KIT }
+        };
+
+        appendChildElements(doc, namespace, renderKitElement, renderKitElements);
+        populateClientBehaviorRenderers(doc, namespace, renderKitElement);
+        populateRenderers(doc, namespace, renderKitElement);
+        rootElement.appendChild(renderKitElement);
+    }
+
+    private void populateClientBehaviorRenderers(Document doc, String namespace, Element rootElement) {
+        String[][] clientBehaviorRenderers = {
+                { AjaxBehavior.BEHAVIOR_ID, com.sun.faces.renderkit.html_basic.AjaxBehaviorRenderer.class.getName() }
+        };
+
+        for (String[] clientBehaviorRenderer : clientBehaviorRenderers) {
+            var parentElement = doc.createElementNS(namespace, "client-behavior-renderer");
+
+            appendChildElements(doc, namespace, parentElement, new String[][] {
+                { "client-behavior-renderer-type", clientBehaviorRenderer[0] },
+                { "client-behavior-renderer-class", clientBehaviorRenderer[1] }
+            });
+
+            rootElement.appendChild(parentElement);
+        }
+    }
+
+    private void populateRenderers(Document doc, String namespace, Element rootElement) {
+        String[][] renderers = {
+                { UIRepeat.COMPONENT_FAMILY, "facelets.ui.Repeat", com.sun.faces.facelets.component.RepeatRenderer.class.getName() },
+                { UICommand.COMPONENT_FAMILY, "jakarta.faces.Button", com.sun.faces.renderkit.html_basic.ButtonRenderer.class.getName() },                    
+                { UICommand.COMPONENT_FAMILY, "jakarta.faces.Link", com.sun.faces.renderkit.html_basic.CommandLinkRenderer.class.getName() },                    
+                { UICommand.COMPONENT_FAMILY, "jakarta.faces.Script", com.sun.faces.renderkit.html_basic.CommandScriptRenderer.class.getName() },                    
+                { UIData.COMPONENT_FAMILY, "jakarta.faces.Table", com.sun.faces.renderkit.html_basic.TableRenderer.class.getName() },                    
+                { UIForm.COMPONENT_FAMILY, "jakarta.faces.Form", com.sun.faces.renderkit.html_basic.FormRenderer.class.getName() },                    
+                { UIGraphic.COMPONENT_FAMILY, "jakarta.faces.Image", com.sun.faces.renderkit.html_basic.ImageRenderer.class.getName() },                    
+                { UIPanel.COMPONENT_FAMILY, "jakarta.faces.passthrough.Element", com.sun.faces.renderkit.html_basic.PassthroughRenderer.class.getName() },                    
+                { UIInput.COMPONENT_FAMILY, "jakarta.faces.File", com.sun.faces.renderkit.html_basic.FileRenderer.class.getName() },                    
+                { UIInput.COMPONENT_FAMILY, "jakarta.faces.Hidden", com.sun.faces.renderkit.html_basic.HiddenRenderer.class.getName() },                    
+                { UIInput.COMPONENT_FAMILY, "jakarta.faces.Secret", com.sun.faces.renderkit.html_basic.SecretRenderer.class.getName() },                    
+                { UIInput.COMPONENT_FAMILY, "jakarta.faces.Text", com.sun.faces.renderkit.html_basic.TextRenderer.class.getName() },                    
+                { UIInput.COMPONENT_FAMILY, "jakarta.faces.Textarea", com.sun.faces.renderkit.html_basic.TextareaRenderer.class.getName() },                    
+                { UIMessage.COMPONENT_FAMILY, "jakarta.faces.Message", com.sun.faces.renderkit.html_basic.MessageRenderer.class.getName() },                    
+                { UIMessages.COMPONENT_FAMILY, "jakarta.faces.Messages", com.sun.faces.renderkit.html_basic.MessagesRenderer.class.getName() },                    
+                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Format", com.sun.faces.renderkit.html_basic.OutputMessageRenderer.class.getName() },                    
+                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Label", com.sun.faces.renderkit.html_basic.LabelRenderer.class.getName() },                    
+                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Link", com.sun.faces.renderkit.html_basic.OutputLinkRenderer.class.getName() },                    
+                { UIOutcomeTarget.COMPONENT_FAMILY, "jakarta.faces.Link", com.sun.faces.renderkit.html_basic.OutcomeTargetLinkRenderer.class.getName() },                    
+                { UIOutcomeTarget.COMPONENT_FAMILY, "jakarta.faces.Button", com.sun.faces.renderkit.html_basic.OutcomeTargetButtonRenderer.class.getName() },                    
+                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Text", com.sun.faces.renderkit.html_basic.TextRenderer.class.getName() },                    
+                { UIPanel.COMPONENT_FAMILY, "jakarta.faces.Grid", com.sun.faces.renderkit.html_basic.GridRenderer.class.getName() },                    
+                { UIPanel.COMPONENT_FAMILY, "jakarta.faces.Group", com.sun.faces.renderkit.html_basic.GroupRenderer.class.getName() },                    
+                { UISelectBoolean.COMPONENT_FAMILY, "jakarta.faces.Checkbox", com.sun.faces.renderkit.html_basic.CheckboxRenderer.class.getName() },                    
+                { UISelectMany.COMPONENT_FAMILY, "jakarta.faces.Checkbox", com.sun.faces.renderkit.html_basic.SelectManyCheckboxListRenderer.class.getName() },                    
+                { UISelectMany.COMPONENT_FAMILY, "jakarta.faces.Listbox", com.sun.faces.renderkit.html_basic.ListboxRenderer.class.getName() },                    
+                { UISelectMany.COMPONENT_FAMILY, "jakarta.faces.Menu", com.sun.faces.renderkit.html_basic.MenuRenderer.class.getName() },                    
+                { UISelectOne.COMPONENT_FAMILY, "jakarta.faces.Listbox", com.sun.faces.renderkit.html_basic.ListboxRenderer.class.getName() },                    
+                { UISelectOne.COMPONENT_FAMILY, "jakarta.faces.Menu", com.sun.faces.renderkit.html_basic.MenuRenderer.class.getName() },                    
+                { UISelectOne.COMPONENT_FAMILY, "jakarta.faces.Radio", com.sun.faces.renderkit.html_basic.RadioRenderer.class.getName() },                    
+                { UINamingContainer.COMPONENT_FAMILY, "jakarta.faces.Composite", com.sun.faces.renderkit.html_basic.CompositeRenderer.class.getName() },                    
+                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.CompositeFacet", com.sun.faces.renderkit.html_basic.CompositeFacetRenderer.class.getName() },                    
+                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.resource.Script", com.sun.faces.renderkit.html_basic.ScriptRenderer.class.getName() },                    
+                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.resource.Stylesheet", com.sun.faces.renderkit.html_basic.StylesheetRenderer.class.getName() },                    
+                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Doctype", com.sun.faces.renderkit.html_basic.DoctypeRenderer.class.getName() },                    
+                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Head", com.sun.faces.renderkit.html_basic.HeadRenderer.class.getName() },                    
+                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Body", com.sun.faces.renderkit.html_basic.BodyRenderer.class.getName() },                    
+                { UIWebsocket.COMPONENT_FAMILY, "jakarta.faces.Websocket", com.sun.faces.renderkit.html_basic.WebsocketRenderer.class.getName() }
+        };
+
+        for (String[] renderer : renderers) {
+            var parentElement = doc.createElementNS(namespace, "renderer");
+
+            appendChildElements(doc, namespace, parentElement, new String[][] {
+                { "component-family", renderer[0] },
+                { "renderer-type", renderer[1] },
+                { "renderer-class", renderer[1] },
+            });
+
+            rootElement.appendChild(parentElement);
+        }
+    }
+
     private void appendChildElements(Document doc, String namespace, Element parentElement, String[][] childElementNamesAndValues) {
         for (String[] childElementNameAndValue : childElementNamesAndValues) {
             var child = doc.createElementNS(namespace, childElementNameAndValue[0]);
