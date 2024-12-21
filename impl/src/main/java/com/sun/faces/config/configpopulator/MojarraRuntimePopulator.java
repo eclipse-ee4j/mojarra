@@ -1,5 +1,7 @@
 package com.sun.faces.config.configpopulator;
 
+import java.util.ArrayList;
+
 import jakarta.faces.application.ApplicationConfigurationPopulator;
 import jakarta.faces.component.UIColumn;
 import jakarta.faces.component.UICommand;
@@ -355,15 +357,15 @@ public final class MojarraRuntimePopulator extends ApplicationConfigurationPopul
 
     private void appendNestedChildElements(Document doc, String namespace, Element parentElement, String nestedElementName, String[] childElementNames, String[][] nestedChildElementValues) {
         for (String[] childElementValues: nestedChildElementValues) {
-            var listenerElement = doc.createElementNS(namespace, nestedElementName);
+            var nestedElement = doc.createElementNS(namespace, nestedElementName);
+            var childElementNamesAndValues = new ArrayList<String[]>();
+            
+            for (int i = 0; i < childElementNames.length; i++) {
+                childElementNamesAndValues.add(new String[] { childElementNames[i], childElementValues[i] });
+            }
 
-            appendChildElements(doc, namespace, listenerElement, new String[][] {
-                { childElementNames[0], childElementValues[0] },
-                { childElementNames[1], childElementValues[1] },
-                { childElementNames[2], childElementValues[2] }
-            });
-
-            parentElement.appendChild(listenerElement);
+            appendChildElements(doc, namespace, nestedElement, childElementNamesAndValues.toArray(String[][]::new));
+            parentElement.appendChild(nestedElement);
         }
     }
 }
