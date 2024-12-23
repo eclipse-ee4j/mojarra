@@ -74,6 +74,7 @@ import jakarta.faces.convert.IntegerConverter;
 import jakarta.faces.convert.LongConverter;
 import jakarta.faces.convert.NumberConverter;
 import jakarta.faces.convert.ShortConverter;
+import jakarta.faces.convert.UUIDConverter;
 import jakarta.faces.event.PostConstructViewMapEvent;
 import jakarta.faces.event.PreDestroyViewMapEvent;
 import jakarta.faces.render.RenderKitFactory;
@@ -186,7 +187,8 @@ public final class MojarraRuntimePopulator extends ApplicationConfigurationPopul
                 { LongConverter.CONVERTER_ID, LongConverter.class.getName() },
                 { NumberConverter.CONVERTER_ID, NumberConverter.class.getName() },
                 { ShortConverter.CONVERTER_ID, ShortConverter.class.getName() },
-                { EnumConverter.CONVERTER_ID, EnumConverter.class.getName() }
+                { EnumConverter.CONVERTER_ID, EnumConverter.class.getName() },
+                { UUIDConverter.CONVERTER_ID, UUIDConverter.class.getName() }
         };
 
         appendNestedChildElements(doc, namespace, rootElement, "converter", new String[] { "converter-id", "converter-class" }, converters);
