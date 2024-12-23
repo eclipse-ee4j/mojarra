@@ -16,6 +16,7 @@ import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.UIOutcomeTarget;
 import jakarta.faces.component.UIOutput;
 import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.UIParameter;
 import jakarta.faces.component.UISelectBoolean;
 import jakarta.faces.component.UISelectItem;
 import jakarta.faces.component.UISelectItemGroup;
@@ -235,6 +236,7 @@ public final class MojarraRuntimePopulator extends ApplicationConfigurationPopul
                 { UIPanel.COMPONENT_TYPE, UIPanel.class.getName() },
                 { UIViewParameter.COMPONENT_TYPE, UIViewParameter.class.getName() },
                 { UIViewAction.COMPONENT_TYPE, UIViewAction.class.getName() },
+                { UIParameter.COMPONENT_TYPE, UIParameter.class.getName() },
                 { UISelectBoolean.COMPONENT_TYPE, UISelectBoolean.class.getName() },
                 { UISelectItem.COMPONENT_TYPE, UISelectItem.class.getName() },
                 { UISelectItems.COMPONENT_TYPE, UISelectItems.class.getName() },
