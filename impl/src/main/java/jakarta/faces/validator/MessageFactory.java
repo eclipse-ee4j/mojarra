@@ -19,6 +19,7 @@ package jakarta.faces.validator;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 import jakarta.el.ValueExpression;
@@ -322,6 +323,19 @@ class MessageFactory {
         private Locale locale;
         private Object[] parameters;
         private Object[] resolvedParameters;
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(super.hashCode(), locale, parameters, resolvedParameters);
+        }
+
+        @Override
+        public boolean equals(Object object) {
+            return super.equals(object)
+                && Objects.equals(locale, ((BindingFacesMessage) object).locale)
+                && Objects.equals(parameters, ((BindingFacesMessage) object).parameters)
+                && Objects.equals(resolvedParameters, ((BindingFacesMessage) object).resolvedParameters);
+        }
     }
 
 } // end of class MessageFactory
