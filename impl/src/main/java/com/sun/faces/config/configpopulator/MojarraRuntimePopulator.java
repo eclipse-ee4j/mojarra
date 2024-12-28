@@ -1,2261 +1,375 @@
 package com.sun.faces.config.configpopulator;
 
+import java.util.ArrayList;
+
 import jakarta.faces.application.ApplicationConfigurationPopulator;
+import jakarta.faces.component.UIColumn;
+import jakarta.faces.component.UICommand;
+import jakarta.faces.component.UIData;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UIGraphic;
+import jakarta.faces.component.UIImportConstants;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UIMessage;
+import jakarta.faces.component.UIMessages;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.component.UIOutcomeTarget;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.UIParameter;
+import jakarta.faces.component.UISelectBoolean;
+import jakarta.faces.component.UISelectItem;
+import jakarta.faces.component.UISelectItemGroup;
+import jakarta.faces.component.UISelectItemGroups;
+import jakarta.faces.component.UISelectItems;
+import jakarta.faces.component.UISelectMany;
+import jakarta.faces.component.UISelectOne;
+import jakarta.faces.component.UIViewAction;
+import jakarta.faces.component.UIViewParameter;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.UIWebsocket;
+import jakarta.faces.component.behavior.AjaxBehavior;
+import jakarta.faces.component.html.HtmlBody;
+import jakarta.faces.component.html.HtmlColumn;
+import jakarta.faces.component.html.HtmlCommandButton;
+import jakarta.faces.component.html.HtmlCommandLink;
+import jakarta.faces.component.html.HtmlCommandScript;
+import jakarta.faces.component.html.HtmlDataTable;
+import jakarta.faces.component.html.HtmlDoctype;
+import jakarta.faces.component.html.HtmlForm;
+import jakarta.faces.component.html.HtmlGraphicImage;
+import jakarta.faces.component.html.HtmlHead;
+import jakarta.faces.component.html.HtmlInputFile;
+import jakarta.faces.component.html.HtmlInputHidden;
+import jakarta.faces.component.html.HtmlInputSecret;
+import jakarta.faces.component.html.HtmlInputText;
+import jakarta.faces.component.html.HtmlInputTextarea;
+import jakarta.faces.component.html.HtmlMessage;
+import jakarta.faces.component.html.HtmlMessages;
+import jakarta.faces.component.html.HtmlOutcomeTargetButton;
+import jakarta.faces.component.html.HtmlOutcomeTargetLink;
+import jakarta.faces.component.html.HtmlOutputFormat;
+import jakarta.faces.component.html.HtmlOutputLabel;
+import jakarta.faces.component.html.HtmlOutputLink;
+import jakarta.faces.component.html.HtmlOutputText;
+import jakarta.faces.component.html.HtmlPanelGrid;
+import jakarta.faces.component.html.HtmlPanelGroup;
+import jakarta.faces.component.html.HtmlSelectBooleanCheckbox;
+import jakarta.faces.component.html.HtmlSelectManyCheckbox;
+import jakarta.faces.component.html.HtmlSelectManyListbox;
+import jakarta.faces.component.html.HtmlSelectManyMenu;
+import jakarta.faces.component.html.HtmlSelectOneListbox;
+import jakarta.faces.component.html.HtmlSelectOneMenu;
+import jakarta.faces.component.html.HtmlSelectOneRadio;
+import jakarta.faces.convert.BigDecimalConverter;
+import jakarta.faces.convert.BigIntegerConverter;
+import jakarta.faces.convert.BooleanConverter;
+import jakarta.faces.convert.ByteConverter;
+import jakarta.faces.convert.CharacterConverter;
+import jakarta.faces.convert.DateTimeConverter;
+import jakarta.faces.convert.DoubleConverter;
 import jakarta.faces.convert.EnumConverter;
+import jakarta.faces.convert.FloatConverter;
+import jakarta.faces.convert.IntegerConverter;
+import jakarta.faces.convert.LongConverter;
+import jakarta.faces.convert.NumberConverter;
+import jakarta.faces.convert.ShortConverter;
+import jakarta.faces.convert.UUIDConverter;
+import jakarta.faces.event.PostConstructViewMapEvent;
+import jakarta.faces.event.PreDestroyViewMapEvent;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.validator.BeanValidator;
+import jakarta.faces.validator.DoubleRangeValidator;
+import jakarta.faces.validator.LengthValidator;
+import jakarta.faces.validator.LongRangeValidator;
+import jakarta.faces.validator.RegexValidator;
+import jakarta.faces.validator.RequiredValidator;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.sun.faces.ext.component.UIValidateWholeBean;
+import com.sun.faces.facelets.component.UIRepeat;
+import com.sun.faces.facelets.tag.ui.ComponentRef;
+import com.sun.faces.facelets.tag.ui.UIDebug;
+
 public final class MojarraRuntimePopulator extends ApplicationConfigurationPopulator {
+
     @Override
-    public void populateApplicationConfiguration(Document toPopulate) {
-        String ns = toPopulate.getDocumentElement().getNamespaceURI();
-        Element faces_configElement = toPopulate.getDocumentElement();
-        {
-            Element factoryElement = toPopulate.createElementNS(ns, "factory");
-            {
-                Element faces_servlet_factoryElement = toPopulate.createElementNS(ns, "faces-servlet-factory");
-                faces_servlet_factoryElement.appendChild(toPopulate.createTextNode("com.sun.faces.webapp.FacesServletFactoryImpl"));
-                factoryElement.appendChild(faces_servlet_factoryElement);
-            }
-            {
-                Element application_factoryElement = toPopulate.createElementNS(ns, "application-factory");
-                application_factoryElement.appendChild(toPopulate.createTextNode("com.sun.faces.application.ApplicationFactoryImpl"));
-                factoryElement.appendChild(application_factoryElement);
-            }
-            {
-                Element exception_handler_factoryElement = toPopulate.createElementNS(ns, "exception-handler-factory");
-                exception_handler_factoryElement.appendChild(toPopulate.createTextNode("com.sun.faces.context.ExceptionHandlerFactoryImpl"));
-                factoryElement.appendChild(exception_handler_factoryElement);
-            }
-            {
-                Element visit_context_factoryElement = toPopulate.createElementNS(ns, "visit-context-factory");
-                visit_context_factoryElement.appendChild(toPopulate.createTextNode("com.sun.faces.component.visit.VisitContextFactoryImpl"));
-                factoryElement.appendChild(visit_context_factoryElement);
-            }
-            {
-                Element faces_context_factoryElement = toPopulate.createElementNS(ns, "faces-context-factory");
-                faces_context_factoryElement.appendChild(toPopulate.createTextNode("com.sun.faces.context.FacesContextFactoryImpl"));
-                factoryElement.appendChild(faces_context_factoryElement);
-            }
-            {
-                Element client_window_factoryElement = toPopulate.createElementNS(ns, "client-window-factory");
-                client_window_factoryElement.appendChild(toPopulate.createTextNode("com.sun.faces.lifecycle.ClientWindowFactoryImpl"));
-                factoryElement.appendChild(client_window_factoryElement);
-            }
-            {
-                Element flash_factoryElement = toPopulate.createElementNS(ns, "flash-factory");
-                flash_factoryElement.appendChild(toPopulate.createTextNode("com.sun.faces.context.flash.FlashFactoryImpl"));
-                factoryElement.appendChild(flash_factoryElement);
-            }
-            {
-                Element partial_view_context_factoryElement = toPopulate.createElementNS(ns, "partial-view-context-factory");
-                partial_view_context_factoryElement.appendChild(toPopulate.createTextNode("com.sun.faces.context.PartialViewContextFactoryImpl"));
-                factoryElement.appendChild(partial_view_context_factoryElement);
-            }
-            {
-                Element lifecycle_factoryElement = toPopulate.createElementNS(ns, "lifecycle-factory");
-                lifecycle_factoryElement.appendChild(toPopulate.createTextNode("com.sun.faces.lifecycle.LifecycleFactoryImpl"));
-                factoryElement.appendChild(lifecycle_factoryElement);
-            }
-            {
-                Element render_kit_factoryElement = toPopulate.createElementNS(ns, "render-kit-factory");
-                render_kit_factoryElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.RenderKitFactoryImpl"));
-                factoryElement.appendChild(render_kit_factoryElement);
-            }
-            {
-                Element view_declaration_language_factoryElement = toPopulate.createElementNS(ns, "view-declaration-language-factory");
-                view_declaration_language_factoryElement
-                        .appendChild(toPopulate.createTextNode("com.sun.faces.application.view.ViewDeclarationLanguageFactoryImpl"));
-                factoryElement.appendChild(view_declaration_language_factoryElement);
-            }
-            {
-                Element tag_handler_delegate_factoryElement = toPopulate.createElementNS(ns, "tag-handler-delegate-factory");
-                tag_handler_delegate_factoryElement.appendChild(toPopulate.createTextNode("com.sun.faces.facelets.tag.faces.TagHandlerDelegateFactoryImpl"));
-                factoryElement.appendChild(tag_handler_delegate_factoryElement);
-            }
-            {
-                Element external_context_factoryElement = toPopulate.createElementNS(ns, "external-context-factory");
-                external_context_factoryElement.appendChild(toPopulate.createTextNode("com.sun.faces.context.ExternalContextFactoryImpl"));
-                factoryElement.appendChild(external_context_factoryElement);
-            }
-            {
-                Element facelet_cache_factoryElement = toPopulate.createElementNS(ns, "facelet-cache-factory");
-                facelet_cache_factoryElement.appendChild(toPopulate.createTextNode("com.sun.faces.facelets.impl.FaceletCacheFactoryImpl"));
-                factoryElement.appendChild(facelet_cache_factoryElement);
-            }
-            {
-                Element flow_handler_factoryElement = toPopulate.createElementNS(ns, "flow-handler-factory");
-                flow_handler_factoryElement.appendChild(toPopulate.createTextNode("com.sun.faces.flow.FlowHandlerFactoryImpl"));
-                factoryElement.appendChild(flow_handler_factoryElement);
-            }
-            {
-                Element search_expression_context_factoryElement = toPopulate.createElementNS(ns, "search-expression-context-factory");
-                search_expression_context_factoryElement
-                        .appendChild(toPopulate.createTextNode("com.sun.faces.component.search.SearchExpressionContextFactoryImpl"));
-                factoryElement.appendChild(search_expression_context_factoryElement);
-            }
-            faces_configElement.appendChild(factoryElement);
-        }
-        {
-            Element applicationElement = toPopulate.createElementNS(ns, "application");
-            {
-                Element action_listenerElement = toPopulate.createElementNS(ns, "action-listener");
-                action_listenerElement.appendChild(toPopulate.createTextNode("com.sun.faces.application.ActionListenerImpl"));
-                applicationElement.appendChild(action_listenerElement);
-            }
-            {
-                Element navigation_handlerElement = toPopulate.createElementNS(ns, "navigation-handler");
-                navigation_handlerElement.appendChild(toPopulate.createTextNode("com.sun.faces.application.NavigationHandlerImpl"));
-                applicationElement.appendChild(navigation_handlerElement);
-            }
-            {
-                Element state_managerElement = toPopulate.createElementNS(ns, "state-manager");
-                state_managerElement.appendChild(toPopulate.createTextNode("com.sun.faces.application.StateManagerImpl"));
-                applicationElement.appendChild(state_managerElement);
-            }
-            {
-                Element view_handlerElement = toPopulate.createElementNS(ns, "view-handler");
-                view_handlerElement.appendChild(toPopulate.createTextNode("com.sun.faces.application.view.MultiViewHandler"));
-                applicationElement.appendChild(view_handlerElement);
-            }
-            {
-                Element resource_handlerElement = toPopulate.createElementNS(ns, "resource-handler");
-                resource_handlerElement.appendChild(toPopulate.createTextNode("com.sun.faces.application.resource.ResourceHandlerImpl"));
-                applicationElement.appendChild(resource_handlerElement);
-            }
-            {
-                Element search_expression_handlerElement = toPopulate.createElementNS(ns, "search-expression-handler");
-                search_expression_handlerElement.appendChild(toPopulate.createTextNode("com.sun.faces.component.search.SearchExpressionHandlerImpl"));
-                applicationElement.appendChild(search_expression_handlerElement);
-            }
-            {
-                Element system_event_listenerElement = toPopulate.createElementNS(ns, "system-event-listener");
-                {
-                    Element system_event_listener_classElement = toPopulate.createElementNS(ns, "system-event-listener-class");
-                    system_event_listener_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.application.view.ViewScopeEventListener"));
-                    system_event_listenerElement.appendChild(system_event_listener_classElement);
-                }
-                {
-                    Element system_event_classElement = toPopulate.createElementNS(ns, "system-event-class");
-                    system_event_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.event.PostConstructViewMapEvent"));
-                    system_event_listenerElement.appendChild(system_event_classElement);
-                }
-                {
-                    Element source_classElement = toPopulate.createElementNS(ns, "source-class");
-                    source_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIViewRoot"));
-                    system_event_listenerElement.appendChild(source_classElement);
-                }
-                applicationElement.appendChild(system_event_listenerElement);
-            }
-            {
-                Element system_event_listenerElement = toPopulate.createElementNS(ns, "system-event-listener");
-                {
-                    Element system_event_listener_classElement = toPopulate.createElementNS(ns, "system-event-listener-class");
-                    system_event_listener_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.application.view.ViewScopeEventListener"));
-                    system_event_listenerElement.appendChild(system_event_listener_classElement);
-                }
-                {
-                    Element system_event_classElement = toPopulate.createElementNS(ns, "system-event-class");
-                    system_event_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.event.PreDestroyViewMapEvent"));
-                    system_event_listenerElement.appendChild(system_event_classElement);
-                }
-                {
-                    Element source_classElement = toPopulate.createElementNS(ns, "source-class");
-                    source_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIViewRoot"));
-                    system_event_listenerElement.appendChild(source_classElement);
-                }
-                applicationElement.appendChild(system_event_listenerElement);
-            }
-            faces_configElement.appendChild(applicationElement);
-        }
-        {
-            Element converterElement = toPopulate.createElementNS(ns, "converter");
-            {
-                Element converter_idElement = toPopulate.createElementNS(ns, "converter-id");
-                converter_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.BigDecimal"));
-                converterElement.appendChild(converter_idElement);
-            }
-            {
-                Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.BigDecimalConverter"));
-                converterElement.appendChild(converter_classElement);
-            }
-            faces_configElement.appendChild(converterElement);
-        }
-        {
-            Element converterElement = toPopulate.createElementNS(ns, "converter");
-            {
-                Element converter_idElement = toPopulate.createElementNS(ns, "converter-id");
-                converter_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.BigInteger"));
-                converterElement.appendChild(converter_idElement);
-            }
-            {
-                Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.BigIntegerConverter"));
-                converterElement.appendChild(converter_classElement);
-            }
-            faces_configElement.appendChild(converterElement);
-        }
-        {
-            Element converterElement = toPopulate.createElementNS(ns, "converter");
-            {
-                Element converter_idElement = toPopulate.createElementNS(ns, "converter-id");
-                converter_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.Boolean"));
-                converterElement.appendChild(converter_idElement);
-            }
-            {
-                Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.BooleanConverter"));
-                converterElement.appendChild(converter_classElement);
-            }
-            faces_configElement.appendChild(converterElement);
-        }
-        {
-            Element converterElement = toPopulate.createElementNS(ns, "converter");
-            {
-                Element converter_idElement = toPopulate.createElementNS(ns, "converter-id");
-                converter_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.Byte"));
-                converterElement.appendChild(converter_idElement);
-            }
-            {
-                Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.ByteConverter"));
-                converterElement.appendChild(converter_classElement);
-            }
-            faces_configElement.appendChild(converterElement);
-        }
-        {
-            Element converterElement = toPopulate.createElementNS(ns, "converter");
-            {
-                Element converter_idElement = toPopulate.createElementNS(ns, "converter-id");
-                converter_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.Character"));
-                converterElement.appendChild(converter_idElement);
-            }
-            {
-                Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.CharacterConverter"));
-                converterElement.appendChild(converter_classElement);
-            }
-            faces_configElement.appendChild(converterElement);
-        }
-        {
-            Element converterElement = toPopulate.createElementNS(ns, "converter");
-            {
-                Element converter_idElement = toPopulate.createElementNS(ns, "converter-id");
-                converter_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.DateTime"));
-                converterElement.appendChild(converter_idElement);
-            }
-            {
-                Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.DateTimeConverter"));
-                converterElement.appendChild(converter_classElement);
-            }
-            faces_configElement.appendChild(converterElement);
-        }
-        {
-            Element converterElement = toPopulate.createElementNS(ns, "converter");
-            {
-                Element converter_idElement = toPopulate.createElementNS(ns, "converter-id");
-                converter_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.Double"));
-                converterElement.appendChild(converter_idElement);
-            }
-            {
-                Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.DoubleConverter"));
-                converterElement.appendChild(converter_classElement);
-            }
-            faces_configElement.appendChild(converterElement);
-        }
-        {
-            Element converterElement = toPopulate.createElementNS(ns, "converter");
-            {
-                Element converter_idElement = toPopulate.createElementNS(ns, "converter-id");
-                converter_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.Float"));
-                converterElement.appendChild(converter_idElement);
-            }
-            {
-                Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.FloatConverter"));
-                converterElement.appendChild(converter_classElement);
-            }
-            faces_configElement.appendChild(converterElement);
-        }
-        {
-            Element converterElement = toPopulate.createElementNS(ns, "converter");
-            {
-                Element converter_idElement = toPopulate.createElementNS(ns, "converter-id");
-                converter_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.Integer"));
-                converterElement.appendChild(converter_idElement);
-            }
-            {
-                Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.IntegerConverter"));
-                converterElement.appendChild(converter_classElement);
-            }
-            faces_configElement.appendChild(converterElement);
-        }
-        {
-            Element converterElement = toPopulate.createElementNS(ns, "converter");
-            {
-                Element converter_idElement = toPopulate.createElementNS(ns, "converter-id");
-                converter_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.Long"));
-                converterElement.appendChild(converter_idElement);
-            }
-            {
-                Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.LongConverter"));
-                converterElement.appendChild(converter_classElement);
-            }
-            faces_configElement.appendChild(converterElement);
-        }
-        {
-            Element converterElement = toPopulate.createElementNS(ns, "converter");
-            {
-                Element converter_idElement = toPopulate.createElementNS(ns, "converter-id");
-                converter_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.Number"));
-                converterElement.appendChild(converter_idElement);
-            }
-            {
-                Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.NumberConverter"));
-                converterElement.appendChild(converter_classElement);
-            }
-            faces_configElement.appendChild(converterElement);
-        }
-        {
-            Element converterElement = toPopulate.createElementNS(ns, "converter");
-            {
-                Element converter_idElement = toPopulate.createElementNS(ns, "converter-id");
-                converter_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.Short"));
-                converterElement.appendChild(converter_idElement);
-            }
-            {
-                Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.ShortConverter"));
-                converterElement.appendChild(converter_classElement);
-            }
-            faces_configElement.appendChild(converterElement);
-        }
-        {
-            Element converterElement = toPopulate.createElementNS(ns, "converter");
-            {
-                Element converter_idElement = toPopulate.createElementNS(ns, "converter-id");
-                converter_idElement.appendChild(toPopulate.createTextNode(EnumConverter.CONVERTER_ID));
-                converterElement.appendChild(converter_idElement);
-            }
-            {
-                Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode(EnumConverter.class.getName()));
-                converterElement.appendChild(converter_classElement);
-            }
-            faces_configElement.appendChild(converterElement);
-        }
-        {
-            Element converterElement = toPopulate.createElementNS(ns, "converter");
-            {
-                Element converter_for_classElement = toPopulate.createElementNS(ns, "converter-for-class");
-                converter_for_classElement.appendChild(toPopulate.createTextNode("java.math.BigDecimal"));
-                converterElement.appendChild(converter_for_classElement);
-            }
-            {
-                Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.BigDecimalConverter"));
-                converterElement.appendChild(converter_classElement);
-            }
-            faces_configElement.appendChild(converterElement);
-        }
-        {
-            Element converterElement = toPopulate.createElementNS(ns, "converter");
-            {
-                Element converter_for_classElement = toPopulate.createElementNS(ns, "converter-for-class");
-                converter_for_classElement.appendChild(toPopulate.createTextNode("java.math.BigInteger"));
-                converterElement.appendChild(converter_for_classElement);
-            }
-            {
-                Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.BigIntegerConverter"));
-                converterElement.appendChild(converter_classElement);
-            }
-            faces_configElement.appendChild(converterElement);
-        }
-        {
-            Element converterElement = toPopulate.createElementNS(ns, "converter");
-            {
-                Element converter_for_classElement = toPopulate.createElementNS(ns, "converter-for-class");
-                converter_for_classElement.appendChild(toPopulate.createTextNode("java.lang.Boolean"));
-                converterElement.appendChild(converter_for_classElement);
-            }
-            {
-                Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.BooleanConverter"));
-                converterElement.appendChild(converter_classElement);
-            }
-            faces_configElement.appendChild(converterElement);
-        }
-        {
-            Element converterElement = toPopulate.createElementNS(ns, "converter");
-            {
-                Element converter_for_classElement = toPopulate.createElementNS(ns, "converter-for-class");
-                converter_for_classElement.appendChild(toPopulate.createTextNode("java.lang.Byte"));
-                converterElement.appendChild(converter_for_classElement);
-            }
-            {
-                Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.ByteConverter"));
-                converterElement.appendChild(converter_classElement);
-            }
-            faces_configElement.appendChild(converterElement);
-        }
-        {
-            Element converterElement = toPopulate.createElementNS(ns, "converter");
-            {
-                Element converter_for_classElement = toPopulate.createElementNS(ns, "converter-for-class");
-                converter_for_classElement.appendChild(toPopulate.createTextNode("java.lang.Character"));
-                converterElement.appendChild(converter_for_classElement);
-            }
-            {
-                Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.CharacterConverter"));
-                converterElement.appendChild(converter_classElement);
-            }
-            faces_configElement.appendChild(converterElement);
-        }
-        {
-            Element converterElement = toPopulate.createElementNS(ns, "converter");
-            {
-                Element converter_for_classElement = toPopulate.createElementNS(ns, "converter-for-class");
-                converter_for_classElement.appendChild(toPopulate.createTextNode("java.lang.Double"));
-                converterElement.appendChild(converter_for_classElement);
-            }
-            {
-                Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.DoubleConverter"));
-                converterElement.appendChild(converter_classElement);
-            }
-            faces_configElement.appendChild(converterElement);
-        }
-        {
-            Element converterElement = toPopulate.createElementNS(ns, "converter");
-            {
-                Element converter_for_classElement = toPopulate.createElementNS(ns, "converter-for-class");
-                converter_for_classElement.appendChild(toPopulate.createTextNode("java.lang.Float"));
-                converterElement.appendChild(converter_for_classElement);
-            }
-            {
-                Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.FloatConverter"));
-                converterElement.appendChild(converter_classElement);
-            }
-            faces_configElement.appendChild(converterElement);
-        }
-        {
-            Element converterElement = toPopulate.createElementNS(ns, "converter");
-            {
-                Element converter_for_classElement = toPopulate.createElementNS(ns, "converter-for-class");
-                converter_for_classElement.appendChild(toPopulate.createTextNode("java.lang.Integer"));
-                converterElement.appendChild(converter_for_classElement);
-            }
-            {
-                Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.IntegerConverter"));
-                converterElement.appendChild(converter_classElement);
-            }
-            faces_configElement.appendChild(converterElement);
-        }
-        {
-            Element converterElement = toPopulate.createElementNS(ns, "converter");
-            {
-                Element converter_for_classElement = toPopulate.createElementNS(ns, "converter-for-class");
-                converter_for_classElement.appendChild(toPopulate.createTextNode("java.lang.Long"));
-                converterElement.appendChild(converter_for_classElement);
-            }
-            {
-                Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.LongConverter"));
-                converterElement.appendChild(converter_classElement);
-            }
-            faces_configElement.appendChild(converterElement);
-        }
-        {
-            Element converterElement = toPopulate.createElementNS(ns, "converter");
-            {
-                Element converter_for_classElement = toPopulate.createElementNS(ns, "converter-for-class");
-                converter_for_classElement.appendChild(toPopulate.createTextNode("java.lang.Short"));
-                converterElement.appendChild(converter_for_classElement);
-            }
-            {
-                Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.ShortConverter"));
-                converterElement.appendChild(converter_classElement);
-            }
-            faces_configElement.appendChild(converterElement);
-        }
-        {
-            Element converterElement = toPopulate.createElementNS(ns, "converter");
-            {
-                Element converter_for_classElement = toPopulate.createElementNS(ns, "converter-for-class");
-                converter_for_classElement.appendChild(toPopulate.createTextNode("java.lang.Enum"));
-                converterElement.appendChild(converter_for_classElement);
-            }
-            {
-                Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.EnumConverter"));
-                converterElement.appendChild(converter_classElement);
-            }
-            faces_configElement.appendChild(converterElement);
-        }
-        {
-            Element converterElement = toPopulate.createElementNS(ns, "converter");
-            {
-                Element converter_for_classElement = toPopulate.createElementNS(ns, "converter-for-class");
-                converter_for_classElement.appendChild(toPopulate.createTextNode("java.util.UUID"));
-                converterElement.appendChild(converter_for_classElement);
-            }
-            {
-                Element converter_classElement = toPopulate.createElementNS(ns, "converter-class");
-                converter_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.convert.UUIDConverter"));
-                converterElement.appendChild(converter_classElement);
-            }
-            faces_configElement.appendChild(converterElement);
-        }
-        {
-            Element lifecycleElement = toPopulate.createElementNS(ns, "lifecycle");
-            {
-                Element phase_listenerElement = toPopulate.createElementNS(ns, "phase-listener");
-                phase_listenerElement.appendChild(toPopulate.createTextNode("com.sun.faces.lifecycle.ELResolverInitPhaseListener"));
-                lifecycleElement.appendChild(phase_listenerElement);
-            }
-            faces_configElement.appendChild(lifecycleElement);
-        }
-        {
-            Element behaviorElement = toPopulate.createElementNS(ns, "behavior");
-            {
-                Element behavior_idElement = toPopulate.createElementNS(ns, "behavior-id");
-                behavior_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.behavior.Ajax"));
-                behaviorElement.appendChild(behavior_idElement);
-            }
-            {
-                Element behavior_classElement = toPopulate.createElementNS(ns, "behavior-class");
-                behavior_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.behavior.AjaxBehavior"));
-                behaviorElement.appendChild(behavior_classElement);
-            }
-            faces_configElement.appendChild(behaviorElement);
-        }
-        {
-            Element validatorElement = toPopulate.createElementNS(ns, "validator");
-            {
-                Element validator_idElement = toPopulate.createElementNS(ns, "validator-id");
-                validator_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.Bean"));
-                validatorElement.appendChild(validator_idElement);
-            }
-            {
-                Element validator_classElement = toPopulate.createElementNS(ns, "validator-class");
-                validator_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.validator.BeanValidator"));
-                validatorElement.appendChild(validator_classElement);
-            }
-            faces_configElement.appendChild(validatorElement);
-        }
-        {
-            Element validatorElement = toPopulate.createElementNS(ns, "validator");
-            {
-                Element validator_idElement = toPopulate.createElementNS(ns, "validator-id");
-                validator_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.DoubleRange"));
-                validatorElement.appendChild(validator_idElement);
-            }
-            {
-                Element validator_classElement = toPopulate.createElementNS(ns, "validator-class");
-                validator_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.validator.DoubleRangeValidator"));
-                validatorElement.appendChild(validator_classElement);
-            }
-            faces_configElement.appendChild(validatorElement);
-        }
-        {
-            Element validatorElement = toPopulate.createElementNS(ns, "validator");
-            {
-                Element validator_idElement = toPopulate.createElementNS(ns, "validator-id");
-                validator_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.Length"));
-                validatorElement.appendChild(validator_idElement);
-            }
-            {
-                Element validator_classElement = toPopulate.createElementNS(ns, "validator-class");
-                validator_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.validator.LengthValidator"));
-                validatorElement.appendChild(validator_classElement);
-            }
-            faces_configElement.appendChild(validatorElement);
-        }
-        {
-            Element validatorElement = toPopulate.createElementNS(ns, "validator");
-            {
-                Element validator_idElement = toPopulate.createElementNS(ns, "validator-id");
-                validator_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.LongRange"));
-                validatorElement.appendChild(validator_idElement);
-            }
-            {
-                Element validator_classElement = toPopulate.createElementNS(ns, "validator-class");
-                validator_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.validator.LongRangeValidator"));
-                validatorElement.appendChild(validator_classElement);
-            }
-            faces_configElement.appendChild(validatorElement);
-        }
-        {
-            Element validatorElement = toPopulate.createElementNS(ns, "validator");
-            {
-                Element validator_idElement = toPopulate.createElementNS(ns, "validator-id");
-                validator_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.RegularExpression"));
-                validatorElement.appendChild(validator_idElement);
-            }
-            {
-                Element validator_classElement = toPopulate.createElementNS(ns, "validator-class");
-                validator_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.validator.RegexValidator"));
-                validatorElement.appendChild(validator_classElement);
-            }
-            faces_configElement.appendChild(validatorElement);
-        }
-        {
-            Element validatorElement = toPopulate.createElementNS(ns, "validator");
-            {
-                Element validator_idElement = toPopulate.createElementNS(ns, "validator-id");
-                validator_idElement.appendChild(toPopulate.createTextNode("jakarta.faces.Required"));
-                validatorElement.appendChild(validator_idElement);
-            }
-            {
-                Element validator_classElement = toPopulate.createElementNS(ns, "validator-class");
-                validator_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.validator.RequiredValidator"));
-                validatorElement.appendChild(validator_classElement);
-            }
-            faces_configElement.appendChild(validatorElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("com.sun.faces.ext.validateWholeBean"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.ext.component.UIValidateWholeBean"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("facelets.ui.Repeat"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.facelets.component.UIRepeat"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("facelets.ui.ComponentRef"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.facelets.tag.ui.ComponentRef"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("facelets.ui.Debug"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.facelets.tag.ui.UIDebug"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Composite"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.facelets.tag.faces.CompositeComponentImpl"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.ComponentResourceContainer"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.component.ComponentResourceContainer"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element render_kitElement = toPopulate.createElementNS(ns, "render-kit");
-            {
-                Element render_kit_idElement = toPopulate.createElementNS(ns, "render-kit-id");
-                render_kit_idElement.appendChild(toPopulate.createTextNode("HTML_BASIC"));
-                render_kitElement.appendChild(render_kit_idElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("facelets"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("facelets.ui.Repeat"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.facelets.component.RepeatRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element client_behavior_rendererElement = toPopulate.createElementNS(ns, "client-behavior-renderer");
-                {
-                    Element client_behavior_renderer_typeElement = toPopulate.createElementNS(ns, "client-behavior-renderer-type");
-                    client_behavior_renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.behavior.Ajax"));
-                    client_behavior_rendererElement.appendChild(client_behavior_renderer_typeElement);
-                }
-                {
-                    Element client_behavior_renderer_classElement = toPopulate.createElementNS(ns, "client-behavior-renderer-class");
-                    client_behavior_renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.AjaxBehaviorRenderer"));
-                    client_behavior_rendererElement.appendChild(client_behavior_renderer_classElement);
-                }
-                render_kitElement.appendChild(client_behavior_rendererElement);
-            }
-            faces_configElement.appendChild(render_kitElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Column"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIColumn"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Command"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UICommand"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Data"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIData"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Form"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIForm"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Graphic"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIGraphic"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.ImportConstants"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIImportConstants"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Input"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIInput"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Message"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIMessage"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Messages"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIMessages"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.NamingContainer"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UINamingContainer"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Output"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIOutput"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.OutcomeTarget"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIOutcomeTarget"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Panel"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIPanel"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.ViewParameter"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIViewParameter"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.ViewAction"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIViewAction"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Parameter"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIParameter"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectBoolean"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UISelectBoolean"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectItem"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UISelectItem"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectItems"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UISelectItems"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectItemGroup"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UISelectItemGroup"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectItemGroups"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UISelectItemGroups"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectMany"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UISelectMany"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectOne"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UISelectOne"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.ViewRoot"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIViewRoot"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Websocket"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.UIWebsocket"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlColumn"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlColumn"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlCommandButton"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlCommandButton"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlCommandLink"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlCommandLink"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlCommandScript"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlCommandScript"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlDataTable"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlDataTable"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlForm"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlForm"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlGraphicImage"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlGraphicImage"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlInputFile"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlInputFile"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlInputHidden"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlInputHidden"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlInputSecret"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlInputSecret"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlInputText"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlInputText"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlInputTextarea"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlInputTextarea"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlMessage"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlMessage"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlMessages"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlMessages"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlOutputFormat"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlOutputFormat"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlOutputLabel"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlOutputLabel"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlOutputLink"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlOutputLink"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlOutcomeTargetLink"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlOutcomeTargetLink"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlOutcomeTargetButton"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlOutcomeTargetButton"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlOutputText"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlOutputText"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlPanelGrid"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlPanelGrid"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlPanelGroup"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlPanelGroup"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlSelectBooleanCheckbox"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlSelectBooleanCheckbox"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlSelectManyCheckbox"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlSelectManyCheckbox"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlSelectManyListbox"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlSelectManyListbox"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlSelectManyMenu"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlSelectManyMenu"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlSelectOneListbox"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlSelectOneListbox"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlSelectOneMenu"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlSelectOneMenu"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.HtmlSelectOneRadio"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlSelectOneRadio"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.OutputDoctype"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlDoctype"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.OutputHead"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlHead"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element componentElement = toPopulate.createElementNS(ns, "component");
-            {
-                Element component_typeElement = toPopulate.createElementNS(ns, "component-type");
-                component_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.OutputBody"));
-                componentElement.appendChild(component_typeElement);
-            }
-            {
-                Element component_classElement = toPopulate.createElementNS(ns, "component-class");
-                component_classElement.appendChild(toPopulate.createTextNode("jakarta.faces.component.html.HtmlBody"));
-                componentElement.appendChild(component_classElement);
-            }
-            faces_configElement.appendChild(componentElement);
-        }
-        {
-            Element render_kitElement = toPopulate.createElementNS(ns, "render-kit");
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Command"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Button"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.ButtonRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Command"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Link"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.CommandLinkRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Command"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Script"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.CommandScriptRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Data"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Table"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.TableRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Form"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Form"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.FormRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Graphic"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Image"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.ImageRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Panel"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.passthrough.Element"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.PassthroughRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Input"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.File"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.FileRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Input"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Hidden"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.HiddenRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Input"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Secret"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.SecretRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Input"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Text"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.TextRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Input"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Textarea"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.TextareaRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Message"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Message"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.MessageRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Messages"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Messages"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.MessagesRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Output"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Format"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.OutputMessageRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Output"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Label"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.LabelRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Output"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Link"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.OutputLinkRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.OutcomeTarget"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Link"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.OutcomeTargetLinkRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.OutcomeTarget"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Button"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.OutcomeTargetButtonRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Output"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Text"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.TextRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Panel"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Grid"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.GridRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Panel"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Group"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.GroupRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectBoolean"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Checkbox"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.CheckboxRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectMany"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Checkbox"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.SelectManyCheckboxListRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectMany"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Listbox"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.ListboxRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectMany"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Menu"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.MenuRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectOne"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Listbox"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.ListboxRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectOne"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Menu"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.MenuRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.SelectOne"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Radio"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.RadioRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.NamingContainer"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Composite"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.CompositeRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Output"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.CompositeFacet"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.CompositeFacetRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Output"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.resource.Script"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.ScriptRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Output"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.resource.Stylesheet"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.StylesheetRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Output"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Doctype"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.DoctypeRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Output"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Head"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.HeadRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Output"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Body"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.BodyRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            {
-                Element rendererElement = toPopulate.createElementNS(ns, "renderer");
-                {
-                    Element component_familyElement = toPopulate.createElementNS(ns, "component-family");
-                    component_familyElement.appendChild(toPopulate.createTextNode("jakarta.faces.Script"));
-                    rendererElement.appendChild(component_familyElement);
-                }
-                {
-                    Element renderer_typeElement = toPopulate.createElementNS(ns, "renderer-type");
-                    renderer_typeElement.appendChild(toPopulate.createTextNode("jakarta.faces.Websocket"));
-                    rendererElement.appendChild(renderer_typeElement);
-                }
-                {
-                    Element renderer_classElement = toPopulate.createElementNS(ns, "renderer-class");
-                    renderer_classElement.appendChild(toPopulate.createTextNode("com.sun.faces.renderkit.html_basic.WebsocketRenderer"));
-                    rendererElement.appendChild(renderer_classElement);
-                }
-                render_kitElement.appendChild(rendererElement);
-            }
-            faces_configElement.appendChild(render_kitElement);
+    public void populateApplicationConfiguration(Document doc) {
+        var namespace = doc.getDocumentElement().getNamespaceURI();
+        var rootElement = doc.getDocumentElement();
+
+        populateApplicationElements(doc, namespace, rootElement);
+        populateFactoryElements(doc, namespace, rootElement);
+        populateLifecycleElements(doc, namespace, rootElement);
+        populateConverters(doc, namespace, rootElement);
+        populateValidators(doc, namespace, rootElement);
+        populateBehaviors(doc, namespace, rootElement);
+        populateComponents(doc, namespace, rootElement);
+        populateRenderKitElements(doc, namespace, rootElement);
+    }
+
+    private void populateApplicationElements(Document doc, String namespace, Element rootElement) {
+        var applicationElement = doc.createElementNS(namespace, "application");
+
+        String[][] applicationElements = {
+                { "action-listener", com.sun.faces.application.ActionListenerImpl.class.getName() },
+                { "navigation-handler", com.sun.faces.application.NavigationHandlerImpl.class.getName() },
+                { "state-manager", com.sun.faces.application.StateManagerImpl.class.getName() },
+                { "view-handler", com.sun.faces.application.view.MultiViewHandler.class.getName() },
+                { "resource-handler", com.sun.faces.application.resource.ResourceHandlerImpl.class.getName() },
+                { "search-expression-handler", com.sun.faces.component.search.SearchExpressionHandlerImpl.class.getName() }
+        };
+
+        appendChildElements(doc, namespace, applicationElement, applicationElements);
+        populateSystemEventListeners(doc, namespace, applicationElement);
+        rootElement.appendChild(applicationElement);
+    }
+
+    private void populateSystemEventListeners(Document doc, String namespace, Element applicationElement) {
+        String[][] systemEventListeners = {
+                { com.sun.faces.application.view.ViewScopeEventListener.class.getName(), PostConstructViewMapEvent.class.getName(), UIViewRoot.class.getName() },
+                { com.sun.faces.application.view.ViewScopeEventListener.class.getName(), PreDestroyViewMapEvent.class.getName(), UIViewRoot.class.getName() }   
+        };
+
+        appendNestedChildElements(doc, namespace, applicationElement, "system-event-listener", new String[] { "system-event-listener-class", "system-event-class", "source-class" }, systemEventListeners);
+    }
+
+    private void populateFactoryElements(Document doc, String namespace, Element rootElement) {
+        var factoryElement = doc.createElementNS(namespace, "factory");
+
+        String[][] factoryElements = {
+                { "faces-servlet-factory", com.sun.faces.webapp.FacesServletFactoryImpl.class.getName() },
+                { "application-factory", com.sun.faces.application.ApplicationFactoryImpl.class.getName() },
+                { "exception-handler-factory", com.sun.faces.context.ExceptionHandlerFactoryImpl.class.getName() },
+                { "visit-context-factory", com.sun.faces.component.visit.VisitContextFactoryImpl.class.getName() },
+                { "faces-context-factory", com.sun.faces.context.FacesContextFactoryImpl.class.getName() },
+                { "client-window-factory", com.sun.faces.lifecycle.ClientWindowFactoryImpl.class.getName() },
+                { "flash-factory", com.sun.faces.context.flash.FlashFactoryImpl.class.getName() },
+                { "partial-view-context-factory", com.sun.faces.context.PartialViewContextFactoryImpl.class.getName() },
+                { "lifecycle-factory", com.sun.faces.lifecycle.LifecycleFactoryImpl.class.getName() },
+                { "render-kit-factory", com.sun.faces.renderkit.RenderKitFactoryImpl.class.getName() },
+                { "view-declaration-language-factory", com.sun.faces.application.view.ViewDeclarationLanguageFactoryImpl.class.getName() },
+                { "tag-handler-delegate-factory", com.sun.faces.facelets.tag.faces.TagHandlerDelegateFactoryImpl.class.getName() },
+                { "external-context-factory", com.sun.faces.context.ExternalContextFactoryImpl.class.getName() },
+                { "facelet-cache-factory", com.sun.faces.facelets.impl.FaceletCacheFactoryImpl.class.getName() },
+                { "flow-handler-factory", com.sun.faces.flow.FlowHandlerFactoryImpl.class.getName() },
+                { "search-expression-context-factory", com.sun.faces.component.search.SearchExpressionContextFactoryImpl.class.getName() }
+        };
+
+        appendChildElements(doc, namespace, factoryElement, factoryElements);
+        rootElement.appendChild(factoryElement);
+    }
+
+    private void populateLifecycleElements(Document doc, String namespace, Element rootElement) {
+        var lifecycleElement = doc.createElementNS(namespace, "lifecycle");
+
+        String[][] lifecycleElements = {
+                { "phase-listener", com.sun.faces.lifecycle.ELResolverInitPhaseListener.class.getName() }
+        };
+
+        appendChildElements(doc, namespace, lifecycleElement, lifecycleElements);
+        rootElement.appendChild(lifecycleElement);
+    }
+
+    private void populateConverters(Document doc, String namespace, Element rootElement) {
+        String[][] converters = {
+                { BigDecimalConverter.CONVERTER_ID, BigDecimalConverter.class.getName() },
+                { BigIntegerConverter.CONVERTER_ID, BigIntegerConverter.class.getName() },
+                { BooleanConverter.CONVERTER_ID,BooleanConverter.class.getName() },
+                { ByteConverter.CONVERTER_ID, ByteConverter.class.getName() },
+                { CharacterConverter.CONVERTER_ID, CharacterConverter.class.getName() },
+                { DateTimeConverter.CONVERTER_ID, DateTimeConverter.class.getName() },
+                { DoubleConverter.CONVERTER_ID, DoubleConverter.class.getName() },
+                { FloatConverter.CONVERTER_ID, FloatConverter.class.getName() },
+                { IntegerConverter.CONVERTER_ID, IntegerConverter.class.getName() },
+                { LongConverter.CONVERTER_ID, LongConverter.class.getName() },
+                { NumberConverter.CONVERTER_ID, NumberConverter.class.getName() },
+                { ShortConverter.CONVERTER_ID, ShortConverter.class.getName() },
+                { EnumConverter.CONVERTER_ID, EnumConverter.class.getName() },
+                { UUIDConverter.CONVERTER_ID, UUIDConverter.class.getName() }
+        };
+
+        appendNestedChildElements(doc, namespace, rootElement, "converter", new String[] { "converter-id", "converter-class" }, converters);
+    }
+
+    private void populateValidators(Document doc, String namespace, Element rootElement) {
+        String[][] validators = {
+                { BeanValidator.VALIDATOR_ID, BeanValidator.class.getName() },
+                { DoubleRangeValidator.VALIDATOR_ID, DoubleRangeValidator.class.getName() },
+                { LengthValidator.VALIDATOR_ID, LengthValidator.class.getName() },
+                { LongRangeValidator.VALIDATOR_ID, LongRangeValidator.class.getName() },
+                { RegexValidator.VALIDATOR_ID, RegexValidator.class.getName() },
+                { RequiredValidator.VALIDATOR_ID, RequiredValidator.class.getName() }
+        };
+
+        appendNestedChildElements(doc, namespace, rootElement, "validator", new String[] { "validator-id", "validator-class" }, validators);
+    }
+    
+    private void populateBehaviors(Document doc, String namespace, Element rootElement) {
+        String[][] behaviors = {
+                { AjaxBehavior.BEHAVIOR_ID, jakarta.faces.component.behavior.AjaxBehavior.class.getName() }
+        };
+
+        appendNestedChildElements(doc, namespace, rootElement, "behavior", new String[] { "behavior-id", "behavior-class" }, behaviors);
+    }
+
+    private void populateComponents(Document doc, String namespace, Element rootElement) {
+        String[][] components = {
+                { UIValidateWholeBean.FAMILY, UIValidateWholeBean.class.getName() },
+                { UIRepeat.COMPONENT_TYPE, UIRepeat.class.getName() },
+                { ComponentRef.COMPONENT_TYPE, ComponentRef.class.getName() },
+                { UIDebug.COMPONENT_TYPE, UIDebug.class.getName() },
+                { "jakarta.faces.Composite", com.sun.faces.facelets.tag.faces.CompositeComponentImpl.class.getName() },
+                { "jakarta.faces.ComponentResourceContainer", com.sun.faces.component.ComponentResourceContainer.class.getName() },
+                { UIColumn.COMPONENT_TYPE, UIColumn.class.getName() },
+                { UICommand.COMPONENT_TYPE, UICommand.class.getName() },
+                { UIData.COMPONENT_TYPE, UIData.class.getName() },
+                { UIForm.COMPONENT_TYPE, UIForm.class.getName() },
+                { UIGraphic.COMPONENT_TYPE, UIGraphic.class.getName() },
+                { UIImportConstants.COMPONENT_TYPE, UIImportConstants.class.getName() },
+                { UIInput.COMPONENT_TYPE, UIInput.class.getName() },
+                { UIMessage.COMPONENT_TYPE, UIMessage.class.getName() },
+                { UIMessages.COMPONENT_TYPE, UIMessages.class.getName() },
+                { UINamingContainer.COMPONENT_TYPE, UINamingContainer.class.getName() },
+                { UIOutput.COMPONENT_TYPE, UIOutput.class.getName() },
+                { UIOutcomeTarget.COMPONENT_TYPE, UIOutcomeTarget.class.getName() },
+                { UIPanel.COMPONENT_TYPE, UIPanel.class.getName() },
+                { UIViewParameter.COMPONENT_TYPE, UIViewParameter.class.getName() },
+                { UIViewAction.COMPONENT_TYPE, UIViewAction.class.getName() },
+                { UIParameter.COMPONENT_TYPE, UIParameter.class.getName() },
+                { UISelectBoolean.COMPONENT_TYPE, UISelectBoolean.class.getName() },
+                { UISelectItem.COMPONENT_TYPE, UISelectItem.class.getName() },
+                { UISelectItems.COMPONENT_TYPE, UISelectItems.class.getName() },
+                { UISelectItemGroup.COMPONENT_TYPE, UISelectItemGroup.class.getName() },
+                { UISelectItemGroups.COMPONENT_TYPE, UISelectItemGroups.class.getName() },
+                { UISelectMany.COMPONENT_TYPE, UISelectMany.class.getName() },
+                { UISelectOne.COMPONENT_TYPE, UISelectOne.class.getName() },
+                { UIViewRoot.COMPONENT_TYPE, UIViewRoot.class.getName() },
+                { UIWebsocket.COMPONENT_TYPE, UIWebsocket.class.getName() },
+                { HtmlColumn.COMPONENT_TYPE, HtmlColumn.class.getName() },
+                { HtmlCommandButton.COMPONENT_TYPE, HtmlCommandButton.class.getName() },
+                { HtmlCommandLink.COMPONENT_TYPE, HtmlCommandLink.class.getName() },
+                { HtmlCommandScript.COMPONENT_TYPE, HtmlCommandScript.class.getName() },
+                { HtmlDataTable.COMPONENT_TYPE, HtmlDataTable.class.getName() },
+                { HtmlForm.COMPONENT_TYPE, HtmlForm.class.getName() },
+                { HtmlGraphicImage.COMPONENT_TYPE, HtmlGraphicImage.class.getName() },
+                { HtmlInputFile.COMPONENT_TYPE, HtmlInputFile.class.getName() },
+                { HtmlInputHidden.COMPONENT_TYPE, HtmlInputHidden.class.getName() },
+                { HtmlInputSecret.COMPONENT_TYPE, HtmlInputSecret.class.getName() },
+                { HtmlInputText.COMPONENT_TYPE, HtmlInputText.class.getName() },
+                { HtmlInputTextarea.COMPONENT_TYPE, HtmlInputTextarea.class.getName() },
+                { HtmlMessage.COMPONENT_TYPE, HtmlMessage.class.getName() },
+                { HtmlMessages.COMPONENT_TYPE, HtmlMessages.class.getName() },
+                { HtmlOutputFormat.COMPONENT_TYPE, HtmlOutputFormat.class.getName() },
+                { HtmlOutputLabel.COMPONENT_TYPE, HtmlOutputLabel.class.getName() },
+                { HtmlOutputLink.COMPONENT_TYPE, HtmlOutputLink.class.getName() },
+                { HtmlOutcomeTargetLink.COMPONENT_TYPE, HtmlOutcomeTargetLink.class.getName() },
+                { HtmlOutcomeTargetButton.COMPONENT_TYPE, HtmlOutcomeTargetButton.class.getName() },
+                { HtmlOutputText.COMPONENT_TYPE, HtmlOutputText.class.getName() },
+                { HtmlPanelGrid.COMPONENT_TYPE, HtmlPanelGrid.class.getName() },
+                { HtmlPanelGroup.COMPONENT_TYPE, HtmlPanelGroup.class.getName() },
+                { HtmlSelectBooleanCheckbox.COMPONENT_TYPE, HtmlSelectBooleanCheckbox.class.getName() },
+                { HtmlSelectManyCheckbox.COMPONENT_TYPE, HtmlSelectManyCheckbox.class.getName() },
+                { HtmlSelectManyListbox.COMPONENT_TYPE, HtmlSelectManyListbox.class.getName() },
+                { HtmlSelectManyMenu.COMPONENT_TYPE, HtmlSelectManyMenu.class.getName() },
+                { HtmlSelectOneListbox.COMPONENT_TYPE, HtmlSelectOneListbox.class.getName() },
+                { HtmlSelectOneMenu.COMPONENT_TYPE, HtmlSelectOneMenu.class.getName() },
+                { HtmlSelectOneRadio.COMPONENT_TYPE, HtmlSelectOneRadio.class.getName() },
+                { HtmlDoctype.COMPONENT_TYPE, HtmlDoctype.class.getName() },
+                { HtmlHead.COMPONENT_TYPE, HtmlHead.class.getName() },
+                { HtmlBody.COMPONENT_TYPE, HtmlBody.class.getName() }
+        };
+
+        appendNestedChildElements(doc, namespace, rootElement, "component", new String[] { "component-type", "component-class" }, components);
+    }
+
+    private void populateRenderKitElements(Document doc, String namespace, Element rootElement) {
+        var renderKitElement = doc.createElementNS(namespace, "render-kit");
+
+        String[][] renderKitElements = {
+                { "render-kit-id", RenderKitFactory.HTML_BASIC_RENDER_KIT }
+        };
+
+        appendChildElements(doc, namespace, renderKitElement, renderKitElements);
+        populateClientBehaviorRenderers(doc, namespace, renderKitElement);
+        populateRenderers(doc, namespace, renderKitElement);
+        rootElement.appendChild(renderKitElement);
+    }
+
+    private void populateClientBehaviorRenderers(Document doc, String namespace, Element rootElement) {
+        String[][] clientBehaviorRenderers = {
+                { AjaxBehavior.BEHAVIOR_ID, com.sun.faces.renderkit.html_basic.AjaxBehaviorRenderer.class.getName() }
+        };
+
+        appendNestedChildElements(doc, namespace, rootElement, "client-behavior-renderer", new String[] { "client-behavior-renderer-type", "client-behavior-renderer-class" }, clientBehaviorRenderers);
+    }
+
+    private void populateRenderers(Document doc, String namespace, Element rootElement) {
+        String[][] renderers = {
+                { UIRepeat.COMPONENT_FAMILY, "facelets.ui.Repeat", com.sun.faces.facelets.component.RepeatRenderer.class.getName() },
+                { UICommand.COMPONENT_FAMILY, "jakarta.faces.Button", com.sun.faces.renderkit.html_basic.ButtonRenderer.class.getName() },                    
+                { UICommand.COMPONENT_FAMILY, "jakarta.faces.Link", com.sun.faces.renderkit.html_basic.CommandLinkRenderer.class.getName() },                    
+                { UICommand.COMPONENT_FAMILY, "jakarta.faces.Script", com.sun.faces.renderkit.html_basic.CommandScriptRenderer.class.getName() },                    
+                { UIData.COMPONENT_FAMILY, "jakarta.faces.Table", com.sun.faces.renderkit.html_basic.TableRenderer.class.getName() },                    
+                { UIForm.COMPONENT_FAMILY, "jakarta.faces.Form", com.sun.faces.renderkit.html_basic.FormRenderer.class.getName() },                    
+                { UIGraphic.COMPONENT_FAMILY, "jakarta.faces.Image", com.sun.faces.renderkit.html_basic.ImageRenderer.class.getName() },                    
+                { UIPanel.COMPONENT_FAMILY, "jakarta.faces.passthrough.Element", com.sun.faces.renderkit.html_basic.PassthroughRenderer.class.getName() },                    
+                { UIInput.COMPONENT_FAMILY, "jakarta.faces.File", com.sun.faces.renderkit.html_basic.FileRenderer.class.getName() },                    
+                { UIInput.COMPONENT_FAMILY, "jakarta.faces.Hidden", com.sun.faces.renderkit.html_basic.HiddenRenderer.class.getName() },                    
+                { UIInput.COMPONENT_FAMILY, "jakarta.faces.Secret", com.sun.faces.renderkit.html_basic.SecretRenderer.class.getName() },                    
+                { UIInput.COMPONENT_FAMILY, "jakarta.faces.Text", com.sun.faces.renderkit.html_basic.TextRenderer.class.getName() },                    
+                { UIInput.COMPONENT_FAMILY, "jakarta.faces.Textarea", com.sun.faces.renderkit.html_basic.TextareaRenderer.class.getName() },                    
+                { UIMessage.COMPONENT_FAMILY, "jakarta.faces.Message", com.sun.faces.renderkit.html_basic.MessageRenderer.class.getName() },                    
+                { UIMessages.COMPONENT_FAMILY, "jakarta.faces.Messages", com.sun.faces.renderkit.html_basic.MessagesRenderer.class.getName() },                    
+                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Format", com.sun.faces.renderkit.html_basic.OutputMessageRenderer.class.getName() },                    
+                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Label", com.sun.faces.renderkit.html_basic.LabelRenderer.class.getName() },                    
+                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Link", com.sun.faces.renderkit.html_basic.OutputLinkRenderer.class.getName() },                    
+                { UIOutcomeTarget.COMPONENT_FAMILY, "jakarta.faces.Link", com.sun.faces.renderkit.html_basic.OutcomeTargetLinkRenderer.class.getName() },                    
+                { UIOutcomeTarget.COMPONENT_FAMILY, "jakarta.faces.Button", com.sun.faces.renderkit.html_basic.OutcomeTargetButtonRenderer.class.getName() },                    
+                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Text", com.sun.faces.renderkit.html_basic.TextRenderer.class.getName() },                    
+                { UIPanel.COMPONENT_FAMILY, "jakarta.faces.Grid", com.sun.faces.renderkit.html_basic.GridRenderer.class.getName() },                    
+                { UIPanel.COMPONENT_FAMILY, "jakarta.faces.Group", com.sun.faces.renderkit.html_basic.GroupRenderer.class.getName() },                    
+                { UISelectBoolean.COMPONENT_FAMILY, "jakarta.faces.Checkbox", com.sun.faces.renderkit.html_basic.CheckboxRenderer.class.getName() },                    
+                { UISelectMany.COMPONENT_FAMILY, "jakarta.faces.Checkbox", com.sun.faces.renderkit.html_basic.SelectManyCheckboxListRenderer.class.getName() },                    
+                { UISelectMany.COMPONENT_FAMILY, "jakarta.faces.Listbox", com.sun.faces.renderkit.html_basic.ListboxRenderer.class.getName() },                    
+                { UISelectMany.COMPONENT_FAMILY, "jakarta.faces.Menu", com.sun.faces.renderkit.html_basic.MenuRenderer.class.getName() },                    
+                { UISelectOne.COMPONENT_FAMILY, "jakarta.faces.Listbox", com.sun.faces.renderkit.html_basic.ListboxRenderer.class.getName() },                    
+                { UISelectOne.COMPONENT_FAMILY, "jakarta.faces.Menu", com.sun.faces.renderkit.html_basic.MenuRenderer.class.getName() },                    
+                { UISelectOne.COMPONENT_FAMILY, "jakarta.faces.Radio", com.sun.faces.renderkit.html_basic.RadioRenderer.class.getName() },                    
+                { UINamingContainer.COMPONENT_FAMILY, "jakarta.faces.Composite", com.sun.faces.renderkit.html_basic.CompositeRenderer.class.getName() },                    
+                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.CompositeFacet", com.sun.faces.renderkit.html_basic.CompositeFacetRenderer.class.getName() },                    
+                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.resource.Script", com.sun.faces.renderkit.html_basic.ScriptRenderer.class.getName() },                    
+                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.resource.Stylesheet", com.sun.faces.renderkit.html_basic.StylesheetRenderer.class.getName() },                    
+                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Doctype", com.sun.faces.renderkit.html_basic.DoctypeRenderer.class.getName() },                    
+                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Head", com.sun.faces.renderkit.html_basic.HeadRenderer.class.getName() },                    
+                { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Body", com.sun.faces.renderkit.html_basic.BodyRenderer.class.getName() },                    
+                { UIWebsocket.COMPONENT_FAMILY, "jakarta.faces.Websocket", com.sun.faces.renderkit.html_basic.WebsocketRenderer.class.getName() }
+        };
+
+        appendNestedChildElements(doc, namespace, rootElement, "renderer", new String[] { "component-family", "renderer-type", "renderer-class" }, renderers);
+    }
+
+    private void appendChildElements(Document doc, String namespace, Element parentElement, String[][] childElementNamesAndValues) {
+        for (String[] childElementNameAndValue : childElementNamesAndValues) {
+            var child = doc.createElementNS(namespace, childElementNameAndValue[0]);
+            child.appendChild(doc.createTextNode(childElementNameAndValue[1]));
+            parentElement.appendChild(child);
+        }
+    }
+
+    private void appendNestedChildElements(Document doc, String namespace, Element parentElement, String nestedElementName, String[] childElementNames, String[][] nestedChildElementValues) {
+        for (String[] childElementValues: nestedChildElementValues) {
+            var nestedElement = doc.createElementNS(namespace, nestedElementName);
+            var childElementNamesAndValues = new ArrayList<String[]>();
+            
+            for (int i = 0; i < childElementNames.length; i++) {
+                childElementNamesAndValues.add(new String[] { childElementNames[i], childElementValues[i] });
+            }
+
+            appendChildElements(doc, namespace, nestedElement, childElementNamesAndValues.toArray(String[][]::new));
+            parentElement.appendChild(nestedElement);
         }
     }
 }
