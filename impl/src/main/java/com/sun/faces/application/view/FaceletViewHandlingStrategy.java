@@ -43,6 +43,7 @@ import static jakarta.faces.application.ProjectStage.Development;
 import static jakarta.faces.application.Resource.COMPONENT_RESOURCE_KEY;
 import static jakarta.faces.application.StateManager.IS_BUILDING_INITIAL_STATE;
 import static jakarta.faces.application.StateManager.STATE_SAVING_METHOD_SERVER;
+import static jakarta.faces.application.ViewHandler.CHARACTER_ENCODING_KEY;
 import static jakarta.faces.application.ViewHandler.DEFAULT_FACELETS_SUFFIX;
 import static jakarta.faces.application.ViewVisitOption.RETURN_AS_MINIMAL_IMPLICIT_OUTCOME;
 import static jakarta.faces.component.UIComponent.BEANINFO_KEY;
@@ -918,6 +919,10 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
         contentType = getResponseContentType(context, initWriter.getContentType());
         encoding = Util.getResponseEncoding(context, Optional.ofNullable(initWriter.getCharacterEncoding()));
+
+        // Store the response encoding in the session (Spec section "2.5.2.2. Determining the Character Encoding")
+        Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
+        sessionMap.put(CHARACTER_ENCODING_KEY, encoding);
 
         // apply them to the response
         char[] buffer = new char[1028];
