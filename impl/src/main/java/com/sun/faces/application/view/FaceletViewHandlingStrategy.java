@@ -71,7 +71,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
@@ -905,19 +904,20 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             }
         }
 
-        // get our content type
-        String contentType = (String) context.getAttributes().get("facelets.ContentType");
+        // Get the <f:view contentType> as default content type.
+        // See also ViewHandler#apply().
+        String defaultContentType = (String) context.getAttributes().get("facelets.ContentType");
 
-        // get the encoding
-        String encoding = (String) context.getAttributes().get(FACELETS_ENCODING_KEY);
+        // Get the <f:view encoding> or otherwise Facelets default encoding of UTF-8 as default encoding. 
+        // See also SAXCompiler#doCompile() and EncodingHandler#apply().
+        String defaultEncoding = (String) context.getAttributes().get(FACELETS_ENCODING_KEY);
 
-        // Create a dummy ResponseWriter with a bogus writer,
-        // so we can figure out what content type and encoding the ReponseWriter
-        // is really going to ask for
-        ResponseWriter initWriter = renderKit.createResponseWriter(NullWriter.INSTANCE, contentType, encoding);
+        // Create a dummy ResponseWriter with a bogus writer, so we can figure out what 
+        // content type and encoding the ResponseWriter is ultimately going to need.
+        ResponseWriter initWriter = renderKit.createResponseWriter(NullWriter.INSTANCE, defaultContentType, defaultEncoding);
 
-        contentType = getResponseContentType(context, initWriter.getContentType());
-        encoding = Util.getResponseEncoding(context, Optional.ofNullable(initWriter.getCharacterEncoding()));
+        String contentType = getResponseContentType(context, initWriter.getContentType());
+        String encoding = Util.getResponseEncoding(context, initWriter.getCharacterEncoding());
 
         // apply them to the response
         char[] buffer = new char[1028];
@@ -929,7 +929,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         // Save encoding in UIViewRoot for faster consult when Util#getResponseEncoding() is invoked again elsewhere.
         context.getViewRoot().getAttributes().put(FACELETS_ENCODING_KEY, encoding);
 
-        // Save encoding in Session as per spec section "2.5.2.2. Determining the Character Encoding".
+        // Save encoding in Session for consult in subsequent postback request as per spec section "2.5.2.2. Determining the Character Encoding".
         if (context.getExternalContext().getSession(false) != null) {
             context.getExternalContext().getSessionMap().put(CHARACTER_ENCODING_KEY, encoding);
         }
