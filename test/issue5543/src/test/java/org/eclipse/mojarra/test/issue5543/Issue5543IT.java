@@ -57,7 +57,7 @@ class Issue5543IT extends BaseIT {
         open("issue5543.xhtml");
         assertEquals("ä", input.getAttribute("value"));
         assertEquals("ä", output.getText());
-        guardHttp(ajaxSubmit::click);
+        guardAjax(ajaxSubmit::click);
         assertEquals("ä", input.getAttribute("value"));
         assertEquals("ä", output.getText());
     }
