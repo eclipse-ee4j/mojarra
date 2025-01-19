@@ -175,7 +175,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
 
     private static final TimeZone DEFAULT_TIME_ZONE = TimeZone.getTimeZone("GMT");
 
-    private static final Map<String, TemporalQuery<Object>> TEMPORAL_QUERIES = Map.of(
+    private static final Map<String, TemporalQuery<Object>> JAVA_TIME_TYPES = Map.of(
         "localDate", LocalDate::from,
         "localDateTime", LocalDateTime::from,
         "localTime", LocalTime::from,
@@ -524,20 +524,15 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
         }
 
         DateFormat df = null;
+        DateTimeFormatterBuilder dtfBuilder = null;
         DateTimeFormatter dtf = null;
-        TemporalQuery<Object> from = TEMPORAL_QUERIES.get(type);
+        TemporalQuery<Object> fromJavaTime = JAVA_TIME_TYPES.get(type);
 
         if (pattern != null) {
-            if (from == null) {
+            if (fromJavaTime == null) {
                 df = new SimpleDateFormat(pattern, locale);
             } else {
-                DateTimeFormatterBuilder dtfBuilder = new DateTimeFormatterBuilder().appendPattern(pattern);
-                
-                if (!ESCAPED_DATE_TIME_PATTERN.matcher(pattern).replaceAll("").contains("uu")) {
-                    dtfBuilder.parseDefaulting(ChronoField.ERA, 1);
-                }
-
-                dtf = dtfBuilder.toFormatter(locale);
+                dtfBuilder = new DateTimeFormatterBuilder().appendPattern(pattern);
             }
         } else if (type.equals("both")) {
             df = DateFormat.getDateTimeInstance(getStyle(dateStyle), getStyle(timeStyle), locale);
@@ -546,11 +541,11 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
         } else if (type.equals("time")) {
             df = DateFormat.getTimeInstance(getStyle(timeStyle), locale);
         } else if (type.equals("localDate")) {
-            dtf = DateTimeFormatter.ofLocalizedDate(getFormatStyle(dateStyle)).withLocale(locale);
+            dtfBuilder = new DateTimeFormatterBuilder().appendLocalized(getFormatStyle(dateStyle), null);
         } else if (type.equals("localDateTime")) {
-            dtf = DateTimeFormatter.ofLocalizedDateTime(getFormatStyle(dateStyle), getFormatStyle(timeStyle)).withLocale(locale);
+            dtfBuilder = new DateTimeFormatterBuilder().appendLocalized(getFormatStyle(dateStyle), getFormatStyle(timeStyle));
         } else if (type.equals("localTime")) {
-            dtf = DateTimeFormatter.ofLocalizedTime(getFormatStyle(timeStyle)).withLocale(locale);
+            dtfBuilder = new DateTimeFormatterBuilder().appendLocalized(null, getFormatStyle(timeStyle));
         } else if (type.equals("offsetTime")) {
             dtf = DateTimeFormatter.ISO_OFFSET_TIME.withLocale(locale);
         } else if (type.equals("offsetDateTime")) {
@@ -562,12 +557,21 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
             throw new IllegalArgumentException("Invalid type: " + type);
         }
 
-        if (null != df) {
+        if (df != null) {
             df.setLenient(false);
             return new FormatWrapper(df);
-        } else if (null != dtf) {
-            dtf = dtf.withChronology(IsoChronology.INSTANCE).withResolverStyle(ResolverStyle.STRICT);
-            return new FormatWrapper(dtf, from);
+        } else {
+            if (dtfBuilder != null) {
+                if (pattern == null || !ESCAPED_DATE_TIME_PATTERN.matcher(pattern).replaceAll("").contains("uu")) {
+                    dtfBuilder.parseDefaulting(ChronoField.ERA, 1);
+                }
+    
+                dtf = dtfBuilder.toFormatter(locale).withChronology(IsoChronology.INSTANCE).withResolverStyle(ResolverStyle.STRICT);
+            }
+
+            if (dtf != null) {
+                return new FormatWrapper(dtf, fromJavaTime);
+            }
         }
 
         // PENDING(craigmcc) - i18n
