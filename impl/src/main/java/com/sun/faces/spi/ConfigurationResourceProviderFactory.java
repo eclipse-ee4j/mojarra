@@ -120,6 +120,6 @@ public class ConfigurationResourceProviderFactory {
             }
         }
 
-        return providers.toArray(new ConfigurationResourceProvider[providers.size()]);
+        return providers.toArray(new ConfigurationResourceProvider[0]);
     }
 }

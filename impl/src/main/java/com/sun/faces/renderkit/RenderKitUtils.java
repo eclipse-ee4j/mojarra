@@ -514,7 +514,7 @@ public class RenderKitUtils {
                 continue;
             }
 
-            if (Boolean.valueOf(val.toString())) {
+            if (Boolean.parseBoolean(val.toString())) {
                 writer.writeAttribute(attrName, true, attrName);
             }
         }
@@ -822,8 +822,8 @@ public class RenderKitUtils {
         String[] types = Util.split(appMap, accept, CONTENT_TYPE_DELIMITER);
         String[][] arrayAccept = new String[types.length][MAX_CONTENT_TYPE_PARTS];
         int index = -1;
-        for (int i = 0; i < types.length; i++) {
-            String token = types[i].trim();
+        for (String s : types) {
+            String token = s.trim();
             index += 1;
             // Check to see if our accept string contains the delimiter that is used
             // to add uniqueness to a type/subtype, and/or delimits a qualifier value:

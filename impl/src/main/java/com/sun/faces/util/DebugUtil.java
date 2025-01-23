@@ -45,7 +45,7 @@ import jakarta.faces.model.SelectItem;
 
 /**
  * <B>DebugUtil</B> is a class ...
- * 
+ *
  * <B>Lifetime And Scope</B>
  */
 public class DebugUtil {
@@ -72,7 +72,7 @@ public class DebugUtil {
     /**
      * Usage:
      * <P>
-     * 
+     *
      * Place a call to this method in the earliest possible entry point of your servlet app. It will cause the app to enter
      * into an infinite loop, sleeping until the static var keepWaiting is set to false. The idea is that you attach your
      * debugger to the servlet, then, set a breakpoint in this method. When it is hit, you use the debugger to set the
@@ -303,8 +303,8 @@ public class DebugUtil {
         }
 
         Object obj;
-        for (int i = 0; i < root.length; i++) {
-            obj = root[i];
+        for (Object o : root) {
+            obj = o;
             if (null == obj) {
                 indentPrintln(out, "null");
             } else {
@@ -329,8 +329,8 @@ public class DebugUtil {
         }
 
         Object obj;
-        for (int i = 0; i < root.length; i++) {
-            obj = root[i];
+        for (Object o : root) {
+            obj = o;
             if (null == obj) {
                 indentPrintln(out, "null");
             } else {

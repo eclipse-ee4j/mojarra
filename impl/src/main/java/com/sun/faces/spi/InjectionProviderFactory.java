@@ -221,8 +221,8 @@ public class InjectionProviderFactory {
         } else {
             String[] serviceEntries = getServiceEntries();
             if (serviceEntries.length > 0) {
-                for (int i = 0; i < serviceEntries.length; i++) {
-                    provider = getProviderFromEntry(extContext.getApplicationMap(), serviceEntries[i]);
+                for (String serviceEntry : serviceEntries) {
+                    provider = getProviderFromEntry(extContext.getApplicationMap(), serviceEntry);
                     if (provider != null) {
                         break;
                     }
@@ -343,7 +343,7 @@ public class InjectionProviderFactory {
             }
         }
 
-        return results != null && !results.isEmpty() ? results.toArray(new String[results.size()]) : EMPTY_ARRAY;
+        return results != null && !results.isEmpty() ? results.toArray(new String[0]) : EMPTY_ARRAY;
 
     }
 

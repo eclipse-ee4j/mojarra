@@ -204,8 +204,8 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
 
         if (prefix == null) {
             StringBuilder builder = new StringBuilder(faceletHierarchy.size() * 30);
-            for (int i = 0; i < faceletHierarchy.size(); i++) {
-                DefaultFacelet facelet = (DefaultFacelet) faceletHierarchy.get(i);
+            for (Facelet value : faceletHierarchy) {
+                DefaultFacelet facelet = (DefaultFacelet) value;
                 builder.append(facelet.getAlias());
             }
             Integer prefixInt = builder.toString().hashCode();
@@ -215,7 +215,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
                 prefixes.put(prefixInt, 0);
                 prefix = prefixInt.toString();
             } else {
-                int i = cnt.intValue() + 1;
+                int i = cnt + 1;
                 prefixes.put(prefixInt, i);
                 prefix = prefixInt + "_" + i;
             }
@@ -230,7 +230,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
             uniqueIdBuilder.append(base);
             return uniqueIdBuilder.toString();
         } else {
-            int i = cnt.intValue() + 1;
+            int i = cnt + 1;
             ids.put(base, i);
             uniqueIdBuilder.delete(0, uniqueIdBuilder.length());
             uniqueIdBuilder.append(prefix);

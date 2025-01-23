@@ -25,6 +25,7 @@ import static java.lang.Boolean.TRUE;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.component.EditableValueHolder;
@@ -44,6 +45,7 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
     private static final String ERROR_MISPLACED_COMPONENT = "f:validateWholeBean must be placed at the end of UIForm.";
 
     public static final String FAMILY = "com.sun.faces.ext.validateWholeBean";
+    private static final Pattern EMPTY_VALIDATION_GROUPS_PATTERN_PATTERN = Pattern.compile(EMPTY_VALIDATION_GROUPS_PATTERN);
 
     private transient Class<?>[] cachedValidationGroups;
     private transient String validationGroups = "";
@@ -82,7 +84,7 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
         String newValidationGroups = validationGroups;
 
         // Treat empty list as null
-        if (newValidationGroups != null && newValidationGroups.matches(EMPTY_VALIDATION_GROUPS_PATTERN)) {
+        if (newValidationGroups != null && EMPTY_VALIDATION_GROUPS_PATTERN_PATTERN.matcher(newValidationGroups).matches()) {
             newValidationGroups = null;
         }
         // Only clear cache of validation group classes if value is changing
@@ -193,7 +195,7 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
             }
         }
 
-        cachedValidationGroups = validationGroupsList.toArray(new Class[validationGroupsList.size()]);
+        cachedValidationGroups = validationGroupsList.toArray(new Class[0]);
 
         return cachedValidationGroups;
     }

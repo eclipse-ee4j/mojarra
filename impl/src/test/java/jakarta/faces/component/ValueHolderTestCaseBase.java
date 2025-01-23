@@ -30,6 +30,8 @@ import jakarta.faces.convert.LongConverter;
 import jakarta.faces.convert.NumberConverter;
 import jakarta.faces.convert.ShortConverter;
 
+import java.util.Arrays;
+
 /**
  * <p>
  * Unit tests for {@link ValueHolder}. Any test case for a component class that implements {@link ValueHolder} should
@@ -56,10 +58,7 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
         final Boolean outcomes[] = new Boolean[numThreads];
         Runnable runnables[] = new Runnable[numThreads];
         int i = 0;
-
-        for (i = 0; i < outcomes.length; i++) {
-            outcomes[i] = null;
-        }
+        Arrays.fill(outcomes, null);
 
         for (i = 0; i < runnables.length; i++) {
             runnables[i] = new Runnable() {
@@ -67,7 +66,7 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
                 public void run() {
                     int threadNum = 0;
                     try {
-                        threadNum = Integer.valueOf(Thread.currentThread().getName()).intValue();
+                        threadNum = Integer.parseInt(Thread.currentThread().getName());
                     } catch (NumberFormatException ex) {
                         fail("Expected thread name to be an integer");
                     }
@@ -90,7 +89,7 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
                     }
                     try {
                         boolean result = doTestAttributesTransparency(vh, newComp);
-                        outcomes[threadNum] = Boolean.valueOf(result);
+                        outcomes[threadNum] = result;
                     } catch (Throwable e) {
                         e.printStackTrace();
                         outcomes[threadNum] = Boolean.FALSE;
@@ -117,7 +116,7 @@ public abstract class ValueHolderTestCaseBase extends UIComponentBaseTestCase {
         }
 
         for (i = 0; i < outcomes.length; i++) {
-            if (!outcomes[i].booleanValue()) {
+            if (!outcomes[i]) {
                 fail("Thread " + i + " failed");
             }
         }

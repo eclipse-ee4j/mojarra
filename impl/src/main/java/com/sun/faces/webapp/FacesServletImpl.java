@@ -37,6 +37,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
@@ -269,6 +270,7 @@ public final class FacesServletImpl implements Servlet {
      * means allow all
      */
     private static final String ALLOWED_HTTP_METHODS_ATTR = "com.sun.faces.allowedHttpMethods";
+    private static final Pattern WHITESPACES = Pattern.compile("\\s+");
 
     // Http method names must be upper case. http://www.w3.org/Protocols/HTTP/NoteMethodCS.html
     // List of valid methods in Http 1.1 http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9
@@ -556,7 +558,7 @@ public final class FacesServletImpl implements Servlet {
 
         String allowedHttpMethodsString = servletConfig.getServletContext().getInitParameter(ALLOWED_HTTP_METHODS_ATTR);
         if (allowedHttpMethodsString != null) {
-            String[] methods = allowedHttpMethodsString.split("\\s+");
+            String[] methods = WHITESPACES.split(allowedHttpMethodsString);
 
             allowedUnknownHttpMethods = new HashSet<>(methods.length);
             List<String> allowedKnownHttpMethodsStringList = new ArrayList<>();

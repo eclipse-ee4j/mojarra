@@ -16,6 +16,7 @@
 
 package com.sun.faces.util;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -137,7 +138,7 @@ public class MultiKeyConcurrentHashMap<K, V> {
 
     /**
      * ConcurrentHashMap list entry. Note that this is never exported out as a user-visible Map.Entry.
-     * 
+     *
      * Because the value field is volatile, not final, it is legal wrt the Java Memory Model for an unsynchronized reader to
      * see null instead of initial value when read via a data race. Although a reordering leading to this is not likely to
      * ever actually occur, the Segment.readValueUnderLock method is used as a backup in case a null (pre-initialized) value
@@ -417,12 +418,10 @@ public class MultiKeyConcurrentHashMap<K, V> {
             HashEntry[] newTable = new HashEntry[oldCapacity << 1];
             threshold = (int) (newTable.length * loadFactor);
             int sizeMask = newTable.length - 1;
-            for (int i = 0; i < oldCapacity; i++) {
+            for (HashEntry<K, V> e : oldTable) {
                 // We need to guarantee that any existing reads of old Map can
                 // proceed. So we cannot yet null out each bin.
                 // noinspection unchecked
-                HashEntry<K, V> e = oldTable[i];
-
                 if (e != null) {
                     HashEntry<K, V> next = e.next;
                     int idx = e.hash & sizeMask;
@@ -501,9 +500,7 @@ public class MultiKeyConcurrentHashMap<K, V> {
                 lock();
                 try {
                     HashEntry[] tab = table;
-                    for (int i = 0; i < tab.length; i++) {
-                        tab[i] = null;
-                    }
+                    Arrays.fill(tab, null);
                     ++modCount;
                     count = 0; // write-volatile
                 } finally {
@@ -650,14 +647,14 @@ public class MultiKeyConcurrentHashMap<K, V> {
         }
         if (check != sum) { // Resort to locking all segments
             sum = 0;
-            for (int i = 0; i < segments.length; ++i) {
-                segments[i].lock();
+            for (Segment segment : segments) {
+                segment.lock();
             }
-            for (int i = 0; i < segments.length; ++i) {
-                sum += segments[i].count;
+            for (Segment segment : segments) {
+                sum += segment.count;
             }
-            for (int i = 0; i < segments.length; ++i) {
-                segments[i].unlock();
+            for (Segment segment : segments) {
+                segment.unlock();
             }
         }
         if (sum > Integer.MAX_VALUE) {
@@ -788,20 +785,20 @@ public class MultiKeyConcurrentHashMap<K, V> {
             }
         }
         // Resort to locking all segments
-        for (int i = 0; i < segments.length; ++i) {
-            segments[i].lock();
+        for (Segment segment : segments) {
+            segment.lock();
         }
         boolean found = false;
         try {
-            for (int i = 0; i < segments.length; ++i) {
-                if (segments[i].containsValue(value)) {
+            for (Segment segment : segments) {
+                if (segment.containsValue(value)) {
                     found = true;
                     break;
                 }
             }
         } finally {
-            for (int i = 0; i < segments.length; ++i) {
-                segments[i].unlock();
+            for (Segment segment : segments) {
+                segment.unlock();
             }
         }
         return found;
@@ -826,7 +823,7 @@ public class MultiKeyConcurrentHashMap<K, V> {
     /**
      * Maps the specified <code>key</code> to the specified <code>value</code> in this table. Neither the key nor the value can be
      * <code>null</code>.
-     * 
+     *
      * <p>
      * The value can be retrieved by calling the <code>get</code> method with a key that is equal to the original key.
      *
@@ -1031,8 +1028,8 @@ public class MultiKeyConcurrentHashMap<K, V> {
      * Removes all mappings from this map.
      */
     public void clear() {
-        for (int i = 0; i < segments.length; ++i) {
-            segments[i].clear();
+        for (Segment segment : segments) {
+            segment.clear();
         }
     }
 

@@ -193,7 +193,7 @@ public final class JstlFunction {
             tokens.add(st.nextToken());
         }
 
-        return tokens.toArray(new String[tokens.size()]);
+        return tokens.toArray(new String[0]);
     }
 
     public static boolean startsWith(String value, String p) {

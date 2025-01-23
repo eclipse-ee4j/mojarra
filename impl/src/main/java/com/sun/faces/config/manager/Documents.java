@@ -97,7 +97,7 @@ public class Documents {
                     if (processedUris.add(uri)) {
                         FutureTask<DocumentInfo> docTask = new FutureTask<>(new ParseConfigResourceToDOMTask(servletContext, validating, uri));
                         docTasks.add(docTask);
-                        
+
                         if (executor != null) {
                             executor.execute(docTask);
                         } else {
@@ -123,7 +123,7 @@ public class Documents {
             }
         }
 
-        return docs.toArray(new DocumentInfo[docs.size()]);
+        return docs.toArray(new DocumentInfo[0]);
     }
 
     public static List<DocumentInfo> getProgrammaticDocuments(List<ApplicationConfigurationPopulator> configPopulators) throws ParserConfigurationException {
@@ -198,7 +198,7 @@ public class Documents {
                 list.add(new DocumentOrderingWrapper(facesDocuments[i]));
             }
 
-            DocumentOrderingWrapper[] ordering = list.toArray(new DocumentOrderingWrapper[list.size()]);
+            DocumentOrderingWrapper[] ordering = list.toArray(new DocumentOrderingWrapper[0]);
             if (absoluteOrdering == null) {
                 DocumentOrderingWrapper.sort(ordering);
 

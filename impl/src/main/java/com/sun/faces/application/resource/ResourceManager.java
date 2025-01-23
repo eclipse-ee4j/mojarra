@@ -180,7 +180,7 @@ public class ResourceManager {
     public Stream<String> getViewResources(FacesContext facesContext, String path, int maxDepth, ResourceVisitOption... options) {
         return faceletWebappResourceHelper.getViewResources(facesContext, path, maxDepth, options);
     }
-    
+
     public String getBaseContractsPath() {
         return faceletWebappResourceHelper.getBaseContractsPath();
     }
@@ -405,13 +405,13 @@ public class ResourceManager {
     /**
      * <p>
      * Attempt to lookup and return a {@link LibraryInfo} based on the specified <code>arguments</code>.
-     * 
+     *
      * <p>
      * The lookup process will first search the file system of the web application *within the resources directory*. If the
      * library is not found, then it processed to searching the classpath, if not found there, search from the webapp root
      * *excluding* the resources directory.
      * </p>
-     * 
+     *
      * <p>
      * If a library is found, this method will return a {@link LibraryInfo} instance that contains the name, version, and
      * {@link ResourceHelper}.
@@ -448,12 +448,12 @@ public class ResourceManager {
     /**
      * <p>
      * Attempt to lookup and return a {@link ResourceInfo} based on the specified <code>arguments</code>.
-     * 
+     *
      * <p>
      * The lookup process will first search the file system of the web application. If the library is not found, then it
      * processed to searching the classpath.
      * </p>
-     * 
+     *
      * <p>
      * If a library is found, this method will return a {@link LibraryInfo} instance that contains the name, version, and
      * {@link ResourceHelper}.
@@ -494,9 +494,9 @@ public class ResourceManager {
         String libraryName = null;
         String resourceName = null;
         int end = 0, start = 0;
-        if (-1 != (end = resourceId.lastIndexOf("/"))) {
+        if (-1 != (end = resourceId.lastIndexOf('/'))) {
             resourceName = resourceId.substring(end + 1);
-            if (-1 != (start = resourceId.lastIndexOf("/", end - 1))) {
+            if (-1 != (start = resourceId.lastIndexOf('/', end - 1))) {
                 libraryName = resourceId.substring(start + 1, end);
             } else {
                 libraryName = resourceId.substring(0, end);

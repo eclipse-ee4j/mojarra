@@ -48,9 +48,9 @@ public abstract class TagHandlerImpl extends TagHandler {
             found.add(nextHandler);
         } else if (nextHandler instanceof CompositeFaceletHandler) {
             FaceletHandler[] h = ((CompositeFaceletHandler) nextHandler).getHandlers();
-            for (int i = 0; i < h.length; i++) {
-                if (type.isAssignableFrom(h[i].getClass())) {
-                    found.add(h[i]);
+            for (FaceletHandler faceletHandler : h) {
+                if (type.isAssignableFrom(faceletHandler.getClass())) {
+                    found.add(faceletHandler);
                 }
             }
         }
@@ -63,9 +63,9 @@ public abstract class TagHandlerImpl extends TagHandler {
             found.add(nextHandler);
         } else if (nextHandler instanceof CompositeFaceletHandler) {
             FaceletHandler[] h = ((CompositeFaceletHandler) nextHandler).getHandlers();
-            for (int i = 0; i < h.length; i++) {
-                if (type.isAssignableFrom(h[i].getClass())) {
-                    found.add(h[i]);
+            for (FaceletHandler faceletHandler : h) {
+                if (type.isAssignableFrom(faceletHandler.getClass())) {
+                    found.add(faceletHandler);
                 }
             }
         }

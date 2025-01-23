@@ -43,6 +43,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.util.Util;
@@ -76,6 +77,7 @@ public final class DevTools {
     private final static String TS = "&lt;";
 
     private static final String ERROR_TEMPLATE = "META-INF/facelet-dev-error.xml";
+    private static final Pattern AT_PATTERN = Pattern.compile("@@");
 
     private static String[] ERROR_PARTS;
 
@@ -299,7 +301,7 @@ public final class DevTools {
                 is.close();
             }
         }
-        return str.split("@@");
+        return AT_PATTERN.split(str);
 
     }
 

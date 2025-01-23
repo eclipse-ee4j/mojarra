@@ -143,7 +143,7 @@ public abstract class AnnotationScanner extends AnnotationProvider {
                 }
             }
         }
-        webInfClassesPackages = packages.toArray(new String[packages.size()]);
+        webInfClassesPackages = packages.toArray(new String[0]);
     }
 
     private String[] normalizeJarPackages(String[] packages) {
@@ -162,7 +162,7 @@ public abstract class AnnotationScanner extends AnnotationProvider {
             }
         }
 
-        return normalizedPackages.toArray(new String[normalizedPackages.size()]);
+        return normalizedPackages.toArray(new String[0]);
     }
 
     // --------------------------------------------------------- Protected Methods
