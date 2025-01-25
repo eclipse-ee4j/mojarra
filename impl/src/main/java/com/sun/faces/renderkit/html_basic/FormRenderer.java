@@ -95,7 +95,7 @@ public class FormRenderer extends HtmlBasicRenderer {
         }
 
         if (context.isProjectStage(Development) && !((UIForm) component).isPrependId()) {
-            LOGGER.warning("The <h:form> attribute 'prependId' is deprecated as of Faces 5.0 and should not longer be used.");
+            LOGGER.warning("The <h:form prependId=\"false\"> is deprecated as of Faces 5.0 and should not longer be used.");
         }
         
         ResponseWriter writer = context.getResponseWriter();
