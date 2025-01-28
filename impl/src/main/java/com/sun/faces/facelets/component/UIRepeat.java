@@ -35,8 +35,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.sun.faces.facelets.tag.IterationStatus;
-
 import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
@@ -65,6 +63,8 @@ import jakarta.faces.model.ListDataModel;
 import jakarta.faces.model.ResultSetDataModel;
 import jakarta.faces.model.ScalarDataModel;
 import jakarta.faces.render.Renderer;
+
+import com.sun.faces.facelets.tag.IterationStatus;
 
 public class UIRepeat extends UINamingContainer {
 
@@ -274,8 +274,8 @@ public class UIRepeat extends UINamingContainer {
                 if (getOffset() != null && getOffset() < 0) {
                     throw new FacesException("UIRepeat: 'offset' attribute may not be less than 0");
                 }
-                if (getStep() != null && getStep() < 1) {
-                    throw new FacesException("UIRepeat: 'step' attribute may not be less than 1");
+                if (getStep() != null && getStep() == 0) {
+                    throw new FacesException("UIRepeat: 'step' attribute may not be equal to 0");
                 }
             }
 
@@ -336,7 +336,6 @@ public class UIRepeat extends UINamingContainer {
                 } else {
                     model = new ScalarDataModel<>(val);
                 }
-
             }
         }
         return model;
@@ -681,9 +680,14 @@ public class UIRepeat extends UINamingContainer {
                     e = e - 1;
                 }
 
+                if (s < 0) {
+                    i = e - i - 1;
+                    e = e - 1;
+                }
+
                 setIndex(faces, i);
                 updateIterationStatus(faces, new IterationStatus(true, i + s > e || rowCount == 1, i, begin, end, step));
-                while (i <= e && isIndexAvailable()) {
+                while (0 <= i && i <= e && isIndexAvailable()) {
 
                     if (PhaseId.RENDER_RESPONSE.equals(phase) && renderer != null) {
                         renderer.encodeChildren(faces, this);
@@ -702,9 +706,13 @@ public class UIRepeat extends UINamingContainer {
                             }
                         }
                     }
+
                     i += s;
-                    setIndex(faces, i);
-                    updateIterationStatus(faces, new IterationStatus(false, i + s >= e, i, begin, end, step));
+
+                    if (i >= 0) {
+                        setIndex(faces, i);
+                        updateIterationStatus(faces, new IterationStatus(false, i + s >= e, i, begin, end, step));
+                    }
                 }
             }
         } catch (IOException e) {
@@ -894,11 +902,17 @@ public class UIRepeat extends UINamingContainer {
         int i = begin != null ? begin : 0;
         int e = end != null ? end : rowCount;
         int s = step != null ? step : 1;
+
+        if (s < 0) {
+            i = e - i - 1;
+            e = e - 1;
+        }
+
         validateIterationControlValues(rowCount, i, e);
         FacesContext faces = context.getFacesContext();
         setIndex(faces, i);
         updateIterationStatus(faces, new IterationStatus(true, i + s > e || rowCount == 1, i, begin, end, step));
-        while (i < e && isIndexAvailable()) {
+        while (0 <= i && i < e && isIndexAvailable()) {
 
             setIndex(faces, i);
             updateIterationStatus(faces, new IterationStatus(false, i + s >= e, i, begin, end, step));
