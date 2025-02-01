@@ -31,15 +31,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.facelets.el.VariableMapperWrapper;
-import com.sun.faces.facelets.tag.MetaRulesetImpl;
-import com.sun.faces.facelets.tag.MetadataTargetImpl;
-import com.sun.faces.facelets.tag.faces.ComponentTagHandlerDelegateImpl.CreateComponentDelegate;
-import com.sun.faces.facelets.util.ReflectionUtil;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
-
 import jakarta.el.ELException;
 import jakarta.el.ValueExpression;
 import jakarta.el.VariableMapper;
@@ -68,6 +59,16 @@ import jakarta.faces.view.facelets.Metadata;
 import jakarta.faces.view.facelets.MetadataTarget;
 import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagAttribute;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.el.CompositeComponentELResolver;
+import com.sun.faces.facelets.el.VariableMapperWrapper;
+import com.sun.faces.facelets.tag.MetaRulesetImpl;
+import com.sun.faces.facelets.tag.MetadataTargetImpl;
+import com.sun.faces.facelets.tag.faces.ComponentTagHandlerDelegateImpl.CreateComponentDelegate;
+import com.sun.faces.facelets.util.ReflectionUtil;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
 
 /**
  * <p>
@@ -505,7 +506,7 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
         /**
          * CompositeExpressionMetadata sets up specialized wrapper ValueExpression instances around the source ValueExpression
          * that, when evaluated, will cause the parent composite component of the currently available composite component to be
-         * pushed onto a stack that the ImplicitObjectELResolver will check for.
+         * pushed onto a stack that the {@link CompositeComponentELResolver} will check for.
          */
         private static final class CompositeExpressionMetadata extends Metadata {
 
