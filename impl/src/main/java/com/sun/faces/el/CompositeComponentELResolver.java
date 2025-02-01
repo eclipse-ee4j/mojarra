@@ -33,8 +33,8 @@ import com.sun.faces.component.CompositeComponentStackManager;
 
 /**
  * <p>
- * This {@link ELResolver} will handle the resolution of <code>cc</code> when processing a composite component
- * instance.
+ * This {@link ELResolver} will handle the resolution of <code>#{cc}</code>.
+ * The {@link CompositeComponentAttributesELResolver} will in turn handle the resolution of <code>#{cc.attrs}</code>.
  * </p>
  */
 public class CompositeComponentELResolver extends ELResolver {
