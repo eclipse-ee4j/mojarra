@@ -19,17 +19,13 @@
 package com.sun.faces.renderkit.html_basic;
 
 import static com.sun.faces.renderkit.RenderKitUtils.getParameterName;
+import static jakarta.faces.application.ProjectStage.Development;
 
 import java.io.IOException;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.logging.Level;
-
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter;
-import com.sun.faces.renderkit.Attribute;
-import com.sun.faces.renderkit.AttributeManager;
-import com.sun.faces.renderkit.RenderKitUtils;
+import java.util.logging.Logger;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIForm;
@@ -38,10 +34,19 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter;
+import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.AttributeManager;
+import com.sun.faces.renderkit.RenderKitUtils;
+import com.sun.faces.util.FacesLogger;
+
 /** 
  * <B>FormRenderer</B> is a class that renders a <code>UIForm</code> as a Form. 
  * */
 public class FormRenderer extends HtmlBasicRenderer {
+
+    private static final Logger LOGGER = FacesLogger.RENDERKIT.getLogger();
 
     private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.FORMFORM);
 
@@ -89,6 +94,10 @@ public class FormRenderer extends HtmlBasicRenderer {
             return;
         }
 
+        if (context.isProjectStage(Development) && !((UIForm) component).isPrependId()) {
+            LOGGER.warning("The <h:form prependId=\"false\"> is deprecated as of Faces 5.0 and should not longer be used.");
+        }
+        
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
         String clientId = component.getClientId(context);
