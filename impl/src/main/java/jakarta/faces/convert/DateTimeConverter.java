@@ -28,14 +28,20 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZonedDateTime;
+import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.time.format.FormatStyle;
+import java.time.format.ResolverStyle;
+import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQuery;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 
 import jakarta.faces.component.PartialStateHolder;
 import jakarta.faces.component.UIComponent;
@@ -168,6 +174,17 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
     public static final String STRING_ID = "jakarta.faces.converter.STRING";
 
     private static final TimeZone DEFAULT_TIME_ZONE = TimeZone.getTimeZone("GMT");
+
+    private static final Map<String, TemporalQuery<Object>> JAVA_TIME_TYPES = Map.of(
+        "localDate", LocalDate::from,
+        "localDateTime", LocalDateTime::from,
+        "localTime", LocalTime::from,
+        "offsetTime", OffsetTime::from,
+        "offsetDateTime", OffsetDateTime::from,
+        "zonedDateTime", ZonedDateTime::from
+    );
+
+    private static final Pattern ESCAPED_DATE_TIME_PATTERN = Pattern.compile("'[^']*+'");
 
     // ------------------------------------------------------ Instance Variables
 
@@ -507,10 +524,16 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
         }
 
         DateFormat df = null;
+        DateTimeFormatterBuilder dtfBuilder = null;
         DateTimeFormatter dtf = null;
-        TemporalQuery from = null;
-        if (pattern != null && !isJavaTimeType(type)) {
-            df = new SimpleDateFormat(pattern, locale);
+        TemporalQuery<Object> fromJavaTime = JAVA_TIME_TYPES.get(type);
+
+        if (pattern != null) {
+            if (fromJavaTime == null) {
+                df = new SimpleDateFormat(pattern, locale);
+            } else {
+                dtfBuilder = new DateTimeFormatterBuilder().appendPattern(pattern);
+            }
         } else if (type.equals("both")) {
             df = DateFormat.getDateTimeInstance(getStyle(dateStyle), getStyle(timeStyle), locale);
         } else if (type.equals("date")) {
@@ -518,70 +541,41 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
         } else if (type.equals("time")) {
             df = DateFormat.getTimeInstance(getStyle(timeStyle), locale);
         } else if (type.equals("localDate")) {
-            if (null != pattern) {
-                dtf = DateTimeFormatter.ofPattern(pattern, locale);
-            } else {
-                dtf = DateTimeFormatter.ofLocalizedDate(getFormatStyle(dateStyle)).withLocale(locale);
-            }
-            from = LocalDate::from;
+            dtfBuilder = new DateTimeFormatterBuilder().appendLocalized(getFormatStyle(dateStyle), null);
         } else if (type.equals("localDateTime")) {
-            if (null != pattern) {
-                dtf = DateTimeFormatter.ofPattern(pattern, locale);
-            } else {
-                dtf = DateTimeFormatter.ofLocalizedDateTime(getFormatStyle(dateStyle), getFormatStyle(timeStyle)).withLocale(locale);
-            }
-            from = LocalDateTime::from;
+            dtfBuilder = new DateTimeFormatterBuilder().appendLocalized(getFormatStyle(dateStyle), getFormatStyle(timeStyle));
         } else if (type.equals("localTime")) {
-            if (null != pattern) {
-                dtf = DateTimeFormatter.ofPattern(pattern, locale);
-            } else {
-                dtf = DateTimeFormatter.ofLocalizedTime(getFormatStyle(timeStyle)).withLocale(locale);
-            }
-            from = LocalTime::from;
+            dtfBuilder = new DateTimeFormatterBuilder().appendLocalized(null, getFormatStyle(timeStyle));
         } else if (type.equals("offsetTime")) {
-            if (null != pattern) {
-                dtf = DateTimeFormatter.ofPattern(pattern, locale);
-            } else {
-                dtf = DateTimeFormatter.ISO_OFFSET_TIME.withLocale(locale);
-            }
-            from = OffsetTime::from;
+            dtf = DateTimeFormatter.ISO_OFFSET_TIME.withLocale(locale);
         } else if (type.equals("offsetDateTime")) {
-            if (null != pattern) {
-                dtf = DateTimeFormatter.ofPattern(pattern, locale);
-            } else {
-                dtf = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withLocale(locale);
-            }
-            from = OffsetDateTime::from;
+            dtf = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withLocale(locale);
         } else if (type.equals("zonedDateTime")) {
-            if (null != pattern) {
-                dtf = DateTimeFormatter.ofPattern(pattern, locale);
-            } else {
-                dtf = DateTimeFormatter.ISO_ZONED_DATE_TIME.withLocale(locale);
-            }
-            from = ZonedDateTime::from;
+            dtf = DateTimeFormatter.ISO_ZONED_DATE_TIME.withLocale(locale);
         } else {
             // PENDING(craigmcc) - i18n
             throw new IllegalArgumentException("Invalid type: " + type);
         }
-        if (null != df) {
+
+        if (df != null) {
             df.setLenient(false);
             return new FormatWrapper(df);
-        } else if (null != dtf) {
-            return new FormatWrapper(dtf, from);
+        } else {
+            if (dtfBuilder != null) {
+                if (pattern == null || !ESCAPED_DATE_TIME_PATTERN.matcher(pattern).replaceAll("").contains("uu")) {
+                    dtfBuilder.parseDefaulting(ChronoField.ERA, 1);
+                }
+    
+                dtf = dtfBuilder.toFormatter(locale).withChronology(IsoChronology.INSTANCE).withResolverStyle(ResolverStyle.STRICT);
+            }
+
+            if (dtf != null) {
+                return new FormatWrapper(dtf, fromJavaTime);
+            }
         }
 
         // PENDING(craigmcc) - i18n
         throw new IllegalArgumentException("Invalid type: " + type);
-    }
-
-    private static boolean isJavaTimeType(String type) {
-        boolean result = false;
-        if (null != type && type.length() > 1) {
-            char c = type.charAt(0);
-            result = c == 'l' || c == 'o' || c == 'z';
-        }
-
-        return result;
     }
 
     /**
