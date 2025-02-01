@@ -16,9 +16,6 @@
 
 package com.sun.faces.el;
 
-import static com.sun.faces.util.Util.getFeatureDescriptor;
-import static java.util.Arrays.asList;
-
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 
@@ -80,7 +77,6 @@ public class CompositeComponentELResolver extends ELResolver {
     public Class<?> getType(ELContext context, Object base, Object property) throws ELException {
         if (base == null && COMPOSITE_COMPONENT_NAME.equals(property)) {
             context.setPropertyResolved(true);
-            return UIComponent.class;
         }
 
         return null;
@@ -88,19 +84,15 @@ public class CompositeComponentELResolver extends ELResolver {
 
     @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base) {
-        if (base != null) {
-            return null;
+        if (base == null) {
+            return String.class;
         }
 
-        return String.class;
+        return null;
     }
 
     @Override
     public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
-        if (base != null) {
-            return null;
-        }
-
-        return asList(getFeatureDescriptor("cc", "cc", "cc", false, false, true, UIComponent.class, Boolean.TRUE)).iterator();
+        return null;
     }
 }
