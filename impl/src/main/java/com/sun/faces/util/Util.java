@@ -1654,7 +1654,7 @@ public class Util {
      * @return the encoding to be used for the response
      */
     public static String getResponseEncoding(FacesContext context) {
-        return getResponseEncoding(context, Optional.empty());
+        return getResponseEncoding(context, null);
     }
 
     /**
@@ -1662,7 +1662,7 @@ public class Util {
      * @param defaultEncoding the default encoding, if any
      * @return the encoding to be used for the response
      */
-    public static String getResponseEncoding(FacesContext context, Optional<String> defaultEncoding) {
+    public static String getResponseEncoding(FacesContext context, String defaultEncoding) {
 
         // 1. First get it from viewroot, if any.
         if (context.getViewRoot() != null) {
@@ -1694,8 +1694,8 @@ public class Util {
         }
 
         if (encoding == null && context.getExternalContext().getSession(false) != null) {
-            // 4. If still none found then get previously known request encoding from session.
-            //    See also ViewHandler#initView().
+            // 4. If still none found then get previously known request or response encoding from session.
+            //    See also ViewHandler#initView() and FaceletViewHandlingStrategy#createResponseWriter().
             encoding = (String) context.getExternalContext().getSessionMap().get(CHARACTER_ENCODING_KEY);
 
             if (encoding != null && LOGGER.isLoggable(FINEST)) {
@@ -1705,9 +1705,7 @@ public class Util {
 
         if (encoding == null) {
             // 5. If still none found then fall back to specified default.
-            if (defaultEncoding.isPresent()) {
-                encoding = defaultEncoding.get();
-            }
+            encoding = defaultEncoding;
 
             if (encoding != null && !encoding.isBlank()) {
                 if (LOGGER.isLoggable(FINEST)) {
