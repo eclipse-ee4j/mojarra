@@ -43,6 +43,7 @@ import static jakarta.faces.application.ProjectStage.Development;
 import static jakarta.faces.application.Resource.COMPONENT_RESOURCE_KEY;
 import static jakarta.faces.application.StateManager.IS_BUILDING_INITIAL_STATE;
 import static jakarta.faces.application.StateManager.STATE_SAVING_METHOD_SERVER;
+import static jakarta.faces.application.ViewHandler.CHARACTER_ENCODING_KEY;
 import static jakarta.faces.application.ViewHandler.DEFAULT_FACELETS_SUFFIX;
 import static jakarta.faces.application.ViewVisitOption.RETURN_AS_MINIMAL_IMPLICIT_OUTCOME;
 import static jakarta.faces.component.UIComponent.BEANINFO_KEY;
@@ -57,7 +58,6 @@ import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
-import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
 
 import java.beans.BeanDescriptor;
@@ -71,32 +71,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
-
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.context.StateContext;
-import com.sun.faces.facelets.compiler.FaceletDoctype;
-import com.sun.faces.facelets.el.ContextualCompositeMethodExpression;
-import com.sun.faces.facelets.el.VariableMapperWrapper;
-import com.sun.faces.facelets.impl.DefaultFaceletFactory;
-import com.sun.faces.facelets.impl.XMLFrontMatterSaver;
-import com.sun.faces.facelets.tag.composite.CompositeComponentBeanInfo;
-import com.sun.faces.facelets.tag.faces.CompositeComponentTagHandler;
-import com.sun.faces.facelets.tag.ui.UIDebug;
-import com.sun.faces.renderkit.RenderKitUtils;
-import com.sun.faces.renderkit.html_basic.DoctypeRenderer;
-import com.sun.faces.util.Cache;
-import com.sun.faces.util.ComponentStruct;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.HtmlUtils;
-import com.sun.faces.util.RequestStateManager;
-import com.sun.faces.util.Util;
 
 import jakarta.el.ELContext;
 import jakarta.el.ExpressionFactory;
@@ -144,6 +123,26 @@ import jakarta.faces.view.ViewMetadata;
 import jakarta.faces.view.facelets.Facelet;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.servlet.http.HttpSession;
+
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.context.StateContext;
+import com.sun.faces.facelets.compiler.FaceletDoctype;
+import com.sun.faces.facelets.el.ContextualCompositeMethodExpression;
+import com.sun.faces.facelets.el.VariableMapperWrapper;
+import com.sun.faces.facelets.impl.DefaultFaceletFactory;
+import com.sun.faces.facelets.impl.XMLFrontMatterSaver;
+import com.sun.faces.facelets.tag.composite.CompositeComponentBeanInfo;
+import com.sun.faces.facelets.tag.faces.CompositeComponentTagHandler;
+import com.sun.faces.facelets.tag.ui.UIDebug;
+import com.sun.faces.renderkit.RenderKitUtils;
+import com.sun.faces.renderkit.html_basic.DoctypeRenderer;
+import com.sun.faces.util.Cache;
+import com.sun.faces.util.ComponentStruct;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.HtmlUtils;
+import com.sun.faces.util.RequestStateManager;
+import com.sun.faces.util.Util;
 
 /**
  * This {@link ViewHandlingStrategy} handles Facelets/PDL-based views.
@@ -905,19 +904,20 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             }
         }
 
-        // get our content type
-        String contentType = (String) context.getAttributes().get("facelets.ContentType");
+        // Get the <f:view contentType> as default content type.
+        // See also ViewHandler#apply().
+        String defaultContentType = (String) context.getAttributes().get("facelets.ContentType");
 
-        // get the encoding
-        String encoding = (String) context.getAttributes().get(FACELETS_ENCODING_KEY);
+        // Get the <f:view encoding> or otherwise Facelets default encoding of UTF-8 as default encoding. 
+        // See also SAXCompiler#doCompile() and EncodingHandler#apply().
+        String defaultEncoding = (String) context.getAttributes().get(FACELETS_ENCODING_KEY);
 
-        // Create a dummy ResponseWriter with a bogus writer,
-        // so we can figure out what content type and encoding the ReponseWriter
-        // is really going to ask for
-        ResponseWriter initWriter = renderKit.createResponseWriter(NullWriter.INSTANCE, contentType, encoding);
+        // Create a dummy ResponseWriter with a bogus writer, so we can figure out what 
+        // content type and default encoding the ResponseWriter is ultimately going to need.
+        ResponseWriter initWriter = renderKit.createResponseWriter(NullWriter.INSTANCE, defaultContentType, defaultEncoding);
 
-        contentType = getResponseContentType(context, initWriter.getContentType());
-        encoding = Util.getResponseEncoding(context, Optional.ofNullable(initWriter.getCharacterEncoding()));
+        String contentType = getResponseContentType(context, initWriter.getContentType());
+        String encoding = Util.getResponseEncoding(context, initWriter.getCharacterEncoding());
 
         // apply them to the response
         char[] buffer = new char[1028];
@@ -928,6 +928,11 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
         // Save encoding in UIViewRoot for faster consult when Util#getResponseEncoding() is invoked again elsewhere.
         context.getViewRoot().getAttributes().put(FACELETS_ENCODING_KEY, encoding);
+
+        // Save encoding in Session for consult in subsequent postback request as per spec section "2.5.2.2. Determining the Character Encoding".
+        if (context.getExternalContext().getSession(false) != null) {
+            context.getExternalContext().getSessionMap().put(CHARACTER_ENCODING_KEY, encoding);
+        }
 
         // Now, clone with the real writer
         ResponseWriter writer = initWriter.cloneWithWriter(extContext.getResponseOutputWriter());
