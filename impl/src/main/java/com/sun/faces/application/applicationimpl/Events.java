@@ -35,7 +35,6 @@ import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
-import jakarta.faces.event.ComponentSystemEvent;
 import jakarta.faces.event.ExceptionQueuedEvent;
 import jakarta.faces.event.ExceptionQueuedEventContext;
 import jakarta.faces.event.SystemEvent;
@@ -338,17 +337,18 @@ public class Events {
     }
 
     private void fireCdiSystemEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass, SystemEvent event, Object source) {
-        if (!systemEventClass.isAssignableFrom(ComponentSystemEvent.class)) {
-            if (event == null) {
-                event = systemEventHelper.getEventInfo(systemEventClass, source.getClass()).createSystemEvent(source);
-            }
+        if (event == null) {
+            var eventInfo = (source instanceof SystemEventListenerHolder) 
+                    ? compSysEventHelper.getEventInfo(systemEventClass, source.getClass())
+                    : systemEventHelper.getEventInfo(systemEventClass, source.getClass());
+            event = eventInfo.createSystemEvent(source);
+        }
 
-            var cdi = getCdiBeanManager(context).getEvent();
-            cdi.fire(event);
-            
-            if (source instanceof UIViewRoot) {
-                cdi.select(View.Literal.of(((UIViewRoot) source).getViewId())).fire(event);
-            }
+        var cdi = getCdiBeanManager(context).getEvent();
+        cdi.fire(event);
+        
+        if (source instanceof UIViewRoot) {
+            cdi.select(View.Literal.of(((UIViewRoot) source).getViewId())).fire(event);
         }
     }
 
