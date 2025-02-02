@@ -39,14 +39,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.el.ELUtils;
-import com.sun.faces.facelets.util.DevTools;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.RequestStateManager;
-import com.sun.faces.util.Util;
-
 import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
@@ -79,6 +71,14 @@ import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
 import jakarta.faces.render.Renderer;
 import jakarta.faces.render.ResponseStateManager;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.el.ELUtils;
+import com.sun.faces.facelets.util.DevTools;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.RequestStateManager;
+import com.sun.faces.util.Util;
 
 /**
  * <p>
@@ -669,8 +669,11 @@ public class RenderKitUtils {
                 String[] events = attribute.getEvents();
                 if (events != null && events.length > 0 && behaviorEventName.equals(events[0])) {
                     renderHandler(context, component, null, attrName, null, behaviorEventName, null, false, false);
+                    return;
                 }
             }
+
+            renderPassthruAttribute(context, writer, component, behaviors, isXhtml, attrMap, BEHAVIOR_EVENT_ATTRIBUTE_PREFIX + behaviorEventName, behaviorEventName);
         }
     }
 
