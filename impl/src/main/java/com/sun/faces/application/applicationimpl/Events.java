@@ -16,6 +16,7 @@
 
 package com.sun.faces.application.applicationimpl;
 
+import static com.sun.faces.util.Util.getCdiBeanManager;
 import static com.sun.faces.util.Util.notNull;
 import static jakarta.faces.application.ProjectStage.Development;
 import static java.util.logging.Level.WARNING;
@@ -29,12 +30,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import com.sun.faces.application.applicationimpl.events.ComponentSystemEventHelper;
-import com.sun.faces.application.applicationimpl.events.EventInfo;
-import com.sun.faces.application.applicationimpl.events.ReentrantLisneterInvocationGuard;
-import com.sun.faces.application.applicationimpl.events.SystemEventHelper;
-import com.sun.faces.util.FacesLogger;
-
+import jakarta.faces.annotation.View;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
@@ -44,6 +40,12 @@ import jakarta.faces.event.ExceptionQueuedEventContext;
 import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
 import jakarta.faces.event.SystemEventListenerHolder;
+
+import com.sun.faces.application.applicationimpl.events.ComponentSystemEventHelper;
+import com.sun.faces.application.applicationimpl.events.EventInfo;
+import com.sun.faces.application.applicationimpl.events.ReentrantLisneterInvocationGuard;
+import com.sun.faces.application.applicationimpl.events.SystemEventHelper;
+import com.sun.faces.util.FacesLogger;
 
 public class Events {
 
@@ -105,6 +107,9 @@ public class Events {
 
             // Look for and invoke any listeners not specific to the source class
             invokeListenersFor(systemEventClass, event, source, null, false);
+
+            // Fire system event as CDI event
+            fireCdiSystemEvent(context, systemEventClass, event, source);
         } catch (AbortProcessingException ape) {
             context.getApplication().publishEvent(context, ExceptionQueuedEvent.class, new ExceptionQueuedEventContext(context, ape));
         }
@@ -329,6 +334,22 @@ public class Events {
         System.arraycopy(temp, 0, result, 0, i);
 
         return result;
+    }
+
+    private void fireCdiSystemEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass, SystemEvent event, Object source) {
+        if (event == null) {
+            var eventInfo = (source instanceof SystemEventListenerHolder) 
+                    ? compSysEventHelper.getEventInfo(systemEventClass, source.getClass())
+                    : systemEventHelper.getEventInfo(systemEventClass, source.getClass());
+            event = eventInfo.createSystemEvent(source);
+        }
+
+        var cdi = getCdiBeanManager(context).getEvent();
+        cdi.fire(event);
+        
+        if (source instanceof UIViewRoot) {
+            cdi.select(View.Literal.of(((UIViewRoot) source).getViewId())).fire(event);
+        }
     }
 
 }
