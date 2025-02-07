@@ -17,6 +17,7 @@
 package com.sun.faces.facelets.tag.composite;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -43,6 +44,11 @@ public class RetargetedAjaxBehavior extends AjaxBehavior {
 
     private AjaxBehavior retargeted;
     private List<String> targetClientIds;
+
+    public RetargetedAjaxBehavior() {
+        retargeted = new AjaxBehavior();
+        targetClientIds = Collections.emptyList();
+    }
 
     public RetargetedAjaxBehavior(AjaxBehavior retargeted, List<String> targetClientIds) {
         this.retargeted = retargeted;
