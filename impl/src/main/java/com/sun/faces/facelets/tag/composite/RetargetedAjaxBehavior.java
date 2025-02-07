@@ -46,8 +46,7 @@ public class RetargetedAjaxBehavior extends AjaxBehavior {
     private List<String> targetClientIds;
 
     public RetargetedAjaxBehavior() {
-        retargeted = new AjaxBehavior();
-        targetClientIds = Collections.emptyList();
+        this(new AjaxBehavior(), Collections.emptyList());
     }
 
     public RetargetedAjaxBehavior(AjaxBehavior retargeted, List<String> targetClientIds) {
