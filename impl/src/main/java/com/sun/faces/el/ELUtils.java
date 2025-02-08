@@ -30,9 +30,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.application.ResolversRegistry;
-import com.sun.faces.config.WebConfiguration;
 import jakarta.el.CompositeELResolver;
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
@@ -41,6 +38,10 @@ import jakarta.el.ValueExpression;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.application.ResolversRegistry;
+import com.sun.faces.config.WebConfiguration;
 
 /**
  * Utility class for EL related methods.
@@ -149,6 +150,7 @@ public class ELUtils {
         addCDIELResolver(composite);
         ResolversRegistry elRegistry = associate.getGlobalResolversRegistry();
         composite.add(elRegistry.FLASH_RESOLVER);
+        composite.add(elRegistry.COMPOSITE_COMPONENT_EL_RESOLVER);
         composite.addPropertyELResolver(elRegistry.COMPOSITE_COMPONENT_ATTRIBUTES_EL_RESOLVER);
         addELResolvers(composite, associate.getELResolversFromFacesConfig());
         composite.add(associate.getApplicationELResolvers());
