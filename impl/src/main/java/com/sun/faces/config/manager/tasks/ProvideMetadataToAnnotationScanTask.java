@@ -84,7 +84,7 @@ public final class ProvideMetadataToAnnotationScanTask {
                                     toRemove.add(clazz);
                                 }
                             }
-                            annotatedSet.removeAll(toRemove);
+                            toRemove.forEach(annotatedSet::remove);
                         }
                     }
                 }

@@ -74,7 +74,7 @@ public class FacesConfigOrderingTestCase {
 		// J+
 
 		DocumentOrderingWrapper[] wrappers = documents
-				.toArray(new DocumentOrderingWrapper[documents.size()]);
+				.toArray(new DocumentOrderingWrapper[0]);
 		String[] originalOrder = extractNames(wrappers);
 		DocumentOrderingWrapper.sort(wrappers);
 
@@ -112,7 +112,7 @@ public class FacesConfigOrderingTestCase {
 		);
 		//J+
 
-		DocumentOrderingWrapper[] wrappers = documents.toArray(new DocumentOrderingWrapper[documents.size()]);
+		DocumentOrderingWrapper[] wrappers = documents.toArray(new DocumentOrderingWrapper[0]);
 		String[] originalOrder = extractNames(wrappers);
 		DocumentOrderingWrapper.sort(wrappers);
 
@@ -165,7 +165,7 @@ public class FacesConfigOrderingTestCase {
 		);
 		//J+
 
-		DocumentOrderingWrapper[] wrappers = documents.toArray(new DocumentOrderingWrapper[documents.size()]);
+		DocumentOrderingWrapper[] wrappers = documents.toArray(new DocumentOrderingWrapper[0]);
 		String[] originalOrder = extractNames(wrappers);
 		DocumentOrderingWrapper.sort(wrappers);
 
@@ -220,7 +220,7 @@ public class FacesConfigOrderingTestCase {
 		);
 		//J+
 
-		DocumentOrderingWrapper[] wrappers = documents.toArray(new DocumentOrderingWrapper[documents.size()]);
+		DocumentOrderingWrapper[] wrappers = documents.toArray(new DocumentOrderingWrapper[0]);
 		String[] originalOrder = extractNames(wrappers);
 		DocumentOrderingWrapper.sort(wrappers);
 
@@ -281,7 +281,7 @@ public class FacesConfigOrderingTestCase {
 
 			Collections.shuffle(documents);
 
-			DocumentOrderingWrapper[] wrappers = documents.toArray(new DocumentOrderingWrapper[documents.size()]);
+			DocumentOrderingWrapper[] wrappers = documents.toArray(new DocumentOrderingWrapper[0]);
 			String[] originalOrder = extractNames(wrappers);
 			DocumentOrderingWrapper.sort(wrappers);
 

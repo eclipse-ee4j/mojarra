@@ -115,8 +115,8 @@ public final class CompositionHandler extends TagHandlerImpl implements Template
             if (params != null) {
                 VariableMapper vm = new VariableMapperWrapper(orig);
                 ctx.setVariableMapper(vm);
-                for (int i = 0; i < params.length; i++) {
-                    params[i].apply(ctx, parent);
+                for (ParamHandler param : params) {
+                    param.apply(ctx, parent);
                 }
             }
 

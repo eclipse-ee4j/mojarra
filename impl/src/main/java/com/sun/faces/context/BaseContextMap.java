@@ -96,8 +96,8 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
             return false;
         }
         if (containsValue(value)) {
-            for (Iterator i = entrySet().iterator(); i.hasNext();) {
-                Map.Entry e = (Map.Entry) i.next();
+            for (Map.Entry<String, V> stringVEntry : entrySet()) {
+                Map.Entry e = stringVEntry;
                 if (value.equals(e.getValue())) {
                     valueRemoved = remove(e.getKey()) != null;
                 }

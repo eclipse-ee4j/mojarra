@@ -63,18 +63,18 @@ public class RepeatHandler extends ComponentHandler {
         public TagMetaData(Class type) {
             Set s = new HashSet();
             TagAttribute[] ta = tag.getAttributes().getAll();
-            for (int i = 0; i < ta.length; i++) {
-                if ("class".equals(ta[i].getLocalName())) {
+            for (TagAttribute tagAttribute : ta) {
+                if ("class".equals(tagAttribute.getLocalName())) {
                     s.add("styleClass");
                 } else {
-                    s.add(ta[i].getLocalName());
+                    s.add(tagAttribute.getLocalName());
                 }
             }
             try {
                 PropertyDescriptor[] pd = Introspector.getBeanInfo(type).getPropertyDescriptors();
-                for (int i = 0; i < pd.length; i++) {
-                    if (pd[i].getWriteMethod() != null) {
-                        s.remove(pd[i].getName());
+                for (PropertyDescriptor propertyDescriptor : pd) {
+                    if (propertyDescriptor.getWriteMethod() != null) {
+                        s.remove(propertyDescriptor.getName());
                     }
                 }
             } catch (Exception e) {
@@ -82,7 +82,7 @@ public class RepeatHandler extends ComponentHandler {
                     log.log(Level.FINEST, "Unable to get bean info", e);
                 }
             }
-            attrs = (String[]) s.toArray(new String[s.size()]);
+            attrs = (String[]) s.toArray(new String[0]);
         }
 
         @Override
