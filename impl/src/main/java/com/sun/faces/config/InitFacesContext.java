@@ -53,6 +53,8 @@ public class InitFacesContext extends NoOpFacesContext {
 
     private ELContext elContext = new NoOpELContext();
 
+    private ExceptionHandler exceptionHandler;
+
     public InitFacesContext(ServletContext servletContext) {
         servletContextAdapter = new ServletContextAdapter(servletContext);
         servletContext.setAttribute(INIT_FACES_CONTEXT_ATTR_NAME, this);
@@ -101,7 +103,10 @@ public class InitFacesContext extends NoOpFacesContext {
 
     @Override
     public ExceptionHandler getExceptionHandler() {
-        return new ExceptionHandlerImpl(false);
+        if (exceptionHandler == null) {
+            exceptionHandler = new ExceptionHandlerImpl(false);
+        }
+        return exceptionHandler;
     }
 
     @Override
