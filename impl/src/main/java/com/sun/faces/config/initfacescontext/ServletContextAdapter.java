@@ -318,6 +318,10 @@ public class ServletContextAdapter extends ExternalContext {
     }
 
     @Override
+    public void setResponseStatus(int statusCode) {
+    }
+
+    @Override
     public String encodePartialActionURL(String url) {
         return null;
     }
