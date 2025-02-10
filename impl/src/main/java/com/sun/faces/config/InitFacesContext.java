@@ -33,6 +33,7 @@ import javax.faces.application.Application;
 import javax.faces.application.ApplicationFactory;
 import javax.faces.application.ProjectStage;
 import javax.faces.component.UIViewRoot;
+import javax.faces.context.ExceptionHandler;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
@@ -42,6 +43,7 @@ import com.sun.faces.config.initfacescontext.NoOpELContext;
 import com.sun.faces.config.initfacescontext.NoOpFacesContext;
 import com.sun.faces.config.initfacescontext.ServletContextAdapter;
 import com.sun.faces.context.ApplicationMap;
+import com.sun.faces.context.ExceptionHandlerImpl;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
@@ -59,6 +61,8 @@ public class InitFacesContext extends NoOpFacesContext {
     private Map<Object, Object> attributes;
 
     private ELContext elContext = new NoOpELContext();
+
+    private ExceptionHandler exceptionHandler;
 
     public InitFacesContext(ServletContext servletContext) {
         servletContextAdapter = new ServletContextAdapter(servletContext);
@@ -238,14 +242,16 @@ public class InitFacesContext extends NoOpFacesContext {
 
         return result;
     }
-    
-    
-    
-    
-    
-    
-    
-    // Cactus / unit test only
+
+    @Override
+    public ExceptionHandler getExceptionHandler() {
+        if (exceptionHandler == null) {
+            exceptionHandler = new ExceptionHandlerImpl(false);
+        }
+        return exceptionHandler;
+    }
+
+// Cactus / unit test only
     
     public void reInitializeExternalContext(ServletContext sc) {
         assert (Util.isUnitTestModeEnabled());
