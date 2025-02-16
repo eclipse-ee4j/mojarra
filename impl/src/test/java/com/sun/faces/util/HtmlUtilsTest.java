@@ -11,6 +11,7 @@ class HtmlUtilsTest {
     /**
      * https://github.com/eclipse-ee4j/mojarra/issues/4516
      * https://github.com/eclipse-ee4j/mojarra/issues/5464
+     * https://github.com/eclipse-ee4j/mojarra/issues/5562
      */
     @Test
     void testAllowedXmlCharacter() {
@@ -44,5 +45,6 @@ class HtmlUtilsTest {
 
         assertFalse(isAllowedXmlCharacter(0xFFFE));
         assertFalse(isAllowedXmlCharacter(0xFFFF));
+        assertTrue(isAllowedXmlCharacter(0x1D11E));
     }
 }

@@ -330,7 +330,7 @@ public class HtmlUtils {
 
     public static boolean isAllowedXmlCharacter(int ch) {
         // See https://www.w3.org/TR/xml/#charsets Character Range
-        return ch < 0x20 ? isPrintableControlChar(ch, true) : ch <= 0xD7FF || ch >= 0xE000 && ch <= 0xFFFD; 
+        return ch < 0x20 ? isPrintableControlChar(ch, true) : ch <= 0xD7FF || ch >= 0xE000 && ch <= 0xFFFD || ch >= 0x10000 && ch <= 0x10FFFF;
     }
 
     /**
