@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -222,6 +223,17 @@ public final class ReflectionUtils {
             }
 
             throw new IllegalStateException(e);
+        }
+    }
+
+    /**
+     * Returns the {@link Class} instance of {@link #toClass(String)}, or else an empty {@link Optional} when it throws an exception for whatever reason.
+     */
+    public static Optional<Class<?>> findClass(String className) {
+        try {
+            return Optional.of(toClass(className));
+        } catch (Exception e) {
+            return Optional.empty();
         }
     }
 

@@ -16,7 +16,12 @@
 
 package com.sun.faces.cdi;
 
+import static com.sun.faces.util.ReflectionUtils.findClass;
+
+import java.util.Optional;
+
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
@@ -26,17 +31,25 @@ import jakarta.faces.context.FacesContext;
  * </p>
  *
  * @since 2.3
- * @see ExternalContext
+ * @see ExternalContext#getContext()
  */
 public class ApplicationProducer extends CdiProducer<Object> {
+
+    private static final Optional<Class<?>> SERVLET_CONTEXT_CLASS = findClass("jakarta.servlet.ServletContext");
 
     /**
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
 
-    public ApplicationProducer() {
-        super.name("application").scope(ApplicationScoped.class).create(e -> FacesContext.getCurrentInstance().getExternalContext().getContext());
+    public ApplicationProducer(BeanManager beanManager) {
+        CdiProducer<Object> producer = super.name("application").scope(ApplicationScoped.class);
+
+        if (SERVLET_CONTEXT_CLASS.isPresent()) {
+            producer = producer.beanClass(beanManager, SERVLET_CONTEXT_CLASS.get()); // #5561
+        }
+
+        producer.create(e -> FacesContext.getCurrentInstance().getExternalContext().getContext());
     }
 
 }

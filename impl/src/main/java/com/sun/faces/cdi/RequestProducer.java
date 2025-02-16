@@ -16,7 +16,12 @@
 
 package com.sun.faces.cdi;
 
+import static com.sun.faces.util.ReflectionUtils.findClass;
+
+import java.util.Optional;
+
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
@@ -30,13 +35,21 @@ import jakarta.faces.context.FacesContext;
  */
 public class RequestProducer extends CdiProducer<Object> {
 
+    private static final Optional<Class<?>> HTTP_SERVLET_REQUEST_CLASS = findClass("jakarta.servlet.http.HttpServletRequest");
+
     /**
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
 
-    public RequestProducer() {
-        super.name("request").scope(RequestScoped.class).create(e -> FacesContext.getCurrentInstance().getExternalContext().getRequest());
+    public RequestProducer(BeanManager beanManager) {
+        CdiProducer<Object> producer = super.name("request").scope(RequestScoped.class);
+
+        if (HTTP_SERVLET_REQUEST_CLASS.isPresent()) {
+            producer = producer.beanClass(beanManager, HTTP_SERVLET_REQUEST_CLASS.get()); // #5561
+        }
+
+        producer.create(e -> FacesContext.getCurrentInstance().getExternalContext().getRequest());
     }
 
 }
