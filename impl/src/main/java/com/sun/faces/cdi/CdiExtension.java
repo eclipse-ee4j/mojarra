@@ -32,11 +32,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.push.WebsocketChannelManager;
-import com.sun.faces.push.WebsocketSessionManager;
-import com.sun.faces.push.WebsocketUserManager;
-import com.sun.faces.util.FacesLogger;
-
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
 import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
@@ -49,6 +44,11 @@ import jakarta.enterprise.inject.spi.ProcessManagedBean;
 import jakarta.faces.annotation.ManagedProperty;
 import jakarta.faces.model.DataModel;
 import jakarta.faces.model.FacesDataModel;
+
+import com.sun.faces.push.WebsocketChannelManager;
+import com.sun.faces.push.WebsocketSessionManager;
+import com.sun.faces.push.WebsocketUserManager;
+import com.sun.faces.util.FacesLogger;
 
 /**
  * The CDI extension.
@@ -179,7 +179,7 @@ public class CdiExtension implements Extension {
         // Ideally below should only happen if Jakarta Faces is considered active,
         // but this is not detectable as ServletContext is not necessarily available at this moment.
 
-        afterBeanDiscovery.addBean(new ApplicationProducer());
+        afterBeanDiscovery.addBean(new ApplicationProducer(beanManager));
         afterBeanDiscovery.addBean(new ApplicationMapProducer(beanManager));
         afterBeanDiscovery.addBean(new CompositeComponentProducer(beanManager));
         afterBeanDiscovery.addBean(new ComponentProducer(beanManager));
@@ -190,13 +190,13 @@ public class CdiExtension implements Extension {
         afterBeanDiscovery.addBean(new InitParameterMapProducer(beanManager));
         afterBeanDiscovery.addBean(new RequestParameterMapProducer(beanManager));
         afterBeanDiscovery.addBean(new RequestParameterValuesMapProducer(beanManager));
-        afterBeanDiscovery.addBean(new RequestProducer());
+        afterBeanDiscovery.addBean(new RequestProducer(beanManager));
         afterBeanDiscovery.addBean(new RequestMapProducer(beanManager));
         afterBeanDiscovery.addBean(new ResourceHandlerProducer(beanManager));
         afterBeanDiscovery.addBean(new ExternalContextProducer(beanManager));
         afterBeanDiscovery.addBean(new FacesContextProducer(beanManager));
         afterBeanDiscovery.addBean(new RequestCookieMapProducer(beanManager));
-        afterBeanDiscovery.addBean(new SessionProducer());
+        afterBeanDiscovery.addBean(new SessionProducer(beanManager));
         afterBeanDiscovery.addBean(new SessionMapProducer(beanManager));
         afterBeanDiscovery.addBean(new ViewMapProducer(beanManager));
         afterBeanDiscovery.addBean(new ViewProducer(beanManager));
