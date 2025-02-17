@@ -51,7 +51,7 @@ import jakarta.servlet.ServletContext;
  * A special, minimal implementation of FacesContext used at application initialization time. The ExternalContext
  * returned by this FacesContext only exposes the ApplicationMap.
  */
-public class InitFacesContext extends NoOpFacesContext {
+public class    InitFacesContext extends NoOpFacesContext {
 
     private static Logger LOGGER = FacesLogger.CONFIG.getLogger();
     private static final String INIT_FACES_CONTEXT_ATTR_NAME = RIConstants.FACES_PREFIX + "InitFacesContext";
@@ -61,6 +61,8 @@ public class InitFacesContext extends NoOpFacesContext {
     private Map<Object, Object> attributes;
 
     private ELContext elContext = new NoOpELContext();
+
+    private ExceptionHandler exceptionHandler;
 
     public InitFacesContext(ServletContext servletContext) {
         servletContextAdapter = new ServletContextAdapter(servletContext);
@@ -113,7 +115,10 @@ public class InitFacesContext extends NoOpFacesContext {
 
     @Override
     public ExceptionHandler getExceptionHandler() {
-        return new ExceptionHandlerImpl(false);
+        if (exceptionHandler == null) {
+            exceptionHandler = new ExceptionHandlerImpl(false);
+        }
+        return exceptionHandler;
     }
 
     @Override
