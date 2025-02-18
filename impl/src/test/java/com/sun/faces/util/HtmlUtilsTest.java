@@ -45,6 +45,11 @@ class HtmlUtilsTest {
 
         assertFalse(isAllowedXmlCharacter(0xFFFE));
         assertFalse(isAllowedXmlCharacter(0xFFFF));
+        assertTrue(isAllowedXmlCharacter(0x10000));
         assertTrue(isAllowedXmlCharacter(0x1D11E));
+        assertTrue(isAllowedXmlCharacter("😎".codePointAt(0)));
+        assertTrue(isAllowedXmlCharacter("🎉".codePointAt(0)));
+        assertTrue(isAllowedXmlCharacter(0x10FFFF));
+        assertFalse(isAllowedXmlCharacter(0x110000));
     }
 }
