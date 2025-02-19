@@ -52,13 +52,13 @@ In case you're manually carrying around JARs:
 
     Add below JARs to `/WEB-INF/lib`:
 
-    - [`jakarta.faces.4.0.x.jar`][9]
-    - [`weld-servlet-shaded-4.0.0.Final.jar`][10]
-    - [`jstl-2.0.jar`][11]
-    - [`jakarta.json-api-2.0.jar`][12] (optional, only when `<f:websocket>` is used)
-    - [`jakarta.json-2.0.jar`][12a] (optional, only when `<f:websocket>` is used)
-    - [`validation-api-3.0.0.Final.jar`][13] (optional, only when `<f:validateBean|validateWholeBean>` is used)
-    - [`hibernate-validator-8.0.x.Final.jar`][14] (optional, only when `<f:validateBean|validateWholeBean>` is used)
+     - [`jakarta.faces.4.0.x.jar`][2]
+     - [`weld-servlet-shaded-4.0.x.Final.jar`][3]
+     - [`jakarta.servlet.jsp.jstl-api-2.0.x.jar`][4]
+     - [`jakarta.json-api-2.0.x.jar`][5] (optional, only when `<f:websocket>` is used)
+     - [`jakarta.json-2.0.x.jar`][12a] (optional, only when `<f:websocket>` is used)
+     - [`validation-api-3.0.x.Final.jar`][6] (optional, only when `<f:validateBean|validateWholeBean>` is used)
+     - [`hibernate-validator-8.0.x.Final.jar`][7] (optional, only when `<f:validateBean|validateWholeBean>` is used)
 
     Substitute `x` with latest version number available.
 
@@ -335,13 +335,15 @@ mvn versions:set -DgroupId=* -DartifactId=* -DoldVersion=* -DgenerateBackupPoms=
   [6]: https://developer.ibm.com/wasdev/websphere-liberty/
   [7]: http://tomcat.apache.org
   [8]: http://www.eclipse.org/jetty/
-  [9]: http://central.maven.org/maven2/org/glassfish/javax.faces/
-  [10]: https://repo1.maven.org/maven2/org/jboss/weld/servlet/weld-servlet-shaded/4.0.0.Final/weld-servlet-shaded-4.0.0.Final.jar
-  [11]: http://central.maven.org/maven2/javax/servlet/jstl/2.0/jstl-2.0.jar
-  [12]: https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.0.0/jakarta.json-api-2.0.0.jar
-  [12A]: http://central.maven.org/maven2/org/glassfish/javax.json/2.0/javax.json-2.0.jar
-  [13]: https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/3.0.0/jakarta.validation-api-3.0.0.jar
-  [14]: https://repo1.maven.org/maven2/org/hibernate/validator/hibernate-validator/7.0.0.Final/hibernate-validator-7.0.0.Final.jar
+
+  [9]: https://repo1.maven.org/maven2/org/glassfish/jakarta.faces/
+  [10]: https://repo1.maven.org/maven2/org/jboss/weld/servlet/weld-servlet-shaded/
+  [11]: https://repo.maven.apache.org/maven2/jakarta/servlet/jsp/jstl/jakarta.servlet.jsp.jstl-api
+  [12]: https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api
+  [12A]: https://repo1.maven.org/maven2/org/glassfish/jakarta.json/
+  [13]: https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api
+  [14]: https://repo1.maven.org/maven2/org/hibernate/validator/hibernate-validator
+  
   [15]: https://stackoverflow.com/q/35899887/157882
   [16]: http://mvnrepository.com/artifact/org.glassfish/jakarta.faces
   [17]: https://stackoverflow.com/q/3008395/157882
