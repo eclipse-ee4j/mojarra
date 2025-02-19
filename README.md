@@ -52,13 +52,13 @@ In case you're manually carrying around JARs:
 
     Add below JARs to `/WEB-INF/lib`:
 
-     - [`jakarta.faces.4.0.x.jar`][2]
-     - [`weld-servlet-shaded-4.0.x.Final.jar`][3]
-     - [`jakarta.servlet.jsp.jstl-api-2.0.x.jar`][4]
-     - [`jakarta.json-api-2.0.x.jar`][5] (optional, only when `<f:websocket>` is used)
-     - [`jakarta.json-2.0.x.jar`][12a] (optional, only when `<f:websocket>` is used)
-     - [`validation-api-3.0.x.Final.jar`][6] (optional, only when `<f:validateBean|validateWholeBean>` is used)
-     - [`hibernate-validator-8.0.x.Final.jar`][7] (optional, only when `<f:validateBean|validateWholeBean>` is used)
+     - [`jakarta.faces.4.0.x.jar`][9]
+     - [`weld-servlet-shaded-4.0.x.Final.jar`][10]
+     - [`jakarta.servlet.jsp.jstl-api-2.0.x.jar`][11]
+     - [`jakarta.json-api-2.0.x.jar`][12] (optional, only when `<f:websocket>` is used)
+     - [`jakarta.json-2.0.x.jar`][12A] (optional, only when `<f:websocket>` is used)
+     - [`validation-api-3.0.x.Final.jar`][13] (optional, only when `<f:validateBean|validateWholeBean>` is used)
+     - [`hibernate-validator-8.0.x.Final.jar`][14] (optional, only when `<f:validateBean|validateWholeBean>` is used)
 
     Substitute `x` with latest version number available.
 
