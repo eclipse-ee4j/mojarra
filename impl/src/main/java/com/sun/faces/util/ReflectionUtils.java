@@ -339,6 +339,25 @@ public final class ReflectionUtils {
 
     /**
      * <p>
+     * Finds the <code>Method</code> appropriate to the specified object instance and method name, and invokes it.
+     * </p>
+     *
+     * @param object the Object instance of interest
+     * @param methodName the name of the method
+     * @return the result of the method invocation
+     * @throws UnsupportedOperationException if it cannot be invoked the reason which is wrapped as cause
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T invokeMethod(Object object, String methodName) {
+        try {
+            return (T) lookupMethod(object, methodName).invoke(object);
+        } catch (Exception e) {
+            throw new UnsupportedOperationException(e);
+        }
+    }
+
+    /**
+     * <p>
      * Constructs a new object instance based off the provided class name.
      * </p>
      *

@@ -30,13 +30,16 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
-import com.sun.faces.context.ApplicationMap;
-import com.sun.faces.context.InitParameterMap;
-
+import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.Flash;
 import jakarta.servlet.ServletContext;
+
+import com.sun.faces.context.ApplicationMap;
+import com.sun.faces.context.ContextParamUtils;
+import com.sun.faces.context.InitParameterMap;
 
 public class ServletContextAdapter extends ExternalContext {
 
@@ -132,6 +135,11 @@ public class ServletContextAdapter extends ExternalContext {
     @Override
     public String getInitParameter(String name) {
         return servletContext.getInitParameter(name);
+    }
+
+    @Override
+    public <T> T getContextParamValue(ContextParam contextParam) {
+        return ContextParamUtils.getValue(this, new AtomicReference<>(), contextParam);
     }
 
     @Override

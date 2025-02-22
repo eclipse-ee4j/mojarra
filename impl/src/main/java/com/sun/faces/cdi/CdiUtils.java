@@ -22,6 +22,7 @@ import static java.util.stream.Collectors.toSet;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -31,10 +32,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
-
+import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ContextNotActiveException;
 import jakarta.enterprise.context.spi.Context;
 import jakarta.enterprise.context.spi.CreationalContext;
@@ -55,6 +53,10 @@ import jakarta.faces.model.FacesDataModel;
 import jakarta.faces.validator.FacesValidator;
 import jakarta.faces.validator.Validator;
 
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
+
 /**
  * A static utility class for CDI.
  */
@@ -72,6 +74,32 @@ public final class CdiUtils {
     private final static Type VALIDATOR_TYPE = new TypeLiteral<Validator<?>>() {
         private static final long serialVersionUID = 1L;
     }.getType();
+
+    /**
+     * This does unfortunately not exist in cdi spec: https://stackoverflow.com/a/63653513
+     *
+     * This basically sorts descending by priority with fallback to FQN.
+     * Highest priority first.
+     * Priotityless bean last.
+     * Same priorities ordered by FQN (for now?)
+     */
+    public static final Comparator<Object> BEAN_PRIORITY_COMPARATOR = (left, right) -> {
+        Class<?> leftClass = left.getClass();
+        Class<?> rightClass = right.getClass();
+        Priority leftPriority = leftClass.getAnnotation(Priority.class);
+        Priority rightPriority = rightClass.getAnnotation(Priority.class);
+
+        int compare = leftPriority != null && rightPriority != null ? Integer.compare(rightPriority.value(), leftPriority.value())
+                : leftPriority != null ? -1
+                : rightPriority != null ? 1
+                : 0;
+
+        if (compare == 0) {
+            return leftClass.getName().compareTo(rightClass.getName());
+        }
+
+        return compare;
+    };
 
     /**
      * Constructor.
@@ -423,6 +451,16 @@ public final class CdiUtils {
      */
     public static boolean isWeld(BeanManager beanManager) {
         return beanManager.getClass().getPackageName().startsWith("org.jboss.weld.");
+    }
+
+    /**
+     * Returns all bean references by given qualifiers.
+     */
+    public static Set<?> getBeanReferencesByQualifier(Annotation... qualifiers) {
+        BeanManager beanManager = Util.getCdiBeanManager(FacesContext.getCurrentInstance());
+        return beanManager.getBeans(Object.class, qualifiers).stream()
+            .map(bean -> beanManager.getReference(bean, bean.getBeanClass(), beanManager.createCreationalContext(bean)))
+            .collect(toSet());
     }
 
 }

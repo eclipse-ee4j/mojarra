@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import jakarta.faces.FacesException;
+import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.context.ExternalContext;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletRequest;
@@ -237,6 +238,11 @@ public class MockExternalContext extends ExternalContext {
         initParams.put(name, value);
     }
 
+    @Override
+    public <T> T getContextParamValue(ContextParam contextParam) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
     @Override
     public void addResponseHeader(String arg0, String arg1) {
         throw new UnsupportedOperationException("Not supported yet.");

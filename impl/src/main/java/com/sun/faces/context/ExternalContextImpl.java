@@ -31,18 +31,22 @@ import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.annotation.FacesConfig;
+import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -96,6 +100,8 @@ public class ExternalContextImpl extends ExternalContext {
     private Map<String, String[]> requestHeaderValuesMap = null;
     private Map<String, Object> cookieMap = null;
     private Map<String, String> initParameterMap = null;
+    private final Map<ContextParam, Object> contextParameterMap = new EnumMap<>(ContextParam.class);
+    private final AtomicReference<Optional<FacesConfig>> annotatedConfig = new AtomicReference<>();
 
     private Flash flash;
     private final boolean distributable;
@@ -145,7 +151,7 @@ public class ExternalContextImpl extends ExternalContext {
             ((HttpServletResponse) response).addHeader("X-Powered-By", poweredBy);
         }
 
-        distributable = ContextParamUtils.getValue(servletContext, ContextParam.EnableDistributable, Boolean.class);
+        distributable = ContextParamUtils.getValue(servletContext, com.sun.faces.context.ContextParam.EnableDistributable, Boolean.class);
 
     }
 
@@ -467,6 +473,15 @@ public class ExternalContextImpl extends ExternalContext {
             throw new NullPointerException("Init parameter name cannot be null");
         }
         return servletContext.getInitParameter(name);
+    }
+
+    /**
+     * @see jakarta.faces.context.ExternalContext#getContextParamValue(jakarta.faces.annotation.FacesConfig.ContextParam)
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getContextParamValue(ContextParam contextParam) {
+        return (T) contextParameterMap.computeIfAbsent(contextParam, param -> ContextParamUtils.getValue(this, this.annotatedConfig, contextParam));
     }
 
     /**
