@@ -222,7 +222,7 @@ class DefaultTagDecorator implements TagDecorator {
                 attributes.put(converted.getQName(), converted);
             }
 
-            return new TagAttributesImpl(attributes.values().toArray(new TagAttribute[attributes.size()]));
+            return new TagAttributesImpl(attributes.values().toArray(new TagAttribute[0]));
         }
 
         private TagAttribute createElementName(Tag tag) {
