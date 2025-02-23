@@ -352,13 +352,15 @@ mvn versions:set -DgroupId=* -DartifactId=* -DoldVersion=* -DgenerateBackupPoms=
   [6]: https://developer.ibm.com/wasdev/websphere-liberty/
   [7]: http://tomcat.apache.org
   [8]: http://www.eclipse.org/jetty/
-  [9]: http://central.maven.org/maven2/org/glassfish/javax.faces/
-  [10]: https://repo1.maven.org/maven2/org/jboss/weld/servlet/weld-servlet-shaded/4.0.0.Final/weld-servlet-shaded-4.0.0.Final.jar
-  [11]: http://central.maven.org/maven2/javax/servlet/jstl/2.0/jstl-2.0.jar
-  [12]: https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.0.0/jakarta.json-api-2.0.0.jar
-  [12A]: http://central.maven.org/maven2/org/glassfish/javax.json/2.0/javax.json-2.0.jar
-  [13]: https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/3.0.0/jakarta.validation-api-3.0.0.jar
-  [14]: https://repo1.maven.org/maven2/org/hibernate/validator/hibernate-validator/7.0.0.Final/hibernate-validator-7.0.0.Final.jar
+
+  [9]: https://repo1.maven.org/maven2/org/glassfish/jakarta.faces/
+  [10]: https://repo1.maven.org/maven2/org/jboss/weld/servlet/weld-servlet-shaded/
+  [11]: https://repo.maven.apache.org/maven2/jakarta/servlet/jsp/jstl/jakarta.servlet.jsp.jstl-api
+  [12]: https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api
+  [12A]: https://repo1.maven.org/maven2/org/glassfish/jakarta.json/
+  [13]: https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api
+  [14]: https://repo1.maven.org/maven2/org/hibernate/validator/hibernate-validator
+  
   [15]: https://stackoverflow.com/q/35899887/157882
   [16]: http://mvnrepository.com/artifact/org.glassfish/jakarta.faces
   [17]: https://stackoverflow.com/q/3008395/157882

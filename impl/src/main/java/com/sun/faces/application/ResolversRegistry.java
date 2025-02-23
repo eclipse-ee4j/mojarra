@@ -15,12 +15,6 @@
  */
 package com.sun.faces.application;
 
-import com.sun.faces.context.flash.FlashELResolver;
-import com.sun.faces.el.CompositeComponentAttributesELResolver;
-import com.sun.faces.el.EmptyStringToNullELResolver;
-import com.sun.faces.el.FacesResourceBundleELResolver;
-import com.sun.faces.el.ResourceELResolver;
-import com.sun.faces.el.ScopedAttributeELResolver;
 import jakarta.el.ArrayELResolver;
 import jakarta.el.BeanELResolver;
 import jakarta.el.ListELResolver;
@@ -29,6 +23,14 @@ import jakarta.el.OptionalELResolver;
 import jakarta.el.RecordELResolver;
 import jakarta.el.ResourceBundleELResolver;
 import jakarta.el.StaticFieldELResolver;
+
+import com.sun.faces.context.flash.FlashELResolver;
+import com.sun.faces.el.CompositeComponentAttributesELResolver;
+import com.sun.faces.el.CompositeComponentELResolver;
+import com.sun.faces.el.EmptyStringToNullELResolver;
+import com.sun.faces.el.FacesResourceBundleELResolver;
+import com.sun.faces.el.ResourceELResolver;
+import com.sun.faces.el.ScopedAttributeELResolver;
 
 public class ResolversRegistry {
     public final BeanELResolver BEAN_RESOLVER = new BeanELResolver();
@@ -43,6 +45,7 @@ public class ResolversRegistry {
     public final ResourceBundleELResolver BUNDLE_RESOLVER = new ResourceBundleELResolver();
     public final ScopedAttributeELResolver SCOPED_RESOLVER = new ScopedAttributeELResolver();
     public final ResourceELResolver RESOURCE_RESOLVER = new ResourceELResolver();
+    public final CompositeComponentELResolver COMPOSITE_COMPONENT_EL_RESOLVER = new CompositeComponentELResolver();
     public final CompositeComponentAttributesELResolver COMPOSITE_COMPONENT_ATTRIBUTES_EL_RESOLVER = new CompositeComponentAttributesELResolver();
     public final EmptyStringToNullELResolver EMPTY_STRING_TO_NULL_RESOLVER = new EmptyStringToNullELResolver();
 
