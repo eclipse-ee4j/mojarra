@@ -23,9 +23,6 @@ import static com.sun.faces.util.Util.getCdiBeanManager;
 import static com.sun.faces.util.Util.isEmpty;
 import static java.lang.Boolean.FALSE;
 
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.application.ResolversRegistry;
-import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.util.Cache;
 import com.sun.faces.util.LRUCache;
 import jakarta.el.CompositeELResolver;
@@ -38,6 +35,10 @@ import jakarta.faces.context.FacesContext;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.application.ResolversRegistry;
+import com.sun.faces.config.WebConfiguration;
 
 /**
  * Utility class for EL related methods.
@@ -137,6 +138,7 @@ public class ELUtils {
 
         ResolversRegistry elRegistry = associate.getGlobalResolversRegistry();
         composite.add(elRegistry.FLASH_RESOLVER);
+        composite.add(elRegistry.COMPOSITE_COMPONENT_EL_RESOLVER);
         composite.addPropertyELResolver(elRegistry.COMPOSITE_COMPONENT_ATTRIBUTES_EL_RESOLVER);
         addELResolvers(composite, associate.getELResolversFromFacesConfig());
         composite.add(associate.getApplicationELResolvers());
