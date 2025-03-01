@@ -79,7 +79,6 @@ import jakarta.el.ValueExpression;
 import jakarta.el.VariableMapper;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
-import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.application.Resource;
 import jakarta.faces.application.StateManager.StateSavingMethod;
 import jakarta.faces.application.ViewHandler;
@@ -122,6 +121,7 @@ import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.servlet.http.HttpSession;
 
 import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.context.FacesContextParam;
 import com.sun.faces.context.StateContext;
 import com.sun.faces.facelets.compiler.FaceletDoctype;
 import com.sun.faces.facelets.el.ContextualCompositeMethodExpression;
@@ -771,9 +771,6 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * @param viewId the view ID to check
      * @return <code>true</code> if assuming a default configuration and the view ID's extension in {@link ViewHandler#FACELETS_SUFFIX_PARAM_NAME}
      * Otherwise try to match the view ID based on the configured extensions and prefixes in {@link ViewHandler#FACELETS_VIEW_MAPPINGS_PARAM_NAME}
-     *
-     * @see ContextParam#FACELETS_SUFFIX
-     * @see ContextParam#FACELETS_VIEW_MAPPINGS
      */
     @Override
     public boolean handlesViewId(String viewId) {
@@ -813,7 +810,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             return FaceletViewHandlingStrategy.this.createComponentMetadata(context, ccResource);
         });
 
-        responseBufferSize = ContextParam.FACELETS_BUFFER_SIZE.getValue(FacesContext.getCurrentInstance());
+        responseBufferSize = FacesContextParam.FACELETS_BUFFER_SIZE.getValue(FacesContext.getCurrentInstance());
 
         LOGGER.fine("Initialization Successful");
 
@@ -841,7 +838,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      */
     protected void initializeMappings() {
         FacesContext context = FacesContext.getCurrentInstance();
-        String[] mappingsArray = ContextParam.FACELETS_VIEW_MAPPINGS.getValue(context);
+        String[] mappingsArray = FacesContextParam.FACELETS_VIEW_MAPPINGS.getValue(context);
         if (mappingsArray.length > 0) {
             List<String> extensionsList = new ArrayList<>(mappingsArray.length);
             List<String> prefixesList = new ArrayList<>(mappingsArray.length);
@@ -1812,7 +1809,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * @return true if we are, false otherwise.
      */
     private boolean isServerStateSaving() {
-        if (StateSavingMethod.SERVER == ContextParam.STATE_SAVING_METHOD.getValue(FacesContext.getCurrentInstance())) {
+        if (StateSavingMethod.SERVER == FacesContextParam.STATE_SAVING_METHOD.getValue(FacesContext.getCurrentInstance())) {
             return true;
         }
 
@@ -1849,7 +1846,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     }
 
     private boolean isMatchedWithFaceletsSuffix(String viewId) {
-        String suffix = ContextParam.FACELETS_SUFFIX.getValue(FacesContext.getCurrentInstance());
+        String suffix = FacesContextParam.FACELETS_SUFFIX.getValue(FacesContext.getCurrentInstance());
         if (viewId.endsWith(suffix)) {
             return true;
         }
@@ -1858,7 +1855,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     }
 
     private String getMatchedWithFaceletsSuffix(String viewId) {
-        String suffix = ContextParam.FACELETS_SUFFIX.getValue(FacesContext.getCurrentInstance());
+        String suffix = FacesContextParam.FACELETS_SUFFIX.getValue(FacesContext.getCurrentInstance());
         if (viewId.endsWith(suffix)) {
             return suffix;
         }

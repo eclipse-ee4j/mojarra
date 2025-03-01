@@ -30,14 +30,14 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.util.FacesLogger;
-
 import jakarta.faces.FacesException;
-import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
+
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.context.FacesContextParam;
+import com.sun.faces.util.FacesLogger;
 
 /**
  * <p>
@@ -64,8 +64,8 @@ public class WebappResourceHelper extends ResourceHelper {
         WebConfiguration webconfig = WebConfiguration.getInstance();
         FacesContext context = FacesContext.getCurrentInstance();
         cacheTimestamp = webconfig.isOptionEnabled(CacheResourceModificationTimestamp);
-        BASE_RESOURCE_PATH = ensureLeadingSlash(ContextParam.WEBAPP_RESOURCES_DIRECTORY.getValue(context));
-        BASE_CONTRACTS_PATH = ensureLeadingSlash(ContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(context));
+        BASE_RESOURCE_PATH = ensureLeadingSlash(FacesContextParam.WEBAPP_RESOURCES_DIRECTORY.getValue(context));
+        BASE_CONTRACTS_PATH = ensureLeadingSlash(FacesContextParam.WEBAPP_CONTRACTS_DIRECTORY.getValue(context));
 
     }
 

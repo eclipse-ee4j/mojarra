@@ -40,21 +40,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.application.ApplicationResourceBundle;
-import com.sun.faces.config.ConfigurationException;
-import com.sun.faces.config.manager.documents.DocumentInfo;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
-
 import jakarta.el.ELResolver;
 import jakarta.faces.FacesException;
-import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ConfigurableNavigationHandler;
 import jakarta.faces.application.NavigationHandler;
@@ -72,6 +59,19 @@ import jakarta.faces.validator.BeanValidator;
 import jakarta.servlet.ServletContext;
 import jakarta.validation.Validation;
 import jakarta.validation.ValidatorFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.application.ApplicationResourceBundle;
+import com.sun.faces.config.ConfigurationException;
+import com.sun.faces.config.manager.documents.DocumentInfo;
+import com.sun.faces.context.FacesContextParam;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
 
 /**
  * <p>
@@ -341,7 +341,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
         if (defaultValidatorIds == null) {
             defaultValidatorIds = new LinkedHashSet<>();
             if (isBeanValidatorAvailable(facesContext)) {
-                if (!ContextParam.DISABLE_DEFAULT_BEAN_VALIDATOR.isSet(facesContext)) {
+                if (!FacesContextParam.DISABLE_DEFAULT_BEAN_VALIDATOR.isSet(facesContext)) {
                     defaultValidatorIds.add(BeanValidator.VALIDATOR_ID);
                 }
             }

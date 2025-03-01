@@ -19,9 +19,9 @@ package com.sun.faces;
 
 import java.nio.charset.StandardCharsets;
 
-import com.sun.faces.config.manager.FacesSchema;
-
 import jakarta.faces.render.RenderKitFactory;
+
+import com.sun.faces.config.manager.FacesSchema;
 
 /**
  * This class contains literal strings used throughout the Faces RI.
@@ -49,6 +49,7 @@ public class RIConstants {
 
     public static final Class<?>[] EMPTY_CLASS_ARGS = new Class[0];
     public static final Object[] EMPTY_METH_ARGS = new Object[0];
+    public static final String[] EMPTY_STRING_ARRAY = new String[0];
 
     /**
      * <p>

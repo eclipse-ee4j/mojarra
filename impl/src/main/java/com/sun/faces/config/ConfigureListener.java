@@ -56,7 +56,6 @@ import javax.xml.parsers.SAXParserFactory;
 
 import jakarta.el.ELManager;
 import jakarta.faces.FactoryFinder;
-import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.context.FacesContext;
@@ -80,6 +79,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.WebappLifecycleListener;
+import com.sun.faces.context.FacesContextParam;
 import com.sun.faces.el.ELContextImpl;
 import com.sun.faces.push.WebsocketEndpoint;
 import com.sun.faces.util.FacesLogger;
@@ -152,7 +152,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                 LOGGER.log(FINE, "FacesServlet found in deployment descriptor - processing configuration.");
             }
         } else if (servletContext.getAttribute(FACES_SERVLET_MAPPINGS) != null) { // If automatic mapping needs to be handled.
-            if (ContextParam.DISABLE_FACESSERVLET_TO_XHTML.isSet(initFacesContext)) {
+            if (FacesContextParam.DISABLE_FACESSERVLET_TO_XHTML.isSet(initFacesContext)) {
                 facesServletRegistration.addMapping(FACES_SERVLET_MAPPINGS_WITHOUT_XHTML);
             }
             else {
@@ -227,7 +227,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
             // Register websocket endpoint if explicitly enabled.
             // Note: websocket channel filter is registered in FacesInitializer.
-            if (ContextParam.ENABLE_WEBSOCKET_ENDPOINT.isSet(initFacesContext)) {
+            if (FacesContextParam.ENABLE_WEBSOCKET_ENDPOINT.isSet(initFacesContext)) {
                 ServerContainer serverContainer = (ServerContainer) servletContext.getAttribute(ServerContainer.class.getName());
 
                 if (serverContainer == null) {
@@ -411,7 +411,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
     private boolean isDevModeEnabled() {
         // interrogate the init parameter directly vs looking up the application
-        return ContextParam.PROJECT_STAGE.getValue(FacesContext.getCurrentInstance()) == ProjectStage.Development;
+        return FacesContextParam.PROJECT_STAGE.getValue(FacesContext.getCurrentInstance()) == ProjectStage.Development;
     }
 
     /**

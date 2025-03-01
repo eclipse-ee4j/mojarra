@@ -57,12 +57,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
-import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.application.ViewVisitOption;
 import jakarta.faces.component.UIViewParameter;
@@ -74,6 +70,10 @@ import jakarta.faces.view.ViewDeclarationLanguageFactory;
 import jakarta.faces.view.ViewMetadata;
 import jakarta.servlet.http.HttpServletMapping;
 import jakarta.servlet.http.HttpServletResponse;
+
+import com.sun.faces.context.FacesContextParam;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
 
 /**
  * This {@link ViewHandler} implementation handles the Facelets VDL-based views.
@@ -91,7 +91,7 @@ public class MultiViewHandler extends ViewHandler {
     // ------------------------------------------------------------ Constructors
 
     public MultiViewHandler() {
-        String faceletsSuffix = ContextParam.FACELETS_SUFFIX.getValue(FacesContext.getCurrentInstance());
+        String faceletsSuffix = FacesContextParam.FACELETS_SUFFIX.getValue(FacesContext.getCurrentInstance());
         configuredExtensions = asList(faceletsSuffix);
         vdlFactory = (ViewDeclarationLanguageFactory) FactoryFinder.getFactory(VIEW_DECLARATION_LANGUAGE_FACTORY);
         protectedViews = new CopyOnWriteArraySet<>();

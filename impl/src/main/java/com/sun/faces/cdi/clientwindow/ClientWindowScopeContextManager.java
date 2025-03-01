@@ -26,18 +26,18 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.LRUMap;
-
 import jakarta.enterprise.context.spi.Contextual;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.PassivationCapable;
-import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpSessionEvent;
+
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.context.FacesContextParam;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.LRUMap;
 
 /**
  * The manager that deals with CDI ClientWindowScoped beans.
@@ -143,7 +143,7 @@ public class ClientWindowScopeContextManager {
                 String clientWindowId = getCurrentClientWindowId(facesContext);
 
                 if (clientWindowScopeContexts == null && create) {
-                    int numberOfClientWindows = ContextParam.NUMBER_OF_CLIENT_WINDOWS.getValue(facesContext);
+                    int numberOfClientWindows = FacesContextParam.NUMBER_OF_CLIENT_WINDOWS.getValue(facesContext);
 
                     synchronized (getMutex(session)) {
                         sessionMap.put(CLIENT_WINDOW_CONTEXTS, Collections.synchronizedMap(new LRUMap<String, Object>(numberOfClientWindows)));

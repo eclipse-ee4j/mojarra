@@ -21,15 +21,15 @@ import static java.util.logging.Level.FINE;
 
 import java.util.logging.Logger;
 
-import com.sun.faces.application.ValidateComponentNesting;
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.util.FacesLogger;
-
-import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PostAddToViewEvent;
+
+import com.sun.faces.application.ValidateComponentNesting;
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.context.FacesContextParam;
+import com.sun.faces.util.FacesLogger;
 
 public class Stage {
 
@@ -66,7 +66,7 @@ public class Stage {
                 LOGGER.log(FINE, "ProjectStage configured via JNDI: {0}", value);
             }
         } else {
-            projectStage = ContextParam.PROJECT_STAGE.getValue(context);
+            projectStage = FacesContextParam.PROJECT_STAGE.getValue(context);
             if (LOGGER.isLoggable(FINE)) {
                 LOGGER.log(FINE, "ProjectStage configured via servlet context init parameter: {0}", value);
             }

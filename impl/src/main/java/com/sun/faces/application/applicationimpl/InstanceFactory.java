@@ -59,7 +59,6 @@ import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.FacesException;
-import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.Resource;
 import jakarta.faces.component.UIComponent;
@@ -87,6 +86,7 @@ import com.sun.faces.application.ConverterPropertyEditorFactory;
 import com.sun.faces.application.ViewMemberInstanceFactoryMetadataMap;
 import com.sun.faces.cdi.CdiUtils;
 import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.context.FacesContextParam;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.ReflectionUtils;
@@ -170,7 +170,7 @@ public class InstanceFactory {
         WebConfiguration webConfig = WebConfiguration.getInstance(context.getExternalContext());
         registerPropertyEditors = webConfig.isOptionEnabled(RegisterConverterPropertyEditors);
 
-        passDefaultTimeZone = ContextParam.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE.getValue(context);
+        passDefaultTimeZone = FacesContextParam.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE.getValue(context);
         if (passDefaultTimeZone) {
             systemTimeZone = TimeZone.getDefault();
         }

@@ -21,11 +21,11 @@ import static com.sun.faces.util.RequestStateManager.FACES_VIEW_STATE;
 import java.io.IOException;
 
 import jakarta.faces.FacesException;
-import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.application.StateManager.StateSavingMethod;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.render.ResponseStateManager;
 
+import com.sun.faces.context.FacesContextParam;
 import com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter;
 import com.sun.faces.util.RequestStateManager;
 
@@ -39,7 +39,7 @@ public class ResponseStateManagerImpl extends ResponseStateManager {
 
     public ResponseStateManagerImpl() {
         FacesContext context = FacesContext.getCurrentInstance();
-        helper = ContextParam.STATE_SAVING_METHOD.getValue(context) == StateSavingMethod.CLIENT ? new ClientSideStateHelper() : new ServerSideStateHelper();
+        helper = FacesContextParam.STATE_SAVING_METHOD.getValue(context) == StateSavingMethod.CLIENT ? new ClientSideStateHelper() : new ServerSideStateHelper();
     }
 
     // --------------------------------------- Methods from ResponseStateManager

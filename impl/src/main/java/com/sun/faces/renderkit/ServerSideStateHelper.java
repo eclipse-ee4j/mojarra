@@ -41,20 +41,20 @@ import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
+import com.sun.faces.context.FacesContextParam;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.LRUMap;
 import com.sun.faces.util.RequestStateManager;
 import com.sun.faces.util.TypedCollections;
 import com.sun.faces.util.Util;
-
-import jakarta.faces.FacesException;
-import jakarta.faces.annotation.FacesConfig.ContextParam;
-import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.context.ExternalContext;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.context.ResponseWriter;
 
 /**
  * This <code>StateHelper</code> provides the functionality associated with server-side state saving, though in
@@ -329,7 +329,7 @@ public class ServerSideStateHelper extends StateHelper {
      * @return If option <code>SerializeServerState</code> is <code>true</code>, serialize and return the state, otherwise, return <code>state</code> unchanged.
      */
     protected Object handleSaveState(Object state) {
-        if (!ContextParam.SERIALIZE_SERVER_STATE.isSet(FacesContext.getCurrentInstance())) {
+        if (!FacesContextParam.SERIALIZE_SERVER_STATE.isSet(FacesContext.getCurrentInstance())) {
             return state;
         }
 
@@ -360,7 +360,7 @@ public class ServerSideStateHelper extends StateHelper {
      * de-serialize the state prior to returning it, otherwise return <code>state</code> as is.
      */
     protected Object handleRestoreState(Object state) {
-        if (!ContextParam.SERIALIZE_SERVER_STATE.isSet(FacesContext.getCurrentInstance())) {
+        if (!FacesContextParam.SERIALIZE_SERVER_STATE.isSet(FacesContext.getCurrentInstance())) {
             return state;
         }
 

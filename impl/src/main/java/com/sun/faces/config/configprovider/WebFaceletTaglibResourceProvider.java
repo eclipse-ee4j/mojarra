@@ -16,7 +16,7 @@
 
 package com.sun.faces.config.configprovider;
 
-import jakarta.faces.annotation.FacesConfig.ContextParam;
+import com.sun.faces.context.FacesContextParam;
 
 /**
  *
@@ -29,8 +29,8 @@ public class WebFaceletTaglibResourceProvider extends BaseWebConfigResourceProvi
     // ------------------------------ Methods from BaseWebConfigResourceProvider
 
     @Override
-    protected ContextParam getParameter() {
-        return ContextParam.FACELETS_LIBRARIES;
+    protected FacesContextParam getParameter() {
+        return FacesContextParam.FACELETS_LIBRARIES;
     }
 
     @Override

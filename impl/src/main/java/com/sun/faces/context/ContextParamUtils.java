@@ -37,7 +37,7 @@ public class ContextParamUtils {
      * @param contextParam the context-param.
      * @return the value.
      */
-    public static Object getValue(ServletContext servletContext, ContextParam contextParam) {
+    public static Object getValue(ServletContext servletContext, MojarraContextParam contextParam) {
         Object result = contextParam.getDefaultValue();
         if (servletContext.getInitParameter(contextParam.getName()) != null) {
             if (contextParam.getType().equals(Boolean.class)) {
@@ -58,7 +58,7 @@ public class ContextParamUtils {
      * @param clazz the class.
      * @return the value.
      */
-    public static <T extends Object> T getValue(ServletContext servletContext, ContextParam contextParam, Class<T> clazz) {
+    public static <T extends Object> T getValue(ServletContext servletContext, MojarraContextParam contextParam, Class<T> clazz) {
         return clazz.cast(getValue(servletContext, contextParam));
     }
 }

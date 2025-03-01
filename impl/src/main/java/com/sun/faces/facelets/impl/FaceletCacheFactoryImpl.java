@@ -16,10 +16,11 @@
 
 package com.sun.faces.facelets.impl;
 
-import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.FaceletCache;
 import jakarta.faces.view.facelets.FaceletCacheFactory;
+
+import com.sun.faces.context.FacesContextParam;
 
 /**
  * Default implementation of {@link FaceletCacheFactory}.
@@ -32,7 +33,7 @@ public class FaceletCacheFactoryImpl extends FaceletCacheFactory {
 
     @Override
     public FaceletCache getFaceletCache() {
-        int period = ContextParam.FACELETS_REFRESH_PERIOD.getValue(FacesContext.getCurrentInstance());
+        int period = FacesContextParam.FACELETS_REFRESH_PERIOD.getValue(FacesContext.getCurrentInstance());
         FaceletCache<DefaultFacelet> result = new DefaultFaceletCache(period);
         return result;
 

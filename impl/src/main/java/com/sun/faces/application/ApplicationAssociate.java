@@ -47,6 +47,28 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
+import jakarta.el.CompositeELResolver;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.NavigationCase;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.search.SearchExpressionHandler;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PostConstructApplicationEvent;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.event.SystemEventListener;
+import jakarta.faces.flow.FlowHandler;
+import jakarta.faces.flow.FlowHandlerFactory;
+import jakarta.faces.view.facelets.FaceletCache;
+import jakarta.faces.view.facelets.FaceletCacheFactory;
+import jakarta.faces.view.facelets.TagDecorator;
+import jakarta.servlet.ServletContext;
+
 import com.sun.faces.RIConstants;
 import com.sun.faces.application.annotation.AnnotationManager;
 import com.sun.faces.application.annotation.FacesComponentUsage;
@@ -54,6 +76,7 @@ import com.sun.faces.application.resource.ResourceCache;
 import com.sun.faces.application.resource.ResourceManager;
 import com.sun.faces.component.search.SearchExpressionHandlerImpl;
 import com.sun.faces.config.ConfigManager;
+import com.sun.faces.context.FacesContextParam;
 import com.sun.faces.el.DemuxCompositeELResolver;
 import com.sun.faces.facelets.compiler.Compiler;
 import com.sun.faces.facelets.compiler.SAXCompiler;
@@ -71,29 +94,6 @@ import com.sun.faces.facelets.util.DevTools;
 import com.sun.faces.facelets.util.FunctionLibrary;
 import com.sun.faces.spi.InjectionProvider;
 import com.sun.faces.util.FacesLogger;
-import jakarta.el.CompositeELResolver;
-
-import jakarta.el.ELResolver;
-import jakarta.el.ExpressionFactory;
-import jakarta.faces.FacesException;
-import jakarta.faces.FactoryFinder;
-import jakarta.faces.annotation.FacesConfig.ContextParam;
-import jakarta.faces.application.Application;
-import jakarta.faces.application.NavigationCase;
-import jakarta.faces.application.ViewHandler;
-import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.component.search.SearchExpressionHandler;
-import jakarta.faces.context.ExternalContext;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.event.PostConstructApplicationEvent;
-import jakarta.faces.event.SystemEvent;
-import jakarta.faces.event.SystemEventListener;
-import jakarta.faces.flow.FlowHandler;
-import jakarta.faces.flow.FlowHandlerFactory;
-import jakarta.faces.view.facelets.FaceletCache;
-import jakarta.faces.view.facelets.FaceletCacheFactory;
-import jakarta.faces.view.facelets.TagDecorator;
-import jakarta.servlet.ServletContext;
 
 /**
  * <p>
@@ -302,7 +302,7 @@ public class ApplicationAssociate {
             String facesConfigVersion = getFacesConfigXmlVersion(context);
             context.getExternalContext().getApplicationMap().put(FACES_CONFIG_VERSION, facesConfigVersion);
 
-            if (ContextParam.AUTOMATIC_EXTENSIONLESS_MAPPING.isSet(context)) {
+            if (FacesContextParam.AUTOMATIC_EXTENSIONLESS_MAPPING.isSet(context)) {
                 getFacesServletRegistration(context)
                     .ifPresent(registration ->
                         viewHandler.getViews(context, "/", RETURN_AS_MINIMAL_IMPLICIT_OUTCOME)
@@ -623,7 +623,7 @@ public class ApplicationAssociate {
     protected DefaultFaceletFactory createFaceletFactory(FacesContext context, Compiler compiler) {
 
         // refresh period
-        int period = ContextParam.FACELETS_REFRESH_PERIOD.getValue(context);
+        int period = FacesContextParam.FACELETS_REFRESH_PERIOD.getValue(context);
 
         // resource resolver
         DefaultResourceResolver resolver = new DefaultResourceResolver(applicationImpl.getResourceHandler());
@@ -643,7 +643,7 @@ public class ApplicationAssociate {
         loadDecorators(context, newCompiler);
 
         // Skip params?
-        newCompiler.setTrimmingComments(ContextParam.FACELETS_SKIP_COMMENTS.isSet(context));
+        newCompiler.setTrimmingComments(FacesContextParam.FACELETS_SKIP_COMMENTS.isSet(context));
 
         addTagLibraries(newCompiler);
 
@@ -651,7 +651,7 @@ public class ApplicationAssociate {
     }
 
     protected void loadDecorators(FacesContext context, Compiler newCompiler) {
-        String[] decorators = ContextParam.FACELETS_DECORATORS.getValue(context);
+        String[] decorators = FacesContextParam.FACELETS_DECORATORS.getValue(context);
 
         for (String decorator : decorators) {
             try {
