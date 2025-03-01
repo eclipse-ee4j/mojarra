@@ -18,7 +18,7 @@
 package com.sun.faces.context;
 
 import static com.sun.faces.RIConstants.PUSH_RESOURCE_URLS_KEY_NAME;
-import static com.sun.faces.context.ContextParam.SendPoweredByHeader;
+import static com.sun.faces.context.MojarraContextParam.SendPoweredByHeader;
 import static com.sun.faces.context.UrlBuilder.PROTOCOL_SEPARATOR;
 import static com.sun.faces.context.UrlBuilder.WEBSOCKET_PROTOCOL;
 import static com.sun.faces.util.Util.isEmpty;
@@ -145,7 +145,7 @@ public class ExternalContextImpl extends ExternalContext {
             ((HttpServletResponse) response).addHeader("X-Powered-By", poweredBy);
         }
 
-        distributable = ContextParamUtils.getValue(servletContext, ContextParam.EnableDistributable, Boolean.class);
+        distributable = ContextParamUtils.getValue(servletContext, MojarraContextParam.EnableDistributable, Boolean.class);
 
     }
 

@@ -19,7 +19,7 @@ package com.sun.faces.context;
 /**
  * The enumeration of all our context-param entries.
  */
-public enum ContextParam {
+public enum MojarraContextParam {
 
     /**
      * Enable distributable code.
@@ -48,7 +48,7 @@ public enum ContextParam {
     /**
      * Constructor.
      */
-    ContextParam(String name, Class type, Object defaultValue) {
+    MojarraContextParam(String name, Class type, Object defaultValue) {
         this.name = name;
         this.type = type;
         this.defaultValue = defaultValue;
