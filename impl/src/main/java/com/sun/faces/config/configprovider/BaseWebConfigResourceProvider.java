@@ -28,13 +28,13 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import com.sun.faces.spi.ConfigurationResourceProvider;
-import com.sun.faces.util.FacesLogger;
-
 import jakarta.faces.FacesException;
-import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletContext;
+
+import com.sun.faces.context.FacesContextParam;
+import com.sun.faces.spi.ConfigurationResourceProvider;
+import com.sun.faces.util.FacesLogger;
 
 /**
  *
@@ -69,7 +69,7 @@ public abstract class BaseWebConfigResourceProvider implements ConfigurationReso
 
     // ------------------------------------------------------- Protected Methods
 
-    protected abstract ContextParam getParameter();
+    protected abstract FacesContextParam getParameter();
 
     protected abstract String[] getExcludedResources();
 

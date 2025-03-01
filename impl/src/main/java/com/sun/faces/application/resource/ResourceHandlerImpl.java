@@ -46,17 +46,17 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.RequestStateManager;
-
-import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.application.Resource;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.application.ResourceVisitOption;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.context.FacesContextParam;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.RequestStateManager;
 
 /**
  * This is the default implementation of {@link ResourceHandler}.
@@ -560,7 +560,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
      * will be used.
      */
     private void initExclusions(FacesContext context) {
-        String[] patterns = ContextParam.RESOURCE_EXCLUDES.getValue(context);
+        String[] patterns = FacesContextParam.RESOURCE_EXCLUDES.getValue(context);
 
         excludePatterns = new ArrayList<>(patterns.length);
         for (String pattern : patterns) {

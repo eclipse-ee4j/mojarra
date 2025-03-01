@@ -42,7 +42,6 @@ import java.util.logging.Logger;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
-import jakarta.faces.annotation.FacesConfig;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -569,7 +568,7 @@ public class ExternalContextImpl extends ExternalContext {
         Util.notNull("url", url);
 
         HttpServletRequest request = (HttpServletRequest) getRequest();
-        int port = FacesConfig.ContextParam.WEBSOCKET_ENDPOINT_PORT.getValue(FacesContext.getCurrentInstance());
+        int port = FacesContextParam.WEBSOCKET_ENDPOINT_PORT.getValue(FacesContext.getCurrentInstance());
 
         try {
             final URL requestURL = new URL(request.getRequestURL().toString());
