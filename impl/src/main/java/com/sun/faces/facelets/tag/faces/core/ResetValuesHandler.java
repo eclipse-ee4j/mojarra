@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 import jakarta.faces.component.ActionSource;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.visit.VisitHint;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ActionEvent;
@@ -39,24 +40,30 @@ import jakarta.faces.view.facelets.TagConfig;
 public final class ResetValuesHandler extends ActionListenerHandlerBase implements ActionSourceAttachedObjectHandler {
 
     private final TagAttribute render;
+    private final TagAttribute clearModel;
 
     // Pattern used for execute/render string splitting
     private static Pattern SPLIT_PATTERN = Pattern.compile(" ");
 
+    private static VisitHint[] CLEAR_MODEL_HINT = { VisitHint.CLEAR_MODEL };
+    private static VisitHint[] NO_HINTS = {};
+
     private final static class LazyActionListener implements ActionListener, Serializable {
         Collection<String> render;
+        boolean clearModel;
 
         private static final long serialVersionUID = -5676209243297546166L;
 
-        public LazyActionListener(Collection<String> render) {
+        public LazyActionListener(Collection<String> render, boolean clearModel) {
             this.render = new ArrayList<>(render);
+            this.clearModel = clearModel;
         }
 
         @Override
         public void processAction(ActionEvent event) throws AbortProcessingException {
             FacesContext context = FacesContext.getCurrentInstance();
             UIViewRoot root = context.getViewRoot();
-            root.resetValues(context, render);
+            root.resetValues(context, render, clearModel ? CLEAR_MODEL_HINT : NO_HINTS);
         }
     }
 
@@ -66,6 +73,7 @@ public final class ResetValuesHandler extends ActionListenerHandlerBase implemen
     public ResetValuesHandler(TagConfig config) {
         super(config);
         render = getAttribute("render");
+        clearModel = getAttribute("clearModel");
     }
 
     @Override
@@ -73,7 +81,8 @@ public final class ResetValuesHandler extends ActionListenerHandlerBase implemen
         FaceletContext ctx = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
         ActionSource as = (ActionSource) parent;
         String renderStr = (String) render.getObject(ctx, String.class);
-        ActionListener listener = new LazyActionListener(toList(renderStr));
+        Boolean clearModel = this.clearModel != null && (Boolean) this.clearModel.getObject(ctx, Boolean.class);
+        ActionListener listener = new LazyActionListener(toList(renderStr), clearModel);
         as.addActionListener(listener);
     }
 
