@@ -27,15 +27,6 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.config.initfacescontext.NoOpELContext;
-import com.sun.faces.config.initfacescontext.NoOpFacesContext;
-import com.sun.faces.config.initfacescontext.ServletContextAdapter;
-import com.sun.faces.context.ApplicationMap;
-import com.sun.faces.context.ExceptionHandlerImpl;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
-
 import jakarta.el.ELContext;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
@@ -47,11 +38,20 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletContext;
 
+import com.sun.faces.RIConstants;
+import com.sun.faces.config.initfacescontext.NoOpELContext;
+import com.sun.faces.config.initfacescontext.NoOpFacesContext;
+import com.sun.faces.config.initfacescontext.ServletContextAdapter;
+import com.sun.faces.context.ApplicationMap;
+import com.sun.faces.context.ExceptionHandlerImpl;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
+
 /**
  * A special, minimal implementation of FacesContext used at application initialization time. The ExternalContext
  * returned by this FacesContext only exposes the ApplicationMap.
  */
-public class    InitFacesContext extends NoOpFacesContext {
+public class InitFacesContext extends NoOpFacesContext {
 
     private static final Logger LOGGER = FacesLogger.CONFIG.getLogger();
     private static final String INIT_FACES_CONTEXT_ATTR_NAME = RIConstants.FACES_PREFIX + "InitFacesContext";

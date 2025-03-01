@@ -16,9 +16,6 @@
 
 package com.sun.faces.el;
 
-import java.beans.FeatureDescriptor;
-import java.util.Iterator;
-
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
@@ -88,11 +85,6 @@ public class CompositeComponentELResolver extends ELResolver {
             return String.class;
         }
 
-        return null;
-    }
-
-    @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
         return null;
     }
 }
