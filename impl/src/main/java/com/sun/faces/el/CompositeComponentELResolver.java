@@ -16,9 +16,6 @@
 
 package com.sun.faces.el;
 
-import java.beans.FeatureDescriptor;
-import java.util.Iterator;
-
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;

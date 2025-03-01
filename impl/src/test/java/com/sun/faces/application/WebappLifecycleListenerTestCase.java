@@ -1,19 +1,20 @@
 package com.sun.faces.application;
 
-import com.sun.faces.config.InitFacesContext;
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.junit.JUnitFacesTestCaseBase;
-import com.sun.faces.mock.MockHttpServletRequest;
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
+
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletRequestEvent;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.junit.JUnitFacesTestCaseBase;
+import com.sun.faces.mock.MockHttpServletRequest;
 
 
 public class WebappLifecycleListenerTestCase extends JUnitFacesTestCaseBase {
@@ -28,11 +29,6 @@ public class WebappLifecycleListenerTestCase extends JUnitFacesTestCaseBase {
         // This closes the MockFacesContext created in this test setUp method.
         if (FacesContext.getCurrentInstance() != null) {
             FacesContext.getCurrentInstance().release();
-        }
-
-        // This removes the InitFacesContext initialized in lifecycleListener.requestDestroyed(event).
-        if (FacesContext.getCurrentInstance() instanceof InitFacesContext) {
-            ((InitFacesContext) FacesContext.getCurrentInstance()).removeInitContextEntryForCurrentThread();
         }
 
         // To release ServletContextFacesContextFactory, which also keeps reference to InitFacesContext instance.

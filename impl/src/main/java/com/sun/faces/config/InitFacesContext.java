@@ -22,13 +22,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.config.initfacescontext.NoOpELContext;
-import com.sun.faces.config.initfacescontext.NoOpFacesContext;
-import com.sun.faces.config.initfacescontext.ServletContextAdapter;
-import com.sun.faces.context.ExceptionHandlerImpl;
-import com.sun.faces.util.Util;
-
 import jakarta.el.ELContext;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
@@ -39,11 +32,18 @@ import jakarta.faces.context.ExceptionHandler;
 import jakarta.faces.context.ExternalContext;
 import jakarta.servlet.ServletContext;
 
+import com.sun.faces.RIConstants;
+import com.sun.faces.config.initfacescontext.NoOpELContext;
+import com.sun.faces.config.initfacescontext.NoOpFacesContext;
+import com.sun.faces.config.initfacescontext.ServletContextAdapter;
+import com.sun.faces.context.ExceptionHandlerImpl;
+import com.sun.faces.util.Util;
+
 /**
  * A special, minimal implementation of FacesContext used at application initialization time. The ExternalContext
  * returned by this FacesContext only exposes the ApplicationMap.
  */
-public class    InitFacesContext extends NoOpFacesContext {
+public class InitFacesContext extends NoOpFacesContext {
 
     private static final String INIT_FACES_CONTEXT_ATTR_NAME = RIConstants.FACES_PREFIX + "InitFacesContext";
 
