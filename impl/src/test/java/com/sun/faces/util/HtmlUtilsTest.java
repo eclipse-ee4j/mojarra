@@ -59,20 +59,25 @@ class HtmlUtilsTest {
      */
     @Test
     void testAllowedSurrogateChars() {
-        for (char high1 = 0xD800; high1 <= 0xDBFF; high1++) {
-            for (char high2 = 0xD800; high2 <= 0xDBFF; high2++) {
-                assertEquals("", writeUnescapedTextForXML(new String(new char[] { high1, high2 })));
-            }
-            for (char low2 = 0xDC00; low2 <= 0xDFFF; low2++) {
-                assertNotEquals("", writeUnescapedTextForXML(new String(new char[] { high1, low2 })));
-            }
-        }
         for (char low1 = 0xDC00; low1 <= 0xDFFF; low1++) {
+            assertEquals("", writeUnescapedTextForXML(new String(new char[] { low1 })));
+
             for (char high2 = 0xD800; high2 <= 0xDBFF; high2++) {
                 assertEquals("", writeUnescapedTextForXML(new String(new char[] { low1, high2 })));
             }
             for (char low2 = 0xDC00; low2 <= 0xDFFF; low2++) {
                 assertEquals("", writeUnescapedTextForXML(new String(new char[] { low1, low2 })));
+            }
+        }
+
+        for (char high1 = 0xD800; high1 <= 0xDBFF; high1++) {
+            assertEquals("", writeUnescapedTextForXML(new String(new char[] { high1 })));
+
+            for (char high2 = 0xD800; high2 <= 0xDBFF; high2++) {
+                assertEquals("", writeUnescapedTextForXML(new String(new char[] { high1, high2 })));
+            }
+            for (char low2 = 0xDC00; low2 <= 0xDFFF; low2++) {
+                assertNotEquals("", writeUnescapedTextForXML(new String(new char[] { high1, low2 }))); // This is the only combination which is allowed.
             }
         }
     }
