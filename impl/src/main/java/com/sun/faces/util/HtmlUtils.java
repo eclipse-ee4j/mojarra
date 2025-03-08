@@ -16,6 +16,9 @@
 
 package com.sun.faces.util;
 
+import static java.lang.Character.isHighSurrogate;
+import static java.lang.Character.isLowSurrogate;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -55,7 +58,7 @@ public class HtmlUtils {
 
         int end = start + length;
         for (int i = start; i < end; i++) {
-            buffIndex = writeTextChar(out, escapeUnicode, escapeIsocode, text[i], buffIndex, buff, buffLength, forXml);
+            buffIndex = writeTextChar(out, escapeUnicode, escapeIsocode, text, i, text[i], buffIndex, buff, buffLength, forXml);
         }
 
         flushBuffer(out, buff, buffIndex);
@@ -76,14 +79,14 @@ public class HtmlUtils {
             int buffIndex = 0;
             for (int i = 0; i < length; i++) {
                 char ch = text.charAt(i);
-                buffIndex = writeTextChar(out, escapeUnicode, escapeIsocode, ch, buffIndex, buff, buffLength, forXml);
+                buffIndex = writeTextChar(out, escapeUnicode, escapeIsocode, text, i, ch, buffIndex, buff, buffLength, forXml);
             }
             flushBuffer(out, buff, buffIndex);
         }
 
     }
 
-    private static int writeTextChar(Writer out, boolean escapeUnicode, boolean escapeIsocode, char ch, int buffIndex, char[] buff, int buffLength, boolean forXml)
+    private static int writeTextChar(Writer out, boolean escapeUnicode, boolean escapeIsocode, Object originalChars, int charIndex, char ch, int buffIndex, char[] buff, int buffLength, boolean forXml)
             throws IOException {
         int nextIndex;
         if (ch <= 0x1f) {
@@ -128,7 +131,7 @@ public class HtmlUtils {
                 // UNICODE entities: encode as needed
                 nextIndex = _writeDecRef(out, buff, buffIndex, buffLength, ch);
             } else {
-                if (forXml && !isAllowedXmlCharacter(ch)) {
+                if (forXml && !(isAllowedXmlCharacter(ch) || isAllowedSurrogateCharacter(ch, charIndex, originalChars))) {
                     return buffIndex;
                 }
 
@@ -221,7 +224,7 @@ public class HtmlUtils {
                         // UNICODE entities: encode as needed
                         buffIndex = _writeDecRef(out, buff, buffIndex, buffLength, ch);
                     } else {
-                        if (forXml && !isAllowedXmlCharacter(ch)) {
+                        if (forXml && !(isAllowedXmlCharacter(ch) || isAllowedSurrogateCharacter(ch, i, text))) {
                             continue;
                         }
 
@@ -310,7 +313,7 @@ public class HtmlUtils {
                     // UNICODE entities: encode as needed
                     buffIndex = _writeDecRef(out, buff, buffIndex, buffLength, ch);
                 } else {
-                    if (forXml && !isAllowedXmlCharacter(ch)) {
+                    if (forXml && !(isAllowedXmlCharacter(ch) || isAllowedSurrogateCharacter(ch, i, text))) {
                         continue;
                     }
 
@@ -322,15 +325,42 @@ public class HtmlUtils {
         flushBuffer(out, buff, buffIndex);
     }
 
-    static private boolean isPrintableControlChar(int ch, boolean forXml) {
-
+    private static boolean isPrintableControlChar(char ch, boolean forXml) {
         return (ch == 0x09 || ch == 0x0A || (ch == 0x0C && !forXml) || ch == 0x0D);
 
     }
 
-    public static boolean isAllowedXmlCharacter(int ch) {
+    static boolean isAllowedXmlCharacter(char ch) {
         // See https://www.w3.org/TR/xml/#charsets Character Range
         return ch < 0x20 ? isPrintableControlChar(ch, true) : ch <= 0xD7FF || ch >= 0xE000 && ch <= 0xFFFD; 
+    }
+
+    private static boolean isAllowedSurrogateCharacter(char ch, int index, Object originalTextOrChars) {
+        if (isHighSurrogate(ch)) {
+            return isLowSurrogate(charAt(originalTextOrChars, index + 1));
+        }
+        else if (isLowSurrogate(ch)) {
+            return isHighSurrogate(charAt(originalTextOrChars, index - 1));
+        }
+        else {
+            return false;
+        }
+    }
+
+    private static final char NO_CHAR = (char) -1;
+
+    private static char charAt(Object originalTextOrChars, int index) {
+        if (index < 0) {
+            return NO_CHAR;
+        }
+        else if (originalTextOrChars instanceof String) {
+            String text = (String) originalTextOrChars;
+            return index < text.length() ? text.charAt(index) : NO_CHAR;
+        }
+        else {
+            char[] chars = (char[]) originalTextOrChars;
+            return index < chars.length ? chars[index] : NO_CHAR;
+        }
     }
 
     /**
@@ -567,7 +597,7 @@ public class HtmlUtils {
         for (int i = 0; i < length; i++) {
             final char ch = text.charAt(i);
 
-            if (isAllowedXmlCharacter(ch)) {
+            if (isAllowedXmlCharacter(ch) || isAllowedSurrogateCharacter(ch, i, text)) {
                 out.write(ch);
             }
         }
