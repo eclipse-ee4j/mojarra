@@ -21,19 +21,18 @@ import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParamet
 
 import java.util.Map;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.util.Util;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
-import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.context.ExceptionHandlerFactory;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.ExternalContextFactory;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.FacesContextFactory;
 import jakarta.faces.lifecycle.Lifecycle;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.util.Util;
 
 public class FacesContextFactoryImpl extends FacesContextFactory {
 
@@ -78,11 +77,11 @@ public class FacesContextFactoryImpl extends FacesContextFactory {
         ExternalContext extContext = context.getExternalContext();
         Map<String, Object> appMap = extContext.getApplicationMap();
         Map<Object, Object> attrs = context.getAttributes();
-        attrs.put(ContextParam.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE.getName(), ContextParam.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE.getValue(context));
+        attrs.put(FacesContextParam.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE.getName(), FacesContextParam.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE.getValue(context));
         attrs.put(PartialStateSaving, webConfig.isOptionEnabled(PartialStateSaving) ? Boolean.TRUE : Boolean.FALSE);
         attrs.put(ForceAlwaysWriteFlashCookie, webConfig.isOptionEnabled(ForceAlwaysWriteFlashCookie) ? Boolean.TRUE : Boolean.FALSE);
-        attrs.put(ContextParam.VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS.getName(), ContextParam.VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS.getValue(context));
-        attrs.put(ContextParam.ENABLE_VALIDATE_WHOLE_BEAN.getName(), ContextParam.ENABLE_VALIDATE_WHOLE_BEAN.getValue(context));
+        attrs.put(FacesContextParam.VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS.getName(), FacesContextParam.VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS.getValue(context));
+        attrs.put(FacesContextParam.ENABLE_VALIDATE_WHOLE_BEAN.getName(), FacesContextParam.ENABLE_VALIDATE_WHOLE_BEAN.getValue(context));
 
         String facesConfigVersion = String.valueOf(appMap.get(RIConstants.FACES_CONFIG_VERSION));
         attrs.put(RIConstants.FACES_CONFIG_VERSION, facesConfigVersion);

@@ -36,6 +36,14 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationFactory;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.ServletContext;
+
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -45,19 +53,11 @@ import com.sun.faces.application.ApplicationResourceBundle;
 import com.sun.faces.config.ConfigManager;
 import com.sun.faces.config.ConfigurationException;
 import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.context.FacesContextParam;
 import com.sun.faces.spi.InjectionProvider;
 import com.sun.faces.spi.InjectionProviderException;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
-
-import jakarta.faces.FacesException;
-import jakarta.faces.FactoryFinder;
-import jakarta.faces.annotation.FacesConfig.ContextParam;
-import jakarta.faces.application.Application;
-import jakarta.faces.application.ApplicationFactory;
-import jakarta.faces.application.ProjectStage;
-import jakarta.faces.context.FacesContext;
-import jakarta.servlet.ServletContext;
 
 /**
  * <p>
@@ -332,7 +332,7 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
                     }
                 }
             } else {
-                projectStage = ContextParam.PROJECT_STAGE.getValue(facesContext);
+                projectStage = FacesContextParam.PROJECT_STAGE.getValue(facesContext);
                 if (projectStage != null) {
                     if (LOGGER.isLoggable(FINE)) {
                         LOGGER.log(FINE, "ProjectStage configured via servlet context init parameter: {0}", value);

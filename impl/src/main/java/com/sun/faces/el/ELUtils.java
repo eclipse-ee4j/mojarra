@@ -31,12 +31,12 @@ import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
 import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
-import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.ResolversRegistry;
+import com.sun.faces.context.FacesContextParam;
 import com.sun.faces.util.Cache;
 import com.sun.faces.util.LRUCache;
 
@@ -143,7 +143,7 @@ public class ELUtils {
         addELResolvers(composite, associate.getELResolversFromFacesConfig());
         composite.add(associate.getApplicationELResolvers());
 
-        if (ContextParam.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL.isSet(FacesContext.getCurrentInstance())) {
+        if (FacesContextParam.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL.isSet(FacesContext.getCurrentInstance())) {
             composite.addPropertyELResolver(elRegistry.EMPTY_STRING_TO_NULL_RESOLVER);
         }
 

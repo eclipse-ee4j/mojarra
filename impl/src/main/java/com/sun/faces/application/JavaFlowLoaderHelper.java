@@ -24,18 +24,18 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.sun.faces.cdi.CdiUtils;
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.flow.FlowDiscoveryCDIExtension;
-import com.sun.faces.util.FacesLogger;
-
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.Producer;
-import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.Flow;
 import jakarta.faces.flow.FlowHandler;
 import jakarta.faces.flow.builder.FlowDefinition;
+
+import com.sun.faces.cdi.CdiUtils;
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.context.FacesContextParam;
+import com.sun.faces.flow.FlowDiscoveryCDIExtension;
+import com.sun.faces.util.FacesLogger;
 
 public class JavaFlowLoaderHelper {
 
@@ -71,14 +71,14 @@ public class JavaFlowLoaderHelper {
     }
 
     public static void enableClientWindowModeIfNecessary(FacesContext context) {
-        String optionValue = ContextParam.CLIENT_WINDOW_MODE.getValue(context);
+        String optionValue = FacesContextParam.CLIENT_WINDOW_MODE.getValue(context);
 
         boolean clientWindowNeedsEnabling = false;
         if ("none".equals(optionValue)) {
             clientWindowNeedsEnabling = true;
 
             LOGGER.log(WARNING, "{0} was set to none, but Faces Flows requires {0} is enabled.  Setting to ''url''.",
-                    new Object[] { ContextParam.CLIENT_WINDOW_MODE.getName() });
+                    new Object[] { FacesContextParam.CLIENT_WINDOW_MODE.getName() });
 
         } else if (optionValue == null) {
             clientWindowNeedsEnabling = true;

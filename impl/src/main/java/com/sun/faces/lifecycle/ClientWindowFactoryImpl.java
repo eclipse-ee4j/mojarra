@@ -16,9 +16,6 @@
 
 package com.sun.faces.lifecycle;
 
-import com.sun.faces.application.JavaFlowLoaderHelper;
-
-import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.application.Application;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
@@ -27,6 +24,9 @@ import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
 import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.faces.lifecycle.ClientWindowFactory;
+
+import com.sun.faces.application.JavaFlowLoaderHelper;
+import com.sun.faces.context.FacesContextParam;
 
 public class ClientWindowFactoryImpl extends ClientWindowFactory {
 
@@ -59,7 +59,7 @@ public class ClientWindowFactoryImpl extends ClientWindowFactory {
 
     private void postConstructApplicationInitialization() {
         FacesContext context = FacesContext.getCurrentInstance();
-        String optionValue = ContextParam.CLIENT_WINDOW_MODE.getValue(context);
+        String optionValue = FacesContextParam.CLIENT_WINDOW_MODE.getValue(context);
         isClientWindowEnabled = "url".equals(optionValue) || JavaFlowLoaderHelper.isClientWindowModeForciblyEnabled(context);
     }
 

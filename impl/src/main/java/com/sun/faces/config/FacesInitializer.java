@@ -30,7 +30,6 @@ import java.util.logging.Logger;
 
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.annotation.FacesConfig;
-import jakarta.faces.annotation.FacesConfig.ContextParam;
 import jakarta.faces.application.ResourceDependencies;
 import jakarta.faces.application.ResourceDependency;
 import jakarta.faces.component.FacesComponent;
@@ -64,6 +63,7 @@ import jakarta.servlet.ServletRegistration;
 import jakarta.servlet.annotation.HandlesTypes;
 import jakarta.websocket.server.ServerContainer;
 
+import com.sun.faces.context.FacesContextParam;
 import com.sun.faces.util.FacesLogger;
 
 /**
@@ -227,7 +227,7 @@ public class FacesInitializer implements ServletContainerInitializer {
             return;
         }
 
-        if (!ContextParam.ENABLE_WEBSOCKET_ENDPOINT.isSet(facesContext)) {
+        if (!FacesContextParam.ENABLE_WEBSOCKET_ENDPOINT.isSet(facesContext)) {
             // Register websocket endpoint is not enabled
             return;
         }
