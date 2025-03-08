@@ -179,7 +179,7 @@ public class CdiExtension implements Extension {
         // Ideally below should only happen if Jakarta Faces is considered active,
         // but this is not detectable as ServletContext is not necessarily available at this moment.
 
-        afterBeanDiscovery.addBean(new ApplicationProducer());
+        afterBeanDiscovery.addBean(new ApplicationProducer(beanManager));
         afterBeanDiscovery.addBean(new ApplicationMapProducer(beanManager));
         afterBeanDiscovery.addBean(new ComponentProducer(beanManager));
         afterBeanDiscovery.addBean(new FlashProducer(beanManager));
@@ -190,13 +190,13 @@ public class CdiExtension implements Extension {
         afterBeanDiscovery.addBean(new InitParameterMapProducer(beanManager));
         afterBeanDiscovery.addBean(new RequestParameterMapProducer(beanManager));
         afterBeanDiscovery.addBean(new RequestParameterValuesMapProducer(beanManager));
-        afterBeanDiscovery.addBean(new RequestProducer());
+        afterBeanDiscovery.addBean(new RequestProducer(beanManager));
         afterBeanDiscovery.addBean(new RequestMapProducer(beanManager));
         afterBeanDiscovery.addBean(new ResourceHandlerProducer(beanManager));
         afterBeanDiscovery.addBean(new ExternalContextProducer(beanManager));
         afterBeanDiscovery.addBean(new FacesContextProducer(beanManager));
         afterBeanDiscovery.addBean(new RequestCookieMapProducer(beanManager));
-        afterBeanDiscovery.addBean(new SessionProducer());
+        afterBeanDiscovery.addBean(new SessionProducer(beanManager));
         afterBeanDiscovery.addBean(new SessionMapProducer(beanManager));
         afterBeanDiscovery.addBean(new ViewMapProducer(beanManager));
         afterBeanDiscovery.addBean(new ViewProducer(beanManager));

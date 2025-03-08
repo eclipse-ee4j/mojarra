@@ -16,7 +16,12 @@
 
 package com.sun.faces.cdi;
 
+import static com.sun.faces.util.ReflectionUtils.findClass;
+
+import java.util.Optional;
+
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
@@ -30,14 +35,21 @@ import jakarta.faces.context.FacesContext;
  */
 public class SessionProducer extends CdiProducer<Object> {
 
+    private static final Optional<Class<?>> HTTP_SESSION_CLASS = findClass("jakarta.servlet.http.HttpSession");
+
     /**
      * Serialization version
      */
     private static final long serialVersionUID = 1L;
 
-    public SessionProducer() {
-        super.name("session").scope(RequestScoped.class).create(e -> FacesContext.getCurrentInstance().getExternalContext().getSession(false));
+    public SessionProducer(BeanManager beanManager) {
+        CdiProducer<Object> producer = super.name("session").scope(RequestScoped.class); // #5222
 
+        if (HTTP_SESSION_CLASS.isPresent()) {
+            producer = producer.beanClass(beanManager, HTTP_SESSION_CLASS.get()); // #5561
+        }
+
+        producer.create(e -> FacesContext.getCurrentInstance().getExternalContext().getSession(false));
     }
 
 }
