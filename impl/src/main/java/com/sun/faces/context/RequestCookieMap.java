@@ -56,9 +56,9 @@ public class RequestCookieMap extends BaseContextMap<Object> {
         String keyString = key.toString();
         Object result = null;
 
-        for (int i = 0; i < cookies.length; i++) {
-            if (cookies[i].getName().equals(keyString)) {
-                result = cookies[i];
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals(keyString)) {
+                result = cookie;
                 break;
             }
         }

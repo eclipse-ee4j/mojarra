@@ -56,7 +56,7 @@ public final class TagAttributesImpl extends TagAttributes {
         for (i = 0; i < this.attrs.length; i++) {
             set.add(this.attrs[i].getNamespace());
         }
-        ns = set.toArray(new String[set.size()]);
+        ns = set.toArray(new String[0]);
         Arrays.sort(ns);
 
         // assign attrs
@@ -71,7 +71,7 @@ public final class TagAttributesImpl extends TagAttributes {
         }
         for (i = 0; i < ns.length; i++) {
             List r = (List) nsattrs.get(i);
-            nsattrs.set(i, r.toArray(new TagAttribute[r.size()]));
+            nsattrs.set(i, r.toArray(new TagAttribute[0]));
         }
     }
 
@@ -110,9 +110,9 @@ public final class TagAttributesImpl extends TagAttributes {
             int idx = Arrays.binarySearch(this.ns, ns);
             if (idx >= 0) {
                 TagAttribute[] uia = (TagAttribute[]) nsattrs.get(idx);
-                for (int i = 0; i < uia.length; i++) {
-                    if (localName.equals(uia[i].getLocalName())) {
-                        return uia[i];
+                for (TagAttribute tagAttribute : uia) {
+                    if (localName.equals(tagAttribute.getLocalName())) {
+                        return tagAttribute;
                     }
                 }
             }

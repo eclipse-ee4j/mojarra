@@ -267,8 +267,8 @@ public final class ComponentSupport {
         }
 
         int len = components.size();
-        for (int i = 0; i < len; i++) {
-            c = components.get(i);
+        for (UIComponent component : components) {
+            c = component;
             cid = (String) c.getAttributes().get(MARK_CREATED);
             if (id.equals(cid)) {
                 return c;
@@ -382,9 +382,8 @@ public final class ComponentSupport {
      */
     private static void removeAllDescendantMarkIds(UIComponent component, Map<String, UIComponent> otherMarkIds) {
         Map<String, UIComponent> descendantMarkIdCache = getDescendantMarkIdCache(component);
-        Iterator<String> iterator = otherMarkIds.keySet().iterator();
-        while (iterator.hasNext()) {
-            descendantMarkIdCache.remove(iterator.next());
+        for (String s : otherMarkIds.keySet()) {
+            descendantMarkIdCache.remove(s);
         }
         UIComponent parent = component.getParent();
         if (parent != null) {
@@ -473,8 +472,8 @@ public final class ComponentSupport {
         if (c.getFacets().size() > 0) {
             Set col = c.getFacets().entrySet();
             UIComponent fc;
-            for (Iterator itr = col.iterator(); itr.hasNext();) {
-                Map.Entry entry = (Map.Entry) itr.next();
+            for (Object o : col) {
+                Entry entry = (Entry) o;
                 String facet = (String) entry.getKey();
                 fc = (UIComponent) entry.getValue();
                 Map<String, Object> attrs = fc.getAttributes();
@@ -511,9 +510,7 @@ public final class ComponentSupport {
             if (viewToRender.getRendersChildren()) {
                 viewToRender.encodeChildren(context);
             } else if (viewToRender.getChildCount() > 0) {
-                Iterator kids = viewToRender.getChildren().iterator();
-                while (kids.hasNext()) {
-                    UIComponent kid = (UIComponent) kids.next();
+                for (UIComponent kid : viewToRender.getChildren()) {
                     encodeRecursive(context, kid);
                 }
             }

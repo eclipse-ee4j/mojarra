@@ -529,7 +529,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
         if (getFacesMapping(context).getMappingMatch() == EXTENSION) {
             String path = context.getExternalContext().getRequestServletPath();
             // strip off the extension
-            return path.substring(0, path.lastIndexOf("."));
+            return path.substring(0, path.lastIndexOf('.'));
         }
 
         return context.getExternalContext().getRequestPathInfo();

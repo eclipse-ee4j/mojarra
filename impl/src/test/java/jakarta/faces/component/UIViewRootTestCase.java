@@ -557,9 +557,9 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         final Field fields[] = UIViewRoot.class.getDeclaredFields();
         Field field = null;
         List<List> events = null;
-        for (int i = 0; i < fields.length; ++i) {
-            if ("events".equals(fields[i].getName())) {
-                field = fields[i];
+        for (Field value : fields) {
+            if ("events".equals(value.getName())) {
+                field = value;
                 field.setAccessible(true);
                 try {
                     events = TypedCollections.dynamicallyCastList((List<?>) field.get(root), List.class);

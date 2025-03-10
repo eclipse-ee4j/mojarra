@@ -72,7 +72,7 @@ public class ExpressionLanguage {
      */
     public ELContextListener[] getELContextListeners() {
         if (!elContextListeners.isEmpty()) {
-            return elContextListeners.toArray(new ELContextListener[elContextListeners.size()]);
+            return elContextListeners.toArray(new ELContextListener[0]);
         }
 
         return EMPTY_EL_CTX_LIST_ARRAY;
