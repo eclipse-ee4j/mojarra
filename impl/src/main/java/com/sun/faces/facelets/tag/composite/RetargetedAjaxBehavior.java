@@ -180,6 +180,16 @@ public class RetargetedAjaxBehavior extends AjaxBehavior {
     }
 
     @Override
+    public boolean isClearModel() {
+        return retargeted.isClearModel();
+    }
+
+    @Override
+    public void setClearModel(boolean clearModel) {
+        retargeted.setClearModel(clearModel);
+    }
+
+    @Override
     public boolean isDisabled() {
         return retargeted.isDisabled();
     }
@@ -212,6 +222,11 @@ public class RetargetedAjaxBehavior extends AjaxBehavior {
     @Override
     public boolean isResetValuesSet() {
         return retargeted.isResetValuesSet();
+    }
+
+    @Override
+    public boolean isClearModelSet() {
+        return retargeted.isClearModelSet();
     }
 
     @Override
