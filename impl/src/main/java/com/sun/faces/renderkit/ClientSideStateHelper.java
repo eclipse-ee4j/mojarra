@@ -41,16 +41,16 @@ import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter;
 import com.sun.faces.util.DebugObjectOutputStream;
 import com.sun.faces.util.DebugUtil;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
-
-import jakarta.faces.FacesException;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.context.ResponseWriter;
 
 /**
  * <p>
@@ -160,9 +160,7 @@ public class ClientSideStateHelper extends StateHelper {
             StringBuilder stateBuilder = new StringBuilder();
             doWriteState(ctx, state, new StringBuilderWriter(stateBuilder));
             writer.writeAttribute("value", stateBuilder.toString(), null);
-            if (webConfig.isOptionEnabled(AutoCompleteOffOnViewState)) {
-                writer.writeAttribute("autocomplete", "off", null);
-            }
+            writer.writeAttribute("autocomplete", webConfig.isOptionEnabled(AutoCompleteOffOnViewState) ? "off" : "one-time-code", null);
             writer.endElement("input");
 
             writeClientWindowField(ctx, writer);
