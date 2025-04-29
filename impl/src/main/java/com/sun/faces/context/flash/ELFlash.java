@@ -37,12 +37,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
-import com.sun.faces.facelets.tag.ui.UIDebug;
-import com.sun.faces.util.ByteArrayGuardAESCTR;
-import com.sun.faces.util.FacesLogger;
-
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
@@ -55,6 +49,12 @@ import jakarta.faces.event.PreClearFlashEvent;
 import jakarta.faces.event.PreRemoveFlashValueEvent;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
+import com.sun.faces.facelets.tag.ui.UIDebug;
+import com.sun.faces.util.ByteArrayGuardAESCTR;
+import com.sun.faces.util.FacesLogger;
 
 /**
  * <p>
@@ -156,7 +156,7 @@ public class ELFlash extends Flash {
      */
     static final String FLASH_NOW_REQUEST_KEY = FLASH_ATTRIBUTE_NAME + "n";
 
-    private enum CONSTANTS {
+    enum CONSTANTS {
 
         /**
          * The key in the FacesContext attributes map (hereafter referred to as contextMap) for the request scoped
@@ -209,7 +209,7 @@ public class ELFlash extends Flash {
     // <editor-fold defaultstate="collapsed" desc="Constructors and instance accessors">
 
     /** Creates a new instance of ELFlash */
-    private ELFlash(ExternalContext extContext) {
+    ELFlash(ExternalContext extContext) {
         flashInnerMap = new ConcurrentHashMap<>();
         WebConfiguration config = WebConfiguration.getInstance(extContext);
         String value;
@@ -721,7 +721,7 @@ public class ELFlash extends Flash {
         return Boolean.TRUE == context.getAttributes().get(CONSTANTS.KeepFlagAttributeName);
     }
 
-    private long getNewSequenceNumber() {
+    long getNewSequenceNumber() {
         long result = sequenceNumber.incrementAndGet();
 
         if (0 == result % numberOfFlashesBetweenFlashReapings) {
@@ -1174,7 +1174,7 @@ public class ELFlash extends Flash {
      * </p>
      */
 
-    private static final class PreviousNextFlashInfoManager {
+    static final class PreviousNextFlashInfoManager {
 
         private FlashInfo previousRequestFlashInfo;
 
@@ -1190,7 +1190,7 @@ public class ELFlash extends Flash {
             this.guard = guard;
         }
 
-        private PreviousNextFlashInfoManager(ByteArrayGuardAESCTR guard, Map<String, Map<String, Object>> innerMap) {
+        PreviousNextFlashInfoManager(ByteArrayGuardAESCTR guard, Map<String, Map<String, Object>> innerMap) {
             this.guard = guard;
             this.innerMap = innerMap;
         }
@@ -1366,6 +1366,8 @@ public class ELFlash extends Flash {
                     nextRequestFlashInfo.setFlashMap(flashMap);
                 }
             } catch (Throwable t) {
+                previousRequestFlashInfo = new FlashInfo();
+                previousRequestFlashInfo.setFlashMap(new HashMap<>(1));
                 context.getAttributes().put(CONSTANTS.ForceSetMaxAgeZero, Boolean.TRUE);
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, "faces.externalcontext.flash.bad.cookie", new Object[] { value });
@@ -1441,7 +1443,7 @@ public class ELFlash extends Flash {
      * Encapsulate one of the two maps that back the flash for the current request.
      * </p>
      */
-    private static final class FlashInfo {
+    static final class FlashInfo {
 
         /**
          * <p>
