@@ -54,8 +54,8 @@ public final class CompositeTagDecorator implements TagDecorator {
         }
 
         Tag t = null;
-        for (int i = 0; i < decorators.length; i++) {
-            t = decorators[i].decorate(tag);
+        for (TagDecorator decorator : decorators) {
+            t = decorator.decorate(tag);
             if (t != null) {
                 return t;
             }

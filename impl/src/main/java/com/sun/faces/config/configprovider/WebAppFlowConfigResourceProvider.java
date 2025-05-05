@@ -89,12 +89,12 @@ public class WebAppFlowConfigResourceProvider implements ConfigurationResourcePr
         for (String cur : allPaths) {
             if (cur.endsWith(RIConstants.FLOW_DEFINITION_ID_SUFFIX)) {
                 int suffixIndex = cur.length() - RIConstants.FLOW_DEFINITION_ID_SUFFIX_LENGTH;
-                int slash = cur.lastIndexOf("/", suffixIndex);
+                int slash = cur.lastIndexOf('/', suffixIndex);
                 if (-1 == slash) {
                     continue;
                 }
                 String flowName = cur.substring(slash + 1, suffixIndex);
-                int prevSlash = cur.lastIndexOf("/", slash - 1);
+                int prevSlash = cur.lastIndexOf('/', slash - 1);
                 if (-1 == prevSlash) {
                     continue;
                 }
