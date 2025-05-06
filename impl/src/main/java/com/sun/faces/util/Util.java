@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
- * Copyright (c) 2021 Contributors to Eclipse Foundation.
+ * Copyright (c) 2021,2025 Contributors to Eclipse Foundation.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -110,6 +110,8 @@ import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.manager.FacesSchema;
 import com.sun.faces.facelets.component.UIRepeat;
 import com.sun.faces.io.FastStringWriter;
+
+import java.nio.channels.ClosedChannelException;
 
 /**
  * <B>Util</B> is a class ...
@@ -1697,4 +1699,29 @@ public class Util {
         return encoding;
     }
 
+    public static boolean isConnectionAbort(IOException ioe) {
+        if (ioe instanceof ClosedChannelException) {
+            return true;
+        }
+
+        String exceptionClassName = ioe.getClass().getCanonicalName();
+
+        if (exceptionClassName.equals("org.apache.catalina.connector.ClientAbortException") ||
+                exceptionClassName.equals("org.eclipse.jetty.io.EofException")) {
+            return true;
+        }
+
+        String exceptionMessage = ioe.getMessage();
+
+        if (exceptionMessage == null) {
+            return false;
+        }
+
+        if (exceptionMessage.contains("Connection is closed")) { // Thrown by Grizzly if connection aborted by client
+            return true;
+        }
+
+        String lowercasedExceptionMessage = exceptionMessage.toLowerCase();
+        return lowercasedExceptionMessage.contains("connection") && lowercasedExceptionMessage.contains("abort"); // #5264
+    }
 }
