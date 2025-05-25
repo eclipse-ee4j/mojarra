@@ -18,7 +18,6 @@ package com.sun.faces.application.resource;
 
 import static com.sun.faces.RIConstants.FLOW_IN_JAR_PREFIX;
 import static com.sun.faces.config.WebConfiguration.META_INF_CONTRACTS_DIR;
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsSuffix;
 import static jakarta.faces.application.ResourceVisitOption.TOP_LEVEL_VIEWS_ONLY;
 import static java.util.Spliterator.DISTINCT;
 import static java.util.Spliterators.spliteratorUnknownSize;
@@ -34,10 +33,6 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.util.Util;
-
 import jakarta.enterprise.inject.Any;
 import jakarta.faces.FacesException;
 import jakarta.faces.annotation.View;
@@ -45,6 +40,10 @@ import jakarta.faces.application.ResourceVisitOption;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.Flow;
+
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.context.FacesContextParam;
+import com.sun.faces.util.Util;
 
 public class FaceletWebappResourceHelper extends ResourceHelper {
 
@@ -55,8 +54,8 @@ public class FaceletWebappResourceHelper extends ResourceHelper {
 
     public FaceletWebappResourceHelper(WebappResourceHelper webappResourceHelper) {
         this.webappResourceHelper = webappResourceHelper;
-        WebConfiguration webConfig = WebConfiguration.getInstance();
-        configuredExtensions = webConfig.getOptionValue(FaceletsSuffix, " ");
+        FacesContext context = FacesContext.getCurrentInstance();
+        configuredExtensions = new String[] { FacesContextParam.FACELETS_SUFFIX.getValue(context) };
     }
 
     @Override

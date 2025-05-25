@@ -16,7 +16,6 @@
 
 package com.sun.faces.application;
 
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.ClientWindowMode;
 import static com.sun.faces.util.Util.getCdiBeanManager;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
@@ -25,11 +24,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.sun.faces.cdi.CdiUtils;
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.flow.FlowDiscoveryCDIExtension;
-import com.sun.faces.util.FacesLogger;
-
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.Producer;
 import jakarta.faces.context.FacesContext;
@@ -37,7 +31,13 @@ import jakarta.faces.flow.Flow;
 import jakarta.faces.flow.FlowHandler;
 import jakarta.faces.flow.builder.FlowDefinition;
 
-class JavaFlowLoaderHelper {
+import com.sun.faces.cdi.CdiUtils;
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.context.FacesContextParam;
+import com.sun.faces.flow.FlowDiscoveryCDIExtension;
+import com.sun.faces.util.FacesLogger;
+
+public class JavaFlowLoaderHelper {
 
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
@@ -70,24 +70,26 @@ class JavaFlowLoaderHelper {
         }
     }
 
-    private void enableClientWindowModeIfNecessary(FacesContext context) {
-        WebConfiguration config = WebConfiguration.getInstance(context.getExternalContext());
-
-        String optionValue = config.getOptionValue(ClientWindowMode);
+    public static void enableClientWindowModeIfNecessary(FacesContext context) {
+        String optionValue = FacesContextParam.CLIENT_WINDOW_MODE.getValue(context);
 
         boolean clientWindowNeedsEnabling = false;
         if ("none".equals(optionValue)) {
             clientWindowNeedsEnabling = true;
 
             LOGGER.log(WARNING, "{0} was set to none, but Faces Flows requires {0} is enabled.  Setting to ''url''.",
-                    new Object[] { ClientWindowMode.getQualifiedName() });
+                    new Object[] { FacesContextParam.CLIENT_WINDOW_MODE.getName() });
 
         } else if (optionValue == null) {
             clientWindowNeedsEnabling = true;
         }
 
         if (clientWindowNeedsEnabling) {
-            config.setOptionValue(ClientWindowMode, "url");
+            context.getExternalContext().getApplicationMap().put(JavaFlowLoaderHelper.class.getName(), Boolean.TRUE);
         }
+    }
+    
+    public static boolean isClientWindowModeForciblyEnabled(FacesContext context) {
+        return context.getExternalContext().getApplicationMap().get(JavaFlowLoaderHelper.class.getName()) == Boolean.TRUE;
     }
 }

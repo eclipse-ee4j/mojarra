@@ -17,7 +17,6 @@
 package com.sun.faces.application.applicationimpl;
 
 import static com.sun.faces.application.ApplicationImpl.THIS_LIBRARY;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.DateTimeConverterUsesSystemTimezone;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.RegisterConverterPropertyEditors;
 import static com.sun.faces.util.Util.isEmpty;
 import static com.sun.faces.util.Util.loadClass;
@@ -71,6 +70,7 @@ import jakarta.faces.convert.CharacterConverter;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.DateTimeConverter;
 import jakarta.faces.convert.DoubleConverter;
+import jakarta.faces.convert.EnumConverter;
 import jakarta.faces.convert.FloatConverter;
 import jakarta.faces.convert.IntegerConverter;
 import jakarta.faces.convert.LongConverter;
@@ -86,6 +86,7 @@ import com.sun.faces.application.ConverterPropertyEditorFactory;
 import com.sun.faces.application.ViewMemberInstanceFactoryMetadataMap;
 import com.sun.faces.cdi.CdiUtils;
 import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.context.FacesContextParam;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.ReflectionUtils;
@@ -113,6 +114,7 @@ public class InstanceFactory {
         STANDARD_CONV_ID_TO_TYPE_MAP.put(LongConverter.CONVERTER_ID, new Class<?>[] { Long.TYPE, Long.class });
         STANDARD_CONV_ID_TO_TYPE_MAP.put(FloatConverter.CONVERTER_ID, new Class<?>[] { Float.TYPE, Float.class });
         STANDARD_CONV_ID_TO_TYPE_MAP.put(DoubleConverter.CONVERTER_ID, new Class<?>[] { Double.TYPE, Double.class });
+        STANDARD_CONV_ID_TO_TYPE_MAP.put(EnumConverter.CONVERTER_ID, new Class<?>[] { Enum.class });
         STANDARD_CONV_ID_TO_TYPE_MAP.put(UUIDConverter.CONVERTER_ID, new Class<?>[] { UUID.class });
         for (Map.Entry<String, Class<?>[]> entry : STANDARD_CONV_ID_TO_TYPE_MAP.entrySet()) {
             Class<?>[] types = entry.getValue();
@@ -164,10 +166,11 @@ public class InstanceFactory {
         defaultValidatorIds = new LinkedHashSet<>();
         behaviorMap = new ViewMemberInstanceFactoryMetadataMap<>(new ConcurrentHashMap<>());
 
-        WebConfiguration webConfig = WebConfiguration.getInstance(FacesContext.getCurrentInstance().getExternalContext());
+        FacesContext context = FacesContext.getCurrentInstance();
+        WebConfiguration webConfig = WebConfiguration.getInstance(context.getExternalContext());
         registerPropertyEditors = webConfig.isOptionEnabled(RegisterConverterPropertyEditors);
 
-        passDefaultTimeZone = webConfig.isOptionEnabled(DateTimeConverterUsesSystemTimezone);
+        passDefaultTimeZone = FacesContextParam.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE.getValue(context);
         if (passDefaultTimeZone) {
             systemTimeZone = TimeZone.getDefault();
         }

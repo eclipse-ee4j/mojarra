@@ -18,7 +18,7 @@
 package com.sun.faces.context;
 
 import static com.sun.faces.RIConstants.PUSH_RESOURCE_URLS_KEY_NAME;
-import static com.sun.faces.context.ContextParam.SendPoweredByHeader;
+import static com.sun.faces.context.MojarraContextParam.SendPoweredByHeader;
 import static com.sun.faces.context.UrlBuilder.PROTOCOL_SEPARATOR;
 import static com.sun.faces.context.UrlBuilder.WEBSOCKET_PROTOCOL;
 import static com.sun.faces.util.Util.isEmpty;
@@ -144,7 +144,7 @@ public class ExternalContextImpl extends ExternalContext {
             ((HttpServletResponse) response).addHeader("X-Powered-By", poweredBy);
         }
 
-        distributable = ContextParamUtils.getValue(servletContext, ContextParam.EnableDistributable, Boolean.class);
+        distributable = ContextParamUtils.getValue(servletContext, MojarraContextParam.EnableDistributable, Boolean.class);
 
     }
 
@@ -568,7 +568,7 @@ public class ExternalContextImpl extends ExternalContext {
         Util.notNull("url", url);
 
         HttpServletRequest request = (HttpServletRequest) getRequest();
-        int port = ContextParamUtils.getValue(servletContext, ContextParam.WebsocketEndpointPort, Integer.class);
+        int port = FacesContextParam.WEBSOCKET_ENDPOINT_PORT.getValue(FacesContext.getCurrentInstance());
 
         try {
             final URL requestURL = new URL(request.getRequestURL().toString());

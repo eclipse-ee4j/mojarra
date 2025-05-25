@@ -14,30 +14,33 @@
 [//]: # " SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 "
 -->
 
-# Mojarra 4.1
+# Mojarra 5.0
 
-Eclipse's implementation of the Jakarta Faces 4.1 specification.
+Eclipse's implementation of the Jakarta Faces 5.0 specification
 
-For Mojarra / JSF 2.3 please have a look at https://github.com/eclipse-ee4j/mojarra/blob/2.3/README.md.  
-For Mojarra / JSF 3.0 please have a look at https://github.com/eclipse-ee4j/mojarra/blob/3.0/README.md.
-For Mojarra / JSF 4.0 please have a look at https://github.com/eclipse-ee4j/mojarra/blob/4.0/README.md.
+* Mojarra 5.0 - this branch, under development
+* [Mojarra 4.1](https://github.com/eclipse-ee4j/mojarra/blob/4.1/README.md) - stable release
+* [Mojarra 4.0](https://github.com/eclipse-ee4j/mojarra/blob/4.0/README.md) - stable release
+* [Mojarra 3.0](https://github.com/eclipse-ee4j/mojarra/blob/3.0/README.md) - legacy release
+* [Mojarra 2.3](https://github.com/eclipse-ee4j/mojarra/blob/2.3/README.md) - legacy release
+
+For support on Mojarra 2.3 and earlier please contact your vendor for support (RedHat, IBM,
+Oracle, Omnifish, Payara, etceteras)
 
 ## Minimum Requirements
 
 - Java 17
 - Jakarta Servlet 6.1
 - Jakarta Expression Language 6.0
-- jakarta CDI 4.1
+- Jakarta CDI 4.1
 - Jakarta Web Socket 2.2 (optional, only when `<f:websocket>` is used)
 - Jakarta JSON Processing  2.1 (optional, only when `<f:websocket>` is used)
 - Jakarta Validation 3.1 (optional, only when `<f:validateBean>` or `<f:validateWholeBean>` is used)
 
-CDI is explicitly required because since Jakarta Faces 2.3 the `javax.faces.bean.*` annotations such as `@ManagedBean` are deprecated, and since 4.0 these have been removed. Several implicit Jakarta Expression Language objects are produced via CDI producers, and `<f:websocket>` manages the Jakarta WebSocket sessions and events via CDI.
-
 
 ## Installation
 
-Depending on the server used, Jakarta Faces may already be built-in (full fledged Jakarta EE containers such as [WildFly][1], [JBoss EAP][2], [TomEE][3], [Payara][4], [GlassFish][5], [Liberty][6], etc.), or not (barebones Jakarta Server Pages/Jakarta Servlet containers such as [Tomcat][7], [Jetty][8], etc.). If the server doesn't ship with Jakarta Faces built-in, then you need to manually install Jakarta Faces 4.1 along with a CDI 4.1+, Jakarta JSON Processing 2.1+ as those Jakarta Servlet containers usually also don't ship with those Jakarta Faces dependencies.
+Depending on the server used, Jakarta Faces may already be built-in (full fledged Jakarta EE containers such as [WildFly][1], [JBoss EAP][2], [TomEE][3], [Payara][4], [GlassFish][5], [Liberty][6], etc.), or not (barebones Jakarta Server Pages/Jakarta Servlet containers such as [Tomcat][7], [Jetty][8], etc.). If the server doesn't ship with Jakarta Faces built-in, then you need to manually install Jakarta Faces 4.0 along with CDI 4.0+, Jakarta JSON Processing 2.0+ and Jakarta Standard Tag Library 2.0+ as those Jakarta Servlet containers usually also don't even ship with those Jakarta Faces dependencies.
 
 
 ### Non-Maven

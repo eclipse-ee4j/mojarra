@@ -20,10 +20,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.facelets.el.VariableMapperWrapper;
-import com.sun.faces.facelets.tag.TagHandlerImpl;
-import com.sun.faces.util.FacesLogger;
-
 import jakarta.el.VariableMapper;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
@@ -31,6 +27,10 @@ import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagAttributeException;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagException;
+
+import com.sun.faces.facelets.el.VariableMapperWrapper;
+import com.sun.faces.facelets.tag.TagHandlerImpl;
+import com.sun.faces.util.FacesLogger;
 
 /**
  * @author Jacob Hookom

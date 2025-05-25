@@ -65,12 +65,6 @@ public class CompilationMessageHolderImpl implements CompilerPackageCompilationM
     }
 
     @Override
-    public void removeNamespacePrefixMessages(String prefix) {
-        Map<String, List<FacesMessage>> map = getMessageListMap();
-        map.remove(prefix);
-    }
-
-    @Override
     public CompilationManager getCurrentCompositeComponentCompilationManager() {
         return compilationManager;
     }

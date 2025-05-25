@@ -17,6 +17,14 @@
 
 package com.sun.faces.mock;
 
+import static java.util.Collections.emptySet;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
 import jakarta.el.ELResolver;
 import jakarta.el.ExpressionFactory;
 import jakarta.enterprise.context.spi.Context;
@@ -42,11 +50,6 @@ import jakarta.enterprise.inject.spi.Interceptor;
 import jakarta.enterprise.inject.spi.ObserverMethod;
 import jakarta.enterprise.inject.spi.ProducerFactory;
 import jakarta.enterprise.inject.spi.el.ELAwareBeanManager;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
 
 public class MockBeanManager implements BeanManager, ELAwareBeanManager {
 
@@ -73,12 +76,12 @@ public class MockBeanManager implements BeanManager, ELAwareBeanManager {
 
     @Override
     public Set<Bean<?>> getBeans(Type beanType, Annotation... qualifiers) {
-        return null;
+        return emptySet();
     }
 
     @Override
     public Set<Bean<?>> getBeans(String name) {
-        return null;
+        return emptySet();
     }
 
     @Override
@@ -158,12 +161,12 @@ public class MockBeanManager implements BeanManager, ELAwareBeanManager {
 
     @Override
     public Set<Annotation> getInterceptorBindingDefinition(Class<? extends Annotation> bindingType) {
-        return null;
+        return emptySet();
     }
 
     @Override
     public Set<Annotation> getStereotypeDefinition(Class<? extends Annotation> stereotype) {
-        return null;
+        return emptySet();
     }
 
     @Override

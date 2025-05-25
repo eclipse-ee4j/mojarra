@@ -47,6 +47,7 @@ import org.w3c.dom.NodeList;
 
 import com.sun.faces.RIConstants;
 import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.application.JavaFlowLoaderHelper;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.facelets.util.ReflectionUtil;
@@ -177,19 +178,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
         }
 
         if (config.isHasFlows()) {
-            String optionValue = config.getOptionValue(WebConfiguration.WebContextInitParameter.ClientWindowMode);
-            boolean clientWindowNeedsEnabling = false;
-            if ("none".equals(optionValue)) {
-                clientWindowNeedsEnabling = true;
-                String featureName = WebConfiguration.WebContextInitParameter.ClientWindowMode.getQualifiedName();
-                LOGGER.log(Level.WARNING, "{0} was set to none, but Faces Flows requires {0} is enabled.  Setting to ''url''.", new Object[] { featureName });
-            } else if (null == optionValue) {
-                clientWindowNeedsEnabling = true;
-            }
-            if (clientWindowNeedsEnabling) {
-                config.setOptionValue(WebConfiguration.WebContextInitParameter.ClientWindowMode, "url");
-            }
-
+            JavaFlowLoaderHelper.enableClientWindowModeIfNecessary(facesContext);
             facesContext.getApplication().subscribeToEvent(PostConstructApplicationEvent.class, Application.class, new PerformDeferredFlowProcessing());
         }
 

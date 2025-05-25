@@ -16,9 +16,7 @@
 
 package com.sun.faces.config.configprovider;
 
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsLibraries;
-
-import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
+import com.sun.faces.context.FacesContextParam;
 
 /**
  *
@@ -31,8 +29,8 @@ public class WebFaceletTaglibResourceProvider extends BaseWebConfigResourceProvi
     // ------------------------------ Methods from BaseWebConfigResourceProvider
 
     @Override
-    protected WebContextInitParameter getParameter() {
-        return FaceletsLibraries;
+    protected FacesContextParam getParameter() {
+        return FacesContextParam.FACELETS_LIBRARIES;
     }
 
     @Override

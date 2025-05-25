@@ -18,7 +18,6 @@ package com.sun.faces.application.resource;
 
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.DefaultResourceMaxAge;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.ResourceBufferSize;
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.ResourceExcludes;
 import static com.sun.faces.util.RequestStateManager.RESOURCE_REQUEST;
 import static com.sun.faces.util.Util.getFacesMapping;
 import static com.sun.faces.util.Util.notNegative;
@@ -47,17 +46,17 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.RequestStateManager;
-import com.sun.faces.util.Util;
-
 import jakarta.faces.application.Resource;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.application.ResourceVisitOption;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.context.FacesContextParam;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.RequestStateManager;
 
 /**
  * This is the default implementation of {@link ResourceHandler}.
@@ -81,9 +80,10 @@ public class ResourceHandlerImpl extends ResourceHandler {
     public ResourceHandlerImpl() {
         creationTime = System.currentTimeMillis();
         webconfig = WebConfiguration.getInstance();
-        ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
+        FacesContext context = FacesContext.getCurrentInstance();
+        ExternalContext extContext = context.getExternalContext();
         manager = ApplicationAssociate.getInstance(extContext).getResourceManager();
-        initExclusions(extContext.getApplicationMap());
+        initExclusions(context);
         initMaxAge();
     }
 
@@ -559,9 +559,8 @@ public class ResourceHandlerImpl extends ResourceHandler {
      * <ul>
      * will be used.
      */
-    private void initExclusions(Map<String, Object> appMap) {
-        String excludesParam = webconfig.getOptionValue(ResourceExcludes);
-        String[] patterns = Util.split(appMap, excludesParam, " ");
+    private void initExclusions(FacesContext context) {
+        String[] patterns = FacesContextParam.RESOURCE_EXCLUDES.getValue(context);
 
         excludePatterns = new ArrayList<>(patterns.length);
         for (String pattern : patterns) {

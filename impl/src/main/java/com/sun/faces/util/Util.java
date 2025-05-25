@@ -183,7 +183,7 @@ public class Util {
         return emptyList();
     }
 
-    private static ServletRegistration getExistingFacesServletRegistration(ServletContext servletContext) {
+    public static ServletRegistration getExistingFacesServletRegistration(ServletContext servletContext) {
         Map<String, ? extends ServletRegistration> existing = servletContext.getServletRegistrations();
         for (ServletRegistration registration : existing.values()) {
             if (FACES_SERVLET_CLASS.equals(registration.getClassName())) {

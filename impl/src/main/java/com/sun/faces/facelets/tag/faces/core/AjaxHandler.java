@@ -36,6 +36,7 @@ import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.AjaxBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.component.html.HtmlEvents;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.AjaxBehaviorEvent;
@@ -352,7 +353,9 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
             }
         }
 
-        builder.append(".");
+        builder.append(".  In case you wish to add new ones, then you can specify them"
+                + " as space-separated value of context-param with name "
+                + HtmlEvents.ADDITIONAL_HTML_EVENT_NAMES_PARAM_NAME);
 
         return builder.toString();
     }

@@ -92,6 +92,7 @@ public class UIRepeat extends UINamingContainer {
     private Integer begin;
     private Integer end;
     private Integer step;
+    private Integer offset;
     private Integer size;
 
     private Boolean rowStatePreserved;
@@ -143,13 +144,13 @@ public class UIRepeat extends UINamingContainer {
     }
 
     public void setOffset(Integer offset) {
-        begin = offset;
+        this.offset = offset;
     }
 
     public Integer getOffset() {
 
-        if (begin != null) {
-            return begin;
+        if (offset != null) {
+            return offset;
         }
         ValueExpression ve = getValueExpression("offset");
         if (ve != null) {
@@ -262,7 +263,30 @@ public class UIRepeat extends UINamingContainer {
     private DataModel getDataModel() {
         if (model == null) {
             Object val = getValue();
+            
+            if (val != null) {
+                if (getBegin() != null) {
+                    throw new FacesException("UIRepeat: when 'value' attribute is set, you need 'offset' attribute instead of 'begin' attribute");
+                }
+                if (getEnd() != null) {
+                    throw new FacesException("UIRepeat: when 'value' attribute is set, you need 'size' attribute instead of 'end' attribute");
+                }
+                if (getOffset() != null && getOffset() < 0) {
+                    throw new FacesException("UIRepeat: 'offset' attribute may not be less than 0");
+                }
+                if (getStep() != null && getStep() < 1) {
+                    throw new FacesException("UIRepeat: 'step' attribute may not be less than 1");
+                }
+            }
+
             if (val == null) {
+                if (getOffset() != null) {
+                    throw new FacesException("UIRepeat: when 'value' attribute is not set, you need 'begin' attribute instead of 'offset' attribute");
+                }
+                if (getSize() != null) {
+                    throw new FacesException("UIRepeat: when 'value' attribute is not set, you need 'end' attribute instead of 'size' attribute");
+                }
+                
                 if (originalBegin == null) {
                     originalBegin = getBegin();
                 }
@@ -273,15 +297,11 @@ public class UIRepeat extends UINamingContainer {
                 Integer begin = originalBegin;
                 Integer end = originalEnd;
 
-                if (end == null) {
-                    if (begin == null) {
-                        model = EMPTY_MODEL;
-                    } else {
-                        throw new IllegalArgumentException("end");
-                    }
+                if (begin == null && end == null) {
+                    model = EMPTY_MODEL;
                 } else {
                     int b = begin == null ? 0 : begin;
-                    int e = end;
+                    int e = end == null ? 0 : end;
                     int d = b < e ? 1 : b > e ? -1 : 0;
                     int s = Math.abs(e - b) + 1;
                     Integer[] array = new Integer[s];
@@ -642,7 +662,7 @@ public class UIRepeat extends UINamingContainer {
 
                 Integer size = getSize();
                 if (null != size) {
-                    end = size;
+                    end = (begin != null ? begin : 0) + size;
                 }
 
                 // grab renderer
@@ -658,7 +678,7 @@ public class UIRepeat extends UINamingContainer {
                 int s = step != null ? step : 1;
                 validateIterationControlValues(rowCount, i, e);
                 if (null != size && size > 0) {
-                    e = size - 1;
+                    e = e - 1;
                 }
 
                 setIndex(faces, i);
@@ -854,13 +874,13 @@ public class UIRepeat extends UINamingContainer {
         }
         // PENDING i18n
         if (begin > rowCount) {
-            throw new FacesException("Iteration start index is greater than the number of available rows.");
+            throw new FacesException("UIRepeat: 'offset' attribute may not be greater than the number of available rows");
         }
         if (begin > end) {
-            throw new FacesException("Iteration start index is greater than the end index.");
+            throw new FacesException("UIRepeat: 'size' attribute may not be less than 0");
         }
         if (end > rowCount) {
-            throw new FacesException("Iteration end index is greater than the number of available rows.");
+            throw new FacesException("UIRepeat: " + (getOffset() != null ? "'offset' plus " : "") + "'size' attribute may not be greater than the number of available rows");
         }
     }
 

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-
-	Copyright (c) 2021, 2024 Contributors to Eclipse Foundation.
+    Copyright (c) 2021, 2023 Contributors to Eclipse Foundation.
     Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
@@ -27,9 +26,9 @@
         <version>1.0.9</version>
     </parent>
 
-   <groupId>org.glassfish</groupId>
+   <groupId>org.glassfish.mojarra</groupId>
    <artifactId>mojarra-parent</artifactId>
-   <version>4.1.4-SNAPSHOT</version>
+   <version>5.0.0-SNAPSHOT</version>
    <packaging>pom</packaging>
 
    <name>Mojarra ${project.version} - Project</name>
@@ -47,36 +46,34 @@
     </licenses>
 
    <modules>
-        <module>cdi</module>
         <module>impl</module>
-        <module>action</module>
-        <module>rest</module>
-        <module>test</module>
-    </modules>
+   </modules>
 
    <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        
         <maven.compiler.release>17</maven.compiler.release>
     </properties>
 
    <build>
         <plugins>
-            <!-- Sets minimal Maven version to 3.8.6 -->
+            <!-- Sets minimal Maven version to 3.6.0 and minimal Java version to 17 -->
             <plugin>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>enforce-maven</id>
+                        <id>enforce-versions</id>
                         <goals>
                             <goal>enforce</goal>
                         </goals>
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>3.8.6</version>
+                                    <version>3.6.0</version>
                                 </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <version>[17,)</version>
+                                </requireJavaVersion>
                             </rules>
                         </configuration>
                     </execution>
@@ -86,7 +83,7 @@
             <!-- Restricts the Java version to 17 - API remains at Java 17 for now. -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
+                <version>3.11.0</version>
                 <configuration>
                     <release>17</release>
                     <compilerArgument>-Xlint:unchecked</compilerArgument>
@@ -94,4 +91,19 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>api</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+
+            <modules>
+                <module>faces/api</module>
+            </modules>
+        </profile>
+    </profiles>
+    
+     
 </project>

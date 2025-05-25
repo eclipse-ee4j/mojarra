@@ -1,0 +1,4 @@
+[submodule "faces"]
+	path = faces
+	url = https://github.com/jakartaee/faces.git
+	branch = 5.0

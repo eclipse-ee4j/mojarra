@@ -34,6 +34,7 @@ import static jakarta.faces.render.ResponseStateManager.NON_POSTBACK_VIEW_TOKEN_
 import static jakarta.servlet.http.MappingMatch.EXACT;
 import static jakarta.servlet.http.MappingMatch.EXTENSION;
 import static jakarta.servlet.http.MappingMatch.PATH;
+import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 import static java.util.logging.Level.SEVERE;
@@ -56,10 +57,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.ViewHandler;
@@ -73,6 +70,10 @@ import jakarta.faces.view.ViewDeclarationLanguageFactory;
 import jakarta.faces.view.ViewMetadata;
 import jakarta.servlet.http.HttpServletMapping;
 import jakarta.servlet.http.HttpServletResponse;
+
+import com.sun.faces.context.FacesContextParam;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
 
 /**
  * This {@link ViewHandler} implementation handles the Facelets VDL-based views.
@@ -90,9 +91,8 @@ public class MultiViewHandler extends ViewHandler {
     // ------------------------------------------------------------ Constructors
 
     public MultiViewHandler() {
-        WebConfiguration config = WebConfiguration.getInstance();
-
-        configuredExtensions = config.getConfiguredExtensions();
+        String faceletsSuffix = FacesContextParam.FACELETS_SUFFIX.getValue(FacesContext.getCurrentInstance());
+        configuredExtensions = asList(faceletsSuffix);
         vdlFactory = (ViewDeclarationLanguageFactory) FactoryFinder.getFactory(VIEW_DECLARATION_LANGUAGE_FACTORY);
         protectedViews = new CopyOnWriteArraySet<>();
     }

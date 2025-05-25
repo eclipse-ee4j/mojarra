@@ -16,22 +16,27 @@
 
 package com.sun.faces.lifecycle;
 
+import static com.sun.faces.util.Util.getCdiBeanManager;
+
+import java.lang.annotation.Annotation;
 import java.util.ListIterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Timer;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.Flash;
+import jakarta.faces.event.AfterPhase;
+import jakarta.faces.event.BeforePhase;
 import jakarta.faces.event.ExceptionQueuedEvent;
 import jakarta.faces.event.ExceptionQueuedEventContext;
 import jakarta.faces.event.PhaseEvent;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.PhaseListener;
 import jakarta.faces.lifecycle.Lifecycle;
+
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Timer;
 
 /**
  * <p>
@@ -55,10 +60,7 @@ public abstract class Phase {
     public void doPhase(FacesContext context, Lifecycle lifecycle, ListIterator<PhaseListener> listeners) {
 
         context.setCurrentPhaseId(getId());
-        PhaseEvent event = null;
-        if (listeners.hasNext()) {
-            event = new PhaseEvent(context, getId(), lifecycle);
-        }
+        PhaseEvent event = new PhaseEvent(context, getId(), lifecycle);
 
         // start timing - include before and after phase processing
         Timer timer = Timer.getInstance();
@@ -141,6 +143,7 @@ public abstract class Phase {
                 LOGGER.fine("ExternalContext.getFlash() throw UnsupportedOperationException -> Flash unavailable");
             }
         }
+
         while (listenersIterator.hasPrevious()) {
             PhaseListener listener = listenersIterator.previous();
             if (getId().equals(listener.getPhaseId()) || PhaseId.ANY_PHASE.equals(listener.getPhaseId())) {
@@ -148,11 +151,16 @@ public abstract class Phase {
                     listener.afterPhase(event);
                 } catch (Exception e) {
                     queueException(context, e, ExceptionQueuedEventContext.IN_AFTER_PHASE_KEY);
-                    return;
+                    break;
                 }
             }
         }
 
+        fireCdiPhaseEvent(context, event, AfterPhase.Literal.of(event.getPhaseId()));
+
+        if (event.getPhaseId() != PhaseId.ANY_PHASE) {
+            fireCdiPhaseEvent(context, event, AfterPhase.Literal.INSTANCE);
+        }
     }
 
     /**
@@ -172,6 +180,13 @@ public abstract class Phase {
                 LOGGER.fine("ExternalContext.getFlash() throw UnsupportedOperationException -> Flash unavailable");
             }
         }
+
+        if (event.getPhaseId() != PhaseId.ANY_PHASE) {
+            fireCdiPhaseEvent(context, event, BeforePhase.Literal.INSTANCE);
+        }
+
+        fireCdiPhaseEvent(context, event, BeforePhase.Literal.of(event.getPhaseId()));
+
         while (listenersIterator.hasNext()) {
             PhaseListener listener = listenersIterator.next();
             if (getId().equals(listener.getPhaseId()) || PhaseId.ANY_PHASE.equals(listener.getPhaseId())) {
@@ -188,6 +203,10 @@ public abstract class Phase {
             }
         }
 
+    }
+    
+    private static void fireCdiPhaseEvent(FacesContext context, PhaseEvent event, Annotation qualifier) {
+        getCdiBeanManager(context).getEvent().select(PhaseEvent.class, qualifier).fire(event);
     }
 
     // --------------------------------------------------------- Private Methods

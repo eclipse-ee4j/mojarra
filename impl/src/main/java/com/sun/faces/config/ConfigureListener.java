@@ -20,13 +20,10 @@ import static com.sun.faces.RIConstants.ANNOTATED_CLASSES;
 import static com.sun.faces.RIConstants.ERROR_PAGE_PRESENT_KEY_NAME;
 import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
 import static com.sun.faces.RIConstants.FACES_SERVLET_REGISTRATION;
-import static com.sun.faces.config.InitFacesContext.getInitContextServletContextMap;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableLazyBeanValidation;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableThreading;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableWebsocketEndpoint;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.ForceLoadFacesConfigFiles;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.VerifyFacesConfigObjects;
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.JakartaFacesProjectStage;
 import static com.sun.faces.context.SessionMap.createMutex;
 import static com.sun.faces.context.SessionMap.removeMutex;
 import static com.sun.faces.push.WebsocketEndpoint.URI_TEMPLATE;
@@ -49,7 +46,6 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -58,29 +54,16 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
-
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.application.WebappLifecycleListener;
-import com.sun.faces.el.ELContextImpl;
-import com.sun.faces.push.WebsocketEndpoint;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.MojarraThreadFactory;
-import com.sun.faces.util.ReflectionUtils;
-import com.sun.faces.util.Timer;
-import com.sun.faces.util.Util;
-
 import jakarta.el.ELManager;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
+import jakarta.faces.application.ProjectStage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PreDestroyApplicationEvent;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.ServletRegistration;
 import jakarta.servlet.ServletRequestEvent;
 import jakarta.servlet.ServletRequestListener;
 import jakarta.servlet.http.HttpSession;
@@ -89,6 +72,22 @@ import jakarta.servlet.http.HttpSessionListener;
 import jakarta.websocket.server.ServerContainer;
 import jakarta.websocket.server.ServerEndpointConfig;
 
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.application.WebappLifecycleListener;
+import com.sun.faces.context.FacesContextParam;
+import com.sun.faces.el.ELContextImpl;
+import com.sun.faces.push.WebsocketEndpoint;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.MojarraThreadFactory;
+import com.sun.faces.util.ReflectionUtils;
+import com.sun.faces.util.Timer;
+import com.sun.faces.util.Util;
+
 /**
  * Parse all relevant Faces configuration resources, and configure the Mojarra runtime
  * environment.
@@ -96,6 +95,8 @@ import jakarta.websocket.server.ServerEndpointConfig;
 public class ConfigureListener implements ServletRequestListener, HttpSessionListener, ServletContextListener {
 
     private static final Logger LOGGER = FacesLogger.CONFIG.getLogger();
+    private static final String[] FACES_SERVLET_MAPPINGS_WITH_XHTML = { "/faces/*", "*.jsf", "*.faces", "*.xhtml" };
+    private static final String[] FACES_SERVLET_MAPPINGS_WITHOUT_XHTML = { "/faces/*", "*.jsf", "*.faces" };
 
     private ScheduledThreadPoolExecutor webResourcePool;
 
@@ -132,7 +133,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         // Check to see if the FacesServlet is present in the
         // web.xml. If it is, perform faces configuration as normal,
         // otherwise, simply return.
-        Object facesServletRegistration = servletContext.getAttribute(FACES_SERVLET_REGISTRATION); // If found by FacesInitializer.
+        ServletRegistration facesServletRegistration = (ServletRegistration) servletContext.getAttribute(FACES_SERVLET_REGISTRATION); // If found by FacesInitializer.
 
         WebXmlProcessor webXmlProcessor = new WebXmlProcessor(servletContext);
         if (facesServletRegistration == null) {
@@ -143,13 +144,22 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                     WebConfiguration.clear(servletContext);
                     configManager.destroy(servletContext, initFacesContext);
                     ConfigManager.removeInstance(servletContext);
-                    InitFacesContext.cleanupInitMaps(servletContext);
+                    initFacesContext.release();
 
                     return;
                 }
             } else {
                 LOGGER.log(FINE, "FacesServlet found in deployment descriptor - processing configuration.");
             }
+        } else if (servletContext.getAttribute(FACES_SERVLET_MAPPINGS) != null) { // If automatic mapping needs to be handled.
+            if (FacesContextParam.DISABLE_FACESSERVLET_TO_XHTML.isSet(initFacesContext)) {
+                facesServletRegistration.addMapping(FACES_SERVLET_MAPPINGS_WITHOUT_XHTML);
+            }
+            else {
+                facesServletRegistration.addMapping(FACES_SERVLET_MAPPINGS_WITH_XHTML);
+            }
+
+            servletContext.setAttribute(FACES_SERVLET_MAPPINGS, facesServletRegistration.getMappings());
         }
 
         // Do not override if already defined
@@ -217,7 +227,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
             // Register websocket endpoint if explicitly enabled.
             // Note: websocket channel filter is registered in FacesInitializer.
-            if (webConfig.isOptionEnabled(EnableWebsocketEndpoint)) {
+            if (FacesContextParam.ENABLE_WEBSOCKET_ENDPOINT.isSet(initFacesContext)) {
                 ServerContainer serverContainer = (ServerContainer) servletContext.getAttribute(ServerContainer.class.getName());
 
                 if (serverContainer == null) {
@@ -274,11 +284,11 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
         InitFacesContext initContext = null;
         try {
-            initContext = getInitFacesContext(context);
-            if (initContext == null) {
-                initContext = new InitFacesContext(context);
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            if (facesContext instanceof InitFacesContext) {
+                initContext = (InitFacesContext) facesContext;
             } else {
-                InitFacesContext.getThreadInitContextMap().put(Thread.currentThread(), initContext);
+                initContext = new InitFacesContext(context);
             }
 
             if (webAppListener != null) {
@@ -325,7 +335,9 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
             FactoryFinder.releaseFactories();
             ReflectionUtils.clearCache(Thread.currentThread().getContextClassLoader());
             WebConfiguration.clear(context);
-            InitFacesContext.cleanupInitMaps(context);
+            if (initContext != null) {
+                initContext.release();
+            }
         }
 
     }
@@ -399,7 +411,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
     private boolean isDevModeEnabled() {
         // interrogate the init parameter directly vs looking up the application
-        return "Development".equals(webConfig.getOptionValue(JakartaFacesProjectStage));
+        return FacesContextParam.PROJECT_STAGE.getValue(FacesContext.getCurrentInstance()) == ProjectStage.Development;
     }
 
     /**
@@ -482,16 +494,6 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         }
 
         LOGGER.log(INFO, () -> format("Reload complete. ({0})", servletContext.getContextPath()));
-    }
-
-    private InitFacesContext getInitFacesContext(ServletContext context) {
-        for (Entry<InitFacesContext, ServletContext> entry : getInitContextServletContextMap().entrySet()) {
-            if (context == entry.getValue()) {
-                return entry.getKey();
-            }
-        }
-
-        return null;
     }
 
 

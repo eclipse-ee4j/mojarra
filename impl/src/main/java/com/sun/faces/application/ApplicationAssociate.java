@@ -18,10 +18,6 @@ package com.sun.faces.application;
 
 import static com.sun.faces.RIConstants.FACES_CONFIG_VERSION;
 import static com.sun.faces.RIConstants.FACES_PREFIX;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.AutomaticExtensionlessMapping;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.FaceletsSkipComments;
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsDecorators;
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsDefaultRefreshPeriod;
 import static com.sun.faces.el.ELUtils.buildFacesResolver;
 import static com.sun.faces.el.FacesCompositeELResolver.ELResolverChainType.Faces;
 import static com.sun.faces.facelets.util.ReflectionUtil.forName;
@@ -29,13 +25,10 @@ import static com.sun.faces.util.MessageUtils.APPLICATION_ASSOCIATE_EXISTS_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 import static com.sun.faces.util.Util.getFacesConfigXmlVersion;
 import static com.sun.faces.util.Util.getFacesServletRegistration;
-import static com.sun.faces.util.Util.split;
 import static jakarta.faces.FactoryFinder.FACELET_CACHE_FACTORY;
 import static jakarta.faces.FactoryFinder.FLOW_HANDLER_FACTORY;
 import static jakarta.faces.application.ProjectStage.Development;
-import static jakarta.faces.application.ProjectStage.Production;
 import static jakarta.faces.application.ViewVisitOption.RETURN_AS_MINIMAL_IMPLICIT_OUTCOME;
-import static java.lang.Long.parseLong;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.logging.Level.FINE;
@@ -54,33 +47,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.application.annotation.AnnotationManager;
-import com.sun.faces.application.annotation.FacesComponentUsage;
-import com.sun.faces.application.resource.ResourceCache;
-import com.sun.faces.application.resource.ResourceManager;
-import com.sun.faces.component.search.SearchExpressionHandlerImpl;
-import com.sun.faces.config.ConfigManager;
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.el.DemuxCompositeELResolver;
-import com.sun.faces.facelets.compiler.Compiler;
-import com.sun.faces.facelets.compiler.SAXCompiler;
-import com.sun.faces.facelets.impl.DefaultFaceletFactory;
-import com.sun.faces.facelets.impl.DefaultResourceResolver;
-import com.sun.faces.facelets.tag.composite.CompositeLibrary;
-import com.sun.faces.facelets.tag.faces.PassThroughAttributeLibrary;
-import com.sun.faces.facelets.tag.faces.PassThroughElementLibrary;
-import com.sun.faces.facelets.tag.faces.core.CoreLibrary;
-import com.sun.faces.facelets.tag.faces.html.HtmlLibrary;
-import com.sun.faces.facelets.tag.jstl.core.JstlCoreLibrary;
-import com.sun.faces.facelets.tag.jstl.fn.JstlFunction;
-import com.sun.faces.facelets.tag.ui.UILibrary;
-import com.sun.faces.facelets.util.DevTools;
-import com.sun.faces.facelets.util.FunctionLibrary;
-import com.sun.faces.spi.InjectionProvider;
-import com.sun.faces.util.FacesLogger;
 import jakarta.el.CompositeELResolver;
-
 import jakarta.el.ELResolver;
 import jakarta.el.ExpressionFactory;
 import jakarta.faces.FacesException;
@@ -101,6 +68,32 @@ import jakarta.faces.view.facelets.FaceletCache;
 import jakarta.faces.view.facelets.FaceletCacheFactory;
 import jakarta.faces.view.facelets.TagDecorator;
 import jakarta.servlet.ServletContext;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.application.annotation.AnnotationManager;
+import com.sun.faces.application.annotation.FacesComponentUsage;
+import com.sun.faces.application.resource.ResourceCache;
+import com.sun.faces.application.resource.ResourceManager;
+import com.sun.faces.component.search.SearchExpressionHandlerImpl;
+import com.sun.faces.config.ConfigManager;
+import com.sun.faces.context.FacesContextParam;
+import com.sun.faces.el.DemuxCompositeELResolver;
+import com.sun.faces.facelets.compiler.Compiler;
+import com.sun.faces.facelets.compiler.SAXCompiler;
+import com.sun.faces.facelets.impl.DefaultFaceletFactory;
+import com.sun.faces.facelets.impl.DefaultResourceResolver;
+import com.sun.faces.facelets.tag.composite.CompositeLibrary;
+import com.sun.faces.facelets.tag.faces.PassThroughAttributeLibrary;
+import com.sun.faces.facelets.tag.faces.PassThroughElementLibrary;
+import com.sun.faces.facelets.tag.faces.core.CoreLibrary;
+import com.sun.faces.facelets.tag.faces.html.HtmlLibrary;
+import com.sun.faces.facelets.tag.jstl.core.JstlCoreLibrary;
+import com.sun.faces.facelets.tag.jstl.fn.JstlFunction;
+import com.sun.faces.facelets.tag.ui.UILibrary;
+import com.sun.faces.facelets.util.DevTools;
+import com.sun.faces.facelets.util.FunctionLibrary;
+import com.sun.faces.spi.InjectionProvider;
+import com.sun.faces.util.FacesLogger;
 
 /**
  * <p>
@@ -161,8 +154,6 @@ public class ApplicationAssociate {
     private final PropertyEditorHelper propertyEditorHelper;
 
     private final NamedEventManager namedEventManager;
-
-    private final WebConfiguration webConfig;
 
     private FlowHandler flowHandler;
 
@@ -244,7 +235,6 @@ public class ApplicationAssociate {
 
         navigationMap = new ConcurrentHashMap<>();
         injectionProvider = (InjectionProvider) facesContext.getAttributes().get(ConfigManager.INJECTION_PROVIDER_KEY);
-        webConfig = WebConfiguration.getInstance(externalContext);
 
         annotationManager = new AnnotationManager();
 
@@ -312,7 +302,7 @@ public class ApplicationAssociate {
             String facesConfigVersion = getFacesConfigXmlVersion(context);
             context.getExternalContext().getApplicationMap().put(FACES_CONFIG_VERSION, facesConfigVersion);
 
-            if (webConfig.isOptionEnabled(AutomaticExtensionlessMapping)) {
+            if (FacesContextParam.AUTOMATIC_EXTENSIONLESS_MAPPING.isSet(context)) {
                 getFacesServletRegistration(context)
                     .ifPresent(registration ->
                         viewHandler.getViews(context, "/", RETURN_AS_MINIMAL_IMPLICIT_OUTCOME)
@@ -330,9 +320,8 @@ public class ApplicationAssociate {
 
         FacesContext ctx = FacesContext.getCurrentInstance();
 
-        Map<String, Object> appMap = ctx.getExternalContext().getApplicationMap();
-        compiler = createCompiler(appMap, webConfig);
-        faceletFactory = createFaceletFactory(ctx, compiler, webConfig);
+        compiler = createCompiler(ctx);
+        faceletFactory = createFaceletFactory(ctx, compiler);
     }
 
     public long getTimeOfInstantiation() {
@@ -631,20 +620,10 @@ public class ApplicationAssociate {
         definingDocumentIdsToTruncatedJarUrls.put(definingDocumentId, candidate);
     }
 
-    protected DefaultFaceletFactory createFaceletFactory(FacesContext context, Compiler compiler, WebConfiguration webConfig) {
+    protected DefaultFaceletFactory createFaceletFactory(FacesContext context, Compiler compiler) {
 
         // refresh period
-        boolean isProduction = applicationImpl.getProjectStage() == Production;
-        String refreshPeriod;
-        if (webConfig.isSet(FaceletsDefaultRefreshPeriod)) {
-            refreshPeriod = webConfig.getOptionValue(FaceletsDefaultRefreshPeriod);
-        } else if (isProduction) {
-            refreshPeriod = "-1";
-        } else {
-            refreshPeriod = FaceletsDefaultRefreshPeriod.getDefaultValue();
-        }
-
-        long period = parseLong(refreshPeriod);
+        int period = FacesContextParam.FACELETS_REFRESH_PERIOD.getValue(context);
 
         // resource resolver
         DefaultResourceResolver resolver = new DefaultResourceResolver(applicationImpl.getResourceHandler());
@@ -658,35 +637,33 @@ public class ApplicationAssociate {
         return toReturn;
     }
 
-    protected Compiler createCompiler(Map<String, Object> appMap, WebConfiguration webConfig) {
+    protected Compiler createCompiler(FacesContext context) {
         Compiler newCompiler = new SAXCompiler();
 
-        loadDecorators(appMap, newCompiler);
+        loadDecorators(context, newCompiler);
 
         // Skip params?
-        newCompiler.setTrimmingComments(webConfig.isOptionEnabled(FaceletsSkipComments));
+        newCompiler.setTrimmingComments(FacesContextParam.FACELETS_SKIP_COMMENTS.isSet(context));
 
         addTagLibraries(newCompiler);
 
         return newCompiler;
     }
 
-    protected void loadDecorators(Map<String, Object> appMap, Compiler newCompiler) {
-        String decoratorsParamValue = webConfig.getOptionValue(FaceletsDecorators);
+    protected void loadDecorators(FacesContext context, Compiler newCompiler) {
+        String[] decorators = FacesContextParam.FACELETS_DECORATORS.getValue(context);
 
-        if (decoratorsParamValue != null) {
-            for (String decorator : split(appMap, decoratorsParamValue.trim(), ";")) {
-                try {
-                    newCompiler
-                            .addTagDecorator((TagDecorator) forName(decorator).getDeclaredConstructor().newInstance());
+        for (String decorator : decorators) {
+            try {
+                newCompiler
+                        .addTagDecorator((TagDecorator) forName(decorator).getDeclaredConstructor().newInstance());
 
-                    if (LOGGER.isLoggable(FINE)) {
-                        LOGGER.log(FINE, "Successfully Loaded Decorator: {0}", decorator);
-                    }
-                } catch (ReflectiveOperationException | IllegalArgumentException | SecurityException e) {
-                    if (LOGGER.isLoggable(SEVERE)) {
-                        LOGGER.log(SEVERE, "Error Loading Decorator: " + decorator, e);
-                    }
+                if (LOGGER.isLoggable(FINE)) {
+                    LOGGER.log(FINE, "Successfully Loaded Decorator: {0}", decorator);
+                }
+            } catch (ReflectiveOperationException | IllegalArgumentException | SecurityException e) {
+                if (LOGGER.isLoggable(SEVERE)) {
+                    LOGGER.log(SEVERE, "Error Loading Decorator: " + decorator, e);
                 }
             }
         }

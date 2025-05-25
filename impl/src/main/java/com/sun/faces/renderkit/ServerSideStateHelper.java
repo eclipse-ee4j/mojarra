@@ -19,7 +19,6 @@ package com.sun.faces.renderkit;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.AutoCompleteOffOnViewState;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableViewStateIdRendering;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.GenerateUniqueServerStateIds;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.SerializeServerState;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.NumberOfLogicalViews;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.NumberOfViews;
 import static com.sun.faces.context.SessionMap.getMutex;
@@ -50,6 +49,7 @@ import jakarta.faces.context.ResponseWriter;
 
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
+import com.sun.faces.context.FacesContextParam;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.LRUMap;
 import com.sun.faces.util.RequestStateManager;
@@ -327,7 +327,7 @@ public class ServerSideStateHelper extends StateHelper {
      * @return If option <code>SerializeServerState</code> is <code>true</code>, serialize and return the state, otherwise, return <code>state</code> unchanged.
      */
     protected Object handleSaveState(Object state) {
-        if (!webConfig.isOptionEnabled(SerializeServerState)) {
+        if (!FacesContextParam.SERIALIZE_SERVER_STATE.isSet(FacesContext.getCurrentInstance())) {
             return state;
         }
 
@@ -358,7 +358,7 @@ public class ServerSideStateHelper extends StateHelper {
      * de-serialize the state prior to returning it, otherwise return <code>state</code> as is.
      */
     protected Object handleRestoreState(Object state) {
-        if (!webConfig.isOptionEnabled(SerializeServerState)) {
+        if (!FacesContextParam.SERIALIZE_SERVER_STATE.isSet(FacesContext.getCurrentInstance())) {
             return state;
         }
 

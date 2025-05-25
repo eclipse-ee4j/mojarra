@@ -25,12 +25,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.facelets.FaceletContextImplBase;
-import com.sun.faces.facelets.TemplateClient;
-import com.sun.faces.facelets.el.VariableMapperWrapper;
-import com.sun.faces.facelets.tag.TagHandlerImpl;
-import com.sun.faces.util.FacesLogger;
-
 import jakarta.el.VariableMapper;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -38,6 +32,12 @@ import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagAttributeException;
 import jakarta.faces.view.facelets.TagConfig;
+
+import com.sun.faces.facelets.FaceletContextImplBase;
+import com.sun.faces.facelets.TemplateClient;
+import com.sun.faces.facelets.el.VariableMapperWrapper;
+import com.sun.faces.facelets.tag.TagHandlerImpl;
+import com.sun.faces.util.FacesLogger;
 
 /**
  * @author Jacob Hookom

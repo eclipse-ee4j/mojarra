@@ -16,10 +16,7 @@
 
 package com.sun.faces.lifecycle;
 
-import com.sun.faces.config.WebConfiguration;
-
 import jakarta.faces.application.Application;
-import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.PostConstructApplicationEvent;
@@ -28,10 +25,12 @@ import jakarta.faces.event.SystemEventListener;
 import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.faces.lifecycle.ClientWindowFactory;
 
+import com.sun.faces.application.JavaFlowLoaderHelper;
+import com.sun.faces.context.FacesContextParam;
+
 public class ClientWindowFactoryImpl extends ClientWindowFactory {
 
     private boolean isClientWindowEnabled = false;
-    private WebConfiguration config = null;
 
     public ClientWindowFactoryImpl() {
         super(null);
@@ -60,11 +59,8 @@ public class ClientWindowFactoryImpl extends ClientWindowFactory {
 
     private void postConstructApplicationInitialization() {
         FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext extContext = context.getExternalContext();
-        config = WebConfiguration.getInstance(extContext);
-        String optionValue = config.getOptionValue(WebConfiguration.WebContextInitParameter.ClientWindowMode);
-
-        isClientWindowEnabled = null != optionValue && "url".equals(optionValue);
+        String optionValue = FacesContextParam.CLIENT_WINDOW_MODE.getValue(context);
+        isClientWindowEnabled = "url".equals(optionValue) || JavaFlowLoaderHelper.isClientWindowModeForciblyEnabled(context);
     }
 
     @Override

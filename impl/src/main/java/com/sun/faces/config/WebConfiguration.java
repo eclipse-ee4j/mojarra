@@ -17,9 +17,7 @@
 
 package com.sun.faces.config;
 
-import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsSuffix;
 import static com.sun.faces.util.Util.split;
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyMap;
 import static java.util.logging.Level.FINE;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
@@ -33,7 +31,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,22 +44,13 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import jakarta.faces.FactoryFinder;
-import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.application.StateManager;
-import jakarta.faces.application.ViewHandler;
-import jakarta.faces.component.UIInput;
-import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.convert.Converter;
 import jakarta.faces.event.PhaseListener;
-import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.lifecycle.LifecycleFactory;
-import jakarta.faces.push.PushContext;
-import jakarta.faces.validator.BeanValidator;
-import jakarta.faces.webapp.FacesServlet;
 import jakarta.servlet.ServletContext;
 
 import com.sun.faces.application.ApplicationAssociate;
@@ -86,7 +74,7 @@ public class WebConfiguration {
     // Key under which we store our WebConfiguration instance.
     private static final String WEB_CONFIG_KEY = "com.sun.faces.config.WebConfiguration";
 
-    public static final String META_INF_CONTRACTS_DIR = "META-INF" + WebContextInitParameter.WebAppContractsDirectory.getDefaultValue();
+    public static final String META_INF_CONTRACTS_DIR = "META-INF" + ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE;
 
     private static final int META_INF_CONTRACTS_DIR_LEN = META_INF_CONTRACTS_DIR.length();
 
@@ -103,7 +91,7 @@ public class WebConfiguration {
 
     private final Map<WebEnvironmentEntry, String> envEntries = new EnumMap<>(WebEnvironmentEntry.class);
 
-    private final Map<WebContextInitParameter, String[]> cachedListParams;
+    private final Map<WebContextInitParameter, String[]> cachedListParams = new HashMap<>();
 
     private final Set<String> setParams = new HashSet<>();
 
@@ -130,12 +118,6 @@ public class WebConfiguration {
         if (canProcessJndiEntries()) {
             processJndiEntries(contextName);
         }
-
-        // build the cache of list type params
-        cachedListParams = new HashMap<>(3);
-        getOptionValue(WebContextInitParameter.ResourceExcludes, " ");
-        getOptionValue(WebContextInitParameter.FaceletsViewMappings, ";");
-        getOptionValue(WebContextInitParameter.FaceletsSuffix, " ");
 
         specificationVersion = getClass().getPackage().getSpecificationVersion();
     }
@@ -328,17 +310,6 @@ public class WebConfiguration {
             LOGGER.log(FINE, "Overriding init parameter {0}.  Changing from {1} to {2}.", new Object[] { param.getQualifiedName(), oldVal, value });
         }
 
-    }
-
-    /**
-     * @return the facelet suffixes.
-     */
-    public List<String> getConfiguredExtensions() {
-        String[] faceletsSuffix = getOptionValue(FaceletsSuffix, " ");
-
-        Set<String> deduplicatedFaceletsSuffixes = new LinkedHashSet<>(asList(faceletsSuffix));
-
-        return new ArrayList<>(deduplicatedFaceletsSuffixes);
     }
 
     public void overrideContextInitParameter(WebContextInitParameter param, String value) {
@@ -748,13 +719,6 @@ public class WebConfiguration {
         // if a parameter is to be deprecated, then the <name>Deprecated enum element *must* appear after the one that is taking
         // its place. The reporting logic depends on this.
 
-        StateSavingMethod(StateManager.STATE_SAVING_METHOD_PARAM_NAME, "server"),
-        FaceletsSuffix(ViewHandler.FACELETS_SUFFIX_PARAM_NAME, ViewHandler.DEFAULT_FACELETS_SUFFIX),
-        JakartaFacesConfigFiles(FacesServlet.CONFIG_FILES_ATTR, ""),
-        JakartaFacesProjectStage(ProjectStage.PROJECT_STAGE_PARAM_NAME, "Production"),
-        AlternateLifecycleId(FacesServlet.LIFECYCLE_ID_ATTR, ""),
-        ResourceExcludes(ResourceHandler.RESOURCE_EXCLUDES_PARAM_NAME, ResourceHandler.RESOURCE_EXCLUDES_DEFAULT_VALUE),
-        NumberOfClientWindows(ClientWindow.NUMBER_OF_CLIENT_WINDOWS_PARAM_NAME, "10"),
         NumberOfViews("com.sun.faces.numberOfViewsInSession", "15"),
         NumberOfLogicalViews("com.sun.faces.numberOfLogicalViews", "15"),
         NumberOfActiveViewMaps("com.sun.faces.numberOfActiveViewMaps", "25"),
@@ -763,7 +727,6 @@ public class WebConfiguration {
         NumberOfFlashesBetweenFlashReapings("com.sun.faces.numberOfFlashesBetweenFlashReapings", "5000"),
         InjectionProviderClass("com.sun.faces.injectionProvider", ""),
         SerializationProviderClass("com.sun.faces.serializationProvider", ""),
-        FaceletsBufferSize(ViewHandler.FACELETS_BUFFER_SIZE_PARAM_NAME, "1024"),
         ClientStateWriteBufferSize("com.sun.faces.clientStateWriteBufferSize", "8192"),
         ResourceBufferSize("com.sun.faces.resourceBufferSize", "2048"),
         ClientStateTimeout("com.sun.faces.clientStateTimeout", ""),
@@ -771,18 +734,10 @@ public class WebConfiguration {
         ResourceUpdateCheckPeriod("com.sun.faces.resourceUpdateCheckPeriod", "5"), // in minutes
         CompressableMimeTypes("com.sun.faces.compressableMimeTypes", ""),
         DisableUnicodeEscaping("com.sun.faces.disableUnicodeEscaping", "auto"),
-        FaceletsDefaultRefreshPeriod(ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, "0"), // this is default for non-prod; default for prod is set in WebConfiguration
-        FaceletsViewMappings(ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME, ""),
-        FaceletsLibraries(ViewHandler.FACELETS_LIBRARIES_PARAM_NAME, ""),
-        FaceletsDecorators(ViewHandler.FACELETS_DECORATORS_PARAM_NAME, ""),
         DuplicateJARPattern("com.sun.faces.duplicateJARPattern", ""),
-        ValidateEmptyFields(UIInput.VALIDATE_EMPTY_FIELDS_PARAM_NAME, "auto"),
         FullStateSavingViewIds(StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME, ""),
         AnnotationScanPackages("com.sun.faces.annotationScanPackages", ""),
         FaceletsProcessingFileExtensionProcessAs("", ""),
-        ClientWindowMode(ClientWindow.CLIENT_WINDOW_MODE_PARAM_NAME, "none"),
-        WebAppResourcesDirectory(ResourceHandler.WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME, "/resources"),
-        WebAppContractsDirectory(ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME, "/contracts"),
         ;
 
         private final String defaultValue;
@@ -848,14 +803,11 @@ public class WebConfiguration {
         // *must* appear after the one that is taking
         // its place. The reporting logic depends on this
 
-        AlwaysPerformValidationWhenRequiredTrue(UIInput.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE, false),
         DisplayConfiguration("com.sun.faces.displayConfiguration", false),
         ValidateFacesConfigFiles("com.sun.faces.validateXml", false),
         VerifyFacesConfigObjects("com.sun.faces.verifyObjects", false),
         ForceLoadFacesConfigFiles("com.sun.faces.forceLoadConfiguration", false),
         DisableClientStateEncryption("com.sun.faces.disableClientStateEncryption", false),
-        DisableFacesServletAutomaticMapping(FacesServlet.DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME, false),
-        AutomaticExtensionlessMapping(FacesServlet.AUTOMATIC_EXTENSIONLESS_MAPPING_PARAM_NAME, false),
         EnableClientStateDebugging("com.sun.faces.enableClientStateDebugging", false),
         PreferXHTMLContentType("com.sun.faces.preferXHTML", false),
         CompressViewState("com.sun.faces.compressViewState", true),
@@ -863,28 +815,20 @@ public class WebConfiguration {
         EnableScriptInAttributeValue("com.sun.faces.enableScriptsInAttributeValues", true),
         WriteStateAtFormEnd("com.sun.faces.writeStateAtFormEnd", true),
         EnableLazyBeanValidation("com.sun.faces.enableLazyBeanValidation", true),
-        SerializeServerState(StateManager.SERIALIZE_SERVER_STATE_PARAM_NAME, false),
         EnableViewStateIdRendering("com.sun.faces.enableViewStateIdRendering", true),
         RegisterConverterPropertyEditors("com.sun.faces.registerConverterPropertyEditors", false),
-        DisableDefaultBeanValidator(BeanValidator.DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME, false),
-        DateTimeConverterUsesSystemTimezone(Converter.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME, false),
         EnableHttpMethodRestrictionPhaseListener("com.sun.faces.ENABLE_HTTP_METHOD_RESTRICTION_PHASE_LISTENER", false),
-        FaceletsSkipComments(ViewHandler.FACELETS_SKIP_COMMENTS_PARAM_NAME, false),
         PartialStateSaving(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, true),
         GenerateUniqueServerStateIds("com.sun.faces.generateUniqueServerStateIds", true),
-        InterpretEmptyStringSubmittedValuesAsNull(UIInput.EMPTY_STRING_AS_NULL_PARAM_NAME, false),
         AutoCompleteOffOnViewState("com.sun.faces.autoCompleteOffOnViewState", false),
         EnableThreading("com.sun.faces.enableThreading", false),
         AllowTextChildren("com.sun.faces.allowTextChildren", false),
         CacheResourceModificationTimestamp("com.sun.faces.cacheResourceModificationTimestamp", false),
-        EnableDistributable("com.sun.faces.enableDistributable", false),
+        EnableDistributable("com.sun.faces.enableDistributable", false), // NOTE: this is indeed implicitly set to true when web.xml distributable is also set, see ConfigureListener.
         EnableMissingResourceLibraryDetection("com.sun.faces.enableMissingResourceLibraryDetection", false),
         DisableIdUniquenessCheck("com.sun.faces.disableIdUniquenessCheck", false),
         EnableTransitionTimeNoOpFlash("com.sun.faces.enableTransitionTimeNoOpFlash", false),
         ForceAlwaysWriteFlashCookie("com.sun.faces.forceAlwaysWriteFlashCookie", false),
-        ViewRootPhaseListenerQueuesException(UIViewRoot.VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS_PARAM_NAME, false),
-        EnableValidateWholeBean(BeanValidator.ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME, false),
-        EnableWebsocketEndpoint(PushContext.ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME, false),
         DisallowDoctypeDecl("com.sun.faces.disallowDoctypeDecl", false),
         UseFaceletsID("com.sun.faces.useFaceletsID",false),
         ;

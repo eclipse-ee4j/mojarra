@@ -18,17 +18,17 @@ package jakarta.faces.webapp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import com.sun.faces.junit.JUnitFacesTestCaseBase;
-import com.sun.faces.mock.MockRenderKit;
-
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
 import jakarta.servlet.http.HttpServletResponse;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.sun.faces.junit.JUnitFacesTestCaseBase;
+import com.sun.faces.mock.MockRenderKit;
 
 public class FacesServletTestCase extends JUnitFacesTestCaseBase {
 
