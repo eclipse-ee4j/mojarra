@@ -42,6 +42,12 @@ import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
 import com.sun.faces.util.FacesLogger;
@@ -49,12 +55,6 @@ import com.sun.faces.util.LRUMap;
 import com.sun.faces.util.RequestStateManager;
 import com.sun.faces.util.TypedCollections;
 import com.sun.faces.util.Util;
-
-import jakarta.faces.FacesException;
-import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.context.ExternalContext;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.context.ResponseWriter;
 
 /**
  * This <code>StateHelper</code> provides the functionality associated with server-side state saving, though in
@@ -214,9 +214,7 @@ public class ServerSideStateHelper extends StateHelper {
                 writer.writeAttribute("id", viewStateId, null);
             }
             writer.writeAttribute("value", id, null);
-            if (webConfig.isOptionEnabled(AutoCompleteOffOnViewState)) {
-                writer.writeAttribute("autocomplete", "off", null);
-            }
+            writer.writeAttribute("autocomplete", webConfig.isOptionEnabled(AutoCompleteOffOnViewState) ? "off" : "one-time-code", null);
             writer.endElement("input");
 
             writeClientWindowField(ctx, writer);
