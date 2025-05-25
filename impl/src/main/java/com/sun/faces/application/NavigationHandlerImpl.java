@@ -472,9 +472,7 @@ public class NavigationHandlerImpl extends NavigationHandler {
                 NavigationInfo info = new NavigationInfo();
                 if (!switches.isEmpty()) {
                     info.switches = new ConcurrentHashMap<>();
-                    for (Map.Entry<String, SwitchNode> cur : switches.entrySet()) {
-                        info.switches.put(cur.getKey(), cur.getValue());
-                    }
+                    info.switches.putAll(switches);
                 }
                 if (!navRules.isEmpty()) {
                     info.ruleSet = new NavigationMap();
