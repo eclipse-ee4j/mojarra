@@ -20,6 +20,7 @@ import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_RENDER_PARAM;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_RESET_VALUES_PARAM;
 import static jakarta.faces.FactoryFinder.VISIT_CONTEXT_FACTORY;
+import static jakarta.faces.component.visit.VisitHint.CLEAR_MODEL;
 import static jakarta.faces.component.visit.VisitHint.EXECUTE_LIFECYCLE;
 import static jakarta.faces.component.visit.VisitHint.SKIP_UNRENDERED;
 import static java.util.logging.Level.FINE;
@@ -37,20 +38,13 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.component.visit.PartialVisitContext;
-import com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.HtmlUtils;
-import com.sun.faces.util.Util;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.ResourceHandler;
-import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.behavior.AjaxBehavior;
 import jakarta.faces.component.visit.VisitCallback;
 import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitContextFactory;
@@ -62,10 +56,18 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.PartialResponseWriter;
 import jakarta.faces.context.PartialViewContext;
 import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.BehaviorEvent;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.component.visit.PartialVisitContext;
+import com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.HtmlUtils;
+import com.sun.faces.util.Util;
 
 public class PartialViewContextImpl extends PartialViewContext {
 
@@ -73,7 +75,8 @@ public class PartialViewContextImpl extends PartialViewContext {
     private static final Logger LOGGER = FacesLogger.CONTEXT.getLogger();
 
     private static final Set<VisitHint> SKIP_UNRENDERED_AND_EXECUTE_LIFECYCLE_HINTS = EnumSet.of(SKIP_UNRENDERED, EXECUTE_LIFECYCLE);
-
+    private static final VisitHint[] SKIP_UNRENDERED_AND_CLEAR_MODEL_HINTS = { SKIP_UNRENDERED, CLEAR_MODEL };
+    private static final VisitHint[] SKIP_UNRENDERED_HINT = { SKIP_UNRENDERED };
 
     private boolean released;
 
@@ -86,6 +89,7 @@ public class PartialViewContextImpl extends PartialViewContext {
     private Boolean partialRequest;
     private Boolean renderAll;
     private FacesContext ctx;
+    private List<AjaxBehavior> queuedAjaxBehaviors;
 
     private static final String ORIGINAL_WRITER = "com.sun.faces.ORIGINAL_WRITER";
 
@@ -267,10 +271,17 @@ public class PartialViewContextImpl extends PartialViewContext {
             // partial response writer. We want to make sure that any content
             // or errors generated in the other phases are written using the
             // partial response writer.
-            //
+            // Also collect all queued ajax behaviors.
             if (phaseId == PhaseId.APPLY_REQUEST_VALUES) {
                 PartialResponseWriter writer = pvc.getPartialResponseWriter();
                 ctx.setResponseWriter(writer);
+                queuedAjaxBehaviors = viewRoot.getQueuedEvents().values().stream().flatMap(List::stream)
+                        .filter(BehaviorEvent.class::isInstance)
+                        .map(BehaviorEvent.class::cast)
+                        .map(BehaviorEvent::getBehavior)
+                        .filter(AjaxBehavior.class::isInstance)
+                        .map(AjaxBehavior.class::cast)
+                        .toList();
             }
 
         } else if (phaseId == PhaseId.RENDER_RESPONSE) {
@@ -291,7 +302,8 @@ public class PartialViewContextImpl extends PartialViewContext {
                 writer.startDocument();
 
                 if (isResetValues()) {
-                    viewRoot.resetValues(ctx, myRenderIds, SKIP_UNRENDERED);
+                    boolean clearModel = queuedAjaxBehaviors != null && queuedAjaxBehaviors.stream().anyMatch(AjaxBehavior::isClearModel);
+                    viewRoot.resetValues(ctx, myRenderIds, clearModel ? SKIP_UNRENDERED_AND_CLEAR_MODEL_HINTS : SKIP_UNRENDERED_HINT);
                 }
 
                 if (isRenderAll()) {
@@ -362,7 +374,7 @@ public class PartialViewContextImpl extends PartialViewContext {
         evalScripts = null;
         ctx = null;
         partialRequest = null;
-
+        queuedAjaxBehaviors = null;
     }
 
     // -------------------------------------------------------- Private Methods
