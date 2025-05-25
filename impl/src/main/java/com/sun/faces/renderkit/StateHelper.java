@@ -27,6 +27,13 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.logging.Logger;
 
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.lifecycle.ClientWindow;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.render.ResponseStateManager;
+import jakarta.servlet.http.HttpSession;
+
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.spi.SerializationProvider;
@@ -34,13 +41,6 @@ import com.sun.faces.spi.SerializationProviderFactory;
 import com.sun.faces.util.ByteArrayGuardAESCTR;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
-
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.context.ResponseWriter;
-import jakarta.faces.lifecycle.ClientWindow;
-import jakarta.faces.render.RenderKitFactory;
-import jakarta.faces.render.ResponseStateManager;
-import jakarta.servlet.http.HttpSession;
 
 /**
  * Common code for the default <code>StateHelper</code> implementations.
@@ -213,9 +213,7 @@ public abstract class StateHelper {
             writer.writeAttribute("name", CLIENT_WINDOW_PARAM.getName(context), null);
             writer.writeAttribute("id", Util.getClientWindowId(context), null);
             writer.writeAttribute("value", window.getId(), null);
-            if (webConfig.isOptionEnabled(AutoCompleteOffOnViewState)) {
-                writer.writeAttribute("autocomplete", "off", null);
-            }
+            writer.writeAttribute("autocomplete", webConfig.isOptionEnabled(AutoCompleteOffOnViewState) ? "off" : "one-time-code", null);
             writer.endElement("input");
         }
     }

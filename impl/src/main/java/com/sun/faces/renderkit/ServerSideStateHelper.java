@@ -214,9 +214,7 @@ public class ServerSideStateHelper extends StateHelper {
                 writer.writeAttribute("id", viewStateId, null);
             }
             writer.writeAttribute("value", id, null);
-            if (webConfig.isOptionEnabled(AutoCompleteOffOnViewState)) {
-                writer.writeAttribute("autocomplete", "off", null);
-            }
+            writer.writeAttribute("autocomplete", webConfig.isOptionEnabled(AutoCompleteOffOnViewState) ? "off" : "one-time-code", null);
             writer.endElement("input");
 
             writeClientWindowField(ctx, writer);
