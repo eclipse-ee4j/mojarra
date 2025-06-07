@@ -44,6 +44,7 @@
         <module>issue5515</module>
         <module>issue5541</module>
         <module>issue5543</module>
+        <module>issue5584</module>
     </modules>
 
     <properties>
