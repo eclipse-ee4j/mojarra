@@ -16,16 +16,9 @@
 
 package com.sun.faces.facelets.tag;
 
+import static com.sun.faces.facelets.tag.faces.CompositeComponentTagHandler.LOCATION_KEY;
 import static com.sun.faces.util.MessageUtils.ARGUMENTS_NOT_LEGAL_CC_ATTRS_EXPR;
-
-import com.sun.faces.el.ELUtils;
-import com.sun.faces.facelets.el.ContextualCompositeMethodExpression;
-import com.sun.faces.facelets.el.ContextualCompositeValueExpression;
-import com.sun.faces.facelets.el.ELText;
-import com.sun.faces.facelets.el.TagMethodExpression;
-import com.sun.faces.facelets.el.TagValueExpression;
-import com.sun.faces.util.MessageUtils;
-import com.sun.faces.util.Util;
+import static java.util.Optional.ofNullable;
 
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
@@ -39,6 +32,15 @@ import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagAttributeException;
+
+import com.sun.faces.el.ELUtils;
+import com.sun.faces.facelets.el.ContextualCompositeMethodExpression;
+import com.sun.faces.facelets.el.ContextualCompositeValueExpression;
+import com.sun.faces.facelets.el.ELText;
+import com.sun.faces.facelets.el.TagMethodExpression;
+import com.sun.faces.facelets.el.TagValueExpression;
+import com.sun.faces.util.MessageUtils;
+import com.sun.faces.util.Util;
 
 /**
  * Representation of a Tag's attribute in a Facelet File
@@ -341,7 +343,8 @@ public class TagAttributeImpl extends TagAttribute {
                     String message = MessageUtils.getExceptionMessageString(ARGUMENTS_NOT_LEGAL_CC_ATTRS_EXPR);
                     throw new TagAttributeException(this, message);
                 }
-                return new TagValueExpression(this, new ContextualCompositeValueExpression(getLocation(), delegate));
+                Location location = ofNullable((Location) ctx.getAttribute(LOCATION_KEY)).orElse(getLocation());
+                return new TagValueExpression(this, new ContextualCompositeValueExpression(location, delegate));
             } else {
                 return new TagValueExpression(this, delegate);
             }
