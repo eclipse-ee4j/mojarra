@@ -2,6 +2,7 @@ package com.sun.faces.util;
 
 import static com.sun.faces.util.HtmlUtils.isAllowedXmlCharacter;
 import static java.lang.Character.toChars;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -127,6 +128,15 @@ class HtmlUtilsTest {
         assertEquals("&#55357;&#56379;&#8205;&#10052;&#65039;", writeAttributeForXML("🐻‍❄️"));
     }
 
+    /**
+     * https://github.com/eclipse-ee4j/mojarra/issues/5585
+     */
+    @Test
+    void testWriteURLWithQuestionMarkInFragment() {
+        assertEquals("https://server.com/sap?query#fragment?p=v", writeURL("https://server.com/sap?query#fragment?p=v"));
+        assertEquals("https://server.com/sap?query=foo%3Fbar#fragment?p=v", writeURL("https://server.com/sap?query=foo?bar#fragment?p=v"));
+    }
+
     private static String writeUnescapedTextForXML(String string) {
         return write(output -> HtmlUtils.writeUnescapedTextForXML(output, string));
     }
@@ -137,6 +147,10 @@ class HtmlUtilsTest {
 
     private static String writeAttributeForXML(String string) {
         return write(output -> HtmlUtils.writeAttribute(output, true, true, new char[16], string, new char[1024], false, true));
+    }
+
+    private static String writeURL(String string) {
+        return write(output -> HtmlUtils.writeURL(output, string, new char[string.length()], UTF_8.name()));
     }
 
     private static String write(ThrowingConsumer<Writer> output) {
