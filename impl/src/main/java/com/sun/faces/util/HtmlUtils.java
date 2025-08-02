@@ -611,11 +611,16 @@ public class HtmlUtils {
         MyByteArrayOutputStream buf = null;
         OutputStreamWriter writer = null;
         char[] charArray = null;
+        boolean fragment = false;
 
         int length = text.length();
         for (int i = start; i < length; i++) {
             char ch = text.charAt(i);
-            if (DONT_ENCODE_SET.get(ch)) {
+            if (DONT_ENCODE_SET.get(ch) || (fragment && ch == '?')) {
+                if (ch == '#') {
+                    fragment = true; // RFC3986 section 3.5
+                }
+
                 if (ch == '&') {
                     if (i + 1 < length && isAmpEscaped(text, i + 1)) {
                         out.write(ch);
@@ -667,10 +672,15 @@ public class HtmlUtils {
         MyByteArrayOutputStream buf = null;
         OutputStreamWriter writer = null;
         char[] charArray = null;
+        boolean fragment = false;
 
         for (int i = start; i < end; i++) {
             char ch = textBuff[i];
-            if (DONT_ENCODE_SET.get(ch)) {
+            if (DONT_ENCODE_SET.get(ch) || (fragment && ch == '?')) {
+                if (ch == '#') {
+                    fragment = true; // RFC3986 section 3.5
+                }
+
                 if (ch == '&') {
                     if (i + 1 < end && isAmpEscaped(textBuff, i + 1)) {
                         out.write(ch);
