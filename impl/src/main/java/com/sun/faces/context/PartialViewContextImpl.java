@@ -22,6 +22,7 @@ import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter
 import static jakarta.faces.FactoryFinder.VISIT_CONTEXT_FACTORY;
 import static jakarta.faces.component.visit.VisitHint.EXECUTE_LIFECYCLE;
 import static jakarta.faces.component.visit.VisitHint.SKIP_UNRENDERED;
+import static java.util.Collections.emptySet;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.WARNING;
 
@@ -36,13 +37,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.sun.faces.RIConstants;
-import com.sun.faces.component.visit.PartialVisitContext;
-import com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.HtmlUtils;
-import com.sun.faces.util.Util;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
@@ -66,6 +60,13 @@ import jakarta.faces.event.PhaseId;
 import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.component.visit.PartialVisitContext;
+import com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.HtmlUtils;
+import com.sun.faces.util.Util;
 
 public class PartialViewContextImpl extends PartialViewContext {
 
@@ -410,7 +411,7 @@ public class PartialViewContextImpl extends PartialViewContext {
 
         // Note that we use the SKIP_UNRENDERED hint as
         // we only want to visit the rendered subtree.
-        Set<VisitHint> hints = executeLifecycle ? SKIP_UNRENDERED_AND_EXECUTE_LIFECYCLE_HINTS : SKIP_UNRENDERED_HINT;
+        Set<VisitHint> hints = executeLifecycle ? SKIP_UNRENDERED_AND_EXECUTE_LIFECYCLE_HINTS : emptySet();
         VisitContextFactory visitContextFactory = (VisitContextFactory) FactoryFinder.getFactory(VISIT_CONTEXT_FACTORY);
         return visitContextFactory.getVisitContext(context, clientIds, hints);
     }

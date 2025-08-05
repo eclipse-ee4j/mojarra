@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) Contributors to Eclipse Foundation.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<html xmlns:ui="jakarta.faces.facelets"
+      xmlns:f="jakarta.faces.core"
+      xmlns:h="jakarta.faces.html"
+>
+    <h:head>
+        <title>Mojarra issue 5576</title>
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <h:messages id="messages" />
+        
+            <h:selectOneMenu id="group" value="#{issue5576.group}" required="true" label="Group">
+                <f:selectItem itemValue="" itemLabel="- Select group -" />
+                <f:selectItem itemValue="Group1" itemLabel="Group1" />
+                <f:selectItem itemValue="Group2" itemLabel="Group2" />
+                <f:ajax render="groups" />
+            </h:selectOneMenu>
+            
+            <h:panelGroup id="groups" layout="block">
+                <ui:fragment rendered="#{issue5576.group eq 'Group1'}">
+                    <h3>Group1</h3>
+                    <h:selectOneMenu id="subgroup11" value="#{issue5576.subgroup1Item1}" required="true" label="Item1">
+                        <f:selectItem itemValue="" itemLabel="- Select value -" />
+                        <f:selectItem itemValue="Item1" itemLabel="Item1" />
+                        <f:selectItem itemValue="Item2" itemLabel="Item2" />
+                        <f:ajax render="subgroup12" />
+                    </h:selectOneMenu>
+                    <h:selectOneMenu id="subgroup12" value="#{issue5576.subgroup1Item2}" disabled="#{empty issue5576.subgroup1Item1}" required="true" label="Item2">
+                        <f:selectItem itemValue="" itemLabel="- Select value -" />
+                        <f:selectItem itemValue="Item1" itemLabel="Item1" />
+                        <f:selectItem itemValue="Item2" itemLabel="Item2" />
+                    </h:selectOneMenu>
+                </ui:fragment>
+                <ui:fragment rendered="#{issue5576.group eq 'Group2'}">
+                    <h3>Group2</h3>
+                    <h:selectOneMenu id="subgroup21" value="#{issue5576.subgroup2Item1}" required="true" label="Item1">
+                        <f:selectItem itemValue="" itemLabel="- Select value -" />
+                        <f:selectItem itemValue="Item1" itemLabel="Item1" />
+                        <f:selectItem itemValue="Item2" itemLabel="Item2" />
+                    </h:selectOneMenu>
+                </ui:fragment>
+            </h:panelGroup>
+
+            <h:inputText id="string1" value="#{issue5576.string1}" required="true" label="Text"/>
+            <br/>
+            <h:commandButton id="save" value="Save">
+                <f:ajax execute="@form" render="@form" listener="#{issue5576.save}" />
+            </h:commandButton>
+            <h:commandButton id="clean" value="Clean">
+                <f:ajax render="@form" listener="#{issue5576.clean}" resetValues="true"/>
+            </h:commandButton>
+        </h:form>
+
+    </h:body>
+</html>
