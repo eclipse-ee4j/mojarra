@@ -37,17 +37,9 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.component.visit.PartialVisitContext;
-import com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.HtmlUtils;
-import com.sun.faces.util.Util;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.ResourceHandler;
-import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
@@ -66,6 +58,13 @@ import jakarta.faces.event.PhaseId;
 import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.component.visit.PartialVisitContext;
+import com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.HtmlUtils;
+import com.sun.faces.util.Util;
 
 public class PartialViewContextImpl extends PartialViewContext {
 
@@ -291,7 +290,7 @@ public class PartialViewContextImpl extends PartialViewContext {
                 writer.startDocument();
 
                 if (isResetValues()) {
-                    viewRoot.resetValues(ctx, myRenderIds, SKIP_UNRENDERED);
+                    viewRoot.resetValues(ctx, myRenderIds);
                 }
 
                 if (isRenderAll()) {
