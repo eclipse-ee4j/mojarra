@@ -48,6 +48,7 @@ import jakarta.faces.component.UniqueIdVendor;
 import jakarta.faces.component.ValueHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.AttachedObjectHandler;
+import jakarta.faces.view.Location;
 import jakarta.faces.view.ViewDeclarationLanguage;
 import jakarta.faces.view.ViewDeclarationLanguageFactory;
 import jakarta.faces.view.facelets.ComponentConfig;
@@ -77,6 +78,8 @@ import com.sun.faces.util.Util;
  * </p>
  */
 public class CompositeComponentTagHandler extends ComponentHandler implements CreateComponentDelegate {
+
+    public static final String LOCATION_KEY = "CompositeComponentTagHandler.location";
 
     private static final Logger LOGGER = FacesLogger.TAGLIB.getLogger();
     private Resource ccResource;
@@ -294,7 +297,8 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
     private void applyCompositeComponent(FaceletContext ctx, UIComponent c) throws IOException {
 
         FacesContext facesContext = ctx.getFacesContext();
-        VariableMapper orig = ctx.getVariableMapper();
+        VariableMapper parentVariableMapper = ctx.getVariableMapper();
+        Location parentLocation = (Location) ctx.getAttribute(LOCATION_KEY);
 
         UIPanel facetComponent;
         if (ComponentHandler.isNew(c)) {
@@ -308,7 +312,8 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
         assert null != facetComponent;
 
         try {
-            VariableMapper wrapper = new VariableMapperWrapper(orig) {
+            ctx.setAttribute(LOCATION_KEY, new Location(ccResource.getLibraryName() + "/" + ccResource.getResourceName(), 0, 0));
+            VariableMapper wrapper = new VariableMapperWrapper(parentVariableMapper) {
 
                 @Override
                 public ValueExpression resolveVariable(String variable) {
@@ -324,7 +329,8 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
              */
             ctx.includeFacelet(facetComponent, ccResource.getURL());
         } finally {
-            ctx.setVariableMapper(orig);
+            ctx.setVariableMapper(parentVariableMapper);
+            ctx.setAttribute(LOCATION_KEY, parentLocation);
         }
     }
 
