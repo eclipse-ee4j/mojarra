@@ -17,9 +17,7 @@
 
 package com.sun.faces.mock;
 
-import java.beans.FeatureDescriptor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Iterator;
 import java.util.Map;
 
 import jakarta.el.ELContext;
@@ -27,7 +25,6 @@ import jakarta.el.ELException;
 import jakarta.el.ELResolver;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.validator.BeanValidatorTestCase.TestBean;
 
 import org.apache.commons.beanutils.PropertyUtils;
 
@@ -139,11 +136,6 @@ public class MockELResolver extends ELResolver {
 
     @Override
     public Class<?> getType(ELContext context, Object base, Object property) throws ELException {
-        if (base instanceof TestBean && "message".equals(property)) {
-            context.setPropertyResolved(true);
-            return String.class;
-        }
-
         return null;
     }
 
