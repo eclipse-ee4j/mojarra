@@ -368,6 +368,7 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
                             runScript(head, loadedScriptUrls, scripts, index + 1); // Run next script.
                         }
                     };
+                    scriptNode.nonce = "test";
                     head.appendChild(scriptNode); // add it to end of the head (and don't remove it)
                     scriptLoadedViaUrl = true;
                 }
@@ -380,6 +381,7 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
                     const scriptNode = document.createElement('script');
                     // scriptNode.type = 'text/javascript';
                     scriptNode.text = script; // add the code to the script node
+                    scriptNode.nonce = "test";
                     head.appendChild(scriptNode); // add it to the head
                     head.removeChild(scriptNode); // then remove it
                 }
@@ -3148,3 +3150,13 @@ mojarra.l = function l(l) {
 
 };
 
+/**
+ * Add event listener.
+ *
+ * @param id element id
+ * @param ev event name
+ * @param fn function
+ */
+mojarra.ael = function ael(id, ev, fn) {
+    document.getElementById(id).addEventListener(ev, fn);
+};

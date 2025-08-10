@@ -18,17 +18,18 @@ package com.sun.faces.renderkit.html_basic;
 
 import java.io.IOException;
 
+import jakarta.faces.application.NavigationCase;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+
 import com.sun.faces.RIConstants;
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
-
-import jakarta.faces.application.NavigationCase;
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.context.ResponseWriter;
 
 public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
 
@@ -68,6 +69,16 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
 
         String label = getLabel(component);
 
+        // value should be used even for image type for accessibility (e.g., images disabled in browser)
+        writer.writeAttribute("value", label, "value");
+
+        String styleClass = (String) component.getAttributes().get("styleClass");
+        if (styleClass != null && styleClass.length() > 0) {
+            writer.writeAttribute("class", styleClass, "styleClass");
+        }
+
+        renderPassThruAttributes(context, writer, component, ATTRIBUTES, null);
+
         if (!Util.componentIsDisabled(component)) {
             NavigationCase navCase = getNavigationCase(context, component);
 
@@ -78,19 +89,9 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
             } else {
                 String hrefVal = getEncodedTargetURL(context, component, navCase);
                 hrefVal += getFragment(component);
-                writer.writeAttribute("onclick", getOnclick(component, hrefVal), "onclick");
+                RenderKitUtils.addEventListener(context, component, HtmlDocumentElementEvent.click.name(), getOnclick(component, hrefVal));
             }
         }
-
-        // value should be used even for image type for accessibility (e.g., images disabled in browser)
-        writer.writeAttribute("value", label, "value");
-
-        String styleClass = (String) component.getAttributes().get("styleClass");
-        if (styleClass != null && styleClass.length() > 0) {
-            writer.writeAttribute("class", styleClass, "styleClass");
-        }
-
-        renderPassThruAttributes(context, writer, component, ATTRIBUTES, null);
 
         if (component.getChildCount() == 0) {
             writer.endElement("input");

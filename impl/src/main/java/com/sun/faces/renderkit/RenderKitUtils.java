@@ -76,6 +76,7 @@ import com.sun.faces.RIConstants;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.el.ELUtils;
 import com.sun.faces.facelets.util.DevTools;
+import com.sun.faces.renderkit.html_basic.ScriptRenderer;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.RequestStateManager;
 import com.sun.faces.util.Util;
@@ -345,10 +346,10 @@ public class RenderKitUtils {
         }
     }
 
-    // Renders the onchange handler for input components. Handles
+    // Renders the onchange event listener for input components. Handles
     // chaining together the user-provided onchange handler with
     // any Behavior scripts.
-    public static void renderOnchange(FacesContext context, UIComponent component, boolean incExec) throws IOException {
+    public static void renderOnchangeEventListener(FacesContext context, UIComponent component, boolean incExec) throws IOException {
 
         final String handlerName = "onchange";
         final Object userHandler = component.getAttributes().get(handlerName);
@@ -368,11 +369,11 @@ public class RenderKitUtils {
             params = new LinkedList<>();
             params.add(new ClientBehaviorContext.Parameter("incExec", true));
         }
-        renderHandler(context, component, params, handlerName, userHandler, behaviorEventName, null, false, incExec);
+        renderEventListener(context, component, params, handlerName, userHandler, behaviorEventName, domEventName, null, false, incExec);
     }
 
-    // Renders onclick handler for SelectRaidio and SelectCheckbox
-    public static void renderSelectOnclick(FacesContext context, UIComponent component, boolean incExec) throws IOException {
+    // Renders onclick event listener for SelectRaidio and SelectCheckbox
+    public static void renderSelectOnclickEventListener(FacesContext context, UIComponent component, boolean incExec) throws IOException {
 
         final String handlerName = "onclick";
         final Object userHandler = component.getAttributes().get(handlerName);
@@ -392,13 +393,13 @@ public class RenderKitUtils {
             params = new LinkedList<>();
             params.add(new ClientBehaviorContext.Parameter("incExec", true));
         }
-        renderHandler(context, component, params, handlerName, userHandler, behaviorEventName, null, false, incExec);
+        renderEventListener(context, component, params, handlerName, userHandler, behaviorEventName, domEventName, null, false, incExec);
     }
 
-    // Renders the onclick handler for command buttons. Handles
+    // Renders the onclick event listener for command buttons. Handles
     // chaining together the user-provided onclick handler, any
     // Behavior scripts, plus the default button submit script.
-    public static void renderOnclick(FacesContext context, UIComponent component, Collection<ClientBehaviorContext.Parameter> params, String submitTarget,
+    public static void renderOnclickEventListener(FacesContext context, UIComponent component, Collection<ClientBehaviorContext.Parameter> params, String submitTarget,
             boolean needsSubmit) throws IOException {
 
         final String handlerName = "onclick";
@@ -419,18 +420,17 @@ public class RenderKitUtils {
             }
         }
 
-        renderHandler(context, component, params, handlerName, userHandler, behaviorEventName, submitTarget, needsSubmit, false);
+        renderEventListener(context, component, params, handlerName, userHandler, behaviorEventName, domEventName, submitTarget, needsSubmit, false);
     }
 
-    // Renders the script function for command scripts.
+    // Renders the script element with the function for command scripts.
     public static void renderFunction(FacesContext context, UIComponent component, Collection<ClientBehaviorContext.Parameter> params, String submitTarget)
             throws IOException {
 
         ClientBehaviorContext behaviorContext = ClientBehaviorContext.createClientBehaviorContext(context, component, FacesComponentEvent.action.name(), submitTarget, params);
         AjaxBehavior behavior = (AjaxBehavior) context.getApplication().createBehavior(AjaxBehavior.BEHAVIOR_ID);
         mapAttributes(component, behavior, "execute", "render", "onerror", "onevent", "resetValues");
-
-        context.getResponseWriter().append(behavior.getScript(behaviorContext));
+        renderScript(context, component, null, behavior.getScript(behaviorContext));
     }
 
     private static void mapAttributes(UIComponent component, AjaxBehavior behavior, String... attributeNames) {
@@ -624,7 +624,7 @@ public class RenderKitUtils {
                     Attribute attr = knownAttributes[index];
 
                     if (isBehaviorEventAttribute(attr, behaviorEventName)) {
-                        renderHandler(context, component, null, name, value, behaviorEventName, null, false, false);
+                        renderEventListener(context, component, null, name, value, behaviorEventName, behaviorEventName, null, false, false);
 
                         renderedBehavior = true;
                     } else {
@@ -636,7 +636,7 @@ public class RenderKitUtils {
                 Object value = attrMap.get(name);
                 if (value != null && shouldRenderAttribute(value)) {
                     if (name.substring(2).equals(behaviorEventName)) {
-                        renderHandler(context, component, null, name, value, behaviorEventName, null, false, false);
+                        renderEventListener(context, component, null, name, value, behaviorEventName, behaviorEventName, null, false, false);
 
                         renderedBehavior = true;
                     } else {
@@ -668,7 +668,7 @@ public class RenderKitUtils {
                 String attrName = attribute.getName();
                 String[] events = attribute.getEvents();
                 if (events != null && events.length > 0 && behaviorEventName.equals(events[0])) {
-                    renderHandler(context, component, null, attrName, null, behaviorEventName, null, false, false);
+                    renderEventListener(context, component, null, attrName, null, behaviorEventName, behaviorEventName, null, false, false);
                     return;
                 }
             }
@@ -730,7 +730,7 @@ public class RenderKitUtils {
             // If we've got a behavior for this attribute,
             // we may need to chain scripts together, so use
             // renderHandler().
-            renderHandler(context, component, null, attrName, value, eventName, null, false, false);
+            renderEventListener(context, component, null, attrName, value, eventName, eventName, null, false, false);
         }
     }
 
@@ -1540,7 +1540,7 @@ public class RenderKitUtils {
         builder.append("')");
 
         if (preventDefault) {
-            builder.append(";return false");
+            builder.append(";event.preventDefault()");
         }
 
         return builder.toString();
@@ -1578,10 +1578,10 @@ public class RenderKitUtils {
         builder.append(")");
 
         // If we're submitting (either via a behavior, or by rendering
-        // a submit script), we need to return false to prevent the
-        // default button/link action.
+        // a submit script), we need to prevent the
+        // default button/link action event.
         if (submitting && (FacesComponentEvent.action.name().equals(behaviorEventName) || HtmlDocumentElementEvent.click.name().equals(behaviorEventName))) {
-            builder.append(";return false");
+            builder.append(";event.preventDefault()");
         }
 
         return builder.toString();
@@ -1602,7 +1602,7 @@ public class RenderKitUtils {
                 script = getSubmitHandler(context, component, params, submitTarget, preventDefault);
             }
         } else if (preventDefault) {
-            script = script + ";return false";
+            script = script + ";event.preventDefault()";
         }
 
         return script;
@@ -1631,15 +1631,16 @@ public class RenderKitUtils {
      * @param handlerValue the user-specified value for the handler attribute
      * @param behaviorEventName the name of the behavior event that corresponds to this handler (eg. "action" or
      * "mouseover").
+     * @param domEventName the name of the DOM event that corresponds to this handler (eg. "click" or
+     * "change").
      * @param needsSubmit indicates whether the mojarra.cljs() "submit" script is required by the component. Most
      * components do not need this, either because they submit themselves (eg. commandButton), or because they do not
      * perform submits (eg. non-command components). This flag is mainly here for the commandLink case, where we need to
      * render the submit script to make the link submit.
      */
-    private static void renderHandler(FacesContext context, UIComponent component, Collection<ClientBehaviorContext.Parameter> params, String handlerName,
-            Object handlerValue, String behaviorEventName, String submitTarget, boolean needsSubmit, boolean includeExec) throws IOException {
+    private static void renderEventListener(FacesContext context, UIComponent component, Collection<ClientBehaviorContext.Parameter> params, String handlerName,
+            Object handlerValue, String behaviorEventName, String domEventName, String submitTarget, boolean needsSubmit, boolean includeExec) throws IOException {
 
-        ResponseWriter writer = context.getResponseWriter();
         String userHandler = getNonEmptyUserHandler(handlerValue);
         List<ClientBehavior> behaviors = getClientBehaviors(component, behaviorEventName);
 
@@ -1673,7 +1674,33 @@ public class RenderKitUtils {
             assert false;
         }
 
-        writer.writeAttribute(handlerName, handler, null);
+        addEventListener(context, component, domEventName, handler);
+    }
+
+    public static void addEventListener(FacesContext context, UIComponent component, String domEventName, String function) throws IOException {
+        StringBuilder script = new StringBuilder("mojarra.ael('")
+            .append(component.getClientId(context))
+            .append("','")
+            .append(domEventName)
+            .append("',()=>{" + function + "})");
+        renderScript(context, component, null, script.toString());
+    }
+
+    public static void renderScript(FacesContext context, UIComponent component, String clientId, String script) throws IOException {
+        ResponseWriter writer = context.getResponseWriter();
+
+        writer.startElement("script", component);
+
+        if (clientId != null) {
+            writer.writeAttribute("id", clientId, "id");
+        }
+
+        if (!RenderKitUtils.isOutputHtml5Doctype(context)) {
+            writer.writeAttribute("type", ScriptRenderer.DEFAULT_CONTENT_TYPE, "type");
+        }
+
+        writer.writeText(script, component, null);
+        writer.endElement("script");
     }
 
     // Determines the type of handler to render based on what sorts of

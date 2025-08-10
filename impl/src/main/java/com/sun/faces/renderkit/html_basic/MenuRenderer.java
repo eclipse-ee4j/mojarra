@@ -20,7 +20,7 @@ package com.sun.faces.renderkit.html_basic;
 
 import static com.sun.faces.RIConstants.NO_VALUE;
 import static com.sun.faces.renderkit.RenderKitUtils.getSelectItems;
-import static com.sun.faces.renderkit.RenderKitUtils.renderOnchange;
+import static com.sun.faces.renderkit.RenderKitUtils.renderOnchangeEventListener;
 import static com.sun.faces.renderkit.RenderKitUtils.renderPassThruAttributes;
 import static com.sun.faces.renderkit.RenderKitUtils.renderXHTMLStyleBooleanAttributes;
 import static com.sun.faces.util.MessageUtils.CONVERSION_ERROR_MESSAGE_ID;
@@ -664,7 +664,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         renderPassThruAttributes(context, writer, component, ATTRIBUTES, getNonOnChangeBehaviors(component));
         renderXHTMLStyleBooleanAttributes(writer, component);
 
-        renderOnchange(context, component, false);
+        renderOnchangeEventListener(context, component, false);
 
         // Now, write the buffered option content
         writer.write(bufferedWriter.toString());

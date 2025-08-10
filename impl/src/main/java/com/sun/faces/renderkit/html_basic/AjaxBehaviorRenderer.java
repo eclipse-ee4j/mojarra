@@ -210,13 +210,12 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer {
         ajaxCommand.append("mojarra.ab(");
 
         if (sourceId == null) {
-            ajaxCommand.append("this");
-        } else {
-            ajaxCommand.append("'");
-            ajaxCommand.append(sourceId);
-            ajaxCommand.append("'");
+            sourceId = component.getClientId();
         }
 
+        ajaxCommand.append("'");
+        ajaxCommand.append(sourceId);
+        ajaxCommand.append("'");
         ajaxCommand.append(",");
         ajaxCommand.append(commandScript == null ? "event" : "null");
         ajaxCommand.append(",'");

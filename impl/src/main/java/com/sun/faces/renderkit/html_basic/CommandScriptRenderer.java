@@ -22,8 +22,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
-import com.sun.faces.renderkit.RenderKitUtils;
-
 import jakarta.faces.component.UICommand;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.html.HtmlCommandScript;
@@ -31,6 +29,8 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.PhaseId;
+
+import com.sun.faces.renderkit.RenderKitUtils;
 
 /**
  * <b>CommandScriptRenderer</b> is a class that renders the current value of <code>UICommand</code> as a Script that acts
@@ -90,11 +90,6 @@ public class CommandScriptRenderer extends HtmlBasicRenderer {
 
         writer.startElement("span", commandScript);
         writer.writeAttribute("id", clientId, "id");
-        writer.startElement("script", commandScript);
-        
-        if (!RenderKitUtils.isOutputHtml5Doctype(context)) {
-            writer.writeAttribute("type", ScriptRenderer.DEFAULT_CONTENT_TYPE, "type");
-        }
 
         RenderKitUtils.renderFunction(context, component, getBehaviorParameters(commandScript), clientId);
     }
@@ -110,7 +105,6 @@ public class CommandScriptRenderer extends HtmlBasicRenderer {
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
 
-        writer.endElement("script");
         writer.endElement("span");
     }
 
