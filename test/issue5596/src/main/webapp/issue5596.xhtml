@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) Contributors to Eclipse Foundation.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<html lang="en"
+    xmlns:h="jakarta.faces.html"
+    xmlns:f="jakarta.faces.core"
+>
+    <h:head>
+        <title>issue5596</title>
+    </h:head>
+    <h:body>
+        <h:form id="formWithImplicitConversion">
+            <h:inputText id="byte" value="#{issue5596.myByte}" />
+            <h:inputText id="short" value="#{issue5596.myShort}" />
+            <h:inputText id="integer" value="#{issue5596.myInteger}" />
+            <h:inputText id="long" value="#{issue5596.myLong}" />
+            <h:inputText id="float" value="#{issue5596.myFloat}" />
+            <h:inputText id="double" value="#{issue5596.myDouble}" />
+            <h:inputText id="bigInteger" value="#{issue5596.bigInteger}" />
+            <h:inputText id="bigDecimal" value="#{issue5596.bigDecimal}" />
+            <h:commandButton id="submit" value="submit" />
+            <h:messages id="messages" />
+        </h:form>
+        <h:form id="formWithDefaultNumberConverter">
+            <h:inputText id="byte" value="#{issue5596.myByte}"><f:convertNumber /></h:inputText>
+            <h:inputText id="short" value="#{issue5596.myShort}"><f:convertNumber /></h:inputText>
+            <h:inputText id="integer" value="#{issue5596.myInteger}"><f:convertNumber /></h:inputText>
+            <h:inputText id="long" value="#{issue5596.myLong}"><f:convertNumber /></h:inputText>
+            <h:inputText id="float" value="#{issue5596.myFloat}"><f:convertNumber /></h:inputText>
+            <h:inputText id="double" value="#{issue5596.myDouble}"><f:convertNumber /></h:inputText>
+            <h:inputText id="bigInteger" value="#{issue5596.bigInteger}"><f:convertNumber /></h:inputText>
+            <h:inputText id="bigDecimal" value="#{issue5596.bigDecimal}"><f:convertNumber /></h:inputText>
+            <h:commandButton id="submit" value="submit" />
+            <h:messages id="messages" />
+        </h:form>
+        <h:form id="formWithSpecificNumberConverter">
+            <h:inputText id="byte" value="#{issue5596.myByte}" converter="jakarta.faces.Byte" />
+            <h:inputText id="short" value="#{issue5596.myShort}" converter="jakarta.faces.Short" />
+            <h:inputText id="integer" value="#{issue5596.myInteger}" converter="jakarta.faces.Integer" />
+            <h:inputText id="long" value="#{issue5596.myLong}" converter="jakarta.faces.Long" />
+            <h:inputText id="float" value="#{issue5596.myFloat}" converter="jakarta.faces.Float" />
+            <h:inputText id="double" value="#{issue5596.myDouble}" converter="jakarta.faces.Double" />
+            <h:inputText id="bigInteger" value="#{issue5596.bigInteger}" converter="jakarta.faces.BigInteger" />
+            <h:inputText id="bigDecimal" value="#{issue5596.bigDecimal}" converter="jakarta.faces.BigDecimal" />
+            <h:commandButton id="submit" value="submit" />
+            <h:messages id="messages" />
+        </h:form>
+    </h:body>
+</html>
