@@ -50,7 +50,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 @TestInstance(Lifecycle.PER_CLASS)
 public abstract class BaseIT {
 
-    private WebDriver browser;
+    protected WebDriver browser;
 
     @ArquillianResource
     private URL baseURL;
