@@ -3287,7 +3287,6 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
 
         // "Constant" fields ----------------------------------------------------------------------------------------------
 
-        var URL_PROTOCOL = window.location.protocol.replace("http", "ws") + "//";
         var RECONNECT_INTERVAL = 500;
         var MAX_RECONNECT_ATTEMPTS = 25;
         var REASON_EXPIRED = "Expired";
