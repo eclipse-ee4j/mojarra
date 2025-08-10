@@ -312,12 +312,13 @@ public class BeanValidator implements Validator, PartialStateHolder {
         
         if (isResolvable(valueReference, valueExpression)) {
             jakarta.validation.Validator beanValidator = getBeanValidator(context);
+            Object coercedValue = context.getApplication().getExpressionFactory().coerceToType(value, valueExpression.getType(context.getELContext()));
 
             @SuppressWarnings("rawtypes")
             Set violationsRaw = null;
 
             try {
-                violationsRaw = beanValidator.validateValue(valueReference.getBase().getClass(), valueReference.getProperty().toString(), value, validationGroupsArray);
+                violationsRaw = beanValidator.validateValue(valueReference.getBase().getClass(), valueReference.getProperty().toString(), coercedValue, validationGroupsArray);
             } catch (IllegalArgumentException iae) {
                 LOGGER.fine("Unable to validate expression " + valueExpression.getExpressionString()
                         + " using Bean Validation.  Unable to get value of expression. " + " Message from Bean Validation: " + iae.getMessage());
