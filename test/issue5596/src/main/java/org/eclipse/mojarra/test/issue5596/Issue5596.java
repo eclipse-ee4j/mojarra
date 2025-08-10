@@ -20,19 +20,21 @@ import java.math.BigInteger;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
 
 @Named
 @RequestScoped
 public class Issue5596 {
 
-    private Byte myByte;
-    private Short myShort;
-    private Integer myInteger;
-    private Long myLong;
-    private Float myFloat;
-    private Double myDouble;
-    private BigInteger bigInteger;
-    private BigDecimal bigDecimal;
+    private @Min(1) Byte myByte;
+    private @Min(1) Short myShort;
+    private @Min(1) Integer myInteger;
+    private @Min(1) Long myLong;
+    private @DecimalMin("1.0") Float myFloat;
+    private @DecimalMin("1.0") Double myDouble;
+    private @Min(1) BigInteger bigInteger;
+    private @DecimalMin("1.0") BigDecimal bigDecimal;
 
     public Byte getMyByte() {
         return myByte;
