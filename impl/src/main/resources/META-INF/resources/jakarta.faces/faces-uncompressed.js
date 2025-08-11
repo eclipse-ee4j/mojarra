@@ -1103,7 +1103,7 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
         const doEval = function doEval(element) {
             (() => { //
                 const script = element ? element.textContent : undefined;
-                if (script) runScripts(getScripts(script));
+                if (script) runScripts([[null, '', script]]);
                 else console.warn('called doEval with no source code');
             })();
         };
