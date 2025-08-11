@@ -369,7 +369,7 @@ public class RenderKitUtils {
             params = new LinkedList<>();
             params.add(new ClientBehaviorContext.Parameter("incExec", true));
         }
-        renderEventListener(context, component, params, handlerName, userHandler, behaviorEventName, domEventName, null, false, incExec);
+        renderHandler(context, component, params, handlerName, userHandler, behaviorEventName, domEventName, null, false, incExec, true);
     }
 
     // Renders onclick event listener for SelectRaidio and SelectCheckbox
@@ -393,7 +393,7 @@ public class RenderKitUtils {
             params = new LinkedList<>();
             params.add(new ClientBehaviorContext.Parameter("incExec", true));
         }
-        renderEventListener(context, component, params, handlerName, userHandler, behaviorEventName, domEventName, null, false, incExec);
+        renderHandler(context, component, params, handlerName, userHandler, behaviorEventName, domEventName, null, false, incExec, true);
     }
 
     // Renders the onclick event listener for command buttons. Handles
@@ -420,7 +420,7 @@ public class RenderKitUtils {
             }
         }
 
-        renderEventListener(context, component, params, handlerName, userHandler, behaviorEventName, domEventName, submitTarget, needsSubmit, false);
+        renderHandler(context, component, params, handlerName, userHandler, behaviorEventName, domEventName, submitTarget, needsSubmit, false, true);
     }
 
     // Renders the script element with the function for command scripts.
@@ -624,7 +624,7 @@ public class RenderKitUtils {
                     Attribute attr = knownAttributes[index];
 
                     if (isBehaviorEventAttribute(attr, behaviorEventName)) {
-                        renderEventListener(context, component, null, name, value, behaviorEventName, behaviorEventName, null, false, false);
+                        renderHandler(context, component, null, name, value, behaviorEventName, behaviorEventName, null, false, false, false);
 
                         renderedBehavior = true;
                     } else {
@@ -636,7 +636,7 @@ public class RenderKitUtils {
                 Object value = attrMap.get(name);
                 if (value != null && shouldRenderAttribute(value)) {
                     if (name.substring(2).equals(behaviorEventName)) {
-                        renderEventListener(context, component, null, name, value, behaviorEventName, behaviorEventName, null, false, false);
+                        renderHandler(context, component, null, name, value, behaviorEventName, behaviorEventName, null, false, false, false);
 
                         renderedBehavior = true;
                     } else {
@@ -668,7 +668,7 @@ public class RenderKitUtils {
                 String attrName = attribute.getName();
                 String[] events = attribute.getEvents();
                 if (events != null && events.length > 0 && behaviorEventName.equals(events[0])) {
-                    renderEventListener(context, component, null, attrName, null, behaviorEventName, behaviorEventName, null, false, false);
+                    renderHandler(context, component, null, attrName, null, behaviorEventName, behaviorEventName, null, false, false, false);
                     return;
                 }
             }
@@ -729,8 +729,8 @@ public class RenderKitUtils {
 
             // If we've got a behavior for this attribute,
             // we may need to chain scripts together, so use
-            // renderHandler().
-            renderEventListener(context, component, null, attrName, value, eventName, eventName, null, false, false);
+            // renderEventListener().
+            renderHandler(context, component, null, attrName, value, eventName, eventName, null, false, false, false);
         }
     }
 
@@ -1638,8 +1638,8 @@ public class RenderKitUtils {
      * perform submits (eg. non-command components). This flag is mainly here for the commandLink case, where we need to
      * render the submit script to make the link submit.
      */
-    private static void renderEventListener(FacesContext context, UIComponent component, Collection<ClientBehaviorContext.Parameter> params, String handlerName,
-            Object handlerValue, String behaviorEventName, String domEventName, String submitTarget, boolean needsSubmit, boolean includeExec) throws IOException {
+    private static void renderHandler(FacesContext context, UIComponent component, Collection<ClientBehaviorContext.Parameter> params, String handlerName,
+            Object handlerValue, String behaviorEventName, String domEventName, String submitTarget, boolean needsSubmit, boolean includeExec, boolean asEventListener) throws IOException {
 
         String userHandler = getNonEmptyUserHandler(handlerValue);
         List<ClientBehavior> behaviors = getClientBehaviors(component, behaviorEventName);
@@ -1674,7 +1674,12 @@ public class RenderKitUtils {
             assert false;
         }
 
-        addEventListener(context, component, domEventName, handler);
+        if (asEventListener) {
+            addEventListener(context, component, domEventName, handler);
+        }
+        else {
+            context.getResponseWriter().writeAttribute(handlerName, handler, null);
+        }
     }
 
     public static void addEventListener(FacesContext context, UIComponent component, String domEventName, String function) throws IOException {
