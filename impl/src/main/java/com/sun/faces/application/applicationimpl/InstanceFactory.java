@@ -473,8 +473,8 @@ public class InstanceFactory {
         // targetClass
         Class<?>[] interfaces = targetClass.getInterfaces();
         if (interfaces != null) {
-            for (int i = 0; i < interfaces.length; i++) {
-                returnVal = createConverterBasedOnClass(interfaces[i], targetClass);
+            for (Class<?> anInterface : interfaces) {
+                returnVal = createConverterBasedOnClass(anInterface, targetClass);
                 if (returnVal != null) {
                     if (LOGGER.isLoggable(Level.FINE)) {
                         LOGGER.fine(MessageFormat.format("Created converter of type ''{0}''", returnVal.getClass().getName()));
@@ -897,8 +897,8 @@ public class InstanceFactory {
         // targetClass
         Class<?>[] interfaces = targetClass.getInterfaces();
         if (interfaces != null) {
-            for (int i = 0; i < interfaces.length; i++) {
-                returnVal = createConverterBasedOnClass(interfaces[i], null);
+            for (Class<?> anInterface : interfaces) {
+                returnVal = createConverterBasedOnClass(anInterface, null);
                 if (returnVal != null) {
                     if (LOGGER.isLoggable(Level.FINE)) {
                         LOGGER.fine(MessageFormat.format("Created converter of type ''{0}''", returnVal.getClass().getName()));

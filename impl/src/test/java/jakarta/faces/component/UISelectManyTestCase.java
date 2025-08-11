@@ -274,11 +274,11 @@ public class UISelectManyTestCase extends UIInputTestCase {
         checkMessages(0);
 
         // Verify that all legal values will validate
-        for (int i = 0; i < legalValues.length; i++) {
+        for (String legalValue : legalValues) {
             selectMany.setValid(true);
-            selectMany.setSubmittedValue(new Object[] { legalValues[0], legalValues[i] });
+            selectMany.setSubmittedValue(new Object[]{legalValues[0], legalValue});
             selectMany.validate(facesContext);
-            assertTrue(selectMany.isValid(), "Value '" + legalValues[i] + "' found");
+            assertTrue(selectMany.isValid(), "Value '" + legalValue + "' found");
             checkMessages(0);
         }
 
@@ -306,11 +306,11 @@ public class UISelectManyTestCase extends UIInputTestCase {
         checkMessages(0);
 
         // Verify that all legal values will validate
-        for (int i = 0; i < legalValues.length; i++) {
+        for (String legalValue : legalValues) {
             selectMany.setValid(true);
-            selectMany.setSubmittedValue(new Object[] { legalValues[0], legalValues[i] });
+            selectMany.setSubmittedValue(new Object[]{legalValues[0], legalValue});
             selectMany.validate(facesContext);
-            assertTrue(selectMany.isValid(), "Value '" + legalValues[i] + "' found");
+            assertTrue(selectMany.isValid(), "Value '" + legalValue + "' found");
             checkMessages(0);
         }
 

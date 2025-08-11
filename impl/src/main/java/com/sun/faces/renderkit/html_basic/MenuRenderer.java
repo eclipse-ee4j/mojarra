@@ -120,7 +120,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
             }
 
             if (convertedValue == null) {
-                Object[] params = { newValues == null ? "" : stream(newValues).collect(joining("")), valueExpression.getExpressionString() };
+                Object[] params = { newValues == null ? "" : String.join("", newValues), valueExpression.getExpressionString() };
                 throw new ConverterException(getExceptionMessage(CONVERSION_ERROR_MESSAGE_ID, params));
             }
         } else {
@@ -277,7 +277,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
                     return newValues;
                 }
 
-                Object[] params = { stream(newValues).collect(joining(" ")), "null Converter" };
+                Object[] params = {String.join(" ", newValues), "null Converter" };
                 throw new ConverterException(getExceptionMessage(CONVERSION_ERROR_MESSAGE_ID, params));
             }
         }
@@ -369,7 +369,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
             // Then "convert" submitted value to object based on collected available
             // object items.
             for (String newValue : newValues) {
-                collection.add(availableItems.containsKey(newValue) ? availableItems.get(newValue) : newValue);
+                collection.add(availableItems.getOrDefault(newValue, newValue));
             }
         }
 
@@ -847,7 +847,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
                     List<String> newValuesList = new ArrayList<>(Arrays.asList(newValues));
 
                     if (newValuesList.removeAll(disabledSelectItemValues)) {
-                        newValues = newValuesList.toArray(new String[newValuesList.size()]);
+                        newValues = newValuesList.toArray(new String[0]);
                     }
                 }
             }

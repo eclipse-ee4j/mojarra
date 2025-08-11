@@ -90,7 +90,7 @@ public abstract class Compiler {
 
     public final TagDecorator createTagDecorator() {
         if (decorators.size() > 0) {
-            return new CompositeTagDecorator(decorators.toArray(new TagDecorator[decorators.size()]));
+            return new CompositeTagDecorator(decorators.toArray(new TagDecorator[0]));
         }
         return EMPTY_DECORATOR;
     }
@@ -140,7 +140,7 @@ public abstract class Compiler {
 
     public final TagLibrary createTagLibrary(CompilationMessageHolder unit) {
         if (libraries.size() > 0) {
-            return new CompositeTagLibrary(libraries.toArray(new TagLibrary[libraries.size()]), unit);
+            return new CompositeTagLibrary(libraries.toArray(new TagLibrary[0]), unit);
         }
         return EMPTY_LIBRARY;
     }

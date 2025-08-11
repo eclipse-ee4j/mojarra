@@ -205,11 +205,11 @@ public class UISelectOneTestCase extends UIInputTestCase {
         checkMessages(0);
 
         // Verify that all legal values will validate
-        for (int i = 0; i < legalValues.length; i++) {
+        for (String legalValue : legalValues) {
             selectOne.setValid(true);
-            selectOne.setSubmittedValue(legalValues[i]);
+            selectOne.setSubmittedValue(legalValue);
             selectOne.validate(facesContext);
-            assertTrue(selectOne.isValid(), "Value '" + legalValues[i] + "' found");
+            assertTrue(selectOne.isValid(), "Value '" + legalValue + "' found");
             checkMessages(0);
         }
 

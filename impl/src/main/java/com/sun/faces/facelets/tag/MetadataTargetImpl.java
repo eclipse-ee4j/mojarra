@@ -41,8 +41,8 @@ public class MetadataTargetImpl extends MetadataTarget {
         pd = new HashMap<>();
         BeanInfo info = Introspector.getBeanInfo(type);
         PropertyDescriptor[] pda = info.getPropertyDescriptors();
-        for (int i = 0; i < pda.length; i++) {
-            pd.put(pda[i].getName(), pda[i]);
+        for (PropertyDescriptor propertyDescriptor : pda) {
+            pd.put(propertyDescriptor.getName(), propertyDescriptor);
         }
     }
 
