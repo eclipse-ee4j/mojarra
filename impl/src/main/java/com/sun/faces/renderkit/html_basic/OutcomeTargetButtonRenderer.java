@@ -86,10 +86,6 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
                 // QUESTION should this only be added in development mode?
                 label += MessageUtils.getExceptionMessageString(MessageUtils.OUTCOME_TARGET_BUTTON_NO_MATCH);
                 writer.writeAttribute("disabled", "true", "disabled");
-            } else {
-                String hrefVal = getEncodedTargetURL(context, component, navCase);
-                hrefVal += getFragment(component);
-                RenderKitUtils.addEventListener(context, component, HtmlDocumentElementEvent.click.name(), getOnclick(component, hrefVal));
             }
         }
 
@@ -108,6 +104,15 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
             context.getResponseWriter().endElement("input");
         }
 
+        if (!Util.componentIsDisabled(component)) {
+            NavigationCase navCase = getNavigationCase(context, component);
+
+            if (navCase != null) {
+                String hrefVal = getEncodedTargetURL(context, component, navCase);
+                hrefVal += getFragment(component);
+                RenderKitUtils.addEventListener(context, component, HtmlDocumentElementEvent.click.name(), getOnclick(component, hrefVal));
+            }
+        }
     }
 
     // ------------------------------------------------------- Protected Methods
