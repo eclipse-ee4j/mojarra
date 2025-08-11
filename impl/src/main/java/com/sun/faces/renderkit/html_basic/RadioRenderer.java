@@ -314,9 +314,9 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
         RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES, getNonOnClickSelectBehaviors(component));
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
-        RenderKitUtils.renderSelectOnclickEventListener(context, component, false);
-
         writer.endElement("input");
+
+        RenderKitUtils.renderSelectOnclickEventListener(context, component, false);
     }
 
     protected void renderLabel(ResponseWriter writer, UIComponent component, String forClientId, SelectItem curItem, OptionComponentInfo optionInfo)

@@ -1683,7 +1683,13 @@ public class RenderKitUtils {
             .append("','")
             .append(domEventName)
             .append("',()=>{" + function + "})");
-        renderScript(context, component, null, script.toString());
+        
+        if (context.getPartialViewContext().isAjaxRequest()) {
+            context.getPartialViewContext().getEvalScripts().add(script.toString());
+        }
+        else {
+            renderScript(context, component, null, script.toString());
+        }
     }
 
     public static void renderScript(FacesContext context, UIComponent component, String clientId, String script) throws IOException {

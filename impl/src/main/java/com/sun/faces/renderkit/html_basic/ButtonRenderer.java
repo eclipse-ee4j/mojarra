@@ -98,11 +98,6 @@ public class ButtonRenderer extends HtmlBasicRenderer {
          * when we decide how to do script injection.
          */
 
-        Collection<ClientBehaviorContext.Parameter> params = getBehaviorParameters(component);
-        if (!params.isEmpty() && (type.equals("submit") || type.equals("button"))) {
-            RenderKitUtils.renderFacesJsIfNecessary(context);
-        }
-
         String imageSrc = (String) component.getAttributes().get("image");
         writer.startElement("input", component);
         writeIdAttributeIfNecessary(context, writer, component);
@@ -134,8 +129,6 @@ public class ButtonRenderer extends HtmlBasicRenderer {
             writer.writeAttribute("class", styleClass, "styleClass");
         }
 
-        RenderKitUtils.renderOnclickEventListener(context, component, params, null, false);
-
         // PENDING(edburns): Prior to i_spec_1111, this element
         // was rendered unconditionally
 
@@ -155,6 +148,15 @@ public class ButtonRenderer extends HtmlBasicRenderer {
         if (component.getChildCount() > 0) {
             context.getResponseWriter().endElement("input");
         }
+
+        String type = getButtonType(component);
+        Collection<ClientBehaviorContext.Parameter> params = getBehaviorParameters(component);
+
+        if (!params.isEmpty() && (type.equals("submit") || type.equals("button"))) {
+            RenderKitUtils.renderFacesJsIfNecessary(context);
+        }
+
+        RenderKitUtils.renderOnclickEventListener(context, component, params, null, false);
     }
 
     // --------------------------------------------------------- Private Methods

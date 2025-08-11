@@ -664,12 +664,12 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         renderPassThruAttributes(context, writer, component, ATTRIBUTES, getNonOnChangeBehaviors(component));
         renderXHTMLStyleBooleanAttributes(writer, component);
 
-        renderOnchangeEventListener(context, component, false);
-
         // Now, write the buffered option content
         writer.write(bufferedWriter.toString());
 
         writer.endElement("select");
+
+        renderOnchangeEventListener(context, component, false);
     }
 
     protected Integer getSizeAttribute(UIComponent component) {

@@ -86,9 +86,9 @@ public class SecretRenderer extends HtmlBasicInputRenderer {
             writer.writeAttribute("class", styleClass, "styleClass");
         }
 
-        RenderKitUtils.renderOnchangeEventListener(context, component, false);
-
         writer.endElement("input");
+
+        RenderKitUtils.renderOnchangeEventListener(context, component, false);
 
     }
 

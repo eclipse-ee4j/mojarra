@@ -104,9 +104,9 @@ public class CheckboxRenderer extends HtmlBasicInputRenderer {
         RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES, getNonOnClickSelectBehaviors(component));
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
-        RenderKitUtils.renderSelectOnclickEventListener(context, component, false);
-
         writer.endElement("input");
+
+        RenderKitUtils.renderSelectOnclickEventListener(context, component, false);
 
     }
 

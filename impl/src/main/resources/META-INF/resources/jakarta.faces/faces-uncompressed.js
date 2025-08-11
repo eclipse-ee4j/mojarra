@@ -348,6 +348,9 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
             const src = scriptStr[1].match(findsrc);
             let scriptLoadedViaUrl = false;
 
+            const thisScript = document.querySelector("script[src*='jakarta.faces.resource/faces.js']");
+            const nonce = isNotNull(thisScript) ? thisScript.nonce : undefined;
+
             if (!!src && src[1]) {
                 // if this is a file, load it
                 const url = unescapeHTML(src[1]);
@@ -360,7 +363,7 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
                     parserElement.innerHTML = scriptStr[0];
                     cloneAttributes(scriptNode, parserElement.firstChild);
                     deleteNode(parserElement);
-                    //scriptNode.type = 'text/javascript';
+                    scriptNode.nonce = nonce;
                     scriptNode.src = url; // add the src to the script node
                     scriptNode.onload = scriptNode.onreadystatechange = function(_, abort) {
                         if (abort || !scriptNode.readyState || scriptLoadedStates.includes(scriptNode.readyState) ) {
@@ -378,7 +381,7 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
                 if (!!script) {
                     // create script node
                     const scriptNode = document.createElement('script');
-                    // scriptNode.type = 'text/javascript';
+                    scriptNode.nonce = nonce;
                     scriptNode.text = script; // add the code to the script node
                     head.appendChild(scriptNode); // add it to the head
                     head.removeChild(scriptNode); // then remove it
@@ -1099,8 +1102,8 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
          */
         const doEval = function doEval(element) {
             (() => { //
-                const src = element ? element.textContent : undefined;
-                if (src) window.eval.call(window, src);
+                const script = element ? element.textContent : undefined;
+                if (script) runScripts(getScripts(script));
                 else console.warn('called doEval with no source code');
             })();
         };

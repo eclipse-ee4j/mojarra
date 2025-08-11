@@ -136,9 +136,9 @@ public class TextRenderer extends HtmlBasicInputRenderer {
             RenderKitUtils.renderPassThruAttributes(context, writer, component, attributes, getNonOnChangeBehaviors(component));
             RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
-            RenderKitUtils.renderOnchangeEventListener(context, component, hasPassthroughAttributes);
-
             writer.endElement("input");
+
+            RenderKitUtils.renderOnchangeEventListener(context, component, hasPassthroughAttributes);
 
         } else if (isOutput = component instanceof UIOutput) {
             if (styleClass != null || style != null || dir != null || lang != null || title != null || hasPassthroughAttributes
