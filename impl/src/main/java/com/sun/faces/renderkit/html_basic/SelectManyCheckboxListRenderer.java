@@ -277,7 +277,7 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
 
         writer.endElement("input");
 
-        RenderKitUtils.renderSelectOnclickEventListener(context, component, false);
+        RenderKitUtils.renderSelectOnclickEventListener(context, component, idString, false);
 
         writer.startElement("label", component);
         writer.writeAttribute("for", idString, "for");

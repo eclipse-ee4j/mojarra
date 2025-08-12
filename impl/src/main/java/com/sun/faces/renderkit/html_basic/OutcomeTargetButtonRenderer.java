@@ -110,7 +110,7 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
             if (navCase != null) {
                 String hrefVal = getEncodedTargetURL(context, component, navCase);
                 hrefVal += getFragment(component);
-                RenderKitUtils.addEventListener(context, component, HtmlDocumentElementEvent.click.name(), getOnclick(component, hrefVal));
+                RenderKitUtils.addEventListener(context, component, null, HtmlDocumentElementEvent.click.name(), getOnclick(component, hrefVal));
             }
         }
     }

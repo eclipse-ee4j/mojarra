@@ -106,7 +106,7 @@ public class CheckboxRenderer extends HtmlBasicInputRenderer {
 
         writer.endElement("input");
 
-        RenderKitUtils.renderSelectOnclickEventListener(context, component, false);
+        RenderKitUtils.renderSelectOnclickEventListener(context, component, null, false);
 
     }
 
