@@ -1674,11 +1674,13 @@ public class RenderKitUtils {
             assert false;
         }
 
-        if (asEventListener) {
-            addEventListener(context, component, clientId, domEventName, handler);
-        }
-        else {
-            context.getResponseWriter().writeAttribute(handlerName, handler, null);
+        if (handler != null) {
+            if (asEventListener) {
+                addEventListener(context, component, clientId, domEventName, handler);
+            }
+            else {
+                context.getResponseWriter().writeAttribute(handlerName, handler, null);
+            }
         }
     }
 
