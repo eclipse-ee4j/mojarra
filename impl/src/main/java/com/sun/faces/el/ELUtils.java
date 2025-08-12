@@ -16,6 +16,7 @@
  */
 package com.sun.faces.el;
 
+import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.DisableOptionalELResolver;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.InterpretEmptyStringSubmittedValuesAsNull;
 import static com.sun.faces.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
@@ -23,8 +24,10 @@ import static com.sun.faces.util.Util.getCdiBeanManager;
 import static com.sun.faces.util.Util.isEmpty;
 import static java.lang.Boolean.FALSE;
 
-import com.sun.faces.util.Cache;
-import com.sun.faces.util.LRUCache;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import jakarta.el.CompositeELResolver;
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
@@ -32,13 +35,12 @@ import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.ResolversRegistry;
 import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.util.Cache;
+import com.sun.faces.util.LRUCache;
 
 /**
  * Utility class for EL related methods.
@@ -163,7 +165,11 @@ public class ELUtils {
         composite.addPropertyELResolver(elRegistry.MAP_RESOLVER);
         composite.addPropertyELResolver(elRegistry.LIST_RESOLVER);
         composite.addPropertyELResolver(elRegistry.ARRAY_RESOLVER);
-        composite.addPropertyELResolver(elRegistry.OPTIONAL_RESOLVER);
+        
+        if (!WebConfiguration.getInstance().isOptionEnabled(DisableOptionalELResolver)) {
+            composite.addPropertyELResolver(elRegistry.OPTIONAL_RESOLVER);
+        }
+
         composite.addPropertyELResolver(elRegistry.RECORD_RESOLVER);
         composite.addPropertyELResolver(elRegistry.BEAN_RESOLVER);
 
