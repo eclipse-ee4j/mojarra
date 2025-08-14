@@ -831,6 +831,7 @@ public class WebConfiguration {
         ForceAlwaysWriteFlashCookie("com.sun.faces.forceAlwaysWriteFlashCookie", false),
         DisallowDoctypeDecl("com.sun.faces.disallowDoctypeDecl", false),
         UseFaceletsID("com.sun.faces.useFaceletsID",false),
+        DisableOptionalELResolver("com.sun.faces.disableOptionalELResolver", false),
         ;
 
         private final BooleanWebContextInitParameter alternate;
