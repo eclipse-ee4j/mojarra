@@ -887,6 +887,7 @@ public class WebConfiguration {
         EnableWebsocketEndpoint(PushContext.ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME, false),
         DisallowDoctypeDecl("com.sun.faces.disallowDoctypeDecl", false),
         UseFaceletsID("com.sun.faces.useFaceletsID",false),
+        DisableOptionalELResolver("com.sun.faces.disableOptionalELResolver", false),
         ;
 
         private final BooleanWebContextInitParameter alternate;
