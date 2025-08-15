@@ -2718,7 +2718,6 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
 
         // "Constant" fields ----------------------------------------------------------------------------------------------
 
-        const URL_PROTOCOL = window.location.protocol.replace("http", "ws") + "//"; // todo: unused... https...?
         const RECONNECT_INTERVAL = 500;
         const MAX_RECONNECT_ATTEMPTS = 25;
         const REASON_EXPIRED = "Expired";
