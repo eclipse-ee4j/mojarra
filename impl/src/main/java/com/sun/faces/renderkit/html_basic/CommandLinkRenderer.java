@@ -24,19 +24,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import com.sun.faces.renderkit.Attribute;
-import com.sun.faces.renderkit.AttributeManager;
-import com.sun.faces.renderkit.RenderKitUtils;
-
 import jakarta.faces.component.UICommand;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
 import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
-import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.ActionEvent;
+import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
+
+import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.AttributeManager;
+import com.sun.faces.renderkit.RenderKitUtils;
 
 /**
  * <b>CommandLinkRenderer</b> is a class that renders the current value of <code>UICommand</code> as a HyperLink that
@@ -160,6 +160,12 @@ public class CommandLinkRenderer extends LinkRenderer {
 
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, command);
 
+        writeCommonLinkAttributes(writer, command);
+
+        // render the current value as link text.
+        writeValue(command, writer);
+        writer.flush();
+
         String target = (String) command.getAttributes().get("target");
         if (target != null) {
             target = target.trim();
@@ -168,14 +174,7 @@ public class CommandLinkRenderer extends LinkRenderer {
         }
 
         Collection<ClientBehaviorContext.Parameter> params = getBehaviorParameters(command);
-        RenderKitUtils.renderOnclick(context, command, params, target, true);
-
-        writeCommonLinkAttributes(writer, command);
-
-        // render the current value as link text.
-        writeValue(command, writer);
-        writer.flush();
-
+        RenderKitUtils.renderOnclickEventListener(context, command, params, target, true);
     }
 
     // --------------------------------------------------------- Private Methods
