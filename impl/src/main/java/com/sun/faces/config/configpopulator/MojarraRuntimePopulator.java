@@ -1,6 +1,9 @@
 package com.sun.faces.config.configpopulator;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import jakarta.faces.application.ApplicationConfigurationPopulator;
 import jakarta.faces.component.UIColumn;
@@ -192,6 +195,26 @@ public final class MojarraRuntimePopulator extends ApplicationConfigurationPopul
         };
 
         appendNestedChildElements(doc, namespace, rootElement, "converter", new String[] { "converter-id", "converter-class" }, converters);
+        populateConvertersForClass(doc, namespace, rootElement);
+    }
+
+    private void populateConvertersForClass(Document doc, String namespace, Element rootElement) {
+        String[][] convertersForClass = {
+                { BigDecimal.class.getName(), BigDecimalConverter.class.getName() },
+                { BigInteger.class.getName(), BigIntegerConverter.class.getName() },
+                { Boolean.class.getName(),BooleanConverter.class.getName() },
+                { Byte.class.getName(), ByteConverter.class.getName() },
+                { Character.class.getName(), CharacterConverter.class.getName() },
+                { Double.class.getName(), DoubleConverter.class.getName() },
+                { Float.class.getName(), FloatConverter.class.getName() },
+                { Integer.class.getName(), IntegerConverter.class.getName() },
+                { Long.class.getName(), LongConverter.class.getName() },
+                { Short.class.getName(), ShortConverter.class.getName() },
+                { Enum.class.getName(), EnumConverter.class.getName() },
+                { UUID.class.getName(), UUIDConverter.class.getName() }
+        };
+
+        appendNestedChildElements(doc, namespace, rootElement, "converter", new String[] { "converter-for-class", "converter-class" }, convertersForClass);
     }
 
     private void populateValidators(Document doc, String namespace, Element rootElement) {
