@@ -52,12 +52,12 @@ public class MockPrincipal implements Principal {
     }
 
     public boolean isUserInRole(String role) {
-        for (int i = 0; i < roles.length; i++) {
-            if (role.equals(roles[i])) {
-                return (true);
+        for (String s : roles) {
+            if (role.equals(s)) {
+                return true;
             }
         }
-        return (false);
+        return false;
     }
 
     @Override

@@ -84,9 +84,9 @@ public final class HtmlDecorator implements TagDecorator {
         TagAttribute[] o = attrs.getAll();
         TagAttribute[] a = new TagAttribute[o.length - 1];
         int p = 0;
-        for (int i = 0; i < o.length; i++) {
-            if (!"type".equals(o[i].getLocalName())) {
-                a[p++] = o[i];
+        for (TagAttribute tagAttribute : o) {
+            if (!"type".equals(tagAttribute.getLocalName())) {
+                a[p++] = tagAttribute;
             }
         }
         return new TagAttributesImpl(a);
