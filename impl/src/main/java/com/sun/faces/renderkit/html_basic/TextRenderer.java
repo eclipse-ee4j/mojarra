@@ -23,11 +23,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.renderkit.Attribute;
-import com.sun.faces.renderkit.AttributeManager;
-import com.sun.faces.renderkit.RenderKitUtils;
-
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIComponent;
@@ -37,6 +32,11 @@ import jakarta.faces.component.html.HtmlInputFile;
 import jakarta.faces.component.html.HtmlInputText;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
+
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.AttributeManager;
+import com.sun.faces.renderkit.RenderKitUtils;
 
 /**
  * <B>TextRenderer</B> is a class that renders the current value of <code>UIInput</code> or <code>UIOutput</code>
@@ -136,9 +136,9 @@ public class TextRenderer extends HtmlBasicInputRenderer {
             RenderKitUtils.renderPassThruAttributes(context, writer, component, attributes, getNonOnChangeBehaviors(component));
             RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
-            RenderKitUtils.renderOnchange(context, component, false);
-
             writer.endElement("input");
+
+            RenderKitUtils.renderOnchangeEventListener(context, component, hasPassthroughAttributes);
 
         } else if (isOutput = component instanceof UIOutput) {
             if (styleClass != null || style != null || dir != null || lang != null || title != null || hasPassthroughAttributes

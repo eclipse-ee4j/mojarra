@@ -18,17 +18,17 @@ package com.sun.faces.renderkit.html_basic;
 
 import java.io.IOException;
 
+import jakarta.faces.application.NavigationCase;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+
 import com.sun.faces.RIConstants;
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
-
-import jakarta.faces.application.NavigationCase;
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.context.ResponseWriter;
 
 public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
 
@@ -68,20 +68,6 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
 
         String label = getLabel(component);
 
-        if (!Util.componentIsDisabled(component)) {
-            NavigationCase navCase = getNavigationCase(context, component);
-
-            if (navCase == null) {
-                // QUESTION should this only be added in development mode?
-                label += MessageUtils.getExceptionMessageString(MessageUtils.OUTCOME_TARGET_BUTTON_NO_MATCH);
-                writer.writeAttribute("disabled", "true", "disabled");
-            } else {
-                String hrefVal = getEncodedTargetURL(context, component, navCase);
-                hrefVal += getFragment(component);
-                writer.writeAttribute("onclick", getOnclick(component, hrefVal), "onclick");
-            }
-        }
-
         // value should be used even for image type for accessibility (e.g., images disabled in browser)
         writer.writeAttribute("value", label, "value");
 
@@ -91,6 +77,16 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
         }
 
         renderPassThruAttributes(context, writer, component, ATTRIBUTES, null);
+
+        if (!Util.componentIsDisabled(component)) {
+            NavigationCase navCase = getNavigationCase(context, component);
+
+            if (navCase == null) {
+                // QUESTION should this only be added in development mode?
+                label += MessageUtils.getExceptionMessageString(MessageUtils.OUTCOME_TARGET_BUTTON_NO_MATCH);
+                writer.writeAttribute("disabled", "true", "disabled");
+            }
+        }
 
         if (component.getChildCount() == 0) {
             writer.endElement("input");
@@ -107,6 +103,15 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
             context.getResponseWriter().endElement("input");
         }
 
+        if (!Util.componentIsDisabled(component)) {
+            NavigationCase navCase = getNavigationCase(context, component);
+
+            if (navCase != null) {
+                String hrefVal = getEncodedTargetURL(context, component, navCase);
+                hrefVal += getFragment(component);
+                RenderKitUtils.addEventListener(context, component, null,"click", getOnclick(component, hrefVal));
+            }
+        }
     }
 
     // ------------------------------------------------------- Protected Methods

@@ -26,20 +26,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.sun.faces.push.WebsocketChannelManager;
-import com.sun.faces.push.WebsocketFacesListener;
-import com.sun.faces.renderkit.RenderKitUtils;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIWebsocket;
 import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ComponentSystemEvent;
 import jakarta.faces.event.ComponentSystemEventListener;
 import jakarta.faces.event.ListenerFor;
 import jakarta.faces.event.PostAddToViewEvent;
+
+import com.sun.faces.push.WebsocketChannelManager;
+import com.sun.faces.push.WebsocketFacesListener;
+import com.sun.faces.renderkit.RenderKitUtils;
 
 /**
  * <b>WebsocketRenderer</b> is a class that renders the <code>faces.push.init()</code> script and decodes any client
@@ -95,11 +94,7 @@ public class WebsocketRenderer extends HtmlBasicRenderer implements ComponentSys
 
             RenderKitUtils.renderFacesJsIfNecessary(context);
 
-            ResponseWriter writer = context.getResponseWriter();
-            writer.startElement("script", component);
-            writer.writeAttribute("id", clientId, "id");
-            writer.write(String.format(SCRIPT_INIT, clientId, url, channel, functions, behaviors, connected));
-            writer.endElement("script");
+            RenderKitUtils.renderScript(context, component, clientId, String.format(SCRIPT_INIT, clientId, url, channel, functions, behaviors, connected));
         }
     }
 

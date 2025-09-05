@@ -31,14 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.renderkit.Attribute;
-import com.sun.faces.renderkit.AttributeManager;
-import com.sun.faces.renderkit.RenderKitUtils;
-import com.sun.faces.renderkit.SelectItemsIterator;
-import com.sun.faces.util.RequestStateManager;
-import com.sun.faces.util.Util;
-
 import jakarta.el.ELException;
 import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
@@ -54,6 +46,14 @@ import jakarta.faces.event.ComponentSystemEventListener;
 import jakarta.faces.event.ListenerFor;
 import jakarta.faces.event.PostAddToViewEvent;
 import jakarta.faces.model.SelectItem;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.AttributeManager;
+import com.sun.faces.renderkit.RenderKitUtils;
+import com.sun.faces.renderkit.SelectItemsIterator;
+import com.sun.faces.util.RequestStateManager;
+import com.sun.faces.util.Util;
 
 /**
  * <B>ReadoRenderer</B> is a class that renders the current value of <code>UISelectOne</code> or <code>UISelectMany</code>
@@ -314,9 +314,9 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
         RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES, getNonOnClickSelectBehaviors(component));
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
-        RenderKitUtils.renderSelectOnclick(context, component, false);
-
         writer.endElement("input");
+
+        RenderKitUtils.renderSelectOnclickEventListener(context, component, clientId, false);
     }
 
     protected void renderLabel(ResponseWriter writer, UIComponent component, String forClientId, SelectItem curItem, OptionComponentInfo optionInfo)
