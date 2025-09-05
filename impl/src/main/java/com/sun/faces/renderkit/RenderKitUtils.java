@@ -729,7 +729,7 @@ public class RenderKitUtils {
 
             // If we've got a behavior for this attribute,
             // we may need to chain scripts together, so use
-            // renderEventListener().
+            // renderHandler().
             renderHandler(context, component, null, null, attrName, value, eventName, eventName, null, false, false, false);
         }
     }
