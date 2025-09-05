@@ -1695,7 +1695,7 @@ public class Util {
 
         if (encoding == null && context.getExternalContext().getSession(false) != null) {
             // 4. If still none found then get previously known request or response encoding from session.
-            //    See also ViewHandler#initView() and FaceletViewHandlingStrategy#createResponseWriter().
+            //    See also ViewHandler#initView() and FaceletViewHandlingStrategy#renderView().
             encoding = (String) context.getExternalContext().getSessionMap().get(CHARACTER_ENCODING_KEY);
 
             if (encoding != null && LOGGER.isLoggable(FINEST)) {

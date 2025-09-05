@@ -450,6 +450,11 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 writer.endDocument();
             }
 
+            // Save encoding in Session for consult in subsequent postback request as per spec section "2.5.2.2. Determining the Character Encoding".
+            if (ctx.getExternalContext().getSession(false) != null) {
+                ctx.getExternalContext().getSessionMap().put(CHARACTER_ENCODING_KEY, writer.getCharacterEncoding());
+            }
+
             // Finish writing
             writer.close();
 
@@ -914,11 +919,6 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
         // Save encoding in UIViewRoot for faster consult when Util#getResponseEncoding() is invoked again elsewhere.
         context.getViewRoot().getAttributes().put(FACELETS_ENCODING_KEY, encoding);
-
-        // Save encoding in Session for consult in subsequent postback request as per spec section "2.5.2.2. Determining the Character Encoding".
-        if (context.getExternalContext().getSession(false) != null) {
-            context.getExternalContext().getSessionMap().put(CHARACTER_ENCODING_KEY, encoding);
-        }
 
         // Now, clone with the real writer
         ResponseWriter writer = initWriter.cloneWithWriter(extContext.getResponseOutputWriter());
