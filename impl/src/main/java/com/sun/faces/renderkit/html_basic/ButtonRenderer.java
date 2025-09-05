@@ -18,28 +18,26 @@
 
 package com.sun.faces.renderkit.html_basic;
 
-import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.BEHAVIOR_SOURCE_PARAM;
-
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.renderkit.Attribute;
-import com.sun.faces.renderkit.AttributeManager;
-import com.sun.faces.renderkit.RenderKitUtils;
-
 import jakarta.faces.component.UICommand;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
 import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
-import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.ActionEvent;
+import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.AttributeManager;
+import com.sun.faces.renderkit.RenderKitUtils;
 
 /**
  * <B>ButtonRenderer</B> is a class that renders the current value of <code>UICommand</code> as a Button.
@@ -100,11 +98,6 @@ public class ButtonRenderer extends HtmlBasicRenderer {
          * when we decide how to do script injection.
          */
 
-        Collection<ClientBehaviorContext.Parameter> params = getBehaviorParameters(component);
-        if (!params.isEmpty() && (type.equals("submit") || type.equals("button"))) {
-            RenderKitUtils.renderFacesJsIfNecessary(context);
-        }
-
         String imageSrc = (String) component.getAttributes().get("image");
         writer.startElement("input", component);
         writeIdAttributeIfNecessary(context, writer, component);
@@ -136,8 +129,6 @@ public class ButtonRenderer extends HtmlBasicRenderer {
             writer.writeAttribute("class", styleClass, "styleClass");
         }
 
-        RenderKitUtils.renderOnclick(context, component, params, null, false);
-
         // PENDING(edburns): Prior to i_spec_1111, this element
         // was rendered unconditionally
 
@@ -157,6 +148,15 @@ public class ButtonRenderer extends HtmlBasicRenderer {
         if (component.getChildCount() > 0) {
             context.getResponseWriter().endElement("input");
         }
+
+        String type = getButtonType(component);
+        Collection<ClientBehaviorContext.Parameter> params = getBehaviorParameters(component);
+
+        if (!params.isEmpty() && (type.equals("submit") || type.equals("button"))) {
+            RenderKitUtils.renderFacesJsIfNecessary(context);
+        }
+
+        RenderKitUtils.renderOnclickEventListener(context, component, params, null, false);
     }
 
     // --------------------------------------------------------- Private Methods

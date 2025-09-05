@@ -22,14 +22,14 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Level;
 
-import com.sun.faces.renderkit.Attribute;
-import com.sun.faces.renderkit.AttributeManager;
-import com.sun.faces.renderkit.RenderKitUtils;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.convert.ConverterException;
+
+import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.AttributeManager;
+import com.sun.faces.renderkit.RenderKitUtils;
 
 /**
  * <B>CheckboxRenderer</B> is a class that renders the current value of <code>UISelectBoolean</code> as a checkbox.
@@ -104,9 +104,9 @@ public class CheckboxRenderer extends HtmlBasicInputRenderer {
         RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES, getNonOnClickSelectBehaviors(component));
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
-        RenderKitUtils.renderSelectOnclick(context, component, false);
-
         writer.endElement("input");
+
+        RenderKitUtils.renderSelectOnclickEventListener(context, component, null, false);
 
     }
 

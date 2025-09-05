@@ -22,15 +22,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.sun.faces.facelets.util.DevTools;
-import com.sun.faces.facelets.util.FastWriter;
-import com.sun.faces.renderkit.RenderKitUtils;
-import com.sun.faces.renderkit.html_basic.ScriptRenderer;
-
 import jakarta.faces.component.UIComponentBase;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.servlet.http.HttpServletResponse;
+
+import com.sun.faces.facelets.util.DevTools;
+import com.sun.faces.facelets.util.FastWriter;
+import com.sun.faces.renderkit.RenderKitUtils;
 
 /**
  * @author Jacob Hookom
@@ -104,14 +103,9 @@ public final class UIDebug extends UIComponentBase {
             ResponseWriter writer = facesContext.getResponseWriter();
             writer.startElement("span", this);
             writer.writeAttribute("id", getClientId(facesContext), "id");
-            writer.startElement("script", this);
+            
+            RenderKitUtils.renderScript(facesContext, this, null, sb.toString());
 
-            if (!RenderKitUtils.isOutputHtml5Doctype(facesContext)) {
-                writer.writeAttribute("type", ScriptRenderer.DEFAULT_CONTENT_TYPE, "type");
-            }
-
-            writer.writeText(sb.toString(), this, null);
-            writer.endElement("script");
             writer.endElement("span");
         }
     }

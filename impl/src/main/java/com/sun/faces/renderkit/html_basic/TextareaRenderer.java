@@ -20,13 +20,13 @@ package com.sun.faces.renderkit.html_basic;
 
 import java.io.IOException;
 
-import com.sun.faces.renderkit.Attribute;
-import com.sun.faces.renderkit.AttributeManager;
-import com.sun.faces.renderkit.RenderKitUtils;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
+
+import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.AttributeManager;
+import com.sun.faces.renderkit.RenderKitUtils;
 
 /**
  * <B>TextareaRenderer</B> is a class that renders the current value of <code>UIInput</code> component as a Textarea.
@@ -63,8 +63,6 @@ public class TextareaRenderer extends HtmlBasicInputRenderer {
         RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES);
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
-        RenderKitUtils.renderOnchange(context, component, false);
-
         if (component.getAttributes().containsKey("com.sun.faces.addNewLineAtStart")
                 && "true".equalsIgnoreCase((String) component.getAttributes().get("com.sun.faces.addNewLineAtStart"))) {
             writer.writeText("\n", null);
@@ -77,6 +75,7 @@ public class TextareaRenderer extends HtmlBasicInputRenderer {
 
         writer.endElement("textarea");
 
+        RenderKitUtils.renderOnchangeEventListener(context, component, false);
     }
 
 }
