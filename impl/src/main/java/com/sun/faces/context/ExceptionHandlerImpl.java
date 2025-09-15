@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2025 Contributors to Eclipse Foundation.
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -24,6 +25,7 @@ import java.util.logging.Logger;
 
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
 
 import jakarta.el.ELException;
 import jakarta.faces.FacesException;
@@ -37,6 +39,8 @@ import jakarta.faces.event.ExceptionQueuedEvent;
 import jakarta.faces.event.ExceptionQueuedEventContext;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.SystemEvent;
+
+import java.io.IOException;
 
 /**
  * <p>
@@ -205,8 +209,11 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
         try {
             extContext.responseReset();
         } catch (Exception e) {
-            if (LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.log(Level.INFO, "Exception when handling error trying to reset the response.", wrapped);
+            boolean isConnectionAbort = wrapped instanceof IOException && Util.isConnectionAbort((IOException)wrapped);
+            if (!isConnectionAbort) {
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.log(Level.WARNING, "Exception when handling error trying to reset the response.", wrapped);
+                }
             }
         }
         if (null != wrapped && wrapped instanceof FacesFileNotFoundException) {
