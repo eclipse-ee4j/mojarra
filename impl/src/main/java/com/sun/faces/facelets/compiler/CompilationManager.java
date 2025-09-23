@@ -326,7 +326,7 @@ final class CompilationManager {
         }
 
         boolean alreadyPresent = namespaceManager.getNamespace(prefix) != null;
-        
+
         if (alreadyPresent) {
             return;
         }
@@ -446,9 +446,9 @@ final class CompilationManager {
             TagAttribute[] oa = tag.getAttributes().getAll();
             TagAttribute[] na = new TagAttribute[oa.length - 1];
             int p = 0;
-            for (int i = 0; i < oa.length; i++) {
-                if (!"jsfc".equals(oa[i].getLocalName())) {
-                    na[p++] = oa[i];
+            for (TagAttribute tagAttribute : oa) {
+                if (!"jsfc".equals(tagAttribute.getLocalName())) {
+                    na[p++] = tagAttribute;
                 }
             }
             return new Tag(tag, new TagAttributesImpl(na));
@@ -479,7 +479,7 @@ final class CompilationManager {
                 }
                 attrList.add(attr[i]);
             }
-            attr = attrList.toArray(new TagAttribute[attrList.size()]);
+            attr = attrList.toArray(new TagAttribute[0]);
             return new Tag(tag.getLocation(), tag.getNamespace(), tag.getLocalName(), tag.getQName(), new TagAttributesImpl(attr));
         }
     }
@@ -491,9 +491,7 @@ final class CompilationManager {
      */
     private CompilationUnit getViewRootUnitFromStack(Stack<CompilationUnit> units) {
         CompilationUnit result = null;
-        Iterator<CompilationUnit> iterator = units.iterator();
-        while (iterator.hasNext()) {
-            CompilationUnit compilationUnit = iterator.next();
+        for (CompilationUnit compilationUnit : units) {
             if (compilationUnit instanceof TagUnit) {
                 TagUnit tagUnit = (TagUnit) compilationUnit;
                 String ns = tagUnit.getTag().getNamespace();

@@ -103,7 +103,7 @@ public class StateContext {
             stateCtx = new StateContext(info);
             ctx.getAttributes().put(KEY, stateCtx);
         }
-        
+
         return stateCtx;
     }
 
@@ -146,7 +146,7 @@ public class StateContext {
             partial = stateInfo.usePartialStateSaving(viewId);
             partialLocked = true;
         }
-        
+
         return partial;
     }
 
@@ -180,7 +180,7 @@ public class StateContext {
      * Toggles the current modification tracking status.
      *
      * @param trackMods if <code>true</code> and the listener installed by
-     * <code>startTrackViewModifications</code> is* present, then view modifications will be tracked. 
+     * <code>startTrackViewModifications</code> is* present, then view modifications will be tracked.
      * If <code>false</code>, then modification events will be ignored.
      */
     public void setTrackViewModifications(boolean trackMods) {
@@ -554,7 +554,7 @@ public class StateContext {
                     dynamicActions = new ArrayList<>();
                 }
             }
-            
+
             return dynamicActions;
         }
 
@@ -570,7 +570,7 @@ public class StateContext {
                     dynamicComponents = new HashMap<>();
                 }
             }
-            
+
             return dynamicComponents;
         }
 
@@ -585,7 +585,7 @@ public class StateContext {
             if (component.isInView()) {
                 decrementDynamicChildCount(context, component.getParent());
                 handleAddRemoveWithAutoPrune(
-                    component, 
+                    component,
                     new ComponentStruct(REMOVE, findFacetNameForComponent(component), component.getClientId(context), component.getId())
                 );
            }
@@ -641,9 +641,7 @@ public class StateContext {
          */
         private String findFacetNameForComponent(UIComponent component) {
             Set<Entry<String, UIComponent>> entrySet = component.getParent().getFacets().entrySet();
-            Iterator<Entry<String, UIComponent>> entries = entrySet.iterator();
-            while (entries.hasNext()) {
-                Entry<String, UIComponent> candidate = entries.next();
+            for (Entry<String, UIComponent> candidate : entrySet) {
                 if (component == candidate.getValue()) {
                     return candidate.getKey();
                 }

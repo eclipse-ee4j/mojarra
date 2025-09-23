@@ -25,6 +25,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -204,6 +205,7 @@ public class FaceletTaglibConfigProcessor extends AbstractConfigProcessor {
      * </p>
      */
     private static final String COMPOSITE_LIBRARY_NAME = "composite-library-name";
+    private static final Pattern WHITESPACES = Pattern.compile("\\s+");
 
     // -------------------------------------------- Methods from ConfigProcessor
 
@@ -600,7 +602,7 @@ public class FaceletTaglibConfigProcessor extends AbstractConfigProcessor {
 
         // Formatted XML might cause \n\t characters - make sure we only have space characters left
 
-        String signature = signatureParam.replaceAll("\\s+", " ");
+        String signature = WHITESPACES.matcher(signatureParam).replaceAll(" ");
         int pos = signature.indexOf(' ');
         if (pos == -1) {
             throw new Exception("Must Provide Return Type: " + signature);

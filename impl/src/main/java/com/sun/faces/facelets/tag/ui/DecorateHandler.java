@@ -95,8 +95,8 @@ public final class DecorateHandler extends TagHandlerImpl implements TemplateCli
         if (params != null) {
             VariableMapper vm = new VariableMapperWrapper(orig);
             ctx.setVariableMapper(vm);
-            for (int i = 0; i < params.length; i++) {
-                params[i].apply(ctx, parent);
+            for (ParamHandler param : params) {
+                param.apply(ctx, parent);
             }
         }
 
