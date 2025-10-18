@@ -13,10 +13,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 or Apache-2.0
  */
-package org.eclipse.mojarra.test.issue5584;
+package org.eclipse.mojarra.test.issue5596;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.util.Set;
 
@@ -77,4 +78,20 @@ class Issue5596IT extends BaseIT {
             );
         }
     }
+
+    /**
+     * https://github.com/eclipse-ee4j/mojarra/issues/5609
+     */
+    @Test
+    void testNotNullValidation() {
+        String formId = "formForNotNullValidation";
+        open("issue5596.xhtml");
+        assertEquals("", browser.findElement(By.id(formId + ":messages")).getText());
+        guardHttp(browser.findElement(By.id(formId + ":submit"))::click);
+        assertNotEquals("", browser.findElement(By.id(formId + ":messages")).getText());
+        browser.findElement(By.id(formId + ":string")).sendKeys("not null");
+        guardHttp(browser.findElement(By.id(formId + ":submit"))::click);
+        assertEquals("", browser.findElement(By.id(formId + ":messages")).getText());
+    }
+
 }
