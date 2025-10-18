@@ -1367,6 +1367,7 @@ public class ELFlash extends Flash {
                 }
             } catch (Throwable t) {
                 previousRequestFlashInfo = new FlashInfo();
+                previousRequestFlashInfo.setLifetimeMarker(LifetimeMarker.FirstTimeThru);
                 previousRequestFlashInfo.setFlashMap(new HashMap<>(1));
                 context.getAttributes().put(CONSTANTS.ForceSetMaxAgeZero, Boolean.TRUE);
                 if (LOGGER.isLoggable(Level.SEVERE)) {
