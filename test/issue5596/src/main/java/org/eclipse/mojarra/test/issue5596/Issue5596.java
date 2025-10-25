@@ -22,6 +22,7 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 @Named
 @RequestScoped
@@ -35,6 +36,7 @@ public class Issue5596 {
     private @DecimalMin("1.0") Double myDouble;
     private @Min(1) BigInteger bigInteger;
     private @DecimalMin("1.0") BigDecimal bigDecimal;
+    private @NotNull String string;
 
     public Byte getMyByte() {
         return myByte;
@@ -71,11 +73,11 @@ public class Issue5596 {
     public Float getMyFloat() {
         return myFloat;
     }
-    
+
     public void setMyFloat(Float myFloat) {
         this.myFloat = myFloat;
     }
-    
+
     public Double getMyDouble() {
         return myDouble;
     }
@@ -100,4 +102,11 @@ public class Issue5596 {
         this.bigDecimal = bigDecimal;
     }
 
+    public String getString() {
+        return string;
+    }
+
+    public void setString(String string) {
+        this.string = string;
+    }
 }

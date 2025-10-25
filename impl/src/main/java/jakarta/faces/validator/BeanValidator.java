@@ -312,7 +312,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
         
         if (isResolvable(valueReference, valueExpression)) {
             jakarta.validation.Validator beanValidator = getBeanValidator(context);
-            Object coercedValue = context.getApplication().getExpressionFactory().coerceToType(value, valueExpression.getType(context.getELContext()));
+            Object coercedValue = value == null ? null : context.getApplication().getExpressionFactory().coerceToType(value, valueExpression.getType(context.getELContext()));
 
             @SuppressWarnings("rawtypes")
             Set violationsRaw = null;
