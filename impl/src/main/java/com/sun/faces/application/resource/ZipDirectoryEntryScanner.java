@@ -55,7 +55,7 @@ class ZipDirectoryEntryScanner {
                             if (!entryName.endsWith("/")) {
                                 // Assume this code is only reached if the zip entry
                                 // is NOT a 'directory' entry.
-                                int i = entryName.lastIndexOf("/");
+                                int i = entryName.lastIndexOf('/');
                                 if (-1 != i) {
                                     entryName = entryName.substring(0, i);
                                     if (!resourceLibraries.containsKey(entryName)) {

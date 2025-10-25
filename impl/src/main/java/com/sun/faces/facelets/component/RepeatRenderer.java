@@ -47,12 +47,12 @@ public class RepeatRenderer extends Renderer {
                 String[] attrs = (String[]) a.get("alias.attributes");
                 String attr;
                 if (attrs != null) {
-                    for (int i = 0; i < attrs.length; i++) {
-                        attr = attrs[i];
+                    for (String s : attrs) {
+                        attr = s;
                         if ("styleClass".equals(attr)) {
                             attr = "class";
                         }
-                        out.writeAttribute(attr, a.get(attrs[i]), attrs[i]);
+                        out.writeAttribute(attr, a.get(s), s);
                     }
                 }
             }

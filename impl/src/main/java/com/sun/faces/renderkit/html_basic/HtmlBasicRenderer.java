@@ -228,7 +228,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
                 }
             }
         }
-        
+
         return forValue;
     }
 
@@ -278,7 +278,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
         if (childCount > 0) {
             return component.getChildren().iterator();
         } else {
-            return Collections.<UIComponent>emptyList().iterator();
+            return Collections.emptyIterator();
         }
 
     }
@@ -510,7 +510,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
                     }
                 }
             }
-            return parameterList.toArray(new Param[parameterList.size()]);
+            return parameterList.toArray(new Param[0]);
         } else {
             return EMPTY_PARAMS;
         }
@@ -708,9 +708,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
         UIComponent retComp = null;
         if (startPoint.getChildCount() > 0) {
             List<UIComponent> children = startPoint.getChildren();
-            for (int i = 0, size = children.size(); i < size; i++) {
-                UIComponent comp = children.get(i);
-
+            for (UIComponent comp : children) {
                 if (comp instanceof NamingContainer) {
                     try {
                         retComp = comp.findComponent(forComponent);

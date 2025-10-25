@@ -88,8 +88,8 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
         // setup a variable map
         if (vars.length > 0) {
             VariableMapper varMapper = new VariableMapperWrapper(orig);
-            for (int i = 0; i < vars.length; i++) {
-                varMapper.setVariable(vars[i].getLocalName(), vars[i].getValueExpression(ctx, Object.class));
+            for (TagAttribute var : vars) {
+                varMapper.setVariable(var.getLocalName(), var.getValueExpression(ctx, Object.class));
             }
             ctx.setVariableMapper(varMapper);
         }

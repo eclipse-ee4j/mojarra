@@ -59,7 +59,7 @@ public class RequestHeaderValuesMap extends StringArrayValuesMap {
             valuesList.add(valuesEnum.nextElement());
         }
 
-        return valuesList.toArray(new String[valuesList.size()]);
+        return valuesList.toArray(new String[0]);
     }
 
     @Override
