@@ -94,6 +94,9 @@ public class ELFlashTest {
         mockedStaticFacesContext.close();
     }
 
+    /**
+     * https://github.com/eclipse-ee4j/mojarra/issues/5552
+     */
     @Test
     public void testGetEmptyFlashDuringRestoreView() {
         when(mockedFacesContext.getCurrentPhaseId()).thenReturn(RESTORE_VIEW);
@@ -110,6 +113,9 @@ public class ELFlashTest {
         assertEquals(2, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
     }
 
+    /**
+     * https://github.com/eclipse-ee4j/mojarra/issues/5552
+     */
     @Test
     public void testGetEmptyFlashDuringRestoreViewAndKeepMessages() {
         when(mockedFacesContext.getCurrentPhaseId()).thenReturn(RESTORE_VIEW);
@@ -128,6 +134,9 @@ public class ELFlashTest {
         assertEquals(2, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
     }
 
+    /**
+     * https://github.com/eclipse-ee4j/mojarra/issues/5552
+     */
     @Test
     public void testGetEmptyFlashDuringRenderResponse() {
         when(mockedFacesContext.getCurrentPhaseId()).thenReturn(RENDER_RESPONSE);
@@ -143,6 +152,40 @@ public class ELFlashTest {
         assertEquals(2, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
     }
 
+    /**
+     * https://github.com/eclipse-ee4j/mojarra/issues/5610
+     */
+    @Test
+    public void testGetEmptyFlashDuringRestoreViewAndRenderResponse() {
+        when(mockedFacesContext.getCurrentPhaseId()).thenReturn(RESTORE_VIEW);
+
+        Flash flash = mockedExternalContext.getFlash();
+
+        assertNotNull(flash);
+        assertEquals(emptySet(), flash.keySet());
+        assertEquals(emptyMap(), cookieMap);
+        assertEquals(Set.of(SavedResponseCompleteFlagValue, RequestFlashManager), contextMap.keySet());
+        assertEquals(false, contextMap.get(SavedResponseCompleteFlagValue));
+        PreviousNextFlashInfoManager flashInfo = (PreviousNextFlashInfoManager) contextMap.get(RequestFlashManager);
+        assertEquals(1, flashInfo.getPreviousRequestFlashInfo().getSequenceNumber());
+        assertEquals(2, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
+        
+        when(mockedFacesContext.getCurrentPhaseId()).thenReturn(RENDER_RESPONSE);
+
+        flash = mockedExternalContext.getFlash();
+
+        assertNotNull(flash);
+        assertEquals(emptySet(), flash.keySet());
+        assertEquals(Set.of(FLASH_COOKIE_NAME), cookieMap.keySet());
+        assertEquals(Set.of(SavedResponseCompleteFlagValue, RequestFlashManager), contextMap.keySet());
+        flashInfo = (PreviousNextFlashInfoManager) contextMap.get(RequestFlashManager);
+        assertEquals(3, flashInfo.getPreviousRequestFlashInfo().getSequenceNumber());
+        assertEquals(4, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
+    }
+
+    /**
+     * https://github.com/eclipse-ee4j/mojarra/issues/5552
+     */
     @Test
     public void testGetEmptyFlashDuringRenderResponseAndKeepMessages() {
         when(mockedFacesContext.getCurrentPhaseId()).thenReturn(RENDER_RESPONSE);
@@ -160,6 +203,9 @@ public class ELFlashTest {
         assertEquals(2, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
     }
 
+    /**
+     * https://github.com/eclipse-ee4j/mojarra/issues/5552
+     */
     @Test
     public void testGetPreviousRequestFlashViaCookieWithNullValueDuringRestoreView() {
         cookieMap.put(FLASH_COOKIE_NAME, new Cookie(FLASH_COOKIE_NAME, null));
@@ -178,6 +224,9 @@ public class ELFlashTest {
         assertEquals(null, flashInfo.getNextRequestFlashInfo());
     }
 
+    /**
+     * https://github.com/eclipse-ee4j/mojarra/issues/5552
+     */
     @Test
     public void testGetPreviousRequestFlashViaCookieWithNullValueDuringRestoreViewAndKeepMessages() {
         cookieMap.put(FLASH_COOKIE_NAME, new Cookie(FLASH_COOKIE_NAME, null));
@@ -197,6 +246,9 @@ public class ELFlashTest {
         assertEquals(null, flashInfo.getNextRequestFlashInfo());
     }
 
+    /**
+     * https://github.com/eclipse-ee4j/mojarra/issues/5552
+     */
     @Test
     public void testGetPreviousRequestFlashViaCookieWithEmptyValueDuringRestoreView() {
         cookieMap.put(FLASH_COOKIE_NAME, new Cookie(FLASH_COOKIE_NAME, ""));
@@ -215,6 +267,9 @@ public class ELFlashTest {
         assertEquals(null, flashInfo.getNextRequestFlashInfo());
     }
 
+    /**
+     * https://github.com/eclipse-ee4j/mojarra/issues/5552
+     */
     @Test
     public void testGetPreviousRequestFlashViaCookieWithEmptyValueDuringRestoreViewAndKeepMessages() {
         cookieMap.put(FLASH_COOKIE_NAME, new Cookie(FLASH_COOKIE_NAME, ""));
@@ -234,6 +289,9 @@ public class ELFlashTest {
         assertEquals(null, flashInfo.getNextRequestFlashInfo());
     }
 
+    /**
+     * https://github.com/eclipse-ee4j/mojarra/issues/5552
+     */
     @Test
     public void testGetPreviousRequestFlashViaCookieWithNullValueDuringRenderResponse() {
         cookieMap.put(FLASH_COOKIE_NAME, new Cookie(FLASH_COOKIE_NAME, null));
@@ -251,6 +309,43 @@ public class ELFlashTest {
         assertEquals(2, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
     }
 
+    /**
+     * https://github.com/eclipse-ee4j/mojarra/issues/5610
+     */
+    @Test
+    public void testGetPreviousRequestFlashViaCookieWithNullValueDuringRestoreViewAndRenderResponse() {
+        cookieMap.put(FLASH_COOKIE_NAME, new Cookie(FLASH_COOKIE_NAME, null));
+        when(mockedFacesContext.getCurrentPhaseId()).thenReturn(RESTORE_VIEW);
+
+        Flash flash = mockedExternalContext.getFlash();
+
+        assertNotNull(flash);
+        assertEquals(emptySet(), flash.keySet());
+        assertEquals(Set.of(FLASH_COOKIE_NAME), cookieMap.keySet());
+        assertEquals(emptyMap().toString(), flashInnerMap.toString());
+        assertEquals(Set.of(SavedResponseCompleteFlagValue, RequestFlashManager, ForceSetMaxAgeZero), contextMap.keySet());
+        assertEquals(false, contextMap.get(SavedResponseCompleteFlagValue));
+        PreviousNextFlashInfoManager flashInfo = (PreviousNextFlashInfoManager) contextMap.get(RequestFlashManager);
+        assertEquals(0, flashInfo.getPreviousRequestFlashInfo().getSequenceNumber());
+        assertEquals(null, flashInfo.getNextRequestFlashInfo());
+
+        when(mockedFacesContext.getCurrentPhaseId()).thenReturn(RENDER_RESPONSE);
+
+        flash = mockedExternalContext.getFlash();
+
+        assertNotNull(flash);
+        assertEquals(emptySet(), flash.keySet());
+        assertEquals(Set.of(FLASH_COOKIE_NAME), cookieMap.keySet());
+        assertEquals(emptyMap().toString(), flashInnerMap.toString());
+        assertEquals(Set.of(SavedResponseCompleteFlagValue, RequestFlashManager, ForceSetMaxAgeZero), contextMap.keySet());
+        flashInfo = (PreviousNextFlashInfoManager) contextMap.get(RequestFlashManager);
+        assertEquals(1, flashInfo.getPreviousRequestFlashInfo().getSequenceNumber());
+        assertEquals(2, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
+    }
+
+    /**
+     * https://github.com/eclipse-ee4j/mojarra/issues/5552
+     */
     @Test
     public void testGetPreviousRequestFlashViaCookieWithNullValueDuringRenderResponseAndKeepMessages() {
         cookieMap.put(FLASH_COOKIE_NAME, new Cookie(FLASH_COOKIE_NAME, null));
@@ -269,6 +364,9 @@ public class ELFlashTest {
         assertEquals(2, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
     }
 
+    /**
+     * https://github.com/eclipse-ee4j/mojarra/issues/5552
+     */
     @Test
     public void testGetPreviousRequestFlashViaCookieWithEmptyValueDuringRenderResponse() {
         cookieMap.put(FLASH_COOKIE_NAME, new Cookie(FLASH_COOKIE_NAME, ""));
@@ -286,6 +384,44 @@ public class ELFlashTest {
         assertEquals(2, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
     }
 
+    /**
+     * https://github.com/eclipse-ee4j/mojarra/issues/5610
+     */
+    @Test
+    public void testGetPreviousRequestFlashViaCookieWithEmptyValueDuringRestoreViewAndRenderResponse() {
+        cookieMap.put(FLASH_COOKIE_NAME, new Cookie(FLASH_COOKIE_NAME, ""));
+        when(mockedFacesContext.getCurrentPhaseId()).thenReturn(RESTORE_VIEW);
+
+        Flash flash = mockedExternalContext.getFlash();
+
+        assertNotNull(flash);
+        assertEquals(emptySet(), flash.keySet());
+        assertEquals(Set.of(FLASH_COOKIE_NAME), cookieMap.keySet());
+        assertEquals(emptyMap().toString(), flashInnerMap.toString());
+        assertEquals(Set.of(SavedResponseCompleteFlagValue, RequestFlashManager, ForceSetMaxAgeZero), contextMap.keySet());
+        assertEquals(false, contextMap.get(SavedResponseCompleteFlagValue));
+        PreviousNextFlashInfoManager flashInfo = (PreviousNextFlashInfoManager) contextMap.get(RequestFlashManager);
+        assertEquals(0, flashInfo.getPreviousRequestFlashInfo().getSequenceNumber());
+        assertEquals(null, flashInfo.getNextRequestFlashInfo());
+
+        cookieMap.put(FLASH_COOKIE_NAME, new Cookie(FLASH_COOKIE_NAME, ""));
+        when(mockedFacesContext.getCurrentPhaseId()).thenReturn(RENDER_RESPONSE);
+
+        flash = mockedExternalContext.getFlash();
+
+        assertNotNull(flash);
+        assertEquals(emptySet(), flash.keySet());
+        assertEquals(Set.of(FLASH_COOKIE_NAME), cookieMap.keySet());
+        assertEquals(emptyMap().toString(), flashInnerMap.toString());
+        assertEquals(Set.of(SavedResponseCompleteFlagValue, RequestFlashManager, ForceSetMaxAgeZero), contextMap.keySet());
+        flashInfo = (PreviousNextFlashInfoManager) contextMap.get(RequestFlashManager);
+        assertEquals(1, flashInfo.getPreviousRequestFlashInfo().getSequenceNumber());
+        assertEquals(2, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
+    }
+
+    /**
+     * https://github.com/eclipse-ee4j/mojarra/issues/5552
+     */
     @Test
     public void testGetPreviousRequestFlashViaCookieWithEmptyValueDuringRenderResponseAndKeepMessages() {
         cookieMap.put(FLASH_COOKIE_NAME, new Cookie(FLASH_COOKIE_NAME, ""));
@@ -304,6 +440,9 @@ public class ELFlashTest {
         assertEquals(2, flashInfo.getNextRequestFlashInfo().getSequenceNumber());
     }
 
+    /**
+     * https://github.com/eclipse-ee4j/mojarra/issues/5552
+     */
     @Test
     public void testGetPreviousRequestFlashViaCookieWithPriorValueDuringRenderResponse() {
         contextMap.put(RequestFlashManager, mockPreviousNextFlashInfoManager(flashInnerMap));
@@ -334,6 +473,9 @@ public class ELFlashTest {
         assertEquals(true, contextMap.get(DidWriteCookieAttributeName));
     }
 
+    /**
+     * https://github.com/eclipse-ee4j/mojarra/issues/5552
+     */
     @Test
     public void testGetPreviousRequestFlashViaCookieWithPriorValueDuringRenderResponseAndKeepMessages() {
         contextMap.put(RequestFlashManager, mockPreviousNextFlashInfoManager(flashInnerMap));
