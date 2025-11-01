@@ -257,17 +257,12 @@ public class WebsocketSessionManager {
 
     // Internal -------------------------------------------------------------------------------------------------------
 
-    private static volatile WebsocketSessionManager instance;
-
     /**
      * Internal usage only. Awkward workaround for it being unavailable via @Inject in endpoint in Tomcat+Weld/OWB.
+     * NOTE: CDI.current() doesn't work during WebsocketEndpoint#onClose().
      */
     static WebsocketSessionManager getInstance() {
-        if (instance == null) {
-            instance = getBeanReference(WebsocketSessionManager.class);
-        }
-
-        return instance;
+        return getBeanReference(WebsocketSessionManager.class);
     }
 
     // Helpers --------------------------------------------------------------------------------------------------------
