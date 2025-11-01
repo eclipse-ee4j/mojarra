@@ -358,7 +358,10 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
         }
 
         // lets not forget about part after the separator
-        tokens.add(buffer.toString());
+        String bufferAsString = buffer.toString().trim();
+        if (bufferAsString.length() > 0) {
+            tokens.add(bufferAsString);
+        }
 
         return tokens.toArray(new String[tokens.size()]);
     }
