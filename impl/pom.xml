@@ -475,18 +475,52 @@
                 </executions>
             </plugin>
 
-            <!-- Disable the default maven-deploy-plugin, we need central-publishing-maven-plugin -->
+            <!-- Check licenses of dependencies (Eclipse requirement) -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
+                <groupId>org.eclipse.dash</groupId>
+                <artifactId>license-tool-plugin</artifactId>
+                <version>1.1.0</version>
+                <executions>
+                    <execution>
+                        <id>license-check</id>
+                        <goals>
+                            <goal>license-check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Generate a "consumer pom" for Maven Central release -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.7.0</version>
                 <configuration>
-                    <skip>false</skip>
+                    <flattenMode>ossrh</flattenMode>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
 
     <profiles>
+    
+        <!-- Maven Central release -->
         <profile>
             <id>central-release</id>
             <build>
