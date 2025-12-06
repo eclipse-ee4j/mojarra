@@ -218,6 +218,13 @@
         </dependency>
     </dependencies>
 
+    <pluginRepositories>
+        <pluginRepository>
+            <id>eclipse-releases</id>
+            <url>https://repo.eclipse.org/content/groups/releases/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
    <build>
         <resources>
             <resource>
