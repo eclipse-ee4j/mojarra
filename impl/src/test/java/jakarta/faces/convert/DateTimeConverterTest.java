@@ -3,24 +3,34 @@ package jakarta.faces.convert;
 import com.sun.faces.junit.JUnitFacesTestCaseBase;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.html.HtmlOutputText;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Date;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DateTimeConverterTest extends JUnitFacesTestCaseBase {
 
+    private UIViewRoot viewRoot;
+
+    @BeforeEach
+    public void beforeAll() {
+        viewRoot = new UIViewRoot();
+        viewRoot.setLocale(Locale.US);
+    }
+
     @Test
     public void legacyDateGetAsStringWithoutTimezone() {
         DateTimeConverter converter = new DateTimeConverter();
         converter.setType("date");
         converter.setPattern("MM/dd/yyyy hh:mm a z");
-        facesContext.setViewRoot(new UIViewRoot());
+        facesContext.setViewRoot(viewRoot);
         assertEquals("01/01/2024 12:00 PM GMT", converter.getAsString(facesContext, new HtmlOutputText(), Date.from(Instant.parse("2024-01-01T12:00:00Z"))));
     }
 
@@ -30,7 +40,7 @@ public class DateTimeConverterTest extends JUnitFacesTestCaseBase {
         converter.setType("date");
         converter.setTimeZone(TimeZone.getTimeZone("MST7MDT"));
         converter.setPattern("MM/dd/yyyy hh:mm a z");
-        facesContext.setViewRoot(new UIViewRoot());
+        facesContext.setViewRoot(viewRoot);
         assertEquals("01/01/2024 05:00 AM MST", converter.getAsString(facesContext, new HtmlOutputText(), Date.from(Instant.parse("2024-01-01T12:00:00Z"))));
     }
 
@@ -39,7 +49,7 @@ public class DateTimeConverterTest extends JUnitFacesTestCaseBase {
         DateTimeConverter converter = new DateTimeConverter();
         converter.setType("zonedDateTime");
         converter.setPattern("MM/dd/yyyy hh:mm a z");
-        facesContext.setViewRoot(new UIViewRoot());
+        facesContext.setViewRoot(viewRoot);
         assertEquals("01/01/2024 12:00 PM GMT", converter.getAsString(facesContext, new HtmlOutputText(), ZonedDateTime.ofInstant(Instant.parse("2024-01-01T12:00:00Z"), ZoneOffset.UTC)));
     }
 
@@ -49,7 +59,7 @@ public class DateTimeConverterTest extends JUnitFacesTestCaseBase {
         converter.setType("zonedDateTime");
         converter.setTimeZone(TimeZone.getTimeZone("MST7MDT"));
         converter.setPattern("MM/dd/yyyy hh:mm a z");
-        facesContext.setViewRoot(new UIViewRoot());
+        facesContext.setViewRoot(viewRoot);
         assertEquals("01/01/2024 05:00 AM MST", converter.getAsString(facesContext, new HtmlOutputText(), ZonedDateTime.ofInstant(Instant.parse("2024-01-01T12:00:00Z"), ZoneOffset.UTC)));
     }
 }
