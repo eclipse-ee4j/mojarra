@@ -387,10 +387,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
             Locale locale = getLocale(context);
 
             // Create and configure the parser to be used
-            parser = getDateFormat(locale);
-            if (timeZone != null) {
-                parser.setTimeZone(timeZone);
-            }
+            parser = getDateFormat(locale, timeZone);
 
             // Perform the requested parsing
             returnValue = parser.parse(value);
@@ -452,12 +449,6 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
         private String formatNow() {
             return dateFormat != null ? dateFormat.format(new Date()) : dateTimeFormatter.format(ZonedDateTime.now());
         }
-
-        private void setTimeZone(TimeZone zone) {
-            if (dateFormat != null) {
-                dateFormat.setTimeZone(zone);
-            }
-        }
     }
 
     /**
@@ -488,10 +479,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
             Locale locale = getLocale(context);
 
             // Create and configure the formatter to be used
-            FormatWrapper formatter = getDateFormat(locale);
-            if (null != timeZone) {
-                formatter.setTimeZone(timeZone);
-            }
+            FormatWrapper formatter = getDateFormat(locale, timeZone);
 
             // Perform the requested formatting
             return formatter.format(value);
@@ -515,7 +503,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
      * @param locale The <code>Locale</code> used to select formatting and parsing conventions
      * @throws ConverterException if no instance can be created
      */
-    private FormatWrapper getDateFormat(Locale locale) {
+    private FormatWrapper getDateFormat(Locale locale, TimeZone timeZone) {
 
         // PENDING(craigmcc) - Implement pooling if needed for performance?
 
@@ -559,17 +547,22 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
 
         if (df != null) {
             df.setLenient(false);
+            if (timeZone != null) {
+                df.setTimeZone(timeZone);
+            }
             return new FormatWrapper(df);
         } else {
             if (dtfBuilder != null) {
                 if (pattern == null || !ESCAPED_DATE_TIME_PATTERN.matcher(pattern).replaceAll("").contains("uu")) {
                     dtfBuilder.parseDefaulting(ChronoField.ERA, 1);
                 }
-    
                 dtf = dtfBuilder.toFormatter(locale).withChronology(IsoChronology.INSTANCE).withResolverStyle(ResolverStyle.STRICT);
             }
 
             if (dtf != null) {
+                if (timeZone != null) {
+                    dtf = dtf.withZone(timeZone.toZoneId());
+                }
                 return new FormatWrapper(dtf, fromJavaTime);
             }
         }
