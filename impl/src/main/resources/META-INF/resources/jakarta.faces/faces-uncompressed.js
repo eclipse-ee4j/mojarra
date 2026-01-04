@@ -3051,7 +3051,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
         var stage; // temp value for stage
         var match; // temp value for match
         while (s < scripts.length) {
-            if (typeof scripts[s].src === 'string' && scripts[s].src.match('\/javax\.faces\.resource\/faces\.js\?.*ln=javax\.faces')) {
+            if (typeof scripts[s].src === 'string' && scripts[s].src.match('\/jakarta\.faces\.resource\/faces\.js\?.*ln=jakarta\.faces')) {
                 script = scripts[s].src;
                 break;
             }
