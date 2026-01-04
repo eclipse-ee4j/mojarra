@@ -57,6 +57,7 @@ import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.context.FacesContextParam;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.RequestStateManager;
+import com.sun.faces.util.Util;
 
 /**
  * This is the default implementation of {@link ResourceHandler}.
