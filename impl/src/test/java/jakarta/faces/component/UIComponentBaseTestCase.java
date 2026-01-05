@@ -376,7 +376,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         c.pushComponentToEL(facesContext, c);
         c.restoreState(facesContext, state);
         c.popComponentFromEL(facesContext);
-        assertEquals(Arrays.asList("attr1", "attr2"), c.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet"));
+        assertEquals(Arrays.asList("attr2"), c.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet"));
     }
 
     @Test

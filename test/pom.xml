@@ -35,6 +35,7 @@
         <module>base</module>
         <module>example_jar_with_metadata_complete_false</module>
         <module>example_jar_with_metadata_complete_true</module>
+        <module>issue5059</module>
         <module>issue5460</module>
         <module>issue5464</module>
         <module>issue5488</module>
