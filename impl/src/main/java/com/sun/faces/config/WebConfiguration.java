@@ -46,13 +46,6 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.application.view.FaceletViewHandlingStrategy;
-import com.sun.faces.facelets.util.Classpath;
-import com.sun.faces.lifecycle.HttpMethodRestrictionsPhaseListener;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
-
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.ResourceHandler;
@@ -71,6 +64,13 @@ import jakarta.faces.push.PushContext;
 import jakarta.faces.validator.BeanValidator;
 import jakarta.faces.webapp.FacesServlet;
 import jakarta.servlet.ServletContext;
+
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.application.view.FaceletViewHandlingStrategy;
+import com.sun.faces.facelets.util.Classpath;
+import com.sun.faces.lifecycle.HttpMethodRestrictionsPhaseListener;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
 
 /**
  * Class Documentation
@@ -784,6 +784,7 @@ public class WebConfiguration {
         ClientWindowMode(ClientWindow.CLIENT_WINDOW_MODE_PARAM_NAME, "none"),
         WebAppResourcesDirectory(ResourceHandler.WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME, "/resources"),
         WebAppContractsDirectory(ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME, "/contracts"),
+        ExceptionTypesToIgnoreInLogging("com.sun.faces.exceptionTypesToIgnoreInLogging", ""),
         ;
 
         private String defaultValue;
