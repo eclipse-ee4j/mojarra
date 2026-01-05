@@ -27,15 +27,6 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.config.initfacescontext.NoOpELContext;
-import com.sun.faces.config.initfacescontext.NoOpFacesContext;
-import com.sun.faces.config.initfacescontext.ServletContextAdapter;
-import com.sun.faces.context.ApplicationMap;
-import com.sun.faces.context.ExceptionHandlerImpl;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
-
 import jakarta.el.ELContext;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
@@ -46,6 +37,15 @@ import jakarta.faces.context.ExceptionHandler;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletContext;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.config.initfacescontext.NoOpELContext;
+import com.sun.faces.config.initfacescontext.NoOpFacesContext;
+import com.sun.faces.config.initfacescontext.ServletContextAdapter;
+import com.sun.faces.context.ApplicationMap;
+import com.sun.faces.context.ExceptionHandlerImpl;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
 
 /**
  * A special, minimal implementation of FacesContext used at application initialization time. The ExternalContext
@@ -116,7 +116,7 @@ public class    InitFacesContext extends NoOpFacesContext {
     @Override
     public ExceptionHandler getExceptionHandler() {
         if (exceptionHandler == null) {
-            exceptionHandler = new ExceptionHandlerImpl(false);
+            exceptionHandler = new ExceptionHandlerImpl(this, false);
         }
         return exceptionHandler;
     }

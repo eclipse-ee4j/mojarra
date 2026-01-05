@@ -71,14 +71,14 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
 
     public ExceptionHandlerImpl() {
 
-        this(true);
+        this(FacesContext.getCurrentInstance(), true);
 
     }
 
-    public ExceptionHandlerImpl(boolean errorPagePresent) {
+    public ExceptionHandlerImpl(FacesContext context, boolean errorPagePresent) {
 
         this.errorPagePresent = errorPagePresent;
-        this.exceptionTypesToIgnoreInLogging = parseExceptionTypesToIgnoreInLogging();
+        this.exceptionTypesToIgnoreInLogging = parseExceptionTypesToIgnoreInLogging(context);
 
     }
 
@@ -210,12 +210,12 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
     // --------------------------------------------------------- Private Methods
 
     @SuppressWarnings("unchecked")
-    private static Set<Class<? extends Throwable>> parseExceptionTypesToIgnoreInLogging() {
+    private static Set<Class<? extends Throwable>> parseExceptionTypesToIgnoreInLogging(FacesContext context) {
         var types = new HashSet<Class<? extends Throwable>>();
-        var typesParam = WebConfiguration.getInstance().getOptionValue(WebContextInitParameter.ExceptionTypesToIgnoreInLogging);
+        var typesParam = WebConfiguration.getInstance(context.getExternalContext()).getOptionValue(WebContextInitParameter.ExceptionTypesToIgnoreInLogging);
 
         if (typesParam != null) {
-            for (var typeParam : Util.split(FacesContext.getCurrentInstance().getExternalContext().getApplicationMap(), typesParam, ",")) {
+            for (var typeParam : Util.split(context.getExternalContext().getApplicationMap(), typesParam, ",")) {
                 try {
                     types.add((Class<? extends Throwable>) Class.forName(typeParam));
                 }
