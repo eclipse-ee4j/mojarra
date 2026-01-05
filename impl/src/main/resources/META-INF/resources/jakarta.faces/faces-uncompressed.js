@@ -2982,7 +2982,7 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
                 window[facesChainEvent] = event;
                 const script = 'window.' + facesChainResult + ' = (function(event) { ' + arguments[i] + ' }).call(window.' + facesChainThis + ', window.' + facesChainEvent + ');';
                 executeScriptWithNonce(head, script, nonce);
-                result = window[tempResult];
+                result = window[facesChainResult];
             }
             finally {
                 delete window[facesChainThis];
