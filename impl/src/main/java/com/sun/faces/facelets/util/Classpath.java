@@ -111,7 +111,7 @@ public final class Classpath {
             }
 
             for (int i = 0; i < fc.length; i++) {
-                path = fc[i].getAbsolutePath();
+                path = fc[i].getAbsolutePath().replace('\\', '/');
                 if (fc[i].isDirectory()) {
                     searchDir(result, fc[i], suffix);
                 } else if (path.endsWith(suffix)) {
