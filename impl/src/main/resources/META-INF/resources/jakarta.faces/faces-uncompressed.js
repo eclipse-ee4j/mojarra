@@ -22,8 +22,6 @@
  @description This is the standard implementation of the Faces JavaScript Library.
  */
 
-"use strict";
-
 // Detect if this is already loaded, and if loaded, if it's a higher version
 if ( !( (window.faces && window.faces.specversion && window.faces.specversion >= 50000 )
     && (window.faces.implversion && window.faces.implversion >= 5)) ) {
