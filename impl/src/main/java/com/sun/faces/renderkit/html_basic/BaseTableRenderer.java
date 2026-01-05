@@ -22,15 +22,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.sun.faces.renderkit.Attribute;
-import com.sun.faces.renderkit.RenderKitUtils;
-import com.sun.faces.util.Util;
-
 import jakarta.faces.component.UIColumn;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIData;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
+
+import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.RenderKitUtils;
+import com.sun.faces.util.Util;
 
 /**
  * Base class for concrete Grid and Table renderers.
@@ -131,7 +131,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
             if (captionStyle != null) {
                 writer.writeAttribute("style", captionStyle, "captionStyle");
             }
-            encodeRecursive(context, caption);
+            encodeRecursive(context, caption, true);
             writer.endElement("caption");
         }
 

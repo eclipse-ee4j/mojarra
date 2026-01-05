@@ -24,13 +24,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter;
-import com.sun.faces.io.FastStringWriter;
-import com.sun.faces.util.HtmlUtils;
-import com.sun.faces.util.MessageUtils;
-
 import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
@@ -38,6 +31,13 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.render.Renderer;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter;
+import com.sun.faces.io.FastStringWriter;
+import com.sun.faces.util.HtmlUtils;
+import com.sun.faces.util.MessageUtils;
 
 /**
  * <p>
@@ -977,11 +977,11 @@ public class HtmlResponseWriter extends ResponseWriter {
         if (null != name && containsPassThroughAttribute(name)) {
             return;
         }
-        writeURIAttributeIgnoringPassThroughAttributes(name, value, componentPropertyName, false);
+        writeURIAttributeIgnoringPassThroughAttributes(attributesBuffer, name, value, componentPropertyName, false);
 
     }
 
-    private void writeURIAttributeIgnoringPassThroughAttributes(String name, Object value, String componentPropertyName, boolean isPassthrough)
+    private void writeURIAttributeIgnoringPassThroughAttributes(FastStringWriter attributesBuffer, String name, Object value, String componentPropertyName, boolean isPassthrough)
             throws IOException {
 
         if (name == null) {
@@ -1089,17 +1089,28 @@ public class HtmlResponseWriter extends ResponseWriter {
     }
 
     private void flushAttributes() throws IOException {
-        boolean hasPassthroughAttributes = null != passthroughAttributes && !passthroughAttributes.isEmpty();
+        if (passthroughAttributes != null && !passthroughAttributes.isEmpty()) {
+            writePassthroughAttributes(attributesBuffer, passthroughAttributes);
+        }
 
-        if (hasPassthroughAttributes) {
-            FacesContext context = FacesContext.getCurrentInstance();
-            for (Map.Entry<String, Object> entry : passthroughAttributes.entrySet()) {
-                Object valObj = entry.getValue();
-                String val = getAttributeValue(context, valObj);
-                String key = entry.getKey();
-                if (val != null) {
-                    writeURIAttributeIgnoringPassThroughAttributes(key, val, key, true);
-                }
+        if (passthroughAttributes != null) {
+            passthroughAttributes.clear();
+            passthroughAttributes = null;
+        }
+
+    }
+
+    private void writePassthroughAttributes(FastStringWriter attributesBuffer, Map<String, Object> passthroughAttributes) throws IOException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        for (Map.Entry<String, Object> entry : passthroughAttributes.entrySet()) {
+            Object valObj = entry.getValue();
+            String val = getAttributeValue(context, valObj);
+            String key = entry.getKey();
+            if ("styleClass".equals(key)) {
+                key = "class";
+            }
+            if (val != null) {
+                writeURIAttributeIgnoringPassThroughAttributes(attributesBuffer, key, val, key, true);
             }
         }
 
@@ -1124,12 +1135,11 @@ public class HtmlResponseWriter extends ResponseWriter {
             }
             attributesBuffer.reset();
         }
+    }
 
-        if (hasPassthroughAttributes) {
-            passthroughAttributes.clear();
-            passthroughAttributes = null;
-        }
-
+    public void writePassthroughAttributes(Map<String, Object> passthroughAttributes) throws IOException {
+        attributesBuffer.reset();
+        writePassthroughAttributes(attributesBuffer, passthroughAttributes);
     }
 
     private String getAttributeValue(FacesContext context, Object valObj) {
