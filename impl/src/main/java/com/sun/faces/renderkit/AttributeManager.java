@@ -84,13 +84,13 @@ public class AttributeManager {
                     ar(attr("accesskey"), attr("alt"), attr("dir"), attr("lang"), attr("maxlength"), attr("onblur", "blur"), attr("onclick", "click"),
                             attr("ondblclick", "dblclick"), attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"),
                             attr("onkeyup", "keyup"), attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"),
-                            attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("onselect", "select"), attr("role"), attr("size"),
+                            attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("onselect", "select"), attr("placeholder"), attr("role"), attr("size"),
                             attr("style"), attr("tabindex"), attr("title")))
             .add(Key.INPUTTEXTAREA,
                     ar(attr("accesskey"), attr("cols"), attr("dir"), attr("lang"), attr("onblur", "blur"), attr("onclick", "click"),
                             attr("ondblclick", "dblclick"), attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"),
                             attr("onkeyup", "keyup"), attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"),
-                            attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("onselect", "select"), attr("role"), attr("rows"),
+                            attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("onselect", "select"), attr("placeholder"), attr("role"), attr("rows"),
                             attr("style"), attr("tabindex"), attr("title")))
             .add(Key.MESSAGEMESSAGE,
                     ar(attr("dir"), attr("lang"), attr("role"), attr("style"), attr("title")))
