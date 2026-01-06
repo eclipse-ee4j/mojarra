@@ -36,6 +36,7 @@ import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.SEVERE;
 
 import java.beans.FeatureDescriptor;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
@@ -46,6 +47,7 @@ import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.channels.ClosedChannelException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -116,8 +118,6 @@ import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.manager.FacesSchema;
 import com.sun.faces.facelets.component.UIRepeat;
 import com.sun.faces.io.FastStringWriter;
-
-import java.nio.channels.ClosedChannelException;
 
 /**
  * <B>Util</B> is a class ...
@@ -1674,14 +1674,14 @@ public class Util {
     }
 
     public static boolean isConnectionAbort(IOException ioe) {
-        if (ioe instanceof ClosedChannelException) {
+        if (ioe instanceof ClosedChannelException || ioe instanceof EOFException) {
             return true;
         }
 
         String exceptionClassName = ioe.getClass().getCanonicalName();
 
-        if (exceptionClassName.equals("org.apache.catalina.connector.ClientAbortException") ||
-                exceptionClassName.equals("org.eclipse.jetty.io.EofException")) {
+        if (exceptionClassName.equals("org.apache.catalina.connector.ClientAbortException") // Tomcat
+            || exceptionClassName.equals("org.eclipse.jetty.io.EofException")) {            // Jetty
             return true;
         }
 
@@ -1691,11 +1691,10 @@ public class Util {
             return false;
         }
 
-        if (exceptionMessage.contains("Connection is closed")) { // Thrown by Grizzly if connection aborted by client
-            return true;
-        }
-
         String lowercasedExceptionMessage = exceptionMessage.toLowerCase();
-        return lowercasedExceptionMessage.contains("connection") && lowercasedExceptionMessage.contains("abort"); // #5264
+
+        return (lowercasedExceptionMessage.contains("connection") && lowercasedExceptionMessage.contains("abort"))        // #5264 Undertow (English)
+            || (lowercasedExceptionMessage.contains("connection") && lowercasedExceptionMessage.contains("closed"))       // #5583 Grizzly
+            || (lowercasedExceptionMessage.contains("verbindung") && lowercasedExceptionMessage.contains("abgebrochen")); // #5527 Undertow (German)
     }
 }
