@@ -52,7 +52,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import java.util.SortedSet;
@@ -63,7 +62,6 @@ import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UISelectItems;
 import jakarta.faces.component.UISelectMany;
 import jakarta.faces.component.UISelectOne;
 import jakarta.faces.component.ValueHolder;
@@ -83,8 +81,6 @@ import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.renderkit.SelectItemsIterator;
 import com.sun.faces.util.RequestStateManager;
-import com.sun.faces.util.ScopedRunner;
-import com.sun.faces.util.ScopedRunner.ThrowingRunnable;
 import com.sun.faces.util.Util;
 
 /**
@@ -432,30 +428,15 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
             writer.writeAttribute("class", labelClass, "labelClass");
         }
 
-        final String label = curItem.isEscape() ? Optional.ofNullable(curItem.getLabel()).orElse(valueString) : curItem.getLabel();
-
-        ThrowingRunnable writeAction = () -> {
-            if (curItem.isEscape()) {
-                writer.writeText(label, component, "label");
+        if (curItem.isEscape()) {
+            String label = curItem.getLabel();
+            if (label == null) {
+                label = valueString;
             }
-            else {
-                writer.write(label);
-            }
-        };
-
-        String varName = null;
-
-        if (selectComponent instanceof UISelectItems && selectComponent.getPassThroughAttributes(false) != null) {
-            varName = (String) ((UISelectItems) selectComponent).getAttributes().get("var");
+            writer.writeText(label, component, "label");
+        } else {
+            writer.write(curItem.getLabel());
         }
-
-        if (varName != null) {
-            new ScopedRunner(context).with(varName, curItem.getValue()).invoke(writeAction);
-        }
-        else {
-            writeAction.run();
-        }
-
         writer.endElement("option");
         writer.writeText("\n", component, null);
 
