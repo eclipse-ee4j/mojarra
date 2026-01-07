@@ -780,10 +780,13 @@ public class Util {
         Class<?> primitiveType = primitiveTypes.get(type);
         if ( primitiveType != null ) return primitiveType;
 
-        if (type.indexOf('.') == -1) {
+        if ("void".equals(type)) {
+            return Void.TYPE;
+        }
+        else if (type.indexOf('.') == -1) {
             type = "java.lang." + type;
         }
-
+        
         Class<?> result = loadClass(type, Void.TYPE);
         return result;
     }
