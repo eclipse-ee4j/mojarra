@@ -1712,6 +1712,12 @@ public class RenderKitUtils {
             writer.writeAttribute("type", ScriptRenderer.DEFAULT_CONTENT_TYPE, "type");
         }
 
+        String nonce = context.getApplication().getResourceHandler().getCurrentNonce(context);
+        
+        if (nonce != null) {
+            writer.writeAttribute("nonce", nonce, "nonce");
+        }
+
         writer.writeText(script, component, null);
         writer.endElement("script");
     }
