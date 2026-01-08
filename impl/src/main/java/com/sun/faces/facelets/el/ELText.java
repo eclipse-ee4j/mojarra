@@ -108,15 +108,15 @@ public class ELText {
 
         @Override
         public void write(Writer out, ELContext ctx) throws ELException, IOException {
-            for (int i = 0; i < txt.length; i++) {
-                txt[i].write(out, ctx);
+            for (ELText elText : txt) {
+                elText.write(out, ctx);
             }
         }
 
         @Override
         public void writeText(ResponseWriter out, ELContext ctx) throws ELException, IOException {
-            for (int i = 0; i < txt.length; i++) {
-                txt[i].writeText(out, ctx);
+            for (ELText elText : txt) {
+                elText.writeText(out, ctx);
             }
         }
 
@@ -305,7 +305,7 @@ public class ELText {
     /**
      * Factory method for creating a validated ELText instance. When an Expression is hit, it will use the ExpressionFactory
      * to create a ValueExpression instance, resolving any functions at that time.
-     * 
+     *
      * Variables and properties will not be evaluated.
      *
      * @param fact ExpressionFactory to use
@@ -387,7 +387,7 @@ public class ELText {
         } else if (text.size() == 1) {
             return text.get(0);
         } else {
-            ELText[] ta = text.toArray(new ELText[text.size()]);
+            ELText[] ta = text.toArray(new ELText[0]);
             return new ELTextComposite(ta);
         }
     }

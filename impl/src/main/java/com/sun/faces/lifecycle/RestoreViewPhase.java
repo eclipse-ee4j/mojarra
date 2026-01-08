@@ -41,6 +41,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import jakarta.el.MethodExpression;
 import jakarta.faces.FacesException;
@@ -84,6 +85,7 @@ public class RestoreViewPhase extends Phase {
     private static final Logger LOGGER = FacesLogger.LIFECYCLE.getLogger();
 
     private static final Set<VisitHint> SKIP_ITERATION_HINT = EnumSet.of(SKIP_ITERATION);
+    private static final Pattern ABSOLUTE_URI_PATTERN = Pattern.compile("^[a-z]+://.*");
 
     // ---------------------------------------------------------- Public Methods
 
@@ -322,7 +324,7 @@ public class RestoreViewPhase extends Phase {
         URI uri = null;
         String path = null;
 
-        boolean isAbsoluteURI = view.matches("^[a-z]+://.*");
+        boolean isAbsoluteURI = ABSOLUTE_URI_PATTERN.matcher(view).matches();
         if (!isAbsoluteURI) {
             URI absoluteURI = null;
             URI relativeURI = null;

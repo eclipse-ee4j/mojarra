@@ -451,7 +451,7 @@ public class Util {
 
         // Trim any path segments that remain, leaving only the
         // last path segment.
-        int slash = input.lastIndexOf("/");
+        int slash = input.lastIndexOf('/');
 
         // Do we have a "/"?
         if (-1 != slash) {
@@ -485,12 +485,12 @@ public class Util {
 
         // Trim any path segments that remain, leaving only the
         // last path segment.
-        int lastSlash = input.lastIndexOf("/");
+        int lastSlash = input.lastIndexOf('/');
 
         // Do we have a "/"?
         if (-1 != lastSlash) {
 
-            int startOrPreviousSlash = input.lastIndexOf("/", lastSlash - 1);
+            int startOrPreviousSlash = input.lastIndexOf('/', lastSlash - 1);
             startOrPreviousSlash = -1 == startOrPreviousSlash ? 0 : startOrPreviousSlash;
 
             input = input.substring(startOrPreviousSlash, lastSlash);
@@ -500,7 +500,7 @@ public class Util {
     }
 
     public static String removeLastPathSegment(String input) {
-        int slash = input.lastIndexOf("/");
+        int slash = input.lastIndexOf('/');
 
         // Do we have a "/"?
         if (-1 != slash) {

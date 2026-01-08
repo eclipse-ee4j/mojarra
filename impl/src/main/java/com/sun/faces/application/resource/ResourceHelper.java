@@ -638,7 +638,7 @@ public abstract class ResourceHelper {
             String expressionBody = new String(chars);
             int colon;
             // If this expression contains a ":"
-            if (-1 != (colon = expressionBody.indexOf(":"))) {
+            if (-1 != (colon = expressionBody.indexOf(':'))) {
                 // Make sure it contains only one ":"
                 if (!isPropertyValid(expressionBody)) {
                     String message = MessageUtils.getExceptionMessageString(MessageUtils.INVALID_RESOURCE_FORMAT_COLON_ERROR, expressionBody);
@@ -653,7 +653,7 @@ public abstract class ResourceHelper {
 
                 }
                 try {
-                    int mark = parts[0].indexOf("[") + 2;
+                    int mark = parts[0].indexOf('[') + 2;
                     char quoteMark = parts[0].charAt(mark - 1);
                     parts[0] = parts[0].substring(mark, colon);
                     if (parts[0].equals("this")) {
@@ -666,7 +666,7 @@ public abstract class ResourceHelper {
                             throw new NullPointerException("Resource expression is not a library or resource library contract");
                         }
 
-                        mark = parts[1].indexOf("]") - 1;
+                        mark = parts[1].indexOf(']') - 1;
                         parts[1] = parts[1].substring(0, mark);
                         expressionBody = "resource[" + quoteMark + parts[0] + ":" + parts[1] + quoteMark + "]";
                     }

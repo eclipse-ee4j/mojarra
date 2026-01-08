@@ -181,7 +181,7 @@ public class LifecycleImpl extends Lifecycle {
     @Override
     public PhaseListener[] getPhaseListeners() {
 
-        return listeners.toArray(new PhaseListener[listeners.size()]);
+        return listeners.toArray(new PhaseListener[0]);
 
     }
 

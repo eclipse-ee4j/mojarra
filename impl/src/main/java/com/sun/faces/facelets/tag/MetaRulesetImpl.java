@@ -69,11 +69,11 @@ public class MetaRulesetImpl extends MetaRuleset {
 
         // setup attributes
         TagAttribute[] attrs = this.tag.getAttributes().getAll();
-        for (int i = 0; i < attrs.length; i++) {
-            if (attrs[i].getLocalName().equals("class")) {
-                attributes.put("styleClass", attrs[i]);
+        for (TagAttribute attr : attrs) {
+            if (attr.getLocalName().equals("class")) {
+                attributes.put("styleClass", attr);
             } else {
-                attributes.put(attrs[i].getLocalName(), attrs[i]);
+                attributes.put(attr.getLocalName(), attr);
             }
         }
 
@@ -132,8 +132,8 @@ public class MetaRulesetImpl extends MetaRuleset {
         if (!attributes.isEmpty()) {
             if (rules.isEmpty()) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
-                    for (Iterator<TagAttribute> itr = attributes.values().iterator(); itr.hasNext();) {
-                        LOGGER.severe(itr.next() + " Unhandled by MetaTagHandler for type " + type.getName());
+                    for (TagAttribute tagAttribute : attributes.values()) {
+                        LOGGER.severe(tagAttribute + " Unhandled by MetaTagHandler for type " + type.getName());
                     }
                 }
             } else {
@@ -162,7 +162,7 @@ public class MetaRulesetImpl extends MetaRuleset {
         if (mappers.isEmpty()) {
             return NONE;
         } else {
-            return new MetadataImpl(mappers.toArray(new Metadata[mappers.size()]));
+            return new MetadataImpl(mappers.toArray(new Metadata[0]));
         }
 
     }

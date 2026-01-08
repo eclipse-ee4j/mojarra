@@ -338,6 +338,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
                 for (char separator : separators) {
                     if (c == separator) {
                         isSeparator = true;
+                        break;
                     }
                 }
 
@@ -363,7 +364,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler {
             tokens.add(bufferAsString);
         }
 
-        return tokens.toArray(new String[tokens.size()]);
+        return tokens.toArray(new String[0]);
     }
 
     @Override

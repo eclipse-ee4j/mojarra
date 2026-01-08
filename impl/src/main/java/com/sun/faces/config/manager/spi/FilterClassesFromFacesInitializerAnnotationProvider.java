@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.spi.AnnotationProvider;
@@ -46,6 +47,8 @@ import jakarta.servlet.ServletContext;
  *
  */
 public class FilterClassesFromFacesInitializerAnnotationProvider extends AnnotationProvider {
+
+    private static final Pattern WHITESPACES = Pattern.compile("\\s+");
 
     public FilterClassesFromFacesInitializerAnnotationProvider(ServletContext servletContext) {
         super(servletContext);
@@ -84,7 +87,7 @@ public class FilterClassesFromFacesInitializerAnnotationProvider extends Annotat
         WebConfiguration webConfig = WebConfiguration.getInstance();
         boolean annotationScanPackagesSet = webConfig.isSet(AnnotationScanPackages);
 
-        String[] annotationScanPackages = annotationScanPackagesSet ? webConfig.getOptionValue(AnnotationScanPackages).split("\\s+") : null;
+        String[] annotationScanPackages = annotationScanPackagesSet ? WHITESPACES.split(webConfig.getOptionValue(AnnotationScanPackages)) : null;
 
         Iterator<Class<?>> iterator = annotatedSet.iterator();
         while (iterator.hasNext()) {
@@ -116,18 +119,18 @@ public class FilterClassesFromFacesInitializerAnnotationProvider extends Annotat
     private boolean matchesAnnotationScanPackages(Class<?> clazz, String[] annotationScanPackages) {
         boolean result = false;
 
-        for (int i = 0; i < annotationScanPackages.length; i++) {
+        for (String annotationScanPackage : annotationScanPackages) {
 
             String classUrlString = clazz.getProtectionDomain().getCodeSource().getLocation().toString();
             String classPackageName = clazz.getPackage().getName();
 
-            if (classUrlString.contains("WEB-INF/classes") && annotationScanPackages[i].equals("*")) {
+            if (classUrlString.contains("WEB-INF/classes") && annotationScanPackage.equals("*")) {
                 result = true;
-            } else if (classPackageName.equals(annotationScanPackages[i])) {
+            } else if (classPackageName.equals(annotationScanPackage)) {
                 result = true;
-            } else if (annotationScanPackages[i].startsWith("jar:")) {
-                String jarName = annotationScanPackages[i].substring(4, annotationScanPackages[i].indexOf(":", 5));
-                String jarPackageName = annotationScanPackages[i].substring(annotationScanPackages[i].lastIndexOf(":") + 1);
+            } else if (annotationScanPackage.startsWith("jar:")) {
+                String jarName = annotationScanPackage.substring(4, annotationScanPackage.indexOf(":", 5));
+                String jarPackageName = annotationScanPackage.substring(annotationScanPackage.lastIndexOf(':') + 1);
                 if (jarName.equals("*")) {
                     if (jarPackageName.equals("*")) {
                         result = true;

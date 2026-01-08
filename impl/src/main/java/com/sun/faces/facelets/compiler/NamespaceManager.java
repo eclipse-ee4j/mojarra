@@ -58,8 +58,8 @@ final class NamespaceManager {
 
     public String getNamespace(String prefix) {
         NS ns = null;
-        for (int i = 0; i < namespaces.size(); i++) {
-            ns = namespaces.get(i);
+        for (NS namespace : namespaces) {
+            ns = namespace;
             if (ns.prefix.equals(prefix)) {
                 return ns.namespace;
             }

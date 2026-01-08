@@ -145,7 +145,7 @@ final class ServiceFactoryUtils {
             }
         }
 
-        return results != null && !results.isEmpty() ? results.toArray(new String[results.size()]) : EMPTY_ARRAY;
+        return results != null && !results.isEmpty() ? results.toArray(new String[0]) : EMPTY_ARRAY;
 
     }
 

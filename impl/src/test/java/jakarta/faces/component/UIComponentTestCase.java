@@ -226,9 +226,9 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         component.setId("oldvalue");
         assertEquals("oldvalue", attributes.get("id")); // Property
         component.setRendered(false);
-        assertTrue(!((Boolean) attributes.get("rendered")).booleanValue());
+        assertTrue(!(Boolean) attributes.get("rendered"));
         component.setRendered(true);
-        assertTrue(((Boolean) attributes.get("rendered")).booleanValue());
+        assertTrue((Boolean) attributes.get("rendered"));
 
         // Test put()
         try {
@@ -334,7 +334,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
 
         assertEquals(component.getParent(), component.getAttributes().get("parent"));
 
-        assertEquals(component.isRendered(), ((Boolean) component.getAttributes().get("rendered")).booleanValue());
+        assertEquals(component.isRendered(), component.getAttributes().get("rendered"));
         component.setRendered(false);
         assertEquals(Boolean.FALSE, component.getAttributes().get("rendered"));
         component.setRendered(true);
@@ -353,7 +353,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         component.getAttributes().put("rendererType", null);
         assertNull(component.getRendererType());
 
-        assertEquals(component.getRendersChildren(), ((Boolean) component.getAttributes().get("rendersChildren")).booleanValue());
+        assertEquals(component.getRendersChildren(), component.getAttributes().get("rendersChildren"));
 
     }
 
@@ -1536,8 +1536,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
 
         // Validate attributes
         checkAttributeCount(component, expectedAttributes.length);
-        for (int i = 0; i < expectedAttributes.length; i++) {
-            checkAttributePresent(component, expectedAttributes[i], null);
+        for (String expectedAttribute : expectedAttributes) {
+            checkAttributePresent(component, expectedAttribute, null);
         }
 
         // Validate properties
@@ -1698,8 +1698,8 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         List<?> children = component.getChildren();
         assertTrue(!children.contains(child), "child " + child + " should not be contained");
         assertEquals(-1, children.indexOf(child));
-        for (int i = 0; i < children.size(); i++) {
-            if (child.equals(children.get(i))) {
+        for (Object o : children) {
+            if (child.equals(o)) {
                 fail("child " + child + " should be missing");
             }
         }
@@ -1733,16 +1733,12 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         assertTrue(!facets.containsValue(facet), "facet " + name + " value not present");
         assertNull(facets.get(name), "facet " + name + " key not found by get");
         assertNull(component.getFacet(name), "facet " + name + " not returned by getFacet(String)");
-        Iterator<String> keys = facets.keySet().iterator();
-        while (keys.hasNext()) {
-            String key = keys.next();
+        for (String key : facets.keySet()) {
             if (name.equals(key)) {
                 fail("facet " + name + " found in keys");
             }
         }
-        Iterator<UIComponent> values = facets.values().iterator();
-        while (values.hasNext()) {
-            UIComponent value = values.next();
+        for (UIComponent value : facets.values()) {
             if (facet.equals(value)) {
                 fail("facet " + name + " found in values");
             }
@@ -1759,9 +1755,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         assertEquals(facet, facets.get(name));
         assertTrue(facet == component.getFacet(name), "facet " + name + " returned by getFacet(String)");
         boolean found = false;
-        Iterator<String> keys = facets.keySet().iterator();
-        while (keys.hasNext()) {
-            String key = keys.next();
+        for (String key : facets.keySet()) {
             if (name.equals(key)) {
                 found = true;
                 break;
@@ -1771,9 +1765,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
             fail("facet " + name + " not found in keys");
         }
         found = false;
-        Iterator<UIComponent> values = facets.values().iterator();
-        while (values.hasNext()) {
-            UIComponent value = values.next();
+        for (UIComponent value : facets.values()) {
             if (facet.equals(value)) {
                 found = true;
                 break;

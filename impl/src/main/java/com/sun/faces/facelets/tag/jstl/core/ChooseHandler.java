@@ -47,7 +47,7 @@ public final class ChooseHandler extends TagHandlerImpl {
         if (whenList.isEmpty()) {
             throw new TagException(tag, "Choose Tag must have one or more When Tags");
         }
-        when = (ChooseWhenHandler[]) whenList.toArray(new ChooseWhenHandler[whenList.size()]);
+        when = (ChooseWhenHandler[]) whenList.toArray(new ChooseWhenHandler[0]);
 
         itr = this.findNextByType(ChooseOtherwiseHandler.class);
         if (itr.hasNext()) {
@@ -59,9 +59,9 @@ public final class ChooseHandler extends TagHandlerImpl {
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
-        for (int i = 0; i < when.length; i++) {
-            if (when[i].isTestTrue(ctx)) {
-                when[i].apply(ctx, parent);
+        for (ChooseWhenHandler chooseWhenHandler : when) {
+            if (chooseWhenHandler.isTestTrue(ctx)) {
+                chooseWhenHandler.apply(ctx, parent);
                 return;
             }
         }

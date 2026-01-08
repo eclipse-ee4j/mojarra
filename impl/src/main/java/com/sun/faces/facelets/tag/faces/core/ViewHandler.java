@@ -40,7 +40,7 @@ import jakarta.faces.view.facelets.TagConfig;
 
 /**
  * Container for all Jakarta Faces core and custom component actions used on a page.
- * 
+ *
  * See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/view.html">tag
  * documentation</a>.
  *
@@ -135,7 +135,7 @@ public final class ViewHandler extends TagHandlerImpl {
             }
 
             if (transientFlag != null) {
-                Boolean b = Boolean.valueOf(transientFlag.getValue(ctx));
+                boolean b = Boolean.parseBoolean(transientFlag.getValue(ctx));
                 root.setTransient(b);
             }
 

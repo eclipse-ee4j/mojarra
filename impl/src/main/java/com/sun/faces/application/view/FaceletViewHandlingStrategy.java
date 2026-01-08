@@ -1543,7 +1543,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 Class<?>[] expectedParameters = NO_ARGS;
 
                 // Get expectedReturnType
-                int j, i = methodSignature.indexOf(" ");
+                int j, i = methodSignature.indexOf(' ');
                 if (-1 != i) {
                     String strValue = methodSignature.substring(0, i);
                     try {
@@ -1559,9 +1559,9 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 }
 
                 // derive the arguments
-                i = methodSignature.indexOf("(");
+                i = methodSignature.indexOf('(');
                 if (-1 != i) {
-                    j = methodSignature.indexOf(")", i + 1);
+                    j = methodSignature.indexOf(')', i + 1);
                     if (-1 != j) {
                         String strValue = methodSignature.substring(i + 1, j);
                         if (0 < strValue.length()) {

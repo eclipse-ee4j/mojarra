@@ -46,9 +46,7 @@ public final class PassThroughAttributesHandler extends TagHandlerImpl implement
         if (parent.getParent() == null) {
             Map<String, Object> componentPassThroughAttrs = parent.getPassThroughAttributes(true);
             Map<String, Object> tagPassThroughAttrs = (Map<String, Object>) value.getObject(ctx, Map.class);
-            for (Map.Entry<String, Object> cur : tagPassThroughAttrs.entrySet()) {
-                componentPassThroughAttrs.put(cur.getKey(), cur.getValue());
-            }
+            componentPassThroughAttrs.putAll(tagPassThroughAttrs);
         }
     }
 
