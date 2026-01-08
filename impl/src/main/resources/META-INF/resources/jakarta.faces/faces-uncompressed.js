@@ -18,13 +18,13 @@
 
 /**
  @project Faces JavaScript Library
- @version 4.1
+ @version 5.0
  @description This is the standard implementation of the Faces JavaScript Library.
  */
 
 // Detect if this is already loaded, and if loaded, if it's a higher version
-if ( !( (window.faces && window.faces.specversion && window.faces.specversion >= 41000 )
-    && (window.faces.implversion && window.faces.implversion >= 4)) ) {
+if ( !( (window.faces && window.faces.specversion && window.faces.specversion >= 50000 )
+    && (window.faces.implversion && window.faces.implversion >= 5)) ) {
 
     // --- JS Lang --------------------------------------------------------------------
     const UDEF = 'undefined';
@@ -33,6 +33,35 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
     const FORM = "form";
     const isNull = (value) => (typeof value === UDEF || (typeof value === "object" && !value));
     const isNotNull = (value) => !isNull(value);
+
+    /**
+     * Get the head from document.
+     * @ignore
+     */
+    const getHead = () => {
+        return document.head || document.getElementsByTagName('head')[0] || document.documentElement;
+    };
+
+    /**
+     * Get the nonce from faces.js script for CSP support.
+     * @ignore
+     */
+    const getNonce = () => {
+        const thisScript = document.querySelector("script[src*='jakarta.faces.resource/faces.js']");
+        return isNotNull(thisScript) ? thisScript.nonce : undefined;
+    };
+
+    /**
+     * Execute script with nonce for CSP support.
+     * @ignore
+     */
+    const executeScriptWithNonce = (head, script, nonce) => {
+        const scriptNode = document.createElement('script'); // create script node
+        scriptNode.nonce = nonce;
+        scriptNode.text = script; // add the code to the script node
+        head.appendChild(scriptNode); // add it to the head
+        head.removeChild(scriptNode); // then remove it
+    };
 
     // --- Faces constants ------------------------------------------------------------
     const VIEW_STATE_PARAM = "jakarta.faces.ViewState";
@@ -318,7 +347,7 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
                 if (url) loadedScriptUrls.push(url);
             }
 
-            const head = document.head || document.getElementsByTagName('head')[0] || document.documentElement;
+            const head = getHead();
             runScript(head, loadedScriptUrls, scripts, 0);
         };
 
@@ -346,8 +375,7 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
             const src = scriptStr[1].match(findsrc);
             let scriptLoadedViaUrl = false;
 
-            const thisScript = document.querySelector("script[src*='jakarta.faces.resource/faces.js']");
-            const nonce = isNotNull(thisScript) ? thisScript.nonce : undefined;
+            const nonce = getNonce();
 
             if (!!src && src[1]) {
                 // if this is a file, load it
@@ -377,12 +405,7 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
                 const script = scriptStr[2].replace(stripStart, EMPTY);
 
                 if (!!script) {
-                    // create script node
-                    const scriptNode = document.createElement('script');
-                    scriptNode.nonce = nonce;
-                    scriptNode.text = script; // add the code to the script node
-                    head.appendChild(scriptNode); // add it to the head
-                    head.removeChild(scriptNode); // then remove it
+                    executeScriptWithNonce(head, script, nonce);
                 }
             }
 
@@ -406,7 +429,7 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
             const findhref = /href="([\S]*?)"/im;
 
             // the head of the document, note that document.head do not always work
-            const head = document.head || document.getElementsByTagName('head')[0] || document.documentElement;
+            const head = getHead();
 
             let loadedStylesheetUrls = null;
             let parserElement = null;
@@ -2943,13 +2966,31 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
         // RELEASE_PENDING rogerk - shouldn't this be getElementById instead of null
         const thisArg = (typeof source === 'object') ? source : null;
 
+        const head = getHead();
+        const nonce = getNonce();
+
         // Call back any scripts that were passed in
         for (let i = 2; i < arguments.length; i++) {
+            const facesChainThis = '__facesChainThis' + i;
+            const facesChainEvent = '__facesChainEvent' + i;
+            const facesChainResult = '__facesChainResult' + i;
 
-            const f = new Function("event", arguments[i]);
-            const returnValue = f.call(thisArg, event);
+            let result = undefined;
 
-            if (returnValue === false) {
+            try {
+                window[facesChainThis] = thisArg;
+                window[facesChainEvent] = event;
+                const script = 'window.' + facesChainResult + ' = (function(event) { ' + arguments[i] + ' }).call(window.' + facesChainThis + ', window.' + facesChainEvent + ');';
+                executeScriptWithNonce(head, script, nonce);
+                result = window[facesChainResult];
+            }
+            finally {
+                delete window[facesChainThis];
+                delete window[facesChainEvent];
+                delete window[facesChainResult];
+            }
+
+            if (result === false) {
                 return false;
             }
         }
@@ -2975,7 +3016,7 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
      * minor release number, leftmost digits, major release number.
      * This number may only be incremented by a new release of the specification.</p>
      */
-    faces.specversion = 41000;
+    faces.specversion = 50000;
 
     /**
      * <p>An integer specifying the implementation version that this file implements.
@@ -2983,7 +3024,7 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
      * <code>faces.specversion</code>
      * This number is implementation dependent.</p>
      */
-    faces.implversion = 4;
+    faces.implversion = 5;
 
 
 } //end if version detection block
