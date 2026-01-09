@@ -18,6 +18,7 @@ package org.eclipse.mojarra.test.issue5576;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.eclipse.mojarra.test.base.BaseIT;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
