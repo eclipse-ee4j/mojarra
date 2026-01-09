@@ -17,15 +17,14 @@
 
 package com.sun.faces.context;
 
+import java.io.IOException;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.sun.faces.renderkit.RenderKitUtils;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
 
 import jakarta.el.ELException;
 import jakarta.faces.FacesException;
@@ -40,7 +39,11 @@ import jakarta.faces.event.ExceptionQueuedEventContext;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.SystemEvent;
 
-import java.io.IOException;
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
+import com.sun.faces.renderkit.RenderKitUtils;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
 
 /**
  * <p>
@@ -61,18 +64,20 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
     private LinkedList<ExceptionQueuedEvent> handledExceptions;
     private ExceptionQueuedEvent handled;
     private final boolean errorPagePresent;
+    private final Set<Class<? extends Throwable>> exceptionTypesToIgnoreInLogging;
 
     // ------------------------------------------------------------ Constructors
 
     public ExceptionHandlerImpl() {
 
-        errorPagePresent = true;
+        this(FacesContext.getCurrentInstance(), true);
 
     }
 
-    public ExceptionHandlerImpl(boolean errorPagePresent) {
+    public ExceptionHandlerImpl(FacesContext context, boolean errorPagePresent) {
 
         this.errorPagePresent = errorPagePresent;
+        this.exceptionTypesToIgnoreInLogging = parseExceptionTypesToIgnoreInLogging(context);
 
     }
 
@@ -97,9 +102,11 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
             ExceptionQueuedEventContext context = (ExceptionQueuedEventContext) event.getSource();
             try {
                 Throwable t = context.getException();
+                Throwable unwrapped = getRootCause(t);
+                boolean loggable = isLoggable(unwrapped);
+
                 if (isRethrown(t)) {
                     handled = event;
-                    Throwable unwrapped = getRootCause(t);
                     if (unwrapped != null) {
                         throwIt(context.getContext(), new FacesException(unwrapped.getMessage(), unwrapped));
                     } else {
@@ -109,11 +116,11 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
                             throwIt(context.getContext(), new FacesException(t.getMessage(), t));
                         }
                     }
-                    if (LOGGER.isLoggable(INCIDENT_ERROR)) {
+                    if (loggable && LOGGER.isLoggable(INCIDENT_ERROR)) {
                         log(context);
                     }
 
-                } else {
+                } else if (loggable) {
                     log(context);
                 }
 
@@ -201,6 +208,27 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
 
     // --------------------------------------------------------- Private Methods
 
+    @SuppressWarnings("unchecked")
+    private static Set<Class<? extends Throwable>> parseExceptionTypesToIgnoreInLogging(FacesContext context) {
+        var types = new HashSet<Class<? extends Throwable>>();
+        var typesParam = WebConfiguration.getInstance(context.getExternalContext()).getOptionValue(WebContextInitParameter.ExceptionTypesToIgnoreInLogging);
+
+        if (typesParam != null) {
+            for (var typeParam : Util.split(context.getExternalContext().getApplicationMap(), typesParam, ",")) {
+                try {
+                    types.add((Class<? extends Throwable>) Class.forName(typeParam));
+                }
+                catch (ClassNotFoundException e) {
+                    throw new IllegalArgumentException(String.format(
+                            "Context parameter '%s' references a class which cannot be found in runtime classpath: '%s'", 
+                            WebContextInitParameter.ExceptionTypesToIgnoreInLogging.getQualifiedName(), typeParam), e);
+                }
+            }
+        }
+
+        return Collections.unmodifiableSet(types);
+    }
+
     private void throwIt(FacesContext ctx, FacesException fe) {
 
         boolean isDevelopment = ctx.isProjectStage(ProjectStage.Development);
@@ -253,6 +281,10 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
 
         return !(t instanceof AbortProcessingException);
 
+    }
+
+    private boolean isLoggable(Throwable unwrapped) {
+        return exceptionTypesToIgnoreInLogging.stream().noneMatch(type -> type.isInstance(unwrapped));
     }
 
     private void log(ExceptionQueuedEventContext exceptionContext) {

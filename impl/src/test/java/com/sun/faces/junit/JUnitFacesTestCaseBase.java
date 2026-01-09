@@ -20,9 +20,15 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.ApplicationFactory;
+import jakarta.faces.context.FacesContextFactory;
+import jakarta.faces.lifecycle.LifecycleFactory;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
+import com.sun.faces.context.ExceptionHandlerImpl;
 import com.sun.faces.mock.MockApplication;
 import com.sun.faces.mock.MockExternalContext;
 import com.sun.faces.mock.MockFacesContext;
@@ -32,11 +38,6 @@ import com.sun.faces.mock.MockHttpSession;
 import com.sun.faces.mock.MockLifecycle;
 import com.sun.faces.mock.MockServletConfig;
 import com.sun.faces.mock.MockServletContext;
-
-import jakarta.faces.FactoryFinder;
-import jakarta.faces.application.ApplicationFactory;
-import jakarta.faces.context.FacesContextFactory;
-import jakarta.faces.lifecycle.LifecycleFactory;
 
 public class JUnitFacesTestCaseBase {
 
@@ -92,6 +93,7 @@ public class JUnitFacesTestCaseBase {
         ApplicationFactory applicationFactory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
         application = (MockApplication) applicationFactory.getApplication();
         facesContext.setApplication(application);
+        facesContext.setExceptionHandler(new ExceptionHandlerImpl(facesContext, false));
 
     }
 
