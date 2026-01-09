@@ -16,11 +16,11 @@
 
 package com.sun.faces.context;
 
-import com.sun.faces.application.ApplicationAssociate;
-
 import jakarta.faces.context.ExceptionHandler;
 import jakarta.faces.context.ExceptionHandlerFactory;
 import jakarta.faces.context.FacesContext;
+
+import com.sun.faces.application.ApplicationAssociate;
 
 /**
  * Default ExceptionHandlerFactory implementation.
@@ -43,8 +43,8 @@ public class ExceptionHandlerFactoryImpl extends ExceptionHandlerFactory {
         FacesContext fc = FacesContext.getCurrentInstance();
         ApplicationAssociate myAssociate = getAssociate(fc);
 
-        ExceptionHandler result = new AjaxNoAjaxExceptionHandler(new AjaxExceptionHandlerImpl(new ExceptionHandlerImpl(Boolean.TRUE)),
-                new ExceptionHandlerImpl(myAssociate != null ? myAssociate.isErrorPagePresent() : Boolean.TRUE));
+        ExceptionHandler result = new AjaxNoAjaxExceptionHandler(new AjaxExceptionHandlerImpl(new ExceptionHandlerImpl(fc, Boolean.TRUE)),
+                new ExceptionHandlerImpl(fc, myAssociate != null ? myAssociate.isErrorPagePresent() : Boolean.TRUE));
         return result;
 
     }

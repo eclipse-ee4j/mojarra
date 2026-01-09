@@ -738,6 +738,7 @@ public class WebConfiguration {
         FullStateSavingViewIds(StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME, ""),
         AnnotationScanPackages("com.sun.faces.annotationScanPackages", ""),
         FaceletsProcessingFileExtensionProcessAs("", ""),
+        ExceptionTypesToIgnoreInLogging("com.sun.faces.exceptionTypesToIgnoreInLogging", ""),
         ;
 
         private final String defaultValue;
