@@ -24,13 +24,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter;
-import com.sun.faces.io.FastStringWriter;
-import com.sun.faces.util.HtmlUtils;
-import com.sun.faces.util.MessageUtils;
-
 import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
@@ -38,6 +31,13 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.render.Renderer;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter;
+import com.sun.faces.io.FastStringWriter;
+import com.sun.faces.util.HtmlUtils;
+import com.sun.faces.util.MessageUtils;
 
 /**
  * <p>
@@ -977,11 +977,11 @@ public class HtmlResponseWriter extends ResponseWriter {
         if (null != name && containsPassThroughAttribute(name)) {
             return;
         }
-        writeURIAttributeIgnoringPassThroughAttributes(name, value, componentPropertyName, false);
+        writeURIAttributeIgnoringPassThroughAttributes(attributesBuffer, name, value, componentPropertyName, false);
 
     }
 
-    private void writeURIAttributeIgnoringPassThroughAttributes(String name, Object value, String componentPropertyName, boolean isPassthrough)
+    private void writeURIAttributeIgnoringPassThroughAttributes(Writer destination, String name, Object value, String componentPropertyName, boolean isPassthrough)
             throws IOException {
 
         if (name == null) {
@@ -1003,21 +1003,20 @@ public class HtmlResponseWriter extends ResponseWriter {
             scriptOrStyleSrc = true;
         }
 
-        attributesBuffer.write(' ');
-        attributesBuffer.write(name);
-        attributesBuffer.write("=\"");
+        destination.write(' ');
+        destination.write(name);
+        destination.write("=\"");
 
         String stringValue = value.toString();
         ensureTextBufferCapacity(stringValue);
         // Javascript URLs should not be URL-encoded
         if (stringValue.startsWith("javascript:") || isPassthrough) {
-            HtmlUtils.writeAttribute(attributesBuffer, escapeUnicode, escapeIso, buffer, stringValue, textBuffer, isScriptInAttributeValueEnabled, isPartial);
+            HtmlUtils.writeAttribute(destination, escapeUnicode, escapeIso, buffer, stringValue, textBuffer, isScriptInAttributeValueEnabled, isPartial);
         } else {
-            HtmlUtils.writeURL(attributesBuffer, stringValue, textBuffer, encoding);
+            HtmlUtils.writeURL(destination, stringValue, textBuffer, encoding);
         }
 
-        attributesBuffer.write('"');
-
+        destination.write('"');
     }
 
     // --------------------------------------------------------- Private Methods
@@ -1092,15 +1091,7 @@ public class HtmlResponseWriter extends ResponseWriter {
         boolean hasPassthroughAttributes = null != passthroughAttributes && !passthroughAttributes.isEmpty();
 
         if (hasPassthroughAttributes) {
-            FacesContext context = FacesContext.getCurrentInstance();
-            for (Map.Entry<String, Object> entry : passthroughAttributes.entrySet()) {
-                Object valObj = entry.getValue();
-                String val = getAttributeValue(context, valObj);
-                String key = entry.getKey();
-                if (val != null) {
-                    writeURIAttributeIgnoringPassThroughAttributes(key, val, key, true);
-                }
-            }
+            writePassthroughAttributes(passthroughAttributes, attributesBuffer);
         }
 
         // a little complex, but the end result is, potentially, two
@@ -1130,6 +1121,32 @@ public class HtmlResponseWriter extends ResponseWriter {
             passthroughAttributes = null;
         }
 
+    }
+
+    private void writePassthroughAttributes(Map<String, Object> attrs, Writer destination) throws IOException {
+        if (attrs == null || attrs.isEmpty()) {
+            return;
+        }
+
+        FacesContext context = FacesContext.getCurrentInstance();
+        for (Map.Entry<String, Object> entry : attrs.entrySet()) {
+            Object valObj = entry.getValue();
+            String val = getAttributeValue(context, valObj);
+            if (val != null) {
+                String key = entry.getKey();
+                if ("styleClass".equals(key)) {
+                    key = "class";
+                }
+                writeURIAttributeIgnoringPassThroughAttributes(destination, key, val, key, true);
+            }
+        }
+    }
+
+    public void writePassthroughAttributes(Map<String, Object> passthroughAttributes) throws IOException {
+        if (!closeStart) {
+            throw new IllegalStateException("Cannot write passthrough attributes when there is no currently open element");
+        }
+        writePassthroughAttributes(passthroughAttributes, writer);
     }
 
     private String getAttributeValue(FacesContext context, Object valObj) {

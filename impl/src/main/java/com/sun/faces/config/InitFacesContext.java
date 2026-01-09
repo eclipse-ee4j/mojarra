@@ -104,7 +104,7 @@ public class InitFacesContext extends NoOpFacesContext {
     @Override
     public ExceptionHandler getExceptionHandler() {
         if (exceptionHandler == null) {
-            exceptionHandler = new ExceptionHandlerImpl(false);
+            exceptionHandler = new ExceptionHandlerImpl(this, false);
         }
         return exceptionHandler;
     }

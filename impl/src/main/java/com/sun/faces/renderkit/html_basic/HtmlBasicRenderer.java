@@ -18,6 +18,7 @@
 
 package com.sun.faces.renderkit.html_basic;
 
+import static com.sun.faces.facelets.tag.faces.core.FacetHandler.hasFacetPassThroughAttributes;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.BEHAVIOR_EVENT_PARAM;
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.BEHAVIOR_SOURCE_PARAM;
 import static com.sun.faces.util.MessageUtils.CANT_WRITE_ID_ATTRIBUTE_ERROR_MESSAGE_ID;
@@ -40,10 +41,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.MessageUtils;
-import com.sun.faces.util.Util;
-
 import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIInput;
@@ -61,6 +58,10 @@ import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.ConverterException;
 import jakarta.faces.render.Renderer;
+
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.MessageUtils;
+import com.sun.faces.util.Util;
 
 /**
  * <B>HtmlBasicRenderer</B> is a base class for implementing renderers for HtmlBasicRenderKit.
@@ -244,11 +245,31 @@ public abstract class HtmlBasicRenderer extends Renderer {
      * @throws IOException if an error occurrs during the encode process
      */
     protected void encodeRecursive(FacesContext context, UIComponent component) throws IOException {
+        encodeRecursive(context, component, false);
+    }
+
+    /**
+     * <p>
+     * Render nested child components by invoking the encode methods on those components, but only when the
+     * <code>rendered</code> property is <code>true</code>.
+     * </p>
+     *
+     * @param context FacesContext for the current request
+     * @param component the component to recursively encode
+     * @param facet whether the component is a facet; in such case any passthrough attributes will be written to current (parent) component
+     *
+     * @throws IOException if an error occurrs during the encode process
+     */
+    protected void encodeRecursive(FacesContext context, UIComponent component, boolean facet) throws IOException {
 
         // suppress rendering if "rendered" property on the component is
         // false.
         if (!component.isRendered()) {
             return;
+        }
+
+        if (facet && hasFacetPassThroughAttributes(component) && context.getResponseWriter() instanceof HtmlResponseWriter html) {
+            html.writePassthroughAttributes(component.getPassThroughAttributes());
         }
 
         // Render this component and its children recursively

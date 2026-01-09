@@ -16,6 +16,7 @@
 
 package com.sun.faces.util;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,17 +56,36 @@ public class ScopedRunner {
 		return this;
 	}
 
-	/**
-	 * Invokes the callback within the scope of the variables being given in the constructor.
-	 * @param callback The callback.
-	 */
-	public void invoke(Runnable callback) {
-		try {
-			setNewScope();
-			callback.run();
-		} finally {
-			restorePreviousScope();
-		}
+    /**
+     * Invokes the callback within the scope of the variables being given in the constructor.
+     * @param callback The callback.
+     */
+    public void invoke(Runnable callback) {
+        try {
+            setNewScope();
+            callback.run();
+        } finally {
+            restorePreviousScope();
+        }
+    }
+
+    /**
+     * Invokes the callback within the scope of the variables being given in the constructor.
+     * @param callback The callback which can throw IOException.
+     * @throws IOException when an I/O error occurs.
+     */
+    public void invokeThrowing(ThrowingRunnable callback) throws IOException {
+        try {
+            setNewScope();
+            callback.run();
+        } finally {
+            restorePreviousScope();
+        }
+    }
+
+	@FunctionalInterface
+	public interface ThrowingRunnable {
+	    void run() throws IOException;
 	}
 
 	private void setNewScope() {

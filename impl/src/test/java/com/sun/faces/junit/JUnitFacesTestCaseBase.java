@@ -29,6 +29,7 @@ import jakarta.faces.lifecycle.LifecycleFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
+import com.sun.faces.context.ExceptionHandlerImpl;
 import com.sun.faces.mock.MockApplication;
 import com.sun.faces.mock.MockCDIProvider;
 import com.sun.faces.mock.MockExternalContext;
@@ -99,6 +100,7 @@ public class JUnitFacesTestCaseBase {
         ApplicationFactory applicationFactory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
         application = (MockApplication) applicationFactory.getApplication();
         facesContext.setApplication(application);
+        facesContext.setExceptionHandler(new ExceptionHandlerImpl(facesContext, false));
 
     }
 

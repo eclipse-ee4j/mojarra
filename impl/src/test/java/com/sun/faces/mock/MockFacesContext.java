@@ -24,10 +24,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.context.ExceptionHandlerFactoryImpl;
-import com.sun.faces.renderkit.RenderKitUtils;
-
 import jakarta.el.ELContext;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
@@ -45,6 +41,10 @@ import jakarta.faces.event.PhaseId;
 import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.context.ExceptionHandlerImpl;
+import com.sun.faces.renderkit.RenderKitUtils;
 
 // Mock Object for FacesContext
 public class MockFacesContext extends FacesContext {
@@ -71,6 +71,7 @@ public class MockFacesContext extends FacesContext {
         setCurrentInstance(this);
         elContext = new MockELContext(new MockELResolver());
         elContext.putContext(FacesContext.class, this);
+        exceptionHandler = new ExceptionHandlerImpl(this, false);
     }
 
     public MockFacesContext(ExternalContext externalContext, Lifecycle lifecycle) {
@@ -303,8 +304,7 @@ public class MockFacesContext extends FacesContext {
         return released;
     }
 
-    private ExceptionHandler exceptionHandler
-            = new ExceptionHandlerFactoryImpl().getExceptionHandler();
+    private ExceptionHandler exceptionHandler;
 
     @Override
     public ExceptionHandler getExceptionHandler() {

@@ -30,11 +30,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.BiFunction;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.context.StateContext;
-import com.sun.faces.facelets.tag.faces.core.FacetHandler;
-import com.sun.faces.util.Util;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIPanel;
@@ -47,6 +42,11 @@ import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagAttributeException;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.context.StateContext;
+import com.sun.faces.facelets.tag.faces.core.FacetHandler;
+import com.sun.faces.util.Util;
 
 /**
  *
@@ -618,6 +618,16 @@ public final class ComponentSupport {
         }
         return false;
 
+    }
+
+    public static boolean hasPassthroughAttributes(Tag t) {
+        for (String namespace : PassThroughAttributeLibrary.NAMESPACES) {
+            TagAttribute[] passthroughAttrs = t.getAttributes().getAll(namespace);
+            if (passthroughAttrs != null && passthroughAttrs.length > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void copyPassthroughAttributes(FaceletContext ctx, UIComponent c, Tag t) {
