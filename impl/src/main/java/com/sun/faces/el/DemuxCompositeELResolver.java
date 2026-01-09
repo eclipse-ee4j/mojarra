@@ -20,6 +20,7 @@ import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import jakarta.el.ELClass;
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
@@ -153,7 +154,7 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
         int resolverCount;
         ELResolver[] resolvers;
 
-        if (base == null) {
+        if (base == null || base instanceof ELClass) {
             resolverCount = _rootELResolverCount;
             resolvers = _rootELResolvers;
         } else {
@@ -183,7 +184,7 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
         int resolverCount;
         ELResolver[] resolvers;
 
-        if (base == null) {
+        if (base == null || base instanceof ELClass) {
             resolverCount = _rootELResolverCount;
             resolvers = _rootELResolvers;
         } else {
@@ -211,7 +212,7 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
         int resolverCount;
         ELResolver[] resolvers;
 
-        if (base == null) {
+        if (base == null || base instanceof ELClass) {
             resolverCount = _rootELResolverCount;
             resolvers = _rootELResolvers;
         } else {
@@ -241,7 +242,7 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
         int resolverCount;
         ELResolver[] resolvers;
 
-        if (base == null) {
+        if (base == null || base instanceof ELClass) {
             resolverCount = _rootELResolverCount;
             resolvers = _rootELResolvers;
         } else {
