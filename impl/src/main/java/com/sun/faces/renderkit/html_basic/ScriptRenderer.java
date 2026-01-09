@@ -18,11 +18,11 @@ package com.sun.faces.renderkit.html_basic;
 
 import java.io.IOException;
 
-import com.sun.faces.renderkit.RenderKitUtils;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
+
+import com.sun.faces.renderkit.RenderKitUtils;
 
 /**
  * <p>
@@ -39,6 +39,12 @@ public class ScriptRenderer extends ScriptStyleBaseRenderer {
 
         if (!RenderKitUtils.isOutputHtml5Doctype(context)) {
             writer.writeAttribute("type", DEFAULT_CONTENT_TYPE, "type");
+        }
+        
+        String nonce = context.getApplication().getResourceHandler().getCurrentNonce(context);
+        
+        if (nonce != null) {
+            writer.writeAttribute("nonce", nonce, "nonce");
         }
     }
 

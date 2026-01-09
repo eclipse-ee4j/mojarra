@@ -29,6 +29,7 @@ import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static jakarta.servlet.http.HttpServletResponse.SC_NOT_MODIFIED;
 import static jakarta.servlet.http.MappingMatch.EXTENSION;
 import static java.lang.Boolean.FALSE;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.WARNING;
 
@@ -39,8 +40,10 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -55,6 +58,8 @@ import jakarta.faces.context.FacesContext;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.context.FacesContextParam;
+import com.sun.faces.renderkit.html_basic.ScriptRenderer;
+import com.sun.faces.renderkit.html_basic.StylesheetRenderer;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.RequestStateManager;
 import com.sun.faces.util.Util;
@@ -67,10 +72,13 @@ public class ResourceHandlerImpl extends ResourceHandler {
     // Log instance for this class
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
+    private static final String CURRENT_NONCE = ResourceHandlerImpl.class.getName() + ".currentNonce";
+    
     ResourceManager manager;
     List<Pattern> excludePatterns;
     private long creationTime;
     private long maxAge;
+    private boolean cspEnabled;
     private final WebConfiguration webconfig;
 
     // ------------------------------------------------------------ Constructors
@@ -86,6 +94,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
         manager = ApplicationAssociate.getInstance(extContext).getResourceManager();
         initExclusions(context);
         initMaxAge();
+        cspEnabled = FacesContextParam.ENABLE_CSP_NONCE.isSet(context);
     }
 
     // ------------------------------------------- Methods from Resource Handler
@@ -217,19 +226,25 @@ public class ResourceHandlerImpl extends ResourceHandler {
 
     @Override
     public String getRendererTypeForResourceName(String resourceName) {
-        String rendererType = null;
+        String resourceType = getResourceType(getContentType(FacesContext.getCurrentInstance(), resourceName));
 
-        String contentType = getContentType(FacesContext.getCurrentInstance(), resourceName);
-        if (null != contentType) {
-            contentType = contentType.toLowerCase();
-            if (contentType.contains("javascript")) {
-                rendererType = "jakarta.faces.resource.Script";
-            } else if (contentType.contains("css")) {
-                rendererType = "jakarta.faces.resource.Stylesheet";
-            }
+        return switch (resourceType) {
+            case "script" -> "jakarta.faces.resource.Script";
+            case "style" -> "jakarta.faces.resource.Stylesheet";
+            default -> null;
+        };
+    }
+    
+    private static String getResourceType(String contentType) {
+        if (contentType == null) {
+            return null;
         }
 
-        return rendererType;
+        return switch (contentType.toLowerCase()) {
+            case ScriptRenderer.DEFAULT_CONTENT_TYPE -> "script";
+            case StylesheetRenderer.DEFAULT_CONTENT_TYPE -> "style";
+            default -> null;
+        };
     }
 
     /**
@@ -380,6 +395,23 @@ public class ResourceHandlerImpl extends ResourceHandler {
 
     private void send304(FacesContext ctx) {
         ctx.getExternalContext().setResponseStatus(SC_NOT_MODIFIED);
+    }
+
+    @Override
+    public String getCurrentNonce(FacesContext context) {
+        if (cspEnabled) {
+            var viewMap = context.getViewRoot().getViewMap(true);
+            var nonce = (String) viewMap.get(CURRENT_NONCE);
+            
+            if (nonce == null) {
+                nonce = Base64.getEncoder().encodeToString(UUID.randomUUID().toString().getBytes(UTF_8));
+                viewMap.put(CURRENT_NONCE, nonce);
+            }
+
+            return nonce;
+        }
+
+        return null;
     }
 
     // ------------------------------------------------- Package Private Methods
@@ -551,10 +583,13 @@ public class ResourceHandlerImpl extends ResourceHandler {
         maxAge = Long.parseLong(webconfig.getOptionValue(DefaultResourceMaxAge));
     }
 
-    private void handleHeaders(FacesContext ctx, Resource resource) {
-        ExternalContext extContext = ctx.getExternalContext();
+    private void handleHeaders(FacesContext context, Resource resource) {
+        ExternalContext extContext = context.getExternalContext();
         for (Map.Entry<String, String> cur : resource.getResponseHeaders().entrySet()) {
             extContext.setResponseHeader(cur.getKey(), cur.getValue());
+        }
+        if (cspEnabled && "script".equals(getResourceType(resource.getContentType()))) {
+            extContext.addResponseHeader("Content-Security-Policy", "default-src 'none'; script-src 'self'");
         }
     }
 

@@ -86,6 +86,11 @@ public enum FacesContextParam {
     DISABLE_FACESSERVLET_TO_XHTML(FacesServlet.DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME, false),
 
     /**
+     * Returns {@value ResourceHandler#ENABLE_CSP_NONCE} as {@link Boolean} with default of {@code false}.
+     */
+    ENABLE_CSP_NONCE(ResourceHandler.ENABLE_CSP_NONCE, false),
+
+    /**
      * Returns {@value BeanValidator#ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME} as {@link Boolean} with default of {@code false}.
      */
     ENABLE_VALIDATE_WHOLE_BEAN(BeanValidator.ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME, false),
