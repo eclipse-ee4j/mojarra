@@ -39,8 +39,6 @@ import jakarta.faces.event.ExceptionQueuedEventContext;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.SystemEvent;
 
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
 import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
@@ -211,18 +209,16 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
     @SuppressWarnings("unchecked")
     private static Set<Class<? extends Throwable>> parseExceptionTypesToIgnoreInLogging(FacesContext context) {
         var types = new HashSet<Class<? extends Throwable>>();
-        var typesParam = WebConfiguration.getInstance(context.getExternalContext()).getOptionValue(WebContextInitParameter.ExceptionTypesToIgnoreInLogging);
+        String[] typesParam = FacesContextParam.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING.getValue(context);
 
-        if (typesParam != null) {
-            for (var typeParam : Util.split(context.getExternalContext().getApplicationMap(), typesParam, ",")) {
-                try {
-                    types.add((Class<? extends Throwable>) Class.forName(typeParam));
-                }
-                catch (ClassNotFoundException e) {
-                    throw new IllegalArgumentException(String.format(
-                            "Context parameter '%s' references a class which cannot be found in runtime classpath: '%s'", 
-                            WebContextInitParameter.ExceptionTypesToIgnoreInLogging.getQualifiedName(), typeParam), e);
-                }
+        for (var typeParam : typesParam) {
+            try {
+                types.add((Class<? extends Throwable>) Class.forName(typeParam));
+            }
+            catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException(String.format(
+                        "Context parameter '%s' references a class which cannot be found in runtime classpath: '%s'", 
+                        FacesContextParam.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING.getName(), typeParam), e);
             }
         }
 
