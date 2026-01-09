@@ -19,7 +19,7 @@ package com.sun.faces.el;
 
 import static com.sun.faces.util.MessageUtils.getExceptionMessageString;
 
-import com.sun.faces.util.MessageUtils;
+import jakarta.el.ELClass;
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
@@ -28,6 +28,8 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import java.util.Map;
+
+import com.sun.faces.util.MessageUtils;
 
 public class ScopedAttributeELResolver extends ELResolver {
 
@@ -78,6 +80,12 @@ public class ScopedAttributeELResolver extends ELResolver {
         result = externalContext.getApplicationMap().get(attribute);
         if (result != null) {
             return result;
+        }
+
+        // check importhandler
+        result = facesContext.getELContext().getImportHandler().resolveClass(attribute);
+        if (result instanceof Class) {
+            return new ELClass((Class<?>) result);
         }
 
         return null;
