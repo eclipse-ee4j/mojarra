@@ -23,15 +23,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.sun.faces.renderkit.Attribute;
-import com.sun.faces.renderkit.AttributeManager;
-import com.sun.faces.util.Util;
-
 import jakarta.faces.component.UIColumn;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIData;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
+
+import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.AttributeManager;
+import com.sun.faces.util.Util;
 
 /**
  * <p>
@@ -199,7 +199,7 @@ public class TableRenderer extends BaseTableRenderer {
 
         UIComponent colGroups = getFacet(table, "colgroups");
         if (colGroups != null) {
-            encodeRecursive(context, colGroups);
+            encodeRecursive(context, colGroups, true);
         }
 
     }
@@ -229,8 +229,7 @@ public class TableRenderer extends BaseTableRenderer {
                 }
                 UIComponent facet = getFacet(column, "footer");
                 if (facet != null) {
-                    writer.writeText("", table, null);
-                    encodeRecursive(context, facet);
+                    encodeRecursive(context, facet, true);
                 }
                 writer.endElement("td");
                 writer.writeText("\n", table, null);
@@ -246,7 +245,7 @@ public class TableRenderer extends BaseTableRenderer {
             if (info.columns.size() > 1) {
                 writer.writeAttribute("colspan", String.valueOf(info.columns.size()), null);
             }
-            encodeRecursive(context, footer);
+            encodeRecursive(context, footer, true);
             writer.endElement("td");
             renderRowEnd(context, table, writer);
         }
@@ -277,7 +276,7 @@ public class TableRenderer extends BaseTableRenderer {
                 writer.writeAttribute("colspan", String.valueOf(info.columns.size()), null);
             }
             writer.writeAttribute("scope", "colgroup", null);
-            encodeRecursive(context, header);
+            encodeRecursive(context, header, true);
             writer.endElement("th");
             renderRowEnd(context, table, writer);
         }
@@ -295,7 +294,7 @@ public class TableRenderer extends BaseTableRenderer {
                 writer.writeAttribute("scope", "col", null);
                 UIComponent facet = getFacet(column, "header");
                 if (facet != null) {
-                    encodeRecursive(context, facet);
+                    encodeRecursive(context, facet, true);
                 }
                 writer.endElement("th");
                 writer.writeText("\n", table, null);

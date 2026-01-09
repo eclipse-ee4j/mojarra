@@ -17,14 +17,17 @@
 package com.sun.faces.facelets.tag.faces.core;
 
 import java.io.IOException;
-
-import com.sun.faces.facelets.tag.TagHandlerImpl;
+import java.util.Map;
 
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIPanel;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagException;
+
+import com.sun.faces.facelets.tag.TagHandlerImpl;
+import com.sun.faces.facelets.tag.faces.ComponentSupport;
 
 /**
  * Register a named facet on the UIComponent associated with the closest parent UIComponent custom action.
@@ -38,6 +41,7 @@ import jakarta.faces.view.facelets.TagException;
 public final class FacetHandler extends TagHandlerImpl implements jakarta.faces.view.facelets.FacetHandler {
 
     public static final String KEY = "facelets.FACET_NAME";
+    public static final String FACET_HAS_PASSTHROUGH_ATTRIBUTES = "facelets.FACET_HAS_PASSTHROUGH_ATTRIBUTES";
 
     protected final TagAttribute name;
 
@@ -56,9 +60,27 @@ public final class FacetHandler extends TagHandlerImpl implements jakarta.faces.
         if (parent == null) {
             throw new TagException(tag, "Parent UIComponent was null");
         }
-        parent.getAttributes().put(KEY, getFacetName(ctx));
+
+        String facetName = getFacetName(ctx);
+        parent.getAttributes().put(KEY, facetName);
+
         try {
             nextHandler.apply(ctx, parent);
+            UIComponent child = parent.getFacets().get(facetName);
+
+            if (child == null && ComponentSupport.hasPassthroughAttributes(tag)) {
+                child = ctx.getFacesContext().getApplication().createComponent(UIPanel.COMPONENT_TYPE);
+                parent.getFacets().put(facetName, child);
+            }
+
+            if (child != null) {
+                ComponentSupport.copyPassthroughAttributes(ctx, child, tag);
+                Map<String, Object> passThroughAttributes = child.getPassThroughAttributes(false);
+
+                if (passThroughAttributes != null && !passThroughAttributes.isEmpty()) {
+                    child.getTransientStateHelper().putTransient(FACET_HAS_PASSTHROUGH_ATTRIBUTES, true);
+                }
+            }
         } finally {
             parent.getAttributes().remove(KEY);
         }
@@ -69,5 +91,9 @@ public final class FacetHandler extends TagHandlerImpl implements jakarta.faces.
     @Override
     public String getFacetName(FaceletContext ctxt) {
         return name.getValue(ctxt);
+    }
+
+    public static boolean hasFacetPassThroughAttributes(UIComponent possibleFacet) {
+        return possibleFacet.getTransientStateHelper().getTransient(FACET_HAS_PASSTHROUGH_ATTRIBUTES) != null;
     }
 }

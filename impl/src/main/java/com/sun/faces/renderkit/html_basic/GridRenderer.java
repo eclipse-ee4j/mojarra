@@ -19,12 +19,12 @@ package com.sun.faces.renderkit.html_basic;
 import java.io.IOException;
 import java.util.Iterator;
 
-import com.sun.faces.renderkit.Attribute;
-import com.sun.faces.renderkit.AttributeManager;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
+
+import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.AttributeManager;
 
 /**
  * <B>GridRenderer</B> is a class that renders <code>UIPanel</code> component as a "Grid".
@@ -162,7 +162,7 @@ public class GridRenderer extends BaseTableRenderer {
             }
             writer.writeAttribute("colspan", String.valueOf(info.columns.size()), null);
             writer.writeAttribute("scope", "colgroup", null);
-            encodeRecursive(context, header);
+            encodeRecursive(context, header, true);
             writer.endElement("th");
             writer.endElement("tr");
             writer.writeText("\n", table, null);
@@ -187,7 +187,7 @@ public class GridRenderer extends BaseTableRenderer {
                 writer.writeAttribute("class", footerClass, "footerClass");
             }
             writer.writeAttribute("colspan", String.valueOf(info.columns.size()), null);
-            encodeRecursive(context, footer);
+            encodeRecursive(context, footer, true);
             writer.endElement("td");
             writer.endElement("tr");
             writer.writeText("\n", table, null);
