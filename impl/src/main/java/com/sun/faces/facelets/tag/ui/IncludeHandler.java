@@ -37,6 +37,8 @@ import com.sun.faces.util.FacesLogger;
  */
 public final class IncludeHandler extends TagHandlerImpl {
 
+    public final static String INCLUDED_KEY = "com.sun.faces.facelets.INCLUDED";
+
     private static final Logger log = FacesLogger.FACELETS_INCLUDE.getLogger();
 
     private final TagAttribute src;
@@ -75,7 +77,13 @@ public final class IncludeHandler extends TagHandlerImpl {
         ctx.setVariableMapper(new VariableMapperWrapper(orig));
         try {
             nextHandler.apply(ctx, null);
-            ctx.includeFacelet(parent, path);
+            Object included = ctx.getAttribute(INCLUDED_KEY);
+            try {
+                ctx.setAttribute(INCLUDED_KEY, true);
+                ctx.includeFacelet(parent, path);
+            } finally {
+                ctx.setAttribute(INCLUDED_KEY, included);
+            }
         } catch (IOException e) {
             if (log.isLoggable(Level.FINE)) {
                 log.log(Level.FINE, e.toString(), e);

@@ -16,6 +16,8 @@
 
 package com.sun.faces.facelets.impl;
 
+import static com.sun.faces.facelets.tag.ui.IncludeHandler.INCLUDED_KEY;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -262,7 +264,13 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
      */
     private void include(DefaultFaceletContext ctx, UIComponent parent) throws IOException {
         refresh(parent);
-        root.apply(new DefaultFaceletContext(ctx, this), parent);
+        Object included = ctx.getAttribute(INCLUDED_KEY);
+        try {
+            ctx.setAttribute(INCLUDED_KEY, true); // to signal MetataHandler that we're basically in a template.
+            root.apply(new DefaultFaceletContext(ctx, this), parent);
+        } finally {
+            ctx.setAttribute(INCLUDED_KEY, included);
+        }
         markApplied(parent);
     }
 

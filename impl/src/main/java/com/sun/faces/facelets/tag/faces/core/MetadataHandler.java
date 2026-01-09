@@ -20,16 +20,19 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.facelets.tag.TagHandlerImpl;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
-
 import jakarta.faces.application.Application;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIPanel;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagException;
+
+import com.sun.faces.facelets.tag.TagHandlerImpl;
+import com.sun.faces.facelets.tag.ui.IncludeHandler;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
 
 /**
  * <p>
@@ -56,10 +59,13 @@ public class MetadataHandler extends TagHandlerImpl {
         UIViewRoot root;
         if (parent instanceof UIViewRoot) {
             root = (UIViewRoot) parent;
+            if (ctx.getAttribute(IncludeHandler.INCLUDED_KEY) == Boolean.TRUE) {
+                handleInvalidMetadataLocation(tag, root);
+            }
         } else {
             root = ctx.getFacesContext().getViewRoot();
-            if (root != null && LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING, "faces.metadata.invalid.location", root.getViewId());
+            if (root != null) {
+                handleInvalidMetadataLocation(tag, root);
             }
         }
         if (root == null) {
@@ -92,5 +98,10 @@ public class MetadataHandler extends TagHandlerImpl {
                 facetComponent.setId(UIViewRoot.METADATA_FACET_NAME);
             }
         }
+    }
+
+    public static void handleInvalidMetadataLocation(Tag tag, UIViewRoot root) {
+        throw new TagException(tag, "The metadata facet must be a direct child of the UIViewRoot in viewId " + root.getViewId() + "."
+                + " It is not allowed inside other components or in templates, includes, tag files, or composite components.");
     }
 }
