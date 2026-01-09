@@ -723,7 +723,6 @@ public class WebConfiguration {
         NumberOfLogicalViews("com.sun.faces.numberOfLogicalViews", "15"),
         NumberOfActiveViewMaps("com.sun.faces.numberOfActiveViewMaps", "25"),
         NumberOfConcurrentFlashUsers("com.sun.faces.numberOfConcurrentFlashUsers", "5000"),
-        NumberOfConcerrentFlashUsers("com.sun.faces.numberOfConcerrentFlashUsers", "5000", true, NumberOfConcurrentFlashUsers),
         NumberOfFlashesBetweenFlashReapings("com.sun.faces.numberOfFlashesBetweenFlashReapings", "5000"),
         InjectionProviderClass("com.sun.faces.injectionProvider", ""),
         SerializationProviderClass("com.sun.faces.serializationProvider", ""),
@@ -738,7 +737,6 @@ public class WebConfiguration {
         FullStateSavingViewIds(StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME, ""),
         AnnotationScanPackages("com.sun.faces.annotationScanPackages", ""),
         FaceletsProcessingFileExtensionProcessAs("", ""),
-        ExceptionTypesToIgnoreInLogging("com.sun.faces.exceptionTypesToIgnoreInLogging", ""),
         ;
 
         private final String defaultValue;

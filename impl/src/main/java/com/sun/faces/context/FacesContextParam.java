@@ -21,6 +21,7 @@ import jakarta.faces.component.UIInput.ValidateEmptyFields;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.html.HtmlEvents;
+import jakarta.faces.context.ExceptionHandler;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
@@ -93,6 +94,11 @@ public enum FacesContextParam {
      * Returns {@value PushContext#ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME} as {@link Boolean} with default of {@code false}.
      */
     ENABLE_WEBSOCKET_ENDPOINT(PushContext.ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME, false),
+
+    /**
+     * Returns {@value ExceptionHandler.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING_PARAM_NAME} as {@link String} array with default of empty string array.
+     */
+    EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING(ExceptionHandler.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING_PARAM_NAME, EMPTY_STRING_ARRAY, StringArray.COMMA_SEPARATED),
 
     /**
      * Returns {@value ViewHandler#FACELETS_BUFFER_SIZE_PARAM_NAME} as {@link Integer} with default of {@value ViewHandler#FACELETS_BUFFER_SIZE_DEFAULT_VALUE}.
