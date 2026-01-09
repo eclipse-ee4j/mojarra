@@ -74,7 +74,7 @@ public class ScopedRunner {
      * @param callback The callback which can throw IOException.
      * @throws IOException when an I/O error occurs.
      */
-    public void invoke(ThrowingRunnable callback) throws IOException {
+    public void invokeThrowing(ThrowingRunnable callback) throws IOException {
         try {
             setNewScope();
             callback.run();

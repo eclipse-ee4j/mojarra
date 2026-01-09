@@ -450,7 +450,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         }
 
         if (varName != null) {
-            new ScopedRunner(context).with(varName, curItem.getValue()).invoke(writeAction);
+            new ScopedRunner(context).with(varName, curItem.getValue()).invokeThrowing(writeAction);
         }
         else {
             writeAction.run();
