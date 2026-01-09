@@ -96,7 +96,7 @@ public enum FacesContextParam {
     ENABLE_WEBSOCKET_ENDPOINT(PushContext.ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME, false),
 
     /**
-     * Returns {@value ExceptionHandler.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING_PARAM_NAME} as {@link String} array with default of empty string array.
+     * Returns {@value ExceptionHandler#EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING_PARAM_NAME} as {@link String} array with default of empty string array.
      */
     EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING(ExceptionHandler.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING_PARAM_NAME, EMPTY_STRING_ARRAY, StringArray.COMMA_SEPARATED),
 
