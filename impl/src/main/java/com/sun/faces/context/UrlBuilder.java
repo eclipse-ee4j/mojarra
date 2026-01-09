@@ -24,12 +24,14 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.sun.faces.util.Util;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.faces.render.ResponseStateManager;
+
+import com.sun.faces.util.Util;
 
 /**
  * <p>
@@ -95,7 +97,8 @@ class UrlBuilder {
                     throw new IllegalArgumentException("Parameter name cannot be empty");
                 }
                 List<String> values = entry.getValue();
-                addValuesToParameter(entry.getKey().trim(), values, true);
+                List<String> retValues = values.stream().filter(Objects::nonNull).collect(Collectors.toList());
+                addValuesToParameter(entry.getKey().trim(), retValues, true);
             }
         }
 
