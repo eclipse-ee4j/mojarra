@@ -33,6 +33,7 @@ import jakarta.faces.component.UISelectMany;
 import jakarta.faces.component.UISelectOne;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.model.SelectItem;
+import jakarta.faces.model.SelectItemGroup;
 
 /**
  * <p>
@@ -539,7 +540,7 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
             }
 
             Object item = Array.get(array, index++);
-            if (item instanceof SelectItem && !hasVar()) {
+            if (item instanceof SelectItem && (item instanceof SelectItemGroup || !hasVar())) {
                 return (SelectItem) item;
             } else {
                 return getSelectItemFor(ctx, item);
@@ -588,7 +589,7 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
         public SelectItem next() {
 
             Object item = iterator.next();
-            if (item instanceof SelectItem && !hasVar()) {
+            if (item instanceof SelectItem && (item instanceof SelectItemGroup || !hasVar())) {
                 return (SelectItem) item;
             } else {
                 return getSelectItemFor(ctx, item);
