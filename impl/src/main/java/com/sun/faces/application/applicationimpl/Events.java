@@ -348,7 +348,10 @@ public class Events {
         cdi.fire(event);
         
         if (source instanceof UIViewRoot) {
-            cdi.select(View.Literal.of(((UIViewRoot) source).getViewId())).fire(event);
+            String viewId = ((UIViewRoot) source).getViewId();
+            if (viewId != null) {
+                cdi.select(View.Literal.of(viewId)).fire(event);
+            }
         }
     }
 
