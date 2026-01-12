@@ -669,48 +669,6 @@ public abstract class HtmlBasicRenderer extends Renderer {
         return true;
     }
 
-    /**
-     * When rendering pass thru attributes, we need to take any attached Behaviors into account. The presence of a non-empty
-     * Behaviors map can cause us to switch from optimized pass thru attribute rendering to the unoptimized code path.
-     * However, in two very common cases - attaching action behaviors to commands and attaching value change behaviors to
-     * editable value holders - the behaviors map is populated with behaviors that are not handled by the pass thru
-     * attribute code - ie. the behaviors are handled locally by the renderer.
-     *
-     * In order to optimize such cases, we check to see whether the component's behaviors map actually contains behaviors
-     * only for these non-pass thru attributes. If so, we can pass a null behavior map into renderPassThruAttributes(), thus
-     * ensuring that we can take advantage of the optimized pass thru rendering logic.
-     *
-     * Note that in all cases where we use this method, we actually have two behavior events that we want to check for - a
-     * low-level/dom event (eg. "click", or "change") plus a high-level component event (eg. "action", or "valueChange").
-     *
-     * @param component the component that we are rendering
-     * @param domEventName the name of the dom-level event
-     * @param componentEventName the name of the component-level event
-     */
-    protected static Map<String, List<ClientBehavior>> getPassThruBehaviors(UIComponent component, String domEventName, String componentEventName) {
-
-        if (!(component instanceof ClientBehaviorHolder)) {
-            return null;
-        }
-
-        Map<String, List<ClientBehavior>> behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
-
-        int size = behaviors.size();
-
-        if (size == 1 || size == 2) {
-            boolean hasDomBehavior = behaviors.containsKey(domEventName);
-            boolean hasComponentBehavior = behaviors.containsKey(componentEventName);
-
-            // If the behavior map only contains behaviors for non-pass
-            // thru attributes, return null.
-            if (size == 1 && (hasDomBehavior || hasComponentBehavior) || size == 2 && hasDomBehavior && hasComponentBehavior) {
-                return null;
-            }
-        }
-
-        return behaviors;
-    }
-
     // --------------------------------------------------------- Private Methods
 
     /**

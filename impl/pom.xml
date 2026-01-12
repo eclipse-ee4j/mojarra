@@ -248,6 +248,7 @@
                             <outputFilename>#{path}/faces.js</outputFilename>
                             <skipMerge>true</skipMerge>
                             <closureLanguageOut>NO_TRANSPILE</closureLanguageOut>
+                            <closureEmitUseStrict>false</closureEmitUseStrict>
                         </configuration>
                     </execution>
                 </executions>

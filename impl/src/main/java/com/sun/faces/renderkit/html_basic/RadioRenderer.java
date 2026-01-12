@@ -37,10 +37,12 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.UISelectItem;
 import jakarta.faces.component.UISelectOne;
+import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 import jakarta.faces.event.ComponentSystemEvent;
 import jakarta.faces.event.ComponentSystemEventListener;
 import jakarta.faces.event.ListenerFor;
@@ -311,12 +313,12 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
         // Apply HTML 4.x attributes specified on UISelectMany component to all
         // items in the list except styleClass and style which are rendered as
         // attributes of outer most table.
-        RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES, getNonOnClickSelectBehaviors(component));
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, clientId, false, ATTRIBUTES, HtmlDocumentElementEvent.click, FacesComponentEvent.valueChange);
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
         writer.endElement("input");
 
-        RenderKitUtils.renderSelectOnclickEventListener(context, component, clientId, false);
+        RenderKitUtils.flushPendingBehaviorEventListeners(context, component, clientId);
     }
 
     protected void renderLabel(ResponseWriter writer, UIComponent component, String forClientId, SelectItem curItem, OptionComponentInfo optionInfo)

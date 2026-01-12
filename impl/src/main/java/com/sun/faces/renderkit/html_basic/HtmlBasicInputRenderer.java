@@ -18,13 +18,7 @@
 
 package com.sun.faces.renderkit.html_basic;
 
-import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
-
-import com.sun.faces.util.MessageFactory;
-import com.sun.faces.util.MessageUtils;
-import com.sun.faces.util.RequestStateManager;
 
 import jakarta.el.PropertyNotFoundException;
 import jakarta.el.ValueExpression;
@@ -32,12 +26,13 @@ import jakarta.faces.application.Application;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.component.ValueHolder;
-import jakarta.faces.component.behavior.ClientBehavior;
-import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
-import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.ConverterException;
+
+import com.sun.faces.util.MessageFactory;
+import com.sun.faces.util.MessageUtils;
+import com.sun.faces.util.RequestStateManager;
 
 /**
  * <B>HtmlBasicInputRenderer</B> is a base class for implementing renderers that support UIInput type components
@@ -171,26 +166,6 @@ public abstract class HtmlBasicInputRenderer extends HtmlBasicRenderer {
 
         return null;
 
-    }
-
-    // Returns the Behaviors map, but only if it contains some entry other
-    // than those handled by renderOnchange(). This helps us optimize
-    // renderPassThruAttributes() in the very common case where the
-    // button only contains an "valueChange" (or "change") Behavior. In that
-    // we pass a null Behaviors map into renderPassThruAttributes(),
-    // which allows us to take a more optimized code path.
-    protected static Map<String, List<ClientBehavior>> getNonOnChangeBehaviors(UIComponent component) {
-        return getPassThruBehaviors(component, HtmlDocumentElementEvent.change.name(), FacesComponentEvent.valueChange.name());
-    }
-
-    // Returns the Behaviors map, but only if it contains some entry other
-    // than those handled by renderOnchange(). This helps us optimize
-    // renderPassThruAttributes() in the very common case where the
-    // button only contains an "valueChange" (or "change") Behavior. In that
-    // we pass a null Behaviors map into renderPassThruAttributes(),
-    // which allows us to take a more optimized code path.
-    protected static Map<String, List<ClientBehavior>> getNonOnClickSelectBehaviors(UIComponent component) {
-        return getPassThruBehaviors(component, HtmlDocumentElementEvent.click.name(), FacesComponentEvent.valueChange.name());
     }
 
     // --------------------------------------------------------- Private Methods

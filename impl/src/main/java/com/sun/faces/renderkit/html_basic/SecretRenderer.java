@@ -21,8 +21,10 @@ package com.sun.faces.renderkit.html_basic;
 import java.io.IOException;
 
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
@@ -78,7 +80,7 @@ public class SecretRenderer extends HtmlBasicInputRenderer {
             writer.writeAttribute("value", currentValue, "value");
         }
 
-        RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES, getNonOnChangeBehaviors(component));
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, ATTRIBUTES, HtmlDocumentElementEvent.change, FacesComponentEvent.valueChange);
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
         String styleClass;
@@ -88,7 +90,7 @@ public class SecretRenderer extends HtmlBasicInputRenderer {
 
         writer.endElement("input");
 
-        RenderKitUtils.renderOnchangeEventListener(context, component, false);
+        RenderKitUtils.flushPendingBehaviorEventListeners(context, component, null);
 
     }
 

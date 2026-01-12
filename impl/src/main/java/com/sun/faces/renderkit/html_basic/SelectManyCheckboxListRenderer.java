@@ -27,9 +27,11 @@ import java.util.Iterator;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.ValueHolder;
+import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.convert.Converter;
+import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 import jakarta.faces.model.SelectItem;
 import jakarta.faces.model.SelectItemGroup;
 
@@ -271,12 +273,12 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
         // Apply HTML 4.x attributes specified on UISelectMany component to all
         // items in the list except styleClass and style which are rendered as
         // attributes of outer most table.
-        RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES, getNonOnClickSelectBehaviors(component));
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, idString, false, ATTRIBUTES, HtmlDocumentElementEvent.click, FacesComponentEvent.valueChange);
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
         writer.endElement("input");
 
-        RenderKitUtils.renderSelectOnclickEventListener(context, component, idString, false);
+        RenderKitUtils.flushPendingBehaviorEventListeners(context, component, idString);
 
         writer.startElement("label", component);
         writer.writeAttribute("for", idString, "for");

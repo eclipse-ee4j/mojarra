@@ -28,10 +28,12 @@ import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
 import jakarta.faces.component.html.HtmlInputFile;
 import jakarta.faces.component.html.HtmlInputText;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.renderkit.Attribute;
@@ -133,12 +135,12 @@ public class TextRenderer extends HtmlBasicInputRenderer {
 
             // style is rendered as a passthru attribute
             Attribute[] attributes = component instanceof HtmlInputFile ? INPUTFILE_ATTRIBUTES : INPUTTEXT_ATTRIBUTES;
-            RenderKitUtils.renderPassThruAttributes(context, writer, component, attributes, getNonOnChangeBehaviors(component));
+            RenderKitUtils.renderPassThruAttributes(context, writer, component, null, hasPassthroughAttributes, attributes, HtmlDocumentElementEvent.change, FacesComponentEvent.valueChange);
             RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
             writer.endElement("input");
 
-            RenderKitUtils.renderOnchangeEventListener(context, component, hasPassthroughAttributes);
+            RenderKitUtils.flushPendingBehaviorEventListeners(context, component, null);
 
         } else if (isOutput = component instanceof UIOutput) {
             if (styleClass != null || style != null || dir != null || lang != null || title != null || hasPassthroughAttributes
