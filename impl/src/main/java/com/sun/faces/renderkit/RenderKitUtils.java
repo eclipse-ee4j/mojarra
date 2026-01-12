@@ -1657,6 +1657,7 @@ public class RenderKitUtils {
 
         case USER_HANDLER_ONLY:
             handler = userHandler;
+            asEventListener = false;
             break;
 
         case SINGLE_BEHAVIOR_ONLY:
