@@ -16,6 +16,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.context.FacesContext;
+
 import com.sun.faces.facelets.tag.composite.CompositeLibrary;
 import com.sun.faces.facelets.tag.faces.PassThroughAttributeLibrary;
 import com.sun.faces.facelets.tag.faces.PassThroughElementLibrary;
@@ -59,14 +62,24 @@ final class DeprecatedNamespacesChecker {
 
     /**
      * If given namespace is null, return null.
+     * If FacesContext is null, return null.
+     * If ProjectStage is not Development, return null.
      * If given namespace was already previously checked, return null.
      * If given namespace is not deprecated, return null.
      * If given namespace is deprecated, return replacement namespace.
      */
     static String shouldWarnAboutForDeprecatedNamespace(String namespace) {
-        if (namespace == null || !foundNamespaces.add(namespace)) {
+        if (namespace == null || foundNamespaces.contains(namespace)) {
             return null;
         }
+
+        var context = FacesContext.getCurrentInstance();
+        
+        if (context == null || context.getApplication().getProjectStage() != ProjectStage.Development) {
+            return null;
+        }
+
+        foundNamespaces.add(namespace);
         return DEPRECATED_NAMESPACE_REPLACEMENTS.get(namespace);
     }
 }
