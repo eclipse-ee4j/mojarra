@@ -23,6 +23,13 @@ import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import jakarta.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributeException;
+import jakarta.faces.view.facelets.TagDecorator;
+import jakarta.faces.view.facelets.TagException;
+
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.facelets.tag.TagAttributesImpl;
 import com.sun.faces.facelets.tag.TagLibrary;
@@ -34,13 +41,6 @@ import com.sun.faces.facelets.tag.ui.ComponentRefHandler;
 import com.sun.faces.facelets.tag.ui.CompositionHandler;
 import com.sun.faces.facelets.tag.ui.UILibrary;
 import com.sun.faces.util.FacesLogger;
-
-import jakarta.faces.view.facelets.FaceletHandler;
-import jakarta.faces.view.facelets.Tag;
-import jakarta.faces.view.facelets.TagAttribute;
-import jakarta.faces.view.facelets.TagAttributeException;
-import jakarta.faces.view.facelets.TagDecorator;
-import jakarta.faces.view.facelets.TagException;
 
 /**
  * Compilation unit for managing the creation of a single FaceletHandler based on events from an XML parser.
@@ -329,6 +329,11 @@ final class CompilationManager {
         
         if (alreadyPresent) {
             return;
+        }
+
+        var replacement = DeprecatedNamespacesChecker.shouldWarnAboutForDeprecatedNamespace(uri);
+        if (replacement != null && log.isLoggable(Level.WARNING)) {
+            log.warning("The namespace '" + uri + "' is DEPRECATED and will be removed in a future version of Jakarta Faces. Applications should migrate to '" + replacement + "' instead.");
         }
 
         namespaceManager.pushNamespace(prefix, uri);
