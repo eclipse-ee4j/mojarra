@@ -173,6 +173,8 @@ public class FormRenderer extends HtmlBasicRenderer {
             resource.encodeAll(context);
         }
 
+        RenderKitUtils.flushPendingBehaviorEventListeners(context, component, null);
+
         // Render the end tag for form
         if (writeStateAtEnd) {
             context.getApplication().getViewHandler().writeState(context);

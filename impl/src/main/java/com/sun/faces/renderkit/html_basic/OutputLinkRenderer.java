@@ -25,14 +25,14 @@ import static java.util.logging.Level.FINE;
 import java.io.IOException;
 import java.net.URLEncoder;
 
-import com.sun.faces.renderkit.Attribute;
-import com.sun.faces.renderkit.AttributeManager;
-import com.sun.faces.renderkit.RenderKitUtils;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIOutput;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
+
+import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.AttributeManager;
+import com.sun.faces.renderkit.RenderKitUtils;
 
 /**
  * <B>OutputLinkRenderer</B> is a class ...
@@ -109,6 +109,7 @@ public class OutputLinkRenderer extends LinkRenderer {
             writer.endElement("a");
         }
 
+        RenderKitUtils.flushPendingBehaviorEventListeners(context, component, null);
     }
 
     @Override

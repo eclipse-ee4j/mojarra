@@ -104,6 +104,8 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
             context.getResponseWriter().endElement("input");
         }
 
+        RenderKitUtils.flushPendingBehaviorEventListeners(context, component, null);
+
         if (!Util.componentIsDisabled(component)) {
             NavigationCase navCase = getNavigationCase(context, component);
 

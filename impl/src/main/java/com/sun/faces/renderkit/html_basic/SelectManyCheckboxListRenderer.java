@@ -272,7 +272,6 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
         // items in the list except styleClass and style which are rendered as
         // attributes of outer most table.
         RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES, getNonOnClickSelectBehaviors(component));
-
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
         writer.endElement("input");

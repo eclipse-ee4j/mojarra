@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -146,6 +147,8 @@ public class RenderKitUtils {
      * Hopefully Faces X will remove the need for this.
      */
     private static final String ATTRIBUTES_THAT_ARE_SET_KEY = UIComponentBase.class.getName() + ".attributesThatAreSet";
+
+    private static final String PENDING_BEHAVIOR_EVENT_LISTENERS_KEY = UIComponentBase.class.getName() + ".pendingBehaviorEventListeners";
 
     private static final String BEHAVIOR_EVENT_ATTRIBUTE_PREFIX = "on";
 
@@ -369,7 +372,7 @@ public class RenderKitUtils {
             params = new LinkedList<>();
             params.add(new ClientBehaviorContext.Parameter("incExec", true));
         }
-        renderHandler(context, component, null, params, handlerName, userHandler, behaviorEventName, domEventName, null, false, incExec, true);
+        addBehaviorEventListener(context, component, null, params, handlerName, userHandler, behaviorEventName, domEventName, null, false, incExec, true);
     }
 
     // Renders onclick event listener for SelectRadio and SelectCheckbox
@@ -393,7 +396,7 @@ public class RenderKitUtils {
             params = new LinkedList<>();
             params.add(new ClientBehaviorContext.Parameter("incExec", true));
         }
-        renderHandler(context, component, clientId, params, handlerName, userHandler, behaviorEventName, domEventName, null, false, incExec, true);
+        addBehaviorEventListener(context, component, clientId, params, handlerName, userHandler, behaviorEventName, domEventName, null, false, incExec, true);
     }
 
     // Renders the onclick event listener for command buttons. Handles
@@ -420,7 +423,7 @@ public class RenderKitUtils {
             }
         }
 
-        renderHandler(context, component, null, params, handlerName, userHandler, behaviorEventName, domEventName, submitTarget, needsSubmit, false, true);
+        addBehaviorEventListener(context, component, null, params, handlerName, userHandler, behaviorEventName, domEventName, submitTarget, needsSubmit, false, true);
     }
 
     // Renders the script element with the function for command scripts.
@@ -624,7 +627,7 @@ public class RenderKitUtils {
                     Attribute attr = knownAttributes[index];
 
                     if (isBehaviorEventAttribute(attr, behaviorEventName)) {
-                        renderHandler(context, component, null, null, name, value, behaviorEventName, behaviorEventName, null, false, false, false);
+                        addBehaviorEventListener(context, component, null, null, name, value, behaviorEventName, behaviorEventName, null, false, false, false);
 
                         renderedBehavior = true;
                     } else {
@@ -636,7 +639,7 @@ public class RenderKitUtils {
                 Object value = attrMap.get(name);
                 if (value != null && shouldRenderAttribute(value)) {
                     if (name.substring(2).equals(behaviorEventName)) {
-                        renderHandler(context, component, null, null, name, value, behaviorEventName, behaviorEventName, null, false, false, false);
+                        addBehaviorEventListener(context, component, null, null, name, value, behaviorEventName, behaviorEventName, null, false, false, false);
 
                         renderedBehavior = true;
                     } else {
@@ -668,7 +671,7 @@ public class RenderKitUtils {
                 String attrName = attribute.getName();
                 String[] events = attribute.getEvents();
                 if (events != null && events.length > 0 && behaviorEventName.equals(events[0])) {
-                    renderHandler(context, component, null, null, attrName, null, behaviorEventName, behaviorEventName, null, false, false, false);
+                    addBehaviorEventListener(context, component, null, null, attrName, null, behaviorEventName, behaviorEventName, null, false, false, false);
                     return;
                 }
             }
@@ -730,7 +733,7 @@ public class RenderKitUtils {
             // If we've got a behavior for this attribute,
             // we may need to chain scripts together, so use
             // renderHandler().
-            renderHandler(context, component, null, null, attrName, value, eventName, eventName, null, false, false, false);
+            addBehaviorEventListener(context, component, null, null, attrName, value, eventName, eventName, null, false, false, false);
         }
     }
 
@@ -1638,8 +1641,8 @@ public class RenderKitUtils {
      * perform submits (eg. non-command components). This flag is mainly here for the commandLink case, where we need to
      * render the submit script to make the link submit.
      */
-    private static void renderHandler(FacesContext context, UIComponent component, String clientId, Collection<ClientBehaviorContext.Parameter> params, String handlerName,
-            Object handlerValue, String behaviorEventName, String domEventName, String submitTarget, boolean needsSubmit, boolean includeExec, boolean asEventListener) throws IOException {
+    private static void addBehaviorEventListener(FacesContext context, UIComponent component, String clientId, Collection<ClientBehaviorContext.Parameter> params, String handlerName,
+            Object handlerValue, String behaviorEventName, String domEventName, String submitTarget, boolean needsSubmit, boolean includeExec, boolean flushPendingBehaviorEventListeners) throws IOException {
 
         String userHandler = getNonEmptyUserHandler(handlerValue);
         List<ClientBehavior> behaviors = getClientBehaviors(component, behaviorEventName);
@@ -1657,7 +1660,6 @@ public class RenderKitUtils {
 
         case USER_HANDLER_ONLY:
             handler = userHandler;
-            asEventListener = false;
             break;
 
         case SINGLE_BEHAVIOR_ONLY:
@@ -1675,12 +1677,39 @@ public class RenderKitUtils {
             assert false;
         }
 
+        if (flushPendingBehaviorEventListeners) {
+            flushPendingBehaviorEventListeners(context, component, clientId);
+        }
         if (handler != null) {
-            if (asEventListener) {
+            if (flushPendingBehaviorEventListeners) {
                 addEventListener(context, component, clientId, domEventName, handler);
             }
             else {
-                context.getResponseWriter().writeAttribute(handlerName, handler, null);
+                getPendingBehaviorEventListeners(component, false).computeIfAbsent(domEventName, $ -> new ArrayList<>(2)).add(handler);
+            }
+        }
+    }
+
+    private static Map<String, List<String>> getPendingBehaviorEventListeners(UIComponent component, boolean flush) {
+        var transientStateHelper = component.getTransientStateHelper();
+        var pendingBehaviorEventListeners = (Map<String, List<String>>) transientStateHelper.getTransient(PENDING_BEHAVIOR_EVENT_LISTENERS_KEY);
+        if (pendingBehaviorEventListeners == null) {
+            if (flush) {
+                return Collections.emptyMap();
+            }
+            pendingBehaviorEventListeners = new LinkedHashMap<String, List<String>>(2);
+            transientStateHelper.putTransient(PENDING_BEHAVIOR_EVENT_LISTENERS_KEY, pendingBehaviorEventListeners);
+        }
+        if (flush) {
+            transientStateHelper.putTransient(PENDING_BEHAVIOR_EVENT_LISTENERS_KEY, null);
+        }
+        return pendingBehaviorEventListeners;
+    }
+
+    public static void flushPendingBehaviorEventListeners(FacesContext context, UIComponent component, String clientId) throws IOException {
+        for (var pendingEvent : getPendingBehaviorEventListeners(component, true).entrySet()) {
+            for (var pendingEventListener : pendingEvent.getValue()) {
+                addEventListener(context, component, clientId, pendingEvent.getKey(), pendingEventListener);
             }
         }
     }
