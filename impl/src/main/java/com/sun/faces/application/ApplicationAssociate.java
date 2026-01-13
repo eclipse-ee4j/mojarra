@@ -623,7 +623,7 @@ public class ApplicationAssociate {
     protected DefaultFaceletFactory createFaceletFactory(FacesContext context, Compiler compiler) {
 
         // refresh period
-        int period = FacesContextParam.FACELETS_REFRESH_PERIOD.getValue(context);
+        int refreshPeriodInSeconds = FacesContextParam.FACELETS_REFRESH_PERIOD.getValue(context);
 
         // resource resolver
         DefaultResourceResolver resolver = new DefaultResourceResolver(applicationImpl.getResourceHandler());
@@ -632,7 +632,7 @@ public class ApplicationAssociate {
         FaceletCache<?> cache = cacheFactory.getFaceletCache();
 
         DefaultFaceletFactory toReturn = new DefaultFaceletFactory();
-        toReturn.init(context, compiler, resolver, period, cache);
+        toReturn.init(context, compiler, resolver, refreshPeriodInSeconds, cache);
 
         return toReturn;
     }
