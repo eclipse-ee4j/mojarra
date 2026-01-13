@@ -21,12 +21,12 @@ import java.net.URL;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
 
+import jakarta.faces.FacesException;
+import jakarta.faces.view.facelets.FaceletCache;
+
 import com.sun.faces.util.ConcurrentCache;
 import com.sun.faces.util.ExpiringConcurrentCache;
 import com.sun.faces.util.Util;
-
-import jakarta.faces.FacesException;
-import jakarta.faces.view.facelets.FaceletCache;
 
 /**
  * Default FaceletCache implementation.
@@ -39,34 +39,35 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
      * @param refreshPeriod cache refresh period (in seconds). 0 means 'always refresh', negative value means 'never
      * refresh'
      */
-    DefaultFaceletCache(final long refreshPeriod) {
+    DefaultFaceletCache(final long refreshPeriodInSeconds) {
 
         // We will be delegating object storage to the ExpiringCocurrentCache
         // Create Factory objects here for the cache. The objects will be delegating to our
         // own instance factories
 
-        final boolean checkExpiry = refreshPeriod > 0;
+        final boolean checkExpiry = refreshPeriodInSeconds > 0;
+        final long refreshPeriodInMillis = refreshPeriodInSeconds >= 0 ? refreshPeriodInSeconds * 1000 : -1;
 
         ConcurrentCache.Factory<URL, Record> faceletFactory = key -> {
             // Make sure that the expensive timestamp retrieval is not done
             // if no expiry check is going to be performed
             long lastModified = checkExpiry ? Util.getLastModified(key) : 0;
-            return new Record(System.currentTimeMillis(), lastModified, getMemberFactory().newInstance(key), refreshPeriod);
+            return new Record(System.currentTimeMillis(), lastModified, getMemberFactory().newInstance(key), refreshPeriodInMillis);
         };
 
         ConcurrentCache.Factory<URL, Record> metadataFaceletFactory = key -> {
             // Make sure that the expensive timestamp retrieval is not done
             // if no expiry check is going to be performed
             long lastModified = checkExpiry ? Util.getLastModified(key) : 0;
-            return new Record(System.currentTimeMillis(), lastModified, getMetadataMemberFactory().newInstance(key), refreshPeriod);
+            return new Record(System.currentTimeMillis(), lastModified, getMetadataMemberFactory().newInstance(key), refreshPeriodInMillis);
         };
 
         // No caching if refreshPeriod is 0
-        if (refreshPeriod == 0) {
+        if (refreshPeriodInSeconds == 0) {
             _faceletCache = new NoCache(faceletFactory);
             _metadataFaceletCache = new NoCache(metadataFaceletFactory);
         } else {
-            ExpiringConcurrentCache.ExpiryChecker<URL, Record> checker = refreshPeriod > 0 ? new ExpiryChecker() : new NeverExpired();
+            ExpiringConcurrentCache.ExpiryChecker<URL, Record> checker = refreshPeriodInSeconds > 0 ? new ExpiryChecker() : new NeverExpired();
             _faceletCache = new ExpiringConcurrentCache<>(faceletFactory, checker);
             _metadataFaceletCache = new ExpiringConcurrentCache<>(metadataFaceletFactory, checker);
         }
@@ -135,14 +136,14 @@ final class DefaultFaceletCache extends FaceletCache<DefaultFacelet> {
      * next expiry check should be performed
      */
     private static class Record {
-        Record(long creationTime, long lastModified, DefaultFacelet facelet, long refreshInterval) {
+        Record(long creationTime, long lastModified, DefaultFacelet facelet, long refreshIntervalInMillis) {
             _facelet = facelet;
             _creationTime = creationTime;
             _lastModified = lastModified;
-            _refreshInterval = refreshInterval;
+            _refreshInterval = refreshIntervalInMillis;
 
             // There is no point in calculating the next refresh time if we are refreshing always/never
-            _nextRefreshTime = _refreshInterval > 0 ? new AtomicLong(creationTime + refreshInterval) : null;
+            _nextRefreshTime = _refreshInterval > 0 ? new AtomicLong(creationTime + refreshIntervalInMillis) : null;
         }
 
         DefaultFacelet getFacelet() {
