@@ -68,7 +68,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
 
     private final long createTime;
 
-    private final long refreshPeriod;
+    private final long refreshPeriodInMillis;
 
     private final FaceletHandler root;
 
@@ -89,7 +89,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
         this.alias = alias;
         this.mapper = factory.idMappers != null ? factory.idMappers.get(alias) : null;
         createTime = System.currentTimeMillis();
-        refreshPeriod = this.factory.getRefreshPeriod();
+        refreshPeriodInMillis = this.factory.getRefreshPeriodInMillis();
 
         Doctype doctype = Util.getDOCTYPEFromFacesContextAttributes(FacesContext.getCurrentInstance());
         if (null != doctype) {
@@ -140,7 +140,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     }
 
     private void refresh(UIComponent c) {
-        if (refreshPeriod > 0) {
+        if (refreshPeriodInMillis > 0) {
 
             // finally remove any children marked as deleted
             int sz = c.getChildCount();
@@ -187,9 +187,9 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     }
 
     private void markApplied(UIComponent parent) {
-        if (refreshPeriod > 0) {
+        if (refreshPeriodInMillis > 0) {
             Iterator itr = parent.getFacetsAndChildren();
-            ApplyToken token = new ApplyToken(alias, System.currentTimeMillis() + refreshPeriod);
+            ApplyToken token = new ApplyToken(alias, System.currentTimeMillis() + refreshPeriodInMillis);
             while (itr.hasNext()) {
                 UIComponent c = (UIComponent) itr.next();
                 if (!c.isTransient()) {

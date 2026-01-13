@@ -43,15 +43,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.application.resource.ResourceManager;
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.context.FacesFileNotFoundException;
-import com.sun.faces.facelets.compiler.Compiler;
-import com.sun.faces.util.Cache;
-import com.sun.faces.util.FacesLogger;
-
 import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
@@ -66,6 +57,15 @@ import jakarta.faces.view.facelets.FaceletCache;
 import jakarta.faces.view.facelets.FaceletCacheFactory;
 import jakarta.faces.view.facelets.FaceletException;
 import jakarta.faces.view.facelets.FaceletHandler;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.application.resource.ResourceManager;
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.context.FacesFileNotFoundException;
+import com.sun.faces.facelets.compiler.Compiler;
+import com.sun.faces.util.Cache;
+import com.sun.faces.util.FacesLogger;
 
 /**
  * Default FaceletFactory implementation.
@@ -86,7 +86,7 @@ public class DefaultFaceletFactory {
     private ResourceManager manager;
     private URL baseUrl;
     private String baseUrlAsString;
-    private long refreshPeriod;
+    private long refreshPeriodInMillis;
     private FaceletCache<DefaultFacelet> cache;
     private ConcurrentMap<String, FaceletCache<DefaultFacelet>> cachePerContract;
 
@@ -95,10 +95,10 @@ public class DefaultFaceletFactory {
     // ------------------------------------------------------------ Constructors
 
     public DefaultFaceletFactory() {
-        refreshPeriod = -1;
+        refreshPeriodInMillis = -1;
     }
 
-    public final void init(FacesContext facesContext, Compiler compiler, DefaultResourceResolver resolver, long refreshPeriod, FaceletCache cache) {
+    public final void init(FacesContext facesContext, Compiler compiler, DefaultResourceResolver resolver, final long refreshPeriodInSeconds, FaceletCache cache) {
         notNull("compiler", compiler);
         notNull("resolver", resolver);
 
@@ -112,11 +112,10 @@ public class DefaultFaceletFactory {
         baseUrl = resolver.resolveUrl("/");
         baseUrlAsString = baseUrl.toExternalForm();
         this.idMappers = config.isOptionEnabled(UseFaceletsID) ? null : new Cache<>(new IdMapperFactory());
-        refreshPeriod = refreshPeriod >= 0 ? refreshPeriod * 1000 : -1;
-        this.refreshPeriod = refreshPeriod;
+        this.refreshPeriodInMillis = refreshPeriodInSeconds >= 0 ? refreshPeriodInSeconds * 1000 : -1;
         if (log.isLoggable(Level.FINE)) {
             log.log(Level.FINE, "Using ResourceResolver: {0}", resolver);
-            log.log(Level.FINE, "Using Refresh Period: {0}", refreshPeriod);
+            log.log(Level.FINE, "Using Refresh Period ms: {0}", refreshPeriodInMillis);
         }
 
         // We can cast to the FaceletCache<DefaultFacelet> here because we know
@@ -434,8 +433,8 @@ public class DefaultFaceletFactory {
 
     }
 
-    public long getRefreshPeriod() {
-        return refreshPeriod;
+    public long getRefreshPeriodInMillis() {
+        return refreshPeriodInMillis;
     }
 
 

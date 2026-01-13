@@ -16,10 +16,16 @@
 
 package com.sun.faces.facelets.impl;
 
-import com.sun.faces.config.WebConfiguration;
+import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsDefaultRefreshPeriod;
+import static jakarta.faces.application.ProjectStage.Production;
+import static java.lang.Long.parseLong;
 
+import jakarta.faces.application.Application;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.FaceletCache;
 import jakarta.faces.view.facelets.FaceletCacheFactory;
+
+import com.sun.faces.config.WebConfiguration;
 
 /**
  * Default implementation of {@link FaceletCacheFactory}.
@@ -32,12 +38,24 @@ public class FaceletCacheFactoryImpl extends FaceletCacheFactory {
 
     @Override
     public FaceletCache getFaceletCache() {
-        WebConfiguration webConfig = WebConfiguration.getInstance();
-        String refreshPeriod = webConfig.getOptionValue(WebConfiguration.WebContextInitParameter.FaceletsDefaultRefreshPeriod);
-        long period = Long.parseLong(refreshPeriod) * 1000;
-        FaceletCache<DefaultFacelet> result = new DefaultFaceletCache(period);
+        FacesContext context = FacesContext.getCurrentInstance();
+        WebConfiguration webConfig = WebConfiguration.getInstance(context.getExternalContext());
+        long refreshPeriodInSeconds = getFaceletsRefreshPeriodInSeconds(context.getApplication(), webConfig);
+        FaceletCache<DefaultFacelet> result = new DefaultFaceletCache(refreshPeriodInSeconds);
         return result;
-
     }
 
+    public static long getFaceletsRefreshPeriodInSeconds(Application application, WebConfiguration webConfig) {
+        boolean isProduction = application.getProjectStage() == Production;
+        String refreshPeriod;
+        if (webConfig.isSet(FaceletsDefaultRefreshPeriod)) {
+            refreshPeriod = webConfig.getOptionValue(FaceletsDefaultRefreshPeriod);
+        } else if (isProduction) {
+            refreshPeriod = "-1";
+        } else {
+            refreshPeriod = FaceletsDefaultRefreshPeriod.getDefaultValue();
+        }
+
+        return parseLong(refreshPeriod);
+    }
 }
