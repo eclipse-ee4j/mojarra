@@ -375,31 +375,32 @@ public class Util {
             "char",     char.class
     );
 
-    public static Class loadClass(String name, Object fallbackClass) throws ClassNotFoundException {
+    @SuppressWarnings("unchecked")
+    public static <T> Class<T> loadClass(String name, Object fallbackClass) throws ClassNotFoundException {
         // Primitive Type
-        Class primitiveType = primitiveTypes.get(name);
-        if (primitiveType != null) return primitiveType;
+        Class<?> primitiveType = primitiveTypes.get(name);
+        if (primitiveType != null) return (Class<T>) primitiveType;
 
         // Class.forName
         ClassLoader loader = getCurrentLoader(fallbackClass);
-        return Class.forName(name, true, loader);
+        return (Class<T>) Class.forName(name, true, loader);
     }
 
-    public static Class<?> loadClass2(String name, Object fallbackClass) {
+    @SuppressWarnings("unchecked")
+    public static <T> Class<T> loadClass2(String name, Object fallbackClass) {
         try {
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
             if (loader == null) {
                 loader = fallbackClass.getClass().getClassLoader();
             }
 
-            return Class.forName(name, true, loader);
+            return (Class<T>) Class.forName(name, true, loader);
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T> T newInstance(Class<?> clazz) {
+    public static <T> T newInstance(Class<T> clazz) {
         try {
             return (T) clazz.getDeclaredConstructor().newInstance();
         } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
@@ -771,7 +772,7 @@ public class Util {
         return result;
     }
 
-    public static Converter getConverterForClass(Class converterClass, FacesContext context) {
+    public static <T> Converter<T> getConverterForClass(Class<T> converterClass, FacesContext context) {
         if (converterClass == null) {
             return null;
         }
@@ -783,7 +784,7 @@ public class Util {
         }
     }
 
-    public static Converter getConverterForIdentifier(String converterId, FacesContext context) {
+    public static <T> Converter<T> getConverterForIdentifier(String converterId, FacesContext context) {
         if (converterId == null) {
             return null;
         }

@@ -31,9 +31,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.util.FacesLogger;
-
 import jakarta.enterprise.context.spi.Contextual;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.BeanManager;
@@ -44,6 +41,9 @@ import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpSessionEvent;
+
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.util.FacesLogger;
 
 /**
  * The manager that deals with CDI ViewScoped beans.
@@ -149,6 +149,7 @@ public class ViewScopeContextManager {
      * @param viewMap the view map.
      * @param contextMap the context map.
      */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private void destroyBeans(Map<String, Object> viewMap, Map<String, ViewScopeContextObject> contextMap) {
         ArrayList<String> removalNameList = new ArrayList<>();
 
@@ -244,7 +245,6 @@ public class ViewScopeContextManager {
             if (session != null) {
                 Map<Object, Map<String, ViewScopeContextObject>> activeViewScopeContexts = (Map<Object, Map<String, ViewScopeContextObject>>)
                     sessionMap.get(ACTIVE_VIEW_CONTEXTS);
-                Map<String, Object> viewMap = facesContext.getViewRoot().getViewMap(false);
                 String viewMapId = (String) facesContext.getViewRoot().getTransientStateHelper().getTransient(VIEW_MAP_ID);
 
                 if (activeViewScopeContexts == null && create) {

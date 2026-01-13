@@ -35,10 +35,10 @@ import jakarta.faces.view.facelets.TagAttribute;
  */
 final class ActionSourceRule extends MetaRule {
 
-    public final static Class[] ACTION_SIG = new Class[0];
+    public final static Class<?>[] ACTION_SIG = new Class[0];
 
-    public final static Class[] ACTION_LISTENER_SIG = new Class[] { ActionEvent.class };
-    public final static Class[] ACTION_LISTENER_ZEROARG_SIG = new Class[] {};
+    public final static Class<?>[] ACTION_LISTENER_SIG = new Class[] { ActionEvent.class };
+    public final static Class<?>[] ACTION_LISTENER_ZEROARG_SIG = new Class[] {};
 
     final static class ActionMapper2 extends Metadata {
 

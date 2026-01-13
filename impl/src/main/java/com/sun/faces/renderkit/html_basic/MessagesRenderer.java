@@ -79,7 +79,7 @@ public class MessagesRenderer extends HtmlBasicRenderer {
         }
 
         // "for" attribute optional for Messages
-        Iterator messageIter = getMessageIter(context, clientId, component);
+        Iterator<FacesMessage> messageIter = getMessageIter(context, clientId, component);
 
         assert messageIter != null;
 

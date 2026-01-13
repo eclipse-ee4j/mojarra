@@ -47,6 +47,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
 
     // Supported by maps if overridden
     @Override
+    @SuppressWarnings("rawtypes")
     public void putAll(Map t) {
         throw new UnsupportedOperationException();
     }
@@ -96,8 +97,8 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
             return false;
         }
         if (containsValue(value)) {
-            for (Iterator i = entrySet().iterator(); i.hasNext();) {
-                Map.Entry e = (Map.Entry) i.next();
+            for (Iterator<Map.Entry<String, V>> i = entrySet().iterator(); i.hasNext();) {
+                Map.Entry<String, V> e = i.next();
                 if (value.equals(e.getValue())) {
                     valueRemoved = remove(e.getKey()) != null;
                 }
@@ -135,8 +136,9 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public boolean remove(Object o) {
-            return o instanceof Map.Entry && removeKey(((Map.Entry) o).getKey());
+            return o instanceof Map.Entry && removeKey(((Map.Entry<String, V>) o).getKey());
         }
 
     }
@@ -183,11 +185,11 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
 
     abstract static class BaseIterator<E> implements Iterator<E> {
 
-        protected Enumeration e;
+        protected Enumeration<String> e;
         protected String currentKey;
         protected boolean removeCalled = false;
 
-        BaseIterator(Enumeration e) {
+        BaseIterator(Enumeration<String> e) {
             this.e = e;
         }
 
@@ -198,14 +200,14 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
 
         public String nextKey() {
             removeCalled = false;
-            currentKey = (String) e.nextElement();
+            currentKey = e.nextElement();
             return currentKey;
         }
     }
 
     class EntryIterator extends BaseIterator<Map.Entry<String, V>> {
 
-        EntryIterator(Enumeration e) {
+        EntryIterator(Enumeration<String> e) {
             super(e);
         }
 
@@ -228,7 +230,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
 
     class KeyIterator extends BaseIterator<String> {
 
-        KeyIterator(Enumeration e) {
+        KeyIterator(Enumeration<String> e) {
             super(e);
         }
 
@@ -250,7 +252,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
 
     class ValueIterator extends BaseIterator<V> {
 
-        ValueIterator(Enumeration e) {
+        ValueIterator(Enumeration<String> e) {
             super(e);
         }
 
@@ -304,6 +306,7 @@ abstract class BaseContextMap<V> extends AbstractMap<String, V> {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public boolean equals(Object obj) {
             if ( !(obj instanceof Map.Entry) ) {
                 return false;

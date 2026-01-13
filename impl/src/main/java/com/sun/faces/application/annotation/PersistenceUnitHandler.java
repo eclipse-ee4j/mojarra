@@ -39,7 +39,6 @@ class PersistenceUnitHandler extends JndiHandler implements RuntimeAnnotationHan
         this.fieldAnnotations = fieldAnnotations;
     }
 
-    @SuppressWarnings({ "UnusedDeclaration" })
     @Override
     public void apply(FacesContext ctx, Object... params) {
         Object object = params[0];

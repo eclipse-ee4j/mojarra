@@ -33,6 +33,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * <li>This cannot be cast as a general Map implementation.</li>
  * </ul>
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class MultiKeyConcurrentHashMap<K, V> {
 
     /*
@@ -218,7 +219,6 @@ public class MultiKeyConcurrentHashMap<K, V> {
         /**
          * The per-segment table. Declared as a raw type, casted to HashEntry<K,V> on each use.
          */
-        @SuppressWarnings({ "NonSerializableFieldInSerializableClass" })
         volatile HashEntry[] table;
 
         /**

@@ -40,7 +40,6 @@ class EJBHandler extends JndiHandler implements RuntimeAnnotationHandler {
         this.methodAnnotations = methodAnnotations;
     }
 
-    @SuppressWarnings({ "UnusedDeclaration" })
     @Override
     public void apply(FacesContext ctx, Object... params) {
         Object object = params[0];

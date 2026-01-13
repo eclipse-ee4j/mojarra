@@ -21,10 +21,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sun.faces.el.ELUtils;
-import com.sun.faces.util.HtmlUtils;
-import com.sun.faces.util.MessageUtils;
-
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ExpressionFactory;
@@ -32,6 +28,10 @@ import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.view.Location;
+
+import com.sun.faces.el.ELUtils;
+import com.sun.faces.util.HtmlUtils;
+import com.sun.faces.util.MessageUtils;
 
 /**
  * Handles parsing EL Strings in accordance with the EL-API Specification. The parser accepts either <code>${..}</code>
@@ -87,12 +87,12 @@ public class ELText {
         }
 
         @Override
-        public Class getType(ELContext context) {
+        public Class<?> getType(ELContext context) {
             return null;
         }
 
         @Override
-        public Class getExpectedType() {
+        public Class<?> getExpectedType() {
             return null;
         }
 

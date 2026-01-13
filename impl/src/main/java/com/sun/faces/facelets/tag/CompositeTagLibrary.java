@@ -105,7 +105,7 @@ public final class CompositeTagLibrary implements TagLibrary {
                     String prefix = getPrefixFromTag(t);
                     if (null != prefix) {
                         List<FacesMessage> prefixMessages = messageHolder.getNamespacePrefixMessages(context, prefix);
-                        prefixMessages.add(new FacesMessage(FacesMessage.SEVERITY_WARN, "Warning: This page calls for XML namespace " + ns
+                        prefixMessages.add(new FacesMessage(FacesMessage.Severity.WARN, "Warning: This page calls for XML namespace " + ns
                                 + " declared with prefix " + prefix + " but no taglibrary exists for that namespace.", ""));
                     }
                 }

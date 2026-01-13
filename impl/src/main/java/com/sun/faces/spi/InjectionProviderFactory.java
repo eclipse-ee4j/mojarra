@@ -34,15 +34,15 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import jakarta.faces.context.ExternalContext;
+import jakarta.servlet.ServletContext;
+
 import com.sun.faces.RIConstants;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 import com.sun.faces.vendor.WebContainerInjectionProvider;
-
-import jakarta.faces.context.ExternalContext;
-import jakarta.servlet.ServletContext;
 
 /**
  * <p>
@@ -111,7 +111,7 @@ public class InjectionProviderFactory {
                 Class<?> clazz = Util.loadClass(className, InjectionProviderFactory.class);
                 if (implementsInjectionProvider(clazz)) {
                     try {
-                        Constructor ctor = clazz.getConstructor(ServletContext.class);
+                        Constructor<?> ctor = clazz.getConstructor(ServletContext.class);
                         return (InjectionProvider) ctor.newInstance((ServletContext) extContext.getContext());
                     } catch (NoSuchMethodException nsme) {
                         return (InjectionProvider) clazz.getDeclaredConstructor().newInstance();

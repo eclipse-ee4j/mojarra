@@ -33,15 +33,15 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.io.FastStringWriter;
-import com.sun.faces.renderkit.RenderKitUtils;
-
 import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.ValueHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.model.SelectItem;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.io.FastStringWriter;
+import com.sun.faces.renderkit.RenderKitUtils;
 
 /**
  * <B>DebugUtil</B> is a class ...
@@ -110,7 +110,7 @@ public class DebugUtil {
             doos = new DebugObjectOutputStream(oos);
             doos.writeObject(toPrint);
         } catch (IOException ioe) {
-            List pathToBadObject = doos.getStack();
+            List<Object> pathToBadObject = doos.getStack();
             builder.append("Path to non-Serializable Object: \n");
             for (Object cur : pathToBadObject) {
                 builder.append(cur.toString()).append("\n");
@@ -277,11 +277,12 @@ public class DebugUtil {
         curDepth--;
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes", })
     public static void printState(Map state, Logger out) {
         Set<Map.Entry> entrySet = state.entrySet();
         Object key, value;
         String keyIsSerializable, valueIsSerializable;
-        for (Map.Entry cur : entrySet) {
+        for (Map.Entry<?, ?> cur : entrySet) {
             key = cur.getKey();
             value = cur.getValue();
             keyIsSerializable = key instanceof Serializable ? "true" : "+_+_+_+FALSE+_+_+_+_";
@@ -339,7 +340,7 @@ public class DebugUtil {
                     printTree((Object[]) obj, out);
                     curDepth--;
                 } else if (obj instanceof List) {
-                    printList((List) obj, out);
+                    printList((List<?>) obj, out);
                 } else {
                     indentPrintln(out, obj);
                 }
@@ -349,11 +350,11 @@ public class DebugUtil {
 
     }
 
-    public static void printList(List list, Logger out) {
+    public static void printList(List<?> list, Logger out) {
         for (Object cur : list) {
             if (cur instanceof List) {
                 curDepth++;
-                printList((List) cur, out);
+                printList((List<?>) cur, out);
                 curDepth--;
             } else {
                 indentPrintln(out, cur);

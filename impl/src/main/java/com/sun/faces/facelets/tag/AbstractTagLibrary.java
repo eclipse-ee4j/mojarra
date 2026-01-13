@@ -178,11 +178,11 @@ public abstract class AbstractTagLibrary implements TagLibrary {
     }
 
     private static class HandlerFactory implements TagHandlerFactory {
-        private final static Class[] CONSTRUCTOR_SIG = new Class[] { TagConfig.class };
+        private final static Class<?>[] CONSTRUCTOR_SIG = new Class[] { TagConfig.class };
 
-        protected final Class handlerType;
+        protected final Class<?> handlerType;
 
-        public HandlerFactory(Class handlerType) {
+        public HandlerFactory(Class<?> handlerType) {
             this.handlerType = handlerType;
         }
 
@@ -304,17 +304,17 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
     private static class UserComponentHandlerFactory implements TagHandlerFactory {
 
-        private final static Class[] CONS_SIG = new Class[] { ComponentConfig.class };
+        private final static Class<?>[] CONS_SIG = new Class[] { ComponentConfig.class };
 
         protected final String componentType;
 
         protected final String renderType;
 
-        protected final Class type;
+        protected final Class<?> type;
 
         protected final Constructor<?> constructor;
 
-        public UserComponentHandlerFactory(String componentType, String renderType, Class type) {
+        public UserComponentHandlerFactory(String componentType, String renderType, Class<?> type) {
             this.componentType = componentType;
             this.renderType = renderType;
             this.type = type;
@@ -386,15 +386,15 @@ public abstract class AbstractTagLibrary implements TagLibrary {
     }
 
     private static class UserConverterHandlerFactory implements TagHandlerFactory {
-        private final static Class[] CONS_SIG = new Class[] { ConverterConfig.class };
+        private final static Class<?>[] CONS_SIG = new Class[] { ConverterConfig.class };
 
         protected final String converterId;
 
-        protected final Class type;
+        protected final Class<?> type;
 
         protected final Constructor<?> constructor;
 
-        public UserConverterHandlerFactory(String converterId, Class type) {
+        public UserConverterHandlerFactory(String converterId, Class<?> type) {
             this.converterId = converterId;
             this.type = type;
             try {
@@ -418,15 +418,15 @@ public abstract class AbstractTagLibrary implements TagLibrary {
     }
 
     private static class UserValidatorHandlerFactory implements TagHandlerFactory {
-        private final static Class[] CONS_SIG = new Class[] { ValidatorConfig.class };
+        private final static Class<?>[] CONS_SIG = new Class[] { ValidatorConfig.class };
 
         protected final String validatorId;
 
-        protected final Class type;
+        protected final Class<?> type;
 
         protected final Constructor<?> constructor;
 
-        public UserValidatorHandlerFactory(String validatorId, Class type) {
+        public UserValidatorHandlerFactory(String validatorId, Class<?> type) {
             this.validatorId = validatorId;
             this.type = type;
             try {
@@ -450,15 +450,15 @@ public abstract class AbstractTagLibrary implements TagLibrary {
     }
 
     private static class UserBehaviorHandlerFactory implements TagHandlerFactory {
-        private final static Class[] CONS_SIG = new Class[] { BehaviorConfig.class };
+        private final static Class<?>[] CONS_SIG = new Class[] { BehaviorConfig.class };
 
         protected final String behaviorId;
 
-        protected final Class type;
+        protected final Class<?> type;
 
         protected final Constructor<?> constructor;
 
-        public UserBehaviorHandlerFactory(String behaviorId, Class type) {
+        public UserBehaviorHandlerFactory(String behaviorId, Class<?> type) {
             this.behaviorId = behaviorId;
             this.type = type;
             try {
@@ -514,7 +514,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      * @param rendererType rendererType to use
      * @param handlerType a Class that extends ComponentHandler
      */
-    protected final void addComponent(String name, String componentType, String rendererType, Class handlerType) {
+    protected final void addComponent(String name, String componentType, String rendererType, Class<?> handlerType) {
         factories.put(name, new UserComponentHandlerFactory(componentType, rendererType, handlerType));
     }
 
@@ -540,7 +540,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      * @param converterId id to pass to Application instance
      * @param type TagHandler type that takes in a ConverterConfig
      */
-    protected final void addConverter(String name, String converterId, Class type) {
+    protected final void addConverter(String name, String converterId, Class<?> type) {
         factories.put(name, new UserConverterHandlerFactory(converterId, type));
     }
 
@@ -566,7 +566,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      * @param validatorId id to pass to Application instance
      * @param type TagHandler type that takes in a ValidatorConfig
      */
-    protected final void addValidator(String name, String validatorId, Class type) {
+    protected final void addValidator(String name, String validatorId, Class<?> type) {
         factories.put(name, new UserValidatorHandlerFactory(validatorId, type));
     }
 
@@ -582,7 +582,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
         factories.put(name, new BehaviorHandlerFactory(behaviorId));
     }
 
-    protected final void addBehavior(String name, String behaviorId, Class type) {
+    protected final void addBehavior(String name, String behaviorId, Class<?> type) {
         factories.put(name, new UserBehaviorHandlerFactory(behaviorId, type));
     }
 
@@ -593,7 +593,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
      * @param name name to use, "foo" would be {@code <my:foo />}
      * @param handlerType must extend TagHandler
      */
-    protected final void addTagHandler(String name, Class handlerType) {
+    protected final void addTagHandler(String name, Class<?> handlerType) {
         factories.put(name, new HandlerFactory(handlerType));
     }
 

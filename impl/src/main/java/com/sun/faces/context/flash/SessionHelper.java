@@ -36,6 +36,7 @@ class SessionHelper implements Serializable, HttpSessionActivationListener {
         return (SessionHelper) extContext.getSessionMap().get(FLASH_SESSIONACTIVATIONLISTENER_ATTRIBUTE_NAME);
     }
 
+    @SuppressWarnings("unchecked")
     void update(ExternalContext extContext, ELFlash flash) {
         Map<String, Object> sessionMap = extContext.getSessionMap();
         if (didPassivate) {

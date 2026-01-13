@@ -51,7 +51,7 @@ public final class ConvertDelegateHandler extends ConverterHandler {
      *
      * @see jakarta.faces.application.Application#createComponent(java.lang.String)
      */
-    protected Converter createConverter(FaceletContext ctx) throws FacesException, ELException, FaceletException {
+    protected Converter<?> createConverter(FaceletContext ctx) throws FacesException, ELException, FaceletException {
         return ctx.getFacesContext().getApplication().createConverter(converterId.getValue(ctx));
     }
 

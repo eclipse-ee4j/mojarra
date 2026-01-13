@@ -451,6 +451,11 @@
                         <id>attach-javadocs</id>
                         <configuration>
                             <excludePackageNames>com</excludePackageNames>
+                            <quiet>true</quiet>
+					        <additionalOptions>
+					            <additionalOption>-Xdoclint:none</additionalOption>
+					        </additionalOptions>
+					        <failOnError>true</failOnError>
                         </configuration>
                         <goals>
                             <goal>jar</goal>

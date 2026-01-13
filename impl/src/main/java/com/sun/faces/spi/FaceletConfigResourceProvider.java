@@ -45,7 +45,7 @@ package com.sun.faces.spi;
  * <code>META-INF</code> but <em>before</em> those that process <code>taglib.xml</code> files in the web application.
  * </p>
  */
-public interface FaceletConfigResourceProvider {
+public interface FaceletConfigResourceProvider extends ConfigurationResourceProvider {
 
     String SERVICES_KEY = "com.sun.faces.spi.FaceletConfigResourceProvider";
 

@@ -50,7 +50,6 @@ public class MutableNavigationCase extends NavigationCase {
     private ValueExpression toViewIdExpr;
     private ValueExpression conditionExpr;
     private String toString;
-    private int hashCode;
 
     // ------------------------------------------------------------ Constructors
 
@@ -77,7 +76,7 @@ public class MutableNavigationCase extends NavigationCase {
 
     public MutableNavigationCase(String fromViewId, String fromAction, String fromOutcome, String condition, String toViewId, String toFlowDocumentId,
             boolean redirect, boolean includeViewParams) {
-        super(fromViewId, fromAction, fromOutcome, condition, toViewId, toFlowDocumentId, Collections.EMPTY_MAP, redirect, includeViewParams);
+        super(fromViewId, fromAction, fromOutcome, condition, toViewId, toFlowDocumentId, Collections.emptyMap(), redirect, includeViewParams);
 
         this.fromViewId = fromViewId;
         this.fromAction = fromAction;

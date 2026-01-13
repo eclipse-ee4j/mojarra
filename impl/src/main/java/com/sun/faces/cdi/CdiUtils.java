@@ -31,10 +31,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
-
 import jakarta.enterprise.context.ContextNotActiveException;
 import jakarta.enterprise.context.spi.Context;
 import jakarta.enterprise.context.spi.CreationalContext;
@@ -54,6 +50,10 @@ import jakarta.faces.model.DataModel;
 import jakarta.faces.model.FacesDataModel;
 import jakarta.faces.validator.FacesValidator;
 import jakarta.faces.validator.Validator;
+
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
 
 /**
  * A static utility class for CDI.
@@ -86,8 +86,9 @@ public final class CdiUtils {
      * @param value the value attribute.
      * @return the converter, or null if we could not match one.
      */
+    @SuppressWarnings("unchecked")
     public static Converter<?> createConverter(BeanManager beanManager, String value) {
-        Converter<?> managedConverter = createConverter(beanManager, FacesConverter.Literal.of(value, Object.class, true));
+        Converter<Object> managedConverter = (Converter<Object>) createConverter(beanManager, FacesConverter.Literal.of(value, Object.class, true));
 
         if (managedConverter != null) {
             ApplicationAssociate associate = ApplicationAssociate.getCurrentInstance();
@@ -106,12 +107,13 @@ public final class CdiUtils {
      * @param forClass the for class.
      * @return the converter, or null if we could not match one.
      */
+    @SuppressWarnings("unchecked")
     public static Converter<?> createConverter(BeanManager beanManager, Class<?> forClass) {
-        Converter<?> managedConverter = null;
+        Converter<Object> managedConverter = null;
 
         for (Class<?> forClassOrSuperclass = forClass; managedConverter == null && forClassOrSuperclass != null
                 && forClassOrSuperclass != Object.class; forClassOrSuperclass = forClassOrSuperclass.getSuperclass()) {
-            managedConverter = createConverter(beanManager, FacesConverter.Literal.of("", forClassOrSuperclass, true));
+            managedConverter = (Converter<Object>) createConverter(beanManager, FacesConverter.Literal.of("", forClassOrSuperclass, true));
         }
 
         if (managedConverter != null) {
@@ -163,31 +165,32 @@ public final class CdiUtils {
      * @param value the value attribute.
      * @return the validator, or null if we could not match one.
      */
+    @SuppressWarnings("unchecked")
     public static Validator<?> createValidator(BeanManager beanManager, String value) {
 
         Annotation qualifier = FacesValidator.Literal.of(value, false, true);
 
         // Try to find parameterized validator first
-        Validator<?> managedValidator = (Validator<?>) getBeanReferenceByType(beanManager, VALIDATOR_TYPE, qualifier);
+        Validator<Object> managedValidator = (Validator<Object>) getBeanReferenceByType(beanManager, VALIDATOR_TYPE, qualifier);
 
         if (managedValidator == null) {
             // No parameterized validator, try raw validator
-            managedValidator = getBeanReference(beanManager, Validator.class, qualifier);
+            managedValidator = (Validator<Object>) getBeanReference(beanManager, Validator.class, qualifier);
         }
 
         if (managedValidator == null) {
             // Still nothing found, try default qualifier and value as bean name.
             qualifier = FacesValidator.Literal.of("", false, true);
-            managedValidator = (Validator<?>) getBeanReferenceByType(
+            managedValidator = (Validator<Object>) getBeanReferenceByType(
                     beanManager,
                     VALIDATOR_TYPE,
                     value,
                     qualifier);
         }
-                
+
         if (managedValidator == null) {
             // No parameterized validator, try raw validator
-            managedValidator = getBeanReference(
+            managedValidator = (Validator<Object>) getBeanReference(
                 beanManager,
                 Validator.class,
                 value,

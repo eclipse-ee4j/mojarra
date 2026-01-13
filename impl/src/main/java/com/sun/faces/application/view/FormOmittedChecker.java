@@ -122,7 +122,7 @@ class FormOmittedChecker {
             }
         }
         if (!missingFormReported) {
-            message.setSeverity(FacesMessage.SEVERITY_WARN);
+            message.setSeverity(FacesMessage.Severity.WARN);
             context.addMessage(null, message);
         }
     }

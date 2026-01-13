@@ -25,8 +25,10 @@ import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLDecoder;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -60,7 +62,7 @@ public final class Classpath {
     }
 
     public static URL[] search(ClassLoader cl, String prefix, String suffix, SearchAdvice advice) throws IOException {
-        Enumeration<URL>[] e = new Enumeration[] { cl.getResources(prefix), cl.getResources(prefix + "MANIFEST.MF") };
+        List<Enumeration<URL>> e = Arrays.asList(cl.getResources(prefix), cl.getResources(prefix + "MANIFEST.MF"));
         Set<URL> all = new LinkedHashSet<>();
         URL url;
         URLConnection conn;
@@ -103,7 +105,6 @@ public final class Classpath {
         if (file.exists() && file.isDirectory()) {
             File[] fc = file.listFiles();
             String path;
-            URL src;
             // protect against Windows JDK bugs for listFiles -
             // if it's null (even though it shouldn't be) return false
             if (fc == null) {
@@ -116,7 +117,7 @@ public final class Classpath {
                     searchDir(result, value, suffix);
                 } else if (path.endsWith(suffix)) {
                     // result.add(new URL("file:/" + path));
-                    result.add(value.toURL());
+                    result.add(value.toURI().toURL());
                 }
             }
             return true;

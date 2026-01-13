@@ -32,7 +32,7 @@ public class FaceletCacheFactoryImpl extends FaceletCacheFactory {
     }
 
     @Override
-    public FaceletCache getFaceletCache() {
+    public FaceletCache<DefaultFacelet> getFaceletCache() {
         int refreshPeriodInSeconds = FacesContextParam.FACELETS_REFRESH_PERIOD.getValue(FacesContext.getCurrentInstance());
         FaceletCache<DefaultFacelet> result = new DefaultFaceletCache(refreshPeriodInSeconds);
         return result;

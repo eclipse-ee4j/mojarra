@@ -39,7 +39,7 @@ public class ReflectionUtil {
     private ReflectionUtil() {
     }
 
-    public static Class forName(String name) throws ClassNotFoundException {
+    public static Class<?> forName(String name) throws ClassNotFoundException {
         if (null == name || "".equals(name)) {
             return null;
         }
@@ -56,7 +56,7 @@ public class ReflectionUtil {
         return c;
     }
 
-    protected static Class forNamePrimitive(String name) {
+    protected static Class<?> forNamePrimitive(String name) {
         if (name.length() <= 8) {
             int p = Arrays.binarySearch(PRIMITIVE_NAMES, name);
             if (p >= 0) {
@@ -78,7 +78,7 @@ public class ReflectionUtil {
      * @return the array of classes.
      * @throws ClassNotFoundException
      */
-    public static Class[] toTypeArray(String[] s) throws ClassNotFoundException {
+    public static Class<?>[] toTypeArray(String[] s) throws ClassNotFoundException {
         if (s == null) {
             return null;
         }
@@ -95,7 +95,7 @@ public class ReflectionUtil {
      * @param c the array of classes.
      * @return the array of class names.
      */
-    public static String[] toTypeNameArray(Class[] c) {
+    public static String[] toTypeNameArray(Class<?>[] c) {
         if (c == null) {
             return null;
         }
@@ -160,14 +160,14 @@ public class ReflectionUtil {
         return null;
     }
 
-    public static Object decorateInstance(Class clazz, Class rootType, Object root) {
+    public static Object decorateInstance(Class<?> clazz, Class<?> rootType, Object root) {
         Object returnObject = null;
         try {
             if (returnObject == null) {
                 // Look for an adapter constructor if we've got
                 // an object to adapt
                 if (rootType != null && root != null) {
-                    Constructor construct = ReflectionUtils.lookupConstructor(clazz, rootType);
+                    Constructor<?> construct = ReflectionUtils.lookupConstructor(clazz, rootType);
                     if (construct != null) {
                         returnObject = construct.newInstance(root);
                     }
@@ -184,8 +184,8 @@ public class ReflectionUtil {
 
     }
 
-    public static Object decorateInstance(String className, Class rootType, Object root) {
-        Class clazz;
+    public static Object decorateInstance(String className, Class<?> rootType, Object root) {
+        Class<?> clazz;
         Object returnObject = null;
         if (className != null) {
             try {

@@ -21,12 +21,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.sun.faces.facelets.tag.TagHandlerImpl;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagException;
+
+import com.sun.faces.facelets.tag.TagHandlerImpl;
 
 /**
  * @author Jacob Hookom
@@ -39,8 +39,8 @@ public final class ChooseHandler extends TagHandlerImpl {
     public ChooseHandler(TagConfig config) {
         super(config);
 
-        List whenList = new ArrayList();
-        Iterator itr = this.findNextByType(ChooseWhenHandler.class);
+        List<ChooseWhenHandler> whenList = new ArrayList<>();
+        Iterator<ChooseWhenHandler> itr = this.findNextByType(ChooseWhenHandler.class);
         while (itr.hasNext()) {
             whenList.add(itr.next());
         }
@@ -49,9 +49,9 @@ public final class ChooseHandler extends TagHandlerImpl {
         }
         when = (ChooseWhenHandler[]) whenList.toArray(new ChooseWhenHandler[whenList.size()]);
 
-        itr = this.findNextByType(ChooseOtherwiseHandler.class);
-        if (itr.hasNext()) {
-            otherwise = (ChooseOtherwiseHandler) itr.next();
+        Iterator<ChooseOtherwiseHandler> itr2 = this.findNextByType(ChooseOtherwiseHandler.class);
+        if (itr2.hasNext()) {
+            otherwise = itr2.next();
         } else {
             otherwise = null;
         }

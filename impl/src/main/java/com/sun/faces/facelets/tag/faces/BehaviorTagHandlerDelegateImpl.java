@@ -21,9 +21,6 @@ import java.beans.BeanInfo;
 import java.io.IOException;
 import java.util.List;
 
-import com.sun.faces.facelets.tag.MetaRulesetImpl;
-import com.sun.faces.util.Util;
-
 import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.Behavior;
@@ -40,6 +37,9 @@ import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagException;
 import jakarta.faces.view.facelets.TagHandlerDelegate;
 
+import com.sun.faces.facelets.tag.MetaRulesetImpl;
+import com.sun.faces.util.Util;
+
 /**
  *
  * @author edburns
@@ -53,6 +53,7 @@ class BehaviorTagHandlerDelegateImpl extends TagHandlerDelegate implements Attac
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         // only process if it's been created
         if (parent == null || !(parent.getParent() == null)) {

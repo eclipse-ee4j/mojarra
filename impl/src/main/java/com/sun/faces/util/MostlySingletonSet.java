@@ -59,6 +59,7 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean addAll(Collection<? extends E> c) {
         boolean result = true;
 
@@ -126,7 +127,7 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
         if (null != inner) {
             if (1 == inner.size()) {
                 // May throw NPE per spec for Collection.removeAll()
-                Iterator incomingIter = c.iterator();
+                Iterator<?> incomingIter = c.iterator();
                 E oneAndOnlyElement = inner.iterator().next();
                 // Iterate over the incoming collection
                 // looking for a member that is equal to our one and only
@@ -166,7 +167,7 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
 
         if (null != inner) {
             if (1 == inner.size()) {
-                Iterator incomingIter = c.iterator();
+                Iterator<?> incomingIter = c.iterator();
                 E oneAndOnlyElement = inner.iterator().next();
                 // Iterate over the incoming collection
                 // looking for a member that is equal to our one and only
@@ -244,6 +245,7 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean equals(Object obj) {
         boolean result = false;
         if (obj != null) {
@@ -255,7 +257,7 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
                     result = true;
                 }
             } else if (obj instanceof Collection) {
-                Collection otherCollection = (Collection) obj;
+                Collection<?> otherCollection = (Collection<?>) obj;
 
                 if (null != inner) {
                     result = inner.equals(otherCollection);
@@ -295,7 +297,7 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
         if (null != inner) {
             result = inner.iterator();
         } else {
-            result = Collections.EMPTY_SET.iterator();
+            result = Collections.<E>emptySet().iterator();
         }
 
         return result;

@@ -20,9 +20,9 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.sun.faces.util.Util;
-
 import jakarta.servlet.ServletContext;
+
+import com.sun.faces.util.Util;
 
 /**
  * @see jakarta.faces.context.ExternalContext#getApplicationMap()
@@ -52,6 +52,7 @@ public class ApplicationMap extends BaseContextMap<Object> {
 
     // Supported by maps if overridden
     @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void putAll(Map map) {
         Util.notNull("map", map);
         map.forEach( (key, value) -> servletContext.setAttribute((String) key, value));

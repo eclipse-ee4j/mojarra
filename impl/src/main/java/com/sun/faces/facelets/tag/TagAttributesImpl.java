@@ -40,7 +40,7 @@ public final class TagAttributesImpl extends TagAttributes {
 
     private final String[] ns;
 
-    private final List nsattrs;
+    private final List<TagAttribute[]> nsattrs;
 
     private Tag tag;
 
@@ -60,18 +60,19 @@ public final class TagAttributesImpl extends TagAttributes {
         Arrays.sort(ns);
 
         // assign attrs
-        nsattrs = new ArrayList<>();
+        List<List<TagAttribute>> tempList = new ArrayList<>();
         for (i = 0; i < ns.length; i++) {
-            nsattrs.add(i, new ArrayList<>());
+            tempList.add(i, new ArrayList<>());
         }
         int nsIdx = 0;
         for (i = 0; i < this.attrs.length; i++) {
             nsIdx = Arrays.binarySearch(ns, this.attrs[i].getNamespace());
-            ((List) nsattrs.get(nsIdx)).add(this.attrs[i]);
+            tempList.get(nsIdx).add(this.attrs[i]);
         }
+        nsattrs = new ArrayList<>();
         for (i = 0; i < ns.length; i++) {
-            List r = (List) nsattrs.get(i);
-            nsattrs.set(i, r.toArray(new TagAttribute[r.size()]));
+            List<TagAttribute> r = tempList.get(i);
+            nsattrs.add(r.toArray(new TagAttribute[r.size()]));
         }
     }
 
@@ -109,7 +110,7 @@ public final class TagAttributesImpl extends TagAttributes {
         if (ns != null && localName != null) {
             int idx = Arrays.binarySearch(this.ns, ns);
             if (idx >= 0) {
-                TagAttribute[] uia = (TagAttribute[]) nsattrs.get(idx);
+                TagAttribute[] uia = nsattrs.get(idx);
                 for (int i = 0; i < uia.length; i++) {
                     if (localName.equals(uia[i].getLocalName())) {
                         return uia[i];
@@ -135,7 +136,7 @@ public final class TagAttributesImpl extends TagAttributes {
             idx = Arrays.binarySearch(ns, namespace);
         }
         if (idx >= 0) {
-            return (TagAttribute[]) nsattrs.get(idx);
+            return nsattrs.get(idx);
         }
         return EMPTY;
     }

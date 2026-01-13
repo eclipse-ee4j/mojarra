@@ -22,12 +22,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.application.NamedEventManager;
-
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.NamedEvent;
 import jakarta.faces.event.SystemEvent;
+
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.application.NamedEventManager;
 
 /**
  * This class handles the processing the NamedEvent annotation. For each class with this annotation, the following logic
@@ -44,7 +44,7 @@ public class NamedEventConfigHandler implements ConfigAnnotationHandler {
 
     private static final Collection<Class<? extends Annotation>> HANDLES = List.of(NamedEvent.class);
 
-    private Map<Class<?>, Annotation> namedEvents;
+    private Map<Class<? extends SystemEvent>, Annotation> namedEvents;
 
     @Override
     public Collection<Class<? extends Annotation>> getHandledAnnotations() {
@@ -52,11 +52,12 @@ public class NamedEventConfigHandler implements ConfigAnnotationHandler {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void collect(Class<?> target, Annotation annotation) {
         if (namedEvents == null) {
             namedEvents = new HashMap<>();
         }
-        namedEvents.put(target, annotation);
+        namedEvents.put((Class<? extends SystemEvent>) target, annotation);
     }
 
     @Override
@@ -65,7 +66,7 @@ public class NamedEventConfigHandler implements ConfigAnnotationHandler {
             ApplicationAssociate associate = ApplicationAssociate.getInstance(ctx.getExternalContext());
             if (associate != null) {
                 NamedEventManager nem = associate.getNamedEventManager();
-                for (Map.Entry<Class<?>, Annotation> entry : namedEvents.entrySet()) {
+                for (Map.Entry<Class<? extends SystemEvent>, Annotation> entry : namedEvents.entrySet()) {
                     process(nem, entry.getKey(), entry.getValue());
                 }
             }
@@ -75,7 +76,7 @@ public class NamedEventConfigHandler implements ConfigAnnotationHandler {
     // --------------------------------------------------------- Private Methods
     /*
      */
-    private void process(NamedEventManager nem, Class<?> annotatedClass, Annotation annotation) {
+    private void process(NamedEventManager nem, Class<? extends SystemEvent> annotatedClass, Annotation annotation) {
         String name = annotatedClass.getSimpleName();
         int index = name.lastIndexOf("Event");
         if (index > -1) {
@@ -84,7 +85,7 @@ public class NamedEventConfigHandler implements ConfigAnnotationHandler {
 
         name = annotatedClass.getPackage().getName() + '.' + Character.toLowerCase(name.charAt(0)) + name.substring(1);
 
-        nem.addNamedEvent(name, (Class<? extends SystemEvent>) annotatedClass);
+        nem.addNamedEvent(name, annotatedClass);
 
         String shortName = ((NamedEvent) annotation).shortName();
 

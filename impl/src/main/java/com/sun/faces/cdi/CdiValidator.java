@@ -25,7 +25,7 @@ import jakarta.faces.validator.ValidatorException;
 /**
  * A delegate to the CDI managed validator.
  */
-public class CdiValidator implements Validator, StateHolder {
+public class CdiValidator implements Validator<Object>, StateHolder {
 
     /**
      * Stores the validator-id.
@@ -35,7 +35,7 @@ public class CdiValidator implements Validator, StateHolder {
     /**
      * Stores a transient reference to the CDI managed converter.
      */
-    private transient Validator delegate;
+    private transient Validator<Object> delegate;
 
     /**
      * Constructor.
@@ -49,7 +49,7 @@ public class CdiValidator implements Validator, StateHolder {
      * @param validatorId the validator id.
      * @param delegate the delegate.
      */
-    public CdiValidator(String validatorId, Validator delegate) {
+    public CdiValidator(String validatorId, Validator<Object> delegate) {
         this.validatorId = validatorId;
         this.delegate = delegate;
     }
@@ -106,9 +106,9 @@ public class CdiValidator implements Validator, StateHolder {
      * @param facesContext the Faces context.
      * @return the delegate.
      */
-    private Validator getDelegate(FacesContext facesContext) {
+    private Validator<Object> getDelegate(FacesContext facesContext) {
         if (delegate == null) {
-            delegate = facesContext.getApplication().createValidator(validatorId);
+            delegate = (Validator<Object>) facesContext.getApplication().createValidator(validatorId);
         }
         return delegate;
     }

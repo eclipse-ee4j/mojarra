@@ -101,7 +101,6 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
      * @param writer the current writer
      * @throws IOException if content cannot be written
      */
-    @SuppressWarnings({ "UnusedDeclaration" })
     protected void renderTableEnd(FacesContext context, UIComponent table, ResponseWriter writer) throws IOException {
 
         writer.endElement("table");
@@ -146,7 +145,6 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
      * @param writer the current writer
      * @throws IOException if content cannot be written
      */
-    @SuppressWarnings({ "UnusedDeclaration" })
     protected void renderTableBodyStart(FacesContext context, UIComponent table, ResponseWriter writer) throws IOException {
 
         writer.startElement("tbody", table);
@@ -162,7 +160,6 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
      * @param writer the current writer
      * @throws IOException if content cannot be written
      */
-    @SuppressWarnings({ "UnusedDeclaration" })
     protected void renderTableBodyEnd(FacesContext context, UIComponent table, ResponseWriter writer) throws IOException {
 
         writer.endElement("tbody");
@@ -212,7 +209,6 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
      * @param writer the current writer
      * @throws IOException if content cannot be written
      */
-    @SuppressWarnings({ "UnusedDeclaration" })
     protected void renderRowEnd(FacesContext context, UIComponent table, ResponseWriter writer) throws IOException {
 
         writer.endElement("tr");

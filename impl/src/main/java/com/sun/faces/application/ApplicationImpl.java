@@ -477,16 +477,18 @@ public class ApplicationImpl extends Application {
      * @see jakarta.faces.application.Application#createConverter(String)
      */
     @Override
-    public Converter<?> createConverter(String converterId) {
-        return instanceFactory.createConverter(converterId);
+    @SuppressWarnings("unchecked")
+    public <T> Converter<T> createConverter(String converterId) {
+        return (Converter<T>) instanceFactory.createConverter(converterId);
     }
 
     /**
      * @see jakarta.faces.application.Application#createConverter(Class)
      */
     @Override
+    @SuppressWarnings("unchecked")
     public <T> Converter<T> createConverter(Class<T> targetClass) {
-        return instanceFactory.createConverter(targetClass);
+        return (Converter<T>) instanceFactory.createConverter(targetClass);
     }
 
     /**
@@ -517,8 +519,9 @@ public class ApplicationImpl extends Application {
      * @see jakarta.faces.application.Application#createValidator(String)
      */
     @Override
-    public Validator<?> createValidator(String validatorId) throws FacesException {
-        return instanceFactory.createValidator(validatorId);
+    @SuppressWarnings("unchecked")
+    public <T> Validator<T> createValidator(String validatorId) throws FacesException {
+        return (Validator<T>) instanceFactory.createValidator(validatorId);
     }
 
     /**

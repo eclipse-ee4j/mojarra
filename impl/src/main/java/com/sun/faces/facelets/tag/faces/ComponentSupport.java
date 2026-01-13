@@ -109,9 +109,9 @@ public final class ComponentSupport {
         int sz = c.getChildCount();
         if (sz > 0) {
             UIComponent cc = null;
-            List cl = c.getChildren();
+            List<UIComponent> cl = c.getChildren();
             while (--sz >= 0) {
-                cc = (UIComponent) cl.get(sz);
+                cc = cl.get(sz);
                 if (cc.getAttributes().containsKey(MARK_DELETED)) {
                     cl.remove(sz);
                 }
@@ -146,6 +146,7 @@ public final class ComponentSupport {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static Tag setTagForComponent(FacesContext context, UIComponent c, Tag t) {
         Map<Object, Object> contextMap = context.getAttributes();
         Map<Integer, Tag> componentToTagMap;
@@ -157,6 +158,7 @@ public final class ComponentSupport {
         return componentToTagMap.put(System.identityHashCode(c), t);
     }
 
+    @SuppressWarnings("unchecked")
     public static Tag getTagForComponent(FacesContext context, UIComponent c) {
         Tag result = null;
         Map<Object, Object> contextMap = context.getAttributes();
@@ -180,9 +182,9 @@ public final class ComponentSupport {
         int sz = parent.getChildCount();
         if (sz > 0) {
             UIComponent c = null;
-            List cl = parent.getChildren();
+            List<UIComponent> cl = parent.getChildren();
             while (--sz >= 0) {
-                c = (UIComponent) cl.get(sz);
+                c = cl.get(sz);
                 if (id.equals(c.getId())) {
                     return c;
                 }
@@ -460,9 +462,9 @@ public final class ComponentSupport {
         int sz = c.getChildCount();
         if (sz > 0) {
             UIComponent cc = null;
-            List cl = c.getChildren();
+            List<UIComponent> cl = c.getChildren();
             while (--sz >= 0) {
-                cc = (UIComponent) cl.get(sz);
+                cc = cl.get(sz);
                 if (cc.getAttributes().containsKey(MARK_CREATED)) {
                     cc.getAttributes().put(MARK_DELETED, Boolean.TRUE);
                 }
@@ -471,12 +473,12 @@ public final class ComponentSupport {
 
         // mark all facets to be deleted
         if (c.getFacets().size() > 0) {
-            Set col = c.getFacets().entrySet();
+            Set<Entry<String, UIComponent>> col = c.getFacets().entrySet();
             UIComponent fc;
-            for (Iterator itr = col.iterator(); itr.hasNext();) {
-                Map.Entry entry = (Map.Entry) itr.next();
-                String facet = (String) entry.getKey();
-                fc = (UIComponent) entry.getValue();
+            for (Iterator<Entry<String, UIComponent>> itr = col.iterator(); itr.hasNext();) {
+                Entry<String, UIComponent> entry = itr.next();
+                String facet = entry.getKey();
+                fc = entry.getValue();
                 Map<String, Object> attrs = fc.getAttributes();
                 if (attrs.containsKey(MARK_CREATED)) {
                     attrs.put(MARK_DELETED, Boolean.TRUE);
@@ -485,9 +487,9 @@ public final class ComponentSupport {
                     sz = fc.getChildCount();
                     if (sz > 0) {
                         UIComponent cc = null;
-                        List cl = fc.getChildren();
+                        List<UIComponent> cl = fc.getChildren();
                         while (--sz >= 0) {
-                            cc = (UIComponent) cl.get(sz);
+                            cc = cl.get(sz);
                             cc.getAttributes().put(MARK_DELETED, Boolean.TRUE);
                         }
                     }
@@ -511,9 +513,9 @@ public final class ComponentSupport {
             if (viewToRender.getRendersChildren()) {
                 viewToRender.encodeChildren(context);
             } else if (viewToRender.getChildCount() > 0) {
-                Iterator kids = viewToRender.getChildren().iterator();
+                Iterator<UIComponent> kids = viewToRender.getChildren().iterator();
                 while (kids.hasNext()) {
-                    UIComponent kid = (UIComponent) kids.next();
+                    UIComponent kid = kids.next();
                     encodeRecursive(context, kid);
                 }
             }
@@ -524,11 +526,11 @@ public final class ComponentSupport {
     public static void removeTransient(UIComponent c) {
         UIComponent d, e;
         if (c.getChildCount() > 0) {
-            for (Iterator itr = c.getChildren().iterator(); itr.hasNext();) {
-                d = (UIComponent) itr.next();
+            for (Iterator<UIComponent> itr = c.getChildren().iterator(); itr.hasNext();) {
+                d = itr.next();
                 if (d.getFacets().size() > 0) {
-                    for (Iterator jtr = d.getFacets().values().iterator(); jtr.hasNext();) {
-                        e = (UIComponent) jtr.next();
+                    for (Iterator<UIComponent> jtr = d.getFacets().values().iterator(); jtr.hasNext();) {
+                        e = jtr.next();
                         if (e.isTransient()) {
                             jtr.remove();
                         } else {
@@ -544,8 +546,8 @@ public final class ComponentSupport {
             }
         }
         if (c.getFacets().size() > 0) {
-            for (Iterator itr = c.getFacets().values().iterator(); itr.hasNext();) {
-                d = (UIComponent) itr.next();
+            for (Iterator<UIComponent> itr = c.getFacets().values().iterator(); itr.hasNext();) {
+                d = itr.next();
                 if (d.isTransient()) {
                     itr.remove();
                 } else {
@@ -700,6 +702,7 @@ public final class ComponentSupport {
         return stateMap;
     }
 
+    @SuppressWarnings("unchecked")
     public static void restoreFullDescendantComponentStates(FacesContext facesContext, Iterator<UIComponent> childIterator, Object state, boolean restoreChildFacets) {
         Iterator<? extends Object[]> descendantStateIterator = null;
         while (childIterator.hasNext()) {
@@ -734,6 +737,7 @@ public final class ComponentSupport {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static void restoreFullDescendantComponentDeltaStates(FacesContext facesContext, Iterator<UIComponent> childIterator, Object state, Object initialState, boolean restoreChildFacets) {
         Map<String, Object> descendantStateIterator = null;
         Iterator<? extends Object[]> descendantFullStateIterator = null;

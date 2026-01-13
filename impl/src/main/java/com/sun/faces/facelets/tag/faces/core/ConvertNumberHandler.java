@@ -16,8 +16,6 @@
 
 package com.sun.faces.facelets.tag.faces.core;
 
-import com.sun.faces.facelets.tag.faces.ComponentSupport;
-
 import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.convert.Converter;
@@ -28,6 +26,8 @@ import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.FaceletException;
 import jakarta.faces.view.facelets.MetaRuleset;
 import jakarta.faces.view.facelets.TagAttribute;
+
+import com.sun.faces.facelets.tag.faces.ComponentSupport;
 
 /**
  * Register a NumberConverter instance on the UIComponent associated with the closest parent UIComponent custom action.
@@ -55,7 +55,7 @@ public final class ConvertNumberHandler extends ConverterHandler {
      *
      * @see NumberConverter
      */
-    protected Converter createConverter(FaceletContext ctx) throws FacesException, ELException, FaceletException {
+    protected Converter<Number> createConverter(FaceletContext ctx) throws FacesException, ELException, FaceletException {
         return ctx.getFacesContext().getApplication().createConverter(NumberConverter.CONVERTER_ID);
     }
 

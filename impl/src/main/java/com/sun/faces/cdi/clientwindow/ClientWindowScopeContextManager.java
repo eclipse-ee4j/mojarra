@@ -77,7 +77,7 @@ public class ClientWindowScopeContextManager {
         if (contextualInstance != null) {
             String passivationCapableId = ((PassivationCapable) contextual).getId();
 
-            getContextMap(facesContext).put(passivationCapableId, new ClientWindowScopeContextObject(passivationCapableId, contextualInstance));
+            getContextMap(facesContext).put(passivationCapableId, new ClientWindowScopeContextObject<>(passivationCapableId, contextualInstance));
         }
 
         return contextualInstance;
@@ -94,14 +94,14 @@ public class ClientWindowScopeContextManager {
     @SuppressWarnings("unchecked")
     public <T> T getBean(FacesContext facesContext, Contextual<T> contextual) {
         T result = null;
-        Map<String, ClientWindowScopeContextObject> contextMap = getContextMap(facesContext);
+        Map<String, ClientWindowScopeContextObject<?>> contextMap = getContextMap(facesContext);
 
         if (contextMap != null) {
             if (!(contextual instanceof PassivationCapable)) {
                 throw new IllegalArgumentException("ClientWindowScoped bean " + contextual.toString() + " must be PassivationCapable, but is not.");
             }
 
-            ClientWindowScopeContextObject<T> contextObject = contextMap.get(((PassivationCapable) contextual).getId());
+            ClientWindowScopeContextObject<T> contextObject = (ClientWindowScopeContextObject<T>) contextMap.get(((PassivationCapable) contextual).getId());
 
             if (contextObject != null) {
                 return contextObject.getContextualInstance();
@@ -117,7 +117,7 @@ public class ClientWindowScopeContextManager {
      * @param facesContext the Faces context.
      * @return the context map.
      */
-    private Map<String, ClientWindowScopeContextObject> getContextMap(FacesContext facesContext) {
+    private Map<String, ClientWindowScopeContextObject<?>> getContextMap(FacesContext facesContext) {
         return getContextMap(facesContext, true);
     }
 
@@ -129,8 +129,8 @@ public class ClientWindowScopeContextManager {
      * @return the context map.
      */
     @SuppressWarnings("unchecked")
-    private Map<String, ClientWindowScopeContextObject> getContextMap(FacesContext facesContext, boolean create) {
-        Map<String, ClientWindowScopeContextObject> result = null;
+    private Map<String, ClientWindowScopeContextObject<?>> getContextMap(FacesContext facesContext, boolean create) {
+        Map<String, ClientWindowScopeContextObject<?>> result = null;
 
         ExternalContext externalContext = facesContext.getExternalContext();
         if (externalContext != null) {
@@ -138,7 +138,7 @@ public class ClientWindowScopeContextManager {
             Object session = externalContext.getSession(create);
 
             if (session != null) {
-                Map<Object, Map<String, ClientWindowScopeContextObject>> clientWindowScopeContexts = (Map<Object, Map<String, ClientWindowScopeContextObject>>)
+                Map<Object, Map<String, ClientWindowScopeContextObject<?>>> clientWindowScopeContexts = (Map<Object, Map<String, ClientWindowScopeContextObject<?>>>)
                     sessionMap.get(CLIENT_WINDOW_CONTEXTS);
                 String clientWindowId = getCurrentClientWindowId(facesContext);
 
@@ -146,7 +146,7 @@ public class ClientWindowScopeContextManager {
                     int numberOfClientWindows = FacesContextParam.NUMBER_OF_CLIENT_WINDOWS.getValue(facesContext);
 
                     synchronized (getMutex(session)) {
-                        sessionMap.put(CLIENT_WINDOW_CONTEXTS, Collections.synchronizedMap(new LRUMap<String, Object>(numberOfClientWindows)));
+                        sessionMap.put(CLIENT_WINDOW_CONTEXTS, Collections.synchronizedMap(new LRUMap<>(numberOfClientWindows)));
                     }
                 }
 
@@ -154,7 +154,7 @@ public class ClientWindowScopeContextManager {
                     synchronized (clientWindowScopeContexts) {
                         if (!clientWindowScopeContexts.containsKey(clientWindowId)) {
                             clientWindowScopeContexts.put(clientWindowId,
-                                    new ConcurrentHashMap<String, ClientWindowScopeContextObject>());
+                                    new ConcurrentHashMap<>());
                             if (distributable) {
                                 // If we are distributable, this will result in a dirtying of the
                                 // session data, forcing replication. If we are not distributable,
@@ -187,7 +187,7 @@ public class ClientWindowScopeContextManager {
 
         HttpSession session = httpSessionEvent.getSession();
 
-        Map<Object, Map<String, ClientWindowScopeContextObject>> clientWindowScopeContexts = (Map<Object, Map<String, ClientWindowScopeContextObject>>)
+        Map<Object, Map<String, ClientWindowScopeContextObject<?>>> clientWindowScopeContexts = (Map<Object, Map<String, ClientWindowScopeContextObject<?>>>)
                 session.getAttribute(CLIENT_WINDOW_CONTEXTS);
         if (clientWindowScopeContexts != null) {
             clientWindowScopeContexts.clear();

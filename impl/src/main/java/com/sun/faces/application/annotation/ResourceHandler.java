@@ -39,7 +39,6 @@ class ResourceHandler extends JndiHandler {
         this.methodAnnotations = methodAnnotations;
     }
 
-    @SuppressWarnings({ "UnusedDeclaration" })
     @Override
     public void apply(FacesContext ctx, Object... params) {
         Object object = params[0];

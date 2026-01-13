@@ -23,12 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import com.sun.faces.application.NavigationHandlerImpl;
-import com.sun.faces.flow.FlowHandlerImpl;
-import com.sun.faces.renderkit.Attribute;
-import com.sun.faces.renderkit.RenderKitUtils;
-import com.sun.faces.util.Util;
-
 import jakarta.faces.application.NavigationCase;
 import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.application.ViewHandler;
@@ -40,6 +34,12 @@ import jakarta.faces.event.ActionListener;
 import jakarta.faces.flow.FlowHandler;
 import jakarta.faces.lifecycle.ClientWindow;
 
+import com.sun.faces.application.NavigationHandlerImpl;
+import com.sun.faces.flow.FlowHandlerImpl;
+import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.RenderKitUtils;
+import com.sun.faces.util.Util;
+
 public abstract class OutcomeTargetRenderer extends HtmlBasicRenderer {
 
     @Override
@@ -48,7 +48,7 @@ public abstract class OutcomeTargetRenderer extends HtmlBasicRenderer {
 
     // ------------------------------------------------------- Protected Methods
 
-    protected void renderPassThruAttributes(FacesContext ctx, ResponseWriter writer, UIComponent component, Attribute[] attributes, List excludedAttributes)
+    protected void renderPassThruAttributes(FacesContext ctx, ResponseWriter writer, UIComponent component, Attribute[] attributes, List<String> excludedAttributes)
             throws IOException {
         RenderKitUtils.renderPassThruAttributes(ctx, writer, component, attributes);
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component, excludedAttributes);

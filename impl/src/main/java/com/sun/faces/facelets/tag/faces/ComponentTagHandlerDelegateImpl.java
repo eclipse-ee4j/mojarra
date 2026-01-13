@@ -27,16 +27,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.component.CompositeComponentStackManager;
-import com.sun.faces.component.behavior.AjaxBehaviors;
-import com.sun.faces.component.validator.ComponentValidators;
-import com.sun.faces.context.StateContext;
-import com.sun.faces.facelets.impl.IdMapper;
-import com.sun.faces.facelets.tag.MetaRulesetImpl;
-import com.sun.faces.facelets.tag.faces.core.FacetHandler;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
-
 import jakarta.el.ValueExpression;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
@@ -58,6 +48,16 @@ import jakarta.faces.view.facelets.MetaRuleset;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagException;
 import jakarta.faces.view.facelets.TagHandlerDelegate;
+
+import com.sun.faces.component.CompositeComponentStackManager;
+import com.sun.faces.component.behavior.AjaxBehaviors;
+import com.sun.faces.component.validator.ComponentValidators;
+import com.sun.faces.context.StateContext;
+import com.sun.faces.facelets.impl.IdMapper;
+import com.sun.faces.facelets.tag.MetaRulesetImpl;
+import com.sun.faces.facelets.tag.faces.core.FacetHandler;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
 
 public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
 
@@ -205,6 +205,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
     // Tests whether the component associated with the specified tagId was
     // a child of the parent component that has been dynamically removed. If
     // so, we want to suppress re-creation of this child
+    @SuppressWarnings("unchecked")
     private boolean suppressRemovedChild(UIComponent parent, String childTagId) {
         Collection<String> removedChildren = (Collection<String>) parent.getAttributes().get(ComponentSupport.REMOVED_CHILDREN);
         return removedChildren != null && removedChildren.contains(childTagId);
@@ -451,14 +452,12 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         }
     }
 
-    @SuppressWarnings({ "UnusedDeclaration" })
     protected UIComponent findChild(FaceletContext ctx, UIComponent parent, String tagId) {
 
         return ComponentSupport.findChildByTagId(ctx.getFacesContext(), parent, tagId);
 
     }
 
-    @SuppressWarnings({ "UnusedDeclaration" })
     protected UIComponent findReparentedComponent(FaceletContext ctx, UIComponent parent, String tagId) {
         UIComponent facet = parent.getFacets().get(UIComponent.COMPOSITE_FACET_NAME);
         if (facet != null) {

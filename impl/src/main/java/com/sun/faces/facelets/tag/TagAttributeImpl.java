@@ -274,6 +274,7 @@ public class TagAttributeImpl extends TagAttribute {
      * @return Object value of this attribute
      */
     @Override
+    @SuppressWarnings("unchecked")
     public Object getObject(FaceletContext ctx, Class type) {
         if (literal) {
             if (String.class.equals(type)) {
@@ -334,7 +335,7 @@ public class TagAttributeImpl extends TagAttribute {
 
     // --------------------------------------------------------- Private Methods
 
-    public ValueExpression getValueExpression(FaceletContext ctx, String expr, Class type) {
+    public ValueExpression getValueExpression(FaceletContext ctx, String expr, Class<?> type) {
         try {
             ExpressionFactory f = ctx.getExpressionFactory();
             ValueExpression delegate = f.createValueExpression(ctx, expr, type);
@@ -367,7 +368,7 @@ public class TagAttributeImpl extends TagAttribute {
 
         }
 
-        @SuppressWarnings({ "UnusedDeclaration" })
+        @SuppressWarnings("unused")
         public AttributeLookupMethodExpression() {
         } // for serialization
 

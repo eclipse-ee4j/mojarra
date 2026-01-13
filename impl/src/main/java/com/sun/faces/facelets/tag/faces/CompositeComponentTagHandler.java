@@ -170,7 +170,7 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
 
     @Override
     public void setCompositeComponent(FacesContext context, UIComponent cc) {
-        Map contextMap = context.getAttributes();
+        Map<Object, Object> contextMap = context.getAttributes();
         String key = ccInstanceVariableStandinKey + tagId;
         if (!contextMap.containsKey(key)) {
             contextMap.put(key, cc);
@@ -179,7 +179,7 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
 
     @Override
     public UIComponent getCompositeComponent(FacesContext context) {
-        Map contextMap = context.getAttributes();
+        Map<Object, Object> contextMap = context.getAttributes();
         String key = ccInstanceVariableStandinKey + tagId;
         UIComponent result = (UIComponent) contextMap.get(key);
 
@@ -386,7 +386,7 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
             // --------------------------------- Methods from MetadataTargetImpl
 
             @Override
-            public Class getPropertyType(String name) {
+            public Class<?> getPropertyType(String name) {
                 PropertyDescriptor compDescriptor = findDescriptor(name);
                 if (compDescriptor != null) {
                     // composite:attribute declaration...
@@ -532,6 +532,7 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
             // ------------------------------------------- Methods from Metadata
 
             @Override
+            @SuppressWarnings("unchecked")
             public void applyMetadata(FaceletContext ctx, Object instance) {
 
                 ValueExpression ve = attr.getValueExpression(ctx, type);

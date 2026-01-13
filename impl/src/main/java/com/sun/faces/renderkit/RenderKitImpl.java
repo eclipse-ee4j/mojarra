@@ -35,13 +35,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.renderkit.html_basic.HtmlResponseWriter;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.MessageUtils;
-import com.sun.faces.util.Util;
-
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseStream;
 import jakarta.faces.context.ResponseWriter;
@@ -49,6 +42,13 @@ import jakarta.faces.render.ClientBehaviorRenderer;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.Renderer;
 import jakarta.faces.render.ResponseStateManager;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.renderkit.html_basic.HtmlResponseWriter;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.MessageUtils;
+import com.sun.faces.util.Util;
 
 /**
  * <B>RenderKitImpl</B> is a class ...
@@ -70,7 +70,7 @@ public class RenderKitImpl extends RenderKit {
      * Keys are String renderer family. Values are HashMaps. Nested HashMap keys are Strings for the rendererType, and
      * values are the Renderer instances themselves.
      */
-    private ConcurrentHashMap<String, HashMap<String, Renderer>> rendererFamilies = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, HashMap<String, Renderer<?>>> rendererFamilies = new ConcurrentHashMap<>();
 
     /**
      * For Behavior Renderers: Keys are Strings for the behaviorRendererType, and values are the behaviorRenderer instances
@@ -96,7 +96,7 @@ public class RenderKitImpl extends RenderKit {
         Util.notNull("rendererType", rendererType);
         Util.notNull("renderer", renderer);
 
-        HashMap<String, Renderer> renderers = rendererFamilies.get(family);
+        HashMap<String, Renderer<?>> renderers = rendererFamilies.get(family);
         if (renderers == null) {
             renderers = new HashMap<>();
             rendererFamilies.put(family, renderers);
@@ -118,7 +118,7 @@ public class RenderKitImpl extends RenderKit {
 
         assert rendererFamilies != null;
 
-        HashMap<String, Renderer> renderers = rendererFamilies.get(family);
+        HashMap<String, Renderer<?>> renderers = rendererFamilies.get(family);
         return renderers != null ? renderers.get(rendererType) : null;
 
     }
@@ -345,7 +345,7 @@ public class RenderKitImpl extends RenderKit {
     @Override
     public Iterator<String> getRendererTypes(String componentFamily) {
 
-        Map<String, Renderer> family = rendererFamilies.get(componentFamily);
+        Map<String, Renderer<?>> family = rendererFamilies.get(componentFamily);
         if (family != null) {
             return family.keySet().iterator();
         } else {

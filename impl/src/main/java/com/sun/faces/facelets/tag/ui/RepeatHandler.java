@@ -24,8 +24,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.util.FacesLogger;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.ComponentConfig;
 import jakarta.faces.view.facelets.ComponentHandler;
@@ -33,6 +31,8 @@ import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.MetaRuleset;
 import jakarta.faces.view.facelets.Metadata;
 import jakarta.faces.view.facelets.TagAttribute;
+
+import com.sun.faces.util.FacesLogger;
 
 public class RepeatHandler extends ComponentHandler {
 
@@ -60,8 +60,8 @@ public class RepeatHandler extends ComponentHandler {
 
         private final String[] attrs;
 
-        public TagMetaData(Class type) {
-            Set s = new HashSet();
+        public TagMetaData(Class<?> type) {
+            Set<String> s = new HashSet<>();
             TagAttribute[] ta = tag.getAttributes().getAll();
             for (int i = 0; i < ta.length; i++) {
                 if ("class".equals(ta[i].getLocalName())) {
@@ -82,13 +82,13 @@ public class RepeatHandler extends ComponentHandler {
                     log.log(Level.FINEST, "Unable to get bean info", e);
                 }
             }
-            attrs = (String[]) s.toArray(new String[s.size()]);
+            attrs = s.toArray(new String[s.size()]);
         }
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance) {
             UIComponent c = (UIComponent) instance;
-            Map localAttrs = c.getAttributes();
+            Map<String, Object> localAttrs = c.getAttributes();
             localAttrs.put("alias.element", tag.getQName());
             if (attrs.length > 0) {
                 localAttrs.put("alias.attributes", attrs);

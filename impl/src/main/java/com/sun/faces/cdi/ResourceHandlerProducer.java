@@ -16,8 +16,6 @@
 
 package com.sun.faces.cdi;
 
-import java.util.Map;
-
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.application.Application;

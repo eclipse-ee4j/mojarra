@@ -16,9 +16,6 @@
 
 package com.sun.faces.application;
 
-import com.sun.faces.util.MessageFactory;
-import com.sun.faces.util.RequestStateManager;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
@@ -27,6 +24,9 @@ import jakarta.faces.component.UIInput;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.ConverterException;
+
+import com.sun.faces.util.MessageFactory;
+import com.sun.faces.util.RequestStateManager;
 
 /**
  * Helper class to aid the ConverterPropertyEditorBase in converting properties.
@@ -47,9 +47,9 @@ public class PropertyEditorHelper {
      * @param textValue the text value
      * @return the conversion result
      */
-    public Object convertToObject(Class<?> targetClass, String textValue) {
+    public <T> T convertToObject(Class<T> targetClass, String textValue) {
         UIComponent component = getComponent();
-        Converter converter = app.createConverter(targetClass);
+        Converter<T> converter = app.createConverter(targetClass);
         if (null == converter) {
             // PENDING(edburns): I18N
             FacesException e = new FacesException(
@@ -71,9 +71,9 @@ public class PropertyEditorHelper {
      * @param value the value
      * @return the conversion result
      */
-    public String convertToString(Class<?> targetClass, Object value) {
+    public <T> String convertToString(Class<T> targetClass, T value) {
         UIComponent component = getComponent();
-        Converter converter = app.createConverter(targetClass);
+        Converter<T> converter = app.createConverter(targetClass);
         if (null == converter) {
             // PENDING(edburns): I18N
             throw new FacesException("Cannot create Converter to convert " + targetClass.getName() + " value " + value + " to string.");
@@ -117,7 +117,7 @@ public class PropertyEditorHelper {
             input.setValid(false);
         }
         if (null != converterMessageString) {
-            message = new FacesMessage(FacesMessage.SEVERITY_ERROR, converterMessageString, converterMessageString);
+            message = new FacesMessage(FacesMessage.Severity.ERROR, converterMessageString, converterMessageString);
         } else {
             message = ce.getFacesMessage();
             if (message == null) {

@@ -636,7 +636,7 @@ public class NavigationHandlerImpl extends NavigationHandler {
                 params = new Object[] { viewId, fromAction, outcome };
             }
             FacesMessage m = MessageUtils.getExceptionMessage(key, params);
-            m.setSeverity(FacesMessage.SEVERITY_WARN);
+            m.setSeverity(FacesMessage.Severity.WARN);
             ctx.addMessage(null, m);
         }
         return caseStruct;
@@ -838,7 +838,7 @@ public class NavigationHandlerImpl extends NavigationHandler {
                     key = MessageUtils.NAVIGATION_INVALID_QUERY_STRING_ID;
                     params = new Object[] { viewIdToTest };
                     FacesMessage m = MessageUtils.getExceptionMessage(key, params);
-                    m.setSeverity(FacesMessage.SEVERITY_WARN);
+                    m.setSeverity(FacesMessage.Severity.WARN);
                     context.addMessage(null, m);
                 }
                 queryString = null;

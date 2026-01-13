@@ -23,17 +23,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.sun.faces.facelets.FaceletContextImplBase;
-import com.sun.faces.facelets.TemplateClient;
-import com.sun.faces.facelets.el.VariableMapperWrapper;
-import com.sun.faces.facelets.tag.ui.DefineHandler;
-
 import jakarta.el.VariableMapper;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagException;
+
+import com.sun.faces.facelets.FaceletContextImplBase;
+import com.sun.faces.facelets.TemplateClient;
+import com.sun.faces.facelets.el.VariableMapperWrapper;
+import com.sun.faces.facelets.tag.ui.DefineHandler;
 
 /**
  * A Tag that is specified in a FaceletFile. Takes all attributes specified and sets them on the FaceletContext before
@@ -48,7 +48,7 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
 
     protected final URL location;
 
-    protected final Map handlers;
+    protected final Map<String, DefineHandler> handlers;
 
     /**
      * @param config
@@ -57,13 +57,13 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
         super(config);
         vars = tag.getAttributes().getAll();
         this.location = location;
-        Iterator itr = this.findNextByType(DefineHandler.class);
+        Iterator<DefineHandler> itr = this.findNextByType(DefineHandler.class);
         if (itr.hasNext()) {
-            handlers = new HashMap();
+            handlers = new HashMap<>();
 
             DefineHandler d = null;
             while (itr.hasNext()) {
-                d = (DefineHandler) itr.next();
+                d = itr.next();
                 handlers.put(d.getName(), d);
             }
         } else {

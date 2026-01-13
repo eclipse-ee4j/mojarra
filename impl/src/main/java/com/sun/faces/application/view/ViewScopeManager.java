@@ -267,7 +267,7 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
             FacesContext facesContext = FacesContext.getCurrentInstance();
 
             if (viewRoot.isTransient() && facesContext.isProjectStage(ProjectStage.Development)) {
-                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN, "@ViewScoped beans are not supported on stateless views",
+                FacesMessage message = new FacesMessage(FacesMessage.Severity.WARN, "@ViewScoped beans are not supported on stateless views",
                         "@ViewScoped beans are not supported on stateless views");
                 facesContext.addMessage(viewRoot.getClientId(facesContext), message);
 

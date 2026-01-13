@@ -36,7 +36,7 @@ public class MetadataTargetImpl extends MetadataTarget {
     private final Map<String, PropertyDescriptor> pd;
     private final Class<?> type;
 
-    public MetadataTargetImpl(Class type) throws IntrospectionException {
+    public MetadataTargetImpl(Class<?> type) throws IntrospectionException {
         this.type = type;
         pd = new HashMap<>();
         BeanInfo info = Introspector.getBeanInfo(type);
@@ -57,12 +57,12 @@ public class MetadataTargetImpl extends MetadataTarget {
     }
 
     @Override
-    public Class getTargetClass() {
+    public Class<?> getTargetClass() {
         return type;
     }
 
     @Override
-    public Class getPropertyType(String name) {
+    public Class<?> getPropertyType(String name) {
         PropertyDescriptor pd = getProperty(name);
         if (pd != null) {
             return pd.getPropertyType();

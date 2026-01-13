@@ -80,7 +80,7 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
             border = (Integer) borderObj;
         }
 
-        Converter converter = null;
+        Converter<?> converter = null;
         if (component instanceof ValueHolder) {
             converter = ((ValueHolder) component).getConverter();
         }
@@ -217,7 +217,7 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
 
     }
 
-    protected void renderOption(FacesContext context, UIComponent component, Converter converter, SelectItem curItem, Object currentSelections,
+    protected void renderOption(FacesContext context, UIComponent component, Converter<?> converter, SelectItem curItem, Object currentSelections,
             Object[] submittedValues, Boolean newTableRow, int itemNumber, OptionComponentInfo optionInfo) throws IOException {
 
         String valueString = getFormattedValue(context, component, curItem.getValue(), converter);

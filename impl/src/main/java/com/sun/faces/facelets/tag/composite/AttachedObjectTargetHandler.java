@@ -21,9 +21,6 @@ import java.beans.BeanInfo;
 import java.io.IOException;
 import java.util.List;
 
-import com.sun.faces.application.view.FaceletViewHandlingStrategy;
-import com.sun.faces.facelets.tag.TagHandlerImpl;
-
 import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.AttachedObjectTarget;
@@ -32,6 +29,9 @@ import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagException;
+
+import com.sun.faces.application.view.FaceletViewHandlingStrategy;
+import com.sun.faces.facelets.tag.TagHandlerImpl;
 
 public abstract class AttachedObjectTargetHandler extends TagHandlerImpl {
 
@@ -47,6 +47,7 @@ public abstract class AttachedObjectTargetHandler extends TagHandlerImpl {
     abstract AttachedObjectTargetImpl newAttachedObjectTargetImpl();
 
     @Override
+    @SuppressWarnings("unchecked")
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
 
         assert ctx.getFacesContext().getAttributes().containsKey(FaceletViewHandlingStrategy.IS_BUILDING_METADATA);

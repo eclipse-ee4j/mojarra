@@ -48,9 +48,6 @@ import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.util.FacesLogger;
-
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.Resource;
 import jakarta.faces.application.ResourceHandler;
@@ -58,6 +55,9 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.http.HttpServletMapping;
 import jakarta.servlet.http.HttpServletRequest;
+
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.util.FacesLogger;
 
 /**
  * Default implementation of {@link jakarta.faces.application.Resource}. The ResourceImpl instance itself has the same
@@ -105,7 +105,6 @@ public class ResourceImpl extends Resource implements Externalizable {
     /**
      * Necessary for serialization.
      */
-    @SuppressWarnings({ "UnusedDeclaration" })
     public ResourceImpl() {
     }
 

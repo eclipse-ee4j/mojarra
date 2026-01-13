@@ -27,9 +27,9 @@ import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.util.FacesLogger;
-
 import jakarta.faces.FacesException;
+
+import com.sun.faces.util.FacesLogger;
 
 /**
  * Factory class for creating <code>ConfigurationResourceProvider</code> instances using the Java services discovery
@@ -100,7 +100,7 @@ public class ConfigurationResourceProviderFactory {
             }
         } else {
 
-            ServiceLoader serviceLoader;
+            ServiceLoader<? extends ConfigurationResourceProvider> serviceLoader;
 
             switch (providerType) {
             case FacesConfig:
@@ -113,10 +113,10 @@ public class ConfigurationResourceProviderFactory {
                 throw new UnsupportedOperationException(providerType.servicesKey + " cannot be loaded via ServiceLoader API.");
             }
 
-            Iterator iterator = serviceLoader.iterator();
+            Iterator<? extends ConfigurationResourceProvider> iterator = serviceLoader.iterator();
 
             while (iterator.hasNext()) {
-                providers.add((ConfigurationResourceProvider) iterator.next());
+                providers.add(iterator.next());
             }
         }
 

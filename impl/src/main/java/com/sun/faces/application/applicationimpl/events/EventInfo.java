@@ -25,11 +25,11 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.util.FacesLogger;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
+
+import com.sun.faces.util.FacesLogger;
 
 /**
  * Represent a logical association between a SystemEvent and a Source. This call will contain the Listeners specific to
@@ -42,8 +42,8 @@ public class EventInfo {
     private final Class<? extends SystemEvent> systemEvent;
     private final Class<?> sourceClass;
     private final Set<SystemEventListener> listeners;
-    private Constructor eventConstructor;
-    private final Map<Class<?>, Constructor> constructorMap;
+    private Constructor<?> eventConstructor;
+    private final Map<Class<?>, Constructor<?>> constructorMap;
 
     // -------------------------------------------------------- Constructors
 
@@ -69,7 +69,7 @@ public class EventInfo {
 
     public SystemEvent createSystemEvent(Object source) {
 
-        Constructor toInvoke = getCachedConstructor(source.getClass());
+        Constructor<? >toInvoke = getCachedConstructor(source.getClass());
         if (toInvoke != null) {
             try {
                 return (SystemEvent) toInvoke.newInstance(source);
@@ -83,12 +83,12 @@ public class EventInfo {
 
     // ----------------------------------------------------- Private Methods
 
-    private Constructor getCachedConstructor(Class<?> source) {
+    private Constructor<?> getCachedConstructor(Class<?> source) {
 
         if (eventConstructor != null) {
             return eventConstructor;
         } else {
-            Constructor c = constructorMap.get(source);
+            Constructor<?> c = constructorMap.get(source);
             if (c == null) {
                 c = getEventConstructor(source);
                 if (c != null) {
@@ -100,15 +100,15 @@ public class EventInfo {
 
     }
 
-    private Constructor getEventConstructor(Class<?> source) {
+    private Constructor<?> getEventConstructor(Class<?> source) {
 
-        Constructor ctor = null;
+        Constructor<?> ctor = null;
         try {
             return systemEvent.getDeclaredConstructor(source);
         } catch (NoSuchMethodException ignored) {
-            Constructor[] ctors = systemEvent.getConstructors();
+            Constructor<?>[] ctors = systemEvent.getConstructors();
             if (ctors != null) {
-                for (Constructor c : ctors) {
+                for (Constructor<?> c : ctors) {
                     Class<?>[] params = c.getParameterTypes();
                     if (params.length != 1) {
                         continue;

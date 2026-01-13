@@ -24,10 +24,10 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import com.sun.faces.util.Util;
-
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+
+import com.sun.faces.util.Util;
 
 /**
  * @see jakarta.faces.context.ExternalContext#getRequestCookieMap()
@@ -113,7 +113,7 @@ public class RequestCookieMap extends BaseContextMap<Object> {
 
     // ----------------------------------------------------------- Inner Classes
 
-    private static class CookieArrayEnumerator implements Enumeration {
+    private static class CookieArrayEnumerator implements Enumeration<String> {
 
         Cookie[] cookies;
         int curIndex = -1;
@@ -130,7 +130,7 @@ public class RequestCookieMap extends BaseContextMap<Object> {
         }
 
         @Override
-        public Object nextElement() {
+        public String nextElement() {
             curIndex++;
             if (curIndex < upperBound) {
                 return cookies[curIndex].getName();

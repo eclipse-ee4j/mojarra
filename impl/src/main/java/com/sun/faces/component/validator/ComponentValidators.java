@@ -23,15 +23,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.sun.faces.facelets.tag.faces.ComponentSupport;
-import com.sun.faces.util.RequestStateManager;
-
 import jakarta.faces.application.Application;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.ValidatorHandler;
+
+import com.sun.faces.facelets.tag.faces.ComponentSupport;
+import com.sun.faces.util.RequestStateManager;
 
 /**
  * <p>
@@ -274,7 +274,7 @@ public class ComponentValidators {
 
         }
 
-        public void applyAttributes(Validator v) {
+        public void applyAttributes(Validator<?> v) {
 
             owner.setAttributes(ctx, v);
 

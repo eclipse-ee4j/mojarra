@@ -21,14 +21,14 @@ package com.sun.faces.renderkit.html_basic;
 import java.io.IOException;
 import java.util.Iterator;
 
-import com.sun.faces.renderkit.RenderKitUtils;
-
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIMessage;
 import jakarta.faces.component.UIOutput;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
+
+import com.sun.faces.renderkit.RenderKitUtils;
 
 /**
  * <p>
@@ -105,7 +105,7 @@ public class MessageRenderer extends HtmlBasicRenderer {
         }
 
         clientId = augmentIdReference(clientId, component);
-        Iterator messageIter = getMessageIter(context, clientId, component);
+        Iterator<FacesMessage> messageIter = getMessageIter(context, clientId, component);
 
         assert messageIter != null;
         if (!messageIter.hasNext()) {

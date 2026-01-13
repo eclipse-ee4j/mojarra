@@ -32,10 +32,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import jakarta.faces.FacesException;
+
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
-
-import jakarta.faces.FacesException;
 
 /**
  * <p>
@@ -57,7 +57,7 @@ final class ServiceFactoryUtils {
 
         try {
             Class<?> clazz = Util.loadClass(entry, null);
-            Constructor c = clazz.getDeclaredConstructor(argumentTypes);
+            Constructor<?> c = clazz.getDeclaredConstructor(argumentTypes);
             if (c == null) {
                 throw new FacesException("Unable to find constructor accepting arguments: " + Arrays.toString(arguments));
             }

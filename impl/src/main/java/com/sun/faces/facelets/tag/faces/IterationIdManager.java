@@ -73,13 +73,13 @@ public class IterationIdManager {
         _getStackOfTrackedIds(ctx).pop();
     }
 
+    @SuppressWarnings("unchecked")
     static boolean isIterating(FaceletContext context) {
-        @SuppressWarnings("unchecked")
         Deque<Set<String>> iterationIds = (Deque<Set<String>>) context.getAttribute(_STACK_OF_TRACKED_IDS);
-
         return iterationIds != null && iterationIds.peek() != null;
     }
 
+    @SuppressWarnings("unchecked")
     private static Deque<Set<String>> _getStackOfTrackedIds(FaceletContext ctx) {
         Deque<Set<String>> stack = (Deque<Set<String>>)ctx.getAttribute(_STACK_OF_TRACKED_IDS);
         if (stack == null) {

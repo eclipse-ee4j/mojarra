@@ -50,7 +50,7 @@ public final class CompositionHandler extends TagHandlerImpl implements Template
 
     protected final TagAttribute template;
 
-    protected final Map handlers;
+    protected final Map<String, DefineHandler> handlers;
 
     protected final ParamHandler[] params;
 
@@ -61,8 +61,8 @@ public final class CompositionHandler extends TagHandlerImpl implements Template
         super(config);
         template = getAttribute("template");
         if (template != null) {
-            handlers = new HashMap();
-            Iterator itr = this.findNextByType(DefineHandler.class);
+            handlers = new HashMap<>();
+            Iterator<?> itr = this.findNextByType(DefineHandler.class);
             DefineHandler d = null;
             while (itr.hasNext()) {
                 d = (DefineHandler) itr.next();
@@ -71,15 +71,15 @@ public final class CompositionHandler extends TagHandlerImpl implements Template
                     log.fine(tag + " found Define[" + d.getName() + "]");
                 }
             }
-            List paramC = new ArrayList();
+            List<ParamHandler> paramC = new ArrayList<>();
             itr = this.findNextByType(ParamHandler.class);
             while (itr.hasNext()) {
-                paramC.add(itr.next());
+                paramC.add((ParamHandler) itr.next());
             }
             if (paramC.size() > 0) {
                 params = new ParamHandler[paramC.size()];
                 for (int i = 0; i < params.length; i++) {
-                    params[i] = (ParamHandler) paramC.get(i);
+                    params[i] = paramC.get(i);
                 }
             } else {
                 params = null;
@@ -156,7 +156,7 @@ public final class CompositionHandler extends TagHandlerImpl implements Template
             if (handlers == null) {
                 return false;
             }
-            DefineHandler handler = (DefineHandler) handlers.get(name);
+            DefineHandler handler = handlers.get(name);
             if (handler != null) {
                 handler.applyDefinition(ctx, parent);
                 return true;

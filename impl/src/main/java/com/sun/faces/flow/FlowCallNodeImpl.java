@@ -134,6 +134,6 @@ public class FlowCallNodeImpl extends FlowCallNode implements Serializable {
 
     @Override
     public Map<String, Parameter> getOutboundParameters() {
-        return _outboundParameters;
+        return outboundParameters;
     }
 }

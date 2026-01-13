@@ -126,11 +126,9 @@ class StateHolderSaver implements Serializable {
 
         if (null != toRestoreClass) {
             try {
-                result = toRestoreClass.newInstance();
-            } catch (InstantiationException e) {
+                result = toRestoreClass.getDeclaredConstructor().newInstance();
+            } catch (Exception e) {
                 throw new IllegalStateException(e);
-            } catch (IllegalAccessException a) {
-                throw new IllegalStateException(a);
             }
         }
 
@@ -143,7 +141,7 @@ class StateHolderSaver implements Serializable {
         return result;
     }
 
-    private static Class loadClass(String name, Object fallbackClass) throws ClassNotFoundException {
+    private static Class<?> loadClass(String name, Object fallbackClass) throws ClassNotFoundException {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         if (loader == null) {
             loader = fallbackClass.getClass().getClassLoader();

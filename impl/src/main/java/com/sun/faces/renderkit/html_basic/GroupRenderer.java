@@ -45,7 +45,6 @@ public class GroupRenderer extends HtmlBasicRenderer {
             return;
         }
         // Render a span around this group if necessary
-        String style = (String) component.getAttributes().get("style");
         String styleClass = (String) component.getAttributes().get("styleClass");
         ResponseWriter writer = context.getResponseWriter();
 

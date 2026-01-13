@@ -32,8 +32,6 @@ import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.util.FacesLogger;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.Behavior;
@@ -45,6 +43,8 @@ import jakarta.faces.render.ClientBehaviorRenderer;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.Renderer;
 import jakarta.faces.validator.Validator;
+
+import com.sun.faces.util.FacesLogger;
 
 /**
  * This class represents the central point for annotation handling within a web application.
@@ -136,7 +136,7 @@ public class AnnotationManager {
      * @param annotatedClasses <code>Collection</code> of class names known to contain one or more Faces configuration
      * annotations
      */
-    public void applyConfigAnnotations(FacesContext ctx, Class<? extends Annotation> annotationType, Set<? extends Class> annotatedClasses) {
+    public void applyConfigAnnotations(FacesContext ctx, Class<? extends Annotation> annotationType, Set<? extends Class<?>> annotatedClasses) {
         if (annotatedClasses != null && !annotatedClasses.isEmpty()) {
             ConfigAnnotationHandler handler = getConfigAnnotationHandlers().get(annotationType);
             if (handler == null) {
@@ -200,7 +200,7 @@ public class AnnotationManager {
      * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
      * @param v the target <code>Validator</code> to process
      */
-    public void applyValidatorAnnotations(FacesContext ctx, Validator v) {
+    public void applyValidatorAnnotations(FacesContext ctx, Validator<?> v) {
         applyAnnotations(ctx, v.getClass(), ProcessingTarget.Validator, v);
     }
 
@@ -210,7 +210,7 @@ public class AnnotationManager {
      * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
      * @param c the target <code>Converter</code> to process
      */
-    public void applyConverterAnnotations(FacesContext ctx, Converter c) {
+    public void applyConverterAnnotations(FacesContext ctx, Converter<?> c) {
         applyAnnotations(ctx, c.getClass(), ProcessingTarget.Converter, c);
     }
 
@@ -221,7 +221,7 @@ public class AnnotationManager {
      * @param r the <code>Renderer</code> to process
      * @param c the <code>UIComponent</code> instances that is associated with this <code>Renderer</code>
      */
-    public void applyRendererAnnotations(FacesContext ctx, Renderer r, UIComponent c) {
+    public void applyRendererAnnotations(FacesContext ctx, Renderer<?> r, UIComponent c) {
         applyAnnotations(ctx, r.getClass(), ProcessingTarget.Renderer, r, c);
     }
 

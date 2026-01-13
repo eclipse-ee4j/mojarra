@@ -38,15 +38,10 @@ public class FaceletsConfiguration {
 
     private static final Pattern EXTENSION_PATTERN = Pattern.compile("\\.[^/]+$");
 
-    private final WebConfiguration config;
-
     private final Map<String, String> faceletsProcessingMappings;
 
     public FaceletsConfiguration(WebConfiguration config) {
-        this.config = config;
-
         faceletsProcessingMappings = config.getFacesConfigOptionValue(WebConfiguration.WebContextInitParameter.FaceletsProcessingFileExtensionProcessAs);
-
     }
 
     public boolean isProcessCurrentDocumentAsFaceletsXhtml(String alias) {

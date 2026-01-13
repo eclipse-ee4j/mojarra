@@ -122,7 +122,7 @@ public final class JstlFunction {
             return 0;
         }
         if (obj instanceof Collection) {
-            return ((Collection) obj).size();
+            return ((Collection<?>) obj).size();
         }
         if (obj.getClass().isArray()) {
             return Array.getLength(obj);
@@ -131,10 +131,10 @@ public final class JstlFunction {
             return ((String) obj).length();
         }
         if (obj instanceof Map) {
-            return ((Map) obj).size();
+            return ((Map<?, ?>) obj).size();
         }
         if (obj instanceof Enumeration) {
-            Enumeration e = (Enumeration) obj;
+            Enumeration<?> e = (Enumeration<?>) obj;
             int count = 0;
             while (e.hasMoreElements()) {
                 e.nextElement();
@@ -143,7 +143,7 @@ public final class JstlFunction {
             return count;
         }
         if (obj instanceof Iterator) {
-            Iterator i = (Iterator) obj;
+            Iterator<?> i = (Iterator<?>) obj;
             int count = 0;
             while (i.hasNext()) {
                 i.next();

@@ -18,8 +18,6 @@ package com.sun.faces.facelets.tag.faces.core;
 
 import java.util.TimeZone;
 
-import com.sun.faces.facelets.tag.faces.ComponentSupport;
-
 import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.convert.Converter;
@@ -31,6 +29,8 @@ import jakarta.faces.view.facelets.FaceletException;
 import jakarta.faces.view.facelets.MetaRuleset;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagAttributeException;
+
+import com.sun.faces.facelets.tag.faces.ComponentSupport;
 
 /**
  * Register a DateTimeConverter instance on the UIComponent associated with the closest parent UIComponent custom
@@ -74,7 +74,7 @@ public final class ConvertDateTimeHandler extends ConverterHandler {
      *
      * @see DateTimeConverter
      */
-    protected Converter createConverter(FaceletContext ctx) throws FacesException, ELException, FaceletException {
+    protected Converter<Object> createConverter(FaceletContext ctx) throws FacesException, ELException, FaceletException {
         return ctx.getFacesContext().getApplication().createConverter(DateTimeConverter.CONVERTER_ID);
 
     }

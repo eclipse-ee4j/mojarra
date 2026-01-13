@@ -20,12 +20,6 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.sun.faces.cdi.CdiValidator;
-import com.sun.faces.component.validator.ComponentValidators;
-import com.sun.faces.facelets.tag.MetaRulesetImpl;
-import com.sun.faces.util.RequestStateManager;
-import com.sun.faces.util.Util;
-
 import jakarta.el.ValueExpression;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
@@ -41,6 +35,12 @@ import jakarta.faces.view.facelets.TagException;
 import jakarta.faces.view.facelets.TagHandler;
 import jakarta.faces.view.facelets.TagHandlerDelegate;
 import jakarta.faces.view.facelets.ValidatorHandler;
+
+import com.sun.faces.cdi.CdiValidator;
+import com.sun.faces.component.validator.ComponentValidators;
+import com.sun.faces.facelets.tag.MetaRulesetImpl;
+import com.sun.faces.util.RequestStateManager;
+import com.sun.faces.util.Util;
 
 public class ValidatorTagHandlerDelegateImpl extends TagHandlerDelegate implements AttachedObjectHandler {
 
@@ -99,10 +99,10 @@ public class ValidatorTagHandlerDelegateImpl extends TagHandlerDelegate implemen
         }
 
         ValueExpression ve = null;
-        Validator v = null;
+        Validator<?> v = null;
         if (owner.getBinding() != null) {
             ve = owner.getBinding().getValueExpression(ctx, Validator.class);
-            v = (Validator) ve.getValue(ctx);
+            v = (Validator<?>) ve.getValue(ctx);
         }
         if (v == null) {
             v = createValidator(ctx);
@@ -115,10 +115,10 @@ public class ValidatorTagHandlerDelegateImpl extends TagHandlerDelegate implemen
         }
         owner.setAttributes(ctx, v);
 
-        Validator[] validators = evh.getValidators();
+        Validator<?>[] validators = evh.getValidators();
         boolean found = false;
 
-        for (Validator validator : validators) {
+        for (Validator<?> validator : validators) {
             if (validator.getClass().equals(v.getClass()) && !(v instanceof CdiValidator)) {
                 found = true;
                 break;
@@ -210,7 +210,7 @@ public class ValidatorTagHandlerDelegateImpl extends TagHandlerDelegate implemen
      * @param ctx FaceletContext to use
      * @return a new Validator instance
      */
-    private Validator createValidator(FaceletContext ctx) {
+    private Validator<?> createValidator(FaceletContext ctx) {
 
         String id = owner.getValidatorId(ctx);
         if (id == null) {

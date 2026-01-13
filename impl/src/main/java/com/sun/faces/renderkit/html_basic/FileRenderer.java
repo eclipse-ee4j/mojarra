@@ -25,8 +25,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.sun.faces.renderkit.RenderKitUtils;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.application.ProjectStage;
@@ -39,6 +37,8 @@ import jakarta.faces.convert.ConverterException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
+
+import com.sun.faces.renderkit.RenderKitUtils;
 
 public class FileRenderer extends TextRenderer {
 
@@ -109,7 +109,7 @@ public class FileRenderer extends TextRenderer {
             }
 
             if (produceMessage) {
-                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN,
+                FacesMessage message = new FacesMessage(FacesMessage.Severity.WARN,
                         "File upload component requires a form with an enctype of multipart/form-data",
                         "File upload component requires a form with an enctype of multipart/form-data");
                 context.addMessage(component.getClientId(context), message);
@@ -126,6 +126,7 @@ public class FileRenderer extends TextRenderer {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue) throws ConverterException {
         if (submittedValue instanceof Part) {
             Part part = (Part) submittedValue;

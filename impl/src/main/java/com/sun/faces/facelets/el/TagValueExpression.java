@@ -68,7 +68,7 @@ public final class TagValueExpression extends ValueExpression implements Externa
     }
 
     @Override
-    public Object getValue(ELContext context) {
+    public <T> T getValue(ELContext context) {
         try {
             return wrapped.getValue(context);
         } catch (PropertyNotFoundException pnfe) {

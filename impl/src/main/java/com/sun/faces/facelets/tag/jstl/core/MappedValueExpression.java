@@ -28,13 +28,13 @@ import jakarta.el.ValueExpression;
  */
 public final class MappedValueExpression extends ValueExpression {
 
-    private final static class Entry implements Map.Entry, Serializable {
+    private final static class Entry implements Map.Entry<Object, Object>, Serializable {
 
         private static final long serialVersionUID = 4361498560718735987L;
-        private final Map src;
+        private final Map<Object, Object> src;
         private final Object key;
 
-        public Entry(Map src, Object key) {
+        public Entry(Map<Object, Object> src, Object key) {
             this.src = src;
             this.key = key;
         }
@@ -68,7 +68,7 @@ public final class MappedValueExpression extends ValueExpression {
     /**
      *
      */
-    public MappedValueExpression(ValueExpression orig, Map.Entry entry) {
+    public MappedValueExpression(ValueExpression orig, Map.Entry<?, ?> entry) {
         this.orig = orig;
         key = entry.getKey();
     }
@@ -79,11 +79,12 @@ public final class MappedValueExpression extends ValueExpression {
      * @see jakarta.el.ValueExpression#getValue(jakarta.el.ELContext)
      */
     @Override
+    @SuppressWarnings("unchecked")
     public Object getValue(ELContext context) {
         Object base = orig.getValue(context);
         if (base != null) {
             context.setPropertyResolved(true);
-            return new Entry((Map) base, key);
+            return new Entry((Map<Object, Object>) base, key);
 
         }
         return null;
@@ -124,7 +125,7 @@ public final class MappedValueExpression extends ValueExpression {
      * @see jakarta.el.ValueExpression#getType(jakarta.el.ELContext)
      */
     @Override
-    public Class getType(ELContext context) {
+    public Class<?> getType(ELContext context) {
         Object base = orig.getValue(context);
         if (base != null) {
             context.setPropertyResolved(false);
@@ -139,7 +140,7 @@ public final class MappedValueExpression extends ValueExpression {
      * @see jakarta.el.ValueExpression#getExpectedType()
      */
     @Override
-    public Class getExpectedType() {
+    public Class<?> getExpectedType() {
         return Object.class;
     }
 

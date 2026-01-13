@@ -45,9 +45,10 @@ public final class IteratedValueExpression extends ValueExpression {
      * @see jakarta.el.ValueExpression#getValue(jakarta.el.ELContext)
      */
     @Override
-    public Object getValue(ELContext context) {
-        Collection collection = (Collection) orig.getValue(context);
-        Iterator iterator = collection.iterator();
+    @SuppressWarnings("unchecked")
+    public <T> T getValue(ELContext context) {
+        Collection<?> collection = (Collection<?>) orig.getValue(context);
+        Iterator<?> iterator = collection.iterator();
         Object result = null;
         int i = start;
         if (i != 0) {
@@ -68,7 +69,7 @@ public final class IteratedValueExpression extends ValueExpression {
             i++;
             result = iterator.next();
         }
-        return result;
+        return (T) result;
     }
 
     /*
@@ -99,7 +100,7 @@ public final class IteratedValueExpression extends ValueExpression {
      * @see jakarta.el.ValueExpression#getType(jakarta.el.ELContext)
      */
     @Override
-    public Class getType(ELContext context) {
+    public Class<?> getType(ELContext context) {
         context.setPropertyResolved(false);
         return Object.class;
     }
@@ -110,7 +111,7 @@ public final class IteratedValueExpression extends ValueExpression {
      * @see jakarta.el.ValueExpression#getExpectedType()
      */
     @Override
-    public Class getExpectedType() {
+    public Class<?> getExpectedType() {
         return Object.class;
     }
 

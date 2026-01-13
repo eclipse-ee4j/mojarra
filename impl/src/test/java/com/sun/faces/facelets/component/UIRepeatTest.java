@@ -34,7 +34,7 @@ public class UIRepeatTest {
 
 	private FacesContext ctx;
 
-	private FacesMessage.Severity maximumSeverity = FacesMessage.SEVERITY_WARN;
+	private FacesMessage.Severity maximumSeverity = FacesMessage.Severity.WARN;
 
 	private Method uiRepeatHasErrorMessages;
 
@@ -48,13 +48,13 @@ public class UIRepeatTest {
 		    }
 		});
 
-		maximumSeverity = FacesMessage.SEVERITY_WARN;
+		maximumSeverity = FacesMessage.Severity.WARN;
 		assertEquals(false, hasErrorMessages(ctx));
-		maximumSeverity = FacesMessage.SEVERITY_INFO;
+		maximumSeverity = FacesMessage.Severity.INFO;
 		assertEquals(false, hasErrorMessages(ctx));
-		maximumSeverity = FacesMessage.SEVERITY_ERROR;
+		maximumSeverity = FacesMessage.Severity.ERROR;
 		assertEquals(true, hasErrorMessages(ctx));
-		maximumSeverity = FacesMessage.SEVERITY_FATAL;
+		maximumSeverity = FacesMessage.Severity.FATAL;
 		assertEquals(true, hasErrorMessages(ctx));
 	}
 

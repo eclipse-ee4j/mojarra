@@ -167,9 +167,9 @@ public class FormRenderer extends HtmlBasicRenderer {
         // Render ay resources that have been targeted for this form.
 
         UIViewRoot viewRoot = context.getViewRoot();
-        ListIterator iter = viewRoot.getComponentResources(context, "form").listIterator();
+        ListIterator<UIComponent> iter = viewRoot.getComponentResources(context, "form").listIterator();
         while (iter.hasNext()) {
-            UIComponent resource = (UIComponent) iter.next();
+            UIComponent resource = iter.next();
             resource.encodeAll(context);
         }
 

@@ -499,7 +499,7 @@ public final class ReflectionUtils {
      */
     private static final class MetaData {
 
-        Map<Integer, Constructor> constructors;
+        Map<Integer, Constructor<?>> constructors;
         Map<String, HashMap<Integer, Method>> methods;
         Map<String, HashMap<Integer, Method>> declaredMethods;
         Map<String, PropertyDescriptor> propertyDescriptors;

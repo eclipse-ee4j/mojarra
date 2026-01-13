@@ -26,10 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.sun.faces.facelets.FaceletContextImplBase;
-import com.sun.faces.facelets.TemplateClient;
-import com.sun.faces.facelets.el.DefaultVariableMapper;
-
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
@@ -42,6 +38,10 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.Facelet;
 import jakarta.faces.view.facelets.FaceletContext;
+
+import com.sun.faces.facelets.FaceletContextImplBase;
+import com.sun.faces.facelets.TemplateClient;
+import com.sun.faces.facelets.el.DefaultVariableMapper;
 
 /**
  * Default FaceletContext implementation.
@@ -180,7 +180,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
      * @see jakarta.el.ELContext#getContext(java.lang.Class)
      */
     @Override
-    public Object getContext(Class key) {
+    public Object getContext(Class<?> key) {
         return ctx.getContext(key);
     }
 
@@ -190,7 +190,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
      * @see jakarta.el.ELContext#putContext(java.lang.Class, java.lang.Object)
      */
     @Override
-    public void putContext(Class key, Object contextObject) {
+    public void putContext(Class<?> key, Object contextObject) {
         ctx.putContext(key, contextObject);
     }
 
@@ -294,7 +294,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     @Override
     public void popClient(TemplateClient client) {
         if (!clients.isEmpty()) {
-            Iterator itr = clients.iterator();
+            Iterator<TemplateManager> itr = clients.iterator();
             while (itr.hasNext()) {
                 if (itr.next().equals(client)) {
                     itr.remove();
@@ -307,12 +307,12 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
 
     @Override
     public void pushClient(final TemplateClient client) {
-        clients.add(0, new TemplateManager(facelet, client, true));
+        clients.add(0, new TemplateManager(facelet, client));
     }
 
     @Override
     public void extendClient(final TemplateClient client) {
-        clients.add(new TemplateManager(facelet, client, false));
+        clients.add(new TemplateManager(facelet, client));
     }
 
     @Override
@@ -337,14 +337,11 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
 
         private final TemplateClient target;
 
-        private final boolean root;
-
         private final Set<String> names = new HashSet<>();
 
-        public TemplateManager(DefaultFacelet owner, TemplateClient target, boolean root) {
+        public TemplateManager(DefaultFacelet owner, TemplateClient target) {
             this.owner = owner;
             this.target = target;
-            this.root = root;
         }
 
         @Override
@@ -366,10 +363,6 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
             // System.out.println(this.owner.getAlias() + " == " +
             // ((DefaultFacelet) o).getAlias());
             return owner == o || target == o;
-        }
-
-        public boolean isRoot() {
-            return root;
         }
     }
 

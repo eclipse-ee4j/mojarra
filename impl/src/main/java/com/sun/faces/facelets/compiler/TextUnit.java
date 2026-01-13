@@ -20,14 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import com.sun.faces.facelets.el.ELText;
-
 import jakarta.el.ELException;
 import jakarta.faces.view.facelets.CompositeFaceletHandler;
 import jakarta.faces.view.facelets.FaceletHandler;
 import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagException;
+
+import com.sun.faces.facelets.el.ELText;
 
 /**
  *
@@ -44,7 +44,7 @@ final class TextUnit extends CompilationUnit {
 
     private final Stack<Tag> tags;
 
-    private final List children;
+    private final List<Object> children;
 
     private boolean startTagOpen;
 

@@ -23,12 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import jakarta.servlet.ServletContext;
+
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.config.WebConfiguration.WebContextInitParameter;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MultiKeyConcurrentHashMap;
-
-import jakarta.servlet.ServletContext;
 
 /**
  * <p>
@@ -99,7 +99,7 @@ public class ResourceCache {
         if (LOGGER.isLoggable(FINE)) {
             LOGGER.log(FINE, "Caching ResourceInfo: {0}", info.toString());
         }
-        ResourceInfoCheckPeriodProxy proxy = resourceCache.putIfAbsent(info.name, info.libraryName, info.localePrefix, new ArrayList(contracts),
+        ResourceInfoCheckPeriodProxy proxy = resourceCache.putIfAbsent(info.name, info.libraryName, info.localePrefix, new ArrayList<>(contracts),
                 new ResourceInfoCheckPeriodProxy(info, checkPeriod));
         return proxy != null ? proxy.getResourceInfo() : null;
 

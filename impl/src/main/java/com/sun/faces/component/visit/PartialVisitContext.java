@@ -236,7 +236,7 @@ public class PartialVisitContext extends VisitContext {
         // Initialize the clientIds collection. Note that we proxy
         // this collection so that we can trap adds/removes and sync
         // up all of the other collections.
-        this.clientIds = new CollectionProxy<>(new HashSet<>());
+        this.clientIds = new CollectionProxy(new HashSet<>());
 
         // Finally, populate the clientIds collection. This has the
         // side effect of populating all of the other collections.
@@ -341,9 +341,9 @@ public class PartialVisitContext extends VisitContext {
     // Little proxy collection implementation. We proxy the id
     // collection so that we can detect modifications and update
     // our internal state when ids to visit are added or removed.
-    private class CollectionProxy<E extends String> extends AbstractCollection<E> {
+    private class CollectionProxy extends AbstractCollection<String> {
 
-        private CollectionProxy(Collection<E> wrapped) {
+        private CollectionProxy(Collection<String> wrapped) {
             this.wrapped = wrapped;
         }
 
@@ -353,12 +353,12 @@ public class PartialVisitContext extends VisitContext {
         }
 
         @Override
-        public Iterator<E> iterator() {
-            return new IteratorProxy<>(wrapped.iterator());
+        public Iterator<String> iterator() {
+            return new IteratorProxy(wrapped.iterator());
         }
 
         @Override
-        public boolean add(E o) {
+        public boolean add(String o) {
             boolean added = wrapped.add(o);
 
             if (added) {
@@ -368,13 +368,13 @@ public class PartialVisitContext extends VisitContext {
             return added;
         }
 
-        private final Collection<E> wrapped;
+        private final Collection<String> wrapped;
     }
 
     // Little proxy iterator implementation used by CollectionProxy
     // so that we can catch removes.
-    private class IteratorProxy<E extends String> implements Iterator<E> {
-        private IteratorProxy(Iterator<E> wrapped) {
+    private class IteratorProxy implements Iterator<String> {
+        private IteratorProxy(Iterator<String> wrapped) {
             this.wrapped = wrapped;
         }
 
@@ -384,7 +384,7 @@ public class PartialVisitContext extends VisitContext {
         }
 
         @Override
-        public E next() {
+        public String next() {
             current = wrapped.next();
 
             return current;
@@ -400,9 +400,9 @@ public class PartialVisitContext extends VisitContext {
             wrapped.remove();
         }
 
-        private final Iterator<E> wrapped;
+        private final Iterator<String> wrapped;
 
-        private E current = null;
+        private String current = null;
     }
 
     // The client ids to visit

@@ -726,6 +726,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
      *
      * @return a new <code>Collection</code> instance or null if the instance cannot be created
      */
+    @SuppressWarnings("unchecked")
     protected Collection<Object> createCollection(Collection<Object> collection, Class<? extends Collection<Object>> fallBackType) {
 
         Class<?> lookupClass = fallBackType;

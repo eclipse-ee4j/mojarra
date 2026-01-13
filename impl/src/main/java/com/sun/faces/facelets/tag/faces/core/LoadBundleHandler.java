@@ -49,8 +49,8 @@ import jakarta.faces.view.facelets.TagConfig;
  */
 public final class LoadBundleHandler extends TagHandlerImpl {
 
-    private final static class ResourceBundleMap implements Map {
-        private final static class ResourceEntry implements Map.Entry {
+    private final static class ResourceBundleMap implements Map<String, Object> {
+        private final static class ResourceEntry implements Map.Entry<String, Object> {
 
             protected final String key;
 
@@ -62,7 +62,7 @@ public final class LoadBundleHandler extends TagHandlerImpl {
             }
 
             @Override
-            public Object getKey() {
+            public String getKey() {
                 return key;
             }
 
@@ -114,12 +114,12 @@ public final class LoadBundleHandler extends TagHandlerImpl {
         }
 
         @Override
-        public Set entrySet() {
-            Enumeration e = bundle.getKeys();
-            Set s = new HashSet();
+        public Set<Map.Entry<String, Object>> entrySet() {
+            Enumeration<String> e = bundle.getKeys();
+            Set<Map.Entry<String, Object>> s = new HashSet<>();
             String k;
             while (e.hasMoreElements()) {
-                k = (String) e.nextElement();
+                k = e.nextElement();
                 s.add(new ResourceEntry(k, bundle.getString(k)));
             }
             return s;
@@ -140,9 +140,9 @@ public final class LoadBundleHandler extends TagHandlerImpl {
         }
 
         @Override
-        public Set keySet() {
-            Enumeration e = bundle.getKeys();
-            Set s = new HashSet();
+        public Set<String> keySet() {
+            Enumeration<String> e = bundle.getKeys();
+            Set<String> s = new HashSet<>();
             while (e.hasMoreElements()) {
                 s.add(e.nextElement());
             }
@@ -150,12 +150,12 @@ public final class LoadBundleHandler extends TagHandlerImpl {
         }
 
         @Override
-        public Object put(Object key, Object value) {
+        public Object put(String key, Object value) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void putAll(Map t) {
+        public void putAll(Map<? extends String, ?> t) {
             throw new UnsupportedOperationException();
         }
 
@@ -170,11 +170,11 @@ public final class LoadBundleHandler extends TagHandlerImpl {
         }
 
         @Override
-        public Collection values() {
-            Enumeration e = bundle.getKeys();
-            Set s = new HashSet();
+        public Collection<Object> values() {
+            Enumeration<String> e = bundle.getKeys();
+            Set<Object> s = new HashSet<>();
             while (e.hasMoreElements()) {
-                s.add(bundle.getObject((String) e.nextElement()));
+                s.add(bundle.getObject(e.nextElement()));
             }
             return s;
         }

@@ -25,9 +25,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
 
-import com.sun.faces.spi.ConfigurationResourceProvider;
-
 import jakarta.servlet.ServletContext;
+
+import com.sun.faces.spi.ConfigurationResourceProvider;
 
 /**
  * <p>
@@ -60,7 +60,6 @@ public class FindConfigResourceURIsTask implements Callable<Collection<URI>> {
      * @return zero or more <code>URL</code> instances
      * @throws Exception if an Exception is thrown by the underlying <code>ConfigurationResourceProvider</code>
      */
-    @SuppressWarnings("unchecked")
     @Override
     public Collection<URI> call() throws Exception {
         Collection<URI> untypedCollection = provider.getResources(servletContext);

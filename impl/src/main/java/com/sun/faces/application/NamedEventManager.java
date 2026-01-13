@@ -60,7 +60,6 @@ public class NamedEventManager {
         namedEvents.put(name, event);
     }
 
-    @SuppressWarnings("unchecked")
     public Class<? extends SystemEvent> getNamedEvent(String name) {
         Class<? extends SystemEvent> namedEvent = namedEvents.get(name);
 

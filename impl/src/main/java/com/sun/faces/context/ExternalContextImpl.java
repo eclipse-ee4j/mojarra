@@ -113,7 +113,7 @@ public class ExternalContextImpl extends ExternalContext {
     }
 
     // we want exactly the UnmodifiableMap.class (which is private) so do not remove the call to Collections.unmodifiableMap(...)
-    static final Class theUnmodifiableMapClass = Collections.unmodifiableMap(Collections.emptyMap()).getClass();
+    static final Class<?> theUnmodifiableMapClass = Collections.unmodifiableMap(Collections.emptyMap()).getClass();
 
     private static final Map<String, String> fallbackContentTypeMap = Map.of(
             "js", ScriptRenderer.DEFAULT_CONTENT_TYPE,

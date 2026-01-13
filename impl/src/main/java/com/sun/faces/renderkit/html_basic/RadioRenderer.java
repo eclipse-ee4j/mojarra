@@ -236,7 +236,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
     }
 
     @Override
-    protected void renderOption(FacesContext context, UIComponent component, Converter converter, SelectItem curItem, Object currentSelections,
+    protected void renderOption(FacesContext context, UIComponent component, Converter<?> converter, SelectItem curItem, Object currentSelections,
             Object[] submittedValues, Boolean newTableRow, int itemNumber, OptionComponentInfo optionInfo) throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();

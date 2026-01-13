@@ -18,8 +18,6 @@ package com.sun.faces.util.copier;
 
 import static com.sun.faces.util.ReflectionUtils.instance;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.faces.context.FacesContext;

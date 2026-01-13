@@ -72,12 +72,13 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
 
     // -------------------------------------------- Methods from ConfigProcessor
 
+    @SuppressWarnings("unchecked")
     private ApplicationInstanceFactoryMetadataMap<String, Object> getClassMetadataMap(ServletContext servletContext) {
         ApplicationInstanceFactoryMetadataMap<String, Object> classMetadataMap = (ApplicationInstanceFactoryMetadataMap<String, Object>) servletContext
                 .getAttribute(getClassMetadataMapKey());
 
         if (classMetadataMap == null) {
-            classMetadataMap = new ApplicationInstanceFactoryMetadataMap(new ConcurrentHashMap<>());
+            classMetadataMap = new ApplicationInstanceFactoryMetadataMap<>(new ConcurrentHashMap<>());
             servletContext.setAttribute(getClassMetadataMapKey(), classMetadataMap);
         }
 

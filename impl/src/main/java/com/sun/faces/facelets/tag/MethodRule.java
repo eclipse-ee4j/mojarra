@@ -41,7 +41,7 @@ public final class MethodRule extends MetaRule {
 
     private final Class<?>[] params;
 
-    public MethodRule(String methodName, Class returnTypeClass, Class[] params) {
+    public MethodRule(String methodName, Class<?> returnTypeClass, Class<?>[] params) {
         this.methodName = methodName;
         this.returnTypeClass = returnTypeClass;
         this.params = params;
@@ -72,7 +72,7 @@ public final class MethodRule extends MetaRule {
 
         private Class<?> _returnType;
 
-        public MethodExpressionMetadata(Method method, TagAttribute attribute, Class returnType, Class[] paramList) {
+        public MethodExpressionMetadata(Method method, TagAttribute attribute, Class<?> returnType, Class<?>[] paramList) {
             _method = method;
             _attribute = attribute;
             _paramList = paramList;

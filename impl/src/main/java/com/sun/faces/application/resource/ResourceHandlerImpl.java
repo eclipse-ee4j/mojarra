@@ -23,7 +23,6 @@ import static com.sun.faces.util.RequestStateManager.RESOURCE_REQUEST;
 import static com.sun.faces.util.Util.getFacesMapping;
 import static com.sun.faces.util.Util.notNegative;
 import static com.sun.faces.util.Util.notNull;
-import static jakarta.faces.application.ProjectStage.Development;
 import static jakarta.faces.application.ProjectStage.Production;
 import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static jakarta.servlet.http.HttpServletResponse.SC_NOT_MODIFIED;
@@ -176,9 +175,6 @@ public class ResourceHandlerImpl extends ResourceHandler {
     public Resource createResourceFromId(String resourceId) {
         notNull("resourceId", resourceId);
         FacesContext ctx = FacesContext.getCurrentInstance();
-
-        boolean development = ctx.isProjectStage(Development);
-
         ResourceInfo info = manager.findResource(resourceId);
         String ctype = getContentType(ctx, resourceId);
         if (info == null) {
@@ -422,7 +418,6 @@ public class ResourceHandlerImpl extends ResourceHandler {
      *
      * @return the time when the ResourceHandler was instantiated (in milliseconds)
      */
-    @SuppressWarnings({ "UnusedDeclaration" })
     long getCreationTime() {
         return creationTime;
     }
@@ -432,7 +427,6 @@ public class ResourceHandlerImpl extends ResourceHandler {
      *
      * @param creationTime the time in milliseconds
      */
-    @SuppressWarnings({ "UnusedDeclaration" })
     void setCreationTime(long creationTime) {
         this.creationTime = creationTime;
     }
@@ -442,7 +436,6 @@ public class ResourceHandlerImpl extends ResourceHandler {
      *
      * @return the {@link WebConfiguration} for this application
      */
-    @SuppressWarnings({ "UnusedDeclaration" })
     WebConfiguration getWebConfig() {
         return webconfig;
     }

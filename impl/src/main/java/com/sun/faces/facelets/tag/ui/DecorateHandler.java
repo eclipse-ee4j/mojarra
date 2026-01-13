@@ -47,7 +47,7 @@ public final class DecorateHandler extends TagHandlerImpl implements TemplateCli
 
     private final TagAttribute template;
 
-    private final Map handlers;
+    private final Map<String, DefineHandler> handlers;
 
     private final ParamHandler[] params;
 
@@ -57,9 +57,9 @@ public final class DecorateHandler extends TagHandlerImpl implements TemplateCli
     public DecorateHandler(TagConfig config) {
         super(config);
         template = getRequiredAttribute("template");
-        handlers = new HashMap();
+        handlers = new HashMap<>();
 
-        Iterator itr = this.findNextByType(DefineHandler.class);
+        Iterator<?> itr = this.findNextByType(DefineHandler.class);
         DefineHandler d = null;
         while (itr.hasNext()) {
             d = (DefineHandler) itr.next();
@@ -68,15 +68,15 @@ public final class DecorateHandler extends TagHandlerImpl implements TemplateCli
                 log.fine(tag + " found Define[" + d.getName() + "]");
             }
         }
-        List paramC = new ArrayList();
+        List<ParamHandler> paramC = new ArrayList<>();
         itr = this.findNextByType(ParamHandler.class);
         while (itr.hasNext()) {
-            paramC.add(itr.next());
+            paramC.add((ParamHandler) itr.next());
         }
         if (paramC.size() > 0) {
             params = new ParamHandler[paramC.size()];
             for (int i = 0; i < params.length; i++) {
-                params[i] = (ParamHandler) paramC.get(i);
+                params[i] = paramC.get(i);
             }
         } else {
             params = null;
@@ -122,7 +122,7 @@ public final class DecorateHandler extends TagHandlerImpl implements TemplateCli
     @Override
     public boolean apply(FaceletContext ctx, UIComponent parent, String name) throws IOException {
         if (name != null) {
-            DefineHandler handler = (DefineHandler) handlers.get(name);
+            DefineHandler handler = handlers.get(name);
             if (handler != null) {
                 handler.applyDefinition(ctx, parent);
                 return true;

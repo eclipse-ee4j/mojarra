@@ -27,15 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import com.sun.faces.config.ConfigurationException;
-import com.sun.faces.config.manager.documents.DocumentInfo;
-import com.sun.faces.util.FacesLogger;
-
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.render.ClientBehaviorRenderer;
@@ -45,6 +36,15 @@ import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
 import jakarta.faces.render.Renderer;
 import jakarta.servlet.ServletContext;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import com.sun.faces.config.ConfigurationException;
+import com.sun.faces.config.manager.documents.DocumentInfo;
+import com.sun.faces.util.FacesLogger;
 
 /**
  * This <code>ConfigProcessor</code> handles all elements defined under <code>/faces-config/render-kit</code>.
@@ -282,7 +282,7 @@ public class RenderKitConfigProcessor extends AbstractConfigProcessor {
 
             if (rendererFamily != null && rendererType != null && rendererClass != null) {
 
-                Renderer renderer = (Renderer) createInstance(sc, facesContext, rendererClass, Renderer.class, null, rendererNode);
+                Renderer<?> renderer = (Renderer<?>) createInstance(sc, facesContext, rendererClass, Renderer.class, null, rendererNode);
 
                 if (renderer != null) {
                     if (LOGGER.isLoggable(FINE)) {

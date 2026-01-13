@@ -35,8 +35,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.sun.faces.facelets.tag.IterationStatus;
-
 import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
@@ -66,18 +64,20 @@ import jakarta.faces.model.ResultSetDataModel;
 import jakarta.faces.model.ScalarDataModel;
 import jakarta.faces.render.Renderer;
 
+import com.sun.faces.facelets.tag.IterationStatus;
+
 public class UIRepeat extends UINamingContainer {
 
     public static final String COMPONENT_TYPE = "facelets.ui.Repeat";
 
     public static final String COMPONENT_FAMILY = "facelets";
 
-    private final static DataModel EMPTY_MODEL = new ListDataModel<>(Collections.emptyList());
+    private final static DataModel<?> EMPTY_MODEL = new ListDataModel<>(Collections.emptyList());
 
     // our data
     private Object value;
 
-    private transient DataModel model;
+    private transient DataModel<?> model;
 
     // variables
     private String var;
@@ -255,12 +255,13 @@ public class UIRepeat extends UINamingContainer {
         }
     }
 
-    private void setDataModel(DataModel model) {
+    private void setDataModel(DataModel<?> model) {
         // noinspection unchecked
         this.model = model;
     }
 
-    private DataModel getDataModel() {
+    @SuppressWarnings("unchecked")
+    private DataModel<?> getDataModel() {
         if (model == null) {
             Object val = getValue();
             
@@ -449,7 +450,7 @@ public class UIRepeat extends UINamingContainer {
         String id = c.getId();
         c.setId(id);
 
-        Iterator itr = c.getFacetsAndChildren();
+        Iterator<UIComponent> itr = c.getFacetsAndChildren();
         while (itr.hasNext()) {
             removeChildState(faces, (UIComponent) itr.next());
         }
@@ -471,7 +472,7 @@ public class UIRepeat extends UINamingContainer {
         }
 
         // continue hack
-        Iterator itr = c.getFacetsAndChildren();
+        Iterator<UIComponent> itr = c.getFacetsAndChildren();
         while (itr.hasNext()) {
             saveChildState(faces, (UIComponent) itr.next());
         }
@@ -504,7 +505,7 @@ public class UIRepeat extends UINamingContainer {
         }
 
         // continue hack
-        Iterator itr = c.getFacetsAndChildren();
+        Iterator<UIComponent> itr = c.getFacetsAndChildren();
         while (itr.hasNext()) {
             restoreChildState(faces, (UIComponent) itr.next());
         }
@@ -519,7 +520,7 @@ public class UIRepeat extends UINamingContainer {
     private boolean hasErrorMessages(FacesContext context) {
 
         FacesMessage.Severity sev = context.getMaximumSeverity();
-        return sev != null && FacesMessage.SEVERITY_ERROR.compareTo(sev) <= 0;
+        return sev != null && FacesMessage.Severity.ERROR.compareTo(sev) <= 0;
 
     }
 
@@ -531,6 +532,7 @@ public class UIRepeat extends UINamingContainer {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void setRowIndexWithRowStatePreserved(FacesContext ctx, int index) {
         if (index < -1) {
             throw new IllegalArgumentException("index is less than -1");
@@ -554,7 +556,7 @@ public class UIRepeat extends UINamingContainer {
 
         // Update to the new row index
         this.index = index;
-        DataModel localModel = getDataModel();
+        DataModel<?> localModel = getDataModel();
         localModel.setRowIndex(index);
 
         // if rowIndex is -1, clear the cache
@@ -592,7 +594,7 @@ public class UIRepeat extends UINamingContainer {
 
     private void setRowIndexWithoutRowStatePreserved(FacesContext ctx, int index) {
 
-        DataModel localModel = getDataModel();
+        DataModel<?> localModel = getDataModel();
 
         // save child state
         if (this.index != -1 && localModel.isRowAvailable()) {
@@ -626,6 +628,7 @@ public class UIRepeat extends UINamingContainer {
         return getDataModel().isRowAvailable();
     }
 
+    @SuppressWarnings("unchecked")
     public void process(FacesContext faces, PhaseId phase) {
 
         // stop if not rendered
@@ -648,7 +651,7 @@ public class UIRepeat extends UINamingContainer {
         try {
             // has children
             if (getChildCount() > 0) {
-                Iterator itr;
+                Iterator<UIComponent> itr;
                 UIComponent c;
 
                 Integer begin = getBegin();
@@ -667,7 +670,7 @@ public class UIRepeat extends UINamingContainer {
 
                 // grab renderer
                 String rendererType = getRendererType();
-                Renderer renderer = null;
+                Renderer<UIComponent> renderer = null;
                 if (rendererType != null) {
                     renderer = getRenderer(faces);
                 }
@@ -952,47 +955,12 @@ public class UIRepeat extends UINamingContainer {
     // from RI
     private final static class SavedState implements Serializable {
 
-        private Object submittedValue;
-
         private static final long serialVersionUID = 2920252657338389849L;
 
-        Object getSubmittedValue() {
-            return submittedValue;
-        }
-
-        void setSubmittedValue(Object submittedValue) {
-            this.submittedValue = submittedValue;
-        }
-
+        private Object submittedValue;
         private boolean valid = true;
-
-        boolean isValid() {
-            return valid;
-        }
-
-        void setValid(boolean valid) {
-            this.valid = valid;
-        }
-
         private Object value;
-
-        Object getValue() {
-            return value;
-        }
-
-        public void setValue(Object value) {
-            this.value = value;
-        }
-
         private boolean localValueSet;
-
-        boolean isLocalValueSet() {
-            return localValueSet;
-        }
-
-        public void setLocalValueSet(boolean localValueSet) {
-            this.localValueSet = localValueSet;
-        }
 
         @Override
         public String toString() {
@@ -1149,6 +1117,7 @@ public class UIRepeat extends UINamingContainer {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void restoreState(FacesContext faces, Object object) {
         if (faces == null) {
             throw new NullPointerException();
@@ -1208,7 +1177,7 @@ public class UIRepeat extends UINamingContainer {
     @Override
     public boolean getRendersChildren() {
         if (getRendererType() != null) {
-            Renderer renderer = getRenderer(getFacesContext());
+            Renderer<?> renderer = getRenderer(getFacesContext());
             if (renderer != null) {
                 return renderer.getRendersChildren();
             }

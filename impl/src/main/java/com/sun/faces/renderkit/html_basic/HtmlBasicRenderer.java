@@ -41,6 +41,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIInput;
@@ -66,7 +67,7 @@ import com.sun.faces.util.Util;
 /**
  * <B>HtmlBasicRenderer</B> is a base class for implementing renderers for HtmlBasicRenderKit.
  */
-public abstract class HtmlBasicRenderer extends Renderer {
+public abstract class HtmlBasicRenderer extends Renderer<UIComponent> {
 
     // Log instance for this class
     protected static final Logger logger = FacesLogger.RENDERKIT.getLogger();
@@ -426,6 +427,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
      *
      * @throws ConverterException if the value cannot be converted
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     protected String getFormattedValue(FacesContext context, UIComponent component, Object currentValue, Converter converter) throws ConverterException {
 
         // formatting is supported only for components that support
@@ -488,7 +490,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
     private static final Set<SearchExpressionHint> EXPRESSION_HINTS = EnumSet.of(SearchExpressionHint.IGNORE_NO_RESULT,
             SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
 
-    protected Iterator getMessageIter(FacesContext context, String forComponent, UIComponent component) {
+    protected Iterator<FacesMessage> getMessageIter(FacesContext context, String forComponent, UIComponent component) {
         // no "for" expression - return all messages
         if (forComponent == null) {
             return context.getMessages();

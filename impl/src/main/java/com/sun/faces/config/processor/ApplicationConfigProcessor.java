@@ -716,6 +716,7 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void addSystemEventListener(ServletContext servletContext, FacesContext facesContext, Application application, Node systemEventListener) {
         NodeList children = systemEventListener.getChildNodes();
         String listenerClass = null;

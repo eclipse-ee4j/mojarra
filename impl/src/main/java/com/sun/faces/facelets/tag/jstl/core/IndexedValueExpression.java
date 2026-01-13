@@ -47,11 +47,12 @@ public final class IndexedValueExpression extends ValueExpression {
      * @see jakarta.el.ValueExpression#getValue(jakarta.el.ELContext)
      */
     @Override
-    public Object getValue(ELContext context) {
+    @SuppressWarnings("unchecked")
+    public <T> T getValue(ELContext context) {
         Object base = orig.getValue(context);
         if (base != null) {
             context.setPropertyResolved(false);
-            return context.getELResolver().getValue(context, base, i);
+            return (T) context.getELResolver().getValue(context, base, i);
         }
         return null;
     }
@@ -91,7 +92,7 @@ public final class IndexedValueExpression extends ValueExpression {
      * @see jakarta.el.ValueExpression#getType(jakarta.el.ELContext)
      */
     @Override
-    public Class getType(ELContext context) {
+    public Class<?> getType(ELContext context) {
         Object base = orig.getValue(context);
         if (base != null) {
             context.setPropertyResolved(false);
@@ -106,7 +107,7 @@ public final class IndexedValueExpression extends ValueExpression {
      * @see jakarta.el.ValueExpression#getExpectedType()
      */
     @Override
-    public Class getExpectedType() {
+    public Class<?> getExpectedType() {
         return Object.class;
     }
 

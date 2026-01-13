@@ -47,6 +47,17 @@ import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELContextEvent;
+import jakarta.el.ELContextListener;
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationConfigurationPopulator;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PostConstructApplicationEvent;
+import jakarta.servlet.ServletContext;
+
 import com.sun.faces.config.configpopulator.MojarraRuntimePopulator;
 import com.sun.faces.config.configprovider.MetaInfFaceletTaglibraryConfigProvider;
 import com.sun.faces.config.configprovider.MetaInfFacesConfigResourceProvider;
@@ -81,17 +92,6 @@ import com.sun.faces.spi.InjectionProvider;
 import com.sun.faces.spi.InjectionProviderFactory;
 import com.sun.faces.spi.ThreadContext;
 import com.sun.faces.util.FacesLogger;
-
-import jakarta.el.ELContext;
-import jakarta.el.ELContextEvent;
-import jakarta.el.ELContextListener;
-import jakarta.faces.FacesException;
-import jakarta.faces.FactoryFinder;
-import jakarta.faces.application.Application;
-import jakarta.faces.application.ApplicationConfigurationPopulator;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.event.PostConstructApplicationEvent;
-import jakarta.servlet.ServletContext;
 
 /**
  * <p>
@@ -351,9 +351,9 @@ public class ConfigManager {
         Future<Map<Class<? extends Annotation>, Set<Class<?>>>> annotationScan;
 
         if (executor != null) {
-            annotationScan = executor.submit(new FindAnnotatedConfigClasses(servletContext, context, taskMetadata));
+            annotationScan = executor.submit(new FindAnnotatedConfigClasses(servletContext, taskMetadata));
         } else {
-            annotationScan = new FutureTask<>(new FindAnnotatedConfigClasses(servletContext, context, taskMetadata));
+            annotationScan = new FutureTask<>(new FindAnnotatedConfigClasses(servletContext, taskMetadata));
             ((FutureTask<Map<Class<? extends Annotation>, Set<Class<?>>>>) annotationScan).run();
         }
 

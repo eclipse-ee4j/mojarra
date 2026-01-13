@@ -447,9 +447,9 @@ public class InstanceFactory {
     /*
      * @see jakarta.faces.application.Application#createConverter(Class)
      */
-    public Converter createConverter(Class<?> targetClass) {
+    public Converter<?> createConverter(Class<?> targetClass) {
         notNull("targetClass", targetClass);
-        Converter returnVal = null;
+        Converter<?> returnVal = null;
 
         BeanManager beanManager = getBeanManager();
         returnVal = CdiUtils.createConverter(beanManager, targetClass);
@@ -457,7 +457,7 @@ public class InstanceFactory {
             return returnVal;
         }
 
-        returnVal = (Converter) newConverter(targetClass, converterTypeMap, targetClass);
+        returnVal = (Converter<?>) newConverter(targetClass, converterTypeMap, targetClass);
         if (returnVal != null) {
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.fine(MessageFormat.format("Created converter of type ''{0}''", returnVal.getClass().getName()));
@@ -726,7 +726,7 @@ public class InstanceFactory {
             associate.getAnnotationManager().applyComponentAnnotations(ctx, c);
             if (rendererType != null) {
                 RenderKit rk = ctx.getRenderKit();
-                Renderer r = null;
+                Renderer<?> r = null;
                 if (rk != null) {
                     r = rk.getRenderer(c.getFamily(), rendererType);
                     if (r != null) {
@@ -883,9 +883,9 @@ public class InstanceFactory {
         }
     }
 
-    private Converter createConverterBasedOnClass(Class<?> targetClass, Class<?> baseClass) {
+    private Converter<?> createConverterBasedOnClass(Class<?> targetClass, Class<?> baseClass) {
 
-        Converter returnVal = (Converter) newConverter(targetClass, converterTypeMap, baseClass);
+        Converter<?> returnVal = (Converter<?>) newConverter(targetClass, converterTypeMap, baseClass);
         if (returnVal != null) {
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.fine(MessageFormat.format("Created converter of type ''{0}''", returnVal.getClass().getName()));
@@ -974,7 +974,7 @@ public class InstanceFactory {
             clazz = (Class<?>) value;
         }
 
-        Constructor ctor = ReflectionUtils.lookupConstructor(clazz, Class.class);
+        Constructor<?> ctor = ReflectionUtils.lookupConstructor(clazz, Class.class);
         Throwable cause = null;
         if (ctor != null) {
             try {

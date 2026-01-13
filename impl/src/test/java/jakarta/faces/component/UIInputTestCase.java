@@ -271,7 +271,7 @@ public class UIInputTestCase extends UIOutputTestCase {
         Iterator<FacesMessage> messages = facesContext.getMessages();
         while (messages.hasNext()) {
             FacesMessage message = messages.next();
-            assertEquals(FacesMessage.SEVERITY_ERROR, message.getSeverity());
+            assertEquals(FacesMessage.Severity.ERROR, message.getSeverity());
             n++;
             // System.err.println(message.getSummary());
         }

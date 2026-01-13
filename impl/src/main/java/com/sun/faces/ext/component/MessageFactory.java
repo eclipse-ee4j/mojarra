@@ -52,7 +52,7 @@ public class MessageFactory {
      * @param messageId - the key of the message in the resource bundle
      * @param params - substittion parameters
      *
-     * @return a localized <code>FacesMessage</code> with the severity of FacesMessage.SEVERITY_ERROR
+     * @return a localized <code>FacesMessage</code> with the severity of FacesMessage.Severity.ERROR
      */
     public static FacesMessage getMessage(FacesContext context, String messageId, Object... params) {
         if (context == null || messageId == null) {
@@ -89,7 +89,7 @@ public class MessageFactory {
      * @param messageId - the key of the message in the resource bundle
      * @param params - substittion parameters
      *
-     * @return a localized <code>FacesMessage</code> with the severity of FacesMessage.SEVERITY_ERROR
+     * @return a localized <code>FacesMessage</code> with the severity of FacesMessage.Severity.ERROR
      */
     private static FacesMessage getMessage(Locale locale, String messageId, Object... params) {
         String summary = null;
@@ -146,7 +146,7 @@ public class MessageFactory {
 
         // At this point, we have a summary and a bundle.
         FacesMessage ret = new BindingFacesMessage(locale, summary, detail, params);
-        ret.setSeverity(FacesMessage.SEVERITY_ERROR);
+        ret.setSeverity(FacesMessage.Severity.ERROR);
         return ret;
     }
 
@@ -183,7 +183,7 @@ public class MessageFactory {
         return afactory.getApplication();
     }
 
-    private static ClassLoader getCurrentLoader(Class fallbackClass) {
+    private static ClassLoader getCurrentLoader(Class<?>fallbackClass) {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         if (loader == null) {
             loader = fallbackClass.getClassLoader();

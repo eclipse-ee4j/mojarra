@@ -58,7 +58,7 @@ public class FacesMessageTest {
     @Test
     public void testSerializeableSummaryDetailSeverity() throws Exception {
         FacesMessage message = null;
-        message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "This is a bad error.",
+        message = new FacesMessage(FacesMessage.Severity.FATAL, "This is a bad error.",
                 "This is a really bad error.");
         persistAndCheck(message);
     }

@@ -34,14 +34,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.application.ApplicationStateInfo;
-import com.sun.faces.facelets.tag.faces.ComponentSupport;
-import com.sun.faces.util.ComponentStruct;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.MostlySingletonSet;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
@@ -51,6 +43,14 @@ import jakarta.faces.event.PostAddToViewEvent;
 import jakarta.faces.event.PreRemoveFromViewEvent;
 import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.application.ApplicationStateInfo;
+import com.sun.faces.facelets.tag.faces.ComponentSupport;
+import com.sun.faces.util.ComponentStruct;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.MostlySingletonSet;
 
 /**
  * Context for dealing with partial state saving mechanics.
@@ -351,7 +351,7 @@ public class StateContext {
         // This is silly. We should be able to use Colletions.emptyMap(),
         // but cannot as StateContext.getDynamicComponents() API returns a
         // HashMap instead of a Map.
-        private HashMap emptyComponentsMap = new HashMap();
+        private HashMap<String, UIComponent> emptyComponentsMap = new HashMap<>();
 
         public NoopAddRemoveListener(FacesContext context) {
             super(context);
@@ -425,6 +425,7 @@ public class StateContext {
 
         private static final String DYNAMIC_COMPONENT_ADD_COLLECTION = RIConstants.FACES_PREFIX + "DynamicComponentSubtreeRoots";
 
+        @SuppressWarnings("unchecked")
         private Collection<UIComponent> getDynamicComponentCollection(Map<Object, Object> contextMap) {
             Collection<UIComponent> result = (Collection<UIComponent>) contextMap.get(DYNAMIC_COMPONENT_ADD_COLLECTION);
             if (null == result) {
@@ -464,6 +465,7 @@ public class StateContext {
             }
         }
 
+        @SuppressWarnings("unchecked")
         private Collection<String> getPreviouslyRemovedChildren(UIComponent parent) {
             Map<String, Object> attrs = parent.getAttributes();
             Collection<String> removedChildrenIds = (Collection<String>) attrs.get(ComponentSupport.REMOVED_CHILDREN);
@@ -502,6 +504,7 @@ public class StateContext {
 
         // Handles the addition of a new child to the parent. Returns true
         // if the child was previously removed from this parent.
+        @SuppressWarnings("unchecked")
         private boolean childAddedToSameParentAsBefore(UIComponent parent, String childTagId) {
             if (parent != null) {
                 Map<String, Object> attrs = parent.getAttributes();

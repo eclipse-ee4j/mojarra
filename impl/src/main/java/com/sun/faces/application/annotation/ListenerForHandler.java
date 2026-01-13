@@ -40,7 +40,6 @@ class ListenerForHandler implements RuntimeAnnotationHandler {
 
     // ----------------------------------- Methods from RuntimeAnnotationHandler
 
-    @SuppressWarnings({ "UnusedDeclaration" })
     @Override
     public void apply(FacesContext ctx, Object... params) {
 

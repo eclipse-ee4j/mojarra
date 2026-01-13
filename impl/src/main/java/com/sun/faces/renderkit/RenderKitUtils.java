@@ -1124,13 +1124,14 @@ public class RenderKitUtils {
         return false;
     }
 
+    @SuppressWarnings("unchecked")
     public static void renderUnhandledMessages(FacesContext ctx) {
 
         if (ctx.isProjectStage(ProjectStage.Development)) {
             Application app = ctx.getApplication();
             HtmlMessages messages = (HtmlMessages) app.createComponent(HtmlMessages.COMPONENT_TYPE);
             messages.setId(DEVELOPMENT_STAGE_MESSAGES_ID);
-            Renderer messagesRenderer = ctx.getRenderKit().getRenderer(HtmlMessages.COMPONENT_FAMILY, "jakarta.faces.Messages");
+            Renderer<HtmlMessages> messagesRenderer = ctx.getRenderKit().getRenderer(HtmlMessages.COMPONENT_FAMILY, "jakarta.faces.Messages");
             messages.setErrorStyle("Color: red");
             messages.setWarnStyle("Color: orange");
             messages.setInfoStyle("Color: blue");
@@ -1302,7 +1303,7 @@ public class RenderKitUtils {
             if (libName == null && ApplicationAssociate.getInstance(context).getResourceManager().isContractsResource(resName)) {
                 if (context.isProjectStage(ProjectStage.Development)) {
                     String msg = "Illegal path, direct contract references are not allowed: " + resName;
-                    context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, msg));
+                    context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.Severity.ERROR, msg, msg));
                 }
                 return "RES_NOT_FOUND";
             }
@@ -1311,7 +1312,7 @@ public class RenderKitUtils {
             if (res == null) {
                 if (context.isProjectStage(ProjectStage.Development)) {
                     String msg = "Unable to find resource " + (libName == null ? "" : libName + ", ") + resName;
-                    context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, msg));
+                    context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.Severity.ERROR, msg, msg));
                 }
                 return "RES_NOT_FOUND";
             } else {
@@ -1327,7 +1328,7 @@ public class RenderKitUtils {
             if (ApplicationAssociate.getInstance(context).getResourceManager().isContractsResource(value)) {
                 if (context.isProjectStage(ProjectStage.Development)) {
                     String msg = "Illegal path, direct contract references are not allowed: " + value;
-                    context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, msg));
+                    context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.Severity.ERROR, msg, msg));
                 }
                 return "RES_NOT_FOUND";
             }
@@ -1716,6 +1717,7 @@ public class RenderKitUtils {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static Map<String, List<String>> getPendingBehaviorEventListeners(UIComponent component, boolean flush) {
         var transientStateHelper = component.getTransientStateHelper();
         var pendingBehaviorEventListeners = (Map<String, List<String>>) transientStateHelper.getTransient(PENDING_BEHAVIOR_EVENT_LISTENERS_KEY);

@@ -35,7 +35,7 @@ public class TagLibraryImpl extends AbstractTagLibrary {
         this.addConverter(name, id);
     }
 
-    public void putConverter(String name, String id, Class handlerClass) {
+    public void putConverter(String name, String id, Class<?> handlerClass) {
         Util.notNull("name", name);
         Util.notNull("id", id);
         Util.notNull("handlerClass", handlerClass);
@@ -48,7 +48,7 @@ public class TagLibraryImpl extends AbstractTagLibrary {
         this.addValidator(name, id);
     }
 
-    public void putValidator(String name, String id, Class handlerClass) {
+    public void putValidator(String name, String id, Class<?> handlerClass) {
         Util.notNull("name", name);
         Util.notNull("id", id);
         Util.notNull("handlerClass", handlerClass);
@@ -61,14 +61,14 @@ public class TagLibraryImpl extends AbstractTagLibrary {
         this.addBehavior(name, id);
     }
 
-    public void putBehavior(String name, String id, Class handlerClass) {
+    public void putBehavior(String name, String id, Class<?> handlerClass) {
         Util.notNull("name", name);
         Util.notNull("id", id);
         Util.notNull("handlerClass", handlerClass);
         this.addBehavior(name, id, handlerClass);
     }
 
-    public void putTagHandler(String name, Class type) {
+    public void putTagHandler(String name, Class<?> type) {
         Util.notNull("name", name);
         Util.notNull("type", type);
         addTagHandler(name, type);
@@ -80,7 +80,7 @@ public class TagLibraryImpl extends AbstractTagLibrary {
         this.addComponent(name, componentType, rendererType);
     }
 
-    public void putComponent(String name, String componentType, String rendererType, Class handlerClass) {
+    public void putComponent(String name, String componentType, String rendererType, Class<?> handlerClass) {
         Util.notNull("name", name);
         Util.notNull("handlerClass", handlerClass);
         this.addComponent(name, componentType, rendererType, handlerClass);

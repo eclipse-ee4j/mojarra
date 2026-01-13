@@ -77,13 +77,12 @@ public abstract class JndiHandler implements RuntimeAnnotationHandler {
     public void setField(FacesContext facesContext, Field field, Object instance, Object value) {
         synchronized (instance) {
             try {
-                boolean fieldAccessible = true;
-                if (!field.isAccessible()) {
-                    field.setAccessible(true);
-                    fieldAccessible = false;
+                boolean restoreAccess = false;
+                if (!field.canAccess(instance)) {
+                    restoreAccess = field.trySetAccessible();
                 }
                 field.set(instance, value);
-                if (!fieldAccessible) {
+                if (restoreAccess) {
                     field.setAccessible(false);
                 }
             } catch (IllegalArgumentException | IllegalAccessException iae) {
@@ -108,10 +107,14 @@ public abstract class JndiHandler implements RuntimeAnnotationHandler {
     protected void invokeMethod(FacesContext facesContext, Method method, Object instance, Object value) {
         synchronized (instance) {
             try {
-                boolean accessible = method.isAccessible();
-                method.setAccessible(false);
+                boolean restoreAccess = false;
+                if (!method.canAccess(instance)) {
+                    restoreAccess = method.trySetAccessible();
+                }
                 method.invoke(instance, value);
-                method.setAccessible(accessible);
+                if (restoreAccess) {
+                    method.setAccessible(false);
+                }
             } catch (InvocationTargetException | IllegalArgumentException | IllegalAccessException ite) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
                     LOGGER.log(Level.WARNING, "Unable to call method: " + method.getName(), ite);

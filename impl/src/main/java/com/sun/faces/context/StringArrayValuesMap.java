@@ -48,12 +48,13 @@ abstract class StringArrayValuesMap extends BaseContextMap<String[]> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean equals(Object obj) {
 
         if (obj == null || !(obj.getClass() == ExternalContextImpl.theUnmodifiableMapClass)) {
             return false;
         }
-        Map objMap = (Map) obj;
+        Map<Object, Object[]> objMap = (Map<Object, Object[]>) obj;
 
         if (size() != objMap.size()) {
             return false;
@@ -69,7 +70,7 @@ abstract class StringArrayValuesMap extends BaseContextMap<String[]> {
         } else {
             for (Object key : thisKeys) {
                 Object[] thisVal = get(key);
-                Object[] objVal = (Object[]) objMap.get(key);
+                Object[] objVal = objMap.get(key);
                 if (!Arrays.equals(thisVal, objVal)) {
                     return false;
                 }

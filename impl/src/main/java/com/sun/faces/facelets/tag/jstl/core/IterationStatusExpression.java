@@ -16,10 +16,10 @@
 
 package com.sun.faces.facelets.tag.jstl.core;
 
-import com.sun.faces.facelets.tag.IterationStatus;
-
 import jakarta.el.ELContext;
 import jakarta.el.ValueExpression;
+
+import com.sun.faces.facelets.tag.IterationStatus;
 
 /**
  * @author Jacob Hookom
@@ -47,7 +47,8 @@ public final class IterationStatusExpression extends ValueExpression {
      * @see jakarta.el.ValueExpression#getValue(jakarta.el.ELContext)
      */
     @Override
-    public Object getValue(ELContext context) {
+    @SuppressWarnings("unchecked")
+    public IterationStatus getValue(ELContext context) {
         return status;
     }
 
@@ -77,7 +78,7 @@ public final class IterationStatusExpression extends ValueExpression {
      * @see jakarta.el.ValueExpression#getType(jakarta.el.ELContext)
      */
     @Override
-    public Class getType(ELContext context) {
+    public Class<?> getType(ELContext context) {
         return IterationStatus.class;
     }
 
@@ -87,7 +88,7 @@ public final class IterationStatusExpression extends ValueExpression {
      * @see jakarta.el.ValueExpression#getExpectedType()
      */
     @Override
-    public Class getExpectedType() {
+    public Class<?> getExpectedType() {
         return IterationStatus.class;
     }
 

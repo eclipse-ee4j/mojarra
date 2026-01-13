@@ -25,7 +25,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.logging.Logger;
 
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
@@ -39,15 +38,12 @@ import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.spi.SerializationProvider;
 import com.sun.faces.spi.SerializationProviderFactory;
 import com.sun.faces.util.ByteArrayGuardAESCTR;
-import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.Util;
 
 /**
  * Common code for the default <code>StateHelper</code> implementations.
  */
 public abstract class StateHelper {
-
-    private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 
     /**
      * <p>

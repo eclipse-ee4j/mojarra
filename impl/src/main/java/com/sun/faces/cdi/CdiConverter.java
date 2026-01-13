@@ -24,7 +24,7 @@ import jakarta.faces.convert.Converter;
 /**
  * A delegate to the CDI managed converter.
  */
-public class CdiConverter implements Converter, StateHolder {
+public class CdiConverter implements Converter<Object>, StateHolder {
 
     /**
      * Stores the converter-id (if any).
@@ -34,7 +34,7 @@ public class CdiConverter implements Converter, StateHolder {
     /**
      * Stores a transient reference to the CDI managed converter.
      */
-    private transient Converter delegate;
+    private transient Converter<Object> delegate;
 
     /**
      * Stores the for-class (if any).
@@ -54,7 +54,7 @@ public class CdiConverter implements Converter, StateHolder {
      * @param forClass the for class.
      * @param delegate the delegate.
      */
-    public CdiConverter(String converterId, Class forClass, Converter delegate) {
+    public CdiConverter(String converterId, Class<?> forClass, Converter<Object> delegate) {
         this.converterId = converterId;
         this.forClass = forClass;
         this.delegate = delegate;
@@ -139,12 +139,13 @@ public class CdiConverter implements Converter, StateHolder {
      * @param facesContext the Faces context.
      * @return the delegate.
      */
-    private Converter getDelegate(FacesContext facesContext) {
+    @SuppressWarnings("unchecked")
+    private Converter<Object> getDelegate(FacesContext facesContext) {
         if (delegate == null) {
             if (!converterId.equals("")) {
                 delegate = facesContext.getApplication().createConverter(converterId);
             } else {
-                delegate = facesContext.getApplication().createConverter(forClass);
+                delegate = (Converter<Object>) facesContext.getApplication().createConverter(forClass);
             }
         }
         return delegate;

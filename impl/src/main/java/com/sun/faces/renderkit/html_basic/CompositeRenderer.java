@@ -19,11 +19,11 @@ package com.sun.faces.renderkit.html_basic;
 import java.io.IOException;
 import java.util.Map;
 
-import com.sun.faces.util.Util;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.render.Renderer;
+
+import com.sun.faces.util.Util;
 
 /**
  * <p>
@@ -31,7 +31,7 @@ import jakarta.faces.render.Renderer;
  * section of a composite component template.
  * </p>
  */
-public class CompositeRenderer extends Renderer {
+public class CompositeRenderer extends Renderer<UIComponent> {
 
     // --------------------------------------------------- Methods from Renderer
 

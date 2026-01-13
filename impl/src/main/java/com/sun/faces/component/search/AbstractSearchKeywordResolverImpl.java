@@ -23,6 +23,7 @@ import jakarta.faces.component.search.SearchKeywordResolver;
 
 public abstract class AbstractSearchKeywordResolverImpl extends SearchKeywordResolver {
 
+    @SuppressWarnings("unchecked")
     protected <T> T closest(Class<T> type, UIComponent base) {
         UIComponent parent = base.getParent();
 

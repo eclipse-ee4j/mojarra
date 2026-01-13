@@ -206,6 +206,7 @@ public final class AjaxHandler extends TagHandlerImpl implements BehaviorHolderA
 
     // Applies a nested AjaxHandler by adding the AjaxBehavior to the
     // parent component.
+    @SuppressWarnings("unchecked")
     private void applyNested(FaceletContext ctx, UIComponent parent, String eventName) {
 
         if (!ComponentHandler.isNew(parent)) {

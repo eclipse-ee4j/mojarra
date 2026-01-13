@@ -135,6 +135,7 @@ public class ServerSideStateHelper extends StateHelper {
      * <code>StringBuilder</code> without any markup included or any content written to the client.
      */
     @Override
+    @SuppressWarnings("rawtypes")
     public void writeState(FacesContext ctx, Object state, StringBuilder stateCapture) throws IOException {
         notNull("context", ctx);
 
@@ -265,9 +266,10 @@ public class ServerSideStateHelper extends StateHelper {
 
         // noinspection SynchronizationOnLocalVariableOrMethodParameter
         synchronized (getMutex(sessionObj)) {
-            Map logicalMap = (Map) externalCtx.getSessionMap().get(LOGICAL_VIEW_MAP);
+            @SuppressWarnings("unchecked")
+            Map<String, Map<String, Object[]>> logicalMap = (Map<String, Map<String, Object[]>>) externalCtx.getSessionMap().get(LOGICAL_VIEW_MAP);
             if (logicalMap != null) {
-                Map actualMap = (Map) logicalMap.get(idInLogicalMap);
+                Map<String, Object[]> actualMap = logicalMap.get(idInLogicalMap);
                 if (actualMap != null) {
                     RequestStateManager.set(ctx, RequestStateManager.LOGICAL_VIEW_MAP, idInLogicalMap);
 

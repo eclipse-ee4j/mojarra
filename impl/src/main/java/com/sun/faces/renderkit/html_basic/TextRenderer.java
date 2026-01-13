@@ -108,7 +108,7 @@ public class TextRenderer extends HtmlBasicInputRenderer {
 
                     if (recommendedComponent != null) {
                         String message = "<h:inputText type=\"" + type + "\"> is discommended, you should instead use " + recommendedComponent;
-                        context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_WARN, message, message));
+                        context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.Severity.WARN, message, message));
                     }
                 }
 

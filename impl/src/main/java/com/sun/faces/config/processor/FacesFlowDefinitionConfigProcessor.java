@@ -37,25 +37,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import com.sun.faces.RIConstants;
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.application.JavaFlowLoaderHelper;
-import com.sun.faces.config.WebConfiguration;
-import com.sun.faces.config.manager.documents.DocumentInfo;
-import com.sun.faces.facelets.util.ReflectionUtil;
-import com.sun.faces.flow.FlowImpl;
-import com.sun.faces.flow.ParameterImpl;
-import com.sun.faces.flow.builder.FlowBuilderImpl;
-import com.sun.faces.util.FacesLogger;
-
 import jakarta.el.ELContext;
 import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
@@ -77,6 +58,25 @@ import jakarta.faces.flow.builder.MethodCallBuilder;
 import jakarta.faces.flow.builder.NavigationCaseBuilder;
 import jakarta.faces.flow.builder.SwitchBuilder;
 import jakarta.servlet.ServletContext;
+
+import org.w3c.dom.Attr;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.application.JavaFlowLoaderHelper;
+import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.config.manager.documents.DocumentInfo;
+import com.sun.faces.facelets.util.ReflectionUtil;
+import com.sun.faces.flow.FlowImpl;
+import com.sun.faces.flow.ParameterImpl;
+import com.sun.faces.flow.builder.FlowBuilderImpl;
+import com.sun.faces.util.FacesLogger;
 
 /**
  * <p>
@@ -184,9 +184,14 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
 
     }
 
+    @SuppressWarnings("unchecked")
+    private static List<FlowDefinitionDocument> getFlowDefinitionDocuments(Map<String, Object> appMap) {
+        return (List<FlowDefinitionDocument>) appMap.get(flowDefinitionListKey);
+    }
+
     private void saveFlowDefinition(FacesContext context, URI definingDocumentURI, Document flowDefinitions) {
         Map<String, Object> appMap = context.getExternalContext().getApplicationMap();
-        List<FlowDefinitionDocument> def = (List<FlowDefinitionDocument>) appMap.get(flowDefinitionListKey);
+        List<FlowDefinitionDocument> def = getFlowDefinitionDocuments(appMap);
         if (null == def) {
             def = new ArrayList<>();
             appMap.put(flowDefinitionListKey, def);
@@ -196,13 +201,13 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
 
     private List<FlowDefinitionDocument> getSavedFlowDefinitions(FacesContext context) {
         Map<String, Object> appMap = context.getExternalContext().getApplicationMap();
-        List<FlowDefinitionDocument> def = (List<FlowDefinitionDocument>) appMap.get(flowDefinitionListKey);
+        List<FlowDefinitionDocument> def = getFlowDefinitionDocuments(appMap);
         return null != def ? def : Collections.emptyList();
     }
 
     private void clearSavedFlowDefinitions(FacesContext context) {
         Map<String, Object> appMap = context.getExternalContext().getApplicationMap();
-        List<FlowDefinitionDocument> def = (List<FlowDefinitionDocument>) appMap.get(flowDefinitionListKey);
+        List<FlowDefinitionDocument> def = getFlowDefinitionDocuments(appMap);
         if (null != def) {
             for (FlowDefinitionDocument cur : def) {
                 cur.clear();
@@ -494,7 +499,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
             String destinationId = facesFlowIdList.item(0).getNodeValue().trim();
 
             NodeList definingDocumentIdList = (NodeList) xpath.evaluate(".//ns1:flow-document-id/text()", facesFlowRefNode, XPathConstants.NODESET);
-            if (null == definingDocumentIdList && 1 != definingDocumentIdList.getLength()) {
+            if (null != definingDocumentIdList && 1 != definingDocumentIdList.getLength()) {
                 throw new XPathExpressionException("Within <flow-reference> must have at most one <flow-document-id>");
             }
             String definingDocumentId = "";

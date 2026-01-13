@@ -19,8 +19,6 @@ package com.sun.faces.facelets.tag.jstl.core;
 import java.io.IOException;
 import java.util.Iterator;
 
-import com.sun.faces.facelets.tag.TagHandlerImpl;
-
 import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
@@ -28,6 +26,8 @@ import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagException;
 import jakarta.faces.view.facelets.TextHandler;
+
+import com.sun.faces.facelets.tag.TagHandlerImpl;
 
 /**
  * Simplified implementation of c:set
@@ -62,7 +62,7 @@ public class SetHandler extends TagHandlerImpl {
 
         StringBuilder bodyValue = new StringBuilder();
 
-        Iterator iter = TagHandlerImpl.findNextByType(nextHandler, TextHandler.class);
+        Iterator<TextHandler> iter = TagHandlerImpl.findNextByType(nextHandler, TextHandler.class);
         while (iter.hasNext()) {
             TextHandler text = (TextHandler) iter.next();
             bodyValue.append(text.getText(ctx));

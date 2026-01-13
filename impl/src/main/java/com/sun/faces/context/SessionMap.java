@@ -26,12 +26,12 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
-
 import jakarta.faces.application.ProjectStage;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
 
 /**
  * @see jakarta.faces.context.ExternalContext#getSessionMap()
@@ -66,6 +66,7 @@ public class SessionMap extends BaseContextMap<Object> {
 
     // Supported by maps if overridden
     @Override
+    @SuppressWarnings("rawtypes")
     public void putAll(Map t) {
         HttpSession session = getSession(true);
         for (Iterator i = t.entrySet().iterator(); i.hasNext();) {

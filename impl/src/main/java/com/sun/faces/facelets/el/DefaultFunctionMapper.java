@@ -25,9 +25,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.sun.faces.facelets.util.ReflectionUtil;
-
 import jakarta.el.FunctionMapper;
+
+import com.sun.faces.facelets.util.ReflectionUtil;
 
 /**
  * Default implementation of the FunctionMapper
@@ -41,7 +41,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
 
     private static final long serialVersionUID = 1L;
 
-    private Map functions = null;
+    private Map<String, Function> functions = null;
 
     /*
      * (non-Javadoc)
@@ -51,7 +51,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
     @Override
     public Method resolveFunction(String prefix, String localName) {
         if (functions != null) {
-            Function f = (Function) functions.get(prefix + ':' + localName);
+            Function f = functions.get(prefix + ':' + localName);
             return f.getMethod();
         }
         return null;
@@ -59,7 +59,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
 
     public void addFunction(String prefix, String localName, Method m) {
         if (functions == null) {
-            functions = new HashMap();
+            functions = new HashMap<>();
         }
         Function f = new Function(prefix, localName, m);
         synchronized (this) {
@@ -83,15 +83,16 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
      * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
      */
     @Override
+    @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        functions = (Map) in.readObject();
+        functions = (Map<String, Function>) in.readObject();
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(128);
         sb.append("FunctionMapper[\n");
-        for (Iterator itr = functions.values().iterator(); itr.hasNext();) {
+        for (Iterator<Function> itr = functions.values().iterator(); itr.hasNext();) {
             sb.append(itr.next()).append('\n');
         }
         sb.append(']');
@@ -178,6 +179,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
             return m;
         }
 
+        @SuppressWarnings("unused")
         public boolean matches(String prefix, String localName) {
             if (this.prefix != null) {
                 if (prefix == null) {

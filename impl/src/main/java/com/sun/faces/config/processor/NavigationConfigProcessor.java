@@ -25,11 +25,15 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.xpath.XPathExpressionException;
+
+import jakarta.faces.application.NavigationCase;
+import jakarta.faces.application.NavigationHandler;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.ServletContext;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -38,11 +42,6 @@ import org.w3c.dom.NodeList;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.manager.documents.DocumentInfo;
 import com.sun.faces.util.FacesLogger;
-
-import jakarta.faces.application.NavigationCase;
-import jakarta.faces.application.NavigationHandler;
-import jakarta.faces.context.FacesContext;
-import jakarta.servlet.ServletContext;
 
 /**
  * <p>

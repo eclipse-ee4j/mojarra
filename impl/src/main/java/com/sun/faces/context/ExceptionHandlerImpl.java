@@ -91,7 +91,6 @@ public class ExceptionHandlerImpl extends ExceptionHandler {
     /**
      * @see jakarta.faces.context.ExceptionHandler#handle()
      */
-    @SuppressWarnings({ "ThrowableInstanceNeverThrown" })
     @Override
     public void handle() throws FacesException {
 

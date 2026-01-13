@@ -16,11 +16,11 @@
 
 package com.sun.faces.facelets.tag;
 
-import com.sun.faces.util.Util;
-
 import jakarta.faces.view.facelets.MetaRuleset;
 import jakarta.faces.view.facelets.MetaTagHandler;
 import jakarta.faces.view.facelets.TagConfig;
+
+import com.sun.faces.util.Util;
 
 /**
  * A base tag for wiring state to an object instance based on rules populated at the time of creating a MetaRuleset.

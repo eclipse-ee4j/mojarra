@@ -24,11 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.sun.faces.application.view.FaceletViewHandlingStrategy;
-import com.sun.faces.facelets.tag.TagHandlerImpl;
-import com.sun.faces.facelets.tag.faces.ComponentSupport;
-import com.sun.faces.util.MessageUtils;
-
 import jakarta.el.ValueExpression;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.Resource;
@@ -41,6 +36,11 @@ import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagException;
+
+import com.sun.faces.application.view.FaceletViewHandlingStrategy;
+import com.sun.faces.facelets.tag.TagHandlerImpl;
+import com.sun.faces.facelets.tag.faces.ComponentSupport;
+import com.sun.faces.util.MessageUtils;
 
 public class InterfaceHandler extends TagHandlerImpl {
 
@@ -69,6 +69,7 @@ public class InterfaceHandler extends TagHandlerImpl {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void validateComponent(FacesContext context, UIComponent ccParent) throws TagException {
         UIComponent cc = ccParent.getParent();
         if (null == cc) {

@@ -187,7 +187,7 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
                 } else if (value instanceof Iterable) {
                     items = new IterableItemIterator(ctx, (UISelectItems) kid, (Iterable<?>) value);
                 } else if (value instanceof Map) {
-                    items = new MapIterator(ctx, (UISelectItems) kid, (Map) value);
+                    items = new MapIterator(ctx, (UISelectItems) kid, (Map<?, ?>) value);
                 } else {
                     throw new IllegalArgumentException();
                 }
@@ -299,6 +299,7 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
 
         // -------------------------------------------------------- Constructors
 
+        @SuppressWarnings({ "rawtypes", "unchecked" })
         private MapIterator(FacesContext ctx, UISelectItems sourceComponent, Map map) {
 
             super(sourceComponent);

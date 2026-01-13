@@ -30,17 +30,17 @@ public class FlowDiscoveryInfo {
         this.definingDocument = definingDocument;
     }
 
-    public FlowDiscoveryInfo(Class definingClass, String id, String definingDocument) {
+    public FlowDiscoveryInfo(Class<?> definingClass, String id, String definingDocument) {
         this.definingClass = definingClass;
         this.id = id;
         this.definingDocument = definingDocument;
     }
 
-    public Class getDefiningClass() {
+    public Class<?> getDefiningClass() {
         return definingClass;
     }
 
-    public void setDefiningClass(Class definingClass) {
+    public void setDefiningClass(Class<?> definingClass) {
         this.definingClass = definingClass;
     }
 

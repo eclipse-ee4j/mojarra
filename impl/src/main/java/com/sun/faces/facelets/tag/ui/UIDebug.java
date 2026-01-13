@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIComponentBase;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
@@ -55,18 +56,18 @@ public final class UIDebug extends UIComponentBase {
     }
 
     @Override
-    public List getChildren() {
-        return new ArrayList() {
+    public List<UIComponent> getChildren() {
+        return new ArrayList<>() {
 
             private static final long serialVersionUID = 2156130539926052013L;
 
             @Override
-            public boolean add(Object o) {
+            public boolean add(UIComponent o) {
                 throw new IllegalStateException("<ui:debug> does not support children");
             }
 
             @Override
-            public void add(int index, Object o) {
+            public void add(int index, UIComponent o) {
                 throw new IllegalStateException("<ui:debug> does not support children");
             }
         };
@@ -110,19 +111,20 @@ public final class UIDebug extends UIComponentBase {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static String writeDebugOutput(FacesContext faces) throws IOException {
         FastWriter fw = new FastWriter();
         DevTools.debugHtml(fw, faces);
 
-        Map session = faces.getExternalContext().getSessionMap();
-        Map debugs = (Map) session.get(KEY);
+        Map<String, Object> session = faces.getExternalContext().getSessionMap();
+        Map<String, String> debugs = (Map<String, String>) session.get(KEY);
         if (debugs == null) {
-            debugs = new LinkedHashMap() {
+            debugs = new LinkedHashMap<>() {
 
                 private static final long serialVersionUID = 2541609242499547693L;
 
                 @Override
-                protected boolean removeEldestEntry(Map.Entry eldest) {
+                protected boolean removeEldestEntry(Map.Entry<String, String> eldest) {
                     return size() > 5;
                 }
             };
@@ -133,11 +135,12 @@ public final class UIDebug extends UIComponentBase {
         return id;
     }
 
+    @SuppressWarnings("unchecked")
     private static String fetchDebugOutput(FacesContext faces, String id) {
-        Map session = faces.getExternalContext().getSessionMap();
-        Map debugs = (Map) session.get(KEY);
+        Map<String, Object> session = faces.getExternalContext().getSessionMap();
+        Map<String, String> debugs = (Map<String, String>) session.get(KEY);
         if (debugs != null) {
-            return (String) debugs.get(id);
+            return debugs.get(id);
         }
         return null;
     }

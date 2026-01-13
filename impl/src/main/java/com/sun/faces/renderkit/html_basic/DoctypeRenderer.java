@@ -18,18 +18,13 @@ package com.sun.faces.renderkit.html_basic;
 
 import java.io.IOException;
 
-import com.sun.faces.renderkit.Attribute;
-import com.sun.faces.renderkit.AttributeManager;
-
 import jakarta.faces.component.Doctype;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.render.Renderer;
 
-public class DoctypeRenderer extends Renderer {
-
-    private static final Attribute[] DOCTYPE_ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.OUTPUTDOCTYPE);
+public class DoctypeRenderer extends Renderer<UIComponent> {
 
     @Override
     public void decode(FacesContext context, UIComponent component) {

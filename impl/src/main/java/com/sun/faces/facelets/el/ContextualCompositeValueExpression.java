@@ -16,14 +16,14 @@
 
 package com.sun.faces.facelets.el;
 
-import com.sun.faces.component.CompositeComponentStackManager;
-
 import jakarta.el.ELContext;
 import jakarta.el.ValueExpression;
 import jakarta.el.ValueReference;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.Location;
+
+import com.sun.faces.component.CompositeComponentStackManager;
 
 /**
  * <p>
@@ -103,7 +103,7 @@ public final class ContextualCompositeValueExpression extends ValueExpression {
     // ------------------------------------ Methods from ValueExpression
 
     @Override
-    public Object getValue(ELContext elContext) {
+    public <T> T getValue(ELContext elContext) {
 
         FacesContext ctx = (FacesContext) elContext.getContext(FacesContext.class);
         boolean pushed = pushCompositeComponent(ctx);
@@ -198,7 +198,6 @@ public final class ContextualCompositeValueExpression extends ValueExpression {
         return originalVE.getExpressionString();
     }
 
-    @SuppressWarnings({ "EqualsWhichDoesntCheckParameterClass" })
     @Override
     public boolean equals(Object o) {
         return originalVE.equals(o);

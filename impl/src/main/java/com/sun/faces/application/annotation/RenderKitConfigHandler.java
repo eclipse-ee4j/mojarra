@@ -88,7 +88,7 @@ public class RenderKitConfigHandler implements ConfigAnnotationHandler {
                                     + ".  Unable to find specified RenderKit.");
                         }
                         rk.addRenderer(ra.componentFamily(), ra.rendererType(),
-                                (Renderer) rClass.getDeclaredConstructor().newInstance());
+                                (Renderer<?>) rClass.getDeclaredConstructor().newInstance());
                     } catch (IllegalStateException | ReflectiveOperationException | SecurityException e) {
                         throw new FacesException(e);
                     }

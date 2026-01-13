@@ -52,7 +52,7 @@ public abstract class HtmlBasicInputRenderer extends HtmlBasicRenderer {
         String newValue = (String) submittedValue;
         // if we have no local value, try to get the valueExpression.
         ValueExpression valueExpression = component.getValueExpression("value");
-        Converter converter = null;
+        Converter<?> converter = null;
 
         // If there is a converter attribute, use it to to ask application
         // instance for a converter with this identifer.

@@ -118,7 +118,7 @@ public class ValidateComponentNesting implements SystemEventListener {
         Object[] params = new Object[] {};
 
         FacesMessage m = MessageUtils.getExceptionMessage(key, params);
-        m.setSeverity(FacesMessage.SEVERITY_WARN);
+        m.setSeverity(FacesMessage.Severity.WARN);
         ctx.addMessage(clientId, m);
     }
 

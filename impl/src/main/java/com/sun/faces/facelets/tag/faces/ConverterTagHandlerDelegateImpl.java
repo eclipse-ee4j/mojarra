@@ -18,9 +18,6 @@ package com.sun.faces.facelets.tag.faces;
 
 import java.io.IOException;
 
-import com.sun.faces.facelets.tag.MetaRulesetImpl;
-import com.sun.faces.util.Util;
-
 import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.ValueHolder;
@@ -33,6 +30,9 @@ import jakarta.faces.view.facelets.MetaRuleset;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagException;
 import jakarta.faces.view.facelets.TagHandlerDelegate;
+
+import com.sun.faces.facelets.tag.MetaRulesetImpl;
+import com.sun.faces.util.Util;
 
 /**
  *
@@ -100,10 +100,10 @@ public class ConverterTagHandlerDelegateImpl extends TagHandlerDelegate implemen
         // cast to a ValueHolder
         ValueHolder vh = (ValueHolder) parent;
         ValueExpression ve = null;
-        Converter c = null;
+        Converter<?> c = null;
         if (owner.getBinding() != null) {
             ve = owner.getBinding().getValueExpression(ctx, Converter.class);
-            c = (Converter) ve.getValue(ctx);
+            c = (Converter<?>) ve.getValue(ctx);
         }
         if (c == null) {
             c = createConverter(ctx);
@@ -129,7 +129,7 @@ public class ConverterTagHandlerDelegateImpl extends TagHandlerDelegate implemen
      * @param ctx FaceletContext to use
      * @return Converter instance, cannot be null
      */
-    private Converter createConverter(FaceletContext ctx) {
+    private Converter<?> createConverter(FaceletContext ctx) {
         if (owner.getConverterId(ctx) == null) {
             throw new TagException(owner.getTag(),
                     "Default behavior invoked of requiring a converter-id passed in the constructor, must override ConvertHandler(ConverterConfig)");

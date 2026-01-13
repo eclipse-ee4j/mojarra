@@ -79,7 +79,7 @@ public abstract class MetadataWrapperMap<K, V> implements Map<K, V> {
     protected abstract V onPut(K key, V value);
 
     @Override
-    public void putAll(Map m) {
+    public void putAll(Map<? extends K, ? extends V> m) {
         this.wrapped.putAll(m);
     }
 

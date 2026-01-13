@@ -25,13 +25,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import com.sun.faces.config.InitFacesContext;
+import jakarta.servlet.ServletContext;
+
 import com.sun.faces.config.manager.spi.FilterClassesFromFacesInitializerAnnotationProvider;
 import com.sun.faces.spi.AnnotationProvider;
 import com.sun.faces.spi.AnnotationProviderFactory;
 import com.sun.faces.util.Timer;
-
-import jakarta.servlet.ServletContext;
 
 /**
  * Scans the class files within a web application returning a <code>Set</code> of classes that have been annotated with
@@ -39,7 +38,6 @@ import jakarta.servlet.ServletContext;
  */
 public class FindAnnotatedConfigClasses implements Callable<Map<Class<? extends Annotation>, Set<Class<?>>>> {
 
-    private final InitFacesContext facesContext;
     private final AnnotationProvider provider;
     private final ProvideMetadataToAnnotationScanTask metadataGetter;
     private final Set<Class<?>> annotatedSet;
@@ -47,8 +45,7 @@ public class FindAnnotatedConfigClasses implements Callable<Map<Class<? extends 
     // -------------------------------------------------------- Constructors
 
     @SuppressWarnings("unchecked")
-    public FindAnnotatedConfigClasses(ServletContext servletContext, InitFacesContext facesContext, ProvideMetadataToAnnotationScanTask metadataGetter) {
-        this.facesContext = facesContext;
+    public FindAnnotatedConfigClasses(ServletContext servletContext, ProvideMetadataToAnnotationScanTask metadataGetter) {
         provider = AnnotationProviderFactory.createAnnotationProvider(servletContext);
         this.metadataGetter = metadataGetter;
         annotatedSet = (Set<Class<?>>) servletContext.getAttribute(ANNOTATED_CLASSES);

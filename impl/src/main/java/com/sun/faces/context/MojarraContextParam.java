@@ -48,7 +48,7 @@ public enum MojarraContextParam {
     /**
      * Constructor.
      */
-    MojarraContextParam(String name, Class type, Object defaultValue) {
+    MojarraContextParam(String name, Class<?> type, Object defaultValue) {
         this.name = name;
         this.type = type;
         this.defaultValue = defaultValue;
@@ -88,7 +88,7 @@ public enum MojarraContextParam {
      *
      * @return the type.
      */
-    public Class getType() {
+    public Class<?> getType() {
         return type;
     }
 }

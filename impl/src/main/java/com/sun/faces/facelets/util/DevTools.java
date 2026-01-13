@@ -44,14 +44,14 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.util.Util;
-
 import jakarta.el.Expression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.Flash;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.util.Util;
 
 /**
  * Utility class for displaying Facelet error/debug information.
@@ -234,12 +234,12 @@ public final class DevTools {
         writer.write("</dt>");
         if (hasChildren) {
             if (c.getFacets().size() > 0) {
-                for (Map.Entry entry : c.getFacets().entrySet()) {
+                for (Map.Entry<String, UIComponent> entry : c.getFacets().entrySet()) {
                     writer.write("<dd style=\"margin-top: 2px; margin-bottom: 2px;\">");
                     writer.write("<span style=\"font-family: 'Trebuchet MS', Verdana, Arial, Sans-Serif; font-size: small;\">");
-                    writer.write((String) entry.getKey());
+                    writer.write(entry.getKey());
                     writer.write("</span>");
-                    writeComponent(writer, (UIComponent) entry.getValue());
+                    writeComponent(writer, entry.getValue());
                     writer.write("</dd>");
                 }
             }

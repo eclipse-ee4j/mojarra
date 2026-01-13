@@ -21,9 +21,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.util.FacesLogger;
-
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.Resource;
@@ -39,6 +36,9 @@ import jakarta.faces.event.ListenerFor;
 import jakarta.faces.event.PostAddToViewEvent;
 import jakarta.faces.render.Renderer;
 
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.util.FacesLogger;
+
 /**
  * <p>
  * Base class for shared behavior between Script and Stylesheet renderers. Maybe composition would be better, but
@@ -46,7 +46,7 @@ import jakarta.faces.render.Renderer;
  * </p>
  */
 @ListenerFor(systemEventClass = PostAddToViewEvent.class)
-public abstract class ScriptStyleBaseRenderer extends Renderer implements ComponentSystemEventListener {
+public abstract class ScriptStyleBaseRenderer extends Renderer<UIComponent> implements ComponentSystemEventListener {
 
     private static final String COMP_KEY = ScriptStyleBaseRenderer.class.getName() + "_COMPOSITE_COMPONENT";
 
@@ -137,7 +137,7 @@ public abstract class ScriptStyleBaseRenderer extends Renderer implements Compon
             if (0 == childCount) {
                 // this is user error, so put up a message if desired
                 if (context.isProjectStage(ProjectStage.Development)) {
-                    FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN,
+                    FacesMessage message = new FacesMessage(FacesMessage.Severity.WARN,
                             "outputScript or outputStylesheet with no library, no name, and no body content", "Is body content intended?");
                     context.addMessage(component.getClientId(context), message);
                 }
@@ -197,7 +197,7 @@ public abstract class ScriptStyleBaseRenderer extends Renderer implements Compon
         if (library == null && name != null && ApplicationAssociate.getInstance(context).getResourceManager().isContractsResource(name)) {
             if (context.isProjectStage(ProjectStage.Development)) {
                 String msg = "Illegal path, direct contract references are not allowed: " + name;
-                context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, msg));
+                context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.Severity.ERROR, msg, msg));
             }
             resource = null;
         }
@@ -205,7 +205,7 @@ public abstract class ScriptStyleBaseRenderer extends Renderer implements Compon
         if (resource == null) {
             if (context.isProjectStage(ProjectStage.Development)) {
                 String msg = "Unable to find resource " + (library == null ? "" : library + ", ") + name;
-                context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, msg));
+                context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.Severity.ERROR, msg, msg));
             }
         } else {
             resourceUrl = resource.getRequestPath();

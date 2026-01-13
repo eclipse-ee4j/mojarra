@@ -20,9 +20,9 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.sun.faces.util.Util;
-
 import jakarta.servlet.ServletRequest;
+
+import com.sun.faces.util.Util;
 
 /**
  * @see jakarta.faces.context.ExternalContext#getRequestMap()
@@ -48,6 +48,7 @@ public class RequestMap extends BaseContextMap<Object> {
 
     // Supported by maps if overridden
     @Override
+    @SuppressWarnings("rawtypes")
     public void putAll(Map t) {
         for (Iterator i = t.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry) i.next();

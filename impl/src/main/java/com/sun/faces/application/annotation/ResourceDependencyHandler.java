@@ -21,14 +21,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.sun.faces.el.ELUtils;
-import com.sun.faces.util.RequestStateManager;
-
 import jakarta.el.ValueExpression;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ResourceDependency;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
+
+import com.sun.faces.el.ELUtils;
+import com.sun.faces.util.RequestStateManager;
 
 /**
  * {@link RuntimeAnnotationHandler} responsible for processing {@link ResourceDependency} annotations.
@@ -70,7 +70,6 @@ class ResourceDependencyHandler implements RuntimeAnnotationHandler {
 
     // ----------------------------------- Methods from RuntimeAnnotationHandler
 
-    @SuppressWarnings({ "UnusedDeclaration" })
     @Override
     public void apply(FacesContext ctx, Object... params) {
 

@@ -44,7 +44,7 @@ public abstract class NoOpFacesContext extends FacesContext {
 
     @Override
     public FacesMessage.Severity getMaximumSeverity() {
-        return FacesMessage.SEVERITY_INFO;
+        return FacesMessage.Severity.INFO;
     }
 
     @Override

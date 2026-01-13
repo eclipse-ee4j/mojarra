@@ -30,14 +30,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.cdi.CdiExtension;
-import com.sun.faces.cdi.FacesContextProducer;
-import com.sun.faces.el.ELContextImpl;
-import com.sun.faces.renderkit.RenderKitUtils;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.RequestStateManager;
-import com.sun.faces.util.Util;
-
 import jakarta.el.ELContext;
 import jakarta.el.ELContextEvent;
 import jakarta.el.ELContextListener;
@@ -62,6 +54,13 @@ import jakarta.faces.event.PhaseId;
 import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
+
+import com.sun.faces.cdi.FacesContextProducer;
+import com.sun.faces.el.ELContextImpl;
+import com.sun.faces.renderkit.RenderKitUtils;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.RequestStateManager;
+import com.sun.faces.util.Util;
 
 public class FacesContextImpl extends FacesContext {
 
@@ -269,7 +268,7 @@ public class FacesContextImpl extends FacesContext {
                 if (result == null || severity.compareTo(result) > 0) {
                     result = severity;
                 }
-                if (result == FacesMessage.SEVERITY_FATAL) {
+                if (result == FacesMessage.Severity.FATAL) {
                     break;
                 }
             }

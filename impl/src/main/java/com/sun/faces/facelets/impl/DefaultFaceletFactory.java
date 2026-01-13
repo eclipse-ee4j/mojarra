@@ -98,6 +98,7 @@ public class DefaultFaceletFactory {
         refreshPeriodInMillis = -1;
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public final void init(FacesContext facesContext, Compiler compiler, DefaultResourceResolver resolver, final long refreshPeriodInSeconds, FaceletCache cache) {
         notNull("compiler", compiler);
         notNull("resolver", resolver);
@@ -316,7 +317,7 @@ public class DefaultFaceletFactory {
 
         try {
             byte[] faceletPage = "facelet".getBytes(CHAR_ENCODING);
-            ByteArrayInputStream bais = new ByteArrayInputStream(faceletPage);
+            new ByteArrayInputStream(faceletPage);
         } catch (UnsupportedEncodingException uee) {
             if (log.isLoggable(Level.SEVERE)) {
                 log.log(Level.SEVERE, "Unsupported encoding when creating component for " + tagName + " in " + taglibURI, uee);
@@ -334,6 +335,7 @@ public class DefaultFaceletFactory {
     // ---------------------------------------------------------- Private Methods
 
 
+    @SuppressWarnings("unchecked")
     private FaceletCache<DefaultFacelet> initCache(FaceletCache<DefaultFacelet> cache) {
         if (cache == null) {
             FaceletCacheFactory cacheFactory = (FaceletCacheFactory) FactoryFinder.getFactory(FactoryFinder.FACELET_CACHE_FACTORY);

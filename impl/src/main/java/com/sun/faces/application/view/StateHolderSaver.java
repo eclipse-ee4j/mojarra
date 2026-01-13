@@ -126,11 +126,9 @@ class StateHolderSaver implements Serializable {
 
         if (null != toRestoreClass) {
             try {
-                result = toRestoreClass.newInstance();
-            } catch (InstantiationException e) {
+                result = toRestoreClass.getDeclaredConstructor().newInstance();
+            } catch (Exception e) {
                 throw new IllegalStateException(e);
-            } catch (IllegalAccessException a) {
-                throw new IllegalStateException(a);
             }
         }
 

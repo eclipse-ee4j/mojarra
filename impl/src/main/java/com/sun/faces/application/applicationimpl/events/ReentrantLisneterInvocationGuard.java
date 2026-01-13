@@ -47,6 +47,7 @@ public class ReentrantLisneterInvocationGuard {
 
     }
 
+    @SuppressWarnings("unchecked")
     private Map<Class<? extends SystemEvent>, Boolean> getDataStructure(FacesContext ctx) {
         Map<Class<? extends SystemEvent>, Boolean> result = null;
         Map<Object, Object> ctxMap = ctx.getAttributes();

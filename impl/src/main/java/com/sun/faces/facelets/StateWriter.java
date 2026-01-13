@@ -48,7 +48,7 @@ final class StateWriter extends Writer {
     private boolean writtenState;
 
     static public StateWriter getCurrentInstance() {
-        return (StateWriter) CURRENT_WRITER.get();
+        return CURRENT_WRITER.get();
     }
 
     public StateWriter(Writer initialOut, int initialSize) {
@@ -128,5 +128,4 @@ final class StateWriter extends Writer {
         CURRENT_WRITER.set(null);
     }
 
-    static private final ThreadLocal CURRENT_WRITER = new ThreadLocal();
-}
+    static private final ThreadLocal<StateWriter> CURRENT_WRITER = new ThreadLocal<>();}

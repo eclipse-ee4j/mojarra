@@ -23,11 +23,11 @@ import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.config.manager.spi.FilterClassesFromFacesInitializerAnnotationProvider;
-import com.sun.faces.util.FacesLogger;
-
 import jakarta.faces.FacesException;
 import jakarta.servlet.ServletContext;
+
+import com.sun.faces.config.manager.spi.FilterClassesFromFacesInitializerAnnotationProvider;
+import com.sun.faces.util.FacesLogger;
 
 /**
  *
@@ -80,7 +80,7 @@ public class AnnotationProviderFactory {
         } else {
 
             ServiceLoader<AnnotationProvider> serviceLoader = ServiceLoader.load(AnnotationProvider.class);
-            Iterator iterator = serviceLoader.iterator();
+            Iterator<AnnotationProvider> iterator = serviceLoader.iterator();
 
             if (iterator.hasNext()) {
 
@@ -97,7 +97,7 @@ public class AnnotationProviderFactory {
 
     private static AnnotationProvider createDefaultProvider(ServletContext sc) {
         AnnotationProvider result = null;
-        Constructor c;
+        Constructor<?> c;
 
         try {
             c = DEFAULT_ANNOTATION_PROVIDER.getDeclaredConstructor(ServletContext.class);

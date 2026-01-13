@@ -19,13 +19,13 @@ package com.sun.faces.facelets.tag.faces.core;
 import java.io.IOException;
 import java.util.Map;
 
-import com.sun.faces.facelets.tag.TagHandlerImpl;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagException;
+
+import com.sun.faces.facelets.tag.TagHandlerImpl;
 
 public final class PassThroughAttributesHandler extends TagHandlerImpl implements jakarta.faces.view.facelets.AttributeHandler {
 
@@ -37,6 +37,7 @@ public final class PassThroughAttributesHandler extends TagHandlerImpl implement
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         if (parent == null) {
             throw new TagException(tag, "Parent UIComponent was null");

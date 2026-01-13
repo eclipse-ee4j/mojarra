@@ -20,12 +20,12 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.Util;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.render.Renderer;
+
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.Util;
 
 /**
  * <p>
@@ -33,7 +33,7 @@ import jakarta.faces.render.Renderer;
  * template in the desired location within the composite component implementation section.
  * </p>
  */
-public class CompositeFacetRenderer extends Renderer {
+public class CompositeFacetRenderer extends Renderer<UIComponent> {
 
     private static final Logger logger = FacesLogger.RENDERKIT.getLogger();
 

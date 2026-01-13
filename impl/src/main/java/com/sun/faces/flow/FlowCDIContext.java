@@ -28,8 +28,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.sun.faces.RIConstants;
-
 import jakarta.enterprise.context.ContextNotActiveException;
 import jakarta.enterprise.context.spi.Context;
 import jakarta.enterprise.context.spi.Contextual;
@@ -46,6 +44,8 @@ import jakarta.faces.flow.FlowScoped;
 import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpSessionEvent;
+
+import com.sun.faces.RIConstants;
 
 public class FlowCDIContext implements Context, Serializable {
 
@@ -161,14 +161,7 @@ public class FlowCDIContext implements Context, Serializable {
             return null != flowBeansForClientWindowKey && null != creationalForClientWindowKey;
         }
 
-        public String getCreationalForClientWindowKey() {
-            return creationalForClientWindowKey;
-        }
-
-        public String getFlowBeansForClientWindowKey() {
-            return flowBeansForClientWindowKey;
-        }
-
+        @SuppressWarnings("unchecked")
         private Map<String, Object> getFlowScopedBeanMapForCurrentFlow() {
             if (null == flowBeansForClientWindowKey && null == creationalForClientWindowKey) {
                 return Collections.emptyMap();
@@ -183,6 +176,7 @@ public class FlowCDIContext implements Context, Serializable {
             return result;
         }
 
+        @SuppressWarnings("unchecked")
         private Map<String, CreationalContext<?>> getFlowScopedCreationalMapForCurrentFlow() {
             if (null == flowBeansForClientWindowKey && null == creationalForClientWindowKey) {
                 return Collections.emptyMap();
@@ -310,6 +304,7 @@ public class FlowCDIContext implements Context, Serializable {
         return result;
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     static void flowExited(Flow currentFlow, int depth) {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         FlowScopeMapHelper mapHelper = new FlowScopeMapHelper(facesContext, currentFlow, depth);

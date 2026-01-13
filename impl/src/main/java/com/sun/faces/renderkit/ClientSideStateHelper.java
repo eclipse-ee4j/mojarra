@@ -348,7 +348,7 @@ public class ClientSideStateHelper extends StateHelper {
                 try {
                     out.writeObject(stateToWrite[1]);
                 } catch (Exception e) {
-                    DebugUtil.printState((Map) stateToWrite[1], LOGGER);
+                    DebugUtil.printState((Map<?, ?>) stateToWrite[1], LOGGER);
                     throw new FacesException("Serialization error. Path to offending instance: " + out.getStack(), e);
                 }
 

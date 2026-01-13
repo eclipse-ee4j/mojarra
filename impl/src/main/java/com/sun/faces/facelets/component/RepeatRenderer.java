@@ -25,21 +25,21 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.render.Renderer;
 
-public class RepeatRenderer extends Renderer {
+public class RepeatRenderer extends Renderer<UIRepeat> {
 
     public RepeatRenderer() {
         super();
     }
 
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
+    public void encodeBegin(FacesContext context, UIRepeat component) throws IOException {
 
     }
 
     @Override
-    public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
+    public void encodeChildren(FacesContext context, UIRepeat component) throws IOException {
         if (component.getChildCount() > 0) {
-            Map a = component.getAttributes();
+            Map<String, Object> a = component.getAttributes();
             String tag = (String) a.get("alias.element");
             if (tag != null) {
                 ResponseWriter out = context.getResponseWriter();
@@ -57,7 +57,7 @@ public class RepeatRenderer extends Renderer {
                 }
             }
 
-            Iterator itr = component.getChildren().iterator();
+            Iterator<UIComponent> itr = component.getChildren().iterator();
             UIComponent c;
             while (itr.hasNext()) {
                 c = (UIComponent) itr.next();
@@ -71,7 +71,7 @@ public class RepeatRenderer extends Renderer {
     }
 
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
+    public void encodeEnd(FacesContext context, UIRepeat component) throws IOException {
 
     }
 

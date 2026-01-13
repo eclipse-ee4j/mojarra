@@ -185,9 +185,6 @@ public class AjaxBehaviors implements Serializable {
 
             return behavior;
         }
-
-        private BehaviorInfo() {
-        }
     }
 
 }

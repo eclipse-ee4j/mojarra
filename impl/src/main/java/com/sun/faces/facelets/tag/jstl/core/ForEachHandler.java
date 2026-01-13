@@ -41,7 +41,7 @@ import jakarta.faces.view.facelets.TagConfig;
  */
 public final class ForEachHandler extends TagHandlerImpl {
 
-    private static class ArrayIterator implements Iterator {
+    private static class ArrayIterator implements Iterator<Object> {
 
         protected final Object array;
 
@@ -132,7 +132,7 @@ public final class ForEachHandler extends TagHandlerImpl {
             src = b;
         }
         if (src != null) {
-            Iterator itr = toIterator(src);
+            Iterator<?> itr = toIterator(src);
             if (itr != null) {
                 int i = 0;
 
@@ -247,7 +247,7 @@ public final class ForEachHandler extends TagHandlerImpl {
         if (src instanceof List || src.getClass().isArray()) {
             return new IndexedValueExpression(ve, i);
         } else if (src instanceof Map && value instanceof Map.Entry) {
-            return new MappedValueExpression(ve, (Map.Entry) value);
+            return new MappedValueExpression(ve, (Map.Entry<?, ?>) value);
         } else if (src instanceof Collection) {
             return new IteratedValueExpression(ve, start, i);
         }
@@ -268,13 +268,13 @@ public final class ForEachHandler extends TagHandlerImpl {
         return null;
     }
 
-    private Iterator toIterator(Object src) {
+    private Iterator<?> toIterator(Object src) {
         if (src == null) {
             return null;
         } else if (src instanceof Collection) {
-            return ((Collection) src).iterator();
+            return ((Collection<?>) src).iterator();
         } else if (src instanceof Map) {
-            return ((Map) src).entrySet().iterator();
+            return ((Map<?, ?>) src).entrySet().iterator();
         } else if (src.getClass().isArray()) {
             return new ArrayIterator(src);
         } else {

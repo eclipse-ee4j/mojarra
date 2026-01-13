@@ -97,7 +97,6 @@ import com.sun.faces.util.FacesLogger;
 
 public class ELFlash extends Flash {
 
-    private static final String ELEMENT_TYPE_MISMATCH = "element-type-mismatch";
     private static final Logger LOGGER = FacesLogger.FLASH.getLogger();
 
     /**
@@ -885,7 +884,7 @@ public class ELFlash extends Flash {
 
     }
 
-    @SuppressWarnings(ELEMENT_TYPE_MISMATCH)
+    @SuppressWarnings("unchecked")
     void restoreAllMessages(FacesContext context) {
         Map<String, List<FacesMessage>> allFacesMessages;
         Map<String, Object> phaseMap = getPhaseMapForReading();
