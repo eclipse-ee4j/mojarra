@@ -38,6 +38,40 @@
    <name>Mojarra ${project.version}</name>
    <description>EE4J Compatible Implementation for Jakarta Faces API</description>
 
+    <url>https://github.com/eclipse-ee4j/mojarra</url>
+
+    <developers>
+        <developer>
+            <id>balusc</id>
+            <name>Bauke Scholtz</name>
+            <email>balusc@gmail.com</email>
+        </developer>
+        <developer>
+            <id>arjan.tijms</id>
+            <name>Arjan Tijms</name>
+            <email>arjan.tijms@gmail.com</email>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>EPL 2.0</name>
+            <url>https://www.eclipse.org/legal/epl-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+        <license>
+            <name>GPL2 w/ CPE</name>
+            <url>https://www.gnu.org/software/classpath/license.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/eclipse-ee4j/mojarra</url>
+        <connection>scm:git:git://github.com/eclipse-ee4j/mojarra.git</connection>
+        <developerConnection>scm:git:git@github.com:eclipse-ee4j/mojarra.git</developerConnection>
+    </scm>
+
    <properties>
         <mojarra.logstrings.version>${project.version}</mojarra.logstrings.version>
     </properties>
@@ -194,6 +228,13 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>eclipse-releases</id>
+            <url>https://repo.eclipse.org/content/groups/releases/</url>
+        </pluginRepository>
+    </pluginRepositories>
 
    <build>
         <resources>
@@ -417,10 +458,53 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Check licenses of dependencies (Eclipse requirement) -->
+            <plugin>
+                <groupId>org.eclipse.dash</groupId>
+                <artifactId>license-tool-plugin</artifactId>
+                <version>1.1.0</version>
+                <executions>
+                    <execution>
+                        <id>license-check</id>
+                        <goals>
+                            <goal>license-check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Generate a "consumer pom" for Maven Central release -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.7.0</version>
+                <configuration>
+                    <flattenMode>ossrh</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
     <profiles>
+    
+        <!-- Maven Central release -->
         <profile>
             <id>central-release</id>
             <build>
