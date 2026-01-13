@@ -36,8 +36,6 @@ import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.el.ExpressionFactoryImpl;
-
 import jakarta.el.ELContextListener;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
@@ -61,6 +59,8 @@ import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
 import jakarta.faces.event.SystemEventListenerHolder;
 import jakarta.faces.validator.Validator;
+
+import com.sun.el.ExpressionFactoryImpl;
 
 public class MockApplication extends Application {
 
@@ -258,7 +258,7 @@ public class MockApplication extends Application {
     }
 
     @Override
-    public Converter createConverter(Class<?> targetClass) {
+    public <T> Converter<T> createConverter(Class<T> targetClass) {
         throw new UnsupportedOperationException();
     }
 

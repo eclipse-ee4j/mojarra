@@ -26,15 +26,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
-import com.sun.faces.application.applicationimpl.Events;
-import com.sun.faces.application.applicationimpl.ExpressionLanguage;
-import com.sun.faces.application.applicationimpl.InstanceFactory;
-import com.sun.faces.application.applicationimpl.SearchExpression;
-import com.sun.faces.application.applicationimpl.Singletons;
-import com.sun.faces.application.applicationimpl.Stage;
-import com.sun.faces.el.FacesCompositeELResolver;
-import com.sun.faces.util.FacesLogger;
-
 import jakarta.el.CompositeELResolver;
 import jakarta.el.ELContextListener;
 import jakarta.el.ELException;
@@ -60,6 +51,15 @@ import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
 import jakarta.faces.flow.FlowHandler;
 import jakarta.faces.validator.Validator;
+
+import com.sun.faces.application.applicationimpl.Events;
+import com.sun.faces.application.applicationimpl.ExpressionLanguage;
+import com.sun.faces.application.applicationimpl.InstanceFactory;
+import com.sun.faces.application.applicationimpl.SearchExpression;
+import com.sun.faces.application.applicationimpl.Singletons;
+import com.sun.faces.application.applicationimpl.Stage;
+import com.sun.faces.el.FacesCompositeELResolver;
+import com.sun.faces.util.FacesLogger;
 
 /**
  * <strong>Application</strong> represents a per-web-application singleton object where applications based on
@@ -485,7 +485,7 @@ public class ApplicationImpl extends Application {
      * @see jakarta.faces.application.Application#createConverter(Class)
      */
     @Override
-    public Converter<?> createConverter(Class<?> targetClass) {
+    public <T> Converter<T> createConverter(Class<T> targetClass) {
         return instanceFactory.createConverter(targetClass);
     }
 
