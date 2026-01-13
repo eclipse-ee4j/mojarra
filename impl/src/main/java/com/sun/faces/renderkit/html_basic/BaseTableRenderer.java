@@ -107,6 +107,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
         writer.endElement("table");
         writer.writeText("\n", table, null);
 
+        RenderKitUtils.flushPendingBehaviorEventListeners(context, table, null);
     }
 
     /**

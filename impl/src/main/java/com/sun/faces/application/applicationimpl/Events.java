@@ -347,8 +347,12 @@ public class Events {
         var cdi = getCdiBeanManager(context).getEvent();
         cdi.fire(event);
         
-        if (source instanceof UIViewRoot) {
-            cdi.select(View.Literal.of(((UIViewRoot) source).getViewId())).fire(event);
+        if (source instanceof UIViewRoot root) {
+            var viewId = root.getViewId();
+
+            if (viewId != null) {
+                cdi.select(View.Literal.of(viewId)).fire(event);
+            }
         }
     }
 

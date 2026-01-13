@@ -19,13 +19,13 @@ package com.sun.faces.renderkit.html_basic;
 import java.io.IOException;
 import java.util.Iterator;
 
-import com.sun.faces.renderkit.Attribute;
-import com.sun.faces.renderkit.AttributeManager;
-import com.sun.faces.renderkit.RenderKitUtils;
-
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
+
+import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.AttributeManager;
+import com.sun.faces.renderkit.RenderKitUtils;
 
 /**
  * Arbitrary grouping "renderer" that simply renders its children recursively in the <code>encodeEnd()</code> method.
@@ -92,6 +92,8 @@ public class GroupRenderer extends HtmlBasicRenderer {
         if (!shouldEncode(component)) {
             return;
         }
+
+        RenderKitUtils.flushPendingBehaviorEventListeners(context, component, null);
 
         // Close our span element if necessary
         ResponseWriter writer = context.getResponseWriter();

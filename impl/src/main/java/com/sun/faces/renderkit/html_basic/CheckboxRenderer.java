@@ -23,9 +23,11 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.convert.ConverterException;
+import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
@@ -101,13 +103,12 @@ public class CheckboxRenderer extends HtmlBasicInputRenderer {
         if (null != (styleClass = (String) component.getAttributes().get("styleClass"))) {
             writer.writeAttribute("class", styleClass, "styleClass");
         }
-        RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES, getNonOnClickSelectBehaviors(component));
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, ATTRIBUTES, HtmlDocumentElementEvent.click, FacesComponentEvent.valueChange);
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
         writer.endElement("input");
 
-        RenderKitUtils.renderSelectOnclickEventListener(context, component, null, false);
-
+        RenderKitUtils.flushPendingBehaviorEventListeners(context, component, null);
     }
 
     // --------------------------------------------------------- Private Methods

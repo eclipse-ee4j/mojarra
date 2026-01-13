@@ -21,8 +21,10 @@ package com.sun.faces.renderkit.html_basic;
 import java.io.IOException;
 
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
@@ -60,7 +62,7 @@ public class TextareaRenderer extends HtmlBasicInputRenderer {
         }
 
         // style is rendered as a passthru attribute
-        RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES);
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, ATTRIBUTES, HtmlDocumentElementEvent.change, FacesComponentEvent.valueChange);
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
         if (component.getAttributes().containsKey("com.sun.faces.addNewLineAtStart")
@@ -75,7 +77,7 @@ public class TextareaRenderer extends HtmlBasicInputRenderer {
 
         writer.endElement("textarea");
 
-        RenderKitUtils.renderOnchangeEventListener(context, component, false);
+        RenderKitUtils.flushPendingBehaviorEventListeners(context, component, null);
     }
 
 }

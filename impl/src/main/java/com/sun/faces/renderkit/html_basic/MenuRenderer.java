@@ -20,7 +20,6 @@ package com.sun.faces.renderkit.html_basic;
 
 import static com.sun.faces.RIConstants.NO_VALUE;
 import static com.sun.faces.renderkit.RenderKitUtils.getSelectItems;
-import static com.sun.faces.renderkit.RenderKitUtils.renderOnchangeEventListener;
 import static com.sun.faces.renderkit.RenderKitUtils.renderPassThruAttributes;
 import static com.sun.faces.renderkit.RenderKitUtils.renderXHTMLStyleBooleanAttributes;
 import static com.sun.faces.util.MessageUtils.CONVERSION_ERROR_MESSAGE_ID;
@@ -67,12 +66,14 @@ import jakarta.faces.component.UISelectItems;
 import jakarta.faces.component.UISelectMany;
 import jakarta.faces.component.UISelectOne;
 import jakarta.faces.component.ValueHolder;
+import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
 import jakarta.faces.component.html.HtmlSelectManyListbox;
 import jakarta.faces.component.html.HtmlSelectOneListbox;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.ConverterException;
+import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 import jakarta.faces.model.SelectItem;
 import jakarta.faces.model.SelectItemGroup;
 
@@ -680,7 +681,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
 
         writeDefaultSize(writer, size);
 
-        renderPassThruAttributes(context, writer, component, ATTRIBUTES, getNonOnChangeBehaviors(component));
+        renderPassThruAttributes(context, writer, component, null, false, ATTRIBUTES, HtmlDocumentElementEvent.change, FacesComponentEvent.valueChange);
         renderXHTMLStyleBooleanAttributes(writer, component);
 
         // Now, write the buffered option content
@@ -688,7 +689,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
 
         writer.endElement("select");
 
-        renderOnchangeEventListener(context, component, false);
+        RenderKitUtils.flushPendingBehaviorEventListeners(context, component, null);
     }
 
     protected Integer getSizeAttribute(UIComponent component) {

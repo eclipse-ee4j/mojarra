@@ -20,15 +20,15 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.sun.faces.renderkit.Attribute;
-import com.sun.faces.renderkit.AttributeManager;
-import com.sun.faces.renderkit.RenderKitUtils;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.render.Renderer;
+
+import com.sun.faces.renderkit.Attribute;
+import com.sun.faces.renderkit.AttributeManager;
+import com.sun.faces.renderkit.RenderKitUtils;
 
 public class PassthroughRenderer extends HtmlBasicRenderer {
 
@@ -89,6 +89,8 @@ public class PassthroughRenderer extends HtmlBasicRenderer {
         Map<String, Object> attrs = component.getPassThroughAttributes();
         String localName = (String) attrs.get(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY);
         context.getResponseWriter().endElement(localName);
+
+        RenderKitUtils.flushPendingBehaviorEventListeners(context, component, null);
     }
 
     @Override
