@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.eclipse.mojarra.test</groupId>
         <artifactId>pom</artifactId>
-        <version>4.1.6</version>
+        <version>4.1.7-SNAPSHOT</version>
     </parent>
 
     <artifactId>issue5507</artifactId>
