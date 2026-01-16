@@ -646,6 +646,9 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
             var src = scriptStr[1].match(findsrc);
             var scriptLoadedViaUrl = false;
 
+            const thisScript = document.querySelector("script[src*='jakarta.faces.resource/faces.js']");
+            const nonce = isNotNull(thisScript) ? thisScript.nonce : undefined;
+
             if (!!src && src[1]) {
                 // if this is a file, load it
                 var url = unescapeHTML(src[1]);
@@ -658,7 +661,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                     parserElement.innerHTML = scriptStr[0];
                     cloneAttributes(scriptNode, parserElement.firstChild);
                     deleteNode(parserElement);
-                    scriptNode.type = 'text/javascript';
+                    scriptNode.nonce = nonce;
                     scriptNode.src = url; // add the src to the script node
                     scriptNode.onload = scriptNode.onreadystatechange = function(_, abort) {
                         if (abort || !scriptNode.readyState || /loaded|complete/.test(scriptNode.readyState)) {
@@ -667,7 +670,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                             runScript(head, loadedScriptUrls, scripts, index + 1); // Run next script.
                         }
                     };
-                    head.insertBefore(scriptNode, null); // add it to end of the head (and don't remove it)
+                    head.appendChild(scriptNode); // add it to end of the head (and don't remove it)
                     scriptLoadedViaUrl = true;
                 }
             } else if (!!scriptStr && scriptStr[2]) {
@@ -677,7 +680,7 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
                 if (!!script) {
                     // create script node
                     var scriptNode = document.createElement('script');
-                    scriptNode.type = 'text/javascript';
+                    scriptNode.nonce = nonce;
                     scriptNode.text = script; // add the code to the script node
                     head.appendChild(scriptNode); // add it to the head
                     head.removeChild(scriptNode); // then remove it
@@ -1687,20 +1690,17 @@ if (!((faces && faces.specversion && faces.specversion >= 23000 ) &&
          * @param element to eval
          * @ignore
          */
-        var doEval = function doEval(element) {
-            var evalText = '';
-            var childNodes = element.childNodes;
-            for (var i = 0; i < childNodes.length; i++) {
-                evalText += childNodes[i].nodeValue;
-            }
-            globalEval(evalText);
+        const doEval = function doEval(element) {
+            const script = element ? element.textContent : undefined;
+            if (script) runScripts([[null, '', script]]);
+            else console.warn('called doEval with no source code');
         };
 
         /**
          * Ajax Request Queue
          * @ignore
          */
-        var Queue = new function Queue() {
+        const Queue = new function Queue() {
 
             // Create the internal queue
             var queue = [];
@@ -3748,4 +3748,15 @@ mojarra.l = function l(l) {
     else {
         window.onload = l;
     }
+};
+
+/**
+ * Add event listener.
+ *
+ * @param id element id
+ * @param ev event name
+ * @param fn function
+ */
+mojarra.ael = function ael(id, ev, fn) {
+    document.getElementById(id).addEventListener(ev, fn);
 };
