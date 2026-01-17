@@ -16,6 +16,7 @@
 
 package jakarta.faces.component;
 
+import static java.util.Collections.emptyMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -23,27 +24,28 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Locale;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import com.sun.faces.mock.MockRenderKit;
+import java.util.Map;
 
 import jakarta.el.MethodExpression;
 import jakarta.el.ValueExpression;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.FacesEvent;
 import jakarta.faces.event.PhaseEvent;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.PhaseListener;
 import jakarta.faces.event.PostRestoreStateEvent;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.sun.faces.mock.MockRenderKit;
 
 /**
  * <p>
@@ -524,15 +526,15 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         assertTrue(phaseListener.isAfterPhaseCalled());
     }
 
-    private void checkEventQueuesSizes(List<List> events, int applyEventsSize, int valEventsSize, int updateEventsSize,
+    private void checkEventQueuesSizes(Map<PhaseId, List<FacesEvent>> events, int applyEventsSize, int valEventsSize, int updateEventsSize,
             int appEventsSize) {
-        List<?> applyEvents = events.get(PhaseId.APPLY_REQUEST_VALUES.getOrdinal());
+        List<?> applyEvents = events.get(PhaseId.APPLY_REQUEST_VALUES);
         assertEquals(applyEventsSize, applyEvents.size());
-        List<?> valEvents = events.get(PhaseId.PROCESS_VALIDATIONS.getOrdinal());
+        List<?> valEvents = events.get(PhaseId.PROCESS_VALIDATIONS);
         assertEquals(valEventsSize, valEvents.size());
-        List<?> updateEvents = events.get(PhaseId.UPDATE_MODEL_VALUES.getOrdinal());
+        List<?> updateEvents = events.get(PhaseId.UPDATE_MODEL_VALUES);
         assertEquals(updateEventsSize, updateEvents.size());
-        List<?> appEvents = events.get(PhaseId.INVOKE_APPLICATION.getOrdinal());
+        List<?> appEvents = events.get(PhaseId.INVOKE_APPLICATION);
         assertEquals(appEventsSize, appEvents.size());
     }
 
@@ -554,21 +556,7 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         event4 = new EventTestImpl(root, "4");
         event4.setPhaseId(PhaseId.INVOKE_APPLICATION);
         root.queueEvent(event4);
-        final Field fields[] = UIViewRoot.class.getDeclaredFields();
-        Field field = null;
-        List<List> events = null;
-        for (int i = 0; i < fields.length; ++i) {
-            if ("events".equals(fields[i].getName())) {
-                field = fields[i];
-                field.setAccessible(true);
-                try {
-                    events = TypedCollections.dynamicallyCastList((List<?>) field.get(root), List.class);
-                } catch (Exception e) {
-                    assertTrue(false);
-                }
-                break;
-            }
-        }
+        Map<PhaseId, List<FacesEvent>> events = root.getQueuedEvents();
         // CASE: renderReponse not set; responseComplete not set;
         // check for existence of events before processDecodes
         checkEventQueuesSizes(events, 1, 1, 1, 1);
@@ -594,11 +582,7 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         root.queueEvent(event2);
         root.queueEvent(event3);
         root.queueEvent(event4);
-        try {
-            events = TypedCollections.dynamicallyCastList((List<?>) field.get(root), List.class);
-        } catch (Exception e) {
-            assertTrue(false);
-        }
+        events = root.getQueuedEvents();
         // CASE: response set;
         // check for existence of events before processValidators
         checkEventQueuesSizes(events, 1, 1, 1, 1);
@@ -615,11 +599,7 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         root.queueEvent(event2);
         root.queueEvent(event3);
         root.queueEvent(event4);
-        try {
-            events = TypedCollections.dynamicallyCastList((List<?>) field.get(root), List.class);
-        } catch (Exception e) {
-            assertTrue(false);
-        }
+        events = root.getQueuedEvents();
         // CASE: response complete;
         // check for existence of events before processUpdates
         checkEventQueuesSizes(events, 1, 1, 1, 1);
@@ -636,11 +616,7 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
         root.queueEvent(event2);
         root.queueEvent(event3);
         root.queueEvent(event4);
-        try {
-            events = TypedCollections.dynamicallyCastList((List<?>) field.get(root), List.class);
-        } catch (Exception e) {
-            assertTrue(false);
-        }
+        events = root.getQueuedEvents();
         // CASE: response complete;
         // check for existence of events before processApplication
         checkEventQueuesSizes(events, 1, 1, 1, 1);
@@ -651,12 +627,8 @@ public class UIViewRootTestCase extends UIComponentBaseTestCase {
 
         // finally, get the internal events list one more time
         // to make sure it is null
-        try {
-            events = TypedCollections.dynamicallyCastList((List<?>) field.get(root), List.class);
-        } catch (Exception e) {
-            assertTrue(false);
-        }
-        assertNull(events);
+        events = root.getQueuedEvents();
+        assertEquals(emptyMap(), events);
     }
 
     private void callRightLifecycleMethodGivenPhaseId(UIViewRoot root, PhaseId phaseId) throws Exception {

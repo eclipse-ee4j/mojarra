@@ -43,6 +43,7 @@ import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.behavior.AjaxBehavior;
 import jakarta.faces.component.visit.VisitCallback;
 import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitContextFactory;
@@ -54,6 +55,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.PartialResponseWriter;
 import jakarta.faces.context.PartialViewContext;
 import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.BehaviorEvent;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.faces.render.RenderKit;
@@ -85,6 +87,7 @@ public class PartialViewContextImpl extends PartialViewContext {
     private Boolean partialRequest;
     private Boolean renderAll;
     private FacesContext ctx;
+    private List<AjaxBehavior> queuedAjaxBehaviors;
 
     private static final String ORIGINAL_WRITER = "com.sun.faces.ORIGINAL_WRITER";
 
@@ -265,11 +268,18 @@ public class PartialViewContextImpl extends PartialViewContext {
             // If we have just finished APPLY_REQUEST_VALUES phase, install the
             // partial response writer. We want to make sure that any content
             // or errors generated in the other phases are written using the
-            // partial response writer.
+            // partial response writer. Also collect all queued ajax events.
             //
             if (phaseId == PhaseId.APPLY_REQUEST_VALUES) {
                 PartialResponseWriter writer = pvc.getPartialResponseWriter();
                 ctx.setResponseWriter(writer);
+                queuedAjaxBehaviors = viewRoot.getQueuedEvents().values().stream().flatMap(List::stream)
+                        .filter(BehaviorEvent.class::isInstance)
+                        .map(BehaviorEvent.class::cast)
+                        .map(BehaviorEvent::getBehavior)
+                        .filter(AjaxBehavior.class::isInstance)
+                        .map(AjaxBehavior.class::cast)
+                        .toList();
             }
 
         } else if (phaseId == PhaseId.RENDER_RESPONSE) {
@@ -290,7 +300,8 @@ public class PartialViewContextImpl extends PartialViewContext {
                 writer.startDocument();
 
                 if (isResetValues()) {
-                    viewRoot.resetValues(ctx, myRenderIds);
+                    boolean clearModel = queuedAjaxBehaviors != null && queuedAjaxBehaviors.stream().anyMatch(AjaxBehavior::isClearModel);
+                    viewRoot.resetValues(ctx, myRenderIds, clearModel);
                 }
 
                 if (isRenderAll()) {
@@ -361,6 +372,7 @@ public class PartialViewContextImpl extends PartialViewContext {
         evalScripts = null;
         ctx = null;
         partialRequest = null;
+        queuedAjaxBehaviors = null;
 
     }
 
