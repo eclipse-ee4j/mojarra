@@ -32,6 +32,7 @@ import java.beans.PropertyDescriptor;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Array;
+import java.lang.reflect.RecordComponent;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
@@ -150,6 +151,10 @@ public class Json {
             encodeCollection(name, (Collection<?>) object, generator, options);
         } else if (object instanceof Map<?, ?>) {
             encodeMap(name, (Map<?, ?>) object, generator, options);
+        } else if (object instanceof Class<?>) {
+            encodeString(name, ((Class<?>) object).getName(), generator);
+        } else if (object instanceof Record) {
+            encodeRecord(name, (Record) object, generator, options);
         } else {
             encodeBean(name, object, generator, options);
         }
@@ -281,6 +286,33 @@ public class Json {
         generator.writeEnd();
     }
 
+    private static void encodeRecord(String name, Record instance, JsonGenerator generator, EnumSet<Option> options) {
+        if (name == null) {
+            generator.writeStartObject();
+        } else {
+            generator.writeStartObject(name);
+        }
+
+        boolean skipNullValues = options.contains(SKIP_NULL_VALUES);
+
+        for (RecordComponent component : instance.getClass().getRecordComponents()) {
+            Object value;
+
+            try {
+                value = component.getAccessor().invoke(instance);
+            } catch (Exception e) {
+                throw new IllegalArgumentException(String.format(ERROR_INVALID_GETTER, component.getName(), instance.getClass()), e);
+            }
+
+            if (!(value == null && skipNullValues)) {
+                encode(component.getName(), value, generator, options);
+            }
+        }
+
+        generator.writeEnd();
+
+    }
+    
     private static void encodeBean(String name, Object bean, JsonGenerator generator, EnumSet<Option> options) {
         BeanInfo beanInfo;
 
