@@ -316,6 +316,11 @@ public class MultiViewHandler extends ViewHandler {
 
     @Override
     public String getBookmarkableURL(FacesContext context, String viewId, Map<String, List<String>> parameters, boolean includeViewParams) {
+        return getBookmarkableURL(context, viewId, parameters, null, includeViewParams);
+    }
+
+    @Override
+    public String getBookmarkableURL(FacesContext context, String viewId, Map<String, List<String>> parameters, String fragment, boolean includeViewParams) {
         Map<String, List<String>> params;
         if (includeViewParams) {
             params = getFullParameterList(context, viewId, parameters);
@@ -323,8 +328,13 @@ public class MultiViewHandler extends ViewHandler {
             params = parameters;
         }
 
+        String actionURL = getViewHandler(context).getActionURL(context, viewId);
+        if (fragment != null) { 
+            actionURL += "#" + fragment;
+        }
+
         ExternalContext ectx = context.getExternalContext();
-        return ectx.encodeActionURL(ectx.encodeBookmarkableURL(getViewHandler(context).getActionURL(context, viewId), params));
+        return ectx.encodeActionURL(ectx.encodeBookmarkableURL(actionURL, params));
     }
 
     @Override
@@ -347,6 +357,14 @@ public class MultiViewHandler extends ViewHandler {
      */
     @Override
     public String getRedirectURL(FacesContext context, String viewId, Map<String, List<String>> parameters, boolean includeViewParams) {
+        return getRedirectURL(context, viewId, parameters, null, includeViewParams);
+    }
+
+    /**
+     * @see ViewHandler#getRedirectURL(jakarta.faces.context.FacesContext, String, java.util.Map, String, boolean)
+     */
+    @Override
+    public String getRedirectURL(FacesContext context, String viewId, Map<String, List<String>> parameters, String fragment, boolean includeViewParams) {
         String responseEncoding = Util.getResponseEncoding(context);
 
         if (parameters != null) {
@@ -376,8 +394,13 @@ public class MultiViewHandler extends ViewHandler {
             params = parameters;
         }
 
+        String actionURL = Util.getViewHandler(context).getActionURL(context, viewId);
+        if (fragment != null) { 
+            actionURL += "#" + fragment;
+        }
+
         ExternalContext ectx = context.getExternalContext();
-        return ectx.encodeActionURL(ectx.encodeRedirectURL(Util.getViewHandler(context).getActionURL(context, viewId), params));
+        return ectx.encodeActionURL(ectx.encodeRedirectURL(actionURL, params));
     }
 
     /**

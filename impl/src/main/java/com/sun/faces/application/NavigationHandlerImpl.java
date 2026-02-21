@@ -44,15 +44,6 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.config.InitFacesContext;
-import com.sun.faces.flow.FlowHandlerImpl;
-import com.sun.faces.flow.FlowImpl;
-import com.sun.faces.flow.builder.MutableNavigationCase;
-import com.sun.faces.util.FacesLogger;
-import com.sun.faces.util.MessageUtils;
-import com.sun.faces.util.Util;
-
 import jakarta.el.ELContext;
 import jakarta.el.MethodExpression;
 import jakarta.el.ValueExpression;
@@ -76,6 +67,15 @@ import jakarta.faces.flow.ReturnNode;
 import jakarta.faces.flow.SwitchCase;
 import jakarta.faces.flow.SwitchNode;
 import jakarta.faces.flow.ViewNode;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.config.InitFacesContext;
+import com.sun.faces.flow.FlowHandlerImpl;
+import com.sun.faces.flow.FlowImpl;
+import com.sun.faces.flow.builder.MutableNavigationCase;
+import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.MessageUtils;
+import com.sun.faces.util.Util;
 
 /**
  * <p>
@@ -280,7 +280,7 @@ public class NavigationHandlerImpl extends NavigationHandler {
                 }
 
                 String redirectUrl = viewHandler.getRedirectURL(context, caseStruct.viewId, evaluateExpressions(context, parameters),
-                        caseStruct.navCase.isIncludeViewParams());
+                        caseStruct.navCase.getFragment(), caseStruct.navCase.isIncludeViewParams());
                 try {
                     if (LOGGER.isLoggable(FINE)) {
                         LOGGER.log(FINE, "Redirecting to path {0} for outcome {1}and viewId {2}", new Object[] { redirectUrl, outcome, caseStruct.viewId });
@@ -824,6 +824,13 @@ public class NavigationHandlerImpl extends NavigationHandler {
         boolean isIncludeViewParams = false;
         CaseStruct result = null;
 
+        int fragmentHash = viewIdToTest.indexOf('#');
+        String fragment = null;
+        if (-1 != fragmentHash) {
+            fragment = viewIdToTest.substring(fragmentHash + 1);
+            viewIdToTest = viewIdToTest.substring(0, fragmentHash);
+        }
+        
         int questionMark = viewIdToTest.indexOf('?');
         String queryString;
         if (-1 != questionMark) {
@@ -944,7 +951,7 @@ public class NavigationHandlerImpl extends NavigationHandler {
             if (null == newFlow && null == currentFlow && !FlowHandlerImpl.NULL_FLOW.equals(flowDefiningDocumentId)) {
                 flowDefiningDocumentId = null;
             }
-            result.navCase = new NavigationCase(currentViewId, fromAction, outcome, null, viewIdToTest, flowDefiningDocumentId, parameters, isRedirect,
+            result.navCase = new NavigationCase(currentViewId, fromAction, outcome, null, viewIdToTest, flowDefiningDocumentId, parameters, fragment, isRedirect,
                     isIncludeViewParams);
         }
         if (null != result) {
