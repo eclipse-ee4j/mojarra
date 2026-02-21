@@ -293,7 +293,7 @@ public class NavigationConfigProcessor extends AbstractConfigProcessor {
                     }
                 }
 
-                NavigationCase cnc = new NavigationCase(fromViewId, action, outcome, condition, toViewId, toFlowDocumentId, parameters, redirect,
+                NavigationCase cnc = new NavigationCase(fromViewId, action, outcome, condition, toViewId, toFlowDocumentId, parameters, null, redirect,
                         includeViewParams);
                 if (LOGGER.isLoggable(Level.FINE)) {
                     LOGGER.log(Level.FINE, MessageFormat.format("Adding NavigationCase: {0}", cnc.toString()));

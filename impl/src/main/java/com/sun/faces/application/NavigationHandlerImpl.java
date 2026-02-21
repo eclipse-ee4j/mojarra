@@ -1039,7 +1039,7 @@ public class NavigationHandlerImpl extends NavigationHandler {
             if (node instanceof ViewNode) {
                 result = new CaseStruct();
                 result.viewId = ((ViewNode) node).getVdlDocumentId();
-                result.navCase = new MutableNavigationCase(fromAction, fromAction, outcome, null, result.viewId, flow.getDefiningDocumentId(), null, false,
+                result.navCase = new MutableNavigationCase(fromAction, fromAction, outcome, null, result.viewId, flow.getDefiningDocumentId(), null, null, false,
                         false);
             } else if (node instanceof ReturnNode) {
                 String fromOutcome = ((ReturnNode) node).getFromOutcome(context);
@@ -1057,7 +1057,7 @@ public class NavigationHandlerImpl extends NavigationHandler {
                                 result = new CaseStruct();
                                 result.viewId = toViewId;
                                 result.navCase = new MutableNavigationCase(context.getViewRoot().getViewId(), fromAction, outcome, null, toViewId,
-                                        FlowHandler.NULL_FLOW, null, false, false);
+                                        FlowHandler.NULL_FLOW, null, null, false, false);
 
                             }
                         }
@@ -1316,7 +1316,7 @@ public class NavigationHandlerImpl extends NavigationHandler {
                                 result = new CaseStruct();
                                 result.viewId = toViewId;
                                 result.navCase = new NavigationCase(context.getViewRoot().getViewId(), fromAction, outcome, null, toViewId,
-                                        FlowHandler.NULL_FLOW, null, false, false);
+                                        FlowHandler.NULL_FLOW, null, null, false, false);
                             }
                         }
                     }
