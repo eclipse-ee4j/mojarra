@@ -20,10 +20,6 @@ import static com.sun.faces.util.Util.unmodifiableSet;
 
 import java.util.Set;
 
-import com.sun.faces.ext.component.UIValidateWholeBean;
-import com.sun.faces.facelets.tag.AbstractTagLibrary;
-import com.sun.faces.renderkit.html_basic.WebsocketRenderer;
-
 import jakarta.faces.component.UIImportConstants;
 import jakarta.faces.component.UIParameter;
 import jakarta.faces.component.UISelectItem;
@@ -41,6 +37,11 @@ import jakarta.faces.validator.LengthValidator;
 import jakarta.faces.validator.LongRangeValidator;
 import jakarta.faces.validator.RegexValidator;
 import jakarta.faces.validator.RequiredValidator;
+
+import com.sun.faces.ext.component.UIValidateWholeBean;
+import com.sun.faces.facelets.tag.AbstractTagLibrary;
+import com.sun.faces.renderkit.html_basic.ImportConstantsRenderer;
+import com.sun.faces.renderkit.html_basic.WebsocketRenderer;
 
 /**
  * For Tag details, see Faces Core
@@ -133,5 +134,7 @@ public final class CoreLibrary extends AbstractTagLibrary {
         addTagHandler("view", ViewHandler.class);
 
         this.addComponent("websocket", UIWebsocket.COMPONENT_TYPE, WebsocketRenderer.RENDERER_TYPE);
+
+        this.addComponent("importConstants", UIImportConstants.COMPONENT_TYPE, ImportConstantsRenderer.RENDERER_TYPE);
     }
 }
