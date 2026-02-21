@@ -23,9 +23,6 @@ import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.util.FacesLogger;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIComponent;
@@ -39,6 +36,9 @@ import jakarta.faces.event.ExceptionQueuedEvent;
 import jakarta.faces.event.ExceptionQueuedEventContext;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.SystemEvent;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.util.FacesLogger;
 
 /**
  * <p>
@@ -154,6 +154,7 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
         try {
 
             ExternalContext extContext = context.getExternalContext();
+            extContext.responseReset();
             extContext.setResponseContentType(RIConstants.TEXT_XML_CONTENT_TYPE);
             extContext.addResponseHeader("Cache-Control", "no-cache");
             PartialResponseWriter writer = context.getPartialViewContext().getPartialResponseWriter();
