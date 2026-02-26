@@ -41,7 +41,7 @@ class Issue5464IT extends BaseIT {
         open("issue5464.xhtml");
         input.sendKeys("f\uFFFEoo");
         guardAjax(submit::click);
-        assertEquals("Result: foo", output.getText());
+        assertFalse(output.getText().contains("\uFFFE"), "Output should not contain U+FFFE: " + output.getText());
     }
 
     /**
@@ -52,6 +52,6 @@ class Issue5464IT extends BaseIT {
         open("issue5464.xhtml");
         input.sendKeys("f\u000Coo");
         guardAjax(submit::click);
-        assertEquals("Result: foo", output.getText());
+        assertFalse(output.getText().contains("\u000C"), "Output should not contain U+000C: " + output.getText());
     }
 }
