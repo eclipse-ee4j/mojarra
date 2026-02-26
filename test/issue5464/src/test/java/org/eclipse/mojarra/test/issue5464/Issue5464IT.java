@@ -15,7 +15,7 @@
  */
 package org.eclipse.mojarra.test.issue5464;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.eclipse.mojarra.test.base.BaseIT;
 import org.junit.jupiter.api.Test;
