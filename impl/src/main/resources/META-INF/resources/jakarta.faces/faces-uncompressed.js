@@ -237,7 +237,7 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
                     && form.id
                     && form.elements
                     && form.id.indexOf(context.namingContainerPrefix) == 0
-                    && typeof getHiddenStateField(form, hiddenStateFieldName, context.namingContainerPrefix) == "undefined")
+                    && isNull(getHiddenStateField(form, hiddenStateFieldName, context.namingContainerPrefix)))
                 {
                     formsToUpdate.push(form);
                 }
