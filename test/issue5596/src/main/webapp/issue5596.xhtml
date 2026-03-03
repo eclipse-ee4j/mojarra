@@ -41,10 +41,10 @@
             <h:inputText id="short" value="#{issue5596.myShort}"><f:convertNumber /></h:inputText>
             <h:inputText id="integer" value="#{issue5596.myInteger}"><f:convertNumber /></h:inputText>
             <h:inputText id="long" value="#{issue5596.myLong}"><f:convertNumber /></h:inputText>
-            <h:inputText id="float" value="#{issue5596.myFloat}"><f:convertNumber /></h:inputText>
-            <h:inputText id="double" value="#{issue5596.myDouble}"><f:convertNumber /></h:inputText>
+            <h:inputText id="float" value="#{issue5596.myFloat}"><f:convertNumber locale="en" /></h:inputText>
+            <h:inputText id="double" value="#{issue5596.myDouble}"><f:convertNumber locale="en" /></h:inputText>
             <h:inputText id="bigInteger" value="#{issue5596.bigInteger}"><f:convertNumber /></h:inputText>
-            <h:inputText id="bigDecimal" value="#{issue5596.bigDecimal}"><f:convertNumber /></h:inputText>
+            <h:inputText id="bigDecimal" value="#{issue5596.bigDecimal}"><f:convertNumber locale="en" /></h:inputText>
             <h:commandButton id="submit" value="submit" />
             <h:messages id="messages" />
         </h:form>
