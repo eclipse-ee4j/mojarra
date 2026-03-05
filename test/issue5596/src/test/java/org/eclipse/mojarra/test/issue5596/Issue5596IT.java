@@ -65,6 +65,7 @@ class Issue5596IT extends BaseIT {
         guardHttp(browser.findElement(By.id(formId + ":submit"))::click);
         assertEquals("", browser.findElement(By.id(formId + ":messages")).getText());
 
+        // We're implicitly testing the values of the other forms too, but it only works because they're all bound to the same Bean values!
         for (var id : Set.of("formWithImplicitConversion", "formWithDefaultNumberConverter", "formWithSpecificNumberConverter")) {
             assertAll(
                 () -> assertEquals("123", browser.findElement(By.id(id + ":byte")).getDomProperty("value")),
