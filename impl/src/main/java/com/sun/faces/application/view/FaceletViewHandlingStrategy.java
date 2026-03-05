@@ -169,6 +169,10 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     private Cache<Resource, BeanInfo> metadataCache;
     private Map<String, List<String>> contractMappings;
 
+    private static final String NONCE_EXPRESSION = "#{nonce}";
+    private String cspHeader;
+    private boolean dynamicCspHeader;
+
     // ------------------------------------------------------------ Constructors
 
     public FaceletViewHandlingStrategy() {
@@ -423,7 +427,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 // Add CSP header if necessary
                 String nonce = ctx.getApplication().getResourceHandler().getCurrentNonce(ctx);
                 if (nonce != null) {
-                    ctx.getExternalContext().addResponseHeader("Content-Security-Policy", "script-src 'self' 'nonce-" + nonce + "'");
+                    ctx.getExternalContext().addResponseHeader("Content-Security-Policy", evaluateCspHeader(ctx, nonce));
                 }
 
                 // Render the XML declaration to the response
@@ -1962,5 +1966,25 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 markInitialStateIfNotMarked(child);
             }
         }
+    }
+
+    private String evaluateCspHeader(FacesContext context, String nonce) {
+        if (cspHeader == null) {
+            cspHeader = FacesContextParam.CSP_POLICY.getValue(context);
+
+            if (!cspHeader.contains(NONCE_EXPRESSION)) {
+                throw new IllegalArgumentException("The context parameter " + FacesContextParam.CSP_POLICY.getName() + " must include the expression '" + NONCE_EXPRESSION + "'");
+            }
+
+            dynamicCspHeader = cspHeader.replace(NONCE_EXPRESSION, "").contains("#{");
+        }
+
+        var header = cspHeader.replace(NONCE_EXPRESSION, nonce);
+
+        if (dynamicCspHeader) {
+            header = context.getApplication().evaluateExpressionGet(context, header, String.class);
+        }
+
+        return header;
     }
 }

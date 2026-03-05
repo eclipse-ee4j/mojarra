@@ -71,6 +71,11 @@ public enum FacesContextParam {
     CONFIG_FILES(FacesServlet.CONFIG_FILES_ATTR, EMPTY_STRING_ARRAY, StringArray.COMMA_SEPARATED),
 
     /**
+     * Returns {@value ResourceHandler#CSP_POLICY_PARAM_NAME} as {@link String} with default of {@value ResourceHandler#DEFAULT_CSP_POLICY}.
+     */
+    CSP_POLICY(ResourceHandler.CSP_POLICY_PARAM_NAME, ResourceHandler.DEFAULT_CSP_POLICY),
+
+    /**
      * Returns {@value Converter#DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME} as {@link Boolean} with default of {@code false}.
      */
     DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE(Converter.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME, false),
@@ -86,9 +91,9 @@ public enum FacesContextParam {
     DISABLE_FACESSERVLET_TO_XHTML(FacesServlet.DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME, false),
 
     /**
-     * Returns {@value ResourceHandler#ENABLE_CSP_NONCE} as {@link Boolean} with default of {@code false}.
+     * Returns {@value ResourceHandler#ENABLE_CSP_NONCE_PARAM_NAME} as {@link Boolean} with default of {@code false}.
      */
-    ENABLE_CSP_NONCE(ResourceHandler.ENABLE_CSP_NONCE, false),
+    ENABLE_CSP_NONCE(ResourceHandler.ENABLE_CSP_NONCE_PARAM_NAME, false),
 
     /**
      * Returns {@value BeanValidator#ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME} as {@link Boolean} with default of {@code false}.
