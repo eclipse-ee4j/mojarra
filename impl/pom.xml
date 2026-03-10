@@ -81,7 +81,7 @@
        <dependency>
            <groupId>jakarta.faces</groupId>
            <artifactId>jakarta.faces-api</artifactId>
-           <version>${project.version}</version>
+           <version>5.0.0-M1</version>
        </dependency>
        
         <!-- Jakarta EE Dependencies -->
@@ -196,7 +196,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.11.0</version>
+            <version>5.22.0</version>
             <scope>test</scope>
         </dependency>
         
@@ -329,7 +329,7 @@
 
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.2.5</version>
+                <version>3.5.5</version>
                 <configuration>
                     <trimStackTrace>false</trimStackTrace>
                     <argLine>--add-opens java.base/java.lang=ALL-UNNAMED</argLine>
@@ -341,7 +341,7 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>6.0.0</version>
+                <version>6.0.2</version>
                 <executions>
                     <execution>
                         <id>bundle-manifest</id>
@@ -362,7 +362,7 @@
                         <Specification-Version>5.0</Specification-Version>
                         
                         <Implementation-Title>Mojarra</Implementation-Title> 
-                        <Implementation-Version>${project.version}</Implementation-Version>
+                        <Implementation-Version>5.0.0-M1</Implementation-Version>
                         <Implementation-Vendor>Eclipse</Implementation-Vendor> 
                         <Implementation-Vendor-Id>org.glassfish</Implementation-Vendor-Id>
                         
