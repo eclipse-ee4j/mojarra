@@ -31,16 +31,16 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.sun.faces.RIConstants;
-import com.sun.faces.application.ApplicationAssociate;
-import com.sun.faces.context.FacesFileNotFoundException;
-import com.sun.faces.facelets.impl.DefaultFaceletFactory;
-
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIImportConstants;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewMetadata;
+
+import com.sun.faces.RIConstants;
+import com.sun.faces.application.ApplicationAssociate;
+import com.sun.faces.context.FacesFileNotFoundException;
+import com.sun.faces.facelets.impl.DefaultFaceletFactory;
 
 /**
  * @see jakarta.faces.view.ViewMetadata
@@ -142,26 +142,31 @@ public class ViewMetadataImpl extends ViewMetadata {
     // ----------------------------------------------------------------------------------------------- UIImportConstants
 
     private static void importConstantsIfNecessary(FacesContext context, UIViewRoot root) {
-        for (UIImportConstants importConstants : getImportConstants(root)) {
-            String type = importConstants.getType();
+        getImportConstants(root).forEach(importConstants -> importConstants(context, importConstants));
+    }
 
-            if (type == null) {
-                throw new IllegalArgumentException("UIImportConstants type attribute is required.");
-            }
+    /**
+     * Import constants declared by given {@link UIImportConstants} instance into the application map of the given {@link FacesContext}.
+     */
+    public static void importConstants(FacesContext context, UIImportConstants importConstants) {
+        String type = importConstants.getType();
 
-            String var = importConstants.getVar();
+        if (type == null) {
+            throw new IllegalArgumentException("UIImportConstants type attribute is required.");
+        }
 
-            if (var == null) {
-                int innerClass = type.lastIndexOf('$');
-                int outerClass = type.lastIndexOf('.');
-                var = type.substring(Math.max(innerClass, outerClass) + 1);
-            }
+        String var = importConstants.getVar();
 
-            Map<String, Object> applicationMap = context.getExternalContext().getApplicationMap();
+        if (var == null) {
+            int innerClass = type.lastIndexOf('$');
+            int outerClass = type.lastIndexOf('.');
+            var = type.substring(Math.max(innerClass, outerClass) + 1);
+        }
 
-            if (!applicationMap.containsKey(type)) {
-                applicationMap.putIfAbsent(var, collectConstants(type));
-            }
+        Map<String, Object> applicationMap = context.getExternalContext().getApplicationMap();
+
+        if (!applicationMap.containsKey(type)) {
+            applicationMap.putIfAbsent(var, collectConstants(type));
         }
     }
 
@@ -224,7 +229,7 @@ public class ViewMetadataImpl extends ViewMetadata {
      * @author Bauke Scholtz
      * @since 2.3
      */
-    private static class ConstantsMap extends HashMap<String, Object> {
+    private static class ConstantsMap extends LinkedHashMap<String, Object> {
 
         private static final long serialVersionUID = 7036447585721834948L;
         private String type;

@@ -95,6 +95,8 @@ import com.sun.faces.ext.component.UIValidateWholeBean;
 import com.sun.faces.facelets.component.UIRepeat;
 import com.sun.faces.facelets.tag.ui.ComponentRef;
 import com.sun.faces.facelets.tag.ui.UIDebug;
+import com.sun.faces.renderkit.html_basic.ImportConstantsRenderer;
+import com.sun.faces.renderkit.html_basic.WebsocketRenderer;
 
 public final class MojarraRuntimePopulator extends ApplicationConfigurationPopulator {
 
@@ -368,7 +370,8 @@ public final class MojarraRuntimePopulator extends ApplicationConfigurationPopul
                 { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Doctype", com.sun.faces.renderkit.html_basic.DoctypeRenderer.class.getName() },                    
                 { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Head", com.sun.faces.renderkit.html_basic.HeadRenderer.class.getName() },                    
                 { UIOutput.COMPONENT_FAMILY, "jakarta.faces.Body", com.sun.faces.renderkit.html_basic.BodyRenderer.class.getName() },                    
-                { UIWebsocket.COMPONENT_FAMILY, "jakarta.faces.Websocket", com.sun.faces.renderkit.html_basic.WebsocketRenderer.class.getName() }
+                { UIWebsocket.COMPONENT_FAMILY, WebsocketRenderer.RENDERER_TYPE, WebsocketRenderer.class.getName() },
+                { UIImportConstants.COMPONENT_FAMILY, ImportConstantsRenderer.RENDERER_TYPE, ImportConstantsRenderer.class.getName() }
         };
 
         appendNestedChildElements(doc, namespace, rootElement, "renderer", new String[] { "component-family", "renderer-type", "renderer-class" }, renderers);
