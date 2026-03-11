@@ -11,6 +11,7 @@ import static jakarta.faces.event.PhaseId.RESTORE_VIEW;
 import static java.util.Collections.emptyEnumeration;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.emptySet;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -505,6 +506,25 @@ public class ELFlashTest {
         assertEquals(3, nextFlashInfo.getPreviousRequestFlashInfo().getSequenceNumber());
         assertEquals(4, nextFlashInfo.getNextRequestFlashInfo().getSequenceNumber());
         assertEquals(true, contextMap.get(DidWriteCookieAttributeName));
+    }
+
+    /**
+     * https://github.com/eclipse-ee4j/mojarra/issues/5662
+     */
+    @Test
+    public void testDecodeGarbageCookieResetsNextRequestFlashInfo() throws Exception {
+        ByteArrayGuardAESCTR mockGuard = mock(ByteArrayGuardAESCTR.class);
+        when(mockGuard.encrypt(any())).thenReturn("encrypted");
+        when(mockGuard.decrypt(any())).thenReturn("some_garbage");
+
+        PreviousNextFlashInfoManager manager = new PreviousNextFlashInfoManager(mockGuard, flashInnerMap);
+        manager.decode(mockedFacesContext, null, new Cookie(FLASH_COOKIE_NAME, "somevalue"));
+
+        assertNotNull(manager.getPreviousRequestFlashInfo());
+        assertNotNull(manager.getPreviousRequestFlashInfo().getLifetimeMarker());
+        assertEquals(null, manager.getNextRequestFlashInfo());
+        assertEquals(Boolean.TRUE, contextMap.get(ForceSetMaxAgeZero));
+        assertDoesNotThrow(() -> manager.encode());
     }
 
     private PreviousNextFlashInfoManager mockPreviousNextFlashInfoManager(Map<String, Map<String, Object>> flashInnerMap) {
