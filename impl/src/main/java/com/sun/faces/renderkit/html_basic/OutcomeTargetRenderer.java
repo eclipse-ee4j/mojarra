@@ -130,7 +130,7 @@ public abstract class OutcomeTargetRenderer extends HtmlBasicRenderer {
     /**
      * <p>
      * Resolve the target view id and then delegate to
-     * {@link ViewHandler#getBookmarkableURL(jakarta.faces.context.FacesContext, String, java.util.Map, boolean)} to produce
+     * {@link ViewHandler#getBookmarkableURL(jakarta.faces.context.FacesContext, String, java.util.Map, String, boolean)} to produce
      * a redirect URL, which will add the page parameters if necessary and properly prioritizing the parameter overrides.
      * </p>
      *
@@ -162,7 +162,7 @@ public abstract class OutcomeTargetRenderer extends HtmlBasicRenderer {
                 }
             }
 
-            result = Util.getViewHandler(context).getBookmarkableURL(context, toViewId, params, isIncludeViewParams(component, navCase));
+            result = Util.getViewHandler(context).getBookmarkableURL(context, toViewId, params, navCase.getFragment(), isIncludeViewParams(component, navCase));
         } finally {
             if (didDisableClientWindowRendering && null != cw) {
                 cw.enableClientWindowRenderMode(context);

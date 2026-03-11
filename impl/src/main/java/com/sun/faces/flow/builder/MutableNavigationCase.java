@@ -44,6 +44,7 @@ public class MutableNavigationCase extends NavigationCase {
     private String toViewId;
     private String toFlowDocumentId;
     private Map<String, List<String>> parameters;
+    private String fragment;
     private boolean redirect;
     private boolean includeViewParams;
 
@@ -54,13 +55,13 @@ public class MutableNavigationCase extends NavigationCase {
     // ------------------------------------------------------------ Constructors
 
     public MutableNavigationCase() {
-        this(null, null, null, null, null, null, null, false, false);
+        this(null, null, null, null, null, null, null, null, false, false);
         parameters = new ConcurrentHashMap<>();
     }
 
     public MutableNavigationCase(String fromViewId, String fromAction, String fromOutcome, String condition, String toViewId, String toFlowDocumentId,
-            Map<String, List<String>> parameters, boolean redirect, boolean includeViewParams) {
-        super(fromViewId, fromAction, fromOutcome, condition, toViewId, toFlowDocumentId, parameters, redirect, includeViewParams);
+            Map<String, List<String>> parameters, String fragment, boolean redirect, boolean includeViewParams) {
+        super(fromViewId, fromAction, fromOutcome, condition, toViewId, toFlowDocumentId, parameters, fragment, redirect, includeViewParams);
 
         this.fromViewId = fromViewId;
         this.fromAction = fromAction;
@@ -69,6 +70,7 @@ public class MutableNavigationCase extends NavigationCase {
         this.toViewId = toViewId;
         this.toFlowDocumentId = toFlowDocumentId;
         this.parameters = null != parameters ? parameters : new ConcurrentHashMap<>();
+        this.fragment = fragment;
         this.redirect = redirect;
         this.includeViewParams = includeViewParams;
 
@@ -76,7 +78,7 @@ public class MutableNavigationCase extends NavigationCase {
 
     public MutableNavigationCase(String fromViewId, String fromAction, String fromOutcome, String condition, String toViewId, String toFlowDocumentId,
             boolean redirect, boolean includeViewParams) {
-        super(fromViewId, fromAction, fromOutcome, condition, toViewId, toFlowDocumentId, Collections.emptyMap(), redirect, includeViewParams);
+        super(fromViewId, fromAction, fromOutcome, condition, toViewId, toFlowDocumentId, Collections.emptyMap(), null, redirect, includeViewParams);
 
         this.fromViewId = fromViewId;
         this.fromAction = fromAction;
@@ -85,6 +87,7 @@ public class MutableNavigationCase extends NavigationCase {
         this.toViewId = toViewId;
         this.toFlowDocumentId = toFlowDocumentId;
         parameters = Collections.emptyMap();
+        fragment = null;
         this.redirect = redirect;
         this.includeViewParams = includeViewParams;
 
@@ -193,6 +196,15 @@ public class MutableNavigationCase extends NavigationCase {
     }
 
     @Override
+    public String getFragment() {
+        return fragment;
+    }
+    
+    public void setFragment(String fragment) {
+        this.fragment = fragment;
+    }
+    
+    @Override
     public boolean isRedirect() {
 
         return redirect;
@@ -244,6 +256,9 @@ public class MutableNavigationCase extends NavigationCase {
         if (parameters != other.parameters && (parameters == null || !parameters.equals(other.parameters))) {
             return false;
         }
+        if (fragment != other.fragment && (fragment == null || !fragment.equals(other.fragment))) {
+            return false;
+        }
         if (redirect != other.redirect) {
             return false;
         }
@@ -263,6 +278,7 @@ public class MutableNavigationCase extends NavigationCase {
         hash = 29 * hash + (toViewId != null ? toViewId.hashCode() : 0);
         hash = 29 * hash + (toFlowDocumentId != null ? toFlowDocumentId.hashCode() : 0);
         hash = 29 * hash + (parameters != null ? parameters.hashCode() : 0);
+        hash = 29 * hash + (fragment != null ? fragment.hashCode() : 0);
         hash = 29 * hash + (redirect ? 1 : 0);
         hash = 29 * hash + (includeViewParams ? 1 : 0);
         return hash;
@@ -282,6 +298,7 @@ public class MutableNavigationCase extends NavigationCase {
             sb.append(", faces-redirect=").append(redirect);
             sb.append(", includeViewParams=").append(includeViewParams).append('\'');
             sb.append(", parameters=").append(parameters != null ? parameters.toString() : "");
+            sb.append(", fragment=").append(fragment != null ? fragment.toString() : "");
             sb.append('}');
             toString = sb.toString();
         }
