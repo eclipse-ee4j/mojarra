@@ -98,13 +98,17 @@ public abstract class BaseIT {
         return browser.getPageSource();
     }
 
+    protected String getContextPath() {
+        return baseURL.getPath().replaceAll("/$", "");
+    }
+
     protected String getHrefURI(WebElement link) {
         String uri = link.getAttribute("href").substring(baseURL.toExternalForm().length());
         String uriWithoutJsessionId = uri.split(";jsessionid=", 2)[0];
         String[] uriAndQueryString = uri.split(Pattern.quote("?"), 2);
 
         if (uriAndQueryString.length == 2) {
-            uriWithoutJsessionId += "?" + uriAndQueryString[1]; 
+            uriWithoutJsessionId += "?" + uriAndQueryString[1];
         }
 
         return uriWithoutJsessionId;
