@@ -239,4 +239,21 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler implements 
         return getWrapped().isResourceRendered(context, resourceName, libraryName);
     }
 
+    /**
+     * <p class="changed_added_4_0">
+     * The default behavior of this method is to call
+     * {@link ResourceHandler#getCurrentNonce(FacesContext)} on the wrapped {@link ResourceHandler}
+     * object.
+     * </p>
+     *
+     * <p>
+     * This has been backported from Jakarta Faces 5.0 to provide CSP nonce support for older applications.
+     * </p>
+     *
+     * @since 4.0
+     */
+    @Override
+    public String getCurrentNonce(FacesContext context) {
+        return getWrapped().getCurrentNonce(context);
+    }
 }

@@ -21,6 +21,7 @@ import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter
 import static com.sun.faces.renderkit.RenderKitUtils.PredefinedPostbackParameter.PARTIAL_EVENT_PARAM;
 import static jakarta.faces.application.ResourceHandler.FACES_SCRIPT_LIBRARY_NAME;
 import static jakarta.faces.application.ResourceHandler.FACES_SCRIPT_RESOURCE_NAME;
+import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -30,9 +31,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,6 +44,7 @@ import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.config.WebConfiguration;
 import com.sun.faces.el.ELUtils;
 import com.sun.faces.facelets.util.DevTools;
+import com.sun.faces.renderkit.html_basic.ScriptRenderer;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.RequestStateManager;
 import com.sun.faces.util.Util;
@@ -142,6 +146,8 @@ public class RenderKitUtils {
      * Hopefully Faces X will remove the need for this.
      */
     private static final String ATTRIBUTES_THAT_ARE_SET_KEY = UIComponentBase.class.getName() + ".attributesThatAreSet";
+
+    private static final String BEHAVIOR_EVENT_ATTRIBUTE_PREFIX = "on";
 
     /**
      * UIViewRoot attribute key of a boolean value which remembers whether the view will be rendered with a HTML5 doctype.
@@ -332,33 +338,33 @@ public class RenderKitUtils {
             behaviors = Collections.emptyMap();
         }
 
-        if (canBeOptimized(component, behaviors)) {
-            List<String> setAttributes = (List<String>) component.getAttributes().get(ATTRIBUTES_THAT_ARE_SET_KEY);
-            if (setAttributes != null) {
+        List<String> setAttributes = (List<String>) component.getAttributes().get(ATTRIBUTES_THAT_ARE_SET_KEY);
+
+        if (setAttributes != null && canBeOptimized(component, behaviors)) {
                 renderPassThruAttributesOptimized(context, writer, component, attributes, setAttributes, behaviors);
-            }
         } else {
 
             // this block should only be hit by custom components leveraging
             // the RI's rendering code, or in cases where we have behaviors
             // attached to multiple events. We make no assumptions and loop
             // through
-            renderPassThruAttributesUnoptimized(context, writer, component, attributes, behaviors);
+            renderPassThruAttributesUnoptimized(context, writer, component, attributes, setAttributes, behaviors);
         }
     }
 
-    // Renders the onchange handler for input components. Handles
+    // Renders the onchange event listener for input components. Handles
     // chaining together the user-provided onchange handler with
     // any Behavior scripts.
-    public static void renderOnchange(FacesContext context, UIComponent component, boolean incExec) throws IOException {
+    public static void renderOnchangeEventListener(FacesContext context, UIComponent component, boolean incExec) throws IOException {
 
         final String handlerName = "onchange";
         final Object userHandler = component.getAttributes().get(handlerName);
         String behaviorEventName = "valueChange";
+        String domEventName = "change";
         if (component instanceof ClientBehaviorHolder) {
             Map<?, ?> behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
-            if (null != behaviors && behaviors.containsKey("change")) {
-                behaviorEventName = "change";
+            if (null != behaviors && behaviors.containsKey(domEventName)) {
+                behaviorEventName = domEventName;
             }
         }
 
@@ -369,19 +375,20 @@ public class RenderKitUtils {
             params = new LinkedList<>();
             params.add(new ClientBehaviorContext.Parameter("incExec", true));
         }
-        renderHandler(context, component, params, handlerName, userHandler, behaviorEventName, null, false, incExec);
+        renderHandler(context, component, null, params, handlerName, userHandler, behaviorEventName, "change", null, false, incExec, true);
     }
 
-    // Renders onclick handler for SelectRaidio and SelectCheckbox
-    public static void renderSelectOnclick(FacesContext context, UIComponent component, boolean incExec) throws IOException {
+    // Renders onclick event listener for SelectRadio and SelectCheckbox
+    public static void renderSelectOnclickEventListener(FacesContext context, UIComponent component, String clientId, boolean incExec) throws IOException {
 
         final String handlerName = "onclick";
         final Object userHandler = component.getAttributes().get(handlerName);
         String behaviorEventName = "valueChange";
+        String domEventName = "click";
         if (component instanceof ClientBehaviorHolder) {
             Map<?, ?> behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
-            if (null != behaviors && behaviors.containsKey("click")) {
-                behaviorEventName = "click";
+            if (null != behaviors && behaviors.containsKey(domEventName)) {
+                behaviorEventName = domEventName;
             }
         }
 
@@ -392,44 +399,44 @@ public class RenderKitUtils {
             params = new LinkedList<>();
             params.add(new ClientBehaviorContext.Parameter("incExec", true));
         }
-        renderHandler(context, component, params, handlerName, userHandler, behaviorEventName, null, false, incExec);
+        renderHandler(context, component, clientId, params, handlerName, userHandler, behaviorEventName, domEventName, null, false, incExec, true);
     }
 
-    // Renders the onclick handler for command buttons. Handles
+    // Renders the onclick event listener for command buttons. Handles
     // chaining together the user-provided onclick handler, any
     // Behavior scripts, plus the default button submit script.
-    public static void renderOnclick(FacesContext context, UIComponent component, Collection<ClientBehaviorContext.Parameter> params, String submitTarget,
+    public static void renderOnclickEventListener(FacesContext context, UIComponent component, Collection<ClientBehaviorContext.Parameter> params, String submitTarget,
             boolean needsSubmit) throws IOException {
-
         final String handlerName = "onclick";
         final Object userHandler = component.getAttributes().get(handlerName);
         String behaviorEventName = "action";
+        String domEventName = "click";
         if (component instanceof ClientBehaviorHolder) {
             Map<String, List<ClientBehavior>> behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
-            boolean mixed = null != behaviors && behaviors.containsKey("click") && behaviors.containsKey("action");
+            boolean mixed = null != behaviors && behaviors.containsKey(domEventName) && behaviors.containsKey(behaviorEventName);
             if (mixed) {
-                behaviorEventName = "click";
-                List<ClientBehavior> clickBehaviors = behaviors.get("click");
-                List<ClientBehavior> actionBehaviors = behaviors.get("action");
+                List<ClientBehavior> actionBehaviors = behaviors.get(behaviorEventName);
+                behaviorEventName = domEventName;
+                List<ClientBehavior> clickBehaviors = behaviors.get(domEventName);
                 clickBehaviors.addAll(actionBehaviors);
                 actionBehaviors.clear();
-            } else if (null != behaviors && behaviors.containsKey("click")) {
-                behaviorEventName = "click";
+            } else if (null != behaviors && behaviors.containsKey(domEventName)) {
+                behaviorEventName = domEventName;
             }
         }
 
-        renderHandler(context, component, params, handlerName, userHandler, behaviorEventName, submitTarget, needsSubmit, false);
+        renderHandler(context, component, null, params, handlerName, userHandler, behaviorEventName, domEventName, submitTarget, needsSubmit, false, true);
+
     }
 
-    // Renders the script function for command scripts.
+    // Renders the script element with the function for command scripts.
     public static void renderFunction(FacesContext context, UIComponent component, Collection<ClientBehaviorContext.Parameter> params, String submitTarget)
             throws IOException {
 
         ClientBehaviorContext behaviorContext = ClientBehaviorContext.createClientBehaviorContext(context, component, "action", submitTarget, params);
         AjaxBehavior behavior = (AjaxBehavior) context.getApplication().createBehavior(AjaxBehavior.BEHAVIOR_ID);
         mapAttributes(component, behavior, "execute", "render", "onerror", "onevent", "resetValues");
-
-        context.getResponseWriter().append(behavior.getScript(behaviorContext));
+        renderScript(context, component, null, behavior.getScript(behaviorContext));
     }
 
     private static void mapAttributes(UIComponent component, AjaxBehavior behavior, String... attributeNames) {
@@ -623,7 +630,19 @@ public class RenderKitUtils {
                     Attribute attr = knownAttributes[index];
 
                     if (isBehaviorEventAttribute(attr, behaviorEventName)) {
-                        renderHandler(context, component, null, name, value, behaviorEventName, null, false, false);
+                        renderHandler(context, component, null, null, name, value, behaviorEventName, behaviorEventName, null, false, false, false);
+
+                        renderedBehavior = true;
+                    } else {
+                        writer.writeAttribute(prefixAttribute(name, isXhtml), value, name);
+                    }
+                }
+            }
+            else if (isBehaviorEventAttribute(name)) {
+                Object value = attrMap.get(name);
+                if (value != null && shouldRenderAttribute(value)) {
+                    if (name.substring(2).equals(behaviorEventName)) {
+                        renderHandler(context, component, null, null, name, value, behaviorEventName, behaviorEventName, null, false, false, false);
 
                         renderedBehavior = true;
                     } else {
@@ -637,18 +656,29 @@ public class RenderKitUtils {
         // attribute rendering. Need to manually render it out now.
         if (behaviorEventName != null && !renderedBehavior) {
 
-            // Note that we can optimize this search by providing
-            // an event name -> Attribute inverse look up map.
-            // This would change the search time from O(n) to O(1).
-            for (int i = 0; i < knownAttributes.length; i++) {
-                Attribute attr = knownAttributes[i];
-                String[] events = attr.getEvents();
-                if (events != null && events.length > 0 && behaviorEventName.equals(events[0])) {
+            List<String> behaviorAttributes = setAttributes.stream().filter(RenderKitUtils::isBehaviorEventAttribute).collect(toList());
 
-                    renderHandler(context, component, null, attr.getName(), null, behaviorEventName, null, false, false);
+            for (String attrName : behaviorAttributes) {
+                String eventName = attrName.substring(2);
+                if (behaviorEventName.equals(eventName)) {
+                    renderPassthruAttribute(context, writer, component, behaviors, isXhtml, attrMap, attrName, behaviorEventName);
+                    return;
                 }
             }
 
+            // Note that we can optimize this search by providing
+            // an event name -> Attribute inverse look up map.
+            // This would change the search time from O(n) to O(1).
+            for (Attribute attribute : knownAttributes) {
+                String attrName = attribute.getName();
+                String[] events = attribute.getEvents();
+                if (events != null && events.length > 0 && behaviorEventName.equals(events[0])) {
+                    renderHandler(context, component, null, null, attrName, null, behaviorEventName, behaviorEventName, null, false, false, false);
+                    return;
+                }
+            }
+
+            renderPassthruAttribute(context, writer, component, behaviors, isXhtml, attrMap, BEHAVIOR_EVENT_ATTRIBUTE_PREFIX + behaviorEventName, behaviorEventName);
         }
     }
 
@@ -660,33 +690,57 @@ public class RenderKitUtils {
      * @param writer the current writer
      * @param component the component whose attributes we're rendering
      * @param knownAttributes an array of pass-through attributes supported by this component
+     * @param setAttributes a <code>List</code> of attributes that have been set on the provided component
      * @param behaviors the non-null behaviors map for this request.
      * @throws IOException if an error occurs during the write
      */
     private static void renderPassThruAttributesUnoptimized(FacesContext context, ResponseWriter writer, UIComponent component, Attribute[] knownAttributes,
-            Map<String, List<ClientBehavior>> behaviors) throws IOException {
+            List<String> setAttributes, Map<String, List<ClientBehavior>> behaviors) throws IOException {
 
         boolean isXhtml = RIConstants.XHTML_CONTENT_TYPE.equals(writer.getContentType());
 
         Map<String, Object> attrMap = component.getAttributes();
+        Set<String> behaviorEventNames = new LinkedHashSet<>(behaviors.size() + 2);
+
+        behaviorEventNames.addAll(behaviors.keySet());
+
+        if (setAttributes != null) {
+            setAttributes.stream().filter(RenderKitUtils::isBehaviorEventAttribute).map(a -> a.substring(BEHAVIOR_EVENT_ATTRIBUTE_PREFIX.length())).forEach(behaviorEventNames::add);
+        }
 
         for (Attribute attribute : knownAttributes) {
             String attrName = attribute.getName();
             String[] events = attribute.getEvents();
-            boolean hasBehavior = events != null && events.length > 0 && behaviors.containsKey(events[0]);
-
-            Object value = attrMap.get(attrName);
-
-            if (value != null && shouldRenderAttribute(value) && !hasBehavior) {
-                writer.writeAttribute(prefixAttribute(attrName, isXhtml), value, attrName);
-            } else if (hasBehavior) {
-
-                // If we've got a behavior for this attribute,
-                // we may need to chain scripts together, so use
-                // renderHandler().
-                renderHandler(context, component, null, attrName, value, events[0], null, false, false);
-            }
+            String eventName = events != null && events.length > 0 ? events[0] : null;
+            renderPassthruAttribute(context, writer, component, behaviors, isXhtml, attrMap, attrName, eventName);
+            behaviorEventNames.remove(eventName);
         }
+
+        for (String eventName : behaviorEventNames) {
+            renderPassthruAttribute(context, writer, component, behaviors, isXhtml, attrMap, BEHAVIOR_EVENT_ATTRIBUTE_PREFIX + eventName, eventName);
+        }
+    }
+
+    private static void renderPassthruAttribute(FacesContext context, ResponseWriter writer, UIComponent component,
+            Map<String, List<ClientBehavior>> behaviors, boolean isXhtml, Map<String, Object> attrMap, String attrName,
+            String eventName) throws IOException {
+        boolean hasBehavior = eventName != null && behaviors.containsKey(eventName);
+
+        Object value = attrMap.get(attrName);
+
+        if (value != null && shouldRenderAttribute(value) && !hasBehavior) {
+            writer.writeAttribute(prefixAttribute(attrName, isXhtml), value, attrName);
+        } else if (hasBehavior) {
+
+            // If we've got a behavior for this attribute,
+            // we may need to chain scripts together, so use
+            // renderEventListener().
+            renderHandler(context, component, null, null, attrName, value, eventName, eventName, null, false, false, false);
+        }
+    }
+
+    public static boolean isBehaviorEventAttribute(String name) {
+        return name.startsWith(BEHAVIOR_EVENT_ATTRIBUTE_PREFIX) && name.length() > 2;
     }
 
     /**
@@ -1492,7 +1546,7 @@ public class RenderKitUtils {
         builder.append("')");
 
         if (preventDefault) {
-            builder.append(";return false");
+            builder.append(";event.preventDefault()");
         }
 
         return builder.toString();
@@ -1530,10 +1584,10 @@ public class RenderKitUtils {
         builder.append(")");
 
         // If we're submitting (either via a behavior, or by rendering
-        // a submit script), we need to return false to prevent the
-        // default button/link action.
+        // a submit script), we need to prevent the
+        // default button/link action event.
         if (submitting && ("action".equals(behaviorEventName) || "click".equals(behaviorEventName))) {
-            builder.append(";return false");
+            builder.append(";event.preventDefault()");
         }
 
         return builder.toString();
@@ -1554,7 +1608,7 @@ public class RenderKitUtils {
                 script = getSubmitHandler(context, component, params, submitTarget, preventDefault);
             }
         } else if (preventDefault) {
-            script = script + ";return false";
+            script = script + ";event.preventDefault()";
         }
 
         return script;
@@ -1583,15 +1637,16 @@ public class RenderKitUtils {
      * @param handlerValue the user-specified value for the handler attribute
      * @param behaviorEventName the name of the behavior event that corresponds to this handler (eg. "action" or
      * "mouseover").
+     * @param domEventName the name of the DOM event that corresponds to this handler (eg. "click" or
+     * "change").
      * @param needsSubmit indicates whether the mojarra.cljs() "submit" script is required by the component. Most
      * components do not need this, either because they submit themselves (eg. commandButton), or because they do not
      * perform submits (eg. non-command components). This flag is mainly here for the commandLink case, where we need to
      * render the submit script to make the link submit.
      */
-    private static void renderHandler(FacesContext context, UIComponent component, Collection<ClientBehaviorContext.Parameter> params, String handlerName,
-            Object handlerValue, String behaviorEventName, String submitTarget, boolean needsSubmit, boolean includeExec) throws IOException {
+    private static void renderHandler(FacesContext context, UIComponent component, String clientId, Collection<ClientBehaviorContext.Parameter> params, String handlerName,
+            Object handlerValue, String behaviorEventName, String domEventName, String submitTarget, boolean needsSubmit, boolean includeExec, boolean asEventListener) throws IOException {
 
-        ResponseWriter writer = context.getResponseWriter();
         String userHandler = getNonEmptyUserHandler(handlerValue);
         List<ClientBehavior> behaviors = getClientBehaviors(component, behaviorEventName);
 
@@ -1605,27 +1660,70 @@ public class RenderKitUtils {
         }
         String handler = null;
         switch (getHandlerType(behaviors, params, userHandler, needsSubmit, includeExec)) {
+            case USER_HANDLER_ONLY:
+                handler = userHandler;
+                break;
 
-        case USER_HANDLER_ONLY:
-            handler = userHandler;
-            break;
+            case SINGLE_BEHAVIOR_ONLY:
+                handler = getSingleBehaviorHandler(context, component, behaviors.get(0), params, behaviorEventName, submitTarget, needsSubmit);
+                break;
 
-        case SINGLE_BEHAVIOR_ONLY:
-            handler = getSingleBehaviorHandler(context, component, behaviors.get(0), params, behaviorEventName, submitTarget, needsSubmit);
-            break;
+            case SUBMIT_ONLY:
+                handler = getSubmitHandler(context, component, params, submitTarget, true);
+                break;
 
-        case SUBMIT_ONLY:
-            handler = getSubmitHandler(context, component, params, submitTarget, true);
-            break;
-
-        case CHAIN:
-            handler = getChainedHandler(context, component, behaviors, params, behaviorEventName, userHandler, submitTarget, needsSubmit);
-            break;
-        default:
-            assert false;
+            case CHAIN:
+                handler = getChainedHandler(context, component, behaviors, params, behaviorEventName, userHandler, submitTarget, needsSubmit);
+                break;
+            default:
+                assert false;
         }
 
-        writer.writeAttribute(handlerName, handler, null);
+        if (handler != null) {
+            if (asEventListener) {
+                addEventListener(context, component, clientId, domEventName, handler);
+            }
+            else {
+                context.getResponseWriter().writeAttribute(handlerName, handler, null);
+            }
+        }
+    }
+
+    public static void addEventListener(FacesContext context, UIComponent component, String clientId, String domEventName, String function) throws IOException {
+        StringBuilder script = new StringBuilder("mojarra.ael('")
+            .append(clientId != null ? clientId : component.getClientId(context))
+            .append("','")
+            .append(domEventName)
+            .append("',function(event){" + function + "})");
+        
+        if (context.getPartialViewContext().isAjaxRequest()) {
+            context.getPartialViewContext().getEvalScripts().add(script.toString());
+        }
+        else {
+            renderScript(context, component, null, script.toString());
+        }
+    }
+
+    public static void renderScript(FacesContext context, UIComponent component, String clientId, String script) throws IOException {
+        ResponseWriter writer = context.getResponseWriter();
+
+        writer.startElement("script", component);
+
+        if (clientId != null) {
+            writer.writeAttribute("id", clientId, "id");
+        }
+
+        if (!RenderKitUtils.isOutputHtml5Doctype(context)) {
+            writer.writeAttribute("type", ScriptRenderer.DEFAULT_CONTENT_TYPE, "type");
+        }
+
+        String nonce = context.getApplication().getResourceHandler().getCurrentNonce(context);
+        if (nonce != null) {
+            writer.writeAttribute("nonce", nonce, "nonce");
+        }
+
+        writer.writeText(script, component, null);
+        writer.endElement("script");
     }
 
     // Determines the type of handler to render based on what sorts of

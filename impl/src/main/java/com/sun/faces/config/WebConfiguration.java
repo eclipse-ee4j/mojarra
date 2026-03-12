@@ -785,6 +785,7 @@ public class WebConfiguration {
         WebAppResourcesDirectory(ResourceHandler.WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME, "/resources"),
         WebAppContractsDirectory(ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME, "/contracts"),
         ExceptionTypesToIgnoreInLogging("com.sun.faces.exceptionTypesToIgnoreInLogging", ""),
+        CspNonceEnabled(ResourceHandler.ENABLE_CSP_NONCE, ""),
         ;
 
         private String defaultValue;

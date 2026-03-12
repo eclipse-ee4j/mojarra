@@ -259,6 +259,22 @@ public abstract class ResourceHandler {
      */
     public static final String RESOURCE_EXCLUDES_DEFAULT_VALUE = ".class .jsp .jspx .properties .xhtml .groovy";
 
+    /**
+     * <p class="changed_added_4_0">
+     * The boolean context parameter name to explicitly enable Content Security Policy (CSP) nonce generation.
+     * When enabled, Jakarta Faces generates a Content Security Policy (CSP) nonce value for the current request.
+     * The generated nonce can be obtained via {@link #getCurrentNonce(jakarta.faces.context.FacesContext)}.
+     * If this context parameter is not enabled, no nonce is generated and {@link #getCurrentNonce(jakarta.faces.context.FacesContext)} returns {@code null}.
+     * </p>
+     *
+     * <p>
+     * This has been backported from Jakarta Faces 5.0 to provide CSP nonce support for older applications.
+     * </p>
+     *
+     * @since 4.0
+     */
+    public static final String ENABLE_CSP_NONCE = "jakarta.faces.ENABLE_CSP_NONCE";
+
     // ---------------------------------------------------------- Public Methods
 
     /**
@@ -747,4 +763,37 @@ public abstract class ResourceHandler {
         return resourceIdentifiers != null && resourceIdentifiers.contains(resourceIdentifier);
     }
 
+    /**
+     * <p class="changed_added_4_0">
+     * Returns the Content Security Policy (CSP) nonce for the current request, or {@code null} if CSP nonce support is not enabled. When enabled via
+     * {@link #ENABLE_CSP_NONCE}, then the runtime ensures that each view has a consistent nonce value that can be used to allow inline scripts to execute safely.
+     * </p>
+     *
+     * <p>
+     * The returned nonce is intended to be used:
+     * </p>
+     *
+     * <ul>
+     *   <li>As the value of the {@code nonce} attribute on rendered {@code <script>} elements.</li>
+     *   <li>As part of the {@code Content-Security-Policy} response header, for example: <code>script-src 'self' 'nonce-&lt;value&gt;'</code>.</li>
+     * </ul>
+     *
+     * <p>
+     * Implementations must generate a unique nonce for the current view and save it in the {@link jakarta.faces.component.UIViewRoot#getViewMap view state}.
+     * The same nonce will be returned for the duration of the view, including postbacks and AJAX requests.
+     * For backward compatibility, a default implementation is provided that returns {@code null}.
+     * </p>
+     *
+     * <p>
+     * This method has been backported from Jakarta Faces 5.0 to provide CSP nonce support for older applications.
+     * </p>
+     *
+     * @param context The {@link FacesContext} for this request.
+     * @return a Base64-encoded CSP nonce value, or {@code null} if CSP nonce support is not enabled.
+     *
+     * @since 4.0
+     */
+    public String getCurrentNonce(FacesContext context) {
+        return null;
+    }
 }

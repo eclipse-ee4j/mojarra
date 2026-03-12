@@ -424,6 +424,12 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                     FormOmittedChecker.check(ctx);
                 }
 
+                // Add CSP header if necessary
+                String nonce = ctx.getApplication().getResourceHandler().getCurrentNonce(ctx);
+                if (nonce != null) {
+                    ctx.getExternalContext().addResponseHeader("Content-Security-Policy", "script-src 'self' 'nonce-" + nonce + "'");
+                }
+
                 // Render the XML declaration to the response
                 String xmlDecl = getXMLDECLFromFacesContextAttributes(ctx);
                 if (xmlDecl != null) {

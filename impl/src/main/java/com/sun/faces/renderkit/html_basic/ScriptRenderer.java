@@ -40,6 +40,12 @@ public class ScriptRenderer extends ScriptStyleBaseRenderer {
         if (!RenderKitUtils.isOutputHtml5Doctype(context)) {
             writer.writeAttribute("type", DEFAULT_CONTENT_TYPE, "type");
         }
+
+        String nonce = context.getApplication().getResourceHandler().getCurrentNonce(context);
+
+        if (nonce != null) {
+            writer.writeAttribute("nonce", nonce, "nonce");
+        }
     }
 
     @Override

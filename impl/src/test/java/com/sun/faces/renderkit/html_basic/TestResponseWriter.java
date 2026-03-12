@@ -40,17 +40,20 @@ public class TestResponseWriter extends ResponseWriter {
 
     @Override
     public String getContentType() {
-        throw new UnsupportedOperationException("Not supported yet.");
+//        throw new UnsupportedOperationException("Not supported yet.");
+        return "text/html";
     }
 
     @Override
     public String getCharacterEncoding() {
-        throw new UnsupportedOperationException("Not supported yet.");
+//        throw new UnsupportedOperationException("Not supported yet.");
+        return "UTF-8";
     }
 
     @Override
     public void flush() throws IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        writer.flush();
+//        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override

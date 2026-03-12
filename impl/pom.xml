@@ -280,40 +280,36 @@
         <plugins>
         
             <!-- ###  C O M P R E S S  /  M I N I F Y   faces.js  ###   -->
+            <!-- https://blutorange.github.io/closure-compiler-maven-plugin/minify-mojo.html -->
             <plugin>
-                <groupId>net.alchim31.maven</groupId>
-                <artifactId>yuicompressor-maven-plugin</artifactId>
-                <version>1.5.1</version>
+                <groupId>com.github.blutorange</groupId>
+                <artifactId>closure-compiler-maven-plugin</artifactId>
+                <version>2.30.0</version>
                 <executions>
                     <execution>
                         <id>minify-faces-js</id>
                         <phase>generate-sources</phase>
                         <goals>
-                            <goal>compress</goal>
+                            <goal>minify</goal>
                         </goals>
                         <configuration>
-                            <nosuffix>true</nosuffix>
-                            <preProcessAggregates>true</preProcessAggregates>
-                            <aggregations>
-                                <aggregation>
-                                    <includes>
-                                        <include>${project.basedir}/src/main/resources/META-INF/resources/jakarta.faces/faces-uncompressed.js</include>
-                                    </includes>
-                                    <output>${project.build.directory}/generated-resources/yui/faces.js</output>
-                                </aggregation>
-                            </aggregations>
+                            <encoding>UTF-8</encoding>
+                            <baseSourceDir>${project.basedir}/src/main/resources/META-INF/resources/</baseSourceDir>
+                            <baseTargetDir>${project.build.directory}/classes/META-INF/resources/</baseTargetDir>
+                            <sourceDir>jakarta.faces</sourceDir>
+                            <targetDir>jakarta.faces</targetDir>
                             <includes>
-                                <include>*.js</include>
+                                <include>faces-uncompressed.js</include>
                             </includes>
-                            <sourceDirectory>${project.build.directory}/generated-resources/yui</sourceDirectory>
-                            <outputDirectory>${project.build.directory}/generated-resources/yui/META-INF/resources/jakarta.faces/</outputDirectory>
+                            <outputFilename>faces.js</outputFilename>
+                            <skipMerge>true</skipMerge>
+                            <closureLanguageOut>NO_TRANSPILE</closureLanguageOut>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
 
-            
-            <!-- Adds the paths where the source and resources generated above was stored -->
+            <!--&lt;!&ndash; Adds the paths where the source and resources generated above was stored &ndash;&gt;
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -334,7 +330,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
