@@ -44,12 +44,19 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
 
     /**
      * Get the nonce from faces.js script for CSP support.
+     * Captured at load time via document.currentScript for robustness, with DOM query fallback.
      * @ignore
      */
-    const getNonce = () => {
-        const thisScript = document.querySelector("script[src*='jakarta.faces.resource/faces.js']");
-        return isNotNull(thisScript) ? thisScript.nonce : undefined;
-    };
+    const getNonce = (() => {
+        const loadTimeNonce = document.currentScript ? document.currentScript.nonce : undefined;
+        return () => {
+            if (loadTimeNonce) {
+                return loadTimeNonce;
+            }
+            const thisScript = document.querySelector("script[src*='jakarta.faces.resource/faces.js']");
+            return isNotNull(thisScript) ? thisScript.nonce : undefined;
+        };
+    })();
 
     /**
      * Execute script with nonce for CSP support.
@@ -356,7 +363,13 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
          * @ignore
          */
         const removeScripts = function removeScripts(html) {
-            return html.replace(/<script[^>]*type="text\/javascript"[^>]*>([\S\s]*?)<\/script>/igm, EMPTY);
+            return html.replace(SCRIPT_TAG_REGEX, function(match, content) {
+                const type = match.match(TAG_ATTRIBUTE_TYPE_REGEX);
+                if (!!type && type[1] !== "text/javascript") {
+                    return match; // keep non-text/javascript scripts
+                }
+                return EMPTY;
+            });
         };
 
         /**

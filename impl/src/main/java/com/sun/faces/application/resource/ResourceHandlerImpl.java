@@ -28,7 +28,6 @@ import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static jakarta.servlet.http.HttpServletResponse.SC_NOT_MODIFIED;
 import static jakarta.servlet.http.MappingMatch.EXTENSION;
 import static java.lang.Boolean.FALSE;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.WARNING;
 
@@ -42,7 +41,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+import java.security.SecureRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -78,6 +77,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
     private long creationTime;
     private long maxAge;
     private boolean cspEnabled;
+    private SecureRandom secureRandom;
     private final WebConfiguration webconfig;
 
     // ------------------------------------------------------------ Constructors
@@ -94,6 +94,10 @@ public class ResourceHandlerImpl extends ResourceHandler {
         initExclusions(context);
         initMaxAge();
         cspEnabled = FacesContextParam.ENABLE_CSP_NONCE.isSet(context);
+        if (cspEnabled) {
+            secureRandom = new SecureRandom();
+            secureRandom.nextBytes(new byte[1]);
+        }
     }
 
     // ------------------------------------------- Methods from Resource Handler
@@ -398,9 +402,11 @@ public class ResourceHandlerImpl extends ResourceHandler {
         if (cspEnabled) {
             var viewMap = context.getViewRoot().getViewMap(true);
             var nonce = (String) viewMap.get(CURRENT_NONCE);
-            
-            if (nonce == null) {
-                nonce = Base64.getEncoder().encodeToString(UUID.randomUUID().toString().getBytes(UTF_8));
+
+            if (nonce == null || !context.getPartialViewContext().isPartialRequest()) {
+                byte[] bytes = new byte[32];
+                secureRandom.nextBytes(bytes);
+                nonce = Base64.getEncoder().encodeToString(bytes);
                 viewMap.put(CURRENT_NONCE, nonce);
             }
 
@@ -580,9 +586,6 @@ public class ResourceHandlerImpl extends ResourceHandler {
         ExternalContext extContext = context.getExternalContext();
         for (Map.Entry<String, String> cur : resource.getResponseHeaders().entrySet()) {
             extContext.setResponseHeader(cur.getKey(), cur.getValue());
-        }
-        if (cspEnabled && "script".equals(getResourceType(resource.getContentType()))) {
-            extContext.addResponseHeader("Content-Security-Policy", "default-src 'none'; script-src 'self'");
         }
     }
 
