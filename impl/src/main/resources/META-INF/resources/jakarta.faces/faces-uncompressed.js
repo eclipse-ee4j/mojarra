@@ -90,7 +90,11 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
     };
 
     /**
-     * get dom element or document child by name attribute
+     * get dom element or document child by name attribute or null if not found
+     * @param element {Element} the dom base element
+     * @param name {string} the value of the name attribute
+     * @return {Element} the first dom element with the name attribute equals to the passed param
+     * @see {Element#querySelector}
      * @ignore
      */
     const getElementByName = function(element, name) {
@@ -98,8 +102,9 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
     }
 
     /**
-     * get the input element inside a form identified by name attribute
+     * get the input element inside a form identified by name attribute or null if not found
      * @ignore
+     * @return {HTMLInputElement} the dom input element inside the passed form with matching name attribute
      */
     const getFormInputElementByName = function(form, inputElementName) {
         return inputElementName in form ? form[inputElementName] : getElementByName(form,inputElementName);
@@ -187,23 +192,28 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
          * Get an array of all Faces form elements which need their view state to be updated.
          * This covers at least the form that submitted the request and any form that is covered in the render target list.
          *
-         * @param context An object containing the request context, including the following properties:
+         * @param context {Object} An object containing the request context, including the following properties:
          * the source element, per call onerror callback function, per call onevent callback function, the render
          * instructions, the submitting form ID, the naming container ID and naming container prefix.
-         * @param hiddenStateFieldName The hidden state field name, e.g. jakarta.faces.ViewState or jakarta.faces.ClientWindow
+         * @param hiddenStateFieldName {string} The hidden state field name, e.g. jakarta.faces.ViewState or jakarta.faces.ClientWindow
+         * @return {Array<HTMLFormElement>} Get an array of all Faces form elements which need their view state to be updated.
          */
         const getFormsToUpdate = function getFormsToUpdate(context, hiddenStateFieldName) {
-            const formsToUpdate = [];
+            const formsToUpdate = new Set();
 
-            const add = function(element) {
+            // return true if the passed element is a form
+            const isFormElement = (element) => element.nodeName && element.nodeName.toLowerCase() === FORM;
+
+            // return true if the passed form needs the view state hidden field
+            const isValidForm = (form) => form.method === "post" && form.id && form.elements && form.id.startsWith(context.namingContainerPrefix);
+
+            // if the passed DOM element is a form and is valid,
+            // then add to the forms to update,
+            // otherwise add all the valid forms in the descendants of the specified element
+            const add = (element) => {
                 if (element) {
-                    if (element.nodeName
-                        && element.nodeName.toLowerCase() === FORM
-                        && element.method === "post"
-                        && element.id
-                        && element.elements
-                        && element.id.startsWith(context.namingContainerPrefix) ) {
-                            formsToUpdate.push(element);
+                    if ( isFormElement(element) && isValidForm(element) ) {
+                        formsToUpdate.add(element);
                     }
                     else {
                         const forms = element.getElementsByTagName(FORM);
@@ -217,33 +227,36 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
                 add(document.getElementById(context.formId));
             }
 
+            const isRenderAll = context.render && contains(context.render,"@all");
+
             if (context.render) {
-                if ( contains(context.render,"@all") ) {
+                // if is render @all then add all the forms of the document
+                if ( isRenderAll ) {
                     add(document);
-                } else {
+                }
+                // otherwise add the forms taken from the render attribute
+                else {
                     const clientIds = context.render.split(SPACE);
                     for ( const clientId of clientIds )
                         add(document.getElementById(clientId));
                 }
             }
 
-            var allForms = document.getElementsByTagName("form");
+            // second pass: we have to include all the updated forms using PartialViewContext from Java
+            if ( ! isRenderAll ) { // performance bonus: only if we aren't in @all case
+                const allForms = document.getElementsByTagName(FORM);
 
-            for (var i = 0; i < allForms.length; i++) {
-                var form = allForms[i];
-
-                if (formsToUpdate.indexOf(form) < 0
-                    && form.method == "post"
-                    && form.id
-                    && form.elements
-                    && form.id.indexOf(context.namingContainerPrefix) == 0
-                    && isNull(getHiddenStateField(form, hiddenStateFieldName, context.namingContainerPrefix)))
-                {
-                    formsToUpdate.push(form);
+                for (const form of allForms) {
+                    if (!formsToUpdate.has(form)
+                        && isValidForm(form)
+                        && isNull(getHiddenStateField(form, hiddenStateFieldName, context.namingContainerPrefix))) {
+                        formsToUpdate.add(form);
+                    }
                 }
             }
 
-            return formsToUpdate;
+            // Set to Array
+            return [...formsToUpdate];
         };
 
         /**
@@ -866,9 +879,10 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
 
         /**
          * Find hidden state field for a given form.
-         * @param form The form to find hidden state field in.
-         * @param hiddenStateFieldName The hidden state field name, e.g. jakarta.faces.ViewState or jakarta.faces.ClientWindow
-         * @param namingContainerPrefix The naming container prefix, if any (the view root ID suffixed with separator character).
+         * @param form {HTMLFormElement} The form to find hidden state field in.
+         * @param hiddenStateFieldName {string} The hidden state field name, e.g. jakarta.faces.ViewState or jakarta.faces.ClientWindow
+         * @param [namingContainerPrefix] {string} The naming container prefix, if any (the view root ID suffixed with separator character).
+         * @return {HTMLInputElement} HTMLInputElement representing the hidden state field for a given form
          * @ignore
          */
         const getHiddenStateField = function getHiddenStateField(form, hiddenStateFieldName, namingContainerPrefix) {

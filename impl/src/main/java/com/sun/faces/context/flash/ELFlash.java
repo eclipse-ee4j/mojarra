@@ -1317,6 +1317,7 @@ public class ELFlash extends Flash {
                 previousRequestFlashInfo = new FlashInfo();
                 previousRequestFlashInfo.setLifetimeMarker(LifetimeMarker.FirstTimeThru);
                 previousRequestFlashInfo.setFlashMap(new HashMap<>(1));
+                nextRequestFlashInfo = null;
                 context.getAttributes().put(CONSTANTS.ForceSetMaxAgeZero, Boolean.TRUE);
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE, "faces.externalcontext.flash.bad.cookie", new Object[] { value });
