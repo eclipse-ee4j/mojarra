@@ -36,8 +36,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
-import com.sun.faces.util.Util;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.faces.context.FacesContext;
@@ -48,6 +46,8 @@ import jakarta.faces.push.Push;
 import jakarta.inject.Inject;
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.Session;
+
+import com.sun.faces.util.Util;
 
 /**
  * <p class="changed_added_2_3">
@@ -257,12 +257,26 @@ public class WebsocketSessionManager {
 
     // Internal -------------------------------------------------------------------------------------------------------
 
+    private static volatile WebsocketSessionManager instance;
+
     /**
      * Internal usage only. Awkward workaround for it being unavailable via @Inject in endpoint in Tomcat+Weld/OWB.
-     * NOTE: CDI.current() doesn't work during WebsocketEndpoint#onClose().
+     * The instance is refreshed on every successful CDI lookup so that hot-redeploys are picked up automatically.
+     * When CDI is unavailable (e.g. during {@code WebsocketEndpoint#onClose()} in WildFly), the last cached instance is returned.
      */
     static WebsocketSessionManager getInstance() {
-        return getBeanReference(WebsocketSessionManager.class);
+        try {
+            var current = getBeanReference(WebsocketSessionManager.class);
+
+            if (current != null) {
+                instance = current;
+            }
+        }
+        catch (Exception ignore) {
+            // CDI unavailable (e.g. during onClose in WildFly), fall back to last cached instance.
+        }
+
+        return instance;
     }
 
     // Helpers --------------------------------------------------------------------------------------------------------

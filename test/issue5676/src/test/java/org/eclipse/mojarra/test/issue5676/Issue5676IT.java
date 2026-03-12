@@ -13,45 +13,31 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 or Apache-2.0
  */
-package org.eclipse.mojarra.test.issue5464;
+package org.eclipse.mojarra.test.issue5676;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.eclipse.mojarra.test.base.BaseIT;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
-class Issue5464IT extends BaseIT {
+class Issue5676IT extends BaseIT {
 
-    @FindBy(id = "form:input")
-    private WebElement input;
+    @FindBy(id = "webjars")
+    private WebElement webjars;
 
-    @FindBy(id = "form:submit")
-    private WebElement submit;
-
-    @FindBy(id = "form:output")
-    private WebElement output;
+    @FindBy(id = "pftheme")
+    private WebElement pftheme;
 
     /**
-     * https://github.com/eclipse-ee4j/mojarra/issues/5464
+     * https://github.com/eclipse-ee4j/mojarra/issues/5676
      */
     @Test
-    void testFFFE() {
-        open("issue5464.xhtml");
-        input.sendKeys("f\uFFFEoo");
-        guardAjax(submit::click);
-        assertFalse(output.getText().contains("\uFFFE"), "Output should not contain U+FFFE: " + output.getText());
+    void test() {
+        open("issue5676.xhtml");
+        assertEquals(getContextPath() + "/jakarta.faces.resource/font-awesome/7.2.0/webfonts/fa-regular-400.woff2.xhtml?ln=webjars", webjars.getText());
+        assertEquals(getContextPath() + "/jakarta.faces.resource/images/ui-bg_flat_75_ffffff_40x100.png.xhtml?ln=primefaces-casablanca", pftheme.getText());
     }
 
-    /**
-     * https://github.com/eclipse-ee4j/mojarra/issues/4516
-     */
-    @Test
-    void test000C() {
-        open("issue5464.xhtml");
-        input.sendKeys("f\u000Coo");
-        guardAjax(submit::click);
-        assertFalse(output.getText().contains("\u000C"), "Output should not contain U+000C: " + output.getText());
-    }
 }
