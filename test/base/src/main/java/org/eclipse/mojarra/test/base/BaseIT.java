@@ -87,7 +87,11 @@ public abstract class BaseIT {
     }
 
     protected void open(String resource) {
-        browser.get(baseURL + resource);
+        browser.get(getUrl(resource));
+    }
+
+    protected String getUrl(String resource) {
+        return baseURL + resource;
     }
 
     protected String getPageTitle() {

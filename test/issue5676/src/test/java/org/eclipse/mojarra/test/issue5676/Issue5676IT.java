@@ -15,7 +15,13 @@
  */
 package org.eclipse.mojarra.test.issue5676;
 
+import static java.net.URI.create;
+import static java.net.http.HttpClient.newHttpClient;
+import static java.net.http.HttpRequest.newBuilder;
+import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.eclipse.mojarra.test.base.BaseIT;
 import org.junit.jupiter.api.Test;
@@ -38,6 +44,15 @@ class Issue5676IT extends BaseIT {
         open("issue5676.xhtml");
         assertEquals(getContextPath() + "/jakarta.faces.resource/font-awesome/7.2.0/webfonts/fa-regular-400.woff2.xhtml?ln=webjars", webjars.getText());
         assertEquals(getContextPath() + "/jakarta.faces.resource/images/ui-bg_flat_75_ffffff_40x100.png.xhtml?ln=primefaces-casablanca", pftheme.getText());
+
+        try {
+            var css = newHttpClient().send(newBuilder(create(getUrl("jakarta.faces.resource/issue5676.css.xhtml"))).build(), ofString()).body();
+            assertTrue(css.contains("content: \"" + webjars.getText() + "\";"));
+            assertTrue(css.contains("background: url(\"" + pftheme.getText() + "\");"));
+        }
+        catch (Exception e) {
+            fail(e);
+        }
     }
 
 }
