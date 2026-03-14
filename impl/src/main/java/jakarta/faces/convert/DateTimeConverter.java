@@ -185,6 +185,8 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
     );
 
     private static final Pattern ESCAPED_DATE_TIME_PATTERN = Pattern.compile("'[^']*+'");
+    private static final Pattern FIXED_WIDTH_WHITESPACE = Pattern.compile("[\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000]");
+    private static final Pattern ZERO_WIDTH_WHITESPACE = Pattern.compile("[\u200b-\u200d\u2060\ufeff]");
 
     // ------------------------------------------------------ Instance Variables
 
@@ -387,7 +389,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
             Locale locale = getLocale(context);
 
             // Create and configure the parser to be used
-            parser = getDateFormat(locale);
+            parser = getDateFormat(locale, true);
             if (timeZone != null) {
                 parser.setTimeZone(timeZone);
             }
@@ -428,21 +430,32 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
         private final DateFormat dateFormat;
         private final DateTimeFormatter dateTimeFormatter;
         private final TemporalQuery<Object> from;
+        private final boolean normalizeWhitespaceOnParse;
 
         private FormatWrapper(DateFormat dataFormat) {
             this.dateFormat = dataFormat;
             dateTimeFormatter = null;
             from = null;
+            normalizeWhitespaceOnParse = false;
         }
 
-        private FormatWrapper(DateTimeFormatter dateTimeFormatter, TemporalQuery<Object> from) {
+        private FormatWrapper(DateTimeFormatter dateTimeFormatter, TemporalQuery<Object> from, boolean normalizeWhitespaceOnParse) {
             dateFormat = null;
             this.dateTimeFormatter = dateTimeFormatter;
             this.from = from;
+            this.normalizeWhitespaceOnParse = normalizeWhitespaceOnParse;
         }
 
         private Object parse(CharSequence text) throws ParseException {
-            return dateFormat != null ? dateFormat.parse((String) text) : dateTimeFormatter.parse(text, from);
+            if (dateFormat != null) {
+                return dateFormat.parse((String) text);
+            }
+
+            if (normalizeWhitespaceOnParse) {
+                text = normalizeWhitespace(text);
+            }
+
+            return dateTimeFormatter.parse(text, from);
         }
 
         private String format(Object obj) {
@@ -488,7 +501,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
             Locale locale = getLocale(context);
 
             // Create and configure the formatter to be used
-            FormatWrapper formatter = getDateFormat(locale);
+            FormatWrapper formatter = getDateFormat(locale, false);
             if (null != timeZone) {
                 formatter.setTimeZone(timeZone);
             }
@@ -513,9 +526,11 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
      * </p>
      *
      * @param locale The <code>Locale</code> used to select formatting and parsing conventions
+     * @param forParsing {@code true} if the result will be used for parsing user input (enables whitespace normalization),
+     *                   {@code false} if it will be used for formatting output
      * @throws ConverterException if no instance can be created
      */
-    private FormatWrapper getDateFormat(Locale locale) {
+    private FormatWrapper getDateFormat(Locale locale, boolean forParsing) {
 
         // PENDING(craigmcc) - Implement pooling if needed for performance?
 
@@ -541,11 +556,11 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
         } else if (type.equals("time")) {
             df = DateFormat.getTimeInstance(getStyle(timeStyle), locale);
         } else if (type.equals("localDate")) {
-            dtfBuilder = new DateTimeFormatterBuilder().appendLocalized(getFormatStyle(dateStyle), null);
+            dtfBuilder = createLocalizedBuilder(getFormatStyle(dateStyle), null, locale, forParsing);
         } else if (type.equals("localDateTime")) {
-            dtfBuilder = new DateTimeFormatterBuilder().appendLocalized(getFormatStyle(dateStyle), getFormatStyle(timeStyle));
+            dtfBuilder = createLocalizedBuilder(getFormatStyle(dateStyle), getFormatStyle(timeStyle), locale, forParsing);
         } else if (type.equals("localTime")) {
-            dtfBuilder = new DateTimeFormatterBuilder().appendLocalized(null, getFormatStyle(timeStyle));
+            dtfBuilder = createLocalizedBuilder(null, getFormatStyle(timeStyle), locale, forParsing);
         } else if (type.equals("offsetTime")) {
             dtf = DateTimeFormatter.ISO_OFFSET_TIME.withLocale(locale);
         } else if (type.equals("offsetDateTime")) {
@@ -570,7 +585,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
             }
 
             if (dtf != null) {
-                return new FormatWrapper(dtf, fromJavaTime);
+                return new FormatWrapper(dtf, fromJavaTime, forParsing);
             }
         }
 
@@ -624,7 +639,27 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
         throw new ConverterException("Invalid style '" + name + '\'');
     }
 
-    private static FormatStyle getFormatStyle(String name) {
+    /**
+     * Returns a {@link DateTimeFormatterBuilder} with the localized date/time pattern appended. When {@code forParsing} is {@code true}, the pattern is
+     * normalized to replace fixed-width whitespace (such as NNBSP U+202F) with regular spaces and strip zero-width characters, so that user input with regular
+     * spaces is accepted.
+     */
+    private static DateTimeFormatterBuilder createLocalizedBuilder(FormatStyle dateStyle, FormatStyle timeStyle, Locale locale, boolean forParsing) {
+        if (forParsing) {
+            var localizedPattern = DateTimeFormatterBuilder.getLocalizedDateTimePattern(dateStyle, timeStyle, IsoChronology.INSTANCE, locale);
+            var normalizedPattern = normalizeWhitespace(localizedPattern);
+            return new DateTimeFormatterBuilder().appendPattern(normalizedPattern);
+        }
+
+        return new DateTimeFormatterBuilder().appendLocalized(dateStyle, timeStyle);
+    }
+
+    private static String normalizeWhitespace(CharSequence text) {
+        String normalized = FIXED_WIDTH_WHITESPACE.matcher(text).replaceAll(" ");
+        return ZERO_WIDTH_WHITESPACE.matcher(normalized).replaceAll("");
+    }
+
+   private static FormatStyle getFormatStyle(String name) {
         if (null != name) {
             switch (name) {
             case "default":
