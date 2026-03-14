@@ -640,9 +640,9 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
     }
 
     /**
-     * Returns a {@link DateTimeFormatterBuilder} with the localized date/time pattern appended. When {@code forParsing} is {@code true}, the pattern is normalized to replace fixed-width
-     * whitespace (such as NNBSP U+202F) with regular spaces and strip zero-width characters,
-     * so that user input with regular spaces is accepted.
+     * Returns a {@link DateTimeFormatterBuilder} with the localized date/time pattern appended. When {@code forParsing} is {@code true}, the pattern is
+     * normalized to replace fixed-width whitespace (such as NNBSP U+202F) with regular spaces and strip zero-width characters, so that user input with regular
+     * spaces is accepted.
      */
     private static DateTimeFormatterBuilder createLocalizedBuilder(FormatStyle dateStyle, FormatStyle timeStyle, Locale locale, boolean forParsing) {
         if (forParsing) {
