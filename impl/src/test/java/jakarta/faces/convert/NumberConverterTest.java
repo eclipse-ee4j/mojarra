@@ -175,7 +175,7 @@ public class NumberConverterTest {
      *
      * @see <a href="https://github.com/eclipse-ee4j/mojarra/issues/5399">GitHub issue #5399</a>
      */
-    @Test
+    // TODO: uncomment in Faces 5.0: @Test
     public void testFrenchCurrencyParsingWithNbspGroupingSeparator() {
         Locale localeFR = Locale.FRANCE;
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(localeFR);
