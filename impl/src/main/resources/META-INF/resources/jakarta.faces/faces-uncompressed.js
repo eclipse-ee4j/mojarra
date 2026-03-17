@@ -82,14 +82,6 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
     }
 
     /**
-     * append a new pair of parameter=value to a query string
-     * @ignore
-     */
-    const appendToQueryString = function appendToQueryString( queryString , name, value) {
-        return queryString + ( (queryString.length > 0 ? "&" : EMPTY) + encodeURIComponent(name) + "=" + encodeURIComponent(value) );
-    };
-
-    /**
      * return true if one of the dom elements contains
      * a child with the attribute name equals to the passed name
      * @param elements an array of DOM elements
@@ -1230,7 +1222,6 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
             req.context.onevent = null;    // Event handler for request
             req.context.namingContainerId = null;       // If UIViewRoot is an instance of NamingContainer this represents its ID.
             req.context.namingContainerPrefix = null;   // If UIViewRoot is an instance of NamingContainer this represents its ID suffixed with separator character, else an empty string.
-            req.xmlReq = null;             // XMLHttpRequest Object
             req.async = true;              // Default - Asynchronous
             req.parameters = {};           // Parameters For GET or POST
             req.queryString = null;        // Encoded Data For GET or POST
@@ -1252,7 +1243,7 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
 
             /**
              * This function is called when the request/response interaction
-             * is complete.  If the return status code is successfull,
+             * is complete.  If the return status code is successful,
              * dequeue all requests from the queue that have completed.  If a
              * request has been found on the queue that has not been sent,
              * send the request.
@@ -1315,87 +1306,78 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
              * @ignore
              */
             req.sendRequest = function () {
-                if (isNotNull(req.xmlReq)) {
-                    // if there is already a request on the queue waiting to be processed..
-                    // just queue this request
-                    // TODO: add support for async ajax requests
-                    // https://github.com/eclipse-ee4j/mojarra/issues/4946
-                    if (!req.que.isEmpty()) {
-                        if (!req.fromQueue) {
-                            req.que.enqueue(req);
-                            return;
-                        }
-                    }
-                    // If the queue is empty, queue up this request and send
+                // if there is already a request on the queue waiting to be processed..
+                // just queue this request
+                // TODO: add support for async ajax requests
+                // https://github.com/eclipse-ee4j/mojarra/issues/4946
+                if (!req.que.isEmpty()) {
                     if (!req.fromQueue) {
                         req.que.enqueue(req);
+                        return;
                     }
-                    // Some logic to get the real request URL
-                    if (req.generateUniqueUrl && req.method === "GET") {
-                        req.parameters["AjaxRequestUniqueId"] = new Date().getTime() + EMPTY + req.requestIndex;
-                    }
-
-                    // is a multipart form data ?
-                    const isMultiPart = (req.method === "POST" && context.form.enctype === 'multipart/form-data');
-
-                    // If multipart prepare the FormData
-                    const formData = isMultiPart ? new FormData(context.form) : undefined;
-
-                    // Add parameters encoded or multipart
-                    for ( const i of Object.keys(req.parameters) ) {
-                        // if is multipart request -> add parameter to FormData
-                        if ( isMultiPart ) {
-                            formData.append(i,req.parameters[i]);
-                        }
-                        // else is a normal post request -> add encoded request query string to queryString for POST
-                        else {
-                            if (req.queryString.length > 0) req.queryString += "&";
-                            req.queryString += encodeURIComponent(i) + "=" + encodeURIComponent(req.parameters[i]);
-                        }
-                    }
-
-                    // GET Request
-                    if (req.method === "GET") {
-                        if (req.queryString.length > 0) {
-                            req.url += ((req.url.indexOf("?") > -1) ? "&" : "?") + req.queryString;
-                        }
-                    }
-
-                    // Open Ajax request
-                    req.xmlReq.open(req.method, req.url, req.async);
-
-                    // note that we are including the charset=UTF-8 as part of the content type (even
-                    // if encodeURIComponent encodes as UTF-8), because with some
-                    // browsers it will not be set in the request.  Some server implementations need to
-                    // determine the character encoding from the request header content type.
-                    if (req.method === "POST") {
-                        req.xmlReq.setRequestHeader('Faces-Request', 'partial/ajax');
-
-                        // file upload
-                        if ( isMultiPart ) formData.append('Faces-Request','partial/ajax');
-
-                        // GET or POST
-                        // req.xmlReq.setRequestHeader('Content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
-                        else req.xmlReq.setRequestHeader( 'Content-type' , context.form.enctype+';charset=UTF-8' );
-                    }
-
-                    // note that async == false is not a supported feature.  We may change it in ways
-                    // that break existing programs at any time, with no warning.
-                    if (!req.async) req.xmlReq.onreadystatechange = null; // no need for readystate change listening
-
-                    // Send begin event
-                    sendEvent(req.xmlReq, req.context, "begin");
-
-                    // IF multipart/form-data use FormData
-                    if (isMultiPart) req.xmlReq.send(formData);
-
-                    // ELSE use query string
-                    else req.xmlReq.send(req.queryString);
-
-                    // call OnComplete if not async
-                    if(!req.async) req.onComplete();
-
                 }
+                // If the queue is empty, queue up this request and send
+                if (!req.fromQueue) {
+                    req.que.enqueue(req);
+                }
+                // Some logic to get the real request URL
+                if (req.generateUniqueUrl && req.method === "GET") {
+                    req.parameters["AjaxRequestUniqueId"] = new Date().getTime() + EMPTY + req.requestIndex;
+                }
+
+                // is a multipart form data ?
+                const isMultiPart = (req.method === "POST" && context.form.enctype === "multipart/form-data");
+
+                // If multipart use FormData else use URLSearchParams
+                const requestData = isMultiPart ? new FormData(context.form) : new URLSearchParams(req.queryString);
+
+                // Add parameters
+                for ( const i of Object.keys(req.parameters) ) {
+                    requestData.append(i, req.parameters[i]);
+                }
+
+                // GET or POST but not multipart: encode the query params
+                if ( !isMultiPart && requestData.size > 0 ) {
+                    req.queryString = requestData.toString();
+                }
+
+                // GET Request: add query params to url if needed
+                if (req.method === "GET" && requestData.size > 0) {
+                    req.url += ((req.url.indexOf("?") > -1) ? "&" : "?") + req.queryString;
+                }
+
+                // Open Ajax request
+                req.xmlReq.open(req.method, req.url, req.async);
+
+                // note that we are including the charset=UTF-8 as part of the content type (even
+                // if encodeURIComponent encodes as UTF-8), because with some
+                // browsers it will not be set in the request.  Some server implementations need to
+                // determine the character encoding from the request header content type.
+                if (req.method === "POST") {
+                    req.xmlReq.setRequestHeader('Faces-Request', 'partial/ajax');
+
+                    // file upload
+                    if ( isMultiPart ) requestData.append('Faces-Request','partial/ajax');
+
+                    // GET or POST
+                    else req.xmlReq.setRequestHeader('Content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+                }
+
+                // note that async == false is not a supported feature.  We may change it in ways
+                // that break existing programs at any time, with no warning.
+                if (!req.async) req.xmlReq.onreadystatechange = null; // no need for readystate change listening
+
+                // Send begin event
+                sendEvent(req.xmlReq, req.context, "begin");
+
+                // IF multipart/form-data use FormData
+                if (isMultiPart) req.xmlReq.send(requestData);
+
+                // ELSE use query string (must be null in case of GET request)
+                else req.xmlReq.send(req.queryString);
+
+                // call OnComplete if not async
+                if(!req.async) req.onComplete();
             };
 
             return req;
@@ -2511,22 +2493,20 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
         // array of element id => array of existing dom element
         const partialExecuteDomElements = partialExecuteIds.map(getElemById).filter( elem => !!elem );
 
-        // the query string
-        let qString = EMPTY;
+        // the query string builder
+        const query = new URLSearchParams();
 
         // if the partialExecuteIds does not include the form.id,
         // then add it because it's required by the spec to be always included!
         if ( partialExecuteIds && !partialExecuteIds.includes(form.id) ) {
-            qString = appendToQueryString(qString,form.id,form.id);
+            query.append(form.id, form.id);
         }
 
-        // add encoded name=value string to query string parts array.
-        // If partialExecuteIds is defined
-        // then add the field only if there is a child element with his name
+        // Add the name=value param to the query only if there is a child element with his name
         // inside one of the element identified with the id contained in "partialExecuteIds" array (partial submit)
-        const addField = function(name, value) {
+        const addField = (name, value) => {
             const add = !partialExecuteIds || partialExecuteIds.includes(name) || containsNamedChild(partialExecuteDomElements,name);
-            if (add) qString = appendToQueryString(qString,name,value);
+            if (add) query.append(name,value);
         };
 
         const els = form.elements;
@@ -2572,7 +2552,7 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
             }
         }
 
-        return qString;
+        return query.toString();
     }
 
 
@@ -2599,13 +2579,10 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
         if (!form) throw new Error("faces.getViewState:  form must be set");
 
         // the query string
-        let qString = EMPTY;
+        const query = new URLSearchParams();
 
         // add encoded name=value string to query string parts array.
-        // If partialExecuteIds is defined then add the field only if the name is inside the "partialExecuteIds" array (partial submit)
-        const addField = function(name, value) {
-            qString += ( (qString.length > 0 ? "&" : EMPTY) + encodeURIComponent(name) + "=" + encodeURIComponent(value) );
-        };
+        const addField = (name, value) => query.append(name, value);
 
         const els = form.elements;
         for (const el of els) {
@@ -2649,7 +2626,8 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
                 }
             }
         }
-        return qString;
+
+        return query.toString();
     };
 
     /**
@@ -2716,17 +2694,12 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
          * @ignore
          */
         const fetchWindowIdFromURL = function fetchWindowIdFromURL() {
-            const href = window.location.href;
-            const windowId = "windowId";
-            const regex = new RegExp("[\\?&]" + windowId + "=([^&#\\;]*)");
-            const results = regex.exec(href);
-            //initial trial over the url and a regexp
-            return (results != null) ? results[1] : null;
+            const params = new URLSearchParams(document.location.search);
+            return params.get("windowId");
         };
 
         //byId ($)
-        const finalNode = (node && (typeof node == "string" || node instanceof String)) ?
-            document.getElementById(node) : (node || null);
+        const finalNode = node ? getElemById(node) : null;
 
         const forms = getChildForms(finalNode);
         const result = fetchWindowIdFromForms(forms);
