@@ -25,7 +25,7 @@ import jakarta.faces.context.FacesContext;
  * of user interface activity. It is not fired unless validation of the new value was completed successfully.
  * </p>
  */
-public class ValueChangeEvent extends FacesEvent {
+public class ValueChangeEvent<T> extends FacesEvent {
 
     private static final long serialVersionUID = 2455861757565618446L;
 
@@ -40,10 +40,10 @@ public class ValueChangeEvent extends FacesEvent {
      *
      * @param component Source {@link UIComponent} for this event
      * @param oldValue The previous local value of this {@link UIComponent}
-     * @param newValue The new local value of thie {@link UIComponent}
+     * @param newValue The new local value of the {@link UIComponent}
      * @throws IllegalArgumentException if <code>component</code> is <code>null</code>
      */
-    public ValueChangeEvent(UIComponent component, Object oldValue, Object newValue) {
+    public ValueChangeEvent(UIComponent component, T oldValue, T newValue) {
         super(component);
         this.oldValue = oldValue;
         this.newValue = newValue;
@@ -61,10 +61,10 @@ public class ValueChangeEvent extends FacesEvent {
      * @param facesContext the Faces context.
      * @param component Source {@link UIComponent} for this event
      * @param oldValue The previous local value of this {@link UIComponent}
-     * @param newValue The new local value of thie {@link UIComponent}
+     * @param newValue The new local value of the {@link UIComponent}
      * @throws IllegalArgumentException if <code>component</code> is <code>null</code>
      */
-    public ValueChangeEvent(FacesContext facesContext, UIComponent component, Object oldValue, Object newValue) {
+    public ValueChangeEvent(FacesContext facesContext, UIComponent component, T oldValue, T newValue) {
         super(facesContext, component);
         this.oldValue = oldValue;
         this.newValue = newValue;
@@ -77,7 +77,7 @@ public class ValueChangeEvent extends FacesEvent {
      * The previous local value of the source {@link UIComponent}.
      * </p>
      */
-    private Object oldValue = null;
+    private final T oldValue;
 
     /**
      * <p>
@@ -86,10 +86,8 @@ public class ValueChangeEvent extends FacesEvent {
      *
      * @return the previous local value
      */
-    public Object getOldValue() {
-
+    public T getOldValue() {
         return oldValue;
-
     }
 
     /**
@@ -97,7 +95,7 @@ public class ValueChangeEvent extends FacesEvent {
      * The current local value of the source {@link UIComponent}.
      * </p>
      */
-    private Object newValue = null;
+    private final T newValue;
 
     /**
      * <p>
@@ -106,10 +104,8 @@ public class ValueChangeEvent extends FacesEvent {
      *
      * @return the current local value
      */
-    public Object getNewValue() {
-
+    public T getNewValue() {
         return newValue;
-
     }
 
     // ------------------------------------------------- Event Broadcast Methods
