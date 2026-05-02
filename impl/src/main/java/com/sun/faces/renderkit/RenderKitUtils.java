@@ -425,7 +425,8 @@ public class RenderKitUtils {
             ? Collections.singletonList(new ClientBehaviorContext.Parameter("incExec", true))
             : Collections.emptyList();
 
-        addBehaviorEventListener(context, component, clientId, params, handlerName, userHandler, behaviorEventName, domEventName, null, false, incExec, true);
+        addBehaviorEventListener(context, component, clientId, params, handlerName, userHandler, behaviorEventName, domEventName, null, false, incExec,
+                ResourceHandlerImpl.resolveCurrentNonce(context) != null, true);
     }
 
     // Renders the onclick event listener for command buttons. Handles
@@ -451,7 +452,8 @@ public class RenderKitUtils {
             }
         }
 
-        addBehaviorEventListener(context, component, null, params, handlerName, userHandler, behaviorEventName, domEventName, submitTarget, needsSubmit, false, true);
+        addBehaviorEventListener(context, component, null, params, handlerName, userHandler, behaviorEventName, domEventName, submitTarget, needsSubmit, false,
+                ResourceHandlerImpl.resolveCurrentNonce(context) != null, true);
 
     }
 
@@ -656,7 +658,8 @@ public class RenderKitUtils {
                     Attribute attr = knownAttributes[index];
 
                     if (isBehaviorEventAttribute(attr, behaviorEventName)) {
-                        addBehaviorEventListener(context, component, null, null, name, value, behaviorEventName, behaviorEventName, null, false, false, false);
+                        addBehaviorEventListener(context, component, null, null, name, value, behaviorEventName, behaviorEventName, null, false, false,
+                                ResourceHandlerImpl.resolveCurrentNonce(context) != null, false);
 
                         renderedBehavior = true;
                     } else {
@@ -668,7 +671,8 @@ public class RenderKitUtils {
                 Object value = attrMap.get(name);
                 if (value != null && shouldRenderAttribute(value)) {
                     if (name.substring(2).equals(behaviorEventName)) {
-                        addBehaviorEventListener(context, component, null, null, name, value, behaviorEventName, behaviorEventName, null, false, false, false);
+                        addBehaviorEventListener(context, component, null, null, name, value, behaviorEventName, behaviorEventName, null, false, false,
+                                ResourceHandlerImpl.resolveCurrentNonce(context) != null, false);
 
                         renderedBehavior = true;
                     } else {
@@ -699,7 +703,8 @@ public class RenderKitUtils {
                 String attrName = attribute.getName();
                 String[] events = attribute.getEvents();
                 if (events != null && events.length > 0 && behaviorEventName.equals(events[0])) {
-                    addBehaviorEventListener(context, component, null, null, attrName, null, behaviorEventName, behaviorEventName, null, false, false, false);
+                    addBehaviorEventListener(context, component, null, null, attrName, null, behaviorEventName, behaviorEventName, null, false, false,
+                            ResourceHandlerImpl.resolveCurrentNonce(context) != null, false);
                     return;
                 }
             }
@@ -761,7 +766,8 @@ public class RenderKitUtils {
             // If we've got a behavior for this attribute,
             // we may need to chain scripts together, so use
             // renderEventListener().
-            addBehaviorEventListener(context, component, null, null, attrName, value, eventName, eventName, null, false, false, false);
+            addBehaviorEventListener(context, component, null, null, attrName, value, eventName, eventName, null, false, false,
+                    ResourceHandlerImpl.resolveCurrentNonce(context) != null, false);
         }
     }
 
@@ -1671,7 +1677,8 @@ public class RenderKitUtils {
      * render the submit script to make the link submit.
      */
     private static void addBehaviorEventListener(FacesContext context, UIComponent component, String clientId, Collection<ClientBehaviorContext.Parameter> params, String handlerName,
-            Object handlerValue, String behaviorEventName, String domEventName, String submitTarget, boolean needsSubmit, boolean includeExec, boolean flushPendingBehaviorEventListeners) throws IOException {
+            Object handlerValue, String behaviorEventName, String domEventName, String submitTarget, boolean needsSubmit, boolean includeExec,
+            boolean renderAsEventListener, boolean flushPendingBehaviorEventListeners) throws IOException {
 
         String userHandler = getNonEmptyUserHandler(handlerValue);
         List<ClientBehavior> behaviors = getClientBehaviors(component, behaviorEventName);
@@ -1703,6 +1710,13 @@ public class RenderKitUtils {
                 break;
             default:
                 assert false;
+        }
+
+        if (!renderAsEventListener) {
+            if (handler != null) {
+                context.getResponseWriter().writeAttribute(handlerName, handler, null);
+            }
+            return;
         }
 
         if (flushPendingBehaviorEventListeners) {

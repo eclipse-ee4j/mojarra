@@ -31,6 +31,7 @@ import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.ActionEvent;
 
 import com.sun.faces.RIConstants;
+import com.sun.faces.application.resource.ResourceHandlerImpl;
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
@@ -125,6 +126,10 @@ public class ButtonRenderer extends HtmlBasicRenderer {
             writer.writeAttribute("class", styleClass, "styleClass");
         }
 
+        if (ResourceHandlerImpl.resolveCurrentNonce(context) == null) {
+            RenderKitUtils.renderOnclickEventListener(context, component, getBehaviorParameters(component), null, false);
+        }
+
         // PENDING(edburns): Prior to i_spec_1111, this element
         // was rendered unconditionally
 
@@ -152,7 +157,9 @@ public class ButtonRenderer extends HtmlBasicRenderer {
             RenderKitUtils.renderFacesJsIfNecessary(context);
         }
 
-        RenderKitUtils.renderOnclickEventListener(context, component, params, null, false);
+        if (ResourceHandlerImpl.resolveCurrentNonce(context) != null) {
+            RenderKitUtils.renderOnclickEventListener(context, component, params, null, false);
+        }
     }
 
     // --------------------------------------------------------- Private Methods
