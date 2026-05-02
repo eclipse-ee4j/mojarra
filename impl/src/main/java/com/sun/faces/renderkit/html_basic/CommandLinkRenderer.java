@@ -30,6 +30,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.ActionEvent;
 
+import com.sun.faces.application.resource.ResourceHandlerImpl;
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
@@ -120,14 +121,16 @@ public class CommandLinkRenderer extends LinkRenderer {
         } else {
             writer.endElement("a");
 
-            String target = (String) component.getAttributes().get("target");
-            if (target != null) {
-                target = target.trim();
-            } else {
-                target = "";
+            if (ResourceHandlerImpl.resolveCurrentNonce(context) != null) {
+                String target = (String) component.getAttributes().get("target");
+                if (target != null) {
+                    target = target.trim();
+                } else {
+                    target = "";
+                }
+                Collection<ClientBehaviorContext.Parameter> params = getBehaviorParameters(component);
+                RenderKitUtils.renderOnclickEventListener(context, component, params, target, true);
             }
-            Collection<ClientBehaviorContext.Parameter> params = getBehaviorParameters(component);
-            RenderKitUtils.renderOnclickEventListener(context, component, params, target, true);
         }
     }
 
@@ -164,6 +167,18 @@ public class CommandLinkRenderer extends LinkRenderer {
         RenderKitUtils.renderPassThruAttributes(context, writer, command, null, false, ATTRIBUTES, "click", "action");
 
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, command);
+
+        if (ResourceHandlerImpl.resolveCurrentNonce(context) == null) {
+            String target = (String) command.getAttributes().get("target");
+            if (target != null) {
+                target = target.trim();
+            } else {
+                target = "";
+            }
+
+            Collection<ClientBehaviorContext.Parameter> params = getBehaviorParameters(command);
+            RenderKitUtils.renderOnclickEventListener(context, command, params, target, true);
+        }
 
         writeCommonLinkAttributes(writer, command);
 
