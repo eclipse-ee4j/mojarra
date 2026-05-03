@@ -1,27 +1,4 @@
-/*
- * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
- * Copyright 2004 The Apache Software Foundation
- * Copyright 2004-2008 Emmanouil Batsis, mailto: mbatsis at users full stop sourceforge full stop net
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/**
- @project Faces JavaScript Library
- @version 5.0.0
- @description This is the standard implementation of the Faces JavaScript Library.
- */
-
+// @ts-nocheck — legacy monolithic file; type-checking enforced module-by-module during the split.
 // Detect if this is already loaded, and if loaded, if it's a higher version
 if ( !( (window.faces && window.faces.specversion && window.faces.specversion >= 50000 )
     && (window.faces.implversion && window.faces.implversion >= 0)) ) {

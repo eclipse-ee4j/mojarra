@@ -1,0 +1,16 @@
+{
+    "private": true,
+    "engines": {
+        "node": ">=22"
+    },
+    "scripts": {
+        "build": "rollup --config rollup.config.mjs && terser ../../../target/classes/META-INF/resources/jakarta.faces/faces-uncompressed.js --compress --mangle --ecma 2020 --comments \"/^!/\" -o ../../../target/classes/META-INF/resources/jakarta.faces/faces.js"
+    },
+    "devDependencies": {
+        "@rollup/plugin-typescript": "^12.1.4",
+        "rollup": "^4.31.0",
+        "terser": "^5.46.1",
+        "tslib": "^2.8.1",
+        "typescript": "^5.9.3"
+    }
+}
