@@ -1,79 +1,21 @@
 // @ts-nocheck — legacy monolithic file; type-checking enforced module-by-module during the split.
-import { getHead, getNonce, executeScriptWithNonce } from "./faces/dom";
+import {
+    UDEF, EMPTY, SPACE, FORM,
+    VIEW_STATE_PARAM, CLIENT_WINDOW_PARAM, ALWAYS_EXECUTE_IDS, ENCODED_URL_PARAM,
+    PARTIAL_SUBMIT_ENABLED,
+} from "./faces/constants";
+import { isNull, isNotNull, contains } from "./faces/lang";
+import {
+    getHead, getNonce, executeScriptWithNonce,
+    getElemById, getElementByName, getFormInputElementByName, containsNamedChild,
+} from "./faces/dom";
 import { chain as utilChain } from "./faces/util";
 import { push as facesPush } from "./faces/push";
+import { getProjectStage, getViewState, getClientWindow, getPartialViewState } from "./faces/api";
 
 // Detect if this is already loaded, and if loaded, if it's a higher version
 if ( !( (window.faces && window.faces.specversion && window.faces.specversion >= 50000 )
     && (window.faces.implversion && window.faces.implversion >= 0)) ) {
-
-    // --- JS Lang --------------------------------------------------------------------
-    const UDEF = 'undefined';
-    const EMPTY = "";
-    const SPACE = " ";
-    const FORM = "form";
-    const isNull = (value) => (typeof value === UDEF || (typeof value === "object" && !value));
-    const isNotNull = (value) => !isNull(value);
-
-    // --- Faces constants ------------------------------------------------------------
-    const VIEW_STATE_PARAM = "jakarta.faces.ViewState";
-    const CLIENT_WINDOW_PARAM = "jakarta.faces.ClientWindow";
-    const ALWAYS_EXECUTE_IDS = [ VIEW_STATE_PARAM , CLIENT_WINDOW_PARAM ];
-    const ENCODED_URL_PARAM = "jakarta.faces.encodedURL";
-
-    /**
-     * experimental: do partial submit during ajax request
-     * todo: add a config parameter for this, where?
-     */
-    const PARTIAL_SUBMIT_ENABLED = true;
-
-    /**
-     * Check if a String or an Array contains a value
-     * @ignore
-     */
-    const contains = function(stringOrArray,value) { return stringOrArray.indexOf(value) !== -1; }
-
-    /**
-     * Find instance of passed String via getElementById.
-     * @ignore
-     */
-    const getElemById = function getElemById( elementOrId ) {
-        return typeof elementOrId == 'string' ? document.getElementById(elementOrId) : elementOrId;
-    };
-
-    /**
-     * get dom element or document child by name attribute or null if not found
-     * @param element {Element} the dom base element
-     * @param name {string} the value of the name attribute
-     * @return {Element} the first dom element with the name attribute equals to the passed param
-     * @see {Element#querySelector}
-     * @ignore
-     */
-    const getElementByName = function(element, name) {
-        return element.querySelector("[name='"+name+"']");
-    }
-
-    /**
-     * get the input element inside a form identified by name attribute or null if not found
-     * @ignore
-     * @return {HTMLInputElement} the dom input element inside the passed form with matching name attribute
-     */
-    const getFormInputElementByName = function(form, inputElementName) {
-        return inputElementName in form ? form[inputElementName] : getElementByName(form,inputElementName);
-    }
-
-
-    /**
-     * return true if one of the dom elements contains
-     * a child with the attribute name equals to the passed name
-     * @param elements an array of DOM elements
-     * @param name the value of the attribute name
-     * @returns {boolean} true if at least one of the domElements contains a child with the attribute name equals to the passed param name
-     * @ignore
-     */
-    const containsNamedChild = function (elements,name) {
-        return elements.some( elem => !!getElementByName(elem,name) );
-    }
 
     /**
      * <span class="changed_modified_2_2">The top level global namespace
@@ -2443,281 +2385,22 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
     }();
 
     /**
-     *
-     * <p>Return the value of <code>Application.getProjectStage()</code> for
-     * the currently running application instance.  Calling this method must
-     * not cause any network transaction to happen to the server.</p>
-     * <p><b>Usage:</b></p>
-     * <pre><code>
-     * var stage = faces.getProjectStage();
-     * if (stage === ProjectStage.Development) {
-     *  ...
-     * } else if stage === ProjectStage.Production) {
-     *  ...
-     * }
-     * </code></pre>
-     *
-     * @returns String <code>String</code> representing the current state of the
-     * running application in a typical product development lifecycle.  Refer
-     * to <code>jakarta.faces.application.Application.getProjectStage</code> and
-     * <code>jakarta.faces.application.ProjectStage</code>.
-     * @function faces.getProjectStage
+     * Return the value of Application.getProjectStage() for the currently running application instance.
+     * @see api/.../faces.d.ts faces.getProjectStage
      */
-    faces.getProjectStage = function() {
-        // First, return cached value if available
-        if (typeof mojarra !== 'undefined' && typeof mojarra.projectStageCache !== 'undefined') {
-            return mojarra.projectStageCache;
-        }
-        // faces.js script
-        const _script = document.querySelector("script[src*='jakarta.faces.resource/faces.js']");
-        const scriptSrcSearchParam = isNotNull(_script) ? new URLSearchParams(_script.src) : null;
-
-        const stage = ( isNotNull(scriptSrcSearchParam) && scriptSrcSearchParam.get('stage') === 'Development' ) ? 'Development' : 'Production';
-
-        mojarra = mojarra || {};
-        mojarra.projectStageCache = stage;
-
-        return mojarra.projectStageCache;
-    };
+    faces.getProjectStage = getProjectStage;
 
     /**
-     * Collect and encode state for only those input controls within the
-     * specified form that belong to the execute component set (partial submit).
-     * ViewState and ClientWindow parameters are always included.
-     * Unlike faces.getViewState which serializes all form controls, this
-     * function limits serialization to controls that are children of or
-     * named by the execute IDs.
-     *
-     * @param form The form element whose controls will be selectively encoded.
-     * @param execute Space-separated string of component IDs to include.
-     * @returns String The encoded state for the matching input controls.
-     * @ignore
+     * Collect and encode state for input controls associated with the specified form element.
+     * @see api/.../faces.d.ts faces.getViewState
      */
-    const getPartialViewState = function(form, execute) {
-        if (!form) throw new Error("getPartialViewState:  form must be set");
-
-        // if execute is defined, create an array of id
-        // that have to be included in the query string
-        const partialExecuteIds = execute ? execute.split(SPACE).concat(ALWAYS_EXECUTE_IDS) : undefined;
-
-        // array of element id => array of existing dom element
-        const partialExecuteDomElements = partialExecuteIds.map(getElemById).filter( elem => !!elem );
-
-        const params = new URLSearchParams();
-
-        // if the partialExecuteIds does not include the form.id,
-        // then add it because it's required by the spec to be always included!
-        if ( partialExecuteIds && !partialExecuteIds.includes(form.id) ) {
-            params.append(form.id, form.id);
-        }
-
-        // add name=value to params.
-        // If partialExecuteIds is defined
-        // then add the field only if there is a child element with his name
-        // inside one of the element identified with the id contained in "partialExecuteIds" array (partial submit)
-        const addField = function(name, value) {
-            const add = !partialExecuteIds || partialExecuteIds.includes(name) || containsNamedChild(partialExecuteDomElements,name);
-            if (add) params.append(name, value);
-        };
-
-        const els = form.elements;
-        for (const el of els) {
-            if (el.name === EMPTY) {
-                continue;
-            }
-            if (!el.disabled) {
-                switch (el.type) {
-                    case 'submit':
-                    case 'reset':
-                    case 'image':
-                    case 'file':
-                        break;
-                    case 'select-one':
-                        if (el.selectedIndex >= 0) {
-                            addField(el.name, el.options[el.selectedIndex].value);
-                        }
-                        break;
-                    case 'select-multiple':
-                        for ( const option of el.options) {
-                            if (option.selected) {
-                                addField(el.name, option.value);
-                            }
-                        }
-                        break;
-                    case 'checkbox':
-                    case 'radio':
-                        if (el.checked) {
-                            addField(el.name, el.value || 'on');
-                        }
-                        break;
-                    default:
-                        // this is for any input incl.  text', 'password', 'hidden', 'textarea'
-                        const nodeName = el.nodeName.toLowerCase();
-                        if (nodeName === "input" || nodeName === "select" ||
-                            nodeName === "button" || nodeName === "object" ||
-                            nodeName === "textarea") {
-                            addField(el.name, el.value);
-                        }
-                        break;
-                }
-            }
-        }
-
-        return params.toString();
-    }
-
-
+    faces.getViewState = getViewState;
 
     /**
-     * <p>Collect and encode state for input controls associated
-     * with the specified <code>form</code> element.  This will include
-     * all input controls of type <code>hidden</code>.</p>
-     * <p><b>Usage:</b></p>
-     * <pre><code>
-     * var state = faces.getViewState(form);
-     * </pre></code>
-     *
-     * @param form The <code>form</code> element whose contained
-     * <code>input</code> controls will be collected and encoded.
-     * Only successful controls will be collected and encoded in
-     * accordance with: <a href="http://www.w3.org/TR/html401/interact/forms.html#h-17.13.2">
-     * Section 17.13.2 of the HTML Specification</a>.
-     *
-     * @returns String The encoded state for the specified form's input controls.
-     * @function faces.getViewState
+     * Return the windowId of the window in which the argument form is rendered.
+     * @see api/.../faces.d.ts faces.getClientWindow
      */
-    faces.getViewState = function(form) {
-        if (!form) throw new Error("faces.getViewState:  form must be set");
-
-        const params = new URLSearchParams();
-        const addField = function(name, value) {
-            params.append(name, value);
-        };
-
-        const els = form.elements;
-        for (const el of els) {
-            if (el.name === EMPTY) {
-                continue;
-            }
-            if (!el.disabled) {
-                switch (el.type) {
-                    case 'submit':
-                    case 'reset':
-                    case 'image':
-                    case 'file':
-                        break;
-                    case 'select-one':
-                        if (el.selectedIndex >= 0) {
-                            addField(el.name, el.options[el.selectedIndex].value);
-                        }
-                        break;
-                    case 'select-multiple':
-                        for ( const option of el.options) {
-                            if (option.selected) {
-                                addField(el.name, option.value);
-                            }
-                        }
-                        break;
-                    case 'checkbox':
-                    case 'radio':
-                        if (el.checked) {
-                            addField(el.name, el.value || 'on');
-                        }
-                        break;
-                    default:
-                        // this is for any input incl.  text', 'password', 'hidden', 'textarea'
-                        const nodeName = el.nodeName.toLowerCase();
-                        if (nodeName === "input" || nodeName === "select" ||
-                            nodeName === "button" || nodeName === "object" ||
-                            nodeName === "textarea") {
-                            addField(el.name, el.value);
-                        }
-                        break;
-                }
-            }
-        }
-        return params.toString();
-    };
-
-    /**
-     * <p class="changed_added_2_2">Return the windowId of the window
-     * in which the argument form is rendered.</p>
-     *
-     * @param {DomNode} node Determine the nature of
-     * the argument.  If not present, search for the windowId within
-     * <code>document.forms</code>.  If present and the value is a
-     * string, assume the string is a DOM id and get the element with
-     * that id and start the search from there.  If present and the
-     * value is a DOM element, start the search from there.
-     * @returns String The windowId of the current window, or null
-     *  if the windowId cannot be determined.
-     * @throws an error if more than one unique WindowId is found.
-     * @function faces.getClientWindow
-     */
-    faces.getClientWindow = function(node) {
-
-        /**
-         * Find jakarta.faces.ClientWindow field for a given form.
-         * @param form
-         * @ignore
-         */
-        const getWindowIdElement = function(form) {
-            // Try exact name first, then fall back to namespaced name (e.g. "viewId:jakarta.faces.ClientWindow" in portlet environments)
-            return getFormInputElementByName(form, CLIENT_WINDOW_PARAM)
-                || form.querySelector("input[name$='" + faces.separatorchar + CLIENT_WINDOW_PARAM + "']");
-        };
-
-        const fetchWindowIdFromForms = function(forms) {
-            const result_idx = {};
-            let result;
-            let foundCnt = 0;
-
-            for ( const form of forms ) {
-                const windowIdElement = getWindowIdElement(form);
-                const windowId = windowIdElement && windowIdElement.value;
-                if (UDEF !== typeof windowId) {
-                    if (foundCnt > 0 && UDEF === typeof result_idx[windowId]) throw Error("Multiple different windowIds found in document");
-                    result = windowId;
-                    result_idx[windowId] = true;
-                    foundCnt++;
-                }
-            }
-
-            return result;
-        };
-
-        /**
-         * @ignore
-         */
-        const getChildForms = function getChildForms(currentElement) {
-            //Special condition no element we return document forms
-            //as search parameter, ideal would be to
-            //have the viewroot here but the frameworks
-            //can deal with that themselves by using
-            //the viewroot as currentElement
-            if (!currentElement) return document.forms;
-            if (!currentElement.tagName) return [];
-            if (currentElement.tagName.toLowerCase() === FORM) return [ currentElement ];
-            return currentElement.querySelectorAll(FORM);
-        };
-
-        /**
-         * @ignore
-         */
-        const fetchWindowIdFromURL = function fetchWindowIdFromURL() {
-            return new URLSearchParams(location.search).get("windowId");
-        };
-
-        //byId ($)
-        const finalNode = (node && (typeof node == "string" || node instanceof String)) ?
-            document.getElementById(node) : (node || null);
-
-        const forms = getChildForms(finalNode);
-        const result = fetchWindowIdFromForms(forms);
-        return (null != result) ? result : fetchWindowIdFromURL();
-
-
-    };
+    faces.getClientWindow = getClientWindow;
 
     /**
      * <p class="changed_added_2_3">The Push functionality.</p>

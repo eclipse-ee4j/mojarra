@@ -31,3 +31,31 @@ export const executeScriptWithNonce = (head: HTMLElement, script: string, nonce:
     head.appendChild(scriptNode);
     head.removeChild(scriptNode);
 };
+
+/** If a string is given, look up the element by id; otherwise return the element as-is. */
+export const getElemById = function getElemById(elementOrId: Element | string): Element | null {
+    return typeof elementOrId === "string" ? document.getElementById(elementOrId) : elementOrId;
+};
+
+/**
+ * Find a child element by its `name` attribute, or null if not found.
+ * @param element the DOM base element
+ * @param name the value of the name attribute
+ */
+export const getElementByName = function (element: Element | Document, name: string): Element | null {
+    return element.querySelector("[name='" + name + "']");
+};
+
+/**
+ * Find an input element inside a form identified by name attribute, or null if not found.
+ * Accesses by indexed property first (HTMLFormElement maps name → element/RadioNodeList),
+ * falls back to a querySelector by name.
+ */
+export const getFormInputElementByName = function (form: HTMLFormElement, inputElementName: string): Element | null {
+    return inputElementName in form ? (form as any)[inputElementName] : getElementByName(form, inputElementName);
+};
+
+/** True if one of the elements contains a child whose `name` attribute equals `name`. */
+export const containsNamedChild = function (elements: Element[], name: string): boolean {
+    return elements.some(elem => !!getElementByName(elem, name));
+};
