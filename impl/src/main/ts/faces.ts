@@ -1,4 +1,7 @@
 // @ts-nocheck — legacy monolithic file; type-checking enforced module-by-module during the split.
+import { getHead, getNonce, executeScriptWithNonce } from "./faces/dom";
+import { chain as utilChain } from "./faces/util";
+
 // Detect if this is already loaded, and if loaded, if it's a higher version
 if ( !( (window.faces && window.faces.specversion && window.faces.specversion >= 50000 )
     && (window.faces.implversion && window.faces.implversion >= 0)) ) {
@@ -10,42 +13,6 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
     const FORM = "form";
     const isNull = (value) => (typeof value === UDEF || (typeof value === "object" && !value));
     const isNotNull = (value) => !isNull(value);
-
-    /**
-     * Get the head from document.
-     * @ignore
-     */
-    const getHead = () => {
-        return document.head || document.getElementsByTagName('head')[0] || document.documentElement;
-    };
-
-    /**
-     * Get the nonce from faces.js script for CSP support.
-     * Captured at load time via document.currentScript for robustness, with DOM query fallback.
-     * @ignore
-     */
-    const getNonce = (() => {
-        const loadTimeNonce = document.currentScript ? document.currentScript.nonce : undefined;
-        return () => {
-            if (loadTimeNonce) {
-                return loadTimeNonce;
-            }
-            const thisScript = document.querySelector("script[src*='jakarta.faces.resource/faces.js']");
-            return isNotNull(thisScript) ? thisScript.nonce : undefined;
-        };
-    })();
-
-    /**
-     * Execute script with nonce for CSP support.
-     * @ignore
-     */
-    const executeScriptWithNonce = (head, script, nonce) => {
-        const scriptNode = document.createElement('script'); // create script node
-        scriptNode.nonce = nonce;
-        scriptNode.text = script; // add the code to the script node
-        head.appendChild(scriptNode); // add it to the head
-        head.removeChild(scriptNode); // then remove it
-    };
 
     // --- Faces constants ------------------------------------------------------------
     const VIEW_STATE_PARAM = "jakarta.faces.ViewState";
@@ -2965,64 +2932,7 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
      * @name faces.util
      * @namespace
      */
-    faces.util = {};
-
-    /**
-     * <p>A varargs function that invokes an arbitrary number of scripts.
-     * If any script in the chain returns false, the chain is short-circuited
-     * and subsequent scripts are not invoked.  Any number of scripts may
-     * specified after the <code>event</code> argument.</p>
-     *
-     * @param source The DOM element that triggered this Ajax request, or an
-     * id string of the element to use as the triggering element.
-     * @param event The DOM event that triggered this Ajax request.  The
-     * <code>event</code> argument is optional.
-     *
-     * @returns boolean <code>false</code> if any scripts in the chain return <code>false</code>,
-     *  otherwise returns <code>true</code>
-     *
-     * @function faces.util.chain
-     */
-    faces.util.chain = function(source, event) {
-
-        if (arguments.length < 3) {
-            return true;
-        }
-
-        // RELEASE_PENDING rogerk - shouldn't this be getElementById instead of null
-        const thisArg = (typeof source === 'object') ? source : null;
-
-        const head = getHead();
-        const nonce = getNonce();
-
-        // Call back any scripts that were passed in
-        for (let i = 2; i < arguments.length; i++) {
-            const facesChainThis = '__facesChainThis' + i;
-            const facesChainEvent = '__facesChainEvent' + i;
-            const facesChainResult = '__facesChainResult' + i;
-
-            let result = undefined;
-
-            try {
-                window[facesChainThis] = thisArg;
-                window[facesChainEvent] = event;
-                const script = 'window.' + facesChainResult + ' = (function(event) { ' + arguments[i] + ' }).call(window.' + facesChainThis + ', window.' + facesChainEvent + ');';
-                executeScriptWithNonce(head, script, nonce);
-                result = window[facesChainResult];
-            }
-            finally {
-                delete window[facesChainThis];
-                delete window[facesChainEvent];
-                delete window[facesChainResult];
-            }
-
-            if (result === false) {
-                return false;
-            }
-        }
-        return true;
-
-    };
+    faces.util = { chain: utilChain };
 
     /**
      * <p class="changed_added_2_2">The result of calling
