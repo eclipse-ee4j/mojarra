@@ -11,12 +11,15 @@ import {
 } from "./dom";
 import { getPartialViewState } from "./api";
 
-/** Internal request context built up by `request()` and read by `response()` and the listeners. */
-interface AjaxContext {
-    source?: Element;
-    sourceid?: string;
-    onevent?: FacesSpec.ajax.OnEventCallback;
-    onerror?: FacesSpec.ajax.OnErrorCallback;
+/**
+ * Internal request context built up by `request()` and read by `response()` and the listeners.
+ *
+ * Extends the spec's {@link FacesSpec.ajax.RequestContext} with the impl-private fields
+ * the engine needs to carry across the request/response lifecycle. `sourceid` is widened
+ * to `string | Element` because `response()` resolves the id to its DOM element in place.
+ */
+interface AjaxContext extends Omit<FacesSpec.ajax.RequestContext, "sourceid"> {
+    sourceid?: string | Element;
     render?: string;
     formId?: string;
     namingContainerId?: string;
@@ -28,20 +31,6 @@ interface AjaxContext {
 /** Lightweight global lookup used for the few faces.* cross-namespace reads (separatorchar, etc.). */
 type FacesGlobal = { faces: { separatorchar: string; getProjectStage(): FacesSpec.ProjectStage; getViewState(form: HTMLFormElement): string; getClientWindow(node?: HTMLElement | string): string | null; ajax: { response(req: XMLHttpRequest, ctx: AjaxContext): void } } };
 const facesGlobal = (): FacesGlobal["faces"] => (window as unknown as FacesGlobal).faces;
-
-/** A queued ajax request. */
-interface QueuedRequest {
-    xmlReq: XMLHttpRequest | null;
-    context: AjaxContext;
-    queued: boolean;
-    [key: string]: unknown;
-}
-
-/** Form-control type covering everything the value collector inspects. */
-type FormControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | HTMLButtonElement | HTMLObjectElement;
-
-/** Convenience: jsdom-friendly window access for indexed property/method lookups. */
-type WindowAsDict = Window & { [key: string]: unknown };
 
 export const ajax = (function () {
 
@@ -2209,7 +2198,7 @@ export const ajax = (function () {
                 // DOM element may be removed after the update has been processed.
                 if (typeof context.sourceid === 'string') {
                     const found = document.getElementById(context.sourceid);
-                    if (found) (context as { sourceid?: unknown }).sourceid = found;
+                    if (found) context.sourceid = found;
                 }
 
                 const xml = request.responseXML;

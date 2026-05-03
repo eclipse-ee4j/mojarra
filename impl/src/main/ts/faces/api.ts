@@ -5,15 +5,17 @@
  */
 
 import type { faces as FacesSpec } from "../../../../../faces/api/src/main/resources/META-INF/resources/jakarta.faces/faces";
+import type { MojarraNamespace } from "../mojarra";
 
 import { UDEF, EMPTY, SPACE, FORM, ALWAYS_EXECUTE_IDS, CLIENT_WINDOW_PARAM } from "./constants";
 import { isNotNull } from "./lang";
 import { getElemById, getFormInputElementByName, containsNamedChild } from "./dom";
 
-/** Form-level cache of the project stage; lives on `window.mojarra` per the legacy contract. */
-interface MojarraGlobal {
+/** `window.mojarra` as seen from the api module — a (possibly-partial) mojarra namespace
+ *  plus the project-stage cache the api module reads/writes. `Partial<>` because
+ *  `getProjectStage()` is allowed to be invoked before mojarra.ts has registered. */
+interface MojarraGlobal extends Partial<MojarraNamespace> {
     projectStageCache?: FacesSpec.ProjectStage;
-    [key: string]: unknown;
 }
 
 const getMojarra = (): MojarraGlobal | undefined => (window as unknown as { mojarra?: MojarraGlobal }).mojarra;
