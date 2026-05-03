@@ -13,5 +13,5 @@
         "noEmit": true,
         "allowSyntheticDefaultImports": true
     },
-    "include": ["faces.ts"]
+    "include": ["faces.ts", "types.d.ts"]
 }
