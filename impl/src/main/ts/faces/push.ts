@@ -4,6 +4,7 @@
  */
 
 import type { faces as FacesSpec } from "../../../../../faces/api/src/main/resources/META-INF/resources/jakarta.faces/faces";
+import type { WindowAsDict } from "./dom";
 
 type OnOpen = FacesSpec.push.OnOpenHandler;
 type OnMessage = FacesSpec.push.OnMessageHandler;
@@ -15,9 +16,6 @@ interface ReconnectingSocket {
     open(): void;
     close(): void;
 }
-
-/** Lookup of either a function or a global-by-name (per spec, `init` accepts the latter via `window[name]`). */
-type WindowAsDict = Window & { [key: string]: unknown };
 
 export const push: typeof FacesSpec.push = (function (window: WindowAsDict) {
 

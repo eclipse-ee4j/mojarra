@@ -4,9 +4,7 @@
  */
 
 import type { faces as FacesSpec } from "../../../../../faces/api/src/main/resources/META-INF/resources/jakarta.faces/faces";
-import { getHead, getNonce, executeScriptWithNonce } from "./dom";
-
-type GlobalDictWindow = Window & { [key: string]: unknown };
+import { getHead, getNonce, executeScriptWithNonce, type WindowAsDict } from "./dom";
 
 /**
  * A varargs function that invokes an arbitrary number of scripts.
@@ -24,7 +22,7 @@ export const chain: typeof FacesSpec.util.chain = function chain(source, event) 
 
     const head = getHead();
     const nonce = getNonce();
-    const w = window as unknown as GlobalDictWindow;
+    const w = window as unknown as WindowAsDict;
 
     for (let i = 2; i < arguments.length; i++) {
         const facesChainThis = "__facesChainThis" + i;

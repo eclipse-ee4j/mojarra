@@ -450,4 +450,50 @@ describe("faces.getProjectStage", () => {
         script.remove();
         delete mojarra.projectStageCache;
     });
+
+    test.each(["Development", "UnitTest", "SystemTest", "Production"])(
+        "reads stage='%s' from faces.js script src URL",
+        (stage) => {
+            delete mojarra.projectStageCache;
+
+            const script = document.createElement("script");
+            script.src = `http://localhost/jakarta.faces.resource/faces.js?ln=jakarta.faces&stage=${stage}`;
+            document.head.appendChild(script);
+
+            expect((faces.getProjectStage as Function)()).toBe(stage);
+
+            script.remove();
+            delete mojarra.projectStageCache;
+        }
+    );
+
+    test("falls back to 'Production' for unrecognized stage values in URL", () => {
+        delete mojarra.projectStageCache;
+
+        const script = document.createElement("script");
+        script.src = "http://localhost/jakarta.faces.resource/faces.js?ln=jakarta.faces&stage=Bogus";
+        document.head.appendChild(script);
+
+        expect((faces.getProjectStage as Function)()).toBe("Production");
+
+        script.remove();
+        delete mojarra.projectStageCache;
+    });
+
+    test("returns cached value on second call without re-reading the DOM", () => {
+        // First call populates the cache from a Development URL.
+        delete mojarra.projectStageCache;
+        const script = document.createElement("script");
+        script.src = "http://localhost/jakarta.faces.resource/faces.js?ln=jakarta.faces&stage=Development";
+        document.head.appendChild(script);
+        expect((faces.getProjectStage as Function)()).toBe("Development");
+
+        // Remove the script tag; without the cache, the next call would default to Production.
+        script.remove();
+
+        // Second call must return the cached "Development" — the script-tag DOM was already gone.
+        expect((faces.getProjectStage as Function)()).toBe("Development");
+
+        delete mojarra.projectStageCache;
+    });
 });

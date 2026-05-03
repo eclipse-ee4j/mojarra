@@ -2,6 +2,8 @@ import type { faces as FacesSpec } from "../../../../../faces/api/src/main/resou
 import {
     UDEF, EMPTY, SPACE, FORM,
     VIEW_STATE_PARAM, CLIENT_WINDOW_PARAM, ALWAYS_EXECUTE_IDS, ENCODED_URL_PARAM,
+    SOURCE_PARAM, PARTIAL_AJAX_PARAM, PARTIAL_EVENT_PARAM, PARTIAL_EXECUTE_PARAM,
+    PARTIAL_RENDER_PARAM, PARTIAL_RESET_VALUES_PARAM,
     PARTIAL_SUBMIT_ENABLED,
 } from "./constants";
 import { isNull, isNotNull, contains } from "./lang";
@@ -1219,13 +1221,35 @@ export const ajax = (function () {
             return req;
         };
 
+        type ErrorPayload = FacesSpec.AjaxError & { description?: string };
+
+        /**
+         * Resolve `context.sourceid` (either a string id or an already-resolved Element)
+         * to its DOM element, per 14.4.1 of the 2.0 specification. Returns undefined when
+         * the sourceid is unset or refers to a missing element.
+         */
+        const resolveSourceElement = (sourceid: AjaxContext["sourceid"]): Element | undefined => {
+            if (typeof sourceid === "string") {
+                return document.getElementById(sourceid) ?? undefined;
+            }
+            if (sourceid && (sourceid as Element).nodeType !== undefined) {
+                return sourceid as Element;
+            }
+            return undefined;
+        };
+
+        /** Copy the XHR response fields onto an {@link FacesSpec.AjaxData} payload. */
+        const copyResponseFields = (data: FacesSpec.AjaxData, request: XMLHttpRequest): void => {
+            data.responseCode = request.status;
+            data.responseXML = request.responseXML ?? undefined;
+            data.responseText = request.responseText;
+        };
+
         /**
          * Error handling callback.
          * Assumes that the request has completed.
          * @ignore
          */
-        type ErrorPayload = FacesSpec.AjaxError & { description?: string };
-
         const sendError = function sendError(
             request: XMLHttpRequest,
             context: AjaxContext,
@@ -1238,22 +1262,13 @@ export const ajax = (function () {
             // Possible error names: httpError | emptyResponse | serverError | malformedXML
 
             let sent = false;
+            const source = resolveSourceElement(context.sourceid);
             const data: ErrorPayload = {
                 type: "error",
                 status,
-                responseCode: request.status,
-                responseXML: request.responseXML ?? undefined,
-                responseText: request.responseText,
+                ...(source && { source }),
             };
-
-            // ensure data source is the dom element and not the ID per 14.4.1 of the 2.0 specification.
-            const sourceLookup = (context.sourceid as unknown);
-            if (typeof sourceLookup === "string") {
-                const found = document.getElementById(sourceLookup);
-                if (found) data.source = found;
-            } else if (sourceLookup && (sourceLookup as Element).nodeType !== undefined) {
-                data.source = sourceLookup as Element;
-            }
+            copyResponseFields(data, request);
 
             if (description) {
                 data.description = description;
@@ -1331,24 +1346,15 @@ export const ajax = (function () {
          */
         const sendEvent = function sendEvent(request: XMLHttpRequest, context: AjaxContext, status: FacesSpec.AjaxEventStatus): void {
 
+            const source = resolveSourceElement(context.sourceid);
             const data: FacesSpec.AjaxEvent = {
                 type: "event",
                 status,
+                ...(source && { source }),
             };
 
-            // ensure data source is the dom element and not the ID per 14.4.1 of the 2.0 specification.
-            const sourceLookup = context.sourceid as unknown;
-            if (typeof sourceLookup === "string") {
-                const found = document.getElementById(sourceLookup);
-                if (found) data.source = found;
-            } else if (sourceLookup && (sourceLookup as Element).nodeType !== undefined) {
-                data.source = sourceLookup as Element;
-            }
-
             if (status !== 'begin') {
-                data.responseCode = request.status;
-                data.responseXML = request.responseXML ?? undefined;
-                data.responseText = request.responseText;
+                copyResponseFields(data, request);
             }
 
             // TODO: do we need to call this functions in the global context?
@@ -1797,7 +1803,7 @@ export const ajax = (function () {
                 context.formId = form.id;
 
                 // Set up additional arguments to be used in the request..
-                // Make sure "jakarta.faces.source" is set up.
+                // Make sure SOURCE_PARAM is set up.
                 // If there were "execute" ids specified, make sure we
                 // include the identifier of the source element in the
                 // "execute" list.  If there were no "execute" ids
@@ -1807,14 +1813,14 @@ export const ajax = (function () {
 
                 const namingContainerPrefix = viewStateElement.name.substring(0, viewStateElement.name.indexOf(VIEW_STATE_PARAM));
 
-                args[namingContainerPrefix + "jakarta.faces.source"] = element.id;
+                args[namingContainerPrefix + SOURCE_PARAM] = element.id;
 
                 if (event && !!event.type) {
-                    args[namingContainerPrefix + "jakarta.faces.partial.event"] = event.type;
+                    args[namingContainerPrefix + PARTIAL_EVENT_PARAM] = event.type;
                 }
 
                 if ("resetValues" in opts) {
-                    args[namingContainerPrefix + "jakarta.faces.partial.resetValues"] = opts.resetValues;
+                    args[namingContainerPrefix + PARTIAL_RESET_VALUES_PARAM] = opts.resetValues;
                 }
 
                 // do a partial submit only if it is enabled and:
@@ -1824,7 +1830,7 @@ export const ajax = (function () {
 
                 // If we have 'execute' identifiers:
                 // Handle any keywords that may be present.
-                // If @none present anywhere, do not send the "jakarta.faces.partial.execute" parameter.
+                // If @none present anywhere, do not send the PARTIAL_EXECUTE_PARAM parameter.
                 // The 'execute' and 'render' lists must be space delimited.
 
                 if (opts.execute) {
@@ -1844,14 +1850,14 @@ export const ajax = (function () {
                         } else {
                             opts.execute = "@all";
                         }
-                        args[namingContainerPrefix + "jakarta.faces.partial.execute"] = opts.execute;
+                        args[namingContainerPrefix + PARTIAL_EXECUTE_PARAM] = opts.execute;
                     }
                 }
                 // in case of <f:ajax />
                 else {
                     // if id is equals to name then add only one of them to avoid duplicates inside opts.execute
                     opts.execute = (element.name === element.id) ? element.id : element.name + SPACE + element.id;
-                    args[namingContainerPrefix + "jakarta.faces.partial.execute"] = opts.execute;
+                    args[namingContainerPrefix + PARTIAL_EXECUTE_PARAM] = opts.execute;
                 }
 
                 if (opts.render) {
@@ -1867,7 +1873,7 @@ export const ajax = (function () {
                         } else {
                             opts.render = "@all";
                         }
-                        args[namingContainerPrefix + "jakarta.faces.partial.render"] = opts.render;
+                        args[namingContainerPrefix + PARTIAL_RENDER_PARAM] = opts.render;
                     }
                 }
 
@@ -1937,7 +1943,7 @@ export const ajax = (function () {
                     args[namingContainerPrefix + property] = (opts as Record<string, unknown>)[property];
                 }
 
-                args[namingContainerPrefix + "jakarta.faces.partial.ajax"] = "true";
+                args[namingContainerPrefix + PARTIAL_AJAX_PARAM] = "true";
                 args["method"] = "POST";
 
                 // Determine the posting url
@@ -1955,7 +1961,7 @@ export const ajax = (function () {
                     ajaxEngine.context.onevent = onevent;
                     ajaxEngine.context.onerror = onerror;
                     ajaxEngine.context.sourceid = element!.id;
-                    ajaxEngine.context.render = (args[namingContainerPrefix + "jakarta.faces.partial.render"] as string) || EMPTY;
+                    ajaxEngine.context.render = (args[namingContainerPrefix + PARTIAL_RENDER_PARAM] as string) || EMPTY;
                     ajaxEngine.context.namingContainerPrefix = namingContainerPrefix;
                     ajaxEngine.sendRequest();
                 };
@@ -2258,7 +2264,11 @@ export const ajax = (function () {
 
                 if (responseType.nodeName === "redirect") {
                     const url = (responseType as Element).getAttribute("url");
-                    if (url) (window as unknown as { location: string }).location = url;
+                    if (!url) {
+                        sendError(request, context, "malformedXML", "<redirect> element is missing the required 'url' attribute.");
+                        return;
+                    }
+                    (window as unknown as { location: string }).location = url;
                     return;
                 }
 

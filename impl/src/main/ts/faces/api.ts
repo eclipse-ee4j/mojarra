@@ -21,6 +21,21 @@ interface MojarraGlobal extends Partial<MojarraNamespace> {
 const getMojarra = (): MojarraGlobal | undefined => (window as unknown as { mojarra?: MojarraGlobal }).mojarra;
 const setMojarra = (m: MojarraGlobal): void => { (window as unknown as { mojarra: MojarraGlobal }).mojarra = m; };
 
+/** Valid {@link FacesSpec.ProjectStage} literal values, used to validate the URL-encoded stage param. */
+const PROJECT_STAGES = ["Development", "UnitTest", "SystemTest", "Production"] as const;
+
+// Compile-time bidirectional check: PROJECT_STAGES must equal FacesSpec.ProjectStage exactly.
+// If either union drifts, the line below stops compiling.
+type _ProjectStagesMatchSpec =
+    [FacesSpec.ProjectStage] extends [typeof PROJECT_STAGES[number]]
+        ? [typeof PROJECT_STAGES[number]] extends [FacesSpec.ProjectStage] ? true : never
+        : never;
+const _projectStagesMatchSpec: _ProjectStagesMatchSpec = true;
+void _projectStagesMatchSpec;
+
+const isProjectStage = (value: unknown): value is FacesSpec.ProjectStage =>
+    typeof value === "string" && (PROJECT_STAGES as readonly string[]).includes(value);
+
 /**
  * Return the value of `Application.getProjectStage()` for the currently running application instance.
  * Calling this method must not cause any network transaction to happen to the server.
@@ -33,7 +48,8 @@ export const getProjectStage: typeof FacesSpec.getProjectStage = function getPro
     const _script = document.querySelector<HTMLScriptElement>("script[src*='jakarta.faces.resource/faces.js']");
     const scriptSrcSearchParam = _script ? new URLSearchParams(_script.src) : null;
 
-    const stage: FacesSpec.ProjectStage = (scriptSrcSearchParam && scriptSrcSearchParam.get("stage") === "Development") ? "Development" : "Production";
+    const urlStage = scriptSrcSearchParam?.get("stage");
+    const stage: FacesSpec.ProjectStage = isProjectStage(urlStage) ? urlStage : "Production";
 
     const m: MojarraGlobal = moj ?? {};
     setMojarra(m);

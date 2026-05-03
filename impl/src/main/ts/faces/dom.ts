@@ -3,6 +3,13 @@
  * Not part of the public Jakarta Faces JavaScript API.
  */
 
+/**
+ * `Window` augmented with a string-keyed index signature, for the few places
+ * the impl resolves a global by name (e.g. `window[fn]` lookups in
+ * `faces.push.init` and the `__facesChain*` slots in `faces.util.chain`).
+ */
+export type WindowAsDict = Window & { [key: string]: unknown };
+
 /** Get the head from the document. */
 export const getHead = (): HTMLElement => {
     return document.head || document.getElementsByTagName("head")[0] || document.documentElement;
