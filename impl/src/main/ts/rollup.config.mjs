@@ -23,7 +23,7 @@ const BANNER = `/*!
  */`;
 
 export default {
-    input: "faces.ts",
+    input: "index.ts",
     output: {
         file: "../../../target/classes/META-INF/resources/jakarta.faces/faces-uncompressed.js",
         format: "iife",

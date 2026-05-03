@@ -13,5 +13,5 @@
         "noEmit": true,
         "allowSyntheticDefaultImports": true
     },
-    "include": ["faces.ts", "types.d.ts"]
+    "include": ["index.ts", "faces.ts", "mojarra.ts", "types.d.ts"]
 }
