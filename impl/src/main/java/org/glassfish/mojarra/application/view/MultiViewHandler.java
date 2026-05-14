@@ -108,6 +108,24 @@ public class MultiViewHandler extends ViewHandler {
     @Override
     public void initView(FacesContext context) throws FacesException {
         super.initView(context);
+
+        // Spec section 2.5.2.2 falls through to the session-based fallback when
+        // neither <f:view contentType=charset=...> nor a request Content-Type
+        // header charset yields an encoding. That session lookup is moot when
+        // no session is created (e.g. stateless views or client side state saving).
+        // When that happens, super.initView never calls setRequestCharacterEncoding 
+        // and the servlet container decodes form-data with its platform default 
+        // (often ISO-8859-1) — so a postback containing non-ASCII characters 
+        // (e.g. 'ä') can get corrupted on the way in. Default to the same encoding
+        // that Util.getResponseEncoding() uses to render the page, so request 
+        // decoding at least matches what the page was rendered with.
+        if (context.getExternalContext().getRequestCharacterEncoding() == null) {
+            try {
+                context.getExternalContext().setRequestCharacterEncoding(Util.getResponseEncoding(context));
+            } catch (UnsupportedEncodingException e) {
+                throw new FacesException(e);
+            }
+        }
     }
 
     /**

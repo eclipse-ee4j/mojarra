@@ -45,19 +45,33 @@ def JDK_VERSION_CHOICES = [''] + JDK_DISTRO_BY_VERSION.keySet().toList()
 //   implBranch      : mojarra git branch holding the impl source for this release line.
 //   apiBranch       : faces-repo branch for the standalone jakarta.faces-api jar (null when no
 //                     separate API artifact exists for this release line). Must match .gitmodules.
+//                     When non-null, the API version the TCK runs against is read dynamically
+//                     from impl/pom.xml's jakarta.faces-api dep (so the TCK always tests against
+//                     exactly the API version the impl was built against). When null, apiVersion
+//                     below is used instead — 4.x bundles the API spec into the impl jar, so
+//                     impl/pom.xml has no jakarta.faces-api dep to read.
+//   apiVersion      : 4.x only. jakarta.faces-api version the TCK is run against (passed as
+//                     -Dfaces.version). Ignored when apiBranch != null.
 //   jdk             : major JDK version used to build the impl (per Faces spec).
 //   tckJdk          : major JDK version used to run the TCK. Differs from jdk when the GlassFish
 //                     container needs a newer JDK than the spec.
-//   facesVersion    : -Dfaces.version passed to the TCK build.
-//   tckVersion      : Faces TCK release version.
+//   tckVersion      : Faces TCK version. A released version (e.g. "4.0.3") is downloaded as a zip
+//                     from download.eclipse.org/jakartaee/faces/<line>/. A -SNAPSHOT value (e.g.
+//                     "5.0.0-SNAPSHOT") instead builds the TCK from the faces submodule's tck/
+//                     directly — used while a release line's TCK has not yet shipped.
 //   gfVersion       : GlassFish Maven coordinate version used by the TCK.
 //   seleniumEnabled : whether the BaseITNG (Selenium/Chrome) tests run. The agent pod ships
 //                     current Chrome; set false for branches whose TCK pins a CDP major outside
 //                     Selenium's fudge range (e.g. 4.0 pins CDP v108).
+//   threadCount     : Maven `-T` value for the TCK reactor. Set >1 only for release lines whose
+//                     TCK ships gf-pool (5.0+); 4.x TCKs run a single managed GlassFish per
+//                     module and cannot share it across parallel module builds, so threadCount
+//                     stays at 1 there. The pod's cpu/memory should comfortably accommodate
+//                     this many concurrent GlassFish + test JVM pairs.
 def BRANCH_CONFIG = [
-    '4.0': [ implBranch: '4.0',    apiBranch: null,  jdk: '11', tckJdk: '11', facesVersion: '4.0.1', tckVersion: '4.0.3', gfVersion: '7.0.25'  , seleniumEnabled: false ],
-    '4.1': [ implBranch: '4.1',    apiBranch: null,  jdk: '17', tckJdk: '21', facesVersion: '4.1.0', tckVersion: '4.1.0', gfVersion: '8.0.0-M6', seleniumEnabled: true  ],
-    '5.0': [ implBranch: 'master', apiBranch: '5.0', jdk: '17', tckJdk: '21', facesVersion: '5.0.0', tckVersion: '5.0.0', gfVersion: '9.0.0-M2', seleniumEnabled: true  ],
+    '4.0': [ implBranch: '4.0',    apiBranch: null,  apiVersion: '4.0.1', jdk: '11', tckJdk: '11', tckVersion: '4.0.3',          gfVersion: '7.0.25'  , seleniumEnabled: false, threadCount: 1 ],
+    '4.1': [ implBranch: '4.1',    apiBranch: null,  apiVersion: '4.1.0', jdk: '17', tckJdk: '21', tckVersion: '4.1.0',          gfVersion: '8.0.0-M6', seleniumEnabled: true , threadCount: 1 ],
+    '5.0': [ implBranch: 'master', apiBranch: '5.0', apiVersion: null,    jdk: '17', tckJdk: '21', tckVersion: '5.0.0-SNAPSHOT', gfVersion: '9.0.0-M2', seleniumEnabled: true , threadCount: 2 ],
 ]
 
 // Reusable shell snippet: GPG keyring import + trust. Idempotent. Required wherever the build
@@ -128,7 +142,6 @@ pipeline {
     // mounts) is preserved.
     agent {
         kubernetes {
-            label 'mojarra-release-pod'
             defaultContainer 'jnlp-with-chrome'
             yaml """
 apiVersion: v1
@@ -138,11 +151,26 @@ spec:
     - name: jnlp-with-chrome
       image: 'eclipsecbijenkins/basic-ubuntu-chrome:latest'
       tty: true
+      # Bash reaper as PID 1 so reparented orphans (asadmin clients, surefire forks, sh wrappers)
+      # don't accumulate as zombies and exhaust the pod's pids cgroup over a long TCK run. The
+      # image doesn't ship tini; bash + `wait -n` is the zero-dependency equivalent. The outer
+      # `while :;` keeps the loop alive when `wait -n` returns 127 (no children) at startup.
       command:
-        - cat
+        - /bin/bash
+        - -c
+        - 'while :; do wait -n 2>/dev/null || sleep 5; done'
       env:
         - name: HOME
           value: /home/jenkins
+        # The agent image sets JAVA_TOOL_OPTIONS globally with OpenJ9-only flags
+        # (PortableSharedCache, Xshareclasses, IdleTuningGcOnIdle). On a Temurin JDK these are
+        # inert thanks to -XX:+IgnoreUnrecognizedVMOptions but they pollute every "java -version"
+        # line and make CI logs confusing. Empty it for the whole pod.
+        - name: JAVA_TOOL_OPTIONS
+          value: ""
+      # Capped at the Eclipse Jiro namespace quota (8Gi/2 CPU per container; pod total 8704Mi/2300m
+      # with the rest going to the jnlp sidecar). Raising it requires a helpdesk request. 5.0's
+      # -T 4 still helps despite 2:1 CPU oversubscription because gf-pool slots are I/O-bound.
       resources:
         limits:
           memory: 8Gi
@@ -191,27 +219,20 @@ spec:
     }
 
     parameters {
-        choice(name: 'RELEASE_LINE',    choices: ['4.0', '4.1', '5.0'],
-               description: 'Release line to cut.')
-        string(name: 'MILESTONE_VERSION', defaultValue: '',
-               description: 'Leave blank for a GA release; otherwise the suffix for a milestone/RC release. Must match ^(M|RC)[0-9]+$ (e.g. M1, M2, RC1). When set, the release version is auto-derived as <pom-base-version>-<MILESTONE_VERSION> (e.g. 5.0.0-M2), tagged exactly that (no -RELEASE suffix), and the source branch is left untouched: PR-merge, milestone management, GitHub release creation, and snapshot bump are all skipped.')
-        choice(name: 'JDK',             choices: JDK_VERSION_CHOICES,
-               description: 'Leave blank to auto-infer from RELEASE_LINE (11 for 4.0, 17 for 4.1 and 5.0). This is the JDK used to run the build & install.')
-        choice(name: 'TCK_JDK',         choices: JDK_VERSION_CHOICES,
-               description: 'Leave blank to auto-infer from RELEASE_LINE (11 for 4.0, 21 for 4.1 and 5.0). This is the JDK used to run the TCK (the GlassFish container may need a newer JDK than the spec).')
-        string(name: 'TCK_VERSION',     defaultValue: '',
-               description: 'Leave blank to auto-infer from RELEASE_LINE.')
-        string(name: 'GF_VERSION',      defaultValue: '',
-               description: 'Leave blank to auto-infer from RELEASE_LINE. When using GF_BUNDLE_URL, set this to match the artifact version inside the zip (e.g. 8.0.0-X).')
-        string(name: 'GF_BUNDLE_URL',   defaultValue: '',
-               description: 'Leave blank to resolve GlassFish from Maven Central via GF_VERSION; otherwise an explicit zip URL override (GF_VERSION must match the artifact version inside the zip).')
-        string(name: 'API_RELEASE_VERSION', defaultValue: '',
-               description: '5.0+ only. Leave blank to auto-infer from faces/api/pom.xml. Ignored when impl/pom.xml pins jakarta.faces-api to a GA version (impl-only release) or when MILESTONE_VERSION is set.')
-        booleanParam(name: 'RUN_TCK',     defaultValue: true,  description: 'Run the Faces TCK after build.')
-        booleanParam(name: 'SKIP_OLD_TCK', defaultValue: false, description: '4.x only. Skip the old-tck JavaTest modules (excluded from the reactor entirely via -pl); cuts nearly 3 hours off the TCK run. No-op on 5.0+ where these modules no longer exist. The old-tck-selenium failsafe-driven modules are unaffected by this flag.')
-        booleanParam(name: 'DRY_RUN',     defaultValue: true,  description: 'Skip Maven Central deploy and GitHub push.')
-        booleanParam(name: 'TEST_RUN',    defaultValue: false, description: 'Filter the TCK to a tiny representative subset for fast iteration on the pipeline itself (one failsafe IT + one sigtest IT + one old-tck-selenium IT, plus one old-tck JavaTest path when SKIP_OLD_TCK is unchecked). Ignored when DRY_RUN is unchecked, since the run is not TCK-conformant and must never be published.')
-        booleanParam(name: 'SKIP_DEPLOY', defaultValue: false, description: 'Skip the Maven Central deploy stage only (still pushes branch/tag and creates the GitHub release). Use for resuming a previous run after Maven Central already published, or for pipeline-debug runs that exercise Publish to GitHub without re-deploying.')
+        choice(name: 'RELEASE_LINE', choices: ['4.0', '4.1', '5.0'], description: 'Release line to cut.')
+        string(name: 'MILESTONE_VERSION' , defaultValue: '', description: 'Leave blank for a GA release; otherwise the suffix for a milestone/RC release. Must match ^(M|RC)[0-9]+$ (e.g. M1, M2, RC1). When set, the release version is auto-derived as <pom-base-version>-<MILESTONE_VERSION> (e.g. 5.0.0-M2), tagged exactly that (no -RELEASE suffix), and the source branch is left untouched: PR-merge, milestone management, GitHub release creation, and snapshot bump are all skipped.')
+        choice(name: 'JDK', choices: JDK_VERSION_CHOICES, description: 'Leave blank to auto-infer from RELEASE_LINE (11 for 4.0, 17 for 4.1 and 5.0). This is the JDK used to run the build & install.')
+        choice(name: 'TCK_JDK', choices: JDK_VERSION_CHOICES, description: 'Leave blank to auto-infer from RELEASE_LINE (11 for 4.0, 21 for 4.1 and 5.0). This is the JDK used to run the TCK (the GlassFish container may need a newer JDK than the spec).')
+        string(name: 'TCK_VERSION', defaultValue: '', description: 'Leave blank to auto-infer from RELEASE_LINE. A released value (e.g. 4.0.3) downloads the published TCK zip from download.eclipse.org; a -SNAPSHOT value (e.g. 5.0.0-SNAPSHOT) builds the TCK from the faces/tck submodule directory instead.')
+        string(name: 'GF_VERSION', defaultValue: '', description: 'Leave blank to auto-infer from RELEASE_LINE. When using GF_BUNDLE_URL, set this to match the artifact version inside the zip (e.g. 8.0.0-X).')
+        string(name: 'GF_BUNDLE_URL', defaultValue: '', description: 'Leave blank to resolve GlassFish from Maven Central via GF_VERSION; otherwise an explicit zip URL override (GF_VERSION must match the artifact version inside the zip).')
+        string(name: 'API_RELEASE_VERSION', defaultValue: '', description: '5.0+ only. Leave blank to auto-infer from faces/api/pom.xml. Ignored when impl/pom.xml pins jakarta.faces-api to a GA version (impl-only release) or when MILESTONE_VERSION is set.')
+        choice(name: 'THREAD_COUNT', choices: ['', '1', '2', '3', '4', '5', '6', '7', '8'], description: '5.0+ only. Leave blank to auto-infer from RELEASE_LINE (1 for 4.x, 2 for 5.0). Maven `-T` value and gf.pool.size for the TCK reactor. Values >1 only work on TCKs that ship gf-pool (5.0+); selecting one on 4.x errors out.')
+        booleanParam(name: 'RUN_TCK', defaultValue: true, description: 'Run the Faces TCK after build.')
+        booleanParam(name: 'SKIP_OLD_TCK', defaultValue: false, description: 'Requires RUN_TCK. 4.x only. Skip the old-tck JavaTest modules (excluded from the reactor entirely via -pl); cuts nearly 3 hours off the TCK run. No-op on 5.0+ where these modules no longer exist. The old-tck-selenium failsafe-driven modules are unaffected by this flag.')
+        booleanParam(name: 'SMOKE_TEST', defaultValue: false, description: 'Requires RUN_TCK and DRY_RUN. Filter the TCK to a tiny representative subset for fast iteration on the pipeline itself (one failsafe IT + one sigtest IT + one old-tck-selenium IT, plus one old-tck JavaTest path when SKIP_OLD_TCK is unchecked).')
+        booleanParam(name: 'DRY_RUN', defaultValue: true, description: 'Skip Maven Central deploy and GitHub push.')
+        booleanParam(name: 'SKIP_DEPLOY', defaultValue: false, description: 'Requires DRY_RUN unchecked. Skip the Maven Central deploy stage only (still pushes branch/tag and creates the GitHub release). Use for resuming a previous run after Maven Central already published, or for pipeline-debug runs that exercise Publish to GitHub without re-deploying.')
     }
 
     options {
@@ -237,12 +258,25 @@ spec:
                     def cfg = BRANCH_CONFIG[params.RELEASE_LINE]
                     if (cfg == null) error "Unknown RELEASE_LINE: ${params.RELEASE_LINE}"
 
+                    // Enforce the apiBranch/apiVersion XOR invariant so a misconfigured BRANCH_CONFIG
+                    // entry fails fast here rather than producing a confusing error mid-release.
+                    if ((cfg.apiBranch == null) == (cfg.apiVersion == null)) {
+                        error "BRANCH_CONFIG['${params.RELEASE_LINE}'] must set exactly one of apiBranch / apiVersion (apiBranch=${cfg.apiBranch}, apiVersion=${cfg.apiVersion})."
+                    }
+
+                    // Reject inert checkbox combinations up front rather than silently ignoring them.
+                    if (params.SKIP_OLD_TCK && !params.RUN_TCK) error "SKIP_OLD_TCK requires RUN_TCK."
+                    if (params.SMOKE_TEST   && !params.RUN_TCK) error "SMOKE_TEST requires RUN_TCK."
+                    if (params.SMOKE_TEST   && !params.DRY_RUN) error "SMOKE_TEST requires DRY_RUN (filtered run is not TCK-conformant and must never be published)."
+                    if (params.SKIP_DEPLOY  &&  params.DRY_RUN) error "SKIP_DEPLOY requires DRY_RUN unchecked (DRY_RUN already skips deploy)."
+                    if (params.THREAD_COUNT?.trim() && cfg.threadCount == 1) error "THREAD_COUNT is 5.0+ only (4.x TCKs run a single managed GlassFish per module and cannot parallelize)."
+
                     env.RESOLVED_JDK         = params.JDK?.trim()         ?: cfg.jdk
                     env.RESOLVED_TCK_JDK     = params.TCK_JDK?.trim()     ?: cfg.tckJdk
                     env.RESOLVED_TCK_VERSION = params.TCK_VERSION?.trim() ?: cfg.tckVersion
                     env.RESOLVED_GF_VERSION  = params.GF_VERSION?.trim()  ?: cfg.gfVersion
                     env.SELENIUM_ENABLED     = cfg.seleniumEnabled ? 'true' : 'false'
-                    env.FACES_VERSION        = cfg.facesVersion
+                    env.TCK_THREAD_COUNT     = params.THREAD_COUNT?.trim() ?: cfg.threadCount.toString()
                     env.RELEASE_LINE         = params.RELEASE_LINE
                     env.IMPL_BRANCH          = cfg.implBranch
                     env.API_BRANCH           = cfg.apiBranch ?: ''
@@ -314,13 +348,6 @@ spec:
                         env.RELEASE_BRANCH  = env.RELEASE_VERSION
                     }
 
-                    // Mirror the TCK pom's `compute-csp-backport-flags` script for Mojarra versions
-                    // covered by the CSP backport (#5606): a handful of TCK ITs need to be excluded
-                    // because their inline event handlers no longer hold once mojarra.ael attaches them.
-                    // Pre-setting `it.test` here is also safe against TCK zips that already ship the
-                    // script — its guard is `!containsKey('it.test')`, which we then trigger as a no-op.
-                    env.TCK_IT_TEST_FLAGS = cspBackportItTestFlags(env.RELEASE_VERSION)
-
                     // Skip old-tck by excluding its modules from the reactor entirely (-pl), so
                     // they aren't even parsed/built — faster and cleaner than -Dtck.old.skip=true,
                     // which leaves the modules in the reactor and only short-circuits their
@@ -328,37 +355,33 @@ spec:
                     // is not affected.
                     env.SKIP_OLD_TCK_FLAG = params.SKIP_OLD_TCK ? '-pl -:old-faces-tck-parent,-:old-tck-build,-:old-tck-run' : ''
 
-                    // TEST_RUN: smoke-run for iterating on the pipeline itself. Filters failsafe
-                    // ITs to three representative classes and old-tck JavaTest to one small path,
-                    // dropping a 30+ min cycle to ~3 min (or ~12 min with old-tck enabled).
-                    // Hard-gated on DRY_RUN: the filtered run is not TCK-conformant, and must
-                    // never produce a published release.
-                    //   -Dit.test=...   : last `-Dit.test` on the cli wins, overriding the
-                    //                     CSP-backport pattern in TCK_IT_TEST_FLAGS.
+                    // SMOKE_TEST: smoke-test subset for iterating on the pipeline itself. Filters
+                    // failsafe ITs to three representative classes and old-tck JavaTest to one
+                    // small path, dropping a 30+ min cycle to ~3 min (or ~12 min with old-tck
+                    // enabled). Hard-gated on DRY_RUN: the filtered run is not TCK-conformant,
+                    // and must never produce a published release.
                     //   -Drun.test=...  : antrun config in old-tck/run/pom.xml flips to
                     //                     `ant runclient -Dmultiple.tests=${run.test}` when set.
-                    env.TEST_RUN_FLAGS = (params.TEST_RUN && params.DRY_RUN) \
-                        ? "-Dit.test='**/JSFSigTestIT.java,**/ChildCountTestIT.java,**/AjaxTestsIT.java' -Dfailsafe.failIfNoSpecifiedTests=false -Drun.test='com/sun/ts/tests/jsf/api/jakarta_faces/application/facesmessage'" \
+                    env.SMOKE_TEST_FLAGS = (params.SMOKE_TEST && params.DRY_RUN) \
+                        ? "-Dit.test=**/JSFSigTestIT.java,**/ChildCountTestIT.java,**/AjaxTestsIT.java -Dfailsafe.failIfNoSpecifiedTests=false -Drun.test=com/sun/ts/tests/jsf/api/jakarta_faces/application/facesmessage" \
                         : ''
 
-                    // Auto-infer SHOULD_BUILD_API from impl/pom.xml's jakarta.faces-api dep version: a
-                    // -SNAPSHOT dep means the API is unreleased and must be released alongside; a GA
-                    // version means the API is on Maven Central and this is an impl-only release.
-                    // Skipped when no separate API artifact exists for this branch (apiBranch == null).
+                    // Resolve the jakarta.faces-api version the TCK runs against (-Dfaces.version):
+                    //   - 5.0+ (apiBranch != null): read it dynamically from impl/pom.xml's
+                    //     jakarta.faces-api dep, so the TCK tests against exactly the API the
+                    //     impl was built against. A -SNAPSHOT dep also means the API is unreleased
+                    //     and must be co-released; anything else is impl-only (API on Maven Central).
+                    //   - 4.x (apiBranch == null): impl bundles the spec API into its own jar and
+                    //     declares no jakarta.faces-api dep, so use the per-branch cfg.apiVersion.
                     if (cfg.apiBranch != null) {
                         def apiDepVersion = readImplApiDepVersion()
                         if (apiDepVersion == '') {
-                            error "impl/pom.xml does not declare a jakarta.faces-api dependency. Cannot determine whether to release the API."
+                            error "impl/pom.xml does not declare a jakarta.faces-api dependency."
                         }
                         env.IMPL_API_DEP_VERSION = apiDepVersion
-                        if (apiDepVersion.endsWith('-SNAPSHOT')) {
-                            env.SHOULD_BUILD_API = 'true'
-                        } else if (apiDepVersion ==~ /\d+\.\d+\.\d+(\.\d+)*/) {
-                            env.SHOULD_BUILD_API = 'false'
-                        } else {
-                            error "impl/pom.xml's jakarta.faces-api dep version '${apiDepVersion}' is neither a -SNAPSHOT nor a dotted-numeric GA version (e.g. 5.0.0). Update the dep before releasing."
-                        }
+                        env.SHOULD_BUILD_API = apiDepVersion.endsWith('-SNAPSHOT') ? 'true' : 'false'
                     } else {
+                        env.IMPL_API_DEP_VERSION = cfg.apiVersion
                         env.SHOULD_BUILD_API = 'false'
                     }
                     env.MVN_API_PROFILE = (env.SHOULD_BUILD_API == 'true') ? '-Papi' : ''
@@ -389,25 +412,86 @@ spec:
                     def jdkLabel = (env.RESOLVED_JDK == env.RESOLVED_TCK_JDK)
                         ? "JDK${env.RESOLVED_JDK}"
                         : "JDK${env.RESOLVED_JDK}/TCK-JDK${env.RESOLVED_TCK_JDK}"
-                    def tckLabel = params.RUN_TCK ? "TCK ${env.RESOLVED_TCK_VERSION}" : "TCK skipped"
+                    def tckLabel = params.RUN_TCK
+                        ? "TCK ${env.RESOLVED_TCK_VERSION}" + (env.TCK_THREAD_COUNT == '1' ? '' : " -T${env.TCK_THREAD_COUNT}")
+                        : "TCK skipped"
                     // old-TCK exists only on 4.x; on 5.0+ the module is gone so the flag is a no-op.
                     def skipOldTckLabel = (params.RELEASE_LINE.startsWith('4.') && params.RUN_TCK && params.SKIP_OLD_TCK) ? ', old-TCK skipped' : ''
-                    def testRunLabel = (params.RUN_TCK && params.TEST_RUN && params.DRY_RUN) ? ', test-run' : ''
+                    def smokeTestLabel = (params.RUN_TCK && params.SMOKE_TEST && params.DRY_RUN) ? ', smoke-test' : ''
                     def milestoneLabel = (env.IS_MILESTONE == 'true') ? ', milestone' : ''
                     def dryRunLabel = params.DRY_RUN ? ', dry-run' : ''
                     currentBuild.description = "${params.RELEASE_LINE} → ${env.RELEASE_VERSION}" +
                         ((env.SHOULD_BUILD_API == 'true') ? " + API ${env.RESOLVED_API_VERSION}" : ' (impl-only)') +
-                        " (${jdkLabel}, GF ${env.RESOLVED_GF_VERSION}, ${tckLabel}${skipOldTckLabel}${testRunLabel}${milestoneLabel}${dryRunLabel})"
-                    if (env.IS_MILESTONE == 'true') {
-                        echo "Snapshot: ${env.SNAPSHOT_VERSION} | Milestone: ${env.RELEASE_VERSION} (snapshot left untouched)"
-                    } else {
-                        echo "Snapshot: ${env.SNAPSHOT_VERSION} | Release: ${env.RELEASE_VERSION} | Next: ${env.NEXT_VERSION}"
+                        " (${jdkLabel}, GF ${env.RESOLVED_GF_VERSION}, ${tckLabel}${skipOldTckLabel}${smokeTestLabel}${milestoneLabel}${dryRunLabel})"
+                    echo renderBanner(buildBannerLines(params, env, cfg))
+                }
+                // Validate every credential the publish path will need, even on DRY_RUN, so a
+                // revoked/expired credential fails in minute zero rather than after a multi-hour
+                // TCK run. GPG is not pinged here because Build & install signs sources/javadoc
+                // and would fail on a bad keyring within minutes. Maven offers no native dryRun
+                // for Central deploys; the curl probe below is the only zero-cost auth check.
+                sh '''#!/bin/bash -e
+                    # Decrypt <server id=central> creds from the mounted settings.xml via
+                    # SecDispatcher. Temp file is mode 600 + trap-deleted so the cleartext never
+                    # survives the step; stdout is silenced so it never hits the log.
+                    EFF=$(mktemp); chmod 600 "${EFF}"
+                    trap 'rm -f "${EFF}"' EXIT
+                    mvn -q -B ${HELP_PLUGIN}:effective-settings -DshowPasswords=true -Doutput="${EFF}" >/dev/null
+                    # Split on opening <server> tags, keep the block whose id is "central", then
+                    # pluck the inner text of <username>/<password>. \\K resets the match start so
+                    # only the inner text is captured (avoids greedy-.* corner cases).
+                    BLOCK=$(awk 'BEGIN{RS="<server>"} /<id>central<\\/id>/' "${EFF}")
+                    CENTRAL_USER=$(echo "${BLOCK}" | grep -oP '<username>\\K[^<]*' | head -1)
+                    CENTRAL_PASS=$(echo "${BLOCK}" | grep -oP '<password>\\K[^<]*' | head -1)
+                    if [ -z "${CENTRAL_USER}" ] || [ -z "${CENTRAL_PASS}" ]; then
+                        echo "[cred-check] Sonatype Central Portal: <server id=central> missing in settings.xml" >&2
+                        exit 1
+                    fi
+                    # GET /api/v1/publisher/deployments returns 404 on valid creds (Sonatype's
+                    # gateway routes only after auth) and 401 on invalid — the only zero-cost
+                    # auth probe the Portal exposes. 5xx is a transient outage (warn-only);
+                    # anything else surfaces as contract drift rather than silent success.
+                    CODE=$(curl -sS -o /dev/null -w '%{http_code}' \\
+                        -u "${CENTRAL_USER}:${CENTRAL_PASS}" \\
+                        https://central.sonatype.com/api/v1/publisher/deployments) || {
+                        echo "[cred-check] Sonatype Central Portal: curl failed (network/DNS)" >&2; exit 1
                     }
-                    if (env.SHOULD_BUILD_API == 'true') {
-                        echo "Releasing impl AND API in the same reactor (jakarta.faces-api ${env.RESOLVED_API_VERSION})."
-                    } else if (cfg.apiBranch != null) {
-                        echo "Impl-only release: impl/pom.xml's jakarta.faces-api dep is a GA version, so the API will not be rebuilt."
+                    case "${CODE}" in
+                        2*|404)  echo "[cred-check] Sonatype Central Portal: ok (${CODE})" ;;
+                        5*)      echo "[cred-check] Sonatype Central Portal: WARNING transient ${CODE}" >&2 ;;
+                        401|403) echo "[cred-check] Sonatype Central Portal: bad creds (${CODE})" >&2; exit 1 ;;
+                        *)       echo "[cred-check] Sonatype Central Portal: unexpected ${CODE}" >&2; exit 1 ;;
+                    esac
+                '''
+                // GitHub SSH push: --dry-run performs the full receive-pack handshake (incl. the
+                // write-permission check on protected refs) but transmits no objects and never
+                // creates the remote ref. Probes both mojarra.git and (when releasing the API)
+                // jakartaee/faces.git, so a missing/revoked write grant on either fails fast.
+                sshagent(credentials: ['github-bot-ssh']) {
+                    sh '#!/bin/bash -e\n' + KNOWN_HOSTS_INIT + '''
+                        git push --dry-run git@github.com:eclipse-ee4j/mojarra.git HEAD:refs/heads/__cred_check__
+                        echo "[cred-check] GitHub SSH push (mojarra): ok"
+                    '''
+                    script {
+                        if (env.SHOULD_BUILD_API == 'true') {
+                            dir('faces') {
+                                sh '''#!/bin/bash -e
+                                    git push --dry-run git@github.com:jakartaee/faces.git HEAD:refs/heads/__cred_check__
+                                    echo "[cred-check] GitHub SSH push (faces): ok"
+                                '''
+                            }
+                        }
                     }
+                }
+                // GitHub bot token: gh auth status calls /user under the hood, so it fails on an
+                // expired/revoked token. Same withCredentials shape Publish to GitHub uses later.
+                withCredentials([usernamePassword(credentialsId: 'github-bot',
+                                                  usernameVariable: 'GH_USER',
+                                                  passwordVariable: 'GH_TOKEN')]) {
+                    sh '#!/bin/bash -e\n' + GH_INSTALL + '''
+                        gh auth status
+                        echo "[cred-check] GitHub bot token: ok"
+                    '''
                 }
             }
         }
@@ -504,23 +588,38 @@ spec:
                     export JAVA_HOME="${TCK_JAVA_HOME}"
                     export PATH="${JAVA_HOME}/bin:${PATH}"
 
-                    rm -rf "faces-tck-${RESOLVED_TCK_VERSION}"
-                    mkdir -p download
-                    TCK_BUNDLE_NAME="jakarta-faces-tck-${RESOLVED_TCK_VERSION}"
-                    TCK_BUNDLE_DIR="faces-tck-${RESOLVED_TCK_VERSION}"
-                    TCK_URL="https://download.eclipse.org/jakartaee/faces/${RELEASE_LINE}/${TCK_BUNDLE_NAME}.zip"
+                    if [[ "${RESOLVED_TCK_VERSION}" == *-SNAPSHOT ]]; then
+                        # -SNAPSHOT: build the TCK directly from the faces submodule (already checked
+                        # out at faces/) instead of downloading a not-yet-published zip. Used while a
+                        # release line's TCK has not yet shipped. The submodule's tck/ runs standalone
+                        # (its parent is the faces repo top-level pom, which we don't need installed).
+                        if [ ! -d faces/tck ]; then
+                            echo "Cannot run -SNAPSHOT TCK: faces submodule (with tck/) is not checked out." >&2
+                            exit 1
+                        fi
+                        TCK_BUNDLE_DIR="faces"
+                        TCK_SOURCE="faces submodule @ $(cd faces && git rev-parse HEAD) (branch: ${API_BRANCH:-?})"
+                    else
+                        # Released TCK: download the published zip from download.eclipse.org.
+                        rm -rf "faces-tck-${RESOLVED_TCK_VERSION}"
+                        mkdir -p download
+                        TCK_BUNDLE_NAME="jakarta-faces-tck-${RESOLVED_TCK_VERSION}"
+                        TCK_BUNDLE_DIR="faces-tck-${RESOLVED_TCK_VERSION}"
+                        TCK_URL="https://download.eclipse.org/jakartaee/faces/${RELEASE_LINE}/${TCK_BUNDLE_NAME}.zip"
 
-                    wget -q "${TCK_URL}" -O "download/${TCK_BUNDLE_NAME}.zip"
-                    unzip -q -o "download/${TCK_BUNDLE_NAME}.zip"
+                        wget -q "${TCK_URL}" -O "download/${TCK_BUNDLE_NAME}.zip"
+                        unzip -q -o "download/${TCK_BUNDLE_NAME}.zip"
+                        TCK_SOURCE="${TCK_URL} (sha256 $(sha256sum "download/${TCK_BUNDLE_NAME}.zip" | awk '{print $1}'))"
 
-                    # Workaround for an upstream TCK packaging typo: tck/faces23/converter/pom.xml
-                    # declares <finalName>test-faces23-ajax</finalName>, colliding with the ajax
-                    # module's deploy and breaking Issue4070IT. Drop once a fixed TCK zip ships and
-                    # BRANCH_CONFIG.tckVersion is bumped past it.
-                    CONVERTER_POM="${TCK_BUNDLE_DIR}/tck/faces23/converter/pom.xml"
-                    if [ -f "${CONVERTER_POM}" ] && grep -q "<finalName>test-faces23-ajax</finalName>" "${CONVERTER_POM}"; then
-                        sed -i.bak 's|<finalName>test-faces23-ajax</finalName>|<finalName>test-faces23-converter</finalName>|' "${CONVERTER_POM}"
-                        echo "[tck-patch] fixed finalName typo in ${CONVERTER_POM}"
+                        # Workaround for an upstream TCK packaging typo: tck/faces23/converter/pom.xml
+                        # declares <finalName>test-faces23-ajax</finalName>, colliding with the ajax
+                        # module's deploy and breaking Issue4070IT. Drop once a fixed TCK zip ships and
+                        # BRANCH_CONFIG.tckVersion is bumped past it.
+                        CONVERTER_POM="${TCK_BUNDLE_DIR}/tck/faces23/converter/pom.xml"
+                        if [ -f "${CONVERTER_POM}" ] && grep -q "<finalName>test-faces23-ajax</finalName>" "${CONVERTER_POM}"; then
+                            sed -i.bak 's|<finalName>test-faces23-ajax</finalName>|<finalName>test-faces23-converter</finalName>|' "${CONVERTER_POM}"
+                            echo "[tck-patch] fixed finalName typo in ${CONVERTER_POM}"
+                        fi
                     fi
 
                     if [ -n "${GF_BUNDLE_URL}" ]; then
@@ -530,19 +629,29 @@ spec:
                             -DartifactId=glassfish -Dversion="${RESOLVED_GF_VERSION}" -Dpackaging=zip
                     fi
 
-                    # Failsafe gates on test failures via its own non-zero exit. Per-module
-                    # failsafe-summary.xml files are then aggregated below to render summary.txt
-                    # for the release archive.
+                    # Surface the exact TCK bundle source into run.log so post-run forensics don't
+                    # have to dig through the Jenkins console log to figure out which faces SHA (or
+                    # which downloaded zip's sha256) was actually built against.
+                    echo "[tck-bundle] ${TCK_SOURCE}" | tee -a "${WORKSPACE}/run.log"
+
+                    # Failsafe gates on test failures via its own non-zero exit; per-module
+                    # failsafe-summary.xml files are aggregated below into summary.txt.
                     cd "${TCK_BUNDLE_DIR}/tck"
-                    mvn ${MVN_EXTRA} clean install \\
+                    # -T / -Dgf.pool.size: parallel reactor with the gf-pool pre-provisioned to
+                    # match. Set per-line in BRANCH_CONFIG.threadCount (>1 only for TCKs with
+                    # gf-pool support; 4.x stays at 1 — single managed GlassFish per module).
+                    # env -u JAVA_TOOL_OPTIONS: strip the (intentionally empty) inherited var so
+                    # child JVMs don't print the "Picked up JAVA_TOOL_OPTIONS:" banner on each fork.
+                    env -u JAVA_TOOL_OPTIONS \\
+                    mvn ${MVN_EXTRA} -T ${TCK_THREAD_COUNT} clean install \\
                         ${SKIP_OLD_TCK_FLAG} -Dtest.selenium=${SELENIUM_ENABLED} \\
+                        -Dgf.pool.size=${TCK_THREAD_COUNT} \\
                         -Dwdm.cachePath=/home/jenkins/agent/caches/selenium \\
-                        -DskipAssembly=true -Pstaging,glassfish-ci-managed \\
+                        -DskipAssembly=true -Pstaging \\
                         -Dglassfish.version="${RESOLVED_GF_VERSION}" \\
                         -Dmojarra.version="${RELEASE_VERSION}" \\
-                        -Dfaces.version="${FACES_VERSION}" \\
-                        ${TCK_IT_TEST_FLAGS} \\
-                        ${TEST_RUN_FLAGS} \\
+                        -Dfaces.version="${IMPL_API_DEP_VERSION}" \\
+                        ${SMOKE_TEST_FLAGS} \\
                         | tee "${WORKSPACE}/run.log"
 
                     cd "${WORKSPACE}"
@@ -610,8 +719,11 @@ spec:
                         fi
                         echo "Faces TCK ${RESOLVED_TCK_VERSION}"
                         echo "Passed: ${PASSED}  Failed: ${FAILED}  Errors: ${ERRORS}"
-                        echo "TCK download: ${TCK_URL}"
-                        echo "SHA256 TCK : $(sha256sum download/${TCK_BUNDLE_NAME}.zip | awk '{print $1}')"
+                        echo "TCK source : ${TCK_SOURCE}"
+                        if [ -n "${TCK_URL:-}" ] && [ -f "download/${TCK_BUNDLE_NAME}.zip" ]; then
+                            echo "TCK download: ${TCK_URL}"
+                            echo "SHA256 TCK : $(sha256sum download/${TCK_BUNDLE_NAME}.zip | awk '{print $1}')"
+                        fi
                         echo "SHA256 IMPL: $(sha256sum ${TCK_BUNDLE_DIR}/tck/target/glassfish*/glassfish/modules/jakarta.faces.jar | awk '{print $1}')"
                         echo "JDK: $(java -version 2>&1 | head -1)"
                         echo "OS : $(lsb_release -ds 2>/dev/null || cat /etc/os-release | head -1)"
@@ -621,7 +733,8 @@ spec:
             }
             post {
                 always {
-                    archiveArtifacts artifacts: 'run.log, summary.txt', allowEmptyArchive: true, fingerprint: true
+                    archiveArtifacts artifacts: 'run.log, summary.txt',
+                                     allowEmptyArchive: true, fingerprint: true
                 }
             }
         }
@@ -760,12 +873,16 @@ spec:
                                         -f tag_name="${RELEASE_TAG}" -f target_commitish="${IMPL_BRANCH}" --jq .body)
                                 fi
 
+                                # Drop the noise bullets generated for prior squash-merged release PRs
+                                # (titled "<version> has been released"), which carry no real changelog value.
+                                GENERATED=$(echo "${GENERATED}" | grep -v "has been released" || true)
+
                                 {
-                                    echo "${RELEASE_VERSION} has been released"
+                                    echo "## ${RELEASE_VERSION} has been released"
                                     echo
-                                    echo "Maven Central: https://repo1.maven.org/maven2/org/glassfish/jakarta.faces/${RELEASE_VERSION}/"
+                                    echo "- Maven Central: https://repo1.maven.org/maven2/org/glassfish/jakarta.faces/${RELEASE_VERSION}/"
                                     if [ -n "${MILESTONE_NUMBER}" ]; then
-                                        echo "Milestone: https://github.com/${REPO_SLUG}/milestone/${MILESTONE_NUMBER}?closed=1"
+                                        echo "- Milestone: https://github.com/${REPO_SLUG}/milestone/${MILESTONE_NUMBER}?closed=1"
                                     fi
                                     echo
                                     echo "${GENERATED}"
@@ -827,31 +944,63 @@ def requireGaVersion(String paramName, String version, String expectedPrefix) {
     }
 }
 
-// Mirror of the TCK pom's `compute-csp-backport-flags` script (faces/tck/pom.xml, profile
-// glassfish-ci-managed). Returns the `-Dit.test=... -Dfailsafe.failIfNoSpecifiedTests=false`
-// flags when `version` falls in the CSP-backport range (4.0.17+), or "" otherwise.
-def cspBackportItTestFlags(String version) {
-    def m = (version =~ /^(\d+)\.(\d+)\.(\d+)$/)
-    if (!m.matches()) return ''
-    def maj = m[0][1].toInteger()
-    def min = m[0][2].toInteger()
-    def inc = m[0][3].toInteger()
-    if (maj == 4 && min == 0 && inc >= 17) {
-        return '-Dit.test=**/*IT.java,!**/Issue2439IT.java,!**/Issue2674IT.java,!**/Issue4331IT.java,!**/Spec1238IT.java,!**/CommandLinkTestsIT.java -Dfailsafe.failIfNoSpecifiedTests=false'
+// Compose the human-readable banner lines printed at the end of the Prepare stage. Always-on lines
+// describe the artifacts being released and the build/test environment; conditional lines call out
+// active toggles (DRY_RUN, SMOKE_TEST, SKIP_OLD_TCK, SKIP_DEPLOY, RUN_TCK off).
+def buildBannerLines(params, env, cfg) {
+    def lines = []
+    if (env.IS_MILESTONE == 'true') {
+        lines << "Mojarra ${env.RELEASE_VERSION} milestone (snapshot ${env.SNAPSHOT_VERSION} left untouched)"
+    } else {
+        lines << "Mojarra ${env.RELEASE_VERSION} release (snapshot ${env.SNAPSHOT_VERSION}, next ${env.NEXT_VERSION})"
     }
-    return ''
+    if (env.SHOULD_BUILD_API == 'true') {
+        lines << "+ jakarta.faces-api ${env.RESOLVED_API_VERSION} (released alongside in same reactor)"
+    } else if (cfg.apiBranch != null) {
+        lines << "(impl-only: jakarta.faces-api dep is a GA version, API will not be rebuilt)"
+    }
+    def jdkLabel = (env.RESOLVED_JDK == env.RESOLVED_TCK_JDK) \
+        ? "JDK${env.RESOLVED_JDK}" \
+        : "JDK${env.RESOLVED_JDK} (build) / JDK${env.RESOLVED_TCK_JDK} (TCK)"
+    def tckBannerLabel = params.RUN_TCK
+        ? ", Faces TCK ${env.RESOLVED_TCK_VERSION}" + (env.TCK_THREAD_COUNT == '1' ? '' : " (-T ${env.TCK_THREAD_COUNT})")
+        : ''
+    lines << "${jdkLabel}, GlassFish ${env.RESOLVED_GF_VERSION}${tckBannerLabel}"
+    if (!params.RUN_TCK)    lines << "- RUN_TCK off: TCK skipped entirely"
+    if (params.SKIP_OLD_TCK && params.RELEASE_LINE.startsWith('4.')) lines << "- SKIP_OLD_TCK: old-tck JavaTest modules excluded from reactor"
+    if (params.SMOKE_TEST)  lines << "- SMOKE_TEST: smoke-test subset only (NOT TCK-conformant)"
+    if (params.DRY_RUN)     lines << "- DRY_RUN: skips Maven Central deploy and GitHub push"
+    if (params.SKIP_DEPLOY) lines << "- SKIP_DEPLOY: skips deploy but still pushes branch/tag and creates GitHub release"
+    return lines
 }
 
-// Read impl/pom.xml's jakarta.faces:jakarta.faces-api dependency version literal. Returns "" if
-// the dep is not declared or if its <version> is null (e.g. managed via dependencyManagement),
-// letting the caller emit a clear error. Uses readMavenPom (pre-approved by Jenkins
-// script-security) instead of XmlSlurper, which would require manual approval.
-def readImplApiDepVersion() {
-    def pom = readMavenPom(file: 'impl/pom.xml')
-    for (dep in pom.dependencies) {
-        if (dep.groupId == 'jakarta.faces' && dep.artifactId == 'jakarta.faces-api') {
-            return dep.version ?: ''
-        }
+// Render banner lines into a multi-line string with an ASCII border, padded to the longest line.
+def renderBanner(List<String> lines) {
+    int width = 0
+    for (line in lines) {
+        if (line.length() > width) width = line.length()
     }
-    return ''
+    def border = '*' * (width + 4)
+    def out = new StringBuilder('\n').append(border).append('\n')
+    for (line in lines) {
+        out.append("* ").append(line.padRight(width)).append(" *\n")
+    }
+    out.append(border)
+    return out.toString()
+}
+
+// Resolve the jakarta.faces:jakarta.faces-api version that impl/pom.xml effectively depends on,
+// by asking Maven via dependency:tree. Using mvn rather than parsing impl/pom.xml directly
+// handles 4.x where the version lives in a parent pom's dependencyManagement (the literal
+// <version> child is absent on impl/pom.xml itself). Invoked WITHOUT -Papi so the api
+// submodule's local -SNAPSHOT (5.0+) cannot override the literal version impl/pom.xml pins.
+def readImplApiDepVersion() {
+    return sh(returnStdout: true, script: '''#!/bin/bash -e
+        OUT=$(mktemp)
+        trap 'rm -f "$OUT"' EXIT
+        mvn -pl impl -B -q dependency:tree \\
+            -Dincludes=jakarta.faces:jakarta.faces-api \\
+            -DoutputFile="$OUT" -DoutputType=text >/dev/null
+        grep -oE 'jakarta\\.faces:jakarta\\.faces-api:jar:[^:]+' "$OUT" | head -1 | awk -F: '{print $4}'
+    ''').trim()
 }
