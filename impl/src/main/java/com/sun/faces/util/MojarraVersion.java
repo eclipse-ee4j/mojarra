@@ -33,13 +33,13 @@ public final class MojarraVersion {
     /** Spec version as {@code major.minor} (e.g. {@code "4.0"}); {@code null} if {@code mojarra.properties} could not be loaded. */
     public static final String SPECIFICATION_VERSION;
 
-    /** Full implementation version (e.g. {@code "4.0.18-SNAPSHOT"}); {@code null} if {@code mojarra.properties} could not be loaded. */
+    /** Full implementation version (e.g. {@code "4.0.19"}); {@code null} if {@code mojarra.properties} could not be loaded. */
     public static final String IMPLEMENTATION_VERSION;
 
     /** Spec version as packed int: {@code major * 10000 + minor * 100} (e.g. {@code 40000} for {@code "4.0"}). */
     public static final int SPECIFICATION_VERSION_INT;
 
-    /** Implementation incremental version as int (e.g. {@code 18} for {@code "4.0.18-SNAPSHOT"}). */
+    /** Implementation incremental version as int (e.g. {@code 18} for {@code "4.0.19"}). */
     public static final int IMPLEMENTATION_VERSION_INT;
 
     private static final String PROPERTIES_RESOURCE = "/com/sun/faces/mojarra.properties";
