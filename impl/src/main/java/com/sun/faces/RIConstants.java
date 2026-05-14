@@ -116,6 +116,14 @@ public class RIConstants {
     public static final String FACES_CONFIG_VERSION = FACES_PREFIX + "facesConfigVersion";
 
     /**
+     * App map key under which a {@code Map<String, Object>} exposing {@code version} /
+     * {@code specversion} / {@code implversion} of this Mojarra build is published so EL
+     * inside resources (e.g. {@code faces.js}) can read it via
+     * {@code #{applicationScope["com.sun.faces.mojarraVersion"]}}.
+     */
+    public static final String MOJARRA_VERSION = FACES_PREFIX + "mojarraVersion";
+
+    /**
      * Convenience key to temporarily store the set of annotated classes in the servlet context.
      */
     public static final String ANNOTATED_CLASSES = FACES_PREFIX + "AnnotatedClasses";

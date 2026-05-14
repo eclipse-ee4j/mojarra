@@ -235,14 +235,18 @@
                 </includes>
                 <excludes>
                     <exclude>**/LogStrings*.properties</exclude>
+                    <exclude>**/mojarra.properties</exclude>
+                    <exclude>**/faces-uncompressed.js</exclude>
                 </excludes>
             </resource>
-            <!-- Sets the Main Faces version into the log strings -->
+            <!-- Sets the Mojarra version into the log strings, mojarra.properties (read by MojarraVersion at runtime), and the @version JSDoc tag of faces-uncompressed.js. -->
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
                 <includes>
                     <include>**/LogStrings*.properties</include>
+                    <include>**/mojarra.properties</include>
+                    <include>**/faces-uncompressed.js</include>
                 </includes>
             </resource>
         </resources>
@@ -287,7 +291,7 @@
                 <executions>
                     <execution>
                         <id>minify-faces-js</id>
-                        <phase>generate-sources</phase>
+                        <phase>process-classes</phase>
                         <goals>
                             <goal>compress</goal>
                         </goals>
@@ -297,7 +301,7 @@
                             <aggregations>
                                 <aggregation>
                                     <includes>
-                                        <include>${project.basedir}/src/main/resources/META-INF/resources/jakarta.faces/faces-uncompressed.js</include>
+                                        <include>${project.build.outputDirectory}/META-INF/resources/jakarta.faces/faces-uncompressed.js</include>
                                     </includes>
                                     <output>${project.build.directory}/generated-resources/yui/faces.js</output>
                                 </aggregation>
@@ -306,30 +310,7 @@
                                 <include>*.js</include>
                             </includes>
                             <sourceDirectory>${project.build.directory}/generated-resources/yui</sourceDirectory>
-                            <outputDirectory>${project.build.directory}/generated-resources/yui/META-INF/resources/jakarta.faces/</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Adds the paths where the source and resources generated above was stored -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.3.0</version>
-                <executions>
-                    <execution>
-                        <id>generate-resources</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>add-resource</goal>
-                        </goals>
-                        <configuration>
-                            <resources>
-                                <resource>
-                                    <directory>${project.build.directory}/generated-resources/yui</directory>
-                                </resource>
-                            </resources>
+                            <outputDirectory>${project.build.outputDirectory}/META-INF/resources/jakarta.faces/</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>

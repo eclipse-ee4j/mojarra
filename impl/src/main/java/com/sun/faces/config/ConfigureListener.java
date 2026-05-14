@@ -20,6 +20,7 @@ import static com.sun.faces.RIConstants.ANNOTATED_CLASSES;
 import static com.sun.faces.RIConstants.ERROR_PAGE_PRESENT_KEY_NAME;
 import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
 import static com.sun.faces.RIConstants.FACES_SERVLET_REGISTRATION;
+import static com.sun.faces.RIConstants.MOJARRA_VERSION;
 import static com.sun.faces.config.InitFacesContext.getInitContextServletContextMap;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableLazyBeanValidation;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableThreading;
@@ -69,6 +70,7 @@ import com.sun.faces.el.ELContextImpl;
 import com.sun.faces.push.WebsocketEndpoint;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MojarraThreadFactory;
+import com.sun.faces.util.MojarraVersion;
 import com.sun.faces.util.ReflectionUtils;
 import com.sun.faces.util.Timer;
 import com.sun.faces.util.Util;
@@ -128,6 +130,8 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         LOGGER.log(FINE, () -> format("ConfigureListener.contextInitialized({0})", servletContext.getContextPath()));
 
         webConfig = WebConfiguration.getInstance(servletContext);
+
+        servletContext.setAttribute(MOJARRA_VERSION, MojarraVersion.toMap());
 
         // Check to see if the FacesServlet is present in the
         // web.xml. If it is, perform faces configuration as normal,

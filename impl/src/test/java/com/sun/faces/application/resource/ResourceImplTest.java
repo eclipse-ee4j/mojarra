@@ -34,6 +34,7 @@ import org.junit.jupiter.api.Test;
 import com.sun.faces.junit.JUnitFacesTestCaseBase;
 import com.sun.faces.mock.MockApplication;
 import com.sun.faces.mock.MockFacesMappingSupport;
+import com.sun.faces.util.MojarraVersion;
 
 import jakarta.faces.context.FacesContext;
 
@@ -136,7 +137,18 @@ public class ResourceImplTest extends JUnitFacesTestCaseBase {
         configureRequest(MockFacesMappingSupport.mapping(EXACT, "/exact", "exact"), "/exact", "*.jsf", "/faces/*");
         String exactRequestPath = resource.getRequestPath();
 
-        assertEquals("/app/jakarta.faces.resource/faces.js.jsf?ln=jakarta.faces&stage=Development", exactRequestPath);
+        String versionParam = MojarraVersion.IMPLEMENTATION_VERSION != null ? "&v=" + MojarraVersion.IMPLEMENTATION_VERSION : "";
+        assertEquals("/app/jakarta.faces.resource/faces.js.jsf?ln=jakarta.faces" + versionParam + "&stage=Development", exactRequestPath);
+    }
+
+    @Test
+    public void getRequestPathDoesNotAppendImplVersionForOtherLibrariesWithoutVersion() {
+        ResourceImpl resource = createResource("theme.css", "layout", null, null, null, null);
+
+        configureRequest(MockFacesMappingSupport.mapping(EXACT, "/exact", "exact"), "/exact", "*.jsf", "/faces/*");
+        String exactRequestPath = resource.getRequestPath();
+
+        assertEquals("/app/jakarta.faces.resource/theme.css.jsf?ln=layout", exactRequestPath);
     }
 
     @Test
