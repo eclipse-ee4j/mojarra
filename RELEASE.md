@@ -29,9 +29,9 @@ In the example below we assume releasing **Mojarra 4.0.17**.
    - `RUN_TCK` — uncheck to skip the TCK stage. Default: checked.
    - `SKIP_OLD_TCK` — check to skip the old-tck JavaTest modules on 4.0/4.1 (excluded from the reactor entirely via `-pl`; cuts nearly 3 hours off the TCK run). No-op on 5.0+ where these modules no longer exist. The old-tck-selenium failsafe-driven modules are unaffected. Default: unchecked.
    - `DRY_RUN` — check to do everything except Maven Central deploy and GitHub push. Default: checked. Useful for rehearsals.
-   - `TEST_RUN` — only meaningful as a sub-toggle of `DRY_RUN`: filters the TCK to a tiny representative subset (one failsafe IT + one sigtest IT + one old-tck-selenium IT, plus one old-tck JavaTest path when `SKIP_OLD_TCK` is unchecked). Drops run time to ~10 min. Hard-gated: silently ignored when `DRY_RUN` is unchecked, since the run is not TCK-conformant and must never produce a published release. Default: unchecked.
+   - `SMOKE_TEST` — only meaningful as a sub-toggle of `DRY_RUN`: filters the TCK to a tiny representative subset (one failsafe IT + one sigtest IT + one old-tck-selenium IT, plus one old-tck JavaTest path when `SKIP_OLD_TCK` is unchecked). Drops run time to ~10 min. Hard-gated: silently ignored when `DRY_RUN` is unchecked, since the run is not TCK-conformant and must never produce a published release. Default: unchecked.
 5. Click **Build**.
-6. Wait for the run to finish. The build description shows a one-line summary, e.g. `4.0 → 4.0.17 (impl-only) (JDK11, GF 7.0.25, TCK 4.0.3)`. Optional toggles surface as comma-separated suffixes (`, old-TCK skipped`, `, test-run`, `, milestone`, `, dry-run`).
+6. Wait for the run to finish. The build description shows a one-line summary, e.g. `4.0 → 4.0.17 (impl-only) (JDK11, GF 7.0.25, TCK 4.0.3)`. Optional toggles surface as comma-separated suffixes (`, old-TCK skipped`, `, smoke-test`, `, milestone`, `, dry-run`).
 7. On success, verify:
    - Artifact in [Maven Central](https://repo1.maven.org/maven2/org/glassfish/jakarta.faces/) (may take up to an hour to surface).
    - Release branch `4.0.17` and tag `4.0.17-RELEASE` on [GitHub](https://github.com/eclipse-ee4j/mojarra/branches/active) (GA only; milestone runs only push the tag). Once everything checks out, the release branch can be deleted (the squash-merge doesn't auto-delete it).
@@ -43,11 +43,11 @@ In the example below we assume releasing **Mojarra 4.0.17**.
 
 Maintained in `BRANCH_CONFIG` at the top of the `Jenkinsfile`. Adding a new release line means adding one entry there. Current entries:
 
-| Release | Impl branch | API branch  | Build JDK | TCK JDK | API version | TCK version | GF version | Selenium |
-| ------- | ----------- | ----------- | --------- | ------- | ----------- | ----------- | ---------- | -------- |
-| `4.0`   | `4.0`       | — (bundled) | 11        | 11      | 4.0.1       | 4.0.3       | 7.0.25     | off      |
-| `4.1`   | `4.1`       | — (bundled) | 17        | 21      | 4.1.0       | 4.1.0       | 8.0.1      | on       |
-| `5.0`   | `master`    | `5.0`       | 17        | 21      | 5.0.0       | 5.0.0       | 9.0.0-M2   | on       |
+| Release | Impl branch | API branch  | Build JDK | TCK JDK | API version | TCK version | GF version | Selenium | Threads |
+| ------- | ----------- | ----------- | --------- | ------- | ----------- | ----------- | ---------- | -------- | ------- |
+| `4.0`   | `4.0`       | — (bundled) | 11        | 11      | 4.0.1       | 4.0.3       | 7.0.25     | off      | 1       |
+| `4.1`   | `4.1`       | — (bundled) | 17        | 21      | 4.1.0       | 4.1.0       | 8.0.0-M6   | on       | 1       |
+| `5.0`   | `master`    | `5.0`       | 17        | 21      | 5.0.0       | 5.0.0       | 9.0.0-M2   | on       | 4       |
 
 The `Release` column is the release line dropdown value. The mojarra git branch holding the impl source is the next column over — `master` for the 5.0 line because the head of mojarra development sits there, not on a `5.x` branch.
 
@@ -55,11 +55,13 @@ The `Release` column is the release line dropdown value. The mojarra git branch 
 
 `Selenium` is `seleniumEnabled` in the config: `on` means BaseITNG runs against the agent pod's Chrome via `-Dtest.selenium=true`; `off` means the BaseITNG suite self-skips because the TCK pins a CDP major (e.g. 4.0's v108) that's outside Selenium's fudge range against current Chrome — browser-driven tests then fall back to HtmlUnit only.
 
+`Threads` is `threadCount` in the config — the Maven `-T` value for the TCK reactor. Set `>1` only on release lines whose TCK ships `gf-pool` (5.0+) and can therefore share GlassFish across parallel module builds; 4.x TCKs start a single managed GlassFish per module and must stay at `1`. The build description appends e.g. ` -T4` to the TCK label whenever this is `>1`.
+
 ## Troubleshooting
 
 - **Release branch / tag already exists on origin.** The pipeline fails fast at the `Build & install` stage. Bump `pom.xml` (or set `MILESTONE_VERSION` to a fresh suffix) and re-run; Maven Central is immutable, so reusing a published version is never the right call.
 - **TCK failures.** The TCK stage fails on the failsafe exit code; Maven Central deploy and GitHub push are skipped, so no external state was published. `run.log` and `summary.txt` are archived for diagnosis.
 - **Java version mismatch on a developer rerun.** The pipeline picks the JDK from `BRANCH_CONFIG` (or the `JDK` / `TCK_JDK` overrides). If you're reproducing a failure locally, match those.
 - **Need to rehearse without publishing.** `DRY_RUN=true` (the default) does the full build, tagging, and TCK run, but skips the Maven Central deploy and the `git push origin` of the release branch / tag. The conflict check still runs against origin so a stale tag fails fast instead of after burning the whole TCK.
-- **Iterating on the pipeline itself.** Combine `DRY_RUN=true` with `TEST_RUN=true` to run a tiny representative TCK subset, dropping run time to ~10 min. The pipeline still does the full build, tagging, and report aggregation, so changes to those steps are exercised end-to-end without burning the full TCK. `TEST_RUN` is silently ignored without `DRY_RUN`, so it can't accidentally release a non-conformant build.
+- **Iterating on the pipeline itself.** Combine `DRY_RUN=true` with `SMOKE_TEST=true` to run a tiny representative TCK subset, dropping run time to ~10 min. The pipeline still does the full build, tagging, and report aggregation, so changes to those steps are exercised end-to-end without burning the full TCK. `SMOKE_TEST` is silently ignored without `DRY_RUN`, so it can't accidentally release a non-conformant build.
 - **Releasing a milestone or RC.** Set `MILESTONE_VERSION=M1` (or `M2` / `RC1` / etc.). The version becomes `<pom-base>-<MILESTONE_VERSION>` (e.g. `5.0.0-M2`), tagged exactly that on both `mojarra` and `jakartaee/faces`, with both impl and API published to Maven Central at that version. The source branch is left untouched — no PR-merge, no milestone close/open, no GitHub release, no snapshot bump.
