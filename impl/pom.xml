@@ -282,7 +282,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Minifies faces.js via Terser, and runs JavaScript unit tests via Jest. -->
+            <!-- Bundles faces.ts via Rollup, minifies via Terser, and runs JavaScript unit tests via Jest. -->
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
@@ -290,7 +290,7 @@
                 <configuration>
                     <nodeVersion>v22.22.0</nodeVersion>
                     <installDirectory>${project.build.directory}/frontend</installDirectory>
-                    <workingDirectory>${project.basedir}/src/main/js</workingDirectory>
+                    <workingDirectory>${project.basedir}/src/main/ts</workingDirectory>
                 </configuration>
                 <executions>
                     <execution>

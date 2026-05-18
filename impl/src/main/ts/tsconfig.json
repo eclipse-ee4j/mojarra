@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "target": "ES2020",
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
+        "lib": ["ES2020", "DOM"],
+        "strict": false,
+        "noImplicitAny": false,
+        "strictNullChecks": false,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "isolatedModules": true,
+        "noEmit": true,
+        "allowSyntheticDefaultImports": true
+    },
+    "include": ["index.ts", "faces.ts", "mojarra.ts", "faces/**/*.ts", "types.d.ts"]
+}

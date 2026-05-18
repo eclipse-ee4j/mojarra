@@ -10,7 +10,7 @@ declare global {
     var mojarra: Record<string, unknown>;
 }
 
-export const FACES_JS_UNCOMPRESSED = path.resolve(__dirname, "../../main/resources/META-INF/resources/jakarta.faces/faces-uncompressed.js");
+export const FACES_JS_UNCOMPRESSED = path.resolve(__dirname, "../../../target/classes/META-INF/resources/jakarta.faces/faces-uncompressed.js");
 export const FACES_JS = path.resolve(__dirname, "../../../target/classes/META-INF/resources/jakarta.faces/faces.js");
 
 /**
