@@ -320,8 +320,11 @@ spec:
                     def cfg = BRANCH_CONFIG[params.RELEASE_LINE]
 
                     // Read snapshot version from pom.xml; the release version is always derived from it.
-                    def snapshot = sh(returnStdout: true, script:
-                        "mvn -B ${env.HELP_PLUGIN}:evaluate -Dexpression=project.version -q -DforceStdout").trim()
+                    // -Doutput (over returnStdout): help:evaluate writes the bare value to the file, while
+                    // Maven's own logging — including [ERROR] on a resolution failure — stays on the
+                    // console instead of being captured into the discarded-on-throw return value.
+                    sh "mvn -B ${env.HELP_PLUGIN}:evaluate -Dexpression=project.version -q -Doutput=pom-version.txt"
+                    def snapshot = readFile('pom-version.txt').trim()
                     if (!(snapshot ==~ /.*-SNAPSHOT$/)) {
                         error "Top-level pom version '${snapshot}' is not a -SNAPSHOT; refusing to release."
                     }
@@ -388,8 +391,8 @@ spec:
 
                     // Resolve API_RELEASE_VERSION from faces/api/pom.xml when releasing the API.
                     if (env.SHOULD_BUILD_API == 'true') {
-                        def apiSnapshot = sh(returnStdout: true, script:
-                            "mvn -B -f faces/api/pom.xml ${env.HELP_PLUGIN}:evaluate -Dexpression=project.version -q -DforceStdout").trim()
+                        sh "mvn -B -f faces/api/pom.xml ${env.HELP_PLUGIN}:evaluate -Dexpression=project.version -q -Doutput=api-pom-version.txt"
+                        def apiSnapshot = readFile('api-pom-version.txt').trim()
                         if (!(apiSnapshot ==~ /.*-SNAPSHOT$/)) {
                             error "faces api pom version '${apiSnapshot}' is not a -SNAPSHOT; refusing to release."
                         }
