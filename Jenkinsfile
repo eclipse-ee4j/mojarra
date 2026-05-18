@@ -432,11 +432,18 @@ spec:
                 // for Central deploys; the curl probe below is the only zero-cost auth check.
                 sh '''#!/bin/bash -e
                     # Decrypt <server id=central> creds from the mounted settings.xml via
-                    # SecDispatcher. Temp file is mode 600 + trap-deleted so the cleartext never
-                    # survives the step; stdout is silenced so it never hits the log.
-                    EFF=$(mktemp); chmod 600 "${EFF}"
-                    trap 'rm -f "${EFF}"' EXIT
-                    mvn -q -B ${HELP_PLUGIN}:effective-settings -DshowPasswords=true -Doutput="${EFF}" >/dev/null
+                    # SecDispatcher. Temp files are mode 600 + trap-deleted so neither the
+                    # cleartext settings nor Maven's output survives the step. Maven logs to
+                    # stdout, so its output is captured to a file (-DshowPasswords=true would
+                    # otherwise risk leaking decrypted creds into the build log); it is printed
+                    # only on failure, where the goal aborts before emitting the settings dump.
+                    EFF=$(mktemp); LOG=$(mktemp); chmod 600 "${EFF}" "${LOG}"
+                    trap 'rm -f "${EFF}" "${LOG}"' EXIT
+                    if ! mvn -q -B ${HELP_PLUGIN}:effective-settings -DshowPasswords=true -Doutput="${EFF}" >"${LOG}" 2>&1; then
+                        echo "[cred-check] mvn effective-settings failed:" >&2
+                        cat "${LOG}" >&2
+                        exit 1
+                    fi
                     # Split on opening <server> tags, keep the block whose id is "central", then
                     # pluck the inner text of <username>/<password>. \\K resets the match start so
                     # only the inner text is captured (avoids greedy-.* corner cases).
