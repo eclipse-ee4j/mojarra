@@ -999,18 +999,21 @@ def renderBanner(List<String> lines) {
     return out.toString()
 }
 
-// Resolve the jakarta.faces:jakarta.faces-api version that impl/pom.xml effectively depends on,
-// by asking Maven via dependency:tree. Using mvn rather than parsing impl/pom.xml directly
-// handles 4.x where the version lives in a parent pom's dependencyManagement (the literal
-// <version> child is absent on impl/pom.xml itself). Invoked WITHOUT -Papi so the api
+// Resolve the jakarta.faces:jakarta.faces-api version that impl/pom.xml effectively depends on.
+// help:effective-pom applies inheritance and interpolation, so the resolved <version> is present
+// even when it comes from a parent pom's dependencyManagement rather than a literal child of
+// impl/pom.xml. effective-pom builds only the project model and resolves no dependency artifacts,
+// so a milestone dependency carrying an unpublished -SNAPSHOT parent cannot break this read --
+// unlike dependency:tree, which resolves the whole graph. Invoked WITHOUT -Papi so the api
 // submodule's local -SNAPSHOT (5.0+) cannot override the literal version impl/pom.xml pins.
 def readImplApiDepVersion() {
     return sh(returnStdout: true, script: '''#!/bin/bash -e
-        OUT=$(mktemp)
-        trap 'rm -f "$OUT"' EXIT
-        mvn -pl impl -B -q dependency:tree \\
-            -Dincludes=jakarta.faces:jakarta.faces-api \\
-            -DoutputFile="$OUT" -DoutputType=text >/dev/null
-        grep -oE 'jakarta\\.faces:jakarta\\.faces-api:jar:[^:]+' "$OUT" | head -1 | awk -F: '{print $4}'
+        EFF=$(mktemp)
+        trap 'rm -f "$EFF"' EXIT
+        # Maven logs to stdout; route it to stderr so [ERROR] on failure reaches the console
+        # without polluting the version string captured by returnStdout.
+        mvn -pl impl -B -q ${HELP_PLUGIN}:effective-pom -Doutput="$EFF" 1>&2
+        awk 'BEGIN{RS="<dependency>"} /<groupId>jakarta\\.faces<\\/groupId>/ && /<artifactId>jakarta\\.faces-api<\\/artifactId>/' "$EFF" \\
+            | grep -oP '<version>\\K[^<]+' | head -1
     ''').trim()
 }
