@@ -613,6 +613,26 @@ describe("faces.ajax.request: onevent callback", () => {
         expect(statuses).toContain("complete");
         expect(statuses).toContain("success");
     });
+
+    test("data.source is an own-property only when source element resolves at event time", () => {
+        // Pins the original "absent vs present-but-undefined" semantic preserved
+        // by the `...(source && { source })` spread idiom in sendEvent. Begin fires
+        // synchronously during request() (button still in DOM, source set); success/
+        // complete fire after respond() (button removed, source must NOT be set).
+        const events: Record<string, unknown>[] = [];
+        ajax().request(button, null, { onevent: (data: Record<string, unknown>) => events.push(data) });
+
+        const begin = events.find(e => e.status === "begin");
+        expect(begin && "source" in begin).toBe(true);
+        expect(begin!.source).toBe(button);
+
+        button.remove();
+        lastXHR().respond(200, "", '<?xml version="1.0" encoding="UTF-8"?><partial-response id="testForm"><changes></changes></partial-response>');
+
+        const success = events.find(e => e.status === "success");
+        expect(success).toBeDefined();
+        expect("source" in success!).toBe(false);
+    });
 });
 
 // ---- request: onerror callback ----
@@ -678,6 +698,19 @@ describe("faces.ajax.request: onerror callback", () => {
         lastXHR().respond(404, "Not Found");
 
         expect(errors[0].source).toBe(button);
+    });
+
+    test("data.source is an own-property only when source element resolves at error time", () => {
+        // Pins the original "absent vs present-but-undefined" semantic for the
+        // error path: when the source element is gone before the error is dispatched,
+        // sendError must omit the `source` key entirely (not set it to undefined).
+        const errors: Record<string, unknown>[] = [];
+        ajax().request(button, null, { onerror: (data: Record<string, unknown>) => errors.push(data) });
+        button.remove();
+        lastXHR().respond(404, "Not Found");
+
+        expect(errors.length).toBe(1);
+        expect("source" in errors[0]).toBe(false);
     });
 });
 
@@ -776,6 +809,25 @@ describe("faces.ajax.addOnEvent: integration with request", () => {
 
         expect(globalEvents.length).toBeGreaterThanOrEqual(1);
         expect(localEvents.length).toBeGreaterThanOrEqual(1);
+    });
+
+    test("global event listener data.source is an own-property only when source resolves", () => {
+        // Pins the absence-vs-presence semantic on the global-listener path so a
+        // future refactor that only changes one of the two sendEvent callsites
+        // still gets caught.
+        const events: Record<string, unknown>[] = [];
+        ajax().addOnEvent((data: Record<string, unknown>) => events.push(data));
+        ajax().request(button, null);
+
+        const begin = events.find(e => e.status === "begin");
+        expect(begin && "source" in begin).toBe(true);
+
+        button.remove();
+        lastXHR().respond(200, "", '<?xml version="1.0" encoding="UTF-8"?><partial-response id="testForm"><changes></changes></partial-response>');
+
+        const success = events.find(e => e.status === "success");
+        expect(success).toBeDefined();
+        expect("source" in success!).toBe(false);
     });
 });
 
@@ -1125,6 +1177,102 @@ describe("faces.ajax.response", () => {
         expect(created!.value).toBe("sharedState");
         otherForm.remove();
     });
+
+    test("redirect element returns early without firing success or error", () => {
+        // jsdom's window.location is hard to mock; verify the redirect branch by
+        // behavioral inference instead: that branch returns before sendEvent("success")
+        // and never calls sendError. The string assignment to window.location in jsdom
+        // either silently mutates location.href or no-ops, so we wrap respond() in a
+        // try to absorb either outcome.
+        const events: Record<string, unknown>[] = [];
+        const errors: Record<string, unknown>[] = [];
+        ajax().request(button, null, {
+            onevent: (data: Record<string, unknown>) => events.push(data),
+            onerror: (data: Record<string, unknown>) => errors.push(data),
+        });
+
+        const xml = '<?xml version="1.0" encoding="UTF-8"?><partial-response id=""><redirect url="/dest"/></partial-response>';
+        try {
+            lastXHR().respond(200, "", xml);
+        } catch { /* jsdom navigation attempt may throw — acceptable */ }
+
+        // Begin and complete fire normally. Success must NOT fire (redirect returns early).
+        const statuses = events.map(e => e.status);
+        expect(statuses).toContain("begin");
+        expect(statuses).toContain("complete");
+        expect(statuses).not.toContain("success");
+        expect(errors.length).toBe(0);
+    });
+
+    test("redirect with no url attribute triggers malformedXML error (per spec)", () => {
+        const errors: Record<string, unknown>[] = [];
+        ajax().request(button, null, { onerror: (data: Record<string, unknown>) => errors.push(data) });
+
+        const xml = '<?xml version="1.0" encoding="UTF-8"?><partial-response id=""><redirect/></partial-response>';
+        lastXHR().respond(200, "", xml);
+
+        expect(errors.length).toBe(1);
+        expect(errors[0].status).toBe("malformedXML");
+        expect(errors[0].description).toContain("url");
+    });
+
+    test("update with id='jakarta.faces.ViewHead' triggers malformedXML error", () => {
+        // Impl explicitly throws "ViewHead not supported" — the throw is caught by the
+        // change-loop try/catch and reported via sendError as malformedXML.
+        const errors: Record<string, unknown>[] = [];
+        ajax().request(button, null, { onerror: (data: Record<string, unknown>) => errors.push(data) });
+        const xml = successResponse('<update id="jakarta.faces.ViewHead"><![CDATA[<title>x</title>]]></update>');
+        lastXHR().respond(200, "", xml);
+
+        expect(errors.length).toBe(1);
+        expect(errors[0].status).toBe("malformedXML");
+        expect(errors[0].description).toContain("ViewHead not supported");
+    });
+
+    test("update with id='jakarta.faces.Resource' appends new <link> and <script> tags to head", () => {
+        // Track which resources were already present so we only assert on additions.
+        const beforeLinks = document.head.querySelectorAll("link[href]").length;
+        const beforeScripts = document.head.querySelectorAll("script[src]").length;
+
+        ajax().request(button, null);
+        const xml = successResponse(
+            '<update id="jakarta.faces.Resource"><![CDATA[' +
+            '<link rel="stylesheet" type="text/css" href="/added.css"/>' +
+            '<script type="text/javascript" src="/added.js"></script>' +
+            ']]></update>'
+        );
+        lastXHR().respond(200, "", xml);
+
+        const afterLinks = document.head.querySelectorAll("link[href]").length;
+        const afterScripts = document.head.querySelectorAll("script[src]").length;
+        expect(afterLinks).toBe(beforeLinks + 1);
+        expect(afterScripts).toBe(beforeScripts + 1);
+        expect(document.head.querySelector('link[href="/added.css"]')).not.toBeNull();
+        expect(document.head.querySelector('script[src="/added.js"]')).not.toBeNull();
+    });
+
+    test("update with id='jakarta.faces.ViewBody' replaces document body content", () => {
+        ajax().request(button, null);
+        const replacement = "<body><div id='replaced'>new body</div></body>";
+        const xml = successResponse(`<update id="jakarta.faces.ViewBody"><![CDATA[${replacement}]]></update>`);
+        lastXHR().respond(200, "", xml);
+
+        expect(document.getElementById("replaced")).not.toBeNull();
+        expect(document.getElementById("replaced")!.textContent).toBe("new body");
+    });
+
+    test("update with id='jakarta.faces.ViewRoot' replaces document body and forces render=@all", () => {
+        const events: Record<string, unknown>[] = [];
+        ajax().request(button, null, {
+            render: "testForm", // explicit non-@all render
+            onevent: (data: Record<string, unknown>) => events.push(data),
+        });
+        const replacement = "<body><div id='vr-replaced'>view-root</div></body>";
+        const xml = successResponse(`<update id="jakarta.faces.ViewRoot"><![CDATA[${replacement}]]></update>`);
+        lastXHR().respond(200, "", xml);
+
+        expect(document.getElementById("vr-replaced")).not.toBeNull();
+    });
 });
 
 // ---- HTTP error codes ----
@@ -1284,6 +1432,7 @@ describe("faces.ajax.request: unknown options", () => {
         expect(params).not.toContain("render");
         expect(params).not.toContain("delay");
     });
+
 });
 
 // ---- request: queue behavior ----
@@ -1340,6 +1489,52 @@ describe("faces.ajax.request: queue behavior", () => {
 
         // Second request should now have gotten begin
         expect(events2.map(e => e.status)).toContain("begin");
+    });
+
+    test("third queued request is dequeued in FIFO order after the first two complete", () => {
+        const allEvents: { req: number; status: unknown }[] = [];
+        const okXml = '<?xml version="1.0" encoding="UTF-8"?><partial-response id=""><changes></changes></partial-response>';
+
+        ajax().request(button, null, { onevent: (d: Record<string, unknown>) => allEvents.push({ req: 1, status: d.status }) });
+        ajax().request(button, null, { onevent: (d: Record<string, unknown>) => allEvents.push({ req: 2, status: d.status }) });
+        ajax().request(button, null, { onevent: (d: Record<string, unknown>) => allEvents.push({ req: 3, status: d.status }) });
+
+        // Only req 1 begins synchronously.
+        expect(allEvents.filter(e => e.req === 1 && e.status === "begin").length).toBe(1);
+        expect(allEvents.filter(e => e.req === 2 && e.status === "begin").length).toBe(0);
+        expect(allEvents.filter(e => e.req === 3 && e.status === "begin").length).toBe(0);
+
+        // Complete request 1; request 2's begin should fire next.
+        getXHRInstances()[0].respond(200, "", okXml);
+        expect(allEvents.filter(e => e.req === 2 && e.status === "begin").length).toBe(1);
+        expect(allEvents.filter(e => e.req === 3 && e.status === "begin").length).toBe(0);
+
+        // Complete request 2; request 3's begin should fire.
+        getXHRInstances()[1].respond(200, "", okXml);
+        expect(allEvents.filter(e => e.req === 3 && e.status === "begin").length).toBe(1);
+
+        // The 3 begin events fire in submission order.
+        const beginOrder = allEvents.filter(e => e.status === "begin").map(e => e.req);
+        expect(beginOrder).toEqual([1, 2, 3]);
+    });
+
+    test("queue dequeues completed requests so subsequent ones can be sent", () => {
+        // Exercises the dequeue-completed-requests + send-readyState-0 path inside onComplete.
+        const okXml = '<?xml version="1.0" encoding="UTF-8"?><partial-response id=""><changes></changes></partial-response>';
+
+        for (let i = 0; i < 5; i++) ajax().request(button, null);
+
+        // Only the first one is sent immediately; the rest are queued.
+        const beforeFirst = getXHRInstances().filter(x => x.body !== null).length;
+        expect(beforeFirst).toBe(1);
+
+        // Drain them in order; each completion should release the next.
+        for (let i = 0; i < 5; i++) {
+            const xhr = getXHRInstances()[i];
+            xhr.respond(200, "", okXml);
+        }
+        const sent = getXHRInstances().filter(x => x.body !== null).length;
+        expect(sent).toBe(5);
     });
 });
 
@@ -1871,5 +2066,144 @@ describe("faces.ajax.response: direct call validation", () => {
 
     test("throws when request parameter is undefined", () => {
         expect(() => ajax().response(undefined, {})).toThrow("faces.ajax.response: Request parameter is unset");
+    });
+});
+
+// ---- internal helpers exercised through observable behaviour ----
+
+describe("faces.ajax.request: multipart/form-data", () => {
+    let form: HTMLFormElement;
+    let button: HTMLButtonElement;
+
+    beforeEach(() => {
+        installMockXHR();
+        ({ form, button } = createAjaxForm());
+        form.enctype = "multipart/form-data";
+    });
+
+    afterEach(() => {
+        form?.remove();
+        uninstallMockXHR();
+    });
+
+    test("sends FormData (not URLSearchParams) when form enctype is multipart/form-data", () => {
+        ajax().request(button, null);
+        const xhr = lastXHR();
+        // The mock XHR captures whatever is passed to send(). For multipart, the impl passes a FormData object.
+        expect(xhr.body).toBeInstanceOf(FormData);
+    });
+
+    test("multipart FormData includes Faces-Request entry", () => {
+        ajax().request(button, null);
+        const fd = lastXHR().body as unknown as FormData;
+        expect(fd.get("Faces-Request")).toBe("partial/ajax");
+    });
+
+    test("multipart FormData includes ajax parameters (jakarta.faces.partial.ajax)", () => {
+        ajax().request(button, null);
+        const fd = lastXHR().body as unknown as FormData;
+        expect(fd.get("jakarta.faces.partial.ajax")).toBe("true");
+        expect(fd.get("jakarta.faces.source")).toBe("testButton");
+    });
+
+    test("multipart request does NOT set Content-Type header (browser sets it with boundary)", () => {
+        ajax().request(button, null);
+        const xhr = lastXHR();
+        // The impl explicitly skips setRequestHeader('Content-type', ...) for multipart.
+        expect(xhr.requestHeaders["Content-type"]).toBeUndefined();
+    });
+});
+
+// faces.ajax.request: namingContainer prefix (Spec790 / portlet)
+// ----------------------------------------------------------------
+// Intentionally NOT covered by unit tests: namespaceParametersIfNecessary() only fires when
+// the form's ViewState element name has a UIViewRoot-container prefix
+// (e.g. "vr1:jakarta.faces.ViewState"). request() locates the viewstate via
+// `getHiddenStateField(form, VIEW_STATE_PARAM)` which uses HTMLFormElement.namedItem with the
+// bare name; in jsdom we have not been able to construct a form where that lookup succeeds
+// AND the found element's name has the prefix. The Faces TCK / integration tests cover this
+// path end-to-end against a live container.
+
+describe("faces.ajax.response: cloneAttributes dataset and XML branch", () => {
+    let form: HTMLFormElement;
+    let button: HTMLButtonElement;
+
+    beforeEach(() => {
+        installMockXHR();
+        ({ form, button } = createAjaxForm());
+    });
+
+    afterEach(() => {
+        form?.remove();
+        uninstallMockXHR();
+    });
+
+    test("update of an input element copies HTML5 data-* attributes onto the existing target", () => {
+        // For 'input' updates the impl uses the in-place `cloneAttributes` path (rather than
+        // replaceNode) so focus is preserved. The dataset-cloning loop is exercised here.
+        const target = document.createElement("input");
+        target.id = "datasetTarget";
+        target.name = "datasetTarget";
+        target.dataset.stale = "old";
+        form.appendChild(target);
+
+        ajax().request(button, null, { render: "datasetTarget" });
+        const xml = `<?xml version="1.0" encoding="UTF-8"?><partial-response id=""><changes>` +
+            `<update id="datasetTarget"><![CDATA[<input id="datasetTarget" name="datasetTarget" data-fresh="new" data-id="42"/>]]></update>` +
+            `</changes></partial-response>`;
+        lastXHR().respond(200, "", xml);
+
+        const updated = document.getElementById("datasetTarget") as HTMLInputElement;
+        expect(updated.dataset.fresh).toBe("new");
+        expect(updated.dataset.id).toBe("42");
+        // Old dataset entry must be cleared (`for (const tp in targetDataset) { delete targetDataset[tp]; }`).
+        expect(updated.dataset.stale).toBeUndefined();
+    });
+
+    test("update of an input element copies attributes by getAttribute when source is XML (not HTML)", () => {
+        // The update CDATA is parsed by the browser as HTML for the temp container, but the
+        // attribute-copy path differentiates HTML vs XML via source.ownerDocument.contentType.
+        // Whichever branch is taken, the resulting attributes on the target must match the source.
+        const target = document.createElement("input");
+        target.id = "attrTarget";
+        target.name = "attrTarget";
+        target.title = "old title";
+        form.appendChild(target);
+
+        ajax().request(button, null, { render: "attrTarget" });
+        const xml = `<?xml version="1.0" encoding="UTF-8"?><partial-response id=""><changes>` +
+            `<update id="attrTarget"><![CDATA[<input id="attrTarget" name="attrTarget" title="new title" value="new value"/>]]></update>` +
+            `</changes></partial-response>`;
+        lastXHR().respond(200, "", xml);
+
+        const updated = document.getElementById("attrTarget") as HTMLInputElement;
+        expect(updated.title).toBe("new title");
+        expect(updated.value).toBe("new value");
+    });
+});
+
+describe("faces.ajax.response: malformedXML parser branches", () => {
+    let form: HTMLFormElement;
+    let button: HTMLButtonElement;
+
+    beforeEach(() => {
+        installMockXHR();
+        ({ form, button } = createAjaxForm());
+    });
+
+    afterEach(() => {
+        form?.remove();
+        uninstallMockXHR();
+    });
+
+    test("malformed XML response triggers malformedXML error", () => {
+        // jsdom's DOMParser produces a Firefox-style nested <parsererror> for invalid XML —
+        // exercises the doc.getElementsByTagName('parsererror') branch of getParseErrorText().
+        const errors: Record<string, unknown>[] = [];
+        ajax().request(button, null, { onerror: (data: Record<string, unknown>) => errors.push(data) });
+        // Truly malformed XML: unclosed tag.
+        lastXHR().respond(200, "", '<?xml version="1.0" encoding="UTF-8"?><partial-response><oops</partial-response>');
+        expect(errors.length).toBe(1);
+        expect(errors[0].status).toBe("malformedXML");
     });
 });

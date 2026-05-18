@@ -7,6 +7,8 @@ export interface MockXHRInstance {
     url: string | null;
     async: boolean;
     requestHeaders: Record<string, string>;
+    /** Whatever was passed to send(): a URL-encoded string for normal POSTs, or a FormData
+     *  for multipart submissions. Tests that read the body as a string should narrow first. */
     body: string | null;
     readyState: number;
     status: number;
@@ -15,7 +17,7 @@ export interface MockXHRInstance {
     onreadystatechange: ((this: XMLHttpRequest, ev: Event) => void) | null;
     open(method: string, url: string, async?: boolean): void;
     setRequestHeader(name: string, value: string): void;
-    send(body?: string | null): void;
+    send(body?: string | FormData | null): void;
     /** Test helper: simulate server response. */
     respond(status: number, responseText: string, responseXML?: string): void;
 }
@@ -50,8 +52,8 @@ export function installMockXHR(): void {
             this.requestHeaders[name] = value;
         };
 
-        this.send = function (body?: string | null) {
-            this.body = body ?? null;
+        this.send = function (body?: string | FormData | null) {
+            this.body = (body as string | null) ?? null;
         };
 
         this.respond = function (status: number, responseText: string, responseXML?: string) {

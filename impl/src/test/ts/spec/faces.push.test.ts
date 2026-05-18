@@ -28,7 +28,7 @@ function installMockWebSocket(): void {
     wsInstances = [];
     OriginalWebSocket = window.WebSocket;
 
-    (window as unknown as Record<string, unknown>).WebSocket = function MockWebSocket(this: MockWebSocketInstance, url: string) {
+    const MockWebSocket = function MockWebSocket(this: MockWebSocketInstance, url: string) {
         this.url = url;
         this.readyState = 0; // CONNECTING
         this.onopen = null;
@@ -63,7 +63,14 @@ function installMockWebSocket(): void {
         };
 
         wsInstances.push(this);
-    } as unknown as typeof WebSocket;
+    } as unknown as typeof WebSocket & {
+        CONNECTING: 0; OPEN: 1; CLOSING: 2; CLOSED: 3;
+    };
+    MockWebSocket.CONNECTING = 0;
+    MockWebSocket.OPEN = 1;
+    MockWebSocket.CLOSING = 2;
+    MockWebSocket.CLOSED = 3;
+    (window as unknown as Record<string, unknown>).WebSocket = MockWebSocket;
 }
 
 function uninstallMockWebSocket(): void {
@@ -452,21 +459,6 @@ describe("faces.push: onclose callback", () => {
 
         expect(closes.length).toBe(1);
         expect(closes[0][0]).toBe(1008);
-    });
-
-    test("onclose is called when Unknown channel reason with non-1008 code (IE fallback)", () => {
-        const closes: unknown[][] = [];
-        push().init("cl4", "ws://localhost/push", "myChannel",
-            null, null, null,
-            (code: number, channel: string, event: unknown) => closes.push([code, channel, event]),
-            {}, false);
-        push().open("cl4");
-        lastWS().simulateOpen();
-        // IE returns 1005 instead of 1008 but with "Unknown channel" reason
-        lastWS().simulateClose(1005, "Unknown channel");
-
-        expect(closes.length).toBe(1);
-        expect(closes[0][0]).toBe(1005);
     });
 
     test("onclose resolves string function name from window", () => {

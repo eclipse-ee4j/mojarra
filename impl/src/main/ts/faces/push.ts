@@ -4,40 +4,55 @@
  */
 
 import type { faces as FacesSpec } from "../../../../../faces/api/src/main/resources/META-INF/resources/jakarta.faces/faces";
+import type { WindowAsDict } from "./dom";
 
-type WindowAsDict = Window & { [key: string]: any };
+type OnOpen = FacesSpec.push.OnOpenHandler;
+type OnMessage = FacesSpec.push.OnMessageHandler;
+type OnError = FacesSpec.push.OnErrorHandler;
+type OnClose = FacesSpec.push.OnCloseHandler;
+type Behaviors = Record<string, Array<() => void>>;
+
+interface ReconnectingSocket {
+    open(): void;
+    close(): void;
+}
 
 export const push: typeof FacesSpec.push = (function (window: WindowAsDict) {
 
     const RECONNECT_INTERVAL = 500;
     const MAX_RECONNECT_ATTEMPTS = 25;
     const REASON_EXPIRED = "Expired";
-    const REASON_UNKNOWN_CHANNEL = "Unknown channel";
 
-    const sockets: { [clientId: string]: any } = {};
-    const self: any = {};
+    const sockets: { [clientId: string]: ReconnectingSocket } = {};
 
     /**
      * Reconnecting websocket. Reconnects on timeout with cumulative intervals of 500ms,
      * up to 25 attempts (~3 minutes). The `onclose` function is called with the error code
      * of the last attempt.
      */
-    function ReconnectingWebsocket(this: any, url: string, channel: string,
-        onopen: Function, onmessage: Function, onerror: Function, onclose: Function,
-        behaviors: { [message: string]: Function[] }) {
+    function ReconnectingWebsocket(
+        this: ReconnectingSocket,
+        url: string,
+        channel: string,
+        onopen: OnOpen,
+        onmessage: OnMessage,
+        onerror: OnError,
+        onclose: OnClose,
+        behaviors: Behaviors,
+    ) {
 
-        let socket: WebSocket | null;
-        let reconnectAttempts: number | null;
+        let socket: WebSocket | null = null;
+        let reconnectAttempts: number | null = null;
         const self = this;
 
         self.open = function () {
-            if (socket && socket.readyState === 1) {
+            if (socket && socket.readyState === WebSocket.OPEN) {
                 return;
             }
 
             socket = new WebSocket(url);
 
-            socket.onopen = function (event) {
+            socket.onopen = function (_event) {
                 if (reconnectAttempts == null) {
                     onopen(channel);
                 }
@@ -60,7 +75,7 @@ export const push: typeof FacesSpec.push = (function (window: WindowAsDict) {
             socket.onclose = function (event) {
                 if (!socket
                     || (event.code === 1000 && event.reason === REASON_EXPIRED)
-                    || (event.code === 1008 || event.reason === REASON_UNKNOWN_CHANNEL) // Older IE versions incorrectly return 1005 instead of 1008, hence the fallback check on the message.
+                    || event.code === 1008
                     || (reconnectAttempts == null)
                     || (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS)) {
                     onclose(event.code, channel, event);
@@ -83,53 +98,59 @@ export const push: typeof FacesSpec.push = (function (window: WindowAsDict) {
 
     }
 
-    self.init = function (clientId: string, url: string, channel: string,
-        onopen: Function, onmessage: Function, onerror: Function, onclose: Function,
-        behaviors: any, autoconnect: boolean) {
-        onclose = resolveFunction(onclose);
-
-        if (!window.WebSocket) {
-            onclose(-1, clientId);
-            return;
+    /** If `fn` is not a function, look it up by name on `window`; otherwise return `fn`. NOOP fallback. */
+    function resolveFunction<F extends Function>(fn: F | string | null): F {
+        if (typeof fn === "function") {
+            return fn;
         }
-
-        if (!sockets[clientId]) {
-            sockets[clientId] = new (ReconnectingWebsocket as any)(url, channel,
-                resolveFunction(onopen), resolveFunction(onmessage), resolveFunction(onerror),
-                onclose, behaviors);
-        }
-
-        if (autoconnect) {
-            self.open(clientId);
-        }
-    };
-
-    self.open = function (clientId: string) {
-        getSocket(clientId).open();
-    };
-
-    self.close = function (clientId: string) {
-        getSocket(clientId).close();
-    };
-
-    /**
-     * If given function is actually not a function, then try to interpret it as name of a global function.
-     * If it still doesn't resolve to anything, then return a NOOP function.
-     */
-    function resolveFunction(fn: any) {
-        return (typeof fn !== "function") && (fn = window[fn] || function () { }), fn;
+        const named = typeof fn === "string" ? window[fn] : undefined;
+        return (typeof named === "function" ? named : function () { /* NOOP */ }) as F;
     }
 
     /**
      * Get socket associated with given client identifier.
      * @throws {Error} When client identifier is unknown.
      */
-    function getSocket(clientId: string) {
+    function getSocket(clientId: string): ReconnectingSocket {
         const socket = sockets[clientId];
         if (socket) return socket;
         else throw new Error("Unknown clientId: " + clientId);
     }
 
-    return self;
+    return {
+        init(clientId, url, channel, onopen, onmessage, onerror, onclose, behaviors, autoconnect) {
+            const resolvedOnclose = resolveFunction<OnClose>(onclose);
 
-})(window as WindowAsDict);
+            if (!window.WebSocket) {
+                resolvedOnclose(-1, clientId, undefined as unknown as CloseEvent);
+                return;
+            }
+
+            if (!sockets[clientId]) {
+                sockets[clientId] = new (ReconnectingWebsocket as unknown as new (
+                    url: string, channel: string,
+                    onopen: OnOpen, onmessage: OnMessage, onerror: OnError, onclose: OnClose,
+                    behaviors: Behaviors,
+                ) => ReconnectingSocket)(
+                    url, channel,
+                    resolveFunction<OnOpen>(onopen),
+                    resolveFunction<OnMessage>(onmessage),
+                    resolveFunction<OnError>(onerror),
+                    resolvedOnclose,
+                    behaviors as Behaviors,
+                );
+            }
+
+            if (autoconnect) {
+                this.open(clientId);
+            }
+        },
+        open(clientId) {
+            getSocket(clientId).open();
+        },
+        close(clientId) {
+            getSocket(clientId).close();
+        },
+    };
+
+})(window as unknown as WindowAsDict);

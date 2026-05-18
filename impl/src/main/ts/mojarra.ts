@@ -6,6 +6,8 @@
  * form parameters. Not part of the Jakarta Faces spec.
  */
 
+import { BEHAVIOR_EVENT_PARAM } from "./faces/constants";
+
 /** Hidden input elements added by {@link apf}, tracked on the form for later removal. */
 type FormWithAddedParams = HTMLFormElement & { adp?: HTMLInputElement[] };
 
@@ -90,7 +92,7 @@ mojarra.facescbk = function facescbk(f, t, e) {
 
 mojarra.ab = function ab(s, e, n, ex, re, op) {
     if (!op) op = {};
-    if (n)   op["jakarta.faces.behavior.event"] = n;
+    if (n)   op[BEHAVIOR_EVENT_PARAM] = n;
     if (ex)  op["execute"] = ex;
     if (re)  op["render"] = re;
     window.faces.ajax.request(s, e, op);

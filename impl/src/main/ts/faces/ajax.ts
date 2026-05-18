@@ -1,9 +1,9 @@
-// @ts-nocheck — legacy ajax implementation lifted verbatim during the splits;
-// per-internal-helper typing is a future refinement.
-
+import type { faces as FacesSpec } from "../../../../../faces/api/src/main/resources/META-INF/resources/jakarta.faces/faces";
 import {
     UDEF, EMPTY, SPACE, FORM,
     VIEW_STATE_PARAM, CLIENT_WINDOW_PARAM, ALWAYS_EXECUTE_IDS, ENCODED_URL_PARAM,
+    SOURCE_PARAM, PARTIAL_AJAX_PARAM, PARTIAL_EVENT_PARAM, PARTIAL_EXECUTE_PARAM,
+    PARTIAL_RENDER_PARAM, PARTIAL_RESET_VALUES_PARAM,
     PARTIAL_SUBMIT_ENABLED,
 } from "./constants";
 import { isNull, isNotNull, contains } from "./lang";
@@ -13,34 +13,39 @@ import {
 } from "./dom";
 import { getPartialViewState } from "./api";
 
+/**
+ * Internal request context built up by `request()` and read by `response()` and the listeners.
+ *
+ * Extends the spec's {@link FacesSpec.ajax.RequestContext} with the impl-private fields
+ * the engine needs to carry across the request/response lifecycle. `sourceid` is widened
+ * to `string | Element` because `response()` resolves the id to its DOM element in place.
+ */
+interface AjaxContext extends Omit<FacesSpec.ajax.RequestContext, "sourceid"> {
+    sourceid?: string | Element;
+    render?: string;
+    formId?: string;
+    namingContainerId?: string;
+    namingContainerPrefix?: string;
+    includeViewParams?: boolean;
+    [key: string]: unknown;
+}
+
+/** Lightweight global lookup used for the few faces.* cross-namespace reads (separatorchar, etc.). */
+type FacesGlobal = { faces: { separatorchar: string; getProjectStage(): FacesSpec.ProjectStage; getViewState(form: HTMLFormElement): string; getClientWindow(node?: HTMLElement | string): string | null; ajax: { response(req: XMLHttpRequest, ctx: AjaxContext): void } } };
+const facesGlobal = (): FacesGlobal["faces"] => (window as unknown as FacesGlobal).faces;
+
 export const ajax = (function () {
 
-        const eventListeners = [];
-        const errorListeners = [];
+        const eventListeners: FacesSpec.ajax.OnEventCallback[] = [];
+        const errorListeners: FacesSpec.ajax.OnErrorCallback[] = [];
 
-        let delayHandler = null;
-
-        /**
-         * Note by pizzi80:
-         * Replacing DOM element's innerHTML does not execute the (eventually) injected javascript.
-         * This is standard, and we don't need anymore to do this test.
-         * I'll leave this only as a placeholder to identify the places where
-         * it is used in the code.
-         * In the future a new and unique replace algorithm will replace all
-         * the actual code, and it will be possible to remove this and the function isAutoExec()
-         *
-         * Determine if loading scripts into the page executes the script.
-         * This is instead of doing a complicated browser detection algorithm.  Some do, some don't.
-         * @returns {boolean} does including a script in the dom execute it?
-         * @ignore
-         */
-        const isAutoExec = function isAutoExec() { return false; };
+        let delayHandler: ReturnType<typeof setTimeout> | null = null;
 
         /**
          * Utility function that determines if a file control exists for the form.
          * @ignore
          */
-        const hasInputFileControl = function(form) { return isNotNull(form.querySelector("input[type='file']")); };
+        const hasInputFileControl = function(form: HTMLFormElement): boolean { return isNotNull(form.querySelector("input[type='file']")); };
 
 
         // --- FACES input processing functions ---------------------------------------------------------------------------------------
@@ -51,9 +56,9 @@ export const ajax = (function () {
          * @returns form element representing enclosing form, or first form if none found.
          * @ignore
          */
-        const getForm = function(element) {
-            const form = element.closest(FORM);
-            return form ? form : document.forms[0];
+        const getForm = function(element: Element): HTMLFormElement | null {
+            const form = element.closest<HTMLFormElement>(FORM);
+            return form ? form : document.forms[0] ?? null;
         };
 
         /**
@@ -66,26 +71,29 @@ export const ajax = (function () {
          * @param hiddenStateFieldName {string} The hidden state field name, e.g. jakarta.faces.ViewState or jakarta.faces.ClientWindow
          * @return {Array<HTMLFormElement>} Get an array of all Faces form elements which need their view state to be updated.
          */
-        const getFormsToUpdate = function getFormsToUpdate(context, hiddenStateFieldName) {
-            const formsToUpdate = new Set();
+        const getFormsToUpdate = function getFormsToUpdate(context: AjaxContext, hiddenStateFieldName: string): HTMLFormElement[] {
+            const formsToUpdate = new Set<HTMLFormElement>();
 
             // return true if the passed element is a form
-            const isFormElement = (element) => element.nodeName && element.nodeName.toLowerCase() === FORM;
+            const isFormElement = (element: Element | Document): element is HTMLFormElement =>
+                (element as Element).nodeName != null && (element as Element).nodeName.toLowerCase() === FORM;
 
             // return true if the passed form needs the view state hidden field
-            const isValidForm = (form) => form.method === "post" && form.id && form.elements && form.id.startsWith(context.namingContainerPrefix);
+            const isValidForm = (form: HTMLFormElement): boolean =>
+                form.method === "post" && !!form.id && !!form.elements
+                && (context.namingContainerPrefix == null || form.id.startsWith(context.namingContainerPrefix));
 
             // if the passed DOM element is a form and is valid,
             // then add to the forms to update,
             // otherwise add all the valid forms in the descendants of the specified element
-            const add = (element) => {
+            const add = (element: Element | Document | null) => {
                 if (element) {
-                    if ( isFormElement(element) && isValidForm(element) ) {
+                    if (isFormElement(element) && isValidForm(element)) {
                         formsToUpdate.add(element);
                     }
                     else {
-                        const forms = element.getElementsByTagName(FORM);
-                        for ( const form of forms )
+                        const forms = (element as Element | Document).getElementsByTagName(FORM) as HTMLCollectionOf<HTMLFormElement>;
+                        for (const form of Array.from(forms))
                             add(form);
                     }
                 }
@@ -95,26 +103,26 @@ export const ajax = (function () {
                 add(document.getElementById(context.formId));
             }
 
-            const isRenderAll = context.render && contains(context.render,"@all");
+            const isRenderAll = !!context.render && contains(context.render, "@all");
 
             if (context.render) {
                 // if is render @all then add all the forms of the document
-                if ( isRenderAll ) {
+                if (isRenderAll) {
                     add(document);
                 }
                 // otherwise add the forms taken from the render attribute
                 else {
                     const clientIds = context.render.split(SPACE);
-                    for ( const clientId of clientIds )
+                    for (const clientId of clientIds)
                         add(document.getElementById(clientId));
                 }
             }
 
             // second pass: we have to include all the updated forms using PartialViewContext from Java
-            if ( ! isRenderAll ) { // performance bonus: only if we aren't in @all case
-                const allForms = document.getElementsByTagName(FORM);
+            if (!isRenderAll) { // performance bonus: only if we aren't in @all case
+                const allForms = document.getElementsByTagName(FORM) as HTMLCollectionOf<HTMLFormElement>;
 
-                for (const form of allForms) {
+                for (const form of Array.from(allForms)) {
                     if (!formsToUpdate.has(form)
                         && isValidForm(form)
                         && isNull(getHiddenStateField(form, hiddenStateFieldName, context.namingContainerPrefix))) {
@@ -149,30 +157,31 @@ export const ajax = (function () {
          * This is to be used for prefixing absolute target client IDs.
          * @ignore
          */
-        const namespaceParametersIfNecessary = function namespaceParametersIfNecessary(parameters, sourceClientId, namingContainerPrefix) {
+        const namespaceParametersIfNecessary = function namespaceParametersIfNecessary(parameters: string, sourceClientId: string, namingContainerPrefix: string): string {
             if (sourceClientId.indexOf(namingContainerPrefix) !== 0) {
                 return parameters; // Unexpected source client ID; let's silently do nothing.
             }
 
+            const sep = facesGlobal().separatorchar;
             const targetClientIds = parameters.replace(/^\s+|\s+$/g, '').split(/\s+/g);
 
             // adapt each targetClientId and replace the modified version inside the original array
             for ( let i = 0; i < targetClientIds.length; i++) {
                 let targetClientId = targetClientIds[i];
 
-                if (targetClientId.indexOf(faces.separatorchar) === 0) {
+                if (targetClientId.indexOf(sep) === 0) {
                     targetClientId = targetClientId.substring(1);
 
                     if (targetClientId.indexOf(namingContainerPrefix) !== 0) {
                         targetClientId = namingContainerPrefix + targetClientId;
                     }
                 } else if (targetClientId.indexOf(namingContainerPrefix) !== 0) {
-                    const parentClientId = sourceClientId.substring(0, sourceClientId.lastIndexOf(faces.separatorchar));
+                    const parentClientId = sourceClientId.substring(0, sourceClientId.lastIndexOf(sep));
 
                     if (namingContainerPrefix + targetClientId === parentClientId) {
                         targetClientId = parentClientId;
                     } else {
-                        targetClientId = parentClientId + faces.separatorchar + targetClientId;
+                        targetClientId = parentClientId + sep + targetClientId;
                     }
                 }
 
@@ -202,12 +211,12 @@ export const ajax = (function () {
          * @returns {array} of script text
          * @ignore
          */
-        const getScripts = function getScripts(html) {
-            const scripts = [];
+        const getScripts = function getScripts(html: string): RegExpMatchArray[] {
+            const scripts: RegExpMatchArray[] = [];
             const initialnodes = html.match(SCRIPT_TAG_REGEX);
             while (!!initialnodes && initialnodes.length > 0) {
-                let scriptStr = [];
-                scriptStr = initialnodes.shift().match(SINGLE_SCRIPT_TAG_REGEX); // todo: multiple shift array ... rewrite this algo
+                const scriptStr = initialnodes.shift()!.match(SINGLE_SCRIPT_TAG_REGEX); // todo: multiple shift array ... rewrite this algo
+                if (!scriptStr) continue;
                 // check the type - skip if specified but not text/javascript
                 const type = scriptStr[1].match(TAG_ATTRIBUTE_TYPE_REGEX);
                 if (!!type && type[1] !== "text/javascript") {
@@ -224,8 +233,8 @@ export const ajax = (function () {
          * @param html a String containing a portion of html
          * @ignore
          */
-        const removeScripts = function removeScripts(html) {
-            return html.replace(SCRIPT_TAG_REGEX, (match) => {
+        const removeScripts = function removeScripts(html: string): string {
+            return html.replace(SCRIPT_TAG_REGEX, (match: string) => {
                 const type = match.match(TAG_ATTRIBUTE_TYPE_REGEX);
                 if (!!type && type[1] !== "text/javascript") {
                     return match; // keep non-text/javascript scripts
@@ -239,15 +248,15 @@ export const ajax = (function () {
          * @param scripts Array of script nodes.
          * @ignore
          */
-        const runScripts = function runScripts(scripts) {
+        const runScripts = function runScripts(scripts: RegExpMatchArray[]): void {
             if (!scripts || scripts.length === 0) {
                 return;
             }
 
-            const loadedScripts = document.getElementsByTagName("script");
-            const loadedScriptUrls = [];
+            const loadedScripts = document.getElementsByTagName("script") as HTMLCollectionOf<HTMLScriptElement>;
+            const loadedScriptUrls: string[] = [];
 
-            for ( const scriptNode of loadedScripts ) {
+            for (const scriptNode of Array.from(loadedScripts)) {
                 const url = scriptNode.getAttribute("src");
                 if (url) loadedScriptUrls.push(url);
             }
@@ -264,7 +273,7 @@ export const ajax = (function () {
          * @param index Index of script to be loaded.
          * @ignore
          */
-        const runScript = function runScript(head, loadedScriptUrls, scripts, index) {
+        const runScript = function runScript(head: HTMLElement, loadedScriptUrls: string[], scripts: RegExpMatchArray[], index: number): void {
             if (index >= scripts.length) {
                 return;
             }
@@ -273,8 +282,6 @@ export const ajax = (function () {
             const findsrc = /src="([\S]*?)"/im;
             // Regex to remove leading cruft
             const stripStart = /^\s*(<!--)*\s*(\/\/)*\s*(\/\*)*\s*\n*\**\n*\s*\*.*\n*\s*\*\/(<!\[CDATA\[)*/;
-
-            const scriptLoadedStates = [ 'loaded','complete' ];
 
             const scriptStr = scripts[index];
             const src = scriptStr[1].match(findsrc);
@@ -288,21 +295,17 @@ export const ajax = (function () {
                 // if this is already loaded, don't load it
                 // it's never necessary, and can make debugging difficult
                 if (loadedScriptUrls.indexOf(url) < 0) {
-                    // create script node
-                    let scriptNode = document.createElement('script');
+                    const scriptNode = document.createElement('script');
                     const parserElement = document.createElement('div');
                     parserElement.innerHTML = scriptStr[0];
-                    cloneAttributes(scriptNode, parserElement.firstChild);
+                    cloneAttributes(scriptNode, parserElement.firstChild as Element);
                     deleteNode(parserElement);
-                    scriptNode.nonce = nonce;
-                    scriptNode.src = url; // add the src to the script node
-                    scriptNode.onload = scriptNode.onreadystatechange = function(_, abort) {
-                        if (abort || !scriptNode.readyState || scriptLoadedStates.includes(scriptNode.readyState) ) {
-                            scriptNode = null;                                           // why?
-                            runScript(head, loadedScriptUrls, scripts, index + 1); // Run next script.
-                        }
+                    scriptNode.nonce = nonce as string;
+                    scriptNode.src = url;
+                    scriptNode.onload = scriptNode.onerror = () => {
+                        runScript(head, loadedScriptUrls, scripts, index + 1);
                     };
-                    head.appendChild(scriptNode); // add it to end of the head (and don't remove it)
+                    head.appendChild(scriptNode); // append (and leave) at end of head
                     scriptLoadedViaUrl = true;
                 }
             } else if (!!scriptStr && scriptStr[2]) {
@@ -324,7 +327,7 @@ export const ajax = (function () {
          * @param str
          * @ignore
          */
-        const runStylesheets = function runStylesheets(str) {
+        const runStylesheets = function runStylesheets(str: string): void {
             // Regex to find all links in a string
             const findlinks = /<link[^>]*\/>/igm;
             // Regex to find one link, to isolate its attributes [1]
@@ -336,12 +339,13 @@ export const ajax = (function () {
             // the head of the document, note that document.head do not always work
             const head = getHead();
 
-            let loadedStylesheetUrls = null;
-            let parserElement = null;
+            let loadedStylesheetUrls: string[] | null = null;
+            let parserElement: HTMLDivElement | null = null;
 
             const initialnodes = str.match(findlinks);
             while (!!initialnodes && initialnodes.length > 0) {
-                const linkStr = initialnodes.shift().match(findlink);
+                const linkStr = initialnodes.shift()!.match(findlink);
+                if (!linkStr) continue;
                 // check the type - skip if specified but not text/css
                 const type = linkStr[1].match(findtype);
                 if (!!type && type[1] !== "text/css") {
@@ -350,10 +354,10 @@ export const ajax = (function () {
                 const href = linkStr[1].match(findhref);
                 if (!!href && href[1]) {
                     if (loadedStylesheetUrls === null) {
-                        const loadedLinks = document.getElementsByTagName("link");
+                        const loadedLinks = document.getElementsByTagName("link") as HTMLCollectionOf<HTMLLinkElement>;
                         loadedStylesheetUrls = [];
 
-                        for ( const linkNode of loadedLinks ) {
+                        for (const linkNode of Array.from(loadedLinks)) {
                             const linkNodeType = linkNode.getAttribute("type");
                             if (!linkNodeType || linkNodeType === "text/css") {
                                 const url = linkNode.getAttribute("href");
@@ -367,15 +371,17 @@ export const ajax = (function () {
 
                     const url = unescapeHTML(href[1]);
 
-                    if ( loadedStylesheetUrls && loadedStylesheetUrls.indexOf(url) < 0) {
+                    if (loadedStylesheetUrls && loadedStylesheetUrls.indexOf(url) < 0) {
                         // create stylesheet node
                         parserElement = parserElement !== null ? parserElement : document.createElement('div');
                         parserElement.innerHTML = linkStr[0];
-                        const linkNode = parserElement.firstChild;
-                        linkNode.type = 'text/css';
-                        linkNode.rel = 'stylesheet';
-                        linkNode.href = url;
-                        head.appendChild(linkNode); // add it to end of the head (and don't remove it)
+                        const linkNode = parserElement.firstChild as HTMLLinkElement | null;
+                        if (linkNode) {
+                            linkNode.type = 'text/css';
+                            linkNode.rel = 'stylesheet';
+                            linkNode.href = url;
+                            head.appendChild(linkNode); // add it to end of the head (and don't remove it)
+                        }
                     }
                 }
             }
@@ -390,9 +396,8 @@ export const ajax = (function () {
          * @param src string new content for element
          * @ignore
          */
-        const elementReplaceStr = function elementReplaceStr(element, tempTagName, src) {
-            // Creating a head element isn't allowed in IE, and faulty in most browsers,
-            // so it is not allowed
+        const elementReplaceStr = function elementReplaceStr(element: Element, tempTagName: string, src: string): void {
+            // Replacing the head element is not supported.
             if (element && element.nodeName && element.nodeName.toLowerCase() === "head")
                 throw new Error("Attempted to replace a head element - this is not allowed.");
 
@@ -401,55 +406,45 @@ export const ajax = (function () {
                 temp.id = element.id;
             }
 
-            if (isAutoExec()) {
-                temp.innerHTML = src;
-                cloneAttributes(temp, element);
-                replaceNode(temp, element);
-            }
-            else {
-                // Get scripts from text
-                const scripts = getScripts(src);
-                // Remove scripts from text
-                src = removeScripts(src);
-                temp.innerHTML = src;
-                cloneAttributes(temp, element);
-                replaceNode(temp, element);
-                runScripts(scripts);
-            }
-
+            // Get scripts from text, then strip them so innerHTML does not see them,
+            // then run them after the DOM is in place.
+            const scripts = getScripts(src);
+            src = removeScripts(src);
+            temp.innerHTML = src;
+            cloneAttributes(temp, element);
+            replaceNode(temp, element);
+            runScripts(scripts);
         };
 
         // --- Faces xml errors ---------------------------------------------------------------------------
 
         const PARSED_OK = "Document contains no parsing errors";
         const PARSED_EMPTY = "Document is empty";
-        const PARSED_UNKNOWN_ERROR = "Not well-formed or other error";
 
         /**
          * <p>Returns a human readable description of the parsing error. Useful
          * for debugging. Tip: append the returned error string in a &lt;pre&gt;
          * element if you want to render it.</p>
-         * @param  doc The target DOM document
-         * @returns {String} The parsing error description of the target Document in
-         *          human readable form (preformatted text)
-         * @ignore
-         * Note:  This code originally from Sarissa: http://dev.abiss.gr/sarissa
+         *
+         * Webkit reports the error as the documentElement; Firefox/Chromium nest
+         * a <code>&lt;parsererror&gt;</code> element inside the document.
          */
-        const getParseErrorText = function (doc) {
-            let parseErrorText = PARSED_OK;
-            if ((!doc) || (!doc.documentElement)) {
-                parseErrorText = PARSED_EMPTY;
-            } else if (doc.documentElement.tagName === "parsererror") {
-                parseErrorText = doc.documentElement.firstChild.data;
-                parseErrorText += "\n" + doc.documentElement.firstChild.nextSibling.firstChild.data;
-            } else if (doc.getElementsByTagName("parsererror").length > 0) {
-                const parsererror = doc.getElementsByTagName("parsererror")[0];
-                // parseErrorText = getText(parsererror, true) + "\n";
-                parseErrorText = parsererror.textContent + "\n";
-            } else if (doc.parseError && doc.parseError.errorCode !== 0) {
-                parseErrorText = PARSED_UNKNOWN_ERROR;
+        const getParseErrorText = function (doc: Document | null): string {
+            if (!doc || !doc.documentElement) {
+                return PARSED_EMPTY;
             }
-            return parseErrorText;
+            if (doc.documentElement.tagName === "parsererror") {
+                const first = doc.documentElement.firstChild as (CharacterData & { nextSibling: ChildNode | null }) | null;
+                let text = (first as unknown as { data: string } | null)?.data ?? "";
+                const nextFirst = first?.nextSibling?.firstChild as unknown as { data?: string } | null;
+                text += "\n" + (nextFirst?.data ?? "");
+                return text;
+            }
+            if (doc.getElementsByTagName("parsererror").length > 0) {
+                const parsererror = doc.getElementsByTagName("parsererror")[0];
+                return (parsererror.textContent ?? "") + "\n";
+            }
+            return PARSED_OK;
         };
 
         // --- DOM Manipulation ---------------------------------------------------------------------------------------------------------
@@ -466,7 +461,7 @@ export const ajax = (function () {
          * @param node
          * @ignore
          */
-        const clearEvents = function clearEvents(node) {
+        const clearEvents = function clearEvents(node: Element | null): void {
             if (!node) {
                 return;
             }
@@ -476,9 +471,10 @@ export const ajax = (function () {
             }
             // remove the events from node
             try {
+                const indexed = node as unknown as { [key: string]: unknown };
                 for (const eventName of NODE_EVENTS)
-                    node[eventName] = null;
-            } catch (ex) {
+                    indexed[eventName] = null;
+            } catch (_ex) {
                 // it's OK if it fails, at least we tried
             }
         };
@@ -488,8 +484,8 @@ export const ajax = (function () {
          * @param node
          * @ignore
          */
-        const deleteNode = function deleteNode(node) {
-            if (node && node.parentNode) node.remove();
+        const deleteNode = function deleteNode(node: Node | null): void {
+            if (node && node.parentNode) (node as ChildNode).remove();
         };
 
         /**
@@ -497,8 +493,8 @@ export const ajax = (function () {
          * @param nodes array of node
          * @ignore
          */
-        const deleteNodes = function deleteNodes( nodes ) {
-            for ( const node of nodes )
+        const deleteNodes = function deleteNodes(nodes: ArrayLike<Node>): void {
+            for (const node of Array.from(nodes))
                 deleteNode(node);
         };
 
@@ -507,10 +503,10 @@ export const ajax = (function () {
          * @param node
          * @ignore
          */
-        const deleteChildren = function deleteChildren(node) {
+        const deleteChildren = function deleteChildren(node: Node | null): void {
             if (node)
                 while (node.lastChild)
-                    node.lastChild.remove();
+                    (node.lastChild as ChildNode).remove();
         };
 
         /**
@@ -520,7 +516,7 @@ export const ajax = (function () {
          * @param  nodeTo the Node to copy the childNodes to
          * @ignore
          */
-        const copyChildNodes = function copyChildNodes(nodeFrom, nodeTo) {
+        const copyChildNodes = function copyChildNodes(nodeFrom: Node | null, nodeTo: Node | null): void {
 
             if ((!nodeFrom) || (!nodeTo)) {
                 throw "Both source and destination nodes must be provided";
@@ -534,11 +530,11 @@ export const ajax = (function () {
                     nodeTo.appendChild(nodeFrom.firstChild);
 
             } else {
-                const ownerDoc = nodeTo.nodeType === Node.DOCUMENT_NODE ? nodeTo : nodeTo.ownerDocument;
+                const ownerDoc = (nodeTo.nodeType === Node.DOCUMENT_NODE ? nodeTo as Document : nodeTo.ownerDocument)!;
                 const nodeFromChildNodes = nodeFrom.childNodes;
 
                 //if ( typeof(ownerDoc.importNode) !== UDEF ) {
-                    for ( const nodeFromChild of nodeFromChildNodes )
+                    for (const nodeFromChild of Array.from(nodeFromChildNodes))
                         nodeTo.appendChild(ownerDoc.importNode(nodeFromChild, true));
 
                 //} else {
@@ -555,14 +551,14 @@ export const ajax = (function () {
          * @param newNode the new node that's replace the old one
          * @ignore
          */
-        const replaceNode = function replaceNode(newNode, node) {
+        const replaceNode = function replaceNode(newNode: Node, node: ChildNode): void {
             node.replaceWith(newNode);
         };
 
         /**
          * @ignore
          */
-        const propertyToAttribute = function propertyToAttribute(name) {
+        const propertyToAttribute = function propertyToAttribute(name: string): string {
             if (name === 'className')    return 'class';
             else if (name === 'xmllang') return 'xml:lang';
             else                         return name.toLowerCase();
@@ -599,58 +595,62 @@ export const ajax = (function () {
          * @param source element to copy attributes from
          * @ignore
          */
-        const cloneAttributes = function cloneAttributes(target, source) {
+        const cloneAttributes = function cloneAttributes(target: Element, source: Element): void {
+
+            const t = target as HTMLElement & { [key: string]: unknown };
+            const s = source as HTMLElement & { [key: string]: unknown };
 
             const isInputElement = target.nodeName.toLowerCase() === 'input';
             const propertyNames = isInputElement ? coreAndInputElementProperties : coreElementProperties;
-            const isXML = !source.ownerDocument.contentType || source.ownerDocument.contentType === 'text/xml';
+            const isXML = !(source.ownerDocument as Document & { contentType?: string }).contentType
+                || (source.ownerDocument as Document & { contentType?: string }).contentType === 'text/xml';
 
             for (const propertyName of propertyNames) {
                 const attributeName = propertyToAttribute(propertyName);
-                const sourceValue = isXML ? source.getAttribute(attributeName) : source[propertyName];
-                if (isNotNull(sourceValue)) target[propertyName] = sourceValue;
+                const sourceValue = isXML ? source.getAttribute(attributeName) : s[propertyName];
+                if (isNotNull(sourceValue)) t[propertyName] = sourceValue;
             }
 
             if (isInputElement) {
                 for (const propertyName of inputElementPositiveIntegerProperties) {
                     const attributeName = propertyToAttribute(propertyName);
-                    const sourceValue = isXML ? source.getAttribute(attributeName) : source[propertyName];
-                    if (parseInt(sourceValue) >= 0) target[propertyName] = sourceValue;
+                    const sourceValue = isXML ? source.getAttribute(attributeName) : s[propertyName];
+                    if (parseInt(sourceValue as string) >= 0) t[propertyName] = sourceValue;
                 }
 
                 for (const booleanPropertyName of inputElementBooleanProperties) {
-                    const newBooleanValue = source[booleanPropertyName];
-                    if (isNotNull(newBooleanValue)) target[booleanPropertyName] = newBooleanValue;
+                    const newBooleanValue = s[booleanPropertyName];
+                    if (isNotNull(newBooleanValue)) t[booleanPropertyName] = newBooleanValue;
                 }
             }
 
             //'style' attribute special case
             if (source.hasAttribute('style')) {
                 const sourceStyle = source.getAttribute('style');
-                if (isNotNull(sourceStyle)) target.setAttribute('style', sourceStyle);
+                if (isNotNull(sourceStyle)) target.setAttribute('style', sourceStyle as string);
             } else if (target.hasAttribute('style')) {
                 target.removeAttribute('style');
             }
 
             // Special case for 'dir' attribute
-            if (source.dir !== target.dir) {
+            if ((source as HTMLElement).dir !== (target as HTMLElement).dir) {
                 if (source.hasAttribute('dir')) {
-                    target.dir = source.dir;
+                    (target as HTMLElement).dir = (source as HTMLElement).dir;
                 } else if (target.hasAttribute('dir')) {
-                    target.dir = '';
+                    (target as HTMLElement).dir = '';
                 }
             }
 
             for (const name of LISTENER_NAMES) {
-                target[name] = source[name] ? source[name] : null;
-                if (source[name]) {
-                    source[name] = null;
+                t[name] = s[name] ? s[name] : null;
+                if (s[name]) {
+                    s[name] = null;
                 }
             }
 
             // clone HTML5 data-* attributes
-            const sourceDataset = source.dataset;
-            const targetDataset = target.dataset;
+            const sourceDataset = (source as HTMLElement).dataset;
+            const targetDataset = (target as HTMLElement).dataset;
             if (targetDataset || sourceDataset) {
                 //cleanup the dataset
                 for (const tp in targetDataset) {
@@ -669,14 +669,14 @@ export const ajax = (function () {
          * @param origElement original element to replace
          * @ignore
          */
-        const elementReplace = function elementReplace(newElement, origElement) {
+        const elementReplace = function elementReplace(newElement: HTMLElement, origElement: HTMLElement): void {
 
             // copy source attributes to target node
             try {
                 cloneAttributes(origElement, newElement);
-            } catch (ex) {
+            } catch (_ex) {
                 // if in dev mode, report an error, else try to limp onward
-                if (faces.getProjectStage() === "Development") {
+                if (facesGlobal().getProjectStage() === "Development") {
                     throw new Error("Error updating attributes");
                 }
             }
@@ -694,7 +694,7 @@ export const ajax = (function () {
          * @return element the body element
          * @ignore
          */
-        const getBodyElement = function getBodyElement(docStr) {
+        const getBodyElement = function getBodyElement(docStr: string): Element {
 
             const doc = (new DOMParser()).parseFromString(docStr, "text/xml")
 
@@ -721,8 +721,8 @@ export const ajax = (function () {
          * @param form
          * @ignore
          */
-        const getEncodedUrlElement = function getEncodedUrlElement(form) {
-            return getFormInputElementByName(form,ENCODED_URL_PARAM);
+        const getEncodedUrlElement = function getEncodedUrlElement(form: HTMLFormElement): Element | null {
+            return getFormInputElementByName(form, ENCODED_URL_PARAM);
         };
 
         /**
@@ -735,20 +735,20 @@ export const ajax = (function () {
          * instructions, the submitting form ID, the naming container ID and naming container prefix.
          * @param hiddenStateFieldName The hidden state field name, e.g. jakarta.faces.ViewState or jakarta.faces.ClientWindow
          */
-        const updateHiddenStateFields = function updateHiddenStateFields(updateElement, context, hiddenStateFieldName) {
-            const firstChild = updateElement.firstChild;
-            const state = (typeof firstChild.wholeText !== 'undefined') ? firstChild.wholeText : firstChild.nodeValue;
+        const updateHiddenStateFields = function updateHiddenStateFields(updateElement: Element, context: AjaxContext, hiddenStateFieldName: string): void {
+            const firstChild = updateElement.firstChild as Text | null;
+            const state = firstChild?.wholeText ?? "";
             const formsToUpdate = getFormsToUpdate(context, hiddenStateFieldName);
 
-            for ( const form of formsToUpdate ) {
-                let field = getHiddenStateField(form, hiddenStateFieldName, context.namingContainerPrefix);
+            for (const form of formsToUpdate) {
+                let field = getHiddenStateField(form, hiddenStateFieldName, context.namingContainerPrefix) as HTMLInputElement | null;
                 if (isNull(field)) {
                     field = document.createElement("input");
                     field.type = "hidden";
-                    field.name = context.namingContainerPrefix + hiddenStateFieldName;
+                    field.name = (context.namingContainerPrefix ?? "") + hiddenStateFieldName;
                     form.appendChild(field);
                 }
-                field.value = state;
+                field!.value = state;
             }
         };
 
@@ -760,9 +760,9 @@ export const ajax = (function () {
          * @return {HTMLInputElement} HTMLInputElement representing the hidden state field for a given form
          * @ignore
          */
-        const getHiddenStateField = function getHiddenStateField(form, hiddenStateFieldName, namingContainerPrefix) {
-            const fullHiddenStateFieldName = namingContainerPrefix ? namingContainerPrefix+hiddenStateFieldName : hiddenStateFieldName;
-            return getFormInputElementByName( form , fullHiddenStateFieldName );
+        const getHiddenStateField = function getHiddenStateField(form: HTMLFormElement, hiddenStateFieldName: string, namingContainerPrefix?: string): Element | null {
+            const fullHiddenStateFieldName = namingContainerPrefix ? namingContainerPrefix + hiddenStateFieldName : hiddenStateFieldName;
+            return getFormInputElementByName(form, fullHiddenStateFieldName);
         };
 
         /**
@@ -773,14 +773,15 @@ export const ajax = (function () {
          * instructions, the submitting form ID, the naming container ID and naming container prefix.
          * @ignore
          */
-        const doUpdate = function doUpdate(updateElement, context) {
+        const doUpdate = function doUpdate(updateElement: Element, context: AjaxContext): void {
 
-            let scripts = []; // temp holding value for array of script nodes
-            let newElement;
+            let scripts: RegExpMatchArray[] = []; // temp holding value for array of script nodes
 
             const id = updateElement.getAttribute('id');
-            const viewStateRegex = new RegExp(context.namingContainerPrefix + VIEW_STATE_PARAM + faces.separatorchar + ".+$");
-            const windowIdRegex = new RegExp(context.namingContainerPrefix + CLIENT_WINDOW_PARAM + faces.separatorchar + ".+$");
+            if (id == null) return;
+            const sep = facesGlobal().separatorchar;
+            const viewStateRegex = new RegExp((context.namingContainerPrefix ?? "") + VIEW_STATE_PARAM + sep + ".+$");
+            const windowIdRegex = new RegExp((context.namingContainerPrefix ?? "") + CLIENT_WINDOW_PARAM + sep + ".+$");
 
             if (id.match(viewStateRegex)) {
                 updateHiddenStateFields(updateElement, context, VIEW_STATE_PARAM);
@@ -792,7 +793,7 @@ export const ajax = (function () {
 
             // join the CDATA sections in the markup
             let markup = EMPTY;
-            for ( const updateElementChild of updateElement.childNodes ) {
+            for (const updateElementChild of Array.from(updateElement.childNodes)) {
                 markup += updateElementChild.nodeValue;
             }
 
@@ -805,7 +806,7 @@ export const ajax = (function () {
                 scripts = getScripts(src);
                 runScripts(scripts);
             } else {
-                const element = getElemById(id);
+                const element = getElemById(id) as HTMLElement | null;
 
                 if (context.namingContainerId && id === context.namingContainerId) {
                     // spec790: If UIViewRoot is a NamingContainer and this is currently being updated,
@@ -839,13 +840,13 @@ export const ajax = (function () {
                             scripts = getScripts(src);
                             // Remove scripts from text
                             const newSrc = removeScripts(src);
-                            elementReplace(getBodyElement(newSrc), docBody);
+                            elementReplace(getBodyElement(newSrc) as HTMLElement, docBody);
                             runScripts(scripts);
-                        } catch (e) {
+                        } catch (_e) {
                             // OK, replacing the body didn't work with XML - fall back to quirks mode insert
-                            let srcBody, bodyEnd;
+                            let srcBody;
                             // if src contains </body>
-                            bodyEnd = bodyEndEx.exec(src);
+                            const bodyEnd = bodyEndEx.exec(src);
                             if (bodyEnd !== null) {
                                 srcBody = src.substring(bodyStartEx.lastIndex, bodyEnd.index);
                             } else { // can't find the </body> tag, punt
@@ -873,24 +874,18 @@ export const ajax = (function () {
                     const isTableInnerElement = TABLE_INNER_TAGS.includes(tag);
 
                     if (isTableInnerElement) {
-                        if (isAutoExec()) {
-                            // enclose new html inside a table
-                            newElementContainer.innerHTML = '<table>' + html + '</table>';
-                        } else {
-                            // Get the scripts from the html
-                            scripts = getScripts(html);
-                            // Remove scripts from html
-                            html = removeScripts(html);
-                            // enclose new html inside a table
-                            newElementContainer.innerHTML = '<table>' + html + '</table>';
-                        }
-                        newElement = newElementContainer.firstChild;
+                        // Get the scripts from the html, then strip and re-run them after insertion.
+                        scripts = getScripts(html);
+                        html = removeScripts(html);
+                        // enclose new html inside a table
+                        newElementContainer.innerHTML = '<table>' + html + '</table>';
+                        let newElement: ChildNode | null = newElementContainer.firstChild;
                         //some browsers will also create intermediary elements such as table>tbody>tr>td
-                        while ((null !== newElement) && (id !== newElement.id)) {
+                        while ((null !== newElement) && (id !== (newElement as Element).id)) {
                             newElement = newElement.firstChild;
                         }
 
-                        replaceNode(newElement,element);
+                        if (newElement) replaceNode(newElement, element);
                         runScripts(scripts);
 
                     } else if (element.nodeName.toLowerCase() === 'input') {
@@ -899,22 +894,17 @@ export const ajax = (function () {
                         // input elements need to be added in place.
                         newElementContainer = document.createElement('div');
                         newElementContainer.innerHTML = html;
-                        newElement = newElementContainer.firstChild;
+                        const newElement = newElementContainer.firstChild as Element | null;
 
-                        cloneAttributes(element, newElement);
+                        if (newElement) cloneAttributes(element, newElement);
                         deleteNode(newElementContainer);
                     } else if (html.length > 0) {
-                        if (isAutoExec()) {
-                            // Create html
-                            newElementContainer.innerHTML = html;
-                        } else {
-                            // Get the scripts from the text
-                            scripts = getScripts(html);
-                            // Remove scripts from text
-                            html = removeScripts(html);
-                            newElementContainer.innerHTML = html;
-                        }
-                        replaceNode(newElementContainer.firstChild, element);
+                        // Get the scripts from the text, then strip and re-run them after insertion.
+                        scripts = getScripts(html);
+                        html = removeScripts(html);
+                        newElementContainer.innerHTML = html;
+                        const firstChild = newElementContainer.firstChild;
+                        if (firstChild) replaceNode(firstChild, element);
                         deleteNode(newElementContainer);
                         runScripts(scripts);
                     }
@@ -927,8 +917,9 @@ export const ajax = (function () {
          * @param element
          * @ignore
          */
-        const doDelete = function doDelete(element) {
-            if (element) deleteNode(getElemById(element.getAttribute('id')));
+        const doDelete = function doDelete(element: Element | null): void {
+            const id = element?.getAttribute('id');
+            if (id) deleteNode(getElemById(id));
         };
 
         /**
@@ -936,32 +927,34 @@ export const ajax = (function () {
          * @param element
          * @ignore
          */
-        const doInsert = function doInsert(element) {
+        const doInsert = function doInsert(element: Element): void {
 
-            let target = getElemById(element.firstChild.getAttribute('id'));
+            const insertChild = element.firstChild as Element | null;
+            if (!insertChild) return;
+            const targetId = insertChild.getAttribute('id');
+            if (!targetId) return;
+            let target: Node | null = getElemById(targetId);
+            if (!target) return;
             const parent = target.parentNode;
-            let html = element.firstChild.firstChild.nodeValue;
+            const cdata = insertChild.firstChild;
+            let html = cdata?.nodeValue ?? "";
 
             // todo: check if is it possible to use the TABLE_ELEMENTS array and remove the RegExp
             const tablePattern = new RegExp("<\\s*(td|th|tr|tbody|thead|tfoot)", "i");
             const isInTable = tablePattern.test(html);
 
-            if (!isAutoExec())  {
-                // Get the scripts from the text
-                const scripts = getScripts(html);
-                // Remove scripts from text
-                html = removeScripts(html);
-                // execute scripts
-                runScripts(scripts);
-            }
+            // Get the scripts from the text, strip them out, then execute them.
+            const scripts = getScripts(html);
+            html = removeScripts(html);
+            runScripts(scripts);
             const tempElement = document.createElement('div');
-            let newElement;
-            if (isInTable)  {
+            let newElement: Node | null;
+            if (isInTable) {
                 tempElement.innerHTML = '<table>' + html + '</table>';
                 newElement = tempElement.firstChild;
                 //some browsers will also create intermediary elements such as table>tbody>tr>td
                 //test for presence of id on the new element since we do not have it directly
-                while ((null !== newElement) && (EMPTY === newElement.id)) {
+                while ((null !== newElement) && (EMPTY === (newElement as Element).id)) {
                     newElement = newElement.firstChild;
                 }
             } else {
@@ -969,11 +962,11 @@ export const ajax = (function () {
                 newElement = tempElement.firstChild;
             }
 
-            if (element.firstChild.nodeName === 'after') {
+            if (insertChild.nodeName === 'after') {
                 // Get the next in the list, to insert before
-                target = target.nextSibling;
+                target = (target as ChildNode).nextSibling;
             }  // otherwise, this is a 'before' element
-            if (!!tempElement.innerHTML) { // check if only scripts were inserted - if so, do nothing here
+            if (!!tempElement.innerHTML && parent && newElement) { // check if only scripts were inserted - if so, do nothing here
                 parent.insertBefore(newElement, target);
             }
 
@@ -985,11 +978,11 @@ export const ajax = (function () {
          * @param element
          * @ignore
          */
-        const doAttributes = function doAttributes(element) {
+        const doAttributes = function doAttributes(element: Element): void {
 
             // Get id of element we'll act against
             const id = element.getAttribute('id');
-            const target = getElemById(id);
+            const target = id ? getElemById(id) as (HTMLInputElement & { [key: string]: unknown }) | null : null;
 
             if (!target) {
                 throw new Error("The specified id: " + id + " was not found in the page.");
@@ -997,9 +990,10 @@ export const ajax = (function () {
 
             // There can be multiple attributes modified.  Loop through the list.
             const nodes = element.childNodes;
-            for ( const node of nodes ) {
-                const name = node.getAttribute('name');
-                const value = node.getAttribute('value');
+            for (const node of Array.from(nodes) as Element[]) {
+                const name = node.getAttribute!('name');
+                const value = node.getAttribute!('value');
+                if (name == null) continue;
 
                 //boolean attribute handling code for all browsers
                 if (name === 'disabled') {
@@ -1014,9 +1008,9 @@ export const ajax = (function () {
                 }
 
                 if (name === 'value') {
-                    target.value = value;
+                    target.value = value ?? "";
                 } else {
-                    target.setAttribute(name, value);
+                    target.setAttribute(name, value ?? "");
                 }
             }
         };
@@ -1027,10 +1021,10 @@ export const ajax = (function () {
          * @param element to eval
          * @ignore
          */
-        const doEval = function doEval(element) {
+        const doEval = function doEval(element: Element | null): void {
             (() => { //
                 const script = element ? element.textContent : undefined;
-                if (script) runScripts([[null, '', script]]);
+                if (script) runScripts([['', '', script] as unknown as RegExpMatchArray]);
                 else console.warn('called doEval with no source code');
             })();
         };
@@ -1039,267 +1033,216 @@ export const ajax = (function () {
          * Ajax Request Queue
          * @ignore
          */
-        const Queue = new function Queue() {
+        interface AjaxQueue {
+            getSize(): number;
+            isEmpty(): boolean;
+            enqueue(req: AjaxRequest): void;
+            dequeue(): AjaxRequest | undefined;
+            getOldestElement(): AjaxRequest | undefined;
+        }
 
+        const Queue: AjaxQueue = (function () {
             // Create the internal queue
-            let queue = [];
+            let queue: AjaxRequest[] = [];
 
             // the amount of space at the front of the queue, initialised to zero
             let queueSpace = 0;
 
-            /** Returns the size of this Queue. The size of a Queue is equal to the number
-             * of elements that have been enqueued minus the number of elements that have
-             * been dequeued.
-             * @ignore
-             */
-            this.getSize = function getSize() {
-                return queue.length - queueSpace;
-            };
-
-            /**
-             * Returns true if this Queue is empty, and false otherwise. A Queue is empty
-             * if the number of elements that have been enqueued equals the number of
-             * elements that have been dequeued.
-             * @ignore
-             */
-            this.isEmpty = function isEmpty() {
-                return (queue.length === 0);
-            };
-
-            /**
-             * Enqueues the specified element in this Queue.
-             *
-             * @param element - the element to enqueue
-             * @ignore
-             */
-            this.enqueue = function enqueue(element) {
-                queue.push(element);
-            };
-
-
-            /**
-             * Dequeues an element from this Queue. The oldest element in this Queue is
-             * removed and returned. If this Queue is empty then undefined is returned.
-             *
-             * @returns Object The element that was removed from the queue.
-             * @ignore
-             */
-            this.dequeue = function dequeue() {
-                // initialise the element to return to be undefined
-                let element = undefined;
-
-                // check whether the queue is empty
-                if (queue.length) {
-                    // fetch the oldest element in the queue
-                    element = queue[queueSpace];
-
-                    // update the amount of space and check whether a shift should occur
-                    if (++queueSpace * 2 >= queue.length) {
-                        // set the queue equal to the non-empty portion of the queue
-                        queue = queue.slice(queueSpace);
-                        // reset the amount of space at the front of the queue
-                        queueSpace = 0;
+            return {
+                getSize() {
+                    return queue.length - queueSpace;
+                },
+                isEmpty() {
+                    return (queue.length === 0);
+                },
+                enqueue(req) {
+                    queue.push(req);
+                },
+                dequeue() {
+                    let element: AjaxRequest | undefined = undefined;
+                    if (queue.length) {
+                        element = queue[queueSpace];
+                        if (++queueSpace * 2 >= queue.length) {
+                            queue = queue.slice(queueSpace);
+                            queueSpace = 0;
+                        }
                     }
-                }
-                // return the removed element
-                return element;
+                    return element;
+                },
+                getOldestElement() {
+                    return queue.length ? queue[queueSpace] : undefined;
+                },
             };
-
-            /**
-             * Returns the oldest element in this Queue. If this Queue is empty then
-             * undefined is returned. This function returns the same value as the dequeue
-             * function, but does not remove the returned element from this Queue.
-             * @ignore
-             */
-            this.getOldestElement = function getOldestElement() {
-                return queue.length ? queue[queueSpace] : undefined;
-            };
-        };
+        })();
 
 
         /**
          * AjaxEngine handles Ajax implementation details.
          * @ignore
          */
-        const AjaxEngine = function AjaxEngine(context) {
+        interface AjaxRequest {
+            url: string | null;
+            context: AjaxContext & { form?: HTMLFormElement };
+            xmlReq: XMLHttpRequest | null;
+            async: boolean;
+            parameters: Record<string, string>;
+            queryString: string | null;
+            method: string | null;
+            status: number | null;
+            fromQueue: boolean;
+            que: AjaxQueue;
+            generateUniqueUrl?: boolean;
+            requestIndex?: number;
+            onComplete(): void;
+            setupArguments(args: Record<string, unknown>): void;
+            sendRequest(): void;
+            [key: string]: unknown;
+        }
 
-            const req = {};            // Request Object
-            req.url = null;                // Request URL
-            req.context = context;         // Context of request and response
-            req.context.sourceid = null;   // Source of this request
-            req.context.onerror = null;    // Error handler for request
-            req.context.onevent = null;    // Event handler for request
-            req.context.namingContainerId = null;       // If UIViewRoot is an instance of NamingContainer this represents its ID.
-            req.context.namingContainerPrefix = null;   // If UIViewRoot is an instance of NamingContainer this represents its ID suffixed with separator character, else an empty string.
-            req.xmlReq = null;             // XMLHttpRequest Object
-            req.async = true;              // Default - Asynchronous
-            req.parameters = {};           // Parameters For GET or POST
-            req.queryString = null;        // Encoded Data For GET or POST
-            req.method = null;             // GET or POST
-            req.status = null;             // Response Status Code From Server
-            req.fromQueue = false;         // Indicates if the request was taken off the queue before being sent. This prevents the request from entering the queue redundantly.
-            req.que = Queue;               // the shared queue for requests (singleton, per spec)
-            req.xmlReq = new XMLHttpRequest(); // The real XMLHttpRequest Level2
+        const AjaxEngine = function AjaxEngine(context: AjaxContext & { form?: HTMLFormElement }): AjaxRequest {
 
-            // Set up request/response state callbacks
-            /**
-             * @ignore
-             */
-            req.xmlReq.onreadystatechange = function() {
-                if (req.xmlReq.readyState === 4) {
+            const req = {} as AjaxRequest;
+            req.url = null;
+            req.context = context;
+            req.context.sourceid = undefined;
+            req.context.onerror = undefined;
+            req.context.onevent = undefined;
+            req.context.namingContainerId = undefined;
+            req.context.namingContainerPrefix = undefined;
+            req.xmlReq = null;
+            req.async = true;
+            req.parameters = {};
+            req.queryString = null;
+            req.method = null;
+            req.status = null;
+            req.fromQueue = false;
+            req.que = Queue;
+            req.xmlReq = new XMLHttpRequest();
+
+            req.xmlReq.onreadystatechange = function () {
+                if (req.xmlReq && req.xmlReq.readyState === 4) {
                     req.onComplete();
                 }
             };
 
-            /**
-             * This function is called when the request/response interaction
-             * is complete.  If the return status code is successfull,
-             * dequeue all requests from the queue that have completed.  If a
-             * request has been found on the queue that has not been sent,
-             * send the request.
-             * @ignore
-             */
             req.onComplete = function onComplete() {
+                if (!req.xmlReq) return;
                 if (req.xmlReq.status && (req.xmlReq.status >= 200 && req.xmlReq.status < 300)) {
                     sendEvent(req.xmlReq, req.context, "complete");
-                    faces.ajax.response(req.xmlReq, req.context);
+                    facesGlobal().ajax.response(req.xmlReq, req.context);
                 } else {
                     sendEvent(req.xmlReq, req.context, "complete");
                     sendError(req.xmlReq, req.context, "httpError");
                 }
 
-                // Regardless of whether the request completed successfully (or not),
-                // dequeue requests that have been completed (readyState 4) and send
-                // requests that ready to be sent (readyState 0).
-
                 let nextReq = req.que.getOldestElement();
-                if (isNull(nextReq)) {
-                    return;
-                }
-                while (isNotNull(nextReq.xmlReq) && nextReq.xmlReq.readyState === 4) {
+                if (isNull(nextReq)) return;
+                while (nextReq && isNotNull(nextReq.xmlReq) && nextReq.xmlReq!.readyState === 4) {
                     req.que.dequeue();
                     nextReq = req.que.getOldestElement();
-                    if (isNull(nextReq)) {
-                        break;
-                    }
+                    if (isNull(nextReq)) break;
                 }
-                if (isNull(nextReq)) {
-                    return;
-                }
-                if (isNotNull(nextReq.xmlReq) && nextReq.xmlReq.readyState === 0) {
+                if (isNull(nextReq) || !nextReq) return;
+                if (isNotNull(nextReq.xmlReq) && nextReq.xmlReq!.readyState === 0) {
                     nextReq.fromQueue = true;
                     nextReq.sendRequest();
                 }
             };
 
-            /**
-             * Utility method that accepts additional arguments for the AjaxEngine.
-             * If an argument is passed in that matches an AjaxEngine property, the
-             * argument value becomes the value of the AjaxEngine property.
-             * Arguments that don't match AjaxEngine properties are added as
-             * request parameters.
-             * @ignore
-             */
-            req.setupArguments = function(args) {
-                for (const i of Object.keys(args) ) {
-                    if (typeof req[i] === UDEF) {
-                        req.parameters[i] = args[i];
+            req.setupArguments = function (args) {
+                const indexed = req as unknown as Record<string, unknown>;
+                for (const i of Object.keys(args)) {
+                    if (typeof indexed[i] === UDEF) {
+                        req.parameters[i] = args[i] as string;
                     } else {
-                        req[i] = args[i];
+                        indexed[i] = args[i];
                     }
                 }
             };
 
-            /**
-             * This function does final encoding of parameters, determines the request method
-             * (GET or POST) and sends the request using the specified url.
-             * @ignore
-             */
             req.sendRequest = function () {
-                if (isNotNull(req.xmlReq)) {
-                    // if there is already a request on the queue waiting to be processed..
-                    // just queue this request
-                    // TODO: add support for async ajax requests
-                    // https://github.com/eclipse-ee4j/mojarra/issues/4946
-                    if (!req.que.isEmpty()) {
-                        if (!req.fromQueue) {
-                            req.que.enqueue(req);
-                            return;
-                        }
-                    }
-                    // If the queue is empty, queue up this request and send
+                if (!isNotNull(req.xmlReq) || !req.xmlReq) return;
+                // if there is already a request on the queue waiting to be processed..
+                // just queue this request
+                // TODO: add support for async ajax requests
+                // https://github.com/eclipse-ee4j/mojarra/issues/4946
+                if (!req.que.isEmpty()) {
                     if (!req.fromQueue) {
                         req.que.enqueue(req);
+                        return;
                     }
-                    // Some logic to get the real request URL
-                    if (req.generateUniqueUrl && req.method === "GET") {
-                        req.parameters["AjaxRequestUniqueId"] = new Date().getTime() + EMPTY + req.requestIndex;
-                    }
-
-                    // is a multipart form data ?
-                    const isMultiPart = (req.method === "POST" && context.form.enctype === 'multipart/form-data');
-
-                    // If multipart prepare the FormData
-                    const formData = isMultiPart ? new FormData(context.form) : undefined;
-
-                    // Add parameters encoded or multipart
-                    const params = new URLSearchParams(req.queryString);
-                    for ( const i of Object.keys(req.parameters) ) {
-                        // if is multipart request -> add parameter to FormData
-                        if ( isMultiPart ) {
-                            formData.append(i,req.parameters[i]);
-                        }
-                        // else is a normal post request -> add to URLSearchParams for POST
-                        else {
-                            params.append(i, req.parameters[i]);
-                        }
-                    }
-                    req.queryString = params.toString();
-
-                    if (req.method === "GET") {
-                        if (req.queryString.length > 0) {
-                            req.url += ((req.url.indexOf("?") > -1) ? "&" : "?") + req.queryString;
-                        }
-                    }
-
-                    // Open Ajax request
-                    req.xmlReq.open(req.method, req.url, req.async);
-
-                    // note that we are including the charset=UTF-8 as part of the content type (even
-                    // if URLSearchParams encodes as UTF-8), because with some
-                    // browsers it will not be set in the request.  Some server implementations need to
-                    // determine the character encoding from the request header content type.
-                    if (req.method === "POST") {
-                        req.xmlReq.setRequestHeader('Faces-Request', 'partial/ajax');
-
-                        // file upload
-                        if ( isMultiPart ) formData.append('Faces-Request','partial/ajax');
-
-                        // GET or POST
-                        // req.xmlReq.setRequestHeader('Content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
-                        else req.xmlReq.setRequestHeader( 'Content-type' , context.form.enctype+';charset=UTF-8' );
-                    }
-
-                    // note that async == false is not a supported feature.  We may change it in ways
-                    // that break existing programs at any time, with no warning.
-                    if (!req.async) req.xmlReq.onreadystatechange = null; // no need for readystate change listening
-
-                    // Send begin event
-                    sendEvent(req.xmlReq, req.context, "begin");
-
-                    // IF multipart/form-data use FormData
-                    if (isMultiPart) req.xmlReq.send(formData);
-
-                    // ELSE use query string
-                    else req.xmlReq.send(req.queryString);
-
-                    // call OnComplete if not async
-                    if(!req.async) req.onComplete();
-
                 }
+                if (!req.fromQueue) {
+                    req.que.enqueue(req);
+                }
+                if (req.generateUniqueUrl && req.method === "GET") {
+                    req.parameters["AjaxRequestUniqueId"] = new Date().getTime() + EMPTY + req.requestIndex;
+                }
+
+                const form = context.form;
+                const isMultiPart = (req.method === "POST" && form != null && form.enctype === 'multipart/form-data');
+                const formData = isMultiPart && form ? new FormData(form) : undefined;
+
+                const params = new URLSearchParams(req.queryString ?? undefined);
+                for (const i of Object.keys(req.parameters)) {
+                    if (isMultiPart && formData) {
+                        formData.append(i, req.parameters[i]);
+                    } else {
+                        params.append(i, req.parameters[i]);
+                    }
+                }
+                req.queryString = params.toString();
+
+                if (req.method === "GET") {
+                    if (req.queryString.length > 0 && req.url) {
+                        req.url += ((req.url.indexOf("?") > -1) ? "&" : "?") + req.queryString;
+                    }
+                }
+
+                req.xmlReq.open(req.method ?? "POST", req.url ?? "", req.async);
+
+                if (req.method === "POST") {
+                    req.xmlReq.setRequestHeader('Faces-Request', 'partial/ajax');
+
+                    if (isMultiPart && formData) formData.append('Faces-Request', 'partial/ajax');
+                    else req.xmlReq.setRequestHeader('Content-type', (form?.enctype ?? '') + ';charset=UTF-8');
+                }
+
+                if (!req.async) req.xmlReq.onreadystatechange = null;
+
+                sendEvent(req.xmlReq, req.context, "begin");
+
+                if (isMultiPart && formData) req.xmlReq.send(formData);
+                else req.xmlReq.send(req.queryString);
+
+                if (!req.async) req.onComplete();
             };
 
             return req;
+        };
+
+        type ErrorPayload = FacesSpec.AjaxError & { description?: string };
+
+        /**
+         * Resolve `context.sourceid` (either a string id or an already-resolved Element)
+         * to its DOM element, per 14.4.1 of the 2.0 specification. Returns undefined when
+         * the sourceid is unset or refers to a missing element.
+         */
+        const resolveSourceElement = (sourceid: AjaxContext["sourceid"]): Element | undefined => {
+            if (typeof sourceid === "string") {
+                return document.getElementById(sourceid) ?? undefined;
+            }
+            if (sourceid && (sourceid as Element).nodeType !== undefined) {
+                return sourceid as Element;
+            }
+            return undefined;
+        };
+
+        /** Copy the XHR response fields onto an {@link FacesSpec.AjaxData} payload. */
+        const copyResponseFields = (data: FacesSpec.AjaxData, request: XMLHttpRequest): void => {
+            data.responseCode = request.status;
+            data.responseXML = request.responseXML ?? undefined;
+            data.responseText = request.responseText;
         };
 
         /**
@@ -1307,28 +1250,25 @@ export const ajax = (function () {
          * Assumes that the request has completed.
          * @ignore
          */
-        const sendError = function sendError(request, context, status, description, serverErrorName, serverErrorMessage) {
+        const sendError = function sendError(
+            request: XMLHttpRequest,
+            context: AjaxContext,
+            status: FacesSpec.AjaxErrorStatus,
+            description?: string,
+            serverErrorName?: string,
+            serverErrorMessage?: string,
+        ): void {
 
-            // Possible error names:
-            // httpError
-            // emptyResponse
-            // serverError
-            // malformedXML
+            // Possible error names: httpError | emptyResponse | serverError | malformedXML
 
             let sent = false;
-            const data = {};  // data payload for function
-            data.type = "error";
-            data.status = status;
-            data.source = context.sourceid;
-            data.responseCode = request.status;
-            data.responseXML = request.responseXML;
-            data.responseText = request.responseText;
-
-            // ensure data source is the dom element and not the ID
-            // per 14.4.1 of the 2.0 specification.
-            if (typeof data.source === 'string') {
-                data.source = document.getElementById(data.source);
-            }
+            const source = resolveSourceElement(context.sourceid);
+            const data: ErrorPayload = {
+                type: "error",
+                status,
+                ...(source && { source }),
+            };
+            copyResponseFields(data, request);
 
             if (description) {
                 data.description = description;
@@ -1343,8 +1283,8 @@ export const ajax = (function () {
             } else if (status === "emptyResponse") {
                 data.description = "An empty response was received from the server.  Check server error logs.";
             } else if (status === "malformedXML") {
-                const parsedErrorText = getParseErrorText(data.responseXML);
-                if ( parsedErrorText !== PARSED_OK) {
+                const parsedErrorText = getParseErrorText(data.responseXML as unknown as Document | null);
+                if (parsedErrorText !== PARSED_OK) {
                     data.description = parsedErrorText;
                 } else {
                     data.description = "An invalid XML response was received from the server.";
@@ -1370,18 +1310,19 @@ export const ajax = (function () {
             }
 
             if (!sent) {
+                const sourceForLog = data.source as (Element & { id?: string }) | undefined;
                 const errorMessage = status + ": "
                     + (serverErrorName ? serverErrorName + " " : "")
                     + data.description
                     + (data.responseCode ? " (HTTP " + data.responseCode + ")" : "")
-                    + (data.source ? " [source: " + (data.source.id || data.source) + "]" : "");
+                    + (sourceForLog ? " [source: " + (sourceForLog.id || sourceForLog) + "]" : "");
 
                 // Example outputs:
                 // - httpError: There was an error communicating with the server, status: 404 (HTTP 404) [source: myButton]
                 // - serverError: java.lang.NullPointerException fieldName (HTTP 500) [source: myForm]
                 // - emptyResponse: An empty response was received from the server. Check server error logs. [source: myButton]
 
-                if (faces.getProjectStage() === "Development") {
+                if (facesGlobal().getProjectStage() === "Development") {
                     alert(errorMessage);
                 } else {
                     console.error(errorMessage);
@@ -1403,21 +1344,17 @@ export const ajax = (function () {
          * Request is assumed to have completed, except in the case of event = 'begin'.
          * @ignore
          */
-        const sendEvent = function sendEvent(request, context, status) {
+        const sendEvent = function sendEvent(request: XMLHttpRequest, context: AjaxContext, status: FacesSpec.AjaxEventStatus): void {
 
-            const data = {};
-            data.type = "event";
-            data.status = status;
-            data.source = context.sourceid;
-            // ensure data source is the dom element and not the ID
-            // per 14.4.1 of the 2.0 specification.
-            if (typeof data.source === 'string') {
-                data.source = document.getElementById(data.source);
-            }
+            const source = resolveSourceElement(context.sourceid);
+            const data: FacesSpec.AjaxEvent = {
+                type: "event",
+                status,
+                ...(source && { source }),
+            };
+
             if (status !== 'begin') {
-                data.responseCode = request.status;
-                data.responseXML = request.responseXML;
-                data.responseText = request.responseText;
+                copyResponseFields(data, request);
             }
 
             // TODO: do we need to call this functions in the global context?
@@ -1431,7 +1368,7 @@ export const ajax = (function () {
             }
         };
 
-        const unescapeHTML = function unescapeHTML(escapedHTML) {
+        const unescapeHTML = function unescapeHTML(escapedHTML: string): string {
             return escapedHTML
                 .replace(/&apos;/g, "'")
                 .replace(/&quot;/g, '"')
@@ -1463,7 +1400,7 @@ export const ajax = (function () {
              * @function faces.ajax.addOnError
              * @param callback a reference to a function to call on an error
              */
-            addOnError: function addOnError(callback) {
+            addOnError: function addOnError(callback: FacesSpec.ajax.OnErrorCallback) {
                 if (typeof callback === 'function') {
                     errorListeners.push(callback);
                 } else {
@@ -1491,7 +1428,7 @@ export const ajax = (function () {
              * @function faces.ajax.addOnEvent
              * @param callback a reference to a function to call on an event
              */
-            addOnEvent: function addOnEvent(callback) {
+            addOnEvent: function addOnEvent(callback: FacesSpec.ajax.OnEventCallback) {
                 if (typeof callback === 'function') {
                     eventListeners.push(callback);
                 } else {
@@ -1798,26 +1735,30 @@ export const ajax = (function () {
              * is not set to <code>multipart/form-data</code>
              */
 
-            request: function request(source, event, options) {
+            request: function request(source: Element | string, event?: Event | null, options?: FacesSpec.ajax.RequestOptions) {
 
-                const context = {};
+                const context: AjaxContext & { element?: Element; form?: HTMLFormElement; includesInputFile?: boolean } = {};
 
                 if (isNull(source)) {
                     throw new Error("faces.ajax.request: source not set");
                 }
-                if(delayHandler) {
+                if (delayHandler) {
                     clearTimeout(delayHandler);
                     delayHandler = null;
                 }
 
                 // set up the element based on source
-                let element;
+                let element: (Element & { name?: string; id: string }) | null;
                 if (typeof source === 'string') {
-                    element = document.getElementById(source);
+                    element = document.getElementById(source) as (HTMLElement & { name?: string }) | null;
                 } else if (typeof source === 'object') {
-                    element = source;
+                    element = source as Element & { name?: string; id: string };
                 } else {
                     throw new Error("faces.ajax.request: source must be object or string");
+                }
+
+                if (!element) {
+                    throw new Error("faces.ajax.request: source not set");
                 }
 
                 // attempt to handle case of name unset
@@ -1828,25 +1769,23 @@ export const ajax = (function () {
 
                 context.element = element;
 
-                if (isNull(options)) {
-                    options = {};
-                }
+                const opts: FacesSpec.ajax.RequestOptions & Record<string, unknown> = (options ?? {}) as FacesSpec.ajax.RequestOptions & Record<string, unknown>;
 
                 // Error handler for this request
-                let onerror = false;
+                let onerror: FacesSpec.ajax.OnErrorCallback | undefined;
 
-                if (options.onerror && typeof options.onerror === 'function') {
-                    onerror = options.onerror;
-                } else if (options.onerror && typeof options.onerror !== 'function') {
+                if (opts.onerror && typeof opts.onerror === 'function') {
+                    onerror = opts.onerror;
+                } else if (opts.onerror && typeof opts.onerror !== 'function') {
                     throw new Error("faces.ajax.request: Added an onerror callback that was not a function");
                 }
 
                 // Event handler for this request
-                let onevent = false;
+                let onevent: FacesSpec.ajax.OnEventCallback | undefined;
 
-                if (options.onevent && typeof options.onevent === 'function') {
-                    onevent = options.onevent;
-                } else if (options.onevent && typeof options.onevent !== 'function') {
+                if (opts.onevent && typeof opts.onevent === 'function') {
+                    onevent = opts.onevent;
+                } else if (opts.onevent && typeof opts.onevent !== 'function') {
                     throw new Error("faces.ajax.request: Added an onevent callback that was not a function");
                 }
 
@@ -1855,7 +1794,7 @@ export const ajax = (function () {
                     throw new Error("faces.ajax.request: Method must be called within a form");
                 }
 
-                const viewStateElement = getHiddenStateField(form, VIEW_STATE_PARAM);
+                const viewStateElement = getHiddenStateField(form, VIEW_STATE_PARAM) as HTMLInputElement | null;
                 if (!viewStateElement) {
                     throw new Error("faces.ajax.request: Form has no view state element");
                 }
@@ -1864,116 +1803,114 @@ export const ajax = (function () {
                 context.formId = form.id;
 
                 // Set up additional arguments to be used in the request..
-                // Make sure "jakarta.faces.source" is set up.
+                // Make sure SOURCE_PARAM is set up.
                 // If there were "execute" ids specified, make sure we
                 // include the identifier of the source element in the
                 // "execute" list.  If there were no "execute" ids
                 // specified, determine the default.
 
-                const args = {};
+                const args: Record<string, unknown> = {};
 
                 const namingContainerPrefix = viewStateElement.name.substring(0, viewStateElement.name.indexOf(VIEW_STATE_PARAM));
 
-                args[namingContainerPrefix + "jakarta.faces.source"] = element.id;
+                args[namingContainerPrefix + SOURCE_PARAM] = element.id;
 
                 if (event && !!event.type) {
-                    args[namingContainerPrefix + "jakarta.faces.partial.event"] = event.type;
+                    args[namingContainerPrefix + PARTIAL_EVENT_PARAM] = event.type;
                 }
 
-                if ("resetValues" in options) {
-                    args[namingContainerPrefix + "jakarta.faces.partial.resetValues"] = options.resetValues;
+                if ("resetValues" in opts) {
+                    args[namingContainerPrefix + PARTIAL_RESET_VALUES_PARAM] = opts.resetValues;
                 }
 
                 // do a partial submit only if it is enabled and:
                 // 1) option.execute is not defined, eg. <f:ajax />
                 // 2) if it is defined it should not contain @form or @all
-                const doPartialSubmit = PARTIAL_SUBMIT_ENABLED && ( !options.execute || ( !contains(options.execute,"@form") && !contains(options.execute,"@all") ) );
+                const doPartialSubmit = PARTIAL_SUBMIT_ENABLED && (!opts.execute || (!contains(opts.execute, "@form") && !contains(opts.execute, "@all")));
 
                 // If we have 'execute' identifiers:
                 // Handle any keywords that may be present.
-                // If @none present anywhere, do not send the
-                // "jakarta.faces.partial.execute" parameter.
-                // The 'execute' and 'render' lists must be space
-                // delimited.
+                // If @none present anywhere, do not send the PARTIAL_EXECUTE_PARAM parameter.
+                // The 'execute' and 'render' lists must be space delimited.
 
-                if (options.execute) {
-                    const isNone = contains(options.execute,"@none");
-                    if ( !isNone ) {
-                        const isAll = contains(options.execute,"@all");
-                        if ( !isAll ) {
-                            options.execute = options.execute.replace("@this", element.id);
-                            options.execute = options.execute.replace("@form", form.id);
-                            const temp = options.execute.split(SPACE);
-                            if ( ! temp.includes(element.name) ) {
-                                options.execute = element.name + SPACE + options.execute;
+                if (opts.execute) {
+                    const isNone = contains(opts.execute, "@none");
+                    if (!isNone) {
+                        const isAll = contains(opts.execute, "@all");
+                        if (!isAll) {
+                            opts.execute = opts.execute.replace("@this", element.id);
+                            opts.execute = opts.execute.replace("@form", form.id);
+                            const temp = opts.execute.split(SPACE);
+                            if (!temp.includes(element.name!)) {
+                                opts.execute = element.name + SPACE + opts.execute;
                             }
                             if (namingContainerPrefix) {
-                                options.execute = namespaceParametersIfNecessary(options.execute, element.name, namingContainerPrefix);
+                                opts.execute = namespaceParametersIfNecessary(opts.execute, element.name!, namingContainerPrefix);
                             }
                         } else {
-                            options.execute = "@all";
+                            opts.execute = "@all";
                         }
-                        args[namingContainerPrefix + "jakarta.faces.partial.execute"] = options.execute;
+                        args[namingContainerPrefix + PARTIAL_EXECUTE_PARAM] = opts.execute;
                     }
                 }
                 // in case of <f:ajax />
                 else {
-                    // if id is equals to name then add only one of them to avoid duplicates inside options.execute
-                    options.execute = (element.name === element.id) ? element.id : element.name+SPACE+element.id;
-                    args[namingContainerPrefix + "jakarta.faces.partial.execute"] = options.execute;
+                    // if id is equals to name then add only one of them to avoid duplicates inside opts.execute
+                    opts.execute = (element.name === element.id) ? element.id : element.name + SPACE + element.id;
+                    args[namingContainerPrefix + PARTIAL_EXECUTE_PARAM] = opts.execute;
                 }
 
-                if (options.render) {
-                    const isNone = contains(options.render,"@none");
-                    if ( !isNone ) {
-                        const isAll = contains(options.render,"@all");
-                        if ( !isAll ) {
-                            options.render = options.render.replace("@this", element.id);
-                            options.render = options.render.replace("@form", form.id);
+                if (opts.render) {
+                    const isNone = contains(opts.render, "@none");
+                    if (!isNone) {
+                        const isAll = contains(opts.render, "@all");
+                        if (!isAll) {
+                            opts.render = opts.render.replace("@this", element.id);
+                            opts.render = opts.render.replace("@form", form.id);
                             if (namingContainerPrefix) {
-                                options.render = namespaceParametersIfNecessary(options.render, element.name, namingContainerPrefix);
+                                opts.render = namespaceParametersIfNecessary(opts.render, element.name!, namingContainerPrefix);
                             }
                         } else {
-                            options.render = "@all";
+                            opts.render = "@all";
                         }
-                        args[namingContainerPrefix + "jakarta.faces.partial.render"] = options.render;
+                        args[namingContainerPrefix + PARTIAL_RENDER_PARAM] = opts.render;
                     }
                 }
 
                 // delay value for request execution
-                const explicitlyDoNotDelay =    ((typeof options.delay == 'undefined') || (typeof options.delay == 'string') &&
-                                                (options.delay.toLowerCase() === 'none'));
-                let delayValue;
-                if (typeof options.delay == 'number') {
-                    delayValue = options.delay;
-                } else  {
-                    const converted = parseInt(options.delay);
+                const explicitlyDoNotDelay = ((typeof opts.delay == 'undefined') || (typeof opts.delay == 'string') &&
+                    ((opts.delay as string).toLowerCase() === 'none'));
+                let delayValue: number;
+                if (typeof opts.delay == 'number') {
+                    delayValue = opts.delay;
+                } else {
+                    const converted = parseInt(opts.delay as unknown as string);
 
                     if (!explicitlyDoNotDelay && isNaN(converted)) {
-                        throw new Error('invalid value for delay option: ' + options.delay);
+                        throw new Error('invalid value for delay option: ' + opts.delay);
                     }
                     delayValue = converted;
                 }
 
                 // check the "execute" ids to see if any include an input of type "file"
                 context.includesInputFile = false;
-                let ids = options.execute.split(SPACE);
+                let ids = opts.execute!.split(SPACE);
 
                 // if @all -> execute only this form
-                if ( ids.includes("@all") ) ids = [ form.id ];
+                if (ids.includes("@all")) ids = [form.id];
 
                 if (ids) {
-                    for ( const id of ids ) {
+                    for (const id of ids) {
                         const elem = document.getElementById(id);
                         if (elem) {
                             if (elem.nodeType === Node.ELEMENT_NODE) {
-                                if ( elem.hasAttribute("type") ) {
+                                if (elem.hasAttribute("type")) {
                                     if (elem.getAttribute("type") === "file") {
                                         context.includesInputFile = true;
                                         break;
                                     }
                                 } else {
-                                    if (hasInputFileControl(elem)) {
+                                    if (hasInputFileControl(elem as HTMLFormElement)) {
                                         context.includesInputFile = true;
                                         break;
                                     }
@@ -1984,47 +1921,47 @@ export const ajax = (function () {
                 }
 
                 // encoded query string to process, eventually with partial submit logic enabled
-                const viewState = doPartialSubmit ? getPartialViewState( form , options.execute ) : faces.getViewState(form);
+                const viewState = doPartialSubmit ? getPartialViewState(form, opts.execute) : facesGlobal().getViewState(form);
 
                 // copy all params to args
-                const params = options.params || {};
-                for (const property of Object.keys(params) ) {
+                const params = (opts.params ?? {}) as Record<string, string | number | boolean>;
+                for (const property of Object.keys(params)) {
                     args[namingContainerPrefix + property] = params[property];
                 }
 
                 // remove non-passthrough options
-                delete options.execute;
-                delete options.render;
-                delete options.onerror;
-                delete options.onevent;
-                delete options.delay;
-                delete options.resetValues;
-                delete options.params;
+                delete opts.execute;
+                delete opts.render;
+                delete opts.onerror;
+                delete opts.onevent;
+                delete opts.delay;
+                delete opts.resetValues;
+                delete opts.params;
 
                 // copy all other options to args (for backwards compatibility on issue 4115)
-                for (const property of Object.keys(options) ) {
-                    args[namingContainerPrefix + property] = options[property];
+                for (const property of Object.keys(opts)) {
+                    args[namingContainerPrefix + property] = (opts as Record<string, unknown>)[property];
                 }
 
-                args[namingContainerPrefix + "jakarta.faces.partial.ajax"] = "true";
+                args[namingContainerPrefix + PARTIAL_AJAX_PARAM] = "true";
                 args["method"] = "POST";
 
                 // Determine the posting url
-                const encodedUrlField = getEncodedUrlElement(form);
-                if ( isNull(encodedUrlField) ) {
+                const encodedUrlField = getEncodedUrlElement(form) as HTMLInputElement | null;
+                if (isNull(encodedUrlField) || !encodedUrlField) {
                     args["url"] = form.action;
                 } else {
                     args["url"] = encodedUrlField.value;
                 }
 
-                const sendRequest = function() {
-                    const ajaxEngine = new AjaxEngine(context);
+                const sendRequest = function () {
+                    const ajaxEngine = AjaxEngine(context);
                     ajaxEngine.setupArguments(args);
                     ajaxEngine.queryString = viewState;
                     ajaxEngine.context.onevent = onevent;
                     ajaxEngine.context.onerror = onerror;
-                    ajaxEngine.context.sourceid = element.id;
-                    ajaxEngine.context.render = args[namingContainerPrefix + "jakarta.faces.partial.render"] || EMPTY;
+                    ajaxEngine.context.sourceid = element!.id;
+                    ajaxEngine.context.render = (args[namingContainerPrefix + PARTIAL_RENDER_PARAM] as string) || EMPTY;
                     ajaxEngine.context.namingContainerPrefix = namingContainerPrefix;
                     ajaxEngine.sendRequest();
                 };
@@ -2255,7 +2192,7 @@ export const ajax = (function () {
              *
              * @function faces.ajax.response
              */
-            response: function response(request, context) {
+            response: function response(request: XMLHttpRequest, context: AjaxContext) {
 
                 if (!request) {
                     throw new Error("faces.ajax.response: Request parameter is unset");
@@ -2266,7 +2203,8 @@ export const ajax = (function () {
                 // *before* any errors or events are propagated because the
                 // DOM element may be removed after the update has been processed.
                 if (typeof context.sourceid === 'string') {
-                    context.sourceid = document.getElementById(context.sourceid);
+                    const found = document.getElementById(context.sourceid);
+                    if (found) context.sourceid = found;
                 }
 
                 const xml = request.responseXML;
@@ -2282,44 +2220,55 @@ export const ajax = (function () {
 
                 const partialResponse = xml.getElementsByTagName("partial-response")[0];
                 const namingContainerId = partialResponse.getAttribute("id");
-                const namingContainerPrefix = namingContainerId ? (namingContainerId + faces.separatorchar) : EMPTY;
-                let responseType = partialResponse.firstChild;
+                const sep = facesGlobal().separatorchar;
+                const namingContainerPrefix = namingContainerId ? (namingContainerId + sep) : EMPTY;
+                let responseType: ChildNode | null = partialResponse.firstChild;
 
-                context.namingContainerId = namingContainerId;
+                context.namingContainerId = namingContainerId ?? undefined;
                 context.namingContainerPrefix = namingContainerPrefix;
 
-                for ( const partialResponseChild of partialResponse.childNodes ) {
+                for (const partialResponseChild of Array.from(partialResponse.childNodes)) {
                     if (partialResponseChild.nodeName === "error") {
                         responseType = partialResponseChild;
                         break;
                     }
                 }
 
+                if (!responseType) {
+                    sendError(request, context, "malformedXML", "No response type found.");
+                    return;
+                }
+
                 if (responseType.nodeName === "error") { // it's an error
                     let errorName = EMPTY;
                     let errorMessage = EMPTY;
 
-                    let element = responseType.firstChild;
-                    if (element.nodeName === "error-name") {
+                    let element: ChildNode | null = responseType.firstChild;
+                    if (element && element.nodeName === "error-name") {
                         if (null != element.firstChild) {
-                            errorName = element.firstChild.nodeValue;
+                            errorName = element.firstChild.nodeValue ?? EMPTY;
                         }
                     }
 
-                    element = responseType.firstChild.nextSibling;
-                    if (element.nodeName === "error-message") {
+                    element = responseType.firstChild?.nextSibling ?? null;
+                    if (element && element.nodeName === "error-message") {
                         if (null != element.firstChild) {
-                            errorMessage = element.firstChild.nodeValue;
+                            errorMessage = element.firstChild.nodeValue ?? EMPTY;
                         }
                     }
-                    sendError(request, context, "serverError", null, errorName, errorMessage);
+                    sendError(request, context, "serverError", undefined, errorName, errorMessage);
                     sendEvent(request, context, "success");
                     return;
                 }
 
 
                 if (responseType.nodeName === "redirect") {
-                    window.location = responseType.getAttribute("url");
+                    const url = (responseType as Element).getAttribute("url");
+                    if (!url) {
+                        sendError(request, context, "malformedXML", "<redirect> element is missing the required 'url' attribute.");
+                        return;
+                    }
+                    (window as unknown as { location: string }).location = url;
                     return;
                 }
 
@@ -2330,22 +2279,22 @@ export const ajax = (function () {
                 }
 
                 try {
-                    for ( const change of responseType.childNodes ) {
+                    for (const change of Array.from(responseType.childNodes)) {
                         switch (change.nodeName) {
                             case "update":
-                                doUpdate(change, context);
+                                doUpdate(change as Element, context);
                                 break;
                             case "delete":
-                                doDelete(change);
+                                doDelete(change as Element);
                                 break;
                             case "insert":
-                                doInsert(change);
+                                doInsert(change as Element);
                                 break;
                             case "attributes":
-                                doAttributes(change);
+                                doAttributes(change as Element);
                                 break;
                             case "eval":
-                                doEval(change);
+                                doEval(change as Element);
                                 break;
                             case "extension":
                                 // no action
@@ -2356,7 +2305,8 @@ export const ajax = (function () {
                         }
                     }
                 } catch (ex) {
-                    sendError(request, context, "malformedXML", ex.message);
+                    const message = ex instanceof Error ? ex.message : String(ex);
+                    sendError(request, context, "malformedXML", message);
                     return;
                 }
                 sendEvent(request, context, "success");
