@@ -71,6 +71,7 @@ import com.sun.faces.application.view.FaceletViewHandlingStrategy;
 import com.sun.faces.facelets.util.Classpath;
 import com.sun.faces.lifecycle.HttpMethodRestrictionsPhaseListener;
 import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.MojarraVersion;
 import com.sun.faces.util.Util;
 
 /**
@@ -116,8 +117,6 @@ public class WebConfiguration {
 
     private boolean hasFlows;
 
-    private String specificationVersion;
-
     // ------------------------------------------------------------ Constructors
 
     private WebConfiguration(ServletContext servletContext) {
@@ -137,8 +136,6 @@ public class WebConfiguration {
         getOptionValue(WebContextInitParameter.ResourceExcludes, " ");
         getOptionValue(WebContextInitParameter.FaceletsViewMappings, ";");
         getOptionValue(WebContextInitParameter.FaceletsSuffix, " ");
-
-        specificationVersion = getClass().getPackage().getSpecificationVersion();
     }
 
     // ---------------------------------------------------------- Public Methods
@@ -206,7 +203,7 @@ public class WebConfiguration {
     }
 
     public String getSpecificationVersion() {
-        return specificationVersion;
+        return MojarraVersion.SPECIFICATION_VERSION;
     }
 
     /**
