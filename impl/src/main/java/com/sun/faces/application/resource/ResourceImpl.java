@@ -50,6 +50,7 @@ import java.util.logging.Logger;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.util.FacesLogger;
+import com.sun.faces.util.MojarraVersion;
 
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.Resource;
@@ -293,6 +294,10 @@ public class ResourceImpl extends Resource implements Externalizable {
         }
         if (resourceInfo.getVersion() != null) {
             version += resourceInfo.getVersion().toString();
+        }
+
+        if (version.isEmpty() && FACES_SCRIPT_LIBRARY_NAME.equals(getLibraryName()) && MojarraVersion.IMPLEMENTATION_VERSION != null) {
+            version = MojarraVersion.IMPLEMENTATION_VERSION;
         }
 
         if (version.length() > 0) {

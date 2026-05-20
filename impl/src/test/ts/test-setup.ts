@@ -10,8 +10,8 @@ declare global {
     var mojarra: Record<string, unknown>;
 }
 
-export const FACES_JS_UNCOMPRESSED = path.resolve(__dirname, "../../main/resources/META-INF/resources/jakarta.faces/faces-uncompressed.js");
-export const FACES_JS = path.resolve(__dirname, "../../../target/generated-resources/minified/META-INF/resources/jakarta.faces/faces.js");
+export const FACES_JS_UNCOMPRESSED = path.resolve(__dirname, "../../../target/classes/META-INF/resources/jakarta.faces/faces-uncompressed.js");
+export const FACES_JS = path.resolve(__dirname, "../../../target/classes/META-INF/resources/jakarta.faces/faces.js");
 
 /**
  * Parse the @version JSDoc tag from faces-uncompressed.js and derive expected specversion and implversion.
@@ -36,9 +36,12 @@ export function parseFacesJsVersion(): { specversion: number; implversion: numbe
  */
 export function loadFacesJs(): void {
     const source = fs.readFileSync(FACES_JS, "utf-8");
+    const { specversion, implversion } = parseFacesJsVersion();
     const evaluated = source
         .replace("#{facesContext.namingContainerSeparatorChar}", ":")
-        .replace("#{facesContext.externalContext.requestContextPath}", "/test");
+        .replace("#{facesContext.externalContext.requestContextPath}", "/test")
+        .replace(/#\{applicationScope\["com\.sun\.faces\.mojarraVersion"\]\.specversion\}/g, String(specversion))
+        .replace(/#\{applicationScope\["com\.sun\.faces\.mojarraVersion"\]\.implversion\}/g, String(implversion));
 
     const script = document.createElement("script");
     script.textContent = evaluated;

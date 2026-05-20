@@ -18,13 +18,13 @@
 
 /**
  @project Faces JavaScript Library
- @version 4.1.8
+ @version ${project.version}
  @description This is the standard implementation of the Faces JavaScript Library.
  */
 
 // Detect if this is already loaded, and if loaded, if it's a higher version
-if ( !( (window.faces && window.faces.specversion && window.faces.specversion >= 40100 )
-    && (window.faces.implversion && window.faces.implversion >= 8)) ) {
+if (!((window.faces && faces.specversion && faces.specversion >= parseInt('#{applicationScope["com.sun.faces.mojarraVersion"].specversion}', 10)) &&
+      (faces.implversion && faces.implversion >= parseInt('#{applicationScope["com.sun.faces.mojarraVersion"].implversion}', 10)))) {
 
     // --- JS Lang --------------------------------------------------------------------
     const UDEF = 'undefined';
@@ -3065,7 +3065,7 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
      * minor release number, leftmost digits, major release number.
      * This number may only be incremented by a new release of the specification.</p>
      */
-    faces.specversion = 40100;
+    faces.specversion = parseInt('#{applicationScope["com.sun.faces.mojarraVersion"].specversion}', 10);
 
     /**
      * <p>An integer specifying the implementation version that this file implements.
@@ -3073,7 +3073,7 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
      * <code>faces.specversion</code>
      * This number is implementation dependent.</p>
      */
-    faces.implversion = 8;
+    faces.implversion = parseInt('#{applicationScope["com.sun.faces.mojarraVersion"].implversion}', 10);
 
 
 } //end if version detection block
