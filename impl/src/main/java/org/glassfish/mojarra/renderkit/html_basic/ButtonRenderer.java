@@ -154,6 +154,7 @@ public class ButtonRenderer extends HtmlBasicRenderer {
         }
 
         RenderKitUtils.renderOnclickEventListener(context, component, params, null, false);
+        RenderKitUtils.flushPendingBehaviorEventListeners(context, component, null);
     }
 
     // --------------------------------------------------------- Private Methods
