@@ -58,6 +58,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.util.FacesLogger;
+import org.glassfish.mojarra.util.MojarraVersion;
 
 /**
  * Default implementation of {@link jakarta.faces.application.Resource}. The ResourceImpl instance itself has the same
@@ -292,6 +293,10 @@ public class ResourceImpl extends Resource implements Externalizable {
         }
         if (resourceInfo.getVersion() != null) {
             version += resourceInfo.getVersion().toString();
+        }
+
+        if (version.isEmpty() && FACES_SCRIPT_LIBRARY_NAME.equals(getLibraryName()) && MojarraVersion.IMPLEMENTATION_VERSION != null) {
+            version = MojarraVersion.IMPLEMENTATION_VERSION;
         }
 
         if (version.length() > 0) {

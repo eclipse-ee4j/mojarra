@@ -58,6 +58,7 @@ import org.glassfish.mojarra.application.view.FaceletViewHandlingStrategy;
 import org.glassfish.mojarra.facelets.util.Classpath;
 import org.glassfish.mojarra.lifecycle.HttpMethodRestrictionsPhaseListener;
 import org.glassfish.mojarra.util.FacesLogger;
+import org.glassfish.mojarra.util.MojarraVersion;
 import org.glassfish.mojarra.util.Util;
 
 /**
@@ -104,8 +105,6 @@ public class WebConfiguration {
 
     private boolean hasFlows;
 
-    private String specificationVersion;
-
     // ------------------------------------------------------------ Constructors
 
     private WebConfiguration(ServletContext servletContext) {
@@ -120,7 +119,6 @@ public class WebConfiguration {
             processJndiEntries(contextName);
         }
 
-        specificationVersion = getClass().getPackage().getSpecificationVersion();
     }
 
     // ---------------------------------------------------------- Public Methods
@@ -188,7 +186,7 @@ public class WebConfiguration {
     }
 
     public String getSpecificationVersion() {
-        return specificationVersion;
+        return MojarraVersion.SPECIFICATION_VERSION;
     }
 
     /**

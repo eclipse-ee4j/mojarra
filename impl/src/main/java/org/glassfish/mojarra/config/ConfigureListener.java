@@ -26,6 +26,7 @@ import static java.util.logging.Level.WARNING;
 import static org.glassfish.mojarra.RIConstants.ERROR_PAGE_PRESENT_KEY_NAME;
 import static org.glassfish.mojarra.RIConstants.FACES_SERVLET_MAPPINGS;
 import static org.glassfish.mojarra.RIConstants.FACES_SERVLET_REGISTRATION;
+import static org.glassfish.mojarra.RIConstants.MOJARRA_VERSION;
 import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableLazyBeanValidation;
 import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableThreading;
 import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.ForceLoadFacesConfigFiles;
@@ -78,6 +79,7 @@ import org.glassfish.mojarra.el.ELContextImpl;
 import org.glassfish.mojarra.push.WebsocketEndpoint;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.MojarraThreadFactory;
+import org.glassfish.mojarra.util.MojarraVersion;
 import org.glassfish.mojarra.util.ReflectionUtils;
 import org.glassfish.mojarra.util.Timer;
 import org.glassfish.mojarra.util.Util;
@@ -127,6 +129,8 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         LOGGER.log(FINE, () -> format("ConfigureListener.contextInitialized({0})", servletContext.getContextPath()));
 
         webConfig = WebConfiguration.getInstance(servletContext);
+
+        servletContext.setAttribute(MOJARRA_VERSION, MojarraVersion.toMap());
 
         // Check to see if the FacesServlet is present in the
         // web.xml. If it is, perform faces configuration as normal,

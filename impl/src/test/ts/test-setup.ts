@@ -36,9 +36,12 @@ export function parseFacesJsVersion(): { specversion: number; implversion: numbe
  */
 export function loadFacesJs(): void {
     const source = fs.readFileSync(FACES_JS, "utf-8");
+    const { specversion, implversion } = parseFacesJsVersion();
     const evaluated = source
         .replace("#{facesContext.namingContainerSeparatorChar}", ":")
-        .replace("#{facesContext.externalContext.requestContextPath}", "/test");
+        .replace("#{facesContext.externalContext.requestContextPath}", "/test")
+        .replace(/#\{applicationScope\["org\.glassfish\.mojarra\.mojarraVersion"\]\.specversion\}/g, String(specversion))
+        .replace(/#\{applicationScope\["org\.glassfish\.mojarra\.mojarraVersion"\]\.implversion\}/g, String(implversion));
 
     const script = document.createElement("script");
     script.textContent = evaluated;

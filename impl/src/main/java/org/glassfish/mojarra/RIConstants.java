@@ -117,6 +117,14 @@ public class RIConstants {
     public static final String FACES_CONFIG_VERSION = RI_PREFIX + "facesConfigVersion";
 
     /**
+     * App map key under which a {@code Map<String, Object>} exposing {@code version} /
+     * {@code specversion} / {@code implversion} of this Mojarra build is published so EL
+     * inside resources (e.g. {@code faces.js}) can read it via
+     * {@code #{applicationScope["org.glassfish.mojarra.mojarraVersion"]}}.
+     */
+    public static final String MOJARRA_VERSION = RI_PREFIX + "mojarraVersion";
+
+    /**
      * Key to annotate the mappings for the FacesServlet. Since servlet 3.0 the ConfigureListener
      * cannot access the servlet mappings because it is initialized by a TLD and it is programmatic.
      * So this key will store the mappings during the initialization.

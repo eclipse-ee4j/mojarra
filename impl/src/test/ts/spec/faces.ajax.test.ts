@@ -1191,10 +1191,24 @@ describe("faces.ajax.response", () => {
             onerror: (data: Record<string, unknown>) => errors.push(data),
         });
 
+        // jsdom routes its "Not implemented: navigation" warning through console.error when
+        // window.location is set; filter just that message so unrelated errors still surface.
+        // The Error comes from jsdom's realm, so cross-realm `instanceof Error` may be false —
+        // probe `.message` directly and fall back to String() conversion.
+        const originalConsoleError = console.error;
+        const errorSpy = jest.spyOn(console, "error").mockImplementation((...args) => {
+            const first = args[0] as { message?: unknown };
+            const text = typeof first?.message === "string" ? first.message : String(first);
+            if (!text.includes("Not implemented: navigation")) {
+                originalConsoleError(...args);
+            }
+        });
         const xml = '<?xml version="1.0" encoding="UTF-8"?><partial-response id=""><redirect url="/dest"/></partial-response>';
         try {
             lastXHR().respond(200, "", xml);
-        } catch { /* jsdom navigation attempt may throw — acceptable */ }
+        } catch { /* jsdom navigation attempt may throw — acceptable */ } finally {
+            errorSpy.mockRestore();
+        }
 
         // Begin and complete fire normally. Success must NOT fire (redirect returns early).
         const statuses = events.map(e => e.status);

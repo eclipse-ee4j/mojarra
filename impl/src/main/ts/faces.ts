@@ -12,8 +12,8 @@ import { push as facesPush } from "./faces/push";
 import { chain as utilChain } from "./faces/util";
 
 // Detect if this is already loaded, and if loaded, if it's a higher version
-if ( !( (window.faces && window.faces.specversion && window.faces.specversion >= 50000 )
-    && (window.faces.implversion && window.faces.implversion >= 0)) ) {
+if (!((window.faces && faces.specversion && faces.specversion >= parseInt('#{applicationScope["org.glassfish.mojarra.mojarraVersion"].specversion}', 10)) &&
+      (faces.implversion && faces.implversion >= parseInt('#{applicationScope["org.glassfish.mojarra.mojarraVersion"].implversion}', 10)))) {
 
     /**
      * <span class="changed_modified_2_2">The top level global namespace
@@ -80,7 +80,7 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
      * minor release number, leftmost digits, major release number.
      * This number may only be incremented by a new release of the specification.</p>
      */
-    faces.specversion = 50000;
+    faces.specversion = parseInt('#{applicationScope["org.glassfish.mojarra.mojarraVersion"].specversion}', 10);
 
     /**
      * <p>An integer specifying the implementation version that this file implements.
@@ -88,7 +88,7 @@ if ( !( (window.faces && window.faces.specversion && window.faces.specversion >=
      * <code>faces.specversion</code>
      * This number is implementation dependent.</p>
      */
-    faces.implversion = 0;
+    faces.implversion = parseInt('#{applicationScope["org.glassfish.mojarra.mojarraVersion"].implversion}', 10);
 
 
 } //end if version detection block

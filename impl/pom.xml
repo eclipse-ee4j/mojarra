@@ -254,14 +254,16 @@
                 </includes>
                 <excludes>
                     <exclude>**/LogStrings*.properties</exclude>
+                    <exclude>**/mojarra.properties</exclude>
                 </excludes>
             </resource>
-            <!-- Sets the Main Faces version into the log strings -->
+            <!-- Sets the Mojarra version into the log strings and mojarra.properties (read by MojarraVersion at runtime). -->
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
                 <includes>
                     <include>**/LogStrings*.properties</include>
+                    <include>**/mojarra.properties</include>
                 </includes>
             </resource>
         </resources>
@@ -315,6 +317,9 @@
                         </goals>
                         <configuration>
                             <arguments>run build</arguments>
+                            <environmentVariables>
+                                <MOJARRA_VERSION>${project.version}</MOJARRA_VERSION>
+                            </environmentVariables>
                         </configuration>
                     </execution>
                     <execution>

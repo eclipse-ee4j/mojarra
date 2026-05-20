@@ -1,5 +1,9 @@
 import typescript from "@rollup/plugin-typescript";
 
+// MOJARRA_VERSION is set by frontend-maven-plugin to ${project.version}. When running rollup
+// outside Maven (e.g. ad-hoc `npm run build`), fall back to a sentinel so the banner is still well-formed.
+const VERSION = process.env.MOJARRA_VERSION || "0.0.0-DEV";
+
 const BANNER = `/*!
  * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  * Copyright 2004 The Apache Software Foundation
@@ -18,7 +22,7 @@ const BANNER = `/*!
  * limitations under the License.
  *
  * @project Faces JavaScript Library
- * @version 5.0.0
+ * @version ${VERSION}
  * @description This is the standard implementation of the Faces JavaScript Library.
  */`;
 
