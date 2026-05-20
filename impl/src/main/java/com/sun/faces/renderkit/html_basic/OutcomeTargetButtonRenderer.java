@@ -18,6 +18,7 @@ package com.sun.faces.renderkit.html_basic;
 
 import java.io.IOException;
 
+import com.sun.faces.application.resource.ResourceHandlerImpl;
 import jakarta.faces.application.NavigationCase;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -68,6 +69,22 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
 
         String label = getLabel(component);
 
+        if (!Util.componentIsDisabled(component)) {
+            NavigationCase navCase = getNavigationCase(context, component);
+
+            if (navCase == null) {
+                // QUESTION should this only be added in development mode?
+                label += MessageUtils.getExceptionMessageString(MessageUtils.OUTCOME_TARGET_BUTTON_NO_MATCH);
+                writer.writeAttribute("disabled", "true", "disabled");
+            } else {
+                if (ResourceHandlerImpl.resolveCurrentNonce(context) == null) {
+                    String hrefVal = getEncodedTargetURL(context, component, navCase)
+                            + getFragment(component);
+                    writer.writeAttribute("onclick", getOnclick(component, hrefVal), "onclick");
+                }
+            }
+        }
+
         // value should be used even for image type for accessibility (e.g., images disabled in browser)
         writer.writeAttribute("value", label, "value");
 
@@ -77,21 +94,6 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
         }
 
         renderPassThruAttributes(context, writer, component, ATTRIBUTES, null);
-
-        if (!Util.componentIsDisabled(component)) {
-            NavigationCase navCase = getNavigationCase(context, component);
-
-            if (navCase == null) {
-                // QUESTION should this only be added in development mode?
-                label += MessageUtils.getExceptionMessageString(MessageUtils.OUTCOME_TARGET_BUTTON_NO_MATCH);
-                writer.writeAttribute("disabled", "true", "disabled");
-            }
-        }
-
-        if (component.getChildCount() == 0) {
-            writer.endElement("input");
-        }
-
     }
 
     @Override
@@ -109,9 +111,11 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
             NavigationCase navCase = getNavigationCase(context, component);
 
             if (navCase != null) {
-                String hrefVal = getEncodedTargetURL(context, component, navCase);
-                hrefVal += getFragment(component);
-                RenderKitUtils.addEventListener(context, component, null,"click", getOnclick(component, hrefVal));
+                if (ResourceHandlerImpl.resolveCurrentNonce(context) != null) {
+                    String hrefVal = getEncodedTargetURL(context, component, navCase);
+                    hrefVal += getFragment(component);
+                    RenderKitUtils.addEventListener(context, component, null, "click", getOnclick(component, hrefVal));
+                }
             }
         }
     }
@@ -124,7 +128,7 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
 
         if (onclick != null) {
             onclick = onclick.trim();
-            if (onclick.length() > 0 && !onclick.endsWith(";")) {
+            if (!onclick.isEmpty() && !onclick.endsWith(";")) {
                 onclick += "; ";
             }
         } else {
