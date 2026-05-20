@@ -62,6 +62,7 @@ public class HeadRenderer extends HtmlBasicRenderer {
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         encodeHeadResources(context);
+        RenderKitUtils.flushPendingBehaviorEventListeners(context, component, null);
         writer.endElement("head");
     }
 

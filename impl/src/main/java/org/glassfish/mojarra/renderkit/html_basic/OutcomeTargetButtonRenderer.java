@@ -104,17 +104,17 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
             context.getResponseWriter().endElement("input");
         }
 
-        RenderKitUtils.flushPendingBehaviorEventListeners(context, component, null);
-
         if (!Util.componentIsDisabled(component)) {
             NavigationCase navCase = getNavigationCase(context, component);
 
             if (navCase != null) {
                 String hrefVal = getEncodedTargetURL(context, component, navCase);
                 hrefVal += getFragment(component);
-                RenderKitUtils.addEventListener(context, component, null, HtmlDocumentElementEvent.click.name(), getOnclick(component, hrefVal));
+                RenderKitUtils.addEventListener(context, component, HtmlDocumentElementEvent.click.name(), getOnclick(component, hrefVal));
             }
         }
+
+        RenderKitUtils.flushPendingBehaviorEventListeners(context, component, null);
     }
 
     // ------------------------------------------------------- Protected Methods

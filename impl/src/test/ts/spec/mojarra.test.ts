@@ -650,76 +650,116 @@ describe("mojarra.ab", () => {
 
 describe("mojarra.ael", () => {
     let div: HTMLDivElement;
+    const w = () => window as unknown as Record<string, unknown>;
 
     beforeEach(() => {
         div = document.createElement("div");
         div.id = "ael-test";
         document.body.appendChild(div);
+        w().__aelTrace = [];
     });
 
     afterEach(() => {
         div?.remove();
+        delete w().__aelTrace;
     });
 
-    test("attaches click event listener to element by id", () => {
-        let clicked = false;
-        (moj().ael as Function)("ael-test", "click", () => { clicked = true; });
+    test("attaches click event listener that runs a single script", () => {
+        (moj().ael as Function)("ael-test", "click", ["window.__aelTrace.push('clicked')"]);
         div.click();
-        expect(clicked).toBe(true);
+        expect(w().__aelTrace).toEqual(["clicked"]);
     });
 
     test("attaches non-click event listener", () => {
-        let focused = false;
-        (moj().ael as Function)("ael-test", "focus", () => { focused = true; });
+        (moj().ael as Function)("ael-test", "focus", ["window.__aelTrace.push('focused')"]);
         div.dispatchEvent(new Event("focus"));
-        expect(focused).toBe(true);
+        expect(w().__aelTrace).toEqual(["focused"]);
     });
 
-    test("passes event object to handler", () => {
-        let receivedEvent: Event | null = null;
-        (moj().ael as Function)("ael-test", "click", (e: Event) => { receivedEvent = e; });
+    test("exposes the DOM event to the script as 'event'", () => {
+        (moj().ael as Function)("ael-test", "click", ["window.__aelTrace.push(event.type)"]);
         div.click();
-        expect(receivedEvent).toBeInstanceOf(Event);
-        expect(receivedEvent!.type).toBe("click");
+        expect(w().__aelTrace).toEqual(["click"]);
     });
 
-    test("multiple listeners on same element and event", () => {
-        const order: number[] = [];
-        (moj().ael as Function)("ael-test", "click", () => { order.push(1); });
-        (moj().ael as Function)("ael-test", "click", () => { order.push(2); });
+    test("binds 'this' to the element when chain captures it", () => {
+        (moj().ael as Function)("ael-test", "click", ["window.__aelTrace.push(this.id)"]);
         div.click();
-        expect(order).toEqual([1, 2]);
+        expect(w().__aelTrace).toEqual(["ael-test"]);
     });
 
-    test("multiple listeners on same element for different events", () => {
-        let clicked = false;
-        let hovered = false;
-        (moj().ael as Function)("ael-test", "click", () => { clicked = true; });
-        (moj().ael as Function)("ael-test", "mouseover", () => { hovered = true; });
+    test("multiple scripts on same registration run in insertion order", () => {
+        (moj().ael as Function)("ael-test", "click", [
+            "window.__aelTrace.push('a')",
+            "window.__aelTrace.push('b')",
+            "window.__aelTrace.push('c')",
+        ]);
+        div.click();
+        expect(w().__aelTrace).toEqual(["a", "b", "c"]);
+    });
+
+    test("a script returning false short-circuits the remaining scripts", () => {
+        (moj().ael as Function)("ael-test", "click", [
+            "window.__aelTrace.push('a')",
+            "window.__aelTrace.push('b'); return false",
+            "window.__aelTrace.push('never')",
+        ]);
+        div.click();
+        expect(w().__aelTrace).toEqual(["a", "b"]);
+    });
+
+    test("a script returning false calls event.preventDefault()", () => {
+        (moj().ael as Function)("ael-test", "click", ["return false"]);
+        const ev = new Event("click", { cancelable: true });
+        div.dispatchEvent(ev);
+        expect(ev.defaultPrevented).toBe(true);
+    });
+
+    test("a script returning true does not call event.preventDefault()", () => {
+        (moj().ael as Function)("ael-test", "click", ["return true"]);
+        const ev = new Event("click", { cancelable: true });
+        div.dispatchEvent(ev);
+        expect(ev.defaultPrevented).toBe(false);
+    });
+
+    test("a script returning falsy non-false does not call event.preventDefault()", () => {
+        (moj().ael as Function)("ael-test", "click", ["return 0"]);
+        const ev = new Event("click", { cancelable: true });
+        div.dispatchEvent(ev);
+        expect(ev.defaultPrevented).toBe(false);
+    });
+
+    test("multiple registrations on same element and event chain independently", () => {
+        (moj().ael as Function)("ael-test", "click", ["window.__aelTrace.push(1)"]);
+        (moj().ael as Function)("ael-test", "click", ["window.__aelTrace.push(2)"]);
+        div.click();
+        expect(w().__aelTrace).toEqual([1, 2]);
+    });
+
+    test("registrations for different events are independent", () => {
+        (moj().ael as Function)("ael-test", "click", ["window.__aelTrace.push('c')"]);
+        (moj().ael as Function)("ael-test", "mouseover", ["window.__aelTrace.push('m')"]);
 
         div.click();
-        expect(clicked).toBe(true);
-        expect(hovered).toBe(false);
+        expect(w().__aelTrace).toEqual(["c"]);
 
         div.dispatchEvent(new Event("mouseover"));
-        expect(hovered).toBe(true);
+        expect(w().__aelTrace).toEqual(["c", "m"]);
     });
 
     test("throws when element id does not exist", () => {
-        expect(() => (moj().ael as Function)("nonexistent", "click", () => {})).toThrow();
+        expect(() => (moj().ael as Function)("nonexistent", "click", ["window.__aelTrace.push('never')"])).toThrow();
     });
 
-    test("listener not called before event fires", () => {
-        let called = false;
-        (moj().ael as Function)("ael-test", "click", () => { called = true; });
-        expect(called).toBe(false);
+    test("script is not run before the event fires", () => {
+        (moj().ael as Function)("ael-test", "click", ["window.__aelTrace.push('clicked')"]);
+        expect(w().__aelTrace).toEqual([]);
     });
 
     test("works with custom events", () => {
-        let detail: unknown = null;
-        (moj().ael as Function)("ael-test", "myCustomEvent", (e: CustomEvent) => { detail = e.detail; });
+        (moj().ael as Function)("ael-test", "myCustomEvent", ["window.__aelTrace.push(event.detail)"]);
         div.dispatchEvent(new CustomEvent("myCustomEvent", { detail: "payload" }));
-        expect(detail).toBe("payload");
+        expect(w().__aelTrace).toEqual(["payload"]);
     });
 
     test("works with input elements", () => {
@@ -727,12 +767,19 @@ describe("mojarra.ael", () => {
         input.id = "ael-input-test";
         document.body.appendChild(input);
 
-        let changed = false;
-        (moj().ael as Function)("ael-input-test", "change", () => { changed = true; });
+        (moj().ael as Function)("ael-input-test", "change", ["window.__aelTrace.push('changed')"]);
         input.dispatchEvent(new Event("change"));
-        expect(changed).toBe(true);
+        expect(w().__aelTrace).toEqual(["changed"]);
 
         input.remove();
+    });
+
+    test("empty scripts array attaches a no-op listener", () => {
+        (moj().ael as Function)("ael-test", "click", []);
+        const ev = new Event("click", { cancelable: true });
+        div.dispatchEvent(ev);
+        expect(ev.defaultPrevented).toBe(false);
+        expect(w().__aelTrace).toEqual([]);
     });
 });
 

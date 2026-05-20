@@ -33,8 +33,8 @@ export interface MojarraNamespace {
     /** Register a window-load callback (used by command script with autorun=true). */
     l(callback: () => void): void;
 
-    /** Add an event listener to the element with the given id. */
-    ael(id: string, ev: string, fn: EventListenerOrEventListenerObject): void;
+    /** Add chained event listener to the element with the given id; if any script returns `false`, the remaining scripts are skipped and `event.preventDefault()` is called. */
+    ael(id: string, ev: string, scripts: string[]): void;
 }
 
 declare global {
@@ -106,6 +106,11 @@ mojarra.l = function l(callback) {
     }
 };
 
-mojarra.ael = function ael(id, ev, fn) {
-    document.getElementById(id)!.addEventListener(ev, fn);
+mojarra.ael = function ael(id, ev, scripts) {
+    const el = document.getElementById(id)!;
+    el.addEventListener(ev, function (event) {
+        if ((window.faces.util.chain as (...args: unknown[]) => unknown)(el, event, ...scripts) === false) {
+            event.preventDefault();
+        }
+    });
 };

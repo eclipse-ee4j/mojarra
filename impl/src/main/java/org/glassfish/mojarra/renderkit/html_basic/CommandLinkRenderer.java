@@ -131,6 +131,8 @@ public class CommandLinkRenderer extends LinkRenderer {
             Collection<ClientBehaviorContext.Parameter> params = getBehaviorParameters(component);
             RenderKitUtils.renderOnclickEventListener(context, component, params, target, true);
         }
+
+        RenderKitUtils.flushPendingBehaviorEventListeners(context, component, null);
     }
 
     @Override

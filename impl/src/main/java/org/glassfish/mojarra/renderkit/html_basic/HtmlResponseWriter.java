@@ -36,6 +36,7 @@ import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.config.WebConfiguration;
 import org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter;
 import org.glassfish.mojarra.io.FastStringWriter;
+import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.util.HtmlUtils;
 import org.glassfish.mojarra.util.MessageUtils;
 
@@ -143,6 +144,11 @@ public class HtmlResponseWriter extends ResponseWriter {
     private char[] cdataTextBuffer = new char[cdataTextBufferSize];
 
     private Map<String, Object> passthroughAttributes;
+
+    // Component associated with the most-recently-opened element, captured from startElement(name,
+    // component). Used to attribute deferred on* pass-through attributes to the correct component's
+    // pending-behavior-event-listeners map. May be null if startElement was called without a component.
+    private UIComponent currentComponent;
 
     // Internal buffer for to store the result of String.getChars() for
     // values passed to the writer as String to reduce the overhead
@@ -603,6 +609,7 @@ public class HtmlResponseWriter extends ResponseWriter {
             writingCdata = true;
         }
 
+        currentComponent = componentForElement;
         if (null != componentForElement) {
             Map<String, Object> passThroughAttrs = componentForElement.getPassThroughAttributes(false);
             if (null != passThroughAttrs && !passThroughAttrs.isEmpty()) {
@@ -1137,7 +1144,11 @@ public class HtmlResponseWriter extends ResponseWriter {
                 if ("styleClass".equals(key)) {
                     key = "class";
                 }
-                writeURIAttributeIgnoringPassThroughAttributes(destination, key, val, key, true);
+                if (currentComponent != null && RenderKitUtils.isBehaviorEventAttribute(key)) {
+                    RenderKitUtils.addEventListener(context, currentComponent, key.substring(2), val);
+                } else {
+                    writeURIAttributeIgnoringPassThroughAttributes(destination, key, val, key, true);
+                }
             }
         }
     }
