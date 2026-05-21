@@ -15,4 +15,4 @@ and would not compile if moved out.
 | `UIComponentBaseAttachedStateTestCase` | Invokes `UIComponent.addFacesListener(FacesListener)`, which is `protected`. |
 
 Pure API contract tests that don't require this kind of access belong in [`jakartaee/faces`](https://github.com/jakartaee/faces) project.
-Tests that exercise Mojarra impl behavior through the API but don't need package-private/protected access belong in `org.glassfish.mojarra.component`.
+Tests that exercise Mojarra impl behavior through the API but don't need package-private/protected access belong in `org.glassfish.mojarra.*`.
