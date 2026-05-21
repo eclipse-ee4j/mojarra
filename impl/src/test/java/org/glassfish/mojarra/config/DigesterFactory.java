@@ -16,6 +16,8 @@
 
 package org.glassfish.mojarra.config;
 
+import jakarta.faces.component.*;
+
 import java.net.URL;
 import java.util.HashMap;
 import java.util.logging.Level;
