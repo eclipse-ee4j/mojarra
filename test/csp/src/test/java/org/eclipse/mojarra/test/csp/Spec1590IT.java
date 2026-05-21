@@ -24,15 +24,14 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import ee.jakarta.tck.faces.test.util.selenium.BaseITNG;
-import ee.jakarta.tck.faces.test.util.selenium.WebPage;
-import jakarta.faces.application.ResourceHandler;
+import com.sun.faces.application.resource.ResourceHandlerImpl;
+import org.eclipse.mojarra.test.base.BaseIT;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.FindBy;
 
-class Spec1590IT extends BaseITNG {
+class Spec1590IT extends BaseIT {
 
     @FindBy(id = "form1:commandLink")
     private WebElement commandLink;
@@ -65,102 +64,103 @@ class Spec1590IT extends BaseITNG {
     private WebElement refreshButton;
 
     /**
-     * @see ResourceHandler#ENABLE_CSP_NONCE
-     * @see https://github.com/jakartaee/faces/issues/1590
+     * @see ResourceHandlerImpl#ENABLE_CSP_NONCE_PARAM_NAME
+     * @see <a href="https://github.com/jakartaee/faces/issues/1590">https://github.com/jakartaee/faces/issues/1590</a>
      */
     @Test
     public void testCommandLinkWithoutAjax() {
-        var page = getPage("spec1590.xhtml");
-        var nonce = getNonce(page);
+        open("spec1590.xhtml");
+        var nonce = getNonce();
         assertNotNull(nonce);
-        assertEquals(nonce, getBehaviorScriptElement(page, commandLink).getAttribute("nonce"));
+        assertEquals(nonce, getBehaviorScriptElement(commandLink).getAttribute("nonce"));
         assertEquals("false", commandLinkExecuted.getText());
-        page.guardHttp(commandLink::click);
+        guardHttp(commandLink::click);
         assertEquals("true", commandLinkExecuted.getText());
         // Non-ajax postback must generate a new nonce.
-        assertNotEquals(nonce, getNonce(page));
+        assertNotEquals(nonce, getNonce());
     }
 
     /**
-     * @see ResourceHandler#ENABLE_CSP_NONCE
-     * @see https://github.com/jakartaee/faces/issues/1590
+     * @see ResourceHandlerImpl#ENABLE_CSP_NONCE_PARAM_NAME
+     * @see <a href="https://github.com/jakartaee/faces/issues/1590">https://github.com/jakartaee/faces/issues/1590</a>
      */
     @Test
     public void testAjaxInputAndButton() {
-        var page = getPage("spec1590.xhtml");
-        var nonce = getNonce(page);
+        open("spec1590.xhtml");
+        var nonce = getNonce();
         assertNotNull(nonce);
-        assertEquals(nonce, getBehaviorScriptElement(page, ajaxInput).getAttribute("nonce"));
-        assertEquals(nonce, getBehaviorScriptElement(page, ajaxButton).getAttribute("nonce"));
+        assertEquals(nonce, getBehaviorScriptElement(ajaxInput).getAttribute("nonce"));
+        assertEquals(nonce, getBehaviorScriptElement(ajaxButton).getAttribute("nonce"));
         assertEquals("", ajaxOutput.getText());
         ajaxInput.sendKeys("first");
-        page.guardAjax(ajaxButton::click);
+        guardAjax(ajaxButton::click);
         assertEquals("first", ajaxOutput.getText());
         ajaxInput.clear();
         ajaxInput.sendKeys("second");
-        page.guardAjax(ajaxButton::click);
+        guardAjax(ajaxButton::click);
         assertEquals("second", ajaxOutput.getText());
     }
 
     /**
-     * @see ResourceHandler#ENABLE_CSP_NONCE
-     * @see https://github.com/jakartaee/faces/issues/1590
+     * @see ResourceHandlerImpl#ENABLE_CSP_NONCE_PARAM_NAME
+     * @see <a href="https://github.com/jakartaee/faces/issues/1590">https://github.com/jakartaee/faces/issues/1590</a>
      */
     @Test
     public void testCommandScript() {
-        var page = getPage("spec1590.xhtml");
-        var nonce = getNonce(page);
+        open("spec1590.xhtml");
+        var nonce = getNonce();
         assertNotNull(nonce);
-        assertEquals(nonce, getBehaviorScriptElement(page, commandScript).getAttribute("nonce"));
+        assertEquals(nonce, getBehaviorScriptElement(commandScript).getAttribute("nonce"));
         assertEquals("false", commandScriptExecuted.getText());
-        page.guardAjax(() -> page.getJSExecutor().executeScript("commandScript()"));
+        guardAjax(() -> ((ChromeDriver)browser).executeScript("commandScript()"));
         assertEquals("true", commandScriptExecuted.getText());
     }
 
     /**
-     * @see ResourceHandler#ENABLE_CSP_NONCE
-     * @see https://github.com/jakartaee/faces/issues/1590
+     * @see ResourceHandlerImpl#ENABLE_CSP_NONCE_PARAM_NAME
+     * @see <a href="https://github.com/jakartaee/faces/issues/1590">https://github.com/jakartaee/faces/issues/1590</a>
      */
     @Test
     public void testFacesUtilChain() {
-        var page = getPage("spec1590.xhtml");
-        var nonce = getNonce(page);
+        open("spec1590.xhtml");
+        var nonce = getNonce();
         assertNotNull(nonce);
-        assertEquals(nonce, getBehaviorScriptElement(page, facesUtilChain).getAttribute("nonce"));
+        assertEquals(nonce, getBehaviorScriptElement(facesUtilChain).getAttribute("nonce"));
         assertEquals("false", facesUtilChainExecuted.getText());
-        page.guardAjax(facesUtilChain::click);
+        guardAjax(facesUtilChain::click);
         assertEquals("true", facesUtilChainExecuted.getText());
     }
 
     /**
-     * @see ResourceHandler#ENABLE_CSP_NONCE
-     * @see https://github.com/jakartaee/faces/issues/1590
+     * @see ResourceHandlerImpl#ENABLE_CSP_NONCE_PARAM_NAME
+     * @see <a href="https://github.com/jakartaee/faces/issues/1590">https://github.com/jakartaee/faces/issues/1590</a>
      */
     @Test
     public void testRefresh() {
-        var page = getPage("spec1590.xhtml");
-        var nonce = getNonce(page);
+        open("spec1590.xhtml");
+        var nonce = getNonce();
         assertNotNull(nonce);
-        assertEquals(nonce, getBehaviorScriptElement(page, refreshButton).getAttribute("nonce"));
-        page.guardHttp(refreshButton::click);
-        assertNotEquals(nonce, getBehaviorScriptElement(page, refreshButton).getAttribute("nonce"));
+        assertEquals(nonce, getBehaviorScriptElement(refreshButton).getAttribute("nonce"));
+        guardHttp(refreshButton::click);
+        assertNotEquals(nonce, getBehaviorScriptElement(refreshButton).getAttribute("nonce"));
 
-        var nonceAfterRefresh = getNonce(page);
-        assertEquals(nonceAfterRefresh, getBehaviorScriptElement(page, commandLink).getAttribute("nonce"));
-        assertEquals(nonceAfterRefresh, getBehaviorScriptElement(page, ajaxInput).getAttribute("nonce"));
-        assertEquals(nonceAfterRefresh, getBehaviorScriptElement(page, ajaxButton).getAttribute("nonce"));
-        assertEquals(nonceAfterRefresh, getBehaviorScriptElement(page, commandScript).getAttribute("nonce"));
-        assertEquals(nonceAfterRefresh, getBehaviorScriptElement(page, facesUtilChain).getAttribute("nonce"));
-        assertEquals(nonceAfterRefresh, getBehaviorScriptElement(page, refreshButton).getAttribute("nonce"));
+        var nonceAfterRefresh = getNonce();
+        assertEquals(nonceAfterRefresh, getBehaviorScriptElement(commandLink).getAttribute("nonce"));
+        assertEquals(nonceAfterRefresh, getBehaviorScriptElement(ajaxInput).getAttribute("nonce"));
+        assertEquals(nonceAfterRefresh, getBehaviorScriptElement(ajaxButton).getAttribute("nonce"));
+        assertEquals(nonceAfterRefresh, getBehaviorScriptElement(commandScript).getAttribute("nonce"));
+        assertEquals(nonceAfterRefresh, getBehaviorScriptElement(facesUtilChain).getAttribute("nonce"));
+        assertEquals(nonceAfterRefresh, getBehaviorScriptElement(refreshButton).getAttribute("nonce"));
     }
 
     /**
-     * @see ResourceHandler#CSP_POLICY_PARAM_NAME
-     * @see https://github.com/jakartaee/faces/issues/1590
+     * @see ResourceHandlerImpl#CSP_POLICY_PARAM_NAME
+     * @see <a href="https://github.com/jakartaee/faces/issues/1590">https://github.com/jakartaee/faces/issues/1590</a>
      */
     @Test
     public void testCspResponseHeader() throws Exception {
-        var response = newHttpClient().send(newBuilder(create(webUrl + "spec1590.xhtml")).build(), ofString());
+        var response = newHttpClient().send(newBuilder(create(baseURL + "spec1590.xhtml"))
+                .build(), ofString());
         var cspHeader = response.headers().firstValue("Content-Security-Policy");
         assertTrue(cspHeader.isPresent(), "Content-Security-Policy response header must be present");
         assertTrue(cspHeader.get().contains("script-src"), "Content-Security-Policy response header must contain script-src directive");
@@ -168,28 +168,25 @@ class Spec1590IT extends BaseITNG {
     }
 
     /**
-     * @see ResourceHandler#getCurrentNonce
-     * @see https://github.com/jakartaee/faces/issues/1590
+     * @see ResourceHandlerImpl#getCurrentNonce
+     * @see <a href="https://github.com/jakartaee/faces/issues/1590">https://github.com/jakartaee/faces/issues/1590</a>
      */
     @Test
     public void testNonceConsistentDuringAjaxPostback() {
-        var page = getPage("spec1590.xhtml");
-        var nonce = getNonce(page);
+        open("spec1590.xhtml");
+        var nonce = getNonce();
         assertNotNull(nonce);
         ajaxInput.sendKeys("first");
-        page.guardAjax(ajaxButton::click);
+        guardAjax(ajaxButton::click);
         // Ajax postback must retain the same nonce on faces.js.
-        assertEquals(nonce, getNonce(page));
+        assertEquals(nonce, getNonce());
         // Verify behavior scripts were successfully eval'd during ajax by performing another round-trip.
         // If the event listeners weren't properly re-attached, this would fail.
         ajaxInput.clear();
         ajaxInput.sendKeys("second");
-        page.guardAjax(ajaxButton::click);
+        guardAjax(ajaxButton::click);
         assertEquals("second", ajaxOutput.getText());
-        assertEquals(nonce, getNonce(page));
+        assertEquals(nonce, getNonce());
     }
 
-    private String getNonce(WebPage page) {
-        return page.findElement(By.cssSelector("script[src*='jakarta.faces.resource/faces.js']")).getAttribute("nonce");
-    }
 }
