@@ -403,12 +403,6 @@ public class RenderKitUtils {
         String handlerName = BEHAVIOR_EVENT_ATTRIBUTE_PREFIX + domEventName;
         Object userHandler = component.getAttributes().get(handlerName);
 
-        // Fast path: if there's no behavior and we have a user-defined handler, just write it directly as an attribute
-        if (!hasBehaviorForDefaultEvent && userHandler != null) {
-            context.getResponseWriter().writeAttribute(handlerName, userHandler, null);
-            return;
-        }
-
         // Determine which behavior event name to use (component-level or DOM-level)
         String behaviorEventName = componentEventName;
         if (component instanceof ClientBehaviorHolder) {
@@ -422,7 +416,7 @@ public class RenderKitUtils {
             ? Collections.singletonList(new ClientBehaviorContext.Parameter("incExec", true))
             : Collections.emptyList();
 
-        addBehaviorEventListener(context, component, clientId, params, handlerName, userHandler, behaviorEventName, domEventName, null, false, incExec, true);
+        addBehaviorEventListener(context, component, clientId, params, handlerName, userHandler, behaviorEventName, domEventName, null, false, incExec);
     }
 
     // Renders the onclick event listener for command buttons. Handles
@@ -449,7 +443,7 @@ public class RenderKitUtils {
             }
         }
 
-        addBehaviorEventListener(context, component, null, params, handlerName, userHandler, behaviorEventName, domEventName, submitTarget, needsSubmit, false, true);
+        addBehaviorEventListener(context, component, null, params, handlerName, userHandler, behaviorEventName, domEventName, submitTarget, needsSubmit, false);
     }
 
     // Renders the script element with the function for command scripts.
@@ -646,28 +640,15 @@ public class RenderKitUtils {
             // an array to a Map<String, Attribute>. This would change
             // the search time from O(log n) to O(1).
             int index = Arrays.binarySearch(knownAttributes, Attribute.attr(name));
-            if (index >= 0) {
+            if (index >= 0 || isBehaviorEventAttribute(name)) {
                 Object value = attrMap.get(name);
                 if (value != null && shouldRenderAttribute(value)) {
-
-                    Attribute attr = knownAttributes[index];
-
-                    if (isBehaviorEventAttribute(attr, behaviorEventName)) {
-                        addBehaviorEventListener(context, component, null, null, name, value, behaviorEventName, behaviorEventName, null, false, false, false);
-
-                        renderedBehavior = true;
-                    } else {
-                        writer.writeAttribute(prefixAttribute(name, isXhtml), value, name);
-                    }
-                }
-            }
-            else if (isBehaviorEventAttribute(name)) {
-                Object value = attrMap.get(name);
-                if (value != null && shouldRenderAttribute(value)) {
-                    if (name.substring(2).equals(behaviorEventName)) {
-                        addBehaviorEventListener(context, component, null, null, name, value, behaviorEventName, behaviorEventName, null, false, false, false);
-
-                        renderedBehavior = true;
+                    if (isBehaviorEventAttribute(name)) {
+                        String eventName = name.substring(BEHAVIOR_EVENT_ATTRIBUTE_PREFIX.length());
+                        addBehaviorEventListener(context, component, null, null, name, value, eventName, eventName, null, false, false);
+                        if (eventName.equals(behaviorEventName)) {
+                            renderedBehavior = true;
+                        }
                     } else {
                         writer.writeAttribute(prefixAttribute(name, isXhtml), value, name);
                     }
@@ -697,7 +678,7 @@ public class RenderKitUtils {
                 String attrName = attribute.getName();
                 String[] events = attribute.getEvents();
                 if (events != null && events.length > 0 && behaviorEventName.equals(events[0])) {
-                    addBehaviorEventListener(context, component, null, null, attrName, null, behaviorEventName, behaviorEventName, null, false, false, false);
+                    addBehaviorEventListener(context, component, null, null, attrName, null, behaviorEventName, behaviorEventName, null, false, false);
                     return;
                 }
             }
@@ -752,14 +733,12 @@ public class RenderKitUtils {
 
         Object value = attrMap.get(attrName);
 
-        if (value != null && shouldRenderAttribute(value) && !hasBehavior) {
-            writer.writeAttribute(prefixAttribute(attrName, isXhtml), value, attrName);
-        } else if (hasBehavior) {
+        boolean hasValue = value != null && shouldRenderAttribute(value);
 
-            // If we've got a behavior for this attribute,
-            // we may need to chain scripts together, so use
-            // renderHandler().
-            addBehaviorEventListener(context, component, null, null, attrName, value, eventName, eventName, null, false, false, false);
+        if (hasBehavior || (hasValue && isBehaviorEventAttribute(attrName))) {
+            addBehaviorEventListener(context, component, null, null, attrName, value, eventName, eventName, null, false, false);
+        } else if (hasValue) {
+            writer.writeAttribute(prefixAttribute(attrName, isXhtml), value, attrName);
         }
     }
 
@@ -1497,15 +1476,6 @@ public class RenderKitUtils {
         return keys.next();
     }
 
-    // Tests whether the specified Attribute matches to specified
-    // behavior event name. Used by renderPassThruAttributesOptimized.
-    private static boolean isBehaviorEventAttribute(Attribute attr, String behaviorEventName) {
-
-        String[] events = attr.getEvents();
-
-        return behaviorEventName != null && events != null && events.length > 0 && behaviorEventName.equals(events[0]);
-    }
-
     // Ensures that the user-specified DOM event handler script
     // is non-empty, and trimmed if necessary.
     private static String getNonEmptyUserHandler(Object handlerObject) {
@@ -1669,7 +1639,7 @@ public class RenderKitUtils {
      * render the submit script to make the link submit.
      */
     private static void addBehaviorEventListener(FacesContext context, UIComponent component, String clientId, Collection<ClientBehaviorContext.Parameter> params, String handlerName,
-            Object handlerValue, String behaviorEventName, String domEventName, String submitTarget, boolean needsSubmit, boolean includeExec, boolean flushPendingBehaviorEventListeners) throws IOException {
+            Object handlerValue, String behaviorEventName, String domEventName, String submitTarget, boolean needsSubmit, boolean includeExec) throws IOException {
 
         String userHandler = getNonEmptyUserHandler(handlerValue);
         List<ClientBehavior> behaviors = getClientBehaviors(component, behaviorEventName);
@@ -1704,16 +1674,8 @@ public class RenderKitUtils {
             assert false;
         }
 
-        if (flushPendingBehaviorEventListeners) {
-            flushPendingBehaviorEventListeners(context, component, clientId);
-        }
         if (handler != null) {
-            if (flushPendingBehaviorEventListeners) {
-                addEventListener(context, component, clientId, domEventName, handler);
-            }
-            else {
-                getPendingBehaviorEventListeners(component, false).computeIfAbsent(domEventName, $ -> new ArrayList<>(2)).add(handler);
-            }
+            addEventListener(context, component, domEventName, handler);
         }
     }
 
@@ -1734,21 +1696,33 @@ public class RenderKitUtils {
         return pendingBehaviorEventListeners;
     }
 
+    /**
+     * Emit all pending behavior event listeners for the given component as a single batched script.
+     * Each parked handler becomes one {@code mojarra.ael('clientId','event',['script'])} call. Insertion
+     * order across both events and handlers within each event is preserved.
+     */
     public static void flushPendingBehaviorEventListeners(FacesContext context, UIComponent component, String clientId) throws IOException {
-        for (var pendingEvent : getPendingBehaviorEventListeners(component, true).entrySet()) {
-            for (var pendingEventListener : pendingEvent.getValue()) {
-                addEventListener(context, component, clientId, pendingEvent.getKey(), pendingEventListener);
+        var pending = getPendingBehaviorEventListeners(component, true);
+
+        if (pending.isEmpty()) {
+            return;
+        }
+
+        String resolvedClientId = clientId != null ? clientId : component.getClientId(context);
+        StringBuilder script = new StringBuilder();
+
+        for (var pendingEvent : pending.entrySet()) {
+            String domEventName = pendingEvent.getKey();
+            for (String handler : pendingEvent.getValue()) {
+                if (script.length() > 0) {
+                    script.append(';');
+                }
+                script.append("mojarra.ael('").append(resolvedClientId).append("','").append(domEventName).append("',[");
+                appendJsStringLiteral(script, handler);
+                script.append("])");
             }
         }
-    }
 
-    public static void addEventListener(FacesContext context, UIComponent component, String clientId, String domEventName, String function) throws IOException {
-        StringBuilder script = new StringBuilder("mojarra.ael('")
-            .append(clientId != null ? clientId : component.getClientId(context))
-            .append("','")
-            .append(domEventName)
-            .append("',function(event){" + function + "})");
-        
         if (context.getPartialViewContext().isAjaxRequest()) {
             context.getPartialViewContext().getEvalScripts().add(script.toString());
         }
@@ -1756,6 +1730,42 @@ public class RenderKitUtils {
             renderFacesJsIfNecessary(context);
             renderScript(context, component, null, script.toString());
         }
+    }
+
+    /**
+     * Park a single event listener on the component's pending behavior listeners map. Emission is
+     * deferred until {@link #flushPendingBehaviorEventListeners(FacesContext, UIComponent, String)}
+     * runs, so multiple listeners on the same component coalesce into one {@code <script>} tag. The
+     * client id used in the emitted {@code mojarra.ael(...)} call is taken from the flush call, not
+     * captured here.
+     */
+    public static void addEventListener(FacesContext context, UIComponent component, String domEventName, String function) {
+        getPendingBehaviorEventListeners(component, false)
+            .computeIfAbsent(domEventName, $ -> new ArrayList<>(2))
+            .add(function);
+    }
+
+    /**
+     * Append {@code str} to {@code out} as a single-quoted JavaScript string literal, escaping the
+     * characters that would otherwise alter the string's contents (quote, backslash) or terminate
+     * a hosting {@code <script>} element ('{@code <}').
+     */
+    private static void appendJsStringLiteral(StringBuilder out, String str) {
+        out.append('\'');
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            switch (c) {
+                case '\\': out.append("\\\\"); break;
+                case '\'': out.append("\\'"); break;
+                case '\n': out.append("\\n"); break;
+                case '\r': out.append("\\r"); break;
+                case '<':  out.append("\\x3C"); break;
+                case '\u2028': out.append("\\u2028"); break;
+                case '\u2029': out.append("\\u2029"); break;
+                default: out.append(c);
+            }
+        }
+        out.append('\'');
     }
 
     public static void renderScript(FacesContext context, UIComponent component, String clientId, String script) throws IOException {
