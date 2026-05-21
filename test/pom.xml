@@ -230,8 +230,8 @@
             </activation>
             <properties>
                 <wildfly.dir>${maven.multiModuleProjectDirectory}/target/wildfly</wildfly.dir>
-                <wildfly.feature-pack.artifactId>wildfly-ee-10-feature-pack</wildfly.feature-pack.artifactId>
-                <wildfly.feature-pack.version>40.0.0.Beta1</wildfly.feature-pack.version>
+                <wildfly.feature-pack.artifactId>wildfly-ee-galleon-pack</wildfly.feature-pack.artifactId>
+                <wildfly.feature-pack.version>40.0.0.Final</wildfly.feature-pack.version>
             </properties>
             <dependencies>
                 <dependency>
