@@ -70,7 +70,7 @@ public class RIConstants {
 
     public static final String VIEWID_KEY_NAME = RI_PREFIX + "viewId";
 
-    public static final String PUSH_RESOURCE_URLS_KEY_NAME = RI_PREFIX + "resourceUrls";
+    public static final String EARLY_HINTS_RESOURCE_URLS_KEY_NAME = RI_PREFIX + "earlyHintsResourceUrls";
 
     /**
      * Marker used when saving the list of component adds and removes.
