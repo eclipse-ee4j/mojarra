@@ -28,18 +28,18 @@ import java.util.Map;
  */
 public abstract class ConfigFeature {
 
-    private Map attributes = null;
+    private Map<String, ConfigAttribute> attributes = null;
 
     public void addAttribute(ConfigAttribute attribute) {
         if (attributes == null) {
-            attributes = new HashMap();
+            attributes = new HashMap<>();
         }
         attributes.put(attribute.getAttributeName(), attribute);
     }
 
-    public Map getAttributes() {
+    public Map<String, ConfigAttribute> getAttributes() {
         if (attributes == null) {
-            return (Collections.EMPTY_MAP);
+            return (Collections.emptyMap());
         } else {
             return (attributes);
         }
@@ -75,18 +75,18 @@ public abstract class ConfigFeature {
         this.largeIcon = largeIcon;
     }
 
-    private Map properties = null;
+    private Map<String, ConfigProperty> properties = null;
 
     public void addProperty(ConfigProperty property) {
         if (properties == null) {
-            properties = new HashMap();
+            properties = new HashMap<>();
         }
         properties.put(property.getPropertyName(), property);
     }
 
-    public Map getProperties() {
+    public Map<String, ConfigProperty> getProperties() {
         if (properties == null) {
-            return (Collections.EMPTY_MAP);
+            return (Collections.emptyMap());
         } else {
             return (properties);
         }

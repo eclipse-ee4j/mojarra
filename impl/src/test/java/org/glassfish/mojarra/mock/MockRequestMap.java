@@ -64,11 +64,12 @@ final class MockRequestMap implements Map<String, Object> {
     }
 
     @Override
-    public Set entrySet() {
-        Set<Object> set = new HashSet<>();
+    public Set<Map.Entry<String, Object>> entrySet() {
+        Set<Map.Entry<String, Object>> set = new HashSet<>();
         Enumeration<String> keys = request.getAttributeNames();
         while (keys.hasMoreElements()) {
-            set.add(request.getAttribute(keys.nextElement()));
+            String key = keys.nextElement();
+            set.add(Map.entry(key, request.getAttribute(key)));
         }
         return set;
     }

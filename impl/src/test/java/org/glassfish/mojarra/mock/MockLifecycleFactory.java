@@ -44,8 +44,8 @@ public class MockLifecycleFactory extends LifecycleFactory {
     }
 
     @Override
-    public Iterator getLifecycleIds() {
-        ArrayList result = new ArrayList(1);
+    public Iterator<String> getLifecycleIds() {
+        ArrayList<String> result = new ArrayList<>(1);
         result.add(LifecycleFactory.DEFAULT_LIFECYCLE);
         return result.iterator();
     }

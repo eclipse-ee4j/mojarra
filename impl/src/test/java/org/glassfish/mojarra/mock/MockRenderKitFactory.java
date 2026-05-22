@@ -35,7 +35,7 @@ public class MockRenderKitFactory extends RenderKitFactory {
     public MockRenderKitFactory() {
     }
 
-    private Map renderKits = new HashMap();
+    private Map<String, RenderKit> renderKits = new HashMap<>();
 
     @Override
     public void addRenderKit(String renderKitId, RenderKit renderKit) {
@@ -56,7 +56,7 @@ public class MockRenderKitFactory extends RenderKitFactory {
             throw new NullPointerException();
         }
         synchronized (renderKits) {
-            RenderKit renderKit = (RenderKit) renderKits.get(renderKitId);
+            RenderKit renderKit = renderKits.get(renderKitId);
             if (renderKit == null) {
                 throw new IllegalArgumentException(renderKitId);
             }
@@ -65,7 +65,7 @@ public class MockRenderKitFactory extends RenderKitFactory {
     }
 
     @Override
-    public Iterator getRenderKitIds() {
+    public Iterator<String> getRenderKitIds() {
         synchronized (renderKits) {
             return (renderKits.keySet().iterator());
         }

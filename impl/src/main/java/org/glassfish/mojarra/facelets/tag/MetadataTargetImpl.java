@@ -51,7 +51,8 @@ public class MetadataTargetImpl extends MetadataTarget {
         return pd.get(name);
     }
 
-    @Override
+	@Override
+	@SuppressWarnings("unchecked")
     public boolean isTargetInstanceOf(Class type) {
         return type.isAssignableFrom(this.type);
     }
