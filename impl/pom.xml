@@ -271,7 +271,7 @@
 				</configuration>
 			</plugin>
 
-            <!-- Show all compiler warnings. -->
+            <!-- Show all compiler warnings except deprecation/removal (we are aware). -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.15.0</version>
