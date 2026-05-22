@@ -381,7 +381,6 @@ public class RestoreViewPhase extends Phase {
             root.visitTree(visitContext, (context, target) -> {
                 postRestoreStateEvent.setComponent(target);
                 target.processEvent(postRestoreStateEvent);
-                // noinspection ReturnInsideFinallyBlock
                 return VisitResult.ACCEPT;
             });
         } catch (AbortProcessingException e) {

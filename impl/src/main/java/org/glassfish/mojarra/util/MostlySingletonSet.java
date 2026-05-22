@@ -59,12 +59,11 @@ public class MostlySingletonSet<E> implements Set<E>, Serializable {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public boolean addAll(Collection<? extends E> c) {
         boolean result = true;
 
         if (null == inner && 1 == c.size()) {
-            inner = (Set<E>) Collections.singleton(c.iterator().next());
+            inner = Collections.singleton(c.iterator().next());
         } else {
             // If we need to transition from one to more-than-one
             if (1 == inner.size()) {

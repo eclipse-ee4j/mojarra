@@ -16,11 +16,9 @@
 
 package org.glassfish.mojarra.application;
 
-import jakarta.faces.FactoryFinder;
-
-import jakarta.faces.component.*;
-
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import jakarta.faces.FactoryFinder;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

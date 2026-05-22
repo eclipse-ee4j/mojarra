@@ -70,7 +70,7 @@ public class ValidatorTagHandlerDelegateImpl extends TagHandlerDelegate implemen
     }
 
     @Override
-    public MetaRuleset createMetaRuleset(Class type) {
+    public MetaRuleset createMetaRuleset(Class<?> type) {
 
         Util.notNull("type", type);
         MetaRuleset m = new MetaRulesetImpl(owner.getTag(), type);
@@ -81,7 +81,7 @@ public class ValidatorTagHandlerDelegateImpl extends TagHandlerDelegate implemen
 
     // -------------------------------------- Methods from AttachedObjectHandler
 
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings("unchecked")
     @Override
     public void applyAttachedObject(FacesContext context, UIComponent parent) {
 

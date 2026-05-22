@@ -59,7 +59,7 @@ final class ComponentRule extends MetaRule {
 
         private final Class<?> type;
 
-        public ValueExpressionMetadata(String name, Class type, TagAttribute attr) {
+        public ValueExpressionMetadata(String name, Class<?> type, TagAttribute attr) {
             this.name = name;
             this.attr = attr;
             this.type = type;

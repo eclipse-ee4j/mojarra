@@ -16,7 +16,8 @@
 
 package org.glassfish.mojarra.component;
 
-import jakarta.faces.component.*;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIPanel;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

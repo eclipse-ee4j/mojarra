@@ -47,7 +47,7 @@ public final class ChooseHandler extends TagHandlerImpl {
         if (whenList.isEmpty()) {
             throw new TagException(tag, "Choose Tag must have one or more When Tags");
         }
-        when = (ChooseWhenHandler[]) whenList.toArray(new ChooseWhenHandler[whenList.size()]);
+        when = whenList.toArray(new ChooseWhenHandler[whenList.size()]);
 
         Iterator<ChooseOtherwiseHandler> itr2 = this.findNextByType(ChooseOtherwiseHandler.class);
         if (itr2.hasNext()) {

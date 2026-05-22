@@ -745,7 +745,6 @@ public class ApplicationConfigProcessor extends AbstractConfigProcessor {
                 try {
                     // If there is an eventClass, use it, otherwise use
                     // SystemEvent.class
-                    // noinspection unchecked
                     Class<? extends SystemEvent> eventClazz;
 
                     if (eventClass != null) {

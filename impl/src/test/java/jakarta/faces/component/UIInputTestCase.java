@@ -16,11 +16,6 @@
 
 package jakarta.faces.component;
 
-import org.glassfish.mojarra.component.*;
-
-import org.glassfish.mojarra.component.UIOutputTestCase;
-
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -35,6 +30,9 @@ import jakarta.faces.event.ValueChangeEvent;
 import jakarta.faces.event.ValueChangeListener;
 import jakarta.faces.validator.Validator;
 
+import org.glassfish.mojarra.component.InputTestImpl;
+import org.glassfish.mojarra.component.UIOutputTestCase;
+import org.glassfish.mojarra.component.ValueChangeListenerTestImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -175,7 +173,7 @@ public class UIInputTestCase extends UIOutputTestCase {
         input.addValueChangeListener(new ValueChangeListenerTestImpl("PV1"));
         input.addValueChangeListener(new ValueChangeListenerTestImpl("PV2"));
 
-        ValueChangeListener listeners[] = input.getValueChangeListeners();
+        ValueChangeListener<?> listeners[] = input.getValueChangeListeners();
         assertEquals(5, listeners.length);
         input.removeValueChangeListener(listeners[2]);
         listeners = input.getValueChangeListeners();
@@ -188,7 +186,7 @@ public class UIInputTestCase extends UIOutputTestCase {
         InputTestImpl input = new InputTestImpl();
 
         // No listeners added, should be empty
-        ValueChangeListener listeners[] = input.getValueChangeListeners();
+        ValueChangeListener<?> listeners[] = input.getValueChangeListeners();
         assertEquals(0, listeners.length);
     }
 
@@ -210,7 +208,6 @@ public class UIInputTestCase extends UIOutputTestCase {
     @Test
     public void testPropertiesInvalid() throws Exception {
         super.testPropertiesInvalid();
-        UIInput input = (UIInput) component;
     }
 
     // Test validation of a required field
@@ -261,7 +258,7 @@ public class UIInputTestCase extends UIOutputTestCase {
 
         command.addValueChangeListener(ta1);
         command.addValueChangeListener(ta2);
-        ValueChangeListener[] listeners = command.getValueChangeListeners();
+        ValueChangeListener<?>[] listeners = command.getValueChangeListeners();
         assertEquals(2, listeners.length);
         ValueChangeListenerTestImpl[] taListeners = (ValueChangeListenerTestImpl[]) command.getFacesListeners(ValueChangeListenerTestImpl.class);
         assertTrue(taListeners != null);
@@ -293,8 +290,8 @@ public class UIInputTestCase extends UIOutputTestCase {
 
     protected boolean listenersAreEqual(FacesContext context, UIInput comp1, UIInput comp2) {
 
-        ValueChangeListener list1[] = comp1.getValueChangeListeners();
-        ValueChangeListener list2[] = comp2.getValueChangeListeners();
+        ValueChangeListener<?> list1[] = comp1.getValueChangeListeners();
+        ValueChangeListener<?> list2[] = comp2.getValueChangeListeners();
         assertNotNull(list1);
         assertNotNull(list2);
         assertEquals(list1.length, list2.length);
@@ -310,8 +307,8 @@ public class UIInputTestCase extends UIOutputTestCase {
 
     protected boolean validatorsAreEqual(FacesContext context, UIInput comp1, UIInput comp2) {
 
-        Validator list1[] = comp1.getValidators();
-        Validator list2[] = comp2.getValidators();
+        Validator<?> list1[] = comp1.getValidators();
+        Validator<?> list2[] = comp2.getValidators();
         assertNotNull(list1);
         assertNotNull(list2);
         assertEquals(list1.length, list2.length);

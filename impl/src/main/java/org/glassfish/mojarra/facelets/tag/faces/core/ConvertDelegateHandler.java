@@ -56,7 +56,7 @@ public final class ConvertDelegateHandler extends ConverterHandler {
     }
 
     @Override
-    protected MetaRuleset createMetaRuleset(Class type) {
+    protected MetaRuleset createMetaRuleset(Class<?> type) {
         return super.createMetaRuleset(type).ignoreAll();
     }
 }

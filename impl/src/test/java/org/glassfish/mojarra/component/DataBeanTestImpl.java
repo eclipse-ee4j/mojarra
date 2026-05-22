@@ -16,8 +16,6 @@
 
 package org.glassfish.mojarra.component;
 
-import jakarta.faces.component.*;
-
 import java.io.Serializable;
 
 // Test JavaBean for DataModel Tests

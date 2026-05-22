@@ -16,9 +16,6 @@
 
 package jakarta.faces.component;
 
-import org.glassfish.mojarra.component.*;
-
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -36,6 +33,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.FacesListener;
 import jakarta.faces.event.ValueChangeListener;
 
+import org.glassfish.mojarra.component.ValueChangeListenerTestImpl;
 import org.glassfish.mojarra.mock.MockExternalContext;
 import org.glassfish.mojarra.mock.MockFacesContext;
 import org.glassfish.mojarra.mock.MockHttpServletRequest;
@@ -80,8 +78,8 @@ public class UIComponentBaseAttachedStateTestCase {
 
     @Test
     public void testAttachedObjectsSet() throws Exception {
-        Set<ValueChangeListener> attachedObjects = new HashSet<>();
-        ValueChangeListener toAdd = new ValueChangeListenerTestImpl();
+        Set<ValueChangeListener<?>> attachedObjects = new HashSet<>();
+        ValueChangeListener<?> toAdd = new ValueChangeListenerTestImpl();
         attachedObjects.add(toAdd);
         toAdd = new ValueChangeListenerTestImpl();
         attachedObjects.add(toAdd);
@@ -89,15 +87,15 @@ public class UIComponentBaseAttachedStateTestCase {
         attachedObjects.add(toAdd);
         Object result = UIComponentBase.saveAttachedState(facesContext, attachedObjects);
         @SuppressWarnings("unchecked")
-        Set<ValueChangeListener> returnedAttachedObjects = (Set<ValueChangeListener>) UIComponentBase
+        Set<ValueChangeListener<?>> returnedAttachedObjects = (Set<ValueChangeListener<?>>) UIComponentBase
                 .restoreAttachedState(facesContext, result);
         assertNotNull(returnedAttachedObjects);
     }
 
     @Test
     public void testAttachedObjectsStack() throws Exception {
-        Stack<ValueChangeListener> attachedObjects = new Stack<>();
-        ValueChangeListener toAdd = new ValueChangeListenerTestImpl();
+        Stack<ValueChangeListener<?>> attachedObjects = new Stack<>();
+        ValueChangeListener<?> toAdd = new ValueChangeListenerTestImpl();
         attachedObjects.add(toAdd);
         toAdd = new ValueChangeListenerTestImpl();
         attachedObjects.add(toAdd);
@@ -105,15 +103,15 @@ public class UIComponentBaseAttachedStateTestCase {
         attachedObjects.add(toAdd);
         Object result = UIComponentBase.saveAttachedState(facesContext, attachedObjects);
         @SuppressWarnings("unchecked")
-        Stack<ValueChangeListener> returnedAttachedObjects = (Stack<ValueChangeListener>) UIComponentBase
+        Stack<ValueChangeListener<?>> returnedAttachedObjects = (Stack<ValueChangeListener<?>>) UIComponentBase
                 .restoreAttachedState(facesContext, result);
         assertNotNull(returnedAttachedObjects);
     }
 
     @Test
     public void testAttachedObjectsMap() throws Exception {
-        Map<String, ValueChangeListener> attachedObjects = new HashMap<>();
-        ValueChangeListener toAdd = new ValueChangeListenerTestImpl();
+        Map<String, ValueChangeListener<?>> attachedObjects = new HashMap<>();
+        ValueChangeListener<?> toAdd = new ValueChangeListenerTestImpl();
         attachedObjects.put("one", toAdd);
         toAdd = new ValueChangeListenerTestImpl();
         attachedObjects.put("two", toAdd);
@@ -121,7 +119,7 @@ public class UIComponentBaseAttachedStateTestCase {
         attachedObjects.put("three", toAdd);
         Object result = UIComponentBase.saveAttachedState(facesContext, attachedObjects);
         @SuppressWarnings("unchecked")
-        Map<String, ValueChangeListener> returnedAttachedObjects = (Map<String, ValueChangeListener>) UIComponentBase
+        Map<String, ValueChangeListener<?>> returnedAttachedObjects = (Map<String, ValueChangeListener<?>>) UIComponentBase
                 .restoreAttachedState(facesContext, result);
         assertNotNull(returnedAttachedObjects);
     }
@@ -129,17 +127,17 @@ public class UIComponentBaseAttachedStateTestCase {
     // Regression test for bug #907
     @SuppressWarnings("unchecked")
     public void testAttachedObjectsCount() throws Exception {
-        Set<ValueChangeListener> returnedAttachedObjects = null, attachedObjects = new HashSet<>();
-        ValueChangeListener toAdd = new ValueChangeListenerTestImpl();
+        Set<ValueChangeListener<?>> returnedAttachedObjects = null, attachedObjects = new HashSet<>();
+        ValueChangeListener<?> toAdd = new ValueChangeListenerTestImpl();
         attachedObjects.add(toAdd);
         toAdd = new ValueChangeListenerTestImpl();
         attachedObjects.add(toAdd);
         toAdd = new ValueChangeListenerTestImpl();
         attachedObjects.add(toAdd);
         Object result = UIComponentBase.saveAttachedState(facesContext, attachedObjects);
-        returnedAttachedObjects = (Set<ValueChangeListener>) UIComponentBase.restoreAttachedState(facesContext, result);
+        returnedAttachedObjects = (Set<ValueChangeListener<?>>) UIComponentBase.restoreAttachedState(facesContext, result);
         int firstSize = returnedAttachedObjects.size();
-        returnedAttachedObjects = (Set<ValueChangeListener>) UIComponentBase.restoreAttachedState(facesContext, result);
+        returnedAttachedObjects = (Set<ValueChangeListener<?>>) UIComponentBase.restoreAttachedState(facesContext, result);
         int secondSize = returnedAttachedObjects.size();
         assertEquals(firstSize, secondSize);
     }

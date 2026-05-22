@@ -64,7 +64,7 @@ public class SetHandler extends TagHandlerImpl {
 
         Iterator<TextHandler> iter = TagHandlerImpl.findNextByType(nextHandler, TextHandler.class);
         while (iter.hasNext()) {
-            TextHandler text = (TextHandler) iter.next();
+            TextHandler text = iter.next();
             bodyValue.append(text.getText(ctx));
         }
 

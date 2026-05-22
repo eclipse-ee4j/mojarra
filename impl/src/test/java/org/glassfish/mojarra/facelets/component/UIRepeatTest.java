@@ -62,7 +62,7 @@ public class UIRepeatTest {
 		if (uiRepeatHasErrorMessages == null) {
 			Class<?> uiRepeatClass = Class.forName(UIRepeat.class.getName());
 			uiRepeatHasErrorMessages = uiRepeatClass.getDeclaredMethod(
-					"hasErrorMessages", new Class[] { FacesContext.class });
+					"hasErrorMessages", new Class<?>[] { FacesContext.class });
 			uiRepeatHasErrorMessages.setAccessible(true);
 		}
 		return (Boolean)uiRepeatHasErrorMessages.invoke(new UIRepeat(),

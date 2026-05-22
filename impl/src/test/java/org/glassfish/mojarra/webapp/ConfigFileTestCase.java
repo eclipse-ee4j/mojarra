@@ -16,8 +16,6 @@
 
 package org.glassfish.mojarra.webapp;
 
-import jakarta.faces.component.*;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -106,7 +104,7 @@ public class ConfigFileTestCase {
         assertEquals("First", cc1.getConverterId());
         assertEquals("com.mycompany.MyFirstConverter", cc1.getConverterClass());
         assertEquals(1, cc1.getAttributes().size());
-        ConfigAttribute cc1a1 = (ConfigAttribute) cc1.getAttributes().get("attr1");
+        ConfigAttribute cc1a1 = cc1.getAttributes().get("attr1");
         assertNotNull(cc1a1);
         assertEquals("First Converter Attribute 1 Description", cc1a1.getDescription());
         assertEquals("First Converter Attribute 1 Display Name", cc1a1.getDisplayName());
@@ -125,7 +123,7 @@ public class ConfigFileTestCase {
         assertEquals("com.mycompany.MySecondConverter", cc2.getConverterClass());
         assertEquals(0, cc2.getAttributes().size());
         assertEquals(1, cc2.getProperties().size());
-        ConfigProperty cc2p1 = (ConfigProperty) cc2.getProperties().get("prop1");
+        ConfigProperty cc2p1 = cc2.getProperties().get("prop1");
         assertNotNull(cc2p1);
         assertEquals("Second Converter Property 1 Description", cc2p1.getDescription());
         assertEquals("Second Converter Property 1 Display Name", cc2p1.getDisplayName());
@@ -146,7 +144,7 @@ public class ConfigFileTestCase {
         assertEquals("First", cv1.getValidatorId());
         assertEquals("com.mycompany.MyFirstValidator", cv1.getValidatorClass());
         assertEquals(1, cv1.getAttributes().size());
-        ConfigAttribute cv1a1 = (ConfigAttribute) cv1.getAttributes().get("attr1");
+        ConfigAttribute cv1a1 = cv1.getAttributes().get("attr1");
         assertNotNull(cv1a1);
         assertEquals("First Validator Attribute 1 Description", cv1a1.getDescription());
         assertEquals("First Validator Attribute 1 Display Name", cv1a1.getDisplayName());
@@ -165,7 +163,7 @@ public class ConfigFileTestCase {
         assertEquals("com.mycompany.MySecondValidator", cv2.getValidatorClass());
         assertEquals(0, cv2.getAttributes().size());
         assertEquals(1, cv2.getProperties().size());
-        ConfigProperty cv2p1 = (ConfigProperty) cv2.getProperties().get("prop1");
+        ConfigProperty cv2p1 = cv2.getProperties().get("prop1");
         assertNotNull(cv2p1);
         assertEquals("Second Validator Property 1 Description", cv2p1.getDescription());
         assertEquals("Second Validator Property 1 Display Name", cv2p1.getDisplayName());

@@ -16,8 +16,6 @@
 
 package org.glassfish.mojarra.webapp;
 
-import jakarta.faces.component.*;
-
 import java.io.IOException;
 
 import jakarta.el.ValueExpression;

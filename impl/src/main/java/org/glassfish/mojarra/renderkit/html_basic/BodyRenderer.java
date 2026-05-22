@@ -75,7 +75,7 @@ public class BodyRenderer extends HtmlBasicRenderer {
         UIViewRoot viewRoot = context.getViewRoot();
         ListIterator<UIComponent> iter = viewRoot.getComponentResources(context, "body").listIterator();
         while (iter.hasNext()) {
-            UIComponent resource = (UIComponent) iter.next();
+            UIComponent resource = iter.next();
             resource.encodeAll(context);
         }
         RenderKitUtils.renderUnhandledMessages(context);

@@ -16,8 +16,6 @@
 
 package org.glassfish.mojarra.component;
 
-import jakarta.faces.component.*;
-
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -26,6 +24,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jakarta.faces.FactoryFinder;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
 
@@ -37,7 +39,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * <p>
- * Unit tests for the {@link NamingContainer} functionality of all the standard component classes.
+ * Unit tests for the {@link jakarta.faces.component.NamingContainer} functionality of all the standard component classes.
  * </p>
  */
 public class NamingContainerTestCase extends JUnitFacesTestCaseBase {

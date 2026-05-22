@@ -78,7 +78,6 @@ public class MetaInfFacesConfigResourceProvider implements ConfigurationResource
             duplicatePattern = Pattern.compile(duplicateJarPattern);
         }
         SortedMap<String, Set<URI>> sortedJarMap = new TreeMap<>();
-        // noinspection CollectionWithoutInitialCapacity
         List<URI> unsortedResourceList = new ArrayList<>();
 
         try {

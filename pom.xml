@@ -57,7 +57,7 @@
 
    <build>
         <plugins>
-            <!-- Sets minimal Maven version to 3.9.6 and minimal Java version to 17 -->
+            <!-- Sets minimal Maven version and Java version. -->
             <plugin>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <executions>
@@ -72,7 +72,7 @@
                                     <version>3.9.6</version>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
-                                    <version>[17,)</version>
+                                    <version>[${maven.compiler.release},)</version>
                                 </requireJavaVersion>
                             </rules>
                         </configuration>
@@ -80,16 +80,6 @@
                 </executions>
             </plugin>
             
-            <!-- Restricts the Java version to 17 - API remains at Java 17 for now. -->
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.15.0</version>
-                <configuration>
-                    <release>17</release>
-                    <compilerArgument>-Xlint:unchecked</compilerArgument>
-                </configuration>
-            </plugin>
-
             <!-- Only impl is published to Maven Central, via central-publishing-maven-plugin in
                  impl/pom.xml's central-release profile. Disable the default maven-deploy-plugin
                  here so the parent pom (and any sibling module that lacks its own publishing

@@ -16,10 +16,9 @@
 
 package org.glassfish.mojarra.component;
 
-import jakarta.faces.component.*;
-
 import java.io.IOException;
 
+import jakarta.faces.component.UIComponentBase;
 import jakarta.faces.context.FacesContext;
 
 /**

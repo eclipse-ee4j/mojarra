@@ -28,18 +28,11 @@ public class BehaviorHolderAttachedObjectTargetImpl extends AttachedObjectTarget
 
     private boolean defaultEvent;
 
-    /**
-     * <p class="changed_added_2_0">
-     * </p>
-     */
     public BehaviorHolderAttachedObjectTargetImpl() {
 
     }
 
     /**
-     * <p class="changed_added_2_0">
-     * </p>
-     *
      * @return the event
      */
     public String getEvent() {
@@ -47,9 +40,6 @@ public class BehaviorHolderAttachedObjectTargetImpl extends AttachedObjectTarget
     }
 
     /**
-     * <p class="changed_added_2_0">
-     * </p>
-     *
      * @param event the event to set
      */
     public void setEvent(String event) {
@@ -57,9 +47,6 @@ public class BehaviorHolderAttachedObjectTargetImpl extends AttachedObjectTarget
     }
 
     /**
-     * <p class="changed_added_2_0">
-     * </p>
-     *
      * @return the defaultEvent
      */
     @Override
@@ -68,9 +55,6 @@ public class BehaviorHolderAttachedObjectTargetImpl extends AttachedObjectTarget
     }
 
     /**
-     * <p class="changed_added_2_0">
-     * </p>
-     *
      * @param defaultEvent the defaultEvent to set
      */
     public void setDefaultEvent(boolean defaultEvent) {

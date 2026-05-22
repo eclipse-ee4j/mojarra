@@ -16,15 +16,12 @@
 
 package org.glassfish.mojarra.util;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableMap;
 
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import jakarta.faces.model.SelectItem;
@@ -37,20 +34,6 @@ public class CollectionsUtils {
 
     private CollectionsUtils() {
         // this class contains static methods only.
-    }
-
-    @SafeVarargs
-    public static <T> Set<T> asSet(T... a) {
-        return new HashSet<>(asList(a));
-    }
-
-    @SafeVarargs
-    public static <T> T[] ar(T... ts) {
-        return ts;
-    }
-
-    public static <T> T[] ar() {
-        return null;
     }
 
     public static <T, V> ConstMap<T, V> map() {

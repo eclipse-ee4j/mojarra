@@ -338,7 +338,6 @@ public class ClientSideStateHelper extends StateHelper {
 
             }
 
-            // noinspection NonSerializableObjectPassedToObjectStream
             oos.writeObject(stateToWrite[0]);
 
             if (debugSerializedState) {
@@ -354,7 +353,6 @@ public class ClientSideStateHelper extends StateHelper {
 
             }
 
-            // noinspection NonSerializableObjectPassedToObjectStream
             oos.writeObject(stateToWrite[1]);
 
             oos.flush();

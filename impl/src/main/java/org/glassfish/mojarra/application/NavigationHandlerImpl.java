@@ -233,7 +233,7 @@ public class NavigationHandlerImpl extends NavigationHandler {
                 String viewIdBefore = context.getViewRoot().getViewId();
                 viewIdBefore = null == viewIdBefore ? "" : viewIdBefore;
                 String viewIdAfter = caseStruct.navCase.getToViewId(context);
-                viewIdAfter = null == viewIdAfter ? "" : viewIdAfter; // NOPMD
+                viewIdAfter = null == viewIdAfter ? "" : viewIdAfter;
                 isUIViewActionBroadcastAndViewdsDiffer = !viewIdBefore.equals(viewIdAfter);
             }
 
@@ -245,14 +245,14 @@ public class NavigationHandlerImpl extends NavigationHandler {
                 // the necessary metadata is appended to the query string
 
                 // If at least one of newFlow and currentFlow is not null
-                if (caseStruct.newFlow != null || caseStruct.currentFlow != null) { // NOPMD
-                    if (!flowsEqual(caseStruct.newFlow, caseStruct.currentFlow)) { // NOPMD
-                        if (parameters == null) { // NOPMD
+                if (caseStruct.newFlow != null || caseStruct.currentFlow != null) {
+                    if (!flowsEqual(caseStruct.newFlow, caseStruct.currentFlow)) {
+                        if (parameters == null) {
                             parameters = new HashMap<>();
                         }
 
                         // If we are exiting all flows
-                        if (caseStruct.newFlow == null) { // NOPMD
+                        if (caseStruct.newFlow == null) {
                             parameters.put(TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME, List.of(NULL_FLOW));
                             parameters.put(FLOW_ID_REQUEST_PARAM_NAME, List.of(""));
                             FlowHandler flowHandler = context.getApplication().getFlowHandler();

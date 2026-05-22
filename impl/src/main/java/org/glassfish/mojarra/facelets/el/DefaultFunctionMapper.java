@@ -179,19 +179,6 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
             return m;
         }
 
-        @SuppressWarnings("unused")
-        public boolean matches(String prefix, String localName) {
-            if (this.prefix != null) {
-                if (prefix == null) {
-                    return false;
-                }
-                if (!this.prefix.equals(prefix)) {
-                    return false;
-                }
-            }
-            return this.localName.equals(localName);
-        }
-
         /*
          * (non-Javadoc)
          *

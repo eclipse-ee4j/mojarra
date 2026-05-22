@@ -103,7 +103,7 @@ class ResourceDependencyHandler implements RuntimeAnnotationHandler {
      * @param dep the {@link ResourceDependency} in question
      * @return <code>true</code> if the {@link ResourceDependency} has been processed, otherwise <code>false</code>
      */
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings("unchecked")
     private boolean hasBeenProcessed(FacesContext ctx, ResourceDependency dep) {
 
         Set<ResourceDependency> dependencies = (Set<ResourceDependency>) RequestStateManager.get(ctx, RequestStateManager.PROCESSED_RESOURCE_DEPENDENCIES);
@@ -143,7 +143,7 @@ class ResourceDependencyHandler implements RuntimeAnnotationHandler {
      * @param ctx the {@link FacesContext} for the current request
      * @param dep the {@link ResourceDependency}
      */
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings("unchecked")
     private void markProcssed(FacesContext ctx, ResourceDependency dep) {
 
         Set<ResourceDependency> dependencies = (Set<ResourceDependency>) RequestStateManager.get(ctx, RequestStateManager.PROCESSED_RESOURCE_DEPENDENCIES);

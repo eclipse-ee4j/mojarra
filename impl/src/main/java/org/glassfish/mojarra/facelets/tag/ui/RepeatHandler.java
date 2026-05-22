@@ -43,7 +43,7 @@ public class RepeatHandler extends ComponentHandler {
     }
 
     @Override
-    protected MetaRuleset createMetaRuleset(Class type) {
+    protected MetaRuleset createMetaRuleset(Class<?> type) {
         MetaRuleset meta = super.createMetaRuleset(type);
         String myNamespace = tag.getNamespace();
 

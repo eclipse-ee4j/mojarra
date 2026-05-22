@@ -65,11 +65,14 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
         return getFamily();
     }
 
+    // ValueHolder/EditableValueHolder still declare these raw, so the overrides must match the raw erasure.
     @Override
+    @SuppressWarnings("rawtypes")
     public void setConverter(Converter converter) {
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public final void addValidator(Validator validator) {
         if (validator instanceof WholeBeanValidator) {
             super.addValidator(validator);
@@ -164,7 +167,7 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
     }
 
     private boolean isValidatorInstalled() {
-        return (Boolean) getStateHelper().eval(PropertyKeys.ValidatorInstalled, false);
+        return getStateHelper().eval(PropertyKeys.ValidatorInstalled, false);
     }
 
     private void setValidatorInstalled(boolean newValue) {
@@ -193,7 +196,7 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
             }
         }
 
-        cachedValidationGroups = validationGroupsList.toArray(new Class[validationGroupsList.size()]);
+        cachedValidationGroups = validationGroupsList.toArray(new Class<?>[validationGroupsList.size()]);
 
         return cachedValidationGroups;
     }

@@ -54,7 +54,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -1031,7 +1030,6 @@ public class Util {
      * </p>
      * If no mapping can be determined, it most likely means that this particular request wasn't dispatched through the
      * {@link jakarta.faces.webapp.FacesServlet}.
-     * <p>
      *
      * @param context the {@link FacesContext} of the current request
      *
@@ -1566,11 +1564,6 @@ public class Util {
         } else {
             return (Stream<T>) Stream.of(object);
         }
-    }
-
-    @SafeVarargs
-    public static <E> Set<E> unmodifiableSet(E... elements) {
-        return Collections.unmodifiableSet(new LinkedHashSet<>(Arrays.asList(elements)));
     }
 
 

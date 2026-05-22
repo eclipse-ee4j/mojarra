@@ -16,8 +16,6 @@
 
 package org.glassfish.mojarra.component;
 
-import jakarta.faces.component.*;
-
 import jakarta.faces.event.ValueChangeEvent;
 import jakarta.faces.event.ValueChangeListener;
 
@@ -26,7 +24,7 @@ import jakarta.faces.event.ValueChangeListener;
  * Test implementation of {@link ValueChangeListener}.
  * </p>
  */
-public class InputValueChangeListenerTestImpl implements ValueChangeListener {
+public class InputValueChangeListenerTestImpl implements ValueChangeListener<Object> {
 
     protected String valueChangeListenerId = null;
 
@@ -35,7 +33,7 @@ public class InputValueChangeListenerTestImpl implements ValueChangeListener {
     }
 
     @Override
-    public void processValueChange(ValueChangeEvent event) {
+    public void processValueChange(ValueChangeEvent<Object> event) {
         trace(valueChangeListenerId);
     }
 
