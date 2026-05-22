@@ -117,7 +117,7 @@ public class UIInputTestCase extends UIOutputTestCase {
     @Test
     public void testEventsGeneric() {
         UIInput input = (UIInput) component;
-        ValueChangeEvent event = new ValueChangeEvent(input, null, null);
+        ValueChangeEvent<?> event = new ValueChangeEvent<>(input, null, null);
 
         // Register three listeners
         input.addValueChangeListener(new ValueChangeListenerTestImpl("AP0"));
@@ -137,7 +137,7 @@ public class UIInputTestCase extends UIOutputTestCase {
         input.setRendererType(null);
         UIViewRoot root = facesContext.getApplication().getViewHandler().createView(facesContext, null);
         root.getChildren().add(input);
-        ValueChangeEvent event = null;
+        ValueChangeEvent<?> event = null;
 
         // Register three listeners
         input.addValueChangeListener(new ValueChangeListenerTestImpl("ARV"));
@@ -145,15 +145,15 @@ public class UIInputTestCase extends UIOutputTestCase {
         input.addValueChangeListener(new ValueChangeListenerTestImpl("AP"));
 
         ValueChangeListenerTestImpl.trace(null);
-        event = new ValueChangeEvent(input, null, null);
+        event = new ValueChangeEvent<>(input, null, null);
         event.setPhaseId(PhaseId.APPLY_REQUEST_VALUES);
         input.queueEvent(event);
 
-        event = new ValueChangeEvent(input, null, null);
+        event = new ValueChangeEvent<>(input, null, null);
         event.setPhaseId(PhaseId.PROCESS_VALIDATIONS);
         input.queueEvent(event);
 
-        event = new ValueChangeEvent(input, null, null);
+        event = new ValueChangeEvent<>(input, null, null);
         event.setPhaseId(PhaseId.INVOKE_APPLICATION);
         input.queueEvent(event);
 

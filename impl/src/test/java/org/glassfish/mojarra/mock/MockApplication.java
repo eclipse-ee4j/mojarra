@@ -246,12 +246,13 @@ public class MockApplication extends Application {
         throw new UnsupportedOperationException();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public Converter createConverter(String converterId) {
+    public <T> Converter<T> createConverter(String converterId) {
         String converterClass = converters.get(converterId);
         try {
             Class<?> clazz = Class.forName(converterClass);
-            return ((Converter) clazz.getDeclaredConstructor().newInstance());
+            return (Converter<T>) clazz.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             throw new FacesException(e);
         }
@@ -291,12 +292,13 @@ public class MockApplication extends Application {
         validators.put(validatorId, validatorClass);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public Validator createValidator(String validatorId) {
+    public <T> Validator<T> createValidator(String validatorId) {
         String validatorClass = validators.get(validatorId);
         try {
             Class<?> clazz = Class.forName(validatorClass);
-            return ((Validator) clazz.getDeclaredConstructor().newInstance());
+            return (Validator<T>) clazz.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             throw new FacesException(e);
         }
@@ -880,7 +882,7 @@ public class MockApplication extends Application {
         private Class<?> sourceClass;
         private Set<SystemEventListener> listeners;
         private Constructor<? extends SystemEvent> eventConstructor;
-        private Map<Class<?>, Constructor> constructorMap;
+        private Map<Class<?>, Constructor<? extends SystemEvent>> constructorMap;
 
         // -------------------------------------------------------- Constructors
         public EventInfo(Class<? extends SystemEvent> systemEvent,
@@ -935,6 +937,7 @@ public class MockApplication extends Application {
 
         }
 
+        @SuppressWarnings("unchecked")
         private Constructor<? extends SystemEvent> getEventConstructor(Class<?> source) {
 
             Constructor<? extends SystemEvent> ctor = null;

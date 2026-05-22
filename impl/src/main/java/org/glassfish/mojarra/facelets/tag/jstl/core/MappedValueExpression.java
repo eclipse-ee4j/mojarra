@@ -80,11 +80,11 @@ public final class MappedValueExpression extends ValueExpression {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public Object getValue(ELContext context) {
+    public <T> T getValue(ELContext context) {
         Object base = orig.getValue(context);
         if (base != null) {
             context.setPropertyResolved(true);
-            return new Entry((Map<Object, Object>) base, key);
+            return (T) new Entry((Map<Object, Object>) base, key);
 
         }
         return null;

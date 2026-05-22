@@ -52,54 +52,54 @@ public class ConfigBase {
 
 
     // ------------------------------------------------------------ <component>
-    private Map components = null;
+    private Map<String, ConfigComponent> components = null;
 
     public void addComponent(ConfigComponent component) {
         if (components == null) {
-            components = new HashMap();
+            components = new HashMap<>();
         }
         components.put(component.getComponentType(), component);
     }
 
-    public Map getComponents() {
+    public Map<String, ConfigComponent> getComponents() {
         if (components == null) {
-            return (Collections.EMPTY_MAP);
+            return (Collections.emptyMap());
         } else {
             return (this.components);
         }
     }
 
     // ------------------------------------------------------------ <converter>
-    private Map converters = null;
+    private Map<String, ConfigConverter> converters = null;
 
     public void addConverter(ConfigConverter converter) {
         if (converters == null) {
-            converters = new HashMap();
+            converters = new HashMap<>();
         }
         converters.put(converter.getConverterId(), converter);
     }
 
-    public Map getConverters() {
+    public Map<String, ConfigConverter> getConverters() {
         if (converters == null) {
-            return (Collections.EMPTY_MAP);
+            return (Collections.emptyMap());
         } else {
             return (this.converters);
         }
     }
 
     // ------------------------------------------------------------ <validator>
-    private Map validators = null;
+    private Map<String, ConfigValidator> validators = null;
 
     public void addValidator(ConfigValidator validator) {
         if (validators == null) {
-            validators = new HashMap();
+            validators = new HashMap<>();
         }
         validators.put(validator.getValidatorId(), validator);
     }
 
-    public Map getValidators() {
+    public Map<String, ConfigValidator> getValidators() {
         if (validators == null) {
-            return (Collections.EMPTY_MAP);
+            return (Collections.emptyMap());
         } else {
             return (this.validators);
         }

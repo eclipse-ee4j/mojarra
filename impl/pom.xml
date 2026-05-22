@@ -261,11 +261,16 @@
                 </includes>
             </resource>
         </resources>
-        <pluginManagement>
-            <plugins>
-            </plugins>
-        </pluginManagement>
+
         <plugins>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.5.0</version>
+				<configuration>
+					<propertiesEncoding>UTF-8</propertiesEncoding>
+				</configuration>
+			</plugin>
+
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.5</version>
@@ -278,7 +283,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Bundles faces.ts via Rollup, minifies via Terser, and runs JavaScript unit tests via Jest. -->
+			<!-- Bundles faces.ts via Rollup, minifies via Terser, and runs JavaScript unit tests via Jest. -->
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
@@ -343,7 +348,7 @@
                 </executions>
             </plugin>
 
-            <!-- Creates the OSGi MANIFEST.MF file -->
+			<!-- Creates the OSGi MANIFEST.MF file -->
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -375,7 +380,6 @@
                         <Extension-Name>jakarta.faces</Extension-Name>
                         
                         <Export-Package>
-                            jakarta.faces.*,
                             org.glassfish.mojarra.*
                         </Export-Package>
                         
@@ -389,7 +393,6 @@
                             jakarta.enterprise.inject.*,
                             jakarta.enterprise.util.*,
                             jakarta.enterprise.context.*,
-                            jakarta.annotation.processing.*,
                             jakarta.annotation.*,
                             javax.crypto.*,
                             jakarta.websocket.*;resolution:=optional,
@@ -400,12 +403,10 @@
                             jakarta.persistence.*;resolution:=optional,
                             javax.xml.*,
                             org.w3c.dom.*,
-                            com.sun.enterprise.*;resolution:=optional,
-                            org.jboss.weld.*;resolution:=optional,
                             org.xml.sax.*,
                             javax.naming.*
                         </Import-Package>
-                        <!--
+						<!--
                             Allow Mojarra to load alternative FaceletConfigResourceProvider,
                             FacesConfigResourceProvider, and ApplicationConfigurationPopulator SPI
                             implementations. Mojarra provides default implementations, so each capability is marked as
@@ -426,7 +427,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Adds the manifest file created by the org.apache.felix:maven-bundle-plugin -->
+			<!-- Adds the manifest file created by the org.apache.felix:maven-bundle-plugin -->
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
@@ -440,7 +441,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Creates the source jar -->
+			<!-- Creates the source jar -->
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
                 <executions>
@@ -453,7 +454,7 @@
                 </executions>
             </plugin>
 
-            <!-- 
+			<!-- 
                Create Javadoc for API jar
             -->
             <plugin>
@@ -476,7 +477,7 @@
                 </executions>
             </plugin>
 
-            <!-- Check licenses of dependencies (Eclipse requirement) -->
+			<!-- Check licenses of dependencies (Eclipse requirement) -->
             <plugin>
                 <groupId>org.eclipse.dash</groupId>
                 <artifactId>license-tool-plugin</artifactId>
@@ -491,7 +492,7 @@
                 </executions>
             </plugin>
 
-            <!-- Generate a "consumer pom" for Maven Central release -->
+			<!-- Generate a "consumer pom" for Maven Central release -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
