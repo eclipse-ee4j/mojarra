@@ -16,6 +16,9 @@
 
 package jakarta.faces.component;
 
+import org.glassfish.mojarra.component.*;
+
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;

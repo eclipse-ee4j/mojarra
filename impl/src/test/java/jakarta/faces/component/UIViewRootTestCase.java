@@ -16,6 +16,11 @@
 
 package jakarta.faces.component;
 
+import org.glassfish.mojarra.component.*;
+
+import org.glassfish.mojarra.component.UIComponentBaseTestCase;
+
+
 import static java.util.Collections.emptyMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
