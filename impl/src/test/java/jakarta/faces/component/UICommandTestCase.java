@@ -16,11 +16,6 @@
 
 package jakarta.faces.component;
 
-import org.glassfish.mojarra.component.*;
-
-import org.glassfish.mojarra.component.UIComponentBaseTestCase;
-
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -37,6 +32,10 @@ import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
 import jakarta.faces.render.Renderer;
 
+import org.glassfish.mojarra.component.ActionListenerTestImpl;
+import org.glassfish.mojarra.component.CommandActionListenerTestImpl;
+import org.glassfish.mojarra.component.CommandTestImpl;
+import org.glassfish.mojarra.component.UIComponentBaseTestCase;
 import org.glassfish.mojarra.mock.MockExternalContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -243,6 +242,7 @@ public class UICommandTestCase extends UIComponentBaseTestCase {
         ActionListener[] listeners = command.getActionListeners();
         assertEquals(2, listeners.length);
         ActionListenerTestImpl[] taListeners = (ActionListenerTestImpl[]) command.getFacesListeners(ActionListenerTestImpl.class);
+        assertEquals(2, taListeners.length);
     }
 
     // --------------------------------------------------------- Support Methods
@@ -281,7 +281,7 @@ public class UICommandTestCase extends UIComponentBaseTestCase {
 
     // --------------------------------------------------------- Private Classes
     // "Button" Renderer
-    class ButtonRenderer extends Renderer {
+    class ButtonRenderer extends Renderer<UIComponent> {
 
         @Override
         public void decode(FacesContext context, UIComponent component) {

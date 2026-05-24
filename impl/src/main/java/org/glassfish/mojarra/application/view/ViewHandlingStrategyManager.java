@@ -40,7 +40,6 @@ public class ViewHandlingStrategyManager {
      * Iterate through the available {@link org.glassfish.mojarra.application.view.ViewHandlingStrategy} implementations. The first
      * one to return true from {@link org.glassfish.mojarra.application.view.ViewHandlingStrategy#handlesViewId(String)} will be the
      * {@link org.glassfish.mojarra.application.view.ViewHandlingStrategy} returned.
-     * <p>
      *
      * @param viewId the viewId to match a {@link org.glassfish.mojarra.application.view.ViewHandlingStrategy} to
      *

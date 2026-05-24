@@ -16,8 +16,7 @@
 
 package org.glassfish.mojarra.component;
 
-import jakarta.faces.component.*;
-
+import jakarta.faces.component.UIComponent;
 import jakarta.faces.event.FacesEvent;
 import jakarta.faces.event.FacesListener;
 

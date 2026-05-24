@@ -109,6 +109,12 @@ public class MockApplication extends Application {
                     processActionCalled = false;
                     return result;
                 }
+
+                // Constant hash is consistent with the identity-detecting equals above.
+                @Override
+                public int hashCode() {
+                    return 1;
+                }
             };
         }
 

@@ -634,7 +634,7 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
                     }
                     methodCallBuilder.parameters(paramList);
                 }
-                Class<?>[] paramArray = new Class[paramTypes.size()];
+                Class<?>[] paramArray = new Class<?>[paramTypes.size()];
                 paramTypes.toArray(paramArray);
                 methodCallBuilder.expression(methodStr, paramArray);
             }

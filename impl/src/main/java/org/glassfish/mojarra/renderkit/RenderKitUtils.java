@@ -1103,7 +1103,6 @@ public class RenderKitUtils {
         return false;
     }
 
-    @SuppressWarnings("unchecked")
     public static void renderUnhandledMessages(FacesContext ctx) {
 
         if (ctx.isProjectStage(ProjectStage.Development)) {

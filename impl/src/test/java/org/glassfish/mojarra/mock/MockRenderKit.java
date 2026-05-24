@@ -52,12 +52,12 @@ public class MockRenderKit extends RenderKit {
         responseStateManager = new MockResponseStateManager();
     }
 
-    private Map<String, Renderer> renderers = new HashMap<>();
+    private Map<String, Renderer<?>> renderers = new HashMap<>();
     private ResponseStateManager responseStateManager = null;
 
     @Override
     public void addRenderer(String family, String rendererType,
-            Renderer renderer) {
+            Renderer<?> renderer) {
         if ((family == null) || (rendererType == null) || (renderer == null)) {
             throw new NullPointerException();
         }
@@ -65,11 +65,12 @@ public class MockRenderKit extends RenderKit {
     }
 
     @Override
-    public Renderer getRenderer(String family, String rendererType) {
+    @SuppressWarnings("unchecked")
+    public <T extends UIComponent> Renderer<T> getRenderer(String family, String rendererType) {
         if ((family == null) || (rendererType == null)) {
             throw new NullPointerException();
         }
-        return (renderers.get(family + "|" + rendererType));
+        return (Renderer<T>) renderers.get(family + "|" + rendererType);
     }
 
     @Override

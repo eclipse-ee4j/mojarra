@@ -274,7 +274,7 @@ class MultiViewHandlerFragmentTest extends JUnitFacesTestCaseBase {
      */
     @Test
     void getRedirectURL_withSpecialCharsInFragment_passedThroughVerbatim() {
-        String result = handler.getRedirectURL(testContext, VIEW_ID, null, "id:main", false);
+        handler.getRedirectURL(testContext, VIEW_ID, null, "id:main", false);
 
         ArgumentCaptor<String> urlCaptor = ArgumentCaptor.forClass(String.class);
         verify(testExternalContext).encodeRedirectURL(urlCaptor.capture(), any());

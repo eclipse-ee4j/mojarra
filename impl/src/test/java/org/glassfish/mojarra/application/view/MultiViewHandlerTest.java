@@ -22,12 +22,12 @@ import static jakarta.servlet.http.MappingMatch.PATH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import jakarta.faces.FactoryFinder;
+
 import org.glassfish.mojarra.junit.JUnitFacesTestCaseBase;
 import org.glassfish.mojarra.mock.MockFacesMappingSupport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import jakarta.faces.FactoryFinder;
 
 public class MultiViewHandlerTest extends JUnitFacesTestCaseBase {
 

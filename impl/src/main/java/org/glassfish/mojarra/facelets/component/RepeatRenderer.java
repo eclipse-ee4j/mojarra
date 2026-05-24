@@ -60,7 +60,7 @@ public class RepeatRenderer extends Renderer<UIRepeat> {
             Iterator<UIComponent> itr = component.getChildren().iterator();
             UIComponent c;
             while (itr.hasNext()) {
-                c = (UIComponent) itr.next();
+                c = itr.next();
                 c.encodeAll(context);
             }
 

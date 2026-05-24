@@ -31,7 +31,7 @@ public class MethodCallBuilderImpl extends MethodCallBuilder {
     private FlowBuilderImpl root;
     private String methodCallId;
     private MethodCallNodeImpl methodCallNode;
-    private static final Class<?>[] EMPTY_ARGS = new Class[0];
+    private static final Class<?>[] EMPTY_ARGS = new Class<?>[0];
 
     public MethodCallBuilderImpl(FlowBuilderImpl root, String id) {
         this.root = root;
@@ -64,7 +64,7 @@ public class MethodCallBuilderImpl extends MethodCallBuilder {
     }
 
     @Override
-    public MethodCallBuilder expression(String methodExpression, Class[] paramTypes) {
+    public MethodCallBuilder expression(String methodExpression, Class<?>[] paramTypes) {
         ELContext elc = root.getELContext();
         MethodExpression me = root.getExpressionFactory().createMethodExpression(elc, methodExpression, null, paramTypes);
         methodCallNode.setMethodExpression(me);

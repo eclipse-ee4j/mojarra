@@ -542,7 +542,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * @see ViewHandlingStrategy#retargetAttachedObjects(jakarta.faces.context.FacesContext,
      * jakarta.faces.component.UIComponent, java.util.List)
      */
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings("unchecked")
     @Override
     public void retargetAttachedObjects(FacesContext context, UIComponent topLevelComponent, List<AttachedObjectHandler> handlers) {
         notNull("context", context);
@@ -1409,7 +1409,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
          */
         private static abstract class AbstractRetargetHandler implements MethodRetargetHandler {
 
-            protected static final Class<?>[] NO_ARGS = new Class[0];
+            protected static final Class<?>[] NO_ARGS = new Class<?>[0];
 
         } // END AbstractRetargetHandler
 
@@ -1579,7 +1579,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                         String strValue = methodSignature.substring(i + 1, j);
                         if (0 < strValue.length()) {
                             String[] params = strValue.split(",");
-                            expectedParameters = new Class[params.length];
+                            expectedParameters = new Class<?>[params.length];
                             boolean exceptionThrown = false;
                             for (i = 0; i < params.length; i++) {
                                 try {

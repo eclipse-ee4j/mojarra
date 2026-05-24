@@ -19,7 +19,6 @@
 package org.glassfish.mojarra.renderkit;
 
 import static org.glassfish.mojarra.renderkit.Attribute.attr;
-import static org.glassfish.mojarra.util.CollectionsUtils.ar;
 
 import java.util.Map;
 
@@ -38,6 +37,10 @@ public class AttributeManager {
         SELECTBOOLEANCHECKBOX, SELECTMANYCHECKBOX, SELECTMANYLISTBOX,
         SELECTMANYMENU, SELECTONELISTBOX, SELECTONEMENU, SELECTONERADIO,
         OUTPUTBODY, OUTPUTDOCTYPE, OUTPUTHEAD;
+    }
+
+    private static Attribute[] ar(Attribute... attributes) {
+        return attributes;
     }
 
     private static final Map<Key, Attribute[]> ATTRIBUTE_LOOKUP = CollectionsUtils.<Key, Attribute[]>map()

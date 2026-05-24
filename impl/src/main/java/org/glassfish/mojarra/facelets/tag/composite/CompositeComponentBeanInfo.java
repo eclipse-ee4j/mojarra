@@ -32,6 +32,8 @@ import jakarta.faces.FacesException;
 
 public class CompositeComponentBeanInfo extends SimpleBeanInfo implements BeanInfo, Externalizable {
 
+    private static final long serialVersionUID = 1L;
+
     private BeanDescriptor descriptor = null;
 
     @Override
@@ -87,7 +89,7 @@ public class CompositeComponentBeanInfo extends SimpleBeanInfo implements BeanIn
 
             try {
                 String name = (String) in.readObject();
-                CompositeAttributePropertyDescriptor pd = new CompositeAttributePropertyDescriptor(name, null, null); // NOPMD
+                CompositeAttributePropertyDescriptor pd = new CompositeAttributePropertyDescriptor(name, null, null);
 
                 Object type = in.readObject();
                 if (type != null) {

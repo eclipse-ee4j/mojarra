@@ -178,7 +178,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
     }
 
     private static class HandlerFactory implements TagHandlerFactory {
-        private final static Class<?>[] CONSTRUCTOR_SIG = new Class[] { TagConfig.class };
+        private final static Class<?>[] CONSTRUCTOR_SIG = new Class<?>[] { TagConfig.class };
 
         protected final Class<?> handlerType;
 
@@ -304,7 +304,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
 
     private static class UserComponentHandlerFactory implements TagHandlerFactory {
 
-        private final static Class<?>[] CONS_SIG = new Class[] { ComponentConfig.class };
+        private final static Class<?>[] CONS_SIG = new Class<?>[] { ComponentConfig.class };
 
         protected final String componentType;
 
@@ -386,7 +386,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
     }
 
     private static class UserConverterHandlerFactory implements TagHandlerFactory {
-        private final static Class<?>[] CONS_SIG = new Class[] { ConverterConfig.class };
+        private final static Class<?>[] CONS_SIG = new Class<?>[] { ConverterConfig.class };
 
         protected final String converterId;
 
@@ -418,7 +418,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
     }
 
     private static class UserValidatorHandlerFactory implements TagHandlerFactory {
-        private final static Class<?>[] CONS_SIG = new Class[] { ValidatorConfig.class };
+        private final static Class<?>[] CONS_SIG = new Class<?>[] { ValidatorConfig.class };
 
         protected final String validatorId;
 
@@ -450,7 +450,7 @@ public abstract class AbstractTagLibrary implements TagLibrary {
     }
 
     private static class UserBehaviorHandlerFactory implements TagHandlerFactory {
-        private final static Class<?>[] CONS_SIG = new Class[] { BehaviorConfig.class };
+        private final static Class<?>[] CONS_SIG = new Class<?>[] { BehaviorConfig.class };
 
         protected final String behaviorId;
 

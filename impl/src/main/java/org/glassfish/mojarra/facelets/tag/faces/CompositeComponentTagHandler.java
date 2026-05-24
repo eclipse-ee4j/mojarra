@@ -215,7 +215,7 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
      *
      */
     @Override
-    protected MetaRuleset createMetaRuleset(Class type) {
+    protected MetaRuleset createMetaRuleset(Class<?> type) {
 
         Util.notNull("type", type);
         FacesContext context = FacesContext.getCurrentInstance();
@@ -275,7 +275,7 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
      */
     private static final String ATTACHED_OBJECT_HANDLERS_KEY = "jakarta.faces.view.AttachedObjectHandlers";
 
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings("unchecked")
     public static List<AttachedObjectHandler> getAttachedObjectHandlers(UIComponent component, boolean create) {
         Map<String, Object> attrs = component.getAttributes();
         List<AttachedObjectHandler> result = (List<AttachedObjectHandler>) attrs.get(ATTACHED_OBJECT_HANDLERS_KEY);

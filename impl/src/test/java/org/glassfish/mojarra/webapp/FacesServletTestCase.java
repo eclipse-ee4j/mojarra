@@ -16,16 +16,13 @@
 
 package org.glassfish.mojarra.webapp;
 
-import jakarta.faces.webapp.FacesServlet;
-
-import jakarta.faces.component.*;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.webapp.FacesServlet;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.glassfish.mojarra.junit.JUnitFacesTestCaseBase;

@@ -16,8 +16,6 @@
 
 package org.glassfish.mojarra.component;
 
-import jakarta.faces.component.*;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -30,6 +28,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIComponentBase;
+import jakarta.faces.component.UIInput;
 import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
 import jakarta.faces.component.behavior.ClientBehaviorHint;
@@ -229,7 +230,6 @@ public class UIComponentBaseBehaviorTestCase extends UIComponentTestCase {
         Map<String, List<ClientBehavior>> behaviors = holder.getClientBehaviors();
         assertTrue(behaviors.isEmpty());
         assertFalse(behaviors.containsKey(ONCLICK));
-        assertFalse(behaviors.containsValue(new TestBehavior()));
         assertEquals(0, behaviors.entrySet().size());
         holder.addClientBehavior(ONCLICK, new TestBehavior());
         holder.addClientBehavior(ONCLICK, new TestBehavior());

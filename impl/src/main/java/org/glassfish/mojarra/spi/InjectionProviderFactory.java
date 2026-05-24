@@ -358,7 +358,6 @@ public class InjectionProviderFactory {
      * not specified or is invalid.
      * </p>
      */
-    @SuppressWarnings("deprecation")
     private static final class NoopInjectionProvider implements InjectionProvider, AnnotationScanner {
 
         /**

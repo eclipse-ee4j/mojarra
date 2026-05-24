@@ -146,7 +146,7 @@ public class UIOutputAttachedObjectStateTestCase {
         output = new UIOutput();
         assertNull(output.getConverter());
         output.restoreState(facesContext, state);
-        Converter c = output.getConverter();
+        Converter<?> c = output.getConverter();
         assertNotNull(c);
         assertTrue(c instanceof DateTimeConverter);
         converter = (DateTimeConverter) c;

@@ -51,7 +51,7 @@ public final class ValidateDelegateHandler extends ValidatorHandler {
     }
 
     @Override
-    protected MetaRuleset createMetaRuleset(Class type) {
+    protected MetaRuleset createMetaRuleset(Class<?> type) {
         return super.createMetaRuleset(type).ignoreAll();
     }
 

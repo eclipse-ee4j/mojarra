@@ -114,7 +114,7 @@ final class UserTagHandler extends TagHandlerImpl implements TemplateClient {
             if (handlers == null) {
                 return false;
             }
-            DefineHandler handler = (DefineHandler) handlers.get(name);
+            DefineHandler handler = handlers.get(name);
             if (handler != null) {
                 handler.applyDefinition(ctx, parent);
                 return true;

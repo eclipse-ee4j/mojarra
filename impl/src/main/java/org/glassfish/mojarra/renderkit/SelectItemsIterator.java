@@ -408,6 +408,8 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
          */
         private static final class GenericObjectSelectItem extends SelectItem {
 
+            private static final long serialVersionUID = 1L;
+
             private static final String ITEM_VALUE = "itemValue";
             private static final String ITEM_LABEL = "itemLabel";
             private static final String ITEM_DESCRIPTION = "itemDescription";

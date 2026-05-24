@@ -47,7 +47,7 @@ public class DeclareFacetHandler extends TagHandlerImpl {
 
     }
 
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings("unchecked")
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
         // only process if it's been created

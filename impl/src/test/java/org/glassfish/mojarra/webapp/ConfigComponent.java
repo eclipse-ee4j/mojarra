@@ -16,8 +16,6 @@
 
 package org.glassfish.mojarra.webapp;
 
-import jakarta.faces.component.*;
-
 /**
  * <p>
  * Config Bean for an Component.</p>

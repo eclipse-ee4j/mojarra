@@ -16,8 +16,6 @@
 
 package org.glassfish.mojarra.webapp;
 
-import jakarta.faces.component.*;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;

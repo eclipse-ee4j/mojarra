@@ -16,12 +16,12 @@
 
 package org.glassfish.mojarra.component;
 
-import jakarta.faces.component.UIInputTestCase;
-
-import jakarta.faces.component.*;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIInputTestCase;
+import jakarta.faces.component.UISelectBoolean;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

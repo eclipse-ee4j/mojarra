@@ -31,7 +31,6 @@ public interface Copier {
 
     /**
      * Return an object that's logically a copy of the given object.
-     * <p>
      *
      * @param object the object to be copied
      * @return a copy of the given object

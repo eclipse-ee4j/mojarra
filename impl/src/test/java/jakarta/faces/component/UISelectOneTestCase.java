@@ -16,9 +16,6 @@
 
 package jakarta.faces.component;
 
-import org.glassfish.mojarra.component.*;
-
-
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -34,6 +31,7 @@ import jakarta.faces.application.FacesMessage;
 import jakarta.faces.model.SelectItem;
 import jakarta.faces.model.SelectItemGroup;
 
+import org.glassfish.mojarra.component.UISelectItemSub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

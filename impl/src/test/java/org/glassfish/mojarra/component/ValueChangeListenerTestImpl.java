@@ -16,8 +16,7 @@
 
 package org.glassfish.mojarra.component;
 
-import jakarta.faces.component.*;
-
+import jakarta.faces.component.StateHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.ValueChangeEvent;
 import jakarta.faces.event.ValueChangeListener;
@@ -27,7 +26,7 @@ import jakarta.faces.event.ValueChangeListener;
  * Test {@link ValueChangeListener} implementation.
  * </p>
  */
-public class ValueChangeListenerTestImpl implements ValueChangeListener, StateHolder {
+public class ValueChangeListenerTestImpl implements ValueChangeListener<Object>, StateHolder {
 
     // ------------------------------------------------------------ Constructors
     /**
@@ -49,7 +48,7 @@ public class ValueChangeListenerTestImpl implements ValueChangeListener, StateHo
     }
 
     @Override
-    public void processValueChange(ValueChangeEvent event) {
+    public void processValueChange(ValueChangeEvent<Object> event) {
         trace(getId());
     }
 

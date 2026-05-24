@@ -327,6 +327,8 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     }
 
     private static class ApplyToken implements Externalizable {
+        private static final long serialVersionUID = 1L;
+
         public String alias;
 
         public long time;

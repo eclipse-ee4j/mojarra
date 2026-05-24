@@ -148,7 +148,7 @@ public final class ReflectionUtils {
                 }
 
             }
-        } catch (Exception e) { // NOPMD
+        } catch (Exception e) {
             throw new IllegalStateException(e);
         }
     }

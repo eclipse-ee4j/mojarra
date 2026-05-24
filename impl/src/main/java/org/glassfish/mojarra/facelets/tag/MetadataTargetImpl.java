@@ -52,8 +52,7 @@ public class MetadataTargetImpl extends MetadataTarget {
     }
 
 	@Override
-	@SuppressWarnings("unchecked")
-    public boolean isTargetInstanceOf(Class type) {
+    public boolean isTargetInstanceOf(Class<?> type) {
         return type.isAssignableFrom(this.type);
     }
 

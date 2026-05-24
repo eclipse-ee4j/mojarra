@@ -98,7 +98,7 @@ public class ComponentValidators {
      * @param ctx the <code>FacesContext</code> for the current request
      * @param editableValueHolder the component receiving the <code>Validator</code>s
      */
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings("unchecked")
     public static void addDefaultValidatorsToComponent(FacesContext ctx, EditableValueHolder editableValueHolder) {
 
         if (ComponentSupport.isBuildingNewComponentTree(ctx)) {
@@ -125,7 +125,7 @@ public class ComponentValidators {
      * @param ctx the <code>FacesContext</code> for the current request
      * @param editableValueHolder the component receiving the <code>Validator</code>s
      */
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings("unchecked")
     public void addValidators(FacesContext ctx, EditableValueHolder editableValueHolder) {
 
         if (validatorStack == null || validatorStack.isEmpty()) {

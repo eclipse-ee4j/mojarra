@@ -16,7 +16,6 @@
 
 package org.glassfish.mojarra.facelets.tag.faces.core;
 
-import static org.glassfish.mojarra.util.Util.unmodifiableSet;
 
 import java.util.Set;
 
@@ -57,7 +56,7 @@ public final class CoreLibrary extends AbstractTagLibrary {
     private final static String JcpNamespace = "http://xmlns.jcp.org/jsf/core";
     private final static String JakartaNamespace = "jakarta.faces.core";
 
-    public final static Set<String> NAMESPACES = unmodifiableSet(JakartaNamespace, JcpNamespace, SunNamespace);
+    public final static Set<String> NAMESPACES = Set.of(JakartaNamespace, JcpNamespace, SunNamespace);
     public final static String DEFAULT_NAMESPACE = JakartaNamespace;
 
     public CoreLibrary(String namespace) {
