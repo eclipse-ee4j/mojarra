@@ -28,5 +28,5 @@
     <artifactId>issue5746</artifactId>
     <packaging>war</packaging>
 
-    <name>Mojarra ${project.version} - INTEGRATION TESTS - ${project.artifactId}</name>
+    <name>Mojarra ${project.version} - IT - ${project.artifactId}</name>
 </project>

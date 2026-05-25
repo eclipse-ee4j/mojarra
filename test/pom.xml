@@ -29,7 +29,7 @@
     <artifactId>pom</artifactId>
     <packaging>pom</packaging>
 
-    <name>Mojarra ${project.version} - INTEGRATION TESTS</name>
+    <name>Mojarra ${project.version} - IT</name>
 
     <modules>
         <module>issue5746</module>
