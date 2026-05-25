@@ -32,6 +32,7 @@
     <name>Mojarra ${project.version} - IT</name>
 
     <modules>
+        <module>../faces/tck/util</module> <!-- BaseITNG et.al. -->
         <module>issue5746</module>
     </modules>
 
