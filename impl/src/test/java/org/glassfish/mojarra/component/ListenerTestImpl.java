@@ -16,8 +16,6 @@
 
 package org.glassfish.mojarra.component;
 
-import jakarta.faces.component.*;
-
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.FacesListener;
 

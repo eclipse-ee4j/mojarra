@@ -82,7 +82,7 @@ public class ReflectionUtil {
         if (s == null) {
             return null;
         }
-        Class<?>[] c = new Class[s.length];
+        Class<?>[] c = new Class<?>[s.length];
         for (int i = 0; i < s.length; i++) {
             c[i] = forName(s[i]);
         }

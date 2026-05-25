@@ -16,7 +16,6 @@
 
 package org.glassfish.mojarra.facelets.util;
 
-import static org.glassfish.mojarra.util.Util.unmodifiableSet;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -68,7 +67,7 @@ public final class DevTools {
     private final static String JcpNamespace = "http://xmlns.jcp.org/mojarra/private/functions";
     private final static String JakartaNamespace = "mojarra.private.functions";
 
-    public final static Set<String> NAMESPACES = unmodifiableSet(JakartaNamespace, JcpNamespace, SunNamespace);
+    public final static Set<String> NAMESPACES = Set.of(JakartaNamespace, JcpNamespace, SunNamespace);
     public final static String DEFAULT_NAMESPACE = JakartaNamespace;
 
     private static final Logger LOGGER = Logger.getLogger(DevTools.class.getPackage().getName());

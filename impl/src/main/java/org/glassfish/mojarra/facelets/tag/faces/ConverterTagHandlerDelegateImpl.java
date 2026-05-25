@@ -69,7 +69,7 @@ public class ConverterTagHandlerDelegateImpl extends TagHandlerDelegate implemen
     }
 
     @Override
-    public MetaRuleset createMetaRuleset(Class type) {
+    public MetaRuleset createMetaRuleset(Class<?> type) {
         Util.notNull("type", type);
         MetaRuleset m = new MetaRulesetImpl(owner.getTag(), type);
 

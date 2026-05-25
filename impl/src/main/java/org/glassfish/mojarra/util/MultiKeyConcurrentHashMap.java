@@ -130,7 +130,6 @@ public class MultiKeyConcurrentHashMap<K, V> {
      * @return the segment
      */
     final Segment<K, V> segmentFor(int hash) {
-        // noinspection unchecked
         return segments[hash >>> segmentShift & segmentMask];
     }
 
@@ -247,7 +246,6 @@ public class MultiKeyConcurrentHashMap<K, V> {
          */
         HashEntry<K, V> getFirst(int hash) {
             HashEntry[] tab = table;
-            // noinspection unchecked
             return tab[hash & tab.length - 1];
         }
 
@@ -306,7 +304,7 @@ public class MultiKeyConcurrentHashMap<K, V> {
                 HashEntry[] tab = table;
                 int len = tab.length;
                 for (int i = 0; i < len; i++) {
-                    for (// noinspection unchecked
+                    for (
                             HashEntry<K, V> e = tab[i]; e != null; e = e.next) {
                         V v = e.value;
                         if (v == null) // recheck
@@ -372,7 +370,6 @@ public class MultiKeyConcurrentHashMap<K, V> {
                 }
                 HashEntry[] tab = table;
                 int index = hash & tab.length - 1;
-                // noinspection unchecked
                 HashEntry<K, V> first = tab[index];
                 HashEntry<K, V> e = first;
                 while (e != null && (e.hash != hash || key1 != null && !key1.equals(e.key1) || key2 != null && !key2.equals(e.key2)
@@ -420,7 +417,6 @@ public class MultiKeyConcurrentHashMap<K, V> {
             for (int i = 0; i < oldCapacity; i++) {
                 // We need to guarantee that any existing reads of old Map can
                 // proceed. So we cannot yet null out each bin.
-                // noinspection unchecked
                 HashEntry<K, V> e = oldTable[i];
 
                 if (e != null) {
@@ -446,7 +442,6 @@ public class MultiKeyConcurrentHashMap<K, V> {
                         // Clone all remaining nodes
                         for (HashEntry<K, V> p = e; p != lastRun; p = p.next) {
                             int k = p.hash & sizeMask;
-                            // noinspection unchecked
                             HashEntry<K, V> n = newTable[k];
                             newTable[k] = new HashEntry<>(p.key1, p.key2, p.key3, p.key4, p.hash, n, p.value);
                         }
@@ -465,7 +460,6 @@ public class MultiKeyConcurrentHashMap<K, V> {
                 int c = count - 1;
                 HashEntry[] tab = table;
                 int index = hash & tab.length - 1;
-                // noinspection unchecked
                 HashEntry<K, V> first = tab[index];
                 HashEntry<K, V> e = first;
                 while (e != null && (e.hash != hash || key1 != null && !key1.equals(e.key1) || key2 != null && !key2.equals(e.key2)

@@ -616,9 +616,9 @@ public class FaceletTaglibConfigProcessor extends AbstractConfigProcessor {
                     String[] ps = signature.substring(pos2 + 1, pos).trim().split(",");
                     Class<?>[] pc;
                     if (ps.length == 1 && "".equals(ps[0])) {
-                        pc = new Class[0];
+                        pc = new Class<?>[0];
                     } else {
-                        pc = new Class[ps.length];
+                        pc = new Class<?>[ps.length];
                         for (int i = 0; i < pc.length; i++) {
                             pc[i] = ReflectionUtil.forName(ps[i].trim());
                         }

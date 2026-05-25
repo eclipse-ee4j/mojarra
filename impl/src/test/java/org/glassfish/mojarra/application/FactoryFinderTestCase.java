@@ -17,10 +17,6 @@
 
 package org.glassfish.mojarra.application;
 
-import jakarta.faces.FactoryFinder;
-
-import jakarta.faces.component.*;
-
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -29,6 +25,7 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 
 import jakarta.enterprise.inject.spi.CDI;
+import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationFactory;
 import jakarta.faces.context.FacesContext;

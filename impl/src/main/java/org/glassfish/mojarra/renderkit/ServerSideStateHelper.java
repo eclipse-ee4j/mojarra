@@ -264,7 +264,6 @@ public class ServerSideStateHelper extends StateHelper {
             return null;
         }
 
-        // noinspection SynchronizationOnLocalVariableOrMethodParameter
         synchronized (getMutex(sessionObj)) {
             @SuppressWarnings("unchecked")
             Map<String, Map<String, Object[]>> logicalMap = (Map<String, Map<String, Object[]>>) externalCtx.getSessionMap().get(LOGICAL_VIEW_MAP);
@@ -274,7 +273,7 @@ public class ServerSideStateHelper extends StateHelper {
                     RequestStateManager.set(ctx, RequestStateManager.LOGICAL_VIEW_MAP, idInLogicalMap);
 
                     Object[] restoredState = new Object[2];
-                    Object[] state = (Object[]) actualMap.get(idInActualMap);
+                    Object[] state = actualMap.get(idInActualMap);
                     if (state != null) {
                         restoredState[0] = state[0];
                         restoredState[1] = state[1];

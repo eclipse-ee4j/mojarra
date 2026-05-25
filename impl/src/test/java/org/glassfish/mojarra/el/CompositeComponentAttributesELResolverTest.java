@@ -45,6 +45,7 @@ public class CompositeComponentAttributesELResolverTest {
     /**
      * Test issue #2508.
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void testGetValue() throws Exception {
         ELContext elContext1 = Mockito.mock(ELContext.class);

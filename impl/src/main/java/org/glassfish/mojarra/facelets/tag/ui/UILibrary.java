@@ -16,7 +16,6 @@
 
 package org.glassfish.mojarra.facelets.tag.ui;
 
-import static org.glassfish.mojarra.util.Util.unmodifiableSet;
 
 import java.util.Set;
 
@@ -32,7 +31,7 @@ public final class UILibrary extends AbstractTagLibrary {
     private final static String JcpNamespace = "http://xmlns.jcp.org/jsf/facelets";
     private final static String JakartaNamespace = "jakarta.faces.facelets";
 
-    public final static Set<String> NAMESPACES = unmodifiableSet(JakartaNamespace, JcpNamespace, SunNamespace);
+    public final static Set<String> NAMESPACES = Set.of(JakartaNamespace, JcpNamespace, SunNamespace);
     public final static String DEFAULT_NAMESPACE = JakartaNamespace;
 
     public UILibrary(String namespace) {

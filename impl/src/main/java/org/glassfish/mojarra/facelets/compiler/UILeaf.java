@@ -164,7 +164,7 @@ public class UILeaf extends UIComponentBase implements UntargetableComponent {
     }
 
     @Override
-    protected FacesListener[] getFacesListeners(Class faces) {
+    protected FacesListener[] getFacesListeners(Class<? extends FacesListener> faces) {
         return null;
     }
 
@@ -199,7 +199,7 @@ public class UILeaf extends UIComponentBase implements UntargetableComponent {
     }
 
     @Override
-    protected Renderer getRenderer(FacesContext faces) {
+    protected <T extends UIComponent> Renderer<T> getRenderer(FacesContext faces) {
         return null;
     }
 

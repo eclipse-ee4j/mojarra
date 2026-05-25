@@ -16,11 +16,6 @@
 
 package jakarta.faces.component;
 
-import org.glassfish.mojarra.component.*;
-
-import org.glassfish.mojarra.component.UIComponentBaseTestCase;
-
-
 import static java.util.Collections.emptyMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -46,6 +41,9 @@ import jakarta.faces.event.PostRestoreStateEvent;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
 
+import org.glassfish.mojarra.component.EventTestImpl;
+import org.glassfish.mojarra.component.ListenerTestImpl;
+import org.glassfish.mojarra.component.UIComponentBaseTestCase;
 import org.glassfish.mojarra.mock.MockRenderKit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

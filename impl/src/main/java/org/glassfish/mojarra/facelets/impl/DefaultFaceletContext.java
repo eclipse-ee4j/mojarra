@@ -296,7 +296,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
         if (!clients.isEmpty()) {
             Iterator<TemplateManager> itr = clients.iterator();
             while (itr.hasNext()) {
-                if (itr.next().equals(client)) {
+                if (itr.next().wraps(client)) {
                     itr.remove();
                     return;
                 }
@@ -322,8 +322,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
 
         for (int i = 0, size = clients.size(); i < size && !found; i++) {
             client = clients.get(i);
-            // noinspection EqualsBetweenInconvertibleTypes
-            if (client.equals(facelet)) {
+            if (client.wraps(facelet)) {
                 continue;
             }
             found = client.apply(this, parent, name);
@@ -358,10 +357,8 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
             }
         }
 
-        @Override
-        public boolean equals(Object o) {
-            // System.out.println(this.owner.getAlias() + " == " +
-            // ((DefaultFacelet) o).getAlias());
+        // Returns true if the given facelet or template client is the one this manager wraps.
+        boolean wraps(Object o) {
             return owner == o || target == o;
         }
     }

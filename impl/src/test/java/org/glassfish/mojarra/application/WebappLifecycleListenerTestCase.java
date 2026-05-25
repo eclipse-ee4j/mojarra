@@ -51,6 +51,8 @@ public class WebappLifecycleListenerTestCase extends JUnitFacesTestCaseBase {
 
         // Create a request event. Make it cause an exception inside the lifecycleListener.requestDestroyed(event) call.
         ServletRequestEvent event = new ServletRequestEvent(servletContext, new MockHttpServletRequest()) {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public ServletRequest getServletRequest() {
                 // This is just a convenient place to throw the exception for testing purposes. In the real impl the

@@ -47,7 +47,7 @@ public class RIConstants {
 
     public static final String NO_VALUE = "";
 
-    public static final Class<?>[] EMPTY_CLASS_ARGS = new Class[0];
+    public static final Class<?>[] EMPTY_CLASS_ARGS = new Class<?>[0];
     public static final Object[] EMPTY_METH_ARGS = new Object[0];
     public static final String[] EMPTY_STRING_ARRAY = new String[0];
 

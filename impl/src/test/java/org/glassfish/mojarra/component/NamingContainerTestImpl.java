@@ -16,11 +16,12 @@
 
 package org.glassfish.mojarra.component;
 
-import jakarta.faces.component.*;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UINamingContainer;
 
 /**
  * <p>
- * Test {@link NamingContainer} implementation with tracing.
+ * Test {@link jakarta.faces.component.NamingContainer} implementation with tracing.
  * </p>
  */
 public class NamingContainerTestImpl extends UINamingContainer {

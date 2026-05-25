@@ -16,8 +16,7 @@
 
 package org.glassfish.mojarra.component;
 
-import jakarta.faces.component.*;
-
+import jakarta.faces.component.StateHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.ActionListener;
@@ -62,6 +61,11 @@ public class ActionListenerTestImpl implements ActionListener, StateHolder {
             idsAreEqual = id.equals(other.id);
         }
         return idsAreEqual;
+    }
+
+    @Override
+    public int hashCode() {
+        return id == null ? 0 : id.hashCode();
     }
 
     // ---------------------------------------------------- Static Trace Methods

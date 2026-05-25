@@ -16,10 +16,6 @@
 
 package org.glassfish.mojarra.component;
 
-import jakarta.faces.component.UIInputTestCase;
-
-import jakarta.faces.component.*;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -38,6 +34,14 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UIInputTestCase;
+import jakarta.faces.component.UIParameter;
+import jakarta.faces.component.UISelectItem;
+import jakarta.faces.component.UISelectItems;
+import jakarta.faces.component.UISelectMany;
+import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.model.ListDataModel;
 import jakarta.faces.model.SelectItem;
 import jakarta.faces.model.SelectItemGroup;

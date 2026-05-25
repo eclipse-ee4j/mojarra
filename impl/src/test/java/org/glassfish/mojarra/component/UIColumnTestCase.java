@@ -16,7 +16,8 @@
 
 package org.glassfish.mojarra.component;
 
-import jakarta.faces.component.*;
+import jakarta.faces.component.UIColumn;
+import jakarta.faces.component.UIComponent;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

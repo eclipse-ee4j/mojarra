@@ -16,7 +16,7 @@
 
 package org.glassfish.mojarra.component;
 
-import jakarta.faces.component.*;
+import jakarta.faces.component.UIInput;
 
 /**
  * <p>

@@ -78,7 +78,6 @@ public class SessionMap extends BaseContextMap<Object> {
                     LOGGER.log(Level.WARNING, "faces.context.extcontext.sessionmap.nonserializable", new Object[] { k, v.getClass().getName() });
                 }
             }
-            // noinspection NonSerializableObjectBoundToHttpSession
             session.setAttribute((String) k, v);
         }
     }
@@ -101,7 +100,6 @@ public class SessionMap extends BaseContextMap<Object> {
                 LOGGER.log(Level.WARNING, "faces.context.extcontext.sessionmap.nonserializable", new Object[] { key, value.getClass().getName() });
             }
         }
-        // noinspection NonSerializableObjectBoundToHttpSession
         boolean doSet = true;
         if (null != value && null != result) {
             int valCode = System.identityHashCode(value);

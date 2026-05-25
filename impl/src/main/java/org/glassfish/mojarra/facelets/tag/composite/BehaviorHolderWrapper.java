@@ -408,12 +408,12 @@ public class BehaviorHolderWrapper extends UIComponent implements ClientBehavior
     }
 
     @Override
-    protected FacesListener[] getFacesListeners(Class clazz) {
+    protected FacesListener[] getFacesListeners(Class<? extends FacesListener> clazz) {
         return new FacesListener[0];
     }
 
     @Override
-    protected Renderer getRenderer(FacesContext context) {
+    protected <T extends UIComponent> Renderer<T> getRenderer(FacesContext context) {
         return null;
     }
 

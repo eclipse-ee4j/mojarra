@@ -186,7 +186,7 @@ final class TextUnit extends CompilationUnit {
     }
 
     public void endTag() {
-        Tag tag = (Tag) tags.pop();
+        Tag tag = tags.pop();
 
         addInstruction(new EndElementInstruction(tag.getQName()));
 
@@ -230,7 +230,7 @@ final class TextUnit extends CompilationUnit {
 
             } catch (ELException e) {
                 if (tags.size() > 0) {
-                    throw new TagException((Tag) tags.peek(), e.getMessage());
+                    throw new TagException(tags.peek(), e.getMessage());
                 } else {
                     throw new ELException(alias + ": " + e.getMessage(), e.getCause());
                 }

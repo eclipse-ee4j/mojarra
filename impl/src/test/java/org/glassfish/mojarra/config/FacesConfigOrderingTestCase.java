@@ -16,8 +16,6 @@
 
 package org.glassfish.mojarra.config;
 
-import jakarta.faces.component.*;
-
 import static org.glassfish.mojarra.util.Util.createLocalDocumentBuilderFactory;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

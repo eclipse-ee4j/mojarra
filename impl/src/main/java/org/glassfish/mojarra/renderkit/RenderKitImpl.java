@@ -35,6 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseStream;
 import jakarta.faces.context.ResponseWriter;
@@ -90,7 +91,7 @@ public class RenderKitImpl extends RenderKit {
     }
 
     @Override
-    public void addRenderer(String family, String rendererType, Renderer renderer) {
+    public void addRenderer(String family, String rendererType, Renderer<?> renderer) {
 
         Util.notNull("family", family);
         Util.notNull("rendererType", rendererType);
@@ -111,7 +112,8 @@ public class RenderKitImpl extends RenderKit {
     }
 
     @Override
-    public Renderer getRenderer(String family, String rendererType) {
+    @SuppressWarnings("unchecked")
+    public <T extends UIComponent> Renderer<T> getRenderer(String family, String rendererType) {
 
         Util.notNull("family", family);
         Util.notNull("rendererType", rendererType);
@@ -119,7 +121,7 @@ public class RenderKitImpl extends RenderKit {
         assert rendererFamilies != null;
 
         HashMap<String, Renderer<?>> renderers = rendererFamilies.get(family);
-        return renderers != null ? renderers.get(rendererType) : null;
+        return renderers != null ? (Renderer<T>) renderers.get(rendererType) : null;
 
     }
 

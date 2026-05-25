@@ -164,7 +164,7 @@ public class TagAttributeImpl extends TagAttribute {
      * @return a MethodExpression instance
      */
     @Override
-    public MethodExpression getMethodExpression(FaceletContext ctx, Class type, Class[] paramTypes) {
+    public MethodExpression getMethodExpression(FaceletContext ctx, Class<?> type, Class<?>[] paramTypes) {
 
         MethodExpression result;
 
@@ -274,8 +274,7 @@ public class TagAttributeImpl extends TagAttribute {
      * @return Object value of this attribute
      */
     @Override
-    @SuppressWarnings("unchecked")
-    public Object getObject(FaceletContext ctx, Class type) {
+    public Object getObject(FaceletContext ctx, Class<?> type) {
         if (literal) {
             if (String.class.equals(type)) {
                 return value;
@@ -306,7 +305,7 @@ public class TagAttributeImpl extends TagAttribute {
      * @return ValueExpression instance
      */
     @Override
-    public ValueExpression getValueExpression(FaceletContext ctx, Class type) {
+    public ValueExpression getValueExpression(FaceletContext ctx, Class<?> type) {
         return getValueExpression(ctx, value, type);
     }
 

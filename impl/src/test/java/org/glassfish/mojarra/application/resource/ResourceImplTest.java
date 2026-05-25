@@ -29,13 +29,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.InputStream;
 import java.net.URL;
 
+import jakarta.faces.context.FacesContext;
+
 import org.glassfish.mojarra.junit.JUnitFacesTestCaseBase;
 import org.glassfish.mojarra.mock.MockApplication;
 import org.glassfish.mojarra.mock.MockFacesMappingSupport;
 import org.glassfish.mojarra.util.MojarraVersion;
 import org.junit.jupiter.api.Test;
-
-import jakarta.faces.context.FacesContext;
 
 public class ResourceImplTest extends JUnitFacesTestCaseBase {
 

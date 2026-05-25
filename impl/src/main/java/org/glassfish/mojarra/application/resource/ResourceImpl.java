@@ -67,6 +67,8 @@ import org.glassfish.mojarra.util.MojarraVersion;
  */
 public class ResourceImpl extends Resource implements Externalizable {
 
+    private static final long serialVersionUID = 1L;
+
     // Log instance for this class
     private static final Logger LOGGER = FacesLogger.APPLICATION.getLogger();
 

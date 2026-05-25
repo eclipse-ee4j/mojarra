@@ -105,7 +105,7 @@ public class HeadRendererTest {
 
         when(facesContext.getResponseWriter()).thenReturn(testResponseWriter);
         when(facesContext.getViewRoot()).thenReturn(viewRoot);
-        when(viewRoot.getComponentResources(facesContext, "head")).thenReturn(Collections.EMPTY_LIST);
+        when(viewRoot.getComponentResources(facesContext, "head")).thenReturn(Collections.emptyList());
 
         headRenderer.encodeEnd(facesContext, htmlHead);
         String html = writer.toString();

@@ -315,7 +315,7 @@ public class AnnotationManager {
      */
     private static final class ProcessAnnotationsTask implements Callable<Map<Class<? extends Annotation>, RuntimeAnnotationHandler>> {
 
-        @SuppressWarnings({ "unchecked" })
+        @SuppressWarnings("unchecked")
         private static final Map<Class<? extends Annotation>, RuntimeAnnotationHandler> EMPTY = Collections.EMPTY_MAP;
         private final Class<?> clazz;
         private final Scanner[] scanners;

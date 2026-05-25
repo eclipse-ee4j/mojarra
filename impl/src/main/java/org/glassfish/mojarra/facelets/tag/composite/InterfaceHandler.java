@@ -171,7 +171,7 @@ public class InterfaceHandler extends TagHandlerImpl {
         }
     }
 
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings("unchecked")
     private void imbueComponentWithMetadata(FaceletContext ctx, UIComponent parent) {
         // only process if it's been created
         if (null == parent || null == (parent = parent.getParent()) || !ComponentHandler.isNew(parent)) {

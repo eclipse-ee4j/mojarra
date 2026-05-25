@@ -274,7 +274,6 @@ public class UIRepeat extends UINamingContainer {
     }
 
     private void setDataModel(DataModel<?> model) {
-        // noinspection unchecked
         this.model = model;
     }
 
@@ -329,10 +328,8 @@ public class UIRepeat extends UINamingContainer {
                     effectiveEnd = s;
                 }
             } else if (val instanceof DataModel) {
-                // noinspection unchecked
                 model = (DataModel<Object>) val;
             } else if (val instanceof List) {
-                // noinspection unchecked
                 model = new ListDataModel<>((List<Object>) val);
             } else if (Object[].class.isAssignableFrom(val.getClass())) {
                 model = new ArrayDataModel<>((Object[]) val);
@@ -465,7 +462,7 @@ public class UIRepeat extends UINamingContainer {
 
         Iterator<UIComponent> itr = c.getFacetsAndChildren();
         while (itr.hasNext()) {
-            removeChildState(faces, (UIComponent) itr.next());
+            removeChildState(faces, itr.next());
         }
         if (childState != null) {
             childState.remove(c.getClientId(faces));
@@ -487,7 +484,7 @@ public class UIRepeat extends UINamingContainer {
         // continue hack
         Iterator<UIComponent> itr = c.getFacetsAndChildren();
         while (itr.hasNext()) {
-            saveChildState(faces, (UIComponent) itr.next());
+            saveChildState(faces, itr.next());
         }
     }
 
@@ -520,7 +517,7 @@ public class UIRepeat extends UINamingContainer {
         // continue hack
         Iterator<UIComponent> itr = c.getFacetsAndChildren();
         while (itr.hasNext()) {
-            restoreChildState(faces, (UIComponent) itr.next());
+            restoreChildState(faces, itr.next());
         }
     }
 
@@ -641,7 +638,6 @@ public class UIRepeat extends UINamingContainer {
         return getDataModel().isRowAvailable();
     }
 
-    @SuppressWarnings("unchecked")
     public void process(FacesContext faces, PhaseId phase) {
 
         // stop if not rendered
@@ -707,7 +703,7 @@ public class UIRepeat extends UINamingContainer {
                     } else {
                         itr = getChildren().iterator();
                         while (itr.hasNext()) {
-                            c = (UIComponent) itr.next();
+                            c = itr.next();
                             if (PhaseId.APPLY_REQUEST_VALUES.equals(phase)) {
                                 c.processDecodes(faces);
                             } else if (PhaseId.PROCESS_VALIDATIONS.equals(phase)) {
@@ -1141,7 +1137,6 @@ public class UIRepeat extends UINamingContainer {
         }
         Object[] state = (Object[]) object;
         super.restoreState(faces, state[0]);
-        // noinspection unchecked
         childState = (Map<String, SavedState>) state[1];
         begin = (Integer) state[2];
         end = (Integer) state[3];

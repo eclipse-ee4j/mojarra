@@ -16,8 +16,6 @@
 
 package org.glassfish.mojarra.component;
 
-import jakarta.faces.component.*;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
@@ -28,11 +26,11 @@ import java.util.Map;
 
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PostConstructViewMapEvent;
 import jakarta.faces.event.PreDestroyViewMapEvent;
-import jakarta.servlet.http.HttpSession;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -44,7 +42,6 @@ public class UIViewRootTest {
         FacesContext facesContext = Mockito.mock(FacesContext.class);
         Application application = Mockito.mock(Application.class);
         ExternalContext externalContext = Mockito.mock(ExternalContext.class);
-        HttpSession httpSession = Mockito.mock(HttpSession.class);
 
         setFacesContext(facesContext);
 
@@ -66,7 +63,6 @@ public class UIViewRootTest {
         FacesContext facesContext = Mockito.mock(FacesContext.class);
         Application application = Mockito.mock(Application.class);
         ExternalContext externalContext = Mockito.mock(ExternalContext.class);
-        HttpSession httpSession = Mockito.mock(HttpSession.class);
 
         setFacesContext(facesContext);
 
@@ -97,7 +93,6 @@ public class UIViewRootTest {
         FacesContext facesContext = Mockito.mock(FacesContext.class);
         Application application = Mockito.mock(Application.class);
         ExternalContext externalContext = Mockito.mock(ExternalContext.class);
-        HttpSession httpSession = Mockito.mock(HttpSession.class);
         HashMap<Object, Object> attributes = new HashMap<>();
         HashMap<String, Object> sessionMap = new HashMap<>();
 

@@ -124,7 +124,7 @@ public class MessagesRenderer extends HtmlBasicRenderer {
         RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES);
 
         while (messageIter.hasNext()) {
-            FacesMessage curMessage = (FacesMessage) messageIter.next();
+            FacesMessage curMessage = messageIter.next();
             if (curMessage.isRendered() && !messages.isRedisplay()) {
                 continue;
             }

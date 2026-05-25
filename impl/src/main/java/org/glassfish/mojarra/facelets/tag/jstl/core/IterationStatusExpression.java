@@ -48,8 +48,8 @@ public final class IterationStatusExpression extends ValueExpression {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public IterationStatus getValue(ELContext context) {
-        return status;
+    public <T> T getValue(ELContext context) {
+        return (T) status;
     }
 
     /*

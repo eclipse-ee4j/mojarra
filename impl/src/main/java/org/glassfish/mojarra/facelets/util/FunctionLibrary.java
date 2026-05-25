@@ -16,7 +16,6 @@
 
 package org.glassfish.mojarra.facelets.util;
 
-import static org.glassfish.mojarra.util.Util.unmodifiableSet;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -44,7 +43,7 @@ public class FunctionLibrary implements TagLibrary {
     private final static String JcpNamespace = "http://xmlns.jcp.org/jsp/jstl/functions";
     private final static String JakartaNamespace = "jakarta.tags.functions";
 
-    public final static Set<String> NAMESPACES = unmodifiableSet(JakartaNamespace, JcpNamespace, SunNamespace);
+    public final static Set<String> NAMESPACES = Set.of(JakartaNamespace, JcpNamespace, SunNamespace);
     public final static String DEFAULT_NAMESPACE = JakartaNamespace;
 
     private String _namespace;

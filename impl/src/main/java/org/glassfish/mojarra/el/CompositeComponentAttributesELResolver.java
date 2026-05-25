@@ -224,7 +224,6 @@ public class CompositeComponentAttributesELResolver extends ELResolver {
     public Map<String, Object> getEvalMapFor(UIComponent c, FacesContext ctx) {
 
         Map<Object, Object> ctxAttributes = ctx.getAttributes();
-        // noinspection unchecked
         Map<UIComponent, Map<String, Object>> topMap = (Map<UIComponent, Map<String, Object>>) ctxAttributes.get(EVAL_MAP_KEY);
         Map<String, Object> evalMap = null;
         if (topMap == null) {

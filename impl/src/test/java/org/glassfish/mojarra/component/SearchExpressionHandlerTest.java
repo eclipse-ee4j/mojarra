@@ -16,8 +16,6 @@
 
 package org.glassfish.mojarra.component;
 
-import jakarta.faces.component.*;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -32,6 +30,14 @@ import java.util.Set;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
+import jakarta.faces.component.ContextCallback;
+import jakarta.faces.component.UICommand;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.search.ComponentNotFoundException;
 import jakarta.faces.component.search.SearchExpressionContext;
 import jakarta.faces.component.search.SearchExpressionHandler;

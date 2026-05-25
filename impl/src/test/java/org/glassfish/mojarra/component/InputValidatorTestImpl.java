@@ -16,8 +16,7 @@
 
 package org.glassfish.mojarra.component;
 
-import jakarta.faces.component.*;
-
+import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.Validator;
 

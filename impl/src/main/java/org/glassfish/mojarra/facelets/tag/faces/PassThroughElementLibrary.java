@@ -16,7 +16,6 @@
 
 package org.glassfish.mojarra.facelets.tag.faces;
 
-import static org.glassfish.mojarra.util.Util.unmodifiableSet;
 
 import java.util.Set;
 
@@ -27,7 +26,7 @@ public final class PassThroughElementLibrary extends AbstractTagLibrary {
     private final static String JcpNamespace = "http://xmlns.jcp.org/jsf";
     private final static String JakartaNamespace = "jakarta.faces";
 
-    public final static Set<String> NAMESPACES = unmodifiableSet(JakartaNamespace, JcpNamespace);
+    public final static Set<String> NAMESPACES = Set.of(JakartaNamespace, JcpNamespace);
     public final static String DEFAULT_NAMESPACE = JakartaNamespace;
 
     public PassThroughElementLibrary(String namespace) {

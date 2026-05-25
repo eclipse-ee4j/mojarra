@@ -117,7 +117,7 @@ public class MessageRenderer extends HtmlBasicRenderer {
             } // otherwise, return without rendering
             return;
         }
-        FacesMessage curMessage = (FacesMessage) messageIter.next();
+        FacesMessage curMessage = messageIter.next();
         if (curMessage.isRendered() && !message.isRedisplay()) {
             return;
         }
