@@ -22,14 +22,12 @@
     glassfish.home system property set by the failsafe plugin.
 -->
 <arquillian xmlns="http://jboss.org/schema/arquillian"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
-
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
     <container qualifier="glassfish" default="true">
         <configuration>
             <property name="glassFishHome">${glassfish.home}</property>
             <property name="outputToConsole">true</property>
         </configuration>
     </container>
-
 </arquillian>
