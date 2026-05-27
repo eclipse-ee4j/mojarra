@@ -116,11 +116,6 @@ public class HtmlResponseWriter extends ResponseWriter {
     // Keep one instance of the script buffer per Writer
     private FastStringWriter scriptBuffer;
 
-    // Keep one instance of attributesBuffer to buffer the writing
-    // of all attributes for a particular element to reduce the number
-    // of writes
-    private FastStringWriter attributesBuffer;
-
     // Enables hiding of inlined script and style
     // elements from old browsers
     private Boolean isScriptHidingEnabled;
@@ -263,8 +258,6 @@ public class HtmlResponseWriter extends ResponseWriter {
         this.isScriptHidingEnabled = isScriptHidingEnabled;
         this.isScriptInAttributeValueEnabled = isScriptInAttributeValueEnabled;
         this.disableUnicodeEscaping = disableUnicodeEscaping;
-
-        attributesBuffer = new FastStringWriter(128);
 
         // Check the character encoding
         if (!HtmlUtils.validateEncoding(encoding)) {
@@ -516,14 +509,14 @@ public class HtmlResponseWriter extends ResponseWriter {
             // Tricky: we need to use the writer ivar here, rather than the
             // one from the FacesContext because we don't want
             // spurious /> characters to appear in the output.
+            writePassThroughAttributesInline();
+            clearPassthroughAttributes();
             if (isEmptyElement) {
-                flushAttributes();
                 writer.write(" />");
                 closeStart = false;
                 popElementName(name);
                 return;
             }
-            flushAttributes();
             writer.write('>');
             closeStart = false;
         }
@@ -728,21 +721,21 @@ public class HtmlResponseWriter extends ResponseWriter {
                 // name of the attribute itself or appear using
                 // minimization.
                 // http://www.w3.org/TR/html401/intro/sgmltut.html#h-3.3.4.2
-                attributesBuffer.write(' ');
-                attributesBuffer.write(name);
-                attributesBuffer.write("=\"");
-                attributesBuffer.write(name);
-                attributesBuffer.write('"');
+                writer.write(' ');
+                writer.write(name);
+                writer.write("=\"");
+                writer.write(name);
+                writer.write('"');
             }
         } else {
-            attributesBuffer.write(' ');
-            attributesBuffer.write(name);
-            attributesBuffer.write("=\"");
+            writer.write(' ');
+            writer.write(name);
+            writer.write("=\"");
             // write the attribute value
             String val = value.toString();
             ensureTextBufferCapacity(val);
-            HtmlUtils.writeAttribute(attributesBuffer, escapeUnicode, escapeIso, buffer, val, textBuffer, isScriptInAttributeValueEnabled, isPartial);
-            attributesBuffer.write('"');
+            HtmlUtils.writeAttribute(writer, escapeUnicode, escapeIso, buffer, val, textBuffer, isScriptInAttributeValueEnabled, isPartial);
+            writer.write('"');
         }
 
     }
@@ -1003,20 +996,20 @@ public class HtmlResponseWriter extends ResponseWriter {
             scriptOrStyleSrc = true;
         }
 
-        attributesBuffer.write(' ');
-        attributesBuffer.write(name);
-        attributesBuffer.write("=\"");
+        writer.write(' ');
+        writer.write(name);
+        writer.write("=\"");
 
         String stringValue = value.toString();
         ensureTextBufferCapacity(stringValue);
         // Javascript URLs should not be URL-encoded
         if (stringValue.startsWith("javascript:") || isPassthrough) {
-            HtmlUtils.writeAttribute(attributesBuffer, escapeUnicode, escapeIso, buffer, stringValue, textBuffer, isScriptInAttributeValueEnabled, isPartial);
+            HtmlUtils.writeAttribute(writer, escapeUnicode, escapeIso, buffer, stringValue, textBuffer, isScriptInAttributeValueEnabled, isPartial);
         } else {
-            HtmlUtils.writeURL(attributesBuffer, stringValue, textBuffer, encoding);
+            HtmlUtils.writeURL(writer, stringValue, textBuffer, encoding);
         }
 
-        attributesBuffer.write('"');
+        writer.write('"');
 
     }
 
@@ -1040,7 +1033,8 @@ public class HtmlResponseWriter extends ResponseWriter {
     private void closeStartIfNecessary() throws IOException {
 
         if (closeStart) {
-            flushAttributes();
+            writePassThroughAttributesInline();
+            clearPassthroughAttributes();
             writer.write('>');
             closeStart = false;
             if (isScriptOrStyle() && !scriptOrStyleSrc) {
@@ -1088,48 +1082,31 @@ public class HtmlResponseWriter extends ResponseWriter {
         return result;
     }
 
-    private void flushAttributes() throws IOException {
-        boolean hasPassthroughAttributes = null != passthroughAttributes && !passthroughAttributes.isEmpty();
-
-        if (hasPassthroughAttributes) {
-            FacesContext context = FacesContext.getCurrentInstance();
-            for (Map.Entry<String, Object> entry : passthroughAttributes.entrySet()) {
-                Object valObj = entry.getValue();
-                String val = getAttributeValue(context, valObj);
-                String key = entry.getKey();
-                if (val != null) {
-                    writeURIAttributeIgnoringPassThroughAttributes(key, val, key, true);
-                }
-            }
-        }
-
-        // a little complex, but the end result is, potentially, two
-        // fewer temp objects created per call.
-        StringBuilder b = attributesBuffer.getBuffer();
-        int totalLength = b.length();
-        if (totalLength != 0) {
-            int curIdx = 0;
-            while (curIdx < totalLength) {
-                if (totalLength - curIdx > buffer.length) {
-                    int end = curIdx + buffer.length;
-                    b.getChars(curIdx, end, buffer, 0);
-                    writer.write(buffer);
-                    curIdx += buffer.length;
-                } else {
-                    int len = totalLength - curIdx;
-                    b.getChars(curIdx, curIdx + len, buffer, 0);
-                    writer.write(buffer, 0, len);
-                    curIdx += len;
-                }
-            }
-            attributesBuffer.reset();
-        }
-
-        if (hasPassthroughAttributes) {
+    private void clearPassthroughAttributes() {
+        if (passthroughAttributes != null) {
             passthroughAttributes.clear();
             passthroughAttributes = null;
         }
+    }
 
+    /**
+     * Emit any pass-through attributes inline just before the {@code >} closing the start tag,
+     * so they appear AFTER all regular {@code writeAttribute}/{@code writeURIAttribute} output
+     * in the rendered tag ({@code <el regular_attrs passthrough_attrs>}).
+     */
+    private void writePassThroughAttributesInline() throws IOException {
+        if (passthroughAttributes == null || passthroughAttributes.isEmpty()) {
+            return;
+        }
+        FacesContext context = FacesContext.getCurrentInstance();
+        for (Map.Entry<String, Object> entry : passthroughAttributes.entrySet()) {
+            Object valObj = entry.getValue();
+            String val = getAttributeValue(context, valObj);
+            String key = entry.getKey();
+            if (val != null) {
+                writeURIAttributeIgnoringPassThroughAttributes(key, val, key, true);
+            }
+        }
     }
 
     private String getAttributeValue(FacesContext context, Object valObj) {
