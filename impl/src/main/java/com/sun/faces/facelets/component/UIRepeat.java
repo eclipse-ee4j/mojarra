@@ -519,13 +519,19 @@ public class UIRepeat extends UINamingContainer {
 
     private void setIndex(FacesContext ctx, int index) {
 
+        // Force the DataModel to build before any short-circuit. For a value-less
+        // ui:repeat with begin/end attributes, the first getDataModel() call has the
+        // side effect of rewriting begin/end into the model's [0, size) form (see
+        // getDataModel() ArrayDataModel branch); the caller of setIndex(faces, -1) at
+        // the start of process() relies on that side effect to fire before process()
+        // reads getBegin()/getEnd() into its local iteration bounds.
+        DataModel localModel = getDataModel();
+
         // No-op short-circuit when the index is already current. Common when callers
         // restore the iterator to -1 at end-of-iteration on a repeat that was already at -1.
         if (this.index == index) {
             return;
         }
-
-        DataModel localModel = getDataModel();
 
         // save child state
         if (this.index != -1 && localModel.isRowAvailable()) {
