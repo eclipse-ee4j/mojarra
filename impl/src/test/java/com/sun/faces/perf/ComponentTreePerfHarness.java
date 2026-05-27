@@ -45,6 +45,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
+import com.sun.faces.facelets.component.UIRepeat;
 import com.sun.faces.junit.JUnitFacesTestCaseBase;
 import com.sun.faces.mock.MockRenderKit;
 
@@ -189,6 +190,26 @@ public class ComponentTreePerfHarness extends JUnitFacesTestCaseBase {
         long median = medianRun(cycle);
         System.out.printf("%-55s %12s %12s %12s %12s%n",
                 "UIData setRowIndex cycle read-only (100 rows)", "-", "-", "-", median);
+    }
+
+    @Test
+    void uirepeat_iterate_100_rows_5_inputs() {
+        UIViewRoot view = buildUIRepeatTree(100, 5, i -> {
+            UIInput in = new UIInput();
+            in.setId("ri" + i);
+            return in;
+        });
+        measureRowIteration(view, "UIRepeat (100 rows x 5 UIInput) -- iterate rows");
+    }
+
+    @Test
+    void uirepeat_iterate_100_rows_5_outputs_readonly() {
+        UIViewRoot view = buildUIRepeatTree(100, 5, i -> {
+            UIOutput out = new UIOutput();
+            out.setId("ro" + i);
+            return out;
+        });
+        measureRowIteration(view, "UIRepeat (100 rows x 5 UIOutput, read-only) -- iterate rows");
     }
 
     // Per-row setRowIndex cycle is the dominant cost for data tables; measure it
@@ -356,6 +377,45 @@ public class ComponentTreePerfHarness extends JUnitFacesTestCaseBase {
             data.getChildren().add(col);
         }
         return view;
+    }
+
+    private UIViewRoot buildUIRepeatTree(int rows, int children, java.util.function.IntFunction<UIComponent> cellFactory) {
+        UIViewRoot view = new UIViewRoot();
+        view.setId("v");
+        view.setRenderKitId(jakarta.faces.render.RenderKitFactory.HTML_BASIC_RENDER_KIT);
+        UIForm form = new UIForm();
+        form.setId("f");
+        view.getChildren().add(form);
+        UIRepeat repeat = new UIRepeat();
+        repeat.setId("repeat");
+        List<String> rowValues = new ArrayList<>(rows);
+        for (int r = 0; r < rows; r++) {
+            rowValues.add("row-" + r);
+        }
+        repeat.setValue(rowValues);
+        repeat.setVar("row");
+        form.getChildren().add(repeat);
+        for (int i = 0; i < children; i++) {
+            repeat.getChildren().add(cellFactory.apply(i));
+        }
+        return view;
+    }
+
+    /**
+     * Measures full row-iteration cost: visits the tree with iteration enabled (no
+     * SKIP_ITERATION hint), so UIRepeat actually calls setIndex per row and triggers
+     * the per-row save/restore machinery. The visit callback is a no-op so the
+     * measurement isolates iteration overhead from rendering.
+     */
+    private void measureRowIteration(UIViewRoot view, String label) {
+        facesContext.setViewRoot(view);
+        VisitCallback noopCallback = (ctx, target) -> VisitResult.ACCEPT;
+        VisitContext fullIterationVisitContext = VisitContext.createVisitContext(facesContext);
+
+        Runnable iterate = () -> view.visitTree(fullIterationVisitContext, noopCallback);
+        warmUp(iterate);
+        long median = medianRun(iterate);
+        System.out.printf("%-55s %12s %12s %12s %12d%n", label, "-", "-", "-", median);
     }
 
     // -------- Timing helpers -----------------------------------------------
