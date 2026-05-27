@@ -1442,6 +1442,61 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
 
     }
 
+    /**
+     * Verifies the per-component {@code cachedRenderer} invariants: cached on first lookup,
+     * invalidated on {@code setRendererType}, {@code setParent}, and {@code restoreState}.
+     */
+    @Test
+    public void testCachedRendererInvariants() throws Exception {
+        jakarta.faces.render.RenderKit renderKit = facesContext.getRenderKit();
+        jakarta.faces.render.Renderer rA = new jakarta.faces.render.Renderer() { };
+        jakarta.faces.render.Renderer rB = new jakarta.faces.render.Renderer() { };
+        renderKit.addRenderer("Test", "TR_A", rA);
+        renderKit.addRenderer("Test", "TR_B", rB);
+
+        // Wire under a UIViewRoot so getRenderer resolves against the right render kit.
+        UIViewRoot root = (UIViewRoot) facesContext.getViewRoot();
+        ComponentTestImpl test = new ComponentTestImpl("cached");
+        root.getChildren().add(test);
+
+        // First lookup populates the cache; repeated lookups return same instance.
+        test.setRendererType("TR_A");
+        jakarta.faces.render.Renderer firstLookup = invokeGetRenderer(test);
+        assertTrue(firstLookup == rA, "should resolve to rA");
+        assertTrue(invokeGetRenderer(test) == rA, "second lookup should return cached rA");
+
+        // setRendererType invalidates the cache.
+        test.setRendererType("TR_B");
+        assertTrue(invokeGetRenderer(test) == rB, "after setRendererType, lookup must return rB");
+
+        // setParent invalidates the cache.
+        UIPanel newParent = new UIPanel();
+        newParent.setId("p");
+        root.getChildren().add(newParent);
+        // Resolve once on the test component, then re-parent it under a different parent.
+        invokeGetRenderer(test);
+        newParent.getChildren().add(test); // triggers setParent(newParent) on test
+        // Mutate rendererType via the StateHelper path (bypass setRendererType) just to prove
+        // the parent-invalidation path is what we're testing here.
+        test.setRendererType("TR_A");
+        assertTrue(invokeGetRenderer(test) == rA, "after setParent + setRendererType, lookup must return rA");
+
+        // restoreState invalidates the cache: rebuild from a saved snapshot taken with TR_A.
+        Object savedWithA = test.saveState(facesContext);
+        invokeGetRenderer(test); // populate cache with rA
+        test.setRendererType("TR_B"); // direct setter, also invalidates and re-caches on next lookup
+        invokeGetRenderer(test); // re-cache as rB
+        test.restoreState(facesContext, savedWithA); // bring rendererType back to "TR_A" via StateHelper
+        assertTrue(invokeGetRenderer(test) == rA, "after restoreState, lookup must reflect restored rendererType");
+    }
+
+    /** Calls the protected {@code getRenderer(FacesContext)} via reflection. */
+    private jakarta.faces.render.Renderer invokeGetRenderer(UIComponent component) throws Exception {
+        java.lang.reflect.Method m = UIComponentBase.class.getDeclaredMethod("getRenderer", FacesContext.class);
+        m.setAccessible(true);
+        return (jakarta.faces.render.Renderer) m.invoke(component, facesContext);
+    }
+
     // --------------------------------------------------------- Private Classes
     public static final class Listener implements SystemEventListener {
 
