@@ -212,6 +212,64 @@ public class ComponentTreePerfHarness extends JUnitFacesTestCaseBase {
         measureRowIteration(view, "UIRepeat (100 rows x 5 UIOutput, read-only) -- iterate rows");
     }
 
+    /**
+     * Compares the pre-Phase-F walk (recurses into every node, including Facelets-compiled
+     * UILeaf wrappers for static text) against the patched walk that skips
+     * UntargetableComponent descendants. Models a realistic Facelets-compiled view where
+     * every line of whitespace and every literal text fragment between tags becomes a UILeaf.
+     */
+    @Test
+    void checkIdUniqueness_50_real_x_4_uileaf_each() {
+        UIViewRoot view = buildTreeWithUILeafFillers(50, 4);
+        facesContext.setViewRoot(view);
+
+        Runnable rawWalk = () -> rawCheckIdUniqueness(
+                facesContext, view, new java.util.HashSet<>(view.getChildCount() << 1));
+        Runnable patchedWalk = () -> com.sun.faces.util.Util.checkIdUniqueness(
+                facesContext, view, new java.util.HashSet<>(64));
+
+        warmUp(rawWalk);
+        warmUp(patchedWalk);
+        long rawMedian = medianRun(rawWalk);
+        long patchedMedian = medianRun(patchedWalk);
+        System.out.printf("%-55s %12s %12s %12s %12s%n",
+                "checkIdUniqueness (raw walk)", "-", rawMedian, "-", "-");
+        System.out.printf("%-55s %12s %12s %12s %12s%n",
+                "checkIdUniqueness (patched)", "-", patchedMedian, "-", "-");
+    }
+
+    /** Pre-Phase-F reproduction of Util.checkIdUniqueness without the UILeaf skip. */
+    private static void rawCheckIdUniqueness(jakarta.faces.context.FacesContext context, UIComponent component, java.util.Set<String> ids) {
+        for (java.util.Iterator<UIComponent> kids = component.getFacetsAndChildren(); kids.hasNext();) {
+            UIComponent kid = kids.next();
+            String id = kid.getClientId(context);
+            if (!ids.add(id)) {
+                throw new IllegalStateException("duplicate id: " + id);
+            }
+            rawCheckIdUniqueness(context, kid, ids);
+        }
+    }
+
+    private UIViewRoot buildTreeWithUILeafFillers(int realComponents, int uileavesPerReal) {
+        UIViewRoot view = new UIViewRoot();
+        view.setId("v");
+        view.setRenderKitId(jakarta.faces.render.RenderKitFactory.HTML_BASIC_RENDER_KIT);
+        UIForm form = new UIForm();
+        form.setId("f");
+        view.getChildren().add(form);
+        for (int i = 0; i < realComponents; i++) {
+            for (int j = 0; j < uileavesPerReal; j++) {
+                com.sun.faces.facelets.compiler.UILeaf leaf = new com.sun.faces.facelets.compiler.UILeaf();
+                leaf.setId("leaf" + i + "_" + j);
+                form.getChildren().add(leaf);
+            }
+            UIInput in = new UIInput();
+            in.setId("in" + i);
+            form.getChildren().add(in);
+        }
+        return view;
+    }
+
     // Per-row setRowIndex cycle is the dominant cost for data tables; measure it
     // separately so we can see the impact of UIData-specific optimizations.
     @Test
