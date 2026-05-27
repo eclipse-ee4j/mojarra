@@ -167,6 +167,30 @@ public class ComponentTreePerfHarness extends JUnitFacesTestCaseBase {
         runScenario("UIData (100 rows x 5 columns of UIInput)", () -> buildUIDataTree(100, 5));
     }
 
+    @Test
+    void uidata_100_rows_5_cols_readonly() {
+        runScenario("UIData (100 rows x 5 cols, UIOutput / read-only)",
+                () -> buildUIDataTreeReadOnly(100, 5));
+    }
+
+    @Test
+    void uidata_100_rows_5_cols_setRowIndex_cycle_readonly() {
+        UIViewRoot view = buildUIDataTreeReadOnly(100, 5);
+        facesContext.setViewRoot(view);
+        UIData data = (UIData) view.getChildren().get(0).getChildren().get(0);
+        Runnable cycle = () -> {
+            data.setRowIndex(-1);
+            for (int r = 0; r < 100; r++) {
+                data.setRowIndex(r);
+            }
+            data.setRowIndex(-1);
+        };
+        warmUp(cycle);
+        long median = medianRun(cycle);
+        System.out.printf("%-55s %12s %12s %12s %12s%n",
+                "UIData setRowIndex cycle read-only (100 rows)", "-", "-", "-", median);
+    }
+
     // Per-row setRowIndex cycle is the dominant cost for data tables; measure it
     // separately so we can see the impact of UIData-specific optimizations.
     @Test
@@ -293,6 +317,23 @@ public class ComponentTreePerfHarness extends JUnitFacesTestCaseBase {
     }
 
     private UIViewRoot buildUIDataTree(int rows, int cols) {
+        return buildUIDataTree(rows, cols, i -> {
+            UIInput in = new UIInput();
+            in.setId("ci" + i);
+            return in;
+        });
+    }
+
+    /** Read-only variant used to exercise the "no stateful descendants" fast path. */
+    private UIViewRoot buildUIDataTreeReadOnly(int rows, int cols) {
+        return buildUIDataTree(rows, cols, i -> {
+            UIOutput out = new UIOutput();
+            out.setId("co" + i);
+            return out;
+        });
+    }
+
+    private UIViewRoot buildUIDataTree(int rows, int cols, java.util.function.IntFunction<UIComponent> cellFactory) {
         UIViewRoot view = new UIViewRoot();
         view.setId("v");
         view.setRenderKitId(jakarta.faces.render.RenderKitFactory.HTML_BASIC_RENDER_KIT);
@@ -311,9 +352,7 @@ public class ComponentTreePerfHarness extends JUnitFacesTestCaseBase {
         for (int c = 0; c < cols; c++) {
             UIColumn col = new UIColumn();
             col.setId("c" + c);
-            UIInput in = new UIInput();
-            in.setId("ci" + c);
-            col.getChildren().add(in);
+            col.getChildren().add(cellFactory.apply(c));
             data.getChildren().add(col);
         }
         return view;
