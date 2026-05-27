@@ -113,12 +113,7 @@ public class FacesInitializer implements ServletContainerInitializer {
             InitFacesContext initFacesContext = new InitFacesContext(servletContext);
 
             try {
-                if (appHasFacesContent) {
-                    // Only look at mapping concerns if there is Faces content
-                    handleMappingConcerns(servletContext);
-                }
-
-                // Other concerns also handled if there is an existing Faces Servlet mapping
+                handleMappingConcerns(servletContext);
                 handleCdiConcerns(servletContext);
                 handleWebSocketConcerns(servletContext);
 
