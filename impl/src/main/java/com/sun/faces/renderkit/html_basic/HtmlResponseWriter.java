@@ -18,9 +18,10 @@ package com.sun.faces.renderkit.html_basic;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.LinkedList;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -147,7 +148,7 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     private char[] charHolder = new char[1];
 
-    private LinkedList<String> elementNames;
+    private Deque<String> elementNames;
 
     private static final String BREAKCDATA = "]]><![CDATA[";
     private static final char[] ESCAPEDSINGLEBRACKET = ("]" + BREAKCDATA).toCharArray();
@@ -400,14 +401,12 @@ public class HtmlResponseWriter extends ResponseWriter {
             throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "name"));
         }
 
-        // Keep track when we are exiting a script or style element
-        // for escaping purposes.
+        ElementKind kind = ElementKind.of(name);
 
-        if ("script".equalsIgnoreCase(name)) {
+        // Keep track when we are exiting a script or style element for escaping purposes.
+        if (kind == ElementKind.SCRIPT) {
             withinScript = false;
-        }
-
-        if ("style".equalsIgnoreCase(name)) {
+        } else if (kind == ElementKind.STYLE) {
             withinStyle = false;
         }
 
@@ -418,7 +417,7 @@ public class HtmlResponseWriter extends ResponseWriter {
 
         isXhtml = getContentType().equals(RIConstants.XHTML_CONTENT_TYPE);
 
-        if (isScriptOrStyle(name) && !scriptOrStyleSrc && writer instanceof FastStringWriter) {
+        if (isScriptOrStyle(kind) && !scriptOrStyleSrc && writer instanceof FastStringWriter) {
             String result = ((FastStringWriter) writer).getBuffer().toString();
             writer = origWriter;
 
@@ -498,7 +497,7 @@ public class HtmlResponseWriter extends ResponseWriter {
             dontEscape = false;
         }
 
-        if ("cdata".equalsIgnoreCase(name)) {
+        if (kind == ElementKind.CDATA) {
             endCDATA();
             return;
         }
@@ -571,21 +570,19 @@ public class HtmlResponseWriter extends ResponseWriter {
             throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "name"));
         }
 
-        // Keep track if we are in either a script or style element so we
-        // know we do not want to escape.
+        ElementKind kind = ElementKind.of(name);
 
-        if ("script".equalsIgnoreCase(name)) {
+        // Keep track if we are in either a script or style element so we know we do not want to escape.
+        if (kind == ElementKind.SCRIPT) {
             withinScript = true;
-        }
-
-        if ("style".equalsIgnoreCase(name)) {
+        } else if (kind == ElementKind.STYLE) {
             withinStyle = true;
         }
 
         closeStartIfNecessary();
-        isScriptOrStyle(name);
+        isScriptOrStyle(kind);
         scriptOrStyleSrc = false;
-        if ("cdata".equalsIgnoreCase(name)) {
+        if (kind == ElementKind.CDATA) {
             isCdata = true;
             startCDATA();
             return;
@@ -1071,7 +1068,7 @@ public class HtmlResponseWriter extends ResponseWriter {
         if (null != passthroughAttributes) {
             throw new IllegalStateException("Error, this method should only be called once per instance.");
         }
-        passthroughAttributes = new ConcurrentHashMap<>(toCopy);
+        passthroughAttributes = new HashMap<>(toCopy);
     }
 
     private boolean containsPassThroughAttribute(String attrName) {
@@ -1124,7 +1121,7 @@ public class HtmlResponseWriter extends ResponseWriter {
 
         if (original.equals("option")) {
             if (elementNames == null) {
-                elementNames = new LinkedList<>();
+                elementNames = new ArrayDeque<>();
             }
             elementNames.push(original);
             return original;
@@ -1141,7 +1138,7 @@ public class HtmlResponseWriter extends ResponseWriter {
 
         if (!original.equals(name) || elementNames != null) {
             if (elementNames == null) {
-                elementNames = new LinkedList<>();
+                elementNames = new ArrayDeque<>();
             }
             elementNames.push(name);
         }
@@ -1167,11 +1164,11 @@ public class HtmlResponseWriter extends ResponseWriter {
         return name;
     }
 
-    private boolean isScriptOrStyle(String name) {
-        if ("script".equalsIgnoreCase(name)) {
+    private boolean isScriptOrStyle(ElementKind kind) {
+        if (kind == ElementKind.SCRIPT) {
             isScript = true;
             dontEscape = true;
-        } else if ("style".equalsIgnoreCase(name)) {
+        } else if (kind == ElementKind.STYLE) {
             isStyle = true;
             dontEscape = true;
         } else {
@@ -1187,6 +1184,35 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     private boolean isScriptOrStyle() {
         return isScript || isStyle;
+    }
+
+    /**
+     * Coarse element-name classification used by start/end element handling. Classifying once
+     * up-front lets the rest of the method dispatch via {@code kind ==} checks instead of
+     * repeated case-insensitive name comparisons.
+     */
+    private enum ElementKind {
+        SCRIPT, STYLE, CDATA, OTHER;
+
+        static ElementKind of(String name) {
+            switch (name.length()) {
+            case 5:
+                if (name.equalsIgnoreCase("style")) {
+                    return STYLE;
+                }
+                if (name.equalsIgnoreCase("cdata")) {
+                    return CDATA;
+                }
+                return OTHER;
+            case 6:
+                if (name.equalsIgnoreCase("script")) {
+                    return SCRIPT;
+                }
+                return OTHER;
+            default:
+                return OTHER;
+            }
+        }
     }
 
     /*
