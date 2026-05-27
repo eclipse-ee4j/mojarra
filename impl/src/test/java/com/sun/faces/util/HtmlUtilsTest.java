@@ -44,7 +44,6 @@ import org.junit.jupiter.api.function.ThrowingConsumer;
  */
 class HtmlUtilsTest {
 
-    private static final char[] BUFFER = new char[1024];
     private static final char[] TEXT_BUFFER = new char[1024];
 
     // -------- writeText -----------------------------------------------------
@@ -127,13 +126,13 @@ class HtmlUtilsTest {
         for (int i = 0; i < 32; i++) {
             String shortInput = "b" + (char) i + "b";
             StringWriter sw = new StringWriter();
-            HtmlUtils.writeText(sw, false, false, new char[1024], shortInput, new char[1024], false);
+            HtmlUtils.writeText(sw, false, false, shortInput, new char[1024], false);
             int expectedLen = (i == 9 || i == 10 || i == 12 || i == 13) ? 3 : 2;
             assertEquals(expectedLen, sw.toString().length(), "short input failed for control char " + i);
 
             String longInput = shortInput + "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
             sw = new StringWriter();
-            HtmlUtils.writeText(sw, false, false, new char[1024], longInput, new char[1024], false);
+            HtmlUtils.writeText(sw, false, false, longInput, new char[1024], false);
             int expectedLongLen = (i == 9 || i == 10 || i == 12 || i == 13) ? 34 : 33;
             assertEquals(expectedLongLen, sw.toString().length(), "long input failed for control char " + i);
         }
@@ -145,7 +144,7 @@ class HtmlUtilsTest {
         // contract -- the slow-path branch `ch < 0xA0` catches them after the fast path bounded
         // ch < 0x7f.
         StringWriter sw = new StringWriter();
-        HtmlUtils.writeText(sw, true, true, new char[1024], "a\u007fb\u0080c\u009fd".toCharArray(), false);
+        HtmlUtils.writeText(sw, true, true, "a\u007fb\u0080c\u009fd".toCharArray(), false);
         assertEquals("a\u007fb\u0080c\u009fd", sw.toString());
     }
 
@@ -154,7 +153,7 @@ class HtmlUtilsTest {
         // With forXml=true and escapeUnicode=false, chars not valid in XML 1.0 are dropped.
         // U+FFFE and U+FFFF are not valid XML chars.
         StringWriter sw = new StringWriter();
-        HtmlUtils.writeText(sw, false, false, new char[1024], "a\ufffeb\uffffc".toCharArray(), true);
+        HtmlUtils.writeText(sw, false, false, "a\ufffeb\uffffc".toCharArray(), true);
         assertEquals("abc", sw.toString());
     }
 
@@ -176,7 +175,7 @@ class HtmlUtilsTest {
     void writeText_iso8859ChrPassesThroughWhenEscapeIsocodeFalse() throws IOException {
         // U+00E9 = é; with escapeIsocode=false the char is written as-is.
         StringWriter sw = new StringWriter();
-        HtmlUtils.writeText(sw, true, false, new char[1024], "café".toCharArray(), false);
+        HtmlUtils.writeText(sw, true, false, "café".toCharArray(), false);
         assertEquals("café", sw.toString());
     }
 
@@ -184,7 +183,7 @@ class HtmlUtilsTest {
     void writeText_iso8859ChrEntityWhenEscapeIsocodeTrue() throws IOException {
         // U+00E9 = é → &eacute; when escapeIsocode=true.
         StringWriter sw = new StringWriter();
-        HtmlUtils.writeText(sw, true, true, new char[1024], "café".toCharArray(), false);
+        HtmlUtils.writeText(sw, true, true, "café".toCharArray(), false);
         assertEquals("caf&eacute;", sw.toString());
     }
 
@@ -192,7 +191,7 @@ class HtmlUtilsTest {
     void writeText_unicodeChrEntityWhenEscapeUnicodeTrue() throws IOException {
         // U+3042 = あ → &#12354; when escapeUnicode=true.
         StringWriter sw = new StringWriter();
-        HtmlUtils.writeText(sw, true, true, new char[1024], "char あ".toCharArray(), false);
+        HtmlUtils.writeText(sw, true, true, "char あ".toCharArray(), false);
         assertEquals("char &#12354;", sw.toString());
     }
 
@@ -203,21 +202,21 @@ class HtmlUtilsTest {
         // XHTML/XML without DTD. Reachable only when escapeUnicode=true (non-UTF output
         // encoding); modern HTML5+UTF-8 setups write the raw 3-byte UTF-8 sequence.
         StringWriter sw = new StringWriter();
-        HtmlUtils.writeText(sw, true, true, new char[1024], "price €".toCharArray(), false);
+        HtmlUtils.writeText(sw, true, true, "price €".toCharArray(), false);
         assertEquals("price &#8364;", sw.toString());
     }
 
     @Test
     void writeText_unicodeChrPassesThroughWhenEscapeUnicodeFalse() throws IOException {
         StringWriter sw = new StringWriter();
-        HtmlUtils.writeText(sw, false, false, new char[1024], "char あ".toCharArray(), false);
+        HtmlUtils.writeText(sw, false, false, "char あ".toCharArray(), false);
         assertEquals("char あ", sw.toString());
     }
 
     @Test
     void writeText_stringEntryEmptySpecialCases() throws IOException {
         StringWriter sw = new StringWriter();
-        HtmlUtils.writeText(sw, true, true, BUFFER, "", TEXT_BUFFER, false);
+        HtmlUtils.writeText(sw, true, true, "", TEXT_BUFFER, false);
         assertEquals("", sw.toString());
     }
 
@@ -284,14 +283,14 @@ class HtmlUtilsTest {
         // underlying Writer. For inputs that fit in the buffer (< 1024 chars), nothing is emitted
         // -- the entire call's pending output is discarded.
         StringWriter sw = new StringWriter();
-        HtmlUtils.writeAttribute(sw, true, true, new char[1024], "javascript:alert(1)", new char[1024], false, false);
+        HtmlUtils.writeAttribute(sw, true, true, "javascript:alert(1)", new char[1024], false, false);
         assertEquals("", sw.toString());
     }
 
     @Test
     void writeAttribute_scriptInValueKeptWhenEnabled() throws IOException {
         StringWriter sw = new StringWriter();
-        HtmlUtils.writeAttribute(sw, true, true, new char[1024], "javascript:alert(1)", new char[1024], true, false);
+        HtmlUtils.writeAttribute(sw, true, true, "javascript:alert(1)", new char[1024], true, false);
         assertEquals("javascript:alert(1)", sw.toString());
     }
 
@@ -302,21 +301,21 @@ class HtmlUtilsTest {
         // the next 's' hits the fast-path lookahead, matches "cript:", and aborts. Output is
         // exactly the chars emitted up to (but not including) the 's'.
         StringWriter sw = new StringWriter();
-        HtmlUtils.writeAttribute(sw, true, true, new char[1024], "<script:alert(1)", new char[1024], false, false);
+        HtmlUtils.writeAttribute(sw, true, true, "<script:alert(1)", new char[1024], false, false);
         assertEquals("&lt;", sw.toString());
     }
 
     @Test
     void writeAttribute_iso8859Entity() throws IOException {
         StringWriter sw = new StringWriter();
-        HtmlUtils.writeAttribute(sw, true, true, new char[1024], "café", new char[1024], true, false);
+        HtmlUtils.writeAttribute(sw, true, true, "café", new char[1024], true, false);
         assertEquals("caf&eacute;", sw.toString());
     }
 
     @Test
     void writeAttribute_unicodeEntity() throws IOException {
         StringWriter sw = new StringWriter();
-        HtmlUtils.writeAttribute(sw, true, true, new char[1024], "char あ", new char[1024], true, false);
+        HtmlUtils.writeAttribute(sw, true, true, "char あ", new char[1024], true, false);
         assertEquals("char &#12354;", sw.toString());
     }
 
@@ -326,9 +325,9 @@ class HtmlUtilsTest {
         // paths produce identical output for the same input.
         String input = "url(\"path/with/<special>&chars\")";
         StringWriter sw1 = new StringWriter();
-        HtmlUtils.writeAttribute(sw1, true, true, new char[1024], input, new char[1024], false, false);
+        HtmlUtils.writeAttribute(sw1, true, true, input, new char[1024], false, false);
         StringWriter sw2 = new StringWriter();
-        HtmlUtils.writeAttribute(sw2, true, true, new char[1024], input.toCharArray(), 0, input.length(), false, false);
+        HtmlUtils.writeAttribute(sw2, true, true, input.toCharArray(), 0, input.length(), false, false);
         assertEquals(sw1.toString(), sw2.toString());
         assertEquals("url(&quot;path/with/&lt;special&gt;&amp;chars&quot;)", sw1.toString());
     }
@@ -339,13 +338,13 @@ class HtmlUtilsTest {
         for (int i = 0; i < 32; i++) {
             String shortInput = "b" + (char) i + "b";
             StringWriter sw = new StringWriter();
-            HtmlUtils.writeAttribute(sw, false, false, new char[1024], shortInput, new char[1024], false, false);
+            HtmlUtils.writeAttribute(sw, false, false, shortInput, new char[1024], false, false);
             int expectedLen = (i == 9 || i == 10 || i == 12 || i == 13) ? 3 : 2;
             assertEquals(expectedLen, sw.toString().length(), "short input failed for control char " + i);
 
             String longInput = shortInput + "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
             sw = new StringWriter();
-            HtmlUtils.writeAttribute(sw, false, false, new char[1024], longInput, new char[1024], false, false);
+            HtmlUtils.writeAttribute(sw, false, false, longInput, new char[1024], false, false);
             int expectedLongLen = (i == 9 || i == 10 || i == 12 || i == 13) ? 34 : 33;
             assertEquals(expectedLongLen, sw.toString().length(), "long input failed for control char " + i);
         }
@@ -626,13 +625,13 @@ class HtmlUtilsTest {
 
     private static String writeText(String input) throws IOException {
         StringWriter sw = new StringWriter();
-        HtmlUtils.writeText(sw, true, true, new char[1024], input.toCharArray(), false);
+        HtmlUtils.writeText(sw, true, true, input.toCharArray(), false);
         return sw.toString();
     }
 
     private static String writeTextString(String input) throws IOException {
         StringWriter sw = new StringWriter();
-        HtmlUtils.writeText(sw, true, true, BUFFER, input, TEXT_BUFFER, false);
+        HtmlUtils.writeText(sw, true, true, input, TEXT_BUFFER, false);
         return sw.toString();
     }
 
@@ -640,7 +639,7 @@ class HtmlUtilsTest {
         // isScriptInAttributeValueEnabled=true to disable the script:-detection abort logic
         // for general-purpose tests (separate tests cover that special case explicitly).
         StringWriter sw = new StringWriter();
-        HtmlUtils.writeAttribute(sw, true, true, new char[1024], input, new char[1024], true, false);
+        HtmlUtils.writeAttribute(sw, true, true, input, new char[1024], true, false);
         return sw.toString();
     }
 
@@ -653,11 +652,11 @@ class HtmlUtilsTest {
     }
 
     private static String writeTextForXML(String string) {
-        return write(output -> HtmlUtils.writeTextForXML(output, string, new char[1024]));
+        return write(output -> HtmlUtils.writeTextForXML(output, string));
     }
 
     private static String writeAttributeForXML(String string) {
-        return write(output -> HtmlUtils.writeAttribute(output, true, true, new char[16], string, new char[1024], false, true));
+        return write(output -> HtmlUtils.writeAttribute(output, true, true, string, new char[1024], false, true));
     }
 
     private static String write(ThrowingConsumer<Writer> output) {

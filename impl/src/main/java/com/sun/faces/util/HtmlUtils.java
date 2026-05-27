@@ -45,8 +45,8 @@ public class HtmlUtils {
     // escape characters....
     // -------------------------------------------------
 
-    static public void writeText(Writer out, boolean escapeUnicode, boolean escapeIsocode, char[] buffer, char[] text, boolean forXml) throws IOException {
-        writeText(out, escapeUnicode, escapeIsocode, buffer, text, 0, text.length, forXml);
+    static public void writeText(Writer out, boolean escapeUnicode, boolean escapeIsocode, char[] text, boolean forXml) throws IOException {
+        writeText(out, escapeUnicode, escapeIsocode, text, 0, text.length, forXml);
     }
 
     /**
@@ -58,18 +58,15 @@ public class HtmlUtils {
      * the escape sequence is emitted, and a new run begins. At the end the remaining tail is
      * flushed. For plain ASCII content this collapses to a single underlying write.
      *
-     * <p>The {@code buff} parameter is unused (kept for binary compatibility with callers).
-     *
      * @param out the writer to emit to
      * @param escapeUnicode if true, chars &gt; 0xFF are emitted as numeric character references
      * @param escapeIsocode if true, chars in [0xA0, 0xFF] are emitted as named ISO-8859-1 entities
-     * @param buff unused (legacy)
      * @param text the input characters
      * @param start start offset into {@code text}
      * @param length number of characters to write
      * @param forXml if true, drop characters not valid in XML (per XML 1.0 spec)
      */
-    static public void writeText(Writer out, boolean escapeUnicode, boolean escapeIsocode, char[] buff, char[] text, int start, int length, boolean forXml) throws IOException {
+    static public void writeText(Writer out, boolean escapeUnicode, boolean escapeIsocode, char[] text, int start, int length, boolean forXml) throws IOException {
         int end = start + length;
         int runStart = start;
 
@@ -132,14 +129,14 @@ public class HtmlUtils {
      * variant via {@link String#getChars(int, int, char[], int)}; the {@code textBuff} parameter
      * is reused unless the input exceeds its capacity (uncommon for typical attribute values).
      */
-    static public void writeText(Writer out, boolean escapeUnicode, boolean escapeIsocode, char[] buff, String text, char[] textBuff, boolean forXml) throws IOException {
+    static public void writeText(Writer out, boolean escapeUnicode, boolean escapeIsocode, String text, char[] textBuff, boolean forXml) throws IOException {
         int length = text.length();
         if (length == 0) {
             return;
         }
         char[] target = (length > textBuff.length) ? new char[length] : textBuff;
         text.getChars(0, length, target, 0);
-        writeText(out, escapeUnicode, escapeIsocode, buff, target, 0, length, forXml);
+        writeText(out, escapeUnicode, escapeIsocode, target, 0, length, forXml);
     }
 
     /**
@@ -147,7 +144,7 @@ public class HtmlUtils {
      * via {@link String#getChars(int, int, char[], int)}; the {@code textBuff} parameter is reused
      * unless the input exceeds its capacity.
      */
-    static public void writeAttribute(Writer out, boolean escapeUnicode, boolean escapeIsocode, char[] buff, String text, char[] textBuff,
+    static public void writeAttribute(Writer out, boolean escapeUnicode, boolean escapeIsocode, String text, char[] textBuff,
             boolean isScriptInAttributeValueEnabled, boolean forXml) throws IOException {
         int length = text.length();
         if (length == 0) {
@@ -155,13 +152,13 @@ public class HtmlUtils {
         }
         char[] target = (length > textBuff.length) ? new char[length] : textBuff;
         text.getChars(0, length, target, 0);
-        writeAttribute(out, escapeUnicode, escapeIsocode, buff, target, 0, length, isScriptInAttributeValueEnabled, forXml);
+        writeAttribute(out, escapeUnicode, escapeIsocode, target, 0, length, isScriptInAttributeValueEnabled, forXml);
     }
 
     /**
      * Write char array attribute, escaping HTML special characters as needed.
      *
-     * <p>Range-emit strategy (see {@link #writeText(Writer, boolean, boolean, char[], char[], int, int, boolean)}):
+     * <p>Range-emit strategy (see {@link #writeText(Writer, boolean, boolean, char[], int, int, boolean)}):
      * walks the input character by character, tracking the start of the current safe run, and
      * bulk-writes safe runs to the underlying writer. Differences from {@code writeText}:
      * <ul>
@@ -173,10 +170,8 @@ public class HtmlUtils {
      *       safe run -- effectively dropping the entire attribute output as a defence against
      *       JavaScript-URL injection.</li>
      * </ul>
-     *
-     * <p>The {@code buff} parameter is unused (kept for binary compatibility).
      */
-    static public void writeAttribute(Writer out, boolean escapeUnicode, boolean escapeIsocode, char[] buff, char[] text, int start, int length,
+    static public void writeAttribute(Writer out, boolean escapeUnicode, boolean escapeIsocode, char[] text, int start, int length,
             boolean isScriptInAttributeValueEnabled, boolean forXml) throws IOException {
         int end = start + length;
         int runStart = start;
@@ -445,13 +440,10 @@ public class HtmlUtils {
         }
     }
 
-    static public void writeTextForXML(Writer out, String text, char[] outbuf) throws IOException {
-        char[] textBuffer = new char[128];
+    static public void writeTextForXML(Writer out, String text) throws IOException {
         int len = text.length();
-        if (textBuffer.length < len) {
-            textBuffer = new char[len * 2];
-        }
-        HtmlUtils.writeText(out, true, true, outbuf, text, textBuffer, true);
+        char[] textBuffer = new char[Math.max(128, len)];
+        HtmlUtils.writeText(out, true, true, text, textBuffer, true);
     }
 
     static public void writeUnescapedTextForXML(Writer out, String text) throws IOException {

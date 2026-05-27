@@ -124,11 +124,6 @@ public class HtmlResponseWriter extends ResponseWriter {
     // Enables scripts to be included in attribute values
     private Boolean isScriptInAttributeValueEnabled;
 
-    // Internal buffer used when outputting properly escaped information
-    // using HtmlUtils class.
-    //
-    private char[] buffer = new char[1028];
-
     // Internal buffer used when outputting properly escaped CData information.
     //
     private final static int cdataBufferSize = 1024;
@@ -323,13 +318,6 @@ public class HtmlResponseWriter extends ResponseWriter {
      */
     @Override
     public void flush() throws IOException {
-
-        // NOTE: Internal buffer's contents (the ivar "buffer") is
-        // written to the contained writer in the HtmlUtils class - see
-        // HtmlUtils.flushBuffer method; Buffering is done during
-        // writeAttribute/writeText - otherwise, output is written
-        // directly to the writer (ex: writer.write(....)..
-        //
         // close any previously started element, if necessary
         closeStartIfNecessary();
 
@@ -731,7 +719,7 @@ public class HtmlResponseWriter extends ResponseWriter {
             // write the attribute value
             String val = value.toString();
             ensureTextBufferCapacity(val);
-            HtmlUtils.writeAttribute(writer, escapeUnicode, escapeIso, buffer, val, textBuffer, isScriptInAttributeValueEnabled, isPartial);
+            HtmlUtils.writeAttribute(writer, escapeUnicode, escapeIso, val, textBuffer, isScriptInAttributeValueEnabled, isPartial);
             writer.write('"');
         }
 
@@ -766,7 +754,7 @@ public class HtmlResponseWriter extends ResponseWriter {
         writer.write("<!--");
         String str = comment.toString();
         ensureTextBufferCapacity(str);
-        HtmlUtils.writeText(writer, true, true, buffer, str, textBuffer, isPartial);
+        HtmlUtils.writeText(writer, true, true, str, textBuffer, isPartial);
         writer.write("-->");
 
     }
@@ -797,7 +785,7 @@ public class HtmlResponseWriter extends ResponseWriter {
             }
         } else if (isPartial || !writingCdata) {
             charHolder[0] = text;
-            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, buffer, charHolder, isPartial);
+            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, charHolder, isPartial);
         } else { // if writingCdata
             assert writingCdata;
             charHolder[0] = text;
@@ -838,7 +826,7 @@ public class HtmlResponseWriter extends ResponseWriter {
                 writer.write(text);
             }
         } else if (isPartial || !writingCdata) {
-            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, buffer, text, isPartial);
+            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, text, isPartial);
         } else { // if writingCdata
             assert writingCdata;
             writeEscaped(text, 0, text.length);
@@ -878,7 +866,7 @@ public class HtmlResponseWriter extends ResponseWriter {
             }
         } else if (isPartial || !writingCdata) {
             ensureTextBufferCapacity(textStr);
-            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, buffer, textStr, textBuffer, isPartial);
+            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, textStr, textBuffer, isPartial);
         } else { // if writingCdata
             assert writingCdata;
             int textLen = textStr.length();
@@ -938,7 +926,7 @@ public class HtmlResponseWriter extends ResponseWriter {
                 writer.write(text, off, len);
             }
         } else if (isPartial || !writingCdata) {
-            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, buffer, text, off, len, isPartial);
+            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, text, off, len, isPartial);
         } else { // if (writingCdata)
             assert writingCdata;
             writeEscaped(text, off, len);
@@ -1001,7 +989,7 @@ public class HtmlResponseWriter extends ResponseWriter {
         ensureTextBufferCapacity(stringValue);
         // Javascript URLs should not be URL-encoded
         if (stringValue.startsWith("javascript:") || isPassthrough) {
-            HtmlUtils.writeAttribute(writer, escapeUnicode, escapeIso, buffer, stringValue, textBuffer, isScriptInAttributeValueEnabled, isPartial);
+            HtmlUtils.writeAttribute(writer, escapeUnicode, escapeIso, stringValue, textBuffer, isScriptInAttributeValueEnabled, isPartial);
         } else {
             HtmlUtils.writeURL(writer, stringValue, textBuffer, encoding);
         }
@@ -1016,9 +1004,6 @@ public class HtmlResponseWriter extends ResponseWriter {
         int len = source.length();
         if (textBuffer.length < len) {
             textBuffer = new char[len * 2];
-        }
-        if (buffer.length < len) {
-            buffer = new char[len * 2];
         }
     }
 
