@@ -343,126 +343,105 @@ public class HtmlUtils {
 
     /**
      * Writes a string into URL-encoded format out to a Writer.
-     * 
-     * All characters before the start of the query string will be encoded using UTF-8.
-     * 
-     * Characters after the start of the query string will be encoded using a client-defined encoding. You'll need to use
-     * the encoding that the server will expect. (HTML forms will generate query strings using the character encoding that
-     * the HTML itself was generated in.)
-     * 
-     * All characters will be encoded as needed for URLs, with the exception of the percent symbol ("%"). Because this is
-     * the character itself used for escaping, attempting to escape this character would cause this code to double-escape
-     * some strings. It also may be necessary to pre-escape some characters. In particular, a question mark ("?") is
-     * considered the start of the query string.
-     * 
      *
-     * <p>
-     * NOTE: This is method is duplicated below. The difference being the acceptance of a char[] for the text to write. Any
-     * changes made here, should be made below.
-     * </p>
+     * <p>All characters before the start of the query string will be encoded using UTF-8.
+     * Characters after the start of the query string will be encoded using the client-defined
+     * {@code queryEncoding} -- this needs to match the encoding the server will use to decode
+     * the query string (HTML forms generate query strings using the character encoding the HTML
+     * itself was generated in).
+     *
+     * <p>All characters will be encoded as needed for URLs, with the exception of the percent
+     * symbol ({@code %}). Because that's the character used for escaping itself, attempting to
+     * escape it would double-encode anything already pre-encoded. It also may be necessary to
+     * pre-escape some characters; in particular, the first {@code ?} is treated as the start of
+     * the query string.
+     *
+     * <p>Delegates to {@link #writeURL(Writer, char[], int, int, String)} via {@code getChars} --
+     * a single range-emit pass over the char buffer is faster than per-char {@code charAt} +
+     * branch-per-char for any non-trivial input, and avoids duplicating the per-character logic.
      *
      * @param out a Writer for the output
      * @param text the unencoded (or partially encoded) String
+     * @param textBuff scratch buffer, reused when sized large enough to hold {@code text}
      * @param queryEncoding the character set encoding for after the first question mark
      */
     static public void writeURL(Writer out, String text, char[] textBuff, String queryEncoding) throws IOException, UnsupportedEncodingException {
-
         int length = text.length();
-        if (length >= 16) {
-            text.getChars(0, length, textBuff, 0);
-            writeURL(out, textBuff, 0, length, queryEncoding);
-        } else {
-            for (int i = 0; i < length; i++) {
-                char ch = text.charAt(i);
-
-                if (ch < 33 || ch > 126) {
-                    if (ch == ' ') {
-                        out.write('+');
-                    } else {
-                        textBuff[i] = ch;
-                        encodeURIString(out, textBuff, "UTF-8", i, i + 1);
-                    }
-                }
-                // DO NOT encode '%'. If you do, then for starters,
-                // we'll double-encode anything that's pre-encoded.
-                // And, what's worse, there becomes no way to use
-                // characters that must be encoded if you
-                // don't want them to be interpreted, like '?' or '&'.
-                // else if('%' == ch)
-                // {
-                // writeURIDoubleHex(out, ch);
-                // }
-                else if (ch == '"') {
-                    out.write("%22");
-                }
-                // Everything in the query parameters will be decoded
-                // as if it were in the request's character set. So use
-                // the real encoding for those!
-                else if (ch == '?') {
-                    out.write('?');
-                    encodeURIString(out, text, queryEncoding, i + 1);
-                    return;
-                } else {
-                    out.write(ch);
-                }
-            }
+        if (length == 0) {
+            return;
         }
+        char[] target = (length > textBuff.length) ? new char[length] : textBuff;
+        text.getChars(0, length, target, 0);
+        writeURL(out, target, 0, length, queryEncoding);
     }
 
     /**
-     * Writes a string into URL-encoded format out to a Writer.
-     * 
-     * All characters before the start of the query string will be encoded using UTF-8.
-     * 
-     * Characters after the start of the query string will be encoded using a client-defined encoding. You'll need to use
-     * the encoding that the server will expect. (HTML forms will generate query strings using the character encoding that
-     * the HTML itself was generated in.)
-     * 
-     * All characters will be encoded as needed for URLs, with the exception of the percent symbol ("%"). Because this is
-     * the character itself used for escaping, attempting to escape this character would cause this code to double-escape
-     * some strings. It also may be necessary to pre-escape some characters. In particular, a question mark ("?") is
-     * considered the start of the query string.
-     * 
-     * <p>
-     * NOTE: This is method is duplicated above. The difference being the acceptance of a String for the text to write. Any
-     * changes made here, should be made above.
-     * </p>
+     * Writes a char-array slice into URL-encoded format out to a Writer.
+     *
+     * <p>Range-emit strategy: walk the input character by character, tracking the start of the
+     * current safe run, and bulk-write safe runs to the underlying Writer instead of dispatching
+     * a single {@code out.write(ch)} per character. The safe-run check is one bounds-check plus
+     * two exclusions ({@code ch > 32 && ch < 127 && ch != '"' && ch != '?'}). Inputs consisting
+     * entirely of unreserved ASCII (the common case) collapse to a single underlying write.
+     *
+     * <p>For chars outside the safe run:
+     * <ul>
+     *   <li>{@code ?} -- writes {@code ?}, then delegates the remainder to
+     *       {@link #encodeURIString(Writer, char[], String, int, int)} using {@code queryEncoding}
+     *       and returns.</li>
+     *   <li>{@code "} -- escaped to {@code %22} (HTML attribute value safety).</li>
+     *   <li>{@code ch < 33} or {@code ch > 126} -- percent-encoded through UTF-8.</li>
+     * </ul>
+     *
+     * <p>Importantly, {@code %} is NOT encoded: encoding it would double-encode anything already
+     * pre-encoded and would defeat callers who need to embed already-encoded {@code ?}/{@code &}
+     * etc.
      *
      * @param out a Writer for the output
      * @param textBuff char[] containing the content to write
+     * @param start the offset in {@code textBuff} at which to start
+     * @param len the number of chars to process starting at {@code start}
      * @param queryEncoding the character set encoding for after the first question mark
      */
     static public void writeURL(Writer out, char[] textBuff, int start, int len, String queryEncoding) throws IOException, UnsupportedEncodingException {
-
         int end = start + len;
+        int runStart = start;
+        MyByteArrayOutputStream buf = null;
+        OutputStreamWriter writer = null;
+        char[] charArray = null;
+
         for (int i = start; i < end; i++) {
             char ch = textBuff[i];
 
-            if (ch < 33 || ch > 126) {
-                encodeURIString(out, textBuff, "UTF-8", i, i + 1);
+            if (ch > 32 && ch < 127 && ch != '"' && ch != '?') {
+                continue;
             }
-            // DO NOT encode '%'. If you do, then for starters,
-            // we'll double-encode anything that's pre-encoded.
-            // And, what's worse, there becomes no way to use
-            // characters that must be encoded if you
-            // don't want them to be interpreted, like '?' or '&'.
-            // else if('%' == ch)
-            // {
-            // writeURIDoubleHex(out, ch);
-            // }
-            else if (ch == '"') {
-                out.write("%22");
+
+            if (i > runStart) {
+                out.write(textBuff, runStart, i - runStart);
             }
-            // Everything in the query parameters will be decoded
-            // as if it were in the request's character set. So use
-            // the real encoding for those!
-            else if (ch == '?') {
+
+            if (ch == '?') {
                 out.write('?');
                 encodeURIString(out, textBuff, queryEncoding, i + 1, end);
                 return;
-            } else {
-                out.write(ch);
             }
+            if (ch == '"') {
+                out.write("%22");
+                runStart = i + 1;
+                continue;
+            }
+            if (buf == null) {
+                buf = new MyByteArrayOutputStream(MAX_BYTES_PER_CHAR);
+                writer = new OutputStreamWriter(buf, "UTF-8");
+                charArray = new char[1];
+            }
+            encodeCharPercentBytes(out, ch, buf, writer, charArray);
+            runStart = i + 1;
+        }
+
+        if (runStart < end) {
+            out.write(textBuff, runStart, end - runStart);
         }
     }
 
@@ -487,149 +466,108 @@ public class HtmlUtils {
         }
     }
 
-    // Encode a String into URI-encoded form. This code will
-    // appear rather (ahem) similar to java.net.URLEncoder
-    // This is duplicated below accepting a char[] for the content
-    // to write. Any changes here, should be made there as well.
-    static private void encodeURIString(Writer out, String text, String encoding, int start) throws IOException {
-        MyByteArrayOutputStream buf = null;
-        OutputStreamWriter writer = null;
-        char[] charArray = null;
-        boolean fragment = false;
-
-        int length = text.length();
-        for (int i = start; i < length; i++) {
-            char ch = text.charAt(i);
-            if (DONT_ENCODE_SET.get(ch) || (fragment && ch == '?')) {
-                if (ch == '#') {
-                    fragment = true; // RFC3986 section 3.5
-                }
-
-                if (ch == '&') {
-                    if (i + 1 < length && isAmpEscaped(text, i + 1)) {
-                        out.write(ch);
-                        continue;
-                    }
-                    out.write(AMP_CHARS);
-                } else {
-                    out.write(ch);
-                }
-            } else {
-                if (buf == null) {
-                    buf = new MyByteArrayOutputStream(MAX_BYTES_PER_CHAR);
-                    if (encoding != null) {
-                        writer = new OutputStreamWriter(buf, encoding);
-                    } else {
-                        writer = new OutputStreamWriter(buf, RIConstants.CHAR_ENCODING);
-                    }
-                    charArray = new char[1];
-                }
-
-                // convert to external encoding before hex conversion
-                try {
-                    // An inspection of OutputStreamWriter reveals
-                    // that write(char) always allocates a one element
-                    // character array. We can reuse our own.
-                    charArray[0] = ch;
-                    writer.write(charArray, 0, 1);
-                    writer.flush();
-                } catch (IOException e) {
-                    buf.reset();
-                    continue;
-                }
-
-                byte[] ba = buf.getBuf();
-                for (int j = 0, size = buf.size(); j < size; j++) {
-                    writeURIDoubleHex(out, ba[j] + 256);
-                }
-
-                buf.reset();
-            }
-        }
-    }
-
-    // Encode a String into URI-encoded form. This code will
-    // appear rather (ahem) similar to java.net.URLEncoder
-    // This is duplicated above accepting a String for the content
-    // to write. Any changes here, should be made there as well.
+    /**
+     * Encodes a char-array slice into URI-encoded form (rather similar to {@link java.net.URLEncoder}).
+     *
+     * <p>Range-emit: walks the input tracking the start of the current safe run, and bulk-writes
+     * safe runs to the underlying Writer. A character is "safe" if it's in {@link #DONT_ENCODE_SET}
+     * AND not {@code &} (needs lookahead for {@code &amp;} non-double-escape) AND not {@code #}
+     * (sets fragment mode). Within fragment mode (after the first {@code #}, per RFC 3986 section
+     * 3.5) the {@code ?} character is also safe.
+     *
+     * <p>Characters not in the safe run are dispatched as follows:
+     * <ul>
+     *   <li>{@code &} -- if immediately followed by {@code amp;}, write the bare {@code &}
+     *       (don't double-escape); otherwise emit {@code &amp;}.</li>
+     *   <li>{@code #} -- write {@code #} and enter fragment mode.</li>
+     *   <li>Anything else -- percent-encode through the requested external encoding.</li>
+     * </ul>
+     *
+     * <p>The {@link MyByteArrayOutputStream}/{@link OutputStreamWriter} pair used for non-ASCII
+     * percent-encoding is lazily allocated on first need and shared across all encode calls in
+     * a single invocation -- matching the original allocation amortization.
+     */
     static private void encodeURIString(Writer out, char[] textBuff, String encoding, int start, int end) throws IOException {
+        int runStart = start;
+        boolean fragment = false;
         MyByteArrayOutputStream buf = null;
         OutputStreamWriter writer = null;
         char[] charArray = null;
-        boolean fragment = false;
 
         for (int i = start; i < end; i++) {
             char ch = textBuff[i];
-            if (DONT_ENCODE_SET.get(ch) || (fragment && ch == '?')) {
-                if (ch == '#') {
-                    fragment = true; // RFC3986 section 3.5
-                }
 
-                if (ch == '&') {
-                    if (i + 1 < end && isAmpEscaped(textBuff, i + 1)) {
-                        out.write(ch);
-                        continue;
-                    }
-                    out.write(AMP_CHARS);
+            if (DONT_ENCODE_SET.get(ch) && ch != '&' && ch != '#') {
+                continue;
+            }
+            if (fragment && ch == '?') {
+                continue;
+            }
+
+            if (i > runStart) {
+                out.write(textBuff, runStart, i - runStart);
+            }
+            runStart = i + 1;
+
+            if (ch == '#') {
+                out.write('#');
+                fragment = true; // RFC 3986 section 3.5
+                continue;
+            }
+            if (ch == '&') {
+                if (i + 1 < end && isAmpEscaped(textBuff, i + 1)) {
+                    out.write('&');
                 } else {
-                    out.write(ch);
+                    out.write(AMP_CHARS);
                 }
-            } else {
-                if (buf == null) {
-                    buf = new MyByteArrayOutputStream(MAX_BYTES_PER_CHAR);
-                    if (encoding != null) {
-                        writer = new OutputStreamWriter(buf, encoding);
-                    } else {
-                        writer = new OutputStreamWriter(buf, RIConstants.CHAR_ENCODING);
-                    }
-                    charArray = new char[1];
-                }
-
-                // convert to external encoding before hex conversion
-                try {
-                    // An inspection of OutputStreamWriter reveals
-                    // that write(char) always allocates a one element
-                    // character array. We can reuse our own.
-                    charArray[0] = ch;
-                    writer.write(charArray, 0, 1);
-                    writer.flush();
-                } catch (IOException e) {
-                    buf.reset();
-                    continue;
-                }
-
-                byte[] ba = buf.getBuf();
-                for (int j = 0, size = buf.size(); j < size; j++) {
-                    writeURIDoubleHex(out, ba[j] + 256);
-                }
-
-                buf.reset();
-            }
-        }
-    }
-
-    // NOTE: Any changes made to this method should be made
-    // in the associated method that accepts a char[] instead
-    // of String
-    static private boolean isAmpEscaped(String text, int idx) {
-        for (int i = 1, ix = idx; i < AMP_CHARS.length; i++, ix++) {
-            if (text.charAt(ix) == AMP_CHARS[i]) {
                 continue;
             }
-            return false;
+
+            if (buf == null) {
+                buf = new MyByteArrayOutputStream(MAX_BYTES_PER_CHAR);
+                writer = new OutputStreamWriter(buf, encoding != null ? encoding : RIConstants.CHAR_ENCODING);
+                charArray = new char[1];
+            }
+            encodeCharPercentBytes(out, ch, buf, writer, charArray);
         }
-        return true;
+
+        if (runStart < end) {
+            out.write(textBuff, runStart, end - runStart);
+        }
     }
 
-    // NOTE: Any changes made to this method should be made
-    // in the associated method that accepts a String instead
-    // of char[]
+    /**
+     * Percent-encode a single char by routing it through {@code writer} (which wraps {@code buf}
+     * with the desired charset) and emitting {@code %XX} for each resulting byte. The shared
+     * {@code buf}/{@code writer}/{@code charArray} are reused across calls in the same enclosing
+     * encode loop.
+     */
+    static private void encodeCharPercentBytes(Writer out, char ch, MyByteArrayOutputStream buf,
+            OutputStreamWriter writer, char[] charArray) throws IOException {
+        try {
+            // OutputStreamWriter#write(char) always allocates a one-element char array; we reuse our own.
+            charArray[0] = ch;
+            writer.write(charArray, 0, 1);
+            writer.flush();
+        } catch (IOException e) {
+            buf.reset();
+            return;
+        }
+        byte[] ba = buf.getBuf();
+        for (int j = 0, size = buf.size(); j < size; j++) {
+            writeURIDoubleHex(out, ba[j] + 256);
+        }
+        buf.reset();
+    }
+
     static private boolean isAmpEscaped(char[] text, int idx) {
-        for (int i = 1, ix = idx; i < AMP_CHARS.length; i++, ix++) {
-            if (text[ix] == AMP_CHARS[i]) {
-                continue;
-            }
+        if (idx + AMP_CHARS.length - 1 > text.length) {
             return false;
+        }
+        for (int i = 1, ix = idx; i < AMP_CHARS.length; i++, ix++) {
+            if (text[ix] != AMP_CHARS[i]) {
+                return false;
+            }
         }
         return true;
     }

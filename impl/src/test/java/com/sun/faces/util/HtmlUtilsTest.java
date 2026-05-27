@@ -400,6 +400,40 @@ class HtmlUtilsTest {
     }
 
     @Test
+    void writeURL_spaceInShortPathPercentEncoded() throws IOException {
+        // Both short (<16) and long (>=16) inputs percent-encode space as %20.
+        // (Legacy <16 char-path emitted '+' for space -- inconsistent with the >=16 path,
+        // now unified on the RFC 3986-correct %20.)
+        assertEquals("/a%20b", writeURL("/a b"));
+        assertEquals("/with%20space/path/segment", writeURL("/with space/path/segment"));
+    }
+
+    @Test
+    void writeURL_truncatedAmpAtEndDoesNotCrash() throws IOException {
+        // Trailing "&am" or "&amp" (no closing ';') near end-of-input would have run off the end
+        // of the buffer in the legacy isAmpEscaped because the caller-side guard only verified
+        // the byte AFTER the '&' was in bounds. The new isAmpEscaped does its own bounds check
+        // and falls back to entity-escaping the bare '&'.
+        assertEquals("/x?a=1&amp;am", writeURL("/x?a=1&am"));
+        assertEquals("/x?a=1&amp;amp", writeURL("/x?a=1&amp"));
+    }
+
+    @Test
+    void writeURL_questionMarkAtStartOfInput() throws IOException {
+        // '?' as the very first character: exercises the empty-safe-run branch (i == runStart).
+        assertEquals("?a=1&amp;b=2", writeURL("?a=1&b=2"));
+    }
+
+    @Test
+    void writeURL_textBuffSmallerThanInputStillWorks() throws IOException {
+        // The String entry allocates a fresh char[] when the caller's textBuff is too small to
+        // hold the input. Locks in the fallback path.
+        StringWriter sw = new StringWriter();
+        HtmlUtils.writeURL(sw, "/this/is/a/long/enough/path?a=1&b=2", new char[1], "UTF-8");
+        assertEquals("/this/is/a/long/enough/path?a=1&amp;b=2", sw.toString());
+    }
+
+    @Test
     void writeURL_charArrayEntryDirect() throws IOException {
         // Verify the char[] entry produces the same output as the String entry for the same input.
         String input = "/x?a=1&b=2";
