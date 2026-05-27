@@ -122,6 +122,42 @@ public class CdiLookupCountTest {
     }
 
     @Test
+    public void resolveBeanByName_repeatedCalls_areCached() {
+        CountingBeanManager bm = new CountingBeanManager();
+
+        for (int i = 0; i < 10; i++) {
+            CdiUtils.resolveBeanByName(bm, "comSunFacesDataModelClassesMap");
+        }
+
+        // Name-based lookups use a different BeanManager API (getBeans(String) vs getBeans(Type, ...))
+        // so the test exposes a separate counter. First call probes the registry; rest hit the cache.
+        assertEquals(1, bm.getBeansByName.get(), "Only first resolveBeanByName call hits BeanManager");
+    }
+
+    @Test
+    public void resolveBean_byType_repeatedCalls_areCached() {
+        CountingBeanManager bm = new CountingBeanManager();
+
+        for (int i = 0; i < 10; i++) {
+            CdiUtils.resolveBean(bm, InjectionPoint.class);
+        }
+
+        assertEquals(1, bm.getBeansByType.get(), "Only first resolveBean(Type) call hits BeanManager");
+    }
+
+    @Test
+    public void resolveFacesContextProducerBean_repeatedCalls_areCached() {
+        CountingBeanManager bm = new CountingBeanManager();
+
+        for (int i = 0; i < 10; i++) {
+            CdiUtils.resolveFacesContextProducerBean(bm);
+        }
+
+        // Without caching the type-filtered FacesContextProducer lookup runs on every request release.
+        assertEquals(1, bm.getBeansByType.get(), "FacesContextProducer bean lookup runs once per BeanManager");
+    }
+
+    @Test
     public void createConverter_byId_distinctBeanManagers_haveIndependentCaches() {
         CountingBeanManager bm1 = new CountingBeanManager();
         CountingBeanManager bm2 = new CountingBeanManager();
@@ -205,12 +241,19 @@ public class CdiLookupCountTest {
     private static class CountingBeanManager extends MockBeanManager {
 
         final AtomicInteger getBeansByType = new AtomicInteger();
+        final AtomicInteger getBeansByName = new AtomicInteger();
         final AtomicInteger resolves = new AtomicInteger();
         final AtomicInteger references = new AtomicInteger();
 
         @Override
         public Set<Bean<?>> getBeans(Type beanType, Annotation... qualifiers) {
             getBeansByType.incrementAndGet();
+            return Collections.emptySet();
+        }
+
+        @Override
+        public Set<Bean<?>> getBeans(String name) {
+            getBeansByName.incrementAndGet();
             return Collections.emptySet();
         }
 

@@ -24,6 +24,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -101,6 +102,15 @@ public final class CdiUtils {
      * happens once those {@code Bean} references themselves are no longer reachable.
      */
     private static final Map<BeanManager, ConcurrentMap<BeanLookupKey, Bean<?>>> RESOLVED_BEANS =
+            synchronizedMap(new WeakHashMap<>());
+
+    /**
+     * Parallel cache for the {@link FacesContextImpl} release path: the single
+     * {@link FacesContextProducer}-typed {@link FacesContext} bean per {@link BeanManager}.
+     * Held separately because the lookup filters by {@code bean.getTypes().contains(...)}
+     * rather than by a CDI qualifier, so it does not fit the {@link BeanLookupKey} shape.
+     */
+    private static final Map<BeanManager, Bean<?>> FACES_CONTEXT_PRODUCER_BEANS =
             synchronizedMap(new WeakHashMap<>());
 
     private static final Bean<?> NO_BEAN = new NoBean();
@@ -292,6 +302,51 @@ public final class CdiUtils {
         return resolved;
     }
 
+    /**
+     * Resolves the {@link Bean} for the given required type and qualifiers using the application's
+     * cache. Returns {@code null} if no bean matches. Unlike {@link #getBeanReference}, this does
+     * not invoke {@code getReference} -- the caller is responsible for that when an instance is
+     * needed, so scope semantics remain correct on each invocation.
+     */
+    public static Bean<?> resolveBean(BeanManager beanManager, Type type, Annotation... qualifiers) {
+        return resolveBean(beanManager, type, null, qualifiers);
+    }
+
+    /**
+     * Resolves the {@link Bean} for the given EL name using the application's cache.
+     * Returns {@code null} if no bean has that name.
+     */
+    public static Bean<?> resolveBeanByName(BeanManager beanManager, String name) {
+        ConcurrentMap<BeanLookupKey, Bean<?>> cache = RESOLVED_BEANS.computeIfAbsent(beanManager, k -> new ConcurrentHashMap<>());
+        BeanLookupKey key = new BeanLookupKey(null, name, Collections.emptySet());
+        Bean<?> cached = cache.get(key);
+        if (cached != null) {
+            return cached == NO_BEAN ? null : cached;
+        }
+        Bean<?> resolved = beanManager.resolve(beanManager.getBeans(name));
+        cache.put(key, resolved == null ? NO_BEAN : resolved);
+        return resolved;
+    }
+
+    /**
+     * Resolves and caches the {@link FacesContextProducer}-typed {@link FacesContext} bean
+     * once per {@link BeanManager}. Used by the per-request {@link FacesContext#release()}
+     * destruction path: the producer is registered exactly once per application, so re-running
+     * the type-containment filter on every request is wasted work.
+     */
+    public static Bean<?> resolveFacesContextProducerBean(BeanManager beanManager) {
+        Bean<?> cached = FACES_CONTEXT_PRODUCER_BEANS.get(beanManager);
+        if (cached != null) {
+            return cached == NO_BEAN ? null : cached;
+        }
+        Set<Bean<?>> beans = beanManager.getBeans(FacesContext.class).stream()
+            .filter(bean -> bean.getTypes().contains(FacesContextProducer.class))
+            .collect(toSet());
+        Bean<?> resolved = beanManager.resolve(beans);
+        FACES_CONTEXT_PRODUCER_BEANS.put(beanManager, resolved == null ? NO_BEAN : resolved);
+        return resolved;
+    }
+
     private static final class BeanLookupKey {
         private final Type type;
         private final String beanName;
@@ -453,7 +508,7 @@ public final class CdiUtils {
         BeanManager beanManager = cdi.getBeanManager();
 
         // Get the Map with classes for which a custom DataModel implementation is available from CDI
-        Bean<?> bean = beanManager.resolve(beanManager.getBeans("comSunFacesDataModelClassesMap"));
+        Bean<?> bean = resolveBeanByName(beanManager, "comSunFacesDataModelClassesMap");
         Object beanReference = beanManager.getReference(bean, Map.class, beanManager.createCreationalContext(bean));
 
         return (Map<Class<?>, Class<? extends DataModel<?>>>) beanReference;
@@ -466,11 +521,11 @@ public final class CdiUtils {
      * @return the current injection point
      */
     public static InjectionPoint getCurrentInjectionPoint(BeanManager beanManager, CreationalContext<?> creationalContext) {
-        Bean<? extends Object> bean = beanManager.resolve(beanManager.getBeans(InjectionPoint.class));
+        Bean<?> bean = resolveBean(beanManager, InjectionPoint.class);
         InjectionPoint injectionPoint = (InjectionPoint) beanManager.getReference(bean, InjectionPoint.class, creationalContext);
 
         if (injectionPoint == null) { // It's broken in some Weld versions. Below is a work around.
-            bean = beanManager.resolve(beanManager.getBeans(InjectionPointGenerator.class));
+            bean = resolveBean(beanManager, InjectionPointGenerator.class);
             injectionPoint = (InjectionPoint) beanManager.getInjectableReference(bean.getInjectionPoints().iterator().next(), creationalContext);
         }
 
