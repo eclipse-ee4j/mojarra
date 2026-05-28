@@ -519,19 +519,22 @@ public class UIRepeat extends UINamingContainer {
 
     private void restoreChildState(FacesContext ctx) {
         // Unlike saveChildState, the restore-side walk must always run even when no
-        // descendants carry per-row state: restoreChildState(faces, c) below calls
-        // setId(getId()) on every component to invalidate its cached clientId so each row
-        // gets a row-specific clientId (e.g. repeat:N:foo). Skipping the walk would leave
+        // descendants carry per-row state: restoreChildState(faces, c, childState) below
+        // calls setId(getId()) on every component to invalidate its cached clientId so each
+        // row gets a row-specific clientId (e.g. repeat:N:foo). Skipping the walk would leave
         // stale clientIds and render duplicate id="..." attributes across rows.
         if (getChildCount() > 0) {
 
+            // The child-state map is invariant across this walk; fetch it once and thread it
+            // through the recursion instead of re-querying getChildState() at every node.
+            Map<String, SavedState> childStateMap = getChildState();
             for (UIComponent uiComponent : getChildren()) {
-                this.restoreChildState(ctx, uiComponent);
+                this.restoreChildState(ctx, uiComponent, childStateMap);
             }
         }
     }
 
-    private void restoreChildState(FacesContext faces, UIComponent c) {
+    private void restoreChildState(FacesContext faces, UIComponent c, Map<String, SavedState> childStateMap) {
         // reset id
         String id = c.getId();
         c.setId(id);
@@ -540,7 +543,7 @@ public class UIRepeat extends UINamingContainer {
         if (c instanceof EditableValueHolder) {
             EditableValueHolder evh = (EditableValueHolder) c;
             String clientId = c.getClientId(faces);
-            SavedState ss = getChildState().get(clientId);
+            SavedState ss = childStateMap.get(clientId);
             if (ss != null) {
                 ss.apply(evh);
             } else {
@@ -551,7 +554,7 @@ public class UIRepeat extends UINamingContainer {
         // continue hack
         Iterator itr = c.getFacetsAndChildren();
         while (itr.hasNext()) {
-            restoreChildState(faces, (UIComponent) itr.next());
+            restoreChildState(faces, (UIComponent) itr.next(), childStateMap);
         }
     }
 
