@@ -653,7 +653,7 @@ public class FaceletFullStateManagementStrategy extends StateManagementStrategy 
         /*
          * Check uniqueness.
          */
-        Util.checkIdUniqueness(context, viewRoot, new HashSet<>(viewRoot.getChildCount() << 1));
+        Util.checkIdUniqueness(context, viewRoot, new HashSet<>(64));
 
         /**
          * Save the dynamic actions.

@@ -96,6 +96,7 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIData;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.search.UntargetableComponent;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
@@ -1190,6 +1191,14 @@ public class Util {
             for (Iterator<UIComponent> kids = component.getFacetsAndChildren(); kids.hasNext();) {
 
                 UIComponent kid = kids.next();
+                // Skip UntargetableComponent descendants (e.g. Facelets-compiler-generated
+                // UILeaf wrappers for static text/whitespace). They have auto-generated ids
+                // that cannot collide via user-authored templates, and they have no
+                // user-targetable descendants -- checking them is wasted work on every
+                // save-view.
+                if (kid instanceof UntargetableComponent) {
+                    continue;
+                }
                 // check for id uniqueness
                 String id = kid.getClientId(context);
                 if (componentIds.add(id)) {
