@@ -162,6 +162,26 @@ public abstract class UIComponentBase extends UIComponent {
     private UIComponent parent;
 
     /**
+     * Per-component cache of the resolved {@link Renderer} for this component's renderer type.
+     * Populated lazily by {@link #getRenderer(FacesContext)}; invalidated by
+     * {@link #setRendererType(String)}, {@link #setParent(UIComponent)} (parenting can move
+     * the component under a different {@link UIViewRoot} and therefore a different
+     * {@code RenderKit}), and {@link #restoreState(FacesContext, Object)} (defensive: state
+     * restoration may rewrite {@code rendererType} via the {@link StateHelper} without going
+     * through {@link #setRendererType(String)}).
+     *
+     * <p>The cache assumes the public-API contract: {@code rendererType} mutations flow through
+     * {@code setRendererType}. Code that binds {@code rendererType} to a non-literal
+     * {@link jakarta.el.ValueExpression} (rare) or mutates the {@link StateHelper} directly
+     * after the first {@code getRenderer} call will see a stale cached renderer until the next
+     * invalidation point.
+     *
+     * <p>Marked {@code transient} so it is not serialized as part of view state; it rebuilds on
+     * the first {@code getRenderer} call after deserialization.
+     */
+    private transient Renderer cachedRenderer;
+
+    /**
      * The <code>List</code> containing our child components.
      */
     private List<UIComponent> children;
@@ -279,6 +299,10 @@ public abstract class UIComponentBase extends UIComponent {
     @Override
     public void setParent(UIComponent parent) {
 
+        // Parenting can move this component under a different UIViewRoot (and therefore a
+        // different RenderKit), so invalidate the cached Renderer defensively.
+        cachedRenderer = null;
+
         if (parent == null) {
             if (this.parent != null) {
                 doPreRemoveProcessing(FacesContext.getCurrentInstance(), this);
@@ -306,7 +330,7 @@ public abstract class UIComponentBase extends UIComponent {
 
     @Override
     public boolean isRendered() {
-        return Boolean.valueOf(getStateHelper().eval(PropertyKeys.rendered, TRUE).toString());
+        return (Boolean) getStateHelper().eval(PropertyKeys.rendered, TRUE);
     }
 
     @Override
@@ -322,6 +346,7 @@ public abstract class UIComponentBase extends UIComponent {
     @Override
     public void setRendererType(String rendererType) {
         getStateHelper().put(PropertyKeys.rendererType, rendererType);
+        cachedRenderer = null;
     }
 
     @Override
@@ -1037,7 +1062,10 @@ public abstract class UIComponentBase extends UIComponent {
     @Override
     protected Renderer getRenderer(FacesContext context) {
 
-        Renderer renderer = null;
+        Renderer renderer = cachedRenderer;
+        if (renderer != null) {
+            return renderer;
+        }
 
         String rendererType = getRendererType();
         if (rendererType != null) {
@@ -1046,6 +1074,7 @@ public abstract class UIComponentBase extends UIComponent {
             if (renderer == null && LOGGER.isLoggable(FINE)) {
                 LOGGER.fine("Can't get Renderer for type " + rendererType);
             }
+            cachedRenderer = renderer;
         } else {
             if (LOGGER.isLoggable(FINE)) {
                 String id = getId();
@@ -1238,6 +1267,10 @@ public abstract class UIComponentBase extends UIComponent {
             }
         }
 
+        // StateHelper.restoreState may rewrite rendererType without going through
+        // setRendererType, so invalidate the cached Renderer defensively. The next
+        // getRenderer call will recompute against the restored rendererType.
+        cachedRenderer = null;
     }
 
     @Override

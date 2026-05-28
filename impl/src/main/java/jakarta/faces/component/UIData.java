@@ -243,6 +243,19 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
     private Object _initialDescendantFullComponentState = null;
 
+    /**
+     * Per-iteration cache: {@code true} if any descendant is an {@link EditableValueHolder} or
+     * {@link UIForm} whose state needs to be saved/restored across {@link #setRowIndex} changes;
+     * {@code false} if the entire subtree is read-only. {@code null} means not yet scanned.
+     * Computed lazily by {@link #hasStatefulDescendants()} on first need; cleared when iteration
+     * ends ({@link #setRowIndex} to {@code -1}) so the next iteration re-evaluates the tree shape.
+     *
+     * <p>When this is {@code false}, {@link #saveDescendantState()} and {@link #restoreDescendantState()}
+     * become no-ops, eliminating the per-row tree walk for read-only tables (e.g. a table of
+     * {@code <h:outputText/>}).
+     */
+    private transient Boolean hasStatefulDescendants;
+
     // -------------------------------------------------------------- Properties
 
     @Override
@@ -479,6 +492,12 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     }
 
     private void setRowIndexWithoutRowStatePreserved(int rowIndex) {
+        // No-op short-circuit when the index is already current. Common when callers
+        // restore rowIndex to -1 at end-of-iteration on a table that never iterated.
+        if (getRowIndex() == rowIndex) {
+            return;
+        }
+
         // Save current state for the previous row index
         saveDescendantState();
 
@@ -512,6 +531,14 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
         // Reset current state information for the new row index
         restoreDescendantState();
+
+        // Iteration ended: clear the per-iteration stateful-descendants cache so the next
+        // iteration re-evaluates the tree shape (children can change between iterations).
+        // Cleared after restoreDescendantState() so the in-iteration walks still hit the
+        // cache; this avoids a redundant re-scan on the iteration-end save+restore.
+        if (rowIndex == -1) {
+            hasStatefulDescendants = null;
+        }
 
     }
 
@@ -2140,6 +2167,12 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      */
     private void restoreDescendantState() {
 
+        // Unlike saveDescendantState, the restore-side walk must always run even when no
+        // descendants carry per-row state: restoreDescendantState(component, context) below
+        // calls setId(getId()) on every component to invalidate its cached clientId so each
+        // row gets a row-specific clientId (e.g. data:N:foo). Skipping the walk would leave
+        // stale clientIds and render duplicate id="..." attributes across rows.
+
         FacesContext context = getFacesContext();
         if (getChildCount() > 0) {
             for (UIComponent kid : getChildren()) {
@@ -2216,6 +2249,12 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      */
     private void saveDescendantState() {
 
+        // Skip the per-row tree walk entirely if no descendants need per-row state. This is
+        // the common case for read-only tables (e.g. all-output-text columns).
+        if (!hasStatefulDescendants()) {
+            return;
+        }
+
         FacesContext context = getFacesContext();
         if (getChildCount() > 0) {
             for (UIComponent kid : getChildren()) {
@@ -2225,6 +2264,55 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             }
         }
 
+    }
+
+    /**
+     * Returns whether any descendant under this table's UIColumn children is an
+     * {@link EditableValueHolder} or {@link UIForm} -- i.e. whether per-row state save/restore
+     * has anything to do at all. Computed lazily and cached for the duration of the current
+     * iteration (cleared on {@code setRowIndex(-1)}). Read-only tables short-circuit to {@code false}.
+     */
+    private boolean hasStatefulDescendants() {
+        Boolean cached = hasStatefulDescendants;
+        if (cached != null) {
+            return cached;
+        }
+        boolean result = scanForStatefulDescendants();
+        hasStatefulDescendants = result;
+        return result;
+    }
+
+    private boolean scanForStatefulDescendants() {
+        if (getChildCount() == 0) {
+            return false;
+        }
+        for (UIComponent kid : getChildren()) {
+            if (kid instanceof UIColumn && subtreeHasStatefulDescendant(kid)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean subtreeHasStatefulDescendant(UIComponent component) {
+        if (component instanceof EditableValueHolder || component instanceof UIForm) {
+            return true;
+        }
+        if (component.getChildCount() > 0) {
+            for (UIComponent kid : component.getChildren()) {
+                if (subtreeHasStatefulDescendant(kid)) {
+                    return true;
+                }
+            }
+        }
+        if (component.getFacetCount() > 0) {
+            for (UIComponent facet : component.getFacets().values()) {
+                if (subtreeHasStatefulDescendant(facet)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

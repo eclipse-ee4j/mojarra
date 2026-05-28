@@ -341,6 +341,19 @@ public class UIRepeat extends UINamingContainer {
 
     private Map<String, SavedState> childState;
 
+    /**
+     * Per-iteration cache: {@code true} if any descendant is an {@link EditableValueHolder} whose
+     * state needs to be saved/restored across {@link #setIndex} changes; {@code false} if the
+     * entire subtree is read-only. {@code null} means not yet scanned. Computed lazily by
+     * {@link #hasStatefulDescendants()} on first need; cleared when iteration ends
+     * ({@link #setIndex} to {@code -1}) so the next iteration re-evaluates the tree shape.
+     *
+     * <p>When this is {@code false}, {@link #saveChildState(FacesContext)} and
+     * {@link #restoreChildState(FacesContext)} become no-ops, eliminating the per-row tree walk
+     * for read-only repeats.
+     */
+    private transient Boolean hasStatefulDescendants;
+
     private Map<String, SavedState> getChildState() {
         if (childState == null) {
             childState = new HashMap<>();
@@ -352,7 +365,54 @@ public class UIRepeat extends UINamingContainer {
         childState = null;
     }
 
+    private boolean hasStatefulDescendants() {
+        Boolean cached = hasStatefulDescendants;
+        if (cached != null) {
+            return cached;
+        }
+        boolean result = scanForStatefulDescendants();
+        hasStatefulDescendants = result;
+        return result;
+    }
+
+    private boolean scanForStatefulDescendants() {
+        if (getChildCount() == 0) {
+            return false;
+        }
+        for (UIComponent kid : getChildren()) {
+            if (subtreeHasStatefulDescendant(kid)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean subtreeHasStatefulDescendant(UIComponent component) {
+        if (component instanceof EditableValueHolder) {
+            return true;
+        }
+        if (component.getChildCount() > 0) {
+            for (UIComponent kid : component.getChildren()) {
+                if (subtreeHasStatefulDescendant(kid)) {
+                    return true;
+                }
+            }
+        }
+        if (component.getFacetCount() > 0) {
+            for (UIComponent facet : component.getFacets().values()) {
+                if (subtreeHasStatefulDescendant(facet)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private void saveChildState(FacesContext ctx) {
+        // Skip the per-row tree walk entirely if no descendants need per-row state.
+        if (!hasStatefulDescendants()) {
+            return;
+        }
         if (getChildCount() > 0) {
 
             for (UIComponent uiComponent : getChildren()) {
@@ -407,6 +467,11 @@ public class UIRepeat extends UINamingContainer {
     }
 
     private void restoreChildState(FacesContext ctx) {
+        // Unlike saveChildState, the restore-side walk must always run even when no
+        // descendants carry per-row state: restoreChildState(faces, c) below calls
+        // setId(getId()) on every component to invalidate its cached clientId so each row
+        // gets a row-specific clientId (e.g. repeat:N:foo). Skipping the walk would leave
+        // stale clientIds and render duplicate id="..." attributes across rows.
         if (getChildCount() > 0) {
 
             for (UIComponent uiComponent : getChildren()) {
@@ -454,7 +519,19 @@ public class UIRepeat extends UINamingContainer {
 
     private void setIndex(FacesContext ctx, int index) {
 
+        // Force the DataModel to build before any short-circuit. For a value-less
+        // ui:repeat with begin/end attributes, the first getDataModel() call has the
+        // side effect of rewriting begin/end into the model's [0, size) form (see
+        // getDataModel() ArrayDataModel branch); the caller of setIndex(faces, -1) at
+        // the start of process() relies on that side effect to fire before process()
+        // reads getBegin()/getEnd() into its local iteration bounds.
         DataModel localModel = getDataModel();
+
+        // No-op short-circuit when the index is already current. Common when callers
+        // restore the iterator to -1 at end-of-iteration on a repeat that was already at -1.
+        if (this.index == index) {
+            return;
+        }
 
         // save child state
         if (this.index != -1 && localModel.isRowAvailable()) {
@@ -474,6 +551,13 @@ public class UIRepeat extends UINamingContainer {
         // restore child state
         if (this.index != -1 && localModel.isRowAvailable()) {
             this.restoreChildState(ctx);
+        }
+
+        // Iteration ended: clear the per-iteration stateful-descendants cache so the next
+        // iteration re-evaluates the tree shape (children can change between iterations).
+        // Cleared after restoreChildState() so the in-iteration walks still hit the cache.
+        if (this.index == -1) {
+            hasStatefulDescendants = null;
         }
     }
 
