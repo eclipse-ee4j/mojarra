@@ -75,6 +75,13 @@ public class FactoryFinderTestCase {
         threadInitContext.setAccessible(true);
         ((Map<?, ?>) threadInitContext.get(null)).remove(Thread.currentThread());
 
+        // Also reset the JVM-static FactoryFinder cache. A prior test class that ran with a real ServletContext can
+        // leave a context-bearing FactoryFinderInstance under the shared test ClassLoader; this test's own
+        // MockServletContext then mismatches it, forcing a copy that only carries already-constructed factories and
+        // returns null for the not-yet-constructed ones.
+        FactoryFinder.FACTORIES_CACHE.factoryFinderMap.clear();
+        FactoryFinder.FACTORIES_CACHE.resetSpecialInitializationCaseFlags();
+
         for (int i = 0, len = FACTORIES.length; i < len; i++) {
             System.getProperties().remove(FACTORIES[i][0]);
         }
