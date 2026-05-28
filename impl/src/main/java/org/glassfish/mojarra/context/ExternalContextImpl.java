@@ -17,7 +17,7 @@
 
 package org.glassfish.mojarra.context;
 
-import static org.glassfish.mojarra.RIConstants.PUSH_RESOURCE_URLS_KEY_NAME;
+import static org.glassfish.mojarra.RIConstants.EARLY_HINTS_RESOURCE_URLS_KEY_NAME;
 import static org.glassfish.mojarra.context.MojarraContextParam.SendPoweredByHeader;
 import static org.glassfish.mojarra.context.UrlBuilder.PROTOCOL_SEPARATOR;
 import static org.glassfish.mojarra.context.UrlBuilder.WEBSOCKET_PROTOCOL;
@@ -60,7 +60,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import jakarta.servlet.http.PushBuilder;
 
 import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.config.WebConfiguration;
@@ -567,7 +566,7 @@ public class ExternalContextImpl extends ExternalContext {
         Util.notNull("url", url);
 
         String encodedURL = ((HttpServletResponse) response).encodeURL(url);
-        pushIfPossibleAndNecessary(encodedURL);
+        addEarlyHintIfPossibleAndNecessary(encodedURL);
 
         return encodedURL;
     }
@@ -1035,38 +1034,38 @@ public class ExternalContextImpl extends ExternalContext {
     }
 
     @SuppressWarnings("unchecked")
-    private void pushIfPossibleAndNecessary(String encodedURL) {
+    private void addEarlyHintIfPossibleAndNecessary(String encodedURL) {
         FacesContext context = FacesContext.getCurrentInstance();
 
         if (!context.getApplication().getResourceHandler().isResourceURL(encodedURL)) {
             return;
         }
 
-        Set<String> resourceUrls = (Set<String>) context.getAttributes().computeIfAbsent(PUSH_RESOURCE_URLS_KEY_NAME, k -> new HashSet<>());
-
-        if (!resourceUrls.add(encodedURL)) {
+        // Skip when the client is revalidating, as it then most likely already has the resources cached.
+        if (!isEmpty(getRequestHeaderMap().get("If-Modified-Since"))) {
             return;
         }
 
-        PushBuilder pushBuilder = getPushBuilder(context);
+        if (response instanceof HttpServletResponse hres && !hres.isCommitted()) {
+            Set<String> resourceUrls = (Set<String>) context.getAttributes().computeIfAbsent(EARLY_HINTS_RESOURCE_URLS_KEY_NAME, k -> new HashSet<>());
 
-        if (pushBuilder != null) {
-            pushBuilder.path(encodedURL).push();
+            if (resourceUrls.add(encodedURL)) {
+                hres.addHeader("Link", "<" + encodedURL + ">;rel=preload");
+            }
         }
     }
 
-    private PushBuilder getPushBuilder(FacesContext context) {
-        ExternalContext extContext = context.getExternalContext();
+    /**
+     * Sends a single HTTP 103 (Early Hints) interim response with the {@code Link} preload headers collected so far,
+     * provided the response is not yet committed. Invoked once, right after the head resources have been rendered, so the
+     * client can start fetching the render-blocking resources while the body is still being rendered.
+     */
+    public static void sendEarlyHints(FacesContext context) {
+        Object resourceUrls = context.getAttributes().get(EARLY_HINTS_RESOURCE_URLS_KEY_NAME);
 
-        if (extContext.getRequest() instanceof HttpServletRequest) {
-            HttpServletRequest hreq = (HttpServletRequest) extContext.getRequest();
-
-            if (isEmpty(extContext.getRequestHeaderMap().get("If-Modified-Since"))) {
-                return hreq.newPushBuilder();
-            }
+        if (resourceUrls instanceof Set<?> set && !set.isEmpty() && context.getExternalContext().getResponse() instanceof HttpServletResponse hres && !hres.isCommitted()) {
+            hres.sendEarlyHints();
         }
-
-        return null;
     }
 
     private void doLastPhaseActions(FacesContext context, boolean outgoingResponseIsRedirect) {

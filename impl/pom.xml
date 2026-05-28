@@ -29,7 +29,7 @@
    <artifactId>mojarra</artifactId>
    <packaging>jar</packaging>
 
-   <name>Mojarra ${project.version}</name>
+   <name>Mojarra ${project.version} - Impl</name>
    <description>EE4J Compatible Implementation for Jakarta Faces API</description>
 
     <url>https://github.com/eclipse-ee4j/mojarra</url>
