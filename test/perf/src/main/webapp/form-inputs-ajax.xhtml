@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) Contributors to Eclipse Foundation.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<html lang="#{facesContext.viewRoot.locale.language}"
+    xmlns:h="jakarta.faces.html"
+    xmlns:f="jakarta.faces.core"
+>
+    <h:head>
+        <title>form-inputs-ajax</title>
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <h:panelGrid columns="2">
+                <h:outputLabel for="name" value="Name"/>
+                <h:inputText id="name" value="#{formBean.name}" required="true">
+                    <f:converter converterId="trimConverter"/>
+                    <f:validator validatorId="lengthRangeValidator"/>
+                    <f:validator validatorId="prohibitedWordsValidator"/>
+                </h:inputText>
+
+                <h:outputLabel for="quantity" value="Quantity"/>
+                <h:inputText id="quantity" value="#{formBean.quantity}">
+                    <f:convertNumber integerOnly="true"/>
+                    <f:validateLongRange minimum="0" maximum="10000"/>
+                </h:inputText>
+
+                <h:outputLabel for="price" value="Price"/>
+                <h:inputText id="price" value="#{formBean.price}">
+                    <f:convertNumber type="currency" currencyCode="EUR"/>
+                </h:inputText>
+
+                <h:outputLabel for="date" value="Date"/>
+                <h:inputText id="date" value="#{formBean.date}"/>
+
+                <h:outputLabel for="country" value="Country"/>
+                <h:selectOneMenu id="country" value="#{formBean.country}">
+                    <f:converter converterId="upperCaseConverter"/>
+                    <f:selectItems value="#{appConfig.countries}"/>
+                </h:selectOneMenu>
+            </h:panelGrid>
+
+            <h:commandButton id="submit" value="Submit" action="#{formBean.submit}">
+                <f:ajax execute="@form" render="@form messages"/>
+            </h:commandButton>
+            <h:messages id="messages" globalOnly="false"/>
+        </h:form>
+    </h:body>
+</html>

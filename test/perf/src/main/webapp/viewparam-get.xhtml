@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) Contributors to Eclipse Foundation.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<html lang="#{facesContext.viewRoot.locale.language}"
+    xmlns:h="jakarta.faces.html"
+    xmlns:f="jakarta.faces.core"
+>
+    <f:metadata>
+        <f:viewParam name="id" value="#{viewParamBean.id}">
+            <f:convertNumber integerOnly="true"/>
+            <f:validateLongRange minimum="0" maximum="100000"/>
+        </f:viewParam>
+        <f:viewAction action="#{viewParamBean.load}"/>
+    </f:metadata>
+    <h:head>
+        <title>viewparam-get</title>
+    </h:head>
+    <h:body>
+        <h:panelGroup rendered="#{not empty viewParamBean.row}">
+            id=#{viewParamBean.row.id}
+            name=#{viewParamBean.row.name}
+            description=#{viewParamBean.row.description}
+            qty=#{viewParamBean.row.quantity}
+            price=<h:outputText value="#{viewParamBean.row.price}">
+                      <f:convertNumber type="currency" currencyCode="EUR"/>
+                  </h:outputText>
+            date=<h:outputText value="#{viewParamBean.row.date}"/>
+            active=#{viewParamBean.row.active}
+        </h:panelGroup>
+    </h:body>
+</html>
