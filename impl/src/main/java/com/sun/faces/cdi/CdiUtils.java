@@ -16,18 +16,26 @@
 
 package com.sun.faces.cdi;
 
+import static java.util.Collections.synchronizedMap;
 import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toSet;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -72,6 +80,40 @@ public final class CdiUtils {
     private final static Type VALIDATOR_TYPE = new TypeLiteral<Validator<?>>() {
         private static final long serialVersionUID = 1L;
     }.getType();
+
+    /**
+     * Cache of resolved {@code (type, beanName, qualifiers) -> Bean<?>} lookups per {@link BeanManager}.
+     * Post-bootstrap the set of beans is immutable for the application lifetime, so {@code getBeans} +
+     * {@code resolve} (the expensive part: type/qualifier matching over the whole bean registry) is a
+     * pure function of its arguments. {@link BeanManager#getReference(Bean, Type, CreationalContext)}
+     * is intentionally kept out of the cache to preserve scope semantics &mdash; that call is cheap.
+     * Negative results are cached as {@link #NO_BEAN}; built-in Faces IDs such as
+     * {@code jakarta.faces.Integer} are not CDI beans, so caching the miss avoids repeated registry
+     * walks on every component creation.
+     *
+     * <p>Caveat: this assumes the {@link BeanManager} is fully bootstrapped when first observed.
+     * If a transient/incomplete BeanManager were probed here, negative entries against that
+     * identity would persist after bootstrap completes. Today the only callers are public
+     * {@code Application#create*} methods invoked during request processing, after CDI is ready.
+     *
+     * <p>The outer map uses weak keys to release the inner cache when a BeanManager becomes
+     * otherwise unreachable. Note that cached {@link Bean} instances may transitively hold a
+     * reference back to their owning BeanManager (Weld does), in which case reclamation only
+     * happens once those {@code Bean} references themselves are no longer reachable.
+     */
+    private static final Map<BeanManager, ConcurrentMap<BeanLookupKey, Bean<?>>> RESOLVED_BEANS =
+            synchronizedMap(new WeakHashMap<>());
+
+    /**
+     * Parallel cache for the {@link FacesContextImpl} release path: the single
+     * {@link FacesContextProducer}-typed {@link FacesContext} bean per {@link BeanManager}.
+     * Held separately because the lookup filters by {@code bean.getTypes().contains(...)}
+     * rather than by a CDI qualifier, so it does not fit the {@link BeanLookupKey} shape.
+     */
+    private static final Map<BeanManager, Bean<?>> FACES_CONTEXT_PRODUCER_BEANS =
+            synchronizedMap(new WeakHashMap<>());
+
+    private static final Bean<?> NO_BEAN = new NoBean();
 
     /**
      * Constructor.
@@ -235,21 +277,124 @@ public final class CdiUtils {
     }
 
     private static Object getBeanReferenceByType(BeanManager beanManager, Type type, String beanName, Annotation... qualifiers) {
+        Bean<?> bean = resolveBean(beanManager, type, beanName, qualifiers);
+        if (bean == null) {
+            return null;
+        }
+        return beanManager.getReference(bean, type, beanManager.createCreationalContext(bean));
+    }
 
-        Object beanReference = null;
-
-        Set<Bean<? extends Object>> beans = beanManager.getBeans(type, qualifiers);
+    private static Bean<?> resolveBean(BeanManager beanManager, Type type, String beanName, Annotation... qualifiers) {
+        ConcurrentMap<BeanLookupKey, Bean<?>> cache = RESOLVED_BEANS.computeIfAbsent(beanManager, k -> new ConcurrentHashMap<>());
+        BeanLookupKey key = new BeanLookupKey(type, beanName, new HashSet<>(Arrays.asList(qualifiers)));
+        Bean<?> cached = cache.get(key);
+        if (cached != null) {
+            return cached == NO_BEAN ? null : cached;
+        }
+        Set<Bean<?>> beans = beanManager.getBeans(type, qualifiers);
         if (beanName != null) {
             beans = beans.stream()
                 .filter(bean -> beanName.equals(getBeanName(bean)))
                 .collect(toSet());
         }
-        Bean<?> bean = beanManager.resolve(beans);
-        if (bean != null) {
-            beanReference = beanManager.getReference(bean, type, beanManager.createCreationalContext(bean));
+        Bean<?> resolved = beanManager.resolve(beans);
+        cache.put(key, resolved == null ? NO_BEAN : resolved);
+        return resolved;
+    }
+
+    /**
+     * Resolves the {@link Bean} for the given required type and qualifiers using the application's
+     * cache. Returns {@code null} if no bean matches. Unlike {@link #getBeanReference}, this does
+     * not invoke {@code getReference} -- the caller is responsible for that when an instance is
+     * needed, so scope semantics remain correct on each invocation.
+     */
+    public static Bean<?> resolveBean(BeanManager beanManager, Type type, Annotation... qualifiers) {
+        return resolveBean(beanManager, type, null, qualifiers);
+    }
+
+    /**
+     * Resolves the {@link Bean} for the given EL name using the application's cache.
+     * Returns {@code null} if no bean has that name.
+     */
+    public static Bean<?> resolveBeanByName(BeanManager beanManager, String name) {
+        ConcurrentMap<BeanLookupKey, Bean<?>> cache = RESOLVED_BEANS.computeIfAbsent(beanManager, k -> new ConcurrentHashMap<>());
+        BeanLookupKey key = new BeanLookupKey(null, name, Collections.emptySet());
+        Bean<?> cached = cache.get(key);
+        if (cached != null) {
+            return cached == NO_BEAN ? null : cached;
+        }
+        Bean<?> resolved = beanManager.resolve(beanManager.getBeans(name));
+        cache.put(key, resolved == null ? NO_BEAN : resolved);
+        return resolved;
+    }
+
+    /**
+     * Resolves and caches the {@link FacesContextProducer}-typed {@link FacesContext} bean
+     * once per {@link BeanManager}. Used by the per-request {@link FacesContext#release()}
+     * destruction path: the producer is registered exactly once per application, so re-running
+     * the type-containment filter on every request is wasted work.
+     */
+    public static Bean<?> resolveFacesContextProducerBean(BeanManager beanManager) {
+        Bean<?> cached = FACES_CONTEXT_PRODUCER_BEANS.get(beanManager);
+        if (cached != null) {
+            return cached == NO_BEAN ? null : cached;
+        }
+        Set<Bean<?>> beans = beanManager.getBeans(FacesContext.class).stream()
+            .filter(bean -> bean.getTypes().contains(FacesContextProducer.class))
+            .collect(toSet());
+        Bean<?> resolved = beanManager.resolve(beans);
+        FACES_CONTEXT_PRODUCER_BEANS.put(beanManager, resolved == null ? NO_BEAN : resolved);
+        return resolved;
+    }
+
+    private static final class BeanLookupKey {
+        private final Type type;
+        private final String beanName;
+        private final Set<Annotation> qualifiers;
+        private final int hash;
+
+        BeanLookupKey(Type type, String beanName, Set<Annotation> qualifiers) {
+            this.type = type;
+            this.beanName = beanName;
+            this.qualifiers = qualifiers;
+            this.hash = Objects.hash(type, beanName, qualifiers);
         }
 
-        return beanReference;
+        @Override
+        public boolean equals(Object other) {
+            if (this == other) {
+                return true;
+            }
+            if (!(other instanceof BeanLookupKey)) {
+                return false;
+            }
+            BeanLookupKey k = (BeanLookupKey) other;
+            return hash == k.hash && Objects.equals(type, k.type)
+                    && Objects.equals(beanName, k.beanName) && qualifiers.equals(k.qualifiers);
+        }
+
+        @Override
+        public int hashCode() {
+            return hash;
+        }
+    }
+
+    /**
+     * Sentinel for "no bean resolves for this key". Cannot be a {@code null} value because
+     * {@link ConcurrentHashMap} forbids null values, and we want to distinguish "cached miss"
+     * from "not yet cached" without a second containsKey call.
+     */
+    private static final class NoBean implements Bean<Object> {
+        @Override public Set<Type> getTypes() { throw new UnsupportedOperationException(); }
+        @Override public Set<Annotation> getQualifiers() { throw new UnsupportedOperationException(); }
+        @Override public Class<? extends Annotation> getScope() { throw new UnsupportedOperationException(); }
+        @Override public String getName() { throw new UnsupportedOperationException(); }
+        @Override public Set<Class<? extends Annotation>> getStereotypes() { throw new UnsupportedOperationException(); }
+        @Override public Class<?> getBeanClass() { throw new UnsupportedOperationException(); }
+        @Override public boolean isAlternative() { throw new UnsupportedOperationException(); }
+        @Override public Object create(CreationalContext<Object> ctx) { throw new UnsupportedOperationException(); }
+        @Override public void destroy(Object instance, CreationalContext<Object> ctx) { throw new UnsupportedOperationException(); }
+        @Override public Set<InjectionPoint> getInjectionPoints() { throw new UnsupportedOperationException(); }
     }
 
     private static String getBeanName(Bean<?> bean) {
@@ -363,7 +508,7 @@ public final class CdiUtils {
         BeanManager beanManager = cdi.getBeanManager();
 
         // Get the Map with classes for which a custom DataModel implementation is available from CDI
-        Bean<?> bean = beanManager.resolve(beanManager.getBeans("comSunFacesDataModelClassesMap"));
+        Bean<?> bean = resolveBeanByName(beanManager, "comSunFacesDataModelClassesMap");
         Object beanReference = beanManager.getReference(bean, Map.class, beanManager.createCreationalContext(bean));
 
         return (Map<Class<?>, Class<? extends DataModel<?>>>) beanReference;
@@ -376,11 +521,11 @@ public final class CdiUtils {
      * @return the current injection point
      */
     public static InjectionPoint getCurrentInjectionPoint(BeanManager beanManager, CreationalContext<?> creationalContext) {
-        Bean<? extends Object> bean = beanManager.resolve(beanManager.getBeans(InjectionPoint.class));
+        Bean<?> bean = resolveBean(beanManager, InjectionPoint.class);
         InjectionPoint injectionPoint = (InjectionPoint) beanManager.getReference(bean, InjectionPoint.class, creationalContext);
 
         if (injectionPoint == null) { // It's broken in some Weld versions. Below is a work around.
-            bean = beanManager.resolve(beanManager.getBeans(InjectionPointGenerator.class));
+            bean = resolveBean(beanManager, InjectionPointGenerator.class);
             injectionPoint = (InjectionPoint) beanManager.getInjectableReference(bean.getInjectionPoints().iterator().next(), creationalContext);
         }
 
