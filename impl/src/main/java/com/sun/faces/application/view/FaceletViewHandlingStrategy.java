@@ -65,6 +65,7 @@ import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -939,10 +940,9 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         String encoding = Util.getResponseEncoding(context, initWriter.getCharacterEncoding());
 
         // apply them to the response
-        char[] buffer = new char[1028];
-        HtmlUtils.writeTextForXML(initWriter, contentType, buffer);
-        String str = String.valueOf(buffer).trim();
-        extContext.setResponseContentType(str);
+        StringWriter contentTypeWriter = new StringWriter();
+        HtmlUtils.writeTextForXML(contentTypeWriter, contentType);
+        extContext.setResponseContentType(contentTypeWriter.toString().trim());
         extContext.setResponseCharacterEncoding(encoding);
 
         // Save encoding in UIViewRoot for faster consult when Util#getResponseEncoding() is invoked again elsewhere.
