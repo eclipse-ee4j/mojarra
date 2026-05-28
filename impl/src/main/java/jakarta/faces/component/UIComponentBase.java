@@ -2681,6 +2681,9 @@ public abstract class UIComponentBase extends UIComponent {
         }
 
         Iterator<String> keySetIterator() {
+            if (super.isEmpty()) {
+                return Collections.emptyIterator();
+            }
             return new ArrayList<>(super.keySet()).iterator();
         }
 
@@ -3145,6 +3148,8 @@ public abstract class UIComponentBase extends UIComponent {
 
     }
 
+    private static final String COMPONENT_DESCRIPTORS_MAP_KEY = "com.sun.faces.component.COMPONENT_DESCRIPTORS_MAP";
+
     @SuppressWarnings("unchecked")
     private void populateDescriptorsMapIfNecessary() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -3157,11 +3162,8 @@ public abstract class UIComponentBase extends UIComponent {
 
             Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
 
-            if (!applicationMap.containsKey("com.sun.faces.compnent.COMPONENT_DESCRIPTORS_MAP")) {
-                applicationMap.put("com.sun.faces.compnent.COMPONENT_DESCRIPTORS_MAP", new ConcurrentHashMap<>());
-            }
-
-            descriptors = (Map<Class<?>, Map<String, PropertyDescriptor>>) applicationMap.get("com.sun.faces.compnent.COMPONENT_DESCRIPTORS_MAP");
+            descriptors = (Map<Class<?>, Map<String, PropertyDescriptor>>) applicationMap.computeIfAbsent(
+                    COMPONENT_DESCRIPTORS_MAP_KEY, k -> new ConcurrentHashMap<>());
             propertyDescriptorMap = descriptors.get(clazz);
         }
 
@@ -3180,8 +3182,8 @@ public abstract class UIComponentBase extends UIComponent {
                     LOGGER.log(FINE, "fine.component.populating_descriptor_map", new Object[] { clazz, currentThread().getName() });
                 }
 
-                if (descriptors != null && !descriptors.containsKey(clazz)) {
-                    descriptors.put(clazz, propertyDescriptorMap);
+                if (descriptors != null) {
+                    descriptors.putIfAbsent(clazz, propertyDescriptorMap);
                 }
             }
         }
