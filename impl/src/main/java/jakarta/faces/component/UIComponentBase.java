@@ -2681,6 +2681,9 @@ public abstract class UIComponentBase extends UIComponent {
         }
 
         Iterator<String> keySetIterator() {
+            if (super.isEmpty()) {
+                return Collections.emptyIterator();
+            }
             return new ArrayList<>(super.keySet()).iterator();
         }
 
