@@ -2168,16 +2168,20 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     private void restoreDescendantState() {
 
         // Unlike saveDescendantState, the restore-side walk must always run even when no
-        // descendants carry per-row state: restoreDescendantState(component, context) below
-        // calls setId(getId()) on every component to invalidate its cached clientId so each
-        // row gets a row-specific clientId (e.g. data:N:foo). Skipping the walk would leave
-        // stale clientIds and render duplicate id="..." attributes across rows.
+        // descendants carry per-row state: restoreDescendantState(component, context, saved)
+        // below calls setId(getId()) on every component to invalidate its cached clientId so
+        // each row gets a row-specific clientId (e.g. data:N:foo). Skipping the walk would
+        // leave stale clientIds and render duplicate id="..." attributes across rows.
 
         FacesContext context = getFacesContext();
+        // The saved-state map is invariant across this walk; fetch it once and thread it
+        // through the recursion instead of re-querying the state helper at every node.
+        @SuppressWarnings("unchecked")
+        Map<String, SavedState> saved = (Map<String, SavedState>) getStateHelper().get(PropertyKeys.saved);
         if (getChildCount() > 0) {
             for (UIComponent kid : getChildren()) {
                 if (kid instanceof UIColumn) {
-                    restoreDescendantState(kid, context);
+                    restoreDescendantState(kid, context, saved);
                 }
             }
         }
@@ -2192,12 +2196,11 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * @param component Component for which to restore state information
      * @param context {@link FacesContext} for the current request
      */
-    private void restoreDescendantState(UIComponent component, FacesContext context) {
+    private void restoreDescendantState(UIComponent component, FacesContext context, Map<String, SavedState> saved) {
 
         // Reset the client identifier for this component
         String id = component.getId();
         component.setId(id); // Forces client id to be reset
-        Map<String, SavedState> saved = (Map<String, SavedState>) getStateHelper().get(PropertyKeys.saved);
         // Restore state for this component (if it is a EditableValueHolder)
         if (component instanceof EditableValueHolder) {
             EditableValueHolder input = (EditableValueHolder) component;
@@ -2229,14 +2232,14 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         // Restore state for children of this component
         if (component.getChildCount() > 0) {
             for (UIComponent kid : component.getChildren()) {
-                restoreDescendantState(kid, context);
+                restoreDescendantState(kid, context, saved);
             }
         }
 
         // Restore state for facets of this component
         if (component.getFacetCount() > 0) {
             for (UIComponent facet : component.getFacets().values()) {
-                restoreDescendantState(facet, context);
+                restoreDescendantState(facet, context, saved);
             }
         }
 
