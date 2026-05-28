@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) Contributors to Eclipse Foundation.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<html lang="#{facesContext.viewRoot.locale.language}"
+    xmlns:h="jakarta.faces.html"
+>
+    <h:head>
+        <title>Mojarra perf bench</title>
+    </h:head>
+    <h:body>
+        <h1>#{appConfig.appName}</h1>
+        <ul>
+            <li><h:link outcome="form-inputs"        value="form-inputs"/></li>
+            <li><h:link outcome="table-readonly"     value="table-readonly"/></li>
+            <li><h:link outcome="table-inputs"       value="table-inputs"/></li>
+            <li><h:link outcome="repeat-readonly"    value="repeat-readonly"/></li>
+            <li><h:link outcome="repeat-inputs"      value="repeat-inputs"/></li>
+            <li><h:link outcome="repeat-nested"      value="repeat-nested"/></li>
+            <li><h:link outcome="composite-readonly" value="composite-readonly"/></li>
+            <li><h:link outcome="composite-inputs"   value="composite-inputs"/></li>
+            <li><h:link outcome="composite-nested"   value="composite-nested"/></li>
+            <li><h:link outcome="table-readonly-heavy"  value="table-readonly-heavy"/></li>
+            <li><h:link outcome="repeat-readonly-heavy" value="repeat-readonly-heavy"/></li>
+            <li><h:link outcome="table-inputs-heavy"    value="table-inputs-heavy"/></li>
+            <li><h:link outcome="repeat-inputs-heavy"   value="repeat-inputs-heavy"/></li>
+            <li><h:link outcome="form-inputs-ajax"      value="form-inputs-ajax"/></li>
+            <li><h:link outcome="table-inputs-ajax"     value="table-inputs-ajax"/></li>
+            <li><h:link outcome="repeat-inputs-ajax"    value="repeat-inputs-ajax"/></li>
+            <li><h:link outcome="viewparam-get"         value="viewparam-get?id=42"/></li>
+            <li><a href="perf-stats">/perf-stats</a></li>
+        </ul>
+    </h:body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) Contributors to Eclipse Foundation.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<html lang="#{facesContext.viewRoot.locale.language}"
+    xmlns:h="jakarta.faces.html"
+    xmlns:f="jakarta.faces.core"
+    xmlns:ui="jakarta.faces.facelets"
+>
+    <h:head>
+        <title>repeat-inputs-ajax</title>
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <h:panelGroup id="rows" layout="block">
+                <ui:repeat value="#{repeatBean.inputRows}" var="row">
+                    <h:panelGroup layout="block">
+                        <h:outputText value="#{row.id}"/>
+                        <h:inputText value="#{row.name}">
+                            <f:converter converterId="trimConverter"/>
+                            <f:validator validatorId="lengthRangeValidator"/>
+                        </h:inputText>
+                        <h:inputText value="#{row.quantity}">
+                            <f:convertNumber integerOnly="true"/>
+                        </h:inputText>
+                        <h:inputText value="#{row.price}">
+                            <f:convertNumber type="currency" currencyCode="EUR"/>
+                        </h:inputText>
+                        <h:inputText value="#{row.date}"/>
+                    </h:panelGroup>
+                </ui:repeat>
+            </h:panelGroup>
+            <h:commandButton id="submit" value="Save" action="#{repeatBean.save}">
+                <f:ajax execute="@form" render="rows messages"/>
+            </h:commandButton>
+            <h:messages id="messages" globalOnly="false"/>
+        </h:form>
+    </h:body>
+</html>
