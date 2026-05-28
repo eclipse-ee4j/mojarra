@@ -1456,19 +1456,19 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
     @Test
     public void testCachedRendererInvariants() throws Exception {
         jakarta.faces.render.RenderKit renderKit = facesContext.getRenderKit();
-        jakarta.faces.render.Renderer rA = new jakarta.faces.render.Renderer() { };
-        jakarta.faces.render.Renderer rB = new jakarta.faces.render.Renderer() { };
+        jakarta.faces.render.Renderer<?> rA = new jakarta.faces.render.Renderer<UIComponent>() { };
+        jakarta.faces.render.Renderer<?> rB = new jakarta.faces.render.Renderer<UIComponent>() { };
         renderKit.addRenderer("Test", "TR_A", rA);
         renderKit.addRenderer("Test", "TR_B", rB);
 
         // Wire under a UIViewRoot so getRenderer resolves against the right render kit.
-        UIViewRoot root = (UIViewRoot) facesContext.getViewRoot();
+        UIViewRoot root = facesContext.getViewRoot();
         ComponentTestImpl test = new ComponentTestImpl("cached");
         root.getChildren().add(test);
 
         // First lookup populates the cache; repeated lookups return same instance.
         test.setRendererType("TR_A");
-        jakarta.faces.render.Renderer firstLookup = invokeGetRenderer(test);
+        jakarta.faces.render.Renderer<?> firstLookup = invokeGetRenderer(test);
         assertTrue(firstLookup == rA, "should resolve to rA");
         assertTrue(invokeGetRenderer(test) == rA, "second lookup should return cached rA");
 
@@ -1498,10 +1498,10 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
     }
 
     /** Calls the protected {@code getRenderer(FacesContext)} via reflection. */
-    private jakarta.faces.render.Renderer invokeGetRenderer(UIComponent component) throws Exception {
+    private jakarta.faces.render.Renderer<?> invokeGetRenderer(UIComponent component) throws Exception {
         java.lang.reflect.Method m = UIComponentBase.class.getDeclaredMethod("getRenderer", FacesContext.class);
         m.setAccessible(true);
-        return (jakarta.faces.render.Renderer) m.invoke(component, facesContext);
+        return (jakarta.faces.render.Renderer<?>) m.invoke(component, facesContext);
     }
 
     // --------------------------------------------------------- Private Classes

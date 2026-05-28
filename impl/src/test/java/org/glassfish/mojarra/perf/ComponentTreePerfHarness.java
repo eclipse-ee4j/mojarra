@@ -499,7 +499,7 @@ public class ComponentTreePerfHarness extends JUnitFacesTestCaseBase {
 
     // -------- No-op renderer ------------------------------------------------
 
-    private static final class NoOpRenderer extends Renderer {
+    private static final class NoOpRenderer extends Renderer<UIComponent> {
         @Override
         public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
             // no-op
