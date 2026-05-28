@@ -45,8 +45,6 @@ public class FormBean implements Serializable {
     private String category = "Books";
 
     public String submit() {
-        // touch the injected references so any future caching of @Inject lookups
-        // shows up; using them keeps SpotBugs from flagging "unread field" too.
         session.getHits();
         appConfig.getAppName();
         return null;

@@ -15,6 +15,7 @@
  */
 package org.eclipse.mojarra.test.perf.validators;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -22,8 +23,11 @@ import jakarta.faces.validator.FacesValidator;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
 
-/** CDI-managed validator looked up by id. */
+/** CDI-managed validator looked up by id.
+ *  {@code @Dependent} is the bean-defining annotation that makes this class
+ *  discoverable under the CDI 4.0 default {@code bean-discovery-mode=annotated}. */
 @FacesValidator(value = "lengthRangeValidator", managed = true)
+@Dependent
 public class LengthRangeValidator implements Validator<String> {
 
     private static final int MIN = 1;

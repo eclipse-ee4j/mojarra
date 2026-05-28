@@ -63,9 +63,12 @@ exercises that jar.
 - `composite-readonly` — readonly composite component, 200 instances
 - `composite-inputs` — input composite component, 40 instances
 - `composite-nested` — composite component nested inside ui:repeat (5×10)
+- `form-inputs-ajax`, `table-inputs-ajax`, `repeat-inputs-ajax` — same as their non-ajax twins but submit via `<f:ajax execute="@form" render="@form messages">`; driver sends a partial-ajax POST and refreshes `ViewState` from the XML response.
+- `viewparam-get` — GET with `<f:metadata><f:viewParam><f:viewAction></f:metadata>` so the GET runs the **entire** lifecycle (Apply Request Values → Render Response), not just Restore View + Render Response.
 
-GET-only scenarios fire RESTORE_VIEW + RENDER_RESPONSE; the rest are full
-postbacks so all six phases are recorded.
+GET-only scenarios fire RESTORE_VIEW + RENDER_RESPONSE; the `viewparam-get`
+scenario fires all six on GET because of the `<f:viewParam>`/`<f:viewAction>`;
+postback and ajax-postback scenarios fire all six phases on POST.
 
 ## Endpoints
 

@@ -18,6 +18,7 @@ package org.eclipse.mojarra.test.perf.converters;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -25,8 +26,11 @@ import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.ConverterException;
 import jakarta.faces.convert.FacesConverter;
 
-/** CDI-managed converter looked up by class (forClass). */
+/** CDI-managed converter looked up by class (forClass).
+ *  {@code @Dependent} is the bean-defining annotation that makes this class
+ *  discoverable under the CDI 4.0 default {@code bean-discovery-mode=annotated}. */
 @FacesConverter(forClass = LocalDate.class, managed = true)
+@Dependent
 public class LocalDateIsoConverter implements Converter<LocalDate> {
 
     @Override

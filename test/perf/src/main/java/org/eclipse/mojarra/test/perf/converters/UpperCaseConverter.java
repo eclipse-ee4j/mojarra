@@ -17,14 +17,18 @@ package org.eclipse.mojarra.test.perf.converters;
 
 import org.eclipse.mojarra.test.perf.beans.AppConfig;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.FacesConverter;
 import jakarta.inject.Inject;
 
-/** CDI-managed converter looked up by id. */
+/** CDI-managed converter looked up by id.
+ *  {@code @Dependent} is the bean-defining annotation that makes this class
+ *  discoverable under the CDI 4.0 default {@code bean-discovery-mode=annotated}. */
 @FacesConverter(value = "upperCaseConverter", managed = true)
+@Dependent
 public class UpperCaseConverter implements Converter<String> {
 
     @Inject
@@ -35,10 +39,7 @@ public class UpperCaseConverter implements Converter<String> {
         if (value == null) {
             return null;
         }
-        // See ProhibitedWordsValidator for why this @Inject is null-guarded.
-        if (appConfig != null) {
-            appConfig.getAppName();
-        }
+        appConfig.getAppName();
         return value.toUpperCase();
     }
 

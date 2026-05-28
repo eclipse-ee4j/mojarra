@@ -17,6 +17,7 @@ package org.eclipse.mojarra.test.perf.validators;
 
 import org.eclipse.mojarra.test.perf.beans.AppConfig;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -25,8 +26,11 @@ import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
 import jakarta.inject.Inject;
 
-/** CDI-managed validator looked up by id, exercising an @Inject chain. */
+/** CDI-managed validator looked up by id, exercising an @Inject chain.
+ *  {@code @Dependent} is the bean-defining annotation that makes this class
+ *  discoverable under the CDI 4.0 default {@code bean-discovery-mode=annotated}. */
 @FacesValidator(value = "prohibitedWordsValidator", managed = true)
+@Dependent
 public class ProhibitedWordsValidator implements Validator<String> {
 
     @Inject
@@ -37,12 +41,7 @@ public class ProhibitedWordsValidator implements Validator<String> {
         if (value == null) {
             return;
         }
-        // @Inject is null on Mojarra 4.0.18 (issue #5708, fixed in PR 5752):
-        // InstanceFactory cached a non-CDI path for managed=true validators.
-        // Null-guarded so the bench runs against both 4.0.18 and the perf branch.
-        if (appConfig != null) {
-            appConfig.getAppName();
-        }
+        appConfig.getAppName();
         if (value.equalsIgnoreCase("forbidden")) {
             throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Prohibited word", "This value is not allowed"));
