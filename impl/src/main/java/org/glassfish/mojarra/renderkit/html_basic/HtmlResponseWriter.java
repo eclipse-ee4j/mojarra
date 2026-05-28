@@ -18,9 +18,10 @@ package org.glassfish.mojarra.renderkit.html_basic;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.LinkedList;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -117,22 +118,12 @@ public class HtmlResponseWriter extends ResponseWriter {
     // Keep one instance of the script buffer per Writer
     private FastStringWriter scriptBuffer;
 
-    // Keep one instance of attributesBuffer to buffer the writing
-    // of all attributes for a particular element to reduce the number
-    // of writes
-    private FastStringWriter attributesBuffer;
-
     // Enables hiding of inlined script and style
     // elements from old browsers
     private Boolean isScriptHidingEnabled;
 
     // Enables scripts to be included in attribute values
     private Boolean isScriptInAttributeValueEnabled;
-
-    // Internal buffer used when outputting properly escaped information
-    // using HtmlUtils class.
-    //
-    private char[] buffer = new char[1028];
 
     // Internal buffer used when outputting properly escaped CData information.
     //
@@ -158,7 +149,7 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     private char[] charHolder = new char[1];
 
-    private LinkedList<String> elementNames;
+    private Deque<String> elementNames;
 
     private static final String BREAKCDATA = "]]><![CDATA[";
     private static final char[] ESCAPEDSINGLEBRACKET = ("]" + BREAKCDATA).toCharArray();
@@ -270,8 +261,6 @@ public class HtmlResponseWriter extends ResponseWriter {
         this.isScriptInAttributeValueEnabled = isScriptInAttributeValueEnabled;
         this.disableUnicodeEscaping = disableUnicodeEscaping;
 
-        attributesBuffer = new FastStringWriter(128);
-
         // Check the character encoding
         if (!HtmlUtils.validateEncoding(encoding)) {
             throw new IllegalArgumentException(MessageUtils.getExceptionMessageString(MessageUtils.ENCODING_ERROR_MESSAGE_ID));
@@ -335,13 +324,6 @@ public class HtmlResponseWriter extends ResponseWriter {
      */
     @Override
     public void flush() throws IOException {
-
-        // NOTE: Internal buffer's contents (the ivar "buffer") is
-        // written to the contained writer in the HtmlUtils class - see
-        // HtmlUtils.flushBuffer method; Buffering is done during
-        // writeAttribute/writeText - otherwise, output is written
-        // directly to the writer (ex: writer.write(....)..
-        //
         // close any previously started element, if necessary
         closeStartIfNecessary();
 
@@ -413,14 +395,12 @@ public class HtmlResponseWriter extends ResponseWriter {
             throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "name"));
         }
 
-        // Keep track when we are exiting a script or style element
-        // for escaping purposes.
+        ElementKind kind = ElementKind.of(name);
 
-        if ("script".equalsIgnoreCase(name)) {
+        // Keep track when we are exiting a script or style element for escaping purposes.
+        if (kind == ElementKind.SCRIPT) {
             withinScript = false;
-        }
-
-        if ("style".equalsIgnoreCase(name)) {
+        } else if (kind == ElementKind.STYLE) {
             withinStyle = false;
         }
 
@@ -431,7 +411,7 @@ public class HtmlResponseWriter extends ResponseWriter {
 
         isXhtml = getContentType().equals(RIConstants.XHTML_CONTENT_TYPE);
 
-        if (isScriptOrStyle(name) && !scriptOrStyleSrc && writer instanceof FastStringWriter) {
+        if (isScriptOrStyle(kind) && !scriptOrStyleSrc && writer instanceof FastStringWriter) {
             String result = ((FastStringWriter) writer).getBuffer().toString();
             writer = origWriter;
 
@@ -511,7 +491,7 @@ public class HtmlResponseWriter extends ResponseWriter {
             dontEscape = false;
         }
 
-        if ("cdata".equalsIgnoreCase(name)) {
+        if (kind == ElementKind.CDATA) {
             endCDATA();
             return;
         }
@@ -522,14 +502,14 @@ public class HtmlResponseWriter extends ResponseWriter {
             // Tricky: we need to use the writer ivar here, rather than the
             // one from the FacesContext because we don't want
             // spurious /> characters to appear in the output.
+            writePassThroughAttributesInline();
+            clearPassthroughAttributes();
             if (isEmptyElement) {
-                flushAttributes();
                 writer.write(" />");
                 closeStart = false;
                 popElementName(name);
                 return;
             }
-            flushAttributes();
             writer.write('>');
             closeStart = false;
         }
@@ -584,21 +564,19 @@ public class HtmlResponseWriter extends ResponseWriter {
             throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "name"));
         }
 
-        // Keep track if we are in either a script or style element so we
-        // know we do not want to escape.
+        ElementKind kind = ElementKind.of(name);
 
-        if ("script".equalsIgnoreCase(name)) {
+        // Keep track if we are in either a script or style element so we know we do not want to escape.
+        if (kind == ElementKind.SCRIPT) {
             withinScript = true;
-        }
-
-        if ("style".equalsIgnoreCase(name)) {
+        } else if (kind == ElementKind.STYLE) {
             withinStyle = true;
         }
 
         closeStartIfNecessary();
-        isScriptOrStyle(name);
+        isScriptOrStyle(kind);
         scriptOrStyleSrc = false;
-        if ("cdata".equalsIgnoreCase(name)) {
+        if (kind == ElementKind.CDATA) {
             isCdata = true;
             startCDATA();
             return;
@@ -735,21 +713,21 @@ public class HtmlResponseWriter extends ResponseWriter {
                 // name of the attribute itself or appear using
                 // minimization.
                 // http://www.w3.org/TR/html401/intro/sgmltut.html#h-3.3.4.2
-                attributesBuffer.write(' ');
-                attributesBuffer.write(name);
-                attributesBuffer.write("=\"");
-                attributesBuffer.write(name);
-                attributesBuffer.write('"');
+                writer.write(' ');
+                writer.write(name);
+                writer.write("=\"");
+                writer.write(name);
+                writer.write('"');
             }
         } else {
-            attributesBuffer.write(' ');
-            attributesBuffer.write(name);
-            attributesBuffer.write("=\"");
+            writer.write(' ');
+            writer.write(name);
+            writer.write("=\"");
             // write the attribute value
             String val = value.toString();
             ensureTextBufferCapacity(val);
-            HtmlUtils.writeAttribute(attributesBuffer, escapeUnicode, escapeIso, buffer, val, textBuffer, isScriptInAttributeValueEnabled, isPartial);
-            attributesBuffer.write('"');
+            HtmlUtils.writeAttribute(writer, escapeUnicode, escapeIso, val, textBuffer, isScriptInAttributeValueEnabled, isPartial);
+            writer.write('"');
         }
 
     }
@@ -783,7 +761,7 @@ public class HtmlResponseWriter extends ResponseWriter {
         writer.write("<!--");
         String str = comment.toString();
         ensureTextBufferCapacity(str);
-        HtmlUtils.writeText(writer, true, true, buffer, str, textBuffer, isPartial);
+        HtmlUtils.writeText(writer, true, true, str, textBuffer, isPartial);
         writer.write("-->");
 
     }
@@ -814,7 +792,7 @@ public class HtmlResponseWriter extends ResponseWriter {
             }
         } else if (isPartial || !writingCdata) {
             charHolder[0] = text;
-            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, buffer, charHolder, isPartial);
+            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, charHolder, isPartial);
         } else { // if writingCdata
             assert writingCdata;
             charHolder[0] = text;
@@ -855,7 +833,7 @@ public class HtmlResponseWriter extends ResponseWriter {
                 writer.write(text);
             }
         } else if (isPartial || !writingCdata) {
-            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, buffer, text, isPartial);
+            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, text, isPartial);
         } else { // if writingCdata
             assert writingCdata;
             writeEscaped(text, 0, text.length);
@@ -895,7 +873,7 @@ public class HtmlResponseWriter extends ResponseWriter {
             }
         } else if (isPartial || !writingCdata) {
             ensureTextBufferCapacity(textStr);
-            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, buffer, textStr, textBuffer, isPartial);
+            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, textStr, textBuffer, isPartial);
         } else { // if writingCdata
             assert writingCdata;
             int textLen = textStr.length();
@@ -955,7 +933,7 @@ public class HtmlResponseWriter extends ResponseWriter {
                 writer.write(text, off, len);
             }
         } else if (isPartial || !writingCdata) {
-            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, buffer, text, off, len, isPartial);
+            HtmlUtils.writeText(writer, escapeUnicode, escapeIso, text, off, len, isPartial);
         } else { // if (writingCdata)
             assert writingCdata;
             writeEscaped(text, off, len);
@@ -984,11 +962,11 @@ public class HtmlResponseWriter extends ResponseWriter {
         if (null != name && containsPassThroughAttribute(name)) {
             return;
         }
-        writeURIAttributeIgnoringPassThroughAttributes(attributesBuffer, name, value, componentPropertyName, false);
+        writeURIAttributeIgnoringPassThroughAttributes(name, value, componentPropertyName, false);
 
     }
 
-    private void writeURIAttributeIgnoringPassThroughAttributes(Writer destination, String name, Object value, String componentPropertyName, boolean isPassthrough)
+    private void writeURIAttributeIgnoringPassThroughAttributes(String name, Object value, String componentPropertyName, boolean isPassthrough)
             throws IOException {
 
         if (name == null) {
@@ -1010,20 +988,21 @@ public class HtmlResponseWriter extends ResponseWriter {
             scriptOrStyleSrc = true;
         }
 
-        destination.write(' ');
-        destination.write(name);
-        destination.write("=\"");
+        writer.write(' ');
+        writer.write(name);
+        writer.write("=\"");
 
         String stringValue = value.toString();
         ensureTextBufferCapacity(stringValue);
         // Javascript URLs should not be URL-encoded
         if (stringValue.startsWith("javascript:") || isPassthrough) {
-            HtmlUtils.writeAttribute(destination, escapeUnicode, escapeIso, buffer, stringValue, textBuffer, isScriptInAttributeValueEnabled, isPartial);
+            HtmlUtils.writeAttribute(writer, escapeUnicode, escapeIso, stringValue, textBuffer, isScriptInAttributeValueEnabled, isPartial);
         } else {
-            HtmlUtils.writeURL(destination, stringValue, textBuffer, encoding);
+            HtmlUtils.writeURL(writer, stringValue, textBuffer, encoding);
         }
 
-        destination.write('"');
+        writer.write('"');
+
     }
 
     // --------------------------------------------------------- Private Methods
@@ -1032,9 +1011,6 @@ public class HtmlResponseWriter extends ResponseWriter {
         int len = source.length();
         if (textBuffer.length < len) {
             textBuffer = new char[len * 2];
-        }
-        if (buffer.length < len) {
-            buffer = new char[len * 2];
         }
     }
 
@@ -1046,7 +1022,8 @@ public class HtmlResponseWriter extends ResponseWriter {
     private void closeStartIfNecessary() throws IOException {
 
         if (closeStart) {
-            flushAttributes();
+            writePassThroughAttributesInline();
+            clearPassthroughAttributes();
             writer.write('>');
             closeStart = false;
             if (isScriptOrStyle() && !scriptOrStyleSrc) {
@@ -1083,7 +1060,7 @@ public class HtmlResponseWriter extends ResponseWriter {
         if (null != passthroughAttributes) {
             throw new IllegalStateException("Error, this method should only be called once per instance.");
         }
-        passthroughAttributes = new ConcurrentHashMap<>(toCopy);
+        passthroughAttributes = new HashMap<>(toCopy);
     }
 
     private boolean containsPassThroughAttribute(String attrName) {
@@ -1094,47 +1071,29 @@ public class HtmlResponseWriter extends ResponseWriter {
         return result;
     }
 
-    private void flushAttributes() throws IOException {
-        boolean hasPassthroughAttributes = null != passthroughAttributes && !passthroughAttributes.isEmpty();
-
-        if (hasPassthroughAttributes) {
-            writePassthroughAttributes(passthroughAttributes, attributesBuffer);
-        }
-
-        // a little complex, but the end result is, potentially, two
-        // fewer temp objects created per call.
-        StringBuilder b = attributesBuffer.getBuffer();
-        int totalLength = b.length();
-        if (totalLength != 0) {
-            int curIdx = 0;
-            while (curIdx < totalLength) {
-                if (totalLength - curIdx > buffer.length) {
-                    int end = curIdx + buffer.length;
-                    b.getChars(curIdx, end, buffer, 0);
-                    writer.write(buffer);
-                    curIdx += buffer.length;
-                } else {
-                    int len = totalLength - curIdx;
-                    b.getChars(curIdx, curIdx + len, buffer, 0);
-                    writer.write(buffer, 0, len);
-                    curIdx += len;
-                }
-            }
-            attributesBuffer.reset();
-        }
-
-        if (hasPassthroughAttributes) {
+    private void clearPassthroughAttributes() {
+        if (passthroughAttributes != null) {
             passthroughAttributes.clear();
             passthroughAttributes = null;
         }
-
     }
 
-    private void writePassthroughAttributes(Map<String, Object> attrs, Writer destination) throws IOException {
+    /**
+     * Emit any pass-through attributes inline just before the {@code >} closing the start tag,
+     * so they appear AFTER all regular {@code writeAttribute}/{@code writeURIAttribute} output
+     * in the rendered tag ({@code <el regular_attrs passthrough_attrs>}).
+     */
+    private void writePassThroughAttributesInline() throws IOException {
+        writePassthroughAttributes(passthroughAttributes);
+    }
+
+    public void writePassthroughAttributes(Map<String, Object> attrs) throws IOException {
         if (attrs == null || attrs.isEmpty()) {
             return;
         }
-
+        if (!closeStart) {
+            throw new IllegalStateException("Cannot write passthrough attributes when there is no currently open element");
+        }
         FacesContext context = FacesContext.getCurrentInstance();
         for (Map.Entry<String, Object> entry : attrs.entrySet()) {
             Object valObj = entry.getValue();
@@ -1147,17 +1106,10 @@ public class HtmlResponseWriter extends ResponseWriter {
                 if (currentComponent != null && RenderKitUtils.isBehaviorEventAttribute(key)) {
                     RenderKitUtils.addEventListener(context, currentComponent, key.substring(2), val);
                 } else {
-                    writeURIAttributeIgnoringPassThroughAttributes(destination, key, val, key, true);
+                    writeURIAttributeIgnoringPassThroughAttributes(key, val, key, true);
                 }
             }
         }
-    }
-
-    public void writePassthroughAttributes(Map<String, Object> passthroughAttributes) throws IOException {
-        if (!closeStart) {
-            throw new IllegalStateException("Cannot write passthrough attributes when there is no currently open element");
-        }
-        writePassthroughAttributes(passthroughAttributes, writer);
     }
 
     private String getAttributeValue(FacesContext context, Object valObj) {
@@ -1175,7 +1127,7 @@ public class HtmlResponseWriter extends ResponseWriter {
 
         if (original.equals("option")) {
             if (elementNames == null) {
-                elementNames = new LinkedList<>();
+                elementNames = new ArrayDeque<>();
             }
             elementNames.push(original);
             return original;
@@ -1192,7 +1144,7 @@ public class HtmlResponseWriter extends ResponseWriter {
 
         if (!original.equals(name) || elementNames != null) {
             if (elementNames == null) {
-                elementNames = new LinkedList<>();
+                elementNames = new ArrayDeque<>();
             }
             elementNames.push(name);
         }
@@ -1218,11 +1170,11 @@ public class HtmlResponseWriter extends ResponseWriter {
         return name;
     }
 
-    private boolean isScriptOrStyle(String name) {
-        if ("script".equalsIgnoreCase(name)) {
+    private boolean isScriptOrStyle(ElementKind kind) {
+        if (kind == ElementKind.SCRIPT) {
             isScript = true;
             dontEscape = true;
-        } else if ("style".equalsIgnoreCase(name)) {
+        } else if (kind == ElementKind.STYLE) {
             isStyle = true;
             dontEscape = true;
         } else {
@@ -1238,6 +1190,35 @@ public class HtmlResponseWriter extends ResponseWriter {
 
     private boolean isScriptOrStyle() {
         return isScript || isStyle;
+    }
+
+    /**
+     * Coarse element-name classification used by start/end element handling. Classifying once
+     * up-front lets the rest of the method dispatch via {@code kind ==} checks instead of
+     * repeated case-insensitive name comparisons.
+     */
+    private enum ElementKind {
+        SCRIPT, STYLE, CDATA, OTHER;
+
+        static ElementKind of(String name) {
+            switch (name.length()) {
+            case 5:
+                if (name.equalsIgnoreCase("style")) {
+                    return STYLE;
+                }
+                if (name.equalsIgnoreCase("cdata")) {
+                    return CDATA;
+                }
+                return OTHER;
+            case 6:
+                if (name.equalsIgnoreCase("script")) {
+                    return SCRIPT;
+                }
+                return OTHER;
+            default:
+                return OTHER;
+            }
+        }
     }
 
     /*

@@ -188,8 +188,7 @@ public class ELText {
         public void write(Writer out, ELContext ctx) throws ELException, IOException {
             Object v = ve.getValue(ctx);
             if (v != null) {
-                char[] buffer = new char[1028];
-                HtmlUtils.writeTextForXML(out, v.toString(), buffer);
+                HtmlUtils.writeTextForXML(out, v.toString());
             }
         }
 
