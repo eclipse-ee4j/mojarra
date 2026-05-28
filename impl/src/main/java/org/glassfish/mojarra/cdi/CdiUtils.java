@@ -131,14 +131,7 @@ public final class CdiUtils {
      */
     @SuppressWarnings("unchecked")
     public static Converter<?> createConverter(BeanManager beanManager, String value) {
-        // The managed attribute is deprecated since 5.0 and defaults to false, but existing applications may still
-        // explicitly set managed=true. Since @FacesConverter is a @Qualifier, CDI does exact matching on all attributes,
-        // so we must try both values.
-        Converter<Object> managedConverter = (Converter<Object>) createConverter(beanManager, FacesConverter.Literal.of(value, Object.class, true));
-
-        if (managedConverter == null) {
-            managedConverter = (Converter<Object>) createConverter(beanManager, FacesConverter.Literal.of(value, Object.class, false));
-        }
+        Converter<Object> managedConverter = (Converter<Object>) createConverter(beanManager, FacesConverter.Literal.of(value, Object.class, false));
 
         if (managedConverter != null) {
             ApplicationAssociate associate = ApplicationAssociate.getCurrentInstance();
@@ -161,11 +154,7 @@ public final class CdiUtils {
 
         for (Class<?> forClassOrSuperclass = forClass; managedConverter == null && forClassOrSuperclass != null
                 && forClassOrSuperclass != Object.class; forClassOrSuperclass = forClassOrSuperclass.getSuperclass()) {
-            managedConverter = (Converter<Object>) createConverter(beanManager, FacesConverter.Literal.of("", forClassOrSuperclass, true));
-
-            if (managedConverter == null) {
-                managedConverter = (Converter<Object>) createConverter(beanManager, FacesConverter.Literal.of("", forClassOrSuperclass, false));
-            }
+            managedConverter = (Converter<Object>) createConverter(beanManager, FacesConverter.Literal.of("", forClassOrSuperclass, false));
         }
 
         if (managedConverter != null) {
@@ -197,13 +186,7 @@ public final class CdiUtils {
      * @return the behavior, or null if we could not match one.
      */
     public static Behavior createBehavior(BeanManager beanManager, String value) {
-        Behavior managedBehavior = getBeanReference(beanManager, Behavior.class, FacesBehavior.Literal.of(value, true));
-
-        if (managedBehavior == null) {
-            managedBehavior = getBeanReference(beanManager, Behavior.class, FacesBehavior.Literal.of(value, false));
-        }
-
-        return managedBehavior;
+        return getBeanReference(beanManager, Behavior.class, FacesBehavior.Literal.of(value, false));
     }
 
     /**
@@ -215,8 +198,7 @@ public final class CdiUtils {
      */
     @SuppressWarnings("unchecked")
     public static Validator<?> createValidator(BeanManager beanManager, String value) {
-
-        Annotation qualifier = FacesValidator.Literal.of(value, false, true);
+        Annotation qualifier = FacesValidator.Literal.of(value, false, false);
 
         // Try to find parameterized validator first
         Validator<Object> managedValidator = (Validator<Object>) getBeanReferenceByType(beanManager, VALIDATOR_TYPE, qualifier);
@@ -227,49 +209,13 @@ public final class CdiUtils {
         }
 
         if (managedValidator == null) {
-            // The managed attribute is deprecated since 5.0 and defaults to false. Retry with managed=false.
-            qualifier = FacesValidator.Literal.of(value, false, false);
-            managedValidator = (Validator<Object>) getBeanReferenceByType(beanManager, VALIDATOR_TYPE, qualifier);
+            // Still nothing found, try default qualifier and value as bean name.
+            Annotation defaultQualifier = FacesValidator.Literal.of("", false, false);
+            managedValidator = (Validator<Object>) getBeanReferenceByType(beanManager, VALIDATOR_TYPE, value, defaultQualifier);
 
             if (managedValidator == null) {
-                managedValidator = (Validator<Object>) getBeanReference(beanManager, Validator.class, qualifier);
+                managedValidator = (Validator<Object>) getBeanReference(beanManager, Validator.class, value, defaultQualifier);
             }
-        }
-
-        if (managedValidator == null) {
-            // Still nothing found, try default qualifier and value as bean name.
-            qualifier = FacesValidator.Literal.of("", false, true);
-            managedValidator = (Validator<Object>) getBeanReferenceByType(
-                    beanManager,
-                    VALIDATOR_TYPE,
-                    value,
-                    qualifier);
-        }
-
-        if (managedValidator == null) {
-            qualifier = FacesValidator.Literal.of("", false, false);
-            managedValidator = (Validator<Object>) getBeanReferenceByType(
-                    beanManager,
-                    VALIDATOR_TYPE,
-                    value,
-                    qualifier);
-        }
-
-        if (managedValidator == null) {
-            // No parameterized validator, try raw validator
-            managedValidator = (Validator<Object>) getBeanReference(
-                beanManager,
-                Validator.class,
-                value,
-                FacesValidator.Literal.of("", false, true));
-        }
-
-        if (managedValidator == null) {
-            managedValidator = (Validator<Object>) getBeanReference(
-                beanManager,
-                Validator.class,
-                value,
-                FacesValidator.Literal.of("", false, false));
         }
 
         return managedValidator;

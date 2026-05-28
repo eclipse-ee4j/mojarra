@@ -65,7 +65,7 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
  * the median of {@value #RUNS} runs of {@value #ITERATIONS} iterations each.
  *
  * <p>For positive cases ({@code testConverter}, {@code testValidator}, {@code testBehavior})
- * a stub bean is registered with the matching {@code managed=true} qualifier. For the
+ * a stub bean is registered with the {@code @Faces*} qualifier. For the
  * {@link FacesContext} producer destroy path, an extension registers a stub bean with both
  * {@link FacesContext} and {@link FacesContextProducer} in its bean types.
  */
@@ -219,7 +219,7 @@ public class CdiLookupPerfHarness {
     // straight to the BeanManager API without consulting the new CdiUtils cache.
 
     private static Object rawCreateConverterById(BeanManager bm, String value) {
-        FacesConverter qualifier = FacesConverter.Literal.of(value, Object.class, true);
+        FacesConverter qualifier = FacesConverter.Literal.of(value, Object.class, false);
         Object ref = rawGetBeanReference(bm, CONVERTER_TYPE, qualifier);
         if (ref == null) {
             ref = rawGetBeanReference(bm, Converter.class, qualifier);
@@ -230,7 +230,7 @@ public class CdiLookupPerfHarness {
     private static Object rawCreateConverterByClass(BeanManager bm, Class<?> forClass) {
         Object ref = null;
         for (Class<?> c = forClass; ref == null && c != null && c != Object.class; c = c.getSuperclass()) {
-            FacesConverter qualifier = FacesConverter.Literal.of("", c, true);
+            FacesConverter qualifier = FacesConverter.Literal.of("", c, false);
             ref = rawGetBeanReference(bm, CONVERTER_TYPE, qualifier);
             if (ref == null) {
                 ref = rawGetBeanReference(bm, Converter.class, qualifier);
@@ -240,24 +240,23 @@ public class CdiLookupPerfHarness {
     }
 
     private static Object rawCreateValidator(BeanManager bm, String value) {
-        FacesValidator qualifier = FacesValidator.Literal.of(value, false, true);
+        FacesValidator qualifier = FacesValidator.Literal.of(value, false, false);
         Object ref = rawGetBeanReference(bm, VALIDATOR_TYPE, qualifier);
         if (ref == null) {
             ref = rawGetBeanReference(bm, Validator.class, qualifier);
         }
         if (ref == null) {
-            FacesValidator defaultQualifier = FacesValidator.Literal.of("", false, true);
+            FacesValidator defaultQualifier = FacesValidator.Literal.of("", false, false);
             ref = rawGetBeanReferenceFilteredByName(bm, VALIDATOR_TYPE, value, defaultQualifier);
-        }
-        if (ref == null) {
-            FacesValidator defaultQualifier = FacesValidator.Literal.of("", false, true);
-            ref = rawGetBeanReferenceFilteredByName(bm, Validator.class, value, defaultQualifier);
+            if (ref == null) {
+                ref = rawGetBeanReferenceFilteredByName(bm, Validator.class, value, defaultQualifier);
+            }
         }
         return ref;
     }
 
     private static Object rawCreateBehavior(BeanManager bm, String value) {
-        return rawGetBeanReference(bm, Behavior.class, FacesBehavior.Literal.of(value, true));
+        return rawGetBeanReference(bm, Behavior.class, FacesBehavior.Literal.of(value, false));
     }
 
     private static Bean<?> rawResolveBeanByName(BeanManager bm, String name) {
@@ -308,7 +307,7 @@ public class CdiLookupPerfHarness {
 
     // --- Test stub beans -------------------------------------------------------------
 
-    @FacesConverter(value = "testConverter", managed = true)
+    @FacesConverter(value = "testConverter")
     @Dependent
     public static class TestConverter implements Converter<Object> {
         @Override
@@ -322,7 +321,7 @@ public class CdiLookupPerfHarness {
         }
     }
 
-    @FacesValidator(value = "testValidator", managed = true)
+    @FacesValidator(value = "testValidator")
     @Dependent
     public static class TestValidator implements Validator<Object> {
         @Override
@@ -331,7 +330,7 @@ public class CdiLookupPerfHarness {
         }
     }
 
-    @FacesBehavior(value = "testBehavior", managed = true)
+    @FacesBehavior(value = "testBehavior")
     @Dependent
     public static class TestBehavior extends BehaviorBase {
     }

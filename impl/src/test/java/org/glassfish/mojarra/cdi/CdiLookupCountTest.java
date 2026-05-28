@@ -53,7 +53,7 @@ public class CdiLookupCountTest {
 
         assertNull(CdiUtils.createConverter(bm, "jakarta.faces.Integer"));
 
-        // 2 type attempts (parameterized Converter<?>, raw Converter), managed=true only.
+        // 2 type attempts (parameterized Converter<?>, raw Converter).
         assertEquals(2, bm.getBeansByType.get(), "getBeans(Type, qualifiers) calls per createConverter(String)");
         assertEquals(2, bm.resolves.get(), "resolve(Set) calls per createConverter(String)");
     }
@@ -88,7 +88,7 @@ public class CdiLookupCountTest {
 
         assertNull(CdiUtils.createBehavior(bm, "jakarta.faces.Ajax"));
 
-        // Raw Behavior type, managed=true only.
+        // Raw Behavior type.
         assertEquals(1, bm.getBeansByType.get(), "getBeans(Type, qualifiers) calls per createBehavior(String)");
         assertEquals(1, bm.resolves.get(), "resolve(Set) calls per createBehavior(String)");
     }
