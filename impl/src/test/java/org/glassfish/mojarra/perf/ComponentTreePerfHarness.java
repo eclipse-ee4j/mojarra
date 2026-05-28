@@ -19,7 +19,9 @@ package org.glassfish.mojarra.perf;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.faces.component.UIColumn;
 import jakarta.faces.component.UIComponent;
@@ -29,9 +31,6 @@ import jakarta.faces.component.UIInput;
 import jakarta.faces.component.UIOutput;
 import jakarta.faces.component.UIPanel;
 import jakarta.faces.component.UIViewRoot;
-import java.util.EnumSet;
-import java.util.Set;
-
 import jakarta.faces.component.visit.VisitCallback;
 import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitHint;
@@ -40,14 +39,13 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.Renderer;
 
+import org.glassfish.mojarra.facelets.component.UIRepeat;
+import org.glassfish.mojarra.junit.JUnitFacesTestCaseBase;
+import org.glassfish.mojarra.mock.MockRenderKit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
-
-import org.glassfish.mojarra.facelets.component.UIRepeat;
-import org.glassfish.mojarra.junit.JUnitFacesTestCaseBase;
-import org.glassfish.mojarra.mock.MockRenderKit;
 
 /**
  * Manual performance harness for the component-tree hot paths exercised during
