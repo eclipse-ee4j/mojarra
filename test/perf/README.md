@@ -13,7 +13,7 @@ From the repo root, install the impl jar you want to measure plus the `base`
 test helper into your local `~/.m2`:
 
 ```
-. java21 && mvn -pl impl,test/base -am clean install -DskipTests
+mvn -pl impl,test/base -am clean install -DskipTests
 ```
 
 The bench injects this freshly-installed `jakarta.faces` jar into the server at
