@@ -38,6 +38,7 @@ import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
 import jakarta.enterprise.inject.spi.AnnotatedField;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
+import jakarta.enterprise.inject.spi.BeforeShutdown;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessBean;
 import jakarta.enterprise.inject.spi.ProcessManagedBean;
@@ -264,6 +265,19 @@ public class CdiExtension implements Extension {
         }
 
         forClassToDataModelClass = unmodifiableMap(linkedForClassToDataModelClass);
+    }
+
+    /**
+     * BeforeShutdown: drop this application's cached CDI bean resolutions so a redeployment that
+     * reuses the BeanManager identity does not resolve against {@link jakarta.enterprise.inject.spi.Bean}
+     * instances left over from the now-defunct deployment (which fails with a
+     * {@code ContextNotActiveException} on first use).
+     *
+     * @param event the before shutdown event
+     * @param beanManager the current bean manager
+     */
+    public void beforeShutdown(@Observes BeforeShutdown event, BeanManager beanManager) {
+        CdiUtils.clearCaches();
     }
 
     /**
