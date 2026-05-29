@@ -62,6 +62,7 @@
         <glassfish.version>8.0.2</glassfish.version>
         <glassfish.home>glassfish8</glassfish.home>
         <arquillian.browser>chrome</arquillian.browser>
+        <mojarra.version>${project.version}</mojarra.version>
     </properties>
 
     <repositories>
@@ -199,7 +200,7 @@
                                         <artifactItem>
                                             <groupId>org.glassfish</groupId>
                                             <artifactId>jakarta.faces</artifactId>
-                                            <version>${project.version}</version>
+                                            <version>${mojarra.version}</version>
                                             <type>jar</type>
                                             <overWrite>true</overWrite>
                                             <outputDirectory>${project.build.directory}/${glassfish.home}/glassfish/modules</outputDirectory>
@@ -222,9 +223,9 @@
                 </plugins>
             </build>
         </profile>
+
         <profile>
             <id>wildfly</id>
-            <!-- For easier IDE integration -->
             <activation>
                 <property>
                     <name>wildfly</name>
@@ -234,6 +235,8 @@
                 <wildfly.dir>${maven.multiModuleProjectDirectory}/target/wildfly</wildfly.dir>
                 <wildfly.feature-pack.artifactId>wildfly-ee-galleon-pack</wildfly.feature-pack.artifactId>
                 <wildfly.feature-pack.version>40.0.0.Final</wildfly.feature-pack.version>
+                <!-- Extra JVM args for the managed WildFly process (arquillian reads jboss.options). Override e.g. -Djboss.options="-Xmx8g". -->
+                <jboss.options></jboss.options>
             </properties>
             <dependencies>
                 <dependency>
@@ -290,11 +293,11 @@
                                         <artifactItem>
                                             <groupId>org.glassfish</groupId>
                                             <artifactId>jakarta.faces</artifactId>
-                                            <version>${project.version}</version>
+                                            <version>${mojarra.version}</version>
                                             <type>jar</type>
                                             <overWrite>true</overWrite>
                                             <outputDirectory>${wildfly.dir}/modules/system/layers/base/jakarta/faces/impl/main/</outputDirectory>
-                                            <destFileName>jakarta.faces-${project.version}.jar</destFileName>
+                                            <destFileName>jakarta.faces-${mojarra.version}.jar</destFileName>
                                         </artifactItem>
                                     </artifactItems>
                                 </configuration>
@@ -315,7 +318,7 @@
                                     <target>
                                         <replaceregexp file="${wildfly.dir}/modules/system/layers/base/jakarta/faces/impl/main/module.xml"
                                                        match="jakarta\.faces-.*\.jar"
-                                                       replace="jakarta.faces-${project.version}.jar"/>
+                                                       replace="jakarta.faces-${mojarra.version}.jar"/>
                                     </target>
                                 </configuration>
                             </execution>
@@ -327,6 +330,141 @@
                         <configuration>
                             <systemPropertyVariables>
                                 <jboss.home>${wildfly.dir}</jboss.home>
+                                <jboss.options>${jboss.options}</jboss.options>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>tomee</id>
+            <activation>
+                <property>
+                    <name>tomee</name>
+                </property>
+            </activation>
+            <properties>
+                <tomee.version>10.1.5</tomee.version>
+                <tomee.classifier>plume</tomee.classifier>
+                <tomee.dir>${project.build.directory}/apache-tomee-${tomee.classifier}-${tomee.version}</tomee.dir>
+                <tomee.httpPort>8080</tomee.httpPort>
+                <tomee.stopPort>8005</tomee.stopPort>
+                <tomee.catalina_opts>-Xms256m -Xmx512m -XX:+HeapDumpOnOutOfMemoryError -XX:ReservedCodeCacheSize=64m</tomee.catalina_opts>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.tomee</groupId>
+                    <artifactId>arquillian-tomee-remote</artifactId>
+                    <version>${tomee.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack-tomee</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.apache.tomee</groupId>
+                                            <artifactId>apache-tomee</artifactId>
+                                            <version>${tomee.version}</version>
+                                            <classifier>${tomee.classifier}</classifier>
+                                            <type>zip</type>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>update-mojarra</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.glassfish</groupId>
+                                            <artifactId>jakarta.faces</artifactId>
+                                            <version>${mojarra.version}</version>
+                                            <type>jar</type>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${tomee.dir}/lib</outputDirectory>
+                                            <destFileName>jakarta.faces.jar</destFileName>
+                                        </artifactItem>
+                                        <!-- EE 11 spec shim: Plume 10.1.5 is Jakarta EE 10, but Mojarra 4.1.x (Faces 4.1) is EE 11.
+                                             Overlay the EE 11 API classes Faces 4.1 references (CDI 4.1 ELAwareBeanManager, EL 6.0
+                                             OptionalELResolver). Same shim for baseline and snapshot, so the per-version delta stays fair. -->
+                                        <artifactItem>
+                                            <groupId>jakarta.el</groupId>
+                                            <artifactId>jakarta.el-api</artifactId>
+                                            <version>6.0.1</version>
+                                            <type>jar</type>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${tomee.dir}/lib</outputDirectory>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>jakarta.enterprise</groupId>
+                                            <artifactId>jakarta.enterprise.cdi-el-api</artifactId>
+                                            <version>4.1.0</version>
+                                            <type>jar</type>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${tomee.dir}/lib</outputDirectory>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>jakarta.enterprise</groupId>
+                                            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+                                            <version>4.1.0</version>
+                                            <type>jar</type>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${tomee.dir}/lib</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>remove-bundled-faces</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <!-- Drop Plume's bundled jakarta.faces-<version>.jar; ours is overlaid as jakarta.faces.jar (no hyphen, so this won't match it). -->
+                                        <delete>
+                                            <fileset dir="${tomee.dir}/lib" includes="jakarta.faces-*.jar"/>
+                                        </delete>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <tomee.remote.dir>${tomee.dir}</tomee.remote.dir>
+                                <tomee.remote.httpPort>${tomee.httpPort}</tomee.remote.httpPort>
+                                <tomee.remote.stopPort>${tomee.stopPort}</tomee.remote.stopPort>
+                                <tomee.remote.catalina_opts>${tomee.catalina_opts}</tomee.remote.catalina_opts>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>
