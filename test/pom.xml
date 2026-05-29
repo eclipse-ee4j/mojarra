@@ -46,6 +46,8 @@
         <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
         <maven-dependency-plugin.version>3.7.1</maven-dependency-plugin.version>
         <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
+        <faces-api.version>5.0.0-SNAPSHOT</faces-api.version>
+        <mojarra.version>${project.version}</mojarra.version>
     </properties>
 
     <dependencies>
@@ -149,7 +151,7 @@
                                         <artifactItem>
                                             <groupId>jakarta.faces</groupId>
                                             <artifactId>jakarta.faces-api</artifactId>
-                                            <version>${project.version}</version>
+                                            <version>${faces-api.version}</version>
                                             <type>jar</type>
                                             <overWrite>true</overWrite>
                                             <destFileName>jakarta.faces-api.jar</destFileName>
@@ -157,7 +159,7 @@
                                         <artifactItem>
                                             <groupId>org.glassfish.mojarra</groupId>
                                             <artifactId>mojarra</artifactId>
-                                            <version>${project.version}</version>
+                                            <version>${mojarra.version}</version>
                                             <type>jar</type>
                                             <overWrite>true</overWrite>
                                             <destFileName>mojarra.jar</destFileName>
@@ -166,6 +168,15 @@
                                 </configuration>
                             </execution>
                         </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <glassfish.home>${project.build.directory}/${glassfish.home}</glassfish.home>
+                            </systemPropertyVariables>
+                        </configuration>
                     </plugin>
                     <!--
                         The distribution zip ships a pre-populated OSGi bundle cache; without wiping it GlassFish would
@@ -193,5 +204,252 @@
                 </plugins>
             </build>
         </profile>
+
+        <!-- outcommented until EE12 compatible version is available
+        <profile>
+            <id>wildfly</id>
+            <activation>
+                <property>
+                    <name>wildfly</name>
+                </property>
+            </activation>
+            <properties>
+                <wildfly.dir>${maven.multiModuleProjectDirectory}/target/wildfly</wildfly.dir>
+                <wildfly.feature-pack.artifactId>wildfly-ee-galleon-pack</wildfly.feature-pack.artifactId>
+                <wildfly.feature-pack.version>40.0.0.Final</wildfly.feature-pack.version>
+                <jboss.options></jboss.options>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.wildfly.arquillian</groupId>
+                    <artifactId>wildfly-arquillian-container-managed</artifactId>
+                    <version>5.1.0.Final</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-maven-plugin</artifactId>
+                        <version>5.1.5.Final</version>
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>provision-server</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>provision</goal>
+                                </goals>
+                                <configuration>
+                                    <provisioning-dir>${wildfly.dir}</provisioning-dir>
+                                    <galleon-options>
+                                        <jboss-fork-embedded>true</jboss-fork-embedded>
+                                    </galleon-options>
+                                    <feature-packs>
+                                        <feature-pack>
+                                            <groupId>org.wildfly</groupId>
+                                            <artifactId>${wildfly.feature-pack.artifactId}</artifactId>
+                                            <version>${wildfly.feature-pack.version}</version>
+                                        </feature-pack>
+                                    </feature-packs>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>update-mojarra</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.glassfish</groupId>
+                                            <artifactId>jakarta.faces</artifactId>
+                                            <version>${mojarra.version}</version>
+                                            <type>jar</type>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${wildfly.dir}/modules/system/layers/base/jakarta/faces/impl/main/</outputDirectory>
+                                            <destFileName>jakarta.faces-${mojarra.version}.jar</destFileName>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>update-module-xml</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <replaceregexp file="${wildfly.dir}/modules/system/layers/base/jakarta/faces/impl/main/module.xml"
+                                                       match="jakarta\.faces-.*\.jar"
+                                                       replace="jakarta.faces-${mojarra.version}.jar"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <jboss.home>${wildfly.dir}</jboss.home>
+                                <jboss.options>${jboss.options}</jboss.options>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        -->
+
+        <!-- outcommented until EE12 compatible version is available
+        <profile>
+            <id>tomee</id>
+            <activation>
+                <property>
+                    <name>tomee</name>
+                </property>
+            </activation>
+            <properties>
+                <tomee.version>10.1.5</tomee.version>
+                <tomee.classifier>plume</tomee.classifier>
+                <tomee.dir>${project.build.directory}/apache-tomee-${tomee.classifier}-${tomee.version}</tomee.dir>
+                <tomee.httpPort>8080</tomee.httpPort>
+                <tomee.stopPort>8005</tomee.stopPort>
+                <tomee.catalina_opts>-Xms256m -Xmx512m -XX:+HeapDumpOnOutOfMemoryError -XX:ReservedCodeCacheSize=64m</tomee.catalina_opts>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.tomee</groupId>
+                    <artifactId>arquillian-tomee-remote</artifactId>
+                    <version>${tomee.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack-tomee</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.apache.tomee</groupId>
+                                            <artifactId>apache-tomee</artifactId>
+                                            <version>${tomee.version}</version>
+                                            <classifier>${tomee.classifier}</classifier>
+                                            <type>zip</type>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>update-mojarra</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.glassfish</groupId>
+                                            <artifactId>jakarta.faces</artifactId>
+                                            <version>${mojarra.version}</version>
+                                            <type>jar</type>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${tomee.dir}/lib</outputDirectory>
+                                            <destFileName>jakarta.faces.jar</destFileName>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>jakarta.el</groupId>
+                                            <artifactId>jakarta.el-api</artifactId>
+                                            <version>6.0.1</version>
+                                            <type>jar</type>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${tomee.dir}/lib</outputDirectory>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>jakarta.enterprise</groupId>
+                                            <artifactId>jakarta.enterprise.cdi-el-api</artifactId>
+                                            <version>4.1.0</version>
+                                            <type>jar</type>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${tomee.dir}/lib</outputDirectory>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>jakarta.enterprise</groupId>
+                                            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+                                            <version>4.1.0</version>
+                                            <type>jar</type>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${tomee.dir}/lib</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>remove-bundled-faces</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <delete>
+                                            <fileset dir="${tomee.dir}/lib" includes="jakarta.faces-*.jar"/>
+                                        </delete>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <tomee.remote.dir>${tomee.dir}</tomee.remote.dir>
+                                <tomee.remote.httpPort>${tomee.httpPort}</tomee.remote.httpPort>
+                                <tomee.remote.stopPort>${tomee.stopPort}</tomee.remote.stopPort>
+                                <tomee.remote.catalina_opts>${tomee.catalina_opts}</tomee.remote.catalina_opts>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        -->
     </profiles>
 </project>

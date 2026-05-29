@@ -35,8 +35,10 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -65,18 +67,55 @@ class PerfBenchIT extends BaseITNG {
     private static final int WARMUP = getInteger("perf.warmup", 50);
     private static final int RUNS = getInteger("perf.runs", 500);
 
+    /**
+     * Optional scenario filter for diagnostics: {@code -Dperf.scenarios=a,b,c} restricts the run to
+     * the named scenarios (empty = all). Lets you isolate e.g. large-output renders from the rest.
+     */
+    private static final Set<String> ONLY = parseScenarioFilter();
+
+    private static Set<String> parseScenarioFilter() {
+        String value = System.getProperty("perf.scenarios", "").trim();
+        if (value.isEmpty()) {
+            return Set.of();
+        }
+        Set<String> only = new LinkedHashSet<>();
+        for (String name : value.split(",")) {
+            if (!name.isBlank()) {
+                only.add(name.trim());
+            }
+        }
+        return only;
+    }
+
+    private static Map<String, String> only(Map<String, String> full) {
+        if (ONLY.isEmpty()) {
+            return full;
+        }
+        Map<String, String> filtered = new LinkedHashMap<>();
+        full.forEach((scenario, url) -> {
+            if (ONLY.contains(scenario)) {
+                filtered.put(scenario, url);
+            }
+        });
+        return filtered;
+    }
+
+    private static List<String> only(List<String> full) {
+        return ONLY.isEmpty() ? full : full.stream().filter(ONLY::contains).toList();
+    }
+
     /** Plain GETs. Most fire RESTORE_VIEW + RENDER_RESPONSE; {@code viewparam-get} fires all 6. */
-    private static final Map<String, String> GET_ONLY = Map.ofEntries(
+    private static final Map<String, String> GET_ONLY = only(Map.ofEntries(
             Map.entry("index", "index.xhtml"),
             Map.entry("table-readonly", "table-readonly.xhtml"),
             Map.entry("repeat-readonly", "repeat-readonly.xhtml"),
             Map.entry("composite-readonly", "composite-readonly.xhtml"),
             Map.entry("table-readonly-heavy", "table-readonly-heavy.xhtml"),
             Map.entry("repeat-readonly-heavy", "repeat-readonly-heavy.xhtml"),
-            Map.entry("viewparam-get", "viewparam-get.xhtml?id=42"));
+            Map.entry("viewparam-get", "viewparam-get.xhtml?id=42")));
 
     /** Full (non-ajax) form postbacks. */
-    private static final List<String> POSTBACK = List.of(
+    private static final List<String> POSTBACK = only(List.of(
             "form-inputs",
             "table-inputs",
             "repeat-inputs",
@@ -84,14 +123,14 @@ class PerfBenchIT extends BaseITNG {
             "composite-inputs",
             "composite-nested",
             "table-inputs-heavy",
-            "repeat-inputs-heavy");
+            "repeat-inputs-heavy"));
 
     /** Ajax-partial postbacks. Same body fields as their non-ajax twin plus the
      *  {@code jakarta.faces.partial.*} markers and the {@code Faces-Request} header. */
-    private static final List<String> POSTBACK_AJAX = List.of(
+    private static final List<String> POSTBACK_AJAX = only(List.of(
             "form-inputs-ajax",
             "table-inputs-ajax",
-            "repeat-inputs-ajax");
+            "repeat-inputs-ajax"));
 
     private static final Pattern VIEW_STATE = Pattern.compile(
             "name=\"jakarta\\.faces\\.ViewState\"[^>]*value=\"([^\"]+)\"" +

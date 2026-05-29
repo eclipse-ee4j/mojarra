@@ -117,6 +117,21 @@ public final class CdiUtils {
     private static final Bean<?> NO_BEAN = new NoBean();
 
     /**
+     * Clears the bean-resolution caches. Invoked from {@link CdiExtension} on {@code BeforeShutdown}:
+     * a {@link Bean} transitively references its owning BeanManager (Weld does), which keeps the
+     * {@link WeakHashMap} entry reachable well past application undeployment. Leaving it would let a
+     * redeployment resolve against stale {@code Bean} instances whose context is gone, which surfaces
+     * as a {@code ContextNotActiveException} on first use. The caches are keyed by the (possibly
+     * wrapped) BeanManager, so a defunct deployment's entry cannot be reliably matched by the raw
+     * BeanManager handed to {@code BeforeShutdown}; clearing wholesale is correct because the entries
+     * repopulate lazily on next resolve.
+     */
+    public static void clearCaches() {
+        RESOLVED_BEANS.clear();
+        FACES_CONTEXT_PRODUCER_BEANS.clear();
+    }
+
+    /**
      * Constructor.
      */
     private CdiUtils() {

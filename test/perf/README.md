@@ -6,21 +6,33 @@ and validators, driven by a single integration test that loops thousands of
 GETs and postbacks against a managed GlassFish and dumps per-phase server-side
 timings recorded by `PhaseTimingListener` into `/perf-stats`.
 
+## Setup (once, and again whenever you change impl)
+
+From the repo root, (re)build and install the impl (`mojarra`) jar you want to measure:
+
+```
+mvn -pl impl -am clean install -DskipTests
+```
+
+At build time the bench overlays this freshly-installed `org.glassfish.mojarra:mojarra`
+jar into GlassFish, so re-run it after every impl change you want reflected. The
+overlaid `jakarta.faces:jakarta.faces-api` jar and the `util` test helper
+(`org.eclipse.ee4j.tck.faces.test:util`) come from the `faces` submodule
+(`faces/api` and `faces/tck/util`) — build those once if they aren't already in `~/.m2`.
+
 ## Run
 
+Everything else runs from inside the module — `cd test/perf` first, then:
+
 ```
-# Install the mojarra impl jar of the branch you want to measure:
-. java21 && mvn -pl impl -am clean install -DskipTests
+mvn clean verify -Dperf=true                 # GlassFish
 
-# Build & run the bench (warmup=50, runs=500 by default).
-# The IT is gated behind -Dperf=true (same convention as ComponentTreePerfHarness):
-mvn -pl test/perf -am clean verify -Dperf=true
-
-# Or tune iteration counts:
-mvn -pl test/perf -am clean verify -Dperf=true -Dperf.warmup=200 -Dperf.runs=2000
+# Tune iteration counts (warmup=50, runs=500 by default):
+mvn clean verify -Dperf=true -Dperf.warmup=200 -Dperf.runs=2000
 ```
 
-Without `-Dperf=true`, `PerfBenchIT` is disabled by JUnit's
+The IT is gated behind `-Dperf=true` (same convention as
+`ComponentTreePerfHarness`): without it, `PerfBenchIT` is disabled by JUnit's
 `@EnabledIfSystemProperty`, so a normal `mvn clean install` does not execute the
 benchmark.
 
@@ -28,28 +40,48 @@ After the run, `target/perf-stats-<timestamp>.txt` contains the per-scenario,
 per-phase table (count / total_us / avg_us / min_us / max_us) plus an aggregate
 `<TOTAL>` row per phase. The same text is printed to stdout.
 
-## Comparing two branches
+## Servers
+
+GlassFish is the only active server. The WildFly and TomEE profiles still exist in
+`test/pom.xml` but are commented out until an EE 12-compatible version of each is
+available — re-enable them there once it is.
+
+GlassFish provisions under `target/glassfish9` and overlays the API + impl jars:
+
+| what         | artifact                                     | version property                       |
+|--------------|----------------------------------------------|----------------------------------------|
+| server       | `org.glassfish.main.distributions:glassfish` | `-Dglassfish.version` (9.0.0-SNAPSHOT) |
+| Faces API    | `jakarta.faces:jakarta.faces-api`            | `-Dfaces-api.version` (5.0.0-SNAPSHOT) |
+| Mojarra impl | `org.glassfish.mojarra:mojarra`              | `-Dmojarra.version` (= project version)|
+
+## Picking the Mojarra version
+
+The overlaid impl jar is chosen by `-Dmojarra.version` (and the API jar by
+`-Dfaces-api.version`); both default to the current `-SNAPSHOT` — i.e. whatever you
+installed in [Setup](#setup-once-and-again-whenever-you-change-impl). To measure a
+different build already present in `~/.m2`:
 
 ```
-# Branch A:
-git checkout <branch-a>
-mvn -pl impl -am clean install -DskipTests
-mvn -pl test/perf -am clean verify
-cp test/perf/target/perf-stats-*.txt /tmp/branch-a.txt
-
-# Branch B:
-git checkout <branch-b>
-mvn -pl impl -am clean install -DskipTests
-mvn -pl test/perf -am clean verify
-cp test/perf/target/perf-stats-*.txt /tmp/branch-b.txt
-
-diff /tmp/branch-a.txt /tmp/branch-b.txt
+mvn clean verify -Dperf=true -Dmojarra.version=5.0.0-SNAPSHOT
 ```
 
-Note that the test/perf module itself only needs to exist on one branch; the
-mojarra jar gets injected into GlassFish at `process-test-classes`, so as long
-as you `install` the impl from the branch you want to measure first, the bench
-exercises that jar.
+## Comparing two builds
+
+5.0 has no releases yet, so comparison is branch-vs-branch — rebuild impl between
+runs:
+
+```
+git checkout <branch-a> && mvn -pl impl -am clean install -DskipTests
+( cd test/perf && mvn clean verify -Dperf=true && cp target/perf-stats-*.txt /tmp/a.txt )
+
+git checkout <branch-b> && mvn -pl impl -am clean install -DskipTests
+( cd test/perf && mvn clean verify -Dperf=true && cp target/perf-stats-*.txt /tmp/b.txt )
+
+diff /tmp/a.txt /tmp/b.txt
+```
+
+If you already have two impl versions in `~/.m2`, swap with `-Dmojarra.version=<v>`
+between runs instead and skip the rebuilds.
 
 ## Scenarios
 
@@ -83,7 +115,7 @@ The bench is also useful as a JFR driver for figuring out *where* the time is go
 Enable JFR by adding two `<jvm-options>` to the GlassFish JVM at the top of `<java-config>` inside `server-config`:
 
 ```
-test/perf/target/glassfish7/glassfish/domains/domain1/config/domain.xml
+target/glassfish9/glassfish/domains/domain1/config/domain.xml
 ```
 
 ```xml
@@ -94,8 +126,7 @@ test/perf/target/glassfish7/glassfish/domains/domain1/config/domain.xml
 Then run the bench at a tighter iteration count — JFR samples on a 20 ms cadence by default, so ~7,500 samples (≈150 s of bench time) is plenty for a clear hot-method picture without producing a huge file:
 
 ```
-mvn -pl test/perf failsafe:integration-test failsafe:verify \
-    -Dperf=true -Dperf.warmup=20 -Dperf.runs=200
+mvn failsafe:integration-test failsafe:verify -Dperf=true -Dperf.warmup=20 -Dperf.runs=200
 ```
 
 Analyze with the JDK-bundled `jfr` tool:
@@ -113,12 +144,12 @@ For deeper aggregation (e.g. grouping hot leaves by their Mojarra-side caller, f
 jfr print --json --events jdk.ExecutionSample /tmp/perf-bench.jfr > /tmp/samples.json
 ```
 
-Each event lives at `event['values']['stackTrace']['frames']`; class names use slash form (`com/sun/faces/...`).
+Each event lives at `event['values']['stackTrace']['frames']`; class names use slash form (`org/glassfish/mojarra/...`).
 
 ### Gotchas
 
-- `domain.xml` is regenerated by `mvn -pl test/perf clean package`, so reapply the JFR `<jvm-options>` after every WAR rebuild.
-- Cancelling a bench mid-flight can leave an already-deployed app in `target/glassfish7/glassfish/domains/domain1/applications/`; the next run will then error with `Application with name perf-4.0.19-SNAPSHOT is already registered`. Fix with `rm -rf target/glassfish7` followed by `mvn -pl test/perf -am clean package -DskipTests` (then reapply the JFR edit).
+- `domain.xml` is regenerated by `mvn clean package`, so reapply the JFR `<jvm-options>` after every WAR rebuild.
+- Cancelling a bench mid-flight can leave an already-deployed app in `target/glassfish9/glassfish/domains/domain1/applications/`; the next run will then error with `Application with name perf-<version> is already registered`. Fix with `rm -rf target/glassfish9` followed by `mvn clean package -DskipTests` (then reapply the JFR edit).
 - A killed bench can also leave an orphan `ASMain` JVM running, which trips the next run with `The server is already running!`. Check `jps`, identify the specific PID, kill it by ID — never blanket `pkill java` on a shared host.
 
 ## Profiling a non-Mojarra layer (e.g. GlassFish, Weld)
@@ -126,7 +157,7 @@ Each event lives at `event['values']['stackTrace']['frames']`; class names use s
 Because the bench drives the *whole* request stack, the JFR profile picks up CPU and allocation from every layer — Mojarra, EL, Weld/CDI, Grizzly, and the JDK. To swap one of those layers for a local build:
 
 1. Build the layer in its own checkout (e.g. `mvn clean install` in a GlassFish module) so a `<version>-SNAPSHOT` artifact lands in `~/.m2`.
-2. Either re-run `mvn -pl test/perf -am clean package -DskipTests -Dglassfish.version=<version>-SNAPSHOT` (forces a fresh GlassFish unpack with the SNAPSHOT zip), or — for a single-jar swap — replace the matching `target/glassfish7/glassfish/modules/<artifact>.jar` in place.
+2. Either re-run `mvn clean package -DskipTests -Dglassfish.version=<version>-SNAPSHOT` (forces a fresh GlassFish unpack with the SNAPSHOT zip), or — for a single-jar swap — replace the matching `target/glassfish9/glassfish/modules/<artifact>.jar` in place.
 3. Reapply the JFR `<jvm-options>` and run the bench.
 
-The bench couldn't care less which version of which jar is in the GlassFish modules directory; whatever's on disk at startup is what gets profiled.
+The bench couldn't care less which version of which jar is in the server's modules directory; whatever's on disk at startup is what gets profiled.
