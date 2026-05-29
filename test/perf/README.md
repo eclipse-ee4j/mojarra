@@ -103,9 +103,13 @@ Run both sides on the same server profile so the comparison is fair.
 - `index` — landing page (smallest baseline)
 - `form-inputs` — single h:form with text/textarea/select/checkbox/radio, managed converters+validators, BV
 - `table-readonly` — h:dataTable, 200 rows, outputs only
+- `table-readonly-heavy` — h:dataTable, 2000 rows, outputs only
 - `table-inputs` — h:dataTable, 50 rows, per-row inputs + converters/validators
+- `table-inputs-heavy` — h:dataTable, 200 rows, per-row inputs + converters/validators
 - `repeat-readonly` — ui:repeat, 200 rows, outputs only
+- `repeat-readonly-heavy` — ui:repeat, 2000 rows, outputs only
 - `repeat-inputs` — ui:repeat, 40 rows, per-row inputs
+- `repeat-inputs-heavy` — ui:repeat, 200 rows, per-row inputs
 - `repeat-nested` — ui:repeat ∋ ui:repeat (5×10 rows, per-row inputs)
 - `composite-readonly` — readonly composite component, 200 instances
 - `composite-inputs` — input composite component, 40 instances
