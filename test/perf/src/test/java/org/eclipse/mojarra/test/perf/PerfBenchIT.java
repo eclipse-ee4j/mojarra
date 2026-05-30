@@ -243,8 +243,7 @@ class PerfBenchIT extends BaseIT {
     }
 
     private static long scenarioCount(String stats, String scenario, String phase) {
-        // MyFaces appends the phase ordinal to the label (e.g. RENDER_RESPONSE(6)); Mojarra does not. Tolerate both.
-        Pattern p = Pattern.compile("^" + Pattern.quote(scenario) + "\\s+" + Pattern.quote(phase) + "(?:\\(\\d+\\))?\\s+(\\d+)", Pattern.MULTILINE);
+        Pattern p = Pattern.compile("^" + Pattern.quote(scenario) + "\\s+" + Pattern.quote(phase) + "\\s+(\\d+)", Pattern.MULTILINE);
         Matcher m = p.matcher(stats);
         return m.find() ? Long.parseLong(m.group(1)) : 0L;
     }
