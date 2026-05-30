@@ -40,6 +40,6 @@ public class AppConfig {
     }
 
     public String getAppName() {
-        return "Mojarra Perf Bench";
+        return "Faces Perf Bench";
     }
 }

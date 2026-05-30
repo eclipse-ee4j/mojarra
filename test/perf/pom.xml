@@ -36,7 +36,7 @@
         <webapp.serializeServerState>false</webapp.serializeServerState>
         <webapp.compressViewState>true</webapp.compressViewState>
         <webapp.numberOfViewsInSession>15</webapp.numberOfViewsInSession>
-        <webapp.additionalContextParams></webapp.additionalContextParams>
+        <!-- webapp.additionalContextParams default lives in the parent pom so the server profiles (e.g. wildfly-myfaces) can override it. -->
     </properties>
 
     <dependencies>

@@ -24,12 +24,20 @@ build time, so re-run this after every impl change you want reflected.
 Everything else runs from inside the module — `cd test/perf` first, then:
 
 ```
-mvn clean verify -Dperf=true                 # GlassFish (default)
-mvn clean verify -Dperf=true -Pwildfly       # WildFly
-mvn clean verify -Dperf=true -Ptomee         # TomEE (Plume)
-mvn clean verify -Dperf=true -Ppayara        # Payara
-mvn clean verify -Dperf=true -Popenliberty   # OpenLiberty (Mojarra via facesContainer)
-mvn clean verify -Dperf=true -Ptomcat        # Tomcat (Mojarra + Weld + Hibernate Validator)
+mvn clean verify -Dperf=true             # GlassFish (default)
+mvn clean verify -Dperf=true -Pwildfly   # WildFly
+mvn clean verify -Dperf=true -Ptomee     # TomEE Plume
+mvn clean verify -Dperf=true -Ppayara    # Payara
+mvn clean verify -Dperf=true -Pliberty   # OpenLiberty (via facesContainer)
+mvn clean verify -Dperf=true -Ptomcat    # Tomcat (+ Weld + Hibernate Validator)
+
+# Every server also has a -myfaces twin that runs Apache MyFaces instead of Eclipse Mojarra:
+mvn clean verify -Dperf=true -Pglassfish-myfaces   # GlassFish (with patched jakarta.faces.jar)
+mvn clean verify -Dperf=true -Pwildfly-myfaces     # WildFly (via WAR_BUNDLES_JSF_IMPL)
+mvn clean verify -Dperf=true -Ptomee-myfaces       # TomEE WebProfile
+mvn clean verify -Dperf=true -Ppayara-myfaces      # Payara (with patched jakarta.faces.jar)
+mvn clean verify -Dperf=true -Pliberty-myfaces     # OpenLiberty
+mvn clean verify -Dperf=true -Ptomcat-myfaces      # Tomcat (+ Weld + Hibernate Validator)
 
 # Tune iteration counts (warmup=50, runs=1000 by default):
 mvn clean verify -Dperf=true -Dperf.warmup=200 -Dperf.runs=2000
@@ -58,7 +66,7 @@ the WAR's `WEB-INF/lib` (OpenLiberty, Tomcat).
 | `-Pwildfly`     | WildFly         | `target/wildfly`                | `-Dwildfly.feature-pack.version` (40.0.0.Final) |
 | `-Ptomee`       | TomEE Plume     | `target/apache-tomee-plume-*`   | `-Dtomee.version` (10.1.5)        |
 | `-Ppayara`      | Payara          | `target/payara7`                | `-Dpayara.version` (7.2026.5)     |
-| `-Popenliberty` | OpenLiberty     | `target/wlp`                    | `-Dopenliberty.version` (26.0.0.4-beta) |
+| `-Pliberty`     | OpenLiberty     | `target/wlp`                    | `-Dliberty.version` (26.0.0.4-beta) |
 | `-Ptomcat`      | Tomcat          | `target/apache-tomcat-*`        | `-Dtomcat.version` (11.0.22)      |
 
 - **WildFly**: pass extra JVM args to the managed process with
@@ -66,8 +74,7 @@ the WAR's `WEB-INF/lib` (OpenLiberty, Tomcat).
 - **TomEE**: Plume 10.1.5 is Jakarta EE 10, but Mojarra 4.x (Faces 4.1) is EE 11,
   so the profile overlays the EE 11 API jars Faces references (EL 6.0, CDI 4.1)
   alongside the Mojarra jar. The same shim is applied to every measured version,
-  so the per-version delta stays apples-to-apples. HTTP/stop ports are
-  `-Dtomee.httpPort` (8080) / `-Dtomee.stopPort` (8005).
+  so the per-version delta stays apples-to-apples.
 - **Payara**: GlassFish-derived, so Mojarra is overlaid into
   `payara7/glassfish/modules` exactly as for GlassFish.
 - **OpenLiberty**: ships MyFaces. The profile enables the `facesContainer-4.1`
@@ -83,6 +90,25 @@ Every profile launches its server with the same max heap (`-Xmx1g`) so the
 cross-server comparison is apples-to-apples; change it for all servers at once with
 `-Dperf.heapSize=2g`.
 
+### MyFaces variants
+
+Each server has a `-myfaces` twin (`-Pglassfish-myfaces`, `-Pwildfly-myfaces`,
+`-Ptomee-myfaces`, `-Ppayara-myfaces`, `-Pliberty-myfaces`, `-Ptomcat-myfaces`)
+that runs **Apache MyFaces** (`-Dmyfaces.version`, default `4.1.4-SNAPSHOT`) instead of
+Mojarra, for cross-implementation comparison. How MyFaces is hosted depends on the server:
+
+- **Tomcat / OpenLiberty**: bundle `myfaces-api`+`myfaces-impl` in the WAR instead of the
+  Mojarra jar (OpenLiberty still via `facesContainer-4.1`).
+- **TomEE**: uses the **WebProfile** distribution (the MyFaces flavour) and overlays
+  `${myfaces.version}` into its `lib/`.
+- **WildFly**: bundles MyFaces and tells WildFly to step aside via
+  `WEB-INF/jboss-deployment-structure.xml` (excluding `org.jboss.as.jsf` etc.) plus
+  `org.jboss.jbossfaces.WAR_BUNDLES_JSF_IMPL=true`.
+- **GlassFish / Payara**: keep the Mojarra module (the Weld integration needs it) but make
+  the WAR use bundled MyFaces via `WEB-INF/glassfish-web.xml` (`delegate=false` +
+  `useBundledJsf=true`), and strip Mojarra's CDI-extension and `ServletContainerInitializer`
+  service entries from the container `jakarta.faces.jar` to avoid clashes.
+
 ## Picking the Mojarra version
 
 The injected jar is chosen by `-Dmojarra.version`; the default is the current
@@ -93,7 +119,12 @@ To measure an already-released build instead (no impl install needed):
 mvn clean verify -Dperf=true -Dmojarra.version=4.1.9
 ```
 
-This works on every server profile.
+This works on every server profile. The `-myfaces` profiles take `-Dmyfaces.version`
+(default `4.1.4-SNAPSHOT`) the same way:
+
+```
+mvn clean verify -Dperf=true -Ptomcat-myfaces -Dmyfaces.version=4.1.3
+```
 
 ## Comparing two versions
 
