@@ -59,10 +59,13 @@
     </modules>
 
     <properties>
-        <glassfish.version>8.0.2</glassfish.version>
+        <glassfish.version>8.0.3-SNAPSHOT</glassfish.version>
         <glassfish.home>glassfish8</glassfish.home>
         <arquillian.browser>chrome</arquillian.browser>
         <mojarra.version>${project.version}</mojarra.version>
+        <!-- Max heap aligned across every server profile so the cross-server comparison is apples-to-apples. -->
+        <perf.heapSize>1g</perf.heapSize>
+        <perf.heapArgument>-Xmx${perf.heapSize}</perf.heapArgument>
     </properties>
 
     <repositories>
@@ -217,6 +220,7 @@
                         <configuration>
                             <systemPropertyVariables>
                                 <glassfish.home>${project.build.directory}/${glassfish.home}</glassfish.home>
+                                <glassfish.maxHeapSize>${perf.heapSize}</glassfish.maxHeapSize>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>
@@ -235,8 +239,8 @@
                 <wildfly.dir>${maven.multiModuleProjectDirectory}/target/wildfly</wildfly.dir>
                 <wildfly.feature-pack.artifactId>wildfly-ee-galleon-pack</wildfly.feature-pack.artifactId>
                 <wildfly.feature-pack.version>40.0.0.Final</wildfly.feature-pack.version>
-                <!-- Extra JVM args for the managed WildFly process (arquillian reads jboss.options). Override e.g. -Djboss.options="-Xmx8g". -->
-                <jboss.options></jboss.options>
+                <!-- JVM args for the managed WildFly process (arquillian reads jboss.options); defaults to the aligned heap. Override e.g. -Djboss.options="-Xms2g -Xmx2g". -->
+                <jboss.options>${perf.heapArgument}</jboss.options>
             </properties>
             <dependencies>
                 <dependency>
@@ -340,18 +344,13 @@
 
         <profile>
             <id>tomee</id>
-            <activation>
-                <property>
-                    <name>tomee</name>
-                </property>
-            </activation>
             <properties>
                 <tomee.version>10.1.5</tomee.version>
                 <tomee.classifier>plume</tomee.classifier>
                 <tomee.dir>${project.build.directory}/apache-tomee-${tomee.classifier}-${tomee.version}</tomee.dir>
                 <tomee.httpPort>8080</tomee.httpPort>
                 <tomee.stopPort>8005</tomee.stopPort>
-                <tomee.catalina_opts>-Xms256m -Xmx512m -XX:+HeapDumpOnOutOfMemoryError -XX:ReservedCodeCacheSize=64m</tomee.catalina_opts>
+                <tomee.catalina_opts>${perf.heapArgument} -XX:+HeapDumpOnOutOfMemoryError -XX:ReservedCodeCacheSize=64m</tomee.catalina_opts>
             </properties>
             <dependencies>
                 <dependency>
@@ -466,6 +465,289 @@
                                 <tomee.remote.stopPort>${tomee.stopPort}</tomee.remote.stopPort>
                                 <tomee.remote.catalina_opts>${tomee.catalina_opts}</tomee.remote.catalina_opts>
                             </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>payara</id>
+            <properties>
+                <payara.version>7.2026.5</payara.version>
+                <payara.home>payara7</payara.home>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>ee.omnifish.arquillian</groupId>
+                    <artifactId>arquillian-glassfish-server-managed</artifactId>
+                    <version>2.1.3</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack-payara</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>fish.payara.distributions</groupId>
+                                            <artifactId>payara-web</artifactId>
+                                            <version>${payara.version}</version>
+                                            <type>zip</type>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>update-mojarra</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.glassfish</groupId>
+                                            <artifactId>jakarta.faces</artifactId>
+                                            <version>${mojarra.version}</version>
+                                            <type>jar</type>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${project.build.directory}/${payara.home}/glassfish/modules</outputDirectory>
+                                            <destFileName>jakarta.faces.jar</destFileName>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <glassfish.home>${project.build.directory}/${payara.home}</glassfish.home>
+                                <glassfish.maxHeapSize>${perf.heapSize}</glassfish.maxHeapSize>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>openliberty</id>
+            <properties>
+                <openliberty.version>26.0.0.4-beta</openliberty.version>
+                <openliberty.support.version>2.1.3</openliberty.support.version>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>io.openliberty.arquillian</groupId>
+                    <artifactId>arquillian-liberty-managed-jakarta</artifactId>
+                    <version>${openliberty.support.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                <!-- OpenLiberty ships MyFaces via faces-4.1; the facesContainer-4.1 feature (see server.xml) omits the impl so this bundled Mojarra is used instead. -->
+                <dependency>
+                    <groupId>org.glassfish</groupId>
+                    <artifactId>jakarta.faces</artifactId>
+                    <version>${mojarra.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack-openliberty</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>io.openliberty.beta</groupId>
+                                            <artifactId>openliberty-runtime</artifactId>
+                                            <version>${openliberty.version}</version>
+                                            <type>zip</type>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>io.openliberty.arquillian</groupId>
+                                            <artifactId>arquillian-liberty-support-jakarta</artifactId>
+                                            <version>${openliberty.support.version}</version>
+                                            <type>zip</type>
+                                            <classifier>feature</classifier>
+                                            <outputDirectory>${project.build.directory}/wlp/usr</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>update-liberty-server</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/wlp/usr/servers/defaultServer</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.basedir}/../base/src/test/resources/arquillian/liberty</directory>
+                                            <includes>
+                                                <include>server.xml</include> <!-- server.xml enables facesContainer-4.1 to run bundled Mojarra. -->
+                                                <include>jvm.options</include> <!-- aligned -Xmx; filtered from ${perf.heapArgument}. -->
+                                            </includes>
+                                            <filtering>true</filtering> <!-- interpolate ${perf.heapArgument} in jvm.options. -->
+                                        </resource>
+                                    </resources>
+                                    <overwrite>true</overwrite>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <arquillian.launch>liberty</arquillian.launch>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>tomcat</id>
+            <properties>
+                <tomcat.version>11.0.22</tomcat.version>
+                <tomcat.dir>${project.build.directory}/apache-tomcat-${tomcat.version}</tomcat.dir>
+                <weld.version>6.0.4.Final</weld.version>
+                <hibernateValidator.version>9.1.0.Final</hibernateValidator.version>
+                <jsonp.version>2.0.1</jsonp.version>
+                <jstl.version>3.0.1</jstl.version>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.arquillian.container</groupId>
+                    <artifactId>arquillian-tomcat-managed-10</artifactId>
+                    <version>1.2.4.Final</version>
+                    <scope>test</scope>
+                </dependency>
+                <!-- Tomcat is a bare servlet container: bundle Faces, CDI (Weld), Bean Validation, JSON-P and JSTL into the WAR. -->
+                <dependency>
+                    <groupId>org.glassfish</groupId>
+                    <artifactId>jakarta.faces</artifactId>
+                    <version>${mojarra.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss.weld.servlet</groupId>
+                    <artifactId>weld-servlet-shaded</artifactId>
+                    <version>${weld.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.hibernate.validator</groupId>
+                    <artifactId>hibernate-validator</artifactId>
+                    <version>${hibernateValidator.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.glassfish</groupId>
+                    <artifactId>jakarta.json</artifactId>
+                    <version>${jsonp.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.glassfish.web</groupId>
+                    <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+                    <version>${jstl.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack-tomcat</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.apache.tomcat</groupId>
+                                            <artifactId>tomcat</artifactId>
+                                            <version>${tomcat.version}</version>
+                                            <type>zip</type>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>update-tomcat-users</id> <!-- Manager user the arquillian-tomcat-managed adapter authenticates with. -->
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${tomcat.dir}/conf</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.basedir}/../base/src/test/resources/arquillian/tomcat</directory>
+                                            <includes>
+                                                <include>tomcat-users.xml</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                    <overwrite>true</overwrite>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <arquillian.launch>tomcat</arquillian.launch>
+                                <perf.heapArgument>${perf.heapArgument}</perf.heapArgument>
+                            </systemPropertyVariables>
+                            <environmentVariables>
+                                <CATALINA_HOME>${tomcat.dir}</CATALINA_HOME>
+                            </environmentVariables>
                         </configuration>
                     </plugin>
                 </plugins>

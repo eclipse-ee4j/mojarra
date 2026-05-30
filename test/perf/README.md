@@ -4,8 +4,8 @@ A WAR with a representative spread of Facelets pages (forms, tables, ui:repeat,
 composites, nested variants, readonly+input flavors) plus CDI-managed converters
 and validators, driven by a single integration test that loops thousands of
 GETs and postbacks against a managed app server (GlassFish by default, optionally
-WildFly or TomEE) and dumps per-phase server-side timings recorded by
-`PhaseTimingListener` into `/perf-stats`.
+WildFly, TomEE, Payara, OpenLiberty or Tomcat) and dumps per-phase server-side
+timings recorded by `PhaseTimingListener` into `/perf-stats`.
 
 ## Setup (once, and again whenever you change impl)
 
@@ -27,8 +27,11 @@ Everything else runs from inside the module — `cd test/perf` first, then:
 mvn clean verify -Dperf=true                 # GlassFish (default)
 mvn clean verify -Dperf=true -Pwildfly       # WildFly
 mvn clean verify -Dperf=true -Ptomee         # TomEE (Plume)
+mvn clean verify -Dperf=true -Ppayara        # Payara
+mvn clean verify -Dperf=true -Popenliberty   # OpenLiberty (Mojarra via facesContainer)
+mvn clean verify -Dperf=true -Ptomcat        # Tomcat (Mojarra + Weld + Hibernate Validator)
 
-# Tune iteration counts (warmup=50, runs=500 by default):
+# Tune iteration counts (warmup=50, runs=1000 by default):
 mvn clean verify -Dperf=true -Dperf.warmup=200 -Dperf.runs=2000
 ```
 
@@ -44,13 +47,19 @@ per-phase table (count / total_us / avg_us / min_us / max_us) plus an aggregate
 ## Servers
 
 The server is selected with `-P`; GlassFish is the default profile. Each profile
-provisions its own server under `target/` and overlays the chosen Mojarra jar.
+provisions its own server under `target/` and supplies the chosen Mojarra jar —
+either overlaid into the server's modules (GlassFish, Payara, WildFly, TomEE) or,
+for the bare servlet containers that ship no Faces implementation, bundled into
+the WAR's `WEB-INF/lib` (OpenLiberty, Tomcat).
 
-| profile     | server          | provisioned into                | version property                  |
-|-------------|-----------------|----------------------------------|-----------------------------------|
-| *(default)* | GlassFish       | `target/glassfish8`             | `-Dglassfish.version` (8.0.2)    |
-| `-Pwildfly` | WildFly         | `target/wildfly`                | `-Dwildfly.feature-pack.version` (40.0.0.Final) |
-| `-Ptomee`   | TomEE Plume     | `target/apache-tomee-plume-*`   | `-Dtomee.version` (10.1.5)        |
+| profile         | server          | provisioned into                | version property                  |
+|-----------------|-----------------|----------------------------------|-----------------------------------|
+| *(default)*     | GlassFish       | `target/glassfish8`             | `-Dglassfish.version` (8.0.3-SNAPSHOT) |
+| `-Pwildfly`     | WildFly         | `target/wildfly`                | `-Dwildfly.feature-pack.version` (40.0.0.Final) |
+| `-Ptomee`       | TomEE Plume     | `target/apache-tomee-plume-*`   | `-Dtomee.version` (10.1.5)        |
+| `-Ppayara`      | Payara          | `target/payara7`                | `-Dpayara.version` (7.2026.5)     |
+| `-Popenliberty` | OpenLiberty     | `target/wlp`                    | `-Dopenliberty.version` (26.0.0.4-beta) |
+| `-Ptomcat`      | Tomcat          | `target/apache-tomcat-*`        | `-Dtomcat.version` (11.0.22)      |
 
 - **WildFly**: pass extra JVM args to the managed process with
   `-Djboss.options="-Xmx8g"`.
@@ -59,6 +68,20 @@ provisions its own server under `target/` and overlays the chosen Mojarra jar.
   alongside the Mojarra jar. The same shim is applied to every measured version,
   so the per-version delta stays apples-to-apples. HTTP/stop ports are
   `-Dtomee.httpPort` (8080) / `-Dtomee.stopPort` (8005).
+- **Payara**: GlassFish-derived, so Mojarra is overlaid into
+  `payara7/glassfish/modules` exactly as for GlassFish.
+- **OpenLiberty**: ships MyFaces. The profile enables the `facesContainer-4.1`
+  feature (instead of `faces-4.1`) so the WAR-bundled Mojarra is used as the Faces
+  implementation; CDI, EL and Bean Validation come from the server. The bench
+  driver is pinned to HTTP/1.1, which this server's endpoint would otherwise
+  upgrade to HTTP/2.
+- **Tomcat**: a bare servlet container, so the profile bundles Mojarra plus Weld 6
+  (`-Dweld.version`, CDI) and Hibernate Validator 9 (`-DhibernateValidator.version`,
+  Bean Validation) into the WAR's `WEB-INF/lib`.
+
+Every profile launches its server with the same max heap (`-Xmx1g`) so the
+cross-server comparison is apples-to-apples; change it for all servers at once with
+`-Dperf.heapSize=2g`.
 
 ## Picking the Mojarra version
 
@@ -142,9 +165,10 @@ target/glassfish8/glassfish/domains/domain1/config/domain.xml
 <jvm-options>-XX:FlightRecorderOptions=stackdepth=128</jvm-options>
 ```
 
-(For WildFly/TomEE the same JVM options go into their respective config — WildFly
-`standalone.conf`, TomEE `bin/setenv.sh` / `-Dtomee.catalina_opts` — rather than
-`domain.xml`.)
+(For the other servers the same JVM options go into their respective config rather
+than `domain.xml`: Payara `payara7/glassfish/domains/domain1/config/domain.xml`,
+WildFly `standalone.conf`, TomEE `bin/setenv.sh` / `-Dtomee.catalina_opts`, Tomcat
+`bin/setenv.sh`, OpenLiberty `wlp/usr/servers/defaultServer/jvm.options`.)
 
 Then run the bench at a tighter iteration count — JFR samples on a 20 ms cadence by default, so ~7,500 samples (≈150 s of bench time) is plenty for a clear hot-method picture without producing a huge file:
 
@@ -155,10 +179,10 @@ mvn failsafe:integration-test failsafe:verify -Dperf=true -Dperf.warmup=20 -Dper
 Analyze with the JDK-bundled `jfr` tool:
 
 ```
-jfr summary                          /tmp/perf-bench.jfr
-jfr view --width 200 hot-methods         /tmp/perf-bench.jfr
+jfr summary /tmp/perf-bench.jfr
+jfr view --width 200 hot-methods /tmp/perf-bench.jfr
 jfr view --width 200 allocation-by-class /tmp/perf-bench.jfr
-jfr view --width 200 allocation-by-site  /tmp/perf-bench.jfr
+jfr view --width 200 allocation-by-site /tmp/perf-bench.jfr
 ```
 
 For deeper aggregation (e.g. grouping hot leaves by their Mojarra-side caller, filtering by thread, attributing samples to scenarios via the timeline) export the execution samples to JSON and process them with a small script:

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) Contributors to Eclipse Foundation.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<!--
+    facesContainer-4.1 (rather than faces-4.1) leaves the Faces implementation out of the server
+    so the application supplies its own (Mojarra, bundled in WEB-INF/lib). This is how Mojarra
+    replaces OpenLiberty's native MyFaces.
+-->
+<server description="arquillian">
+    <featureManager>
+        <feature>facesContainer-4.1</feature>
+        <feature>expressionLanguage-6.0</feature>
+        <feature>servlet-6.1</feature>
+        <feature>cdi-4.1</feature>
+        <feature>validation-3.1</feature>
+        <feature>localConnector-1.0</feature>
+    </featureManager>
+    <applicationMonitor updateTrigger="mbean" />
+    <httpEndpoint id="defaultHttpEndpoint" httpPort="8080" httpsPort="8443" />
+    <applicationManager autoExpand="true" />
+</server>
