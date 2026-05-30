@@ -121,6 +121,35 @@ diff /tmp/a.txt /tmp/b.txt
 
 Run both sides on the same server profile so the comparison is fair.
 
+## Tuning state saving / view pooling
+
+The state and view-pooling context parameters are filtered into the WAR's `web.xml`
+at package time, so they can be tuned per run without editing anything. Defaults
+match the implementation defaults; each knob sets the Mojarra parameter and, where
+applicable, its MyFaces equivalent (the other implementation ignores the foreign one):
+
+| property | default | Faces / Mojarra param | MyFaces equivalent |
+|----------|---------|-----------------------|--------------------|
+| `-Dwebapp.stateSavingMethod`     | `server` | `jakarta.faces.STATE_SAVING_METHOD`    | *(same)* |
+| `-Dwebapp.serializeServerState`  | `false`  | `jakarta.faces.SERIALIZE_SERVER_STATE` | *(same)* |
+| `-Dwebapp.compressViewState`     | `true`   | `com.sun.faces.compressViewState`      | `org.apache.myfaces.COMPRESS_STATE_IN_SESSION` |
+| `-Dwebapp.numberOfViewsInSession`| `15`     | `com.sun.faces.numberOfLogicalViews`   | `org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION` |
+
+```
+mvn clean verify -Dperf=true -Dwebapp.stateSavingMethod=client -Dwebapp.numberOfViewsInSession=10
+```
+
+For any parameter without a dedicated knob, pass raw `<context-param>` XML through the
+`webapp.additionalContextParams` escape hatch (the value is shell-single-quoted, so a literal
+`'` inside a param value must be written as `'\''` — close the quote, an escaped quote, reopen):
+
+```
+mvn clean verify -Dperf=true \
+  -Dwebapp.additionalContextParams='<context-param><param-name>com.sun.faces.disableIdUniquenessCheck</param-name><param-value>true</param-value></context-param>'
+```
+
+(`jakarta.faces.PROJECT_STAGE` is fixed at `Production` — development-stage performance is not of interest.)
+
 ## Scenarios
 
 - `index` — landing page (smallest baseline)

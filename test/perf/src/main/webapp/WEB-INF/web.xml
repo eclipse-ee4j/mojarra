@@ -26,10 +26,39 @@
         <param-name>jakarta.faces.PROJECT_STAGE</param-name>
         <param-value>Production</param-value>
     </context-param>
+
+    <!--
+        State/view-pooling knobs, filtered from Maven properties (see perf/pom.xml) so they can be tuned
+        per run, e.g. -Dwebapp.stateSavingMethod=client. The com.sun.faces.* (Mojarra) and org.apache.myfaces.*
+        (MyFaces) pairs are both set from one knob; each implementation ignores the other's parameter.
+    -->
     <context-param>
         <param-name>jakarta.faces.STATE_SAVING_METHOD</param-name>
-        <param-value>server</param-value>
+        <param-value>${webapp.stateSavingMethod}</param-value>
     </context-param>
+    <context-param>
+        <param-name>jakarta.faces.SERIALIZE_SERVER_STATE</param-name>
+        <param-value>${webapp.serializeServerState}</param-value>
+    </context-param>
+    <context-param>
+        <param-name>com.sun.faces.compressViewState</param-name>
+        <param-value>${webapp.compressViewState}</param-value>
+    </context-param>
+    <context-param>
+        <param-name>org.apache.myfaces.COMPRESS_STATE_IN_SESSION</param-name>
+        <param-value>${webapp.compressViewState}</param-value>
+    </context-param>
+    <context-param>
+        <param-name>com.sun.faces.numberOfLogicalViews</param-name>
+        <param-value>${webapp.numberOfViewsInSession}</param-value>
+    </context-param>
+    <context-param>
+        <param-name>org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION</param-name>
+        <param-value>${webapp.numberOfViewsInSession}</param-value>
+    </context-param>
+
+    <!-- Escape hatch for any other context-param; pass raw <context-param> XML via -Dwebapp.additionalContextParams=... -->
+    ${webapp.additionalContextParams}
 
     <servlet>
         <servlet-name>facesServlet</servlet-name>

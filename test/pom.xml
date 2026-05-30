@@ -59,11 +59,11 @@
     </modules>
 
     <properties>
-        <glassfish.version>8.0.3-SNAPSHOT</glassfish.version>
-        <glassfish.home>glassfish8</glassfish.home>
         <arquillian.browser>chrome</arquillian.browser>
         <mojarra.version>${project.version}</mojarra.version>
-        <!-- Max heap aligned across every server profile so the cross-server comparison is apples-to-apples. -->
+
+        <!-- Max heap aligned across every server profile (consumed by the server profiles below) so the
+             cross-server comparison is apples-to-apples. The webapp context-param knobs live in perf/pom.xml. -->
         <perf.heapSize>1g</perf.heapSize>
         <perf.heapArgument>-Xmx${perf.heapSize}</perf.heapArgument>
     </properties>
@@ -161,6 +161,10 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+            <properties>
+		        <glassfish.version>8.0.3-SNAPSHOT</glassfish.version>
+        		<glassfish.home>glassfish8</glassfish.home>
+            </properties>
             <dependencies>
                 <dependency>
                     <groupId>ee.omnifish.arquillian</groupId>
