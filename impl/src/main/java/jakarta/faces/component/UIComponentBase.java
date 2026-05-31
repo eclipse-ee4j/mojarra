@@ -883,11 +883,18 @@ public abstract class UIComponentBase extends UIComponent {
         pushComponentToEL(context, null);
 
         try {
-            // Process all facets and children of this component
-            Iterator<UIComponent> kids = getFacetsAndChildren();
-            while (kids.hasNext()) {
-                UIComponent kid = kids.next();
-                kid.processDecodes(context);
+            // Process all facets and children of this component, facets first (matching getFacetsAndChildren()).
+            if (getFacetCount() > 0) {
+                for (UIComponent facet : getFacets().values()) {
+                    facet.processDecodes(context);
+                }
+            }
+            int childCount = getChildCount();
+            if (childCount > 0) {
+                List<UIComponent> children = getChildren();
+                for (int i = 0; i < childCount; i++) {
+                    children.get(i).processDecodes(context);
+                }
             }
 
             // Process this component itself
@@ -923,11 +930,18 @@ public abstract class UIComponentBase extends UIComponent {
             Application application = context.getApplication();
             application.publishEvent(context, PreValidateEvent.class, this);
 
-            // Process all the facets and children of this component
-            Iterator<UIComponent> kids = getFacetsAndChildren();
-            while (kids.hasNext()) {
-                UIComponent kid = kids.next();
-                kid.processValidators(context);
+            // Process all facets and children of this component, facets first (matching getFacetsAndChildren()).
+            if (getFacetCount() > 0) {
+                for (UIComponent facet : getFacets().values()) {
+                    facet.processValidators(context);
+                }
+            }
+            int childCount = getChildCount();
+            if (childCount > 0) {
+                List<UIComponent> children = getChildren();
+                for (int i = 0; i < childCount; i++) {
+                    children.get(i).processValidators(context);
+                }
             }
 
             application.publishEvent(context, PostValidateEvent.class, this);
@@ -954,11 +968,18 @@ public abstract class UIComponentBase extends UIComponent {
         pushComponentToEL(context, null);
 
         try {
-            // Process all facets and children of this component
-            Iterator<UIComponent> kids = getFacetsAndChildren();
-            while (kids.hasNext()) {
-                UIComponent kid = kids.next();
-                kid.processUpdates(context);
+            // Process all facets and children of this component, facets first (matching getFacetsAndChildren()).
+            if (getFacetCount() > 0) {
+                for (UIComponent facet : getFacets().values()) {
+                    facet.processUpdates(context);
+                }
+            }
+            int childCount = getChildCount();
+            if (childCount > 0) {
+                List<UIComponent> children = getChildren();
+                for (int i = 0; i < childCount; i++) {
+                    children.get(i).processUpdates(context);
+                }
             }
         } finally {
             popComponentFromEL(context);
@@ -2700,6 +2721,15 @@ public abstract class UIComponentBase extends UIComponent {
             return new ArrayList<>(super.keySet()).iterator();
         }
 
+        // Snapshot of the live entries (super.* to bypass this map's wrapping views), so the values
+        // iterator can return each facet directly instead of re-looking it up by key per next().
+        Iterator<Map.Entry<String, UIComponent>> entrySetIterator() {
+            if (super.isEmpty()) {
+                return Collections.emptyIterator();
+            }
+            return new ArrayList<>(super.entrySet()).iterator();
+        }
+
     }
 
     // Private implementation of Set for FacetsMap.getEntrySet()
@@ -3077,12 +3107,12 @@ public abstract class UIComponentBase extends UIComponent {
 
         public FacetsMapValuesIterator(FacetsMap map) {
             this.map = map;
-            iterator = map.keySetIterator();
+            iterator = map.entrySetIterator();
         }
 
         private FacetsMap map = null;
-        private Iterator<String> iterator = null;
-        private Object last = null;
+        private Iterator<Map.Entry<String, UIComponent>> iterator = null;
+        private Map.Entry<String, UIComponent> last = null;
 
         @Override
         public boolean hasNext() {
@@ -3092,7 +3122,7 @@ public abstract class UIComponentBase extends UIComponent {
         @Override
         public UIComponent next() {
             last = iterator.next();
-            return map.get(last);
+            return last.getValue();
         }
 
         @Override
@@ -3100,7 +3130,7 @@ public abstract class UIComponentBase extends UIComponent {
             if (last == null) {
                 throw new IllegalStateException();
             }
-            map.remove(last);
+            map.remove(last.getKey());
             last = null;
         }
 
