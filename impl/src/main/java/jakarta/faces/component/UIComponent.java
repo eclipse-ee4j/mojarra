@@ -1433,9 +1433,13 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
 
         if (getRendersChildren()) {
             encodeChildren(context);
-        } else if (getChildCount() > 0) {
-            for (UIComponent kid : getChildren()) {
-                kid.encodeAll(context);
+        } else {
+            int childCount = getChildCount();
+            if (childCount > 0) {
+                List<UIComponent> children = getChildren();
+                for (int i = 0; i < childCount; i++) {
+                    children.get(i).encodeAll(context);
+                }
             }
         }
 
