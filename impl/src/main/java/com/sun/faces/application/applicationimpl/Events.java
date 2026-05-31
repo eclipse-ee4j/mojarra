@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import com.sun.faces.application.applicationimpl.events.ComponentSystemEventHelper;
@@ -56,6 +57,12 @@ public class Events {
 
     private final SystemEventHelper systemEventHelper = new SystemEventHelper();
     private final ComponentSystemEventHelper compSysEventHelper = new ComponentSystemEventHelper();
+
+    // Application-level (global) listener subscriptions, by event class. Lets publishEvent skip the
+    // global listener lookup for events nobody subscribed to globally (the common case for the
+    // per-component Pre/PostValidateEvent, PreRenderComponentEvent, etc.). Over-approximating: classes
+    // are never removed on unsubscribe, so a stale entry only costs an empty lookup, never a missed event.
+    private final Set<Class<? extends SystemEvent>> globallySubscribedEventClasses = ConcurrentHashMap.newKeySet();
 
     /*
      * This class encapsulates the behavior to prevent infinite loops when the publishing of one event leads to the queueing
@@ -100,11 +107,15 @@ public class Events {
             // Look for and invoke any 'view' listeners
             event = invokeViewListenersFor(context, systemEventClass, event, source);
 
-            // Look for and invoke any listeners stored on the application using source type.
-            event = invokeListenersFor(systemEventClass, event, source, sourceBaseType, true);
+            // Look for and invoke any application-level listeners. Skip the lookup entirely when no
+            // global listener was ever registered for this event class (the common case).
+            if (globallySubscribedEventClasses.contains(systemEventClass)) {
+                // Look for and invoke any listeners stored on the application using source type.
+                event = invokeListenersFor(systemEventClass, event, source, sourceBaseType, true);
 
-            // Look for and invoke any listeners not specific to the source class
-            invokeListenersFor(systemEventClass, event, source, null, false);
+                // Look for and invoke any listeners not specific to the source class
+                invokeListenersFor(systemEventClass, event, source, null, false);
+            }
         } catch (AbortProcessingException ape) {
             context.getApplication().publishEvent(context, ExceptionQueuedEvent.class, new ExceptionQueuedEventContext(context, ape));
         }
@@ -126,6 +137,7 @@ public class Events {
         notNull(LISTENER, listener);
 
         getListeners(systemEventClass, sourceClass).add(listener);
+        globallySubscribedEventClasses.add(systemEventClass);
     }
 
     /*
@@ -181,30 +193,28 @@ public class Events {
     }
 
     private SystemEvent invokeViewListenersFor(FacesContext ctx, Class<? extends SystemEvent> systemEventClass, SystemEvent event, Object source) {
-        SystemEvent result = event;
+        UIViewRoot root = ctx.getViewRoot();
+        if (root == null) {
+            return event;
+        }
+
+        // Resolve the view listeners before touching the reentrancy guard: the common case has none,
+        // and the guard's bookkeeping (a per-request map) is only needed while actually invoking them.
+        List<SystemEventListener> listeners = root.getViewListenersForEventClass(systemEventClass);
+        if (null == listeners) {
+            return null;
+        }
 
         if (listenerInvocationGuard.isGuardSet(ctx, systemEventClass)) {
-            return result;
+            return event;
         }
         listenerInvocationGuard.setGuard(ctx, systemEventClass);
-
-        UIViewRoot root = ctx.getViewRoot();
         try {
-            if (root != null) {
-                List<SystemEventListener> listeners = root.getViewListenersForEventClass(systemEventClass);
-                if (null == listeners) {
-                    return null;
-                }
-
-                EventInfo rootEventInfo = systemEventHelper.getEventInfo(systemEventClass, UIViewRoot.class);
-                // process view listeners
-                result = processListenersAccountingForAdds(listeners, event, source, rootEventInfo);
-            }
+            EventInfo rootEventInfo = systemEventHelper.getEventInfo(systemEventClass, UIViewRoot.class);
+            return processListenersAccountingForAdds(listeners, event, source, rootEventInfo);
         } finally {
             listenerInvocationGuard.clearGuard(ctx, systemEventClass);
         }
-        return result;
-
     }
 
     /**
