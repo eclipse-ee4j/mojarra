@@ -155,6 +155,12 @@ public abstract class UIComponentBase extends UIComponent {
      */
     private String clientId;
 
+    // Cached first NamingContainer ancestor, resolved lazily by getNamingContainerAncestor(). Depends only
+    // on the parent chain, so it survives UIData/UIRepeat row iteration (which changes rowIndex and clientIds
+    // but not the tree) and lets the per-row clientId recompute skip the parent-chain walk. Invalidated only
+    // in setParent (the sole place this component's parent chain changes).
+    private UIComponent namingContainerAncestor;
+
     /**
      * <p>
      * The parent component for this component.
@@ -290,6 +296,9 @@ public abstract class UIComponentBase extends UIComponent {
         }
 
         clientId = null; // Erase any cached value
+        // Note: the cached NamingContainer ancestor is deliberately NOT cleared here. It depends only on
+        // the parent chain, which setId never changes; clearing it would defeat the cache during iteration,
+        // where UIRepeat/UIData call setId(getId()) per row on every descendant to refresh their clientIds.
     }
 
     @Override
@@ -303,6 +312,8 @@ public abstract class UIComponentBase extends UIComponent {
         // Parenting can move this component under a different UIViewRoot (and therefore a
         // different RenderKit), so invalidate the cached Renderer defensively.
         cachedRenderer = null;
+        // The parent chain changed, so the cached NamingContainer ancestor is no longer valid.
+        namingContainerAncestor = null;
 
         if (parent == null) {
             if (this.parent != null) {
@@ -3282,12 +3293,14 @@ public abstract class UIComponentBase extends UIComponent {
     }
 
     private UIComponent getNamingContainerAncestor() {
-        UIComponent namingContainer = getParent();
-        while (namingContainer != null) {
-            if (namingContainer instanceof NamingContainer) {
-                return namingContainer;
+        if (namingContainerAncestor != null) {
+            return namingContainerAncestor;
+        }
+
+        for (UIComponent ancestor = getParent(); ancestor != null; ancestor = ancestor.getParent()) {
+            if (ancestor instanceof NamingContainer) {
+                return namingContainerAncestor = ancestor;
             }
-            namingContainer = namingContainer.getParent();
         }
 
         return null;
