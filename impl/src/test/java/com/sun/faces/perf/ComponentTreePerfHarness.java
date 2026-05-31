@@ -106,6 +106,9 @@ public class ComponentTreePerfHarness extends JUnitFacesTestCaseBase {
         renderKit.addRenderer(UIData.COMPONENT_FAMILY, "jakarta.faces.Table", new NoOpRenderer());
         // UIColumn has no rendererType by default; nothing to register for it.
         facesContext.getApplication(); // ensure Application is initialized
+        // Force the id-uniqueness check to run so the walk benchmark below measures the walk,
+        // not the default "auto" Production skip.
+        servletContext.addInitParameter("com.sun.faces.disableIdUniquenessCheck", "false");
         com.sun.faces.mock.MockRenderKitFactory rkf = (com.sun.faces.mock.MockRenderKitFactory) jakarta.faces.FactoryFinder
                 .getFactory(jakarta.faces.FactoryFinder.RENDER_KIT_FACTORY);
         try {
