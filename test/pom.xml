@@ -75,7 +75,7 @@
         <!-- Max heap aligned across every server profile (consumed by the server profiles below) so the
              cross-server comparison is apples-to-apples. The webapp context-param knobs live in perf/pom.xml. -->
         <perf.heapSize>1g</perf.heapSize>
-        <perf.heapArgument>-Xmx${perf.heapSize}</perf.heapArgument>
+        <perf.jvmArguments>-Xmx${perf.heapSize}</perf.jvmArguments>
     </properties>
 
     <repositories>
@@ -253,7 +253,7 @@
                 <wildfly.feature-pack.artifactId>wildfly-ee-galleon-pack</wildfly.feature-pack.artifactId>
                 <wildfly.feature-pack.version>${wildfly.version}</wildfly.feature-pack.version>
                 <!-- JVM args for the managed WildFly process (arquillian reads jboss.options); defaults to the aligned heap. Override e.g. -Djboss.options="-Xms2g -Xmx2g". -->
-                <jboss.options>${perf.heapArgument}</jboss.options>
+                <jboss.options>${perf.jvmArguments}</jboss.options>
             </properties>
             <dependencies>
                 <dependency>
@@ -359,7 +359,7 @@
             <id>tomee</id>
             <properties>
                 <tomee.classifier>plume</tomee.classifier>
-                <tomee.dir>${project.build.directory}/apache-tomee-${tomee.classifier}-${tomee.version}</tomee.dir>                <tomee.catalina_opts>${perf.heapArgument}</tomee.catalina_opts>
+                <tomee.dir>${project.build.directory}/apache-tomee-${tomee.classifier}-${tomee.version}</tomee.dir>                <tomee.catalina_opts>${perf.jvmArguments}</tomee.catalina_opts>
             </properties>
             <dependencies>
                 <dependency>
@@ -620,9 +620,9 @@
                                             <directory>${project.basedir}/../base/src/test/resources/arquillian/liberty</directory>
                                             <includes>
                                                 <include>server.xml</include> <!-- server.xml enables facesContainer-4.1 to run bundled Mojarra. -->
-                                                <include>jvm.options</include> <!-- aligned -Xmx; filtered from ${perf.heapArgument}. -->
+                                                <include>jvm.options</include> <!-- aligned -Xmx; filtered from ${perf.jvmArguments}. -->
                                             </includes>
-                                            <filtering>true</filtering> <!-- interpolate ${perf.heapArgument} in jvm.options. -->
+                                            <filtering>true</filtering> <!-- interpolate ${perf.jvmArguments} in jvm.options. -->
                                         </resource>
                                     </resources>
                                     <overwrite>true</overwrite>
@@ -747,7 +747,7 @@
                         <configuration>
                             <systemPropertyVariables>
                                 <arquillian.launch>tomcat</arquillian.launch>
-                                <perf.heapArgument>${perf.heapArgument}</perf.heapArgument>
+                                <perf.jvmArguments>${perf.jvmArguments}</perf.jvmArguments>
                             </systemPropertyVariables>
                             <environmentVariables>
                                 <CATALINA_HOME>${tomcat.dir}</CATALINA_HOME>
@@ -871,7 +871,7 @@
                 <wildfly.dir>${maven.multiModuleProjectDirectory}/target/wildfly</wildfly.dir>
                 <wildfly.feature-pack.artifactId>wildfly-ee-galleon-pack</wildfly.feature-pack.artifactId>
                 <wildfly.feature-pack.version>${wildfly.version}</wildfly.feature-pack.version>
-                <jboss.options>${perf.heapArgument}</jboss.options>
+                <jboss.options>${perf.jvmArguments}</jboss.options>
                 <!-- Tell WildFly the WAR bundles its own Faces impl (paired with the module exclusions in jboss-deployment-structure.xml). -->
                 <webapp.additionalContextParams><![CDATA[<context-param><param-name>org.jboss.jbossfaces.WAR_BUNDLES_JSF_IMPL</param-name><param-value>true</param-value></context-param>]]></webapp.additionalContextParams>
             </properties>
@@ -957,7 +957,7 @@
             <id>tomee-myfaces</id>
             <properties>
                 <tomee.classifier>webprofile</tomee.classifier> <!-- WebProfile is the MyFaces flavour -->
-                <tomee.dir>${project.build.directory}/apache-tomee-${tomee.classifier}-${tomee.version}</tomee.dir>                <tomee.catalina_opts>${perf.heapArgument}</tomee.catalina_opts>
+                <tomee.dir>${project.build.directory}/apache-tomee-${tomee.classifier}-${tomee.version}</tomee.dir>                <tomee.catalina_opts>${perf.jvmArguments}</tomee.catalina_opts>
             </properties>
             <dependencies>
                 <dependency>
@@ -1391,7 +1391,7 @@
                         <configuration>
                             <systemPropertyVariables>
                                 <arquillian.launch>tomcat</arquillian.launch>
-                                <perf.heapArgument>${perf.heapArgument}</perf.heapArgument>
+                                <perf.jvmArguments>${perf.jvmArguments}</perf.jvmArguments>
                             </systemPropertyVariables>
                             <environmentVariables>
                                 <CATALINA_HOME>${tomcat.dir}</CATALINA_HOME>

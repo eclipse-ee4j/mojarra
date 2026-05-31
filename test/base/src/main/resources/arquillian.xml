@@ -36,7 +36,7 @@
         <configuration>
             <property name="user">arquillian</property>
             <property name="pass">arquillian</property>
-            <property name="javaVmArguments">${perf.heapArgument}</property>
+            <property name="javaVmArguments">${perf.jvmArguments}</property>
         </configuration>
     </container>
 </arquillian>
