@@ -1965,36 +1965,33 @@ public abstract class UIComponentBase extends UIComponent {
             if (ATTRIBUTES_THAT_ARE_SET_KEY.equals(key)) {
                 result = component.getStateHelper().get(UIComponent.PropertyKeysPrivate.attributesThatAreSet);
             }
-            Map<String, Object> attributes = (Map<String, Object>) component.getStateHelper().get(PropertyKeys.attributes);
+            // Resolved lazily: the property-backed fast path below never needs it.
+            Map<String, Object> attributes = null;
             if (null == result) {
-                PropertyDescriptor pd = getPropertyDescriptor(key);
-                if (pd != null) {
-                    try {
-                        if (null == readMap) {
-                            readMap = new ConcurrentHashMap<>();
-                        }
-                        Method readMethod = readMap.get(key);
-                        if (null == readMethod) {
-                            readMethod = pd.getReadMethod();
-                            Method putResult = readMap.putIfAbsent(key, readMethod);
-                            if (null != putResult) {
-                                readMethod = putResult;
-                            }
-                        }
-
+                // A previously-resolved property getter is cached by name. Invoke it directly and skip the
+                // per-read PropertyDescriptor lookup -- the descriptor is only needed to discover the getter
+                // once. This is the hot path when the same component is rendered repeatedly (UIData/UIRepeat rows).
+                Method readMethod = readMap == null ? null : readMap.get(key);
+                if (readMethod != null) {
+                    result = invokeReadMethod(readMethod);
+                } else {
+                    PropertyDescriptor pd = getPropertyDescriptor(key);
+                    if (pd != null) {
+                        readMethod = pd.getReadMethod();
                         if (readMethod != null) {
-                            result = readMethod.invoke(component, EMPTY_OBJECT_ARRAY);
+                            if (null == readMap) {
+                                readMap = new ConcurrentHashMap<>();
+                            }
+                            readMap.putIfAbsent(key, readMethod);
+                            result = invokeReadMethod(readMethod);
                         } else {
                             throw new IllegalArgumentException(key);
                         }
-                    } catch (IllegalAccessException e) {
-                        throw new FacesException(e);
-                    } catch (InvocationTargetException e) {
-                        throw new FacesException(e.getTargetException());
-                    }
-                } else if (attributes != null) {
-                    if (attributes.containsKey(key)) {
-                        result = attributes.get(key);
+                    } else {
+                        attributes = (Map<String, Object>) component.getStateHelper().get(PropertyKeys.attributes);
+                        if (attributes != null && attributes.containsKey(key)) {
+                            result = attributes.get(key);
+                        }
                     }
                 }
             }
@@ -2008,8 +2005,13 @@ public abstract class UIComponentBase extends UIComponent {
                     }
                 }
             }
-            if (result == null && attributes != null && isCompositeComponent(component)) {
-                result = getCompositeComponentAttributeDefaultValue(key, attributes);
+            if (result == null && isCompositeComponent(component)) {
+                if (attributes == null) {
+                    attributes = (Map<String, Object>) component.getStateHelper().get(PropertyKeys.attributes);
+                }
+                if (attributes != null) {
+                    result = getCompositeComponentAttributeDefaultValue(key, attributes);
+                }
             }
             return result;
         }
@@ -2224,6 +2226,16 @@ public abstract class UIComponentBase extends UIComponent {
 
         private Object putAttribute(String key, Object value) {
             return component.getStateHelper().put(PropertyKeys.attributes, key, value);
+        }
+
+        private Object invokeReadMethod(Method readMethod) {
+            try {
+                return readMethod.invoke(component, EMPTY_OBJECT_ARRAY);
+            } catch (IllegalAccessException e) {
+                throw new FacesException(e);
+            } catch (InvocationTargetException e) {
+                throw new FacesException(e.getTargetException());
+            }
         }
 
         /**
@@ -3176,6 +3188,18 @@ public abstract class UIComponentBase extends UIComponent {
             if (propertyDescriptors != null) {
                 propertyDescriptorMap = new HashMap<>(propertyDescriptors.length, 1.0f);
                 for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
+                    // Suppress the per-invoke reflective access check on the (public) property getter.
+                    // It is invoked on every property-backed attribute read, which is hot under render
+                    // and UIData/UIRepeat iteration. Done once per component class (this map is cached
+                    // application-wide below). Guarded: the module system may forbid it for a getter in a
+                    // non-exported user package, in which case the normal access check simply remains.
+                    Method readMethod = propertyDescriptor.getReadMethod();
+                    if (readMethod != null) {
+                        try {
+                            readMethod.setAccessible(true);
+                        } catch (RuntimeException accessNotSuppressed) {
+                        }
+                    }
                     propertyDescriptorMap.put(propertyDescriptor.getName(), propertyDescriptor);
                 }
 
