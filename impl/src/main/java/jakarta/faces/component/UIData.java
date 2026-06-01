@@ -248,17 +248,18 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     private Object _initialDescendantFullComponentState = null;
 
     /**
-     * Per-iteration cache: {@code true} if any descendant is an {@link EditableValueHolder} or
-     * {@link UIForm} whose state needs to be saved/restored across {@link #setRowIndex} changes;
-     * {@code false} if the entire subtree is read-only. {@code null} means not yet scanned.
-     * Computed lazily by {@link #hasStatefulDescendants()} on first need; cleared when iteration
-     * ends ({@link #setRowIndex} to {@code -1}) so the next iteration re-evaluates the tree shape.
-     *
-     * <p>When this is {@code false}, {@link #saveDescendantState()} and {@link #restoreDescendantState()}
-     * become no-ops, eliminating the per-row tree walk for read-only tables (e.g. a table of
-     * {@code <h:outputText/>}).
+     * Per-iteration cache of the descendants the per-row save/restore walks act on, collected by
+     * {@link #ensureIterationLists()} on first need and cleared when iteration ends
+     * ({@link #setRowIndex} to {@code -1}) so the next iteration re-evaluates the tree shape.
+     * {@code iterationResetList} is every descendant under the table's {@link UIColumn} children --
+     * all need their cached clientId reset each row; {@code iterationStatefulList} is the
+     * {@link EditableValueHolder}/{@link UIForm} subset that actually carries per-row state.
+     * {@code null} means not yet collected for the current iteration. Iterating these flat lists
+     * replaces the previous per-row recursive tree walk; a read-only table has an empty stateful
+     * list, so save is a no-op.
      */
-    private transient Boolean hasStatefulDescendants;
+    private transient List<UIComponent> iterationResetList;
+    private transient List<UIComponent> iterationStatefulList;
 
     // -------------------------------------------------------------- Properties
 
@@ -541,7 +542,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         // Cleared after restoreDescendantState() so the in-iteration walks still hit the
         // cache; this avoids a redundant re-scan on the iteration-end save+restore.
         if (rowIndex == -1) {
-            hasStatefulDescendants = null;
+            iterationResetList = null;
+            iterationStatefulList = null;
         }
 
     }
@@ -1987,22 +1989,21 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      */
     private void restoreDescendantState() {
 
-        // Unlike saveDescendantState, the restore-side walk must always run even when no
-        // descendants carry per-row state: restoreDescendantState(component, context, saved)
-        // below calls setId(getId()) on every component to invalidate its cached clientId so
-        // each row gets a row-specific clientId (e.g. data:N:foo). Skipping the walk would
-        // leave stale clientIds and render duplicate id="..." attributes across rows.
-
+        // The clientId reset must run for every descendant (not just the stateful ones): each row
+        // needs a row-specific clientId (e.g. data:N:foo), else rows render duplicate id="...". The
+        // descendant set is constant within an iteration, so it is collected once and walked here as
+        // a flat list rather than re-traversing the tree every row.
         FacesContext context = getFacesContext();
-        // The saved-state map is invariant across this walk; fetch it once and thread it
-        // through the recursion instead of re-querying the state helper at every node.
-        @SuppressWarnings("unchecked")
-        Map<String, SavedState> saved = (Map<String, SavedState>) getStateHelper().get(PropertyKeys.saved);
-        if (getChildCount() > 0) {
-            for (UIComponent kid : getChildren()) {
-                if (kid instanceof UIColumn) {
-                    restoreDescendantState(kid, context, saved);
-                }
+        ensureIterationLists();
+        for (UIComponent component : iterationResetList) {
+            component.setId(component.getId()); // forces the cached clientId to be recomputed
+        }
+        if (!iterationStatefulList.isEmpty()) {
+            // The saved-state map is invariant across this walk; fetch it once.
+            @SuppressWarnings("unchecked")
+            Map<String, SavedState> saved = (Map<String, SavedState>) getStateHelper().get(PropertyKeys.saved);
+            for (UIComponent component : iterationStatefulList) {
+                restoreDescendantState(component, context, saved);
             }
         }
 
@@ -2018,10 +2019,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      */
     private void restoreDescendantState(UIComponent component, FacesContext context, Map<String, SavedState> saved) {
 
-        // Reset the client identifier for this component
-        String id = component.getId();
-        component.setId(id); // Forces client id to be reset
-        // Restore state for this component (if it is a EditableValueHolder)
+        // The clientId reset happens in the caller's iterationResetList walk; here we only restore
+        // the per-row transient state of a single stateful descendant.
         if (component instanceof EditableValueHolder) {
             EditableValueHolder input = (EditableValueHolder) component;
             String clientId = component.getClientId(context);
@@ -2049,20 +2048,6 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             }
         }
 
-        // Restore state for children of this component
-        if (component.getChildCount() > 0) {
-            for (UIComponent kid : component.getChildren()) {
-                restoreDescendantState(kid, context, saved);
-            }
-        }
-
-        // Restore state for facets of this component
-        if (component.getFacetCount() > 0) {
-            for (UIComponent facet : component.getFacets().values()) {
-                restoreDescendantState(facet, context, saved);
-            }
-        }
-
     }
 
     /**
@@ -2071,71 +2056,57 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * </p>
      */
     private void saveDescendantState() {
-
-        // Skip the per-row tree walk entirely if no descendants need per-row state. This is
-        // the common case for read-only tables (e.g. all-output-text columns).
-        if (!hasStatefulDescendants()) {
+        ensureIterationLists();
+        if (iterationStatefulList.isEmpty()) {
+            // Read-only table (e.g. all-output-text columns): nothing to save.
             return;
         }
-
         FacesContext context = getFacesContext();
-        if (getChildCount() > 0) {
-            for (UIComponent kid : getChildren()) {
-                if (kid instanceof UIColumn) {
-                    saveDescendantState(kid, context);
-                }
-            }
+        for (UIComponent component : iterationStatefulList) {
+            saveDescendantState(component, context);
         }
-
     }
 
     /**
-     * Returns whether any descendant under this table's UIColumn children is an
-     * {@link EditableValueHolder} or {@link UIForm} -- i.e. whether per-row state save/restore
-     * has anything to do at all. Computed lazily and cached for the duration of the current
-     * iteration (cleared on {@code setRowIndex(-1)}). Read-only tables short-circuit to {@code false}.
+     * Collects, once per iteration, the descendants the per-row save/restore walks act on, so those
+     * walks become flat-list iterations instead of recursive tree traversals re-done every row.
+     * {@code iterationResetList} is every descendant under the table's {@link UIColumn} children
+     * (each needs its cached clientId reset per row); {@code iterationStatefulList} is the
+     * {@link EditableValueHolder}/{@link UIForm} subset carrying per-row state. Cleared on
+     * {@code setRowIndex(-1)} so the next iteration re-evaluates the tree shape.
      */
-    private boolean hasStatefulDescendants() {
-        Boolean cached = hasStatefulDescendants;
-        if (cached != null) {
-            return cached;
+    private void ensureIterationLists() {
+        if (iterationResetList != null) {
+            return;
         }
-        boolean result = scanForStatefulDescendants();
-        hasStatefulDescendants = result;
-        return result;
-    }
-
-    private boolean scanForStatefulDescendants() {
-        if (getChildCount() == 0) {
-            return false;
-        }
-        for (UIComponent kid : getChildren()) {
-            if (kid instanceof UIColumn && subtreeHasStatefulDescendant(kid)) {
-                return true;
+        List<UIComponent> reset = new ArrayList<>();
+        List<UIComponent> stateful = new ArrayList<>();
+        if (getChildCount() > 0) {
+            for (UIComponent kid : getChildren()) {
+                if (kid instanceof UIColumn) {
+                    collectIterationState(kid, reset, stateful);
+                }
             }
         }
-        return false;
+        iterationResetList = reset;
+        iterationStatefulList = stateful;
     }
 
-    private boolean subtreeHasStatefulDescendant(UIComponent component) {
+    private void collectIterationState(UIComponent component, List<UIComponent> reset, List<UIComponent> stateful) {
+        reset.add(component);
         if (component instanceof EditableValueHolder || component instanceof UIForm) {
-            return true;
+            stateful.add(component);
         }
         if (component.getChildCount() > 0) {
             for (UIComponent kid : component.getChildren()) {
-                if (subtreeHasStatefulDescendant(kid)) {
-                    return true;
-                }
+                collectIterationState(kid, reset, stateful);
             }
         }
         if (component.getFacetCount() > 0) {
             for (UIComponent facet : component.getFacets().values()) {
-                if (subtreeHasStatefulDescendant(facet)) {
-                    return true;
-                }
+                collectIterationState(facet, reset, stateful);
             }
         }
-        return false;
     }
 
     /**
@@ -2190,20 +2161,6 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 getStateHelper().put(PropertyKeys.saved, clientId, state);
             } else if (saved != null) {
                 getStateHelper().remove(PropertyKeys.saved, clientId);
-            }
-        }
-
-        // Save state for children of this component
-        if (component.getChildCount() > 0) {
-            for (UIComponent uiComponent : component.getChildren()) {
-                saveDescendantState(uiComponent, context);
-            }
-        }
-
-        // Save state for facets of this component
-        if (component.getFacetCount() > 0) {
-            for (UIComponent facet : component.getFacets().values()) {
-                saveDescendantState(facet, context);
             }
         }
 
