@@ -1178,44 +1178,51 @@ public class Util {
      * Utility method to validate ID uniqueness for the tree represented by <code>component</code>.
      */
     public static void checkIdUniqueness(FacesContext context, UIComponent component, Set<String> componentIds) {
-
-        boolean uniquenessCheckDisabled = false;
-
-        if (context.isProjectStage(ProjectStage.Production)) {
-            WebConfiguration config = WebConfiguration.getInstance(context.getExternalContext());
-            uniquenessCheckDisabled = config.isOptionEnabled(WebConfiguration.BooleanWebContextInitParameter.DisableIdUniquenessCheck);
+        if (!isIdUniquenessCheckDisabled(context)) {
+            doCheckIdUniqueness(context, component, componentIds);
         }
+    }
 
-        if (!uniquenessCheckDisabled) {
+    // com.sun.faces.disableIdUniquenessCheck is true|false|auto (default auto). auto skips the check
+    // in Production only, mirroring MyFaces' CHECK_ID_PRODUCTION_MODE default; a duplicate-id bug would
+    // already have surfaced in Development, so the per-build tree walk buys nothing in Production.
+    private static boolean isIdUniquenessCheckDisabled(FacesContext context) {
+        String value = WebConfiguration.getInstance(context.getExternalContext())
+                .getOptionValue(WebConfiguration.WebContextInitParameter.DisableIdUniquenessCheck);
+        if (value == null || "auto".equals(value)) {
+            return context.isProjectStage(ProjectStage.Production);
+        }
+        return Boolean.parseBoolean(value);
+    }
 
-            // deal with children/facets that are marked transient.
-            for (Iterator<UIComponent> kids = component.getFacetsAndChildren(); kids.hasNext();) {
+    private static void doCheckIdUniqueness(FacesContext context, UIComponent component, Set<String> componentIds) {
+        // deal with children/facets that are marked transient.
+        for (Iterator<UIComponent> kids = component.getFacetsAndChildren(); kids.hasNext();) {
 
-                UIComponent kid = kids.next();
-                // Skip UntargetableComponent descendants (e.g. Facelets-compiler-generated
-                // UILeaf wrappers for static text/whitespace). They have auto-generated ids
-                // that cannot collide via user-authored templates, and they have no
-                // user-targetable descendants -- checking them is wasted work on every
-                // save-view.
-                if (kid instanceof UntargetableComponent) {
-                    continue;
+            UIComponent kid = kids.next();
+            // Skip UntargetableComponent descendants (e.g. Facelets-compiler-generated
+            // UILeaf wrappers for static text/whitespace). They have auto-generated ids
+            // that cannot collide via user-authored templates, and they have no
+            // user-targetable descendants -- checking them is wasted work on every
+            // save-view.
+            if (kid instanceof UntargetableComponent) {
+                continue;
+            }
+            // check for id uniqueness
+            String id = kid.getClientId(context);
+            if (componentIds.add(id)) {
+                doCheckIdUniqueness(context, kid, componentIds);
+            } else {
+                if (LOGGER.isLoggable(Level.SEVERE)) {
+                    LOGGER.log(Level.SEVERE, "faces.duplicate_component_id_error", id);
+
+                    FastStringWriter writer = new FastStringWriter(128);
+                    DebugUtil.simplePrintTree(context.getViewRoot(), id, writer);
+                    LOGGER.severe(writer.toString());
                 }
-                // check for id uniqueness
-                String id = kid.getClientId(context);
-                if (componentIds.add(id)) {
-                    checkIdUniqueness(context, kid, componentIds);
-                } else {
-                    if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.log(Level.SEVERE, "faces.duplicate_component_id_error", id);
 
-                        FastStringWriter writer = new FastStringWriter(128);
-                        DebugUtil.simplePrintTree(context.getViewRoot(), id, writer);
-                        LOGGER.severe(writer.toString());
-                    }
-
-                    String message = MessageUtils.getExceptionMessageString(MessageUtils.DUPLICATE_COMPONENT_ID_ERROR_ID, id);
-                    throw new IllegalStateException(message);
-                }
+                String message = MessageUtils.getExceptionMessageString(MessageUtils.DUPLICATE_COMPONENT_ID_ERROR_ID, id);
+                throw new IllegalStateException(message);
             }
         }
     }

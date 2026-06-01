@@ -25,6 +25,7 @@ import static java.lang.Boolean.TRUE;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.component.EditableValueHolder;
@@ -38,6 +39,9 @@ import jakarta.faces.validator.Validator;
 import jakarta.validation.groups.Default;
 
 public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
+
+    // Precompiled form of EMPTY_VALIDATION_GROUPS_PATTERN; setValidationGroups runs per postback, so avoid recompiling.
+    private static final Pattern EMPTY_VALIDATION_GROUPS = Pattern.compile(EMPTY_VALIDATION_GROUPS_PATTERN);
 
     private static final String ERROR_MISSING_FORM = "f:validateWholeBean must be nested directly in an UIForm.";
 
@@ -82,7 +86,7 @@ public class UIValidateWholeBean extends UIInput implements PartialStateHolder {
         String newValidationGroups = validationGroups;
 
         // Treat empty list as null
-        if (newValidationGroups != null && newValidationGroups.matches(EMPTY_VALIDATION_GROUPS_PATTERN)) {
+        if (newValidationGroups != null && EMPTY_VALIDATION_GROUPS.matcher(newValidationGroups).matches()) {
             newValidationGroups = null;
         }
         // Only clear cache of validation group classes if value is changing

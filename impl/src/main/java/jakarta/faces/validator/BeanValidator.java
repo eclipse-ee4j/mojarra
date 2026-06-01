@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import jakarta.el.PropertyNotFoundException;
 import jakarta.el.ValueExpression;
@@ -116,6 +117,9 @@ public class BeanValidator implements Validator, PartialStateHolder {
      */
     public static final String EMPTY_VALIDATION_GROUPS_PATTERN = "^[\\W" + VALIDATION_GROUPS_DELIMITER + "]*$";
 
+    // Precompiled form of EMPTY_VALIDATION_GROUPS_PATTERN; setValidationGroups runs per postback, so avoid recompiling.
+    private static final Pattern EMPTY_VALIDATION_GROUPS = Pattern.compile(EMPTY_VALIDATION_GROUPS_PATTERN);
+
     /**
      * <p class="changed_added_2_0">
      * If this param is defined, and calling <code>toLowerCase().equals(&#8220;true&#8221;)</code> on a <code>String</code>
@@ -159,7 +163,7 @@ public class BeanValidator implements Validator, PartialStateHolder {
         String newValidationGroups = validationGroups;
 
         // treat empty list as null
-        if (newValidationGroups != null && newValidationGroups.matches(EMPTY_VALIDATION_GROUPS_PATTERN)) {
+        if (newValidationGroups != null && EMPTY_VALIDATION_GROUPS.matcher(newValidationGroups).matches()) {
             newValidationGroups = null;
         }
 
