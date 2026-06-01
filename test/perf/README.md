@@ -66,7 +66,7 @@ the WAR's `WEB-INF/lib` (OpenLiberty, Tomcat).
 | `-Pwildfly`     | WildFly         | `target/wildfly`                | `-Dwildfly.version` (40.0.0.Final) |
 | `-Ptomee`       | TomEE Plume     | `target/apache-tomee-plume-*`   | `-Dtomee.version` (10.1.5)        |
 | `-Ppayara`      | Payara          | `target/payara7`                | `-Dpayara.version` (7.2026.5)     |
-| `-Pliberty`     | OpenLiberty     | `target/wlp`                    | `-Dliberty.version` (26.0.0.4-beta) |
+| `-Pliberty`     | OpenLiberty     | `target/wlp`                    | `-Dliberty.version` (26.0.0.5-beta) |
 | `-Ptomcat`      | Tomcat          | `target/apache-tomcat-*`        | `-Dtomcat.version` (11.0.22)      |
 
 - **WildFly**: pass extra JVM args to the managed process with

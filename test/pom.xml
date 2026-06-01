@@ -66,7 +66,7 @@
         <wildfly.version>40.0.0.Final</wildfly.version>
         <tomee.version>10.1.5</tomee.version>
         <payara.version>7.2026.5</payara.version>
-        <liberty.version>26.0.0.4-beta</liberty.version>
+        <liberty.version>26.0.0.5-beta</liberty.version>
         <tomcat.version>11.0.22</tomcat.version>
 
         <!-- Extra raw <context-param> XML filtered into perf web.xml; default empty. Here (not perf) so server profiles can inject server-specific params (e.g. wildfly-myfaces sets WAR_BUNDLES_JSF_IMPL). -->
