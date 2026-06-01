@@ -770,6 +770,7 @@ public class WebConfiguration {
         ResourceUpdateCheckPeriod("com.sun.faces.resourceUpdateCheckPeriod", "5"), // in minutes
         CompressableMimeTypes("com.sun.faces.compressableMimeTypes", ""),
         DisableUnicodeEscaping("com.sun.faces.disableUnicodeEscaping", "auto"),
+        DisableIdUniquenessCheck("com.sun.faces.disableIdUniquenessCheck", "auto"), // true|false|auto; auto skips the check in Production
         FaceletsDefaultRefreshPeriod(ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, "2"),
         FaceletsViewMappings(ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME, ""),
         FaceletsLibraries(ViewHandler.FACELETS_LIBRARIES_PARAM_NAME, ""),
@@ -880,7 +881,6 @@ public class WebConfiguration {
         CacheResourceModificationTimestamp("com.sun.faces.cacheResourceModificationTimestamp", false),
         EnableDistributable("com.sun.faces.enableDistributable", false),
         EnableMissingResourceLibraryDetection("com.sun.faces.enableMissingResourceLibraryDetection", false),
-        DisableIdUniquenessCheck("com.sun.faces.disableIdUniquenessCheck", false),
         CspNonceEnabled(ResourceHandlerImpl.ENABLE_CSP_NONCE_PARAM_NAME, false),
         EnableTransitionTimeNoOpFlash("com.sun.faces.enableTransitionTimeNoOpFlash", false),
         ForceAlwaysWriteFlashCookie("com.sun.faces.forceAlwaysWriteFlashCookie", false),
