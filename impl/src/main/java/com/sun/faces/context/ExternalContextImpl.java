@@ -825,6 +825,16 @@ public class ExternalContextImpl extends ExternalContext {
     }
 
     /**
+     * Drop the cached {@link BufferedWriter} without flushing it. Both {@code response.reset()} and
+     * {@code response.sendError()} only clear the container buffer, so output still buffered in the wrapping
+     * writer would survive and get flushed at {@link #release()}, re-committing the aborted response and
+     * defeating the container's error page. A subsequent write lazily re-creates a fresh writer.
+     */
+    private void discardResponseOutputWriter() {
+        responseOutputWriter = null;
+    }
+
+    /**
      * @see jakarta.faces.context.ExternalContext#getRequestScheme()
      */
     @Override
@@ -893,6 +903,7 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public void responseReset() {
+        discardResponseOutputWriter();
         response.reset();
     }
 
@@ -901,6 +912,7 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public void responseSendError(int statusCode, String message) throws IOException {
+        discardResponseOutputWriter();
         if (message == null) {
             ((HttpServletResponse) response).sendError(statusCode);
         } else {
