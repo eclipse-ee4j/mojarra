@@ -3,7 +3,7 @@
  * @see api/.../faces.d.ts namespace `faces.util`
  */
 
-import type { faces as FacesSpec } from "../../../../../faces/api/src/main/resources/META-INF/resources/jakarta.faces/faces";
+import type FacesSpec from "../../../../../faces/api/src/main/resources/META-INF/resources/jakarta.faces/faces";
 import { getHead, getNonce, executeScriptWithNonce, type WindowAsDict } from "./dom";
 
 /**

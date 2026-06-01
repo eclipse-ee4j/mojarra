@@ -3,7 +3,7 @@
  * @see api/.../faces.d.ts namespace `faces.push`
  */
 
-import type { faces as FacesSpec } from "../../../../../faces/api/src/main/resources/META-INF/resources/jakarta.faces/faces";
+import type FacesSpec from "../../../../../faces/api/src/main/resources/META-INF/resources/jakarta.faces/faces";
 import type { WindowAsDict } from "./dom";
 
 type OnOpen = FacesSpec.push.OnOpenHandler;

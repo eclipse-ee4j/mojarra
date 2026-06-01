@@ -1,4 +1,4 @@
-import type { faces as FacesSpec } from "../../../../../faces/api/src/main/resources/META-INF/resources/jakarta.faces/faces";
+import type FacesSpec from "../../../../../faces/api/src/main/resources/META-INF/resources/jakarta.faces/faces";
 import {
     UDEF, EMPTY, SPACE, FORM,
     VIEW_STATE_PARAM, CLIENT_WINDOW_PARAM, ALWAYS_EXECUTE_IDS, ENCODED_URL_PARAM,

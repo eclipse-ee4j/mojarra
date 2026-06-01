@@ -4,7 +4,7 @@
  * @see api/.../faces.d.ts namespace `faces`
  */
 
-import type { faces as FacesSpec } from "../../../../../faces/api/src/main/resources/META-INF/resources/jakarta.faces/faces";
+import type FacesSpec from "../../../../../faces/api/src/main/resources/META-INF/resources/jakarta.faces/faces";
 import type { MojarraNamespace } from "../mojarra";
 
 import { UDEF, EMPTY, SPACE, FORM, ALWAYS_EXECUTE_IDS, CLIENT_WINDOW_PARAM } from "./constants";
