@@ -23,6 +23,7 @@ import static com.sun.faces.context.UrlBuilder.PROTOCOL_SEPARATOR;
 import static com.sun.faces.context.UrlBuilder.WEBSOCKET_PROTOCOL;
 import static com.sun.faces.util.Util.isEmpty;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -84,6 +85,7 @@ public class ExternalContextImpl extends ExternalContext {
     private ServletContext servletContext;
     private ServletRequest request;
     private ServletResponse response;
+    private Writer responseOutputWriter;
     private ClientWindow clientWindow = null;
 
     private Map<String, Object> applicationMap = null;
@@ -811,7 +813,10 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public Writer getResponseOutputWriter() throws IOException {
-        return response.getWriter();
+        if (responseOutputWriter == null) {
+            responseOutputWriter = new BufferedWriter(response.getWriter());
+        }
+        return responseOutputWriter;
     }
 
     /**
@@ -916,6 +921,10 @@ public class ExternalContextImpl extends ExternalContext {
             doLastPhaseActions(facesContext, false);
         }
 
+        if (responseOutputWriter != null) {
+            responseOutputWriter.flush();
+        }
+
         response.flushBuffer();
     }
 
@@ -1016,6 +1025,18 @@ public class ExternalContextImpl extends ExternalContext {
 
     @Override
     public void release() {
+        // Flush buffered render output to the container's writer before discarding the response. This is
+        // the guaranteed end-of-request hook (FacesContext.release runs in the FacesServlet finally), so it
+        // covers output written after renderView -- e.g. by PostRenderViewEvent listeners.
+        if (responseOutputWriter != null) {
+            try {
+                responseOutputWriter.flush();
+            } catch (IOException ignored) {
+                // Best-effort at teardown; a genuine write failure surfaces via the container.
+            }
+            responseOutputWriter = null;
+        }
+
         servletContext = null;
         request = null;
         response = null;
