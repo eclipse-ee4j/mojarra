@@ -19,6 +19,7 @@ import static java.lang.Integer.getInteger;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.time.Duration.ofSeconds;
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -116,7 +117,7 @@ class PerfBenchIT extends BaseIT {
     }
 
     private static List<String> only(List<String> full) {
-        return ONLY.isEmpty() ? full : full.stream().filter(ONLY::contains).toList();
+        return ONLY.isEmpty() ? full : full.stream().filter(ONLY::contains).collect(toList());
     }
 
     /** Plain GETs. Most fire RESTORE_VIEW + RENDER_RESPONSE; {@code viewparam-get} fires all 6. */
