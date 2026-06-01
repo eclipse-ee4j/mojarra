@@ -66,7 +66,7 @@ public class PerfStatsServlet extends HttpServlet {
     }
 
     private static void writeText(PrintWriter out, Map<String, Map<PhaseId, Snapshot>> data, Map<PhaseId, Snapshot> totals) {
-        out.println("# Mojarra perf stats (times in microseconds)");
+        out.println("# Faces perf stats (times in microseconds)");
         out.println();
         out.printf("%-22s %-26s %8s %12s %10s %10s %10s%n",
                 "scenario", "phase", "count", "total_us", "avg_us", "min_us", "max_us");
@@ -82,7 +82,7 @@ public class PerfStatsServlet extends HttpServlet {
                 }
                 out.printf("%-22s %-26s %8d %12d %10d %10d %10d%n",
                         scenario,
-                        phaseName(phaseId),
+                        phaseId.getName(),
                         s.count,
                         s.totalNanos / 1000,
                         s.avgNanos() / 1000,
@@ -100,7 +100,7 @@ public class PerfStatsServlet extends HttpServlet {
             }
             out.printf("%-22s %-26s %8d %12d %10d %10d %10d%n",
                     "<TOTAL>",
-                    phaseName(phaseId),
+                    phaseId.getName(),
                     s.count,
                     s.totalNanos / 1000,
                     s.avgNanos() / 1000,
@@ -145,7 +145,7 @@ public class PerfStatsServlet extends HttpServlet {
 
     private static void writePhaseJson(PrintWriter out, PhaseId phaseId, Snapshot s) {
         out.write('"');
-        out.write(phaseName(phaseId));
+        out.write(phaseId.getName());
         out.write("\":{\"count\":");
         out.print(s.count);
         out.write(",\"totalNanos\":");
@@ -155,12 +155,5 @@ public class PerfStatsServlet extends HttpServlet {
         out.write(",\"maxNanos\":");
         out.print(s.maxNanos);
         out.write('}');
-    }
-
-    /** {@link PhaseId#toString()} returns {@code "NAME ordinal"}; we want just the name. */
-    private static String phaseName(PhaseId phaseId) {
-        String s = phaseId.toString();
-        int sp = s.indexOf(' ');
-        return sp > 0 ? s.substring(0, sp) : s;
     }
 }

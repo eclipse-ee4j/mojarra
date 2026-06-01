@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    bean-discovery-mode="all" is required for the OpenLiberty profile: with the Faces impl bundled in the
+    WAR (facesContainer feature), Mojarra's @ViewScoped scope is registered by its CdiExtension at
+    beforeBeanDiscovery, and Liberty's container-managed Weld does not treat that extension-registered
+    scope as a bean-defining annotation during "annotated" discovery, so the @Named @ViewScoped beans go
+    undiscovered (#{formBean} resolves to null on postback). "all" discovers every type and is harmless on
+    the other servers, which discover the same annotated beans either way.
+-->
+<beans xmlns="https://jakarta.ee/xml/ns/jakartaee"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/beans_4_0.xsd"
+       version="4.0" bean-discovery-mode="all">
+</beans>

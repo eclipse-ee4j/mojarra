@@ -3,7 +3,8 @@
 A WAR with a representative spread of Facelets pages (forms, tables, ui:repeat,
 composites, nested variants, readonly+input flavors) plus CDI-managed converters
 and validators, driven by a single integration test that loops thousands of
-GETs and postbacks against a managed GlassFish and dumps per-phase server-side
+GETs and postbacks against a managed app server (GlassFish by default, optionally
+WildFly, TomEE, Payara, OpenLiberty or Tomcat) and dumps per-phase server-side
 timings recorded by `PhaseTimingListener` into `/perf-stats`.
 
 ## Setup (once, and again whenever you change impl)
@@ -25,9 +26,22 @@ overlaid `jakarta.faces:jakarta.faces-api` jar and the `util` test helper
 Everything else runs from inside the module — `cd test/perf` first, then:
 
 ```
-mvn clean verify -Dperf=true                 # GlassFish
+mvn clean verify -Dperf=true             # GlassFish (default)
+mvn clean verify -Dperf=true -Pwildfly   # WildFly
+mvn clean verify -Dperf=true -Ptomee     # TomEE Plume
+mvn clean verify -Dperf=true -Ppayara    # Payara
+mvn clean verify -Dperf=true -Pliberty   # OpenLiberty (via facesContainer)
+mvn clean verify -Dperf=true -Ptomcat    # Tomcat (+ Weld + Hibernate Validator)
 
-# Tune iteration counts (warmup=50, runs=500 by default):
+# Every server also has a -myfaces twin that runs Apache MyFaces instead of Eclipse Mojarra:
+mvn clean verify -Dperf=true -Pglassfish-myfaces   # GlassFish (with patched jakarta.faces.jar)
+mvn clean verify -Dperf=true -Pwildfly-myfaces     # WildFly (via WAR_BUNDLES_JSF_IMPL)
+mvn clean verify -Dperf=true -Ptomee-myfaces       # TomEE WebProfile
+mvn clean verify -Dperf=true -Ppayara-myfaces      # Payara (with patched jakarta.faces.jar)
+mvn clean verify -Dperf=true -Pliberty-myfaces     # OpenLiberty
+mvn clean verify -Dperf=true -Ptomcat-myfaces      # Tomcat (+ Weld + Hibernate Validator)
+
+# Tune iteration counts (warmup=50, runs=1000 by default):
 mvn clean verify -Dperf=true -Dperf.warmup=200 -Dperf.runs=2000
 ```
 
@@ -42,17 +56,60 @@ per-phase table (count / total_us / avg_us / min_us / max_us) plus an aggregate
 
 ## Servers
 
-GlassFish is the only active server. The WildFly and TomEE profiles still exist in
-`test/pom.xml` but are commented out until an EE 12-compatible version of each is
-available — re-enable them there once it is.
+The server is selected with `-P`; GlassFish is the default profile. Each profile
+provisions its own server under `target/` and supplies the chosen Mojarra jar —
+either overlaid into the server's modules (GlassFish, Payara, WildFly, TomEE) or,
+for the bare servlet containers that ship no Faces implementation, bundled into
+the WAR's `WEB-INF/lib` (OpenLiberty, Tomcat).
 
-GlassFish provisions under `target/glassfish9` and overlays the API + impl jars:
+| profile         | server          | provisioned into                | version property                  |
+|-----------------|-----------------|----------------------------------|-----------------------------------|
+| *(default)*     | GlassFish       | `target/glassfish9`             | `-Dglassfish.version` (9.0.0-SNAPSHOT) |
+| `-Pwildfly`     | WildFly         | `target/wildfly`                | `-Dwildfly.version` (40.0.0.Final) |
+| `-Ptomee`       | TomEE Plume     | `target/apache-tomee-plume-*`   | `-Dtomee.version` (10.1.5)        |
+| `-Ppayara`      | Payara          | `target/payara7`                | `-Dpayara.version` (7.2026.5)     |
+| `-Pliberty`     | OpenLiberty     | `target/wlp`                    | `-Dliberty.version` (26.0.0.5-beta) |
+| `-Ptomcat`      | Tomcat          | `target/apache-tomcat-*`        | `-Dtomcat.version` (11.0.22)      |
 
-| what         | artifact                                     | version property                       |
-|--------------|----------------------------------------------|----------------------------------------|
-| server       | `org.glassfish.main.distributions:glassfish` | `-Dglassfish.version` (9.0.0-SNAPSHOT) |
-| Faces API    | `jakarta.faces:jakarta.faces-api`            | `-Dfaces-api.version` (5.0.0-SNAPSHOT) |
-| Mojarra impl | `org.glassfish.mojarra:mojarra`              | `-Dmojarra.version` (= project version)|
+- **WildFly**: pass extra JVM args to the managed process with
+  `-Djboss.options="-Xmx8g"`.
+- **TomEE**: Plume 10.1.5 is Jakarta EE 10, but Mojarra 4.x (Faces 4.1) is EE 11,
+  so the profile overlays the EE 11 API jars Faces references (EL 6.0, CDI 4.1)
+  alongside the Mojarra jar. The same shim is applied to every measured version,
+  so the per-version delta stays apples-to-apples.
+- **Payara**: GlassFish-derived, so Mojarra is overlaid into
+  `payara7/glassfish/modules` exactly as for GlassFish.
+- **OpenLiberty**: ships MyFaces. The profile enables the `facesContainer-4.1`
+  feature (instead of `faces-4.1`) so the WAR-bundled Mojarra is used as the Faces
+  implementation; CDI, EL and Bean Validation come from the server. The bench
+  driver is pinned to HTTP/1.1, which this server's endpoint would otherwise
+  upgrade to HTTP/2.
+- **Tomcat**: a bare servlet container, so the profile bundles Mojarra plus Weld 6
+  (`-Dweld.version`, CDI) and Hibernate Validator 9 (`-DhibernateValidator.version`,
+  Bean Validation) into the WAR's `WEB-INF/lib`.
+
+Every profile launches its server with the same max heap (`-Xmx1g`) so the
+cross-server comparison is apples-to-apples; change it for all servers at once with
+`-Dperf.heapSize=2g`.
+
+### MyFaces variants
+
+Each server has a `-myfaces` twin (`-Pglassfish-myfaces`, `-Pwildfly-myfaces`,
+`-Ptomee-myfaces`, `-Ppayara-myfaces`, `-Pliberty-myfaces`, `-Ptomcat-myfaces`)
+that runs **Apache MyFaces** (`-Dmyfaces.version`, default `4.1.4-SNAPSHOT`) instead of
+Mojarra, for cross-implementation comparison. How MyFaces is hosted depends on the server:
+
+- **Tomcat / OpenLiberty**: bundle `myfaces-api`+`myfaces-impl` in the WAR instead of the
+  Mojarra jar (OpenLiberty still via `facesContainer-4.1`).
+- **TomEE**: uses the **WebProfile** distribution (the MyFaces flavour) and overlays
+  `${myfaces.version}` into its `lib/`.
+- **WildFly**: bundles MyFaces and tells WildFly to step aside via
+  `WEB-INF/jboss-deployment-structure.xml` (excluding `org.jboss.as.jsf` etc.) plus
+  `org.jboss.jbossfaces.WAR_BUNDLES_JSF_IMPL=true`.
+- **GlassFish / Payara**: keep the Mojarra module (the Weld integration needs it) but make
+  the WAR use bundled MyFaces via `WEB-INF/glassfish-web.xml` (`delegate=false` +
+  `useBundledJsf=true`), and strip Mojarra's CDI-extension and `ServletContainerInitializer`
+  service entries from the container `jakarta.faces.jar` to avoid clashes.
 
 ## Picking the Mojarra version
 
@@ -65,7 +122,12 @@ different build already present in `~/.m2`:
 mvn clean verify -Dperf=true -Dmojarra.version=5.0.0-SNAPSHOT
 ```
 
-## Comparing two builds
+This works on every server profile. The `-myfaces` profiles take `-Dmyfaces.version`
+(default `4.1.4-SNAPSHOT`) the same way:
+
+```
+mvn clean verify -Dperf=true -Ptomcat-myfaces -Dmyfaces.version=4.1.3
+```
 
 5.0 has no releases yet, so comparison is branch-vs-branch — rebuild impl between
 runs:
@@ -83,14 +145,47 @@ diff /tmp/a.txt /tmp/b.txt
 If you already have two impl versions in `~/.m2`, swap with `-Dmojarra.version=<v>`
 between runs instead and skip the rebuilds.
 
+## Tuning state saving / view pooling
+
+The state and view-pooling context parameters are filtered into the WAR's `web.xml`
+at package time, so they can be tuned per run without editing anything. Defaults
+match the implementation defaults; each knob sets the Mojarra parameter and, where
+applicable, its MyFaces equivalent (the other implementation ignores the foreign one):
+
+| property | default | Faces / Mojarra param | MyFaces equivalent |
+|----------|---------|-----------------------|--------------------|
+| `-Dwebapp.stateSavingMethod`     | `server` | `jakarta.faces.STATE_SAVING_METHOD`    | *(same)* |
+| `-Dwebapp.serializeServerState`  | `false`  | `jakarta.faces.SERIALIZE_SERVER_STATE` | *(same)* |
+| `-Dwebapp.compressViewState`     | `true`   | `com.sun.faces.compressViewState`      | `org.apache.myfaces.COMPRESS_STATE_IN_SESSION` |
+| `-Dwebapp.numberOfViewsInSession`| `15`     | `com.sun.faces.numberOfLogicalViews`   | `org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION` |
+
+```
+mvn clean verify -Dperf=true -Dwebapp.stateSavingMethod=client -Dwebapp.numberOfViewsInSession=10
+```
+
+For any parameter without a dedicated knob, pass raw `<context-param>` XML through the
+`webapp.additionalContextParams` escape hatch (the value is shell-single-quoted, so a literal
+`'` inside a param value must be written as `'\''` — close the quote, an escaped quote, reopen):
+
+```
+mvn clean verify -Dperf=true \
+  -Dwebapp.additionalContextParams='<context-param><param-name>org.glassfish.mojarra.disableIdUniquenessCheck</param-name><param-value>true</param-value></context-param>'
+```
+
+(`jakarta.faces.PROJECT_STAGE` is fixed at `Production` — development-stage performance is not of interest.)
+
 ## Scenarios
 
 - `index` — landing page (smallest baseline)
 - `form-inputs` — single h:form with text/textarea/select/checkbox/radio, managed converters+validators, BV
 - `table-readonly` — h:dataTable, 200 rows, outputs only
+- `table-readonly-heavy` — h:dataTable, 2000 rows, outputs only
 - `table-inputs` — h:dataTable, 50 rows, per-row inputs + converters/validators
+- `table-inputs-heavy` — h:dataTable, 200 rows, per-row inputs + converters/validators
 - `repeat-readonly` — ui:repeat, 200 rows, outputs only
+- `repeat-readonly-heavy` — ui:repeat, 2000 rows, outputs only
 - `repeat-inputs` — ui:repeat, 40 rows, per-row inputs
+- `repeat-inputs-heavy` — ui:repeat, 200 rows, per-row inputs
 - `repeat-nested` — ui:repeat ∋ ui:repeat (5×10 rows, per-row inputs)
 - `composite-readonly` — readonly composite component, 200 instances
 - `composite-inputs` — input composite component, 40 instances
@@ -123,6 +218,11 @@ target/glassfish9/glassfish/domains/domain1/config/domain.xml
 <jvm-options>-XX:FlightRecorderOptions=stackdepth=128</jvm-options>
 ```
 
+(For the other servers the same JVM options go into their respective config rather
+than `domain.xml`: Payara `payara7/glassfish/domains/domain1/config/domain.xml`,
+WildFly `standalone.conf`, TomEE `bin/setenv.sh` / `-Dtomee.catalina_opts`, Tomcat
+`bin/setenv.sh`, OpenLiberty `wlp/usr/servers/defaultServer/jvm.options`.)
+
 Then run the bench at a tighter iteration count — JFR samples on a 20 ms cadence by default, so ~7,500 samples (≈150 s of bench time) is plenty for a clear hot-method picture without producing a huge file:
 
 ```
@@ -132,10 +232,10 @@ mvn failsafe:integration-test failsafe:verify -Dperf=true -Dperf.warmup=20 -Dper
 Analyze with the JDK-bundled `jfr` tool:
 
 ```
-jfr summary                          /tmp/perf-bench.jfr
-jfr view --width 200 hot-methods         /tmp/perf-bench.jfr
+jfr summary /tmp/perf-bench.jfr
+jfr view --width 200 hot-methods /tmp/perf-bench.jfr
 jfr view --width 200 allocation-by-class /tmp/perf-bench.jfr
-jfr view --width 200 allocation-by-site  /tmp/perf-bench.jfr
+jfr view --width 200 allocation-by-site /tmp/perf-bench.jfr
 ```
 
 For deeper aggregation (e.g. grouping hot leaves by their Mojarra-side caller, filtering by thread, attributing samples to scenarios via the timeline) export the execution samples to JSON and process them with a small script:
