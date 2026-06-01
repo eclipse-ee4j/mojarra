@@ -85,6 +85,11 @@ public class ExternalContextImpl extends ExternalContext {
     private ServletContext servletContext;
     private ServletRequest request;
     private ServletResponse response;
+    // Cached response writer (lazily created). A BufferedWriter so the many small render-time writes --
+    // and any writes by render-view listeners that obtain this same writer -- coalesce into larger chunks
+    // before the container's writer (some servlet writers, e.g. undertow, pay a per-write encode cost).
+    // Caching means every caller shares one buffer, preserving write order; flushed in release() and
+    // responseFlushBuffer().
     private Writer responseOutputWriter;
     private ClientWindow clientWindow = null;
 
