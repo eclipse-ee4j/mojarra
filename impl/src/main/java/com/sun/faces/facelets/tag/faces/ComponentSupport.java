@@ -57,7 +57,15 @@ public final class ComponentSupport {
 
     private final static String MARK_DELETED = "com.sun.faces.facelets.MARK_DELETED";
     public final static String MARK_CREATED = "com.sun.faces.facelets.MARK_ID";
-    private final static String MARK_ID_CACHE = "com.sun.faces.facelets.MARK_ID_CACHE";
+
+    /**
+     * FacesContext-scoped flag set by {@code ComponentTagHandlerDelegateImpl} while applying the children of a
+     * freshly created component. When set, {@link #findChildByTagId} skips its scan: a freshly built subtree has
+     * no pre-existing children to reuse, so searching it is pure waste (the source of the O(n^2) refresh on wide
+     * views). The scan stays active for existing/reused parents -- binding-supplied or refreshed subtrees -- which
+     * is what keeps component-binding reuse (#4128/#4146) correct.
+     */
+    public final static String BUILDING_FRESH_SUBTREE = "com.sun.faces.facelets.BUILDING_FRESH_SUBTREE";
 
     // Expando boolean attribute used to identify parent components that have had
     // a dynamic child addition or removal.
@@ -206,15 +214,12 @@ public final class ComponentSupport {
     // never be in the tree at this point, so we can return null and skip iterating.
 
     public static UIComponent findUIInstructionChildByTagId(FacesContext context, UIComponent parent, String id) {
-        UIComponent result = null;
-        if (isBuildingNewComponentTree(context)) {
+        if (isBuildingNewComponentTree(context) || !isPartialStateSaving(context)) {
             return null;
         }
-        if (isPartialStateSaving(context)) {
-            result = getDescendantMarkIdCache(parent).get(id);
-        }
-
-        return result;
+        // The existing UIInstructions is a direct child of the parent it was applied under, so the bounded
+        // direct scan locates it by its MARK_CREATED tag id without a descendant cache.
+        return findChildByTagIdFullStateSaving(context, parent, id);
     }
 
     private static boolean isPartialStateSaving(FacesContext context) {
@@ -229,20 +234,20 @@ public final class ComponentSupport {
      * @return the UI component
      */
     public static UIComponent findChildByTagId(FacesContext context, UIComponent parent, String id) {
-        if (isPartialStateSaving(context)) {
-            // fast path - get the child from the descendant mark id cache
-            return getDescendantMarkIdCache(parent).get(id);
+        // While building a freshly created subtree there is nothing existing to find, so skip the scan entirely
+        // (this is the refresh-gate that keeps wide fresh builds O(n) instead of O(n^2)). For existing/reused
+        // parents the flag is unset/false and the bounded direct scan runs: the component is a direct child of
+        // the parent it is applied under, so no descendant cache or whole-subtree recursion is needed. Composite
+        // children relocated by cc:insertChildren are resolved separately via findReparentedComponent ->
+        // findChildByTagIdDeep, which bypasses this gate.
+        if (context.getAttributes().get(BUILDING_FRESH_SUBTREE) == Boolean.TRUE) {
+            return null;
         }
-        else {
-            // original impl - traverse the tree
-            return findChildByTagIdFullStateSaving(context, parent, id);
-        }
+        return findChildByTagIdFullStateSaving(context, parent, id);
     }
 
     private static UIComponent findChildByTagIdFullStateSaving(FacesContext context, UIComponent parent, String id) {
         UIComponent c = null;
-        UIViewRoot root = context.getViewRoot();
-        boolean hasDynamicComponents = (null != root && root.getAttributes().containsKey(RIConstants.TREE_HAS_DYNAMIC_COMPONENTS));
         String cid = null;
         List<UIComponent> components;
         String facetName = getFacetName(parent);
@@ -281,115 +286,40 @@ public final class ComponentSupport {
                     }
                 }
             }
-            if (hasDynamicComponents) {
-                /*
-                 * Make sure we look for the child recursively it might have moved
-                 * into a different parent in the parent hierarchy. Note currently
-                 * we are only looking down the tree. Maybe it would be better
-                 * to use the VisitTree API instead.
-                 */
-                UIComponent foundChild = findChildByTagId(context, c, id);
-                if (foundChild != null) {
-                    return foundChild;
-                }
-            }
         }
 
         return null;
     }
 
-    @SuppressWarnings("unchecked")
-    private static Map<String, UIComponent> getDescendantMarkIdCache(UIComponent component) {
-        Map<String, UIComponent> descendantMarkIdCache = (Map<String, UIComponent>) component.getTransientStateHelper().getTransient(MARK_ID_CACHE);
-
-        if (descendantMarkIdCache == null) {
-            descendantMarkIdCache = new HashMap<String, UIComponent>();
-            component.getTransientStateHelper().putTransient(MARK_ID_CACHE, descendantMarkIdCache);
-        }
-
-        return descendantMarkIdCache;
-    }
-
     /**
-     * Adds the mark id of the specified {@link UIComponent} <code>otherComponent</code> to the mark id cache of this component,
-     * including all its descendant mark ids. Changes are propagated up the component tree.
+     * Deep variant of {@link #findChildByTagId} that descends through intermediate containers. Used only to
+     * locate composite-component children relocated by {@code cc:insertChildren}, which may sit several
+     * container levels below the composite implementation facet (e.g. wrapped in an {@code h:panelGroup}).
+     * The hot postback-refresh path uses the bounded {@link #findChildByTagId} direct scan; this deep search
+     * is confined to the (small) composite implementation subtree, off that path.
      */
-    public static void addToDescendantMarkIdCache(UIComponent component, UIComponent otherComponent) {
-        String markId = (String) otherComponent.getAttributes().get(MARK_CREATED);
-        if (markId != null) {
-            addSingleDescendantMarkId(component, markId, otherComponent);
+    public static UIComponent findChildByTagIdDeep(FacesContext context, UIComponent parent, String id) {
+        // Raw scan (not findChildByTagId): the reparent path must search even inside a freshly built composite,
+        // so it deliberately bypasses the BUILDING_FRESH_SUBTREE gate.
+        UIComponent c = findChildByTagIdFullStateSaving(context, parent, id);
+        if (c != null) {
+            return c;
         }
-        Map<String, UIComponent> otherMarkIds = getDescendantMarkIdCache(otherComponent);
-        if (!otherMarkIds.isEmpty()) {
-            addAllDescendantMarkIds(component, otherMarkIds);
+        if (parent.getFacetCount() > 0) {
+            for (UIComponent facet : parent.getFacets().values()) {
+                c = findChildByTagIdDeep(context, facet, id);
+                if (c != null) {
+                    return c;
+                }
+            }
         }
-    }
-
-    /**
-     * Adds the specified <code>markId</code> and its corresponding {@link UIComponent} <code>otherComponent</code>
-     * to the mark id cache of this component. Changes are propagated up the component tree.
-     */
-    private static void addSingleDescendantMarkId(UIComponent component, String markId, UIComponent otherComponent) {
-        getDescendantMarkIdCache(component).put(markId, otherComponent);
-        UIComponent parent = component.getParent();
-        if (parent != null) {
-            addSingleDescendantMarkId(parent, markId, otherComponent);
+        for (UIComponent child : parent.getChildren()) {
+            c = findChildByTagIdDeep(context, child, id);
+            if (c != null) {
+                return c;
+            }
         }
-    }
-
-    /**
-     * Adds all specified <code>otherMarkIds</code> to the mark id cache of this component.
-     * Changes are propagated up the component tree.
-     */
-    private static void addAllDescendantMarkIds(UIComponent component, Map<String, UIComponent> otherMarkIds) {
-        getDescendantMarkIdCache(component).putAll(otherMarkIds);
-        UIComponent parent = component.getParent();
-        if (parent != null) {
-            addAllDescendantMarkIds(parent, otherMarkIds);
-        }
-    }
-
-    /**
-     * Removes the mark id of the specified {@link UIComponent} <code>otherComponent</code> from the mark id cache of this component,
-     * including all its descendant mark ids. Changes are propagated up the component tree.
-     */
-    public static void removeFromDescendantMarkIdCache(UIComponent component, UIComponent otherComponent) {
-        String markId = (String) otherComponent.getAttributes().get(MARK_CREATED);
-        if (markId != null) {
-            removeSingleDescendantMarkId(component, markId);
-        }
-        Map<String, UIComponent> otherMarkIds = getDescendantMarkIdCache(otherComponent);
-        if (!otherMarkIds.isEmpty()) {
-            removeAllDescendantMarkIds(component, otherMarkIds);
-        }
-    }
-
-    /**
-     * Removes the specified <code>markId</code> from the mark id cache of this component.
-     * Changes are propagated up the component tree.
-     */
-    private static void removeSingleDescendantMarkId(UIComponent component, String markId) {
-        getDescendantMarkIdCache(component).remove(markId);
-        UIComponent parent = component.getParent();
-        if (parent != null) {
-            removeSingleDescendantMarkId(parent, markId);
-        }
-    }
-
-    /**
-     * Removes all specified <code>otherMarkIds</code> from the mark id cache of this component.
-     * Changes are propagated up the component tree.
-     */
-    private static void removeAllDescendantMarkIds(UIComponent component, Map<String, UIComponent> otherMarkIds) {
-        Map<String, UIComponent> descendantMarkIdCache = getDescendantMarkIdCache(component);
-        Iterator<String> iterator = otherMarkIds.keySet().iterator();
-        while (iterator.hasNext()) {
-            descendantMarkIdCache.remove(iterator.next());
-        }
-        UIComponent parent = component.getParent();
-        if (parent != null) {
-            removeAllDescendantMarkIds(parent, otherMarkIds);
-        }
+        return null;
     }
 
     /**
