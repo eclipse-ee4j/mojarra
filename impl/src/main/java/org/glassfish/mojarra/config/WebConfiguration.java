@@ -657,7 +657,7 @@ public class WebConfiguration {
         ResourceUpdateCheckPeriod("org.glassfish.mojarra.resourceUpdateCheckPeriod", "5"), // in minutes
         CompressableMimeTypes("org.glassfish.mojarra.compressableMimeTypes", ""),
         DisableUnicodeEscaping("org.glassfish.mojarra.disableUnicodeEscaping", "auto"),
-        DisableIdUniquenessCheck("org.glassfish.mojarra.disableIdUniquenessCheck", "auto"), // true|false|auto; auto skips the check in Production
+        DisableIdUniquenessCheck("org.glassfish.mojarra.disableIdUniquenessCheck", "false"), // true|false|auto; default false (always check), opt-in auto skips it in Production
         DuplicateJARPattern("org.glassfish.mojarra.duplicateJARPattern", ""),
         FullStateSavingViewIds(StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME, ""),
 

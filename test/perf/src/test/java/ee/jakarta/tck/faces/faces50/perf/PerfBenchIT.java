@@ -122,6 +122,7 @@ class PerfBenchIT extends BaseITNG {
             "repeat-nested",
             "composite-inputs",
             "composite-nested",
+            "composite-heavy",
             "table-inputs-heavy",
             "repeat-inputs-heavy"));
 
