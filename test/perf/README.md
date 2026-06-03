@@ -197,6 +197,7 @@ mvn clean verify -Dperf=true \
 - `composite-readonly` — readonly composite component, 200 instances
 - `composite-inputs` — input composite component, 40 instances
 - `composite-nested` — composite component nested inside ui:repeat (5×10)
+- `composite-heavy` — large *static* tree (`c:forEach` of ~500 small composite components ≈ 3000 components, all NamingContainers) at issue #4811 scale; stresses the Facelets refresh / per-component state+attribute cost on postback
 - `form-inputs-ajax`, `table-inputs-ajax`, `repeat-inputs-ajax` — same as their non-ajax twins but submit via `<f:ajax execute="@form" render="@form messages">`; driver sends a partial-ajax POST and refreshes `ViewState` from the XML response.
 - `viewparam-get` — GET with `<f:metadata><f:viewParam><f:viewAction></f:metadata>` so the GET runs the **entire** lifecycle (Apply Request Values → Render Response), not just Restore View + Render Response.
 

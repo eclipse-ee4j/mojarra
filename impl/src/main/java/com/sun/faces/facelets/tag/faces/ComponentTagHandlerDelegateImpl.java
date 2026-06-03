@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -172,10 +173,23 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
             isNaming = true;
             IterationIdManager.startNamingContainer(ctx);
         }
+
+        // Refresh-gate (see ComponentSupport.BUILDING_FRESH_SUBTREE): a freshly created component with no
+        // children yet begins an all-new subtree, so its descendants have nothing existing to reuse and
+        // findChildByTagId can skip scanning. A found or binding-supplied component (which arrives with its
+        // children already attached) may contain components to reuse, so the scan stays active for its subtree.
+        boolean freshSubtree = !componentFound && c.getChildCount() == 0;
+        Map<Object, Object> contextAttributes = context.getAttributes();
+        Object previousFreshSubtree = contextAttributes.put(ComponentSupport.BUILDING_FRESH_SUBTREE, freshSubtree);
         try {
             // first allow c to get populated
             owner.applyNextHandler(ctx, c);
         } finally {
+            if (previousFreshSubtree != null) {
+                contextAttributes.put(ComponentSupport.BUILDING_FRESH_SUBTREE, previousFreshSubtree);
+            } else {
+                contextAttributes.remove(ComponentSupport.BUILDING_FRESH_SUBTREE);
+            }
             if (isNaming) {
                 IterationIdManager.stopNamingContainer(ctx);
             }
@@ -462,7 +476,8 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
     protected UIComponent findReparentedComponent(FaceletContext ctx, UIComponent parent, String tagId) {
         UIComponent facet = parent.getFacets().get(UIComponent.COMPOSITE_FACET_NAME);
         if (facet != null) {
-            return findChild(ctx, facet, tagId);
+            // Relocated children may sit below intermediate containers in the implementation, so search deep.
+            return ComponentSupport.findChildByTagIdDeep(ctx.getFacesContext(), facet, tagId);
         }
         return null;
     }

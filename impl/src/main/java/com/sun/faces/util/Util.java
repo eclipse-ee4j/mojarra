@@ -1183,9 +1183,9 @@ public class Util {
         }
     }
 
-    // com.sun.faces.disableIdUniquenessCheck is true|false|auto (default auto). auto skips the check
-    // in Production only, mirroring MyFaces' CHECK_ID_PRODUCTION_MODE default; a duplicate-id bug would
-    // already have surfaced in Development, so the per-build tree walk buys nothing in Production.
+    // com.sun.faces.disableIdUniquenessCheck is true|false|auto (default false: always run the check).
+    // Opt-in auto skips the whole-tree duplicate-id walk in Production only (a duplicate id would already
+    // have surfaced in Development). The default keeps the check on; the skip stays opt-in.
     private static boolean isIdUniquenessCheckDisabled(FacesContext context) {
         String value = WebConfiguration.getInstance(context.getExternalContext())
                 .getOptionValue(WebConfiguration.WebContextInitParameter.DisableIdUniquenessCheck);
