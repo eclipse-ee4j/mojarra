@@ -3380,6 +3380,19 @@ public abstract class UIComponentBase extends UIComponent {
         return context.getViewRoot().createUniqueId();
     }
 
+    /**
+     * Overridden to reuse the memoized {@link #getNamingContainerAncestor()} cache instead of the default
+     * uncached parent-chain walk, which is hot during view build (assignUniqueId / clientId resolution).
+     * Same result: this component if it is a {@link NamingContainer}, else its first NamingContainer ancestor.
+     */
+    @Override
+    public UIComponent getNamingContainer() {
+        if (this instanceof NamingContainer) {
+            return this;
+        }
+        return getNamingContainerAncestor();
+    }
+
     private UIComponent getNamingContainerAncestor() {
         if (namingContainerAncestor != null) {
             return namingContainerAncestor;
