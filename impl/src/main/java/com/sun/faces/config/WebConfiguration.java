@@ -770,7 +770,7 @@ public class WebConfiguration {
         ResourceUpdateCheckPeriod("com.sun.faces.resourceUpdateCheckPeriod", "5"), // in minutes
         CompressableMimeTypes("com.sun.faces.compressableMimeTypes", ""),
         DisableUnicodeEscaping("com.sun.faces.disableUnicodeEscaping", "auto"),
-        DisableIdUniquenessCheck("com.sun.faces.disableIdUniquenessCheck", "auto"), // true|false|auto; auto skips the check in Production
+        DisableIdUniquenessCheck("com.sun.faces.disableIdUniquenessCheck", "false"), // true|false|auto; default false (always check), opt-in auto skips it in Production
         FaceletsDefaultRefreshPeriod(ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, "2"),
         FaceletsViewMappings(ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME, ""),
         FaceletsLibraries(ViewHandler.FACELETS_LIBRARIES_PARAM_NAME, ""),
