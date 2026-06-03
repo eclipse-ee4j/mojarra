@@ -16,7 +16,7 @@
 
 package org.glassfish.mojarra.facelets.tag.faces;
 
-import static org.glassfish.mojarra.RIConstants.DYNAMIC_COMPONENT;
+import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.DYNAMIC_COMPONENT;
 import static org.glassfish.mojarra.component.CompositeComponentStackManager.StackType.TreeCreation;
 
 import java.io.IOException;
@@ -397,20 +397,19 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         if (this.id != null && !(this.id.isLiteral() && IterationIdManager.registerLiteralId(ctx, this.id.getValue()))) {
             c.setId(this.id.getValue(ctx));
         } else {
-            UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
-            if (root != null) {
-                String uid;
-                IdMapper mapper = IdMapper.getMapper(ctx.getFacesContext());
-                String mid = mapper != null ? mapper.getAliasedId(id) : id;
-                UIComponent ancestorNamingContainer = parent.getNamingContainer();
-                if (null != ancestorNamingContainer && ancestorNamingContainer instanceof UniqueIdVendor) {
-                    uid = ((UniqueIdVendor) ancestorNamingContainer).createUniqueId(ctx.getFacesContext(), mid);
-                } else {
-                    uid = root.createUniqueId(ctx.getFacesContext(), mid);
+            IdMapper mapper = IdMapper.getMapper(ctx.getFacesContext());
+            String mid = mapper != null ? mapper.getAliasedId(id) : id;
+            UIComponent ancestorNamingContainer = parent.getNamingContainer();
+            if (ancestorNamingContainer instanceof UniqueIdVendor) {
+                c.setId(((UniqueIdVendor) ancestorNamingContainer).createUniqueId(ctx.getFacesContext(), mid));
+            } else {
+                // No UniqueIdVendor ancestor: fall back to the view root. getViewRoot walks the parent chain,
+                // so resolve it only on this branch instead of unconditionally for every component.
+                UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
+                if (root != null) {
+                    c.setId(root.createUniqueId(ctx.getFacesContext(), mid));
                 }
-                c.setId(uid);
             }
-
         }
 
         if (rendererType != null) {

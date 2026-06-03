@@ -22,7 +22,7 @@ import static jakarta.faces.component.visit.VisitResult.COMPLETE;
 import static jakarta.faces.component.visit.VisitResult.REJECT;
 import static java.util.logging.Level.FINEST;
 import static org.glassfish.mojarra.RIConstants.DYNAMIC_ACTIONS;
-import static org.glassfish.mojarra.RIConstants.DYNAMIC_COMPONENT;
+import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.DYNAMIC_COMPONENT;
 import static org.glassfish.mojarra.util.ComponentStruct.ADD;
 import static org.glassfish.mojarra.util.ComponentStruct.REMOVE;
 import static org.glassfish.mojarra.util.Util.isEmpty;
@@ -341,6 +341,11 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
         if (state != null) {
             try {
                 stateContext.setTrackViewModifications(false);
+                // No saved dynamic actions => no component carries DYNAMIC_COMPONENT, so the per-component
+                // marker lookup in componentAddedDynamically can be skipped across the whole restore traversal.
+                @SuppressWarnings("unchecked")
+                List<Object> savedActions = (List<Object>) state.get(DYNAMIC_ACTIONS);
+                stateContext.setHasDynamicComponents(!isEmpty(savedActions));
 
                 VisitContext visitContext = VisitContext.createVisitContext(context, null, SKIP_ITERATION_AND_EXECUTE_LIFECYCLE_HINTS);
                 viewRoot.visitTree(visitContext, (context1, target) -> {
@@ -366,6 +371,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
                 });
                 restoreDynamicActions(context, stateContext, state);
             } finally {
+                stateContext.setHasDynamicComponents(true);
                 stateContext.setTrackViewModifications(true);
             }
         } else {

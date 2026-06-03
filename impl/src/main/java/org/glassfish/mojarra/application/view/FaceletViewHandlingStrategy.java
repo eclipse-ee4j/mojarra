@@ -36,7 +36,7 @@ import static java.util.Collections.emptyList;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.WARNING;
-import static org.glassfish.mojarra.RIConstants.DYNAMIC_COMPONENT;
+import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.DYNAMIC_COMPONENT;
 import static org.glassfish.mojarra.RIConstants.FACELETS_ENCODING_KEY;
 import static org.glassfish.mojarra.RIConstants.FLOW_DEFINITION_ID_SUFFIX;
 import static org.glassfish.mojarra.context.StateContext.getStateContext;

@@ -43,7 +43,6 @@ import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagAttributeException;
 
-import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.context.StateContext;
 import org.glassfish.mojarra.facelets.tag.faces.core.FacetHandler;
 import org.glassfish.mojarra.util.Util;
@@ -55,8 +54,25 @@ import org.glassfish.mojarra.util.Util;
  */
 public final class ComponentSupport {
 
-    private final static String MARK_DELETED = "org.glassfish.mojarra.facelets.MARK_DELETED";
-    public final static String MARK_CREATED = "org.glassfish.mojarra.facelets.MARK_ID";
+    // ---- Facelets view-build / refresh markers ----
+    // Stored on a component's attribute map during Facelets build/refresh and shared by value with the
+    // jakarta.faces.component.PackageUtils constants and the UIComponentBase field-backed marker cache; the
+    // values MUST stay identical on both sides.
+
+    // Facelets tag id stamped on each component it creates; findChildByTagId locates a component by it on refresh.
+    public final static String MARK_CREATED = "facelets.MARK_ID";
+
+    // Marks a component pruned during refresh and pending removal.
+    private final static String MARK_DELETED = "facelets.MARK_DELETED";
+
+    // Marks a parent whose children were dynamically added or removed.
+    public final static String MARK_CHILDREN_MODIFIED = "facelets.MARK_CHILDREN_MODIFIED";
+
+    // Collection<String> of the tag ids of children removed from a parent.
+    public final static String REMOVED_CHILDREN = "facelets.REMOVED_CHILDREN";
+
+    // Marks a component added dynamically to the view; value is its index within the parent's children.
+    public final static String DYNAMIC_COMPONENT = "facelets.DYNAMIC_COMPONENT";
 
     /**
      * FacesContext-scoped flag set by {@code ComponentTagHandlerDelegateImpl} while applying the children of a
@@ -67,16 +83,7 @@ public final class ComponentSupport {
      */
     public final static String BUILDING_FRESH_SUBTREE = "org.glassfish.mojarra.facelets.BUILDING_FRESH_SUBTREE";
 
-    // Expando boolean attribute used to identify parent components that have had
-    // a dynamic child addition or removal.
-    public final static String MARK_CHILDREN_MODIFIED = "org.glassfish.mojarra.facelets.MARK_CHILDREN_MODIFIED";
-
-    // Expando Collection<String> attribute used to identify tagIds of child components that
-    // have been removed from a parent component.
-    public final static String REMOVED_CHILDREN = "org.glassfish.mojarra.facelets.REMOVED_CHILDREN";
-
-    // Expando attribute used to mark dynamic UIComponents that have had their
-    // ComponentSupport.MARK_CREATED expando removed.
+    // Marks a dynamic UIComponent whose MARK_CREATED tag id has been removed.
     public static final String MARK_CREATED_REMOVED = StateContext.class.getName() + "_MARK_CREATED_REMOVED";
 
     private final static String IMPLICIT_PANEL = "org.glassfish.mojarra.facelets.IMPLICIT_PANEL";
@@ -498,8 +505,8 @@ public final class ComponentSupport {
 
         String facetName = getFacetName(parent);
         if (facetName == null) {
-            if (child.getAttributes().containsKey(RIConstants.DYNAMIC_COMPONENT)) {
-                int childIndex = (Integer) child.getAttributes().get(RIConstants.DYNAMIC_COMPONENT);
+            if (child.getAttributes().containsKey(DYNAMIC_COMPONENT)) {
+                int childIndex = (Integer) child.getAttributes().get(DYNAMIC_COMPONENT);
                 if (childIndex >= parent.getChildCount() || childIndex == -1) {
                     parent.getChildren().add(child);
                 } else {

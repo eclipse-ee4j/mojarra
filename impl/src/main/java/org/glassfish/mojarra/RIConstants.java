@@ -83,11 +83,6 @@ public class RIConstants {
     public static final String DYNAMIC_CHILD_COUNT = RI_PREFIX + "DynamicChildCount";
 
     /**
-     * Marker attached to a component that was added dynamically.
-     */
-    public static final String DYNAMIC_COMPONENT = RI_PREFIX + "DynamicComponent";
-
-    /**
      * Present in the attrs of UIViewRoot iff the tree has one or more dynamic modifications
      */
     public static final String TREE_HAS_DYNAMIC_COMPONENTS = RI_PREFIX + "TreeHasDynamicComponents";

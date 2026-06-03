@@ -25,7 +25,7 @@ import static jakarta.faces.component.visit.VisitResult.REJECT;
 import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.WARNING;
 import static org.glassfish.mojarra.RIConstants.DYNAMIC_ACTIONS;
-import static org.glassfish.mojarra.RIConstants.DYNAMIC_COMPONENT;
+import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.DYNAMIC_COMPONENT;
 import static org.glassfish.mojarra.util.ComponentStruct.ADD;
 import static org.glassfish.mojarra.util.ComponentStruct.REMOVE;
 import static org.glassfish.mojarra.util.Util.isAnyNull;
