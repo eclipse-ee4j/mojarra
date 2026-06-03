@@ -3386,7 +3386,19 @@ public abstract class UIComponentBase extends UIComponent {
             return namingContainerAncestor;
         }
 
-        for (UIComponent ancestor = getParent(); ancestor != null; ancestor = ancestor.getParent()) {
+        // Resolve via the parent's (memoized) ancestor rather than walking the whole chain: each level is
+        // cached, so building/visiting the tree is O(n) instead of an O(depth) walk per component. The value
+        // is identical to the walk, with the same invalidation point (setParent clears the field).
+        UIComponent parent = getParent();
+        if (parent instanceof NamingContainer) {
+            return namingContainerAncestor = parent;
+        }
+        if (parent instanceof UIComponentBase) {
+            return namingContainerAncestor = ((UIComponentBase) parent).getNamingContainerAncestor();
+        }
+
+        // Rare: a non-UIComponentBase parent has no memoized ancestor, so fall back to the chain walk.
+        for (UIComponent ancestor = parent; ancestor != null; ancestor = ancestor.getParent()) {
             if (ancestor instanceof NamingContainer) {
                 return namingContainerAncestor = ancestor;
             }
