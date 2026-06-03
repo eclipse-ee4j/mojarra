@@ -62,6 +62,10 @@ public class StateContext {
     private boolean partial;
     private boolean partialLocked;
     private boolean trackMods = true;
+    // A view whose saved state carries no dynamic add/remove actions has no component bearing the
+    // DYNAMIC_COMPONENT marker, so componentAddedDynamically can skip the per-component attribute
+    // lookup. The partial-state restore sets this false for such views; true (always check) otherwise.
+    private boolean hasDynamicComponents = true;
     private AddRemoveListener modListener;
     private ApplicationStateInfo stateInfo;
     private WeakReference<UIViewRoot> viewRootRef = new WeakReference<>(null);
@@ -192,7 +196,19 @@ public class StateContext {
      * @return <code>true</code> if the component was added after the initial view construction
      */
     public boolean componentAddedDynamically(UIComponent c) {
-        return c.getAttributes().containsKey(DYNAMIC_COMPONENT);
+        return hasDynamicComponents && c.getAttributes().containsKey(DYNAMIC_COMPONENT);
+    }
+
+    /**
+     * Hint from the state-management strategy: when a restored view's saved state carries no dynamic
+     * add/remove actions, no component can bear the {@code DYNAMIC_COMPONENT} marker, so
+     * {@link #componentAddedDynamically} skips the per-component attribute lookup. Defaults to
+     * {@code true} (always check) for every other call path.
+     *
+     * @param hasDynamicComponents whether the current view may contain dynamically added/removed components
+     */
+    public void setHasDynamicComponents(boolean hasDynamicComponents) {
+        this.hasDynamicComponents = hasDynamicComponents;
     }
 
     public int getIndexOfDynamicallyAddedChildInParent(UIComponent c) {
