@@ -55,7 +55,7 @@ import jakarta.faces.view.facelets.TagAttributeException;
  */
 public final class ComponentSupport {
 
-    private final static String MARK_DELETED = "com.sun.faces.facelets.MARK_DELETED";
+    public final static String MARK_DELETED = "com.sun.faces.facelets.MARK_DELETED";
     public final static String MARK_CREATED = "com.sun.faces.facelets.MARK_ID";
 
     /**
