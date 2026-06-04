@@ -57,7 +57,7 @@ import org.openqa.selenium.WebDriver;
  * <p>Iteration counts are tunable:
  * <ul>
  *   <li>{@code -Dperf.warmup=N} (default 50)</li>
- *   <li>{@code -Dperf.runs=N}   (default 500)</li>
+ *   <li>{@code -Dperf.runs=N}   (default 1000)</li>
  * </ul>
  *
  * <p>Gated behind {@code -Dperf=true} so a normal {@code mvn install} does not run it.
@@ -66,7 +66,7 @@ import org.openqa.selenium.WebDriver;
 class PerfBenchIT extends BaseIT {
 
     private static final int WARMUP = getInteger("perf.warmup", 50);
-    private static final int RUNS = getInteger("perf.runs", 500);
+    private static final int RUNS = getInteger("perf.runs", 1000);
 
     /** Skip the BaseIT ChromeDriver bootstrap — this bench drives the server with HttpClient. */
     @Override
@@ -164,7 +164,11 @@ class PerfBenchIT extends BaseIT {
 
     @Test
     void runBenchmark() throws Exception {
+        // Pin HTTP/1.1: some servers (e.g. OpenLiberty) negotiate HTTP/2 (h2c) on the bench endpoint and
+        // would otherwise send a GOAWAY to the default HTTP/2 client. The bench measures server-side Faces
+        // phase timings, so the wire protocol is immaterial; forcing 1.1 keeps every server on equal footing.
         HttpClient client = HttpClient.newBuilder()
+                .version(HttpClient.Version.HTTP_1_1)
                 .cookieHandler(new CookieManager())
                 .connectTimeout(ofSeconds(10))
                 .build();

@@ -144,15 +144,6 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
         /**
          * <p>
-         * This map contains <code>SavedState</code> instances for each descendant component, keyed by the client identifier of
-         * the descendant. Because descendant client identifiers will contain the <code>rowIndex</code> value of the parent,
-         * per-row state information is actually preserved.
-         * </p>
-         */
-        saved,
-
-        /**
-         * <p>
          * The local value of this {@link UIComponent}.
          * </p>
          */
@@ -237,6 +228,11 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * </p>
      */
     private Boolean isNested = null;
+
+    // Per-row transient state of the stateful descendants, keyed by row index. The value array is positionally
+    // aligned to iterationStatefulList, so save/restore index by position instead of recomputing a clientId and
+    // hashing it per descendant per row. Mirrors UIRepeat#childState; saved/restored explicitly in saveState below.
+    private Map<Integer, SavedState[]> childState;
 
     private Map<String, Object> _rowDeltaStates = new HashMap<>();
     private Map<String, Object> _rowTransientStates = new HashMap<>();
@@ -1665,6 +1661,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         } else {
             _rowDeltaStates = (Map<String, Object>) restoredRowStates;
         }
+        childState = (Map<Integer, SavedState[]>) values[2];
     }
 
     private void resetClientIds(UIComponent component) {
@@ -1680,25 +1677,12 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     public Object saveState(FacesContext context) {
         resetClientIds(this);
 
-        if (initialStateMarked()) {
-            Object superState = super.saveState(context);
-
-            if (superState == null && _rowDeltaStates.isEmpty()) {
-                return null;
-            } else {
-                Object values[] = null;
-                Object attachedState = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
-                if (superState != null || attachedState != null) {
-                    values = new Object[] { superState, attachedState };
-                }
-                return values;
-            }
-        } else {
-            Object values[] = new Object[2];
-            values[0] = super.saveState(context);
-            values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
-            return values;
+        Object superState = super.saveState(context);
+        Object rowDeltaState = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
+        if (initialStateMarked() && superState == null && _rowDeltaStates.isEmpty() && childState == null) {
+            return null;
         }
+        return new Object[] { superState, rowDeltaState, childState };
     }
 
     // --------------------------------------------------------- Protected Methods
@@ -1848,10 +1832,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     // (ie. processDecodes()) or during a tree visit (ie. visitTree()).
     private void preDecode(FacesContext context) {
         setDataModel(null); // Re-evaluate even with server-side state saving
-        Map<String, SavedState> saved = (Map<String, SavedState>) getStateHelper().get(PropertyKeys.saved);
-        if (null == saved || !keepSaved(context)) {
-            // noinspection CollectionWithoutInitialCapacity
-            getStateHelper().remove(PropertyKeys.saved);
+        if (!keepSaved(context)) {
+            childState = null;
         }
     }
 
@@ -1879,9 +1861,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     private void preEncode(FacesContext context) {
         setDataModel(null); // re-evaluate even with server-side state saving
         if (!keepSaved(context)) {
-            //// noinspection CollectionWithoutInitialCapacity
-            // saved = new HashMap<String, SavedState>();
-            getStateHelper().remove(PropertyKeys.saved);
+            childState = null;
         }
     }
 
@@ -2173,39 +2153,33 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         // needs a row-specific clientId (e.g. data:N:foo), else rows render duplicate id="...". The
         // descendant set is constant within an iteration, so it is collected once and walked here as
         // a flat list rather than re-traversing the tree every row.
-        FacesContext context = getFacesContext();
         ensureIterationLists();
         for (UIComponent component : iterationResetList) {
             component.setId(component.getId()); // forces the cached clientId to be recomputed
         }
-        if (!iterationStatefulList.isEmpty()) {
-            // The saved-state map is invariant across this walk; fetch it once.
-            @SuppressWarnings("unchecked")
-            Map<String, SavedState> saved = (Map<String, SavedState>) getStateHelper().get(PropertyKeys.saved);
-            for (UIComponent component : iterationStatefulList) {
-                restoreDescendantState(component, context, saved);
-            }
+        int count = iterationStatefulList.size();
+        if (count == 0) {
+            return;
+        }
+        // Positional restore: index this row's saved-state array rather than rebuilding/hashing a clientId per
+        // child. A null array (row never saved) or short array (tree shape changed) falls back to a reset per slot.
+        SavedState[] rowState = childState == null ? null : childState.get(getRowIndex());
+        for (int i = 0; i < count; i++) {
+            SavedState state = rowState != null && i < rowState.length ? rowState[i] : null;
+            restoreComponentState(iterationStatefulList.get(i), state);
         }
 
     }
 
     /**
      * <p>
-     * Restore state information for the specified component and its descendants.
+     * Restore the per-row transient state of a single stateful descendant. The clientId reset happens in the
+     * caller's iterationResetList walk; a {@code null} state resets the component to its un-submitted defaults.
      * </p>
-     *
-     * @param component Component for which to restore state information
-     * @param context {@link FacesContext} for the current request
      */
-    private void restoreDescendantState(UIComponent component, FacesContext context, Map<String, SavedState> saved) {
-
-        // The clientId reset happens in the caller's iterationResetList walk; here we only restore
-        // the per-row transient state of a single stateful descendant.
+    private void restoreComponentState(UIComponent component, SavedState state) {
         if (component instanceof EditableValueHolder) {
             EditableValueHolder input = (EditableValueHolder) component;
-            String clientId = component.getClientId(context);
-
-            SavedState state = saved == null ? null : saved.get(clientId);
             if (state == null) {
                 input.resetValue();
             } else {
@@ -2217,17 +2191,9 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 input.setLocalValueSet(state.isLocalValueSet());
             }
         } else if (component instanceof UIForm) {
-            UIForm form = (UIForm) component;
-            String clientId = component.getClientId(context);
-            SavedState state = saved == null ? null : saved.get(clientId);
-            if (state == null) {
-                // submitted is transient state
-                form.setSubmitted(false);
-            } else {
-                form.setSubmitted(state.getSubmitted());
-            }
+            // submitted is transient state
+            ((UIForm) component).setSubmitted(state != null && state.getSubmitted());
         }
-
     }
 
     /**
@@ -2237,14 +2203,49 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      */
     private void saveDescendantState() {
         ensureIterationLists();
-        if (iterationStatefulList.isEmpty()) {
+        int count = iterationStatefulList.size();
+        if (count == 0) {
             // Read-only table (e.g. all-output-text columns): nothing to save.
             return;
         }
-        FacesContext context = getFacesContext();
-        for (UIComponent component : iterationStatefulList) {
-            saveDescendantState(component, context);
+        // Capture per position; only slots with delta state hold a SavedState. Persist the row array only when some
+        // slot carries delta, else drop the row entry — keeping the saved state minimal.
+        int row = getRowIndex();
+        SavedState[] rowState = new SavedState[count];
+        boolean anyDelta = false;
+        for (int i = 0; i < count; i++) {
+            SavedState state = captureComponentState(iterationStatefulList.get(i));
+            if (state.hasDeltaState()) {
+                rowState[i] = state;
+                anyDelta = true;
+            }
         }
+        if (anyDelta) {
+            getChildState().put(row, rowState);
+        } else if (childState != null) {
+            childState.remove(row);
+        }
+    }
+
+    private Map<Integer, SavedState[]> getChildState() {
+        if (childState == null) {
+            childState = new HashMap<>();
+        }
+        return childState;
+    }
+
+    private SavedState captureComponentState(UIComponent component) {
+        SavedState state = new SavedState();
+        if (component instanceof EditableValueHolder) {
+            EditableValueHolder input = (EditableValueHolder) component;
+            state.setValue(input.getLocalValue());
+            state.setValid(input.isValid());
+            state.setSubmittedValue(input.getSubmittedValue());
+            state.setLocalValueSet(input.isLocalValueSet());
+        } else if (component instanceof UIForm) {
+            state.setSubmitted(((UIForm) component).isSubmitted());
+        }
+        return state;
     }
 
     /**
@@ -2287,63 +2288,6 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 collectIterationState(facet, reset, stateful);
             }
         }
-    }
-
-    /**
-     * <p>
-     * Save state information for the specified component and its descendants.
-     * </p>
-     *
-     * @param component Component for which to save state information
-     * @param context {@link FacesContext} for the current request
-     */
-    private void saveDescendantState(UIComponent component, FacesContext context) {
-
-        // Save state for this component (if it is a EditableValueHolder)
-        Map<String, SavedState> saved = (Map<String, SavedState>) getStateHelper().get(PropertyKeys.saved);
-        if (component instanceof EditableValueHolder) {
-            EditableValueHolder input = (EditableValueHolder) component;
-            SavedState state = null;
-            String clientId = component.getClientId(context);
-            if (saved == null) {
-                state = new SavedState();
-            }
-            if (state == null) {
-                state = saved.get(clientId);
-                if (state == null) {
-                    state = new SavedState();
-                }
-            }
-            state.setValue(input.getLocalValue());
-            state.setValid(input.isValid());
-            state.setSubmittedValue(input.getSubmittedValue());
-            state.setLocalValueSet(input.isLocalValueSet());
-            if (state.hasDeltaState()) {
-                getStateHelper().put(PropertyKeys.saved, clientId, state);
-            } else if (saved != null) {
-                getStateHelper().remove(PropertyKeys.saved, clientId);
-            }
-        } else if (component instanceof UIForm) {
-            UIForm form = (UIForm) component;
-            String clientId = component.getClientId(context);
-            SavedState state = null;
-            if (saved == null) {
-                state = new SavedState();
-            }
-            if (state == null) {
-                state = saved.get(clientId);
-                if (state == null) {
-                    state = new SavedState();
-                }
-            }
-            state.setSubmitted(form.isSubmitted());
-            if (state.hasDeltaState()) {
-                getStateHelper().put(PropertyKeys.saved, clientId, state);
-            } else if (saved != null) {
-                getStateHelper().remove(PropertyKeys.saved, clientId);
-            }
-        }
-
     }
 
 }
