@@ -47,14 +47,18 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
      * {@code null} as an empty map.
      */
     private Map<Serializable, Object> deltaMap;
-    private final Map<Serializable, Object> defaultMap;
+    /**
+     * Component state written before {@code initialStateMarked()} (the bulk of buildView state).
+     * Lazily allocated on the first write through {@link #defaultMap()}; reads treat {@code null}
+     * as an empty map, so a component that never stores state pays no HashMap allocation.
+     */
+    private Map<Serializable, Object> defaultMap;
     private Map<Object, Object> transientState;
 
     // ------------------------------------------------------------ Constructors
 
     public ComponentStateHelper(UIComponent component) {
         this.component = component;
-        defaultMap = new HashMap<>();
         transientState = null;
     }
 
@@ -68,6 +72,17 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
             deltaMap = new HashMap<>(2);
         }
         return deltaMap;
+    }
+
+    /**
+     * Returns the default map, allocating it on first access. All write sites must route through
+     * this accessor; read-only sites treat {@code defaultMap == null} as an empty map.
+     */
+    private Map<Serializable, Object> defaultMap() {
+        if (defaultMap == null) {
+            defaultMap = new HashMap<>();
+        }
+        return defaultMap;
     }
 
     // ------------------------------------------------ Methods from StateHelper
@@ -86,15 +101,15 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
             Object retVal = deltaMap().put(key, value);
 
             if (retVal == null) {
-                return defaultMap.put(key, value);
+                return defaultMap().put(key, value);
             }
 
-            defaultMap.put(key, value);
+            defaultMap().put(key, value);
             return retVal;
 
         }
 
-        return defaultMap.put(key, value);
+        return defaultMap().put(key, value);
     }
 
     /**
@@ -109,14 +124,16 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
             Object retVal = deltaMap == null ? null : deltaMap.remove(key);
 
             if (retVal == null) {
-                return defaultMap.remove(key);
+                return defaultMap == null ? null : defaultMap.remove(key);
             }
 
-            defaultMap.remove(key);
+            if (defaultMap != null) {
+                defaultMap.remove(key);
+            }
             return retVal;
         }
 
-        return defaultMap.remove(key);
+        return defaultMap == null ? null : defaultMap.remove(key);
     }
 
     /**
@@ -155,7 +172,7 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
         Map<String, Object> map = (Map<String, Object>) get(key);
         if (map == null) {
             map = new HashMap<>(8);
-            defaultMap.put(key, map);
+            defaultMap().put(key, map);
         }
     }
 
@@ -167,7 +184,7 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
      */
     @Override
     public Object get(Serializable key) {
-        return defaultMap.get(key);
+        return defaultMap == null ? null : defaultMap.get(key);
     }
 
     /**
@@ -242,7 +259,7 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
 
         if (get(key) == null) {
             List<Object> items = new ArrayList<>(4);
-            defaultMap.put(key, items);
+            defaultMap().put(key, items);
         }
     }
 
@@ -306,7 +323,7 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
             return;
         }
 
-        if (!component.initialStateMarked() && !defaultMap.isEmpty()) {
+        if (!component.initialStateMarked() && defaultMap != null && !defaultMap.isEmpty()) {
             defaultMap.clear();
             if (deltaMap != null && !deltaMap.isEmpty()) {
                 deltaMap.clear();
@@ -337,7 +354,9 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
                     put(serializable, entry.getKey(), entry.getValue());
                 }
             } else if (value instanceof List) {
-                defaultMap.remove(serializable);
+                if (defaultMap != null) {
+                    defaultMap.remove(serializable);
+                }
                 if (deltaMap != null) {
                     deltaMap.remove(serializable);
                 }
@@ -397,7 +416,7 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
 
     private Object saveMap(FacesContext context, Map<Serializable, Object> map) {
 
-        if (map.isEmpty()) {
+        if (map == null || map.isEmpty()) {
             if (!component.initialStateMarked()) {
                 // only need to propagate the component's delta status when
                 // delta tracking has been disabled. We're assuming that
