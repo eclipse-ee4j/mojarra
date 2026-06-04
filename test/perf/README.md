@@ -28,7 +28,7 @@ mvn clean verify -Dperf=true                 # GlassFish (default)
 mvn clean verify -Dperf=true -Pwildfly       # WildFly
 mvn clean verify -Dperf=true -Ptomee         # TomEE (Plume)
 
-# Tune iteration counts (warmup=50, runs=500 by default):
+# Tune iteration counts (warmup=50, runs=1000 by default):
 mvn clean verify -Dperf=true -Dperf.warmup=200 -Dperf.runs=2000
 ```
 
@@ -103,9 +103,14 @@ Run both sides on the same server profile so the comparison is fair.
 - `index` — landing page (smallest baseline)
 - `form-inputs` — single h:form with text/textarea/select/checkbox/radio, managed converters+validators, BV
 - `table-readonly` — h:dataTable, 200 rows, outputs only
+- `table-readonly-heavy` — h:dataTable, 2000 rows, outputs only
 - `table-inputs` — h:dataTable, 50 rows, per-row inputs + converters/validators
+- `table-inputs-heavy` — h:dataTable, 200 rows, per-row inputs + converters/validators
+- `table-nested` — h:dataTable ∋ h:dataTable with a per-row input composite (5×10); UIData twin of `composite-nested`, isolating UIData's per-row child-state save/restore against ui:repeat's
 - `repeat-readonly` — ui:repeat, 200 rows, outputs only
+- `repeat-readonly-heavy` — ui:repeat, 2000 rows, outputs only
 - `repeat-inputs` — ui:repeat, 40 rows, per-row inputs
+- `repeat-inputs-heavy` — ui:repeat, 200 rows, per-row inputs
 - `repeat-nested` — ui:repeat ∋ ui:repeat (5×10 rows, per-row inputs)
 - `composite-readonly` — readonly composite component, 200 instances
 - `composite-inputs` — input composite component, 40 instances
@@ -152,10 +157,10 @@ mvn failsafe:integration-test failsafe:verify -Dperf=true -Dperf.warmup=20 -Dper
 Analyze with the JDK-bundled `jfr` tool:
 
 ```
-jfr summary                          /tmp/perf-bench.jfr
-jfr view --width 200 hot-methods         /tmp/perf-bench.jfr
+jfr summary /tmp/perf-bench.jfr
+jfr view --width 200 hot-methods /tmp/perf-bench.jfr
 jfr view --width 200 allocation-by-class /tmp/perf-bench.jfr
-jfr view --width 200 allocation-by-site  /tmp/perf-bench.jfr
+jfr view --width 200 allocation-by-site /tmp/perf-bench.jfr
 ```
 
 For deeper aggregation (e.g. grouping hot leaves by their Mojarra-side caller, filtering by thread, attributing samples to scenarios via the timeline) export the execution samples to JSON and process them with a small script:

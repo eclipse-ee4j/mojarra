@@ -244,6 +244,19 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      */
     private transient Object submittedValue = null;
 
+    // The "valid" and "localValueSet" flags are pure per-request lifecycle state: never bound to a ValueExpression and
+    // only mutated during the process phases (always a delta), so they live in plain fields rather than the StateHelper
+    // map. isValid()/isLocalValueSet() are read several times per component per lifecycle; a field read avoids a HashMap
+    // lookup on that hot path. They are saved/restored explicitly in saveState()/restoreState().
+    private boolean valid = true;
+    private boolean localValueSet = false;
+
+    // "required" and "immediate" can be a literal or a ValueExpression. A non-null field holds the literal; when null we
+    // fall back to the bound ValueExpression (mirroring the old StateHelper.eval(key, default) contract). Field-backing
+    // keeps isRequired()/isImmediate() off the HashMap on the validate path. Saved/restored explicitly below.
+    private Boolean required;
+    private Boolean immediate;
+
     /**
      * <p>
      * Return the submittedValue value of this {@link UIInput} component. This method should only be used by the
@@ -327,8 +340,8 @@ public class UIInput extends UIOutput implements EditableValueHolder {
     public void resetValue() {
         super.resetValue();
         setSubmittedValue(null);
-        getStateHelper().remove(PropertyKeys.localValueSet);
-        getStateHelper().remove(PropertyKeys.valid);
+        localValueSet = false;
+        valid = true;
     }
 
     /**
@@ -337,7 +350,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      */
     @Override
     public boolean isLocalValueSet() {
-        return (Boolean) getStateHelper().eval(PropertyKeys.localValueSet, false);
+        return localValueSet;
     }
 
     /**
@@ -345,7 +358,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      */
     @Override
     public void setLocalValueSet(boolean localValueSet) {
-        getStateHelper().put(PropertyKeys.localValueSet, localValueSet);
+        this.localValueSet = localValueSet;
     }
 
     /**
@@ -356,8 +369,17 @@ public class UIInput extends UIOutput implements EditableValueHolder {
     @Override
     public boolean isRequired() {
 
-        return (Boolean) getStateHelper().eval(PropertyKeys.required, false);
-
+        if (required != null) {
+            return required;
+        }
+        ValueExpression ve = getValueExpression(PropertyKeys.required.toString());
+        if (ve != null) {
+            Boolean value = (Boolean) ve.getValue(getFacesContext().getELContext());
+            if (value != null) {
+                return value;
+            }
+        }
+        return false;
     }
 
     /**
@@ -456,16 +478,12 @@ public class UIInput extends UIOutput implements EditableValueHolder {
 
     @Override
     public boolean isValid() {
-
-        return (Boolean) getStateHelper().eval(PropertyKeys.valid, true);
-
+        return valid;
     }
 
     @Override
     public void setValid(boolean valid) {
-
-        getStateHelper().put(PropertyKeys.valid, valid);
-
+        this.valid = valid;
     }
 
     /**
@@ -478,21 +496,30 @@ public class UIInput extends UIOutput implements EditableValueHolder {
     @Override
     public void setRequired(boolean required) {
 
-        getStateHelper().put(PropertyKeys.required, required);
+        this.required = required;
 
     }
 
     @Override
     public boolean isImmediate() {
 
-        return (Boolean) getStateHelper().eval(PropertyKeys.immediate, false);
-
+        if (immediate != null) {
+            return immediate;
+        }
+        ValueExpression ve = getValueExpression(PropertyKeys.immediate.toString());
+        if (ve != null) {
+            Boolean value = (Boolean) ve.getValue(getFacesContext().getELContext());
+            if (value != null) {
+                return value;
+            }
+        }
+        return false;
     }
 
     @Override
     public void setImmediate(boolean immediate) {
 
-        getStateHelper().put(PropertyKeys.immediate, immediate);
+        this.immediate = immediate;
 
     }
 
@@ -1258,16 +1285,16 @@ public class UIInput extends UIOutput implements EditableValueHolder {
             throw new NullPointerException();
         }
 
-        Object[] result = null;
-
         Object superState = super.saveState(context);
         Object validatorsState = validators != null ? validators.saveState(context) : null;
 
-        if (superState != null || validatorsState != null) {
-            result = new Object[] { superState, validatorsState };
+        // valid/localValueSet/required/immediate are not in the StateHelper anymore, so they must be saved explicitly;
+        // skip the array entirely only when everything (including these flags) is at its default.
+        if (superState == null && validatorsState == null && valid && !localValueSet && required == null && immediate == null) {
+            return null;
         }
 
-        return result;
+        return new Object[] { superState, validatorsState, valid, localValueSet, required, immediate };
     }
 
     @Override
@@ -1288,7 +1315,10 @@ public class UIInput extends UIOutput implements EditableValueHolder {
             }
             validators.restoreState(context, values[1]);
         }
-
+        valid = (boolean) values[2];
+        localValueSet = (boolean) values[3];
+        required = (Boolean) values[4];
+        immediate = (Boolean) values[5];
     }
 
     private Converter getConverterWithType(FacesContext context) {

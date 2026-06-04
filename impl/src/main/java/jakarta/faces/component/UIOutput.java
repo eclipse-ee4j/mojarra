@@ -16,6 +16,7 @@
 
 package jakarta.faces.component;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 
@@ -104,7 +105,10 @@ public class UIOutput extends UIComponentBase implements ValueHolder {
             return converter;
         }
 
-        return (Converter) getStateHelper().eval(PropertyKeys.converter);
+        // The converter is only ever stored in the field (setConverter) or as a ValueExpression; PropertyKeys.converter
+        // is never written to the StateHelper, so go straight to the expression and skip the always-miss HashMap lookup.
+        ValueExpression ve = getValueExpression(PropertyKeys.converter.toString());
+        return ve != null ? (Converter) ve.getValue(getFacesContext().getELContext()) : null;
     }
 
     @Override
