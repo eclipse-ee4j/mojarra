@@ -202,6 +202,27 @@ public abstract class UIComponentBase extends UIComponent {
     private transient Renderer cachedRenderer;
 
     /**
+     * Field-backed {@code rendererType}, replacing the {@link StateHelper} entry that every component
+     * writes from its constructor. Backing it with a field keeps {@code defaultMap} unallocated for the
+     * common value-expression-bound leaf component (whose only would-be StateHelper entry is the
+     * renderer type) and turns every {@link #getRenderer}/{@link #getRendererType} read into a field read
+     * rather than a HashMap lookup.
+     *
+     * <p>State handling honours the partial-state contract: under partial state saving the constructor
+     * sets this <em>before</em> {@code markInitialState}, so {@code buildView} reconstructs it on restore
+     * and it is carried in the delta only when changed afterwards (see {@link #rendererTypeSet}); under
+     * full state saving it is persisted unconditionally, like {@link #id}.
+     */
+    private String rendererType;
+
+    /**
+     * {@code true} once {@code rendererType} is changed after {@code markInitialState}, so the change is
+     * carried in the partial-state delta. Transient: a freshly reconstructed component starts clean and
+     * relies on {@code buildView} (partial state) or the saved full state to re-establish the value.
+     */
+    private transient boolean rendererTypeSet;
+
+    /**
      * The <code>List</code> containing our child components.
      */
     private List<UIComponent> children;
@@ -365,12 +386,19 @@ public abstract class UIComponentBase extends UIComponent {
 
     @Override
     public String getRendererType() {
-        return (String) getStateHelper().eval(PropertyKeys.rendererType);
+        if (rendererType != null) {
+            return rendererType;
+        }
+        ValueExpression ve = getValueExpression(PropertyKeys.rendererType.toString());
+        return ve != null ? (String) ve.getValue(getFacesContext().getELContext()) : null;
     }
 
     @Override
     public void setRendererType(String rendererType) {
-        getStateHelper().put(PropertyKeys.rendererType, rendererType);
+        this.rendererType = rendererType;
+        if (initialStateMarked()) {
+            rendererTypeSet = true;
+        }
         cachedRenderer = null;
     }
 
@@ -1222,12 +1250,16 @@ public abstract class UIComponentBase extends UIComponent {
                 savedHelper = stateHelper.saveState(context);
             }
 
-            if (isAllNull(savedFacesListeners, savedSysEventListeners, savedBehaviors, savedBindings, savedHelper)) {
+            // rendererType is set from the constructor (before markInitialState) and rebuilt by buildView,
+            // so it only needs to ride along in the delta when it was changed after the initial state mark.
+            String savedRendererType = rendererTypeSet ? rendererType : null;
+
+            if (isAllNull(savedFacesListeners, savedSysEventListeners, savedBehaviors, savedBindings, savedHelper, savedRendererType)) {
                 return null;
             }
 
-            if (values == null || values.length != 5) {
-                values = new Object[5];
+            if (values == null || values.length != 6) {
+                values = new Object[6];
             }
 
             // Since we're saving partial state, skip id and clientId
@@ -1238,12 +1270,13 @@ public abstract class UIComponentBase extends UIComponent {
             values[2] = savedBehaviors;
             values[3] = savedBindings;
             values[4] = savedHelper;
+            values[5] = savedRendererType;
 
             return values;
 
         } else {
-            if (values == null || values.length != 6) {
-                values = new Object[6];
+            if (values == null || values.length != 7) {
+                values = new Object[7];
             }
 
             values[0] = listeners != null ? listeners.saveState(context) : null;
@@ -1258,7 +1291,9 @@ public abstract class UIComponentBase extends UIComponent {
                 values[4] = stateHelper.saveState(context);
             }
 
-            values[5] = id;
+            // Full state carries no buildView reconstruction, so persist rendererType unconditionally (like id).
+            values[5] = rendererType;
+            values[6] = id;
 
             return values;
         }
@@ -1305,15 +1340,21 @@ public abstract class UIComponentBase extends UIComponent {
             getStateHelper().restoreState(context, values[4]);
         }
 
-        if (values.length == 6) {
-            // This means we've saved full state and need to do a little more
-            // work to finish the job
-            if (values[5] != null) {
-                id = (String) values[5];
+        if (values.length == 7) {
+            // Full state is authoritative and runs no buildView reconstruction: restore rendererType
+            // exactly (including an explicit null, which must overwrite a constructor-set default) and
+            // the id, then sync the field-backed markers from the restored attributes map.
+            rendererType = (String) values[5];
+            if (values[6] != null) {
+                id = (String) values[6];
             }
-            // Full-state restore does not re-run buildView, so sync the field-backed markers from the
-            // restored attributes map (partial-state restore re-establishes them via buildView).
             restoreMarkersFromState();
+        } else if (values[5] != null) {
+            // Partial-state delta: rendererType changed after markInitialState; apply it and keep it
+            // marked dirty so it stays in the delta across subsequent postbacks. buildView re-established
+            // the pre-mark value, so a null here just means "no rendererType delta".
+            rendererType = (String) values[5];
+            rendererTypeSet = true;
         }
 
         // StateHelper.restoreState may rewrite rendererType without going through
