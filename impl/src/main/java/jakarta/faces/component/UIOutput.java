@@ -165,9 +165,12 @@ public class UIOutput extends UIComponentBase implements ValueHolder {
     public void markInitialState() {
         super.markInitialState();
 
-        Converter<?> c = getConverter();
-        if (c instanceof PartialStateHolder) {
-            ((PartialStateHolder) c).markInitialState();
+        // Use the field, not getConverter(): only an explicitly-installed converter can be a
+        // PartialStateHolder worth marking. A ValueExpression-bound converter is resolved lazily
+        // (a fresh instance per call), so resolving it here is meaningless — and getConverter() does
+        // a per-component ValueExpression lookup that dominates buildView on large views.
+        if (converter instanceof PartialStateHolder) {
+            ((PartialStateHolder) converter).markInitialState();
         }
     }
 
@@ -176,9 +179,8 @@ public class UIOutput extends UIComponentBase implements ValueHolder {
         if (initialStateMarked()) {
             super.clearInitialState();
 
-            Converter<?> c = getConverter();
-            if (c instanceof PartialStateHolder) {
-                ((PartialStateHolder) c).clearInitialState();
+            if (converter instanceof PartialStateHolder) {
+                ((PartialStateHolder) converter).clearInitialState();
             }
         }
     }
