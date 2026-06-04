@@ -2161,6 +2161,7 @@ public abstract class UIComponentBase extends UIComponent {
                             if (null == readMap) {
                                 readMap = new ConcurrentHashMap<>();
                             }
+                            suppressAccessCheck(readMethod);
                             readMap.putIfAbsent(key, readMethod);
                             result = invokeReadMethod(readMethod);
                         } else {
@@ -2418,6 +2419,24 @@ public abstract class UIComponentBase extends UIComponent {
                 throw new FacesException(e);
             } catch (InvocationTargetException e) {
                 throw new FacesException(e.getTargetException());
+            }
+        }
+
+        /**
+         * Suppresses the per-invoke reflective access check on the (public) property getter that gets
+         * cached in {@link #readMap} and then invoked on every property-backed attribute read — hot under
+         * render and {@code UIData}/{@code UIRepeat} iteration (a renderer reads each pass-through attribute
+         * through {@code getAttributes().get}). The check is otherwise re-run per invoke because
+         * {@link PropertyDescriptor#getReadMethod()} hands back the method via a soft {@link
+         * java.lang.ref.Reference} that may be regenerated, yielding a fresh {@link Method} whose access
+         * was never suppressed. Suppressing it on the strongly-held cached instance makes the win durable.
+         */
+        private static void suppressAccessCheck(Method readMethod) {
+            try {
+                // The module system may forbid this for a getter in a non-exported user package;
+                // when it does, the normal per-invoke access check simply remains.
+                readMethod.setAccessible(true);
+            } catch (RuntimeException accessNotSuppressed) {
             }
         }
 
@@ -3358,17 +3377,12 @@ public abstract class UIComponentBase extends UIComponent {
             if (propertyDescriptors != null) {
                 propertyDescriptorMap = new HashMap<>(propertyDescriptors.length, 1.0f);
                 for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
-                    // Suppress the per-invoke reflective access check on the (public) property getter.
-                    // It is invoked on every property-backed attribute read, which is hot under render
-                    // and UIData/UIRepeat iteration. Done once per component class (this map is cached
-                    // application-wide below). Guarded: the module system may forbid it for a getter in a
-                    // non-exported user package, in which case the normal access check simply remains.
+                    // Suppress the access check up front (see AttributesMap.suppressAccessCheck); note the
+                    // hot path additionally suppresses it on the readMap-cached instance, since the method
+                    // handed back here may be regenerated before that cache is populated.
                     Method readMethod = propertyDescriptor.getReadMethod();
                     if (readMethod != null) {
-                        try {
-                            readMethod.setAccessible(true);
-                        } catch (RuntimeException accessNotSuppressed) {
-                        }
+                        AttributesMap.suppressAccessCheck(readMethod);
                     }
                     propertyDescriptorMap.put(propertyDescriptor.getName(), propertyDescriptor);
                 }

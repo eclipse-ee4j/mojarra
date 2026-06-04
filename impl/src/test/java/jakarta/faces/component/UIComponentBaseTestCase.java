@@ -1549,6 +1549,21 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         return component;
     }
 
+    /**
+     * Reading a bean-property attribute through {@code getAttributes()} invokes the cached,
+     * access-suppressed property getter (the readMap fast path). It must return the live typed value on
+     * every call — the cache holds the {@code Method}, not the value, so it must reflect later mutations.
+     */
+    @Test
+    public void testPropertyBackedAttributeReadIsRepeatableAndLive() {
+        ComponentTestImpl c = new ComponentTestImpl();
+        c.setRendererType("Foo");
+        assertEquals("Foo", c.getAttributes().get("rendererType"));
+        assertEquals("Foo", c.getAttributes().get("rendererType")); // second read hits the cached getter
+        c.setRendererType("Bar");
+        assertEquals("Bar", c.getAttributes().get("rendererType")); // cached Method, so it sees the new value
+    }
+
     /** Calls the protected {@code getRenderer(FacesContext)} via reflection. */
     private jakarta.faces.render.Renderer invokeGetRenderer(UIComponent component) throws Exception {
         java.lang.reflect.Method m = UIComponentBase.class.getDeclaredMethod("getRenderer", FacesContext.class);
@@ -1557,6 +1572,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
     }
 
     // --------------------------------------------------------- Private Classes
+
     public static final class Listener implements SystemEventListener {
 
         private SystemEvent event;
