@@ -189,6 +189,7 @@ mvn clean verify -Dperf=true \
 - `table-readonly-heavy` — h:dataTable, 2000 rows, outputs only
 - `table-inputs` — h:dataTable, 50 rows, per-row inputs + converters/validators
 - `table-inputs-heavy` — h:dataTable, 200 rows, per-row inputs + converters/validators
+- `table-nested` — h:dataTable ∋ h:dataTable with a per-row input composite (5×10); UIData twin of `composite-nested`, isolating UIData's per-row child-state save/restore against ui:repeat's
 - `repeat-readonly` — ui:repeat, 200 rows, outputs only
 - `repeat-readonly-heavy` — ui:repeat, 2000 rows, outputs only
 - `repeat-inputs` — ui:repeat, 40 rows, per-row inputs
