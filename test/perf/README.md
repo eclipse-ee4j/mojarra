@@ -104,6 +104,7 @@ Run both sides on the same server profile so the comparison is fair.
 - `form-inputs` — single h:form with text/textarea/select/checkbox/radio, managed converters+validators, BV
 - `table-readonly` — h:dataTable, 200 rows, outputs only
 - `table-inputs` — h:dataTable, 50 rows, per-row inputs + converters/validators
+- `table-nested` — h:dataTable ∋ h:dataTable with a per-row input composite (5×10); UIData twin of `composite-nested`, isolating UIData's per-row child-state save/restore against ui:repeat's
 - `repeat-readonly` — ui:repeat, 200 rows, outputs only
 - `repeat-inputs` — ui:repeat, 40 rows, per-row inputs
 - `repeat-nested` — ui:repeat ∋ ui:repeat (5×10 rows, per-row inputs)
