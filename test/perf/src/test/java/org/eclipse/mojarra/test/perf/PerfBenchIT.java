@@ -134,12 +134,13 @@ class PerfBenchIT extends BaseIT {
             "form-inputs",
             "table-inputs",
             "repeat-inputs",
-            "repeat-nested",
             "composite-inputs",
+            "table-nested",
+            "repeat-nested",
             "composite-nested",
-            "composite-heavy",
             "table-inputs-heavy",
-            "repeat-inputs-heavy"));
+            "repeat-inputs-heavy",
+            "composite-heavy"));
 
     /** Ajax-partial postbacks. Same body fields as their non-ajax twin plus the
      *  {@code jakarta.faces.partial.*} markers and the {@code Faces-Request} header. */
