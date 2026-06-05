@@ -1493,8 +1493,82 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         invokeGetRenderer(test); // populate cache with rA
         test.setRendererType("TR_B"); // direct setter, also invalidates and re-caches on next lookup
         invokeGetRenderer(test); // re-cache as rB
-        test.restoreState(facesContext, savedWithA); // bring rendererType back to "TR_A" via StateHelper
+        test.restoreState(facesContext, savedWithA); // bring rendererType back to "TR_A" via the saved full state
         assertTrue(invokeGetRenderer(test) == rA, "after restoreState, lookup must reflect restored rendererType");
+    }
+
+    /**
+     * Verifies the partial-state contract for the field-backed {@code rendererType}: a value set before
+     * {@code markInitialState} (as every component's constructor does) is reconstructed by buildView and
+     * therefore carries no partial state, a value changed afterwards rides along in the delta and stays
+     * there across repeated postbacks, and full state persists the value unconditionally.
+     */
+    @Test
+    public void testRendererTypeStateHolder() throws Exception {
+        // Pre-mark rendererType is "initial" (buildView re-establishes it): no partial state to save.
+        ComponentTestImpl pristine = new ComponentTestImpl();
+        pristine.setRendererType("Foo");
+        pristine.markInitialState();
+        assertNull(pristine.saveState(facesContext), "constructor-set rendererType must not produce partial state");
+
+        // A post-mark change must ride along in the delta and restore on top of the reconstructed initial value.
+        ComponentTestImpl changed = new ComponentTestImpl();
+        changed.setRendererType("Foo");
+        changed.markInitialState();
+        changed.setRendererType("Bar");
+        Object delta = changed.saveState(facesContext);
+        assertNotNull(delta, "post-mark rendererType change must produce partial state");
+
+        ComponentTestImpl restored = newReconstructed("Foo");
+        restored.restoreState(facesContext, delta);
+        assertEquals("Bar", restored.getRendererType(), "post-mark rendererType change must restore");
+
+        // Stability across a second postback: re-saving the restored component must keep the delta.
+        Object delta2 = restored.saveState(facesContext);
+        assertNotNull(delta2, "restored post-mark rendererType must persist across re-save");
+        ComponentTestImpl restored2 = newReconstructed("Foo");
+        restored2.restoreState(facesContext, delta2);
+        assertEquals("Bar", restored2.getRendererType(), "rendererType delta must survive repeated postbacks");
+
+        // Full state (component never marked) persists rendererType unconditionally, with no reconstruction.
+        ComponentTestImpl full = new ComponentTestImpl();
+        full.setRendererType("Baz");
+        Object fullState = full.saveState(facesContext);
+        ComponentTestImpl fullRestored = new ComponentTestImpl();
+        fullRestored.restoreState(facesContext, fullState);
+        assertEquals("Baz", fullRestored.getRendererType(), "full state must persist rendererType");
+
+        // Full state must restore an explicit null rendererType, overwriting a constructor-set default.
+        ComponentTestImpl nulled = new ComponentTestImpl();
+        nulled.setRendererType(null);
+        Object nulledState = nulled.saveState(facesContext);
+        ComponentTestImpl nulledRestored = new ComponentTestImpl();
+        nulledRestored.setRendererType("jakarta.faces.Text"); // a constructor-set default
+        nulledRestored.restoreState(facesContext, nulledState);
+        assertNull(nulledRestored.getRendererType(), "full state must restore an explicit null rendererType over a default");
+    }
+
+    /** A component as buildView hands it back on a postback: constructor-equivalent rendererType, then marked. */
+    private ComponentTestImpl newReconstructed(String rendererType) {
+        ComponentTestImpl component = new ComponentTestImpl();
+        component.setRendererType(rendererType);
+        component.markInitialState();
+        return component;
+    }
+
+    /**
+     * Reading a bean-property attribute through {@code getAttributes()} invokes the cached,
+     * access-suppressed property getter (the readMap fast path). It must return the live typed value on
+     * every call — the cache holds the {@code Method}, not the value, so it must reflect later mutations.
+     */
+    @Test
+    public void testPropertyBackedAttributeReadIsRepeatableAndLive() {
+        ComponentTestImpl c = new ComponentTestImpl();
+        c.setRendererType("Foo");
+        assertEquals("Foo", c.getAttributes().get("rendererType"));
+        assertEquals("Foo", c.getAttributes().get("rendererType")); // second read hits the cached getter
+        c.setRendererType("Bar");
+        assertEquals("Bar", c.getAttributes().get("rendererType")); // cached Method, so it sees the new value
     }
 
     /** Calls the protected {@code getRenderer(FacesContext)} via reflection. */
@@ -1505,6 +1579,7 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
     }
 
     // --------------------------------------------------------- Private Classes
+
     public static final class Listener implements SystemEventListener {
 
         private SystemEvent event;
