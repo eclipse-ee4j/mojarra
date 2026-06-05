@@ -82,10 +82,9 @@ public final class UIDebug extends UIComponentBase {
             StringBuilder sb = new StringBuilder(512);
             sb.append("//<![CDATA[\n");
             sb.append("function faceletsDebugWindow(URL) {");
-            sb.append("day = new Date();");
-            sb.append("id = day.getTime();");
+            sb.append("var id = '' + new Date().getTime();");
             sb.append(
-                    "eval(\"page\" + id + \" = window.open(URL, '\" + id + \"', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=800,height=600,left = 240,top = 212');\"); };");
+                    "window.open(URL, id, 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=800,height=600,left=240,top=212'); };");
             sb.append("(function() { if (typeof faceletsDebug === 'undefined') { var faceletsDebug = false; } if (!faceletsDebug) {");
             sb.append("var faceletsOrigKeyup = document.onkeyup;");
             sb.append("document.onkeyup = function(e) { if (window.event) e = window.event; if (String.fromCharCode(e.keyCode) == '")
