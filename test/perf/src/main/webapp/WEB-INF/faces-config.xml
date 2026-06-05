@@ -23,6 +23,6 @@
     version="4.0"
 >
     <lifecycle>
-        <phase-listener>org.eclipse.mojarra.test.perf.PhaseTimingListener</phase-listener>
+        <phase-listener>org.glassfish.mojarra.test.perf.PhaseTimingListener</phase-listener>
     </lifecycle>
 </faces-config>
