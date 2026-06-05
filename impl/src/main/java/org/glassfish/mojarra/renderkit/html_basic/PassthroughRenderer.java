@@ -22,8 +22,10 @@ import java.util.Map;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
 import jakarta.faces.render.Renderer;
 
 import org.glassfish.mojarra.renderkit.Attribute;
@@ -57,7 +59,13 @@ public class PassthroughRenderer extends HtmlBasicRenderer {
 
         writeIdAttributeIfNecessary(context, writer, component);
 
-        RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES);
+        // A passthrough element is a ClientBehaviorHolder whose default event is "click". Pass the
+        // client behaviors through so non-default DOM events (e.g. mouseover) are rendered here, and
+        // render the default click/action behavior separately - both are queued as CSP-safe event
+        // listeners that encodeEnd() flushes via flushPendingBehaviorEventListeners().
+        RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, ATTRIBUTES,
+                HtmlDocumentElementEvent.click, FacesComponentEvent.action);
+        RenderKitUtils.renderOnclickEventListener(context, component, null, null, false);
 
     }
 
