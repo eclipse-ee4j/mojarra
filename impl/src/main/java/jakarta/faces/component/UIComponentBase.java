@@ -2014,13 +2014,25 @@ public abstract class UIComponentBase extends UIComponent {
             component.pushComponentToEL(context, component);
             application.publishEvent(context, PostAddToViewEvent.class, component);
             if (component.getChildCount() > 0) {
-                Collection<UIComponent> clist = new ArrayList<>(component.getChildren());
-                for (UIComponent c : clist) {
-                    publishAfterViewEvents(context, application, c);
+                // A PostAddToViewEvent listener may relocate children mid-walk (e.g. composite cc:insertChildren's
+                // RelocateChildrenListener), mutating this list. Rather than walk a per-node defensive copy, iterate
+                // the live list and re-check the slot after recursing: if index i no longer holds the component we
+                // just processed, it was relocated away, so process whatever now occupies i. Spends no per-node copy.
+                List<UIComponent> children = component.getChildren();
+                for (int i = 0; i < children.size(); i++) {
+                    while (true) {
+                        UIComponent child = children.get(i);
+                        publishAfterViewEvents(context, application, child);
+                        if (i < children.size() && children.get(i) != child) {
+                            continue;
+                        }
+                        break;
+                    }
                 }
             }
 
             if (component.getFacetCount() > 0) {
+                // Facets are few and rarely relocated; a small defensive copy keeps the iteration trivially safe.
                 Collection<UIComponent> clist = new ArrayList<>(component.getFacets().values());
                 for (UIComponent c : clist) {
                     publishAfterViewEvents(context, application, c);
