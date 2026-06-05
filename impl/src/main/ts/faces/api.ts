@@ -137,8 +137,12 @@ export const getPartialViewState = function getPartialViewState(form: HTMLFormEl
         params.append(form.id, form.id);
     }
 
+    // ViewState/ClientWindow are always included; in a namespaced view their field names carry the
+    // view root container prefix (e.g. "vr:jakarta.faces.ViewState:0"), so match by substring.
+    const isAlwaysExecuted = (name: string): boolean => ALWAYS_EXECUTE_IDS.some(id => name.indexOf(id) >= 0);
+
     const addField = (name: string, value: string): void => {
-        const add = !partialExecuteIds || partialExecuteIds.includes(name) || containsNamedChild(partialExecuteDomElements, name);
+        const add = !partialExecuteIds || partialExecuteIds.includes(name) || isAlwaysExecuted(name) || containsNamedChild(partialExecuteDomElements, name);
         if (add) params.append(name, value);
     };
 
