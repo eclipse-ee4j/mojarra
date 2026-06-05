@@ -55,6 +55,7 @@
         <module>issue5663</module>
         <module>issue5676</module>
         <module>issue5750</module>
+        <module>issue5772</module>
         <module>perf</module>
     </modules>
 
