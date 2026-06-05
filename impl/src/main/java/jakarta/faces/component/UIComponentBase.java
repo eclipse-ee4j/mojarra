@@ -108,8 +108,6 @@ public abstract class UIComponentBase extends UIComponent {
 
     private static final Logger LOGGER = Logger.getLogger("jakarta.faces.component", "jakarta.faces.LogStrings");
 
-    private static final String ADDED = UIComponentBase.class.getName() + ".ADDED";
-
     private static final int MY_STATE = 0;
     private static final int CHILD_STATE = 1;
 
@@ -154,6 +152,15 @@ public abstract class UIComponentBase extends UIComponent {
     private Object dynamicComponent;       // RIConstants.DYNAMIC_COMPONENT (Integer index)
     private boolean markDeleted;           // ComponentSupport.MARK_DELETED
     private boolean markChildrenModified;  // ComponentSupport.MARK_CHILDREN_MODIFIED
+
+    /**
+     * Re-entrancy guard set while this component is being added to a parent. Replaces a former private
+     * {@code ".ADDED"} attribute marker, whose read/write/remove on every {@link #setParent} routed through the
+     * reflective {@link AttributesMap} ({@code getPropertyDescriptor} miss → {@link StateHelper} lookup); a field
+     * read avoids that hot-path cost entirely. {@link #setParent} always clears it before returning, so it is
+     * never carried in saved state.
+     */
+    private boolean added;
 
     /**
      * <p>
@@ -358,19 +365,16 @@ public abstract class UIComponentBase extends UIComponent {
             compositeParent = null;
         } else {
             this.parent = parent;
-            if (getAttributes().get(ADDED) == null) {
+            if (!added) {
 
-                // Add an attribute to this component here to indiciate that
-                // it's being processed. If we don't do this, and the component
-                // is re-parented, the events could fire again in certain cases
-                // and cause a stack overflow.
-                getAttributes().put(ADDED, TRUE);
+                // Flag this component as being processed. Without the guard, a re-parent during event
+                // processing could fire the events again in certain cases and cause a stack overflow.
+                added = true;
 
                 doPostAddProcessing(FacesContext.getCurrentInstance(), this);
 
-                // Remove the attribute once we've returned from the event
-                // processing.
-                getAttributes().remove(ADDED);
+                // Clear the flag once we've returned from the event processing.
+                added = false;
             }
         }
     }
