@@ -762,7 +762,24 @@ export const ajax = (function () {
          */
         const getHiddenStateField = function getHiddenStateField(form: HTMLFormElement, hiddenStateFieldName: string, namingContainerPrefix?: string): Element | null {
             const fullHiddenStateFieldName = namingContainerPrefix ? namingContainerPrefix + hiddenStateFieldName : hiddenStateFieldName;
-            return getFormInputElementByName(form, fullHiddenStateFieldName);
+            const field = getFormInputElementByName(form, fullHiddenStateFieldName);
+
+            if (field) {
+                return field;
+            }
+
+            // In a namespaced view the field name is <namingContainerPrefix>jakarta.faces.ViewState<sep><counter>,
+            // which the exact-name lookup above misses when the prefix is not yet known. Fall back to the first
+            // form input whose name contains the state field name so the prefix can be derived from it.
+            for (const element of Array.from(form.elements)) {
+                const name = (element as HTMLInputElement).name;
+
+                if (name && name.indexOf(hiddenStateFieldName) >= 0) {
+                    return element;
+                }
+            }
+
+            return null;
         };
 
         /**

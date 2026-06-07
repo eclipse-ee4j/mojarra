@@ -36,6 +36,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.InjectionTarget;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
@@ -216,19 +221,10 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
                     ApplicationInstanceFactoryMetadataMap<String, Object> classMetadataMap = getClassMetadataMap(sc);
 
                     if (classMetadataMap.hasAnnotations(className) && performInjection) {
-                        InjectionProvider injectionProvider = (InjectionProvider) facesContext.getAttributes().get(INJECTION_PROVIDER_KEY);
-
                         try {
-                            injectionProvider.inject(returnObject);
-                        } catch (InjectionProviderException ex) {
-                            LOGGER.log(SEVERE, "Unable to inject instance" + className, ex);
-                            throw new FacesException(ex);
-                        }
-
-                        try {
-                            injectionProvider.invokePostConstruct(returnObject);
-                        } catch (InjectionProviderException ex) {
-                            LOGGER.log(SEVERE, "Unable to invoke @PostConstruct annotated method on instance " + className, ex);
+                            injectAndPostConstruct(clazz, returnObject);
+                        } catch (Exception ex) {
+                            LOGGER.log(SEVERE, "Unable to inject instance " + className, ex);
                             throw new FacesException(ex);
                         }
 
@@ -303,6 +299,22 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
     }
 
     // --------------------------------------------------------- Private Methods
+
+    /**
+     * Perform Jakarta EE resource injection ({@code @Resource}, {@code @Inject}, ...) and invoke {@code @PostConstruct} on
+     * a faces-config-declared artifact via CDI's non-contextual {@link InjectionTarget}. This delegates resource resolution
+     * to the container the same way {@code FactoryFinderInstance} already injects factories; the legacy container-provided
+     * {@code InjectionProvider} is no longer available in all environments.
+     */
+    private static <T> void injectAndPostConstruct(Class<T> clazz, Object instance) {
+        BeanManager beanManager = CDI.current().getBeanManager();
+        AnnotatedType<T> annotatedType = beanManager.createAnnotatedType(clazz);
+        InjectionTarget<T> injectionTarget = beanManager.getInjectionTargetFactory(annotatedType).createInjectionTarget(null);
+        T typedInstance = clazz.cast(instance);
+        CreationalContext<T> creationalContext = beanManager.createCreationalContext(null);
+        injectionTarget.inject(typedInstance, creationalContext);
+        injectionTarget.postConstruct(typedInstance);
+    }
 
     private String buildMessage(String cause, Node source) {
         return MessageFormat.format("\n  Source Document: {0}\n  Cause: {1}", source.getOwnerDocument().getDocumentURI(), cause);
