@@ -108,8 +108,6 @@ public abstract class UIComponentBase extends UIComponent {
 
     private static final Logger LOGGER = Logger.getLogger("jakarta.faces.component", "jakarta.faces.LogStrings");
 
-    private static final String ADDED = UIComponentBase.class.getName() + ".ADDED";
-
     private static final int MY_STATE = 0;
     private static final int CHILD_STATE = 1;
 
@@ -154,6 +152,15 @@ public abstract class UIComponentBase extends UIComponent {
     private Object dynamicComponent;       // RIConstants.DYNAMIC_COMPONENT (Integer index)
     private boolean markDeleted;           // ComponentSupport.MARK_DELETED
     private boolean markChildrenModified;  // ComponentSupport.MARK_CHILDREN_MODIFIED
+
+    /**
+     * Re-entrancy guard set while this component is being added to a parent. Replaces a former private
+     * {@code ".ADDED"} attribute marker, whose read/write/remove on every {@link #setParent} routed through the
+     * reflective {@link AttributesMap} ({@code getPropertyDescriptor} miss → {@link StateHelper} lookup); a field
+     * read avoids that hot-path cost entirely. {@link #setParent} always clears it before returning, so it is
+     * never carried in saved state.
+     */
+    private boolean added;
 
     /**
      * <p>
@@ -358,19 +365,16 @@ public abstract class UIComponentBase extends UIComponent {
             compositeParent = null;
         } else {
             this.parent = parent;
-            if (getAttributes().get(ADDED) == null) {
+            if (!added) {
 
-                // Add an attribute to this component here to indiciate that
-                // it's being processed. If we don't do this, and the component
-                // is re-parented, the events could fire again in certain cases
-                // and cause a stack overflow.
-                getAttributes().put(ADDED, TRUE);
+                // Flag this component as being processed. Without the guard, a re-parent during event
+                // processing could fire the events again in certain cases and cause a stack overflow.
+                added = true;
 
                 doPostAddProcessing(FacesContext.getCurrentInstance(), this);
 
-                // Remove the attribute once we've returned from the event
-                // processing.
-                getAttributes().remove(ADDED);
+                // Clear the flag once we've returned from the event processing.
+                added = false;
             }
         }
     }
@@ -2014,13 +2018,25 @@ public abstract class UIComponentBase extends UIComponent {
             component.pushComponentToEL(context, component);
             application.publishEvent(context, PostAddToViewEvent.class, component);
             if (component.getChildCount() > 0) {
-                Collection<UIComponent> clist = new ArrayList<>(component.getChildren());
-                for (UIComponent c : clist) {
-                    publishAfterViewEvents(context, application, c);
+                // A PostAddToViewEvent listener may relocate children mid-walk (e.g. composite cc:insertChildren's
+                // RelocateChildrenListener), mutating this list. Rather than walk a per-node defensive copy, iterate
+                // the live list and re-check the slot after recursing: if index i no longer holds the component we
+                // just processed, it was relocated away, so process whatever now occupies i. Spends no per-node copy.
+                List<UIComponent> children = component.getChildren();
+                for (int i = 0; i < children.size(); i++) {
+                    while (true) {
+                        UIComponent child = children.get(i);
+                        publishAfterViewEvents(context, application, child);
+                        if (i < children.size() && children.get(i) != child) {
+                            continue;
+                        }
+                        break;
+                    }
                 }
             }
 
             if (component.getFacetCount() > 0) {
+                // Facets are few and rarely relocated; a small defensive copy keeps the iteration trivially safe.
                 Collection<UIComponent> clist = new ArrayList<>(component.getFacets().values());
                 for (UIComponent c : clist) {
                     publishAfterViewEvents(context, application, c);
