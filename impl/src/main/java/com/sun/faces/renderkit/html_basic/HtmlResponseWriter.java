@@ -1138,7 +1138,12 @@ public class HtmlResponseWriter extends ResponseWriter {
     }
 
     private String getElementName(String name) {
-        if (containsPassThroughAttribute(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY)) {
+        // The passthrough localName applies only to the element itself, never to framework-generated
+        // <script>/<style> elements (e.g. the CSP behavior-listener script written by renderScript()
+        // for a passthrough element that holds a client behavior such as f:ajax).
+        ElementKind kind = ElementKind.of(name);
+        if (kind != ElementKind.SCRIPT && kind != ElementKind.STYLE
+                && containsPassThroughAttribute(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY)) {
             FacesContext context = FacesContext.getCurrentInstance();
 
             String elementName = getAttributeValue(context, passthroughAttributes.get(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY));

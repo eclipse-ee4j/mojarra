@@ -1818,3 +1818,66 @@ describe("faces.ajax.response: direct call validation", () => {
         expect(() => ajax().response(undefined, {})).toThrow("faces.ajax.response: Request parameter is unset");
     });
 });
+
+// ---- namespaced view (NamingContainer view root) ----
+
+// When the UIViewRoot is a NamingContainer, the ViewState field name is prefixed with the view
+// root container client id, e.g. "MyNamingContainer:jakarta.faces.ViewState:0". request() must
+// still locate that field (without yet knowing the prefix) so it can derive the prefix and
+// namespace the partial-request params. Only namespaceParametersIfNecessary() — the prefixing of
+// relative render/execute target ids — remains covered by the Faces TCK / integration tests
+// against a live container.
+
+describe("faces.ajax.request: namespaced view (NamingContainer view root)", () => {
+    const PREFIX = "MyNamingContainer:";
+    let form: HTMLFormElement;
+    let button: HTMLButtonElement;
+
+    beforeEach(() => {
+        installMockXHR();
+
+        form = document.createElement("form");
+        form.id = PREFIX + "testForm";
+        form.method = "post";
+        form.action = "/test/action";
+
+        // In a namespaced view the field name is <prefix>jakarta.faces.ViewState<sep><counter>,
+        // which an exact-name lookup for "jakarta.faces.ViewState" would miss.
+        const viewState = Object.assign(document.createElement("input"), {
+            type: "hidden",
+            name: PREFIX + "jakarta.faces.ViewState:0",
+            value: "testViewState123",
+        });
+        form.appendChild(viewState);
+
+        button = document.createElement("button");
+        button.type = "button";
+        button.id = PREFIX + "testButton";
+        button.name = PREFIX + "testButton";
+        form.appendChild(button);
+
+        document.body.appendChild(form);
+    });
+
+    afterEach(() => {
+        form?.remove();
+        uninstallMockXHR();
+    });
+
+    test("finds the namespaced ViewState field instead of throwing 'no view state element'", () => {
+        expect(() => ajax().request(button, null)).not.toThrow();
+    });
+
+    test("derives the namespace prefix and namespaces the source and ajax params", () => {
+        ajax().request(button, null);
+        const body = decodeURIComponent(lastXHR().body!);
+        expect(body).toContain(PREFIX + "jakarta.faces.source=" + PREFIX + "testButton");
+        expect(body).toContain(PREFIX + "jakarta.faces.partial.ajax=true");
+    });
+
+    test("includes the namespaced ViewState value", () => {
+        ajax().request(button, null);
+        const body = decodeURIComponent(lastXHR().body!);
+        expect(body).toContain(PREFIX + "jakarta.faces.ViewState:0=testViewState123");
+    });
+});
