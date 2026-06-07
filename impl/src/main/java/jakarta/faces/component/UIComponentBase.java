@@ -1721,7 +1721,11 @@ public abstract class UIComponentBase extends UIComponent {
     private void doPostAddProcessing(FacesContext context, UIComponent added) {
 
         if (parent.isInView()) {
-            publishAfterViewEvents(context, context.getApplication(), added);
+            if (context.isProcessingEvents()) {
+                publishAfterViewEvents(context, context.getApplication(), added);
+            } else {
+                updateInView(added, true);
+            }
         }
 
     }
@@ -1729,7 +1733,11 @@ public abstract class UIComponentBase extends UIComponent {
     private void doPreRemoveProcessing(FacesContext context, UIComponent toRemove) {
 
         if (parent.isInView()) {
-            disconnectFromView(context, context.getApplication(), toRemove);
+            if (context.isProcessingEvents()) {
+                disconnectFromView(context, context.getApplication(), toRemove);
+            } else {
+                updateInView(toRemove, false);
+            }
         }
 
     }
@@ -2065,6 +2073,36 @@ public abstract class UIComponentBase extends UIComponent {
         application.publishEvent(context, PreRemoveFromViewEvent.class, component);
         component.setInView(false);
         component.compositeParent = null;
+    }
+
+    /**
+     * Recursively maintain the in-view flag of the given subtree <em>without</em> publishing the
+     * {@link PostAddToViewEvent}/{@link PreRemoveFromViewEvent} system events. Used when the runtime has event
+     * processing suppressed ({@link FacesContext#isProcessingEvents()} is {@code false}), e.g. while a
+     * partial-state-saving restore rebuilds the tree: {@link Application#publishEvent} is a no-op while suppressed,
+     * so walking the subtree to fire it -- pushing and popping the EL stack at every node -- is wasted work. This
+     * reproduces the publishing walks' only non-event side effects: {@link #publishAfterViewEvents} sets in-view
+     * true, {@link #disconnectFromView} sets it false and clears {@code compositeParent}.
+     */
+    private static void updateInView(UIComponent component, boolean isInView) {
+        component.setInView(isInView);
+        if (!isInView) {
+            component.compositeParent = null;
+        }
+        // Events are suppressed, so no listener can relocate children mid-walk: a plain index loop over the live
+        // children (and the facet values) suffices, avoiding the getFacetsAndChildren() iterator allocation that
+        // the publishing walks were themselves restructured to avoid.
+        if (component.getChildCount() > 0) {
+            List<UIComponent> children = component.getChildren();
+            for (int i = 0, size = children.size(); i < size; i++) {
+                updateInView(children.get(i), isInView);
+            }
+        }
+        if (component.getFacetCount() > 0) {
+            for (UIComponent facet : component.getFacets().values()) {
+                updateInView(facet, isInView);
+            }
+        }
     }
 
     // --------------------------------------------------------- Private Classes
