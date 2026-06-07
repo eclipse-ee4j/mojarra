@@ -3470,8 +3470,27 @@ public abstract class UIComponentBase extends UIComponent {
     }
 
     private String addParentId(FacesContext context, String parentId, String childId) {
-        return new StringBuilder(parentId.length() + 1 + childId.length()).append(parentId).append(UINamingContainer.getSeparatorChar(context)).append(childId)
+        // Reuse a request-shared StringBuilder rather than allocating a fresh one per component: client id
+        // resolution runs once per component per request and, in a deep NamingContainer tree, for every node.
+        // The parent id is already a fully resolved String here (getClientId resolves it before calling this),
+        // and the builder is used and toString()'d in a single uninterrupted step, so the shared instance is
+        // never re-entered mid-build.
+        return sharedClientIdBuilder(context).append(parentId).append(UINamingContainer.getSeparatorChar(context)).append(childId)
                 .toString();
+    }
+
+    private static final String SHARED_CLIENT_ID_BUILDER_KEY = "com.sun.faces.component.UIComponentBase.SHARED_CLIENT_ID_BUILDER";
+
+    private static StringBuilder sharedClientIdBuilder(FacesContext context) {
+        Map<Object, Object> contextAttributes = context.getAttributes();
+        StringBuilder builder = (StringBuilder) contextAttributes.get(SHARED_CLIENT_ID_BUILDER_KEY);
+        if (builder == null) {
+            builder = new StringBuilder();
+            contextAttributes.put(SHARED_CLIENT_ID_BUILDER_KEY, builder);
+        } else {
+            builder.setLength(0);
+        }
+        return builder;
     }
 
     private String getParentId(FacesContext context, UIComponent parent) {
