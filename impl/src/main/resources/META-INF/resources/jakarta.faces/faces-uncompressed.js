@@ -894,7 +894,22 @@ if (!((window.faces && faces.specversion && faces.specversion >= parseInt('#{app
          */
         const getHiddenStateField = function getHiddenStateField(form, hiddenStateFieldName, namingContainerPrefix) {
             const fullHiddenStateFieldName = namingContainerPrefix ? namingContainerPrefix+hiddenStateFieldName : hiddenStateFieldName;
-            return getFormInputElementByName( form , fullHiddenStateFieldName );
+            const field = getFormInputElementByName( form , fullHiddenStateFieldName );
+
+            if (field) {
+                return field;
+            }
+
+            // In a namespaced view the field name is <namingContainerPrefix>jakarta.faces.ViewState<sep><counter>,
+            // which the exact-name lookup above misses when the prefix is not yet known. Fall back to the first
+            // form input whose name contains the state field name so the prefix can be derived from it.
+            for (const element of form.elements) {
+                if (element.name && element.name.indexOf(hiddenStateFieldName) >= 0) {
+                    return element;
+                }
+            }
+
+            return null;
         };
 
         /**
@@ -2570,8 +2585,12 @@ if (!((window.faces && faces.specversion && faces.specversion >= parseInt('#{app
         // If partialExecuteIds is defined
         // then add the field only if there is a child element with his name
         // inside one of the element identified with the id contained in "partialExecuteIds" array (partial submit)
+        // ViewState/ClientWindow are always included; in a namespaced view their field names carry the
+        // view root container prefix (e.g. "vr:jakarta.faces.ViewState:0"), so match by substring.
+        const isAlwaysExecuted = name => ALWAYS_EXECUTE_IDS.some( id => name.indexOf(id) >= 0 );
+
         const addField = function(name, value) {
-            const add = !partialExecuteIds || partialExecuteIds.includes(name) || containsNamedChild(partialExecuteDomElements,name);
+            const add = !partialExecuteIds || partialExecuteIds.includes(name) || isAlwaysExecuted(name) || containsNamedChild(partialExecuteDomElements,name);
             if (add) params.append(name, value);
         };
 
