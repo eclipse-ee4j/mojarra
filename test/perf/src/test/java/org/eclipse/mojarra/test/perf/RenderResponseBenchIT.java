@@ -38,7 +38,7 @@ import org.openqa.selenium.WebDriver;
  *
  * <p>Gated behind {@code -Drender=true}. Iteration counts reuse {@code -Dperf.warmup}/{@code
  * -Dperf.runs} (defaults 50/2000); {@code -Dperf.scenarios=<one>} selects the view (default
- * composite-heavy).
+ * composite-unrolled).
  */
 @EnabledIfSystemProperty(named = "render", matches = "true")
 class RenderResponseBenchIT extends BaseIT {
@@ -61,9 +61,9 @@ class RenderResponseBenchIT extends BaseIT {
 
     @Test
     void renderResponse() throws Exception {
-        String scenario = System.getProperty("perf.scenarios", "composite-heavy").trim();
+        String scenario = System.getProperty("perf.scenarios", "composite-unrolled").trim();
         if (scenario.isEmpty() || scenario.contains(",")) {
-            scenario = "composite-heavy";
+            scenario = "composite-unrolled";
         }
 
         HttpClient client = HttpClient.newBuilder()
