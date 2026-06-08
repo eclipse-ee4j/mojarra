@@ -100,23 +100,28 @@ Run both sides on the same server profile so the comparison is fair.
 
 ## Scenarios
 
+Row data for the table/repeat/composite scenarios comes from one shared `DataBean`. The counts are
+calibrated so each scenario costs roughly ~5 ms per postback on tomcat-myfaces, keeping per-scenario times
+comparable: `readonlyRows` (200) and `inputRows` (50) for the cheap table/repeat rows, `compositeRows` (100)
+for the heavier per-row composites, `ajaxRows` (200) for the restore-dominated ajax-inputs scenarios (kept
+under the container's default `maxParameterCount`), and `groups` (5×10) for the nested scenarios. The
+`*-unrolled` scenarios size their `c:forEach` directly for the same ~5 ms target.
+
 - `index` — landing page (smallest baseline)
 - `form-inputs` — single h:form with text/textarea/select/checkbox/radio, managed converters+validators, BV
 - `table-readonly` — h:dataTable, 200 rows, outputs only
-- `table-readonly-heavy` — h:dataTable, 2000 rows, outputs only
 - `table-inputs` — h:dataTable, 50 rows, per-row inputs + converters/validators
-- `table-inputs-heavy` — h:dataTable, 200 rows, per-row inputs + converters/validators
 - `table-nested` — h:dataTable ∋ h:dataTable with a per-row input composite (5×10); UIData twin of `composite-nested`, isolating UIData's per-row child-state save/restore against ui:repeat's
 - `repeat-readonly` — ui:repeat, 200 rows, outputs only
-- `repeat-readonly-heavy` — ui:repeat, 2000 rows, outputs only
-- `repeat-inputs` — ui:repeat, 40 rows, per-row inputs
-- `repeat-inputs-heavy` — ui:repeat, 200 rows, per-row inputs
+- `repeat-inputs` — ui:repeat, 50 rows, per-row inputs
 - `repeat-nested` — ui:repeat ∋ ui:repeat (5×10 rows, per-row inputs)
-- `composite-readonly` — readonly composite component, 200 instances
-- `composite-inputs` — input composite component, 40 instances
+- `composite-readonly` — readonly composite component, 100 instances
+- `composite-inputs` — input composite component, 50 instances
 - `composite-nested` — composite component nested inside ui:repeat (5×10)
-- `composite-heavy` — large *static* tree (`c:forEach` of ~500 small composite components ≈ 3000 components, all NamingContainers) at issue #4811 scale; stresses the Facelets refresh / per-component state+attribute cost on postback
+- `composite-unrolled` — *static* tree of composite components built by `c:forEach` (~100 composites, all NamingContainers — the issue #4811 pattern); a postback rebuilds and re-renders the whole composite tree at scale (its restore is delta-free, so the state-restore walk is skipped)
+- `view-unrolled` — flat *static* tree built by `c:forEach` (~200 panelGroups, no inputs); delta-free full postback exercising `restoreViewRootOnly` + the descendant mark-id cache + full render at scale
 - `form-inputs-ajax`, `table-inputs-ajax`, `repeat-inputs-ajax` — same as their non-ajax twins but submit via `<f:ajax execute="@form" render="@form messages">`; driver sends a partial-ajax POST and refreshes `ViewState` from the XML response.
+- `view-unrolled-ajax` — ajax twin of `view-unrolled`: same flat static tree, `@form` ajax postback (`restoreViewRootOnly` + partial-response render at scale)
 - `viewparam-get` — GET with `<f:metadata><f:viewParam><f:viewAction></f:metadata>` so the GET runs the **entire** lifecycle (Apply Request Values → Render Response), not just Restore View + Render Response.
 
 GET-only scenarios fire RESTORE_VIEW + RENDER_RESPONSE; the `viewparam-get`

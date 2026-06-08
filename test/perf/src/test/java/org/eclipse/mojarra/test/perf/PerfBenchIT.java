@@ -126,8 +126,6 @@ class PerfBenchIT extends BaseIT {
             Map.entry("table-readonly", "table-readonly.xhtml"),
             Map.entry("repeat-readonly", "repeat-readonly.xhtml"),
             Map.entry("composite-readonly", "composite-readonly.xhtml"),
-            Map.entry("table-readonly-heavy", "table-readonly-heavy.xhtml"),
-            Map.entry("repeat-readonly-heavy", "repeat-readonly-heavy.xhtml"),
             Map.entry("viewparam-get", "viewparam-get.xhtml?id=42")));
 
     /** Full (non-ajax) form postbacks. */
@@ -139,16 +137,16 @@ class PerfBenchIT extends BaseIT {
             "table-nested",
             "repeat-nested",
             "composite-nested",
-            "table-inputs-heavy",
-            "repeat-inputs-heavy",
-            "composite-heavy"));
+            "composite-unrolled",
+            "view-unrolled"));
 
     /** Ajax-partial postbacks. Same body fields as their non-ajax twin plus the
      *  {@code jakarta.faces.partial.*} markers and the {@code Faces-Request} header. */
     private static final List<String> POSTBACK_AJAX = only(List.of(
             "form-inputs-ajax",
             "table-inputs-ajax",
-            "repeat-inputs-ajax"));
+            "repeat-inputs-ajax",
+            "view-unrolled-ajax"));
 
     private static final Pattern VIEW_STATE = Pattern.compile(
             "name=\"jakarta\\.faces\\.ViewState\"[^>]*value=\"([^\"]+)\"" +
