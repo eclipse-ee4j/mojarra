@@ -152,15 +152,7 @@ public abstract class UIComponentBase extends UIComponent {
     private Object dynamicComponent;       // RIConstants.DYNAMIC_COMPONENT (Integer index)
     private boolean markDeleted;           // ComponentSupport.MARK_DELETED
     private boolean markChildrenModified;  // ComponentSupport.MARK_CHILDREN_MODIFIED
-
-    /**
-     * Re-entrancy guard set while this component is being added to a parent. Replaces a former private
-     * {@code ".ADDED"} attribute marker, whose read/write/remove on every {@link #setParent} routed through the
-     * reflective {@link AttributesMap} ({@code getPropertyDescriptor} miss → {@link StateHelper} lookup); a field
-     * read avoids that hot-path cost entirely. {@link #setParent} always clears it before returning, so it is
-     * never carried in saved state.
-     */
-    private boolean added;
+    private boolean added;                 // setParent re-entrancy guard
 
     /**
      * <p>
