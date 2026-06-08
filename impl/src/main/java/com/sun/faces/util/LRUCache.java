@@ -15,65 +15,69 @@
  */
 package com.sun.faces.util;
 
-import java.util.Objects;
-import java.util.concurrent.locks.ReentrantLock;
+import static java.util.Objects.requireNonNull;
 
 /**
  * LRU Cache adapted to the code style of Faces
+ * Optimized for modern JVMs and Virtual Threads.
  *
  * @author Paolo Bernardi
  */
 public class LRUCache<K,V> {
 
-    // we can't use a read/write lock because getting an element
-    // from a LinkedHashMap with access order creates internal
-    // structural changes, so we have a unique lock.
-    // We use the fair mode to better serve waiting threads, otherwise
-    // we could simply use a synchronized block over an "Object lock"
-    private final ReentrantLock lock = new ReentrantLock(true);
-
-    // We use an LRUMap to reuse a common Faces' data structure.
-    // this is backed by a LinkedHashMap with access order
+    // On modern JVMs, the good old synchronized block has been highly optimized
+    // and is 100% compatible with virtual threads (no pinning issues post-JEP 491).
+    // Also, a plain Object monitor is way lighter than a ReentrantLock on the heap,
+    // and we don't need any advanced lock features like timeouts or interruptibility.
+    private final Object lock = new Object();
+    private final Cache.Factory<K,V> factory;
     private final LRUMap<K,V> cache;
 
-    // we wrap the old Factory<K,V> class of Faces' Cache<K,V>
-    // in a Function<K,V> because it can be used natively with Maps
-    private final Cache.Factory<K,V> factory;
-
-    public LRUCache(Cache.Factory<K,V> factory,int capacity) {
+    public LRUCache(Cache.Factory<K,V> factory, int capacity) {
+        this.factory = requireNonNull(factory);
         this.cache = new LRUMap<>(capacity);
-        this.factory = factory;
     }
 
     /**
      * get from cache if exists
      * else init the value + save in cache + return created value
-     *
-     * @param key the key
-     *
-     * @return the value from cache if exists, otherwise the newly created and saved value
      */
-    public V get(K key) {
-        Objects.requireNonNull(key);
+    public V get(final K key) {
+        requireNonNull(key);
 
-        // lock
-        try {
-            // if a waiting thread is interrupted it will release the lock... server shutdown?
-            // if this introduces a performance penalty we could use lock.lock() and remove the try-catch
-            lock.lockInterruptibly();
-        }
-        catch (InterruptedException e) {
-            // in this case we return null
-            // ...it should be ok, isn't it?
-            return null;
+        V value;
+
+        // 1. read with lock (LinkedHashMap with access order does internal changes, a lock is required)
+        synchronized (lock) {
+            value = cache.get(key);
         }
 
-        // read + (create and store if not exist) atomically
-        try {
-            return cache.computeIfAbsent( key , factory );
+        // if not exists:
+        if (value == null) {
+
+            // 2. compute the new value without locking
+            V newValue = factory.apply(key);
+            if (newValue == null) return null;
+
+            // 3. insert new value with lock
+            synchronized (lock) {
+                value = cache.putIfAbsent(key, newValue);
+                if (value == null) {
+                    value = newValue;
+                }
+            }
         }
-        finally {
-            lock.unlock();
+
+        return value;
+    }
+
+    /**
+     * remove an element identified by the passed key from the cache
+     */
+    public V remove(final K key) {
+        requireNonNull(key);
+        synchronized (lock) {
+            return cache.remove(key);
         }
     }
 
@@ -81,50 +85,8 @@ public class LRUCache<K,V> {
      * clear the cache
      */
     public void clear() {
-        // lock
-        try {
-            // if a waiting thread is interrupted it will release the lock... server shutdown?
-            // if this introduces a performance penalty we could use lock.lock() and remove the try-catch
-            lock.lockInterruptibly();
-        }
-        // release if interrupted and return
-        catch (InterruptedException ignored) {
-            return;
-        }
-        // clear
-        try {
+        synchronized (lock) {
             cache.clear();
-        }
-        // always unlock
-        finally {
-            lock.unlock();
-        }
-    }
-
-    /**
-     * remove an element identified by
-     * the passed key from the cache
-     */
-    public V remove(final K key) {
-        Objects.requireNonNull(key);
-
-        // lock
-        try {
-            // if a waiting thread is interrupted it will release the lock... server shutdown?
-            // if this introduces a performance penalty we could use lock.lock() and remove the try-catch
-            lock.lockInterruptibly();
-        }
-        // release if interrupted and return
-        catch (InterruptedException ignored) {
-            return null;
-        }
-        // remove
-        try {
-            return cache.remove(key);
-        }
-        // always unlock
-        finally {
-            lock.unlock();
         }
     }
 
