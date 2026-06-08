@@ -107,8 +107,6 @@ public abstract class UIComponentBase extends UIComponent {
 
     private static Logger LOGGER = Logger.getLogger("jakarta.faces.component", "jakarta.faces.LogStrings");
 
-    private static final String ADDED = UIComponentBase.class.getName() + ".ADDED";
-
     private static final int MY_STATE = 0;
     private static final int CHILD_STATE = 1;
 
@@ -153,6 +151,7 @@ public abstract class UIComponentBase extends UIComponent {
     private Object dynamicComponent;       // RIConstants.DYNAMIC_COMPONENT (Integer index)
     private boolean markDeleted;           // ComponentSupport.MARK_DELETED
     private boolean markChildrenModified;  // ComponentSupport.MARK_CHILDREN_MODIFIED
+    private boolean added;                 // setParent re-entrancy guard
 
     /**
      * <p>
@@ -357,19 +356,16 @@ public abstract class UIComponentBase extends UIComponent {
             compositeParent = null;
         } else {
             this.parent = parent;
-            if (getAttributes().get(ADDED) == null) {
+            if (!added) {
 
-                // Add an attribute to this component here to indiciate that
-                // it's being processed. If we don't do this, and the component
-                // is re-parented, the events could fire again in certain cases
-                // and cause a stack overflow.
-                getAttributes().put(ADDED, TRUE);
+                // Flag this component as being processed. Without the guard, a re-parent during event
+                // processing could fire the events again in certain cases and cause a stack overflow.
+                added = true;
 
                 doPostAddProcessing(FacesContext.getCurrentInstance(), this);
 
-                // Remove the attribute once we've returned from the event
-                // processing.
-                getAttributes().remove(ADDED);
+                // Clear the flag once we've returned from the event processing.
+                added = false;
             }
         }
     }
@@ -1716,7 +1712,11 @@ public abstract class UIComponentBase extends UIComponent {
     private void doPostAddProcessing(FacesContext context, UIComponent added) {
 
         if (parent.isInView()) {
-            publishAfterViewEvents(context, context.getApplication(), added);
+            if (context.isProcessingEvents()) {
+                publishAfterViewEvents(context, context.getApplication(), added);
+            } else {
+                updateInView(added, true);
+            }
         }
 
     }
@@ -1724,7 +1724,11 @@ public abstract class UIComponentBase extends UIComponent {
     private void doPreRemoveProcessing(FacesContext context, UIComponent toRemove) {
 
         if (parent.isInView()) {
-            disconnectFromView(context, context.getApplication(), toRemove);
+            if (context.isProcessingEvents()) {
+                disconnectFromView(context, context.getApplication(), toRemove);
+            } else {
+                updateInView(toRemove, false);
+            }
         }
 
     }
@@ -2013,13 +2017,25 @@ public abstract class UIComponentBase extends UIComponent {
             component.pushComponentToEL(context, component);
             application.publishEvent(context, PostAddToViewEvent.class, component);
             if (component.getChildCount() > 0) {
-                Collection<UIComponent> clist = new ArrayList<>(component.getChildren());
-                for (UIComponent c : clist) {
-                    publishAfterViewEvents(context, application, c);
+                // A PostAddToViewEvent listener may relocate children mid-walk (e.g. composite cc:insertChildren's
+                // RelocateChildrenListener), mutating this list. Rather than walk a per-node defensive copy, iterate
+                // the live list and re-check the slot after recursing: if index i no longer holds the component we
+                // just processed, it was relocated away, so process whatever now occupies i. Spends no per-node copy.
+                List<UIComponent> children = component.getChildren();
+                for (int i = 0; i < children.size(); i++) {
+                    while (true) {
+                        UIComponent child = children.get(i);
+                        publishAfterViewEvents(context, application, child);
+                        if (i < children.size() && children.get(i) != child) {
+                            continue;
+                        }
+                        break;
+                    }
                 }
             }
 
             if (component.getFacetCount() > 0) {
+                // Facets are few and rarely relocated; a small defensive copy keeps the iteration trivially safe.
                 Collection<UIComponent> clist = new ArrayList<>(component.getFacets().values());
                 for (UIComponent c : clist) {
                     publishAfterViewEvents(context, application, c);
@@ -2048,6 +2064,36 @@ public abstract class UIComponentBase extends UIComponent {
         application.publishEvent(context, PreRemoveFromViewEvent.class, component);
         component.setInView(false);
         component.compositeParent = null;
+    }
+
+    /**
+     * Recursively maintain the in-view flag of the given subtree <em>without</em> publishing the
+     * {@link PostAddToViewEvent}/{@link PreRemoveFromViewEvent} system events. Used when the runtime has event
+     * processing suppressed ({@link FacesContext#isProcessingEvents()} is {@code false}), e.g. while a
+     * partial-state-saving restore rebuilds the tree: {@link Application#publishEvent} is a no-op while suppressed,
+     * so walking the subtree to fire it -- pushing and popping the EL stack at every node -- is wasted work. This
+     * reproduces the publishing walks' only non-event side effects: {@link #publishAfterViewEvents} sets in-view
+     * true, {@link #disconnectFromView} sets it false and clears {@code compositeParent}.
+     */
+    private static void updateInView(UIComponent component, boolean isInView) {
+        component.setInView(isInView);
+        if (!isInView) {
+            component.compositeParent = null;
+        }
+        // Events are suppressed, so no listener can relocate children mid-walk: a plain index loop over the live
+        // children (and the facet values) suffices, avoiding the getFacetsAndChildren() iterator allocation that
+        // the publishing walks were themselves restructured to avoid.
+        if (component.getChildCount() > 0) {
+            List<UIComponent> children = component.getChildren();
+            for (int i = 0, size = children.size(); i < size; i++) {
+                updateInView(children.get(i), isInView);
+            }
+        }
+        if (component.getFacetCount() > 0) {
+            for (UIComponent facet : component.getFacets().values()) {
+                updateInView(facet, isInView);
+            }
+        }
     }
 
     // --------------------------------------------------------- Private Classes
@@ -3415,8 +3461,27 @@ public abstract class UIComponentBase extends UIComponent {
     }
 
     private String addParentId(FacesContext context, String parentId, String childId) {
-        return new StringBuilder(parentId.length() + 1 + childId.length()).append(parentId).append(UINamingContainer.getSeparatorChar(context)).append(childId)
+        // Reuse a request-shared StringBuilder rather than allocating a fresh one per component: client id
+        // resolution runs once per component per request and, in a deep NamingContainer tree, for every node.
+        // The parent id is already a fully resolved String here (getClientId resolves it before calling this),
+        // and the builder is used and toString()'d in a single uninterrupted step, so the shared instance is
+        // never re-entered mid-build.
+        return sharedClientIdBuilder(context).append(parentId).append(UINamingContainer.getSeparatorChar(context)).append(childId)
                 .toString();
+    }
+
+    private static final String SHARED_CLIENT_ID_BUILDER_KEY = "com.sun.faces.component.UIComponentBase.SHARED_CLIENT_ID_BUILDER";
+
+    private static StringBuilder sharedClientIdBuilder(FacesContext context) {
+        Map<Object, Object> contextAttributes = context.getAttributes();
+        StringBuilder builder = (StringBuilder) contextAttributes.get(SHARED_CLIENT_ID_BUILDER_KEY);
+        if (builder == null) {
+            builder = new StringBuilder();
+            contextAttributes.put(SHARED_CLIENT_ID_BUILDER_KEY, builder);
+        } else {
+            builder.setLength(0);
+        }
+        return builder;
     }
 
     private String getParentId(FacesContext context, UIComponent parent) {
