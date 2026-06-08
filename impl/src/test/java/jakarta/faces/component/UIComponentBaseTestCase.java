@@ -125,6 +125,40 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         assertTrue(received.contains(c3));
     }
 
+    // While the runtime has event processing suppressed (FacesContext.isProcessingEvents() == false, e.g. during a
+    // partial-state-saving restore), add/remove must NOT publish PostAddToViewEvent/PreRemoveFromViewEvent --
+    // publishEvent is a no-op while suppressed anyway -- but must still maintain the in-view flag across the subtree.
+    @Test
+    public void testInViewMaintainedWithoutEventsWhenProcessingSuppressed() {
+
+        UIComponent parent = new UIPanel();
+        parent.setInView(true);
+
+        UIComponent holder = new UIPanel();
+        UIOutput child = new UIOutput();
+        holder.getChildren().add(child);
+
+        List<UIComponent> received = new ArrayList<>();
+        ComponentSystemEventListener recorder = event -> received.add(event.getComponent());
+        holder.subscribeToEvent(PostAddToViewEvent.class, recorder);
+        child.subscribeToEvent(PostAddToViewEvent.class, recorder);
+
+        facesContext.setProcessingEvents(false);
+        try {
+            parent.getChildren().add(holder);
+            assertTrue(received.isEmpty());        // no event published while suppressed
+            assertTrue(holder.isInView());         // ...but in-view propagated across the added subtree
+            assertTrue(child.isInView());
+
+            parent.getChildren().remove(holder);
+            assertTrue(received.isEmpty());         // still no event published
+            assertTrue(!holder.isInView());         // in-view cleared across the removed subtree
+            assertTrue(!child.isInView());
+        } finally {
+            facesContext.setProcessingEvents(true);
+        }
+    }
+
     @Test
     public void testComponentToFromEL2() throws Exception {
 
