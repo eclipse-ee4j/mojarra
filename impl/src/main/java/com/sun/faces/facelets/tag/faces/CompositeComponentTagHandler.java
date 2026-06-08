@@ -62,6 +62,7 @@ import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagAttribute;
 
 import com.sun.faces.RIConstants;
+import com.sun.faces.context.StateContext;
 import com.sun.faces.el.CompositeComponentELResolver;
 import com.sun.faces.facelets.el.VariableMapperWrapper;
 import com.sun.faces.facelets.tag.MetaRulesetImpl;
@@ -547,8 +548,26 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
                     // about the value's existence.
                     attrs.remove(name);
                 }
-                cc.setValueExpression(name, ve);
 
+                // A composite component's attribute expressions are re-derived from the Facelet on every
+                // (re)build. On a postback rebuild the tree is already initial-state-marked, so recording
+                // them through the normal path stores a per-component delta that buildView reconstructs
+                // identically anyway. Under partial state saving, write them as initial state so the saved
+                // view stays free of this redundant, fully-reconstructable binding. (Legacy from full state
+                // saving, where the component is never initial-state-marked and this branch is a no-op.)
+                FacesContext context = ctx.getFacesContext();
+                boolean writeAsInitialState = cc.initialStateMarked()
+                        && StateContext.getStateContext(context).isPartialStateSaving(context, null);
+                if (writeAsInitialState) {
+                    cc.clearInitialState();
+                }
+                try {
+                    cc.setValueExpression(name, ve);
+                } finally {
+                    if (writeAsInitialState) {
+                        cc.markInitialState();
+                    }
+                }
             }
 
         } // END CompositeExpressionMetadata
