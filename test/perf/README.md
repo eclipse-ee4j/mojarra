@@ -62,7 +62,7 @@ the WAR's `WEB-INF/lib` (OpenLiberty, Tomcat).
 
 | profile         | server          | provisioned into                | version property                  |
 |-----------------|-----------------|----------------------------------|-----------------------------------|
-| *(default)*     | GlassFish       | `target/glassfish8`             | `-Dglassfish.version` (8.0.2)      |
+| *(default)*     | GlassFish       | `target/glassfish8`             | `-Dglassfish.version` (8.0.3)      |
 | `-Pwildfly`     | WildFly         | `target/wildfly`                | `-Dwildfly.version` (40.0.0.Final) |
 | `-Ptomee`       | TomEE Plume     | `target/apache-tomee-plume-*`   | `-Dtomee.version` (10.1.5)        |
 | `-Ppayara`      | Payara          | `target/payara7`                | `-Dpayara.version` (7.2026.5)     |

@@ -63,7 +63,7 @@
         <arquillian.browser>chrome</arquillian.browser>
         <mojarra.version>${project.version}</mojarra.version>
         <myfaces.version>4.1.4-SNAPSHOT</myfaces.version> <!-- consumed by the *-myfaces profiles -->
-        <glassfish.version>8.0.2</glassfish.version>
+        <glassfish.version>8.0.3</glassfish.version>
         <wildfly.version>40.0.0.Final</wildfly.version>
         <tomee.version>10.1.5</tomee.version>
         <payara.version>7.2026.5</payara.version>
