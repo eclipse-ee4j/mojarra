@@ -87,6 +87,77 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
 
     }
 
+    // Adding a subtree to an in-view parent fires PostAddToViewEvent across it via publishAfterViewEvents,
+    // which iterates the live children list (no defensive copy). A listener may relocate a component out of its
+    // parent during its own event (h:outputScript moving itself to the head, composite cc:insertChildren, ...),
+    // shifting the next sibling into the vacated slot. Verify the walk tolerates that: no
+    // ConcurrentModificationException, and the shifted sibling is still visited rather than skipped.
+    @Test
+    public void testPublishAfterViewEventsToleratesSelfRelocation() {
+
+        UIComponent parent = new UIPanel();
+        parent.setInView(true);
+
+        UIComponent holder = new UIPanel();
+        UIOutput c0 = new UIOutput();
+        UIOutput c1 = new UIOutput();
+        UIOutput c2 = new UIOutput();
+        UIOutput c3 = new UIOutput();
+        holder.getChildren().addAll(Arrays.asList(c0, c1, c2, c3));
+
+        List<UIComponent> received = new ArrayList<>();
+        ComponentSystemEventListener recorder = event -> received.add(event.getComponent());
+        for (UIComponent c : Arrays.asList(holder, c0, c1, c2, c3)) {
+            c.subscribeToEvent(PostAddToViewEvent.class, recorder);
+        }
+
+        // c1 relocates itself out of holder during its own PostAddToViewEvent, shifting c2 into index 1.
+        c1.subscribeToEvent(PostAddToViewEvent.class, (ComponentSystemEventListener) event -> holder.getChildren().remove(c1));
+
+        // Triggers publishAfterViewEvents over the holder subtree; must not throw ConcurrentModificationException.
+        parent.getChildren().add(holder);
+
+        assertTrue(received.contains(holder));
+        assertTrue(received.contains(c0));
+        assertTrue(received.contains(c1)); // recorded before it relocated itself
+        assertTrue(received.contains(c2)); // shifted into c1's vacated slot mid-walk, must not be skipped
+        assertTrue(received.contains(c3));
+    }
+
+    // While the runtime has event processing suppressed (FacesContext.isProcessingEvents() == false, e.g. during a
+    // partial-state-saving restore), add/remove must NOT publish PostAddToViewEvent/PreRemoveFromViewEvent --
+    // publishEvent is a no-op while suppressed anyway -- but must still maintain the in-view flag across the subtree.
+    @Test
+    public void testInViewMaintainedWithoutEventsWhenProcessingSuppressed() {
+
+        UIComponent parent = new UIPanel();
+        parent.setInView(true);
+
+        UIComponent holder = new UIPanel();
+        UIOutput child = new UIOutput();
+        holder.getChildren().add(child);
+
+        List<UIComponent> received = new ArrayList<>();
+        ComponentSystemEventListener recorder = event -> received.add(event.getComponent());
+        holder.subscribeToEvent(PostAddToViewEvent.class, recorder);
+        child.subscribeToEvent(PostAddToViewEvent.class, recorder);
+
+        facesContext.setProcessingEvents(false);
+        try {
+            parent.getChildren().add(holder);
+            assertTrue(received.isEmpty());        // no event published while suppressed
+            assertTrue(holder.isInView());         // ...but in-view propagated across the added subtree
+            assertTrue(child.isInView());
+
+            parent.getChildren().remove(holder);
+            assertTrue(received.isEmpty());         // still no event published
+            assertTrue(!holder.isInView());         // in-view cleared across the removed subtree
+            assertTrue(!child.isInView());
+        } finally {
+            facesContext.setProcessingEvents(true);
+        }
+    }
+
     @Test
     public void testComponentToFromEL2() throws Exception {
 

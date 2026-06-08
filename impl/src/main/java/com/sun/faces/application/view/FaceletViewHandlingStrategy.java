@@ -312,7 +312,9 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 facelet.apply(ctx, view);
                 reapplyDynamicActions(ctx);
                 if (stateCtx.isPartialStateSaving(ctx, view.getViewId())) {
-                    markInitialStateIfNotMarked(view);
+                    // reapplyDynamicActions ran above, so the dynamic-action list now reflects this view;
+                    // when it is empty no component bears DYNAMIC_COMPONENT and the per-node marker check is skipped.
+                    markInitialStateIfNotMarked(view, !isEmpty(stateCtx.getDynamicActions()));
                 }
             } finally {
                 stateCtx.setTrackViewModifications(true);
@@ -1186,10 +1188,22 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
     private void markInitialState(final UIComponent component) {
         component.markInitialState();
-        for (Iterator<UIComponent> it = component.getFacetsAndChildren(); it.hasNext();) {
-            UIComponent child = it.next();
-            if (!child.isTransient()) {
-                markInitialState(child);
+        // Index loop over children + facet values rather than getFacetsAndChildren(), avoiding an iterator
+        // allocation at every node of this per-build full-tree walk.
+        if (component.getChildCount() > 0) {
+            List<UIComponent> children = component.getChildren();
+            for (int i = 0, size = children.size(); i < size; i++) {
+                UIComponent child = children.get(i);
+                if (!child.isTransient()) {
+                    markInitialState(child);
+                }
+            }
+        }
+        if (component.getFacetCount() > 0) {
+            for (UIComponent facet : component.getFacets().values()) {
+                if (!facet.isTransient()) {
+                    markInitialState(facet);
+                }
             }
         }
     }
@@ -1994,14 +2008,27 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     /**
      * Mark the initial state if not already marked.
      */
-    private void markInitialStateIfNotMarked(UIComponent component) {
-        if (!component.isTransient()) {
-            if (!component.getAttributes().containsKey(DYNAMIC_COMPONENT) && !component.initialStateMarked()) {
-                component.markInitialState();
+    private void markInitialStateIfNotMarked(UIComponent component, boolean hasDynamicComponents) {
+        if (component.isTransient()) {
+            return;
+        }
+        // The DYNAMIC_COMPONENT guard exists to leave dynamically added components unmarked. When the view
+        // carries no dynamic actions no component bears that marker, so skip the per-node reflective
+        // AttributesMap.containsKey probe entirely. Index loop over children + facet values rather than
+        // getFacetsAndChildren(), avoiding an iterator allocation at every node.
+        if (!component.initialStateMarked()
+                && (!hasDynamicComponents || !component.getAttributes().containsKey(DYNAMIC_COMPONENT))) {
+            component.markInitialState();
+        }
+        if (component.getChildCount() > 0) {
+            List<UIComponent> children = component.getChildren();
+            for (int i = 0, size = children.size(); i < size; i++) {
+                markInitialStateIfNotMarked(children.get(i), hasDynamicComponents);
             }
-            for (Iterator<UIComponent> it = component.getFacetsAndChildren(); it.hasNext();) {
-                UIComponent child = it.next();
-                markInitialStateIfNotMarked(child);
+        }
+        if (component.getFacetCount() > 0) {
+            for (UIComponent facet : component.getFacets().values()) {
+                markInitialStateIfNotMarked(facet, hasDynamicComponents);
             }
         }
     }

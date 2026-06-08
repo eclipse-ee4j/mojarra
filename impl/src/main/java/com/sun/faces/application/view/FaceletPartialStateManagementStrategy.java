@@ -345,31 +345,40 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
                 // marker lookup in componentAddedDynamically can be skipped across the whole restore traversal.
                 @SuppressWarnings("unchecked")
                 List<Object> savedActions = (List<Object>) state.get(DYNAMIC_ACTIONS);
-                stateContext.setHasDynamicComponents(!isEmpty(savedActions));
+                boolean hasDynamicActions = !isEmpty(savedActions);
+                stateContext.setHasDynamicComponents(hasDynamicActions);
 
-                VisitContext visitContext = VisitContext.createVisitContext(context, null, SKIP_ITERATION_AND_EXECUTE_LIFECYCLE_HINTS);
-                viewRoot.visitTree(visitContext, (context1, target) -> {
-                    VisitResult result = VisitResult.ACCEPT;
-                    String cid = target.getClientId(context1.getFacesContext());
-                    Object stateObj = state.get(cid);
-                    if (stateObj != null && !stateContext.componentAddedDynamically(target)) {
-                        boolean restoreStateNow = true;
-                        if (stateObj instanceof StateHolderSaver) {
-                            restoreStateNow = !((StateHolderSaver) stateObj).componentAddedDynamically();
-                        }
-                        if (restoreStateNow) {
-                            try {
-                                target.restoreState(context1.getFacesContext(), stateObj);
-                            } catch (Exception e) {
-                                String msg = MessageUtils.getExceptionMessageString(MessageUtils.PARTIAL_STATE_ERROR_RESTORING_ID, cid, e.toString());
-                                throw new FacesException(msg, e);
+                if (!hasDynamicActions && isViewRootOnlyState(context, viewRoot, state)) {
+                    // No dynamic actions and no per-component delta (or only the view root's): restore the
+                    // view root in isolation and skip the full O(N) restore traversal. Any component whose
+                    // state actually changed carries a non-null delta in the map, which forces the walk via
+                    // the else-branch, so this short-circuit is behavior-neutral for static / low-delta views.
+                    restoreViewRootOnly(context, viewRoot, state);
+                } else {
+                    VisitContext visitContext = VisitContext.createVisitContext(context, null, SKIP_ITERATION_AND_EXECUTE_LIFECYCLE_HINTS);
+                    viewRoot.visitTree(visitContext, (context1, target) -> {
+                        VisitResult result = VisitResult.ACCEPT;
+                        String cid = target.getClientId(context1.getFacesContext());
+                        Object stateObj = state.get(cid);
+                        if (stateObj != null && !stateContext.componentAddedDynamically(target)) {
+                            boolean restoreStateNow = true;
+                            if (stateObj instanceof StateHolderSaver) {
+                                restoreStateNow = !((StateHolderSaver) stateObj).componentAddedDynamically();
+                            }
+                            if (restoreStateNow) {
+                                try {
+                                    target.restoreState(context1.getFacesContext(), stateObj);
+                                } catch (Exception e) {
+                                    String msg = MessageUtils.getExceptionMessageString(MessageUtils.PARTIAL_STATE_ERROR_RESTORING_ID, cid, e.toString());
+                                    throw new FacesException(msg, e);
+                                }
                             }
                         }
-                    }
 
-                    return result;
-                });
-                restoreDynamicActions(context, stateContext, state);
+                        return result;
+                    });
+                    restoreDynamicActions(context, stateContext, state);
+                }
             } finally {
                 stateContext.setHasDynamicComponents(true);
                 stateContext.setTrackViewModifications(true);
@@ -379,6 +388,41 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
         }
         context.setProcessingEvents(processingEvents);
         return viewRoot;
+    }
+
+    /**
+     * Determine whether the saved state holds no per-component delta other than (optionally) the view
+     * root's own state. The {@code DYNAMIC_ACTIONS} entry is bookkeeping rather than a component delta,
+     * so it is excluded from the count.
+     *
+     * @param context the Faces context.
+     * @param viewRoot the view root.
+     * @param state the saved state map.
+     * @return true if only the view root needs restoring, allowing the full restore traversal to be skipped.
+     */
+    private boolean isViewRootOnlyState(FacesContext context, UIViewRoot viewRoot, Map<String, Object> state) {
+        int componentStateCount = state.containsKey(DYNAMIC_ACTIONS) ? state.size() - 1 : state.size();
+        return componentStateCount == 0
+                || componentStateCount == 1 && state.containsKey(viewRoot.getClientId(context));
+    }
+
+    /**
+     * Restore only the view root's own state, skipping the per-component restore traversal.
+     *
+     * @param context the Faces context.
+     * @param viewRoot the view root.
+     * @param state the saved state map.
+     */
+    private void restoreViewRootOnly(FacesContext context, UIViewRoot viewRoot, Map<String, Object> state) {
+        Object viewRootState = state.get(viewRoot.getClientId(context));
+        if (viewRootState != null) {
+            viewRoot.pushComponentToEL(context, viewRoot);
+            try {
+                viewRoot.restoreState(context, viewRootState);
+            } finally {
+                viewRoot.popComponentFromEL(context);
+            }
+        }
     }
 
     /**
