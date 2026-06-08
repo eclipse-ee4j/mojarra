@@ -830,12 +830,19 @@ public class Util {
     }
 
     public static boolean componentIsDisabled(UIComponent component) {
-        return Boolean.parseBoolean(String.valueOf(component.getAttributes().get("disabled")));
+        return attributeIsTrue(component, "disabled");
     }
 
     public static boolean componentIsDisabledOrReadonly(UIComponent component) {
-        return Boolean.parseBoolean(String.valueOf(component.getAttributes().get("disabled")))
-                || Boolean.parseBoolean(String.valueOf(component.getAttributes().get("readonly")));
+        return attributeIsTrue(component, "disabled") || attributeIsTrue(component, "readonly");
+    }
+
+    // disabled/readonly are declared boolean properties on the HTML components these helpers run against, so the
+    // attribute value is always a Boolean (the Facelets boolean MetaRule coerces literals/EL before storing; a String
+    // cannot be written through a boolean setter). Read it directly, mirroring UIComponent.isRendered(), rather than
+    // routing through the String.valueOf()/parseBoolean() coercion the absent String case never needs.
+    private static boolean attributeIsTrue(UIComponent component, String name) {
+        return Boolean.TRUE.equals(component.getAttributes().get(name));
     }
 
     // W3C XML specification refers to IETF RFC 1766 for language code
