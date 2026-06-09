@@ -27,8 +27,8 @@
     <h:body>
         <h:form id="form">
             <h:panelGroup id="rows" layout="block">
-                <ui:repeat value="#{repeatBean.inputRows}" var="row">
-                    <h:panelGroup layout="block">
+                <ui:repeat value="#{dataBean.ajaxRows}" var="row">
+                    <h:panelGroup id="row" ayout="block">
                         <h:outputText value="#{row.id}"/>
                         <h:inputText value="#{row.name}">
                             <f:converter converterId="trimConverter"/>
@@ -44,7 +44,7 @@
                     </h:panelGroup>
                 </ui:repeat>
             </h:panelGroup>
-            <h:commandButton id="submit" value="Save" action="#{repeatBean.save}">
+            <h:commandButton id="submit" value="Save" action="#{dataBean.save}">
                 <f:ajax execute="@form" render="rows messages"/>
             </h:commandButton>
             <h:messages id="messages" globalOnly="false"/>

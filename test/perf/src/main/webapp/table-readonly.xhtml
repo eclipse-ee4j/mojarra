@@ -24,7 +24,7 @@
         <title>table-readonly</title>
     </h:head>
     <h:body>
-        <h:dataTable value="#{tableBean.readonlyRows}" var="row">
+        <h:dataTable value="#{dataBean.readonlyRows}" var="row">
             <h:column><f:facet name="header">#</f:facet>#{row.id}</h:column>
             <h:column><f:facet name="header">Name</f:facet>#{row.name}</h:column>
             <h:column><f:facet name="header">Description</f:facet>#{row.description}</h:column>

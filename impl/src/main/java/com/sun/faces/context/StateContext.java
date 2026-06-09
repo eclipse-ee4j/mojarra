@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -42,7 +43,6 @@ import com.sun.faces.util.ComponentStruct;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MostlySingletonSet;
 
-import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
@@ -270,6 +270,49 @@ public class StateContext {
      */
     public HashMap<String, UIComponent> getDynamicComponents() {
         return modListener != null ? modListener.getDynamicComponents() : null;
+    }
+
+    /**
+     * Collapses a raw, append-ordered dynamic action list into the minimal set to replay or save.
+     *
+     * <p>
+     * Actions are recorded append-only per event (see {@code recordDynamicAction}); redundant add/remove pairs for
+     * the same client id are collapsed here in a single O(n) pass rather than per event (a per-event prune is
+     * O(n&sup2;)). Per
+     * client id the net effect is one of: an ADD (added and still present), nothing (added then removed again), a
+     * REMOVE (a pre-existing component removed), or a REMOVE followed by an ADD (pre-existing removed then re-added).
+     * First-occurrence order is preserved so a parent is always replayed before its children.
+     * </p>
+     *
+     * @param rawActions the dynamic actions in the order they were recorded, or {@code null}.
+     * @return the pruned actions in replay order, or {@code null} if {@code rawActions} was {@code null}.
+     */
+    public static List<ComponentStruct> pruneDynamicActions(List<ComponentStruct> rawActions) {
+        if (rawActions == null) {
+            return null;
+        }
+        // value[0] = effective REMOVE for the client id (or null); value[1] = effective ADD (or null)
+        Map<String, ComponentStruct[]> netByClientId = new LinkedHashMap<>();
+        for (ComponentStruct action : rawActions) {
+            ComponentStruct[] net = netByClientId.computeIfAbsent(action.getClientId(), key -> new ComponentStruct[2]);
+            if (ADD.equals(action.getAction())) {
+                net[1] = action;
+            } else if (net[1] != null) {
+                net[1] = null;          // an earlier ADD is cancelled by this REMOVE
+            } else if (net[0] == null) {
+                net[0] = action;        // first REMOVE of a pre-existing component
+            }
+        }
+        List<ComponentStruct> pruned = new ArrayList<>(netByClientId.size());
+        for (ComponentStruct[] net : netByClientId.values()) {
+            if (net[0] != null) {
+                pruned.add(net[0]);
+            }
+            if (net[1] != null) {
+                pruned.add(net[1]);
+            }
+        }
+        return pruned;
     }
 
     // ---------------------------------------------------------- Nested Classes
@@ -600,7 +643,7 @@ public class StateContext {
         protected void handleRemove(FacesContext context, UIComponent component) {
             if (component.isInView()) {
                 decrementDynamicChildCount(context, component.getParent());
-                handleAddRemoveWithAutoPrune(
+                recordDynamicAction(
                     component, 
                     new ComponentStruct(REMOVE, findFacetNameForComponent(component), component.getClientId(context), component.getId())
                 );
@@ -630,21 +673,21 @@ public class StateContext {
                 if (facetName != null) {
                     incrementDynamicChildCount(context, component.getParent());
                     component.clearInitialState();
-                    component.getAttributes().put(DYNAMIC_COMPONENT, component.getParent().getChildren().indexOf(component));
+                    component.getAttributes().put(DYNAMIC_COMPONENT, indexInParent(component));
 
                     ComponentStruct struct = new ComponentStruct(ADD, facetName, component.getParent().getClientId(context), component.getClientId(context),
                             component.getId());
 
-                    handleAddRemoveWithAutoPrune(component, struct);
+                    recordDynamicAction(component, struct);
                 } else {
                     incrementDynamicChildCount(context, component.getParent());
                     component.clearInitialState();
-                    component.getAttributes().put(DYNAMIC_COMPONENT, component.getParent().getChildren().indexOf(component));
+                    component.getAttributes().put(DYNAMIC_COMPONENT, indexInParent(component));
 
                     ComponentStruct struct = new ComponentStruct(ADD, null, component.getParent().getClientId(context), component.getClientId(context),
                             component.getId());
 
-                    handleAddRemoveWithAutoPrune(component, struct);
+                    recordDynamicAction(component, struct);
                 }
             }
         }
@@ -668,77 +711,39 @@ public class StateContext {
         }
 
         /**
-         * Methods that takes care of pruning and adding an action to the dynamic action list.
+         * Records a dynamic add/remove action by appending it to the dynamic action list (O(1)).
          *
-         * <pre>
-         *  If you add a component and the dynamic action list does not contain
-         *  the component yet then add it to the dynamic action list, regardless
-         *  whether or not if was an ADD or REMOVE.
-         * </pre>
-         *
-         * <pre>
-         *  Else if you add a component and it is already in the dynamic action
-         *  list and it is the only action for that client id in the dynamic
-         *  action list then:
-         *   1) If the previous action was an ADD then
-         *      a) If the current action is a REMOVE then remove the component
-         *         out of the dynamic action list.
-         *      b) If the current action is an ADD then throw a FacesException.
-         *   2) If the previous action was a REMOVE then
-         *      a) If the current action is an ADD then add it to the dynamic
-         *         action list.
-         *      b) If the current action is a REMOVE then throw a FacesException.
-         * </pre>
-         *
-         * <pre>
-         *  Else if a REMOVE and ADD where captured before then:
-         *   1) If the current action is REMOVE then remove the last dynamic
-         *      action out of the dynamic action list.
-         *   2) If the current action is ADD then throw a FacesException.
-         * </pre>
+         * <p>
+         * Redundant add/remove pairs for the same client id (e.g. a component added then removed within a request)
+         * are collapsed in a single pass at save time (see
+         * {@code FaceletPartialStateManagementStrategy#saveDynamicActions}) rather than per event. A per-event prune
+         * has to {@code indexOf}/{@code remove} on the action list for every add or remove, which is O(n&sup2;) over
+         * n dynamically added components; appending and pruning once at save keeps recording O(1) per event.
+         * </p>
          *
          * @param component the UI component.
          * @param struct the dynamic action.
          */
-        private void handleAddRemoveWithAutoPrune(UIComponent component, ComponentStruct struct) {
-            List<ComponentStruct> actionList = getDynamicActions();
-            HashMap<String, UIComponent> componentMap = getDynamicComponents();
+        private void recordDynamicAction(UIComponent component, ComponentStruct struct) {
+            getDynamicActions().add(struct);
+            getDynamicComponents().put(struct.getClientId(), component);
+        }
 
-            int firstIndex = actionList.indexOf(struct);
-            if (firstIndex == -1) {
-                actionList.add(struct);
-                componentMap.put(struct.getClientId(), component);
-            } else {
-                int lastIndex = actionList.lastIndexOf(struct);
-                if (lastIndex == firstIndex) {
-                    ComponentStruct previousStruct = actionList.get(firstIndex);
-                    if (ADD.equals(previousStruct.getAction())) {
-                        if (ADD.equals(struct.getAction())) {
-                            throw new FacesException("Cannot add the same component twice: " + struct.getClientId());
-                        }
-                        if (REMOVE.equals(struct.getAction())) {
-                            actionList.remove(firstIndex);
-                            componentMap.remove(struct.getClientId());
-                        }
-                    }
-                    if (REMOVE.equals(previousStruct.getAction())) {
-                        if (ADD.equals(struct.getAction())) {
-                            actionList.add(struct);
-                            componentMap.put(struct.getClientId(), component);
-                        }
-                        if (REMOVE.equals(struct.getAction())) {
-                            throw new FacesException("Cannot remove the same component twice: " + struct.getClientId());
-                        }
-                    }
-                } else {
-                    if (ADD.equals(struct.getAction())) {
-                        throw new FacesException("Cannot add the same component twice: " + struct.getClientId());
-                    }
-                    if (REMOVE.equals(struct.getAction())) {
-                        actionList.remove(lastIndex);
-                    }
-                }
+        /**
+         * Index of the component within its parent's children list, computed in O(1) for the common case where the
+         * component was just appended (a dynamic add typically appends), with a scan fallback otherwise. Returns -1
+         * when the component is not in the children list (e.g. it is a facet).
+         *
+         * @param component the component whose position to report.
+         * @return the child index, or -1 if not a child of its parent.
+         */
+        private int indexInParent(UIComponent component) {
+            List<UIComponent> children = component.getParent().getChildren();
+            int last = children.size() - 1;
+            if (last >= 0 && children.get(last) == component) {
+                return last;
             }
+            return children.indexOf(component);
         }
     }
 

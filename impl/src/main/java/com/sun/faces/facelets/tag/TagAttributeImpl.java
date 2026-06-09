@@ -52,6 +52,8 @@ public class TagAttributeImpl extends TagAttribute {
 
     private final boolean literal;
 
+    private final boolean compositeComponentExpr;
+
     private final String localName;
 
     private final Location location;
@@ -68,6 +70,7 @@ public class TagAttributeImpl extends TagAttribute {
 
     public TagAttributeImpl() {
         literal = false;
+        compositeComponentExpr = false;
         localName = null;
         location = null;
         namespace = null;
@@ -88,6 +91,9 @@ public class TagAttributeImpl extends TagAttribute {
         } catch (ELException e) {
             throw new TagAttributeException(this, e);
         }
+        // Classify once here, since this attribute's value never changes; getValueExpression/getMethodExpression
+        // would otherwise re-run the regex on every view build.
+        compositeComponentExpr = ELUtils.isCompositeComponentExpr(this.value);
     }
 
     /**
@@ -178,7 +184,7 @@ public class TagAttributeImpl extends TagAttribute {
             // If so, look for a MethodExpression under the attribute key
             if (ELUtils.isCompositeComponentMethodExprLookup(value)) {
                 result = new AttributeLookupMethodExpression(getValueExpression(ctx, MethodExpression.class));
-            } else if (ELUtils.isCompositeComponentExpr(value)) {
+            } else if (compositeComponentExpr) {
                 MethodExpression delegate = new TagMethodExpression(this, f.createMethodExpression(ctx, value, type, paramTypes));
                 result = new ContextualCompositeMethodExpression(getLocation(), delegate);
             } else {
@@ -338,7 +344,9 @@ public class TagAttributeImpl extends TagAttribute {
         try {
             ExpressionFactory f = ctx.getExpressionFactory();
             ValueExpression delegate = f.createValueExpression(ctx, expr, type);
-            if (ELUtils.isCompositeComponentExpr(expr)) {
+            // Reuse the value classified in the constructor when called for this attribute's own value (the common
+            // path via getValueExpression(ctx, type)); only a foreign expr needs the on-the-fly check.
+            if (expr == value ? compositeComponentExpr : ELUtils.isCompositeComponentExpr(expr)) {
                 if (ELUtils.isCompositeComponentLookupWithArgs(expr)) {
                     String message = MessageUtils.getExceptionMessageString(ARGUMENTS_NOT_LEGAL_CC_ATTRS_EXPR);
                     throw new TagAttributeException(this, message);

@@ -25,8 +25,6 @@ import static com.sun.faces.util.ReflectionUtils.newInstance;
 import static com.sun.faces.util.Util.getCdiBeanManager;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -49,29 +47,10 @@ import com.sun.faces.config.WebConfiguration;
 public class ELUtils {
 
     /**
-     * Private cache for storing evaluation results for composite components checks.
+     * The literal marker every composite component EL expression must contain ("cc"); used as a cheap
+     * {@link String#contains(CharSequence)} guard to skip the regex for the common non-composite case.
      */
-    private static final HashMap<String, Boolean> compositeComponentEvaluationCache = new HashMap<>();
-
-    /**
-     * The maximum size of the <code>compositeComponentEvaluationCache</code>.
-     */
-    private static final int compositeComponentEvaluationCacheMaxSize = 1000;
-
-    /**
-     * FIFO queue, holding access information about the <code>compositeComponentEvaluationCache</code>.
-     */
-    private static final LinkedList<String> evaluationCacheFifoQueue = new LinkedList<>();
-
-    /**
-     * Class member, indicating a <I>positive</I> evaluation result.
-     */
-    private static final Boolean IS_COMPOSITE_COMPONENT = Boolean.TRUE;
-
-    /**
-     * Class member, indicating a <I>negative</I> evaluation result.
-     */
-    private static final Boolean IS_NOT_A_COMPOSITE_COMPONENT = Boolean.FALSE;
+    private static final String COMPOSITE_COMPONENT_MARKER = "cc";
 
     /**
      * Helps to determine if a EL expression represents a composite component EL expression.
@@ -108,23 +87,9 @@ public class ELUtils {
     // ---------------------------------------------------------- Public Methods
 
     public static boolean isCompositeComponentExpr(String expression) {
-        Boolean evaluationResult = compositeComponentEvaluationCache.get(expression);
-
-        if (evaluationResult != null) {
-            // fast path - this expression has already been evaluated, therefore return its evaluation result
-            return evaluationResult.booleanValue();
-        }
-
-        // TODO we should be trying to re-use the Matcher by calling
-        // m.reset(expression);
-        boolean returnValue = COMPOSITE_COMPONENT_EXPRESSION
-                .matcher(expression)
-                .find();
-
-        // remember the evaluation result for this expression
-        rememberEvaluationResult(expression, returnValue);
-
-        return returnValue;
+        // The pattern requires a literal "cc." reference, so any match must contain "cc". Probing with a cheap
+        // String.contains() first avoids the (potentially backtracking) regex for the common non-composite case.
+        return expression != null && expression.contains(COMPOSITE_COMPONENT_MARKER) && COMPOSITE_COMPONENT_EXPRESSION.matcher(expression).find();
     }
 
     public static boolean isCompositeComponentMethodExprLookup(String expression) {
@@ -132,8 +97,6 @@ public class ELUtils {
     }
 
     public static boolean isCompositeComponentLookupWithArgs(String expression) {
-        // TODO we should be trying to re-use the Matcher by calling
-        // m.reset(expression);
         return COMPOSITE_COMPONENT_LOOKUP_WITH_ARGS.matcher(expression).find();
     }
 
@@ -237,32 +200,6 @@ public class ELUtils {
 
 
     // --------------------------------------------------------- Private Methods
-
-    /**
-     * Adds the specified <code>expression</code> with its evaluation result <code>isCompositeComponent</code> to the <code>compositeComponentEvaluationCache</code>,
-     * taking into account the maximum cache size.
-     */
-    private static void rememberEvaluationResult(String expression, boolean isCompositeComponent) {
-        synchronized (compositeComponentEvaluationCache) {
-            if (compositeComponentEvaluationCache.size() >= compositeComponentEvaluationCacheMaxSize) {
-                // obtain the oldest cached element
-                String oldestExpression = evaluationCacheFifoQueue.removeFirst();
-
-                // remove the mapping for this element
-                compositeComponentEvaluationCache.remove(oldestExpression);
-            }
-
-            // add the mapping to the cache
-            if (isCompositeComponent) {
-                compositeComponentEvaluationCache.put(expression, IS_COMPOSITE_COMPONENT);
-            } else {
-                compositeComponentEvaluationCache.put(expression, IS_NOT_A_COMPOSITE_COMPONENT);
-            }
-
-            // remember the sequence of the hash map "put" operations
-            evaluationCacheFifoQueue.add(expression);
-        }
-    }
 
     /**
      * <p>

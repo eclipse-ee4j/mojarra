@@ -18,22 +18,25 @@
 -->
 <html lang="#{facesContext.viewRoot.locale.language}"
     xmlns:h="jakarta.faces.html"
-    xmlns:c="jakarta.tags.core"
-    xmlns:cc="jakarta.faces.composite/cc"
+    xmlns:f="jakarta.faces.core"
 >
     <h:head>
-        <title>composite-heavy</title>
+        <title>dynamic-form-ajax</title>
     </h:head>
     <h:body>
-        Large static tree of composite components (issue #4811 scale).
-
+        <!--
+            Idiomatic dynamic components: the input subtree is built programmatically by DynamicFormBean#build
+            (a postAddToView listener) into the bound container, rather than declared here. The structure is stable
+            across requests, so the ajax postback runs the full lifecycle over the dynamically-built inputs exactly
+            like form-inputs-ajax.
+        -->
         <h:form id="form">
-            <!-- c:forEach unrolls at build time, so each iteration is a DISTINCT composite subtree;
-                 ~1000 cells x ~6 components = ~6000 static components, all NamingContainers. -->
-            <c:forEach var="i" begin="1" end="500">
-                <cc:cell value="#{i}"/>
-            </c:forEach>
-            <h:commandButton id="submit" value="Submit" />
+            <h:panelGroup id="container" layout="block" binding="#{dynamicFormBean.container}">
+                <f:event type="postAddToView" listener="#{dynamicFormBean.build}"/>
+            </h:panelGroup>
+            <h:commandButton id="submit" value="Submit">
+                <f:ajax execute="@form" render="@form"/>
+            </h:commandButton>
         </h:form>
     </h:body>
 </html>
