@@ -27,7 +27,7 @@
     <h:body>
         <h:form id="form">
             <ui:repeat value="#{dataBean.inputRows}" var="row">
-                <h:panelGroup layout="block">
+                <h:panelGroup id="row" layout="block">
                     <h:outputText value="#{row.id}"/>
                     <h:inputText value="#{row.name}">
                         <f:converter converterId="trimConverter"/>
