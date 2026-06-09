@@ -20,6 +20,7 @@ import static com.sun.faces.util.ComponentStruct.REMOVE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,7 +93,7 @@ class StateContextTest {
 
     private static void assertNet(List<ComponentStruct> raw, String... expected) {
         List<ComponentStruct> pruned = StateContext.pruneDynamicActions(raw);
-        assertEquals(List.of(expected), pruned.stream().map(s -> s.getAction() + ":" + s.getClientId()).toList());
+        assertEquals(List.of(expected), pruned.stream().map(s -> s.getAction() + ":" + s.getClientId()).collect(toList()));
     }
 
     private static List<ComponentStruct> actions(ComponentStruct... structs) {
