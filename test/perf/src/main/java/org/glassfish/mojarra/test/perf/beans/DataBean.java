@@ -24,9 +24,14 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+/**
+ * Shared row data for the table ({@code h:dataTable}), repeat ({@code ui:repeat}) and composite scenarios.
+ * Composites are far heavier per row, so they iterate {@link #getCompositeRows()} (a smaller list) while the
+ * plain table/repeat scenarios iterate the larger {@link #getReadonlyRows()} / {@link #getInputRows()}.
+ */
 @Named
 @ViewScoped
-public class RepeatBean implements Serializable {
+public class DataBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -35,19 +40,19 @@ public class RepeatBean implements Serializable {
 
     private List<Row> readonlyRows;
     private List<Row> inputRows;
-    private List<Row> heavyReadonlyRows;
-    private List<Row> heavyInputRows;
+    private List<Row> compositeRows;
+    private List<Row> ajaxRows;
     private List<Group> groups;
 
     @PostConstruct
     public void init() {
-        readonlyRows = rowFactory.generate(200);
-        inputRows = rowFactory.generate(40);
-        heavyReadonlyRows = rowFactory.generate(2000);
-        heavyInputRows = rowFactory.generate(200);
+        readonlyRows = rowFactory.generate(140);
+        inputRows = rowFactory.generate(25);
+        compositeRows = rowFactory.generate(100);
+        ajaxRows = rowFactory.generate(200);
         groups = new ArrayList<>();
         for (int g = 0; g < 5; g++) {
-            groups.add(new Group("Group " + g, rowFactory.generate(10)));
+            groups.add(new Group("Group " + g, rowFactory.generate(7)));
         }
     }
 
@@ -59,12 +64,12 @@ public class RepeatBean implements Serializable {
         return inputRows;
     }
 
-    public List<Row> getHeavyReadonlyRows() {
-        return heavyReadonlyRows;
+    public List<Row> getCompositeRows() {
+        return compositeRows;
     }
 
-    public List<Row> getHeavyInputRows() {
-        return heavyInputRows;
+    public List<Row> getAjaxRows() {
+        return ajaxRows;
     }
 
     public List<Group> getGroups() {

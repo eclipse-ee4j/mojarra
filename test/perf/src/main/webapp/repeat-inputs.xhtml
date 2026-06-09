@@ -26,8 +26,8 @@
     </h:head>
     <h:body>
         <h:form id="form">
-            <ui:repeat value="#{repeatBean.inputRows}" var="row">
-                <h:panelGroup layout="block">
+            <ui:repeat value="#{dataBean.inputRows}" var="row">
+                <h:panelGroup id="row" layout="block">
                     <h:outputText value="#{row.id}"/>
                     <h:inputText value="#{row.name}">
                         <f:converter converterId="trimConverter"/>
@@ -43,7 +43,7 @@
                     <h:selectBooleanCheckbox value="#{row.active}"/>
                 </h:panelGroup>
             </ui:repeat>
-            <h:commandButton id="submit" value="Save" action="#{repeatBean.save}"/>
+            <h:commandButton id="submit" value="Save" action="#{dataBean.save}"/>
             <h:messages globalOnly="false"/>
         </h:form>
     </h:body>

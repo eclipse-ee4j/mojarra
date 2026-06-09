@@ -38,7 +38,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * state save. Uses only standard {@code jakarta.faces} API, so the same endpoint runs on Eclipse
  * Mojarra and Apache MyFaces, giving an apples-to-apples buildView comparison.
  *
- * <p>{@code GET /buildview-bench?scenario=composite-heavy&warmup=50&runs=2000} creates a fresh
+ * <p>{@code GET /buildview-bench?scenario=composite-unrolled&warmup=50&runs=2000} creates a fresh
  * {@link UIViewRoot} and calls {@link ViewDeclarationLanguage#buildView} that many times (the
  * compiled Facelet is cached after warmup, so each measured run rebuilds the component tree without
  * recompiling), then reports ns per build and the component count of the last tree.
@@ -52,7 +52,7 @@ public class BuildViewBenchServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String scenario = request.getParameter("scenario");
         if (scenario == null || scenario.isBlank()) {
-            scenario = "composite-heavy";
+            scenario = "composite-unrolled";
         }
         int warmup = intParam(request, "warmup", 50);
         int runs = intParam(request, "runs", 2000);

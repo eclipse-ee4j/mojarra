@@ -26,11 +26,11 @@
     </h:head>
     <h:body>
         <h:form id="form">
-            <ui:repeat value="#{repeatBean.groups}" var="group">
-                <h:panelGroup layout="block">
+            <ui:repeat value="#{dataBean.groups}" var="group">
+                <h:panelGroup id="group" layout="block">
                     <h2>#{group.name}</h2>
                     <ui:repeat value="#{group.rows}" var="row">
-                        <h:panelGroup layout="block">
+                        <h:panelGroup id="row" layout="block">
                             <h:outputText value="#{row.id}"/> - <h:outputText value="#{row.name}"/>
                             <h:inputText value="#{row.quantity}">
                                 <f:convertNumber integerOnly="true"/>
@@ -42,7 +42,7 @@
                     </ui:repeat>
                 </h:panelGroup>
             </ui:repeat>
-            <h:commandButton id="submit" value="Save" action="#{repeatBean.save}"/>
+            <h:commandButton id="submit" value="Save" action="#{dataBean.save}"/>
             <h:messages globalOnly="false"/>
         </h:form>
     </h:body>

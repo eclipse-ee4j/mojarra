@@ -25,7 +25,7 @@
         <cc:attribute name="row" required="true"/>
     </cc:interface>
     <cc:implementation>
-        <h:panelGroup layout="block">
+        <h:panelGroup id="readonly" layout="block">
             #{cc.attrs.row.id} - #{cc.attrs.row.name} - #{cc.attrs.row.description}
             - qty #{cc.attrs.row.quantity}
             - <h:outputText value="#{cc.attrs.row.price}">

@@ -25,7 +25,7 @@
     </h:head>
     <h:body>
         <h:form id="form">
-            <h:dataTable value="#{tableBean.inputRows}" var="row">
+            <h:dataTable value="#{dataBean.inputRows}" var="row">
                 <h:column>
                     <f:facet name="header">#</f:facet>
                     <h:outputText value="#{row.id}"/>
@@ -59,7 +59,7 @@
                     <h:selectBooleanCheckbox value="#{row.active}"/>
                 </h:column>
             </h:dataTable>
-            <h:commandButton id="submit" value="Save" action="#{tableBean.save}"/>
+            <h:commandButton id="submit" value="Save" action="#{dataBean.save}"/>
             <h:messages globalOnly="false"/>
         </h:form>
     </h:body>

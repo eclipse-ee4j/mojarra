@@ -18,15 +18,23 @@
 -->
 <html lang="#{facesContext.viewRoot.locale.language}"
     xmlns:h="jakarta.faces.html"
-    xmlns:ui="jakarta.faces.facelets"
-    xmlns:cc="jakarta.faces.composite/cc"
+    xmlns:f="jakarta.faces.core"
 >
     <h:head>
-        <title>composite-readonly</title>
+        <title>dynamic-toggle-ajax</title>
     </h:head>
     <h:body>
-        <ui:repeat value="#{dataBean.compositeRows}" var="row">
-            <cc:readonly row="#{row}"/>
-        </ui:repeat>
+        <!--
+            DynamicToggleBean#toggle() adds/removes the input subtree under the in-view #{container} from the action.
+            Mutating an in-view container after markInitialState drives Mojarra's dynamic add/remove path
+            (StateContext tracking + DYNAMIC_COMPONENT marker + full-state-save/restore of the subtree) — the path
+            no static scenario reaches. This is the scenario for benchmarking that path.
+        -->
+        <h:form id="form">
+            <h:commandButton id="toggle" value="Toggle" action="#{dynamicToggleBean.toggle}">
+                <f:ajax render="@form"/>
+            </h:commandButton>
+            <h:panelGroup id="container" layout="block"/>
+        </h:form>
     </h:body>
 </html>

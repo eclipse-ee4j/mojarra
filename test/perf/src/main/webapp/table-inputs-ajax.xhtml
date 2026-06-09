@@ -25,7 +25,7 @@
     </h:head>
     <h:body>
         <h:form id="form">
-            <h:dataTable id="table" value="#{tableBean.inputRows}" var="row">
+            <h:dataTable id="table" value="#{dataBean.ajaxRows}" var="row">
                 <h:column>
                     <f:facet name="header">#</f:facet>
                     <h:outputText value="#{row.id}"/>
@@ -54,7 +54,7 @@
                     <h:inputText value="#{row.date}"/>
                 </h:column>
             </h:dataTable>
-            <h:commandButton id="submit" value="Save" action="#{tableBean.save}">
+            <h:commandButton id="submit" value="Save" action="#{dataBean.save}">
                 <f:ajax execute="@form" render="table messages"/>
             </h:commandButton>
             <h:messages id="messages" globalOnly="false"/>

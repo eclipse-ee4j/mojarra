@@ -1701,46 +1701,36 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     }
 
     /**
-     * Find the given component in the component tree.
+     * Builds a {@code clientId -> component} index over the given subtree in a single {@code visitTree} pass, so
+     * dynamic-action replay resolves each component by client id in O(1), so replay is O(n) in the number of
+     * dynamically added components; a per-action lookup would be O(n&sup2;).
      *
      * @param context the Faces context.
-     * @param clientId the client id of the component to find.
+     * @param root the subtree to index.
+     * @return a mutable {@code clientId -> component} map; callers keep it in sync as components are added/removed.
      */
-    private UIComponent locateComponentByClientId(final FacesContext context, final UIComponent parent, final String clientId, final boolean dynamic) {
-        final List<UIComponent> found = new ArrayList<>(1);
-        UIComponent result = null;
+    private Map<String, UIComponent> buildClientIdIndex(FacesContext context, UIComponent root) {
+        Map<String, UIComponent> index = new HashMap<>();
+        indexSubtree(context, root, index);
+        return index;
+    }
 
-        try {
-        	parent.invokeOnComponent(context, clientId, (context1, target) -> found.add(target));
-        } catch (FacesException e) {
-        	if (dynamic) {
-                LOGGER.log(FINE, e, () -> "Cannot find dynamic component " + clientId + " in " + parent.getClientId(context)
-		            	+ "; assuming it just doesn't exist anymore"
-		            	+ "; it will most likely emit a 'WARNING: Unable to save dynamic action' log later on anyway");
-        	} else {
-        		throw e;
-        	}
-        }
-
-        /*
-         * Since we did not find it the cheaper way we need to assume there is a UINamingContainer that does not prepend its ID.
-         * So we are going to walk the tree to find it.
-         */
-        if (found.isEmpty()) {
-            VisitContext visitContext = VisitContext.createVisitContext(context);
-            parent.visitTree(visitContext, (visitContext1, component) -> {
-                VisitResult result1 = VisitResult.ACCEPT;
-                if (component.getClientId(visitContext1.getFacesContext()).equals(clientId)) {
-                    found.add(component);
-                    result1 = VisitResult.COMPLETE;
-                }
-                return result1;
-            });
-        }
-        if (!found.isEmpty()) {
-            result = found.get(0);
-        }
-        return result;
+    /**
+     * Adds {@code root} and every descendant to the {@code clientId -> component} index. Used both to build the
+     * initial index and to register a subtree that replay adds, so a later action targeting a descendant (a
+     * dynamically added component nested under another) resolves against the live tree rather than restoring a
+     * duplicate.
+     *
+     * @param context the Faces context.
+     * @param root the subtree to index.
+     * @param index the index to populate.
+     */
+    private void indexSubtree(FacesContext context, UIComponent root, Map<String, UIComponent> index) {
+        VisitContext visitContext = VisitContext.createVisitContext(context);
+        root.visitTree(visitContext, (visitContext1, component) -> {
+            index.put(component.getClientId(visitContext1.getFacesContext()), component);
+            return VisitResult.ACCEPT;
+        });
     }
 
     /**
@@ -1755,14 +1745,19 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      */
     private void reapplyDynamicActions(FacesContext context) {
         StateContext stateContext = StateContext.getStateContext(context);
-        List<ComponentStruct> actions = stateContext.getDynamicActions();
+        // Actions are recorded raw (append-only); prune to the net per-clientId effect so a collapsed subtree does
+        // not replay its now-cancelled add/remove pairs.
+        List<ComponentStruct> actions = StateContext.pruneDynamicActions(stateContext.getDynamicActions());
         if (actions != null) {
+            // Index the tree once (O(n)) so each replayed action resolves its parent/child in O(1), keeping replay
+            // O(n); kept in sync as we add/remove below.
+            Map<String, UIComponent> componentIndex = buildClientIdIndex(context, context.getViewRoot());
             for (ComponentStruct action : actions) {
                 if (REMOVE.equals(action.getAction())) {
-                    reapplyDynamicRemove(context, action);
+                    reapplyDynamicRemove(context, action, componentIndex);
                 }
                 if (ADD.equals(action.getAction())) {
-                    reapplyDynamicAdd(context, action);
+                    reapplyDynamicAdd(context, action, componentIndex);
                 }
             }
         }
@@ -1774,12 +1769,12 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * @param context the Faces context.
      * @param struct the component struct.
      */
-    private void reapplyDynamicAdd(FacesContext context, ComponentStruct struct) {
-        UIComponent parent = locateComponentByClientId(context, context.getViewRoot(), struct.getParentClientId(), false);
+    private void reapplyDynamicAdd(FacesContext context, ComponentStruct struct, Map<String, UIComponent> componentIndex) {
+        UIComponent parent = componentIndex.get(struct.getParentClientId());
 
         if (parent != null) {
 
-            UIComponent child = locateComponentByClientId(context, parent, struct.getClientId(), true);
+            UIComponent child = componentIndex.get(struct.getClientId());
             StateContext stateContext = StateContext.getStateContext(context);
 
             if (child == null) {
@@ -1797,15 +1792,26 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                         childIndex = (Integer) child.getAttributes().get(DYNAMIC_COMPONENT);
                     }
                     child.setId(struct.getId());
+                    int storedIndex;
                     if (childIndex >= parent.getChildCount() || childIndex == -1) {
                         parent.getChildren().add(child);
+                        storedIndex = parent.getChildCount() - 1;
                     } else {
                         parent.getChildren().add(childIndex, child);
+                        storedIndex = childIndex;
                     }
                     child.getClientId();
-                    child.getAttributes().put(DYNAMIC_COMPONENT, child.getParent().getChildren().indexOf(child));
+                    // Position the child was added at; avoids an O(n) getChildren().indexOf(child) per dynamic add.
+                    child.getAttributes().put(DYNAMIC_COMPONENT, storedIndex);
                 }
                 stateContext.getDynamicComponents().put(struct.getClientId(), child);
+                if (child.getChildCount() == 0 && child.getFacetCount() == 0) {
+                    componentIndex.put(struct.getClientId(), child);
+                } else {
+                    // A subtree was (re)added: index its descendants too, so a later action targeting one of them
+                    // resolves to the live component instead of restoring a duplicate.
+                    indexSubtree(context, child, componentIndex);
+                }
             }
         }
     }
@@ -1816,8 +1822,8 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * @param context the Faces context.
      * @param struct the component struct.
      */
-    private void reapplyDynamicRemove(FacesContext context, ComponentStruct struct) {
-        UIComponent child = locateComponentByClientId(context, context.getViewRoot(), struct.getClientId(), true);
+    private void reapplyDynamicRemove(FacesContext context, ComponentStruct struct, Map<String, UIComponent> componentIndex) {
+        UIComponent child = componentIndex.get(struct.getClientId());
         if (child != null) {
             StateContext stateContext = StateContext.getStateContext(context);
             stateContext.getDynamicComponents().put(struct.getClientId(), child);
@@ -1827,6 +1833,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             } else {
             	parent.getChildren().remove(child);
             }
+            componentIndex.remove(struct.getClientId());
         }
     }
 

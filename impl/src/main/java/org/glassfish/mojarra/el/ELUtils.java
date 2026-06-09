@@ -16,7 +16,6 @@
  */
 package org.glassfish.mojarra.el;
 
-import static java.lang.Boolean.FALSE;
 import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.DisableOptionalELResolver;
 import static org.glassfish.mojarra.util.MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID;
 import static org.glassfish.mojarra.util.MessageUtils.getExceptionMessageString;
@@ -24,7 +23,6 @@ import static org.glassfish.mojarra.util.Util.getCdiBeanManager;
 import static org.glassfish.mojarra.util.Util.isEmpty;
 
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import jakarta.el.CompositeELResolver;
@@ -39,8 +37,6 @@ import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.application.ResolversRegistry;
 import org.glassfish.mojarra.config.WebConfiguration;
 import org.glassfish.mojarra.context.FacesContextParam;
-import org.glassfish.mojarra.util.Cache;
-import org.glassfish.mojarra.util.LRUCache;
 
 /**
  * Utility class for EL related methods.
@@ -48,38 +44,15 @@ import org.glassfish.mojarra.util.LRUCache;
 public class ELUtils {
 
     /**
-     * The maximum size of the <code>compositeComponentEvaluationCache</code>.
+     * The literal marker every composite component EL expression must contain ("cc"); used as a cheap
+     * {@link String#contains(CharSequence)} guard to skip the regex for the common non-composite case.
      */
-    private static final int compositeComponentEvaluationCacheMaxSize = 1000;
+    private static final String COMPOSITE_COMPONENT_MARKER = "cc";
 
     /**
      * Helps to determine if a EL expression represents a composite component EL expression.
      */
     private static final Pattern COMPOSITE_COMPONENT_EXPRESSION = Pattern.compile(".(?:[ ]+|[\\[{,(])cc[.].+[}]");
-
-    // do not use this Matcher, it's only for the Cache Factory
-    private static final Matcher COMPOSITE_COMPONENT_EXPRESSION_MATCHER = COMPOSITE_COMPONENT_EXPRESSION.matcher("");
-
-    /**
-     * Cache.Factory that initialize an element inside the LRUCache evaluating a Matcher against the input.
-     * We should be able to share a Matcher because the Factory it's executed atomically
-     * and this Matcher is used only here
-     */
-    private static final Cache.Factory<String,Boolean> isCompositeExpressionInit = new Cache.Factory<>() {
-
-        // it would be safer to declare the shared Matcher here, but it requires Java 16+ ... Faces 5.0 ?
-        // private static final Matcher COMPOSITE_COMPONENT_EXPRESSION_MATCHER = COMPOSITE_COMPONENT_EXPRESSION.matcher("");
-
-        @Override
-        public Boolean newInstance(String expression) {
-            return expression == null ? FALSE : COMPOSITE_COMPONENT_EXPRESSION_MATCHER.reset(expression).find();
-        }
-    };
-
-    /**
-     * Private cache for storing evaluation results for composite components checks.
-     */
-    private static final LRUCache<String, Boolean> compositeComponentEvaluationCache = new LRUCache<>(isCompositeExpressionInit, compositeComponentEvaluationCacheMaxSize);
 
     /**
      * Used to determine if EL method arguments are being passed to a composite component lookup expression.
@@ -111,7 +84,9 @@ public class ELUtils {
     // ---------------------------------------------------------- Public Methods
 
     public static boolean isCompositeComponentExpr(String expression) {
-        return compositeComponentEvaluationCache.get(expression);
+        // The pattern requires a literal "cc." reference, so any match must contain "cc". Probing with a cheap
+        // String.contains() first avoids the (potentially backtracking) regex for the common non-composite case.
+        return expression != null && expression.contains(COMPOSITE_COMPONENT_MARKER) && COMPOSITE_COMPONENT_EXPRESSION.matcher(expression).find();
     }
 
     public static boolean isCompositeComponentMethodExprLookup(String expression) {
@@ -119,10 +94,6 @@ public class ELUtils {
     }
 
     public static boolean isCompositeComponentLookupWithArgs(String expression) {
-        // TODO we should be trying to re-use the Matcher by calling
-        //      pizzi80: not sure because it will require a synchronized block if this method
-        //               is called by multiple threads
-        // m.reset(expression);
         return COMPOSITE_COMPONENT_LOOKUP_WITH_ARGS.matcher(expression).find();
     }
 
