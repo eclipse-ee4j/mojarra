@@ -27,7 +27,7 @@
     <h:body>
         <h:form id="form">
             <ui:repeat value="#{dataBean.groups}" var="group">
-                <h:panelGroup layout="block">
+                <h:panelGroup id="group" layout="block">
                     <h2>#{group.name}</h2>
                     <ui:repeat value="#{group.rows}" var="row">
                         <cc:inputs row="#{row}"/>

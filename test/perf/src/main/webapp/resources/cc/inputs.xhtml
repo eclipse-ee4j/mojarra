@@ -25,7 +25,7 @@
         <cc:attribute name="row" required="true"/>
     </cc:interface>
     <cc:implementation>
-        <h:panelGroup layout="block">
+        <h:panelGroup id="inputs" layout="block">
             <h:outputText value="#{cc.attrs.row.id}"/>
             <h:inputText value="#{cc.attrs.row.name}">
                 <f:converter converterId="trimConverter"/>

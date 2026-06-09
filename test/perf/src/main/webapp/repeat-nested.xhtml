@@ -27,10 +27,10 @@
     <h:body>
         <h:form id="form">
             <ui:repeat value="#{dataBean.groups}" var="group">
-                <h:panelGroup layout="block">
+                <h:panelGroup id="group" layout="block">
                     <h2>#{group.name}</h2>
                     <ui:repeat value="#{group.rows}" var="row">
-                        <h:panelGroup layout="block">
+                        <h:panelGroup id="row" layout="block">
                             <h:outputText value="#{row.id}"/> - <h:outputText value="#{row.name}"/>
                             <h:inputText value="#{row.quantity}">
                                 <f:convertNumber integerOnly="true"/>
