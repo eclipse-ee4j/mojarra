@@ -125,8 +125,6 @@ class PerfBenchIT extends BaseIT {
             Map.entry("table-readonly", "table-readonly.xhtml"),
             Map.entry("repeat-readonly", "repeat-readonly.xhtml"),
             Map.entry("composite-readonly", "composite-readonly.xhtml"),
-            Map.entry("table-readonly-heavy", "table-readonly-heavy.xhtml"),
-            Map.entry("repeat-readonly-heavy", "repeat-readonly-heavy.xhtml"),
             Map.entry("viewparam-get", "viewparam-get.xhtml?id=42")));
 
     /** Full (non-ajax) form postbacks. */
@@ -138,16 +136,18 @@ class PerfBenchIT extends BaseIT {
             "table-nested",
             "repeat-nested",
             "composite-nested",
-            "table-inputs-heavy",
-            "repeat-inputs-heavy",
-            "composite-heavy"));
+            "composite-unrolled",
+            "view-unrolled"));
 
     /** Ajax-partial postbacks. Same body fields as their non-ajax twin plus the
      *  {@code jakarta.faces.partial.*} markers and the {@code Faces-Request} header. */
     private static final List<String> POSTBACK_AJAX = only(List.of(
             "form-inputs-ajax",
             "table-inputs-ajax",
-            "repeat-inputs-ajax"));
+            "repeat-inputs-ajax",
+            "view-unrolled-ajax",
+            "dynamic-form-ajax",
+            "dynamic-toggle-ajax"));
 
     private static final Pattern VIEW_STATE = Pattern.compile(
             "name=\"jakarta\\.faces\\.ViewState\"[^>]*value=\"([^\"]+)\"" +
@@ -357,10 +357,15 @@ class PerfBenchIT extends BaseIT {
             fields.put("jakarta.faces.ViewState", v);
         }
         if (ajax && submitName != null) {
-            // Faces partial-ajax markers — what faces.js would emit for an ajax submit.
+            // Faces partial-ajax markers — what faces.js emits for a commandButton f:ajax submit. The action fires
+            // via the AjaxBehavior decode, which requires jakarta.faces.behavior.event AND the source clientId to be
+            // present in the execute list (faces.js prepends it). A bare "@form" execute does not decode the
+            // behavior, so without these the action method is never invoked.
             fields.put("jakarta.faces.partial.ajax", "true");
             fields.put("jakarta.faces.source", submitName);
-            fields.put("jakarta.faces.partial.execute", "@form");
+            fields.put("jakarta.faces.behavior.event", "action");
+            fields.put("jakarta.faces.partial.event", "click");
+            fields.put("jakarta.faces.partial.execute", submitName + " @form");
             fields.put("jakarta.faces.partial.render", "@form");
         }
         return new FormSpec(action, fields);

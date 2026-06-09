@@ -26,7 +26,7 @@
     </h:head>
     <h:body>
         <h:form id="form">
-            <h:dataTable value="#{repeatBean.groups}" var="group">
+            <h:dataTable value="#{dataBean.groups}" var="group">
                 <h:column>
                     <h2>#{group.name}</h2>
                     <h:dataTable value="#{group.rows}" var="row">
@@ -36,7 +36,7 @@
                     </h:dataTable>
                 </h:column>
             </h:dataTable>
-            <h:commandButton id="submit" value="Save" action="#{repeatBean.save}"/>
+            <h:commandButton id="submit" value="Save" action="#{dataBean.save}"/>
             <h:messages globalOnly="false"/>
         </h:form>
     </h:body>

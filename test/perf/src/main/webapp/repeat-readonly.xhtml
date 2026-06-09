@@ -26,7 +26,7 @@
     </h:head>
     <h:body>
         <ul>
-            <ui:repeat value="#{repeatBean.readonlyRows}" var="row">
+            <ui:repeat value="#{dataBean.readonlyRows}" var="row">
                 <li>
                     #{row.id} - #{row.name} - #{row.description} - qty #{row.quantity} -
                     <h:outputText value="#{row.price}">

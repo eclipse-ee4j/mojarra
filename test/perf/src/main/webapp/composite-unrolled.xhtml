@@ -18,15 +18,18 @@
 -->
 <html lang="#{facesContext.viewRoot.locale.language}"
     xmlns:h="jakarta.faces.html"
-    xmlns:ui="jakarta.faces.facelets"
+    xmlns:c="jakarta.tags.core"
     xmlns:cc="jakarta.faces.composite/cc"
 >
     <h:head>
-        <title>composite-readonly</title>
+        <title>composite-unrolled</title>
     </h:head>
     <h:body>
-        <ui:repeat value="#{dataBean.compositeRows}" var="row">
-            <cc:readonly row="#{row}"/>
-        </ui:repeat>
+        <h:form id="form">
+            <c:forEach var="i" begin="1" end="85">
+                <cc:cell value="#{i}"/>
+            </c:forEach>
+            <h:commandButton id="submit" value="Submit" />
+        </h:form>
     </h:body>
 </html>
