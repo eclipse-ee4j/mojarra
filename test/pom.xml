@@ -77,6 +77,30 @@
 
     <build>
         <finalName>${project.artifactId}</finalName>
+        <pluginManagement>
+            <plugins>
+                <!-- Server-prep helpers used by the profiles below. gmavenplus (Groovy 4, JDK 21+ safe)
+                     replaces maven-antrun-plugin for the bits that need logic: in-place module.xml rewrite
+                     and stripping service entries from a jar via the JDK zip FileSystem (no external `zip`). -->
+                <plugin>
+                    <groupId>org.codehaus.gmavenplus</groupId>
+                    <artifactId>gmavenplus-plugin</artifactId>
+                    <version>4.1.1</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.groovy</groupId>
+                            <artifactId>groovy</artifactId>
+                            <version>4.0.24</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>3.4.0</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -199,19 +223,21 @@
                     -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <version>3.1.0</version>
+                        <artifactId>maven-clean-plugin</artifactId>
                         <executions>
                             <execution>
                                 <id>clear-osgi-cache</id>
                                 <phase>process-test-classes</phase>
                                 <goals>
-                                    <goal>run</goal>
+                                    <goal>clean</goal>
                                 </goals>
                                 <configuration>
-                                    <target>
-                                        <delete dir="${project.build.directory}/${glassfish.home}/glassfish/domains/domain1/osgi-cache" />
-                                    </target>
+                                    <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                                    <filesets>
+                                        <fileset>
+                                            <directory>${project.build.directory}/${glassfish.home}/glassfish/domains/domain1/osgi-cache</directory>
+                                        </fileset>
+                                    </filesets>
                                 </configuration>
                             </execution>
                         </executions>
@@ -301,21 +327,22 @@
                         </executions>
                     </plugin>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
+                        <groupId>org.codehaus.gmavenplus</groupId>
+                        <artifactId>gmavenplus-plugin</artifactId>
                         <executions>
                             <execution>
                                 <id>update-module-xml</id>
                                 <phase>process-resources</phase>
                                 <goals>
-                                    <goal>run</goal>
+                                    <goal>execute</goal>
                                 </goals>
                                 <configuration>
-                                    <target>
-                                        <replaceregexp file="${wildfly.dir}/modules/system/layers/base/jakarta/faces/impl/main/module.xml"
-                                                       match="jakarta\.faces-.*\.jar"
-                                                       replace="jakarta.faces-${mojarra.version}.jar"/>
-                                    </target>
+                                    <scripts>
+                                        <script><![CDATA[
+                                            def moduleXml = new File('${wildfly.dir}/modules/system/layers/base/jakarta/faces/impl/main/module.xml')
+                                            moduleXml.text = moduleXml.text.replaceAll(/jakarta\.faces-.*\.jar/, 'jakarta.faces-${mojarra.version}.jar')
+                                        ]]></script>
+                                    </scripts>
                                 </configuration>
                             </execution>
                         </executions>
@@ -421,20 +448,25 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
+                        <artifactId>maven-clean-plugin</artifactId>
                         <executions>
                             <execution>
                                 <id>remove-bundled-faces</id>
                                 <phase>process-test-classes</phase>
                                 <goals>
-                                    <goal>run</goal>
+                                    <goal>clean</goal>
                                 </goals>
                                 <configuration>
-                                    <target>
-                                        <delete>
-                                            <fileset dir="${tomee.dir}/lib" includes="jakarta.faces-*.jar"/>
-                                        </delete>
-                                    </target>
+                                    <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                                    <filesets>
+                                        <!-- Drop Plume's bundled jakarta.faces-<version>.jar; ours is overlaid as jakarta.faces.jar (no hyphen, so this won't match it). -->
+                                        <fileset>
+                                            <directory>${tomee.dir}/lib</directory>
+                                            <includes>
+                                                <include>jakarta.faces-*.jar</include>
+                                            </includes>
+                                        </fileset>
+                                    </filesets>
                                 </configuration>
                             </execution>
                         </executions>
@@ -797,26 +829,32 @@
                         </executions>
                     </plugin>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
+                        <groupId>org.codehaus.gmavenplus</groupId>
+                        <artifactId>gmavenplus-plugin</artifactId>
                         <executions>
                             <execution>
                                 <id>neuter-mojarra-cdi-extension</id>
                                 <phase>process-test-classes</phase>
                                 <goals>
-                                    <goal>run</goal>
+                                    <goal>execute</goal>
                                 </goals>
                                 <configuration>
                                     <!-- Keep the Mojarra module (Weld integration needs it) but drop its CDI extension
                                          registration so it doesn't clash with MyFaces' (WELD-001414 ambiguous requestScope). -->
-                                    <target>
-                                        <exec executable="zip" dir="${project.build.directory}/${glassfish.home}/glassfish/modules" failonerror="true">
-                                            <arg value="-d"/>
-                                            <arg value="jakarta.faces.jar"/>
-                                            <arg value="META-INF/services/jakarta.enterprise.inject.spi.Extension"/>
-                                            <arg value="META-INF/services/jakarta.servlet.ServletContainerInitializer"/>
-                                        </exec>
-                                    </target>
+                                    <scripts>
+                                        <script><![CDATA[
+                                            def jar = new File('${project.build.directory}/${glassfish.home}/glassfish/modules/jakarta.faces.jar').toPath()
+                                            def zipfs = java.nio.file.FileSystems.newFileSystem(jar, [:])
+                                            try {
+                                                ['META-INF/services/jakarta.enterprise.inject.spi.Extension',
+                                                 'META-INF/services/jakarta.servlet.ServletContainerInitializer'].each { entry ->
+                                                    java.nio.file.Files.deleteIfExists(zipfs.getPath(entry))
+                                                }
+                                            } finally {
+                                                zipfs.close()
+                                            }
+                                        ]]></script>
+                                    </scripts>
                                 </configuration>
                             </execution>
                         </executions>
@@ -1026,21 +1064,26 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
+                        <artifactId>maven-clean-plugin</artifactId>
                         <executions>
                             <execution>
                                 <id>remove-bundled-myfaces</id>
                                 <phase>process-test-classes</phase>
                                 <goals>
-                                    <goal>run</goal>
+                                    <goal>clean</goal>
                                 </goals>
                                 <configuration>
-                                    <target>
+                                    <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                                    <filesets>
                                         <!-- Drop WebProfile's bundled myfaces-<version>.jar; ours are overlaid hyphen-less, so this won't match them. -->
-                                        <delete>
-                                            <fileset dir="${tomee.dir}/lib" includes="myfaces-api-*.jar,myfaces-impl-*.jar"/>
-                                        </delete>
-                                    </target>
+                                        <fileset>
+                                            <directory>${tomee.dir}/lib</directory>
+                                            <includes>
+                                                <include>myfaces-api-*.jar</include>
+                                                <include>myfaces-impl-*.jar</include>
+                                            </includes>
+                                        </fileset>
+                                    </filesets>
                                 </configuration>
                             </execution>
                         </executions>
@@ -1121,24 +1164,32 @@
                         </executions>
                     </plugin>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
+                        <groupId>org.codehaus.gmavenplus</groupId>
+                        <artifactId>gmavenplus-plugin</artifactId>
                         <executions>
                             <execution>
                                 <id>neuter-mojarra-cdi-extension</id>
                                 <phase>process-test-classes</phase>
                                 <goals>
-                                    <goal>run</goal>
+                                    <goal>execute</goal>
                                 </goals>
                                 <configuration>
-                                    <target>
-                                        <exec executable="zip" dir="${project.build.directory}/${payara.home}/glassfish/modules" failonerror="true">
-                                            <arg value="-d"/>
-                                            <arg value="jakarta.faces.jar"/>
-                                            <arg value="META-INF/services/jakarta.enterprise.inject.spi.Extension"/>
-                                            <arg value="META-INF/services/jakarta.servlet.ServletContainerInitializer"/>
-                                        </exec>
-                                    </target>
+                                    <!-- Keep the Mojarra module (Weld integration needs it) but drop its CDI extension
+                                         registration so it doesn't clash with MyFaces' (WELD-001414 ambiguous requestScope). -->
+                                    <scripts>
+                                        <script><![CDATA[
+                                            def jar = new File('${project.build.directory}/${payara.home}/glassfish/modules/jakarta.faces.jar').toPath()
+                                            def zipfs = java.nio.file.FileSystems.newFileSystem(jar, [:])
+                                            try {
+                                                ['META-INF/services/jakarta.enterprise.inject.spi.Extension',
+                                                 'META-INF/services/jakarta.servlet.ServletContainerInitializer'].each { entry ->
+                                                    java.nio.file.Files.deleteIfExists(zipfs.getPath(entry))
+                                                }
+                                            } finally {
+                                                zipfs.close()
+                                            }
+                                        ]]></script>
+                                    </scripts>
                                 </configuration>
                             </execution>
                         </executions>
