@@ -155,6 +155,9 @@ class PerfBenchIT extends BaseIT {
     private static final Pattern AJAX_VIEW_STATE = Pattern.compile(
             "<update\\s+id=\"[^\"]*ViewState[^\"]*\"><!\\[CDATA\\[(.*?)\\]\\]></update>", Pattern.DOTALL);
     private static final Pattern INPUT_TAG = Pattern.compile("<input\\b([^>]*)/?>", Pattern.CASE_INSENSITIVE);
+    private static final Pattern TEXTAREA_TAG = Pattern.compile("<textarea\\b([^>]*)>(.*?)</textarea>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+    private static final Pattern SELECT_TAG = Pattern.compile("<select\\b([^>]*)>(.*?)</select>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+    private static final Pattern OPTION_TAG = Pattern.compile("<option\\b([^>]*)>", Pattern.CASE_INSENSITIVE);
     private static final Pattern ATTR = Pattern.compile("\\b(\\w+)\\s*=\\s*\"([^\"]*)\"");
 
     private static int totalScenarios() {
@@ -313,7 +316,8 @@ class PerfBenchIT extends BaseIT {
     }
 
     /**
-     * Pulls every named &lt;input&gt; tag (hidden, text, submit, etc.) plus the
+     * Pulls every named &lt;input&gt; tag (hidden, text, submit, etc.), &lt;textarea&gt;
+     * (its text content) and &lt;select&gt; (its selected, else first, option) plus the
      * jakarta.faces.ViewState marker. Good enough for the deterministic markup
      * Mojarra emits for our perf pages.
      *
@@ -351,6 +355,18 @@ class PerfBenchIT extends BaseIT {
             }
             fields.put(name, value == null ? "" : value);
         }
+        for (Matcher ta = TEXTAREA_TAG.matcher(html); ta.find(); ) {
+            String name = attribute(ta.group(1), "name");
+            if (name != null) {
+                fields.put(name, ta.group(2).trim());
+            }
+        }
+        for (Matcher se = SELECT_TAG.matcher(html); se.find(); ) {
+            String name = attribute(se.group(1), "name");
+            if (name != null) {
+                fields.put(name, selectedOptionValue(se.group(2)));
+            }
+        }
         Matcher vs = VIEW_STATE.matcher(html);
         if (vs.find()) {
             String v = vs.group(1) != null ? vs.group(1) : vs.group(2);
@@ -379,6 +395,22 @@ class PerfBenchIT extends BaseIT {
             }
         }
         return null;
+    }
+
+    /** Value a {@code <select>} submits: the selected option, else the first option (browser default), else empty. */
+    private static String selectedOptionValue(String optionsHtml) {
+        String first = null;
+        for (Matcher opt = OPTION_TAG.matcher(optionsHtml); opt.find(); ) {
+            String attrs = opt.group(1);
+            String value = attribute(attrs, "value");
+            if (first == null) {
+                first = value;
+            }
+            if (attrs.toLowerCase().contains("selected")) {
+                return value == null ? "" : value;
+            }
+        }
+        return first == null ? "" : first;
     }
 
     private static final class FormSpec {
