@@ -29,7 +29,7 @@
 
     <!--
         State/view-pooling knobs, filtered from Maven properties (see perf/pom.xml) so they can be tuned
-        per run, e.g. -Dwebapp.stateSavingMethod=client. The com.sun.faces.* (Mojarra) and org.apache.myfaces.*
+        per run, e.g. -Dwebapp.stateSavingMethod=client. The org.glassfish.mojarra.* (Mojarra) and org.apache.myfaces.*
         (MyFaces) pairs are both set from one knob; each implementation ignores the other's parameter.
     -->
     <context-param>
@@ -41,7 +41,7 @@
         <param-value>${webapp.serializeServerState}</param-value>
     </context-param>
     <context-param>
-        <param-name>com.sun.faces.compressViewState</param-name>
+        <param-name>org.glassfish.mojarra.compressViewState</param-name>
         <param-value>${webapp.compressViewState}</param-value>
     </context-param>
     <context-param>
@@ -49,7 +49,7 @@
         <param-value>${webapp.compressViewState}</param-value>
     </context-param>
     <context-param>
-        <param-name>com.sun.faces.numberOfLogicalViews</param-name>
+        <param-name>org.glassfish.mojarra.numberOfLogicalViews</param-name>
         <param-value>${webapp.numberOfViewsInSession}</param-value>
     </context-param>
     <context-param>
