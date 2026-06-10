@@ -1763,7 +1763,9 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         // Actions are recorded raw (append-only); prune to the net per-clientId effect so a collapsed subtree does
         // not replay its now-cancelled add/remove pairs.
         List<ComponentStruct> actions = StateContext.pruneDynamicActions(stateContext.getDynamicActions());
-        if (actions != null) {
+        // Only walk the tree to build the index when there is at least one action to replay; pruneDynamicActions
+        // returns a non-null empty list for the common no-dynamic-component postback, which must not pay an O(n) walk.
+        if (!isEmpty(actions)) {
             // Index the tree once (O(n)) so each replayed action resolves its parent/child in O(1), keeping replay
             // O(n); kept in sync as we add/remove below.
             Map<String, UIComponent> componentIndex = buildClientIdIndex(context, context.getViewRoot());

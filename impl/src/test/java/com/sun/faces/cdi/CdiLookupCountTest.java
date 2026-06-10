@@ -105,6 +105,41 @@ public class CdiLookupCountTest {
         assertEquals(4, bm.getBeansByType.get(), "getBeans calls per createConverter(Class) for Long");
     }
 
+    @Test
+    public void createConverter_byClass_repeatedCalls_areCached() {
+        CountingBeanManager bm = new CountingBeanManager();
+
+        for (int i = 0; i < 10; i++) {
+            CdiUtils.createConverter(bm, Long.class);
+        }
+
+        // Only the first call walks Long -> Number (4 lookups); the other 9 hit the class-keyed cache.
+        // This is the per-cell render path (renderer calls createConverter(value.getClass()) every render).
+        assertEquals(4, bm.getBeansByType.get(), "Only first createConverter(Class) call hits BeanManager");
+    }
+
+    @Test
+    public void createValidator_byId_repeatedCalls_areCached() {
+        CountingBeanManager bm = new CountingBeanManager();
+
+        for (int i = 0; i < 10; i++) {
+            CdiUtils.createValidator(bm, "jakarta.faces.Required");
+        }
+
+        assertEquals(4, bm.getBeansByType.get(), "Only first createValidator(String) call hits BeanManager");
+    }
+
+    @Test
+    public void createBehavior_byId_repeatedCalls_areCached() {
+        CountingBeanManager bm = new CountingBeanManager();
+
+        for (int i = 0; i < 10; i++) {
+            CdiUtils.createBehavior(bm, "jakarta.faces.Ajax");
+        }
+
+        assertEquals(1, bm.getBeansByType.get(), "Only first createBehavior(String) call hits BeanManager");
+    }
+
     /**
      * Simulates a typical render of one input bound to an Integer property: the renderer calls
      * {@code application.createConverter(Integer.class)} per render, plus

@@ -261,51 +261,83 @@ public class Events {
 
     private SystemEvent processListenersAccountingForAdds(List<SystemEventListener> listeners, SystemEvent event, Object source, EventInfo eventInfo) {
 
-        if (listeners != null && !listeners.isEmpty()) {
+        if (listeners == null || listeners.isEmpty()) {
+            return event;
+        }
 
-            // copy listeners
-            // go thru copy completely
-            // compare copy to original
-            // if original differs from copy, make a new copy.
-            // The new copy consists of the original list - processed
-
-            SystemEventListener listenersCopy[] = new SystemEventListener[listeners.size()];
-            int i = 0;
-            for (i = 0; i < listenersCopy.length; i++) {
-                listenersCopy[i] = listeners.get(i);
+        // Fast path: invoke the listeners by walking the live list directly, re-reading size() each step so a
+        // listener that subscribes another listener while being invoked (an append -- the only change the
+        // listener list undergoes during dispatch) is still invoked, in order, exactly once. This avoids the
+        // per-event SystemEventListener[] copy and HashMap that the snapshot path allocates on EVERY published
+        // system event -- the hot path for PostAddToViewEvent during bulk dynamic add/remove. A non-append
+        // change (the listener list shrinking mid-invoke, which Faces' view-event dispatch does not do) falls
+        // back to the snapshot path.
+        int size = listeners.size();
+        for (int i = 0; i < listeners.size(); i++) {
+            if (listeners.size() < size) {
+                return processListenersOnSnapshot(listeners, event, source, eventInfo);
             }
-
-            Map<SystemEventListener, Boolean> processedListeners = new HashMap<>(listeners.size());
-            boolean processedSomeEvents = false, originalDiffersFromCopy = false;
-
-            do {
-                i = 0;
-                originalDiffersFromCopy = false;
-                if (0 < listenersCopy.length) {
-                    for (i = 0; i < listenersCopy.length; i++) {
-                        SystemEventListener curListener = listenersCopy[i];
-                        if (curListener != null && curListener.isListenerForSource(source)) {
-                            if (event == null) {
-                                event = eventInfo.createSystemEvent(source);
-                            }
-                            assert event != null;
-                            if (!processedListeners.containsKey(curListener) && event.isAppropriateListener(curListener)) {
-                                processedSomeEvents = true;
-                                event.processListener(curListener);
-                                processedListeners.put(curListener, Boolean.TRUE);
-                            }
-                        }
-                    }
-                    if (originalDiffersFromCopy(listeners, listenersCopy)) {
-                        originalDiffersFromCopy = true;
-                        listenersCopy = copyListWithExclusions(listeners, processedListeners);
-                    }
+            size = listeners.size();
+            SystemEventListener curListener = listeners.get(i);
+            if (curListener != null && curListener.isListenerForSource(source)) {
+                if (event == null) {
+                    event = eventInfo.createSystemEvent(source);
                 }
-            } while (originalDiffersFromCopy && processedSomeEvents);
+                if (event.isAppropriateListener(curListener)) {
+                    event.processListener(curListener);
+                }
+            }
         }
 
         return event;
+    }
 
+    // Snapshot fallback preserving the original copy + processed-set accounting (tolerates listeners being added
+    // to or removed from the list while they are being invoked). Reached only if the live listener list shrinks
+    // mid-dispatch, which Faces' view-event dispatch does not produce.
+    private SystemEvent processListenersOnSnapshot(List<SystemEventListener> listeners, SystemEvent event, Object source, EventInfo eventInfo) {
+
+        // copy listeners
+        // go thru copy completely
+        // compare copy to original
+        // if original differs from copy, make a new copy.
+        // The new copy consists of the original list - processed
+
+        SystemEventListener[] listenersCopy = new SystemEventListener[listeners.size()];
+        int i = 0;
+        for (i = 0; i < listenersCopy.length; i++) {
+            listenersCopy[i] = listeners.get(i);
+        }
+
+        Map<SystemEventListener, Boolean> processedListeners = new HashMap<>(listeners.size());
+        boolean processedSomeEvents = false, originalDiffersFromCopy = false;
+
+        do {
+            i = 0;
+            originalDiffersFromCopy = false;
+            if (0 < listenersCopy.length) {
+                for (i = 0; i < listenersCopy.length; i++) {
+                    SystemEventListener curListener = listenersCopy[i];
+                    if (curListener != null && curListener.isListenerForSource(source)) {
+                        if (event == null) {
+                            event = eventInfo.createSystemEvent(source);
+                        }
+                        assert event != null;
+                        if (!processedListeners.containsKey(curListener) && event.isAppropriateListener(curListener)) {
+                            processedSomeEvents = true;
+                            event.processListener(curListener);
+                            processedListeners.put(curListener, Boolean.TRUE);
+                        }
+                    }
+                }
+                if (originalDiffersFromCopy(listeners, listenersCopy)) {
+                    originalDiffersFromCopy = true;
+                    listenersCopy = copyListWithExclusions(listeners, processedListeners);
+                }
+            }
+        } while (originalDiffersFromCopy && processedSomeEvents);
+
+        return event;
     }
 
     private boolean originalDiffersFromCopy(Collection<SystemEventListener> original, SystemEventListener copy[]) {
