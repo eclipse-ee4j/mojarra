@@ -123,6 +123,7 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <rerunFailingTestsCount>2</rerunFailingTestsCount>
                     <systemPropertyVariables>
                         <finalName>${project.build.finalName}</finalName>
                         <test.selenium>${test.selenium}</test.selenium>

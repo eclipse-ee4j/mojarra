@@ -19,6 +19,7 @@ import static org.glassfish.mojarra.util.ComponentStruct.ADD;
 import static org.glassfish.mojarra.util.ComponentStruct.REMOVE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static java.util.stream.Collectors.toList;
 
@@ -90,6 +91,29 @@ class StateContextTest {
     }
 
     // ------------------------------------------------------------------ helpers
+
+    @Test
+    void allAddsIsReturnedAsIsWithoutBuildingTheNetMap() {
+        // The common bulk-add postback (all ADDs) must short-circuit: the raw list is already its own pruned
+        // form, so pruneDynamicActions returns it unchanged rather than rebuilding it through the per-client-id
+        // LinkedHashMap on every save and reapply.
+        List<ComponentStruct> raw = actions(add("a"), add("b"), add("c"));
+        assertSame(raw, StateContext.pruneDynamicActions(raw));
+    }
+
+    @Test
+    void allRemovesIsReturnedAsIsWithoutBuildingTheNetMap() {
+        // Symmetric to the bulk-add case: a bulk clear (all REMOVEs) is homogeneous, nothing to collapse.
+        List<ComponentStruct> raw = actions(remove("a"), remove("b"), remove("c"));
+        assertSame(raw, StateContext.pruneDynamicActions(raw));
+    }
+
+    @Test
+    void aSingleRemoveStillEngagesTheNetCollapse() {
+        // Sanity that the short-circuit does not swallow the collapse path: with any REMOVE present the
+        // add/remove coalescing still runs (here the trailing REMOVE cancels the earlier ADD of 'a').
+        assertNet(actions(add("a"), add("b"), remove("a")), "ADD:b");
+    }
 
     private static void assertNet(List<ComponentStruct> raw, String... expected) {
         List<ComponentStruct> pruned = StateContext.pruneDynamicActions(raw);
