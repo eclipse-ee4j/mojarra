@@ -291,6 +291,24 @@ public class StateContext {
         if (rawActions == null) {
             return null;
         }
+        // Collapsing an ADD that a later REMOVE cancels (and coalescing a REMOVE with a re-ADD) for the same
+        // client id can only happen when the list holds both an ADD and a REMOVE. A homogeneous list -- all
+        // ADDs or all REMOVEs, i.e. the common bulk add or bulk clear in an action -- has nothing to collapse:
+        // each action is already a distinct net add/remove. Skip the per-id LinkedHashMap for it.
+        boolean hasAdd = false, hasRemove = false;
+        for (ComponentStruct action : rawActions) {
+            if (ADD.equals(action.getAction())) {
+                hasAdd = true;
+            } else if (REMOVE.equals(action.getAction())) {
+                hasRemove = true;
+            }
+            if (hasAdd && hasRemove) {
+                break;
+            }
+        }
+        if (!hasAdd || !hasRemove) {
+            return rawActions;
+        }
         // value[0] = effective REMOVE for the client id (or null); value[1] = effective ADD (or null)
         Map<String, ComponentStruct[]> netByClientId = new LinkedHashMap<>();
         for (ComponentStruct action : rawActions) {
