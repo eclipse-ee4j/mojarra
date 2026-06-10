@@ -62,13 +62,13 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
      */
     public static final String ACTIVE_VIEW_MAPS_SIZE = "org.glassfish.mojarra.application.view.activeViewMapsSize";
     /**
-     * Stores the view map.
-     */
-    public static final String VIEW_MAP = "org.glassfish.mojarra.application.view.viewMap";
-    /**
      * Stores the view map id.
      */
     public static final String VIEW_MAP_ID = "org.glassfish.mojarra.application.view.viewMapId";
+    /**
+     * Stores the constant indicating that only the view scope must be restored.
+     */
+    public static final String RESTORE_VIEW_SCOPE_ONLY = "org.glassfish.mojarra.application.view.restoreViewScopeOnly";
     /**
      * Stores the constant to keep track of the ViewScopeManager.
      */
@@ -308,7 +308,6 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
 
                     viewMaps.put(viewMapId, viewMap);
                     viewRoot.getTransientStateHelper().putTransient(VIEW_MAP_ID, viewMapId);
-                    viewRoot.getTransientStateHelper().putTransient(VIEW_MAP, viewMap);
                     if (distributable) {
                         // If we are distributable, this will result in a dirtying of the
                         // session data, forcing replication. If we are not distributable,

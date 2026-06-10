@@ -558,7 +558,7 @@ public final class CdiUtils {
         BeanManager beanManager = cdi.getBeanManager();
 
         // Get the Map with classes for which a custom DataModel implementation is available from CDI
-        Bean<?> bean = resolveBeanByName(beanManager, "comSunFacesDataModelClassesMap");
+        Bean<?> bean = resolveBeanByName(beanManager, DataModelClassesMapProducer.DATA_MODEL_CLASSES_MAP_BEAN_NAME);
         Object beanReference = beanManager.getReference(bean, Map.class, beanManager.createCreationalContext(bean));
 
         return (Map<Class<?>, Class<? extends DataModel<?>>>) beanReference;

@@ -32,6 +32,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PostConstructViewMapEvent;
 import jakarta.faces.event.PreDestroyViewMapEvent;
 
+import org.glassfish.mojarra.application.view.ViewScopeManager;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -120,8 +121,8 @@ public class UIViewRootTest {
          * Simulate our ViewMapListener.
          */
         Map<String, Object> viewMaps = new HashMap<>();
-        viewMaps.put((String) viewRoot1.getTransientStateHelper().getTransient("org.glassfish.mojarra.application.view.viewMapId"), viewMap);
-        sessionMap.put("org.glassfish.mojarra.application.view.activeViewMaps", viewMaps);
+        viewMaps.put((String) viewRoot1.getTransientStateHelper().getTransient(ViewScopeManager.VIEW_MAP_ID), viewMap);
+        sessionMap.put(ViewScopeManager.ACTIVE_VIEW_MAPS, viewMaps);
 
         viewRoot2.restoreState(facesContext, saved);
         viewMap = viewRoot2.getViewMap();

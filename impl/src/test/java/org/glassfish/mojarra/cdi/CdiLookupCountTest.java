@@ -160,7 +160,7 @@ public class CdiLookupCountTest {
         CountingBeanManager bm = new CountingBeanManager();
 
         for (int i = 0; i < 10; i++) {
-            CdiUtils.resolveBeanByName(bm, "comSunFacesDataModelClassesMap");
+            CdiUtils.resolveBeanByName(bm, DataModelClassesMapProducer.DATA_MODEL_CLASSES_MAP_BEAN_NAME);
         }
 
         // Name-based lookups use a different BeanManager API (getBeans(String) vs getBeans(Type, ...))

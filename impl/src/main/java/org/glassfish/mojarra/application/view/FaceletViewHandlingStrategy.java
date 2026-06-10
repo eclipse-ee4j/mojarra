@@ -244,9 +244,9 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                         String clientId = viewRoot.getClientId(context);
                         Object stateObj = state.get(clientId);
                         if (stateObj != null) {
-                            context.getAttributes().put("org.glassfish.mojarra.application.view.restoreViewScopeOnly", true);
+                            context.getAttributes().put(ViewScopeManager.RESTORE_VIEW_SCOPE_ONLY, true);
                             viewRoot.restoreState(context, stateObj);
-                            context.getAttributes().remove("org.glassfish.mojarra.application.view.restoreViewScopeOnly");
+                            context.getAttributes().remove(ViewScopeManager.RESTORE_VIEW_SCOPE_ONLY);
                         }
                     }
                 }

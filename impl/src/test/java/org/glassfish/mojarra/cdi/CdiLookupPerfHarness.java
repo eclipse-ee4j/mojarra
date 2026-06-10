@@ -164,9 +164,9 @@ public class CdiLookupPerfHarness {
 
     @Test
     void resolveBeanByName_dataModelClassesMap() {
-        compare("resolveBeanByName -- comSunFacesDataModelClassesMap",
-                () -> rawResolveBeanByName(beanManager, "comSunFacesDataModelClassesMap"),
-                () -> CdiUtils.resolveBeanByName(beanManager, "comSunFacesDataModelClassesMap"));
+        compare("resolveBeanByName -- " + DataModelClassesMapProducer.DATA_MODEL_CLASSES_MAP_BEAN_NAME,
+                () -> rawResolveBeanByName(beanManager, DataModelClassesMapProducer.DATA_MODEL_CLASSES_MAP_BEAN_NAME),
+                () -> CdiUtils.resolveBeanByName(beanManager, DataModelClassesMapProducer.DATA_MODEL_CLASSES_MAP_BEAN_NAME));
     }
 
     @Test
@@ -335,7 +335,7 @@ public class CdiLookupPerfHarness {
     public static class TestBehavior extends BehaviorBase {
     }
 
-    @Named("comSunFacesDataModelClassesMap")
+    @Named(DataModelClassesMapProducer.DATA_MODEL_CLASSES_MAP_BEAN_NAME)
     @ApplicationScoped
     public static class TestDataModelClassesMap {
         public java.util.Map<Class<?>, Class<?>> getMap() {
