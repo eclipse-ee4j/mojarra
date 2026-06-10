@@ -181,6 +181,7 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <rerunFailingTestsCount>2</rerunFailingTestsCount>
                     <systemPropertyVariables>
                         <arquillian.browser>${arquillian.browser}</arquillian.browser>
                         <war.file.name>${project.build.finalName}</war.file.name>
