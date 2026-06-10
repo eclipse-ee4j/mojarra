@@ -49,7 +49,7 @@ public class DataBean implements Serializable {
         readonlyRows = rowFactory.generate(140);
         inputRows = rowFactory.generate(25);
         compositeRows = rowFactory.generate(100);
-        ajaxRows = rowFactory.generate(200);
+        ajaxRows = rowFactory.generate(25);
         groups = new ArrayList<>();
         for (int g = 0; g < 5; g++) {
             groups.add(new Group("Group " + g, rowFactory.generate(7)));
