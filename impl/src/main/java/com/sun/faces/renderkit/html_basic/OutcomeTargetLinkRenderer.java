@@ -99,7 +99,7 @@ public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
 
         writer.startElement("span", component);
         writeIdAndNameAttributes(context, writer, component);
-        renderLinkCommonAttributes(writer, component);
+        writeStyleClassAttributeIfNecessary(writer, component);
         renderPassThruAttributes(context, writer, component, ATTRIBUTES, EXCLUDED_ATTRIBUTES);
         writeValue(writer, component);
 
@@ -124,7 +124,7 @@ public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
         hrefVal += getFragment(component);
         writer.writeURIAttribute("href", hrefVal, "outcome");
 
-        renderLinkCommonAttributes(writer, component);
+        writeStyleClassAttributeIfNecessary(writer, component);
         renderPassThruAttributes(context, writer, component, ATTRIBUTES, null);
         writeValue(writer, component);
 
@@ -144,29 +144,6 @@ public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
         writer.writeText(getLabel(component), component, null);
         writer.flush();
 
-    }
-
-    protected void renderLinkCommonAttributes(ResponseWriter writer, UIComponent component) throws IOException {
-
-        // this is common to both link and button target renderers
-        String styleClass = (String) component.getAttributes().get("styleClass");
-        if (styleClass != null && styleClass.length() > 0) {
-            writer.writeAttribute("class", styleClass, "styleClass");
-        }
-
-        // target/onclick should be pass through, but right now, due to command Link,
-        // they all share the same base properties file which marks them as non
-        // pass-through
-        List<String> setAttributes = RenderKitUtils.getAttributesThatAreSet(component);
-        String target = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "target");
-        if (target != null && target.length() > 0) {
-            writer.writeAttribute("target", target, "target");
-        }
-
-        String onclick = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "onclick");
-        if (onclick != null && onclick.length() > 0) {
-            writer.writeAttribute("onclick", onclick, "onclick");
-        }
     }
 
 }

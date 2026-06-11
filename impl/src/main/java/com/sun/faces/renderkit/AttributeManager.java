@@ -103,10 +103,10 @@ public class AttributeManager {
                             attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("role"), attr("style"), attr("tabindex"), attr("title")))
             .add(Key.OUTCOMETARGETLINK,
                     ar(attr("accesskey"), attr("charset"), attr("coords"), attr("dir"), attr("hreflang"), attr("lang"), attr("onblur", "blur"),
-                            attr("ondblclick", "dblclick"), attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"),
+                    		attr("onclick", "click", "action"), attr("ondblclick", "dblclick"), attr("onfocus", "focus"), attr("onkeydown", "keydown"), attr("onkeypress", "keypress"),
                             attr("onkeyup", "keyup"), attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"), attr("onmouseout", "mouseout"),
                             attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("rel"), attr("rev"), attr("role"), attr("shape"),
-                            attr("style"), attr("tabindex"), attr("title"), attr("type")))
+                            attr("style"), attr("tabindex"), attr("target"), attr("title"), attr("type")))
             .add(Key.OUTPUTFORMAT,
                     ar(attr("dir"), attr("lang"), attr("role"), attr("style"), attr("title")))
             .add(Key.OUTPUTLABEL,
@@ -119,7 +119,7 @@ public class AttributeManager {
                             attr("onclick", "click", "action"), attr("ondblclick", "dblclick"), attr("onfocus", "focus"), attr("onkeydown", "keydown"),
                             attr("onkeypress", "keypress"), attr("onkeyup", "keyup"), attr("onmousedown", "mousedown"), attr("onmousemove", "mousemove"),
                             attr("onmouseout", "mouseout"), attr("onmouseover", "mouseover"), attr("onmouseup", "mouseup"), attr("rel"), attr("rev"),
-                            attr("role"), attr("shape"), attr("style"), attr("tabindex"), attr("title"), attr("type")))
+                            attr("role"), attr("shape"), attr("style"), attr("tabindex"), attr("target"), attr("title"), attr("type")))
             .add(Key.OUTPUTTEXT,
                     ar(attr("dir"), attr("lang"), attr("role"), attr("style"), attr("title")))
             .add(Key.PANELGRID,

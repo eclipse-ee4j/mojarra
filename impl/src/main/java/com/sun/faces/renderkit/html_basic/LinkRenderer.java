@@ -54,19 +54,9 @@ public abstract class LinkRenderer extends HtmlBasicRenderer {
 
         RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES);
 
-        writeCommonLinkAttributes(writer, component);
+        writeStyleClassAttributeIfNecessary(writer, component);
         writeValue(component, writer);
         writer.flush();
-
-    }
-
-    protected void writeCommonLinkAttributes(ResponseWriter writer, UIComponent component) throws IOException {
-
-        // handle styleClass
-        String styleClass = (String) component.getAttributes().get("styleClass");
-        if (styleClass != null) {
-            writer.writeAttribute("class", styleClass, "styleClass");
-        }
 
     }
 
