@@ -65,6 +65,14 @@ public class TextRenderer extends HtmlBasicInputRenderer {
         return Collections.unmodifiableMap(map);
     }
 
+    private final boolean allowTextChildren;
+
+    // ------------------------------------------------------------ Constructors
+
+    public TextRenderer() {
+        allowTextChildren = WebConfiguration.getInstance().isOptionEnabled(WebConfiguration.BooleanWebContextInitParameter.AllowTextChildren);
+    }
+
     // ---------------------------------------------------------- Public Methods
 
     @Override
@@ -177,9 +185,7 @@ public class TextRenderer extends HtmlBasicInputRenderer {
 
     @Override
     public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
-        boolean renderChildren = WebConfiguration.getInstance().isOptionEnabled(WebConfiguration.BooleanWebContextInitParameter.AllowTextChildren);
-
-        if (!renderChildren) {
+        if (!allowTextChildren) {
             return;
         }
 
