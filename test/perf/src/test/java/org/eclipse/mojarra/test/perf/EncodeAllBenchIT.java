@@ -32,7 +32,7 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.openqa.selenium.WebDriver;
 
 /**
- * Drives {@link RenderResponseBenchServlet} so a JFR recording captures only the encode walk (no
+ * Drives {@link EncodeAllBenchServlet} so a JFR recording captures only the encode walk (no
  * buildView, no state save/restore). Run on Mojarra and on MyFaces (via the {@code -*-myfaces}
  * profiles) and diff the recordings to see where Mojarra's render does more work.
  *
@@ -41,7 +41,7 @@ import org.openqa.selenium.WebDriver;
  * composite-unrolled).
  */
 @EnabledIfSystemProperty(named = "render", matches = "true")
-class RenderResponseBenchIT extends BaseIT {
+class EncodeAllBenchIT extends BaseIT {
 
     private static final int WARMUP = getInteger("perf.warmup", 50);
     private static final int RUNS = getInteger("perf.runs", 2000);
@@ -71,11 +71,11 @@ class RenderResponseBenchIT extends BaseIT {
                 .connectTimeout(ofSeconds(10))
                 .build();
 
-        String url = baseURL + "renderresponse-bench?scenario=" + scenario + "&warmup=" + WARMUP + "&runs=" + RUNS;
+        String url = baseURL + "encodeall-bench?scenario=" + scenario + "&warmup=" + WARMUP + "&runs=" + RUNS;
         HttpRequest request = HttpRequest.newBuilder(URI.create(url)).timeout(ofSeconds(600)).GET().build();
         HttpResponse<String> response = client.send(request, ofString(UTF_8));
 
-        assertEquals(200, response.statusCode(), "renderresponse-bench");
+        assertEquals(200, response.statusCode(), "encodeall-bench");
         System.out.println();
         System.out.println(response.body());
     }
