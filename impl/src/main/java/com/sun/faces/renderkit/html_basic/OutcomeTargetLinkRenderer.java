@@ -157,12 +157,13 @@ public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
         // target/onclick should be pass through, but right now, due to command Link,
         // they all share the same base properties file which marks them as non
         // pass-through
-        String target = (String) component.getAttributes().get("target");
+        List<String> setAttributes = RenderKitUtils.getAttributesThatAreSet(component);
+        String target = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "target");
         if (target != null && target.length() > 0) {
             writer.writeAttribute("target", target, "target");
         }
 
-        String onclick = (String) component.getAttributes().get("onclick");
+        String onclick = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "onclick");
         if (onclick != null && onclick.length() > 0) {
             writer.writeAttribute("onclick", onclick, "onclick");
         }

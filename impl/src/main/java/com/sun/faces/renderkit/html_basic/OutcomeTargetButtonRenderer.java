@@ -56,7 +56,7 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
             writer.writeAttribute("type", "image", "type");
             writer.writeURIAttribute("src", RenderKitUtils.getImageSource(context, component, "image"), "image");
 
-            String alt = (String) component.getAttributes().get("alt");
+            String alt = (String) RenderKitUtils.getAttributeIfSet(component, "alt");
             if (alt == null) {
                 writer.writeAttribute("alt", alt, "alt");
             }
@@ -124,7 +124,7 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
 
     protected String getOnclick(UIComponent component, String targetURI) {
 
-        String onclick = (String) component.getAttributes().get("onclick");
+        String onclick = (String) RenderKitUtils.getAttributeIfSet(component, "onclick");
 
         if (onclick != null) {
             onclick = onclick.trim();

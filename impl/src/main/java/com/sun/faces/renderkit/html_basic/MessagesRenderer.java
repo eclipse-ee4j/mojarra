@@ -179,7 +179,7 @@ public class MessagesRenderer extends HtmlBasicRenderer {
             boolean wroteTooltip = false;
             if (isTooltip) {
                 writer.startElement("span", component);
-                String title = (String) component.getAttributes().get("title");
+                String title = (String) RenderKitUtils.getAttributeIfSet(component, "title");
                 if (title == null || title.length() == 0) {
                     writer.writeAttribute("title", detail, "title");
                 }

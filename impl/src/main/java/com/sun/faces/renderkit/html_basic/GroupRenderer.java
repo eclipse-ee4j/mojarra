@@ -45,7 +45,7 @@ public class GroupRenderer extends HtmlBasicRenderer {
             return;
         }
         // Render a span around this group if necessary
-        String style = (String) component.getAttributes().get("style");
+        String style = (String) RenderKitUtils.getAttributeIfSet(component, "style");
         String styleClass = (String) component.getAttributes().get("styleClass");
         ResponseWriter writer = context.getResponseWriter();
 
@@ -123,7 +123,7 @@ public class GroupRenderer extends HtmlBasicRenderer {
      */
     private boolean divOrSpan(UIComponent component) {
 
-        return shouldWriteIdAttribute(component) || component.getAttributes().get("style") != null || component.getAttributes().get("styleClass") != null;
+        return shouldWriteIdAttribute(component) || RenderKitUtils.getAttributeIfSet(component, "style") != null || component.getAttributes().get("styleClass") != null;
 
     }
 
