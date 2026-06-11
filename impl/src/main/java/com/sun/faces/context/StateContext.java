@@ -626,12 +626,10 @@ public class StateContext {
          */
         @Override
         public List<ComponentStruct> getDynamicActions() {
-            synchronized (this) {
-                if (dynamicActions == null) {
-                    dynamicActions = new ArrayList<>();
-                }
+            if (dynamicActions == null) {
+                dynamicActions = new ArrayList<>();
             }
-            
+
             return dynamicActions;
         }
 
@@ -642,12 +640,10 @@ public class StateContext {
          */
         @Override
         public HashMap<String, UIComponent> getDynamicComponents() {
-            synchronized (this) {
-                if (dynamicComponents == null) {
-                    dynamicComponents = new HashMap<>();
-                }
+            if (dynamicComponents == null) {
+                dynamicComponents = new HashMap<>();
             }
-            
+
             return dynamicComponents;
         }
 
@@ -677,16 +673,8 @@ public class StateContext {
         @Override
         protected void handleAdd(FacesContext context, UIComponent component) {
             if (component.getParent() != null && component.getParent().isInView()) {
-                String id = component.getId();
-
-                /*
-                 * Since adding a component, can mean you are really reparenting it, we need to make sure the OLD clientId is not
-                 * cached, we do that by setting the id.
-                 */
-                if (id != null) {
-                    component.setId(id);
-                }
-
+                // The stale clientId that a reparent could leave behind is already invalidated by
+                // UIComponentBase.setParent, which runs before this event, so no setId is needed here.
                 String facetName = findFacetNameForComponent(component);
                 if (facetName != null) {
                     incrementDynamicChildCount(context, component.getParent());
