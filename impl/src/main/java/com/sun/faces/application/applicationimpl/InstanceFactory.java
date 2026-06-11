@@ -654,6 +654,8 @@ public class InstanceFactory {
             throw new FacesException(ex);
         }
 
+        ComponentBindingScopeChecker.check(ctx, componentExpression, c);
+
         return c;
 
     }
