@@ -24,16 +24,15 @@ import static org.mockito.Mockito.when;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-
-import org.glassfish.mojarra.context.StateContext;
-import org.glassfish.mojarra.util.ComponentStruct;
-
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.visit.VisitCallback;
 import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.context.FacesContext;
+
+import org.glassfish.mojarra.context.StateContext;
+import org.glassfish.mojarra.util.ComponentStruct;
+import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 
 class FaceletViewHandlingStrategyTest {
 

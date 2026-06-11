@@ -20,6 +20,7 @@ package org.glassfish.mojarra.renderkit.html_basic;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
@@ -140,11 +141,12 @@ public class MessageRenderer extends HtmlBasicRenderer {
             severityStyleClass = (String) component.getAttributes().get(severityPrefix + "Class");
         }
 
-        String style = (String) component.getAttributes().get("style");
+        List<String> setAttributes = RenderKitUtils.getAttributesThatAreSet(component);
+        String style = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "style");
         String styleClass = (String) component.getAttributes().get("styleClass");
-        String dir = (String) component.getAttributes().get("dir");
-        String lang = (String) component.getAttributes().get("lang");
-        String title = (String) component.getAttributes().get("title");
+        String dir = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "dir");
+        String lang = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "lang");
+        String title = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "title");
 
         // if we have style and severityStyle
         if (style != null && severityStyle != null) {

@@ -144,6 +144,14 @@ class PerfBenchIT extends BaseITNG {
     private static final Pattern SELECT_TAG = Pattern.compile("<select\\b([^>]*)>(.*?)</select>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     private static final Pattern OPTION_TAG = Pattern.compile("<option\\b([^>]*)>", Pattern.CASE_INSENSITIVE);
     private static final Pattern ATTR = Pattern.compile("\\b(\\w+)\\s*=\\s*\"([^\"]*)\"");
+    private static final Pattern FORM_ID = Pattern.compile("<form\\b[^>]*\\bid=\"([^\"]+)\"", Pattern.CASE_INSENSITIVE);
+    /**
+     * The rendered ajax-behavior call, impl-agnostic: Mojarra emits {@code mojarra.ab(this,event,<event>,<execute>,
+     * <render>)} and MyFaces {@code myfaces.ab(this,event,<event>,<execute>,<render>,{})}. Same arg positions; an
+     * arg is a quoted string, {@code 0} (Mojarra "no execute") or {@code ''} (MyFaces "no execute").
+     */
+    private static final Pattern AJAX_AB = Pattern.compile(
+            "(?:mojarra|myfaces)\\.ab\\(this,\\s*event,\\s*('[^']*'|0)\\s*,\\s*('[^']*'|0)\\s*,\\s*('[^']*'|0)\\s*[,)]");
 
     private static int totalScenarios() {
         return GET_ONLY.size() + POSTBACK.size() + POSTBACK_AJAX.size();
@@ -316,6 +324,7 @@ class PerfBenchIT extends BaseITNG {
         Matcher m = INPUT_TAG.matcher(html);
         boolean submitSeen = false;
         String submitName = null;
+        String submitAttrs = null;
         while (m.find()) {
             String attrs = m.group(1);
             String name = attribute(attrs, "name");
@@ -335,6 +344,7 @@ class PerfBenchIT extends BaseITNG {
                     fields.put(name, value == null ? "" : value);
                     submitSeen = true;
                     submitName = name;
+                    submitAttrs = attrs;
                 }
                 continue;
             }
@@ -358,18 +368,80 @@ class PerfBenchIT extends BaseITNG {
             fields.put("jakarta.faces.ViewState", v);
         }
         if (ajax && submitName != null) {
-            // Faces partial-ajax markers — what faces.js emits for a commandButton f:ajax submit. The action fires
-            // via the AjaxBehavior decode, which requires jakarta.faces.behavior.event AND the source clientId to be
-            // present in the execute list (faces.js prepends it). A bare "@form" execute does not decode the
-            // behavior, so without these the action method is never invoked.
+            // Faces partial-ajax markers — exactly what faces.js emits for this commandButton's f:ajax submit.
+            // The markers (execute/render targets, behavior event) are read from the rendered (mojarra|myfaces).ab(...)
+            // call so each scenario drives the real execute/render its view declares, on either impl. CRUCIAL:
+            // resolve @form/@this to concrete client ids the way faces.js does — the server only treats @all as a
+            // keyword, so a literal @form would findComponent("@form") -> miss -> process/render nothing (silently).
+            // Named targets are already absolute in the rendered call (Faces resolves them at render time).
+            String eventName = "action";
+            String executeRaw = "@form";
+            String renderRaw = "@form";
+            String onclick = submitAttrs == null ? null : attribute(submitAttrs, "onclick");
+            if (onclick != null) {
+                Matcher ab = AJAX_AB.matcher(onclick);
+                if (ab.find()) {
+                    eventName = unquote(ab.group(1));
+                    executeRaw = ab.group(2);
+                    renderRaw = ab.group(3);
+                }
+            }
+            Matcher fm = FORM_ID.matcher(html);
+            String formId = fm.find() ? fm.group(1) : null;
+            String execute = resolveAjaxTargets(executeRaw, submitName, formId);
+            // faces.js always executes the source so its behavior decodes; ensure it is present.
+            if (execute.isEmpty()) {
+                execute = submitName;
+            } else if (!(" " + execute + " ").contains(" " + submitName + " ")) {
+                execute = submitName + " " + execute;
+            }
             fields.put("jakarta.faces.partial.ajax", "true");
             fields.put("jakarta.faces.source", submitName);
-            fields.put("jakarta.faces.behavior.event", "action");
+            fields.put("jakarta.faces.behavior.event", eventName);
             fields.put("jakarta.faces.partial.event", "click");
-            fields.put("jakarta.faces.partial.execute", submitName + " @form");
-            fields.put("jakarta.faces.partial.render", "@form");
+            fields.put("jakarta.faces.partial.execute", execute);
+            fields.put("jakarta.faces.partial.render", resolveAjaxTargets(renderRaw, submitName, formId));
         }
         return new FormSpec(action, fields);
+    }
+
+    /**
+     * Resolve a faces.js execute/render argument to the concrete client ids the server expects, mirroring
+     * faces.js: {@code @form}/{@code @this} become the form/source client id, {@code @all}/{@code @none} stay
+     * keywords, {@code 0} (mojarra.ab's "default, i.e. @this only") yields nothing extra, and any other token is
+     * already an absolute client id (Faces resolves named targets at render time). Returns a space-separated list.
+     */
+    private static String resolveAjaxTargets(String raw, String source, String formId) {
+        String value = unquote(raw);
+        if (value.isEmpty() || "0".equals(value)) {
+            return "";
+        }
+        StringBuilder out = new StringBuilder();
+        for (String token : value.split("\\s+")) {
+            String resolved = switch (token) {
+                case "@form" -> formId;
+                case "@this" -> source;
+                default -> token; // @all/@none keyword, or an already-absolute client id
+            };
+            if (resolved != null && !resolved.isEmpty()) {
+                if (out.length() > 0) {
+                    out.append(' ');
+                }
+                out.append(resolved);
+            }
+        }
+        return out.toString();
+    }
+
+    private static String unquote(String value) {
+        if (value == null) {
+            return "";
+        }
+        String trimmed = value.trim();
+        if (trimmed.length() >= 2 && trimmed.startsWith("'") && trimmed.endsWith("'")) {
+            return trimmed.substring(1, trimmed.length() - 1);
+        }
+        return trimmed;
     }
 
     private static String attribute(String attrs, String name) {

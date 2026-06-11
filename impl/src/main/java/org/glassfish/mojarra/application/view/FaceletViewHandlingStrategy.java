@@ -36,10 +36,10 @@ import static java.util.Collections.emptyList;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.WARNING;
-import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.DYNAMIC_COMPONENT;
 import static org.glassfish.mojarra.RIConstants.FACELETS_ENCODING_KEY;
 import static org.glassfish.mojarra.RIConstants.FLOW_DEFINITION_ID_SUFFIX;
 import static org.glassfish.mojarra.context.StateContext.getStateContext;
+import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.DYNAMIC_COMPONENT;
 import static org.glassfish.mojarra.facelets.tag.ui.UIDebug.debugRequest;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.getResponseStateManager;
 import static org.glassfish.mojarra.util.ComponentStruct.ADD;
@@ -1788,7 +1788,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                     parent.getFacets().remove(struct.getFacetName());
                     parent.getFacets().put(struct.getFacetName(), child);
                     child.getClientId();
-                } else {
+                } else if (child.getParent() != parent) {
                     int childIndex = -1;
                     if (child.getAttributes().containsKey(DYNAMIC_COMPONENT)) {
                         childIndex = (Integer) child.getAttributes().get(DYNAMIC_COMPONENT);
@@ -1806,6 +1806,12 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                     // Position the child was added at; avoids an O(n) getChildren().indexOf(child) per dynamic add.
                     child.getAttributes().put(DYNAMIC_COMPONENT, storedIndex);
                 }
+                // else: the child survived the facelet refresh already attached under this parent
+                // (markForDeletion deletes only facelet-created MARK_CREATED siblings, never the
+                // programmatically-added ones) and the refresh preserves their relative order, so it is
+                // already in place. Re-inserting it would erase+re-add via getChildren().add — an O(n)
+                // indexOf per action, i.e. O(n^2) over a large dynamic subtree — only to reproduce the
+                // position it already holds. Leave it; the bookkeeping below still runs.
                 stateContext.getDynamicComponents().put(struct.getClientId(), child);
                 if (child.getChildCount() == 0 && child.getFacetCount() == 0) {
                     componentIndex.put(struct.getClientId(), child);

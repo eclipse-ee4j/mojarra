@@ -187,7 +187,7 @@ public class Events {
         if (source instanceof SystemEventListenerHolder) {
 
             List<SystemEventListener> listeners = ((SystemEventListenerHolder) source).getListenersForEventClass(systemEventClass);
-            if (null == listeners) {
+            if (listeners == null || listeners.isEmpty()) {
                 return null;
             }
             EventInfo eventInfo = compSysEventHelper.getEventInfo(systemEventClass, source.getClass());

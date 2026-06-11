@@ -301,7 +301,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
                 writer.writeAttribute("class", styleClass, "class");
             }
 
-            String style = (String) component.getAttributes().get("style");
+            String style = (String) RenderKitUtils.getAttributeIfSet(component, "style");
             if (style != null) {
                 writer.writeAttribute("style", style, "style");
             }

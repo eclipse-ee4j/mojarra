@@ -122,7 +122,7 @@ public class CommandLinkRenderer extends LinkRenderer {
         } else {
             writer.endElement("a");
 
-            String target = (String) component.getAttributes().get("target");
+            String target = (String) RenderKitUtils.getAttributeIfSet(component, "target");
             if (target != null) {
                 target = target.trim();
             } else {

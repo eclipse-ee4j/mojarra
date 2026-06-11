@@ -384,7 +384,7 @@ public class RenderKitUtils {
             behaviors = Collections.emptyMap();
         }
 
-        List<String> setAttributes = (List<String>) component.getAttributes().get(ATTRIBUTES_THAT_ARE_SET_KEY);
+        List<String> setAttributes = getAttributesThatAreSet(component);
 
         if (setAttributes != null && canBeOptimized(component, behaviors)) {
             renderPassThruAttributesOptimized(context, writer, component, attributes, setAttributes, behaviors);
@@ -394,6 +394,39 @@ public class RenderKitUtils {
             // attached to multiple events. We make no assumptions and loop through
             renderPassThruAttributesUnoptimized(context, writer, component, attributes, setAttributes, behaviors);
         }
+    }
+
+    /**
+     * Returns the names of the attributes that have been explicitly set on the given component, either as a literal value
+     * or as a value expression, or {@code null} when none have been set. This is the same list that
+     * {@link #renderPassThruAttributes} consults to skip reflective reads of attributes that were never set.
+     */
+    @SuppressWarnings("unchecked")
+    public static List<String> getAttributesThatAreSet(UIComponent component) {
+        return (List<String>) component.getAttributes().get(ATTRIBUTES_THAT_ARE_SET_KEY);
+    }
+
+    /**
+     * Returns the value of the named attribute, avoiding a reflective property read for an attribute that was never set.
+     * <p>
+     * This is only safe for attributes whose setters record into {@code setAttributes} (i.e. those rendered through the
+     * pass-through machinery) and only for the standard components that maintain that list; for any other component the
+     * value is read directly, mirroring the fall-back in {@link #renderPassThruAttributes}. In particular {@code styleClass}
+     * is never tracked (it is rendered inline as {@code class}, not via the pass-through loop) and must not be passed here.
+     */
+    public static Object getAttributeIfSet(UIComponent component, List<String> setAttributes, String name) {
+        if (component.getClass().getName().startsWith(OPTIMIZED_PACKAGE)) {
+            return setAttributes != null && setAttributes.contains(name) ? component.getAttributes().get(name) : null;
+        }
+        return component.getAttributes().get(name);
+    }
+
+    /**
+     * Convenience variant of {@link #getAttributeIfSet(UIComponent, List, String)} for a single read; callers reading
+     * several attributes should fetch {@link #getAttributesThatAreSet} once and use the three-argument form instead.
+     */
+    public static Object getAttributeIfSet(UIComponent component, String name) {
+        return getAttributeIfSet(component, getAttributesThatAreSet(component), name);
     }
 
     private static void renderValueChangeEventListener(FacesContext context, UIComponent component, String clientId,

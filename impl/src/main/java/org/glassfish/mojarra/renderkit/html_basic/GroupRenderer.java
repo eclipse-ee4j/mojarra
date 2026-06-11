@@ -122,7 +122,7 @@ public class GroupRenderer extends HtmlBasicRenderer {
      */
     private boolean divOrSpan(UIComponent component) {
 
-        return shouldWriteIdAttribute(component) || component.getAttributes().get("style") != null || component.getAttributes().get("styleClass") != null;
+        return shouldWriteIdAttribute(component) || RenderKitUtils.getAttributeIfSet(component, "style") != null || component.getAttributes().get("styleClass") != null;
 
     }
 

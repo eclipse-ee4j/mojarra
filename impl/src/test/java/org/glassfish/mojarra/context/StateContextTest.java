@@ -15,20 +15,19 @@
  */
 package org.glassfish.mojarra.context;
 
+import static java.util.stream.Collectors.toList;
 import static org.glassfish.mojarra.util.ComponentStruct.ADD;
 import static org.glassfish.mojarra.util.ComponentStruct.REMOVE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
 import org.glassfish.mojarra.util.ComponentStruct;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests {@link StateContext#pruneDynamicActions(List)}: dynamic add/remove actions are recorded append-only per

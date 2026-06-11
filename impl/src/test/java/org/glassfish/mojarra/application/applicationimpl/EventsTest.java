@@ -27,12 +27,11 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
-import org.glassfish.mojarra.application.applicationimpl.events.EventInfo;
-
 import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
+
+import org.glassfish.mojarra.application.applicationimpl.events.EventInfo;
+import org.junit.jupiter.api.Test;
 
 /**
  * Pins the dispatch contract of {@code Events.processListenersAccountingForAdds}: every matching listener is

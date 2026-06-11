@@ -76,7 +76,7 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
                 newTableRow = alignStr.equalsIgnoreCase("pageDirection");
             }
         }
-        if (null != (borderObj = component.getAttributes().get("border"))) {
+        if (null != (borderObj = RenderKitUtils.getAttributeIfSet(component, "border"))) {
             border = (Integer) borderObj;
         }
 
@@ -185,7 +185,7 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
                 writeIdAttributeIfNecessary(context, writer, component);
             }
             String styleClass = (String) component.getAttributes().get("styleClass");
-            String style = (String) component.getAttributes().get("style");
+            String style = (String) RenderKitUtils.getAttributeIfSet(component, "style");
             if (styleClass != null) {
                 writer.writeAttribute("class", styleClass, "class");
             }

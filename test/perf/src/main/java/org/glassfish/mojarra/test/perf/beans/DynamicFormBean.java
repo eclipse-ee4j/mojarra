@@ -39,7 +39,7 @@ import jakarta.inject.Named;
 @RequestScoped
 public class DynamicFormBean {
 
-    private static final int FIELD_COUNT = 570;
+    private static final int FIELD_COUNT = 80;
 
     private UIComponent container;
     private final Map<String, String> values = new HashMap<>();

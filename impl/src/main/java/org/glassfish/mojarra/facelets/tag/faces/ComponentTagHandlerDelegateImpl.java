@@ -16,8 +16,8 @@
 
 package org.glassfish.mojarra.facelets.tag.faces;
 
-import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.DYNAMIC_COMPONENT;
 import static org.glassfish.mojarra.component.CompositeComponentStackManager.StackType.TreeCreation;
+import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.DYNAMIC_COMPONENT;
 
 import java.io.IOException;
 import java.util.ArrayList;

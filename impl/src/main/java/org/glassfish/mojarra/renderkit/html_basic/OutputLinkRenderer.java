@@ -191,7 +191,7 @@ public class OutputLinkRenderer extends LinkRenderer {
         RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES);
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
-        String target = (String) component.getAttributes().get("target");
+        String target = (String) RenderKitUtils.getAttributeIfSet(component, "target");
         if (target != null && target.trim().length() != 0) {
             writer.writeAttribute("target", target, "target");
         }
