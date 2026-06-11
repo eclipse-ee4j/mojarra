@@ -626,12 +626,10 @@ public class StateContext {
          */
         @Override
         public List<ComponentStruct> getDynamicActions() {
-            synchronized (this) {
-                if (dynamicActions == null) {
-                    dynamicActions = new ArrayList<>();
-                }
+            if (dynamicActions == null) {
+                dynamicActions = new ArrayList<>();
             }
-            
+
             return dynamicActions;
         }
 
@@ -642,12 +640,10 @@ public class StateContext {
          */
         @Override
         public HashMap<String, UIComponent> getDynamicComponents() {
-            synchronized (this) {
-                if (dynamicComponents == null) {
-                    dynamicComponents = new HashMap<>();
-                }
+            if (dynamicComponents == null) {
+                dynamicComponents = new HashMap<>();
             }
-            
+
             return dynamicComponents;
         }
 
