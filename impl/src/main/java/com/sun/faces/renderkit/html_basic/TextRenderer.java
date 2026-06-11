@@ -21,6 +21,7 @@ package com.sun.faces.renderkit.html_basic;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import jakarta.faces.application.FacesMessage;
@@ -80,11 +81,12 @@ public class TextRenderer extends HtmlBasicInputRenderer {
         boolean shouldWriteIdAttribute = false;
         boolean isOutput = false;
 
-        String style = (String) component.getAttributes().get("style");
+        List<String> setAttributes = RenderKitUtils.getAttributesThatAreSet(component);
+        String style = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "style");
         String styleClass = (String) component.getAttributes().get("styleClass");
-        String dir = (String) component.getAttributes().get("dir");
-        String lang = (String) component.getAttributes().get("lang");
-        String title = (String) component.getAttributes().get("title");
+        String dir = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "dir");
+        String lang = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "lang");
+        String title = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "title");
         Map<String, Object> passthroughAttributes = component.getPassThroughAttributes(false);
         boolean hasPassthroughAttributes = null != passthroughAttributes && !passthroughAttributes.isEmpty();
         if (component instanceof UIInput) {

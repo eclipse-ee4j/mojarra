@@ -122,7 +122,7 @@ public class CommandLinkRenderer extends LinkRenderer {
             writer.endElement("a");
 
             if (ResourceHandlerImpl.resolveCurrentNonce(context) != null) {
-                String target = (String) component.getAttributes().get("target");
+                String target = (String) RenderKitUtils.getAttributeIfSet(component, "target");
                 if (target != null) {
                     target = target.trim();
                 } else {
@@ -169,7 +169,7 @@ public class CommandLinkRenderer extends LinkRenderer {
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, command);
 
         if (ResourceHandlerImpl.resolveCurrentNonce(context) == null) {
-            String target = (String) command.getAttributes().get("target");
+            String target = (String) RenderKitUtils.getAttributeIfSet(command, "target");
             if (target != null) {
                 target = target.trim();
             } else {

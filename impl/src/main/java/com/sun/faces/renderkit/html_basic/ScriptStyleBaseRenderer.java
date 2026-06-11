@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.util.FacesLogger;
+import com.sun.faces.renderkit.RenderKitUtils;
 
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.application.ProjectStage;
@@ -69,7 +70,7 @@ public abstract class ScriptStyleBaseRenderer extends Renderer implements Compon
         UIComponent component = event.getComponent();
         FacesContext context = FacesContext.getCurrentInstance();
 
-        String target = verifyTarget((String) component.getAttributes().get("target"));
+        String target = verifyTarget((String) RenderKitUtils.getAttributeIfSet(component, "target"));
         if (target != null) {
             // We're checking for a composite component here as if the resource
             // is relocated, it may still require it's composite component context
