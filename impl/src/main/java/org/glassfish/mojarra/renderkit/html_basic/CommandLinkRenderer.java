@@ -122,7 +122,7 @@ public class CommandLinkRenderer extends LinkRenderer {
         } else {
             writer.endElement("a");
 
-            String target = (String) RenderKitUtils.getAttributeIfSet(component, "target");
+            String target = (String) component.getAttributes().get("target");
             if (target != null) {
                 target = target.trim();
             } else {
@@ -169,7 +169,7 @@ public class CommandLinkRenderer extends LinkRenderer {
 
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, command);
 
-        writeCommonLinkAttributes(writer, command);
+        writeStyleClassAttributeIfNecessary(writer, command);
 
         // render the current value as link text.
         writeValue(command, writer);
