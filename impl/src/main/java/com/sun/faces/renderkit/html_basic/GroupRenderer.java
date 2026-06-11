@@ -45,11 +45,10 @@ public class GroupRenderer extends HtmlBasicRenderer {
             return;
         }
         // Render a span around this group if necessary
-        String style = (String) RenderKitUtils.getAttributeIfSet(component, "style");
         String styleClass = (String) component.getAttributes().get("styleClass");
         ResponseWriter writer = context.getResponseWriter();
 
-        if (divOrSpan(component)) {
+        if (divOrSpan(component, styleClass)) {
             if ("block".equals(component.getAttributes().get("layout"))) {
                 writer.startElement("div", component);
             } else {
@@ -59,8 +58,6 @@ public class GroupRenderer extends HtmlBasicRenderer {
             if (styleClass != null) {
                 writer.writeAttribute("class", styleClass, "styleClass");
             }
-            // JAVASERVERFACES-3270: do not manually render "style" as it is handled
-            // in renderPassThruAttributes().
         }
 
         RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES);
@@ -97,7 +94,8 @@ public class GroupRenderer extends HtmlBasicRenderer {
 
         // Close our span element if necessary
         ResponseWriter writer = context.getResponseWriter();
-        if (divOrSpan(component)) {
+        String styleClass = (String) component.getAttributes().get("styleClass");
+        if (divOrSpan(component, styleClass)) {
             if ("block".equals(component.getAttributes().get("layout"))) {
                 writer.endElement("div");
             } else {
@@ -118,12 +116,13 @@ public class GroupRenderer extends HtmlBasicRenderer {
 
     /**
      * @param component <code>UIComponent</code> for this group
+     * @param styleClass the already-resolved {@code styleClass} value
      *
      * @return <code>true</code> if we need to render a div or span element around this group.
      */
-    private boolean divOrSpan(UIComponent component) {
+    private boolean divOrSpan(UIComponent component, String styleClass) {
 
-        return shouldWriteIdAttribute(component) || RenderKitUtils.getAttributeIfSet(component, "style") != null || component.getAttributes().get("styleClass") != null;
+        return shouldWriteIdAttribute(component) || styleClass != null || RenderKitUtils.getAttributeIfSet(component, "style") != null;
 
     }
 

@@ -609,6 +609,14 @@ public abstract class HtmlBasicRenderer extends Renderer {
         return id;
     }
 
+    protected void writeStyleClassAttributeIfNecessary(ResponseWriter writer, UIComponent component) throws IOException {
+
+        String styleClass = (String) component.getAttributes().get("styleClass");
+        if (styleClass != null) {
+            writer.writeAttribute("class", styleClass, "styleClass");
+        }
+    }
+
     protected void rendererParamsNotNull(FacesContext context, UIComponent component) {
         notNull("context", context);
         notNull("component", component);
