@@ -92,11 +92,12 @@ public class OutputMessageRenderer extends HtmlBasicInputRenderer {
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
 
-        String style = (String) component.getAttributes().get("style");
+        List<String> setAttributes = RenderKitUtils.getAttributesThatAreSet(component);
+        String style = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "style");
         String styleClass = (String) component.getAttributes().get("styleClass");
-        String lang = (String) component.getAttributes().get("lang");
-        String dir = (String) component.getAttributes().get("dir");
-        String title = (String) component.getAttributes().get("title");
+        String lang = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "lang");
+        String dir = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "dir");
+        String title = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "title");
         boolean wroteSpan = false;
         if (styleClass != null || style != null || dir != null || lang != null || title != null || shouldWriteIdAttribute(component)) {
             writer.startElement("span", component);
