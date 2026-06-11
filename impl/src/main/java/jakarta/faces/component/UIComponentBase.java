@@ -347,6 +347,8 @@ public abstract class UIComponentBase extends UIComponent {
         cachedRenderer = null;
         // The parent chain changed, so the cached NamingContainer ancestor is no longer valid.
         namingContainerAncestor = null;
+        // The client id is derived from the parent chain, so a reparent invalidates it too.
+        clientId = null;
 
         if (parent == null) {
             if (this.parent != null) {
