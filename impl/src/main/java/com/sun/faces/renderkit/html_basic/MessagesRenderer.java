@@ -101,7 +101,7 @@ public class MessagesRenderer extends HtmlBasicRenderer {
         String layout = (String) component.getAttributes().get("layout");
         boolean showSummary = messages.isShowSummary();
         boolean showDetail = messages.isShowDetail();
-        String styleClass = (String) component.getAttributes().get("styleClass");
+        String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
 
         boolean wroteTable = false;
 

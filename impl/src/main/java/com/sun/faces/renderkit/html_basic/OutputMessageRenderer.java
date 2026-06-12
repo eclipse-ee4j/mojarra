@@ -94,7 +94,7 @@ public class OutputMessageRenderer extends HtmlBasicInputRenderer {
 
         List<String> setAttributes = RenderKitUtils.getAttributesThatAreSet(component);
         String style = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "style");
-        String styleClass = (String) component.getAttributes().get("styleClass");
+        String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
         String lang = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "lang");
         String dir = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "dir");
         String title = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "title");

@@ -88,7 +88,7 @@ public class LabelRenderer extends HtmlBasicInputRenderer {
         }
 
         RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES);
-        String styleClass = (String) component.getAttributes().get("styleClass");
+        String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
         if (null != styleClass) {
             writer.writeAttribute("class", styleClass, "styleClass");
         }

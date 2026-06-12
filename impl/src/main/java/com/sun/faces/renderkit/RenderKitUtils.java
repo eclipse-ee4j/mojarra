@@ -413,10 +413,12 @@ public class RenderKitUtils {
     /**
      * Returns the value of the named attribute, avoiding a reflective property read for an attribute that was never set.
      * <p>
-     * This is only safe for attributes whose setters record into {@code setAttributes} (i.e. those rendered through the
-     * pass-through machinery) and only for the standard components that maintain that list; for any other component the
-     * value is read directly, mirroring the fall-back in {@link #renderPassThruAttributes}. In particular {@code styleClass}
-     * is never tracked (it is rendered inline as {@code class}, not via the pass-through loop) and must not be passed here.
+     * This is only safe for attributes whose setters record into {@code setAttributes} and only for the standard
+     * components that maintain that list (those in {@code jakarta.faces.component}); for any other component the value
+     * is read directly, mirroring the fall-back in {@link #renderPassThruAttributes}. {@code styleClass} qualifies:
+     * although it is rendered inline as {@code class} rather than through the pass-through loop, its setter records into
+     * {@code setAttributes} like the pass-through attributes do, so it may be read through here to skip the reflective
+     * getter when it was never set -- the common case on large views.
      */
     public static Object getAttributeIfSet(UIComponent component, List<String> setAttributes, String name) {
         if (component.getClass().getName().startsWith(OPTIMIZED_PACKAGE)) {

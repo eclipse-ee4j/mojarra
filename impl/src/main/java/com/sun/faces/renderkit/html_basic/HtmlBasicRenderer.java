@@ -40,6 +40,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
@@ -611,7 +612,7 @@ public abstract class HtmlBasicRenderer extends Renderer {
 
     protected void writeStyleClassAttributeIfNecessary(ResponseWriter writer, UIComponent component) throws IOException {
 
-        String styleClass = (String) component.getAttributes().get("styleClass");
+        String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
         if (styleClass != null) {
             writer.writeAttribute("class", styleClass, "styleClass");
         }

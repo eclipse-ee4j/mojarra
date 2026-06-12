@@ -121,7 +121,7 @@ public class ButtonRenderer extends HtmlBasicRenderer {
 
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
-        String styleClass = (String) component.getAttributes().get("styleClass");
+        String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
         if (styleClass != null && styleClass.length() > 0) {
             writer.writeAttribute("class", styleClass, "styleClass");
         }

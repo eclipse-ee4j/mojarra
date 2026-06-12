@@ -735,6 +735,7 @@ public class HtmlOutcomeTargetLink extends UIOutcomeTarget implements ClientBeha
      */
     public void setStyleClass(java.lang.String styleClass) {
         getStateHelper().put(PropertyKeys.styleClass, styleClass);
+        handleAttribute(this, "styleClass", styleClass);
     }
 
     /**

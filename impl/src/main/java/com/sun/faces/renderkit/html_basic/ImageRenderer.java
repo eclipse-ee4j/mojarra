@@ -72,7 +72,7 @@ public class ImageRenderer extends HtmlBasicRenderer {
         RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES);
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
         String styleClass;
-        if (null != (styleClass = (String) component.getAttributes().get("styleClass"))) {
+        if (null != (styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass"))) {
             writer.writeAttribute("class", styleClass, "styleClass");
         }
         writer.endElement("img");

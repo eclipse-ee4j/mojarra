@@ -98,7 +98,7 @@ public class CheckboxRenderer extends HtmlBasicInputRenderer {
         if (Boolean.valueOf(currentValue)) {
             writer.writeAttribute("checked", Boolean.TRUE, "value");
         }
-        if (null != (styleClass = (String) component.getAttributes().get("styleClass"))) {
+        if (null != (styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass"))) {
             writer.writeAttribute("class", styleClass, "styleClass");
         }
         RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, ATTRIBUTES, "click", "valueChange");

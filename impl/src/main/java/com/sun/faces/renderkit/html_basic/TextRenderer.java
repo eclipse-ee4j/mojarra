@@ -91,7 +91,7 @@ public class TextRenderer extends HtmlBasicInputRenderer {
 
         List<String> setAttributes = RenderKitUtils.getAttributesThatAreSet(component);
         String style = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "style");
-        String styleClass = (String) component.getAttributes().get("styleClass");
+        String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
         String dir = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "dir");
         String lang = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "lang");
         String title = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "title");

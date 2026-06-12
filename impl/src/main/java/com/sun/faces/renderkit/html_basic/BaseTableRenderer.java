@@ -84,7 +84,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
         writer.startElement("table", table);
         writeIdAttributeIfNecessary(context, writer, table);
-        String styleClass = (String) table.getAttributes().get("styleClass");
+        String styleClass = (String) RenderKitUtils.getAttributeIfSet(table, "styleClass");
         if (styleClass != null) {
             writer.writeAttribute("class", styleClass, "styleClass");
         }
