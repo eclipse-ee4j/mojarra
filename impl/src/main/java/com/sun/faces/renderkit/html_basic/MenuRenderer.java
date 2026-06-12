@@ -652,7 +652,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
 
         // Render styleClass attribute if present.
         String styleClass;
-        if ((styleClass = (String) component.getAttributes().get("styleClass")) != null) {
+        if ((styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass")) != null) {
             writer.writeAttribute("class", styleClass, "styleClass");
         }
 

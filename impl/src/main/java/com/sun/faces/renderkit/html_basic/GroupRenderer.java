@@ -45,7 +45,7 @@ public class GroupRenderer extends HtmlBasicRenderer {
             return;
         }
         // Render a span around this group if necessary
-        String styleClass = (String) component.getAttributes().get("styleClass");
+        String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
         ResponseWriter writer = context.getResponseWriter();
 
         if (divOrSpan(component, styleClass)) {
@@ -94,7 +94,7 @@ public class GroupRenderer extends HtmlBasicRenderer {
 
         // Close our span element if necessary
         ResponseWriter writer = context.getResponseWriter();
-        String styleClass = (String) component.getAttributes().get("styleClass");
+        String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
         if (divOrSpan(component, styleClass)) {
             if ("block".equals(component.getAttributes().get("layout"))) {
                 writer.endElement("div");

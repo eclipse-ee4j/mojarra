@@ -82,7 +82,7 @@ public class SecretRenderer extends HtmlBasicInputRenderer {
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
         String styleClass;
-        if (null != (styleClass = (String) component.getAttributes().get("styleClass"))) {
+        if (null != (styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass"))) {
             writer.writeAttribute("class", styleClass, "styleClass");
         }
 

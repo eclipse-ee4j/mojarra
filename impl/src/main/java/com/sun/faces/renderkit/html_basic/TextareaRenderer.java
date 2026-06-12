@@ -50,7 +50,7 @@ public class TextareaRenderer extends HtmlBasicInputRenderer {
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
 
-        String styleClass = (String) component.getAttributes().get("styleClass");
+        String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
 
         writer.startElement("textarea", component);
         writeIdAttributeIfNecessary(context, writer, component);

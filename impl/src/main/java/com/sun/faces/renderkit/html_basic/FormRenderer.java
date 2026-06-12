@@ -100,7 +100,7 @@ public class FormRenderer extends HtmlBasicRenderer {
         writer.writeAttribute("name", clientId, "name");
         writer.writeAttribute("method", "post", null);
         writer.writeAttribute("action", getActionStr(context), null);
-        String styleClass = (String) component.getAttributes().get("styleClass");
+        String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
         if (styleClass != null) {
             writer.writeAttribute("class", styleClass, "styleClass");
         }

@@ -25,6 +25,7 @@ import java.util.Map;
 
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
+import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.Util;
 
 import jakarta.faces.component.UIColumn;
@@ -329,7 +330,7 @@ public class TableRenderer extends BaseTableRenderer {
             }
 
             final String tableColumnStyleClass = info.getCurrentColumnClass();
-            final String columnStyleClass = (String) column.getAttributes().get("styleClass");
+            final String columnStyleClass = (String) RenderKitUtils.getAttributeIfSet(column, "styleClass");
 
             if (tableColumnStyleClass != null) {
                 if (columnStyleClass != null) {

@@ -182,7 +182,7 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
             if (shouldWriteIdAttribute(component)) {
                 writeIdAttributeIfNecessary(context, writer, component);
             }
-            String styleClass = (String) component.getAttributes().get("styleClass");
+            String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
             String style = (String) RenderKitUtils.getAttributeIfSet(component, "style");
             if (styleClass != null) {
                 writer.writeAttribute("class", styleClass, "class");

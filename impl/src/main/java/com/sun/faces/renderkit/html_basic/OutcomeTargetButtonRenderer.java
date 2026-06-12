@@ -88,7 +88,7 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
         // value should be used even for image type for accessibility (e.g., images disabled in browser)
         writer.writeAttribute("value", label, "value");
 
-        String styleClass = (String) component.getAttributes().get("styleClass");
+        String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
         if (styleClass != null && styleClass.length() > 0) {
             writer.writeAttribute("class", styleClass, "styleClass");
         }

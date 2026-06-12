@@ -706,6 +706,7 @@ public class HtmlSelectManyMenu extends UISelectMany implements ClientBehaviorHo
      */
     public void setStyleClass(java.lang.String styleClass) {
         getStateHelper().put(PropertyKeys.styleClass, styleClass);
+        handleAttribute(this, "styleClass", styleClass);
     }
 
     /**
