@@ -436,6 +436,17 @@ public class RenderKitUtils {
         return getAttributeIfSet(component, getAttributesThatAreSet(component), name);
     }
 
+    /**
+     * Returns the boolean value of the named component attribute, coerced via {@link Util#toBoolean}: an absent
+     * attribute yields {@code defaultValue}, an already-{@code Boolean} value is returned directly (no
+     * {@code Boolean -> String -> boolean} round-trip), and a non-{@code Boolean} (e.g. a literal String on a non-typed
+     * component) is parsed. Use this in a renderer fallback when the concrete {@code Html*} type whose typed getter
+     * would return the {@code boolean} directly is not known.
+     */
+    public static boolean attributeIsTrue(UIComponent component, String name, boolean defaultValue) {
+        return Util.toBoolean(component.getAttributes().get(name), defaultValue);
+    }
+
     private static void renderValueChangeEventListener(FacesContext context, UIComponent component, String clientId,
             String componentEventName, String domEventName, boolean hasBehaviorForDefaultEvent, boolean incExec) throws IOException {
 

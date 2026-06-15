@@ -55,10 +55,7 @@ public class BodyRenderer extends HtmlBasicRenderer {
         ResponseWriter writer = context.getResponseWriter();
         writer.startElement("body", component);
         writeIdAttributeIfNecessary(context, writer, component);
-        String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
-        if (styleClass != null && styleClass.length() != 0) {
-            writer.writeAttribute("class", styleClass, "styleClass");
-        }
+        writeStyleClassAttributeIfNecessary(writer, component);
         RenderKitUtils.renderPassThruAttributes(context, writer, component, BODY_ATTRIBUTES);
     }
 

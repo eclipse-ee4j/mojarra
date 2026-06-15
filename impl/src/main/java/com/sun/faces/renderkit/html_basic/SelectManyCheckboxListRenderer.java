@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlSelectManyCheckbox;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.ValueHolder;
 import jakarta.faces.context.FacesContext;
@@ -66,7 +67,9 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
         Boolean newTableRow = false;
         int border = 0;
 
-        if (null != (alignStr = (String) component.getAttributes().get("layout"))) {
+        alignStr = component instanceof HtmlSelectManyCheckbox ? ((HtmlSelectManyCheckbox) component).getLayout()
+                : (String) component.getAttributes().get("layout");
+        if (null != alignStr) {
             if (alignStr.equalsIgnoreCase("list")) {
                 newTableRow = null;
             }
@@ -182,14 +185,8 @@ public class SelectManyCheckboxListRenderer extends MenuRenderer {
             if (shouldWriteIdAttribute(component)) {
                 writeIdAttributeIfNecessary(context, writer, component);
             }
-            String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
-            String style = (String) RenderKitUtils.getAttributeIfSet(component, "style");
-            if (styleClass != null) {
-                writer.writeAttribute("class", styleClass, "class");
-            }
-            if (style != null) {
-                writer.writeAttribute("style", style, "style");
-            }
+            writeStyleClassAttributeIfNecessary(writer, component);
+            writeStyleAttributeIfNecessary(writer, component);
         }
         writer.writeText("\n", component, null);
 

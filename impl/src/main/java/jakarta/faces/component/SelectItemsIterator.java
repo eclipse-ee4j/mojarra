@@ -448,9 +448,9 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
                     setValue(itemValueResult != null ? itemValueResult : value);
                     setLabel(itemLabelResult != null ? itemLabelResult.toString() : value.toString());
                     setDescription(itemDescriptionResult != null ? itemDescriptionResult.toString() : null);
-                    setEscape(itemEscapedResult != null ? Boolean.valueOf(itemEscapedResult.toString()) : true);
-                    setDisabled(itemDisabledResult != null ? Boolean.valueOf(itemDisabledResult.toString()) : false);
-                    setNoSelectionOption(noSelectionOptionResult != null ? Boolean.valueOf(noSelectionOptionResult.toString()) : false);
+                    setEscape(toBoolean(itemEscapedResult, true));
+                    setDisabled(toBoolean(itemDisabledResult, false));
+                    setNoSelectionOption(toBoolean(noSelectionOptionResult, false));
                 } finally {
                     if (var != null) {
                         if (oldVarValue != null) {
@@ -461,6 +461,18 @@ final class SelectItemsIterator implements Iterator<SelectItem> {
                     }
                 }
 
+            }
+
+            // Coerce a boolean-attribute value without the Boolean -> String -> boolean round-trip on the common path:
+            // absent -> default, already-Boolean -> direct, otherwise parse. (Local copy to avoid a com.sun.faces dependency.)
+            private static boolean toBoolean(Object value, boolean defaultValue) {
+                if (value == null) {
+                    return defaultValue;
+                }
+                if (value instanceof Boolean) {
+                    return (Boolean) value;
+                }
+                return Boolean.parseBoolean(value.toString());
             }
 
             // --------------------------------------- Methods from Serializable

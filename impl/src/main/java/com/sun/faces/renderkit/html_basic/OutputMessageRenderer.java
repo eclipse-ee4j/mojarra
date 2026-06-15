@@ -27,6 +27,7 @@ import java.util.List;
 import com.sun.faces.renderkit.RenderKitUtils;
 
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlOutputFormat;
 import jakarta.faces.component.UIParameter;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
@@ -121,8 +122,8 @@ public class OutputMessageRenderer extends HtmlBasicInputRenderer {
             }
         }
 
-        Object val = component.getAttributes().get("escape");
-        boolean escape = val != null && Boolean.valueOf(val.toString());
+        boolean escape = component instanceof HtmlOutputFormat ? ((HtmlOutputFormat) component).isEscape()
+                : RenderKitUtils.attributeIsTrue(component, "escape", false);
 
         if (escape) {
             writer.writeText(message, component, "value");

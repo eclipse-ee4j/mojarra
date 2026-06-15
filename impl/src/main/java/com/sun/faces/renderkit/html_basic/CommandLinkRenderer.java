@@ -25,11 +25,13 @@ import java.util.logging.Level;
 
 import jakarta.faces.component.UICommand;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlCommandLink;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.ActionEvent;
 
+import static com.sun.faces.util.Util.componentIsDisabled;
 import com.sun.faces.application.resource.ResourceHandlerImpl;
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
@@ -76,7 +78,8 @@ public class CommandLinkRenderer extends LinkRenderer {
             return;
         }
 
-        boolean componentDisabled = Boolean.TRUE.equals(component.getAttributes().get("disabled"));
+        boolean componentDisabled = component instanceof HtmlCommandLink ? ((HtmlCommandLink) component).isDisabled()
+                : componentIsDisabled(component);
 
         if (componentDisabled) {
             renderAsDisabled(context, component);
@@ -116,13 +119,14 @@ public class CommandLinkRenderer extends LinkRenderer {
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
 
-        if (Boolean.TRUE.equals(component.getAttributes().get("disabled"))) {
+        if (component instanceof HtmlCommandLink ? ((HtmlCommandLink) component).isDisabled() : componentIsDisabled(component)) {
             writer.endElement("span");
         } else {
             writer.endElement("a");
 
             if (ResourceHandlerImpl.resolveCurrentNonce(context) != null) {
-                String target = (String) component.getAttributes().get("target");
+                String target = component instanceof HtmlCommandLink ? ((HtmlCommandLink) component).getTarget()
+                        : (String) component.getAttributes().get("target");
                 if (target != null) {
                     target = target.trim();
                 } else {
@@ -169,7 +173,8 @@ public class CommandLinkRenderer extends LinkRenderer {
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, command);
 
         if (ResourceHandlerImpl.resolveCurrentNonce(context) == null) {
-            String target = (String) command.getAttributes().get("target");
+            String target = command instanceof HtmlCommandLink ? ((HtmlCommandLink) command).getTarget()
+                    : (String) command.getAttributes().get("target");
             if (target != null) {
                 target = target.trim();
             } else {

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.sun.faces.application.view.FaceletViewHandlingStrategy;
+import com.sun.faces.util.Util;
 import com.sun.faces.facelets.tag.TagHandlerImpl;
 import com.sun.faces.facelets.tag.faces.ComponentSupport;
 import com.sun.faces.util.MessageUtils;
@@ -100,7 +101,7 @@ public class InterfaceHandler extends TagHandlerImpl {
             if (null != requiredValue) {
                 if (requiredValue instanceof ValueExpression) {
                     requiredValue = ((ValueExpression) requiredValue).getValue(context.getELContext());
-                    required = Boolean.parseBoolean(requiredValue.toString());
+                    required = Util.toBoolean(requiredValue, false);
                 }
             }
             if (required) {
@@ -145,7 +146,7 @@ public class InterfaceHandler extends TagHandlerImpl {
                 if (null != requiredValue) {
                     if (requiredValue instanceof ValueExpression) {
                         requiredValue = ((ValueExpression) requiredValue).getValue(context.getELContext());
-                        required = Boolean.parseBoolean(requiredValue.toString());
+                        required = Util.toBoolean(requiredValue, false);
                     }
                 }
                 if (required) {

@@ -16,6 +16,7 @@
 
 package com.sun.faces.renderkit;
 
+import com.sun.faces.util.Util;
 import java.io.IOException;
 import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
@@ -449,10 +450,10 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
                     setValue(itemValueResult != null ? itemValueResult : value);
                     setLabel(itemLabelResult != null ? itemLabelResult.toString() : value.toString());
                     setDescription(itemDescriptionResult != null ? itemDescriptionResult.toString() : null);
-                    setEscape(itemEscapedResult != null ? Boolean.valueOf(itemEscapedResult.toString()) : true);
-                    setDisabled(itemDisabledResult != null ? Boolean.valueOf(itemDisabledResult.toString()) : false);
+                    setEscape(Util.toBoolean(itemEscapedResult, true));
+                    setDisabled(Util.toBoolean(itemDisabledResult, false));
                     if (null != noSelectionOptionResult) {
-                        setNoSelectionOption(Boolean.valueOf(noSelectionOptionResult.toString()));
+                        setNoSelectionOption(Util.toBoolean(noSelectionOptionResult, false));
                     } else if (null != noSelectionValueResult) {
                         setNoSelectionOption(getValue().equals(noSelectionValueResult));
                     }

@@ -650,11 +650,7 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
         writeIdAttributeIfNecessary(context, writer, component);
         writer.writeAttribute("name", component.getClientId(context), "clientId");
 
-        // Render styleClass attribute if present.
-        String styleClass;
-        if ((styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass")) != null) {
-            writer.writeAttribute("class", styleClass, "styleClass");
-        }
+        writeStyleClassAttributeIfNecessary(writer, component);
 
         if (!getMultipleText(component).equals("")) {
             writer.writeAttribute("multiple", true, "multiple");
