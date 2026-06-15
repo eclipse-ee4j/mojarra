@@ -25,10 +25,13 @@ import java.util.Map;
 
 import com.sun.faces.renderkit.Attribute;
 import com.sun.faces.renderkit.AttributeManager;
+import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.util.Util;
 
 import jakarta.faces.component.UIColumn;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlDataTable;
+import jakarta.faces.component.html.HtmlColumn;
 import jakarta.faces.component.UIData;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
@@ -213,14 +216,16 @@ public class TableRenderer extends BaseTableRenderer {
         if (footer == null && !info.hasFooterFacets) {
             return;
         }
-        String footerClass = (String) table.getAttributes().get("footerClass");
+        String footerClass = table instanceof HtmlDataTable ? ((HtmlDataTable) table).getFooterClass()
+                : (String) table.getAttributes().get("footerClass");
         writer.startElement("tfoot", table);
         writer.writeText("\n", table, null);
         if (info.hasFooterFacets) {
             writer.startElement("tr", table);
             writer.writeText("\n", table, null);
             for (UIColumn column : info.columns) {
-                String columnFooterClass = (String) column.getAttributes().get("footerClass");
+                String columnFooterClass = column instanceof HtmlColumn ? ((HtmlColumn) column).getFooterClass()
+                        : (String) column.getAttributes().get("footerClass");
                 writer.startElement("td", column);
                 if (columnFooterClass != null) {
                     writer.writeAttribute("class", columnFooterClass, "columnFooterClass");
@@ -264,7 +269,8 @@ public class TableRenderer extends BaseTableRenderer {
         if (header == null && !info.hasHeaderFacets) {
             return;
         }
-        String headerClass = (String) table.getAttributes().get("headerClass");
+        String headerClass = table instanceof HtmlDataTable ? ((HtmlDataTable) table).getHeaderClass()
+                : (String) table.getAttributes().get("headerClass");
         writer.startElement("thead", table);
         writer.writeText("\n", table, null);
         if (header != null) {
@@ -285,7 +291,8 @@ public class TableRenderer extends BaseTableRenderer {
             writer.startElement("tr", table);
             writer.writeText("\n", table, null);
             for (UIColumn column : info.columns) {
-                String columnHeaderClass = (String) column.getAttributes().get("headerClass");
+                String columnHeaderClass = column instanceof HtmlColumn ? ((HtmlColumn) column).getHeaderClass()
+                        : (String) column.getAttributes().get("headerClass");
                 writer.startElement("th", column);
                 if (columnHeaderClass != null) {
                     writer.writeAttribute("class", columnHeaderClass, "columnHeaderClass");
@@ -316,11 +323,8 @@ public class TableRenderer extends BaseTableRenderer {
         for (UIColumn column : info.columns) {
 
             // Render the beginning of this cell
-            boolean isRowHeader = false;
-            Object rowHeaderValue = column.getAttributes().get("rowHeader");
-            if (null != rowHeaderValue) {
-                isRowHeader = Boolean.valueOf(rowHeaderValue.toString());
-            }
+            boolean isRowHeader = column instanceof HtmlColumn ? ((HtmlColumn) column).isRowHeader()
+                    : RenderKitUtils.attributeIsTrue(column, "rowHeader", false);
             if (isRowHeader) {
                 writer.startElement("th", column);
                 writer.writeAttribute("scope", "row", null);
@@ -329,7 +333,7 @@ public class TableRenderer extends BaseTableRenderer {
             }
 
             final String tableColumnStyleClass = info.getCurrentColumnClass();
-            final String columnStyleClass = (String) column.getAttributes().get("styleClass");
+            final String columnStyleClass = (String) RenderKitUtils.getAttributeIfSet(column, "styleClass");
 
             if (tableColumnStyleClass != null) {
                 if (columnStyleClass != null) {

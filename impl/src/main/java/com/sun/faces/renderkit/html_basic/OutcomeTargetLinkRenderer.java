@@ -29,6 +29,7 @@ import com.sun.faces.util.Util;
 import jakarta.faces.application.NavigationCase;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlOutcomeTargetLink;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
@@ -54,7 +55,7 @@ public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
 
         NavigationCase navCase = null;
         boolean failedToResolveNavigationCase = false;
-        boolean disabled = Util.componentIsDisabled(component);
+        boolean disabled = component instanceof HtmlOutcomeTargetLink ? ((HtmlOutcomeTargetLink) component).isDisabled() : Util.componentIsDisabled(component);
 
         if (!disabled) {
             navCase = getNavigationCase(context, component);
@@ -84,7 +85,8 @@ public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
 
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
-        String endElement = Util.componentIsDisabled(component) || context.getAttributes().remove(NO_NAV_CASE) != null ? "span" : "a";
+        boolean disabled = component instanceof HtmlOutcomeTargetLink ? ((HtmlOutcomeTargetLink) component).isDisabled() : Util.componentIsDisabled(component);
+        String endElement = disabled || context.getAttributes().remove(NO_NAV_CASE) != null ? "span" : "a";
         writer.endElement(endElement);
 
         RenderKitUtils.flushPendingBehaviorEventListeners(context, component, null);

@@ -732,6 +732,7 @@ public class HtmlSelectOneListbox extends UISelectOne implements ClientBehaviorH
      */
     public void setStyleClass(java.lang.String styleClass) {
         getStateHelper().put(PropertyKeys.styleClass, styleClass);
+        handleAttribute(this, "styleClass", styleClass);
     }
 
     /**

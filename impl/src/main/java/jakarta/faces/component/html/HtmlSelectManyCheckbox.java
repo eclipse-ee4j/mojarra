@@ -812,6 +812,7 @@ public class HtmlSelectManyCheckbox extends UISelectMany implements ClientBehavi
      */
     public void setStyleClass(java.lang.String styleClass) {
         getStateHelper().put(PropertyKeys.styleClass, styleClass);
+        handleAttribute(this, "styleClass", styleClass);
     }
 
     /**

@@ -50,14 +50,10 @@ public class TextareaRenderer extends HtmlBasicInputRenderer {
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
 
-        String styleClass = (String) component.getAttributes().get("styleClass");
-
         writer.startElement("textarea", component);
         writeIdAttributeIfNecessary(context, writer, component);
         writer.writeAttribute("name", component.getClientId(context), "clientId");
-        if (styleClass != null) {
-            writer.writeAttribute("class", styleClass, "styleClass");
-        }
+        writeStyleClassAttributeIfNecessary(writer, component);
 
         // style is rendered as a passthru attribute
         RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, ATTRIBUTES, "change", "valueChange");
