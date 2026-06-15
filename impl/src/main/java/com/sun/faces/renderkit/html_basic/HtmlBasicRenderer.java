@@ -618,6 +618,14 @@ public abstract class HtmlBasicRenderer extends Renderer {
         }
     }
 
+    protected void writeStyleAttributeIfNecessary(ResponseWriter writer, UIComponent component) throws IOException {
+
+        String style = (String) RenderKitUtils.getAttributeIfSet(component, "style");
+        if (style != null) {
+            writer.writeAttribute("style", style, "style");
+        }
+    }
+
     protected void rendererParamsNotNull(FacesContext context, UIComponent component) {
         notNull("context", context);
         notNull("component", component);

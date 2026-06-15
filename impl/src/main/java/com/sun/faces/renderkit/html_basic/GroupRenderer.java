@@ -24,6 +24,7 @@ import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlPanelGroup;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
@@ -49,7 +50,8 @@ public class GroupRenderer extends HtmlBasicRenderer {
         ResponseWriter writer = context.getResponseWriter();
 
         if (divOrSpan(component, styleClass)) {
-            if ("block".equals(component.getAttributes().get("layout"))) {
+            if (component instanceof HtmlPanelGroup group ? "block".equals(group.getLayout())
+                    : "block".equals(component.getAttributes().get("layout"))) {
                 writer.startElement("div", component);
             } else {
                 writer.startElement("span", component);
@@ -96,7 +98,8 @@ public class GroupRenderer extends HtmlBasicRenderer {
         ResponseWriter writer = context.getResponseWriter();
         String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
         if (divOrSpan(component, styleClass)) {
-            if ("block".equals(component.getAttributes().get("layout"))) {
+            if (component instanceof HtmlPanelGroup group ? "block".equals(group.getLayout())
+                    : "block".equals(component.getAttributes().get("layout"))) {
                 writer.endElement("div");
             } else {
                 writer.endElement("span");

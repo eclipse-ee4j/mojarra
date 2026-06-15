@@ -29,6 +29,7 @@ import com.sun.faces.renderkit.RenderKitUtils;
 
 import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlOutputLabel;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.search.SearchExpressionContext;
 import jakarta.faces.component.search.SearchExpressionHint;
@@ -65,7 +66,8 @@ public class LabelRenderer extends HtmlBasicInputRenderer {
         assert writer != null;
 
         String forClientId = null;
-        String forValue = (String) component.getAttributes().get("for");
+        String forValue = component instanceof HtmlOutputLabel label ? label.getFor()
+                : (String) component.getAttributes().get("for");
         if (forValue != null) {
             SearchExpressionContext searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(context, component, EXPRESSION_HINTS, null);
 
@@ -88,10 +90,7 @@ public class LabelRenderer extends HtmlBasicInputRenderer {
         }
 
         RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES);
-        String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
-        if (null != styleClass) {
-            writer.writeAttribute("class", styleClass, "styleClass");
-        }
+        writeStyleClassAttributeIfNecessary(writer, component);
 
         // render the curentValue as label text if specified.
         String value = getCurrentValue(context, component);
@@ -99,8 +98,8 @@ public class LabelRenderer extends HtmlBasicInputRenderer {
             logger.fine("Value to be rendered " + value);
         }
         if (value != null && value.length() != 0) {
-            Object val = component.getAttributes().get("escape");
-            boolean escape = val != null && Boolean.valueOf(val.toString());
+            boolean escape = component instanceof HtmlOutputLabel label ? label.isEscape()
+                    : RenderKitUtils.attributeIsTrue(component, "escape", false);
 
             if (escape) {
                 writer.writeText(value, component, "value");

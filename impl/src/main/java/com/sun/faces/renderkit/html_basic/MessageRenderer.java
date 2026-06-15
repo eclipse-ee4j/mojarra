@@ -26,6 +26,7 @@ import com.sun.faces.renderkit.RenderKitUtils;
 
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlMessage;
 import jakarta.faces.component.UIMessage;
 import jakarta.faces.component.UIOutput;
 import jakarta.faces.context.FacesContext;
@@ -135,18 +136,20 @@ public class MessageRenderer extends HtmlBasicRenderer {
         // Default to summary if we have no detail
         String detail = null != (detail = curMessage.getDetail()) ? detail : summary;
 
-        if (curMessage.getSeverity() == FacesMessage.SEVERITY_INFO) {
-            severityStyle = (String) component.getAttributes().get("infoStyle");
-            severityStyleClass = (String) component.getAttributes().get("infoClass");
-        } else if (curMessage.getSeverity() == FacesMessage.SEVERITY_WARN) {
-            severityStyle = (String) component.getAttributes().get("warnStyle");
-            severityStyleClass = (String) component.getAttributes().get("warnClass");
-        } else if (curMessage.getSeverity() == FacesMessage.SEVERITY_ERROR) {
-            severityStyle = (String) component.getAttributes().get("errorStyle");
-            severityStyleClass = (String) component.getAttributes().get("errorClass");
-        } else if (curMessage.getSeverity() == FacesMessage.SEVERITY_FATAL) {
-            severityStyle = (String) component.getAttributes().get("fatalStyle");
-            severityStyleClass = (String) component.getAttributes().get("fatalClass");
+        HtmlMessage htmlMessage = component instanceof HtmlMessage ? (HtmlMessage) component : null;
+        FacesMessage.Severity severity = curMessage.getSeverity();
+        if (severity == FacesMessage.SEVERITY_INFO) {
+            severityStyle = htmlMessage != null ? htmlMessage.getInfoStyle() : (String) component.getAttributes().get("infoStyle");
+            severityStyleClass = htmlMessage != null ? htmlMessage.getInfoClass() : (String) component.getAttributes().get("infoClass");
+        } else if (severity == FacesMessage.SEVERITY_WARN) {
+            severityStyle = htmlMessage != null ? htmlMessage.getWarnStyle() : (String) component.getAttributes().get("warnStyle");
+            severityStyleClass = htmlMessage != null ? htmlMessage.getWarnClass() : (String) component.getAttributes().get("warnClass");
+        } else if (severity == FacesMessage.SEVERITY_ERROR) {
+            severityStyle = htmlMessage != null ? htmlMessage.getErrorStyle() : (String) component.getAttributes().get("errorStyle");
+            severityStyleClass = htmlMessage != null ? htmlMessage.getErrorClass() : (String) component.getAttributes().get("errorClass");
+        } else if (severity == FacesMessage.SEVERITY_FATAL) {
+            severityStyle = htmlMessage != null ? htmlMessage.getFatalStyle() : (String) component.getAttributes().get("fatalStyle");
+            severityStyleClass = htmlMessage != null ? htmlMessage.getFatalClass() : (String) component.getAttributes().get("fatalClass");
         }
 
         List<String> setAttributes = RenderKitUtils.getAttributesThatAreSet(component);
@@ -204,8 +207,8 @@ public class MessageRenderer extends HtmlBasicRenderer {
 
         }
 
-        Object val = component.getAttributes().get("tooltip");
-        boolean isTooltip = val != null && Boolean.valueOf(val.toString());
+        boolean isTooltip = htmlMessage != null ? htmlMessage.isTooltip()
+                : RenderKitUtils.attributeIsTrue(component, "tooltip", false);
 
         boolean wroteTooltip = false;
         if ((showSummary || showDetail) && isTooltip) {

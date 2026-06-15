@@ -27,6 +27,7 @@ import com.sun.faces.renderkit.RenderKitUtils;
 
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlMessages;
 import jakarta.faces.component.UIMessages;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
@@ -98,10 +99,11 @@ public class MessagesRenderer extends HtmlBasicRenderer {
             return;
         }
 
-        String layout = (String) component.getAttributes().get("layout");
+        HtmlMessages htmlMessages = component instanceof HtmlMessages ? (HtmlMessages) component : null;
+        String layout = htmlMessages != null ? htmlMessages.getLayout()
+                : (String) component.getAttributes().get("layout");
         boolean showSummary = messages.isShowSummary();
         boolean showDetail = messages.isShowDetail();
-        String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
 
         boolean wroteTable = false;
 
@@ -117,9 +119,7 @@ public class MessagesRenderer extends HtmlBasicRenderer {
 
         // Render "table" or "ul" level attributes.
         writeIdAttributeIfNecessary(context, writer, component);
-        if (null != styleClass) {
-            writer.writeAttribute("class", styleClass, "styleClass");
-        }
+        writeStyleClassAttributeIfNecessary(writer, component);
         // style is rendered as a passthru attribute
         RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES);
 
@@ -139,18 +139,19 @@ public class MessagesRenderer extends HtmlBasicRenderer {
             // Default to summary if we have no detail
             String detail = null != (detail = curMessage.getDetail()) ? detail : summary;
 
-            if (curMessage.getSeverity() == FacesMessage.SEVERITY_INFO) {
-                severityStyle = (String) component.getAttributes().get("infoStyle");
-                severityStyleClass = (String) component.getAttributes().get("infoClass");
-            } else if (curMessage.getSeverity() == FacesMessage.SEVERITY_WARN) {
-                severityStyle = (String) component.getAttributes().get("warnStyle");
-                severityStyleClass = (String) component.getAttributes().get("warnClass");
-            } else if (curMessage.getSeverity() == FacesMessage.SEVERITY_ERROR) {
-                severityStyle = (String) component.getAttributes().get("errorStyle");
-                severityStyleClass = (String) component.getAttributes().get("errorClass");
-            } else if (curMessage.getSeverity() == FacesMessage.SEVERITY_FATAL) {
-                severityStyle = (String) component.getAttributes().get("fatalStyle");
-                severityStyleClass = (String) component.getAttributes().get("fatalClass");
+            FacesMessage.Severity severity = curMessage.getSeverity();
+            if (severity == FacesMessage.SEVERITY_INFO) {
+                severityStyle = htmlMessages != null ? htmlMessages.getInfoStyle() : (String) component.getAttributes().get("infoStyle");
+                severityStyleClass = htmlMessages != null ? htmlMessages.getInfoClass() : (String) component.getAttributes().get("infoClass");
+            } else if (severity == FacesMessage.SEVERITY_WARN) {
+                severityStyle = htmlMessages != null ? htmlMessages.getWarnStyle() : (String) component.getAttributes().get("warnStyle");
+                severityStyleClass = htmlMessages != null ? htmlMessages.getWarnClass() : (String) component.getAttributes().get("warnClass");
+            } else if (severity == FacesMessage.SEVERITY_ERROR) {
+                severityStyle = htmlMessages != null ? htmlMessages.getErrorStyle() : (String) component.getAttributes().get("errorStyle");
+                severityStyleClass = htmlMessages != null ? htmlMessages.getErrorClass() : (String) component.getAttributes().get("errorClass");
+            } else if (severity == FacesMessage.SEVERITY_FATAL) {
+                severityStyle = htmlMessages != null ? htmlMessages.getFatalStyle() : (String) component.getAttributes().get("fatalStyle");
+                severityStyleClass = htmlMessages != null ? htmlMessages.getFatalClass() : (String) component.getAttributes().get("fatalClass");
             }
 
             // Done intializing local variables. Move on to rendering.
@@ -165,16 +166,15 @@ public class MessagesRenderer extends HtmlBasicRenderer {
                 writer.writeAttribute("style", severityStyle, "style");
             }
             if (severityStyleClass != null) {
-                styleClass = severityStyleClass;
-                writer.writeAttribute("class", styleClass, "styleClass");
+                writer.writeAttribute("class", severityStyleClass, "styleClass");
             }
 
             if (wroteTable) {
                 writer.startElement("td", component);
             }
 
-            Object val = component.getAttributes().get("tooltip");
-            boolean isTooltip = val != null && Boolean.valueOf(val.toString());
+            boolean isTooltip = htmlMessages != null ? htmlMessages.isTooltip()
+                    : RenderKitUtils.attributeIsTrue(component, "tooltip", false);
 
             boolean wroteTooltip = false;
             if (isTooltip) {
