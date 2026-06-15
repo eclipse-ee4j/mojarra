@@ -200,9 +200,13 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
     private boolean isInView;
     private Map<String, String> resourceBundleMap;
 
-    // It is safe to cache this because components never go from being
-    // composite to non-composite.
-    private transient Boolean isCompositeComponent;
+    // It is safe to cache this because components never go from being composite to non-composite. Event-driven
+    // rather than lazily resolved: the flag is set TRUE when COMPONENT_RESOURCE_KEY is put
+    // (UIComponentBase.AttributesMap) -- the act that makes a component composite -- and re-derived after restore
+    // (full-state via UIComponentBase.restoreMarkersFromState, any restore via processEvent on PostRestoreStateEvent).
+    // So the common non-composite component answers isCompositeComponent() straight from the field, without a
+    // getAttributes().containsKey(COMPONENT_RESOURCE_KEY) probe on every EL push/pop during buildView.
+    private transient boolean isCompositeComponent;
 
     /**
      * Track whether we have been pushed as current in order to handle mismatched pushes and pops of Jakarta Expression
@@ -1586,14 +1590,17 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
         if (component == null) {
             throw new NullPointerException();
         }
-        boolean result = false;
-        if (null != component.isCompositeComponent) {
-            result = component.isCompositeComponent.booleanValue();
-        } else {
-            result = component.isCompositeComponent = component.getAttributes().containsKey(Resource.COMPONENT_RESOURCE_KEY);
-        }
-        return result;
+        return component.isCompositeComponent;
 
+    }
+
+    /**
+     * Primes the cached composite-component flag without probing the attributes map. Called by
+     * {@code UIComponentBase.AttributesMap} when {@code COMPONENT_RESOURCE_KEY} is put (which is what makes a
+     * component composite) and by {@code restoreMarkersFromState} on full-state restore. See the field declaration.
+     */
+    void setCompositeComponentFlag(boolean composite) {
+        isCompositeComponent = composite;
     }
 
     /**
@@ -1890,7 +1897,10 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
                 valueExpression.setValue(FacesContext.getCurrentInstance().getELContext(), this);
             }
 
-            isCompositeComponent = null;
+            // Re-derive from the (now restored) attributes map; the binding repopulation above and full/partial
+            // state restore can change whether this instance carries COMPONENT_RESOURCE_KEY. Replaces the former
+            // null-reset-then-lazy-recompute now that the flag is a non-nullable primitive.
+            isCompositeComponent = getAttributes().containsKey(Resource.COMPONENT_RESOURCE_KEY);
         }
     }
 

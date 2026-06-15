@@ -17,6 +17,8 @@
  */
 package jakarta.faces.component.html;
 
+import static jakarta.faces.component.html.HtmlComponentUtils.handleAttribute;
+
 import jakarta.faces.component.UIColumn;
 
 /**
@@ -157,6 +159,7 @@ public class HtmlColumn extends UIColumn {
      */
     public void setStyleClass(java.lang.String styleClass) {
         getStateHelper().put(PropertyKeys.styleClass, styleClass);
+        handleAttribute(this, "styleClass", styleClass);
     }
 
 }

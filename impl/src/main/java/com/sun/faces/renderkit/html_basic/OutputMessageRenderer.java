@@ -27,6 +27,7 @@ import java.util.List;
 import com.sun.faces.renderkit.RenderKitUtils;
 
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlOutputFormat;
 import jakarta.faces.component.UIParameter;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
@@ -94,7 +95,7 @@ public class OutputMessageRenderer extends HtmlBasicInputRenderer {
 
         List<String> setAttributes = RenderKitUtils.getAttributesThatAreSet(component);
         String style = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "style");
-        String styleClass = (String) component.getAttributes().get("styleClass");
+        String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
         String lang = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "lang");
         String dir = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "dir");
         String title = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "title");
@@ -121,8 +122,8 @@ public class OutputMessageRenderer extends HtmlBasicInputRenderer {
             }
         }
 
-        Object val = component.getAttributes().get("escape");
-        boolean escape = val != null && Boolean.valueOf(val.toString());
+        boolean escape = component instanceof HtmlOutputFormat format ? format.isEscape()
+                : RenderKitUtils.attributeIsTrue(component, "escape", false);
 
         if (escape) {
             writer.writeText(message, component, "value");

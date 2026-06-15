@@ -26,6 +26,7 @@ import static com.sun.faces.facelets.tag.faces.core.FacetHandler.KEY;
 import static com.sun.faces.util.Util.isAllNull;
 import static com.sun.faces.util.Util.isAnyNull;
 import static com.sun.faces.util.Util.isEmpty;
+import static jakarta.faces.application.Resource.COMPONENT_RESOURCE_KEY;
 import static java.beans.Introspector.getBeanInfo;
 import static java.lang.Boolean.TRUE;
 import static java.lang.Character.isDigit;
@@ -126,6 +127,15 @@ public abstract class UIComponentBase extends UIComponent {
      * can be regenerated) and lets the hot attribute-read path skip re-suppressing and re-caching it per component.
      */
     private Map<String, Method> readMethodMap;
+
+    /**
+     * This class's write methods (keyed by property name), the write-side counterpart of {@link #readMethodMap} kept in
+     * its own application-scoped cache (see {@link #populateDescriptorsMapIfNecessary}). Holds the access-suppressed
+     * setter {@link Method}s strongly so the {@code getAttributes().put} property-write path (Facelets applying a
+     * literal-text {@code ValueExpression} or a non-property literal during buildView) skips the per-put access check
+     * and the soft-reference setter rediscovery.
+     */
+    private Map<String, Method> writeMethodMap;
 
     private Map<Class<? extends SystemEvent>, List<SystemEventListener>> listenersByEventClass;
 
@@ -1635,6 +1645,10 @@ public abstract class UIComponentBase extends UIComponent {
         return readMethodMap;
     }
 
+    Map<String, Method> getWriteMethodMap() {
+        return writeMethodMap;
+    }
+
     // ---- Field-backed Facelets markers (authoritative cache for AttributesMap) ----
     // The marker fields are the single source of truth: AttributesMap.put/remove keep them in sync, and
     // AttributesMap.get/containsKey read them WITHOUT touching the state map -- so the per-component
@@ -1723,6 +1737,7 @@ public abstract class UIComponentBase extends UIComponent {
         dynamicComponent = attrs.get(DYNAMIC_COMPONENT);
         markDeleted = Boolean.TRUE.equals(attrs.get(MARK_DELETED));
         markChildrenModified = Boolean.TRUE.equals(attrs.get(MARK_CHILDREN_MODIFIED));
+        setCompositeComponentFlag(attrs.containsKey(COMPONENT_RESOURCE_KEY));
     }
 
     private void doPostAddProcessing(FacesContext context, UIComponent added) {
@@ -2160,6 +2175,8 @@ public abstract class UIComponentBase extends UIComponent {
         // Per-class, application-scoped cache of access-suppressed read methods (see UIComponentBase.readMethodMap);
         // a hit skips the PropertyDescriptor lookup, the access-check suppression and the reflective getter discovery.
         private transient Map<String, Method> readMap;
+        // Write-side counterpart of readMap (see UIComponentBase.writeMethodMap); used by the property-write path in put.
+        private transient Map<String, Method> writeMap;
         private transient UIComponentBase component;
         private static final long serialVersionUID = -6773035086539772945L;
 
@@ -2170,6 +2187,7 @@ public abstract class UIComponentBase extends UIComponent {
             this.component = (UIComponentBase) component;
             pdMap = this.component.getDescriptorMap();
             readMap = this.component.getReadMethodMap();
+            writeMap = this.component.getWriteMethodMap();
         }
 
         @Override
@@ -2302,12 +2320,25 @@ public abstract class UIComponentBase extends UIComponent {
             PropertyDescriptor pd = marker ? null : getPropertyDescriptor(keyValue);
             if (pd != null) {
                 try {
-                    Object result = null;
-                    Method readMethod = pd.getReadMethod();
-                    if (readMethod != null) {
-                        result = readMethod.invoke(component, EMPTY_OBJECT_ARRAY);
+                    // Prefer the access-suppressed accessors cached per class (writeMap/readMap); fall back to the
+                    // descriptor only when the cache is absent (e.g. no FacesContext at construction), suppressing the
+                    // discovered method so a later put on the same component does not repeat the access check.
+                    Method readMethod = readMap == null ? null : readMap.get(keyValue);
+                    if (readMethod == null) {
+                        readMethod = pd.getReadMethod();
+                        if (readMethod != null) {
+                            suppressAccessCheck(readMethod);
+                        }
                     }
-                    Method writeMethod = pd.getWriteMethod();
+                    Object result = readMethod == null ? null : readMethod.invoke(component, EMPTY_OBJECT_ARRAY);
+
+                    Method writeMethod = writeMap == null ? null : writeMap.get(keyValue);
+                    if (writeMethod == null) {
+                        writeMethod = pd.getWriteMethod();
+                        if (writeMethod != null) {
+                            suppressAccessCheck(writeMethod);
+                        }
+                    }
                     if (writeMethod != null) {
                         writeMethod.invoke(component, value);
                     } else {
@@ -2471,6 +2502,12 @@ public abstract class UIComponentBase extends UIComponent {
         }
 
         private Object putAttribute(String key, Object value) {
+            if (COMPONENT_RESOURCE_KEY.equals(key)) {
+                // Putting the component resource is what makes a component composite; prime the cached flag so
+                // isCompositeComponent() answers from the field instead of probing the attributes map (see the
+                // UIComponent.isCompositeComponent field).
+                component.setCompositeComponentFlag(true);
+            }
             return component.getStateHelper().put(PropertyKeys.attributes, key, value);
         }
 
@@ -2485,19 +2522,20 @@ public abstract class UIComponentBase extends UIComponent {
         }
 
         /**
-         * Suppresses the per-invoke reflective access check on the (public) property getter that gets
-         * cached in {@link #readMap} and then invoked on every property-backed attribute read — hot under
-         * render and {@code UIData}/{@code UIRepeat} iteration (a renderer reads each pass-through attribute
-         * through {@code getAttributes().get}). The check is otherwise re-run per invoke because
-         * {@link PropertyDescriptor#getReadMethod()} hands back the method via a soft {@link
-         * java.lang.ref.Reference} that may be regenerated, yielding a fresh {@link Method} whose access
+         * Suppresses the per-invoke reflective access check on the (public) property accessor (getter cached in
+         * {@link #readMap}, setter in {@link #writeMap}) that is then invoked on every property-backed attribute read
+         * or write — hot under render and {@code UIData}/{@code UIRepeat} iteration (a renderer reads each pass-through
+         * attribute through {@code getAttributes().get}) and under buildView (Facelets writes through
+         * {@code getAttributes().put}). The check is otherwise re-run per invoke because
+         * {@link PropertyDescriptor#getReadMethod()}/{@link PropertyDescriptor#getWriteMethod()} hand back the method via
+         * a soft {@link java.lang.ref.Reference} that may be regenerated, yielding a fresh {@link Method} whose access
          * was never suppressed. Suppressing it on the strongly-held cached instance makes the win durable.
          */
-        private static void suppressAccessCheck(Method readMethod) {
+        private static void suppressAccessCheck(Method accessor) {
             try {
-                // The module system may forbid this for a getter in a non-exported user package;
+                // The module system may forbid this for an accessor in a non-exported user package;
                 // when it does, the normal per-invoke access check simply remains.
-                readMethod.setAccessible(true);
+                accessor.setAccessible(true);
             } catch (RuntimeException accessNotSuppressed) {
             }
         }
@@ -3416,12 +3454,15 @@ public abstract class UIComponentBase extends UIComponent {
 
     private static final String COMPONENT_READ_METHODS_MAP_KEY = "com.sun.faces.component.COMPONENT_READ_METHODS_MAP";
 
+    private static final String COMPONENT_WRITE_METHODS_MAP_KEY = "com.sun.faces.component.COMPONENT_WRITE_METHODS_MAP";
+
     @SuppressWarnings("unchecked")
     private void populateDescriptorsMapIfNecessary() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Class<?> clazz = getClass();
         Map<Class<?>, Map<String, PropertyDescriptor>> descriptors = null;
         Map<Class<?>, Map<String, Method>> readMethods = null;
+        Map<Class<?>, Map<String, Method>> writeMethods = null;
 
         /*
          * If we can find a valid FacesContext we are going to use it to get access to the property descriptor map.
@@ -3437,6 +3478,10 @@ public abstract class UIComponentBase extends UIComponent {
             readMethods = (Map<Class<?>, Map<String, Method>>) applicationMap.computeIfAbsent(
                     COMPONENT_READ_METHODS_MAP_KEY, k -> new ConcurrentHashMap<>());
             readMethodMap = readMethods.get(clazz);
+
+            writeMethods = (Map<Class<?>, Map<String, Method>>) applicationMap.computeIfAbsent(
+                    COMPONENT_WRITE_METHODS_MAP_KEY, k -> new ConcurrentHashMap<>());
+            writeMethodMap = writeMethods.get(clazz);
         }
 
         if (propertyDescriptorMap == null) {
@@ -3447,14 +3492,21 @@ public abstract class UIComponentBase extends UIComponent {
             if (propertyDescriptors != null) {
                 propertyDescriptorMap = new HashMap<>(propertyDescriptors.length, 1.0f);
                 readMethodMap = new HashMap<>(propertyDescriptors.length, 1.0f);
+                writeMethodMap = new HashMap<>(propertyDescriptors.length, 1.0f);
                 for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
-                    // Suppress the access check once, here, and strongly cache the read method per class so the
-                    // suppression stays durable (PropertyDescriptor.getReadMethod hands it back via a soft reference
-                    // that can be regenerated) and the hot attribute-read path never re-suppresses or re-caches it.
+                    // Suppress the access check once, here, and strongly cache the accessor per class so the
+                    // suppression stays durable (PropertyDescriptor.getReadMethod/getWriteMethod hand it back via a soft
+                    // reference that can be regenerated) and the hot attribute-read/write paths never re-suppress or
+                    // re-cache it.
                     Method readMethod = propertyDescriptor.getReadMethod();
                     if (readMethod != null) {
                         AttributesMap.suppressAccessCheck(readMethod);
                         readMethodMap.put(propertyDescriptor.getName(), readMethod);
+                    }
+                    Method writeMethod = propertyDescriptor.getWriteMethod();
+                    if (writeMethod != null) {
+                        AttributesMap.suppressAccessCheck(writeMethod);
+                        writeMethodMap.put(propertyDescriptor.getName(), writeMethod);
                     }
                     propertyDescriptorMap.put(propertyDescriptor.getName(), propertyDescriptor);
                 }
@@ -3468,6 +3520,9 @@ public abstract class UIComponentBase extends UIComponent {
                 }
                 if (readMethods != null) {
                     readMethods.putIfAbsent(clazz, readMethodMap);
+                }
+                if (writeMethods != null) {
+                    writeMethods.putIfAbsent(clazz, writeMethodMap);
                 }
             }
         }

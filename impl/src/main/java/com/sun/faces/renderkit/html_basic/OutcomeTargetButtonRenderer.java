@@ -21,6 +21,7 @@ import java.io.IOException;
 import com.sun.faces.application.resource.ResourceHandlerImpl;
 import jakarta.faces.application.NavigationCase;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlOutcomeTargetButton;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
@@ -51,7 +52,8 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
         writer.startElement("input", component);
         writeIdAttributeIfNecessary(context, writer, component);
 
-        String imageSrc = (String) component.getAttributes().get("image");
+        String imageSrc = component instanceof HtmlOutcomeTargetButton button ? button.getImage()
+                : (String) component.getAttributes().get("image");
         if (imageSrc != null) {
             writer.writeAttribute("type", "image", "type");
             writer.writeURIAttribute("src", RenderKitUtils.getImageSource(context, component, "image"), "image");
@@ -69,7 +71,8 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
 
         String label = getLabel(component);
 
-        if (!Util.componentIsDisabled(component)) {
+        boolean disabled = component instanceof HtmlOutcomeTargetButton button ? button.isDisabled() : Util.componentIsDisabled(component);
+        if (!disabled) {
             NavigationCase navCase = getNavigationCase(context, component);
 
             if (navCase == null) {
@@ -88,7 +91,7 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
         // value should be used even for image type for accessibility (e.g., images disabled in browser)
         writer.writeAttribute("value", label, "value");
 
-        String styleClass = (String) component.getAttributes().get("styleClass");
+        String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
         if (styleClass != null && styleClass.length() > 0) {
             writer.writeAttribute("class", styleClass, "styleClass");
         }
@@ -107,7 +110,8 @@ public class OutcomeTargetButtonRenderer extends OutcomeTargetRenderer {
 
         RenderKitUtils.flushPendingBehaviorEventListeners(context, component, null);
 
-        if (!Util.componentIsDisabled(component)) {
+        boolean disabled = component instanceof HtmlOutcomeTargetButton button ? button.isDisabled() : Util.componentIsDisabled(component);
+        if (!disabled) {
             NavigationCase navCase = getNavigationCase(context, component);
 
             if (navCase != null) {

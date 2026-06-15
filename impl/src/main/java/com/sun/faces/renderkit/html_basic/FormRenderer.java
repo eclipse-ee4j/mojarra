@@ -33,6 +33,7 @@ import com.sun.faces.renderkit.RenderKitUtils;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIForm;
+import jakarta.faces.component.html.HtmlForm;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -100,11 +101,9 @@ public class FormRenderer extends HtmlBasicRenderer {
         writer.writeAttribute("name", clientId, "name");
         writer.writeAttribute("method", "post", null);
         writer.writeAttribute("action", getActionStr(context), null);
-        String styleClass = (String) component.getAttributes().get("styleClass");
-        if (styleClass != null) {
-            writer.writeAttribute("class", styleClass, "styleClass");
-        }
-        String acceptcharset = (String) component.getAttributes().get("acceptcharset");
+        writeStyleClassAttributeIfNecessary(writer, component);
+        String acceptcharset = component instanceof HtmlForm form ? form.getAcceptcharset()
+                : (String) component.getAttributes().get("acceptcharset");
         if (acceptcharset != null) {
             writer.writeAttribute("accept-charset", acceptcharset, "acceptcharset");
         }

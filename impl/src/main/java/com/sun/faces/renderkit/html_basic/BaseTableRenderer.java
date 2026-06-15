@@ -29,6 +29,8 @@ import com.sun.faces.util.Util;
 import jakarta.faces.component.UIColumn;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIData;
+import jakarta.faces.component.html.HtmlDataTable;
+import jakarta.faces.component.html.HtmlPanelGrid;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
@@ -84,10 +86,7 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
         writer.startElement("table", table);
         writeIdAttributeIfNecessary(context, writer, table);
-        String styleClass = (String) table.getAttributes().get("styleClass");
-        if (styleClass != null) {
-            writer.writeAttribute("class", styleClass, "styleClass");
-        }
+        writeStyleClassAttributeIfNecessary(writer, table);
         RenderKitUtils.renderPassThruAttributes(context, writer, table, attributes);
         writer.writeText("\n", table, null);
 
@@ -123,8 +122,10 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
 
         UIComponent caption = getFacet(table, "caption");
         if (caption != null) {
-            String captionClass = (String) table.getAttributes().get("captionClass");
-            String captionStyle = (String) table.getAttributes().get("captionStyle");
+            String captionClass = table instanceof HtmlDataTable t ? t.getCaptionClass()
+                    : table instanceof HtmlPanelGrid g ? g.getCaptionClass() : (String) table.getAttributes().get("captionClass");
+            String captionStyle = table instanceof HtmlDataTable t ? t.getCaptionStyle()
+                    : table instanceof HtmlPanelGrid g ? g.getCaptionStyle() : (String) table.getAttributes().get("captionStyle");
             writer.startElement("caption", table);
             if (captionClass != null) {
                 writer.writeAttribute("class", captionClass, "captionClass");
@@ -184,7 +185,8 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
         writer.startElement("tr", table);
 
         final String tableRowClass = info.rowClasses.length > 0 ? info.getCurrentRowClass() : null;
-        final String rowClass = (String) table.getAttributes().get("rowClass");
+        final String rowClass = table instanceof HtmlDataTable t ? t.getRowClass()
+                : table instanceof HtmlPanelGrid g ? g.getRowClass() : (String) table.getAttributes().get("rowClass");
 
         if (tableRowClass != null) {
             if (rowClass != null) {
@@ -347,7 +349,8 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
          */
         private static String[] getColumnClasses(UIComponent table) {
 
-            String values = (String) table.getAttributes().get("columnClasses");
+            String values = table instanceof HtmlDataTable t ? t.getColumnClasses()
+                    : table instanceof HtmlPanelGrid g ? g.getColumnClasses() : (String) table.getAttributes().get("columnClasses");
             if (values == null) {
                 return EMPTY_STRING_ARRAY;
             }
@@ -383,11 +386,11 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
                 }
             } else {
                 int count;
-                Object value = table.getAttributes().get("columns");
-                if (value != null && value instanceof Integer) {
-                    count = (Integer) value;
+                if (table instanceof HtmlPanelGrid g) {
+                    count = g.getColumns();
                 } else {
-                    count = 2;
+                    Object value = table.getAttributes().get("columns");
+                    count = value instanceof Integer integer ? integer : 2;
                 }
                 if (count < 1) {
                     count = 1;
@@ -439,7 +442,8 @@ public abstract class BaseTableRenderer extends HtmlBasicRenderer {
          */
         private static String[] getRowClasses(UIComponent table) {
 
-            String values = (String) table.getAttributes().get("rowClasses");
+            String values = table instanceof HtmlDataTable t ? t.getRowClasses()
+                    : table instanceof HtmlPanelGrid g ? g.getRowClasses() : (String) table.getAttributes().get("rowClasses");
             if (values == null) {
                 return EMPTY_STRING_ARRAY;
             }
