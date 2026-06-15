@@ -23,6 +23,7 @@ import java.util.Iterator;
 
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlMessages;
 import jakarta.faces.component.UIMessages;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
@@ -98,10 +99,11 @@ public class MessagesRenderer extends HtmlBasicRenderer {
             return;
         }
 
-        String layout = (String) component.getAttributes().get("layout");
+        HtmlMessages htmlMessages = component instanceof HtmlMessages ? (HtmlMessages) component : null;
+        String layout = htmlMessages != null ? htmlMessages.getLayout()
+                : (String) component.getAttributes().get("layout");
         boolean showSummary = messages.isShowSummary();
         boolean showDetail = messages.isShowDetail();
-        String styleClass = (String) component.getAttributes().get("styleClass");
 
         boolean wroteTable = false;
 
@@ -117,9 +119,7 @@ public class MessagesRenderer extends HtmlBasicRenderer {
 
         // Render "table" or "ul" level attributes.
         writeIdAttributeIfNecessary(context, writer, component);
-        if (null != styleClass) {
-            writer.writeAttribute("class", styleClass, "styleClass");
-        }
+        writeStyleClassAttributeIfNecessary(writer, component);
         // style is rendered as a passthru attribute
         RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES);
 
@@ -157,16 +157,15 @@ public class MessagesRenderer extends HtmlBasicRenderer {
                 writer.writeAttribute("style", severityStyle, "style");
             }
             if (severityStyleClass != null) {
-                styleClass = severityStyleClass;
-                writer.writeAttribute("class", styleClass, "styleClass");
+                writer.writeAttribute("class", severityStyleClass, "styleClass");
             }
 
             if (wroteTable) {
                 writer.startElement("td", component);
             }
 
-            Object val = component.getAttributes().get("tooltip");
-            boolean isTooltip = val != null && Boolean.valueOf(val.toString());
+            boolean isTooltip = htmlMessages != null ? htmlMessages.isTooltip()
+                    : RenderKitUtils.attributeIsTrue(component, "tooltip", false);
 
             boolean wroteTooltip = false;
             if (isTooltip) {

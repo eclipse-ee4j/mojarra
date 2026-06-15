@@ -26,6 +26,7 @@ import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIMessage;
 import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.html.HtmlMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
@@ -124,6 +125,7 @@ public class MessageRenderer extends HtmlBasicRenderer {
         }
         curMessage.rendered();
 
+        HtmlMessage htmlMessage = component instanceof HtmlMessage ? (HtmlMessage) component : null;
         String severityStyle = null;
         String severityStyleClass = null;
         boolean showSummary = message.isShowSummary();
@@ -143,7 +145,7 @@ public class MessageRenderer extends HtmlBasicRenderer {
 
         List<String> setAttributes = RenderKitUtils.getAttributesThatAreSet(component);
         String style = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "style");
-        String styleClass = (String) component.getAttributes().get("styleClass");
+        String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
         String dir = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "dir");
         String lang = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "lang");
         String title = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "title");
@@ -196,8 +198,8 @@ public class MessageRenderer extends HtmlBasicRenderer {
 
         }
 
-        Object val = component.getAttributes().get("tooltip");
-        boolean isTooltip = val != null && Boolean.valueOf(val.toString());
+        boolean isTooltip = htmlMessage != null ? htmlMessage.isTooltip()
+                : RenderKitUtils.attributeIsTrue(component, "tooltip", false);
 
         boolean wroteTooltip = false;
         if ((showSummary || showDetail) && isTooltip) {

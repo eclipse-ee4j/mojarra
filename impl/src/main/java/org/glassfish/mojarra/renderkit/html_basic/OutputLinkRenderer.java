@@ -27,6 +27,7 @@ import java.net.URLEncoder;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.html.HtmlOutputLink;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
@@ -60,12 +61,8 @@ public class OutputLinkRenderer extends LinkRenderer {
         rendererParamsNotNull(context, component);
 
         UIOutput output = (UIOutput) component;
-        boolean componentDisabled = false;
-        if (output.getAttributes().get("disabled") != null) {
-            if (output.getAttributes().get("disabled").equals(Boolean.TRUE)) {
-                componentDisabled = true;
-            }
-        }
+        boolean componentDisabled = output instanceof HtmlOutputLink link ? link.isDisabled()
+                : componentIsDisabled(output);
         if (componentDisabled) {
             renderAsDisabled(context, output);
         } else {
@@ -101,7 +98,7 @@ public class OutputLinkRenderer extends LinkRenderer {
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
 
-        if (Boolean.TRUE.equals(component.getAttributes().get("disabled"))) {
+        if (component instanceof HtmlOutputLink link ? link.isDisabled() : componentIsDisabled(component)) {
             writer.endElement("span");
         } else {
             // Write Anchor inline elements
@@ -121,7 +118,8 @@ public class OutputLinkRenderer extends LinkRenderer {
 
     protected String getFragment(UIComponent component) {
 
-        String fragment = (String) component.getAttributes().get("fragment");
+        String fragment = component instanceof HtmlOutputLink link ? link.getFragment()
+                : (String) component.getAttributes().get("fragment");
         fragment = fragment != null ? fragment.trim() : "";
         if (fragment.length() > 0) {
             fragment = "#" + fragment;
@@ -132,7 +130,7 @@ public class OutputLinkRenderer extends LinkRenderer {
 
     @Override
     protected Object getValue(UIComponent component) {
-        if (componentIsDisabled(component)) {
+        if (component instanceof HtmlOutputLink link ? link.isDisabled() : componentIsDisabled(component)) {
             return null;
         }
 

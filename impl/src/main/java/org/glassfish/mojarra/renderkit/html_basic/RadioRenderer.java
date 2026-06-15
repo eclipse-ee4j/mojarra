@@ -34,6 +34,7 @@ import java.util.logging.Level;
 import jakarta.el.ELException;
 import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlSelectOneRadio;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.UISelectItem;
 import jakarta.faces.component.UISelectOne;
@@ -178,7 +179,7 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
         Object itemValue = currentItem.getValue();
         Converter<?> converter = radio.getConverter();
         boolean checked = isChecked(context, radio, itemValue);
-        boolean disabled = Util.componentIsDisabled(radio);
+        boolean disabled = radio instanceof HtmlSelectOneRadio htmlRadio ? htmlRadio.isDisabled() : Util.componentIsDisabled(radio);
 
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
@@ -296,15 +297,8 @@ public class RadioRenderer extends SelectManyCheckboxListRenderer implements Com
             writer.writeAttribute("id", clientId, "id");
             writer.writeAttribute("value", clientId + UINamingContainer.getSeparatorChar(context) + value, "value");
 
-            String styleClass = (String) component.getAttributes().get("styleClass");
-            if (styleClass != null) {
-                writer.writeAttribute("class", styleClass, "class");
-            }
-
-            String style = (String) RenderKitUtils.getAttributeIfSet(component, "style");
-            if (style != null) {
-                writer.writeAttribute("style", style, "style");
-            }
+            writeStyleClassAttributeIfNecessary(writer, component);
+            writeStyleAttributeIfNecessary(writer, component);
         }
 
         if (disabled) {

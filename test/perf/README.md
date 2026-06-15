@@ -157,7 +157,6 @@ applicable, its MyFaces equivalent (the other implementation ignores the foreign
 | `-Dwebapp.stateSavingMethod`     | `server` | `jakarta.faces.STATE_SAVING_METHOD`    | *(same)* |
 | `-Dwebapp.serializeServerState`  | `false`  | `jakarta.faces.SERIALIZE_SERVER_STATE` | *(same)* |
 | `-Dwebapp.compressViewState`     | `true`   | `org.glassfish.mojarra.compressViewState`    | `org.apache.myfaces.COMPRESS_STATE_IN_SESSION` |
-| `-Dwebapp.numberOfViewsInSession`| `15`     | `org.glassfish.mojarra.numberOfLogicalViews` | `org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION` |
 
 ```
 mvn clean verify -Dperf=true -Dwebapp.stateSavingMethod=client -Dwebapp.numberOfViewsInSession=10

@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
+import jakarta.faces.component.html.HtmlInputSecret;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
@@ -55,8 +56,9 @@ public class SecretRenderer extends HtmlBasicInputRenderer {
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
 
-        String redisplay = String.valueOf(component.getAttributes().get("redisplay"));
-        if (redisplay == null || !redisplay.equals("true")) {
+        boolean redisplay = component instanceof HtmlInputSecret secret ? secret.isRedisplay()
+                : RenderKitUtils.attributeIsTrue(component, "redisplay", false);
+        if (!redisplay) {
             currentValue = "";
         }
 
@@ -65,7 +67,8 @@ public class SecretRenderer extends HtmlBasicInputRenderer {
         writer.writeAttribute("type", "password", "type");
         writer.writeAttribute("name", component.getClientId(context), "clientId");
 
-        String autoComplete = (String) component.getAttributes().get("autocomplete");
+        String autoComplete = component instanceof HtmlInputSecret secret ? secret.getAutocomplete()
+                : (String) component.getAttributes().get("autocomplete");
         if (autoComplete != null) {
             // only output the autocomplete attribute if the value
             // is 'off' since its lack of presence will be interpreted
@@ -83,10 +86,7 @@ public class SecretRenderer extends HtmlBasicInputRenderer {
         RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, ATTRIBUTES, HtmlDocumentElementEvent.change, FacesComponentEvent.valueChange);
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
-        String styleClass;
-        if (null != (styleClass = (String) component.getAttributes().get("styleClass"))) {
-            writer.writeAttribute("class", styleClass, "styleClass");
-        }
+        writeStyleClassAttributeIfNecessary(writer, component);
 
         writer.endElement("input");
 

@@ -61,6 +61,7 @@ import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.ConverterException;
 import jakarta.faces.render.Renderer;
 
+import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.MessageUtils;
 import org.glassfish.mojarra.util.Util;
@@ -634,9 +635,17 @@ public abstract class HtmlBasicRenderer extends Renderer<UIComponent> {
 
     protected void writeStyleClassAttributeIfNecessary(ResponseWriter writer, UIComponent component) throws IOException {
 
-        String styleClass = (String) component.getAttributes().get("styleClass");
+        String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
         if (styleClass != null) {
             writer.writeAttribute("class", styleClass, "styleClass");
+        }
+    }
+
+    protected void writeStyleAttributeIfNecessary(ResponseWriter writer, UIComponent component) throws IOException {
+
+        String style = (String) RenderKitUtils.getAttributeIfSet(component, "style");
+        if (style != null) {
+            writer.writeAttribute("style", style, "style");
         }
     }
 

@@ -830,19 +830,27 @@ public class Util {
     }
 
     public static boolean componentIsDisabled(UIComponent component) {
-        return attributeIsTrue(component, "disabled");
+        return toBoolean(component.getAttributes().get("disabled"), false);
     }
 
     public static boolean componentIsDisabledOrReadonly(UIComponent component) {
-        return attributeIsTrue(component, "disabled") || attributeIsTrue(component, "readonly");
+        return componentIsDisabled(component) || toBoolean(component.getAttributes().get("readonly"), false);
     }
 
-    // disabled/readonly are declared boolean properties on the HTML components these helpers run against, so the
-    // attribute value is always a Boolean (the Facelets boolean MetaRule coerces literals/EL before storing; a String
-    // cannot be written through a boolean setter). Read it directly, mirroring UIComponent.isRendered(), rather than
-    // routing through the String.valueOf()/parseBoolean() coercion the absent String case never needs.
-    private static boolean attributeIsTrue(UIComponent component, String name) {
-        return Boolean.TRUE.equals(component.getAttributes().get(name));
+    /**
+     * Coerces a boolean-attribute value to {@code boolean} without the {@code Boolean -> String -> boolean} round-trip
+     * on the common path: an absent value yields {@code defaultValue}, an already-{@code Boolean} value is returned
+     * directly, and only a non-{@code Boolean} (e.g. a literal String set on a non-typed component) is parsed. Prefer
+     * the typed getter via {@code instanceof} where the concrete {@code Html*} type is known; use this for the fallback.
+     */
+    public static boolean toBoolean(Object value, boolean defaultValue) {
+        if (value == null) {
+            return defaultValue;
+        }
+        if (value instanceof Boolean bool) {
+            return bool;
+        }
+        return Boolean.parseBoolean(value.toString());
     }
 
     // W3C XML specification refers to IETF RFC 1766 for language code

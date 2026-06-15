@@ -1346,7 +1346,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         public boolean isRequired(FacesContext ctx) {
 
             ValueExpression rd = (ValueExpression) propertyDescriptor.getValue("required");
-            return rd != null ? Boolean.valueOf(rd.getValue(ctx.getELContext()).toString()) : false;
+            return rd != null && Util.toBoolean(rd.getValue(ctx.getELContext()), false);
 
         }
 

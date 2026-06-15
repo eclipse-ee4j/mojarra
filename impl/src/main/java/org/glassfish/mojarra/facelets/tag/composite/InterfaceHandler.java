@@ -41,6 +41,7 @@ import org.glassfish.mojarra.application.view.FaceletViewHandlingStrategy;
 import org.glassfish.mojarra.facelets.tag.TagHandlerImpl;
 import org.glassfish.mojarra.facelets.tag.faces.ComponentSupport;
 import org.glassfish.mojarra.util.MessageUtils;
+import org.glassfish.mojarra.util.Util;
 
 public class InterfaceHandler extends TagHandlerImpl {
 
@@ -101,7 +102,7 @@ public class InterfaceHandler extends TagHandlerImpl {
             if (null != requiredValue) {
                 if (requiredValue instanceof ValueExpression) {
                     requiredValue = ((ValueExpression) requiredValue).getValue(context.getELContext());
-                    required = Boolean.parseBoolean(requiredValue.toString());
+                    required = Util.toBoolean(requiredValue, false);
                 }
             }
             if (required) {
@@ -146,7 +147,7 @@ public class InterfaceHandler extends TagHandlerImpl {
                 if (null != requiredValue) {
                     if (requiredValue instanceof ValueExpression) {
                         requiredValue = ((ValueExpression) requiredValue).getValue(context.getELContext());
-                        required = Boolean.parseBoolean(requiredValue.toString());
+                        required = Util.toBoolean(requiredValue, false);
                     }
                 }
                 if (required) {

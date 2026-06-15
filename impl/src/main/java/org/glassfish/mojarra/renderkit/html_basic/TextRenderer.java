@@ -32,6 +32,7 @@ import jakarta.faces.component.UIOutput;
 import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
 import jakarta.faces.component.html.HtmlInputFile;
 import jakarta.faces.component.html.HtmlInputText;
+import jakarta.faces.component.html.HtmlOutputText;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
@@ -93,7 +94,7 @@ public class TextRenderer extends HtmlBasicInputRenderer {
 
         List<String> setAttributes = RenderKitUtils.getAttributesThatAreSet(component);
         String style = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "style");
-        String styleClass = (String) component.getAttributes().get("styleClass");
+        String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
         String dir = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "dir");
         String lang = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "lang");
         String title = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "title");
@@ -131,7 +132,8 @@ public class TextRenderer extends HtmlBasicInputRenderer {
             // only output the autocomplete attribute if the value
             // is 'off' since its lack of presence will be interpreted
             // as 'on' by the browser
-            if ("off".equals(component.getAttributes().get("autocomplete"))) {
+            if (component instanceof HtmlInputText text ? "off".equals(text.getAutocomplete())
+                    : "off".equals(component.getAttributes().get("autocomplete"))) {
                 writer.writeAttribute("autocomplete", "off", "autocomplete");
             }
 
@@ -165,8 +167,8 @@ public class TextRenderer extends HtmlBasicInputRenderer {
 
             }
             if (currentValue != null) {
-                Object val = component.getAttributes().get("escape");
-                if (val != null && Boolean.valueOf(val.toString())) {
+                if (component instanceof HtmlOutputText text ? text.isEscape()
+                        : RenderKitUtils.attributeIsTrue(component, "escape", false)) {
                     writer.writeText(currentValue, component, "value");
                 } else {
                     writer.write(currentValue);

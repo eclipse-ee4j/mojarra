@@ -35,6 +35,8 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.model.SelectItem;
 import jakarta.faces.model.SelectItemGroup;
 
+import org.glassfish.mojarra.util.Util;
+
 /**
  * <p>
  * Package private class for iterating over the set of {@link SelectItem}s for a parent {@link UISelectMany} or
@@ -461,10 +463,10 @@ public final class SelectItemsIterator<T extends SelectItem> implements Iterator
                     setValue(itemValueResult != null ? itemValueResult : value);
                     setLabel(itemLabelResult != null ? itemLabelResult.toString() : value.toString());
                     setDescription(itemDescriptionResult != null ? itemDescriptionResult.toString() : null);
-                    setEscape(itemEscapedResult != null ? Boolean.valueOf(itemEscapedResult.toString()) : true);
-                    setDisabled(itemDisabledResult != null ? Boolean.valueOf(itemDisabledResult.toString()) : false);
+                    setEscape(Util.toBoolean(itemEscapedResult, true));
+                    setDisabled(Util.toBoolean(itemDisabledResult, false));
                     if (null != noSelectionOptionResult) {
-                        setNoSelectionOption(Boolean.valueOf(noSelectionOptionResult.toString()));
+                        setNoSelectionOption(Util.toBoolean(noSelectionOptionResult, false));
                     } else if (null != noSelectionValueResult) {
                         setNoSelectionOption(getValue().equals(noSelectionValueResult));
                     }
