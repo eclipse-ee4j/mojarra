@@ -30,6 +30,10 @@ import jakarta.faces.application.Application;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.component.ValueHolder;
+import jakarta.faces.component.html.HtmlInputFile;
+import jakarta.faces.component.html.HtmlInputSecret;
+import jakarta.faces.component.html.HtmlInputText;
+import jakarta.faces.component.html.HtmlInputTextarea;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.ConverterException;
@@ -45,6 +49,23 @@ public abstract class HtmlBasicInputRenderer extends HtmlBasicRenderer {
     private boolean hasStringConverterSet = false;
 
     // ---------------------------------------------------------- Public Methods
+
+    @Override
+    protected boolean isDisabledOrReadonly(UIComponent component) {
+        if (component instanceof HtmlInputText input) {
+            return input.isDisabled() || input.isReadonly();
+        }
+        if (component instanceof HtmlInputTextarea input) {
+            return input.isDisabled() || input.isReadonly();
+        }
+        if (component instanceof HtmlInputSecret input) {
+            return input.isDisabled() || input.isReadonly();
+        }
+        if (component instanceof HtmlInputFile input) {
+            return input.isDisabled() || input.isReadonly();
+        }
+        return super.isDisabledOrReadonly(component);
+    }
 
     @Override
     public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue) throws ConverterException {
