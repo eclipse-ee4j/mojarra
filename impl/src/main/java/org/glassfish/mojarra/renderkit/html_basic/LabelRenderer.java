@@ -25,8 +25,8 @@ import java.util.logging.Level;
 
 import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.html.HtmlOutputLabel;
 import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.component.html.HtmlOutputLabel;
 import jakarta.faces.component.search.SearchExpressionContext;
 import jakarta.faces.component.search.SearchExpressionHint;
 import jakarta.faces.context.FacesContext;

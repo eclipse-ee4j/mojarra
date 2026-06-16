@@ -25,8 +25,8 @@ import java.util.Collections;
 import java.util.List;
 
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.html.HtmlOutputFormat;
 import jakarta.faces.component.UIParameter;
+import jakarta.faces.component.html.HtmlOutputFormat;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 

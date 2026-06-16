@@ -18,6 +18,8 @@
 
 package org.glassfish.mojarra.renderkit.html_basic;
 
+import static org.glassfish.mojarra.util.Util.componentIsDisabled;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
@@ -25,15 +27,13 @@ import java.util.logging.Level;
 
 import jakarta.faces.component.UICommand;
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.html.HtmlCommandLink;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
+import jakarta.faces.component.html.HtmlCommandLink;
 import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
-
-import static org.glassfish.mojarra.util.Util.componentIsDisabled;
 
 import org.glassfish.mojarra.renderkit.Attribute;
 import org.glassfish.mojarra.renderkit.AttributeManager;

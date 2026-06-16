@@ -23,8 +23,8 @@ import java.util.Iterator;
 
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.html.HtmlMessages;
 import jakarta.faces.component.UIMessages;
+import jakarta.faces.component.html.HtmlMessages;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 

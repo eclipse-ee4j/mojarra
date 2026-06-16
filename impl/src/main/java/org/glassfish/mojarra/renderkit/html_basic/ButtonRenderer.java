@@ -25,9 +25,10 @@ import java.util.logging.Level;
 
 import jakarta.faces.component.UICommand;
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.html.HtmlCommandButton;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
+import jakarta.faces.component.html.HtmlCommandButton;
 import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
+import jakarta.faces.component.html.HtmlOutcomeTargetButton;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.ActionEvent;
@@ -47,6 +48,17 @@ public class ButtonRenderer extends HtmlBasicRenderer {
     private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.COMMANDBUTTON);
 
     // ---------------------------------------------------------- Public Methods
+
+    @Override
+    protected boolean isDisabledOrReadonly(UIComponent component) {
+        if (component instanceof HtmlCommandButton button) {
+            return button.isDisabled() || button.isReadonly();
+        }
+        if (component instanceof  HtmlOutcomeTargetButton button) {
+        	return button.isDisabled();
+        }
+        return super.isDisabledOrReadonly(component);
+    }
 
     @Override
     public void decode(FacesContext context, UIComponent component) {

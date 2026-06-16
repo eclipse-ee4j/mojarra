@@ -25,10 +25,10 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.html.HtmlSelectManyCheckbox;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.ValueHolder;
 import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
+import jakarta.faces.component.html.HtmlSelectManyCheckbox;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.convert.Converter;
