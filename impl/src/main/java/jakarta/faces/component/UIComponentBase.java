@@ -2304,8 +2304,15 @@ public abstract class UIComponentBase extends UIComponent {
                 throw new NullPointerException();
             }
 
-            // Keep the field cache in sync; the value is still stored in the attributes map below.
+            // markerPut keeps the field cache in sync for framework markers. Persistent markers (MARK_CREATED etc.)
+            // are still mirrored into the attributes map below so full-state restore can read them back. MARK_DELETED
+            // is a transient build-time flag (markForDeletion/finalizeForDeletion set and clear it on every component
+            // each refresh) that is never present when state is saved, so it stays field-only to avoid per-component
+            // StateHelper traffic.
             boolean marker = component.markerPut(keyValue, value);
+            if (marker && MARK_DELETED.equals(keyValue)) {
+                return null;
+            }
 
             if (ATTRIBUTES_THAT_ARE_SET_KEY.equals(keyValue)) {
                 if (component.attributesThatAreSet == null) {
@@ -2384,6 +2391,9 @@ public abstract class UIComponentBase extends UIComponent {
                 throw new NullPointerException();
             }
             boolean marker = component.markerRemove(key);
+            if (marker && MARK_DELETED.equals(key)) {
+                return null;
+            }
             if (ATTRIBUTES_THAT_ARE_SET_KEY.equals(key)) {
                 return null;
             }
