@@ -26,6 +26,9 @@ import com.sun.faces.renderkit.AttributeManager;
 import com.sun.faces.renderkit.RenderKitUtils;
 
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlCommandLink;
+import jakarta.faces.component.html.HtmlOutcomeTargetLink;
+import jakarta.faces.component.html.HtmlOutputLink;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
@@ -41,6 +44,20 @@ public abstract class LinkRenderer extends HtmlBasicRenderer {
 
     protected abstract void renderAsActive(FacesContext context, UIComponent component) throws IOException;
 
+    @Override
+    protected boolean isDisabledOrReadonly(UIComponent component) {
+    	if (component instanceof HtmlOutputLink link) {
+    		return link.isDisabled();
+    	}
+    	if (component instanceof HtmlCommandLink link) {
+    		return link.isDisabled();
+    	}
+    	if (component instanceof HtmlOutcomeTargetLink link) {
+    		return link.isDisabled();
+    	}
+    	return super.isDisabledOrReadonly(component);
+    }
+    
     protected void renderAsDisabled(FacesContext context, UIComponent component) throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
