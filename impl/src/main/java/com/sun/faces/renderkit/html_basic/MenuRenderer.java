@@ -67,8 +67,12 @@ import jakarta.faces.component.UISelectItems;
 import jakarta.faces.component.UISelectMany;
 import jakarta.faces.component.UISelectOne;
 import jakarta.faces.component.ValueHolder;
+import jakarta.faces.component.html.HtmlSelectManyCheckbox;
 import jakarta.faces.component.html.HtmlSelectManyListbox;
+import jakarta.faces.component.html.HtmlSelectManyMenu;
 import jakarta.faces.component.html.HtmlSelectOneListbox;
+import jakarta.faces.component.html.HtmlSelectOneMenu;
+import jakarta.faces.component.html.HtmlSelectOneRadio;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.convert.Converter;
@@ -96,6 +100,37 @@ public class MenuRenderer extends HtmlBasicInputRenderer {
     private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.SELECTMANYMENU);
 
     // ---------------------------------------------------------- Public Methods
+
+    // Typed disabled/readonly read for the whole select family this renderer (and its Listbox/SelectManyCheckbox/Radio
+    // subclasses) handles, avoiding the reflective attributes-map lookup on the decode path.
+    @Override
+    protected boolean isDisabledOrReadonly(UIComponent component) {
+        if (component instanceof HtmlSelectOneMenu) {
+            HtmlSelectOneMenu select = (HtmlSelectOneMenu) component;
+            return select.isDisabled() || select.isReadonly();
+        }
+        if (component instanceof HtmlSelectManyMenu) {
+            HtmlSelectManyMenu select = (HtmlSelectManyMenu) component;
+            return select.isDisabled() || select.isReadonly();
+        }
+        if (component instanceof HtmlSelectOneListbox) {
+            HtmlSelectOneListbox select = (HtmlSelectOneListbox) component;
+            return select.isDisabled() || select.isReadonly();
+        }
+        if (component instanceof HtmlSelectManyListbox) {
+            HtmlSelectManyListbox select = (HtmlSelectManyListbox) component;
+            return select.isDisabled() || select.isReadonly();
+        }
+        if (component instanceof HtmlSelectManyCheckbox) {
+            HtmlSelectManyCheckbox select = (HtmlSelectManyCheckbox) component;
+            return select.isDisabled() || select.isReadonly();
+        }
+        if (component instanceof HtmlSelectOneRadio) {
+            HtmlSelectOneRadio select = (HtmlSelectOneRadio) component;
+            return select.isDisabled() || select.isReadonly();
+        }
+        return super.isDisabledOrReadonly(component);
+    }
 
     public Object convertSelectManyValue(FacesContext context, UISelectMany uiSelectMany, String[] newValues) throws ConverterException {
 

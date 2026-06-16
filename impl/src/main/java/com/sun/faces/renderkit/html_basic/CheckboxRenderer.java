@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlSelectBooleanCheckbox;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.convert.ConverterException;
@@ -40,6 +41,15 @@ public class CheckboxRenderer extends HtmlBasicInputRenderer {
     private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.SELECTBOOLEANCHECKBOX);
 
     // ---------------------------------------------------------- Public Methods
+
+    @Override
+    protected boolean isDisabledOrReadonly(UIComponent component) {
+        if (component instanceof HtmlSelectBooleanCheckbox) {
+            HtmlSelectBooleanCheckbox checkbox = (HtmlSelectBooleanCheckbox) component;
+            return checkbox.isDisabled() || checkbox.isReadonly();
+        }
+        return super.isDisabledOrReadonly(component);
+    }
 
     @Override
     public void decode(FacesContext context, UIComponent component) {
