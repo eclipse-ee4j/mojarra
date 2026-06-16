@@ -233,6 +233,19 @@ public abstract class UIComponentBase extends UIComponent {
     private transient boolean rendererTypeSet;
 
     /**
+     * Encode-scoped cache of {@link #isRendered()}. Within a single component encode the renderer's
+     * {@code shouldEncode}, {@code encodeChildren} and {@code encodeEnd} all re-consult {@code isRendered()},
+     * each otherwise re-reading {@code rendered} from the StateHelper. {@link #encodeBegin} computes it once and
+     * holds it here for the {@code encodeBegin}..{@code encodeEnd} window (covering both the {@code encodeAll} and
+     * renderer {@code encodeRecursive} paths, which both flow through those methods); {@link #encodeEnd} clears it.
+     * {@code rendered} cannot change mid-encode, so the cached value is authoritative for that window. It is
+     * recomputed fresh on every {@code encodeBegin}, so an encode that aborts before {@code encodeEnd} cannot leave
+     * a stale value in effect. {@code null} means "not currently encoding" — reads fall through to the StateHelper.
+     * Transient: never part of view state.
+     */
+    private transient Boolean cachedIsRendered;
+
+    /**
      * The <code>List</code> containing our child components.
      */
     private List<UIComponent> children;
@@ -385,6 +398,9 @@ public abstract class UIComponentBase extends UIComponent {
 
     @Override
     public boolean isRendered() {
+        if (cachedIsRendered != null) {
+            return cachedIsRendered;
+        }
         return (Boolean) getStateHelper().eval(PropertyKeys.rendered, TRUE);
     }
 
@@ -605,7 +621,11 @@ public abstract class UIComponentBase extends UIComponent {
 
         pushComponentToEL(context, null);
 
-        if (!isRendered()) {
+        // Memoize rendered for this component's encode pass: the renderer's shouldEncode, encodeChildren and
+        // encodeEnd re-consult isRendered() and would otherwise re-read the StateHelper each time. Recomputed fresh
+        // here (rather than relying on a prior clear) so an encode that aborted before encodeEnd leaves no stale value.
+        cachedIsRendered = isRendered();
+        if (!cachedIsRendered) {
             return;
         }
 
@@ -662,21 +682,26 @@ public abstract class UIComponentBase extends UIComponent {
             throw new NullPointerException();
         }
 
-        if (!isRendered()) {
-            popComponentFromEL(context);
-            return;
-        }
-
-        if (getRendererType() != null) {
-            Renderer renderer = getRenderer(context);
-            if (renderer != null) {
-                renderer.encodeEnd(context, this);
+        try {
+            if (!isRendered()) {
+                popComponentFromEL(context);
+                return;
             }
 
-            // We've already logged for this component
-        }
+            if (getRendererType() != null) {
+                Renderer renderer = getRenderer(context);
+                if (renderer != null) {
+                    renderer.encodeEnd(context, this);
+                }
 
-        popComponentFromEL(context);
+                // We've already logged for this component
+            }
+
+            popComponentFromEL(context);
+        } finally {
+            // End of the encode pass opened by encodeBegin: drop the memoized rendered value.
+            cachedIsRendered = null;
+        }
     }
 
     // -------------------------------------------------- Event Listener Methods
@@ -2303,8 +2328,15 @@ public abstract class UIComponentBase extends UIComponent {
                 throw new NullPointerException();
             }
 
-            // Keep the field cache in sync; the value is still stored in the attributes map below.
+            // markerPut keeps the field cache in sync for framework markers. Persistent markers (MARK_CREATED etc.)
+            // are still mirrored into the attributes map below so full-state restore can read them back. MARK_DELETED
+            // is a transient build-time flag (markForDeletion/finalizeForDeletion set and clear it on every component
+            // each refresh) that is never present when state is saved, so it stays field-only to avoid per-component
+            // StateHelper traffic.
             boolean marker = component.markerPut(keyValue, value);
+            if (marker && MARK_DELETED.equals(keyValue)) {
+                return null;
+            }
 
             if (ATTRIBUTES_THAT_ARE_SET_KEY.equals(keyValue)) {
                 if (component.attributesThatAreSet == null) {
@@ -2383,6 +2415,9 @@ public abstract class UIComponentBase extends UIComponent {
                 throw new NullPointerException();
             }
             boolean marker = component.markerRemove(key);
+            if (marker && MARK_DELETED.equals(key)) {
+                return null;
+            }
             if (ATTRIBUTES_THAT_ARE_SET_KEY.equals(key)) {
                 return null;
             }
