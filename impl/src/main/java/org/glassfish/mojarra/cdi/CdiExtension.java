@@ -30,6 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,12 +45,14 @@ import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import jakarta.enterprise.inject.spi.ProcessBean;
 import jakarta.enterprise.inject.spi.ProcessManagedBean;
+import jakarta.enterprise.inject.spi.ProcessObserverMethod;
 import jakarta.enterprise.inject.spi.WithAnnotations;
 import jakarta.faces.annotation.ManagedProperty;
 import jakarta.faces.component.FacesComponent;
 import jakarta.faces.component.behavior.FacesBehavior;
 import jakarta.faces.convert.FacesConverter;
 import jakarta.faces.event.NamedEvent;
+import jakarta.faces.event.SystemEvent;
 import jakarta.faces.model.DataModel;
 import jakarta.faces.model.FacesDataModel;
 import jakarta.faces.render.FacesBehaviorRenderer;
@@ -93,6 +96,13 @@ public class CdiExtension implements Extension {
      * Map of {@code @ManagedProperty} target types
      */
     private final Set<Type> managedPropertyTargetTypes = new HashSet<>();
+
+    /**
+     * Observed types of every CDI observer that observes a Faces {@link SystemEvent} (sub)type. Lets
+     * {@code Events#publishEvent} skip the per-component CDI event dispatch when no observer can receive a
+     * given system event (the common case — see {@link #processSystemEventObserver(ProcessObserverMethod)}).
+     */
+    private final Set<Class<?>> observedSystemEventTypes = ConcurrentHashMap.newKeySet();
 
     /**
      * Stores the logger.
@@ -203,6 +213,30 @@ public class CdiExtension implements Extension {
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.warning("Exception happened during processManagedBean: " + e);
             }
+        }
+    }
+
+    /**
+     * ProcessObserverMethod:
+     * <ul>
+     * <li>record the observed type of every observer that observes a Faces {@link SystemEvent} (sub)type
+     * </ul>
+     * <p>
+     * Faces publishes system events per component per phase (Pre/PostValidateEvent, PostAddToViewEvent,
+     * PreRenderComponentEvent, ...), each of which is also dispatched as a CDI event. Collecting the observed
+     * types here lets {@code Events#publishEvent} skip that dispatch entirely for event types no observer
+     * listens to. Observers must observe a {@code SystemEvent} (sub)type to receive Faces system events as CDI
+     * events, which is the contract of the feature.
+     *
+     * @param <T> the observed system event type
+     * @param event the process observer method event
+     */
+    public <T extends SystemEvent> void processSystemEventObserver(@Observes ProcessObserverMethod<T, ?> event) {
+        Type observedType = event.getObserverMethod().getObservedType();
+        if (observedType instanceof Class<?> observedClass) {
+            observedSystemEventTypes.add(observedClass);
+        } else if (observedType instanceof ParameterizedType parameterizedType && parameterizedType.getRawType() instanceof Class<?> rawClass) {
+            observedSystemEventTypes.add(rawClass);
         }
     }
 
@@ -338,5 +372,14 @@ public class CdiExtension implements Extension {
      */
     public Map<Class<? extends Annotation>, Set<Class<?>>> getAnnotatedClasses() {
         return annotatedClasses;
+    }
+
+    /**
+     * Gets the observed types of all CDI observers that observe a Faces {@link SystemEvent} (sub)type.
+     *
+     * @return the observed Faces system event types, empty when the application defines no such observer
+     */
+    public Set<Class<?>> getObservedSystemEventTypes() {
+        return observedSystemEventTypes;
     }
 }
