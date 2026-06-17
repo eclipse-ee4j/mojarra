@@ -3484,80 +3484,81 @@ public abstract class UIComponentBase extends UIComponent {
 
     }
 
-    private static final String COMPONENT_DESCRIPTORS_MAP_KEY = "com.sun.faces.component.COMPONENT_DESCRIPTORS_MAP";
+    private static final String COMPONENT_METADATA_MAP_KEY = "com.sun.faces.component.COMPONENT_METADATA_MAP";
 
-    private static final String COMPONENT_READ_METHODS_MAP_KEY = "com.sun.faces.component.COMPONENT_READ_METHODS_MAP";
+    /**
+     * Application-scoped per-class reflective metadata, composed into a single value so the per-construction
+     * {@link #populateDescriptorsMapIfNecessary} does one application-map lookup and one per-class lookup rather than
+     * three of each. The three maps are always produced and cached together, so bundling them is behaviour-equivalent.
+     */
+    private static final class ComponentMetadata {
+        private final Map<String, PropertyDescriptor> propertyDescriptors;
+        private final Map<String, Method> readMethods;
+        private final Map<String, Method> writeMethods;
 
-    private static final String COMPONENT_WRITE_METHODS_MAP_KEY = "com.sun.faces.component.COMPONENT_WRITE_METHODS_MAP";
+        private ComponentMetadata(Map<String, PropertyDescriptor> propertyDescriptors, Map<String, Method> readMethods, Map<String, Method> writeMethods) {
+            this.propertyDescriptors = propertyDescriptors;
+            this.readMethods = readMethods;
+            this.writeMethods = writeMethods;
+        }
+    }
 
     @SuppressWarnings("unchecked")
     private void populateDescriptorsMapIfNecessary() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Class<?> clazz = getClass();
-        Map<Class<?>, Map<String, PropertyDescriptor>> descriptors = null;
-        Map<Class<?>, Map<String, Method>> readMethods = null;
-        Map<Class<?>, Map<String, Method>> writeMethods = null;
+        Map<Class<?>, ComponentMetadata> metadataByClass = null;
 
         /*
-         * If we can find a valid FacesContext we are going to use it to get access to the property descriptor map.
+         * If we can find a valid FacesContext we are going to use it to get access to the metadata cache.
          */
         if (facesContext != null && facesContext.getExternalContext() != null && facesContext.getExternalContext().getApplicationMap() != null) {
 
             Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
 
-            descriptors = (Map<Class<?>, Map<String, PropertyDescriptor>>) applicationMap.computeIfAbsent(
-                    COMPONENT_DESCRIPTORS_MAP_KEY, k -> new ConcurrentHashMap<>());
-            propertyDescriptorMap = descriptors.get(clazz);
+            metadataByClass = (Map<Class<?>, ComponentMetadata>) applicationMap.computeIfAbsent(
+                    COMPONENT_METADATA_MAP_KEY, k -> new ConcurrentHashMap<>());
 
-            readMethods = (Map<Class<?>, Map<String, Method>>) applicationMap.computeIfAbsent(
-                    COMPONENT_READ_METHODS_MAP_KEY, k -> new ConcurrentHashMap<>());
-            readMethodMap = readMethods.get(clazz);
-
-            writeMethods = (Map<Class<?>, Map<String, Method>>) applicationMap.computeIfAbsent(
-                    COMPONENT_WRITE_METHODS_MAP_KEY, k -> new ConcurrentHashMap<>());
-            writeMethodMap = writeMethods.get(clazz);
+            ComponentMetadata metadata = metadataByClass.get(clazz);
+            if (metadata != null) {
+                propertyDescriptorMap = metadata.propertyDescriptors;
+                readMethodMap = metadata.readMethods;
+                writeMethodMap = metadata.writeMethods;
+                return;
+            }
         }
 
-        if (propertyDescriptorMap == null) {
+        // We did not find the metadata for this class so we are now going to load it.
 
-            // We did not find the property descriptor map so we are now going to load it.
+        PropertyDescriptor propertyDescriptors[] = getPropertyDescriptors();
+        if (propertyDescriptors != null) {
+            propertyDescriptorMap = new HashMap<>(propertyDescriptors.length, 1.0f);
+            readMethodMap = new HashMap<>(propertyDescriptors.length, 1.0f);
+            writeMethodMap = new HashMap<>(propertyDescriptors.length, 1.0f);
+            for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
+                // Suppress the access check once, here, and strongly cache the accessor per class so the
+                // suppression stays durable (PropertyDescriptor.getReadMethod/getWriteMethod hand it back via a soft
+                // reference that can be regenerated) and the hot attribute-read/write paths never re-suppress or
+                // re-cache it.
+                Method readMethod = propertyDescriptor.getReadMethod();
+                if (readMethod != null) {
+                    AttributesMap.suppressAccessCheck(readMethod);
+                    readMethodMap.put(propertyDescriptor.getName(), readMethod);
+                }
+                Method writeMethod = propertyDescriptor.getWriteMethod();
+                if (writeMethod != null) {
+                    AttributesMap.suppressAccessCheck(writeMethod);
+                    writeMethodMap.put(propertyDescriptor.getName(), writeMethod);
+                }
+                propertyDescriptorMap.put(propertyDescriptor.getName(), propertyDescriptor);
+            }
 
-            PropertyDescriptor propertyDescriptors[] = getPropertyDescriptors();
-            if (propertyDescriptors != null) {
-                propertyDescriptorMap = new HashMap<>(propertyDescriptors.length, 1.0f);
-                readMethodMap = new HashMap<>(propertyDescriptors.length, 1.0f);
-                writeMethodMap = new HashMap<>(propertyDescriptors.length, 1.0f);
-                for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
-                    // Suppress the access check once, here, and strongly cache the accessor per class so the
-                    // suppression stays durable (PropertyDescriptor.getReadMethod/getWriteMethod hand it back via a soft
-                    // reference that can be regenerated) and the hot attribute-read/write paths never re-suppress or
-                    // re-cache it.
-                    Method readMethod = propertyDescriptor.getReadMethod();
-                    if (readMethod != null) {
-                        AttributesMap.suppressAccessCheck(readMethod);
-                        readMethodMap.put(propertyDescriptor.getName(), readMethod);
-                    }
-                    Method writeMethod = propertyDescriptor.getWriteMethod();
-                    if (writeMethod != null) {
-                        AttributesMap.suppressAccessCheck(writeMethod);
-                        writeMethodMap.put(propertyDescriptor.getName(), writeMethod);
-                    }
-                    propertyDescriptorMap.put(propertyDescriptor.getName(), propertyDescriptor);
-                }
+            if (LOGGER.isLoggable(FINE)) {
+                LOGGER.log(FINE, "fine.component.populating_descriptor_map", new Object[] { clazz, currentThread().getName() });
+            }
 
-                if (LOGGER.isLoggable(FINE)) {
-                    LOGGER.log(FINE, "fine.component.populating_descriptor_map", new Object[] { clazz, currentThread().getName() });
-                }
-
-                if (descriptors != null) {
-                    descriptors.putIfAbsent(clazz, propertyDescriptorMap);
-                }
-                if (readMethods != null) {
-                    readMethods.putIfAbsent(clazz, readMethodMap);
-                }
-                if (writeMethods != null) {
-                    writeMethods.putIfAbsent(clazz, writeMethodMap);
-                }
+            if (metadataByClass != null) {
+                metadataByClass.putIfAbsent(clazz, new ComponentMetadata(propertyDescriptorMap, readMethodMap, writeMethodMap));
             }
         }
     }
