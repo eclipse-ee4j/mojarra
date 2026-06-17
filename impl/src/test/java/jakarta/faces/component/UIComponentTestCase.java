@@ -1642,6 +1642,7 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
     // Tests #5801: a "rendered" value expression bound with a non-Boolean expected type (e.g. through a
     // templating layer) can evaluate to a String; isRendered() must coerce it leniently rather than throwing
     // ClassCastException. The Boolean path must stay unchanged.
+    // NOTE: not spec-compliant, so this cannot end up in the TCK.
     @Test
     public void testRenderedCoercesNonBooleanExpression() {
         assertFalse(renderedFromExpression("false"));

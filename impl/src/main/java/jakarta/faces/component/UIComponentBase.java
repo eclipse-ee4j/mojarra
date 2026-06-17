@@ -404,6 +404,7 @@ public abstract class UIComponentBase extends UIComponent {
         // Coerce leniently rather than casting: a "rendered" value expression bound with a non-Boolean expected
         // type (e.g. via a templating layer) can evaluate to a String, which a direct (Boolean) cast rejects.
         // Tolerating it is not spec-required but is kept for backward compatibility; a Boolean costs nothing here.
+        // Mojarra 5.0 should log a warning on this and Mojarra 6.0 should remove this leniency.
         return toBoolean(getStateHelper().eval(PropertyKeys.rendered), true);
     }
 
