@@ -35,9 +35,18 @@
         <webapp.stateSavingMethod>server</webapp.stateSavingMethod>
         <webapp.serializeServerState>false</webapp.serializeServerState>
         <webapp.compressViewState>true</webapp.compressViewState>
-        <webapp.numberOfViewsInSession>15</webapp.numberOfViewsInSession>
         <!-- webapp.additionalContextParams default lives in the parent pom so the server profiles (e.g. wildfly-myfaces) can override it. -->
     </properties>
+
+    <dependencies>
+        <!-- Supplies arquillian-server.xml (the bare-container server-profile Arquillian config, e.g. Tomcat). -->
+        <dependency>
+            <groupId>org.glassfish.mojarra.test</groupId>
+            <artifactId>base</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>

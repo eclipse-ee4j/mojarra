@@ -17,20 +17,19 @@
 
 -->
 <!--
-    Container config for the Tomcat and OpenLiberty profiles. The GlassFish, Payara,
-    WildFly and TomEE profiles configure their adapters purely via failsafe system properties
-    and ignore the qualifiers below (their adapters don't match these qualifier names).
+    Arquillian config for the bare-container Tomcat profile. It is selected via -Darquillian.xml=arquillian-server.xml
+    (set by the tomcat profile's failsafe configuration) so it never collides on the classpath with the default
+    arquillian.xml that the TCK util jar supplies for the pooled CI runs. Because the selected file fully replaces the
+    default, the suite deployment extension is repeated here.
 -->
 <arquillian
     xmlns="http://jboss.org/schema/arquillian"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd"
 >
-    <container qualifier="liberty">
-        <configuration>
-            <property name="wlpHome">target/wlp</property>
-        </configuration>
-    </container>
+    <extension qualifier="suite">
+        <property name="deploymentClass">ee.jakarta.tck.faces.util.selenium.BaseITNG</property>
+    </extension>
 
     <container qualifier="tomcat">
         <configuration>
