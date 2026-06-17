@@ -31,8 +31,10 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
+import jakarta.enterprise.inject.spi.el.ELAwareBeanManager;
 import jakarta.faces.annotation.View;
 import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
@@ -46,6 +48,7 @@ import org.glassfish.mojarra.application.applicationimpl.events.ComponentSystemE
 import org.glassfish.mojarra.application.applicationimpl.events.EventInfo;
 import org.glassfish.mojarra.application.applicationimpl.events.ReentrantLisneterInvocationGuard;
 import org.glassfish.mojarra.application.applicationimpl.events.SystemEventHelper;
+import org.glassfish.mojarra.cdi.CdiExtension;
 import org.glassfish.mojarra.util.FacesLogger;
 
 public class Events {
@@ -65,6 +68,11 @@ public class Events {
     // per-component Pre/PostValidateEvent, PreRenderComponentEvent, etc.). Over-approximating: classes
     // are never removed on unsubscribe, so a stale entry only costs an empty lookup, never a missed event.
     private final Set<Class<? extends SystemEvent>> globallySubscribedEventClasses = ConcurrentHashMap.newKeySet();
+
+    // Per-event-class cache of whether any CDI observer observes a (super)type of the event. Lets
+    // fireCdiSystemEvent decide once per event class -- rather than per publish -- whether to dispatch the
+    // in-scope (jakartaee/faces#1501) application/view events into CDI at all.
+    private final Map<Class<? extends SystemEvent>, Boolean> cdiObserverPresenceCache = new ConcurrentHashMap<>();
 
     /*
      * This class encapsulates the behavior to prevent infinite loops when the publishing of one event leads to the queueing
@@ -379,16 +387,34 @@ public class Events {
     }
 
     private void fireCdiSystemEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass, SystemEvent event, Object source) {
+        // Per issue jakartaee/faces#1501 the CDI dispatch of Faces system events is scoped to application-
+        // and view-level events (ExceptionQueuedEvent, Pre/PostConstruct/PreDestroy application+viewmap
+        // events, PreRenderViewEvent) -- all sourced on the application or the UIViewRoot. The events Faces
+        // publishes per component per phase (Pre/PostValidateEvent, PostAddToViewEvent, PreRenderComponentEvent,
+        // PreRemoveFromViewEvent, ...) are out of that scope, so skip them rather than pay a CDI dispatch per
+        // component per phase.
+        if (source instanceof UIComponent && !(source instanceof UIViewRoot)) {
+            return;
+        }
+
+        ELAwareBeanManager beanManager = getCdiBeanManager(context);
+
+        // Of the in-scope events, skip the dispatch -- and the event allocation below -- when no observer can
+        // receive this event type (the common case where the application defines no matching observer).
+        if (!hasCdiObserverFor(beanManager, systemEventClass)) {
+            return;
+        }
+
         if (event == null) {
-            var eventInfo = (source instanceof SystemEventListenerHolder) 
+            var eventInfo = (source instanceof SystemEventListenerHolder)
                     ? compSysEventHelper.getEventInfo(systemEventClass, source.getClass())
                     : systemEventHelper.getEventInfo(systemEventClass, source.getClass());
             event = eventInfo.createSystemEvent(source);
         }
 
-        var cdi = getCdiBeanManager(context).getEvent();
+        var cdi = beanManager.getEvent();
         cdi.fire(event);
-        
+
         if (source instanceof UIViewRoot root) {
             var viewId = root.getViewId();
 
@@ -396,6 +422,23 @@ public class Events {
                 cdi.select(View.Literal.of(viewId)).fire(event);
             }
         }
+    }
+
+    /**
+     * @return whether any CDI observer observes a type assignable from the given system event class, so that
+     * an observer registered for it (or any supertype, e.g. {@code SystemEvent} or {@code ComponentSystemEvent})
+     * would be notified. Decided once per event class against the types collected by
+     * {@link CdiExtension#getObservedSystemEventTypes()}.
+     */
+    private boolean hasCdiObserverFor(ELAwareBeanManager beanManager, Class<? extends SystemEvent> systemEventClass) {
+        return cdiObserverPresenceCache.computeIfAbsent(systemEventClass, eventClass -> {
+            for (Class<?> observedType : beanManager.getExtension(CdiExtension.class).getObservedSystemEventTypes()) {
+                if (observedType.isAssignableFrom(eventClass)) {
+                    return true;
+                }
+            }
+            return false;
+        });
     }
 
 }
