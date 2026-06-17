@@ -148,6 +148,7 @@ public class InstanceFactory {
     private final ViewMemberInstanceFactoryMetadataMap<String, Object> behaviorMap;
     private final ViewMemberInstanceFactoryMetadataMap<String, Object> converterIdMap;
     private final ViewMemberInstanceFactoryMetadataMap<String, Object> validatorMap;
+    private final Map<Class<?>, Constructor<?>> constructorCache;
 
     private final Set<String> defaultValidatorIds;
     private volatile Map<String, String> defaultValidatorInfo;
@@ -163,6 +164,7 @@ public class InstanceFactory {
         validatorMap = new ViewMemberInstanceFactoryMetadataMap<>(new ConcurrentHashMap<>());
         defaultValidatorIds = new LinkedHashSet<>();
         behaviorMap = new ViewMemberInstanceFactoryMetadataMap<>(new ConcurrentHashMap<>());
+        constructorCache = new ConcurrentHashMap<>();
 
         WebConfiguration webConfig = WebConfiguration.getInstance(FacesContext.getCurrentInstance().getExternalContext());
         registerPropertyEditors = webConfig.isOptionEnabled(RegisterConverterPropertyEditors);
@@ -773,7 +775,7 @@ public class InstanceFactory {
         }
 
         try {
-            result = clazz.getDeclaredConstructor().newInstance();
+            result = getCachedConstructor(clazz).newInstance();
         } catch (Throwable t) {
             Throwable previousT;
             do {
@@ -788,6 +790,28 @@ public class InstanceFactory {
         }
 
         return (T) result;
+    }
+
+    /**
+     * Returns the cached no-arg constructor for the given class, resolving and caching it on first use. The access check
+     * is suppressed up front (mirroring the cached read/write accessors in {@code UIComponentBase}) since components have
+     * a public no-arg constructor; a rare suppression failure leaves the per-call check in place. Not cached in dev mode,
+     * where classes may be reloaded, matching {@link #newThing}'s handling of the resolved {@code Class}.
+     */
+    private Constructor<?> getCachedConstructor(Class<?> clazz) throws NoSuchMethodException {
+        Constructor<?> constructor = constructorCache.get(clazz);
+        if (constructor == null) {
+            constructor = clazz.getDeclaredConstructor();
+            try {
+                constructor.setAccessible(true);
+            } catch (RuntimeException accessNotGranted) {
+                // leave the per-call access check in place
+            }
+            if (!associate.isDevModeEnabled()) {
+                constructorCache.put(clazz, constructor);
+            }
+        }
+        return constructor;
     }
 
     /*
