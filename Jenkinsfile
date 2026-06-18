@@ -233,6 +233,7 @@ spec:
         booleanParam(name: 'SMOKE_TEST', defaultValue: false, description: 'Requires RUN_TCK and DRY_RUN. Filter the TCK to a tiny representative subset for fast iteration on the pipeline itself (one failsafe IT + one sigtest IT + one old-tck-selenium IT, plus one old-tck JavaTest path when SKIP_OLD_TCK is unchecked).')
         booleanParam(name: 'DRY_RUN', defaultValue: true, description: 'Skip Maven Central deploy and GitHub push.')
         booleanParam(name: 'SKIP_DEPLOY', defaultValue: false, description: 'Requires DRY_RUN unchecked. Skip the Maven Central deploy stage only (still pushes branch/tag and creates the GitHub release). Use for resuming a previous run after Maven Central already published, or for pipeline-debug runs that exercise Publish to GitHub without re-deploying.')
+        booleanParam(name: 'SKIP_CRED_CHECK', defaultValue: false, description: 'Skip the Prepare-stage credential checks (Sonatype Central, GitHub SSH push, GitHub bot token). Use for pipeline-debug runs where the publish credentials are unavailable or known-stale and should not abort the run; on a real release leave this unchecked so a bad credential fails fast.')
     }
 
     options {
@@ -430,78 +431,84 @@ spec:
                 }
                 // Validate every credential the publish path will need, even on DRY_RUN, so a
                 // revoked/expired credential fails in minute zero rather than after a multi-hour
-                // TCK run. GPG is not pinged here because Build & install signs sources/javadoc
-                // and would fail on a bad keyring within minutes. Maven offers no native dryRun
-                // for Central deploys; the curl probe below is the only zero-cost auth check.
-                sh '''#!/bin/bash -e
-                    # Decrypt <server id=central> creds from the mounted settings.xml via
-                    # SecDispatcher. Temp files are mode 600 + trap-deleted so neither the
-                    # cleartext settings nor Maven's output survives the step. Maven logs to
-                    # stdout, so its output is captured to a file (-DshowPasswords=true would
-                    # otherwise risk leaking decrypted creds into the build log); it is printed
-                    # only on failure, where the goal aborts before emitting the settings dump.
-                    EFF=$(mktemp); LOG=$(mktemp); chmod 600 "${EFF}" "${LOG}"
-                    trap 'rm -f "${EFF}" "${LOG}"' EXIT
-                    if ! mvn -q -B ${HELP_PLUGIN}:effective-settings -DshowPasswords=true -Doutput="${EFF}" >"${LOG}" 2>&1; then
-                        echo "[cred-check] mvn effective-settings failed:" >&2
-                        cat "${LOG}" >&2
-                        exit 1
-                    fi
-                    # Split on opening <server> tags, keep the block whose id is "central", then
-                    # pluck the inner text of <username>/<password>. \\K resets the match start so
-                    # only the inner text is captured (avoids greedy-.* corner cases).
-                    BLOCK=$(awk 'BEGIN{RS="<server>"} /<id>central<\\/id>/' "${EFF}")
-                    CENTRAL_USER=$(echo "${BLOCK}" | grep -oP '<username>\\K[^<]*' | head -1)
-                    CENTRAL_PASS=$(echo "${BLOCK}" | grep -oP '<password>\\K[^<]*' | head -1)
-                    if [ -z "${CENTRAL_USER}" ] || [ -z "${CENTRAL_PASS}" ]; then
-                        echo "[cred-check] Sonatype Central Portal: <server id=central> missing in settings.xml" >&2
-                        exit 1
-                    fi
-                    # GET /api/v1/publisher/deployments returns 404 on valid creds (Sonatype's
-                    # gateway routes only after auth) and 401 on invalid — the only zero-cost
-                    # auth probe the Portal exposes. 5xx is a transient outage (warn-only);
-                    # anything else surfaces as contract drift rather than silent success.
-                    CODE=$(curl -sS -o /dev/null -w '%{http_code}' \\
-                        -u "${CENTRAL_USER}:${CENTRAL_PASS}" \\
-                        https://central.sonatype.com/api/v1/publisher/deployments) || {
-                        echo "[cred-check] Sonatype Central Portal: curl failed (network/DNS)" >&2; exit 1
-                    }
-                    case "${CODE}" in
-                        2*|404)  echo "[cred-check] Sonatype Central Portal: ok (${CODE})" ;;
-                        5*)      echo "[cred-check] Sonatype Central Portal: WARNING transient ${CODE}" >&2 ;;
-                        401|403) echo "[cred-check] Sonatype Central Portal: bad creds (${CODE})" >&2; exit 1 ;;
-                        *)       echo "[cred-check] Sonatype Central Portal: unexpected ${CODE}" >&2; exit 1 ;;
-                    esac
-                '''
-                // GitHub SSH push: --dry-run performs the full receive-pack handshake (incl. the
-                // write-permission check on protected refs) but transmits no objects and never
-                // creates the remote ref. Probes both mojarra.git and (when releasing the API)
-                // jakartaee/faces.git, so a missing/revoked write grant on either fails fast.
-                sshagent(credentials: ['github-bot-ssh']) {
-                    sh '#!/bin/bash -e\n' + KNOWN_HOSTS_INIT + '''
-                        git push --dry-run git@github.com:eclipse-ee4j/mojarra.git HEAD:refs/heads/__cred_check__
-                        echo "[cred-check] GitHub SSH push (mojarra): ok"
-                    '''
-                    script {
-                        if (env.SHOULD_BUILD_API == 'true') {
-                            dir('faces') {
-                                sh '''#!/bin/bash -e
-                                    git push --dry-run git@github.com:jakartaee/faces.git HEAD:refs/heads/__cred_check__
-                                    echo "[cred-check] GitHub SSH push (faces): ok"
-                                '''
+                // TCK run. Skippable via SKIP_CRED_CHECK for pipeline-debug runs where the publish
+                // credentials are unavailable or known-stale. GPG is not pinged here because Build
+                // & install signs sources/javadoc and would fail on a bad keyring within minutes.
+                // Maven offers no native dryRun for Central deploys; the curl probe below is the
+                // only zero-cost auth check.
+                script {
+                    if (!params.SKIP_CRED_CHECK) {
+                        sh '''#!/bin/bash -e
+                            # Decrypt <server id=central> creds from the mounted settings.xml via
+                            # SecDispatcher. Temp files are mode 600 + trap-deleted so neither the
+                            # cleartext settings nor Maven's output survives the step. Maven logs to
+                            # stdout, so its output is captured to a file (-DshowPasswords=true would
+                            # otherwise risk leaking decrypted creds into the build log); it is printed
+                            # only on failure, where the goal aborts before emitting the settings dump.
+                            EFF=$(mktemp); LOG=$(mktemp); chmod 600 "${EFF}" "${LOG}"
+                            trap 'rm -f "${EFF}" "${LOG}"' EXIT
+                            if ! mvn -q -B ${HELP_PLUGIN}:effective-settings -DshowPasswords=true -Doutput="${EFF}" >"${LOG}" 2>&1; then
+                                echo "[cred-check] mvn effective-settings failed:" >&2
+                                cat "${LOG}" >&2
+                                exit 1
+                            fi
+                            # Split on opening <server> tags, keep the block whose id is "central", then
+                            # pluck the inner text of <username>/<password>. \\K resets the match start so
+                            # only the inner text is captured (avoids greedy-.* corner cases).
+                            BLOCK=$(awk 'BEGIN{RS="<server>"} /<id>central<\\/id>/' "${EFF}")
+                            CENTRAL_USER=$(echo "${BLOCK}" | grep -oP '<username>\\K[^<]*' | head -1)
+                            CENTRAL_PASS=$(echo "${BLOCK}" | grep -oP '<password>\\K[^<]*' | head -1)
+                            if [ -z "${CENTRAL_USER}" ] || [ -z "${CENTRAL_PASS}" ]; then
+                                echo "[cred-check] Sonatype Central Portal: <server id=central> missing in settings.xml" >&2
+                                exit 1
+                            fi
+                            # GET /api/v1/publisher/deployments returns 404 on valid creds (Sonatype's
+                            # gateway routes only after auth) and 401 on invalid — the only zero-cost
+                            # auth probe the Portal exposes. 5xx is a transient outage (warn-only);
+                            # anything else surfaces as contract drift rather than silent success.
+                            CODE=$(curl -sS -o /dev/null -w '%{http_code}' \\
+                                -u "${CENTRAL_USER}:${CENTRAL_PASS}" \\
+                                https://central.sonatype.com/api/v1/publisher/deployments) || {
+                                echo "[cred-check] Sonatype Central Portal: curl failed (network/DNS)" >&2; exit 1
+                            }
+                            case "${CODE}" in
+                                2*|404)  echo "[cred-check] Sonatype Central Portal: ok (${CODE})" ;;
+                                5*)      echo "[cred-check] Sonatype Central Portal: WARNING transient ${CODE}" >&2 ;;
+                                401|403) echo "[cred-check] Sonatype Central Portal: bad creds (${CODE})" >&2; exit 1 ;;
+                                *)       echo "[cred-check] Sonatype Central Portal: unexpected ${CODE}" >&2; exit 1 ;;
+                            esac
+                        '''
+                        // GitHub SSH push: --dry-run performs the full receive-pack handshake (incl. the
+                        // write-permission check on protected refs) but transmits no objects and never
+                        // creates the remote ref. Probes both mojarra.git and (when releasing the API)
+                        // jakartaee/faces.git, so a missing/revoked write grant on either fails fast.
+                        sshagent(credentials: ['github-bot-ssh']) {
+                            sh '#!/bin/bash -e\n' + KNOWN_HOSTS_INIT + '''
+                                git push --dry-run git@github.com:eclipse-ee4j/mojarra.git HEAD:refs/heads/__cred_check__
+                                echo "[cred-check] GitHub SSH push (mojarra): ok"
+                            '''
+                            script {
+                                if (env.SHOULD_BUILD_API == 'true') {
+                                    dir('faces') {
+                                        sh '''#!/bin/bash -e
+                                            git push --dry-run git@github.com:jakartaee/faces.git HEAD:refs/heads/__cred_check__
+                                            echo "[cred-check] GitHub SSH push (faces): ok"
+                                        '''
+                                    }
+                                }
                             }
                         }
+                        // GitHub bot token: gh auth status calls /user under the hood, so it fails on an
+                        // expired/revoked token. Same withCredentials shape Publish to GitHub uses later.
+                        withCredentials([usernamePassword(credentialsId: 'github-bot',
+                                                          usernameVariable: 'GH_USER',
+                                                          passwordVariable: 'GH_TOKEN')]) {
+                            sh '#!/bin/bash -e\n' + GH_INSTALL + '''
+                                gh auth status
+                                echo "[cred-check] GitHub bot token: ok"
+                            '''
+                        }
                     }
-                }
-                // GitHub bot token: gh auth status calls /user under the hood, so it fails on an
-                // expired/revoked token. Same withCredentials shape Publish to GitHub uses later.
-                withCredentials([usernamePassword(credentialsId: 'github-bot',
-                                                  usernameVariable: 'GH_USER',
-                                                  passwordVariable: 'GH_TOKEN')]) {
-                    sh '#!/bin/bash -e\n' + GH_INSTALL + '''
-                        gh auth status
-                        echo "[cred-check] GitHub bot token: ok"
-                    '''
                 }
             }
         }
@@ -956,7 +963,7 @@ def requireGaVersion(String paramName, String version, String expectedPrefix) {
 
 // Compose the human-readable banner lines printed at the end of the Prepare stage. Always-on lines
 // describe the artifacts being released and the build/test environment; conditional lines call out
-// active toggles (DRY_RUN, SMOKE_TEST, SKIP_OLD_TCK, SKIP_DEPLOY, RUN_TCK off).
+// active toggles (DRY_RUN, SMOKE_TEST, SKIP_OLD_TCK, SKIP_DEPLOY, SKIP_CRED_CHECK, RUN_TCK off).
 def buildBannerLines(params, env, cfg) {
     def lines = []
     if (env.IS_MILESTONE == 'true') {
@@ -981,6 +988,7 @@ def buildBannerLines(params, env, cfg) {
     if (params.SMOKE_TEST)  lines << "- SMOKE_TEST: smoke-test subset only (NOT TCK-conformant)"
     if (params.DRY_RUN)     lines << "- DRY_RUN: skips Maven Central deploy and GitHub push"
     if (params.SKIP_DEPLOY) lines << "- SKIP_DEPLOY: skips deploy but still pushes branch/tag and creates GitHub release"
+    if (params.SKIP_CRED_CHECK) lines << "- SKIP_CRED_CHECK: skips Prepare-stage credential checks"
     return lines
 }
 
