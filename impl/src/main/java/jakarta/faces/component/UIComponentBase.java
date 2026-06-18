@@ -26,9 +26,9 @@ import static com.sun.faces.facelets.tag.faces.core.FacetHandler.KEY;
 import static com.sun.faces.util.Util.isAllNull;
 import static com.sun.faces.util.Util.isAnyNull;
 import static com.sun.faces.util.Util.isEmpty;
+import static com.sun.faces.util.Util.toBoolean;
 import static jakarta.faces.application.Resource.COMPONENT_RESOURCE_KEY;
 import static java.beans.Introspector.getBeanInfo;
-import static java.lang.Boolean.TRUE;
 import static java.lang.Character.isDigit;
 import static java.lang.Character.isLetter;
 import static java.lang.Thread.currentThread;
@@ -402,7 +402,11 @@ public abstract class UIComponentBase extends UIComponent {
         if (cachedIsRendered != null) {
             return cachedIsRendered;
         }
-        return (Boolean) getStateHelper().eval(PropertyKeys.rendered, TRUE);
+        // Coerce leniently rather than casting: a "rendered" value expression bound with a non-Boolean expected
+        // type (e.g. via a templating layer) can evaluate to a String, which a direct (Boolean) cast rejects.
+        // Tolerating it is not spec-required but is kept for backward compatibility; a Boolean costs nothing here.
+        // Mojarra 5.0 should log a warning on this and Mojarra 6.0 should remove this leniency.
+        return toBoolean(getStateHelper().eval(PropertyKeys.rendered), true);
     }
 
     @Override
