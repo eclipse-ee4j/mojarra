@@ -44,7 +44,7 @@
         <arquillian.browser>chrome</arquillian.browser>
         <faces-api.version>5.0.0-SNAPSHOT</faces-api.version>
         <mojarra.version>${project.version}</mojarra.version>
-        <myfaces.version>4.1.4-SNAPSHOT</myfaces.version> <!-- consumed by the *-myfaces profiles -->
+        <myfaces.version>5.0.0-SNAPSHOT</myfaces.version> <!-- consumed by the *-myfaces profiles -->
         <glassfish.version>9.0.0-SNAPSHOT</glassfish.version>
         <wildfly.version>40.0.0.Final</wildfly.version>
         <tomee.version>10.1.5</tomee.version>
@@ -862,6 +862,7 @@
                                     <goal>unpack</goal>
                                 </goals>
                                 <configuration>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
                                     <artifactItems>
                                         <artifactItem>
                                             <groupId>org.glassfish.main.distributions</groupId>
@@ -886,10 +887,12 @@
                                 </goals>
                                 <configuration>
                                     <!-- Keep the Mojarra module (Weld integration needs it) but drop its CDI extension
-                                         registration so it doesn't clash with MyFaces' (WELD-001414 ambiguous requestScope). -->
+                                         registration so it doesn't clash with MyFaces' (WELD-001414 ambiguous requestScope).
+                                         Faces 5.0 split the combined jakarta.faces.jar into spec API + impl, so the
+                                         Extension/ServletContainerInitializer service entries now live in mojarra.jar. -->
                                     <scripts>
                                         <script><![CDATA[
-                                            def jar = new File('${project.build.directory}/${glassfish.home}/glassfish/modules/jakarta.faces.jar').toPath()
+                                            def jar = new File('${project.build.directory}/${glassfish.home}/glassfish/modules/mojarra.jar').toPath()
                                             def zipfs = java.nio.file.FileSystems.newFileSystem(jar, [:])
                                             try {
                                                 ['META-INF/services/jakarta.enterprise.inject.spi.Extension',
