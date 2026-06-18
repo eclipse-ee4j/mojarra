@@ -321,10 +321,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
             throw new NullPointerException();
         }
 
-        @SuppressWarnings("unchecked")
-        Map<String, ValueExpression> map = (Map<String, ValueExpression>) getStateHelper().get(UIComponentBase.PropertyKeys.bindings);
-
-        return map != null ? map.get(name) : null;
+        return bindings != null ? bindings.get(name) : null;
     }
 
     /**
@@ -379,7 +376,13 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
                     getStateHelper().add(PropertyKeysPrivate.attributesThatAreSet, name);
                 }
 
-                getStateHelper().put(UIComponentBase.PropertyKeys.bindings, name, binding);
+                if (bindings == null) {
+                    bindings = new HashMap<>(5);
+                }
+                bindings.put(name, binding);
+                if (initialStateMarked()) {
+                    bindingsModified = true;
+                }
 
             } else {
                 ELContext context = FacesContext.getCurrentInstance().getELContext();
@@ -391,7 +394,12 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
             }
         } else {
             getStateHelper().remove(PropertyKeysPrivate.attributesThatAreSet, name);
-            getStateHelper().remove(UIComponentBase.PropertyKeys.bindings, name);
+            if (bindings != null) {
+                bindings.remove(name);
+                if (initialStateMarked()) {
+                    bindingsModified = true;
+                }
+            }
         }
     }
 
@@ -2402,11 +2410,20 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
         return resourceBundle != null ? result : null;
     }
 
-    // The set of ValueExpressions for this component, keyed by property
-    // name This collection is lazily instantiated
-    // The set of ValueExpressions for this component, keyed by property
-    // name This collection is lazily instantiated
+    // The set of ValueExpressions for this component, keyed by property name; lazily instantiated.
+    // Field-backs the component's value expressions (replacing the former PropertyKeys.bindings StateHelper
+    // entry) so getValueExpression/setValueExpression skip a per-call StateHelper lookup -- notably the
+    // getValueExpression("binding") probe fired on every component during Restore View. buildView re-applies
+    // the facelet expressions on each restore, so they ride in the partial-state delta only when changed after
+    // markInitialState (see bindingsModified); full state saving persists the whole map.
     @Deprecated
     protected Map<String, ValueExpression> bindings = null;
+
+    /**
+     * {@code true} once a {@link ValueExpression} is set or removed after {@code markInitialState}, so the change
+     * rides in the partial-state delta. Transient: re-derived per request as {@code buildView} rebuilds the tree.
+     * Gates the field-backed {@link #bindings} map's partial-state save (mirrors {@code rendererTypeSet}).
+     */
+    transient boolean bindingsModified;
 
 }
