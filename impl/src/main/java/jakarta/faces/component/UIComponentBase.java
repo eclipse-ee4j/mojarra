@@ -1274,11 +1274,9 @@ public abstract class UIComponentBase extends UIComponent {
             Object savedFacesListeners = listeners != null ? listeners.saveState(context) : null;
             Object savedSysEventListeners = saveSystemEventListeners(context);
             Object savedBehaviors = saveBehaviorsState(context);
-            Object savedBindings = null;
-
-            if (bindings != null) {
-                savedBindings = saveBindingsState(context);
-            }
+            // buildView re-applies facelet value expressions on restore, so only a change made after
+            // markInitialState needs to ride along in the delta (mirrors rendererType/rendererTypeSet).
+            Object savedBindings = bindingsModified ? saveBindingsState(context) : null;
 
             Object savedHelper = null;
             if (stateHelper != null) {
@@ -1369,6 +1367,11 @@ public abstract class UIComponentBase extends UIComponent {
 
         if (values[3] != null) {
             bindings = restoreBindingsState(context, values[3]);
+            if (values.length != 7) {
+                // Partial-state delta: a value expression changed after markInitialState; keep it dirty so
+                // the change stays in the delta across subsequent postbacks (mirrors rendererTypeSet below).
+                bindingsModified = true;
+            }
         }
 
         if (values[4] != null) {
