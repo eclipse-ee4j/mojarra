@@ -17,10 +17,12 @@
 package jakarta.faces.component;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.when;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -36,10 +38,12 @@ import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import com.sun.faces.junit.JUnitFacesTestCaseBase;
 import com.sun.faces.mock.MockRenderKit;
 
+import jakarta.el.ValueExpression;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
@@ -1633,6 +1637,28 @@ public class UIComponentTestCase extends JUnitFacesTestCaseBase {
         component.setRendererType("foo");
         assertEquals("foo", component.getRendererType());
 
+    }
+
+    // Tests #5801: a "rendered" value expression bound with a non-Boolean expected type (e.g. through a
+    // templating layer) can evaluate to a String; isRendered() must coerce it leniently rather than throwing
+    // ClassCastException. The Boolean path must stay unchanged.
+    // NOTE: not spec-compliant, so this cannot end up in the TCK.
+    @Test
+    public void testRenderedCoercesNonBooleanExpression() {
+        assertFalse(renderedFromExpression("false"));
+        assertTrue(renderedFromExpression("true"));
+        // Common Boolean path is unaffected.
+        assertFalse(renderedFromExpression(Boolean.FALSE));
+        assertTrue(renderedFromExpression(Boolean.TRUE));
+    }
+
+    // Binds "rendered" to a (non-literal) value expression that evaluates to the given value, then reads isRendered().
+    private boolean renderedFromExpression(Object evaluatedValue) {
+        ValueExpression expression = Mockito.mock(ValueExpression.class);
+        when(expression.isLiteralText()).thenReturn(false);
+        when(expression.getValue(Mockito.any())).thenReturn(evaluatedValue);
+        component.setValueExpression("rendered", expression);
+        return component.isRendered();
     }
 
     // --------------------------------------------------------- Support Methods
