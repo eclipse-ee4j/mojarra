@@ -1446,13 +1446,14 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
 
         if (getRendersChildren()) {
             encodeChildren(context);
-        } else {
-            int childCount = getChildCount();
-            if (childCount > 0) {
-                List<UIComponent> children = getChildren();
-                for (int i = 0; i < childCount; i++) {
-                    children.get(i).encodeAll(context);
-                }
+        } else if (getChildCount() > 0) {
+            // Re-read size() each iteration rather than freezing the count: a child may be appended to this
+            // component while one of its own children is being encoded (e.g. a component that programmatically
+            // adds a sibling during its render), and it must still be encoded. This matches the live semantics
+            // of the children list iterator, which never throws on concurrent append.
+            List<UIComponent> children = getChildren();
+            for (int i = 0; i < children.size(); i++) {
+                children.get(i).encodeAll(context);
             }
         }
 
