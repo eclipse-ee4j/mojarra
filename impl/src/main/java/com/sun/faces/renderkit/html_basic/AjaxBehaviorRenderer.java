@@ -40,6 +40,7 @@ import jakarta.faces.component.search.ComponentNotFoundException;
 import jakarta.faces.component.search.SearchExpressionContext;
 import jakarta.faces.component.search.SearchExpressionHandler;
 import jakarta.faces.component.search.SearchExpressionHint;
+import jakarta.faces.component.visit.VisitHint;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AjaxBehaviorEvent;
 import jakarta.faces.event.PhaseId;
@@ -281,6 +282,8 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer {
     private static final Set<SearchExpressionHint> EXPRESSION_HINTS = EnumSet.of(SearchExpressionHint.RESOLVE_CLIENT_SIDE,
             SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
 
+    private static final Set<VisitHint> VISIT_HINTS = EnumSet.of(VisitHint.SKIP_UNRENDERED);
+
     // Appends an ids argument to the ajax command
     private static void appendIds(FacesContext facesContext, UIComponent component, AjaxBehavior ajaxBehavior, StringBuilder builder, Collection<String> idsOrNull) {
 
@@ -334,7 +337,7 @@ public class AjaxBehaviorRenderer extends ClientBehaviorRenderer {
                 builder.append(expression);
             } else {
                 if (searchExpressionContext == null) {
-                    searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(facesContext, component, EXPRESSION_HINTS, null);
+                    searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(facesContext, component, EXPRESSION_HINTS, VISIT_HINTS);
                 }
                 if (handler == null) {
                     handler = facesContext.getApplication().getSearchExpressionHandler();
