@@ -54,7 +54,10 @@ def JDK_VERSION_CHOICES = [''] + JDK_DISTRO_BY_VERSION.keySet().toList()
 //                     -Dfaces.version). Ignored when apiBranch != null.
 //   jdk             : major JDK version used to build the impl (per Faces spec).
 //   tckJdk          : major JDK version used to run the TCK. Differs from jdk when the GlassFish
-//                     container needs a newer JDK than the spec.
+//                     container needs a newer JDK than the spec. Also runs the Prepare-stage
+//                     Sonatype cred-check, whose central-staging plugin is compiled for Java 17,
+//                     so this must stay >= 17 on every line (the 4.x impl still builds on its own
+//                     older `jdk`).
 //   tckVersion      : Faces TCK version. A released version (e.g. "4.0.3") is downloaded as a zip
 //                     from download.eclipse.org/jakartaee/faces/<line>/. A -SNAPSHOT value (e.g.
 //                     "5.0.0-SNAPSHOT") instead builds the TCK from the faces submodule's tck/
@@ -69,7 +72,7 @@ def JDK_VERSION_CHOICES = [''] + JDK_DISTRO_BY_VERSION.keySet().toList()
 //                     stays at 1 there. The pod's cpu/memory should comfortably accommodate
 //                     this many concurrent GlassFish + test JVM pairs.
 def BRANCH_CONFIG = [
-    '4.0': [ implBranch: '4.0',    apiBranch: null,  apiVersion: '4.0.1', jdk: '11', tckJdk: '11', tckVersion: '4.0.3',          gfVersion: '7.0.25'  , seleniumEnabled: false, threadCount: 1 ],
+    '4.0': [ implBranch: '4.0',    apiBranch: null,  apiVersion: '4.0.1', jdk: '11', tckJdk: '17', tckVersion: '4.0.3',          gfVersion: '7.0.25'  , seleniumEnabled: false, threadCount: 1 ],
     '4.1': [ implBranch: '4.1',    apiBranch: null,  apiVersion: '4.1.0', jdk: '17', tckJdk: '21', tckVersion: '4.1.0',          gfVersion: '8.0.0-M6', seleniumEnabled: true , threadCount: 1 ],
     '5.0': [ implBranch: 'master', apiBranch: '5.0', apiVersion: null,    jdk: '17', tckJdk: '21', tckVersion: '5.0.0-SNAPSHOT', gfVersion: '9.0.0-M2', seleniumEnabled: true , threadCount: 2 ],
 ]
@@ -452,6 +455,10 @@ spec:
                         // in minute zero rather than after a multi-hour TCK. central.bearerCreate builds
                         // the Portal bearer token from the decrypted token user/password.
                         sh '''#!/bin/bash -e
+                            # central-staging-plugins is compiled for Java 17; the 4.x impl builds on
+                            # JDK 11, so run this probe under TCK_JAVA_HOME (>= 17 on every line).
+                            export JAVA_HOME="${TCK_JAVA_HOME}"
+                            export PATH="${JAVA_HOME}/bin:${PATH}"
                             mvn -B ${MVN_EXTRA} ${CENTRAL_PLUGIN}:rc-list \\
                                 -Dcentral.namespace=org.glassfish \\
                                 -Dcentral.bearerCreate=true \\
