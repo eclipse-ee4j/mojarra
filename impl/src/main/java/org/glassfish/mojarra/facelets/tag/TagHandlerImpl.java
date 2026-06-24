@@ -21,9 +21,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import jakarta.faces.view.facelets.CompositeFaceletHandler;
+import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.FaceletHandler;
 import jakarta.faces.view.facelets.TagConfig;
 import jakarta.faces.view.facelets.TagHandler;
+
+import org.glassfish.mojarra.RIConstants;
 
 /**
  *
@@ -33,6 +36,18 @@ public abstract class TagHandlerImpl extends TagHandler {
 
     public TagHandlerImpl(TagConfig config) {
         super(config);
+    }
+
+    /**
+     * Flag the current view build as containing build-time-dynamic content (a JSTL conditional/iteration or a dynamic
+     * include) so its facelet is re-applied on every (re)build. Build-time-dynamic handlers call this at the top of
+     * their {@code apply}; the absence of the flag lets {@code FaceletViewHandlingStrategy} skip the redundant
+     * render-time re-apply for a purely component-driven view (see {@code disableRefreshTransientBuild}).
+     *
+     * @param ctx the {@link FaceletContext} for the current build
+     */
+    protected static void markDynamicTransientBuild(FaceletContext ctx) {
+        ctx.getFacesContext().getAttributes().put(RIConstants.DYNAMIC_TRANSIENT_BUILD, Boolean.TRUE);
     }
 
     /**
