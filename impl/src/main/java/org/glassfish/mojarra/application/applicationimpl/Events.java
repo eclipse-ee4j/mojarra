@@ -74,6 +74,12 @@ public class Events {
     // in-scope (jakartaee/faces#1501) application/view events into CDI at all.
     private final Map<Class<? extends SystemEvent>, Boolean> cdiObserverPresenceCache = new ConcurrentHashMap<>();
 
+    // The system-event types observed by some CDI observer, collected by CdiExtension during CDI bootstrap and
+    // immutable thereafter. Captured once and reused so the shutdown path does not call
+    // BeanManager.getExtension(CdiExtension.class), which throws IllegalArgumentException (WELD-001325) once the
+    // container has deregistered the extension during contextDestroyed.
+    private volatile Set<Class<?>> cdiObservedSystemEventTypes;
+
     /*
      * This class encapsulates the behavior to prevent infinite loops when the publishing of one event leads to the queueing
      * of another event of the same type. Special provision is made to allow the case where this guaring mechanims happens
@@ -431,14 +437,39 @@ public class Events {
      * {@link CdiExtension#getObservedSystemEventTypes()}.
      */
     private boolean hasCdiObserverFor(ELAwareBeanManager beanManager, Class<? extends SystemEvent> systemEventClass) {
+        Set<Class<?>> observedTypes = cdiObservedSystemEventTypes(beanManager);
+        if (observedTypes == null) {
+            // CdiExtension is not (or no longer) registered -- the deployment is shutting down. No CDI observers
+            // to dispatch to; the caller publishes the event without CDI.
+            return false;
+        }
         return cdiObserverPresenceCache.computeIfAbsent(systemEventClass, eventClass -> {
-            for (Class<?> observedType : beanManager.getExtension(CdiExtension.class).getObservedSystemEventTypes()) {
+            for (Class<?> observedType : observedTypes) {
                 if (observedType.isAssignableFrom(eventClass)) {
                     return true;
                 }
             }
             return false;
         });
+    }
+
+    /**
+     * @return the system-event types observed by some CDI observer (immutable after CDI bootstrap, so captured
+     * once and reused), or {@code null} when {@link CdiExtension} is not registered -- notably during
+     * {@code contextDestroyed}, where {@code BeanManager.getExtension(CdiExtension.class)} throws
+     * {@code IllegalArgumentException} (WELD-001325) because the container has already deregistered it.
+     */
+    private Set<Class<?>> cdiObservedSystemEventTypes(ELAwareBeanManager beanManager) {
+        Set<Class<?>> observedTypes = cdiObservedSystemEventTypes;
+        if (observedTypes == null) {
+            try {
+                observedTypes = beanManager.getExtension(CdiExtension.class).getObservedSystemEventTypes();
+                cdiObservedSystemEventTypes = observedTypes;
+            } catch (IllegalArgumentException e) {
+                return null;
+            }
+        }
+        return observedTypes;
     }
 
 }
