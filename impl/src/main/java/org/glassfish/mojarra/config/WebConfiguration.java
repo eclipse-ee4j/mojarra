@@ -705,6 +705,7 @@ public class WebConfiguration {
         RegisterConverterPropertyEditors("org.glassfish.mojarra.registerConverterPropertyEditors", false),
         EnableHttpMethodRestrictionPhaseListener("org.glassfish.mojarra.ENABLE_HTTP_METHOD_RESTRICTION_PHASE_LISTENER", false),
         PartialStateSaving(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, true),
+        DisableRefreshTransientBuild("org.glassfish.mojarra.disableRefreshTransientBuild", false),
         GenerateUniqueServerStateIds("org.glassfish.mojarra.generateUniqueServerStateIds", true),
         AutoCompleteOffOnViewState("org.glassfish.mojarra.autoCompleteOffOnViewState", false),
         EnableThreading("org.glassfish.mojarra.enableThreading", false),
