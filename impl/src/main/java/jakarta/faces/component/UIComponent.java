@@ -202,8 +202,9 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
 
     // It is safe to cache this because components never go from being composite to non-composite. Event-driven
     // rather than lazily resolved: the flag is set TRUE when COMPONENT_RESOURCE_KEY is put
-    // (UIComponentBase.AttributesMap) -- the act that makes a component composite -- and re-derived after restore
-    // (full-state via UIComponentBase.restoreMarkersFromState, any restore via processEvent on PostRestoreStateEvent).
+    // (UIComponentBase.AttributesMap) -- the act that makes a component composite -- and re-synced from the
+    // restored attributes map by UIComponentBase.restoreMarkersFromState on full-state restore (full-state saving,
+    // and dynamically-added subtrees restored via a full-state StateHolderSaver under partial state saving).
     // So the common non-composite component answers isCompositeComponent() straight from the field, without a
     // getAttributes().containsKey(COMPONENT_RESOURCE_KEY) probe on every EL push/pop during buildView.
     private transient boolean isCompositeComponent;
@@ -1906,10 +1907,13 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
                 valueExpression.setValue(FacesContext.getCurrentInstance().getELContext(), this);
             }
 
-            // Re-derive from the (now restored) attributes map; the binding repopulation above and full/partial
-            // state restore can change whether this instance carries COMPONENT_RESOURCE_KEY. Replaces the former
-            // null-reset-then-lazy-recompute now that the flag is a non-nullable primitive.
-            isCompositeComponent = getAttributes().containsKey(Resource.COMPONENT_RESOURCE_KEY);
+            // isCompositeComponent is intentionally NOT re-derived here. It is maintained authoritatively on
+            // every restore path before this PostRestoreState walk runs: AttributesMap.put sets it when
+            // COMPONENT_RESOURCE_KEY is (re)applied by buildView under partial state saving, and
+            // restoreMarkersFromState sets it from the restored attributes map on full-state restore -- including
+            // dynamically-added subtrees, which restore via a full-state StateHolderSaver even under partial state
+            // saving. A per-component reflective getAttributes().containsKey() probe across the full-tree
+            // PostRestoreState walk was pure waste (it never once changed the flag in either state-saving mode).
         }
     }
 
