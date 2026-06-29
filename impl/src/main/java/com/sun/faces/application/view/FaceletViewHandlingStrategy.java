@@ -17,6 +17,7 @@
 package com.sun.faces.application.view;
 
 import static com.sun.faces.RIConstants.DYNAMIC_COMPONENT;
+import static com.sun.faces.RIConstants.DYNAMIC_TRANSIENT_BUILD;
 import static com.sun.faces.RIConstants.FACELETS_ENCODING_KEY;
 import static com.sun.faces.RIConstants.FLOW_DEFINITION_ID_SUFFIX;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsBufferSize;
@@ -131,6 +132,7 @@ import jakarta.servlet.http.HttpSession;
 import com.sun.faces.application.ApplicationAssociate;
 import com.sun.faces.application.resource.ResourceHandlerImpl;
 import com.sun.faces.config.WebConfiguration;
+import com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter;
 import com.sun.faces.context.StateContext;
 import com.sun.faces.facelets.compiler.FaceletDoctype;
 import com.sun.faces.facelets.el.ContextualCompositeMethodExpression;
@@ -174,6 +176,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     private final MethodRetargetHandlerManager retargetHandlerManager = new MethodRetargetHandlerManager();
 
     private int responseBufferSize;
+    private boolean disableRefreshTransientBuild;
 
     private Cache<Resource, BeanInfo> metadataCache;
     private Map<String, List<String>> contractMappings;
@@ -304,6 +307,11 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         StateContext stateCtx = StateContext.getStateContext(ctx);
 
         if (isViewPopulated(ctx, view)) {
+            if (canSkipTransientBuildRefresh(ctx, view, stateCtx)) {
+                // The view was already (re)built this request and holds no build-time-dynamic content, so re-applying
+                // the facelet would reproduce the identical tree. Skip it (see disableRefreshTransientBuild).
+                return;
+            }
             Facelet facelet = faceletFactory.getFacelet(ctx, view.getViewId());
             // Disable events from being intercepted by the StateContext by
             // virute of re-applying the handlers.
@@ -375,6 +383,20 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         markInitialState(ctx, view);
 
         setViewPopulated(ctx, view);
+    }
+
+    /**
+     * Determines whether the redundant re-apply of the facelet on an already-populated view may be skipped. Opt-in via
+     * {@code disableRefreshTransientBuild}; only safe under partial state saving for a non-transient view whose build
+     * this request involved no build-time-dynamic content ({@link RIConstants#DYNAMIC_TRANSIENT_BUILD}) and no dynamic
+     * component add/remove, since re-applying would then reproduce the identical tree.
+     */
+    private boolean canSkipTransientBuildRefresh(FacesContext ctx, UIViewRoot view, StateContext stateCtx) {
+        return disableRefreshTransientBuild
+                && !view.isTransient()
+                && stateCtx.isPartialStateSaving(ctx, view.getViewId())
+                && isEmpty(stateCtx.getDynamicActions())
+                && !ctx.getAttributes().containsKey(DYNAMIC_TRANSIENT_BUILD);
     }
 
     /**
@@ -844,6 +866,8 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         } catch (NumberFormatException nfe) {
             responseBufferSize = Integer.parseInt(FaceletsBufferSize.getDefaultValue());
         }
+
+        disableRefreshTransientBuild = webConfig.isOptionEnabled(BooleanWebContextInitParameter.DisableRefreshTransientBuild);
 
         LOGGER.fine("Initialization Successful");
 
