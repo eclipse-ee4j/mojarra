@@ -94,6 +94,12 @@ public final class ViewHandler extends TagHandlerImpl {
      */
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
+        if (hasDynamicAttribute()) {
+            // A non-literal f:view attribute (e.g. locale, contentType) is re-evaluated per request and applied to
+            // the UIViewRoot during this build, so the view must be re-applied on every (re)build instead of skipped
+            // (see refreshTransientBuildOnPSS), otherwise a value changed by a postback would not take effect.
+            markDynamicTransientBuild(ctx);
+        }
         UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
         if (root != null) {
             if (renderKitId != null) {
@@ -170,6 +176,21 @@ public final class ViewHandler extends TagHandlerImpl {
         }
 
         nextHandler.apply(ctx, parent);
+    }
+
+    /**
+     * Whether any of the view attributes applied to the {@link UIViewRoot} during the build is non-literal, i.e.
+     * re-evaluated per request. Such a view must be re-applied on every (re)build so a value changed by a postback
+     * is reflected; the {@code beforePhase}/{@code afterPhase} listener expressions are excluded as they are fixed
+     * per facelet and restored from state.
+     */
+    private boolean hasDynamicAttribute() {
+        return isDynamic(locale) || isDynamic(renderKitId) || isDynamic(contentType) || isDynamic(encoding)
+                || isDynamic(contracts) || isDynamic(transientFlag);
+    }
+
+    private static boolean isDynamic(TagAttribute attribute) {
+        return attribute != null && !attribute.isLiteral();
     }
 
 }
