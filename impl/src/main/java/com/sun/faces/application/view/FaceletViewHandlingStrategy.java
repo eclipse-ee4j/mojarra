@@ -176,7 +176,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     private MethodRetargetHandlerManager retargetHandlerManager = new MethodRetargetHandlerManager();
 
     private int responseBufferSize;
-    private boolean disableRefreshTransientBuild;
+    private boolean refreshTransientBuildOnPSS;
 
     private Cache<Resource, BeanInfo> metadataCache;
     private Map<String, List<String>> contractMappings;
@@ -309,7 +309,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         if (isViewPopulated(ctx, view)) {
             if (canSkipTransientBuildRefresh(ctx, view, stateCtx)) {
                 // The view was already (re)built this request and holds no build-time-dynamic content, so re-applying
-                // the facelet would reproduce the identical tree. Skip it (see disableRefreshTransientBuild).
+                // the facelet would reproduce the identical tree. Skip it (see refreshTransientBuildOnPSS).
                 return;
             }
             Facelet facelet = faceletFactory.getFacelet(ctx, view.getViewId());
@@ -386,13 +386,15 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     }
 
     /**
-     * Determines whether the redundant re-apply of the facelet on an already-populated view may be skipped. Opt-in via
-     * {@code disableRefreshTransientBuild}; only safe under partial state saving for a non-transient view whose build
-     * this request involved no build-time-dynamic content ({@link RIConstants#DYNAMIC_TRANSIENT_BUILD}) and no dynamic
-     * component add/remove, since re-applying would then reproduce the identical tree.
+     * Determines whether the redundant re-apply of the facelet on an already-populated view may be skipped. Enabled by
+     * default (MyFaces {@code REFRESH_TRANSIENT_BUILD_ON_PSS=auto} parity); set {@code refreshTransientBuildOnPSS} to
+     * {@code true} to restore the legacy unconditional re-apply. The skip is only safe under partial state saving for a
+     * non-transient view whose build this request involved no build-time-dynamic content
+     * ({@link RIConstants#DYNAMIC_TRANSIENT_BUILD}) and no dynamic component add/remove, since re-applying would then
+     * reproduce the identical tree.
      */
     private boolean canSkipTransientBuildRefresh(FacesContext ctx, UIViewRoot view, StateContext stateCtx) {
-        return disableRefreshTransientBuild
+        return !refreshTransientBuildOnPSS
                 && !view.isTransient()
                 && stateCtx.isPartialStateSaving(ctx, view.getViewId())
                 && isEmpty(stateCtx.getDynamicActions())
@@ -867,7 +869,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             responseBufferSize = Integer.parseInt(FaceletsBufferSize.getDefaultValue());
         }
 
-        disableRefreshTransientBuild = webConfig.isOptionEnabled(BooleanWebContextInitParameter.DisableRefreshTransientBuild);
+        refreshTransientBuildOnPSS = webConfig.isOptionEnabled(BooleanWebContextInitParameter.RefreshTransientBuildOnPSS);
 
         LOGGER.fine("Initialization Successful");
 
