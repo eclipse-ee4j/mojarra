@@ -387,11 +387,10 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
     /**
      * Determines whether the redundant re-apply of the facelet on an already-populated view may be skipped. Enabled by
-     * default (MyFaces {@code REFRESH_TRANSIENT_BUILD_ON_PSS=auto} parity); set {@code refreshTransientBuildOnPSS} to
-     * {@code true} to restore the legacy unconditional re-apply. The skip is only safe under partial state saving for a
-     * non-transient view whose build this request involved no build-time-dynamic content
-     * ({@link RIConstants#DYNAMIC_TRANSIENT_BUILD}) and no dynamic component add/remove, since re-applying would then
-     * reproduce the identical tree.
+     * default; set {@code refreshTransientBuildOnPSS} to {@code true} to restore the legacy unconditional re-apply.
+     * The skip is only safe under partial state saving for a non-transient view whose build this request involved no
+     * build-time-dynamic content ({@link RIConstants#DYNAMIC_TRANSIENT_BUILD}) and no dynamic component add/remove,
+     * since re-applying would then reproduce the identical tree.
      */
     private boolean canSkipTransientBuildRefresh(FacesContext ctx, UIViewRoot view, StateContext stateCtx) {
         return !refreshTransientBuildOnPSS
