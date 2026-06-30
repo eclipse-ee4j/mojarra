@@ -872,7 +872,7 @@ public class WebConfiguration {
         EnableHttpMethodRestrictionPhaseListener("com.sun.faces.ENABLE_HTTP_METHOD_RESTRICTION_PHASE_LISTENER", false),
         FaceletsSkipComments(ViewHandler.FACELETS_SKIP_COMMENTS_PARAM_NAME, false),
         PartialStateSaving(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, true),
-        DisableRefreshTransientBuild("com.sun.faces.disableRefreshTransientBuild", false),
+        RefreshTransientBuildOnPSS("com.sun.faces.refreshTransientBuildOnPSS", false),
         GenerateUniqueServerStateIds("com.sun.faces.generateUniqueServerStateIds", true),
         InterpretEmptyStringSubmittedValuesAsNull(UIInput.EMPTY_STRING_AS_NULL_PARAM_NAME, false),
         AutoCompleteOffOnViewState("com.sun.faces.autoCompleteOffOnViewState", false),

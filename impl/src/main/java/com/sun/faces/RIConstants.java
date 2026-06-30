@@ -44,7 +44,7 @@ public class RIConstants {
      * Request-scoped flag set during a view build when a build-time-dynamic handler (a JSTL conditional/iteration or a
      * dynamic ui:include/ui:decorate/ui:composition) participates, marking the view as one whose facelet must be
      * re-applied on every (re)build. Read by {@code FaceletViewHandlingStrategy.buildView} to decide whether the
-     * redundant render-time re-apply may be skipped (see {@code disableRefreshTransientBuild}).
+     * redundant render-time re-apply may be skipped (see {@code refreshTransientBuildOnPSS}).
      */
     public static final String DYNAMIC_TRANSIENT_BUILD = FACES_PREFIX + "dynamicTransientBuild";
 
