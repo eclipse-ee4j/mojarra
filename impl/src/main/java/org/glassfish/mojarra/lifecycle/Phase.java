@@ -35,6 +35,7 @@ import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.PhaseListener;
 import jakarta.faces.lifecycle.Lifecycle;
 
+import org.glassfish.mojarra.cdi.CdiExtension;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.Timer;
 
@@ -156,10 +157,12 @@ public abstract class Phase {
             }
         }
 
-        fireCdiPhaseEvent(context, event, AfterPhase.Literal.of(event.getPhaseId()));
+        if (hasCdiPhaseObserver(context)) {
+            fireCdiPhaseEvent(context, event, AfterPhase.Literal.of(event.getPhaseId()));
 
-        if (event.getPhaseId() != PhaseId.ANY_PHASE) {
-            fireCdiPhaseEvent(context, event, AfterPhase.Literal.INSTANCE);
+            if (event.getPhaseId() != PhaseId.ANY_PHASE) {
+                fireCdiPhaseEvent(context, event, AfterPhase.Literal.INSTANCE);
+            }
         }
     }
 
@@ -181,11 +184,13 @@ public abstract class Phase {
             }
         }
 
-        if (event.getPhaseId() != PhaseId.ANY_PHASE) {
-            fireCdiPhaseEvent(context, event, BeforePhase.Literal.INSTANCE);
-        }
+        if (hasCdiPhaseObserver(context)) {
+            if (event.getPhaseId() != PhaseId.ANY_PHASE) {
+                fireCdiPhaseEvent(context, event, BeforePhase.Literal.INSTANCE);
+            }
 
-        fireCdiPhaseEvent(context, event, BeforePhase.Literal.of(event.getPhaseId()));
+            fireCdiPhaseEvent(context, event, BeforePhase.Literal.of(event.getPhaseId()));
+        }
 
         while (listenersIterator.hasNext()) {
             PhaseListener listener = listenersIterator.next();
@@ -207,6 +212,20 @@ public abstract class Phase {
     
     private static void fireCdiPhaseEvent(FacesContext context, PhaseEvent event, Annotation qualifier) {
         getCdiBeanManager(context).getEvent().select(PhaseEvent.class, qualifier).fire(event);
+    }
+
+    /**
+     * @return whether the application defines any CDI observer of a {@link PhaseEvent}, so the before/after
+     * phase dispatch can be skipped entirely in the common case where it does not. Decided once at CDI bootstrap
+     * (see {@link CdiExtension#isPhaseEventObserved()}); returns {@code false} when the extension is no longer
+     * registered (deployment shutting down, WELD-001325), where there are no observers to dispatch to.
+     */
+    private static boolean hasCdiPhaseObserver(FacesContext context) {
+        try {
+            return getCdiBeanManager(context).getExtension(CdiExtension.class).isPhaseEventObserved();
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
     // --------------------------------------------------------- Private Methods
