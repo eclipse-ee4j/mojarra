@@ -52,6 +52,7 @@ import jakarta.faces.component.FacesComponent;
 import jakarta.faces.component.behavior.FacesBehavior;
 import jakarta.faces.convert.FacesConverter;
 import jakarta.faces.event.NamedEvent;
+import jakarta.faces.event.PhaseEvent;
 import jakarta.faces.event.SystemEvent;
 import jakarta.faces.model.DataModel;
 import jakarta.faces.model.FacesDataModel;
@@ -103,6 +104,13 @@ public class CdiExtension implements Extension {
      * given system event (the common case — see {@link #processSystemEventObserver(ProcessObserverMethod)}).
      */
     private final Set<Class<?>> observedSystemEventTypes = ConcurrentHashMap.newKeySet();
+
+    /**
+     * Whether any CDI observer observes a Faces {@link PhaseEvent}. Lets {@code Phase} skip the four CDI phase
+     * event dispatches (and their qualifier allocations) it would otherwise fire before and after every phase
+     * when no observer can receive them (the common case — see {@link #processPhaseEventObserver(ProcessObserverMethod)}).
+     */
+    private volatile boolean phaseEventObserved;
 
     /**
      * Stores the logger.
@@ -238,6 +246,24 @@ public class CdiExtension implements Extension {
         } else if (observedType instanceof ParameterizedType parameterizedType && parameterizedType.getRawType() instanceof Class<?> rawClass) {
             observedSystemEventTypes.add(rawClass);
         }
+    }
+
+    /**
+     * ProcessObserverMethod:
+     * <ul>
+     * <li>record whether any observer observes a Faces {@link PhaseEvent}
+     * </ul>
+     * <p>
+     * Faces dispatches a CDI {@link PhaseEvent} (qualified with {@link jakarta.faces.event.BeforePhase} and
+     * {@link jakarta.faces.event.AfterPhase}) before and after every lifecycle phase. Recording their presence
+     * here lets {@code Phase} skip that dispatch entirely when no observer listens for them. Observers must
+     * observe a {@code PhaseEvent} (or subtype) to receive Faces phase events as CDI events, which is the
+     * contract of the feature.
+     *
+     * @param event the process observer method event
+     */
+    public void processPhaseEventObserver(@Observes ProcessObserverMethod<PhaseEvent, ?> event) {
+        phaseEventObserved = true;
     }
 
     /**
@@ -381,5 +407,12 @@ public class CdiExtension implements Extension {
      */
     public Set<Class<?>> getObservedSystemEventTypes() {
         return observedSystemEventTypes;
+    }
+
+    /**
+     * @return whether the application defines any CDI observer of a Faces {@link PhaseEvent}.
+     */
+    public boolean isPhaseEventObserved() {
+        return phaseEventObserved;
     }
 }
