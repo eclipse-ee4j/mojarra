@@ -121,6 +121,11 @@ public class InterfaceHandler extends TagHandlerImpl {
                         found = null != cc.getValueExpression(key);
                     }
                 }
+                // A declared default value satisfies a required attribute the page author omitted: cc.attrs.<name>
+                // resolves to that default, so it is not a missing-value error (matches the non-Development render).
+                if (!found) {
+                    found = null != cur.getValue("default");
+                }
                 if (!found) {
                     if (null == buf) {
                         buf = new StringBuilder();
