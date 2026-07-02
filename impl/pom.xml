@@ -103,7 +103,7 @@
         <dependency>
             <groupId>jakarta.el</groupId>
             <artifactId>jakarta.el-api</artifactId>
-            <version>6.1.0-M1</version>
+            <version>6.1.0-M2</version>
             <scope>provided</scope>
         </dependency>
     
