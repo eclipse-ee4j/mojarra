@@ -80,7 +80,7 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
      */
     private Map<Serializable, Object> defaultMap() {
         if (defaultMap == null) {
-            defaultMap = new HashMap<>();
+            defaultMap = new HashMap<>(8);
         }
         return defaultMap;
     }

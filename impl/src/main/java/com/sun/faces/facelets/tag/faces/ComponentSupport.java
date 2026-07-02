@@ -126,10 +126,9 @@ public final class ComponentSupport {
             }
         }
 
-        Map<String, UIComponent> facets = c.getFacets();
-        // remove any facets marked as deleted
-        if (facets.size() > 0) {
-            Set<Entry<String, UIComponent>> col = facets.entrySet();
+        // remove any facets marked as deleted (getFacetCount avoids allocating an empty FacetsMap when there are none)
+        if (c.getFacetCount() > 0) {
+            Set<Entry<String, UIComponent>> col = c.getFacets().entrySet();
             UIComponent fc;
             Entry<String, UIComponent> curEntry;
             for (Iterator<Entry<String, UIComponent>> itr = col.iterator(); itr.hasNext();) {
@@ -399,8 +398,8 @@ public final class ComponentSupport {
             }
         }
 
-        // mark all facets to be deleted
-        if (c.getFacets().size() > 0) {
+        // mark all facets to be deleted (getFacetCount avoids allocating an empty FacetsMap when there are none)
+        if (c.getFacetCount() > 0) {
             Set col = c.getFacets().entrySet();
             UIComponent fc;
             for (Iterator itr = col.iterator(); itr.hasNext();) {
@@ -456,7 +455,7 @@ public final class ComponentSupport {
         if (c.getChildCount() > 0) {
             for (Iterator itr = c.getChildren().iterator(); itr.hasNext();) {
                 d = (UIComponent) itr.next();
-                if (d.getFacets().size() > 0) {
+                if (d.getFacetCount() > 0) {
                     for (Iterator jtr = d.getFacets().values().iterator(); jtr.hasNext();) {
                         e = (UIComponent) jtr.next();
                         if (e.isTransient()) {

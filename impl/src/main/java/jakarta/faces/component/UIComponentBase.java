@@ -1327,6 +1327,13 @@ public abstract class UIComponentBase extends UIComponent {
                 values[3] = saveBindingsState(context);
             }
 
+            // MARK_CREATED is field-backed and no longer mirrored into the attributes map per component (see
+            // AttributesMap.put). Full state runs no buildView reconstruction on restore, so re-attach it here for
+            // restoreMarkersFromState to recover. Partial state omits it -- buildView re-establishes it each postback.
+            if (markCreated != null) {
+                getStateHelper().put(PropertyKeys.attributes, MARK_CREATED, markCreated);
+            }
+
             if (stateHelper != null) {
                 values[4] = stateHelper.saveState(context);
             }
@@ -2345,7 +2352,11 @@ public abstract class UIComponentBase extends UIComponent {
             // each refresh) that is never present when state is saved, so it stays field-only to avoid per-component
             // StateHelper traffic.
             boolean marker = component.markerPut(keyValue, value);
-            if (marker && MARK_DELETED.equals(keyValue)) {
+            if (marker && (MARK_DELETED.equals(keyValue) || MARK_CREATED.equals(keyValue))) {
+                // MARK_DELETED is a transient build-time flag; MARK_CREATED is field-backed (markCreated) and set on
+                // every component during buildView. Neither needs the per-component StateHelper mirror on the hot
+                // c:forEach re-apply path: MARK_DELETED is never saved, and MARK_CREATED is re-attached to the
+                // attributes map once at full-state save (saveState) -- partial state rebuilds it via buildView.
                 return null;
             }
 
