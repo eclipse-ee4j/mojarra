@@ -18,6 +18,7 @@ package com.sun.faces.application.view;
 
 import static com.sun.faces.RIConstants.DYNAMIC_COMPONENT;
 import static com.sun.faces.RIConstants.DYNAMIC_TRANSIENT_BUILD;
+import static com.sun.faces.RIConstants.VIEW_REBUILT_AT_RENDER;
 import static com.sun.faces.RIConstants.FACELETS_ENCODING_KEY;
 import static com.sun.faces.RIConstants.FLOW_DEFINITION_ID_SUFFIX;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.FaceletsBufferSize;
@@ -305,11 +306,14 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     @Override
     public void buildView(FacesContext ctx, UIViewRoot view) throws IOException {
         StateContext stateCtx = StateContext.getStateContext(ctx);
+        // Every path below rebuilds the tree from the facelet except the skip branch, which flips this to FALSE.
+        ctx.getAttributes().put(VIEW_REBUILT_AT_RENDER, Boolean.TRUE);
 
         if (isViewPopulated(ctx, view)) {
             if (canSkipTransientBuildRefresh(ctx, view, stateCtx)) {
                 // The view was already (re)built this request and holds no build-time-dynamic content, so re-applying
                 // the facelet would reproduce the identical tree. Skip it (see refreshTransientBuildOnPSS).
+                ctx.getAttributes().put(VIEW_REBUILT_AT_RENDER, Boolean.FALSE);
                 return;
             }
             Facelet facelet = faceletFactory.getFacelet(ctx, view.getViewId());
