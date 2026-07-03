@@ -48,6 +48,16 @@ public class RIConstants {
      */
     public static final String DYNAMIC_TRANSIENT_BUILD = RI_PREFIX + "dynamicTransientBuild";
 
+    /**
+     * Request-scoped flag recording whether the render-time {@code buildView} re-applied the facelet ({@code TRUE}) or
+     * skipped the re-apply for an already-populated static view ({@code FALSE}, see {@code refreshTransientBuildOnPSS}).
+     * Since {@code buildView} runs immediately before {@code renderView}, this reflects whether the tree the state
+     * manager is about to save was (re)built from the facelet this request. {@code saveView} reads it to skip the
+     * redundant whole-tree duplicate-id walk when the tree was not rebuilt (its ids were already validated when it was
+     * first built). Absence is treated as rebuilt, so the check runs by default.
+     */
+    public static final String VIEW_REBUILT_AT_RENDER = RI_PREFIX + "viewRebuiltAtRender";
+
     /*
      * <p>TLV Resource Bundle Location </p>
      */

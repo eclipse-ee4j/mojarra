@@ -20,6 +20,7 @@ import static jakarta.faces.component.visit.VisitHint.SKIP_ITERATION;
 import static jakarta.faces.component.visit.VisitResult.ACCEPT;
 import static java.util.logging.Level.FINEST;
 import static org.glassfish.mojarra.RIConstants.DYNAMIC_ACTIONS;
+import static org.glassfish.mojarra.RIConstants.VIEW_REBUILT_AT_RENDER;
 import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.DYNAMIC_COMPONENT;
 import static org.glassfish.mojarra.util.ComponentStruct.ADD;
 import static org.glassfish.mojarra.util.ComponentStruct.REMOVE;
@@ -453,7 +454,12 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
             return null;
         }
 
-        Util.checkIdUniqueness(context, viewRoot, new HashSet<>(64));
+        // Skip the whole-tree duplicate-id walk when the render-time build skipped the facelet re-apply: the tree is
+        // then identical to the one already validated when it was first built (see VIEW_REBUILT_AT_RENDER). A rebuilt
+        // or freshly-built (GET / navigation / JSTL) tree, or an unset flag, still runs the check.
+        if (!Boolean.FALSE.equals(context.getAttributes().get(VIEW_REBUILT_AT_RENDER))) {
+            Util.checkIdUniqueness(context, viewRoot, new HashSet<>(64));
+        }
 
         final Map<String, Object> stateMap = new HashMap<>();
         final StateContext stateContext = StateContext.getStateContext(context);

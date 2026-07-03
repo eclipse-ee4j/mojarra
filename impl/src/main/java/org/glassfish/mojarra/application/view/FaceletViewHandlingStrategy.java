@@ -37,6 +37,7 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.WARNING;
 import static org.glassfish.mojarra.RIConstants.DYNAMIC_TRANSIENT_BUILD;
+import static org.glassfish.mojarra.RIConstants.VIEW_REBUILT_AT_RENDER;
 import static org.glassfish.mojarra.RIConstants.FACELETS_ENCODING_KEY;
 import static org.glassfish.mojarra.RIConstants.FLOW_DEFINITION_ID_SUFFIX;
 import static org.glassfish.mojarra.context.StateContext.getStateContext;
@@ -300,11 +301,14 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     @Override
     public void buildView(FacesContext ctx, UIViewRoot view) throws IOException {
         StateContext stateCtx = StateContext.getStateContext(ctx);
+        // Every path below rebuilds the tree from the facelet except the skip branch, which flips this to FALSE.
+        ctx.getAttributes().put(VIEW_REBUILT_AT_RENDER, Boolean.TRUE);
 
         if (isViewPopulated(ctx, view)) {
             if (canSkipTransientBuildRefresh(ctx, view, stateCtx)) {
                 // The view was already (re)built this request and holds no build-time-dynamic content, so re-applying
                 // the facelet would reproduce the identical tree. Skip it (see refreshTransientBuildOnPSS).
+                ctx.getAttributes().put(VIEW_REBUILT_AT_RENDER, Boolean.FALSE);
                 return;
             }
             Facelet facelet = faceletFactory.getFacelet(ctx, view.getViewId());
