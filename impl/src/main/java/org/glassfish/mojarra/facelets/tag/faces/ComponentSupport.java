@@ -63,7 +63,7 @@ public final class ComponentSupport {
     public final static String MARK_CREATED = "facelets.MARK_ID";
 
     // Marks a component pruned during refresh and pending removal.
-    private final static String MARK_DELETED = "facelets.MARK_DELETED";
+    public final static String MARK_DELETED = "facelets.MARK_DELETED";
 
     // Marks a parent whose children were dynamically added or removed.
     public final static String MARK_CHILDREN_MODIFIED = "facelets.MARK_CHILDREN_MODIFIED";
