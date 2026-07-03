@@ -115,6 +115,7 @@ class PerfBenchIT extends BaseITNG {
     /** Full (non-ajax) form postbacks. */
     private static final List<String> POSTBACK = only(List.of(
             "form-inputs",
+            "form-invalid",
             "table-inputs",
             "repeat-inputs",
             "composite-inputs",
@@ -178,6 +179,19 @@ class PerfBenchIT extends BaseITNG {
         for (String scenario : POSTBACK_AJAX) {
             String html = get(client, scenario + ".xhtml");
             ajaxForms.put(scenario, parseForm(html, scenario + ".xhtml", true));
+        }
+
+        // The "unhappy path": post values that fail conversion/validation so every run exercises FacesMessage
+        // creation, UIInput invalid-marking, the skipped UPDATE_MODEL/INVOKE phases, redisplay of the submitted
+        // (rejected) value and h:messages rendering with content. "forbidden" trips the CDI prohibited-words
+        // validator; the non-numeric quantity/price trip convertNumber. Injected once; reposted verbatim each run.
+        FormSpec invalidForm = forms.get("form-invalid");
+        if (invalidForm != null) {
+            invalidForm.fields.replaceAll((name, value) ->
+                      name.endsWith(":name")     ? "forbidden"
+                    : name.endsWith(":quantity") ? "not-a-number"
+                    : name.endsWith(":price")    ? "xyz"
+                    : value);
         }
 
         get(client, "perf-stats?reset=1");

@@ -19,15 +19,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 /**
- * Shared row data for the table ({@code h:dataTable}), repeat ({@code ui:repeat}) and composite scenarios.
- * Composites are far heavier per row, so they iterate {@link #getCompositeRows()} (a smaller list) while the
- * plain table/repeat scenarios iterate the larger {@link #getReadonlyRows()} / {@link #getInputRows()}.
+ * Row data for the table ({@code h:dataTable}), repeat ({@code ui:repeat}), composite and unrolled
+ * ({@code c:forEach items}) scenarios. Scenarios group into four size tiers, each a single tunable constant below:
+ * {@link #getReadonlyRows() readonly} rows, {@link #getInputRows() input} rows (also the tier the flat forms match),
+ * {@link #getUnrolledRows() unrolled} rows, and nested {@link #getGroups() groups}. Each getter builds its list lazily
+ * so a view generates only the rows it renders.
  */
 @Named
 @ViewScoped
@@ -35,44 +36,53 @@ public class DataBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private static final int READONLY_ROWS = 200;
+    private static final int INPUT_ROWS = 35;
+    private static final int UNROLLED_ROWS = 100;
+    private static final int GROUPS = 5;
+    private static final int GROUP_ROWS = 10;
+
     @Inject
     private RowFactory rowFactory;
 
     private List<Row> readonlyRows;
     private List<Row> inputRows;
-    private List<Row> compositeRows;
-    private List<Row> ajaxRows;
+    private List<Row> unrolledRows;
     private List<Group> groups;
 
-    @PostConstruct
-    public void init() {
-        readonlyRows = rowFactory.generate(140);
-        inputRows = rowFactory.generate(25);
-        compositeRows = rowFactory.generate(100);
-        ajaxRows = rowFactory.generate(25);
-        groups = new ArrayList<>();
-        for (int g = 0; g < 5; g++) {
-            groups.add(new Group("Group " + g, rowFactory.generate(7)));
-        }
-    }
-
+    /** Readonly (outputs-only) table/repeat/composite rows, e.g. {@code #{dataBean.readonlyRows}}. */
     public List<Row> getReadonlyRows() {
+        if (readonlyRows == null) {
+            readonlyRows = rowFactory.generate(READONLY_ROWS);
+        }
         return readonlyRows;
     }
 
+    /** Per-row-input table/repeat/composite rows (plain and ajax), e.g. {@code #{dataBean.inputRows}}. */
     public List<Row> getInputRows() {
+        if (inputRows == null) {
+            inputRows = rowFactory.generate(INPUT_ROWS);
+        }
         return inputRows;
     }
 
-    public List<Row> getCompositeRows() {
-        return compositeRows;
+    /** Rows the {@code *-unrolled} {@code c:forEach} iterates, e.g. {@code #{dataBean.unrolledRows}}. */
+    public List<Row> getUnrolledRows() {
+        if (unrolledRows == null) {
+            unrolledRows = rowFactory.generate(UNROLLED_ROWS);
+        }
+        return unrolledRows;
     }
 
-    public List<Row> getAjaxRows() {
-        return ajaxRows;
-    }
-
+    /** Nested scenarios: {@value #GROUPS} groups of {@value #GROUP_ROWS} rows, e.g. {@code #{dataBean.groups}}. */
     public List<Group> getGroups() {
+        if (groups == null) {
+            List<Group> list = new ArrayList<>(GROUPS);
+            for (int g = 0; g < GROUPS; g++) {
+                list.add(new Group("Group " + g, rowFactory.generate(GROUP_ROWS)));
+            }
+            groups = list;
+        }
         return groups;
     }
 
