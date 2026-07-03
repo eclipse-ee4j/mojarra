@@ -43,7 +43,7 @@ public class DynamicToggleBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private static final int FIELD_COUNT = 820;
+    private static final int FIELD_COUNT = 500;
 
     public String toggle() {
         FacesContext context = FacesContext.getCurrentInstance();

@@ -18,54 +18,14 @@
 -->
 <html lang="#{facesContext.viewRoot.locale.language}"
     xmlns:h="jakarta.faces.html"
-    xmlns:f="jakarta.faces.core"
+    xmlns:ui="jakarta.faces.facelets"
 >
     <h:head>
         <title>form-inputs</title>
     </h:head>
     <h:body>
         <h:form id="form">
-            <h:panelGrid columns="2">
-                <h:outputLabel for="name" value="Name"/>
-                <h:inputText id="name" value="#{formBean.name}" required="true">
-                    <f:converter converterId="trimConverter"/>
-                    <f:validator validatorId="lengthRangeValidator"/>
-                    <f:validator validatorId="prohibitedWordsValidator"/>
-                </h:inputText>
-
-                <h:outputLabel for="description" value="Description"/>
-                <h:inputTextarea id="description" value="#{formBean.description}">
-                    <f:validator validatorId="lengthRangeValidator"/>
-                </h:inputTextarea>
-
-                <h:outputLabel for="quantity" value="Quantity"/>
-                <h:inputText id="quantity" value="#{formBean.quantity}">
-                    <f:convertNumber integerOnly="true"/>
-                    <f:validateLongRange minimum="0" maximum="10000"/>
-                </h:inputText>
-
-                <h:outputLabel for="price" value="Price"/>
-                <h:inputText id="price" value="#{formBean.price}">
-                    <f:convertNumber type="currency" currencyCode="EUR"/>
-                </h:inputText>
-
-                <h:outputLabel for="date" value="Date (yyyy-MM-dd)"/>
-                <h:inputText id="date" value="#{formBean.date}"/>
-
-                <h:outputLabel for="active" value="Active"/>
-                <h:selectBooleanCheckbox id="active" value="#{formBean.active}"/>
-
-                <h:outputLabel for="country" value="Country"/>
-                <h:selectOneMenu id="country" value="#{formBean.country}">
-                    <f:converter converterId="upperCaseConverter"/>
-                    <f:selectItems value="#{appConfig.countries}"/>
-                </h:selectOneMenu>
-
-                <h:outputLabel for="category" value="Category"/>
-                <h:selectOneRadio id="category" value="#{formBean.category}">
-                    <f:selectItems value="#{appConfig.categories}"/>
-                </h:selectOneRadio>
-            </h:panelGrid>
+            <ui:include src="/WEB-INF/includes/form-fields.xhtml"/>
 
             <h:commandButton id="submit" value="Submit" action="#{formBean.submit}"/>
             <h:messages id="messages" globalOnly="false"/>

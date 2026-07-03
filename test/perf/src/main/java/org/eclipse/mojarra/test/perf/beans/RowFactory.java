@@ -31,7 +31,9 @@ public class RowFactory {
             rows.add(new Row(
                     i,
                     "Item " + i,
-                    "Description for item " + i + " with some filler text",
+                    // Non-ASCII + HTML metacharacters exercise the slow char-by-char escaping path in
+                    // HtmlUtils.writeText; description is render-only (never a posted input) so it round-trips safely.
+                    "Ünïcode ‹" + i + "› — <b>café</b> & \"quoted\" 日本語 filler",
                     i * 3 + 1,
                     new BigDecimal("9.99").add(BigDecimal.valueOf(i)),
                     LocalDate.of(2026, 1, 1).plusDays(i % 365),
