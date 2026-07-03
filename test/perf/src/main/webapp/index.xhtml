@@ -23,9 +23,14 @@
         <title>Mojarra perf bench</title>
     </h:head>
     <h:body>
+        <!-- Resource components: outputStylesheet always relocates to head; outputScript target=head relocates
+             via the PostAddToView head-facet machinery, exercising the resource-relocation renderer path. -->
+        <h:outputStylesheet name="app.css"/>
+        <h:outputScript name="app.js" target="head"/>
         <h1>#{appConfig.appName}</h1>
         <ul>
             <li><h:link outcome="form-inputs"         value="form-inputs"/></li>
+			<li><h:link outcome="form-invalid"        value="form-invalid"/></li>
             <li><h:link outcome="table-readonly"      value="table-readonly"/></li>
             <li><h:link outcome="table-inputs"        value="table-inputs"/></li>
             <li><h:link outcome="repeat-readonly"     value="repeat-readonly"/></li>

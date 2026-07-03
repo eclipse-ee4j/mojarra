@@ -1,0 +1,3 @@
+/* perf-bench stylesheet resource (exercises resource relocation) */
+body { font-family: sans-serif; margin: 1rem; }
+.perf { color: #333; }

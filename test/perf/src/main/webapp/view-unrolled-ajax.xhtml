@@ -26,12 +26,12 @@
     </h:head>
     <h:body>
         <h:form id="form">
-            <c:forEach var="i" begin="1" end="165">
-                <h:panelGroup id="block#{i}" layout="block">
-                    <h:outputText value="alpha"/>
-                    <h:outputText value="beta"/>
-                    <h:outputText value="gamma"/>
-                    <h:outputText value="delta"/>
+            <c:forEach items="#{dataBean.unrolledRows}" var="row" varStatus="loop">
+                <h:panelGroup id="row_#{loop.index + 1}" layout="block">
+                    <h:outputText value="#{row.name}"/>
+                    <h:outputText value="#{row.description}"/>
+                    <h:outputText value="#{row.quantity}"/>
+                    <h:outputText value="#{row.active}"/>
                 </h:panelGroup>
             </c:forEach>
             <h:commandButton id="submit" value="Submit">

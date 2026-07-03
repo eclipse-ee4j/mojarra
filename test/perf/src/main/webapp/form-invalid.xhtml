@@ -18,18 +18,17 @@
 -->
 <html lang="#{facesContext.viewRoot.locale.language}"
     xmlns:h="jakarta.faces.html"
-    xmlns:c="jakarta.tags.core"
-    xmlns:cc="jakarta.faces.composite/cc"
+    xmlns:ui="jakarta.faces.facelets"
 >
     <h:head>
-        <title>composite-unrolled</title>
+        <title>form-invalid</title>
     </h:head>
     <h:body>
         <h:form id="form">
-            <c:forEach items="#{dataBean.unrolledRows}" var="row">
-                <cc:cell value="#{row.id}"/>
-            </c:forEach>
-            <h:commandButton id="submit" value="Submit" />
+            <ui:include src="/WEB-INF/includes/form-fields.xhtml"/>
+
+            <h:commandButton id="submit" value="Submit" action="#{formBean.submit}"/>
+            <h:messages id="messages" globalOnly="false"/>
         </h:form>
     </h:body>
 </html>
