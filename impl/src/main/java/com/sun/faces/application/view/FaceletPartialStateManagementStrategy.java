@@ -18,6 +18,7 @@ package com.sun.faces.application.view;
 
 import static com.sun.faces.RIConstants.DYNAMIC_ACTIONS;
 import static com.sun.faces.RIConstants.DYNAMIC_COMPONENT;
+import static com.sun.faces.RIConstants.VIEW_REBUILT_AT_RENDER;
 import static com.sun.faces.util.ComponentStruct.ADD;
 import static com.sun.faces.util.ComponentStruct.REMOVE;
 import static com.sun.faces.util.Util.isEmpty;
@@ -453,7 +454,12 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
             return null;
         }
 
-        Util.checkIdUniqueness(context, viewRoot, new HashSet<>(64));
+        // Skip the whole-tree duplicate-id walk when the render-time build skipped the facelet re-apply: the tree is
+        // then identical to the one already validated when it was first built (see VIEW_REBUILT_AT_RENDER). A rebuilt
+        // or freshly-built (GET / navigation / JSTL) tree, or an unset flag, still runs the check.
+        if (!Boolean.FALSE.equals(context.getAttributes().get(VIEW_REBUILT_AT_RENDER))) {
+            Util.checkIdUniqueness(context, viewRoot, new HashSet<>(64));
+        }
 
         final Map<String, Object> stateMap = new HashMap<>();
         final StateContext stateContext = StateContext.getStateContext(context);

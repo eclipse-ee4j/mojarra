@@ -378,7 +378,6 @@ public class RenderKitUtils {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private static void renderPassThruAttributesInternal(FacesContext context, ResponseWriter writer, UIComponent component,
             Attribute[] attributes, Map<String, List<ClientBehavior>> behaviors) throws IOException {
 
@@ -391,7 +390,9 @@ public class RenderKitUtils {
 
         List<String> setAttributes = getAttributesThatAreSet(component);
 
-        if (setAttributes != null && canBeOptimized(component, behaviors)) {
+        if (canBeOptimized(component, behaviors)) {
+            // Iterates only the attributes actually set (none => renders nothing but the optional single behavior),
+            // instead of the unoptimized path's reflective read of every known attribute.
             renderPassThruAttributesOptimized(context, writer, component, attributes, setAttributes, behaviors);
         } else {
             // this block should only be hit by custom components leveraging
@@ -403,12 +404,13 @@ public class RenderKitUtils {
 
     /**
      * Returns the names of the attributes that have been explicitly set on the given component, either as a literal value
-     * or as a value expression, or {@code null} when none have been set. This is the same list that
+     * or as a value expression, or an empty list when none have been set. This is the same list that
      * {@link #renderPassThruAttributes} consults to skip reflective reads of attributes that were never set.
      */
     @SuppressWarnings("unchecked")
     public static List<String> getAttributesThatAreSet(UIComponent component) {
-        return (List<String>) component.getAttributes().get(ATTRIBUTES_THAT_ARE_SET_KEY);
+        List<String> setAttributes = (List<String>) component.getAttributes().get(ATTRIBUTES_THAT_ARE_SET_KEY);
+        return setAttributes != null ? setAttributes : Collections.emptyList();
     }
 
     /**
