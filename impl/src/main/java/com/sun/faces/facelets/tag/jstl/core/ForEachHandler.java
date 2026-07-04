@@ -18,18 +18,23 @@ package com.sun.faces.facelets.tag.jstl.core;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import com.sun.faces.RIConstants;
 import com.sun.faces.facelets.tag.TagHandlerImpl;
+import com.sun.faces.facelets.tag.faces.ComponentSupport;
 import com.sun.faces.facelets.tag.faces.IterationIdManager;
 
 import jakarta.el.ValueExpression;
 import jakarta.el.VariableMapper;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.event.PhaseId;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.TagAttribute;
 import jakarta.faces.view.facelets.TagAttributeException;
@@ -89,6 +94,14 @@ public final class ForEachHandler extends TagHandlerImpl {
 
     private final TagAttribute varStatus;
 
+    // Request-attribute key prefix under which an indexable c:forEach records, at its restore-time (re)build, the
+    // iteration it produced (range plus, for items, the element snapshot) and the child components it created. When
+    // the same view is built a second time in the same request (render under partial state saving) with an unchanged
+    // iteration, that subtree is still correct - the index-based var expressions render content changes live - so the
+    // redundant re-apply of the body is skipped and the retained children are un-marked from the parent refresh's
+    // pending deletion. Keyed additionally by parent identity + tag location.
+    private static final String ITERATION_STATE = "com.sun.faces.facelets.forEachIterationState:";
+
     /**
      * @param config
      */
@@ -132,6 +145,44 @@ public final class ForEachHandler extends TagHandlerImpl {
             }
             src = b;
         }
+
+        // See ITERATION_STATE. Retaining the built subtree across the redundant render-time re-apply is only safe when
+        // the iteration is positionally indexable, so each var reference reads its element by position: items over a
+        // List or array (IndexedValueExpression, a live index read) or a begin/end integer range (build-time-baked
+        // value). A Map is not indexable - it iterates as a MappedValueExpression over a snapshotted Map.Entry, with no
+        // positional index to compare against or read live - so it, and any other non-indexable Collection, is left to
+        // the normal re-apply path.
+        boolean indexable = src != null && (srcVE == null || src instanceof List || src.getClass().isArray());
+        Map<Object, Object> contextAttributes = ctx.getFacesContext().getAttributes();
+        String stateKey = null;
+        int[] range = null;
+        List<UIComponent> childrenBeforeBuild = null;
+        if (indexable) {
+            stateKey = ITERATION_STATE + System.identityHashCode(parent) + ':' + tag.getLocation();
+            range = new int[] { s, e, m };
+            if (ctx.getFacesContext().getCurrentPhaseId() == PhaseId.RESTORE_VIEW) {
+                // Restore-time (re)build under PSS rebuilds this transient subtree from scratch; snapshot the existing
+                // children so the ones created below can be recorded for the render pass to retain. Clear the
+                // build-time-dynamic marker first: if applying the body re-sets it, the body holds nested dynamic
+                // content (a nested c:forEach/c:if/...) that could change without this item list changing, so it must
+                // not be skip-retained - only a fully static body is safe.
+                childrenBeforeBuild = new ArrayList<>(parent.getChildren());
+                contextAttributes.remove(RIConstants.DYNAMIC_TRANSIENT_BUILD);
+            } else {
+                Object[] state = (Object[]) contextAttributes.get(stateKey);
+                if (state != null && sameIteration(state, range, srcVE == null ? null : src)) {
+                    // Unchanged since the restore-time build: retain the existing subtree (undo the pending-deletion
+                    // marks the parent's refresh set on it) and skip re-applying the body.
+                    @SuppressWarnings("unchecked")
+                    List<UIComponent> retained = (List<UIComponent>) state[2];
+                    for (UIComponent child : retained) {
+                        child.getAttributes().remove(ComponentSupport.MARK_DELETED);
+                    }
+                    return;
+                }
+            }
+        }
+
         if (src != null) {
             Iterator itr = toIterator(src);
             if (itr != null) {
@@ -207,6 +258,70 @@ public final class ForEachHandler extends TagHandlerImpl {
                 }
             }
         }
+
+        if (childrenBeforeBuild != null) {
+            // The body just applied re-set the dynamic marker iff it holds nested build-time-dynamic content; capture
+            // that, then restore the marker this handler itself set (this c:forEach is build-time-dynamic).
+            boolean nestedDynamic = contextAttributes.containsKey(RIConstants.DYNAMIC_TRANSIENT_BUILD);
+            markDynamicTransientBuild(ctx);
+
+            List<UIComponent> created = new ArrayList<>();
+            for (UIComponent child : parent.getChildren()) {
+                if (!childrenBeforeBuild.contains(child)) {
+                    created.add(child);
+                }
+            }
+            // Record (enabling the render-pass skip) only for a static body that actually created the subtree here: a
+            // nested-dynamic body could change with this item list unchanged, and an empty delta means this build did
+            // not create the subtree (e.g. full state saving already restored it) so there is nothing to retain.
+            if (!nestedDynamic && !created.isEmpty()) {
+                contextAttributes.put(stateKey, new Object[] { range, srcVE == null ? null : snapshotElements(src), created });
+            }
+        }
+    }
+
+    /**
+     * Whether the recorded iteration matches the current one: same range and, for items, the same element sequence
+     * (element-wise {@link Object#equals equality}; items without a value-based {@code equals} fall back to identity,
+     * as a per-element refresh diff would). {@code currentItems} is {@code null} for a begin/end integer range.
+     */
+    private static boolean sameIteration(Object[] state, int[] range, Object currentItems) {
+        if (!Arrays.equals((int[]) state[0], range)) {
+            return false;
+        }
+        List<?> recordedItems = (List<?>) state[1];
+        if (currentItems == null) {
+            return recordedItems == null;
+        }
+        return recordedItems != null && sameElements(recordedItems, currentItems);
+    }
+
+    private static boolean sameElements(List<?> recorded, Object currentItems) {
+        boolean list = currentItems instanceof List;
+        int size = list ? ((List<?>) currentItems).size() : Array.getLength(currentItems);
+        if (recorded.size() != size) {
+            return false;
+        }
+        for (int i = 0; i < size; i++) {
+            Object a = recorded.get(i);
+            Object b = list ? ((List<?>) currentItems).get(i) : Array.get(currentItems, i);
+            if (a == null ? b != null : !a.equals(b)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static List<Object> snapshotElements(Object src) {
+        if (src instanceof List) {
+            return new ArrayList<>((List<?>) src);
+        }
+        int length = Array.getLength(src);
+        List<Object> copy = new ArrayList<>(length);
+        for (int i = 0; i < length; i++) {
+            copy.add(Array.get(src, i));
+        }
+        return copy;
     }
 
     private ValueExpression capture(String name, VariableMapper vars) {
