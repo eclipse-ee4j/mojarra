@@ -125,14 +125,15 @@ public class HtmlResponseWriter extends ResponseWriter {
     // Enables scripts to be included in attribute values
     private Boolean isScriptInAttributeValueEnabled;
 
-    // Internal buffer used when outputting properly escaped CData information.
-    //
+    // Internal buffers used when outputting properly escaped CData information. Lazily allocated on first
+    // CDATA/script/style write: a plain page never enters the writingCdata path, so eagerly allocating these
+    // (~1.1KB) on every writer — and several writers are created per render — is pure allocation pressure.
     private final static int cdataBufferSize = 1024;
-    private char[] cdataBuffer = new char[cdataBufferSize];
+    private char[] cdataBuffer;
     private int cdataBufferLength = 0;
     // Secondary cdata buffer, used for writeText
     private final static int cdataTextBufferSize = 128;
-    private char[] cdataTextBuffer = new char[cdataTextBufferSize];
+    private char[] cdataTextBuffer;
 
     private Map<String, Object> passthroughAttributes;
 
@@ -880,13 +881,15 @@ public class HtmlResponseWriter extends ResponseWriter {
             if (textLen > cdataTextBufferSize) {
                 writeEscaped(textStr.toCharArray(), 0, textLen);
             } else if (textLen >= 16) { // >16, < cdataTextBufferSize
-                textStr.getChars(0, textLen, cdataTextBuffer, 0);
-                writeEscaped(cdataTextBuffer, 0, textLen);
+                char[] buf = cdataTextBuffer();
+                textStr.getChars(0, textLen, buf, 0);
+                writeEscaped(buf, 0, textLen);
             } else { // <16
+                char[] buf = cdataTextBuffer();
                 for (int i = 0; i < textLen; i++) {
-                    cdataTextBuffer[i] = textStr.charAt(i);
+                    buf[i] = textStr.charAt(i);
                 }
-                writeEscaped(cdataTextBuffer, 0, textLen);
+                writeEscaped(buf, 0, textLen);
             }
         }
     }
@@ -1304,6 +1307,23 @@ public class HtmlResponseWriter extends ResponseWriter {
     }
 
     /*
+     * lazily-allocated CDATA buffers; only touched on the writingCdata path
+     */
+    private char[] cdataBuffer() {
+        if (cdataBuffer == null) {
+            cdataBuffer = new char[cdataBufferSize];
+        }
+        return cdataBuffer;
+    }
+
+    private char[] cdataTextBuffer() {
+        if (cdataTextBuffer == null) {
+            cdataTextBuffer = new char[cdataTextBufferSize];
+        }
+        return cdataTextBuffer;
+    }
+
+    /*
      * append a character array to the cdatabuffer
      */
     private void appendBuffer(char[] cbuf) throws IOException {
@@ -1313,7 +1333,7 @@ public class HtmlResponseWriter extends ResponseWriter {
         if (cbuf.length >= cdataBufferSize) { // bigger than the buffer, direct write
             writer.write(cbuf);
         }
-        System.arraycopy(cbuf, 0, cdataBuffer, cdataBufferLength, cbuf.length);
+        System.arraycopy(cbuf, 0, cdataBuffer(), cdataBufferLength, cbuf.length);
         cdataBufferLength = cdataBufferLength + cbuf.length;
     }
 
@@ -1324,7 +1344,7 @@ public class HtmlResponseWriter extends ResponseWriter {
         if (cdataBufferLength + 1 >= cdataBufferSize) {
             flushBuffer();
         }
-        cdataBuffer[cdataBufferLength] = c;
+        cdataBuffer()[cdataBufferLength] = c;
         cdataBufferLength++;
     }
 
