@@ -125,20 +125,26 @@ class PerfBenchIT extends BaseIT {
             Map.entry("table-readonly", "table-readonly.xhtml"),
             Map.entry("repeat-readonly", "repeat-readonly.xhtml"),
             Map.entry("composite-readonly", "composite-readonly.xhtml"),
+            Map.entry("foreach-readonly", "foreach-readonly.xhtml"),
             Map.entry("viewparam-get", "viewparam-get.xhtml?id=42")));
 
-    /** Full (non-ajax) form postbacks. */
+    /** Full (non-ajax) form postbacks. The {@code *-build} scenarios are readonly (no input fields), so their
+     *  postback isolates state restore + encode from any input-processing cost. */
     private static final List<String> POSTBACK = only(List.of(
             "form-inputs",
             "form-invalid",
             "table-inputs",
             "repeat-inputs",
             "composite-inputs",
+            "foreach-inputs",
             "table-nested",
             "repeat-nested",
             "composite-nested",
-            "composite-unrolled",
-            "view-unrolled"));
+            "foreach-nested",
+            "table-build",
+            "repeat-build",
+            "composite-build",
+            "foreach-build"));
 
     /** Ajax-partial postbacks. Same body fields as their non-ajax twin plus the
      *  {@code jakarta.faces.partial.*} markers and the {@code Faces-Request} header. */
@@ -146,7 +152,12 @@ class PerfBenchIT extends BaseIT {
             "form-inputs-ajax",
             "table-inputs-ajax",
             "repeat-inputs-ajax",
-            "view-unrolled-ajax",
+            "composite-inputs-ajax",
+            "foreach-inputs-ajax",
+            "table-nested-ajax",
+            "repeat-nested-ajax",
+            "composite-nested-ajax",
+            "foreach-nested-ajax",
             "dynamic-form-ajax",
             "dynamic-toggle-ajax"));
 

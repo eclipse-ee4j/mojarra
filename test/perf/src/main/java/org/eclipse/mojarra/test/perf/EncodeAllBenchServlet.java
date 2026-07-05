@@ -38,7 +38,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * counting writer; uses only standard {@code jakarta.faces} API, so the same endpoint runs on Mojarra
  * and MyFaces for an apples-to-apples render comparison.
  *
- * <p>{@code GET /encodeall-bench?scenario=composite-unrolled&warmup=50&runs=2000} reports ns per
+ * <p>{@code GET /encodeall-bench?scenario=composite-build&warmup=50&runs=2000} reports ns per
  * render and the output character count.
  */
 @WebServlet("/encodeall-bench")
@@ -50,7 +50,7 @@ public class EncodeAllBenchServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String scenario = request.getParameter("scenario");
         if (scenario == null || scenario.isBlank()) {
-            scenario = "composite-unrolled";
+            scenario = "composite-build";
         }
         int warmup = intParam(request, "warmup", 50);
         int runs = intParam(request, "runs", 2000);

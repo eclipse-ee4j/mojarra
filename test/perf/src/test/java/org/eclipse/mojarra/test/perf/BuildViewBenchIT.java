@@ -38,7 +38,7 @@ import org.openqa.selenium.WebDriver;
  *
  * <p>Gated behind {@code -Dbuildview=true}. Iteration counts reuse {@code -Dperf.warmup}/{@code
  * -Dperf.runs} (defaults 50/2000); {@code -Dperf.scenarios=<one>} selects the view (default
- * composite-unrolled).
+ * composite-build).
  */
 @EnabledIfSystemProperty(named = "buildview", matches = "true")
 class BuildViewBenchIT extends BaseIT {
@@ -61,9 +61,9 @@ class BuildViewBenchIT extends BaseIT {
 
     @Test
     void buildView() throws Exception {
-        String scenario = System.getProperty("perf.scenarios", "composite-unrolled").trim();
+        String scenario = System.getProperty("perf.scenarios", "composite-build").trim();
         if (scenario.isEmpty() || scenario.contains(",")) {
-            scenario = "composite-unrolled";
+            scenario = "composite-build";
         }
 
         HttpClient client = HttpClient.newBuilder()
