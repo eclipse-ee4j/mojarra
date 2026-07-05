@@ -138,7 +138,8 @@ class PerfBenchIT extends BaseIT {
             "repeat-nested",
             "composite-nested",
             "composite-unrolled",
-            "view-unrolled"));
+            "view-unrolled",
+            "view-unrolled-nested"));
 
     /** Ajax-partial postbacks. Same body fields as their non-ajax twin plus the
      *  {@code jakarta.faces.partial.*} markers and the {@code Faces-Request} header. */
