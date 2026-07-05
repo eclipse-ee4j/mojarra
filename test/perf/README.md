@@ -175,35 +175,41 @@ mvn clean verify -Dperf=true \
 
 ## Scenarios
 
-Row data for the table/repeat/composite/unrolled scenarios comes from one shared `DataBean`, sized by four
+Row data for the table/repeat/composite/foreach scenarios comes from one shared `DataBean`, sized by four
 constants — one per tier — so a whole tier is tuned by editing a single number: `READONLY_ROWS` (200),
-`INPUT_ROWS` (35), `UNROLLED_ROWS` (100) and nested `GROUPS`×`GROUP_ROWS` (5×10). The counts are calibrated so
-every scenario costs roughly ~2–3 ms per request on tomcat-mojarra, keeping per-scenario times comparable —
-with the caveat that a single per-tier count can't fully equalise the three structures (a composite costs
-~1.5× a plain row, a nested ui:repeat ~0.4×), so composites read a little hot and `repeat-nested` a little
-cold. The rows themselves are realistic `Row` records (typed fields, a non-ASCII/HTML-metachar description
-exercising the slow escaping path), and the `*-unrolled` scenarios iterate the same rows via `c:forEach items`.
+`INPUT_ROWS` (35), `FOREACH_ROWS` (100) and nested `GROUPS`×`GROUP_ROWS` (5×10). The rows themselves are
+realistic `Row` records (typed fields, a non-ASCII/HTML-metachar description exercising the slow escaping path).
 The two `dynamic-*` scenarios are sized by the `FIELD_COUNT` constant of their backing bean, and the flat forms
 by the shared `/WEB-INF/includes/form-fields.xhtml` field body. `index` and `viewparam-get` are intentionally
 left small.
 
+### Component-family matrix
+
+Four component families each span up to six variants. The family fixes the *structure*; the variant fixes the
+*request shape* and whether inputs are present:
+
+| family | iterator | readonly (GET) | inputs | nested | build | inputs-ajax | nested-ajax |
+|---|---|:-:|:-:|:-:|:-:|:-:|:-:|
+| **table** | `h:dataTable` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| **repeat** | `ui:repeat` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| **composite** | composite components | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| **foreach** | `c:forEach items` (build-time unrolled) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+
+- **readonly** — GET render, outputs only, no form: isolates fresh `buildView` + encode (no state restore). Sized by `READONLY_ROWS` (200); `foreach-readonly` by `FOREACH_ROWS` (100).
+- **inputs** — full postback, per-row inputs + managed converters/validators (`INPUT_ROWS`, 35): full lifecycle over a flat iteration.
+- **nested** — full postback, the iterator inside itself two levels deep with per-row inputs (`GROUPS`×`GROUP_ROWS`, 5×10): isolates per-row child-state save/restore.
+- **build** — full postback of a **readonly** (no-input) tree: empty ARV/PV/UMV, so it isolates the state-**restore** path + encode from any input processing — the representative postback cost for readonly content. `table-build`/`repeat-build` re-post the standard readonly tree (`READONLY_ROWS`); `composite-build` (the #4811 all-NamingContainer case) and `foreach-build` (flat unrolled outputs) are the `c:forEach`-built trees (`FOREACH_ROWS`, delta-free restore).
+- **inputs-ajax** / **nested-ajax** — ajax twins of `inputs`/`nested`, submitting `<f:ajax execute="@form" render="…">`; the driver sends a partial-ajax POST and refreshes `ViewState` from the XML response.
+
+The GET `readonly` and postback `build` variants of the same family render the same tree, giving a clean
+`buildView` (GET) vs `restore` (postback) A/B. Everything else is a full postback (all six phases on POST).
+
+Scenarios outside the matrix:
+
 - `index` — landing page (smallest baseline); also relocates a stylesheet + script via `h:outputStylesheet`/`h:outputScript`
 - `form-inputs` — flat multi-section form (product/contact/address/company/payment/preferences) sharing `/WEB-INF/includes/form-fields.xhtml`: text/textarea/select/checkbox/radio inputs over managed converters+validators and Bean Validation; `country` uses a `Map`-valued `f:selectItems` (label→code). The hero `name`/`quantity`/`price` fields stay flat; the bulk sit in nested typed section view-models on `FormBean` (two-level `BeanELResolver` path)
 - `form-invalid` — same shared field body as `form-inputs`, but the driver posts values that fail conversion/validation (`name=forbidden` trips the CDI prohibited-words validator; non-numeric quantity/price trip `convertNumber`) so every run exercises `FacesMessage` creation, `UIInput` invalid-marking, the **skipped** Update Model/Invoke phases, redisplay of the rejected values and `h:messages` rendering with content
-- `table-readonly` — h:dataTable, outputs only
-- `table-inputs` — h:dataTable, per-row inputs + converters/validators
-- `table-nested` — h:dataTable ∋ h:dataTable with a per-row input composite; UIData twin of `composite-nested`, isolating UIData's per-row child-state save/restore against ui:repeat's
-- `repeat-readonly` — ui:repeat, outputs only
-- `repeat-inputs` — ui:repeat, per-row inputs
-- `repeat-nested` — ui:repeat ∋ ui:repeat, per-row inputs
-- `composite-readonly` — readonly composite component instances
-- `composite-inputs` — input composite component instances
-- `composite-nested` — composite component nested inside ui:repeat
-- `composite-unrolled` — *static* tree of composite components built by `c:forEach items` (all NamingContainers — the issue #4811 pattern); a postback rebuilds and re-renders the whole composite tree at scale (its restore is delta-free, so the state-restore walk is skipped)
-- `view-unrolled` — flat *static* tree built by `c:forEach items` (output blocks, no inputs); delta-free full postback exercising `restoreViewRootOnly` + the descendant mark-id cache + full render at scale
 - `form-inputs-ajax` — ajax twin of `form-inputs` (same shared field body): submits via `<f:ajax execute="@form" render="@form messages">`; additionally the `name` field carries **two** `f:ajax` on distinct events (keyup+blur), which flips the client-behavior chain and Mojarra's *unoptimized* pass-through-attribute renderer path (enabled via the fragment's `ajax` param)
-- `table-inputs-ajax`, `repeat-inputs-ajax` — same as their non-ajax twins but submit via `<f:ajax execute="@form" render="@form messages">`; driver sends a partial-ajax POST and refreshes `ViewState` from the XML response
-- `view-unrolled-ajax` — ajax twin of `view-unrolled`: same flat static tree, `@form` ajax postback (`restoreViewRootOnly` + partial-response render at scale)
 - `dynamic-form-ajax` — the idiomatic **dynamic components** pattern: a request-scoped bean holds the container via `binding`, and an `f:event type="postAddToView"` listener (`DynamicFormBean#build`) **programmatically** builds `FIELD_COUNT` labelled inputs each time the view is (re)built, rather than declaring them in the facelet. The tree structure is identical every request, so the ajax postback runs the full lifecycle (decode/validate/update + partial render) over the dynamically-built inputs exactly like `form-inputs-ajax`. Unlike `dynamic-toggle-ajax` it does **not** touch the dynamic add/remove machinery (the components are built during the normal view (re)build, not after it) — it isolates the cost of `binding` resolution plus programmatic component construction, and is portable across implementations.
 - `dynamic-toggle-ajax` — each ajax toggle adds or removes a `FIELD_COUNT`-input subtree under the in-view `container` via `getChildren().add()/clear()` in the action. Because the mutation happens **after** `markInitialState`, this is the scenario that drives Mojarra's dynamic add/remove path — `StateContext` dynamic-action tracking, the `DYNAMIC_COMPONENT` marker, and full-state-save/restore of the dynamic subtree — which no structurally-static scenario reaches. It is the one for benchmarking that path. On Mojarra the dynamic subtree is replayed on restore, so toggles alternate add↔remove; MyFaces re-adds it each request rather than persisting it across the postback.
 - `viewparam-get` — GET with `<f:metadata><f:viewParam><f:viewAction></f:metadata>` so the GET runs the **entire** lifecycle (Apply Request Values → Render Response), not just Restore View + Render Response.

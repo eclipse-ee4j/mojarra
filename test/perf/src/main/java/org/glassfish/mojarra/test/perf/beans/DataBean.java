@@ -24,10 +24,10 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 /**
- * Row data for the table ({@code h:dataTable}), repeat ({@code ui:repeat}), composite and unrolled
+ * Row data for the table ({@code h:dataTable}), repeat ({@code ui:repeat}), composite and foreach
  * ({@code c:forEach items}) scenarios. Scenarios group into four size tiers, each a single tunable constant below:
  * {@link #getReadonlyRows() readonly} rows, {@link #getInputRows() input} rows (also the tier the flat forms match),
- * {@link #getUnrolledRows() unrolled} rows, and nested {@link #getGroups() groups}. Each getter builds its list lazily
+ * {@link #getForeachRows() foreach} rows, and nested {@link #getGroups() groups}. Each getter builds its list lazily
  * so a view generates only the rows it renders.
  */
 @Named
@@ -38,7 +38,7 @@ public class DataBean implements Serializable {
 
     private static final int READONLY_ROWS = 200;
     private static final int INPUT_ROWS = 35;
-    private static final int UNROLLED_ROWS = 100;
+    private static final int FOREACH_ROWS = 100;
     private static final int GROUPS = 5;
     private static final int GROUP_ROWS = 10;
 
@@ -47,7 +47,7 @@ public class DataBean implements Serializable {
 
     private List<Row> readonlyRows;
     private List<Row> inputRows;
-    private List<Row> unrolledRows;
+    private List<Row> foreachRows;
     private List<Group> groups;
 
     /** Readonly (outputs-only) table/repeat/composite rows, e.g. {@code #{dataBean.readonlyRows}}. */
@@ -66,12 +66,12 @@ public class DataBean implements Serializable {
         return inputRows;
     }
 
-    /** Rows the {@code *-unrolled} {@code c:forEach} iterates, e.g. {@code #{dataBean.unrolledRows}}. */
-    public List<Row> getUnrolledRows() {
-        if (unrolledRows == null) {
-            unrolledRows = rowFactory.generate(UNROLLED_ROWS);
+    /** Rows the {@code foreach-*} {@code c:forEach} iterates, e.g. {@code #{dataBean.foreachRows}}. */
+    public List<Row> getForeachRows() {
+        if (foreachRows == null) {
+            foreachRows = rowFactory.generate(FOREACH_ROWS);
         }
-        return unrolledRows;
+        return foreachRows;
     }
 
     /** Nested scenarios: {@value #GROUPS} groups of {@value #GROUP_ROWS} rows, e.g. {@code #{dataBean.groups}}. */

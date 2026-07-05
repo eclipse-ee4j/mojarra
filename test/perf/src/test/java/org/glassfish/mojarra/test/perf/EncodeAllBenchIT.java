@@ -38,7 +38,7 @@ import ee.jakarta.tck.faces.util.selenium.BaseITNG;
  *
  * <p>Gated behind {@code -Drender=true}. Iteration counts reuse {@code -Dperf.warmup}/{@code
  * -Dperf.runs} (defaults 50/2000); {@code -Dperf.scenarios=<one>} selects the view (default
- * composite-unrolled).
+ * composite-build).
  */
 @EnabledIfSystemProperty(named = "render", matches = "true")
 class EncodeAllBenchIT extends BaseITNG {
@@ -48,9 +48,9 @@ class EncodeAllBenchIT extends BaseITNG {
 
     @Test
     void renderResponse() throws Exception {
-        String scenario = System.getProperty("perf.scenarios", "composite-unrolled").trim();
+        String scenario = System.getProperty("perf.scenarios", "composite-build").trim();
         if (scenario.isEmpty() || scenario.contains(",")) {
-            scenario = "composite-unrolled";
+            scenario = "composite-build";
         }
 
         HttpClient client = HttpClient.newBuilder()

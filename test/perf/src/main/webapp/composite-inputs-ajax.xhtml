@@ -19,24 +19,23 @@
 <html lang="#{facesContext.viewRoot.locale.language}"
     xmlns:h="jakarta.faces.html"
     xmlns:f="jakarta.faces.core"
-    xmlns:c="jakarta.tags.core"
+    xmlns:ui="jakarta.faces.facelets"
+    xmlns:cc="jakarta.faces.composite/cc"
 >
     <h:head>
-        <title>view-unrolled-ajax</title>
+        <title>composite-inputs-ajax</title>
     </h:head>
     <h:body>
         <h:form id="form">
-            <c:forEach items="#{dataBean.unrolledRows}" var="row" varStatus="loop">
-                <h:panelGroup id="row_#{loop.index + 1}" layout="block">
-                    <h:outputText value="#{row.name}"/>
-                    <h:outputText value="#{row.description}"/>
-                    <h:outputText value="#{row.quantity}"/>
-                    <h:outputText value="#{row.active}"/>
-                </h:panelGroup>
-            </c:forEach>
-            <h:commandButton id="submit" value="Submit">
-                <f:ajax execute="@form" render="@form"/>
+            <h:panelGroup id="rows" layout="block">
+                <ui:repeat value="#{dataBean.inputRows}" var="row">
+                    <cc:inputs row="#{row}"/>
+                </ui:repeat>
+            </h:panelGroup>
+            <h:commandButton id="submit" value="Save" action="#{dataBean.save}">
+                <f:ajax execute="@form" render="rows messages"/>
             </h:commandButton>
+            <h:messages id="messages" globalOnly="false"/>
         </h:form>
     </h:body>
 </html>
