@@ -55,8 +55,10 @@
                 <f:convertNumber type="currency" currencyCode="EUR"/>
             </h:inputText>
 
-            <h:outputLabel for="date" value="Date (yyyy-MM-dd)"/>
-            <h:inputText id="date" value="#{formBean.date}"/>
+            <h:outputLabel for="date" value="Date"/>
+            <h:inputText id="date" value="#{formBean.date}">
+                <f:convertDateTime type="localDate"/>
+            </h:inputText>
 
             <h:outputLabel for="active" value="Active"/>
             <h:selectBooleanCheckbox id="active" value="#{formBean.active}"/>
