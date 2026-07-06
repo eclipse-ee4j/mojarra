@@ -386,14 +386,11 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
                 return null;
             }
 
-            // Identify the Locale to use for parsing
-            Locale locale = getLocale(context);
-
-            // Create and configure the parser to be used
-            parser = getDateFormat(locale, true);
-            if (timeZone != null) {
-                parser.setTimeZone(timeZone);
-            }
+            // Create and configure the parser to be used, reused per FacesContext across equal configurations (see
+            // getCachedFormatter). Unlike the formatter it is built with forParsing=true, so it is cached under a
+            // distinct key: for the java.time local/offset/zoned types the parser normalizes fixed-width whitespace,
+            // which the formatter must not.
+            parser = getCachedFormatter(context, true);
 
             // Perform the requested parsing
             returnValue = parser.parse(value);
@@ -501,7 +498,7 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
             // Create and configure the formatter to be used, reused per FacesContext across equal configurations (see
             // getCachedFormatter): it is a function of this converter's configuration only, and rebuilding it per value
             // dominated allocation on conversion-heavy views (e.g. a per-row f:convertDateTime unrolled by c:forEach).
-            FormatWrapper formatter = getCachedFormatter(context);
+            FormatWrapper formatter = getCachedFormatter(context, false);
 
             // Perform the requested formatting
             return formatter.format(value);
@@ -552,12 +549,15 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
     }
 
     /**
-     * Return the fully configured formatter for {@link #getAsString}, cached in the FacesContext attributes keyed by
-     * this converter's format-determining configuration. The formatter is a function of that configuration only, so two
-     * converters with equal configuration share one instance within a FacesContext - single-threaded, so sequential
-     * {@code format} calls are safe - turning a per-value format rebuild into a single build per configuration.
+     * Return the fully configured formatter for {@link #getAsString} ({@code forParsing == false}) or {@link #getAsObject}
+     * ({@code forParsing == true}), cached in the FacesContext attributes keyed by this converter's format-determining
+     * configuration plus {@code forParsing}. The formatter is a function of those inputs only, so two converters with equal
+     * configuration share one instance within a FacesContext - single-threaded, so sequential {@code format}/{@code parse}
+     * calls are safe - turning a per-value formatter rebuild into a single build per configuration. Parser and formatter
+     * are cached separately because they diverge for the java.time local/offset/zoned types (the parser normalizes
+     * fixed-width whitespace).
      */
-    private FormatWrapper getCachedFormatter(FacesContext context) {
+    private FormatWrapper getCachedFormatter(FacesContext context, boolean forParsing) {
         Locale locale = getLocale(context);
         Map<Object, Object> attributes = context.getAttributes();
         @SuppressWarnings("unchecked")
@@ -566,10 +566,10 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
             cache = new FormatterCache();
             attributes.put(FORMATTER_CACHE_KEY, cache);
         }
-        String key = formatterKey(locale);
+        String key = formatterKey(locale, forParsing);
         FormatWrapper formatter = cache.get(key);
         if (formatter == null) {
-            formatter = getDateFormat(locale, false);
+            formatter = getDateFormat(locale, forParsing);
             if (timeZone != null) {
                 formatter.setTimeZone(timeZone);
             }
@@ -579,10 +579,10 @@ public class DateTimeConverter implements Converter, PartialStateHolder {
     }
 
     /** Key over every property {@link #getCachedFormatter} reads to build the formatter. */
-    private String formatterKey(Locale locale) {
+    private String formatterKey(Locale locale, boolean forParsing) {
         return new StringBuilder(48).append(pattern).append('|').append(type).append('|').append(dateStyle).append('|')
                 .append(timeStyle).append('|').append(locale).append('|')
-                .append(timeZone == null ? null : timeZone.getID()).toString();
+                .append(timeZone == null ? null : timeZone.getID()).append('|').append(forParsing).toString();
     }
 
     private FormatWrapper getDateFormat(Locale locale, boolean forParsing) {
