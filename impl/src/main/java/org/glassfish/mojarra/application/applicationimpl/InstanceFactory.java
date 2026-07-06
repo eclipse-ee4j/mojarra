@@ -152,6 +152,9 @@ public class InstanceFactory {
     private final ViewMemberInstanceFactoryMetadataMap<String, Object> validatorMap;
     private final Map<Class<?>, Constructor<?>> constructorCache;
 
+    // Standard built-in (jakarta.faces.convert) by-type converters, reused per target class (see createConverter).
+    private final Map<Class<?>, Converter<?>> builtinConverterByType = new ConcurrentHashMap<>();
+
     private final Set<String> defaultValidatorIds;
     private volatile Map<String, String> defaultValidatorInfo;
 
@@ -454,6 +457,11 @@ public class InstanceFactory {
     public Converter<?> createConverter(Class<?> targetClass) {
         notNull("targetClass", targetClass);
 
+        Converter<?> cached = builtinConverterByType.get(targetClass);
+        if (cached != null) {
+            return cached;
+        }
+
         Converter<?> returnVal = CdiUtils.createConverter(getBeanManager(), targetClass);
         if (returnVal != null) {
             return returnVal;
@@ -488,9 +496,25 @@ public class InstanceFactory {
                 ((DateTimeConverter) returnVal).setTimeZone(systemTimeZone);
             }
             associate.getAnnotationManager().applyConverterAnnotations(FacesContext.getCurrentInstance(), returnVal);
+
+            // Reuse standard built-in converters per target class: the resolution walk, reflective (re)creation and
+            // annotation application are otherwise paid on every conversion.
+            if (isReusableByType(returnVal)) {
+                builtinConverterByType.put(targetClass, returnVal);
+            }
         }
 
         return returnVal;
+    }
+
+    /**
+     * A by-type converter may be reused per target class when it is one of the standard built-in converters
+     * (package {@code jakarta.faces.convert}); these are effectively immutable once resolved for a given target class
+     * (EnumConverter's target enum type and any application-scoped default time zone are fixed). Custom
+     * {@code converter-for-class} registrations are excluded as they may be stateful or scoped.
+     */
+    private static boolean isReusableByType(Converter<?> converter) {
+        return converter.getClass().getName().startsWith("jakarta.faces.convert.");
     }
 
     /*
