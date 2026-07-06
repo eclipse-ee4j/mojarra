@@ -39,7 +39,9 @@
             price=<h:outputText value="#{viewParamBean.row.price}">
                       <f:convertNumber type="currency" currencyCode="EUR"/>
                   </h:outputText>
-            date=<h:outputText value="#{viewParamBean.row.date}"/>
+            date=<h:outputText value="#{viewParamBean.row.date}">
+                     <f:convertDateTime type="localDate"/>
+                 </h:outputText>
             active=#{viewParamBean.row.active}
         </h:panelGroup>
     </h:body>

@@ -52,7 +52,9 @@
                 </h:column>
                 <h:column>
                     <f:facet name="header">Date</f:facet>
-                    <h:inputText value="#{row.date}"/>
+                    <h:inputText value="#{row.date}">
+                        <f:convertDateTime type="localDate"/>
+                    </h:inputText>
                 </h:column>
                 <h:column>
                     <f:facet name="header">Active</f:facet>
