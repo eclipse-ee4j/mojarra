@@ -23,7 +23,9 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Currency;
+import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import jakarta.faces.component.PartialStateHolder;
@@ -658,15 +660,11 @@ public class NumberConverter implements Converter, PartialStateHolder {
                 return (String) value;
             }
 
-            // Identify the Locale to use for formatting
-            Locale locale = getLocale(context);
-
-            // Create and configure the formatter to be used
-            NumberFormat formatter = getNumberFormat(locale);
-            if (pattern != null && pattern.length() != 0 || "currency".equals(type)) {
-                configureCurrency(formatter);
-            }
-            configureFormatter(formatter);
+            // Create and configure the formatter to be used, reused per FacesContext across equal configurations (see
+            // getCachedFormatter): the formatter is a function of this converter's configuration only, and rebuilding
+            // it per value - a DecimalFormat plus a locale-data DecimalFormatSymbols - dominated allocation on
+            // conversion-heavy views (e.g. a per-row f:convertNumber unrolled by c:forEach).
+            NumberFormat formatter = getCachedFormatter(context);
 
             // Perform the requested formatting
             return formatter.format(value);
@@ -820,13 +818,72 @@ public class NumberConverter implements Converter, PartialStateHolder {
      * @param locale The <code>Locale</code> used to select formatting and parsing conventions
      * @throws ConverterException if no instance can be created
      */
+    private static final String FORMATTER_CACHE_KEY = "jakarta.faces.convert.NumberConverter.formatters";
+
+    /**
+     * Upper bound on the per-FacesContext formatter cache, kept as an LRU so a view whose converters are all
+     * differently configured (e.g. a per-row {@code pattern}) cannot retain an unbounded number of formatters for the
+     * request, while a recurring working set stays cached. Normal views use only a handful of configurations.
+     */
+    private static final int FORMATTER_CACHE_LIMIT = 64;
+
+    /** Bounded, access-ordered (LRU) formatter cache stored per {@link FacesContext}. */
+    private static final class FormatterCache extends LinkedHashMap<String, NumberFormat> {
+
+        private static final long serialVersionUID = 1L;
+
+        FormatterCache() {
+            super(16, 0.75f, true);
+        }
+
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<String, NumberFormat> eldest) {
+            return size() > FORMATTER_CACHE_LIMIT;
+        }
+    }
+
+    /**
+     * Return the fully configured formatter for {@link #getAsString}, cached in the FacesContext attributes keyed by
+     * this converter's format-determining configuration. The formatter is a function of that configuration only, so two
+     * converters with equal configuration share one instance within a FacesContext - single-threaded, so sequential
+     * {@code format} calls are safe - turning a per-value {@code DecimalFormat} + locale-data
+     * {@code DecimalFormatSymbols} rebuild into a single build per configuration.
+     */
+    private NumberFormat getCachedFormatter(FacesContext context) throws Exception {
+        Locale locale = getLocale(context);
+        Map<Object, Object> attributes = context.getAttributes();
+        @SuppressWarnings("unchecked")
+        Map<String, NumberFormat> cache = (Map<String, NumberFormat>) attributes.get(FORMATTER_CACHE_KEY);
+        if (cache == null) {
+            cache = new FormatterCache();
+            attributes.put(FORMATTER_CACHE_KEY, cache);
+        }
+        String key = formatterKey(locale);
+        NumberFormat formatter = cache.get(key);
+        if (formatter == null) {
+            formatter = getNumberFormat(locale);
+            if (pattern != null && pattern.length() != 0 || "currency".equals(type)) {
+                configureCurrency(formatter);
+            }
+            configureFormatter(formatter);
+            cache.put(key, formatter);
+        }
+        return formatter;
+    }
+
+    /** Key over every property {@link #getCachedFormatter} reads to build the formatter. */
+    private String formatterKey(Locale locale) {
+        return new StringBuilder(64).append(pattern).append('|').append(type).append('|').append(locale).append('|')
+                .append(currencyCode).append('|').append(currencySymbol).append('|').append(groupingUsed).append('|')
+                .append(minIntegerDigits).append('|').append(maxIntegerDigits).append('|').append(minFractionDigits)
+                .append('|').append(maxFractionDigits).toString();
+    }
+
     private NumberFormat getNumberFormat(Locale locale) {
 
         if (pattern == null && type == null) {
             throw new IllegalArgumentException("Either pattern or type must" + " be specified.");
         }
-
-        // PENDING(craigmcc) - Implement pooling if needed for performance?
 
         // If pattern is specified, type is ignored
         if (pattern != null) {
