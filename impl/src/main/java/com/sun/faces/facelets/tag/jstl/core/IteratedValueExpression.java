@@ -46,7 +46,7 @@ public final class IteratedValueExpression extends ValueExpression {
      */
     @Override
     public Object getValue(ELContext context) {
-        Collection collection = (Collection) orig.getValue(context);
+        Collection collection = (Collection) IterationBaseCache.getValue(context, orig);
         Iterator iterator = collection.iterator();
         Object result = null;
         int i = start;
