@@ -37,7 +37,9 @@
             <h:inputText value="#{cc.attrs.row.price}">
                 <f:convertNumber type="currency" currencyCode="EUR"/>
             </h:inputText>
-            <h:inputText value="#{cc.attrs.row.date}"/>
+            <h:inputText value="#{cc.attrs.row.date}">
+                <f:convertDateTime type="localDate"/>
+            </h:inputText>
             <h:selectBooleanCheckbox value="#{cc.attrs.row.active}"/>
         </h:panelGroup>
     </cc:implementation>

@@ -150,6 +150,7 @@ class PerfBenchIT extends BaseIT {
      *  {@code jakarta.faces.partial.*} markers and the {@code Faces-Request} header. */
     private static final List<String> POSTBACK_AJAX = only(List.of(
             "form-inputs-ajax",
+            "form-invalid-ajax",
             "table-inputs-ajax",
             "repeat-inputs-ajax",
             "composite-inputs-ajax",
@@ -207,18 +208,9 @@ class PerfBenchIT extends BaseIT {
             ajaxForms.put(scenario, parseForm(html, scenario + ".xhtml", true));
         }
 
-        // The "unhappy path": post values that fail conversion/validation so every run exercises FacesMessage
-        // creation, UIInput invalid-marking, the skipped UPDATE_MODEL/INVOKE phases, redisplay of the submitted
-        // (rejected) value and h:messages rendering with content. "forbidden" trips the CDI prohibited-words
-        // validator; the non-numeric quantity/price trip convertNumber. Injected once; reposted verbatim each run.
-        FormSpec invalidForm = forms.get("form-invalid");
-        if (invalidForm != null) {
-            invalidForm.fields.replaceAll((name, value) ->
-                      name.endsWith(":name")     ? "forbidden"
-                    : name.endsWith(":quantity") ? "not-a-number"
-                    : name.endsWith(":price")    ? "xyz"
-                    : value);
-        }
+        // The unhappy path, for both the full-postback and ajax invalid forms (see injectInvalidValues).
+        injectInvalidValues(forms.get("form-invalid"));
+        injectInvalidValues(ajaxForms.get("form-invalid-ajax"));
 
         get(client, "perf-stats?reset=1");
 
@@ -277,6 +269,22 @@ class PerfBenchIT extends BaseIT {
         for (String scenario : POSTBACK_AJAX) {
             assertTrue(scenarioCount(stats, scenario, "RENDER_RESPONSE") >= minimumExpected,
                     scenario + " RENDER_RESPONSE count below " + minimumExpected);
+        }
+    }
+
+    /**
+     * The "unhappy path": replace the happy-path field values with ones that fail conversion/validation, so every run
+     * exercises FacesMessage creation, UIInput invalid-marking, the skipped UPDATE_MODEL/INVOKE phases, redisplay of
+     * the submitted (rejected) value and h:messages rendering with content. "forbidden" trips the CDI prohibited-words
+     * validator; the non-numeric quantity/price trip convertNumber. Injected once; reposted verbatim each run.
+     */
+    private static void injectInvalidValues(FormSpec form) {
+        if (form != null) {
+            form.fields.replaceAll((name, value) ->
+                      name.endsWith(":name")     ? "forbidden"
+                    : name.endsWith(":quantity") ? "not-a-number"
+                    : name.endsWith(":price")    ? "xyz"
+                    : value);
         }
     }
 

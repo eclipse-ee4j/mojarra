@@ -33,7 +33,9 @@
                         <h:outputText value="#{row.price}">
                             <f:convertNumber type="currency" currencyCode="EUR"/>
                         </h:outputText>
-                        - <h:outputText value="#{row.date}"/>
+                        - <h:outputText value="#{row.date}">
+                              <f:convertDateTime type="localDate"/>
+                          </h:outputText>
                         - active=#{row.active}
                     </li>
                 </ui:repeat>
