@@ -81,7 +81,7 @@ public final class MappedValueExpression extends ValueExpression {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getValue(ELContext context) {
-        Object base = orig.getValue(context);
+        Object base = IterationBaseCache.getValue(context, orig);
         if (base != null) {
             context.setPropertyResolved(true);
             return (T) new Entry((Map<Object, Object>) base, key);
@@ -97,7 +97,7 @@ public final class MappedValueExpression extends ValueExpression {
      */
     @Override
     public void setValue(ELContext context, Object value) {
-        Object base = orig.getValue(context);
+        Object base = IterationBaseCache.getValue(context, orig);
         if (base != null) {
             context.setPropertyResolved(false);
             context.getELResolver().setValue(context, base, key, value);
@@ -111,7 +111,7 @@ public final class MappedValueExpression extends ValueExpression {
      */
     @Override
     public boolean isReadOnly(ELContext context) {
-        Object base = orig.getValue(context);
+        Object base = IterationBaseCache.getValue(context, orig);
         if (base != null) {
             context.setPropertyResolved(false);
             return context.getELResolver().isReadOnly(context, base, key);
@@ -126,7 +126,7 @@ public final class MappedValueExpression extends ValueExpression {
      */
     @Override
     public Class<?> getType(ELContext context) {
-        Object base = orig.getValue(context);
+        Object base = IterationBaseCache.getValue(context, orig);
         if (base != null) {
             context.setPropertyResolved(false);
             return context.getELResolver().getType(context, base, key);
