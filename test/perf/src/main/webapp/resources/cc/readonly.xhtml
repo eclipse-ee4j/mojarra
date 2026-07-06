@@ -31,7 +31,9 @@
             - <h:outputText value="#{cc.attrs.row.price}">
                   <f:convertNumber type="currency" currencyCode="EUR"/>
               </h:outputText>
-            - <h:outputText value="#{cc.attrs.row.date}"/>
+            - <h:outputText value="#{cc.attrs.row.date}">
+                  <f:convertDateTime type="localDate"/>
+              </h:outputText>
             - active=#{cc.attrs.row.active}
         </h:panelGroup>
     </cc:implementation>

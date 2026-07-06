@@ -52,11 +52,11 @@
     <!-- Must match amount of stateful pages in this perf bench WAR. -->
     <context-param>
         <param-name>org.glassfish.mojarra.numberOfLogicalViews</param-name>
-        <param-value>25</param-value>
+        <param-value>26</param-value>
     </context-param>
     <context-param>
         <param-name>org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION</param-name>
-        <param-value>25</param-value>
+        <param-value>26</param-value>
     </context-param>
 
     <!-- Escape hatch for any other context-param; pass raw <context-param> XML via -Dwebapp.additionalContextParams=... -->
