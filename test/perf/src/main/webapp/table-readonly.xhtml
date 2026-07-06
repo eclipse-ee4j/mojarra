@@ -37,7 +37,9 @@
             </h:column>
             <h:column>
                 <f:facet name="header">Date</f:facet>
-                <h:outputText value="#{row.date}"/>
+                <h:outputText value="#{row.date}">
+                    <f:convertDateTime type="localDate"/>
+                </h:outputText>
             </h:column>
             <h:column><f:facet name="header">Active</f:facet>#{row.active}</h:column>
         </h:dataTable>

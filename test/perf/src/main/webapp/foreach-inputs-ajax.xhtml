@@ -40,7 +40,9 @@
                         <h:inputText value="#{row.price}">
                             <f:convertNumber type="currency" currencyCode="EUR"/>
                         </h:inputText>
-                        <h:inputText value="#{row.date}"/>
+                        <h:inputText value="#{row.date}">
+                            <f:convertDateTime type="localDate"/>
+                        </h:inputText>
                         <h:selectBooleanCheckbox value="#{row.active}"/>
                     </h:panelGroup>
                 </c:forEach>
