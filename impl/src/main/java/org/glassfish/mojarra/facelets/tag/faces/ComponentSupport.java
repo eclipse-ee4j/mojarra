@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -87,6 +88,10 @@ public final class ComponentSupport {
     public static final String MARK_CREATED_REMOVED = StateContext.class.getName() + "_MARK_CREATED_REMOVED";
 
     private final static String IMPLICIT_PANEL = "org.glassfish.mojarra.facelets.IMPLICIT_PANEL";
+
+    // Request-scoped IdentityHashMap<UIComponent, Object[]{index, generation}> memoizing each refreshed parent's
+    // MARK_CREATED -> component index for findChildByTagIdIndexed. Lives for the build; keyed by parent identity.
+    private final static String REFRESH_INDEX = "org.glassfish.mojarra.facelets.refreshIndex";
 
     /**
      * Key to a FacesContext scoped Map where the keys are UIComponent instances and the values are Tag instances.
@@ -251,7 +256,72 @@ public final class ComponentSupport {
         if (context.getAttributes().get(BUILDING_FRESH_SUBTREE) == Boolean.TRUE) {
             return null;
         }
-        return findChildByTagIdFullStateSaving(context, parent, id);
+        return findChildByTagIdIndexed(context, parent, id);
+    }
+
+    /**
+     * Indexed variant of the refresh-time tag-id lookup. A parent's body applies one child tag after another, each
+     * calling this for a distinct id; the plain scan re-reads every sibling's MARK_CREATED (a string-keyed
+     * AttributesMap.get) on every call, so reconciling a K-child parent costs O(K^2) map reads. Instead build a
+     * MARK_CREATED -> component index once per parent and look up in O(1). The index is request-scoped and guarded
+     * by the parent's child+facet count: a body that creates a new child (count grows) rebuilds it, so it can never
+     * return a stale or detached component. The facetName fast-path and coverage mirror
+     * {@link #findChildByTagIdFullStateSaving} exactly.
+     */
+    private static UIComponent findChildByTagIdIndexed(FacesContext context, UIComponent parent, String id) {
+        String facetName = getFacetName(parent);
+        if (facetName != null) {
+            UIComponent facet = parent.getFacet(facetName);
+            // A facet name without a matching facet occurs with composite-component facets; fall through to the index.
+            if (facet != null && id.equals(facet.getAttributes().get(MARK_CREATED))) {
+                return facet;
+            }
+        }
+        return refreshIndex(context, parent).get(id);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Map<String, UIComponent> refreshIndex(FacesContext context, UIComponent parent) {
+        Map<UIComponent, Object[]> cache = (Map<UIComponent, Object[]>) context.getAttributes().get(REFRESH_INDEX);
+        if (cache == null) {
+            cache = new IdentityHashMap<>();
+            context.getAttributes().put(REFRESH_INDEX, cache);
+        }
+        int generation = parent.getChildCount() + parent.getFacetCount();
+        Object[] entry = cache.get(parent);
+        if (entry == null || (Integer) entry[1] != generation) {
+            entry = new Object[] { buildTagIdIndex(parent), generation };
+            cache.put(parent, entry);
+        }
+        return (Map<String, UIComponent>) entry[0];
+    }
+
+    private static Map<String, UIComponent> buildTagIdIndex(UIComponent parent) {
+        Map<String, UIComponent> index = new HashMap<>();
+        if (parent.getFacetCount() > 0) {
+            for (UIComponent facet : parent.getFacets().values()) {
+                indexTagId(index, facet);
+            }
+        }
+        List<UIComponent> children = parent.getChildren();
+        for (int i = 0, len = children.size(); i < len; i++) {
+            UIComponent c = children.get(i);
+            indexTagId(index, c);
+            if (c instanceof UIPanel && c.getAttributes().containsKey(IMPLICIT_PANEL)) {
+                for (UIComponent c2 : c.getChildren()) {
+                    indexTagId(index, c2);
+                }
+            }
+        }
+        return index;
+    }
+
+    private static void indexTagId(Map<String, UIComponent> index, UIComponent c) {
+        String cid = (String) c.getAttributes().get(MARK_CREATED);
+        if (cid != null) {
+            // First put wins, matching the scan's facets-then-children, top-to-bottom first-match order.
+            index.putIfAbsent(cid, c);
+        }
     }
 
     private static UIComponent findChildByTagIdFullStateSaving(FacesContext context, UIComponent parent, String id) {
