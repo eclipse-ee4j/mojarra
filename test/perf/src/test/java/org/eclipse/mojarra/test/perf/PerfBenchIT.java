@@ -230,15 +230,26 @@ class PerfBenchIT extends BaseIT {
         get(client, "perf-stats?reset=1");
 
         long startWall = System.nanoTime();
-        for (int i = 0; i < RUNS; i++) {
-            for (String url : GET_ONLY.values()) {
+        // Block-wise measurement: run each scenario RUNS times back-to-back rather than round-robin, so its
+        // code+data stay cache-resident within its block. This isolates intrinsic per-phase cost from the
+        // cross-scenario cache interleaving. Warmup above stays round-robin so shared lifecycle code is still compiled against
+        // every scenario's types (realistic mixed JIT state). Each form's ViewState went stale during the prior
+        // block, so re-GET a live ViewState at the start of each block before posting (never submit an expired one).
+        for (String url : GET_ONLY.values()) {
+            for (int i = 0; i < RUNS; i++) {
                 get(client, url);
             }
-            for (FormSpec form : forms.values()) {
-                postAndRefresh(client, form);
+        }
+        for (Map.Entry<String, FormSpec> entry : forms.entrySet()) {
+            refreshViewState(client, entry.getKey(), entry.getValue());
+            for (int i = 0; i < RUNS; i++) {
+                postAndRefresh(client, entry.getValue());
             }
-            for (FormSpec form : ajaxForms.values()) {
-                ajaxPostAndRefresh(client, form);
+        }
+        for (Map.Entry<String, FormSpec> entry : ajaxForms.entrySet()) {
+            refreshViewState(client, entry.getKey(), entry.getValue());
+            for (int i = 0; i < RUNS; i++) {
+                ajaxPostAndRefresh(client, entry.getValue());
             }
         }
         long elapsedMs = (System.nanoTime() - startWall) / 1_000_000L;
@@ -297,6 +308,20 @@ class PerfBenchIT extends BaseIT {
     private void postAndRefresh(HttpClient client, FormSpec form) throws IOException, InterruptedException {
         String body = post(client, form);
         Matcher vs = VIEW_STATE.matcher(body);
+        if (vs.find()) {
+            form.fields.put("jakarta.faces.ViewState", vs.group(1) != null ? vs.group(1) : vs.group(2));
+        }
+    }
+
+    /**
+     * Re-GET the scenario page to install a live ViewState into the form: in the block-wise measurement loop a
+     * form's stored ViewState goes stale (and, under server-side state saving, gets evicted) while the previous
+     * scenario's block runs, so the block's first post would otherwise submit an expired ViewState. Only the
+     * ViewState is replaced; the form's input values (including injected invalids) are left intact.
+     */
+    private void refreshViewState(HttpClient client, String scenario, FormSpec form) throws IOException, InterruptedException {
+        String html = get(client, scenario + ".xhtml");
+        Matcher vs = VIEW_STATE.matcher(html);
         if (vs.find()) {
             form.fields.put("jakarta.faces.ViewState", vs.group(1) != null ? vs.group(1) : vs.group(2));
         }
