@@ -33,7 +33,7 @@
             <h:commandButton id="submit" value="Submit" action="#{formBean.submit}">
                 <f:ajax execute="@form" render="@form messages"/>
             </h:commandButton>
-            <h:messages id="messages" globalOnly="false"/>
+            <h:messages id="messages" globalOnly="true"/>
         </h:form>
     </h:body>
 </html>

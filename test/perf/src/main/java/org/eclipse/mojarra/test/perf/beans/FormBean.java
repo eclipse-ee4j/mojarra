@@ -160,7 +160,7 @@ public class FormBean implements Serializable {
     public static class Address implements Serializable {
         private static final long serialVersionUID = 1L;
         private String street = "Main Street";
-        private String houseNumber = "42";
+        private Integer houseNumber = 42;
         private String addition = "B";
         private String postalCode = "1000 AA";
         private String city = "Amsterdam";
@@ -169,8 +169,8 @@ public class FormBean implements Serializable {
 
         public String getStreet() { return street; }
         public void setStreet(String street) { this.street = street; }
-        public String getHouseNumber() { return houseNumber; }
-        public void setHouseNumber(String houseNumber) { this.houseNumber = houseNumber; }
+        public Integer getHouseNumber() { return houseNumber; }
+        public void setHouseNumber(Integer houseNumber) { this.houseNumber = houseNumber; }
         public String getAddition() { return addition; }
         public void setAddition(String addition) { this.addition = addition; }
         public String getPostalCode() { return postalCode; }
@@ -233,8 +233,8 @@ public class FormBean implements Serializable {
         private static final long serialVersionUID = 1L;
         private String cardName = "A. Acme";
         private String cardNumber = "4111111111111111";
-        private String expiryMonth = "12";
-        private String expiryYear = "2030";
+        private Integer expiryMonth = 12;
+        private Integer expiryYear = 2030;
         private String cvc = "123";
         private String iban = "NL91ABNA0417164300";
         private String currency = "EUR";
@@ -243,10 +243,10 @@ public class FormBean implements Serializable {
         public void setCardName(String cardName) { this.cardName = cardName; }
         public String getCardNumber() { return cardNumber; }
         public void setCardNumber(String cardNumber) { this.cardNumber = cardNumber; }
-        public String getExpiryMonth() { return expiryMonth; }
-        public void setExpiryMonth(String expiryMonth) { this.expiryMonth = expiryMonth; }
-        public String getExpiryYear() { return expiryYear; }
-        public void setExpiryYear(String expiryYear) { this.expiryYear = expiryYear; }
+        public Integer getExpiryMonth() { return expiryMonth; }
+        public void setExpiryMonth(Integer expiryMonth) { this.expiryMonth = expiryMonth; }
+        public Integer getExpiryYear() { return expiryYear; }
+        public void setExpiryYear(Integer expiryYear) { this.expiryYear = expiryYear; }
         public String getCvc() { return cvc; }
         public void setCvc(String cvc) { this.cvc = cvc; }
         public String getIban() { return iban; }
@@ -284,19 +284,19 @@ public class FormBean implements Serializable {
     public static class Shipping implements Serializable {
         private static final long serialVersionUID = 1L;
         private String street = "Depot Road";
-        private String houseNumber = "7";
+        private Integer houseNumber = 7;
         private String postalCode = "2000 BB";
         private String city = "Rotterdam";
         private String country = "NL";
         private String method = "Standard";
         private String instructions = "Leave at reception";
         private boolean giftWrap = false;
-        private String deliveryDate = "2026-02-01";
+        private LocalDate deliveryDate = LocalDate.of(2026, 2, 1);
 
         public String getStreet() { return street; }
         public void setStreet(String street) { this.street = street; }
-        public String getHouseNumber() { return houseNumber; }
-        public void setHouseNumber(String houseNumber) { this.houseNumber = houseNumber; }
+        public Integer getHouseNumber() { return houseNumber; }
+        public void setHouseNumber(Integer houseNumber) { this.houseNumber = houseNumber; }
         public String getPostalCode() { return postalCode; }
         public void setPostalCode(String postalCode) { this.postalCode = postalCode; }
         public String getCity() { return city; }
@@ -309,7 +309,7 @@ public class FormBean implements Serializable {
         public void setInstructions(String instructions) { this.instructions = instructions; }
         public boolean isGiftWrap() { return giftWrap; }
         public void setGiftWrap(boolean giftWrap) { this.giftWrap = giftWrap; }
-        public String getDeliveryDate() { return deliveryDate; }
-        public void setDeliveryDate(String deliveryDate) { this.deliveryDate = deliveryDate; }
+        public LocalDate getDeliveryDate() { return deliveryDate; }
+        public void setDeliveryDate(LocalDate deliveryDate) { this.deliveryDate = deliveryDate; }
     }
 }
