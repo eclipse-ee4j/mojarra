@@ -26,11 +26,14 @@ import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.FormatStyle;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import jakarta.faces.application.Application;
 import jakarta.faces.component.UIPanel;
 import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
 import org.junit.jupiter.api.AfterEach;
@@ -55,9 +58,13 @@ public class DateTimeConverterTest {
         facesContext = Mockito.mock(FacesContext.class);
         UIViewRoot viewRoot = Mockito.mock(UIViewRoot.class);
         Application application = Mockito.mock(Application.class);
+        ExternalContext externalContext = Mockito.mock(ExternalContext.class);
+        Map<String, Object> applicationMap = new HashMap<>();
 
         Mockito.when(facesContext.getViewRoot()).thenReturn(viewRoot);
         Mockito.when(facesContext.getApplication()).thenReturn(application);
+        Mockito.when(facesContext.getExternalContext()).thenReturn(externalContext);
+        Mockito.when(externalContext.getApplicationMap()).thenReturn(applicationMap);
         Mockito.when(viewRoot.createUniqueId()).thenReturn("test");
         Mockito.when(viewRoot.getLocale()).thenReturn(Locale.US);
 
