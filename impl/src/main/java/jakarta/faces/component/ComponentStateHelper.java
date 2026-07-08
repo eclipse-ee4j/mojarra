@@ -526,6 +526,22 @@ class ComponentStateHelper implements StateHelper, TransientStateHelper {
 
     @Override
     public Object putTransient(Object key, Object value) {
+        // A null value removes the entry rather than storing it: neither getTransient overload distinguishes a stored
+        // null from an absent key (both fall back to the default), so removing keeps the map at the non-default entries
+        // only - a component whose transient properties are all at their defaults holds no map at all.
+        if (value == null) {
+            if (transientState == null) {
+                return null;
+            }
+            Object previous = transientState.remove(key);
+            if (transientState.isEmpty()) {
+                // Drop the now-empty map so saveTransientState reports null (no state) rather than an empty map that
+                // the row-state-preserved save would still store per row.
+                transientState = null;
+            }
+            return previous;
+        }
+
         if (transientState == null) {
             transientState = new HashMap<>();
         }
