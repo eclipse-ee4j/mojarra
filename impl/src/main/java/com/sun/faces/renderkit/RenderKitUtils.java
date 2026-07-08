@@ -310,7 +310,7 @@ public class RenderKitUtils {
             behaviors = null;
         }
 
-        renderPassThruAttributesInternal(context, writer, component, attributes, behaviors);
+        renderPassThruAttributesInternal(context, writer, component, attributes, behaviors, null);
     }
 
     /**
@@ -370,7 +370,7 @@ public class RenderKitUtils {
             }
         }
 
-        renderPassThruAttributesInternal(context, writer, component, attributes, behaviors);
+        renderPassThruAttributesInternal(context, writer, component, attributes, behaviors, defaultDomEvent);
 
         if ("valueChange".equals(defaultComponentEvent)) {
             renderValueChangeEventListener(context, component, clientId, defaultComponentEvent, defaultDomEvent, hasValueChangeBehavior, incExec);
@@ -378,7 +378,7 @@ public class RenderKitUtils {
     }
 
     private static void renderPassThruAttributesInternal(FacesContext context, ResponseWriter writer, UIComponent component,
-            Attribute[] attributes, Map<String, List<ClientBehavior>> behaviors) throws IOException {
+            Attribute[] attributes, Map<String, List<ClientBehavior>> behaviors, String defaultDomEvent) throws IOException {
 
         assert null != writer;
         assert null != component;
@@ -389,15 +389,21 @@ public class RenderKitUtils {
 
         List<String> setAttributes = getAttributesThatAreSet(component);
 
+        // The handler attribute of the default DOM event (e.g. "onclick" for "click") is rendered separately by the
+        // caller through renderOnclickEventListener/renderValueChangeEventListener, which chain in any behavior and
+        // submit scripts. Skip it here so it is not additionally emitted as a raw attribute; that would duplicate it
+        // when it was set through a (non-literal) expression, as such attributes end up in getAttributesThatAreSet.
+        String excludedEventAttribute = defaultDomEvent != null ? BEHAVIOR_EVENT_ATTRIBUTE_PREFIX + defaultDomEvent : null;
+
         if (canBeOptimized(component, behaviors)) {
             // Iterates only the attributes actually set (none => renders nothing but the optional single behavior),
             // instead of the unoptimized path's reflective read of every known attribute.
-            renderPassThruAttributesOptimized(context, writer, component, attributes, setAttributes, behaviors);
+            renderPassThruAttributesOptimized(context, writer, component, attributes, setAttributes, behaviors, excludedEventAttribute);
         } else {
             // this block should only be hit by custom components leveraging
             // the RI's rendering code, or in cases where we have behaviors
             // attached to multiple events. We make no assumptions and loop through
-            renderPassThruAttributesUnoptimized(context, writer, component, attributes, setAttributes, behaviors);
+            renderPassThruAttributesUnoptimized(context, writer, component, attributes, setAttributes, behaviors, excludedEventAttribute);
         }
     }
 
@@ -683,7 +689,7 @@ public class RenderKitUtils {
      * @throws IOException if an error occurs during the write
      */
     private static void renderPassThruAttributesOptimized(FacesContext context, ResponseWriter writer, UIComponent component, Attribute[] knownAttributes,
-            List<String> setAttributes, Map<String, List<ClientBehavior>> behaviors) throws IOException {
+            List<String> setAttributes, Map<String, List<ClientBehavior>> behaviors, String excludedEventAttribute) throws IOException {
 
         // We should only come in here if we've got zero or one behavior event
         assert behaviors != null && behaviors.size() < 2;
@@ -694,6 +700,10 @@ public class RenderKitUtils {
         boolean isXhtml = RIConstants.XHTML_CONTENT_TYPE.equals(writer.getContentType());
         Map<String, Object> attrMap = component.getAttributes();
         for (String name : setAttributes) {
+
+            if (name.equals(excludedEventAttribute)) {
+                continue;
+            }
 
             // Note that this search can be optimized by switching from
             // an array to a Map<String, Attribute>. This would change
@@ -774,7 +784,7 @@ public class RenderKitUtils {
      * @throws IOException if an error occurs during the write
      */
     private static void renderPassThruAttributesUnoptimized(FacesContext context, ResponseWriter writer, UIComponent component, Attribute[] knownAttributes,
-            List<String> setAttributes, Map<String, List<ClientBehavior>> behaviors) throws IOException {
+            List<String> setAttributes, Map<String, List<ClientBehavior>> behaviors, String excludedEventAttribute) throws IOException {
 
         boolean isXhtml = RIConstants.XHTML_CONTENT_TYPE.equals(writer.getContentType());
 
@@ -789,6 +799,11 @@ public class RenderKitUtils {
 
         for (Attribute attribute : knownAttributes) {
             String attrName = attribute.getName();
+            if (attrName.equals(excludedEventAttribute)) {
+                // Skipping before the remove() below leaves the excluded event in behaviorEventNames, so the second
+                // loop must skip it too; otherwise it would re-emit the handler the caller renders separately.
+                continue;
+            }
             String[] events = attribute.getEvents();
             String eventName = events != null && events.length > 0 ? events[0] : null;
             renderPassthruAttribute(context, writer, component, behaviors, isXhtml, attrMap, attrName, eventName);
@@ -796,6 +811,9 @@ public class RenderKitUtils {
         }
 
         for (String eventName : behaviorEventNames) {
+            if ((BEHAVIOR_EVENT_ATTRIBUTE_PREFIX + eventName).equals(excludedEventAttribute)) {
+                continue;
+            }
             renderPassthruAttribute(context, writer, component, behaviors, isXhtml, attrMap, BEHAVIOR_EVENT_ATTRIBUTE_PREFIX + eventName, eventName);
         }
     }
