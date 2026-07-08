@@ -252,11 +252,32 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      */
     @Override
     public Object getSubmittedValue() {
-        Object submittedValue = getTransientStateHelper().getTransient(PropertyKeys.submittedValue);
+        Object submittedValue = getTransientOrDefault(PropertyKeys.submittedValue, null);
         if (submittedValue == null && !isValid() && considerEmptyStringNull(FacesContext.getCurrentInstance())) { // JAVASERVERFACES_SPEC_PUBLIC-671
             return "";
         } else {
             return submittedValue;
+        }
+    }
+
+    /**
+     * Read a transient property without forcing creation of the transient-state helper: an absent (default) value costs
+     * no allocation. Pairs with {@link #putTransientOrRemove}.
+     */
+    private Object getTransientOrDefault(Object key, Object defaultValue) {
+        TransientStateHelper helper = getTransientStateHelper(false);
+        return helper == null ? defaultValue : helper.getTransient(key, defaultValue);
+    }
+
+    /**
+     * Store a transient property, mapping the property's default to {@code null} so it is removed rather than stored: the
+     * helper is created only for a non-default value, and a component whose transient properties are all default holds no
+     * map. Pairs with {@link #getTransientOrDefault}.
+     */
+    private void putTransientOrRemove(Object key, Object value) {
+        TransientStateHelper helper = getTransientStateHelper(value != null);
+        if (helper != null) {
+            helper.putTransient(key, value);
         }
     }
 
@@ -271,7 +292,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
     @Override
     public void setSubmittedValue(Object submittedValue) {
 
-        getTransientStateHelper().putTransient(PropertyKeys.submittedValue, submittedValue);
+        putTransientOrRemove(PropertyKeys.submittedValue, submittedValue);
 
     }
 
@@ -338,7 +359,7 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      */
     @Override
     public boolean isLocalValueSet() {
-        return (Boolean) getTransientStateHelper().getTransient(PropertyKeys.localValueSet, false);
+        return (Boolean) getTransientOrDefault(PropertyKeys.localValueSet, Boolean.FALSE);
     }
 
     /**
@@ -346,7 +367,8 @@ public class UIInput extends UIOutput implements EditableValueHolder {
      */
     @Override
     public void setLocalValueSet(boolean localValueSet) {
-        getTransientStateHelper().putTransient(PropertyKeys.localValueSet, localValueSet);
+        // false is the default, mapped to null so it removes the entry.
+        putTransientOrRemove(PropertyKeys.localValueSet, localValueSet ? Boolean.TRUE : null);
     }
 
     /**
@@ -458,13 +480,14 @@ public class UIInput extends UIOutput implements EditableValueHolder {
     @Override
     public boolean isValid() {
 
-        return (Boolean) getTransientStateHelper().getTransient(PropertyKeys.valid, true);
+        return (Boolean) getTransientOrDefault(PropertyKeys.valid, Boolean.TRUE);
     }
 
     @Override
     public void setValid(boolean valid) {
 
-        getTransientStateHelper().putTransient(PropertyKeys.valid, valid);
+        // true is the default, mapped to null so it removes the entry.
+        putTransientOrRemove(PropertyKeys.valid, valid ? null : Boolean.FALSE);
     }
 
     /**

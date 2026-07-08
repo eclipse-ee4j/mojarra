@@ -540,8 +540,9 @@ public class NumberConverter implements Converter, PartialStateHolder {
             // Identify the Locale to use for parsing
             Locale locale = getLocale(context);
 
-            // Create and configure the parser to be used
-            parser = getNumberFormat(locale);
+            // Create and configure the parser to be used. The base parser is cached per (pattern, type, locale) and
+            // cloned here so the per-value/per-component configuration below mutates only this request-local copy.
+            parser = (NumberFormat) getCachedBaseParser(context, locale).clone();
             if (pattern != null && pattern.length() != 0 || "currency".equals(type)) {
                 configureCurrency(parser);
             }
@@ -820,6 +821,8 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     private static final String FORMATTER_CACHE_KEY = "jakarta.faces.convert.NumberConverter.formatters";
 
+    private static final String PARSER_CACHE_KEY = "jakarta.faces.convert.NumberConverter.parsers";
+
     /**
      * Upper bound on the per-FacesContext formatter cache, kept as an LRU so a view whose converters are all
      * differently configured (e.g. a per-row {@code pattern}) cannot retain an unbounded number of formatters for the
@@ -851,13 +854,7 @@ public class NumberConverter implements Converter, PartialStateHolder {
      */
     private NumberFormat getCachedFormatter(FacesContext context) throws Exception {
         Locale locale = getLocale(context);
-        Map<Object, Object> attributes = context.getAttributes();
-        @SuppressWarnings("unchecked")
-        Map<String, NumberFormat> cache = (Map<String, NumberFormat>) attributes.get(FORMATTER_CACHE_KEY);
-        if (cache == null) {
-            cache = new FormatterCache();
-            attributes.put(FORMATTER_CACHE_KEY, cache);
-        }
+        Map<String, NumberFormat> cache = formatterCache(context, FORMATTER_CACHE_KEY);
         String key = formatterKey(locale);
         NumberFormat formatter = cache.get(key);
         if (formatter == null) {
@@ -869,6 +866,43 @@ public class NumberConverter implements Converter, PartialStateHolder {
             cache.put(key, formatter);
         }
         return formatter;
+    }
+
+    /**
+     * Return the base (unconfigured) parser for {@link #getAsObject}, cached in the FacesContext attributes keyed by the
+     * inputs to {@link #getNumberFormat} ({@code pattern}, {@code type}, {@code locale}). Building that base drags in
+     * locale data (a fresh {@link DecimalFormatSymbols}), so a per-row {@code f:convertNumber} multiplied by a table's
+     * rows otherwise rebuilds it for every parsed cell. The caller {@link Object#clone() clones} the shared base before
+     * applying its per-value, per-component configuration ({@code parseIntegerOnly}, {@code parseBigDecimal}, fixed-width
+     * whitespace normalization), so the cached instance itself is never mutated and stays safe to share within the
+     * (single-threaded) request.
+     */
+    private NumberFormat getCachedBaseParser(FacesContext context, Locale locale) {
+        Map<String, NumberFormat> cache = formatterCache(context, PARSER_CACHE_KEY);
+        String key = parserKey(locale);
+        NumberFormat parser = cache.get(key);
+        if (parser == null) {
+            parser = getNumberFormat(locale);
+            cache.put(key, parser);
+        }
+        return parser;
+    }
+
+    /** The bounded per-{@link FacesContext} formatter/parser cache stored under {@code cacheKey}, created on first use. */
+    private static Map<String, NumberFormat> formatterCache(FacesContext context, String cacheKey) {
+        Map<Object, Object> attributes = context.getAttributes();
+        @SuppressWarnings("unchecked")
+        Map<String, NumberFormat> cache = (Map<String, NumberFormat>) attributes.get(cacheKey);
+        if (cache == null) {
+            cache = new FormatterCache();
+            attributes.put(cacheKey, cache);
+        }
+        return cache;
+    }
+
+    /** Key over every property {@link #getNumberFormat} reads to build the base parser. */
+    private String parserKey(Locale locale) {
+        return new StringBuilder(32).append(pattern).append('|').append(type).append('|').append(locale).toString();
     }
 
     /** Key over every property {@link #getCachedFormatter} reads to build the formatter. */

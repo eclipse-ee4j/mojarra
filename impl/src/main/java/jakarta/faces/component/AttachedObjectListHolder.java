@@ -174,7 +174,7 @@ class AttachedObjectListHolder<T> implements PartialStateHolder {
     }
 
     T[] asArray(Class<T> type) {
-        return new ArrayList<>(attachedObjects).toArray((T[]) Array.newInstance(type, attachedObjects.size()));
+        return attachedObjects.toArray((T[]) Array.newInstance(type, attachedObjects.size()));
     }
 
     Iterator<T> iterator() {
