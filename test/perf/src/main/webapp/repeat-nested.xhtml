@@ -18,7 +18,6 @@
 -->
 <html lang="#{facesContext.viewRoot.locale.language}"
     xmlns:h="jakarta.faces.html"
-    xmlns:f="jakarta.faces.core"
     xmlns:ui="jakarta.faces.facelets"
 >
     <h:head>
@@ -31,13 +30,9 @@
                     <h2>#{group.name}</h2>
                     <ui:repeat value="#{group.rows}" var="row">
                         <h:panelGroup id="row" layout="block">
-                            <h:outputText value="#{row.id}"/> - <h:outputText value="#{row.name}"/>
-                            <h:inputText value="#{row.quantity}">
-                                <f:convertNumber integerOnly="true"/>
-                            </h:inputText>
-                            <h:inputText value="#{row.price}">
-                                <f:convertNumber type="currency" currencyCode="EUR"/>
-                            </h:inputText>
+                            <ui:include src="/WEB-INF/includes/inputs.xhtml">
+                                <ui:param name="row" value="#{row}"/>
+                            </ui:include>
                         </h:panelGroup>
                     </ui:repeat>
                 </h:panelGroup>

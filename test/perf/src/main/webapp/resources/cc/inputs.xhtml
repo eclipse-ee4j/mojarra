@@ -17,7 +17,6 @@
 -->
 <ui:component
     xmlns:h="jakarta.faces.html"
-    xmlns:f="jakarta.faces.core"
     xmlns:ui="jakarta.faces.facelets"
     xmlns:cc="jakarta.faces.composite"
 >
@@ -26,21 +25,9 @@
     </cc:interface>
     <cc:implementation>
         <h:panelGroup id="inputs" layout="block">
-            <h:outputText value="#{cc.attrs.row.id}"/>
-            <h:inputText value="#{cc.attrs.row.name}">
-                <f:converter converterId="trimConverter"/>
-                <f:validator validatorId="lengthRangeValidator"/>
-            </h:inputText>
-            <h:inputText value="#{cc.attrs.row.quantity}">
-                <f:convertNumber integerOnly="true"/>
-            </h:inputText>
-            <h:inputText value="#{cc.attrs.row.price}">
-                <f:convertNumber type="currency" currencyCode="EUR"/>
-            </h:inputText>
-            <h:inputText value="#{cc.attrs.row.date}">
-                <f:convertDateTime type="localDate"/>
-            </h:inputText>
-            <h:selectBooleanCheckbox value="#{cc.attrs.row.active}"/>
+            <ui:include src="/WEB-INF/includes/inputs.xhtml">
+                <ui:param name="row" value="#{cc.attrs.row}"/>
+            </ui:include>
         </h:panelGroup>
     </cc:implementation>
 </ui:component>
