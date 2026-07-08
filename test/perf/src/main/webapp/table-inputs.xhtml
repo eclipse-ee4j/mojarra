@@ -18,7 +18,7 @@
 -->
 <html lang="#{facesContext.viewRoot.locale.language}"
     xmlns:h="jakarta.faces.html"
-    xmlns:f="jakarta.faces.core"
+    xmlns:ui="jakarta.faces.facelets"
 >
     <h:head>
         <title>table-inputs</title>
@@ -26,40 +26,9 @@
     <h:body>
         <h:form id="form">
             <h:dataTable value="#{dataBean.inputRows}" var="row">
-                <h:column>
-                    <f:facet name="header">#</f:facet>
-                    <h:outputText value="#{row.id}"/>
-                </h:column>
-                <h:column>
-                    <f:facet name="header">Name</f:facet>
-                    <h:inputText value="#{row.name}" required="true">
-                        <f:converter converterId="trimConverter"/>
-                        <f:validator validatorId="lengthRangeValidator"/>
-                    </h:inputText>
-                </h:column>
-                <h:column>
-                    <f:facet name="header">Qty</f:facet>
-                    <h:inputText value="#{row.quantity}">
-                        <f:convertNumber integerOnly="true"/>
-                        <f:validateLongRange minimum="0" maximum="10000"/>
-                    </h:inputText>
-                </h:column>
-                <h:column>
-                    <f:facet name="header">Price</f:facet>
-                    <h:inputText value="#{row.price}">
-                        <f:convertNumber type="currency" currencyCode="EUR"/>
-                    </h:inputText>
-                </h:column>
-                <h:column>
-                    <f:facet name="header">Date</f:facet>
-                    <h:inputText value="#{row.date}">
-                        <f:convertDateTime type="localDate"/>
-                    </h:inputText>
-                </h:column>
-                <h:column>
-                    <f:facet name="header">Active</f:facet>
-                    <h:selectBooleanCheckbox value="#{row.active}"/>
-                </h:column>
+                <ui:include src="/WEB-INF/includes/inputs-columns.xhtml">
+                    <ui:param name="row" value="#{row}"/>
+                </ui:include>
             </h:dataTable>
             <h:commandButton id="submit" value="Save" action="#{dataBean.save}"/>
             <h:messages globalOnly="false"/>

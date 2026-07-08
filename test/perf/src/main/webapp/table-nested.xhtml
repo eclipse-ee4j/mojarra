@@ -16,10 +16,10 @@
     SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
 
 -->
-<!-- UIData twin of composite-nested: same data and composite, h:dataTable instead of ui:repeat, to isolate UIData's per-row child-state cost. -->
+<!-- UIData twin of repeat-nested: identical row inputs (includes/inputs-columns.xhtml), nested h:dataTable instead of ui:repeat, to isolate UIData's per-row child-state cost. -->
 <html lang="#{facesContext.viewRoot.locale.language}"
     xmlns:h="jakarta.faces.html"
-    xmlns:cc="jakarta.faces.composite/cc"
+    xmlns:ui="jakarta.faces.facelets"
 >
     <h:head>
         <title>table-nested</title>
@@ -30,9 +30,9 @@
                 <h:column>
                     <h2>#{group.name}</h2>
                     <h:dataTable value="#{group.rows}" var="row">
-                        <h:column>
-                            <cc:inputs row="#{row}"/>
-                        </h:column>
+                        <ui:include src="/WEB-INF/includes/inputs-columns.xhtml">
+                            <ui:param name="row" value="#{row}"/>
+                        </ui:include>
                     </h:dataTable>
                 </h:column>
             </h:dataTable>
