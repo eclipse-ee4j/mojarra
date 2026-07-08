@@ -19,7 +19,7 @@
 <html lang="#{facesContext.viewRoot.locale.language}"
     xmlns:h="jakarta.faces.html"
     xmlns:f="jakarta.faces.core"
-    xmlns:cc="jakarta.faces.composite/cc"
+    xmlns:ui="jakarta.faces.facelets"
 >
     <h:head>
         <title>table-nested-ajax</title>
@@ -30,9 +30,9 @@
                 <h:column>
                     <h2>#{group.name}</h2>
                     <h:dataTable value="#{group.rows}" var="row">
-                        <h:column>
-                            <cc:inputs row="#{row}"/>
-                        </h:column>
+                        <ui:include src="/WEB-INF/includes/inputs-columns.xhtml">
+                            <ui:param name="row" value="#{row}"/>
+                        </ui:include>
                     </h:dataTable>
                 </h:column>
             </h:dataTable>
