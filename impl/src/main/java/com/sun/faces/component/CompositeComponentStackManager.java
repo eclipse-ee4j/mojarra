@@ -16,7 +16,8 @@
 
 package com.sun.faces.component;
 
-import java.util.Stack;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.faces.application.Resource;
 import jakarta.faces.component.UIComponent;
@@ -170,13 +171,12 @@ public class CompositeComponentStackManager {
     public UIComponent findCompositeComponentUsingLocation(FacesContext ctx, Location location) {
 
         StackHandler sh = getStackHandler(StackType.TreeCreation);
-        Stack<UIComponent> s = sh.getStack(false);
+        List<UIComponent> s = sh.getStack(false);
         if (s != null) {
             String path = location.getPath();
             for (int i = s.size(); i > 0; i--) {
                 UIComponent cc = s.get(i - 1);
-                Resource r = (Resource) cc.getAttributes().get(Resource.COMPONENT_RESOURCE_KEY);
-                if (path.endsWith('/' + r.getResourceName()) && path.contains(r.getLibraryName())) {
+                if (isResourceOf(path, cc)) {
                     return cc;
                 }
             }
@@ -185,8 +185,7 @@ public class CompositeComponentStackManager {
             String path = location.getPath();
             UIComponent cc = UIComponent.getCurrentCompositeComponent(ctx);
             while (cc != null) {
-                Resource r = (Resource) cc.getAttributes().get(Resource.COMPONENT_RESOURCE_KEY);
-                if (path.endsWith('/' + r.getResourceName()) && path.contains(r.getLibraryName())) {
+                if (isResourceOf(path, cc)) {
                     return cc;
                 }
                 cc = UIComponent.getCompositeComponentParent(cc);
@@ -200,7 +199,30 @@ public class CompositeComponentStackManager {
         return UIComponent.getCurrentCompositeComponent(ctx);
     }
 
+    /**
+     * <p>
+     * Return <code>true</code> if <code>path</code> ends with the composite component's resource name, preceded by a
+     * <code>/</code>, and contains its library name.
+     * </p>
+     */
+    private static boolean isResourceOf(String path, UIComponent compositeComponent) {
+
+        Resource resource = (Resource) compositeComponent.getAttributes().get(Resource.COMPONENT_RESOURCE_KEY);
+        String resourceName = resource.getResourceName();
+        int start = path.length() - resourceName.length() - 1;
+
+        return start >= 0 && path.charAt(start) == '/' && path.endsWith(resourceName) && path.contains(resource.getLibraryName());
+    }
+
     // --------------------------------------------------------- Private Methods
+
+    private static UIComponent last(List<UIComponent> stack) {
+        return stack.get(stack.size() - 1);
+    }
+
+    private static UIComponent removeLast(List<UIComponent> stack) {
+        return stack.remove(stack.size() - 1);
+    }
 
     private StackHandler getStackHandler(StackType type) {
 
@@ -233,15 +255,22 @@ public class CompositeComponentStackManager {
 
         void delete();
 
-        Stack<UIComponent> getStack(boolean create);
+        List<UIComponent> getStack(boolean create);
 
     }
 
     // ---------------------------------------------------------- Nested Classes
 
+    /**
+     * <p>
+     * Both stacks are confined to a single request and are never shared across threads. The backing list must support
+     * indexed access: {@link #findCompositeComponentUsingLocation} and
+     * {@link TreeCreationStackHandler#getParentCompositeComponent} address the stack by index.
+     * </p>
+     */
     private abstract class BaseStackHandler implements StackHandler {
 
-        protected Stack<UIComponent> stack;
+        protected List<UIComponent> stack;
 
         // ------------------------------------------- Methods from StackHandler
 
@@ -253,10 +282,10 @@ public class CompositeComponentStackManager {
         }
 
         @Override
-        public Stack<UIComponent> getStack(boolean create) {
+        public List<UIComponent> getStack(boolean create) {
 
             if (stack == null && create) {
-                stack = new Stack<>();
+                stack = new ArrayList<>();
             }
             return stack;
 
@@ -266,7 +295,7 @@ public class CompositeComponentStackManager {
         public UIComponent peek() {
 
             if (stack != null && !stack.isEmpty()) {
-                return stack.peek();
+                return last(stack);
             }
             return null;
 
@@ -281,7 +310,7 @@ public class CompositeComponentStackManager {
         @Override
         public void delete() {
 
-            Stack<UIComponent> s = getStack(false);
+            List<UIComponent> s = getStack(false);
             if (s != null) {
                 s.clear();
             }
@@ -291,9 +320,9 @@ public class CompositeComponentStackManager {
         @Override
         public void pop() {
 
-            Stack<UIComponent> s = getStack(false);
+            List<UIComponent> s = getStack(false);
             if (s != null && !s.isEmpty()) {
-                s.pop();
+                removeLast(s);
             }
 
         }
@@ -308,8 +337,8 @@ public class CompositeComponentStackManager {
         @Override
         public boolean push(UIComponent compositeComponent) {
 
-            Stack<UIComponent> tstack = treeCreation.getStack(false);
-            Stack<UIComponent> stack = getStack(false);
+            List<UIComponent> tstack = treeCreation.getStack(false);
+            List<UIComponent> stack = getStack(false);
             UIComponent ccp;
             if (tstack != null) {
                 // We have access to the stack of composite components
@@ -327,7 +356,7 @@ public class CompositeComponentStackManager {
 
                 if (compositeComponent == null) {
                     if (stack != null && !stack.isEmpty()) {
-                        ccp = getCompositeParent(stack.peek());
+                        ccp = getCompositeParent(last(stack));
                     } else {
                         ccp = getCompositeParent(UIComponent.getCurrentCompositeComponent(FacesContext.getCurrentInstance()));
                     }
@@ -340,7 +369,7 @@ public class CompositeComponentStackManager {
                 if (stack == null) {
                     stack = getStack(true);
                 }
-                stack.push(ccp);
+                stack.add(ccp);
                 return true;
             }
             return false;
@@ -371,9 +400,9 @@ public class CompositeComponentStackManager {
         @Override
         public void pop() {
 
-            Stack<UIComponent> s = getStack(false);
+            List<UIComponent> s = getStack(false);
             if (s != null && !stack.isEmpty()) {
-                stack.pop();
+                removeLast(stack);
                 if (stack.isEmpty()) {
                     delete();
                 }
@@ -393,8 +422,8 @@ public class CompositeComponentStackManager {
 
             if (compositeComponent != null) {
                 assert UIComponent.isCompositeComponent(compositeComponent);
-                Stack<UIComponent> s = getStack(true);
-                s.push(compositeComponent);
+                List<UIComponent> s = getStack(true);
+                s.add(compositeComponent);
                 return true;
             }
             return false;
@@ -404,7 +433,7 @@ public class CompositeComponentStackManager {
         @Override
         public UIComponent getParentCompositeComponent(FacesContext ctx, UIComponent forComponent) {
 
-            Stack<UIComponent> s = getStack(false);
+            List<UIComponent> s = getStack(false);
             if (s == null) {
                 return null;
             } else {

@@ -1229,10 +1229,16 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
     @Override
     public String createUniqueId(FacesContext context, String seed) {
+        // A seed is already unique within the view, so the counter -- and the state write backing it -- is only
+        // needed to generate an id when no seed is given.
+        if (seed != null) {
+            return UIViewRoot.UNIQUE_ID_PREFIX + seed;
+        }
+
         Integer i = (Integer) getStateHelper().get(PropertyKeys.lastId);
         int lastId = i != null ? i : 0;
         getStateHelper().put(PropertyKeys.lastId, ++lastId);
-        return UIViewRoot.UNIQUE_ID_PREFIX + (seed == null ? lastId : seed);
+        return UIViewRoot.UNIQUE_ID_PREFIX + lastId;
     }
 
     /**
