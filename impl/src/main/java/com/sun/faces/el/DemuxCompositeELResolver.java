@@ -35,10 +35,12 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
     private ELResolver[] _rootELResolvers = new ELResolver[2];
     private ELResolver[] _propertyELResolvers = new ELResolver[2];
     private ELResolver[] _allELResolvers = new ELResolver[2];
+    private ELResolver[] _convertELResolvers = new ELResolver[2];
 
     private int _rootELResolverCount = 0;
     private int _propertyELResolverCount = 0;
     private int _allELResolverCount = 0;
+    private int _convertELResolverCount = 0;
 
     public DemuxCompositeELResolver(ELResolverChainType chainType) {
         if (chainType == null) {
@@ -87,6 +89,37 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
         _rootELResolverCount++;
     }
 
+    /**
+     * Registers <code>elResolver</code> for {@link #convertToType} only when it actually declares that method.
+     * {@link ELResolver#convertToType} returns <code>null</code> without marking the property as resolved, so a
+     * resolver which inherits it can never contribute a conversion, and consulting it is a no-op.
+     */
+    private void _addConvertELResolver(ELResolver elResolver) {
+        if (!declaresConvertToType(elResolver)) {
+            return;
+        }
+
+        // grow array, if necessary
+        if (_convertELResolverCount == _convertELResolvers.length) {
+            ELResolver[] biggerResolvers = new ELResolver[_convertELResolverCount * 2];
+            System.arraycopy(_convertELResolvers, 0, biggerResolvers, 0, _convertELResolverCount);
+            _convertELResolvers = biggerResolvers;
+        }
+
+        // assign new resolver to end
+        _convertELResolvers[_convertELResolverCount] = elResolver;
+        _convertELResolverCount++;
+    }
+
+    private static boolean declaresConvertToType(ELResolver elResolver) {
+        try {
+            return elResolver.getClass().getMethod("convertToType", ELContext.class, Object.class, Class.class).getDeclaringClass() != ELResolver.class;
+        } catch (NoSuchMethodException e) {
+            // Cannot happen: convertToType is public on ELResolver itself.
+            return true;
+        }
+    }
+
     public void _addPropertyELResolver(ELResolver elResolver) {
         if (elResolver == null) {
             throw new NullPointerException();
@@ -112,6 +145,7 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
 
         _addRootELResolver(elResolver);
         _addAllELResolver(elResolver);
+        _addConvertELResolver(elResolver);
     }
 
     @Override
@@ -122,6 +156,7 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
 
         _addPropertyELResolver(elResolver);
         _addAllELResolver(elResolver);
+        _addConvertELResolver(elResolver);
     }
 
     @Override
@@ -133,6 +168,7 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
         _addRootELResolver(elResolver);
         _addPropertyELResolver(elResolver);
         _addAllELResolver(elResolver);
+        _addConvertELResolver(elResolver);
     }
 
     private Object _getValue(int resolverCount, ELResolver[] resolvers, ELContext context, Object base, Object property) throws ELException {
@@ -326,6 +362,21 @@ public class DemuxCompositeELResolver extends FacesCompositeELResolver {
         private final int _resolverCount;
         private int _currResolverIndex;
         private Iterator<FeatureDescriptor> _currIterator;
+    }
+
+    @Override
+    public <T> T convertToType(ELContext context, Object obj, Class<T> targetType) {
+        context.setPropertyResolved(false);
+
+        for (int i = 0; i < _convertELResolverCount; i++) {
+            T value = _convertELResolvers[i].convertToType(context, obj, targetType);
+
+            if (context.isPropertyResolved()) {
+                return value;
+            }
+        }
+
+        return null;
     }
 
     @Override

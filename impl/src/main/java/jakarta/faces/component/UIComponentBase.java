@@ -3825,28 +3825,45 @@ public abstract class UIComponentBase extends UIComponent {
             return base;
         }
 
-        // Search through our facets and children
-        UIComponent component = null;
-        for (Iterator<UIComponent> i = base.getFacetsAndChildren(); i.hasNext();) {
-            UIComponent kid = i.next();
-            if (!(kid instanceof NamingContainer)) {
-                if (checkId && id.equals(kid.getId())) {
-                    component = kid;
-                    break;
-                }
-
-                component = findComponent(kid, id, true);
-
+        // Search through our facets and children, in the order getFacetsAndChildren() defines (facets first),
+        // but without that method's per-node wrapper collection and iterator: this walk recurses over the whole
+        // subtree, so allocating two objects per node visited dominates the cost of resolving a single id.
+        if (base.getFacetCount() != 0) {
+            for (UIComponent facet : base.getFacets().values()) {
+                UIComponent component = findComponentInKid(facet, id);
                 if (component != null) {
-                    break;
+                    return component;
                 }
-            } else if (id.equals(kid.getId())) {
-                component = kid;
-                break;
             }
         }
 
-        return component;
+        if (base.getChildCount() != 0) {
+            List<UIComponent> children = base.getChildren();
+            for (int i = 0, size = children.size(); i < size; i++) {
+                UIComponent component = findComponentInKid(children.get(i), id);
+                if (component != null) {
+                    return component;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * <p>
+     * Match <code>id</code> against a single facet or child of the component being searched: a
+     * {@link NamingContainer} matches only on its own id and is never descended into, any other kid is matched
+     * by a recursive scan which checks its own id first.
+     * </p>
+     */
+    private static UIComponent findComponentInKid(UIComponent kid, String id) {
+
+        if (kid instanceof NamingContainer) {
+            return id.equals(kid.getId()) ? kid : null;
+        }
+
+        return findComponent(kid, id, true);
     }
 
     private List<Object> collectChildState(FacesContext context, List<Object> stateList) {

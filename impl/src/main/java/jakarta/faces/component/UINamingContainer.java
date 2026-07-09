@@ -16,7 +16,6 @@
 
 package jakarta.faces.component;
 
-import static com.sun.faces.util.Util.coalesce;
 import static jakarta.faces.component.UIViewRoot.UNIQUE_ID_PREFIX;
 import static jakarta.faces.component.visit.VisitResult.COMPLETE;
 import static java.util.logging.Level.SEVERE;
@@ -167,10 +166,17 @@ public class UINamingContainer extends UIComponentBase implements NamingContaine
 
     @Override
     public String createUniqueId(FacesContext context, String seed) {
-        int lastId = coalesce(getLastId(), 0);
+        // A seed is already unique within the view, so the counter -- and the state write backing it -- is only
+        // needed to generate an id when no seed is given.
+        if (seed != null) {
+            return UNIQUE_ID_PREFIX + seed;
+        }
+
+        Integer i = getLastId();
+        int lastId = i != null ? i : 0;
         setLastId(++lastId);
 
-        return UNIQUE_ID_PREFIX + coalesce(seed, lastId);
+        return UNIQUE_ID_PREFIX + lastId;
     }
 
     // ----------------------------------------------------- Private Methods
