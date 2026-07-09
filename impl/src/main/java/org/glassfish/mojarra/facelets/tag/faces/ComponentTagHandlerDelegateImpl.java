@@ -126,7 +126,8 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
 
         // grab our component
         UIComponent c = findChild(ctx, parent, id);
-        if (null == c && context.isPostback() && UIComponent.isCompositeComponent(parent) && parent.getAttributes().get(id) != null) {
+        // Reparenting only ever applies to a child of a composite component, so that test gates the costlier ones.
+        if (null == c && UIComponent.isCompositeComponent(parent) && context.isPostback() && parent.getAttributes().get(id) != null) {
             c = findReparentedComponent(ctx, parent, id);
         } else {
             /**
