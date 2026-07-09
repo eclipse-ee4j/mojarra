@@ -262,14 +262,38 @@ public class AnnotationManager {
      * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
      * @param targetClass class of the <code>processingTarget</code>
      * @param processingTarget the type of component that is being processed
-     * @param params one or more parameters to be passed to each {@link RuntimeAnnotationHandler}
+     * @param param the parameter to be passed to each {@link RuntimeAnnotationHandler}
      */
-    private void applyAnnotations(FacesContext ctx, Class<?> targetClass, ProcessingTarget processingTarget, Object... params) {
+    private void applyAnnotations(FacesContext ctx, Class<?> targetClass, ProcessingTarget processingTarget, Object param) {
         Map<Class<? extends Annotation>, RuntimeAnnotationHandler> map = getHandlerMap(targetClass, processingTarget);
         if (map != null && !map.isEmpty()) {
-            for (RuntimeAnnotationHandler handler : map.values()) {
-                handler.apply(ctx, params);
-            }
+            applyHandlers(ctx, map, new Object[] { param });
+        }
+    }
+
+    /**
+     * Apply all annotations associated with <code>targetClass</code>
+     *
+     * @param ctx the {@link jakarta.faces.context.FacesContext} for the current request
+     * @param targetClass class of the <code>processingTarget</code>
+     * @param processingTarget the type of component that is being processed
+     * @param param1 the first parameter to be passed to each {@link RuntimeAnnotationHandler}
+     * @param param2 the second parameter to be passed to each {@link RuntimeAnnotationHandler}
+     */
+    private void applyAnnotations(FacesContext ctx, Class<?> targetClass, ProcessingTarget processingTarget, Object param1, Object param2) {
+        Map<Class<? extends Annotation>, RuntimeAnnotationHandler> map = getHandlerMap(targetClass, processingTarget);
+        if (map != null && !map.isEmpty()) {
+            applyHandlers(ctx, map, new Object[] { param1, param2 });
+        }
+    }
+
+    /**
+     * The parameter array is built only once a handler is known to exist. Nearly every component, renderer, converter
+     * and validator carries no runtime annotation at all, and its handler map is empty.
+     */
+    private static void applyHandlers(FacesContext ctx, Map<Class<? extends Annotation>, RuntimeAnnotationHandler> map, Object[] params) {
+        for (RuntimeAnnotationHandler handler : map.values()) {
+            handler.apply(ctx, params);
         }
     }
 
