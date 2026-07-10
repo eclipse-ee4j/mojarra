@@ -106,13 +106,11 @@ public final class ContextualCompositeValueExpression extends ValueExpression {
     public Object getValue(ELContext elContext) {
 
         FacesContext ctx = (FacesContext) elContext.getContext(FacesContext.class);
-        boolean pushed = pushCompositeComponent(ctx);
+        CompositeComponentStackManager manager = pushCompositeComponent(ctx);
         try {
             return originalVE.getValue(elContext);
         } finally {
-            if (pushed) {
-                popCompositeComponent(ctx);
-            }
+            popCompositeComponent(manager);
         }
 
     }
@@ -121,13 +119,11 @@ public final class ContextualCompositeValueExpression extends ValueExpression {
     public void setValue(ELContext elContext, Object o) {
 
         FacesContext ctx = (FacesContext) elContext.getContext(FacesContext.class);
-        boolean pushed = pushCompositeComponent(ctx);
+        CompositeComponentStackManager manager = pushCompositeComponent(ctx);
         try {
             originalVE.setValue(elContext, o);
         } finally {
-            if (pushed) {
-                popCompositeComponent(ctx);
-            }
+            popCompositeComponent(manager);
         }
 
     }
@@ -136,13 +132,11 @@ public final class ContextualCompositeValueExpression extends ValueExpression {
     public boolean isReadOnly(ELContext elContext) {
 
         FacesContext ctx = (FacesContext) elContext.getContext(FacesContext.class);
-        boolean pushed = pushCompositeComponent(ctx);
+        CompositeComponentStackManager manager = pushCompositeComponent(ctx);
         try {
             return originalVE.isReadOnly(elContext);
         } finally {
-            if (pushed) {
-                popCompositeComponent(ctx);
-            }
+            popCompositeComponent(manager);
         }
 
     }
@@ -151,13 +145,11 @@ public final class ContextualCompositeValueExpression extends ValueExpression {
     public Class<?> getType(ELContext elContext) {
 
         FacesContext ctx = (FacesContext) elContext.getContext(FacesContext.class);
-        boolean pushed = pushCompositeComponent(ctx);
+        CompositeComponentStackManager manager = pushCompositeComponent(ctx);
         try {
             return originalVE.getType(elContext);
         } finally {
-            if (pushed) {
-                popCompositeComponent(ctx);
-            }
+            popCompositeComponent(manager);
         }
 
     }
@@ -166,13 +158,11 @@ public final class ContextualCompositeValueExpression extends ValueExpression {
     public Class<?> getExpectedType() {
 
         FacesContext ctx = FacesContext.getCurrentInstance();
-        boolean pushed = pushCompositeComponent(ctx);
+        CompositeComponentStackManager manager = pushCompositeComponent(ctx);
         try {
             return originalVE.getExpectedType();
         } finally {
-            if (pushed) {
-                popCompositeComponent(ctx);
-            }
+            popCompositeComponent(manager);
         }
     }
 
@@ -180,13 +170,11 @@ public final class ContextualCompositeValueExpression extends ValueExpression {
     public ValueReference getValueReference(ELContext elContext) {
 
         FacesContext ctx = (FacesContext) elContext.getContext(FacesContext.class);
-        boolean pushed = pushCompositeComponent(ctx);
+        CompositeComponentStackManager manager = pushCompositeComponent(ctx);
         try {
             return originalVE.getValueReference(elContext);
         } finally {
-            if (pushed) {
-                popCompositeComponent(ctx);
-            }
+            popCompositeComponent(manager);
         }
 
     }
@@ -230,18 +218,24 @@ public final class ContextualCompositeValueExpression extends ValueExpression {
 
     // ----------------------------------------------------- Private Methods
 
-    private boolean pushCompositeComponent(FacesContext ctx) {
+    /**
+     * @return the manager the composite component was pushed onto, or <code>null</code> when nothing was pushed. The
+     * manager is handed to {@link #popCompositeComponent(CompositeComponentStackManager)} so that the pop does not have
+     * to look it up again; every evaluation of this expression goes through this pair.
+     */
+    private CompositeComponentStackManager pushCompositeComponent(FacesContext ctx) {
 
         CompositeComponentStackManager manager = CompositeComponentStackManager.getManager(ctx);
         UIComponent cc = manager.findCompositeComponentUsingLocation(ctx, location);
-        return manager.push(cc);
+        return manager.push(cc) ? manager : null;
 
     }
 
-    private void popCompositeComponent(FacesContext ctx) {
+    private static void popCompositeComponent(CompositeComponentStackManager manager) {
 
-        CompositeComponentStackManager manager = CompositeComponentStackManager.getManager(ctx);
-        manager.pop();
+        if (manager != null) {
+            manager.pop();
+        }
 
     }
 
