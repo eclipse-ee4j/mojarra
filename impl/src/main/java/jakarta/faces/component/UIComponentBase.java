@@ -764,6 +764,28 @@ public abstract class UIComponentBase extends UIComponent {
     }
 
     /**
+     * Whether at least one listener of the given type would receive an event broadcast by this component. Reads the
+     * same list {@link #broadcast} does, without building the arrays {@link #getFacesListeners} has to allocate.
+     *
+     * @param clazz the listener type to look for
+     * @return true if such a listener is attached
+     */
+    boolean hasFacesListener(Class<? extends FacesListener> clazz) {
+
+        if (listeners == null) {
+            return false;
+        }
+
+        for (Iterator<FacesListener> i = listeners.iterator(); i.hasNext();) {
+            if (clazz.isAssignableFrom(i.next().getClass())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @throws IllegalArgumentException {@inheritDoc}
      * @throws NullPointerException {@inheritDoc}
      */
