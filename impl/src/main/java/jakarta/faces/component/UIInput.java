@@ -849,10 +849,16 @@ public class UIInput extends UIOutput implements EditableValueHolder {
         // If our value is valid, store the new value, erase the
         // "submitted" value, and emit a ValueChangeEvent if appropriate
         if (isValid()) {
-            Object previous = getValue();
+            // Reading the previous value evaluates the value expression, which walks the whole ELResolver chain and,
+            // with CDI in that chain, resolves the bean afresh. It only feeds the ValueChangeEvent, and a queued event
+            // is discarded at broadcast when nothing is listening for it, so skip the read in that case.
+            boolean valueChangeObserved = hasFacesListener(ValueChangeListener.class);
+            Object previous = valueChangeObserved ? getValue() : null;
+
             setValue(newValue);
             setSubmittedValue(null);
-            if (compareValues(previous, newValue)) {
+
+            if (valueChangeObserved && compareValues(previous, newValue)) {
                 queueEvent(new ValueChangeEvent(context, this, previous, newValue));
             }
         }

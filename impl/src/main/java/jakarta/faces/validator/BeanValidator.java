@@ -35,6 +35,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import jakarta.el.ELContext;
 import jakarta.el.PropertyNotFoundException;
 import jakarta.el.ValueExpression;
 import jakarta.el.ValueReference;
@@ -313,17 +314,19 @@ public class BeanValidator implements Validator, PartialStateHolder {
             return;
         }
 
-        ValueReference valueReference = getValueReference(context, component, valueExpression);
+        ResolvedValueReference resolvedValueReference = resolveValueReference(context, component, valueExpression);
+        ValueReference valueReference = resolvedValueReference.getReference();
 
         if (valueReference == null || valueReference.getBase() == null) {
             return;
         }
 
         Class<?>[] validationGroupsArray = parseValidationGroups(getValidationGroups());
-        
+
         if (isResolvable(valueReference, valueExpression)) {
             jakarta.validation.Validator beanValidator = getBeanValidator(context);
-            Object coercedValue = value == null ? null : context.getApplication().getExpressionFactory().coerceToType(value, valueExpression.getType(context.getELContext()));
+            Object coercedValue = value == null ? null
+                    : context.getApplication().getExpressionFactory().coerceToType(value, getPropertyType(context, valueExpression, resolvedValueReference));
 
             @SuppressWarnings("rawtypes")
             Set violationsRaw = null;
@@ -368,7 +371,32 @@ public class BeanValidator implements Validator, PartialStateHolder {
         }
     }
 
-    private static ValueReference getValueReference(FacesContext context, UIComponent component, ValueExpression valueExpression) {
+    /**
+     * A {@link ValueReference}, plus whether it had to be unwrapped out of a composite component's
+     * <code>#{cc.attrs.x}</code> indirection. Once unwrapped it points at the backing bean property rather than at
+     * what the original expression's own {@link ValueExpression#getType} would report, which
+     * {@link #getPropertyType} has to account for.
+     */
+    private static final class ResolvedValueReference {
+
+        private final ValueReference reference;
+        private final boolean unwrappedFromCompositeComponent;
+
+        ResolvedValueReference(ValueReference reference, boolean unwrappedFromCompositeComponent) {
+            this.reference = reference;
+            this.unwrappedFromCompositeComponent = unwrappedFromCompositeComponent;
+        }
+
+        ValueReference getReference() {
+            return reference;
+        }
+
+        boolean isUnwrappedFromCompositeComponent() {
+            return unwrappedFromCompositeComponent;
+        }
+    }
+
+    private static ResolvedValueReference resolveValueReference(FacesContext context, UIComponent component, ValueExpression valueExpression) {
         try {
             ValueReference reference = valueExpression.getValueReference(context.getELContext());
             if (reference != null) {
@@ -376,11 +404,11 @@ public class BeanValidator implements Validator, PartialStateHolder {
                 if (base instanceof CompositeComponentExpressionHolder) {
                     ValueExpression ve = ((CompositeComponentExpressionHolder) base).getExpression(String.valueOf(reference.getProperty()));
                     if (ve != null) {
-                        reference = getValueReference(context, component, ve);
+                        return new ResolvedValueReference(resolveValueReference(context, component, ve).getReference(), true);
                     }
                 }
             }
-            return reference;
+            return new ResolvedValueReference(reference, false);
         }
         catch (PropertyNotFoundException e) {
             if (component instanceof UIInput && ((UIInput) component).getSubmittedValue() == null) {
@@ -391,11 +419,40 @@ public class BeanValidator implements Validator, PartialStateHolder {
                                        valueExpression.getExpressionString(),
                                        component.getId() });
                 }
-                return null;
+                return new ResolvedValueReference(null, false);
             } else {
                 throw e;
             }
         }
+    }
+
+    /**
+     * The type of the property the value expression points at.
+     * <p>
+     * {@link ValueExpression#getType} re-resolves the expression from its root and then asks the resolver about the
+     * base and property it arrives at. That base and property are exactly what the {@link ValueReference} already
+     * holds, so the resolver can be asked directly and the walk skipped -- which matters because with CDI in the
+     * resolver chain the root resolution is a bean lookup, once per input per request.
+     * <p>
+     * A reference unwrapped out of a composite component no longer describes the original expression's own target, so
+     * that case keeps the full walk.
+     */
+    private static Class<?> getPropertyType(FacesContext context, ValueExpression valueExpression, ResolvedValueReference resolvedValueReference) {
+        ELContext elContext = context.getELContext();
+
+        if (resolvedValueReference.isUnwrappedFromCompositeComponent()) {
+            return valueExpression.getType(elContext);
+        }
+
+        ValueReference valueReference = resolvedValueReference.getReference();
+        elContext.setPropertyResolved(false);
+        Class<?> type = elContext.getELResolver().getType(elContext, valueReference.getBase(), valueReference.getProperty());
+
+        if (!elContext.isPropertyResolved()) {
+            throw new PropertyNotFoundException(valueExpression.getExpressionString());
+        }
+
+        return type;
     }
 
     private boolean isResolvable(jakarta.el.ValueReference valueReference, ValueExpression valueExpression) {
