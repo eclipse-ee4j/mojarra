@@ -66,6 +66,7 @@ import jakarta.faces.render.ResponseStateManager;
 import jakarta.faces.view.ViewDeclarationLanguage;
 import jakarta.faces.view.ViewMetadata;
 
+import org.glassfish.mojarra.application.view.ViewScopeManager;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.MessageUtils;
 import org.glassfish.mojarra.util.Util;
@@ -169,6 +170,8 @@ public class RestoreViewPhase extends Phase {
 
                 facesContext.setViewRoot(viewRoot);
                 facesContext.setProcessingEvents(true);
+
+                ViewScopeManager.acquireViewMap(facesContext);
 
                 if (LOGGER.isLoggable(FINE)) {
                     LOGGER.fine("Postback: restored view for " + viewId);

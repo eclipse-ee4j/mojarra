@@ -52,6 +52,7 @@ import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
 
+import org.glassfish.mojarra.application.view.ViewScopeManager;
 import org.glassfish.mojarra.cdi.CdiUtils;
 import org.glassfish.mojarra.el.ELContextImpl;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
@@ -503,6 +504,7 @@ public class FacesContextImpl extends FacesContext {
     @Override
     public void release() {
         BeanManager beanManager = Util.getCdiBeanManager(this);
+        ViewScopeManager.releaseViewMaps(this);
 
         released = true;
         if (externalContext != null) {
