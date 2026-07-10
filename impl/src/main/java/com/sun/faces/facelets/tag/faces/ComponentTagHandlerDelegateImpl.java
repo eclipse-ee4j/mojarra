@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -161,6 +162,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         }
 
         CompositeComponentStackManager ccStackManager = CompositeComponentStackManager.getManager(context);
+        StateContext stateContext = StateContext.getStateContext(context);
         boolean compcompPushed = pushComponentToEL(ctx, c, ccStackManager);
 
         if (ProjectStage.Development == context.getApplication().getProjectStage()) {
@@ -181,15 +183,22 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         // children already attached) may contain components to reuse, so the scan stays active for its subtree.
         boolean freshSubtree = !componentFound && c.getChildCount() == 0;
         Map<Object, Object> contextAttributes = context.getAttributes();
-        Object previousFreshSubtree = contextAttributes.put(ComponentSupport.BUILDING_FRESH_SUBTREE, freshSubtree);
+        Object previousFreshSubtree = contextAttributes.get(ComponentSupport.BUILDING_FRESH_SUBTREE);
+        // The flag holds for a whole subtree, so it only has to be written when it actually flips.
+        boolean flipped = !Objects.equals(previousFreshSubtree, freshSubtree);
+        if (flipped) {
+            contextAttributes.put(ComponentSupport.BUILDING_FRESH_SUBTREE, freshSubtree);
+        }
         try {
             // first allow c to get populated
             owner.applyNextHandler(ctx, c);
         } finally {
-            if (previousFreshSubtree != null) {
-                contextAttributes.put(ComponentSupport.BUILDING_FRESH_SUBTREE, previousFreshSubtree);
-            } else {
-                contextAttributes.remove(ComponentSupport.BUILDING_FRESH_SUBTREE);
+            if (flipped) {
+                if (previousFreshSubtree != null) {
+                    contextAttributes.put(ComponentSupport.BUILDING_FRESH_SUBTREE, previousFreshSubtree);
+                } else {
+                    contextAttributes.remove(ComponentSupport.BUILDING_FRESH_SUBTREE);
+                }
             }
             if (isNaming) {
                 IterationIdManager.stopNamingContainer(ctx);
@@ -207,9 +216,9 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         // add to the tree afterwards
         // this allows children to determine if it's
         // been part of the tree or not yet
-        addComponentToView(ctx, parent, c, componentFound, parentModified);
+        addComponentToView(ctx, parent, c, componentFound, parentModified, stateContext);
         ComponentSupport.copyPassthroughAttributes(ctx, c, owner.getTag());
-        adjustIndexOfDynamicChildren(context, c);
+        adjustIndexOfDynamicChildren(stateContext, c);
         popComponentFromEL(ctx, c, ccStackManager, compcompPushed);
     }
 
@@ -233,8 +242,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         return parent.getAttributes().get(ComponentSupport.MARK_CHILDREN_MODIFIED) != null;
     }
 
-    private void adjustIndexOfDynamicChildren(FacesContext context, UIComponent parent) {
-        StateContext stateContext = StateContext.getStateContext(context);
+    private void adjustIndexOfDynamicChildren(StateContext stateContext, UIComponent parent) {
         if (!stateContext.hasOneOrMoreDynamicChild(parent)) {
             return;
         }
@@ -312,16 +320,17 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
 
     // ------------------------------------------------------- Protected Methods
 
-    private void addComponentToView(FaceletContext ctx, UIComponent parent, UIComponent c, boolean componentFound, boolean parentModified) {
+    private void addComponentToView(FaceletContext ctx, UIComponent parent, UIComponent c, boolean componentFound, boolean parentModified,
+            StateContext stateContext) {
         if (!componentFound || !parentModified) {
-            addComponentToView(ctx, parent, c, componentFound);
+            addComponentToView(ctx, parent, c, componentFound, stateContext);
         }
     }
 
-    protected void addComponentToView(FaceletContext ctx, UIComponent parent, UIComponent c, boolean componentFound) {
+    protected void addComponentToView(FaceletContext ctx, UIComponent parent, UIComponent c, boolean componentFound, StateContext stateContext) {
 
         FacesContext context = ctx.getFacesContext();
-        boolean suppressEvents = ComponentSupport.suppressViewModificationEvents(context);
+        boolean suppressEvents = ComponentSupport.suppressViewModificationEvents(context, stateContext);
         boolean compcomp = UIComponent.isCompositeComponent(c);
 
         if (suppressEvents && componentFound && !compcomp) {

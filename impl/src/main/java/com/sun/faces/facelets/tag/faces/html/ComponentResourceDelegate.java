@@ -20,6 +20,7 @@ import static com.sun.faces.facelets.tag.faces.ComponentSupport.MARK_CREATED;
 
 import java.util.List;
 
+import com.sun.faces.context.StateContext;
 import com.sun.faces.facelets.tag.faces.ComponentSupport;
 import com.sun.faces.facelets.tag.faces.ComponentTagHandlerDelegateImpl;
 
@@ -75,13 +76,13 @@ public abstract class ComponentResourceDelegate extends ComponentTagHandlerDeleg
     }
 
     @Override
-    protected void addComponentToView(FaceletContext ctx, UIComponent parent, UIComponent c, boolean componentFound) {
+    protected void addComponentToView(FaceletContext ctx, UIComponent parent, UIComponent c, boolean componentFound, StateContext stateContext) {
 
         if (!componentFound) {
             // default to the existing logic which will add the component
             // in-place. An event will be fired to move the component
             // as a UIViewRoot component resource
-            super.addComponentToView(ctx, parent, c, componentFound);
+            super.addComponentToView(ctx, parent, c, componentFound, stateContext);
         } else {
             // when re-applying we supress events for existing components,
             // so if we simply relied on the default logic, the resources
@@ -91,7 +92,7 @@ public abstract class ComponentResourceDelegate extends ComponentTagHandlerDeleg
                 final UIViewRoot root = ctx.getFacesContext().getViewRoot();
                 root.addComponentResource(ctx.getFacesContext(), c, target);
             } else {
-                super.addComponentToView(ctx, parent, c, componentFound);
+                super.addComponentToView(ctx, parent, c, componentFound, stateContext);
             }
         }
 
