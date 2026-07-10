@@ -26,6 +26,8 @@ import java.util.Iterator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PhaseId;
@@ -314,5 +316,98 @@ public class UIInputTestCase extends UIOutputTestCase {
             assertTrue(list1[i].getClass() == list2[i].getClass());
         }
         return true;
+    }
+
+    // The previous value only feeds the ValueChangeEvent, so validate() must not evaluate the value
+    // expression to obtain it when no ValueChangeListener could receive that event.
+    @Test
+    public void testValidateSkipsPreviousValueWhenNobodyListens() {
+        CountingValueExpression valueExpression = new CountingValueExpression();
+        UIInput input = newInputWithValueExpression(valueExpression);
+
+        input.validate(facesContext);
+
+        // Guard against a vacuous assertion: the read only happens on the valid branch, so prove it ran.
+        assertTrue(input.isValid());
+        assertTrue(input.isLocalValueSet());
+        assertEquals(0, valueExpression.reads, "value expression must not be evaluated");
+    }
+
+    @Test
+    public void testValidateReadsPreviousValueWhenObserved() {
+        CountingValueExpression valueExpression = new CountingValueExpression();
+        UIInput input = newInputWithValueExpression(valueExpression);
+        input.addValueChangeListener(new ValueChangeListenerTestImpl("VCL"));
+
+        input.validate(facesContext);
+
+        assertTrue(input.isValid());
+        assertTrue(input.isLocalValueSet());
+        assertEquals(1, valueExpression.reads, "value expression must be evaluated once");
+    }
+
+    // Submitting the value the expression already holds keeps compareValues() false, so no
+    // ValueChangeEvent is queued and the component needs no parent to queue it onto.
+    private static UIInput newInputWithValueExpression(CountingValueExpression valueExpression) {
+        UIInput input = new UIInput();
+        input.setRendererType(null);
+        input.setValueExpression("value", valueExpression);
+        input.setSubmittedValue(CountingValueExpression.VALUE);
+        return input;
+    }
+
+    private static final class CountingValueExpression extends ValueExpression {
+
+        private static final long serialVersionUID = 1L;
+
+        static final String VALUE = "unchanged";
+
+        int reads;
+
+        @Override
+        public Object getValue(ELContext context) {
+            reads++;
+            return VALUE;
+        }
+
+        @Override
+        public void setValue(ELContext context, Object value) {
+            // no-op
+        }
+
+        @Override
+        public boolean isReadOnly(ELContext context) {
+            return false;
+        }
+
+        @Override
+        public Class<?> getType(ELContext context) {
+            return String.class;
+        }
+
+        @Override
+        public Class<?> getExpectedType() {
+            return String.class;
+        }
+
+        @Override
+        public String getExpressionString() {
+            return "#{test.value}";
+        }
+
+        @Override
+        public boolean isLiteralText() {
+            return false;
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return this == other;
+        }
+
+        @Override
+        public int hashCode() {
+            return System.identityHashCode(this);
+        }
     }
 }

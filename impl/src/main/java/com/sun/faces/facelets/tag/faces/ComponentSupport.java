@@ -603,17 +603,28 @@ public final class ComponentSupport {
 
     public static boolean suppressViewModificationEvents(FacesContext ctx) {
 
+        String viewId = getViewIdForModificationEvents(ctx);
+        return viewId != null && StateContext.getStateContext(ctx).isPartialStateSaving(ctx, viewId);
+
+    }
+
+    /**
+     * Variant for callers that already hold the request's {@link StateContext}, so that a tree walk does not look it up
+     * once per component.
+     */
+    public static boolean suppressViewModificationEvents(FacesContext ctx, StateContext stateCtx) {
+
+        String viewId = getViewIdForModificationEvents(ctx);
+        return viewId != null && stateCtx.isPartialStateSaving(ctx, viewId);
+
+    }
+
+    private static String getViewIdForModificationEvents(FacesContext ctx) {
+
         // NO UIViewRoot means this was called during restore view -
         // no need to suppress events at that time
         UIViewRoot root = ctx.getViewRoot();
-        if (root != null) {
-            String viewId = root.getViewId();
-            if (viewId != null) {
-                StateContext stateCtx = StateContext.getStateContext(ctx);
-                return stateCtx.isPartialStateSaving(ctx, viewId);
-            }
-        }
-        return false;
+        return root != null ? root.getViewId() : null;
 
     }
 
