@@ -66,6 +66,7 @@ import jakarta.faces.render.ResponseStateManager;
 import jakarta.faces.view.ViewDeclarationLanguage;
 import jakarta.faces.view.ViewMetadata;
 
+import com.sun.faces.application.view.ViewScopeManager;
 import com.sun.faces.util.FacesLogger;
 import com.sun.faces.util.MessageUtils;
 import com.sun.faces.util.Util;
@@ -169,6 +170,8 @@ public class RestoreViewPhase extends Phase {
 
                 facesContext.setViewRoot(viewRoot);
                 facesContext.setProcessingEvents(true);
+
+                ViewScopeManager.acquireViewMap(facesContext);
 
                 if (LOGGER.isLoggable(FINE)) {
                     LOGGER.fine("Postback: restored view for " + viewId);
