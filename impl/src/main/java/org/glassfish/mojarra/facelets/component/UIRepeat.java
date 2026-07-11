@@ -368,11 +368,11 @@ public class UIRepeat extends UINamingContainer {
         this.value = value;
     }
 
-    private transient StringBuffer buffer;
+    private transient StringBuilder buffer;
 
-    private StringBuffer getBuffer() {
+    private StringBuilder getBuffer() {
         if (buffer == null) {
-            buffer = new StringBuffer();
+            buffer = new StringBuilder();
         }
         buffer.setLength(0);
         return buffer;

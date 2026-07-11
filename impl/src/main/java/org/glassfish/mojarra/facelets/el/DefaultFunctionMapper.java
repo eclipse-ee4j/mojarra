@@ -21,9 +21,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import jakarta.el.FunctionMapper;
 
@@ -59,12 +59,13 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
 
     public void addFunction(String prefix, String localName, Method m) {
         if (functions == null) {
-            functions = new HashMap<>();
+            synchronized (this) {
+                if (functions == null) {
+                    functions = new ConcurrentHashMap<>();
+                }
+            }
         }
-        Function f = new Function(prefix, localName, m);
-        synchronized (this) {
-            functions.put(prefix + ':' + localName, f);
-        }
+        functions.put(prefix + ':' + localName, new Function(prefix, localName, m));
     }
 
     /*

@@ -16,9 +16,9 @@
 
 package org.glassfish.mojarra.facelets.tag.faces;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Set;
 
 import jakarta.faces.view.facelets.FaceletContext;
@@ -81,15 +81,10 @@ public class IterationIdManager {
 
     @SuppressWarnings("unchecked")
     private static Deque<Set<String>> _getStackOfTrackedIds(FaceletContext ctx) {
-        Deque<Set<String>> stack = (Deque<Set<String>>)ctx.getAttribute(_STACK_OF_TRACKED_IDS);
+        Deque<Set<String>> stack = (Deque<Set<String>>) ctx.getAttribute(_STACK_OF_TRACKED_IDS);
         if (stack == null) {
-            synchronized(IterationIdManager.class) {
-                stack = (Deque<Set<String>>)ctx.getAttribute(_STACK_OF_TRACKED_IDS);
-                if(stack == null) {
-                   stack = new LinkedList<>();
-                   ctx.setAttribute(_STACK_OF_TRACKED_IDS, stack);
-                }
-            }
+            stack = new ArrayDeque<>();
+            ctx.setAttribute(_STACK_OF_TRACKED_IDS, stack);
         }
         return stack;
     }
