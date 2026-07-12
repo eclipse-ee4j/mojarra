@@ -249,14 +249,28 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
 
         List<UIComponent> children = parent.getChildren();
         List<UIComponent> dynamicChildren = Collections.emptyList();
+        boolean allInPlace = true;
 
+        int index = 0;
         for (UIComponent cur : children) {
             if (stateContext.componentAddedDynamically(cur)) {
                 if (dynamicChildren.isEmpty()) {
                     dynamicChildren = new ArrayList<>(children.size());
                 }
                 dynamicChildren.add(cur);
+                int stored = stateContext.getIndexOfDynamicallyAddedChildInParent(cur);
+                if (stored != -1 && stored != index) {
+                    allInPlace = false;
+                }
             }
+            index++;
+        }
+
+        // reapplyDynamicActions already puts every dynamic child at its stored index, so in the steady state the
+        // remove-all/re-add-all below just reproduces the current list -- at O(dynamic * children) cost, i.e. O(n^2)
+        // for an all-dynamic parent (a large dynamically populated container). Skip it when nothing is out of place.
+        if (allInPlace) {
+            return;
         }
 
         // First remove all the dynamic children, this puts the non-dynamic children at
