@@ -16,9 +16,10 @@
 
 package com.sun.faces.facelets.compiler;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
-import java.util.Stack;
 
 import com.sun.faces.facelets.el.ELText;
 
@@ -36,13 +37,13 @@ import jakarta.faces.view.facelets.TagException;
  */
 final class TextUnit extends CompilationUnit {
 
-    private final StringBuffer buffer;
+    private final StringBuilder buffer;
 
-    private final StringBuffer textBuffer;
+    private final StringBuilder textBuffer;
 
     private final List instructionBuffer;
 
-    private final Stack tags;
+    private final Deque tags;
 
     private final List children;
 
@@ -55,10 +56,10 @@ final class TextUnit extends CompilationUnit {
     public TextUnit(String alias, String id) {
         this.alias = alias;
         this.id = id;
-        buffer = new StringBuffer();
-        textBuffer = new StringBuffer();
+        buffer = new StringBuilder();
+        textBuffer = new StringBuilder();
         instructionBuffer = new ArrayList();
-        tags = new Stack();
+        tags = new ArrayDeque();
         children = new ArrayList();
         startTagOpen = false;
     }
@@ -276,7 +277,7 @@ final class TextUnit extends CompilationUnit {
     }
 
     public boolean isClosed() {
-        return tags.empty();
+        return tags.isEmpty();
     }
 
     private static String trimRight(String s) {

@@ -19,10 +19,10 @@ package com.sun.faces.application;
 import static com.sun.faces.util.Util.coalesce;
 import static com.sun.faces.util.Util.getCurrentLoader;
 
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <p>
@@ -36,7 +36,7 @@ public class ApplicationResourceBundle {
     private final String baseName;
     private final Map<String, String> displayNames;
     private final Map<String, String> descriptions;
-    private volatile Map<Locale, ResourceBundle> resources;
+    private final Map<Locale, ResourceBundle> resources;
 
     // ------------------------------------------------------------ Constructors
 
@@ -59,7 +59,7 @@ public class ApplicationResourceBundle {
         this.baseName = baseName;
         this.displayNames = displayNames;
         this.descriptions = descriptions;
-        resources = new HashMap<>(4, 1.0f);
+        resources = new ConcurrentHashMap<>(4);
     }
 
     // ---------------------------------------------------------- Public Methods
@@ -84,13 +84,7 @@ public class ApplicationResourceBundle {
         ResourceBundle bundle = resources.get(locale);
         if (bundle == null) {
             ClassLoader loader = getCurrentLoader(this);
-            synchronized (this) {
-                bundle = resources.get(locale);
-                if (bundle == null) {
-                    bundle = ResourceBundle.getBundle(baseName, locale, loader);
-                    resources.put(locale, bundle);
-                }
-            }
+            bundle = resources.computeIfAbsent(locale, loc -> ResourceBundle.getBundle(baseName, loc, loader));
         }
 
         return bundle;

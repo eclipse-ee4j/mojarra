@@ -17,9 +17,7 @@
 package com.sun.faces.facelets.compiler;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -61,7 +59,7 @@ final class CompilationManager {
 
     private final NamespaceManager namespaceManager;
 
-    private final Stack<CompilationUnit> units;
+    private final List<CompilationUnit> units;
 
     private int tagId;
 
@@ -93,8 +91,8 @@ final class CompilationManager {
         finished = false;
 
         // our compilationunit stack
-        units = new Stack<>();
-        units.push(new CompilationUnit());
+        units = new ArrayList<>();
+        units.add(new CompilationUnit());
 
         config = WebConfiguration.getInstance();
 
@@ -227,7 +225,7 @@ final class CompilationManager {
             CompilationUnit viewRootUnit = getViewRootUnitFromStack(units);
             units.clear();
             NamespaceUnit nsUnit = namespaceManager.toNamespaceUnit(tagLibrary);
-            units.push(nsUnit);
+            units.add(nsUnit);
             if (viewRootUnit != null) {
                 viewRootUnit.removeChildren();
                 currentUnit().addChild(viewRootUnit);
@@ -250,7 +248,7 @@ final class CompilationManager {
             // Cleare the parent tags
             units.clear();
             NamespaceUnit nsUnit = namespaceManager.toNamespaceUnit(tagLibrary);
-            units.push(nsUnit);
+            units.add(nsUnit);
             currentUnit().addChild(iface);
             startUnit(new ImplementationUnit(tagLibrary, qname[0], qname[1], t, nextTagId()));
             if (log.isLoggable(Level.FINE)) {
@@ -258,7 +256,7 @@ final class CompilationManager {
             }
 
         } else if (isRemove(qname[0], qname[1])) {
-            units.push(new RemoveUnit());
+            units.add(new RemoveUnit());
         } else if (tagLibrary.containsTagHandler(qname[0], qname[1])) {
             if (isInterface(qname[0], qname[1])) {
                 InterfaceUnit iface = new InterfaceUnit(tagLibrary, qname[0], qname[1], t, nextTagId());
@@ -348,13 +346,13 @@ final class CompilationManager {
 
     private CompilationUnit currentUnit() {
         if (!units.isEmpty()) {
-            return units.peek();
+            return units.get(units.size() - 1);
         }
         return null;
     }
 
     private void finishUnit() {
-        CompilationUnit unit = units.pop();
+        CompilationUnit unit = units.remove(units.size() - 1);
         unit.finishNotify(this);
 
         if (log.isLoggable(Level.FINE)) {
@@ -380,7 +378,7 @@ final class CompilationManager {
         }
 
         currentUnit().addChild(unit);
-        units.push(unit);
+        units.add(unit);
         unit.startNotify(this);
     }
 
@@ -489,11 +487,9 @@ final class CompilationManager {
      * @param units the compilation units.
      * @return Get the view
      */
-    private CompilationUnit getViewRootUnitFromStack(Stack<CompilationUnit> units) {
+    private CompilationUnit getViewRootUnitFromStack(List<CompilationUnit> units) {
         CompilationUnit result = null;
-        Iterator<CompilationUnit> iterator = units.iterator();
-        while (iterator.hasNext()) {
-            CompilationUnit compilationUnit = iterator.next();
+        for (CompilationUnit compilationUnit : units) {
             if (compilationUnit instanceof TagUnit) {
                 TagUnit tagUnit = (TagUnit) compilationUnit;
                 String ns = tagUnit.getTag().getNamespace();
