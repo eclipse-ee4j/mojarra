@@ -84,8 +84,7 @@ public class ApplicationResourceBundle {
         ResourceBundle bundle = resources.get(locale);
         if (bundle == null) {
             ClassLoader loader = getCurrentLoader(this);
-            final Locale key = locale;
-            bundle = resources.computeIfAbsent(key, loc -> ResourceBundle.getBundle(baseName, loc, loader));
+            bundle = resources.computeIfAbsent(locale, loc -> ResourceBundle.getBundle(baseName, loc, loader));
         }
 
         return bundle;
