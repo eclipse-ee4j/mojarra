@@ -235,6 +235,8 @@ If you already have a `FacesServlet` entry in `web.xml`, then the `@FacesConfig`
 
 Instructions for checking out the source, building from source, importing into an IDE, and submitting pull requests are available in [DEVELOPERS.md](DEVELOPERS.md).
 
+Before submitting a pull request, please review [CONTRIBUTING.md](CONTRIBUTING.md) for the Eclipse Contributor Agreement (ECA), the sign-off requirement, and the AI-assisted contribution policy.
+
 ## Resources
 
 - [Faces 5.0 Specification][21]
