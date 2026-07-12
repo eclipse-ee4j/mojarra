@@ -61,7 +61,6 @@ import jakarta.faces.view.facelets.MetadataTarget;
 import jakarta.faces.view.facelets.Tag;
 import jakarta.faces.view.facelets.TagAttribute;
 
-import com.sun.faces.RIConstants;
 import com.sun.faces.context.StateContext;
 import com.sun.faces.el.CompositeComponentELResolver;
 import com.sun.faces.facelets.el.VariableMapperWrapper;
@@ -121,7 +120,6 @@ public class CompositeComponentTagHandler extends ComponentHandler implements Cr
         } else {
             cc = context.getApplication().createComponent(context, ccResource);
         }
-        context.getViewRoot().getAttributes().put(RIConstants.TREE_HAS_DYNAMIC_COMPONENTS, Boolean.TRUE);
         setCompositeComponent(context, cc);
 
         return cc;
