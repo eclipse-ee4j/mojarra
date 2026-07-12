@@ -367,9 +367,10 @@ public class UIInputTestCase extends UIOutputTestCase {
         int reads;
 
         @Override
-        public Object getValue(ELContext context) {
+        @SuppressWarnings("unchecked")
+        public <T> T getValue(ELContext context) {
             reads++;
-            return VALUE;
+            return (T) VALUE;
         }
 
         @Override
