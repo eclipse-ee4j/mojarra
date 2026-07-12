@@ -152,9 +152,9 @@ diff /tmp/a.txt /tmp/b.txt
 
 Run both sides on the same server profile so the comparison is fair.
 
-## Tuning state saving / view pooling
+## Tuning state saving
 
-The state and view-pooling context parameters are filtered into the WAR's `web.xml`
+The state-saving context parameters are filtered into the WAR's `web.xml`
 at package time, so they can be tuned per run without editing anything. Defaults
 match the implementation defaults; each knob sets the Mojarra parameter and, where
 applicable, its MyFaces equivalent (the other implementation ignores the foreign one):
@@ -166,7 +166,7 @@ applicable, its MyFaces equivalent (the other implementation ignores the foreign
 | `-Dwebapp.compressViewState`     | `true`   | `com.sun.faces.compressViewState`      | `org.apache.myfaces.COMPRESS_STATE_IN_SESSION` |
 
 ```
-mvn clean verify -Dperf=true -Dwebapp.stateSavingMethod=client -Dwebapp.numberOfViewsInSession=10
+mvn clean verify -Dperf=true -Dwebapp.stateSavingMethod=client -Dwebapp.serializeServerState=true
 ```
 
 For any parameter without a dedicated knob, pass raw `<context-param>` XML through the
