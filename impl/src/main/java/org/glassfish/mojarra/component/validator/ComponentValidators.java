@@ -18,7 +18,6 @@ package org.glassfish.mojarra.component.validator;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -55,13 +54,13 @@ public class ComponentValidators {
      * <code>ValidatorInfo</code> instance will be popped and thus have no impact on other
      * <code>EditableValueHolder</code>s.
      */
-    private LinkedList<ValidatorInfo> validatorStack = null;
+    private List<ValidatorInfo> validatorStack = null;
 
     // ------------------------------------------------------------ Constructors
 
     public ComponentValidators() {
 
-        validatorStack = new LinkedList<>();
+        validatorStack = new ArrayList<>();
 
     }
 
@@ -178,8 +177,9 @@ public class ComponentValidators {
      */
     public void popValidatorInfo() {
 
-        if (validatorStack.size() > 0) {
-            validatorStack.removeLast();
+        int size = validatorStack.size();
+        if (size > 0) {
+            validatorStack.remove(size - 1);
         }
 
     }
@@ -197,7 +197,7 @@ public class ComponentValidators {
      * @param validatorStack current stack of ValidatorInfo instances
      */
     private static void addValidatorsToComponent(FacesContext ctx, Collection<String> validatorIds, EditableValueHolder editableValueHolder,
-            LinkedList<ValidatorInfo> validatorStack) {
+            List<ValidatorInfo> validatorStack) {
 
         if (validatorIds == null || validatorIds.isEmpty()) {
             return;
