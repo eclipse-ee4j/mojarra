@@ -905,8 +905,14 @@ public abstract class UIComponentBase extends UIComponent {
         }
 
         if (!listenersForEventClass.contains(facesLifecycleListener)) {
-            clearInitialState();
             listenersForEventClass.add(facesLifecycleListener);
+            // A listener subscribed while the view's initial state is being built (@ListenerFor on a component or
+            // renderer, an f:event handler) is part of the initial-state baseline and buildView re-establishes it on
+            // restore, so only a subscription made after markInitialState needs to ride along in the delta (mirrors
+            // bindingsModified / rendererTypeSet).
+            if (initialStateMarked()) {
+                systemEventListenersModified = true;
+            }
         }
     }
 
@@ -944,6 +950,9 @@ public abstract class UIComponentBase extends UIComponent {
 
                 if (existingListener.equals(componentListener)) {
                     i.remove();
+                    if (initialStateMarked()) {
+                        systemEventListenersModified = true;
+                    }
                     break;
                 }
             }
@@ -1301,7 +1310,9 @@ public abstract class UIComponentBase extends UIComponent {
 
         if (initialStateMarked()) {
             Object savedFacesListeners = listeners != null ? listeners.saveState(context) : null;
-            Object savedSysEventListeners = saveSystemEventListeners(context);
+            // buildView re-subscribes @ListenerFor / f:event listeners on restore, so only a subscription made after
+            // markInitialState needs to ride along in the delta (mirrors bindingsModified / rendererTypeSet).
+            Object savedSysEventListeners = systemEventListenersModified ? saveSystemEventListeners(context) : null;
             Object savedBehaviors = saveBehaviorsState(context);
             // buildView re-applies facelet value expressions on restore, so only a change made after
             // markInitialState needs to ride along in the delta (mirrors rendererType/rendererTypeSet).
@@ -1394,6 +1405,11 @@ public abstract class UIComponentBase extends UIComponent {
                 listenersByEventClass.putAll(restoredListeners);
             } else {
                 listenersByEventClass = restoredListeners;
+            }
+            if (values.length != 7) {
+                // Partial-state delta: a listener changed after markInitialState; keep it dirty so the change stays
+                // in the delta across subsequent postbacks (mirrors bindingsModified / rendererTypeSet below).
+                systemEventListenersModified = true;
             }
         }
 
