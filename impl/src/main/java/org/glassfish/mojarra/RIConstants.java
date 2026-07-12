@@ -100,11 +100,6 @@ public class RIConstants {
      */
     public static final String DYNAMIC_CHILD_COUNT = RI_PREFIX + "DynamicChildCount";
 
-    /**
-     * Present in the attrs of UIViewRoot iff the tree has one or more dynamic modifications
-     */
-    public static final String TREE_HAS_DYNAMIC_COMPONENTS = RI_PREFIX + "TreeHasDynamicComponents";
-
     public static final String FLOW_DEFINITION_ID_SUFFIX = "-flow.xml";
 
     public static final int FLOW_DEFINITION_ID_SUFFIX_LENGTH = FLOW_DEFINITION_ID_SUFFIX.length();
