@@ -224,33 +224,16 @@ public class StateContext {
         return parent.getAttributes().containsKey(DYNAMIC_CHILD_COUNT);
     }
 
-    private int incrementDynamicChildCount(UIComponent parent) {
-        int result;
+    /**
+     * Mark {@code parent} as having a dynamically added child. Read back by {@link #hasOneOrMoreDynamicChild} to gate
+     * the dynamic-child reorder during Facelets re-apply, which tests only for the key's presence -- so this is a
+     * set-once marker, not a count.
+     */
+    private void markHasDynamicChild(UIComponent parent) {
         Map<String, Object> attrs = parent.getAttributes();
-        Integer cur = (Integer) attrs.get(DYNAMIC_CHILD_COUNT);
-        if (null != cur) {
-            result = cur++;
-        } else {
-            result = 1;
+        if (!attrs.containsKey(DYNAMIC_CHILD_COUNT)) {
+            attrs.put(DYNAMIC_CHILD_COUNT, 1);
         }
-        attrs.put(DYNAMIC_CHILD_COUNT, result);
-
-        return result;
-    }
-
-    private int decrementDynamicChildCount(UIComponent parent) {
-        int result = 0;
-        Map<String, Object> attrs = parent.getAttributes();
-        Integer cur = (Integer) attrs.get(DYNAMIC_CHILD_COUNT);
-        if (null != cur) {
-            result = 0 < cur ? cur-- : 0;
-
-        }
-        if (0 == result && null != cur) {
-            attrs.remove(DYNAMIC_CHILD_COUNT);
-        }
-
-        return result;
     }
 
     /**
@@ -655,7 +638,6 @@ public class StateContext {
         @Override
         protected void handleRemove(FacesContext context, UIComponent component) {
             if (component.isInView()) {
-                decrementDynamicChildCount(component.getParent());
                 recordDynamicAction(
                     component, 
                     new ComponentStruct(REMOVE, findFacetNameForComponent(component), component.getClientId(context), component.getId())
@@ -676,7 +658,7 @@ public class StateContext {
                 // UIComponentBase.setParent, which runs before this event, so no setId is needed here.
                 String facetName = findFacetNameForComponent(component);
                 if (facetName != null) {
-                    incrementDynamicChildCount(component.getParent());
+                    markHasDynamicChild(component.getParent());
                     component.clearInitialState();
                     component.getAttributes().put(DYNAMIC_COMPONENT, indexInParent(component));
 
@@ -685,7 +667,7 @@ public class StateContext {
 
                     recordDynamicAction(component, struct);
                 } else {
-                    incrementDynamicChildCount(component.getParent());
+                    markHasDynamicChild(component.getParent());
                     component.clearInitialState();
                     component.getAttributes().put(DYNAMIC_COMPONENT, indexInParent(component));
 
