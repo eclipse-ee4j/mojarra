@@ -81,15 +81,10 @@ public class IterationIdManager {
     }
 
     private static Deque<Set<String>> _getStackOfTrackedIds(FaceletContext ctx) {
-        Deque<Set<String>> stack = (Deque<Set<String>>)ctx.getAttribute(_STACK_OF_TRACKED_IDS);
+        Deque<Set<String>> stack = (Deque<Set<String>>) ctx.getAttribute(_STACK_OF_TRACKED_IDS);
         if (stack == null) {
-            synchronized(IterationIdManager.class) {
-                stack = (Deque<Set<String>>)ctx.getAttribute(_STACK_OF_TRACKED_IDS);
-                if(stack == null) {
-                   stack = new LinkedList<>();
-                   ctx.setAttribute(_STACK_OF_TRACKED_IDS, stack);
-                }
-            }
+            stack = new LinkedList<>();
+            ctx.setAttribute(_STACK_OF_TRACKED_IDS, stack);
         }
         return stack;
     }

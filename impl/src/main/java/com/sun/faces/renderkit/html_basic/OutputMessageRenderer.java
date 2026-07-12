@@ -83,9 +83,7 @@ public class OutputMessageRenderer extends HtmlBasicInputRenderer {
         String message;
         if (parameterList.size() > 0) {
             MessageFormat fmt = new MessageFormat(currentValue, context.getViewRoot().getLocale());
-            StringBuffer buf = new StringBuffer(currentValue.length() * 2);
-            fmt.format(parameterList.toArray(new Object[parameterList.size()]), buf, null);
-            message = buf.toString();
+            message = fmt.format(parameterList.toArray());
         } else {
             message = currentValue;
         }
