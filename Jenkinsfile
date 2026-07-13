@@ -3,8 +3,9 @@
 // Mojarra release pipeline.
 //
 // Stages: Prepare -> Build & install -> TCK -> Deploy to Maven Central -> Bump to next snapshot
-//   -> Publish to GitHub. Maven Central deploy and GitHub push run only after the TCK passes,
-//   so a TCK failure leaves no half-published external state.
+//   -> Publish to GitHub. Maven Central deploy and GitHub push run only after the TCK passes, so a
+//   TCK failure leaves no half-published external state. On a real SKIP_TCK release, Prepare instead
+//   gates on a matching green tck-status record (see the SKIP_TCK reuse gate) and the TCK is skipped.
 //
 // This pipeline releases the mojarra IMPL only; it never publishes the standalone jakarta.faces-api
 // (5.0+), which is released separately via the jakartaee/faces release job. The api version is
@@ -232,10 +233,10 @@ spec:
         string(name: 'GF_VERSION', defaultValue: '', description: 'Leave blank to auto-infer from RELEASE_LINE. When using GF_BUNDLE_URL, set this to match the artifact version inside the zip (e.g. 8.0.0-X).')
         string(name: 'GF_BUNDLE_URL', defaultValue: '', description: 'Leave blank to resolve GlassFish from Maven Central via GF_VERSION; otherwise an explicit zip URL override (GF_VERSION must match the artifact version inside the zip).')
         choice(name: 'THREAD_COUNT', choices: ['', '1', '2', '3', '4', '5', '6', '7', '8'], description: '5.0+ only. Leave blank to auto-infer from RELEASE_LINE (1 for 4.x, 2 for 5.0). Maven `-T` value and gf.pool.size for the TCK reactor. Values >1 only work on TCKs that ship gf-pool (5.0+); selecting one on 4.x errors out.')
-        booleanParam(name: 'RUN_TCK', defaultValue: true, description: 'Run the Faces TCK after build.')
-        booleanParam(name: 'SKIP_OLD_TCK', defaultValue: false, description: 'Requires RUN_TCK. 4.x only. Skip the old-tck JavaTest modules (excluded from the reactor entirely via -pl); cuts nearly 3 hours off the TCK run. No-op on 5.0+ where these modules no longer exist. The old-tck-selenium failsafe-driven modules are unaffected by this flag.')
-        booleanParam(name: 'SMOKE_TEST', defaultValue: false, description: 'Requires RUN_TCK and DRY_RUN. Filter the TCK to a tiny representative subset for fast iteration on the pipeline itself (one failsafe IT + one sigtest IT + one old-tck-selenium IT, plus one old-tck JavaTest path when SKIP_OLD_TCK is unchecked).')
         booleanParam(name: 'DRY_RUN', defaultValue: true, description: 'Skip Maven Central deploy and GitHub push.')
+        booleanParam(name: 'SMOKE_TEST', defaultValue: false, description: 'Requires DRY_RUN and unset SKIP_TCK. Filter the TCK to a tiny representative subset for fast iteration on the pipeline itself (one failsafe IT + one sigtest IT + one old-tck-selenium IT, plus one old-tck JavaTest path when SKIP_OLD_TCK is unchecked).')
+        booleanParam(name: 'SKIP_TCK', defaultValue: false, description: 'Skip the Faces TCK stage. On a DRY_RUN it is simply skipped. On a real release it is allowed only when the tck-status branch already carries a green record whose line, apiVersion, mojarraTree and facesSha match this exact build (i.e. a prior DRY_RUN already ran the TCK against identical impl source and faces commit); otherwise the release aborts. 4.x lines emit no records, so SKIP_TCK on a real 4.x release always aborts.')
+        booleanParam(name: 'SKIP_OLD_TCK', defaultValue: false, description: 'Requires unset SKIP_TCK. 4.x only. Skip the old-tck JavaTest modules (excluded from the reactor entirely via -pl); cuts nearly 3 hours off the TCK run. No-op on 5.0+ where these modules no longer exist. The old-tck-selenium failsafe-driven modules are unaffected by this flag.')
         booleanParam(name: 'SKIP_DEPLOY', defaultValue: false, description: 'Requires DRY_RUN unchecked. Skip the Maven Central deploy stage only (still pushes branch/tag and creates the GitHub release). Use for resuming a previous run after Maven Central already published, or for pipeline-debug runs that exercise Publish to GitHub without re-deploying.')
         booleanParam(name: 'SKIP_CRED_CHECK', defaultValue: false, description: 'Skip the Prepare-stage credential checks (Sonatype Central, GitHub SSH push, GitHub bot token). Use for pipeline-debug runs where the publish credentials are unavailable or known-stale and should not abort the run; on a real release leave this unchecked so a bad credential fails fast.')
     }
@@ -271,8 +272,8 @@ spec:
                     }
 
                     // Reject inert checkbox combinations up front rather than silently ignoring them.
-                    if (params.SKIP_OLD_TCK && !params.RUN_TCK) error "SKIP_OLD_TCK requires RUN_TCK."
-                    if (params.SMOKE_TEST   && !params.RUN_TCK) error "SMOKE_TEST requires RUN_TCK."
+                    if (params.SKIP_OLD_TCK && params.SKIP_TCK) error "SKIP_OLD_TCK requires the TCK (unset SKIP_TCK)."
+                    if (params.SMOKE_TEST   && params.SKIP_TCK) error "SMOKE_TEST requires the TCK (unset SKIP_TCK)."
                     if (params.SMOKE_TEST   && !params.DRY_RUN) error "SMOKE_TEST requires DRY_RUN (filtered run is not TCK-conformant and must never be published)."
                     if (params.SKIP_DEPLOY  &&  params.DRY_RUN) error "SKIP_DEPLOY requires DRY_RUN unchecked (DRY_RUN already skips deploy)."
                     if (params.THREAD_COUNT?.trim() && cfg.threadCount == 1) error "THREAD_COUNT is 5.0+ only (4.x TCKs run a single managed GlassFish per module and cannot parallelize)."
@@ -419,18 +420,60 @@ spec:
                     def jdkLabel = (env.RESOLVED_JDK == env.RESOLVED_TCK_JDK)
                         ? "JDK${env.RESOLVED_JDK}"
                         : "JDK${env.RESOLVED_JDK}/TCK-JDK${env.RESOLVED_TCK_JDK}"
-                    def tckLabel = params.RUN_TCK
+                    def tckLabel = !params.SKIP_TCK
                         ? "TCK ${env.RESOLVED_TCK_VERSION}" + (env.TCK_THREAD_COUNT == '1' ? '' : " -T${env.TCK_THREAD_COUNT}")
                         : "TCK skipped"
                     // old-TCK exists only on 4.x; on 5.0+ the module is gone so the flag is a no-op.
-                    def skipOldTckLabel = (params.RELEASE_LINE.startsWith('4.') && params.RUN_TCK && params.SKIP_OLD_TCK) ? ', old-TCK skipped' : ''
-                    def smokeTestLabel = (params.RUN_TCK && params.SMOKE_TEST && params.DRY_RUN) ? ', smoke-test' : ''
+                    def skipOldTckLabel = (params.RELEASE_LINE.startsWith('4.') && !params.SKIP_TCK && params.SKIP_OLD_TCK) ? ', old-TCK skipped' : ''
+                    def smokeTestLabel = (!params.SKIP_TCK && params.SMOKE_TEST && params.DRY_RUN) ? ', smoke-test' : ''
                     def milestoneLabel = (env.IS_MILESTONE == 'true') ? ', milestone' : ''
                     def dryRunLabel = params.DRY_RUN ? ', dry-run' : ''
                     currentBuild.description = "${params.RELEASE_LINE} → ${env.RELEASE_VERSION}" +
                         (env.RESOLVED_API_VERSION ? " (API ${env.RESOLVED_API_VERSION} from ${env.API_SOURCE})" : '') +
                         " (${jdkLabel}, GF ${env.RESOLVED_GF_VERSION}, ${tckLabel}${skipOldTckLabel}${smokeTestLabel}${milestoneLabel}${dryRunLabel})"
                     echo renderBanner(buildBannerLines(params, env, cfg))
+                }
+                // Capture the source identity for the tck-status record and the SKIP_TCK reuse gate,
+                // before Build & install runs versions:set. MOJARRA_TREE (superproject tree sha) pins
+                // the impl source; FACES_SHA (the submodule tip, tracked to the faces branch — this is
+                // what the build actually compiles the api/TCK against, not the committed pin) pins the
+                // faces source. Both are deterministic across a DRY_RUN and its follow-up real release.
+                script {
+                    env.MOJARRA_TREE = sh(returnStdout: true, script: "git rev-parse 'HEAD^{tree}'").trim()
+                    env.FACES_SHA = env.API_BRANCH ? sh(returnStdout: true, script: 'git -C faces rev-parse HEAD').trim() : ''
+                }
+                // SKIP_TCK on a real release is honoured only when the tck-status branch already holds a
+                // green record matching THIS build (line + apiVersion + mojarraTree + facesSha) — i.e. a
+                // prior DRY_RUN already ran the full TCK against identical impl source and faces commit,
+                // reused instead of re-running the TCK. No match — or a line that emits no records
+                // (4.x) — aborts here, before any build or publish. Needs curl (agent) + awk.
+                script {
+                    if (params.SKIP_TCK && !params.DRY_RUN) {
+                        if (!env.API_BRANCH) {
+                            error "SKIP_TCK on a real release is unsupported on the ${params.RELEASE_LINE} line (it emits no tck-status records); rerun with the TCK."
+                        }
+                        sh '''#!/bin/bash
+                            set -o pipefail
+                            URL="https://raw.githubusercontent.com/eclipse-ee4j/mojarra/tck-status/tck-validation-${VALIDATED_API_VERSION}.json"
+                            if ! curl -fsS -o rec.json "${URL}"; then
+                                echo "[tck-reuse] ERROR: no TCK record at ${URL}; run a DRY_RUN with the TCK first, or unset SKIP_TCK." >&2
+                                exit 1
+                            fi
+                            # rec.json is machine-generated one-field-per-line; -F'"' splits "key":  "value".
+                            field() { awk -F'"' -v k="$1" '$2==k {print $4; exit}' rec.json; }
+                            if [ "$(field result)" = "SUCCESS" ] \\
+                                && [ "$(field line)" = "${RELEASE_LINE}" ] \\
+                                && [ "$(field apiVersion)" = "${VALIDATED_API_VERSION}" ] \\
+                                && [ "$(field mojarraTree)" = "${MOJARRA_TREE}" ] \\
+                                && [ "$(field facesSha)" = "${FACES_SHA}" ]; then
+                                echo "[tck-reuse] reusing green TCK $(field buildUrl) for api ${VALIDATED_API_VERSION} (tree ${MOJARRA_TREE}, faces ${FACES_SHA})"
+                            else
+                                cat rec.json >&2
+                                echo "[tck-reuse] ERROR: no matching green tck-status record for ${VALIDATED_API_VERSION} at this impl tree (${MOJARRA_TREE}) + faces commit (${FACES_SHA}); run a DRY_RUN with the TCK first, or unset SKIP_TCK." >&2
+                                exit 1
+                            fi
+                        '''
+                    }
                 }
                 // Validate every credential the publish path will need, even on DRY_RUN, so a
                 // revoked/expired credential fails in minute zero rather than after a multi-hour
@@ -536,7 +579,7 @@ spec:
         }
 
         stage('TCK') {
-            when { expression { return params.RUN_TCK } }
+            when { expression { return !params.SKIP_TCK } }
             steps {
                 sh '''#!/bin/bash -ex
                     set -o pipefail
@@ -690,14 +733,16 @@ spec:
                     # release job to gate its Central publish on a green TCK. Emitted only for
                     # release lines that HAVE a standalone api (API_BRANCH set, i.e. 5.0+) and only
                     # on a clean pass; -e means a failing TCK never reaches this point.
+                    # FACES_SHA and MOJARRA_TREE are captured in Prepare (same values the SKIP_TCK
+                    # reuse gate matches against) and exported into this shell.
                     if [ -n "${API_BRANCH}" ] && [ "${FAILED}" -eq 0 ] && [ "${ERRORS}" -eq 0 ]; then
-                        FACES_SHA=$( [ -d faces ] && git -C faces rev-parse HEAD || echo "" )
                         cat > tck-validation.json <<EOF
 {
   "line":       "${RELEASE_LINE}",
   "apiVersion": "${VALIDATED_API_VERSION}",
   "facesSha":   "${FACES_SHA}",
   "mojarraSha": "$(git rev-parse HEAD)",
+  "mojarraTree": "${MOJARRA_TREE}",
   "dryRun":     ${DRY_RUN},
   "runTck":     true,
   "tckVersion": "${RESOLVED_TCK_VERSION}",
@@ -910,7 +955,7 @@ def requireGaVersion(String paramName, String version, String expectedPrefix) {
 
 // Compose the human-readable banner lines printed at the end of the Prepare stage. Always-on lines
 // describe the artifacts being released and the build/test environment; conditional lines call out
-// active toggles (DRY_RUN, SMOKE_TEST, SKIP_OLD_TCK, SKIP_DEPLOY, SKIP_CRED_CHECK, RUN_TCK off).
+// active toggles (DRY_RUN, SMOKE_TEST, SKIP_TCK, SKIP_OLD_TCK, SKIP_DEPLOY, SKIP_CRED_CHECK).
 def buildBannerLines(params, env, cfg) {
     def lines = []
     if (env.IS_MILESTONE == 'true') {
@@ -924,11 +969,11 @@ def buildBannerLines(params, env, cfg) {
     def jdkLabel = (env.RESOLVED_JDK == env.RESOLVED_TCK_JDK) \
         ? "JDK${env.RESOLVED_JDK}" \
         : "JDK${env.RESOLVED_JDK} (build) / JDK${env.RESOLVED_TCK_JDK} (TCK)"
-    def tckBannerLabel = params.RUN_TCK
+    def tckBannerLabel = !params.SKIP_TCK
         ? ", Faces TCK ${env.RESOLVED_TCK_VERSION}" + (env.TCK_THREAD_COUNT == '1' ? '' : " (-T ${env.TCK_THREAD_COUNT})")
         : ''
     lines << "${jdkLabel}, GlassFish ${env.RESOLVED_GF_VERSION}${tckBannerLabel}"
-    if (!params.RUN_TCK)    lines << "- RUN_TCK off: TCK skipped entirely"
+    if (params.SKIP_TCK)    lines << "- SKIP_TCK: Faces TCK stage skipped (real release reuses a matching green tck-status record)"
     if (params.SKIP_OLD_TCK && params.RELEASE_LINE.startsWith('4.')) lines << "- SKIP_OLD_TCK: old-tck JavaTest modules excluded from reactor"
     if (params.SMOKE_TEST)  lines << "- SMOKE_TEST: smoke-test subset only (NOT TCK-conformant)"
     if (params.DRY_RUN)     lines << "- DRY_RUN: skips Maven Central deploy and GitHub push"
