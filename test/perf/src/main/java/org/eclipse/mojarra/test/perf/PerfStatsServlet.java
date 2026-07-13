@@ -41,6 +41,10 @@ public class PerfStatsServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
+    private static final PhaseId[] MATRIX_PHASES = {
+            PhaseId.RESTORE_VIEW, PhaseId.APPLY_REQUEST_VALUES, PhaseId.PROCESS_VALIDATIONS,
+            PhaseId.UPDATE_MODEL_VALUES, PhaseId.INVOKE_APPLICATION, PhaseId.RENDER_RESPONSE };
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setCharacterEncoding("UTF-8");
@@ -106,6 +110,28 @@ public class PerfStatsServlet extends HttpServlet {
                     s.avgNanos() / 1000,
                     s.minNanos / 1000,
                     s.maxNanos / 1000);
+        }
+
+        out.println("--------------------------------------------------------------------------------------------------------");
+        out.println("# Averages by scenario (avg_us per phase; total_us = summed total across all phases)");
+        out.printf("%-22s %8s %8s %8s %8s %8s %8s %12s%n",
+                "scenario", "RV", "ARV", "PV", "UMV", "IA", "RR", "total_us");
+        for (Map.Entry<String, Map<PhaseId, Snapshot>> scenarioEntry : data.entrySet()) {
+            Map<PhaseId, Snapshot> byPhase = scenarioEntry.getValue();
+            StringBuilder row = new StringBuilder(String.format("%-22s", scenarioEntry.getKey()));
+            long totalUs = 0;
+            for (PhaseId phaseId : MATRIX_PHASES) {
+                Snapshot s = byPhase.get(phaseId);
+                if (s == null) {
+                    row.append(String.format(" %8s", "-"));
+                }
+                else {
+                    row.append(String.format(" %8d", s.avgNanos() / 1000));
+                    totalUs += s.totalNanos / 1000;
+                }
+            }
+            row.append(String.format(" %12d", totalUs));
+            out.println(row);
         }
     }
 
