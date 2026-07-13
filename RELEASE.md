@@ -1,67 +1,141 @@
-# Releasing a new Mojarra version
+# Releasing Mojarra and the Jakarta Faces API
 
-The release pipeline is the single [`Jenkinsfile`](https://github.com/eclipse-ee4j/mojarra/blob/master/Jenkinsfile) at the repo root, run as a Jenkins pipeline job. It does, in one run:
+Since the 5.0 line there are **two** release pipelines, on two different Jenkins instances:
 
-1. **Prepare** — checkout, JDK selection, version resolution (impl, and on 5.0+ also `jakarta.faces-api` via the `faces/` submodule), CSP-backport TCK exclusion fallback for 4.0.17+ / 4.1.8+ (mirrors `compute-csp-backport-flags` in the TCK pom for the existing TCK zips that predate the script).
-2. **Build & install** — single Maven reactor (`-pl impl -am`); on 5.0+ adds `-Papi` to also build `jakarta.faces-api` from the submodule. Tags are created locally; pushes happen later.
-3. **TCK** — downloads the published TCK zip from `download.eclipse.org/jakartaee/faces/<branch>/`, runs the TCK against the locally-installed impl, fails the build on any TCK failure or error, then renders `summary.txt` (passed/failed/error counts, SHAs of TCK zip and the produced impl jar, JDK and OS info). Pass/fail counts are aggregated from two sources: per-module `target/failsafe-reports/failsafe-summary.xml` (covers new-TCK *and* old-tck-selenium since both are failsafe-driven), and the JavaTest harness's "Completed running N tests" / "Number of Tests Passed/Failed/Errors" lines in `run.log` (covers old-tck on 4.x when `SKIP_OLD_TCK` is unchecked). Archives `run.log` and `summary.txt`. Selenium/Chrome is provided by the agent pod (`eclipsecbijenkins/basic-ubuntu-chrome`); branches whose TCK pins a CDP major outside Selenium's fudge range (e.g. 4.0 pins CDP v108) skip the BaseITNG suite via `-Dtest.selenium=false` per `BRANCH_CONFIG.seleniumEnabled`.
-4. **Deploy to Maven Central** *(skipped on `DRY_RUN`)* — `mvn deploy -Dcentral.autoPublish=true`, so the bundle auto-publishes on success rather than parking in the Portal staging area.
-5. **Bump to next snapshot** *(GA only)* — `versions:set` to the next `-SNAPSHOT` and commit on the release branch (and the `faces/` submodule on 5.0+). Skipped on milestone/RC runs so the source branch keeps its current `-SNAPSHOT`.
-6. **Publish to GitHub** *(skipped on `DRY_RUN`)* — push the release branch and tag (and the same for the `jakarta.faces-api` submodule on 5.0+); on GA runs, also open & squash-merge a PR back to the source branch as `<version> has been released`, close the matching milestone, open the next snapshot's milestone, and draft+publish a GitHub release at the just-pushed tag with auto-generated notes prepended by a one-line summary, the Maven Central link, and the closed-milestone link. On milestone/RC runs only the tag is pushed; PR-merge, milestones, and GitHub release creation are all skipped.
+| Pipeline | Jenkins job | Releases | Repo / Jenkinsfile |
+| -------- | ----------- | -------- | ------------------ |
+| **mojarra-release** | [ci.eclipse.org/mojarra](https://ci.eclipse.org/mojarra/job/mojarra-release/) | the **impl** `org.glassfish:jakarta.faces` | `eclipse-ee4j/mojarra`, [`Jenkinsfile`](https://github.com/eclipse-ee4j/mojarra/blob/master/Jenkinsfile) at the repo root |
+| **faces-api-release** | [ci.eclipse.org/faces](https://ci.eclipse.org/faces/job/faces-api-release/) | the standalone **API** `jakarta.faces:jakarta.faces-api` | `jakartaee/faces`, [`api/Jenkinsfile`](https://github.com/jakartaee/faces/blob/5.0/api/Jenkinsfile) |
 
-Maven Central deploy and GitHub push only run after the TCK passes, so a failed TCK leaves no half-published external state.
+On the **4.x** lines the API spec classes are bundled inside the impl jar, so there is no standalone API artifact and only the **mojarra-release** job runs. Everything about the API job and the cross-job coordination below applies to **5.0+ only**.
+
+## How the two jobs coordinate: the TCK gate
+
+The API can only be conformant if a matching impl passes the full Jakarta Faces TCK against it. So the API job refuses to publish until Mojarra says so:
+
+- On a green TCK, **mojarra-release** writes a machine-readable record `tck-validation-<version>.json` and pushes it to the orphan [**`tck-status`**](https://github.com/eclipse-ee4j/mojarra/tree/tck-status) branch of `eclipse-ee4j/mojarra`. The record carries `line`, `apiVersion`, `facesSha` (the `jakartaee/faces` commit the TCK ran against), `mojarraTree` (the impl source identity), `result`, `dryRun`, and the TCK/GlassFish versions.
+- **faces-api-release** reads that record from the public raw URL (no credentials) in its Prepare stage. It publishes only if a record exists whose `result=SUCCESS`, `line`, `apiVersion` and `facesSha` match the exact API version and commit it is about to release. On a real publish a missing or mismatched record **aborts**; on a DRY_RUN it only **warns**. The gate is skippable via `SKIP_TCK_GATE` (emergency use only).
+
+Because the gate is satisfied by a Mojarra **DRY_RUN** (the record's `dryRun` flag is not part of the match), the API can be validated and released *before* the impl is released — which is exactly the ordering the SNAPSHOT case below needs.
+
+## The decision that drives a 5.0 release
+
+Look at `impl/pom.xml`'s `jakarta.faces-api` dependency:
+
+- **It is a `-SNAPSHOT`** → a new API version is being cut in lockstep with the impl (the normal case for a fresh `5.0.0`, `5.0.0-M3`, etc., where that API is not on Maven Central yet). This is the **three-run dance** across both jobs; see [Releasing a new 5.0 API + impl](#releasing-a-new-50-api--impl).
+- **It is a concrete GA** (e.g. impl `5.0.1` still depends on API `5.0.0`) → an **impl-only patch**; the API already exists on Central. A **single** mojarra-release run, no API job; see [Releasing a 5.0 impl-only patch](#releasing-a-50-impl-only-patch).
+
+Milestone vs GA is orthogonal to this — it is just a `MILESTONE_VERSION` suffix (`M1`, `RC1`, …) applied to whichever path.
+
+## Pipeline stages
+
+### mojarra-release
+
+1. **Prepare** — checkout (incl. the `faces/` submodule, tracked to the API branch tip on 5.0+), JDK selection, version resolution, credential checks. Resolves the API version from `impl/pom.xml`'s `jakarta.faces-api` dep: a concrete version is used as-is; a `-SNAPSHOT` resolves to this run's release version. On a real release that version must already be on Maven Central (else Prepare fails fast, pointing you at the API job). On a real `SKIP_TCK` release, Prepare gates on a matching green `tck-status` record instead (see [SKIP_TCK](#skipping-the-tck-on-a-real-release-skip_tck)).
+2. **Build & install** — one Maven reactor, `-pl impl -am`. On a **DRY_RUN** whose API dep is an unreleased `-SNAPSHOT`, adds `-Papi` to build the API from the `faces/` submodule into the reactor so the impl can still be validated; otherwise impl-only, API consumed from Maven Central. Tags locally; pushes happen later.
+3. **TCK** *(skipped when `SKIP_TCK`)* — 4.x downloads the published TCK zip from `download.eclipse.org/jakartaee/faces/<line>/`; 5.0 builds the TCK from the `faces/tck` submodule (`tckVersion=5.0.0-SNAPSHOT`). Runs it against the locally-built impl, fails on any failure/error, renders `summary.txt`, and on a green 5.0+ run writes `tck-validation.json` and pushes it to the `tck-status` branch. Archives `run.log`, `summary.txt`, `tck-validation.json`.
+4. **Deploy to Maven Central** *(skipped on `DRY_RUN`)* — `mvn -Poss-release -pl impl -am deploy`, auto-publishing the impl bundle. Impl-only; the API resolves from Central.
+5. **Bump to next snapshot** *(GA only)* — `versions:set` the impl reactor to the next `-SNAPSHOT` and commit.
+6. **Publish to GitHub** *(skipped on `DRY_RUN`)* — push the tag (and, on GA, the release branch); on GA also squash-merge a `<version> has been released` PR back to the source branch, close the milestone, open the next one, and draft+publish a GitHub release. Milestone runs push only the tag. The mojarra job never touches `jakartaee/faces`.
+
+### faces-api-release
+
+1. **Prepare** — checkout the API branch, JDK selection, derive the release version from `api/pom.xml`, run the [TCK gate](#how-the-two-jobs-coordinate-the-tck-gate), credential checks.
+2. **Build & install** — `versions:set` + `mvn -f api/pom.xml install` (validates without publishing; Central publication is instant and irreversible). Tags locally.
+3. **Deploy to Maven Central** *(skipped on `DRY_RUN`)* — `mvn -f api/pom.xml -Dcentral.autoPublish=true deploy`.
+4. **Bump to next snapshot** *(GA only)* — advance `api/pom.xml` to the next `-SNAPSHOT`.
+5. **Publish to GitHub** *(skipped on `DRY_RUN`)* — push the tag (and, on GA, advance the source branch).
 
 ## How to run
 
-In the example below we assume releasing **Mojarra 4.0.17**.
+### Releasing a 4.x version
 
-1. Sanity-check the version isn't already in [Maven Central](https://repo1.maven.org/maven2/org/glassfish/jakarta.faces/) — if it is, bump the version in `pom.xml` first.
-2. Go to [Mojarra CI](https://ci.eclipse.org/mojarra/) and [log in](https://ci.eclipse.org/mojarra/login?from=%2Fmojarra%2F).
-3. Open the [`mojarra-release`](https://ci.eclipse.org/mojarra/job/mojarra-release/) job and click **Build with parameters**. For a normal release set only `RELEASE_LINE`; every other parameter can be left at its default and is auto-inferred:
-   - `RELEASE_LINE` = `4.0` (choices: `4.0`, `4.1`, `5.0`)
-4. *(Optional)* In case you wish to fine-tune the run, override one or more of:
-   - `MILESTONE_VERSION` — leave blank for a GA release; set to `M1` / `M2` / `RC1` / etc. for a milestone or release candidate. When set, the release version is auto-derived as `<pom-base>-<MILESTONE_VERSION>` (e.g. `5.0.0-M2`), tagged exactly that (no `-RELEASE` suffix), and the source branch is left untouched: PR-merge, milestone management, GitHub release creation, and snapshot bump are all skipped.
-   - `JDK` — build JDK. Default: per-branch (see table below).
-   - `TCK_JDK` — JDK that runs the TCK (the GlassFish container can need a newer one than the spec). Default: per-branch.
-   - `TCK_VERSION`, `GF_VERSION` — TCK and GlassFish coordinate versions. Default: per-branch.
-   - `GF_BUNDLE_URL` — alternative GlassFish zip URL. If set, also set `GF_VERSION` to match the artifact version inside the zip.
-   - `API_RELEASE_VERSION` — 5.0+ only. Default: stripped from `faces/api/pom.xml`. Ignored when `impl/pom.xml` already pins `jakarta.faces-api` to a GA version (impl-only patch release, no new API artifact cut), or when `MILESTONE_VERSION` is set.
-   - `RUN_TCK` — uncheck to skip the TCK stage. Default: checked.
-   - `SKIP_OLD_TCK` — check to skip the old-tck JavaTest modules on 4.0/4.1 (excluded from the reactor entirely via `-pl`; cuts nearly 3 hours off the TCK run). No-op on 5.0+ where these modules no longer exist. The old-tck-selenium failsafe-driven modules are unaffected. Default: unchecked.
-   - `DRY_RUN` — check to do everything except Maven Central deploy and GitHub push. Default: checked. Useful for rehearsals.
-   - `SMOKE_TEST` — only meaningful as a sub-toggle of `DRY_RUN`: filters the TCK to a tiny representative subset (one failsafe IT + one sigtest IT + one old-tck-selenium IT, plus one old-tck JavaTest path when `SKIP_OLD_TCK` is unchecked). Drops run time to ~10 min. Hard-gated: silently ignored when `DRY_RUN` is unchecked, since the run is not TCK-conformant and must never produce a published release. Default: unchecked.
-5. Click **Build**.
-6. Wait for the run to finish. The build description shows a one-line summary, e.g. `4.0 → 4.0.17 (impl-only) (JDK11, GF 7.0.25, TCK 4.0.3)`. Optional toggles surface as comma-separated suffixes (`, old-TCK skipped`, `, smoke-test`, `, milestone`, `, dry-run`).
-7. On success, verify:
-   - Artifact in [Maven Central](https://repo1.maven.org/maven2/org/glassfish/jakarta.faces/) (may take up to an hour to surface).
-   - Release branch `4.0.17` and tag `4.0.17-RELEASE` on [GitHub](https://github.com/eclipse-ee4j/mojarra/branches/active) (GA only; milestone runs only push the tag). Once everything checks out, the release branch can be deleted (the squash-merge doesn't auto-delete it).
-   - The squash-merged "Mojarra 4.0.17 has been released" commit landed on the `4.0` source branch, the `4.0.17` release branch is closed, and the GitHub release at `4.0.17-RELEASE` is published with auto-generated notes (GA only).
-   - Closed milestone `4.0.17` and a fresh open milestone for the next snapshot (GA only).
-   - On 5.0+ releases that also cut the API: matching tag in [jakartaee/faces](https://github.com/jakartaee/faces/tags) for the `jakarta.faces-api` version.
+A single **mojarra-release** run; the API is bundled, so no API job and no `tck-status` involvement.
+
+1. Confirm the version isn't already on [Maven Central](https://repo1.maven.org/maven2/org/glassfish/jakarta.faces/); if it is, bump `pom.xml` first.
+2. Open [mojarra-release](https://ci.eclipse.org/mojarra/job/mojarra-release/) → **Build with parameters**, set `RELEASE_LINE` = `4.0` or `4.1`, leave `DRY_RUN` checked for a rehearsal.
+3. Uncheck `DRY_RUN` for the real release. Everything else auto-infers from the [per-branch defaults](#per-branch-defaults).
+
+### Releasing a new 5.0 API + impl
+
+Use this when `impl/pom.xml`'s `jakarta.faces-api` dep is a `-SNAPSHOT` (the API version does not exist on Central yet). Three runs, in order:
+
+**0. Pin the API source.** Only necessary because the API dep is a `-SNAPSHOT`: point mojarra's `faces/` submodule at the `jakartaee/faces` commit you will release the API from, and commit + push it to mojarra, so the `facesSha` in the TCK record matches what the API job will release. (Skip this step entirely for an impl-only patch — its API dep is concrete.)
+
+**1. mojarra-release, DRY_RUN — produce the gate record.**
+   - `RELEASE_LINE=5.0`, leave `DRY_RUN` checked, optionally set `MILESTONE_VERSION` for a milestone.
+   - Builds the API from the submodule (`-Papi`), runs the full TCK, and on green pushes `tck-validation-<version>.json` to `tck-status`. Nothing reaches Maven Central.
+
+**2. faces-api-release — publish the API.**
+   - On [faces-api-release](https://ci.eclipse.org/faces/job/faces-api-release/): `RELEASE_LINE=5.0`, uncheck `DRY_RUN`, optionally the same `MILESTONE_VERSION` as step 1.
+   - Its TCK gate reads Mojarra's record; on a match it publishes `jakarta.faces-api <version>` to Maven Central and tags `jakartaee/faces`.
+
+**3. mojarra-release, real — publish the impl.**
+   - `RELEASE_LINE=5.0`, uncheck `DRY_RUN`, optionally the same `MILESTONE_VERSION` as step 1.
+   - The API is now on Central, so Prepare's api-check passes and the impl pins it. To avoid re-running the TCK that step 1 already ran on identical bits, check `SKIP_TCK` — Prepare will verify a matching green `tck-status` record and skip the TCK stage. Leave `SKIP_TCK` unchecked to re-run it.
+
+### Releasing a 5.0 impl-only patch
+
+When `impl/pom.xml` pins a concrete GA `jakarta.faces-api` already on Central (e.g. impl `5.0.1` → API `5.0.0`). A **single** mojarra-release run — no submodule pin bump, no API job. Run it exactly like a 4.x release (step 3 above minus `SKIP_TCK`, since there is no prior record for the new impl source).
+
+## Skipping the TCK on a real release (SKIP_TCK)
+
+`SKIP_TCK` skips the TCK stage. On a **DRY_RUN** it just skips. On a **real release** it is honoured only when the `tck-status` branch already carries a green record whose `line`, `apiVersion`, `mojarraTree` (impl source) **and** `facesSha` (the exact `faces/` commit built) match this build — i.e. a prior DRY_RUN already validated identical bits. No match, or a 4.x line (which emits no records), aborts the release in Prepare, before anything is built or published. This is what makes step 3 above cheap without letting an unvalidated build reach Central.
+
+## Parameters
+
+Set only `RELEASE_LINE`; everything else auto-infers. Override when fine-tuning.
+
+### mojarra-release
+
+- `RELEASE_LINE` — `4.0`, `4.1`, `5.0`.
+- `MILESTONE_VERSION` — blank = GA; `M1`/`RC1`/… derives `<pom-base>-<suffix>`, tags exactly that, and skips PR-merge, milestones, GitHub release, and snapshot bump.
+- `JDK` / `TCK_JDK` — build / TCK JDK. Default per-branch.
+- `TCK_VERSION` — a released value downloads the zip; a `-SNAPSHOT` builds the TCK from the `faces/tck` submodule. Default per-branch.
+- `GF_VERSION` / `GF_BUNDLE_URL` — GlassFish coordinate / explicit zip URL.
+- `THREAD_COUNT` — 5.0+ only. Maven `-T` and `gf.pool.size` for the TCK reactor.
+- `DRY_RUN` *(default on)* — skip Maven Central deploy and GitHub push.
+- `SMOKE_TEST` — requires `DRY_RUN` and unset `SKIP_TCK`. Filters the TCK to a tiny subset (~10 min) for pipeline iteration; never publishable.
+- `SKIP_TCK` — skip the TCK stage. See [above](#skipping-the-tck-on-a-real-release-skip_tck).
+- `SKIP_OLD_TCK` — requires unset `SKIP_TCK`. 4.x only; drop the old-tck JavaTest modules (~3 h faster).
+- `SKIP_DEPLOY` — requires `DRY_RUN` off. Skip only the Central deploy (still tags/pushes/releases). For resuming after Central already published.
+- `SKIP_CRED_CHECK` — skip the Prepare credential probes. Pipeline-debug only.
+
+### faces-api-release
+
+- `RELEASE_LINE` — `5.0`.
+- `MILESTONE_VERSION` — same as mojarra-release: blank = GA; `M1`/`RC1`/… derives `<pom-base>-<suffix>`, tags exactly that, and leaves the source branch on its `-SNAPSHOT`.
+- `JDK` — default per-branch.
+- `DRY_RUN` *(default on)* — skip Central deploy and GitHub push.
+- `SKIP_DEPLOY` — requires `DRY_RUN` off. Skip only the deploy.
+- `SKIP_CRED_CHECK` — skip the Prepare credential probes.
+- `SKIP_TCK_GATE` — **emergency use only.** Skip the Mojarra-TCK gate and let an unvalidated API reach Central. Only when the gate infrastructure itself is broken and the TCK is known green by other means.
 
 ## Per-branch defaults
 
-Maintained in `BRANCH_CONFIG` at the top of the `Jenkinsfile`. Adding a new release line means adding one entry there. Current entries:
+Maintained in `BRANCH_CONFIG` at the top of each `Jenkinsfile`; adding a release line = one entry.
 
-| Release | Impl branch | API branch  | Build JDK | TCK JDK | API version | TCK version | GF version | Selenium | Threads |
-| ------- | ----------- | ----------- | --------- | ------- | ----------- | ----------- | ---------- | -------- | ------- |
-| `4.0`   | `4.0`       | — (bundled) | 11        | 11      | 4.0.1       | 4.0.3       | 7.0.25     | off      | 1       |
-| `4.1`   | `4.1`       | — (bundled) | 17        | 21      | 4.1.0       | 4.1.0       | 8.0.0-M6   | on       | 1       |
-| `5.0`   | `master`    | `5.0`       | 17        | 21      | 5.0.0       | 5.0.0       | 9.0.0-M2   | on       | 4       |
+**mojarra-release:**
 
-The `Release` column is the release line dropdown value. The mojarra git branch holding the impl source is the next column over — `master` for the 5.0 line because the head of mojarra development sits there, not on a `5.x` branch.
+| Release | Impl branch | API branch | Build JDK | TCK JDK | API version | TCK version | GF version | Selenium | Threads |
+| ------- | ----------- | ---------- | --------- | ------- | ----------- | ----------- | ---------- | -------- | ------- |
+| `4.0`   | `4.0`       | — (bundled) | 11 | 17 | 4.0.1 | 4.0.4 | 7.1.1 | off | 1 |
+| `4.1`   | `4.1`       | — (bundled) | 17 | 21 | 4.1.0 | 4.1.2 | 8.0.3 | on | 1 |
+| `5.0`   | `master`    | `5.0`       | 17 | 21 | resolved | 5.0.0-SNAPSHOT (from submodule) | 9.0.0-M2 | on | 2 |
 
-`API version` is the value passed as `-Dfaces.version` to the TCK build (the published `jakarta.faces-api` jar version that the TCK compiles against). On 4.x the API was bundled with the impl, so this is just the GA on Maven Central. On 5.0+ it tracks the standalone `jakarta.faces-api` artifact — bump it together with the matching API release.
+- **Impl branch**: the mojarra git branch with the impl source — `master` for 5.0, since the head of development lives there, not on a `5.x` branch.
+- **API version**: 4.x bundles the spec into the impl jar, so this is a Central GA passed as `-Dfaces.version`. On 5.0 it is resolved from `impl/pom.xml` (a `-SNAPSHOT` resolves to the run's release version).
+- **TCK version**: a released value downloads the zip; `-SNAPSHOT` builds the TCK from the `faces/tck` submodule.
+- **Selenium**: `on` runs BaseITNG against the agent pod's Chrome; `off` self-skips when the TCK pins a CDP major outside Selenium's range (4.0's v108).
+- **Threads**: Maven `-T` for the TCK reactor; `>1` only on lines whose TCK ships `gf-pool` (5.0+). 4.x runs one managed GlassFish per module and must stay at 1. The 5.0 value of `2` is capped by the CI agent's hardware, not the TCK; better hardware can go higher via `THREAD_COUNT`.
 
-`Selenium` is `seleniumEnabled` in the config: `on` means BaseITNG runs against the agent pod's Chrome via `-Dtest.selenium=true`; `off` means the BaseITNG suite self-skips because the TCK pins a CDP major (e.g. 4.0's v108) that's outside Selenium's fudge range against current Chrome — browser-driven tests then fall back to HtmlUnit only.
-
-`Threads` is `threadCount` in the config — the Maven `-T` value for the TCK reactor. Set `>1` only on release lines whose TCK ships `gf-pool` (5.0+) and can therefore share GlassFish across parallel module builds; 4.x TCKs start a single managed GlassFish per module and must stay at `1`. The build description appends e.g. ` -T4` to the TCK label whenever this is `>1`.
+**faces-api-release:** `5.0` → branch `5.0`, JDK 17.
 
 ## Troubleshooting
 
-- **Release branch / tag already exists on origin.** The pipeline fails fast at the `Build & install` stage. Bump `pom.xml` (or set `MILESTONE_VERSION` to a fresh suffix) and re-run; Maven Central is immutable, so reusing a published version is never the right call.
-- **TCK failures.** The TCK stage fails on the failsafe exit code; Maven Central deploy and GitHub push are skipped, so no external state was published. `run.log` and `summary.txt` are archived for diagnosis.
-- **Java version mismatch on a developer rerun.** The pipeline picks the JDK from `BRANCH_CONFIG` (or the `JDK` / `TCK_JDK` overrides). If you're reproducing a failure locally, match those.
-- **Need to rehearse without publishing.** `DRY_RUN=true` (the default) does the full build, tagging, and TCK run, but skips the Maven Central deploy and the `git push origin` of the release branch / tag. The conflict check still runs against origin so a stale tag fails fast instead of after burning the whole TCK.
-- **Iterating on the pipeline itself.** Combine `DRY_RUN=true` with `SMOKE_TEST=true` to run a tiny representative TCK subset, dropping run time to ~10 min. The pipeline still does the full build, tagging, and report aggregation, so changes to those steps are exercised end-to-end without burning the full TCK. `SMOKE_TEST` is silently ignored without `DRY_RUN`, so it can't accidentally release a non-conformant build.
-- **Releasing a milestone or RC.** Set `MILESTONE_VERSION=M1` (or `M2` / `RC1` / etc.). The version becomes `<pom-base>-<MILESTONE_VERSION>` (e.g. `5.0.0-M2`), tagged exactly that on both `mojarra` and `jakartaee/faces`, with both impl and API published to Maven Central at that version. The source branch is left untouched — no PR-merge, no milestone close/open, no GitHub release, no snapshot bump.
+- **Release branch / tag already exists on origin.** The conflict check fails fast (it runs even on DRY_RUN). Bump `pom.xml` / `api/pom.xml`, or use a fresh `MILESTONE_VERSION`. Central is immutable; never reuse a published version.
+- **`jakarta.faces-api <v> is not on Maven Central`** (mojarra Prepare, real release). The API isn't released yet. Run the [three-run dance](#releasing-a-new-50-api--impl): a mojarra DRY_RUN to seed the gate, then faces-api-release, then the real mojarra run.
+- **`[tck-gate] ERROR: … does not match this commit`** (faces Prepare). No matching green Mojarra record for this API version + `faces` commit. Ensure mojarra's `faces/` submodule was pinned to this commit and a mojarra DRY_RUN with the TCK ran green against it. `SKIP_TCK_GATE` is the emergency override.
+- **`[tck-reuse] ERROR: no matching … record`** (mojarra Prepare, `SKIP_TCK` real release). The `tck-status` record doesn't match this impl tree + faces commit. Run a DRY_RUN with the TCK first, or unset `SKIP_TCK` to re-run it inline.
+- **TCK failures.** The TCK stage fails on the failsafe exit code; deploy and push are skipped, so nothing external was published. `run.log` and `summary.txt` are archived.
+- **Rehearse without publishing.** `DRY_RUN=true` (the default) does the full build, tag, and TCK but skips Central deploy and `git push`. Combine with `SMOKE_TEST=true` (mojarra) for a ~10-min TCK subset when iterating on the pipeline itself.
