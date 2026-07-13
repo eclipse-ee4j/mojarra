@@ -2,13 +2,13 @@
   "line":       "5.0",
   "apiVersion": "5.0.0-SNAPSHOT",
   "facesSha":   "439d28c8d64cbbacdc532df6cdb12424b91aa18d",
-  "mojarraSha": "7e04978d7552341ab6aa4e67348fb4f6932c7584",
+  "mojarraSha": "72db7a58bbc35fab1c93832d1b3fa58df575af95",
   "dryRun":     true,
   "runTck":     true,
   "tckVersion": "5.0.0-SNAPSHOT",
   "glassfish":  "9.0.0-M2",
   "passed":     6026,
   "result":     "SUCCESS",
-  "buildUrl":   "https://ci.eclipse.org/mojarra/job/mojarra-release/155/",
-  "timestamp":  "2026-07-13T17:02:42Z"
+  "buildUrl":   "https://ci.eclipse.org/mojarra/job/mojarra-release/156/",
+  "timestamp":  "2026-07-13T17:32:55Z"
 }
