@@ -242,7 +242,7 @@ spec:
 
     options {
         disableConcurrentBuilds()
-        buildDiscarder(logRotator(daysToKeepStr: '300', numToKeepStr: '20'))
+        buildDiscarder(logRotator(daysToKeepStr: '300', numToKeepStr: '20', artifactDaysToKeepStr: '30', artifactNumToKeepStr: '10'))
         timestamps()
     }
 
@@ -523,6 +523,9 @@ spec:
                         '''
                     }
                 }
+                // Attach the built jars so a DRY_RUN (which never deploys) is inspectable.
+                archiveArtifacts artifacts: 'impl/target/*.jar, faces/api/target/*.jar',
+                                 allowEmptyArchive: true, fingerprint: true
             }
         }
 
