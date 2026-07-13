@@ -1,41 +1,35 @@
 name: build
-on: 
+on:
   push:
-    branches:
-      - '*'
-    tags-ignore:
-      - 'v*'
+    branches: [ '*' ]
+    paths: [ 'impl/**', '.github/workflows/build.yml' ]
   pull_request:
-    branches:
-      - '*'  
+    branches: [ '*' ]
+    paths: [ 'impl/**', '.github/workflows/build.yml' ]
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        java: [ '21' ]
-        os: [ubuntu-latest]
+        java: [ '17' ]
+        os: [ ubuntu-latest ]
     steps:
-    - name: Checkout Sources
-      uses: actions/checkout@v4
-      with:
-        submodules: 'true'
-    - name: Checkout API
-      uses: actions/checkout@v4
-      with:
+      - name: Checkout sources
+        uses: actions/checkout@v5
+      - name: Resolve API branch
+        id: api
+        run: echo "ref=$(git config -f .gitmodules submodule.faces.branch)" >> "$GITHUB_OUTPUT"
+      - name: Checkout API
+        uses: actions/checkout@v5
+        with:
           repository: jakartaee/faces
-          ref: '5.0'
-          path: './faces'
-    - name: Setup Java
-      uses: actions/setup-java@v1
-      with:
-        java-version: ${{ matrix.java }}
-    - name: Setup Maven Action
-      uses: s4u/setup-maven-action@v1.12.0
-      with:
-          checkout-fetch-depth: 0
-          java-version: 21
-          java-distribution: temurin
-          maven-version: 3.9.6
-    - name: Build with Maven
-      run: mvn --no-transfer-progress install -Pstaging -Papi
+          ref: ${{ steps.api.outputs.ref }}
+          path: faces
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: temurin
+          cache: maven
+      - name: Build with Maven
+        run: mvn -B -ntp clean install -Papi
