@@ -720,10 +720,17 @@ EOF
                         fi
                         cp ../tck-validation.json "tck-validation-${IMPL_API_DEP_VERSION}.json"
                         git add -A
-                        git -c user.email="mojarra-bot@eclipse.org" -c user.name="Eclipse Mojarra Bot" \\
-                            commit -q -m "TCK validated jakarta.faces-api ${IMPL_API_DEP_VERSION}"
-                        git push -q origin HEAD:tck-status
-                        echo "[tck-status] published tck-validation-${IMPL_API_DEP_VERSION}.json to eclipse-ee4j/mojarra@tck-status"
+                        # A re-run overwrites the same file: commit+push only when something changed
+                        # (buildUrl/timestamp normally differ), so an identical record is a clean no-op
+                        # rather than a "nothing to commit" failure under -e.
+                        if git diff --cached --quiet; then
+                            echo "[tck-status] tck-validation-${IMPL_API_DEP_VERSION}.json unchanged; nothing to publish."
+                        else
+                            git -c user.email="mojarra-bot@eclipse.org" -c user.name="Eclipse Mojarra Bot" \\
+                                commit -q -m "TCK validated jakarta.faces-api ${IMPL_API_DEP_VERSION}"
+                            git push -q origin HEAD:tck-status
+                            echo "[tck-status] published tck-validation-${IMPL_API_DEP_VERSION}.json to eclipse-ee4j/mojarra@tck-status"
+                        fi
                     '''
                 }
             }
