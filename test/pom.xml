@@ -45,12 +45,12 @@
         <faces-api.version>5.0.0-SNAPSHOT</faces-api.version>
         <mojarra.version>${project.version}</mojarra.version>
         <myfaces.version>5.0.0-SNAPSHOT</myfaces.version> <!-- consumed by the *-myfaces profiles -->
-        <glassfish.version>9.0.0-SNAPSHOT</glassfish.version>
-        <wildfly.version>40.0.0.Final</wildfly.version>
-        <tomee.version>10.1.5</tomee.version>
-        <payara.version>7.2026.5</payara.version>
-        <liberty.version>26.0.0.5-beta</liberty.version>
-        <tomcat.version>11.0.22</tomcat.version>
+        <glassfish.version>9.0.0-SNAPSHOT</glassfish.version> <!-- https://mvnrepository.com/artifact/org.glassfish.main.distributions/glassfish -->
+        <wildfly.version>40.0.1.Final</wildfly.version> <!-- https://mvnrepository.com/artifact/org.wildfly/wildfly-dist -->
+        <tomee.version>10.1.5</tomee.version> <!-- https://mvnrepository.com/artifact/org.apache.tomee/apache-tomee -->
+        <payara.version>7.2026.6</payara.version> <!-- https://mvnrepository.com/artifact/fish.payara.distributions/payara-web -->
+        <liberty.version>26.0.0.6</liberty.version> <!-- https://mvnrepository.com/artifact/io.openliberty/openliberty-runtime -->
+        <tomcat.version>11.0.24</tomcat.version> <!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat -->
 
         <!-- Extra raw <context-param> XML filtered into perf web.xml; default empty. Here (not perf) so server profiles can inject server-specific params (e.g. wildfly-myfaces sets WAR_BUNDLES_JSF_IMPL). -->
         <webapp.additionalContextParams></webapp.additionalContextParams>
@@ -594,7 +594,7 @@
                                 <configuration>
                                     <artifactItems>
                                         <artifactItem>
-                                            <groupId>io.openliberty.beta</groupId>
+                                            <groupId>io.openliberty</groupId>
                                             <artifactId>openliberty-runtime</artifactId>
                                             <version>${liberty.version}</version>
                                             <type>zip</type>
@@ -656,10 +656,10 @@
             <id>tomcat</id>
             <properties>
                 <tomcat.dir>${project.build.directory}/apache-tomcat-${tomcat.version}</tomcat.dir>
-                <weld.version>6.0.4.Final</weld.version>
-                <hibernateValidator.version>9.1.0.Final</hibernateValidator.version>
-                <jsonp.version>2.0.1</jsonp.version>
-                <jstl.version>3.0.1</jstl.version>
+                <weld.version>6.0.4.Final</weld.version> <!-- https://mvnrepository.com/artifact/org.jboss.weld.servlet/weld-servlet-shaded -->
+                <hibernateValidator.version>9.1.2.Final</hibernateValidator.version> <!-- https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator -->
+                <jsonp.version>2.0.1</jsonp.version> <!-- https://mvnrepository.com/artifact/org.glassfish/jakarta.json -->
+                <jstl.version>3.0.1</jstl.version> <!-- https://mvnrepository.com/artifact/org.glassfish.web/jakarta.servlet.jsp.jstl -->
             </properties>
             <dependencies>
                 <dependency>
