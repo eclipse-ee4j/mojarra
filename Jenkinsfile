@@ -405,6 +405,12 @@ spec:
                             error "jakarta.faces-api ${concreteApi} is not on Maven Central. Release it first via the jakartaee/faces release job, then re-run."
                         }
                         env.IMPL_API_DEP_VERSION = env.RESOLVED_API_VERSION
+                        // Build coordinate (IMPL_API_DEP_VERSION) vs. published record label
+                        // (VALIDATED_API_VERSION) are distinct: on the DRY_RUN submodule fallback the
+                        // api is built at its -SNAPSHOT coordinate, but the TCK validation record is
+                        // keyed by the version being cut this run (concreteApi = RELEASE_VERSION for
+                        // a snapshot dep), so the Faces API release job finds tck-validation-<that>.json.
+                        env.VALIDATED_API_VERSION = concreteApi
                     } else {
                         env.IMPL_API_DEP_VERSION = cfg.apiVersion
                         env.MVN_API_PROFILE = ''
@@ -689,7 +695,7 @@ spec:
                         cat > tck-validation.json <<EOF
 {
   "line":       "${RELEASE_LINE}",
-  "apiVersion": "${IMPL_API_DEP_VERSION}",
+  "apiVersion": "${VALIDATED_API_VERSION}",
   "facesSha":   "${FACES_SHA}",
   "mojarraSha": "$(git rev-parse HEAD)",
   "dryRun":     ${DRY_RUN},
@@ -721,18 +727,18 @@ EOF
                         else
                             git checkout -q --orphan tck-status
                         fi
-                        cp ../tck-validation.json "tck-validation-${IMPL_API_DEP_VERSION}.json"
+                        cp ../tck-validation.json "tck-validation-${VALIDATED_API_VERSION}.json"
                         git add -A
                         # A re-run overwrites the same file: commit+push only when something changed
                         # (buildUrl/timestamp normally differ), so an identical record is a clean no-op
                         # rather than a "nothing to commit" failure under -e.
                         if git diff --cached --quiet; then
-                            echo "[tck-status] tck-validation-${IMPL_API_DEP_VERSION}.json unchanged; nothing to publish."
+                            echo "[tck-status] tck-validation-${VALIDATED_API_VERSION}.json unchanged; nothing to publish."
                         else
                             git -c user.email="mojarra-bot@eclipse.org" -c user.name="Eclipse Mojarra Bot" \\
-                                commit -q -m "TCK validated jakarta.faces-api ${IMPL_API_DEP_VERSION}"
+                                commit -q -m "TCK validated jakarta.faces-api ${VALIDATED_API_VERSION}"
                             git push -q origin HEAD:tck-status
-                            echo "[tck-status] published tck-validation-${IMPL_API_DEP_VERSION}.json to eclipse-ee4j/mojarra@tck-status"
+                            echo "[tck-status] published tck-validation-${VALIDATED_API_VERSION}.json to eclipse-ee4j/mojarra@tck-status"
                         fi
                     '''
                 }
