@@ -235,7 +235,7 @@ spec:
         choice(name: 'THREAD_COUNT', choices: ['', '1', '2', '3', '4', '5', '6', '7', '8'], description: '5.0+ only. Leave blank to auto-infer from RELEASE_LINE (1 for 4.x, 2 for 5.0). Maven `-T` value and gf.pool.size for the TCK reactor. Values >1 only work on TCKs that ship gf-pool (5.0+); selecting one on 4.x errors out.')
         booleanParam(name: 'DRY_RUN', defaultValue: true, description: 'Skip Maven Central deploy and GitHub push.')
         booleanParam(name: 'SMOKE_TEST', defaultValue: false, description: 'Requires DRY_RUN and unset SKIP_TCK. Filter the TCK to a tiny representative subset for fast iteration on the pipeline itself (one failsafe IT + one sigtest IT + one old-tck-selenium IT, plus one old-tck JavaTest path when SKIP_OLD_TCK is unchecked).')
-        booleanParam(name: 'SKIP_TCK', defaultValue: false, description: 'Skip the Faces TCK stage. On a DRY_RUN it is simply skipped. On a real release it is allowed only when the tck-status branch already carries a green record whose line, apiVersion, mojarraTree and facesSha match this exact build (i.e. a prior DRY_RUN already ran the TCK against identical impl source and faces commit); otherwise the release aborts. 4.x lines emit no records, so SKIP_TCK on a real 4.x release always aborts.')
+        booleanParam(name: 'SKIP_TCK', defaultValue: false, description: 'Skip the Faces TCK stage. On a DRY_RUN it is simply skipped. On a real release it is allowed only when the tck-status branch already carries a green record for this RELEASE_VERSION whose line, mojarraTree (impl source) and facesSha (the faces commit built) match this build — i.e. a prior DRY_RUN already ran the FULL TCK against identical bits; otherwise the release aborts. Records come only from full TCK runs, so a SMOKE_TEST or SKIP_OLD_TCK dry-run cannot enable a real SKIP_TCK release.')
         booleanParam(name: 'SKIP_OLD_TCK', defaultValue: false, description: 'Requires unset SKIP_TCK. 4.x only. Skip the old-tck JavaTest modules (excluded from the reactor entirely via -pl); cuts nearly 3 hours off the TCK run. No-op on 5.0+ where these modules no longer exist. The old-tck-selenium failsafe-driven modules are unaffected by this flag.')
         booleanParam(name: 'SKIP_DEPLOY', defaultValue: false, description: 'Requires DRY_RUN unchecked. Skip the Maven Central deploy stage only (still pushes branch/tag and creates the GitHub release). Use for resuming a previous run after Maven Central already published, or for pipeline-debug runs that exercise Publish to GitHub without re-deploying.')
         booleanParam(name: 'SKIP_CRED_CHECK', defaultValue: false, description: 'Skip the Prepare-stage credential checks (Sonatype Central, GitHub SSH push, GitHub bot token). Use for pipeline-debug runs where the publish credentials are unavailable or known-stale and should not abort the run; on a real release leave this unchecked so a bad credential fails fast.')
@@ -406,14 +406,16 @@ spec:
                             error "jakarta.faces-api ${concreteApi} is not on Maven Central. Release it first via the jakartaee/faces release job, then re-run."
                         }
                         env.IMPL_API_DEP_VERSION = env.RESOLVED_API_VERSION
-                        // Build coordinate (IMPL_API_DEP_VERSION) vs. published record label
-                        // (VALIDATED_API_VERSION) are distinct: on the DRY_RUN submodule fallback the
-                        // api is built at its -SNAPSHOT coordinate, but the TCK validation record is
-                        // keyed by the version being cut this run (concreteApi = RELEASE_VERSION for
-                        // a snapshot dep), so the Faces API release job finds tck-validation-<that>.json.
+                        // Build coordinate (IMPL_API_DEP_VERSION) vs. the api version stamped in the
+                        // record's apiVersion field (VALIDATED_API_VERSION) are distinct: on the DRY_RUN
+                        // submodule fallback the api is built at its -SNAPSHOT coordinate, but the record
+                        // must attest the version being cut this run (concreteApi = RELEASE_VERSION for a
+                        // snapshot dep), which is what the Faces API release job matches on. (The record
+                        // file itself is keyed by RELEASE_VERSION; the two coincide in the lockstep case.)
                         env.VALIDATED_API_VERSION = concreteApi
                     } else {
                         env.IMPL_API_DEP_VERSION = cfg.apiVersion
+                        env.VALIDATED_API_VERSION = cfg.apiVersion
                         env.MVN_API_PROFILE = ''
                     }
 
@@ -443,33 +445,29 @@ spec:
                     env.FACES_SHA = env.API_BRANCH ? sh(returnStdout: true, script: 'git -C faces rev-parse HEAD').trim() : ''
                 }
                 // SKIP_TCK on a real release is honoured only when the tck-status branch already holds a
-                // green record matching THIS build (line + apiVersion + mojarraTree + facesSha) — i.e. a
-                // prior DRY_RUN already ran the full TCK against identical impl source and faces commit,
-                // reused instead of re-running the TCK. No match — or a line that emits no records
-                // (4.x) — aborts here, before any build or publish. Needs curl (agent) + awk.
+                // green record for this RELEASE_VERSION matching THIS build (line + mojarraTree + facesSha)
+                // — i.e. a prior DRY_RUN already ran the full TCK against identical impl source and faces
+                // commit, reused instead of re-running the TCK. No matching record aborts here, before any
+                // build or publish. Works on every line (facesSha is empty on 4.x). Needs curl + awk.
                 script {
                     if (params.SKIP_TCK && !params.DRY_RUN) {
-                        if (!env.API_BRANCH) {
-                            error "SKIP_TCK on a real release is unsupported on the ${params.RELEASE_LINE} line (it emits no tck-status records); rerun with the TCK."
-                        }
                         sh '''#!/bin/bash
                             set -o pipefail
-                            URL="https://raw.githubusercontent.com/eclipse-ee4j/mojarra/tck-status/tck-validation-${VALIDATED_API_VERSION}.json"
+                            URL="https://raw.githubusercontent.com/eclipse-ee4j/mojarra/tck-status/tck-validation-${RELEASE_VERSION}.json"
                             if ! curl -fsS -o rec.json "${URL}"; then
-                                echo "[tck-reuse] ERROR: no TCK record at ${URL}; run a DRY_RUN with the TCK first, or unset SKIP_TCK." >&2
+                                echo "[tck-reuse] ERROR: no TCK record at ${URL}; run a DRY_RUN with the full TCK first, or unset SKIP_TCK." >&2
                                 exit 1
                             fi
                             # rec.json is machine-generated one-field-per-line; -F'"' splits "key":  "value".
                             field() { awk -F'"' -v k="$1" '$2==k {print $4; exit}' rec.json; }
                             if [ "$(field result)" = "SUCCESS" ] \\
                                 && [ "$(field line)" = "${RELEASE_LINE}" ] \\
-                                && [ "$(field apiVersion)" = "${VALIDATED_API_VERSION}" ] \\
                                 && [ "$(field mojarraTree)" = "${MOJARRA_TREE}" ] \\
                                 && [ "$(field facesSha)" = "${FACES_SHA}" ]; then
-                                echo "[tck-reuse] reusing green TCK $(field buildUrl) for api ${VALIDATED_API_VERSION} (tree ${MOJARRA_TREE}, faces ${FACES_SHA})"
+                                echo "[tck-reuse] reusing green TCK $(field buildUrl) for ${RELEASE_VERSION} (tree ${MOJARRA_TREE}, faces ${FACES_SHA:-none})"
                             else
                                 cat rec.json >&2
-                                echo "[tck-reuse] ERROR: no matching green tck-status record for ${VALIDATED_API_VERSION} at this impl tree (${MOJARRA_TREE}) + faces commit (${FACES_SHA}); run a DRY_RUN with the TCK first, or unset SKIP_TCK." >&2
+                                echo "[tck-reuse] ERROR: no matching green tck-status record for ${RELEASE_VERSION} at this impl tree (${MOJARRA_TREE}) + faces commit (${FACES_SHA:-none}); run a DRY_RUN with the full TCK first, or unset SKIP_TCK." >&2
                                 exit 1
                             fi
                         '''
@@ -729,13 +727,15 @@ spec:
                         echo "******************************************************"
                     } > summary.txt
 
-                    # Machine-readable validation record, consumed by the jakartaee/faces API
-                    # release job to gate its Central publish on a green TCK. Emitted only for
-                    # release lines that HAVE a standalone api (API_BRANCH set, i.e. 5.0+) and only
-                    # on a clean pass; -e means a failing TCK never reaches this point.
-                    # FACES_SHA and MOJARRA_TREE are captured in Prepare (same values the SKIP_TCK
-                    # reuse gate matches against) and exported into this shell.
-                    if [ -n "${API_BRANCH}" ] && [ "${FAILED}" -eq 0 ] && [ "${ERRORS}" -eq 0 ]; then
+                    # Machine-readable validation record, consumed by (a) the jakartaee/faces API
+                    # release job to gate its Central publish on a green TCK (5.0+), and (b) this
+                    # pipeline's own SKIP_TCK reuse gate. Written on every line, but only from a FULL
+                    # conformant TCK — SMOKE_TEST and SKIP_OLD_TCK both drop TCK coverage, so a record
+                    # from either must never gate or be reused. Keyed on publish by RELEASE_VERSION.
+                    # FACES_SHA and MOJARRA_TREE are captured in Prepare (same values the reuse gate
+                    # matches against) and exported into this shell.
+                    if [ "${SMOKE_TEST}" != "true" ] && [ "${SKIP_OLD_TCK}" != "true" ] \\
+                        && [ "${FAILED}" -eq 0 ] && [ "${ERRORS}" -eq 0 ]; then
                         cat > tck-validation.json <<EOF
 {
   "line":       "${RELEASE_LINE}",
@@ -756,10 +756,11 @@ EOF
                     fi
                 '''
                 // Publish the validation record to an orphan tck-status branch of eclipse-ee4j/mojarra
-                // so the jakartaee/faces API release job can gate on it via a public raw URL (no
-                // cross-Jenkins auth). Only when a record exists (5.0+ green run); keyed by api
-                // version. Touches only *.json at the root, so it does not trip build.yml (paths:
-                // impl/**) nor any code branch.
+                // so the jakartaee/faces API release job (5.0+) and this pipeline's SKIP_TCK reuse gate
+                // can read it via a public raw URL (no cross-Jenkins auth). Keyed by RELEASE_VERSION —
+                // the impl version, which equals the api version in the 5.0 lockstep case the faces gate
+                // reads. Touches only *.json at the root, so it does not trip build.yml (paths: impl/**)
+                // nor any code branch.
                 sshagent(credentials: ['github-bot-ssh']) {
                     sh '#!/bin/bash -e\n' + KNOWN_HOSTS_INIT + '''
                         [ -f tck-validation.json ] || exit 0
@@ -772,18 +773,18 @@ EOF
                         else
                             git checkout -q --orphan tck-status
                         fi
-                        cp ../tck-validation.json "tck-validation-${VALIDATED_API_VERSION}.json"
+                        cp ../tck-validation.json "tck-validation-${RELEASE_VERSION}.json"
                         git add -A
                         # A re-run overwrites the same file: commit+push only when something changed
                         # (buildUrl/timestamp normally differ), so an identical record is a clean no-op
                         # rather than a "nothing to commit" failure under -e.
                         if git diff --cached --quiet; then
-                            echo "[tck-status] tck-validation-${VALIDATED_API_VERSION}.json unchanged; nothing to publish."
+                            echo "[tck-status] tck-validation-${RELEASE_VERSION}.json unchanged; nothing to publish."
                         else
                             git -c user.email="mojarra-bot@eclipse.org" -c user.name="Eclipse Mojarra Bot" \\
-                                commit -q -m "TCK validated jakarta.faces-api ${VALIDATED_API_VERSION}"
+                                commit -q -m "TCK validated ${RELEASE_VERSION}"
                             git push -q origin HEAD:tck-status
-                            echo "[tck-status] published tck-validation-${VALIDATED_API_VERSION}.json to eclipse-ee4j/mojarra@tck-status"
+                            echo "[tck-status] published tck-validation-${RELEASE_VERSION}.json to eclipse-ee4j/mojarra@tck-status"
                         fi
                     '''
                 }
