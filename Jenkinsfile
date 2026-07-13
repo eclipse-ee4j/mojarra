@@ -74,8 +74,8 @@ def JDK_VERSION_CHOICES = [''] + JDK_DISTRO_BY_VERSION.keySet().toList()
 //                     stays at 1 there. The pod's cpu/memory should comfortably accommodate
 //                     this many concurrent GlassFish + test JVM pairs.
 def BRANCH_CONFIG = [
-    '4.0': [ implBranch: '4.0',    apiBranch: null,  apiVersion: '4.0.1', jdk: '11', tckJdk: '17', tckVersion: '4.0.3',          gfVersion: '7.0.25'  , seleniumEnabled: false, threadCount: 1 ],
-    '4.1': [ implBranch: '4.1',    apiBranch: null,  apiVersion: '4.1.0', jdk: '17', tckJdk: '21', tckVersion: '4.1.0',          gfVersion: '8.0.0-M6', seleniumEnabled: true , threadCount: 1 ],
+    '4.0': [ implBranch: '4.0',    apiBranch: null,  apiVersion: '4.0.1', jdk: '11', tckJdk: '17', tckVersion: '4.0.4',          gfVersion: '7.1.1'   , seleniumEnabled: false, threadCount: 1 ],
+    '4.1': [ implBranch: '4.1',    apiBranch: null,  apiVersion: '4.1.0', jdk: '17', tckJdk: '21', tckVersion: '4.1.2',          gfVersion: '8.0.3'   , seleniumEnabled: true , threadCount: 1 ],
     '5.0': [ implBranch: 'master', apiBranch: '5.0', apiVersion: null,    jdk: '17', tckJdk: '21', tckVersion: '5.0.0-SNAPSHOT', gfVersion: '9.0.0-M2', seleniumEnabled: true , threadCount: 2 ],
 ]
 
