@@ -701,6 +701,31 @@ spec:
 EOF
                     fi
                 '''
+                // Publish the validation record to an orphan tck-status branch of eclipse-ee4j/mojarra
+                // so the jakartaee/faces API release job can gate on it via a public raw URL (no
+                // cross-Jenkins auth). Only when a record exists (5.0+ green run); keyed by api
+                // version. Touches only *.json at the root, so it does not trip build.yml (paths:
+                // impl/**) nor any code branch.
+                sshagent(credentials: ['github-bot-ssh']) {
+                    sh '#!/bin/bash -e\n' + KNOWN_HOSTS_INIT + '''
+                        [ -f tck-validation.json ] || exit 0
+                        rm -rf .tck-status
+                        mkdir .tck-status && cd .tck-status
+                        git init -q
+                        git remote add origin git@github.com:eclipse-ee4j/mojarra.git
+                        if git fetch -q --depth 1 origin tck-status 2>/dev/null; then
+                            git checkout -q -B tck-status FETCH_HEAD
+                        else
+                            git checkout -q --orphan tck-status
+                        fi
+                        cp ../tck-validation.json "tck-validation-${IMPL_API_DEP_VERSION}.json"
+                        git add -A
+                        git -c user.email="mojarra-bot@eclipse.org" -c user.name="Eclipse Mojarra Bot" \\
+                            commit -q -m "TCK validated jakarta.faces-api ${IMPL_API_DEP_VERSION}"
+                        git push -q origin HEAD:tck-status
+                        echo "[tck-status] published tck-validation-${IMPL_API_DEP_VERSION}.json to eclipse-ee4j/mojarra@tck-status"
+                    '''
+                }
             }
             post {
                 always {
