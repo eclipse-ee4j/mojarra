@@ -676,11 +676,35 @@ spec:
                         echo "OS : $(lsb_release -ds 2>/dev/null || cat /etc/os-release | head -1)"
                         echo "******************************************************"
                     } > summary.txt
+
+                    # Machine-readable validation record, consumed by the jakartaee/faces API
+                    # release job to gate its Central publish on a green TCK. Emitted only for
+                    # release lines that HAVE a standalone api (API_BRANCH set, i.e. 5.0+) and only
+                    # on a clean pass; -e means a failing TCK never reaches this point.
+                    if [ -n "${API_BRANCH}" ] && [ "${FAILED}" -eq 0 ] && [ "${ERRORS}" -eq 0 ]; then
+                        FACES_SHA=$( [ -d faces ] && git -C faces rev-parse HEAD || echo "" )
+                        cat > tck-validation.json <<EOF
+{
+  "line":       "${RELEASE_LINE}",
+  "apiVersion": "${IMPL_API_DEP_VERSION}",
+  "facesSha":   "${FACES_SHA}",
+  "mojarraSha": "$(git rev-parse HEAD)",
+  "dryRun":     ${DRY_RUN},
+  "runTck":     true,
+  "tckVersion": "${RESOLVED_TCK_VERSION}",
+  "glassfish":  "${RESOLVED_GF_VERSION}",
+  "passed":     ${PASSED},
+  "result":     "SUCCESS",
+  "buildUrl":   "${BUILD_URL}",
+  "timestamp":  "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+}
+EOF
+                    fi
                 '''
             }
             post {
                 always {
-                    archiveArtifacts artifacts: 'run.log, summary.txt',
+                    archiveArtifacts artifacts: 'run.log, summary.txt, tck-validation.json',
                                      allowEmptyArchive: true, fingerprint: true
                 }
             }
