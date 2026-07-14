@@ -1,0 +1,15 @@
+{
+  "line":       "4.1",
+  "apiVersion": "4.1.0",
+  "facesSha":   "",
+  "mojarraSha": "9ab15bc4abc1f6505bda67169462201612d69318",
+  "mojarraTree": "786eb15d401f1bf82963b0f6523f5a5c0e1360ab",
+  "dryRun":     true,
+  "runTck":     true,
+  "tckVersion": "4.1.2",
+  "glassfish":  "8.0.3",
+  "passed":     5705,
+  "result":     "SUCCESS",
+  "buildUrl":   "https://ci.eclipse.org/mojarra/job/mojarra-release/164/",
+  "timestamp":  "2026-07-14T02:37:35Z"
+}
