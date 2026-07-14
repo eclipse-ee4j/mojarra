@@ -465,8 +465,11 @@ spec:
                 // — i.e. a prior DRY_RUN already ran the full TCK against identical impl source and faces
                 // commit, reused instead of re-running the TCK. No matching record aborts here, before any
                 // build or publish. Works on every line (facesSha is empty on 4.x). Needs curl + awk.
+                // Skipped under SKIP_DEPLOY: that mode publishes nothing (resume-only, tag/GitHub
+                // release for an already-published version), so the gate — which exists solely to
+                // block an unvalidated *publish* — has nothing to guard.
                 script {
-                    if (params.SKIP_TCK && !params.DRY_RUN) {
+                    if (params.SKIP_TCK && !params.DRY_RUN && !params.SKIP_DEPLOY) {
                         sh '''#!/bin/bash
                             set -o pipefail
                             URL="https://raw.githubusercontent.com/eclipse-ee4j/mojarra/tck-status/tck-validation-impl-${RELEASE_VERSION}.json"
