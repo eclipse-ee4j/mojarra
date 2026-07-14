@@ -572,7 +572,7 @@ spec:
                                     -DdepVersion="${RESOLVED_API_VERSION}" \\
                                     -DforceVersion=true -DgenerateBackupPoms=false
                             fi
-                            git add -A '*pom.xml'
+                            git add -u '*pom.xml'
                             git commit -m "Prepare release ${RELEASE_VERSION}"
                         '''
                         // Build & install. -Papi builds the api from the faces/ submodule into the
@@ -855,7 +855,7 @@ EOF
                     mvn -U -B ${MVN_EXTRA} \\
                         -DnewVersion="${NEXT_VERSION}" -DgenerateBackupPoms=false \\
                         ${VERSIONS_PLUGIN}:set
-                    git add -A '*pom.xml'
+                    git add -u '*pom.xml'
                     git commit -m "Prepare next development cycle for ${NEXT_VERSION}"
                 '''
             }
