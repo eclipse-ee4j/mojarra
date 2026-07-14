@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2022, 2024 Contributors to Eclipse Foundation.
+    Copyright (c) 2022 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.eclipse.ee4j.faces.tck</groupId>
+        <artifactId>jakarta-faces-tck</artifactId>
+        <version>4.1.2</version>
+    </parent>
+
+    <groupId>jakarta.faces.tck</groupId>
+    <artifactId>faces-sigtest</artifactId>
+    <packaging>jar</packaging>
+
+    <name>Faces TCK Signature Test</name>
+
+    <properties>
+        <maven.compiler.release>17</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <sigtest.plugin.version>2.1</sigtest.plugin.version>
+        <junit.jupiter.version>5.10.2</junit.jupiter.version>
+        <faces.api.version>4.1.0</faces.api.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>${sigtest.api.groupId}</groupId>
+            <artifactId>${sigtest.api.artifactId}</artifactId>
+            <version>${sigtest.api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.tck</groupId>
+            <artifactId>sigtest-maven-plugin</artifactId>
+            <version>${sigtest.plugin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.jupiter.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <configuration>
+                    <rules>
+                        <requireMavenVersion>
+                            <version>3.8.6</version>
+                        </requireMavenVersion>
+                        <requireJavaVersion>
+                            <version>17</version>
+                        </requireJavaVersion>
+                    </rules>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-api-jar-to-test</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <!-- The main Faces API artefact to test -->
+                                <artifactItem>
+                                    <groupId>${sigtest.api.groupId}</groupId>
+                                    <artifactId>${sigtest.api.artifactId}</artifactId>
+                                    <version>${sigtest.api.version}</version>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/</outputDirectory>
+                                    <destFileName>jakarta.faces-vendor-api.jar</destFileName>
+                                </artifactItem>
+
+                                <artifactItem>
+                                    <groupId>jakarta.el</groupId>
+                                    <artifactId>jakarta.el-api</artifactId>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/</outputDirectory>
+                                    <destFileName>jakarta.el-api.jar</destFileName>
+                                </artifactItem>
+
+                                <artifactItem>
+                                    <groupId>jakarta.enterprise</groupId>
+                                    <artifactId>jakarta.enterprise.cdi-api</artifactId>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/</outputDirectory>
+                                    <destFileName>jakarta.enterprise.cdi-api.jar</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>jakarta.inject</groupId>
+                                    <artifactId>jakarta.inject-api</artifactId>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/</outputDirectory>
+                                    <destFileName>jakarta.inject-api.jar</destFileName>
+                                </artifactItem>
+
+                                <artifactItem>
+                                    <groupId>jakarta.servlet</groupId>
+                                    <artifactId>jakarta.servlet-api</artifactId>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/</outputDirectory>
+                                    <destFileName>jakarta.servlet-api.jar</destFileName>
+                                </artifactItem>
+
+                                <artifactItem>
+                                    <groupId>jakarta.websocket</groupId>
+                                    <artifactId>jakarta.websocket-api</artifactId>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/</outputDirectory>
+                                    <destFileName>jakarta.websocket-api.jar</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>jakarta.websocket</groupId>
+                                    <artifactId>jakarta.websocket-client-api</artifactId>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/</outputDirectory>
+                                    <destFileName>jakarta.websocket-client-api.jar</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <dependenciesToScan>jakarta.faces.tck:facestck-sigtest-${project.version}</dependenciesToScan>
+                    <systemPropertyVariables>
+                        <jimage.dir>${project.build.directory}/jdk-bundle</jimage.dir>
+                        <optional.tech.packages.to.ignore>jakarta.xml.bind</optional.tech.packages.to.ignore>
+                        <signature.sigTestClasspath>${project.build.directory}/jakarta.faces-vendor-api.jar:${project.build.directory}/jakarta.el-api.jar:${project.build.directory}/jakarta.enterprise.cdi-api.jar:${project.build.directory}/jakarta.servlet-api.jar:${project.build.directory}/jakarta.websocket-client-api.jar:${project.build.directory}/jakarta.websocket-api.jar:${project.build.directory}/jakarta.inject-api.jar:${project.build.directory}/jdk-bundle/java.base:${project.build.directory}/jdk-bundle/java.rmi:${project.build.directory}/jdk-bundle/java.sql:${project.build.directory}/jdk-bundle/java.naming</signature.sigTestClasspath>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
