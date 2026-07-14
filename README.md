@@ -23,22 +23,32 @@ Two pipelines read these records:
 
 ## What's here
 
-One file per validated **release version**:
+Two purpose-keyed files per validated release:
 
-    tck-validation-<releaseVersion>.json     e.g. tck-validation-5.0.0-M3.json
+    tck-validation-impl-<implVersion>.json    e.g. tck-validation-impl-5.0.3.json
+    tck-validation-api-<apiVersion>.json      e.g. tck-validation-api-5.0.1.json
 
-The key is the **impl release version**. On the 5.0 lockstep releases (impl and
-API cut at the same version) it equals the API version the Faces gate looks up; on
-a 4.x or impl-only-patch release it is just that release's version.
+- The **impl reuse record** (`-impl-`, every line) is keyed by the impl release
+  version and read by Mojarra's own `SKIP_TCK` gate.
+- The **API gate record** (`-api-`, 5.0+ only, and only when the API is built from
+  the `faces/` submodule because it is not yet on Central) is keyed by the API
+  version and read by the Faces API release gate.
+
+Keying the API record by API version lets the Faces gate find it even when the impl
+and API versions differ — e.g. an impl line iterating (impl `5.0.1`, `5.0.2`,
+`5.0.3`) against a stable API (`5.0.0`, then `5.0.1`). The two versions coincide
+only when a fresh API is cut alongside the impl.
 
 - **Written** by [Mojarra's release pipeline](https://github.com/eclipse-ee4j/mojarra/blob/master/Jenkinsfile)
   (TCK stage) on any release line, but only from a **full** green TCK run — a
   `SMOKE_TEST` or `SKIP_OLD_TCK` run drops TCK coverage and deliberately writes no
   record, so it can neither gate an API release nor enable a `SKIP_TCK` reuse.
 - **Read** by the [Faces API release pipeline](https://github.com/jakartaee/faces/blob/5.0/api/Jenkinsfile)
-  (TCK gate, 5.0+) and by Mojarra's own `SKIP_TCK` gate, at:
+  (TCK gate, 5.0+) at the `-api-` record, and by Mojarra's own `SKIP_TCK` gate at
+  the `-impl-` record:
 
-      https://raw.githubusercontent.com/eclipse-ee4j/mojarra/tck-status/tck-validation-<version>.json
+      https://raw.githubusercontent.com/eclipse-ee4j/mojarra/tck-status/tck-validation-impl-<implVersion>.json
+      https://raw.githubusercontent.com/eclipse-ee4j/mojarra/tck-status/tck-validation-api-<apiVersion>.json
 
 ## Record format
 
@@ -50,15 +60,16 @@ a 4.x or impl-only-patch release it is just that release's version.
 | `mojarraSha`  | Mojarra commit that ran the TCK                                      |
 | `mojarraTree` | Mojarra source tree sha — the impl source + `faces/` submodule pin identity |
 | `dryRun`      | whether the Mojarra run was a dry-run                               |
-| `runTck`      | always `true` (only written on a TCK run)                           |
 | `tckVersion`  | Faces TCK version used                                              |
 | `glassfish`   | GlassFish version the TCK ran on                                    |
 | `passed`      | passed test count                                                  |
-| `result`      | always `SUCCESS` (only written on a green run)                     |
 | `buildUrl`    | Mojarra CI build that produced the record                          |
 | `timestamp`   | UTC build time                                                     |
 
-- The **Faces API gate** requires `result == SUCCESS`, `runTck == true`, and
-  matching `line`, `apiVersion`, and `facesSha`.
-- The **`SKIP_TCK` reuse gate** requires `result == SUCCESS` and matching `line`,
-  `mojarraTree`, and `facesSha`.
+A record exists only on a green **full** TCK run, so its presence attests success —
+the gates check identity only, there is no status flag to read:
+
+- The **Faces API gate** (reads the `-api-` record) requires matching `line`,
+  `apiVersion`, and `facesSha`.
+- The **`SKIP_TCK` reuse gate** (reads the `-impl-` record) requires matching
+  `line`, `mojarraTree`, and `facesSha`.
