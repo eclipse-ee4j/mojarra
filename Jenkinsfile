@@ -871,7 +871,9 @@ EOF
                         if [ "${IS_MILESTONE}" != "true" ]; then
                             git push origin "${RELEASE_BRANCH}"
                         fi
-                        git push origin "${RELEASE_TAG}"
+                        # Fully-qualified: on a milestone RELEASE_TAG equals the local release
+                        # branch name, so a bare ref would be ambiguous ("matches more than one").
+                        git push origin "refs/tags/${RELEASE_TAG}"
                     '''
                 }
                 // GA-only: squash-merge the release branch into the source branch so "Prepare release"
