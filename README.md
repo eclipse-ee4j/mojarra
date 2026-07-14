@@ -61,7 +61,7 @@ only when a fresh API is cut alongside the impl.
 | `mojarraTree` | Mojarra source tree sha — the impl source + `faces/` submodule pin identity |
 | `dryRun`      | whether the Mojarra run was a dry-run                               |
 | `tckVersion`  | Faces TCK version used                                              |
-| `glassfish`   | GlassFish version the TCK ran on                                    |
+| `gfVersion`   | GlassFish version the TCK ran on                                    |
 | `passed`      | passed test count                                                  |
 | `buildUrl`    | Mojarra CI build that produced the record                          |
 | `timestamp`   | UTC build time                                                     |
