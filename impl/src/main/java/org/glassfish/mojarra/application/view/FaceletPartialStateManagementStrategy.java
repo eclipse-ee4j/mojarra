@@ -164,6 +164,26 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
     }
 
     /**
+     * Returns the index the given action's child must be restored at. The action carries it, as the component
+     * does not necessarily survive to hold it: a facelet-created child which was dynamically moved to another
+     * parent is deleted and recreated by the facelet refresh, losing its marker. The marker on the component
+     * is only consulted for state saved before the action carried the index.
+     *
+     * @param struct the component struct.
+     * @param child the child being restored.
+     * @return the index within the parent's children, or {@link ComponentStruct#APPEND} to append.
+     */
+    private static int indexOf(ComponentStruct struct, UIComponent child) {
+        if (struct.getIndex() != ComponentStruct.APPEND) {
+            return struct.getIndex();
+        }
+        if (child.getAttributes().get(DYNAMIC_COMPONENT) instanceof Integer index) {
+            return index;
+        }
+        return ComponentStruct.APPEND;
+    }
+
+    /**
      * Method that takes care of restoring a dynamic add.
      *
      * @param context the Faces context.
@@ -231,10 +251,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
                     parent.getFacets().put(struct.getFacetName(), child);
                     child.getAttributes().put(DYNAMIC_COMPONENT, child.getParent().getChildren().indexOf(child));
                 } else {
-                    int childIndex = -1;
-                    if (child.getAttributes().containsKey(DYNAMIC_COMPONENT)) {
-                        childIndex = (Integer) child.getAttributes().get(DYNAMIC_COMPONENT);
-                    }
+                    int childIndex = indexOf(struct, child);
                     child.setId(struct.getId());
                     int storedIndex;
                     if (childIndex >= parent.getChildCount() || childIndex == -1) {
@@ -426,6 +443,11 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
                             action.getClientId());
                 }
                 if (component != null) {
+                    // The tree walk above has just stamped each dynamically added component with the index it
+                    // actually ended up at, which supersedes the one recorded when the action was fired.
+                    if (ADD.equals(action.getAction()) && component.getAttributes().get(DYNAMIC_COMPONENT) instanceof Integer index) {
+                        action.setIndex(index);
+                    }
                     savedActions.add(action.saveState(context));
                 }
             }
