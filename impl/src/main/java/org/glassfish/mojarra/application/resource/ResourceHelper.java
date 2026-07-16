@@ -38,6 +38,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -623,12 +624,14 @@ public abstract class ResourceHelper {
          */
         @Override
         public int read(byte[] b, int off, int len) throws IOException {
-            if (null == inner) {
-                return -1;
-            }
+            Objects.checkFromIndexSize(off, len, b.length);
 
             if (len == 0) {
                 return 0;
+            }
+
+            if (null == inner) {
+                return -1;
             }
 
             // An expression is being written out, or a '#' which turned out not to start one is pending; both are states
@@ -681,9 +684,16 @@ public abstract class ResourceHelper {
         }
 
         private boolean fillInnerBuf() throws IOException {
-            int read = inner.read(innerBuf, 0, innerBuf.length);
+            int read;
 
-            if (read <= 0) {
+            // Only a negative return means end of stream. A zero return must not be mistaken for it: it would truncate the
+            // resource, and close() would then disableEL() on the cached ClientResourceInfo, permanently dropping EL
+            // evaluation for it.
+            do {
+                read = inner.read(innerBuf, 0, innerBuf.length);
+            } while (read == 0);
+
+            if (read < 0) {
                 return false;
             }
 
