@@ -1810,6 +1810,26 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     }
 
     /**
+     * Returns the index the given action's child must be reapplied at. The action carries it, as the component
+     * does not necessarily survive to hold it: a facelet-created child which was dynamically moved to another
+     * parent is deleted and recreated by this very refresh, losing its marker. The marker on the component is
+     * only consulted for state saved before the action carried the index.
+     *
+     * @param struct the component struct.
+     * @param child the child being reapplied.
+     * @return the index within the parent's children, or {@link ComponentStruct#APPEND} to append.
+     */
+    private static int indexOf(ComponentStruct struct, UIComponent child) {
+        if (struct.getIndex() != ComponentStruct.APPEND) {
+            return struct.getIndex();
+        }
+        if (child.getAttributes().get(DYNAMIC_COMPONENT) instanceof Integer index) {
+            return index;
+        }
+        return ComponentStruct.APPEND;
+    }
+
+    /**
      * Reapply the dynamic add after Facelets reapply.
      *
      * @param context the Faces context.
@@ -1833,10 +1853,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                     parent.getFacets().put(struct.getFacetName(), child);
                     child.getClientId();
                 } else if (child.getParent() != parent) {
-                    int childIndex = -1;
-                    if (child.getAttributes().containsKey(DYNAMIC_COMPONENT)) {
-                        childIndex = (Integer) child.getAttributes().get(DYNAMIC_COMPONENT);
-                    }
+                    int childIndex = indexOf(struct, child);
                     child.setId(struct.getId());
                     int storedIndex;
                     if (childIndex >= parent.getChildCount() || childIndex == -1) {
