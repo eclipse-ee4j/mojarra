@@ -541,6 +541,12 @@ public abstract class ResourceHelper {
         private boolean expressionEvaluated;
         private boolean endOfStreamReached;
 
+        // Pull from inner in bulk; it is read one byte at a time while scanning for '#{', and inner.read() is typically
+        // synchronized (e.g. ByteArrayInputStream), so a per-byte call to it costs a monitor on every byte of the resource.
+        private final byte[] innerBuf = new byte[8192];
+        private int innerPos;
+        private int innerLimit;
+
         // ---------------------------------------------------- Constructors
 
         public ELEvaluatingInputStream(FacesContext ctx, ClientResourceInfo info, InputStream inner) {
@@ -571,16 +577,16 @@ public abstract class ResourceHelper {
                     i = buf.remove(0);
                 } else {
                     writingExpression = false;
-                    i = inner.read();
+                    i = readInner();
                 }
             } else {
                 // Read a character.
-                i = inner.read();
+                i = readInner();
                 c = (char) i;
                 // If it *might* be an expression...
                 if (c == '#') {
                     // read another character.
-                    i = inner.read();
+                    i = readInner();
                     c = (char) i;
                     // If it's '{', assume we have an expression.
                     if (c == '{') {
@@ -610,13 +616,89 @@ public abstract class ResourceHelper {
             return i;
         }
 
+        /**
+         * Copies through the bytes up to the next '#', which only the single byte state machine may interpret. Bytes are
+         * copied straight out of the buffer that {@link #readInner} fills, so a run without any '#' costs one bulk read on
+         * inner instead of one call per byte.
+         */
+        @Override
+        public int read(byte[] b, int off, int len) throws IOException {
+            if (null == inner) {
+                return -1;
+            }
+
+            if (len == 0) {
+                return 0;
+            }
+
+            // An expression is being written out, or a '#' which turned out not to start one is pending; both are states
+            // which only the single byte read can unwind.
+            if (failedExpressionTest || writingExpression) {
+                return readSingleByteInto(b, off);
+            }
+
+            if (innerPos >= innerLimit && !fillInnerBuf()) {
+                endOfStreamReached = true;
+                return -1;
+            }
+
+            int start = innerPos;
+            int stop = Math.min(innerLimit, start + len);
+            int end = start;
+
+            while (end < stop && innerBuf[end] != '#') {
+                end++;
+            }
+
+            if (end == start) {
+                // Next byte is '#', so it may start an expression; let the single byte read decide.
+                return readSingleByteInto(b, off);
+            }
+
+            int count = end - start;
+            System.arraycopy(innerBuf, start, b, off, count);
+            innerPos = end;
+            return count;
+        }
+
+        private int readSingleByteInto(byte[] b, int off) throws IOException {
+            int i = read();
+
+            if (i == -1) {
+                return -1;
+            }
+
+            b[off] = (byte) i;
+            return 1;
+        }
+
+        private int readInner() throws IOException {
+            if (innerPos >= innerLimit && !fillInnerBuf()) {
+                return -1;
+            }
+
+            return innerBuf[innerPos++] & 0xFF;
+        }
+
+        private boolean fillInnerBuf() throws IOException {
+            int read = inner.read(innerBuf, 0, innerBuf.length);
+
+            if (read <= 0) {
+                return false;
+            }
+
+            innerPos = 0;
+            innerLimit = read;
+            return true;
+        }
+
         private int nextRead = -1;
 
         private void readExpressionIntoBufferAndEvaluateIntoBuffer() throws IOException {
             int i;
             char c;
             do {
-                i = inner.read();
+                i = readInner();
                 c = (char) i;
                 if (c == '}') {
                     evaluateExpressionIntoBuffer();
