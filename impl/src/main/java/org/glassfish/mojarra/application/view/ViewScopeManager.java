@@ -73,10 +73,6 @@ public class ViewScopeManager implements HttpSessionListener, ViewMapListener {
      */
     public static final String VIEW_MAP_ID = "org.glassfish.mojarra.application.view.viewMapId";
     /**
-     * Stores the constant indicating that only the view scope must be restored.
-     */
-    public static final String RESTORE_VIEW_SCOPE_ONLY = "org.glassfish.mojarra.application.view.restoreViewScopeOnly";
-    /**
      * Stores the constant to keep track of the ViewScopeManager.
      */
     public static final String VIEW_SCOPE_MANAGER = "org.glassfish.mojarra.application.view.viewScopeManager";

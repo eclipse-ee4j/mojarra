@@ -18,6 +18,7 @@ package org.glassfish.mojarra.component;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
@@ -37,6 +38,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 public class UIViewRootTest {
+
+    private static final String SAVED_VIEW_MAP_ID = "savedViewMapId";
+    private static final String REPLACEMENT_VIEW_MAP_ID = "replacementViewMapId";
 
     @Test
     public void testViewMapPostConstructViewMapEvent() {
@@ -127,6 +131,89 @@ public class UIViewRootTest {
         viewRoot2.restoreState(facesContext, saved);
         viewMap = viewRoot2.getViewMap();
         assertEquals("one", viewMap.get("one"));
+
+        setFacesContext(null);
+    }
+
+    @Test
+    public void testViewMapRestoreViewScopeState() {
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
+        Application application = Mockito.mock(Application.class);
+        ExternalContext externalContext = Mockito.mock(ExternalContext.class);
+        HashMap<Object, Object> attributes = new HashMap<>();
+        HashMap<String, Object> sessionMap = new HashMap<>();
+
+        setFacesContext(facesContext);
+
+        when(facesContext.getAttributes()).thenReturn(attributes);
+        when(facesContext.getApplication()).thenReturn(application);
+        when(application.getProjectStage()).thenReturn(ProjectStage.UnitTest);
+        when(facesContext.getExternalContext()).thenReturn(externalContext);
+        when(externalContext.getApplicationMap()).thenReturn(null);
+        when(externalContext.getSessionMap()).thenReturn(sessionMap);
+
+        UIViewRoot viewRoot1 = new UIViewRoot();
+        viewRoot1.setRenderKitId("HTML_BASIC_TEST");
+        viewRoot1.getTransientStateHelper().putTransient(ViewScopeManager.VIEW_MAP_ID, SAVED_VIEW_MAP_ID);
+        viewRoot1.getViewMap().put("one", "one");
+        Object saved = viewRoot1.saveState(facesContext);
+
+        Map<String, Object> viewMaps = new HashMap<>();
+        viewMaps.put(SAVED_VIEW_MAP_ID, viewRoot1.getViewMap());
+        sessionMap.put(ViewScopeManager.ACTIVE_VIEW_MAPS, viewMaps);
+
+        UIViewRoot viewRoot2 = new UIViewRoot();
+        viewRoot2.restoreViewScopeState(facesContext, saved);
+
+        assertEquals("one", viewRoot2.getViewMap().get("one"));
+        assertNull(viewRoot2.getRenderKitId());
+
+        setFacesContext(null);
+    }
+
+    @Test
+    public void testViewMapRestoreStateAfterRestoreViewScopeState() {
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
+        Application application = Mockito.mock(Application.class);
+        ExternalContext externalContext = Mockito.mock(ExternalContext.class);
+        HashMap<Object, Object> attributes = new HashMap<>();
+        HashMap<String, Object> sessionMap = new HashMap<>();
+
+        setFacesContext(facesContext);
+
+        when(facesContext.getAttributes()).thenReturn(attributes);
+        when(facesContext.getApplication()).thenReturn(application);
+        when(application.getProjectStage()).thenReturn(ProjectStage.UnitTest);
+        when(facesContext.getExternalContext()).thenReturn(externalContext);
+        when(externalContext.getApplicationMap()).thenReturn(null);
+        when(externalContext.getSessionMap()).thenReturn(sessionMap);
+
+        UIViewRoot viewRoot1 = new UIViewRoot();
+        viewRoot1.getTransientStateHelper().putTransient(ViewScopeManager.VIEW_MAP_ID, SAVED_VIEW_MAP_ID);
+        viewRoot1.getViewMap().put("one", "one");
+        Object saved = viewRoot1.saveState(facesContext);
+
+        /*
+         * The saved view map is no longer among the active view maps, e.g. LRU-evicted or gone with an expired session.
+         */
+        Map<String, Object> viewMaps = new HashMap<>();
+        sessionMap.put(ViewScopeManager.ACTIVE_VIEW_MAPS, viewMaps);
+
+        UIViewRoot viewRoot2 = new UIViewRoot();
+        viewRoot2.restoreViewScopeState(facesContext, saved);
+
+        /*
+         * Simulate our ViewScopeManager minting a replacement view map while the view is being built.
+         */
+        Map<String, Object> replacementViewMap = viewRoot2.getViewMap();
+        replacementViewMap.put("two", "two");
+        viewMaps.put(REPLACEMENT_VIEW_MAP_ID, replacementViewMap);
+        viewRoot2.getTransientStateHelper().putTransient(ViewScopeManager.VIEW_MAP_ID, REPLACEMENT_VIEW_MAP_ID);
+
+        viewRoot2.restoreState(facesContext, saved);
+
+        assertEquals(REPLACEMENT_VIEW_MAP_ID, viewRoot2.getTransientStateHelper().getTransient(ViewScopeManager.VIEW_MAP_ID));
+        assertEquals("two", viewRoot2.getViewMap().get("two"));
 
         setFacesContext(null);
     }
