@@ -248,9 +248,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                         String clientId = viewRoot.getClientId(context);
                         Object stateObj = state.get(clientId);
                         if (stateObj != null) {
-                            context.getAttributes().put(ViewScopeManager.RESTORE_VIEW_SCOPE_ONLY, true);
-                            viewRoot.restoreState(context, stateObj);
-                            context.getAttributes().remove(ViewScopeManager.RESTORE_VIEW_SCOPE_ONLY);
+                            viewRoot.restoreViewScopeState(context, stateObj);
                         }
                     }
                 }
