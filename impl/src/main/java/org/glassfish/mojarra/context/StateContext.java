@@ -657,25 +657,16 @@ public class StateContext {
                 // The stale clientId that a reparent could leave behind is already invalidated by
                 // UIComponentBase.setParent, which runs before this event, so no setId is needed here.
                 String facetName = findFacetNameForComponent(component);
-                if (facetName != null) {
-                    markHasDynamicChild(component.getParent());
-                    component.clearInitialState();
-                    component.getAttributes().put(DYNAMIC_COMPONENT, indexInParent(component));
+                int index = indexInParent(component);
+                markHasDynamicChild(component.getParent());
+                component.clearInitialState();
+                component.getAttributes().put(DYNAMIC_COMPONENT, index);
 
-                    ComponentStruct struct = new ComponentStruct(ADD, facetName, component.getParent().getClientId(context), component.getClientId(context),
-                            component.getId());
+                ComponentStruct struct = new ComponentStruct(ADD, facetName, component.getParent().getClientId(context), component.getClientId(context),
+                        component.getId());
+                struct.setIndex(index);
 
-                    recordDynamicAction(component, struct);
-                } else {
-                    markHasDynamicChild(component.getParent());
-                    component.clearInitialState();
-                    component.getAttributes().put(DYNAMIC_COMPONENT, indexInParent(component));
-
-                    ComponentStruct struct = new ComponentStruct(ADD, null, component.getParent().getClientId(context), component.getClientId(context),
-                            component.getId());
-
-                    recordDynamicAction(component, struct);
-                }
+                recordDynamicAction(component, struct);
             }
         }
 
