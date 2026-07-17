@@ -315,6 +315,67 @@ public class StateContext {
         return pruned;
     }
 
+    /**
+     * Drops the iteration index of every iterating ancestor from the given client id, e.g.
+     * {@code form:table:1:group} becomes {@code form:table:group}.
+     *
+     * <p>
+     * An action is recorded whenever the tree is modified, which can be while an iterating component has a row
+     * index set -- an add performed by a command button inside a row, for instance, as {@link UIData#broadcast}
+     * sets the row index before the action runs. The client id then carries that row, but the component does not:
+     * a component inside an iterating one is a single instance shared by every row, so the modification belongs to
+     * all of them and the row says only when it happened. Recording it would key the action to a position which
+     * does not exist, which nothing can resolve it against afterwards.
+     * </p>
+     *
+     * <p>
+     * A numeric segment is unambiguous: a component id cannot be one, as {@link UIComponent#setId} requires the
+     * first character to be a letter or an underscore. Only an iterating component contributes one.
+     * </p>
+     *
+     * @param separatorChar the naming-container separator character.
+     * @param clientId the client id to strip.
+     * @return the given client id without the iteration index of any iterating ancestor.
+     */
+    static String stripIterationIndex(char separatorChar, String clientId) {
+        StringBuilder builder = new StringBuilder(clientId.length());
+        boolean stripped = false;
+        int segmentStart = 0;
+
+        for (int i = 0; i <= clientId.length(); i++) {
+            if (i < clientId.length() && clientId.charAt(i) != separatorChar) {
+                continue;
+            }
+
+            if (isIterationIndex(clientId, segmentStart, i)) {
+                stripped = true;
+            } else {
+                if (builder.length() > 0) {
+                    builder.append(separatorChar);
+                }
+                builder.append(clientId, segmentStart, i);
+            }
+
+            segmentStart = i + 1;
+        }
+
+        return stripped ? builder.toString() : clientId;
+    }
+
+    private static boolean isIterationIndex(String clientId, int start, int end) {
+        if (start >= end) {
+            return false;
+        }
+
+        for (int i = start; i < end; i++) {
+            if (!Character.isDigit(clientId.charAt(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     // ---------------------------------------------------------- Nested Classes
 
     private AddRemoveListener createAddRemoveListener(FacesContext context, UIViewRoot root) {
@@ -641,7 +702,8 @@ public class StateContext {
             if (component.isInView()) {
                 recordDynamicAction(
                     component,
-                    new ComponentStruct(REMOVE, findFacetNameForComponent(component), stripIterationIndex(context, component.getClientId(context)), component.getId())
+                    new ComponentStruct(REMOVE, findFacetNameForComponent(component),
+                        stripIterationIndex(UINamingContainer.getSeparatorChar(context), component.getClientId(context)), component.getId())
                 );
            }
         }
@@ -663,76 +725,15 @@ public class StateContext {
                 component.clearInitialState();
                 component.getAttributes().put(DYNAMIC_COMPONENT, index);
 
+                char separatorChar = UINamingContainer.getSeparatorChar(context);
                 ComponentStruct struct = new ComponentStruct(ADD, facetName,
-                        stripIterationIndex(context, component.getParent().getClientId(context)),
-                        stripIterationIndex(context, component.getClientId(context)),
+                        stripIterationIndex(separatorChar, component.getParent().getClientId(context)),
+                        stripIterationIndex(separatorChar, component.getClientId(context)),
                         component.getId());
                 struct.setIndex(index);
 
                 recordDynamicAction(component, struct);
             }
-        }
-
-        /**
-         * Drops the iteration index of every iterating ancestor from the given client id, e.g.
-         * {@code form:table:1:group} becomes {@code form:table:group}.
-         *
-         * <p>
-         * An action is recorded whenever the tree is modified, which can be while an iterating component has a row
-         * index set -- an add performed by a command button inside a row, for instance, as {@link UIData#broadcast}
-         * sets the row index before the action runs. The client id then carries that row, but the component does
-         * not: a component inside an iterating one is a single instance shared by every row, so the modification
-         * belongs to all of them and the row says only when it happened. Recording it would key the action to a
-         * position which does not exist, which nothing can resolve it against afterwards.
-         * </p>
-         *
-         * <p>
-         * A numeric segment is unambiguous: a component id cannot be one, as {@link UIComponent#setId} requires the
-         * first character to be a letter or an underscore. Only an iterating component contributes one.
-         * </p>
-         *
-         * @param context the Faces context.
-         * @param clientId the client id to strip.
-         * @return the given client id without the iteration index of any iterating ancestor.
-         */
-        private String stripIterationIndex(FacesContext context, String clientId) {
-            char separatorChar = UINamingContainer.getSeparatorChar(context);
-            StringBuilder builder = new StringBuilder(clientId.length());
-            boolean stripped = false;
-            int segmentStart = 0;
-
-            for (int i = 0; i <= clientId.length(); i++) {
-                if (i < clientId.length() && clientId.charAt(i) != separatorChar) {
-                    continue;
-                }
-
-                if (isIterationIndex(clientId, segmentStart, i)) {
-                    stripped = true;
-                } else {
-                    if (builder.length() > 0) {
-                        builder.append(separatorChar);
-                    }
-                    builder.append(clientId, segmentStart, i);
-                }
-
-                segmentStart = i + 1;
-            }
-
-            return stripped ? builder.toString() : clientId;
-        }
-
-        private boolean isIterationIndex(String clientId, int start, int end) {
-            if (start >= end) {
-                return false;
-            }
-
-            for (int i = start; i < end; i++) {
-                if (!Character.isDigit(clientId.charAt(i))) {
-                    return false;
-                }
-            }
-
-            return true;
         }
 
         /**

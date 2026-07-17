@@ -30,9 +30,8 @@ import org.glassfish.mojarra.util.ComponentStruct;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests {@link StateContext#pruneDynamicActions(List)}: dynamic add/remove actions are recorded append-only per
- * event and collapsed once here, so the per-client-id net effect and the first-occurrence ordering must match what
- * the former per-event prune produced.
+ * Tests the static helpers of {@link StateContext}: {@link StateContext#pruneDynamicActions(List)} and
+ * {@link StateContext#stripIterationIndex(char, String)}.
  */
 class StateContextTest {
 
@@ -117,6 +116,40 @@ class StateContextTest {
     private static void assertNet(List<ComponentStruct> raw, String... expected) {
         List<ComponentStruct> pruned = StateContext.pruneDynamicActions(raw);
         assertEquals(List.of(expected), pruned.stream().map(s -> s.getAction() + ":" + s.getClientId()).collect(toList()));
+    }
+
+    @Test
+    void stripIterationIndexRemovesRowScopedSegments() {
+        // The bug: an add recorded inside a row carries the row index.
+        assertEquals("form:table:group", StateContext.stripIterationIndex(':', "form:table:1:group"));
+        assertEquals("form:table:group", StateContext.stripIterationIndex(':', "form:table:0:group"));
+        assertEquals("form:table:group", StateContext.stripIterationIndex(':', "form:table:10:group"));
+        assertEquals("form:table:group:added0", StateContext.stripIterationIndex(':', "form:table:1:group:added0"));
+        // Nested tables contribute one index each.
+        assertEquals("form:outer:inner:input", StateContext.stripIterationIndex(':', "form:outer:3:inner:12:input"));
+        // Leading and trailing indices: the latter must not leave a dangling separator.
+        assertEquals("button", StateContext.stripIterationIndex(':', "3:button"));
+        assertEquals("form:table", StateContext.stripIterationIndex(':', "form:table:1"));
+    }
+
+    @Test
+    void stripIterationIndexLeavesComponentIdsAlone() {
+        // A component id can never be an iteration index: UIComponent.setId requires a leading letter or underscore.
+        assertEquals("form:_1:group", StateContext.stripIterationIndex(':', "form:_1:group"));
+        assertEquals("form:a1:group", StateContext.stripIterationIndex(':', "form:a1:group"));
+    }
+
+    @Test
+    void stripIterationIndexReturnsSameInstanceWhenNothingToStrip() {
+        // No allocation and no copy for the common client id which carries no iteration index.
+        String clientId = "form:group";
+        assertSame(clientId, StateContext.stripIterationIndex(':', clientId));
+        assertSame("", StateContext.stripIterationIndex(':', ""));
+    }
+
+    @Test
+    void stripIterationIndexHonorsSeparatorChar() {
+        assertEquals("form_table_group", StateContext.stripIterationIndex('_', "form_table_1_group"));
     }
 
     private static List<ComponentStruct> actions(ComponentStruct... structs) {
