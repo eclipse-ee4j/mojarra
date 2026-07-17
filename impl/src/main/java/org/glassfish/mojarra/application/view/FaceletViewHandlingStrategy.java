@@ -70,6 +70,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
@@ -178,6 +179,9 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     private Map<String, List<String>> contractMappings;
 
     private static final String NONCE_EXPRESSION = "#{nonce}";
+
+    private static final Set<VisitHint> SKIP_ITERATION_HINT = EnumSet.of(VisitHint.SKIP_ITERATION);
+
     private String cspHeader;
     private boolean dynamicCspHeader;
 
@@ -1747,12 +1751,27 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * dynamically added component nested under another) resolves against the live tree rather than restoring a
      * duplicate.
      *
+     * <p>
+     * The visit skips iteration, as the same lookup in {@link FaceletPartialStateManagementStrategy} always has.
+     * Iterating is not free of consequence: it sets the row index on every iterating component in the view, which a
+     * component can act on -- a data table backed by a lazily loaded model fetches a page of data per iteration --
+     * and replay must not provoke that merely to find components by client id.
+     * </p>
+     *
+     * <p>
+     * The index therefore holds no row-scoped client id, and an action recorded against one (an add performed while
+     * a row index was set) does not resolve here. That costs nothing: a component inside a row is a single instance
+     * shared by every row, so such an action denotes no position the index is missing, and the request which
+     * recorded it has the component attached already. Later requests never see it either way, as
+     * {@link FaceletPartialStateManagementStrategy} resolves against an equally row-free index when restoring.
+     * </p>
+     *
      * @param context the Faces context.
      * @param root the subtree to index.
      * @param index the index to populate.
      */
     private void indexSubtree(FacesContext context, UIComponent root, Map<String, UIComponent> index) {
-        VisitContext visitContext = VisitContext.createVisitContext(context);
+        VisitContext visitContext = VisitContext.createVisitContext(context, null, SKIP_ITERATION_HINT);
         root.visitTree(visitContext, (visitContext1, component) -> {
             index.put(component.getClientId(visitContext1.getFacesContext()), component);
             return VisitResult.ACCEPT;
@@ -1925,7 +1944,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             return false;
         }
         boolean[] found = { false };
-        VisitContext visitContext = VisitContext.createVisitContext(context, null, EnumSet.of(VisitHint.SKIP_ITERATION));
+        VisitContext visitContext = VisitContext.createVisitContext(context, null, SKIP_ITERATION_HINT);
         viewRoot.visitTree(visitContext, (vc, target) -> {
             if (target instanceof UIForm) {
                 found[0] = true;
