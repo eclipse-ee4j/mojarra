@@ -1060,7 +1060,10 @@ public class ExternalContextImpl extends ExternalContext {
         // covers output written after renderView -- e.g. by PostRenderViewEvent listeners.
         if (responseOutputWriter != null) {
             try {
-                responseOutputWriter.flush();
+                // Deliberately only drain, not flush: flushing the container's writer would commit the response, even
+                // when nothing is left to write, and thereby defeat the error page of a request which is being aborted.
+                // The container flushes its own buffer when the request ends.
+                responseOutputWriter.drain();
             } catch (IOException ignored) {
                 // Best-effort at teardown; a genuine write failure surfaces via the container.
             }
