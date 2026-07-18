@@ -229,10 +229,14 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      */
     private Boolean isNested = null;
 
-    // Per-row transient state of the stateful descendants, keyed by row index. The value array is positionally
-    // aligned to iterationStatefulList, so save/restore index by position instead of recomputing a clientId and
-    // hashing it per descendant per row. Mirrors UIRepeat#childState; saved/restored explicitly in saveState below.
-    private Map<Integer, SavedState[]> childState;
+    // Per-row transient state of the stateful descendants, keyed by this table's own row-scoped clientId. The value
+    // array is positionally aligned to iterationStatefulList, so save/restore index by position instead of recomputing
+    // a clientId and hashing it per descendant per row. The key must be the clientId rather than the bare row index:
+    // a nested table is one component instance reused across the enclosing table's rows, so a row index alone
+    // identifies the same key under every enclosing row and the rows would overwrite each other's state. This
+    // table's own clientId already carries the enclosing rows' indices, and is computed once per row change rather
+    // than once per descendant per row. Mirrors UIRepeat#childState; saved/restored explicitly in saveState below.
+    private Map<String, SavedState[]> childState;
 
     private Map<String, Object> _rowDeltaStates = new HashMap<>();
     private Map<String, Object> _rowTransientStates = new HashMap<>();
@@ -495,8 +499,12 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             return;
         }
 
+        // Resolved once and threaded through: getFacesContext() is a ThreadLocal lookup, and the
+        // per-row save/restore below needs a context for the row state key either way.
+        FacesContext context = getFacesContext();
+
         // Save current state for the previous row index
-        saveDescendantState();
+        saveDescendantState(context);
 
         // Update to the new row index
         // this.rowIndex = rowIndex;
@@ -512,7 +520,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         // Clear or expose the current row data as a request scope attribute
         String var = (String) getStateHelper().get(PropertyKeys.var);
         if (var != null) {
-            Map<String, Object> requestMap = getFacesContext().getExternalContext().getRequestMap();
+            Map<String, Object> requestMap = context.getExternalContext().getRequestMap();
             if (rowIndex == -1) {
                 oldVar = requestMap.remove(var);
             } else if (isRowAvailable()) {
@@ -527,7 +535,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
 
         // Reset current state information for the new row index
-        restoreDescendantState();
+        restoreDescendantState(context);
 
         // Iteration ended: clear the per-iteration stateful-descendants cache so the next
         // iteration re-evaluates the tree shape (children can change between iterations).
@@ -1667,7 +1675,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         } else {
             _rowDeltaStates = (Map<String, Object>) restoredRowStates;
         }
-        childState = (Map<Integer, SavedState[]>) values[2];
+        childState = (Map<String, SavedState[]>) values[2];
     }
 
     private void resetClientIds(UIComponent component) {
@@ -2153,7 +2161,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * Restore state information for all descendant components, as described for <code>setRowIndex()</code>.
      * </p>
      */
-    private void restoreDescendantState() {
+    private void restoreDescendantState(FacesContext context) {
 
         // The clientId reset must run for every descendant (not just the stateful ones): each row
         // needs a row-specific clientId (e.g. data:N:foo), else rows render duplicate id="...". The
@@ -2169,7 +2177,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
         // Positional restore: index this row's saved-state array rather than rebuilding/hashing a clientId per
         // child. A null array (row never saved) or short array (tree shape changed) falls back to a reset per slot.
-        SavedState[] rowState = childState == null ? null : childState.get(getRowIndex());
+        SavedState[] rowState = childState == null ? null : childState.get(getRowStateKey(context));
         for (int i = 0; i < count; i++) {
             SavedState state = rowState != null && i < rowState.length ? rowState[i] : null;
             restoreComponentState(iterationStatefulList.get(i), state);
@@ -2207,7 +2215,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * Save state information for all descendant components, as described for <code>setRowIndex()</code>.
      * </p>
      */
-    private void saveDescendantState() {
+    private void saveDescendantState(FacesContext context) {
         ensureIterationLists();
         int count = iterationStatefulList.size();
         if (count == 0) {
@@ -2216,7 +2224,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
         // Capture per position; only slots with delta state hold a SavedState. Persist the row array only when some
         // slot carries delta, else drop the row entry — keeping the saved state minimal.
-        int row = getRowIndex();
+        String row = getRowStateKey(context);
         SavedState[] rowState = new SavedState[count];
         boolean anyDelta = false;
         for (int i = 0; i < count; i++) {
@@ -2233,11 +2241,24 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
     }
 
-    private Map<Integer, SavedState[]> getChildState() {
+    private Map<String, SavedState[]> getChildState() {
         if (childState == null) {
             childState = new HashMap<>();
         }
         return childState;
+    }
+
+    /**
+     * The key this table's per-row child state is stored under: its own clientId, which carries the row indices of
+     * any enclosing iterating components, plus its current row index. Nesting therefore yields distinct keys where
+     * the bare row index would collide.
+     */
+    private String getRowStateKey(FacesContext context) {
+        // Deliberately super.getClientId(): this table's own getClientId() appends the row index and,
+        // when nested, rebuilds the whole id on every call. The inherited one is cached in the
+        // clientId field and invalidated by the iterationResetList walk whenever an enclosing row
+        // changes, so it yields the enclosing rows' indices without rebuilding them per row.
+        return super.getClientId(context) + NamingContainer.SEPARATOR_CHAR + getRowIndex();
     }
 
     private SavedState captureComponentState(UIComponent component) {
