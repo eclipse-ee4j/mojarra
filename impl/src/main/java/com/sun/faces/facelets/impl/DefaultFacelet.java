@@ -293,7 +293,7 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
                 return;
             }
         } else {
-            if (factory.isContractsResource(new URL(src, relativePath))) {
+            if (factory.isContractsResourceAccessDenied(src, relativePath)) {
                 throw new IOException("Contract resources cannot be accessed this way");
             }
             url = resolveURL(relativePath);
