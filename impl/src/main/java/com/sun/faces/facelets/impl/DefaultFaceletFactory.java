@@ -173,19 +173,39 @@ public class DefaultFaceletFactory {
     }
 
     /**
-     * Returns true if given url is a contracts resource.
-     * @param url source url
-     * @return true if given url is a contracts resource.
+     * Returns true if the facelet at the given source url may not access the given path because it points into the
+     * resource library contracts directory. A contract's own facelets may reference each other; any facelet outside the
+     * contracts directory may not reach into it.
+     * <p>
+     * The path is evaluated as it is declared rather than as it resolves: a template which a contract supplies resolves
+     * to a location inside that contract, which is legitimate and must not be denied. An absolute path is therefore
+     * taken as-is, because resolving it against the source url would discard the webapp base and hide the contracts
+     * directory from the check.
+     *
+     * @param src url of the facelet declaring the path.
+     * @param relativePath path as declared by that facelet.
+     * @return true if that facelet may not access that path.
+     * @throws MalformedURLException if the path cannot be resolved against the source url.
      */
-    public boolean isContractsResource(URL url) {
-        String urlAsString = url.toExternalForm();
-        
-        if (!urlAsString.startsWith(baseUrlAsString)) {
+    public boolean isContractsResourceAccessDenied(URL src, String relativePath) throws MalformedURLException {
+        String targetPath = relativePath.startsWith("/") ? relativePath : getWebappPath(new URL(src, relativePath));
+
+        if (targetPath == null || !manager.isContractsResource(targetPath)) {
             return false;
         }
 
-        String path = urlAsString.substring(baseUrlAsString.length());
-        return manager.isContractsResource(path);
+        String sourcePath = getWebappPath(src);
+        return sourcePath == null || !manager.isContractsResource(sourcePath);
+    }
+
+    /**
+     * Returns the given url as a path relative to the webapp root, or null if it does not reside in the webapp.
+     * @param url url to express relative to the webapp root.
+     * @return the webapp relative path, or null.
+     */
+    private String getWebappPath(URL url) {
+        String urlAsString = url.toExternalForm();
+        return urlAsString.startsWith(baseUrlAsString) ? urlAsString.substring(baseUrlAsString.length()) : null;
     }
 
     /**
