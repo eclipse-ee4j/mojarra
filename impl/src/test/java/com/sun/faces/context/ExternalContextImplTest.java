@@ -16,11 +16,16 @@
 
 package com.sun.faces.context;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -164,6 +169,67 @@ public class ExternalContextImplTest {
         verifySupplier(() -> requestCookieMap.put("foot", "bar"));
         verifyConsumer(m -> requestCookieMap.putAll((Map<? extends String, ? extends Object>) m), new HashMap<>());
         verifySupplier(() -> requestCookieMap.remove("foo"));
+    }
+
+    /**
+     * Test that responseReset discards render output which is still buffered in the response output writer. The writer
+     * is deliberately held on to across the reset, as that is what the response writer created earlier in the request
+     * does.
+     */
+    @Test
+    public void testResponseResetDiscardsBufferedOutput() throws IOException {
+        StringWriter container = new StringWriter();
+        ExternalContextImpl externalContext = createExternalContext(container);
+        Writer writer = externalContext.getResponseOutputWriter();
+
+        writer.write("aborted");
+        externalContext.responseReset();
+        writer.write("replacement");
+        writer.flush();
+
+        assertEquals("replacement", container.toString());
+    }
+
+    /**
+     * Test that responseSendError discards render output which is still buffered in the response output writer.
+     */
+    @Test
+    public void testResponseSendErrorDiscardsBufferedOutput() throws IOException {
+        StringWriter container = new StringWriter();
+        ExternalContextImpl externalContext = createExternalContext(container);
+        Writer writer = externalContext.getResponseOutputWriter();
+
+        writer.write("aborted");
+        externalContext.responseSendError(500, null);
+        writer.flush();
+
+        assertEquals("", container.toString());
+    }
+
+    /**
+     * Test that render output which has already been drained to the container's writer is beyond the reach of
+     * responseReset, which matches the container's own semantics.
+     */
+    @Test
+    public void testResponseResetDoesNotDiscardAlreadyDrainedOutput() throws IOException {
+        StringWriter container = new StringWriter();
+        ExternalContextImpl externalContext = createExternalContext(container);
+        Writer writer = externalContext.getResponseOutputWriter();
+        String drained = "x".repeat(8192);
+
+        writer.write(drained);
+        externalContext.responseReset();
+        writer.flush();
+
+        assertEquals(drained, container.toString());
+    }
+
+    private ExternalContextImpl createExternalContext(StringWriter container) throws IOException {
+        ServletContext servletContext = Mockito.mock(ServletContext.class);
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+        when(response.getWriter()).thenReturn(new PrintWriter(container));
+        return new ExternalContextImpl(servletContext, request, response);
     }
 
     /**
