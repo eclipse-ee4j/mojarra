@@ -17,6 +17,7 @@
 package org.glassfish.mojarra.context;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -222,6 +223,35 @@ public class ExternalContextImplTest {
         writer.flush();
 
         assertEquals(drained, container.toString());
+    }
+
+    /**
+     * Test that release drains buffered render output to the container's writer without flushing it. Flushing would
+     * commit the response, even when nothing is left to write, and thereby defeat the error page of a request which is
+     * being aborted.
+     */
+    @Test
+    public void testReleaseDrainsWithoutFlushing() throws IOException {
+        FlushRecordingWriter container = new FlushRecordingWriter();
+        ExternalContextImpl externalContext = createExternalContext(container);
+
+        externalContext.getResponseOutputWriter().write("rendered");
+        externalContext.release();
+
+        assertEquals("rendered", container.toString());
+        assertFalse(container.flushed, "container writer must not be flushed by release()");
+    }
+
+    private static class FlushRecordingWriter extends StringWriter {
+
+        private boolean flushed;
+
+        @Override
+        public void flush() {
+            flushed = true;
+            super.flush();
+        }
+
     }
 
     private ExternalContextImpl createExternalContext(StringWriter container) throws IOException {
