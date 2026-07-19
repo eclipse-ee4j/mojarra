@@ -155,8 +155,9 @@ Run both sides on the same server profile so the comparison is fair.
 ## Reporting a comparison
 
 `perfreport.py` turns two dumps into a markdown scenario × phase report — a delta
-matrix, a timings matrix (`A / B` average µs per invocation) and a suite total per
-phase:
+matrix and a timings matrix (`A / B` average µs per invocation). Each closes with a
+`TOTAL` row (the suite for that phase) and a `TOTAL` column (one request through
+every phase):
 
 ```
 python3 perfreport.py /tmp/a.txt /tmp/b.txt \
@@ -170,20 +171,26 @@ does not exercise that phase.
 Both dumps must come from the same bench session on the same host. Scoring a run
 against a dump from an earlier session measures the host, not the code.
 
-## Nightly CI report
+`--fail-on-regression` exits non-zero when a phase's suite total is slower in A than
+in B, and `--fail-over PERCENT` widens the tolerance. That is how the CI job gates.
 
-`Jenkinsfile` in this directory is a nightly Eclipse CI pipeline that runs both
+## CI perf report
+
+`Jenkinsfile` in this directory drives the `mojarra-perf-report` Eclipse CI job,
+which runs nightly. It runs both
 arms — freshly built Mojarra, then MyFaces — back-to-back against Tomcat on one agent
 and archives the `perfreport.py` output as `target/perf/report.md`. Nothing picks a
 non-root `Jenkinsfile` up by itself: it needs a Jiro job configured with this path
 as its pipeline script.
 
-It is deliberately reporting-only. CI agents are shared containers with no
-CPU-governor control, so absolute timings drift between nights; only the within-run
-Mojarra/MyFaces ratio carries signal, and even that is too noisy to gate a build on.
-Read the trend, don't assert it.
+The build fails when a phase's suite total is slower than MyFaces. Only suite totals
+gate: CI agents are shared containers with no CPU-governor control, so absolute
+timings drift between nights and per-scenario cells are far too noisy to assert on.
+A single scenario going red is a lead to chase, not a broken build. A phase sitting
+near parity can still flip on agent noise alone — raise `FAIL_OVER` rather than
+letting the job cry wolf.
 
-Tomcat is the only server in the nightly: no application-server provisioning keeps
+Tomcat is the only server: no application-server provisioning keeps
 the wall-clock sane and keeps the measured stack down to Faces + Weld + container.
 `MYFACES_VERSION` defaults to a released version rather than the pom's `-SNAPSHOT`
 default: a moving baseline makes a trend unreadable, because a swing could be MyFaces

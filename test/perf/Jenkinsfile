@@ -1,15 +1,18 @@
 #!/usr/bin/env groovy
 //
-// Nightly Mojarra-vs-MyFaces perf bench (reporting only, no gate).
+// Mojarra-vs-MyFaces perf bench, run nightly as the mojarra-perf-report job.
 //
 // Runs test/perf twice against Tomcat in one job -- once with the freshly built Mojarra impl, once
 // with MyFaces -- and publishes a scenario x phase report. Both arms run back-to-back on the same
 // agent because only the within-run ratio is meaningful: Eclipse CI agents are shared containers
 // with no CPU-governor control, so absolute numbers drift between nights and comparing an arm
-// against a dump from an earlier build measures the host, not the code. For the same reason nothing
-// here asserts a threshold; the report is a trend signal, read by a human.
+// against a dump from an earlier build measures the host, not the code.
 //
-// Tomcat is the only server: it needs no application-server provisioning, which keeps a nightly
+// The build fails when a phase's suite total is slower than MyFaces. Only suite totals gate --
+// per-scenario cells are far noisier, and a single scenario being slower is a lead to chase, not a
+// broken build. FAIL_OVER widens the tolerance if a phase near parity starts flapping.
+//
+// Tomcat is the only server: it needs no application-server provisioning, which keeps a run
 // within a sane wall-clock and keeps the measured stack down to Faces + Weld + the container.
 
 pipeline {
@@ -23,6 +26,7 @@ pipeline {
         string(name: 'MYFACES_VERSION', defaultValue: '4.1.4-SNAPSHOT', description: 'MyFaces version.')
         string(name: 'PERF_WARMUP', defaultValue: '50', description: 'Warmup iterations per scenario.')
         string(name: 'PERF_RUNS', defaultValue: '1000', description: 'Measured iterations per scenario.')
+        string(name: 'FAIL_OVER', defaultValue: '0', description: 'Tolerance for the regression gate, in percent: the build fails when a phase\\'s suite total is slower than MyFaces by more than this. 0 fails on any regression. Raise it if a phase sitting near parity starts flapping on agent noise.')
     }
 
     triggers {
@@ -113,8 +117,9 @@ pipeline {
                             target/perf/mojarra.txt target/perf/myfaces.txt \\
                             --a-label 'Mojarra ${mojarraVersion}' \\
                             --b-label 'MyFaces ${params.MYFACES_VERSION}' \\
-                            --title 'Nightly perf bench #${env.BUILD_NUMBER} — Tomcat' \\
-                            --out target/perf/report.md
+                            --title 'Perf report #${env.BUILD_NUMBER} — Tomcat' \\
+                            --out target/perf/report.md \\
+                            --fail-on-regression --fail-over ${params.FAIL_OVER}
                     """
                     currentBuild.description = "Mojarra ${mojarraVersion} vs MyFaces ${params.MYFACES_VERSION} (warmup=${params.PERF_WARMUP}, runs=${params.PERF_RUNS})"
                 }

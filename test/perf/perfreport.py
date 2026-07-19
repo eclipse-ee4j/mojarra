@@ -18,8 +18,8 @@
 
 Reads two `target/perf-stats-<timestamp>.txt` files as produced by PerfBenchIT
 (columns: scenario phase count total_us avg_us min_us max_us) and emits
-GitHub-flavoured markdown: a scenario x phase delta matrix, a scenario x phase
-timings matrix, and a suite total per phase.
+GitHub-flavoured markdown: a scenario x phase delta matrix and a scenario x phase
+timings matrix, each closed off by suite and per-request totals.
 
 Both dumps must come from the same bench session on the same host; comparing a
 run against a dump from an earlier session measures the host, not the code.
@@ -27,12 +27,14 @@ run against a dump from an earlier session measures the host, not the code.
 Usage:
   perfreport.py <a-stats.txt> <b-stats.txt> [--a-label Mojarra] [--b-label MyFaces]
                 [--title "..."] [--out report.md]
+                [--fail-on-regression [--fail-over PERCENT]]
 
-Delta is per-invocation avg of A vs B; negative means A is faster.
+Delta is per-invocation avg of A vs B; negative means A is faster. With
+--fail-on-regression the exit code is non-zero when any phase's suite total is
+slower in A than in B, which is how CI turns the report into a gate.
 """
 import argparse
 import sys
-from collections import defaultdict
 
 PHASES = ["RESTORE_VIEW", "APPLY_REQUEST_VALUES", "PROCESS_VALIDATIONS",
           "UPDATE_MODEL_VALUES", "INVOKE_APPLICATION", "RENDER_RESPONSE"]
@@ -49,6 +51,9 @@ VARIANT_ORDER = ["readonly", "build", "inputs", "inputs-ajax", "invalid", "inval
 # Under this per-invocation average the phase is too short to time meaningfully; a percentage
 # over it says more about the clock than about the code.
 NOISE_FLOOR_US = 100
+
+# Row and column label for the aggregates closing off each table.
+TOTAL = "TOTAL"
 
 
 def scenario_sort_key(scenario):
@@ -82,9 +87,22 @@ def parse(path):
     return header, rows
 
 
-def avg(rows, key):
-    """Per-invocation average us for one (scenario, phase), or None when not exercised."""
-    total_us, count = rows.get(key, (0, 0))
+def avg(rows, scenario, phase):
+    """
+    Microseconds one request spends in `phase` for `scenario`, or None when not exercised.
+    A None `scenario` aggregates the whole suite, a None `phase` the whole request lifecycle
+    (i.e. summing the per-phase averages rather than averaging them, since a request passes
+    through every phase once).
+    """
+    if phase is None:
+        totals = [avg(rows, scenario, each) for each in PHASES]
+        exercised = [total for total in totals if total is not None]
+        return sum(exercised) if exercised else None
+    total_us = count = 0
+    for (each_scenario, each_phase), (each_total_us, each_count) in rows.items():
+        if each_phase == phase and scenario in (None, each_scenario):
+            total_us += each_total_us
+            count += each_count
     return total_us / count if count else None
 
 
@@ -119,8 +137,30 @@ def table(caption, headers, rows):
 
 
 def phase_table(caption, scenarios, cell):
-    headers = ["scenario"] + [SHORT[phase] for phase in PHASES]
-    return table(caption, headers, [[scenario] + [cell(scenario, phase) for phase in PHASES] for scenario in scenarios])
+    """Scenario rows x phase columns, closed off by a TOTAL row (the suite across scenarios) and a
+    TOTAL column (one request's whole lifecycle for that scenario)."""
+    headers = ["scenario"] + [SHORT[phase] for phase in PHASES] + [TOTAL]
+    rows = [[scenario] + [cell(scenario, phase) for phase in PHASES] + [cell(scenario, None)]
+            for scenario in scenarios]
+    rows.append([TOTAL] + [cell(None, phase) for phase in PHASES] + [cell(None, None)])
+    return table(caption, headers, rows)
+
+
+def suite_regressions(a_rows, b_rows, fail_over):
+    """
+    Phases whose suite total is slower in A than in B by more than `fail_over` percent, as
+    (phase, percent) pairs. Phases too short to time (see NOISE_FLOOR_US) never qualify: a
+    percentage over a sub-100us average says more about the clock than about the code.
+    """
+    regressions = []
+    for phase in PHASES:
+        a_avg, b_avg = avg(a_rows, None, phase), avg(b_rows, None, phase)
+        if a_avg is None or not b_avg or (a_avg < NOISE_FLOOR_US and b_avg < NOISE_FLOOR_US):
+            continue
+        percent = (a_avg - b_avg) / b_avg * 100
+        if percent > fail_over:
+            regressions.append((SHORT[phase], percent))
+    return regressions
 
 
 def main():
@@ -131,49 +171,43 @@ def main():
     parser.add_argument("--b-label", default="B")
     parser.add_argument("--title", default="Perf bench")
     parser.add_argument("--out")
+    parser.add_argument("--fail-on-regression", action="store_true",
+                        help="Exit non-zero when a phase's suite total is slower in A than in B.")
+    parser.add_argument("--fail-over", type=float, default=0.0, metavar="PERCENT",
+                        help="Tolerance for --fail-on-regression: only a suite total slower by more than "
+                             "this many percent fails. Default 0, i.e. any regression fails.")
     args = parser.parse_args()
 
     a_header, a_rows = parse(args.a)
     _, b_rows = parse(args.b)
     scenarios = sorted({s for (s, _) in list(a_rows) + list(b_rows)}, key=scenario_sort_key)
 
-    suite = defaultdict(lambda: [0, 0, 0, 0])  # phase -> [a_total, a_count, b_total, b_count]
-    for (_, phase), (total_us, count) in a_rows.items():
-        suite[phase][0] += total_us
-        suite[phase][1] += count
-    for (_, phase), (total_us, count) in b_rows.items():
-        suite[phase][2] += total_us
-        suite[phase][3] += count
-
     out = [f"# {args.title}", "",
            f"{args.a_label} vs {args.b_label}. {a_header}", "",
            f"Δ = per-invocation average of {args.a_label} against {args.b_label}; "
            f"negative means {args.a_label} is faster. "
            f"`noise` = both sides under {NOISE_FLOOR_US}us per invocation, "
-           "`-` = phase not exercised by that scenario."]
+           f"`-` = phase not exercised by that scenario. {TOTAL} row = the suite, "
+           f"{TOTAL} column = one request through every phase."]
 
     out += phase_table("Δ — scenario × phase", scenarios,
-                       lambda s, p: delta_cell(avg(a_rows, (s, p)), avg(b_rows, (s, p))))
+                       lambda s, p: delta_cell(avg(a_rows, s, p), avg(b_rows, s, p)))
     out += phase_table(f"avg µs per invocation ({args.a_label} / {args.b_label}) — scenario × phase", scenarios,
-                       lambda s, p: time_cell(avg(a_rows, (s, p)), avg(b_rows, (s, p))))
+                       lambda s, p: time_cell(avg(a_rows, s, p), avg(b_rows, s, p)))
 
-    suite_rows = []
-    for phase in PHASES:
-        a_total, a_count, b_total, b_count = suite[phase]
-        a_avg = a_total / a_count if a_count else None
-        b_avg = b_total / b_count if b_count else None
-        suite_rows.append([SHORT[phase],
-                           "-" if a_avg is None else str(round(a_avg)),
-                           "-" if b_avg is None else str(round(b_avg)),
-                           delta_cell(a_avg, b_avg)])
-    out += table("Suite total per phase",
-                 ["phase", f"{args.a_label} µs", f"{args.b_label} µs", "Δ"], suite_rows)
+    regressions = suite_regressions(a_rows, b_rows, args.fail_over)
+    if regressions:
+        out += ["", f"**{args.a_label} is slower than {args.b_label} on the suite total of "
+                    f"{', '.join(phase for phase, _ in regressions)}.**", ""]
+        out += [f"- {phase}: {percent:+.1f}%" for phase, percent in regressions]
 
     report = "\n".join(out) + "\n"
     if args.out:
         with open(args.out, "w", encoding="utf-8") as file:
             file.write(report)
     print(report)
+    if regressions and args.fail_on_regression:
+        sys.exit(1)
 
 
 if __name__ == "__main__":
