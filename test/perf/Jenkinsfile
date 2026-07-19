@@ -74,7 +74,9 @@ pipeline {
                 // The bench bundles this freshly installed jar into the WAR, so it must be installed
                 // before either arm runs. `clean` is mandatory: a packaged artifact is never built
                 // incrementally.
-                sh "mvn ${env.MVN_EXTRA} -pl impl,test/base -am clean install -DskipTests"
+                // Nothing here is published, so the javadoc and source jars impl/pom.xml attaches are
+                // dead weight on a perf bench.
+                sh "mvn ${env.MVN_EXTRA} -pl impl,test/base -am clean install -DskipTests -Dmaven.javadoc.skip=true -Dsource.skip=true"
                 // Both arms stash their dump here, outside the target/ that the next arm's `clean` wipes.
                 sh 'mkdir -p target/perf'
             }
@@ -102,8 +104,9 @@ pipeline {
             steps {
                 script {
                     // Read the version through a file rather than stdout: a stray Maven warning would
-                    // otherwise end up inside the captured value.
-                    sh "mvn ${env.MVN_EXTRA} -q -f impl/pom.xml ${env.HELP_PLUGIN}:evaluate -Dexpression=project.version -Doutput=target/perf/mojarra.version"
+                    // otherwise end up inside the captured value. The output path must be absolute --
+                    // help:evaluate resolves a relative one against the -f project's basedir, not the CWD.
+                    sh "mvn ${env.MVN_EXTRA} -q -f impl/pom.xml ${env.HELP_PLUGIN}:evaluate -Dexpression=project.version -Doutput=${env.WORKSPACE}/target/perf/mojarra.version"
                     def mojarraVersion = readFile('target/perf/mojarra.version').trim()
                     sh """
                         python3 test/perf/perfreport.py \\
