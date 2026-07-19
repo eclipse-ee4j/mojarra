@@ -26,7 +26,7 @@ pipeline {
         string(name: 'MYFACES_VERSION', defaultValue: '4.1.4-SNAPSHOT', description: 'MyFaces version.')
         string(name: 'PERF_WARMUP', defaultValue: '50', description: 'Warmup iterations per scenario.')
         string(name: 'PERF_RUNS', defaultValue: '1000', description: 'Measured iterations per scenario.')
-        string(name: 'FAIL_OVER', defaultValue: '0', description: 'Tolerance for the regression gate, in percent: the build fails when a phase\\'s suite total is slower than MyFaces by more than this. 0 fails on any regression. Raise it if a phase sitting near parity starts flapping on agent noise.')
+        string(name: 'FAIL_OVER', defaultValue: '0', description: 'Tolerance for the regression gate, in percent: the build fails when the suite total of a phase is slower than MyFaces by more than this. 0 fails on any regression. Raise it if a phase sitting near parity starts flapping on agent noise.')
     }
 
     triggers {
