@@ -165,8 +165,8 @@ class PerfBenchIT extends BaseIT {
     private static final Pattern VIEW_STATE = Pattern.compile(
             "name=\"jakarta\\.faces\\.ViewState\"[^>]*value=\"([^\"]+)\"" +
             "|value=\"([^\"]+)\"[^>]*name=\"jakarta\\.faces\\.ViewState\"");
-    private static final Pattern AJAX_VIEW_STATE = Pattern.compile(
-            "<update\\s+id=\"[^\"]*ViewState[^\"]*\"><!\\[CDATA\\[(.*?)\\]\\]></update>", Pattern.DOTALL);
+    private static final Pattern AJAX_UPDATE = Pattern.compile(
+            "<update\\s+id=\"([^\"]+)\"><!\\[CDATA\\[(.*?)\\]\\]></update>", Pattern.DOTALL);
     private static final Pattern INPUT_TAG = Pattern.compile("<input\\b([^>]*)/?>", Pattern.CASE_INSENSITIVE);
     private static final Pattern TEXTAREA_TAG = Pattern.compile("<textarea\\b([^>]*)>(.*?)</textarea>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     private static final Pattern SELECT_TAG = Pattern.compile("<select\\b([^>]*)>(.*?)</select>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
@@ -291,6 +291,14 @@ class PerfBenchIT extends BaseIT {
      */
     private static void injectInvalidValues(FormSpec form) {
         if (form != null) {
+            form.invalid = true;
+            reapplyInvalidValues(form);
+        }
+    }
+
+    /** Kept separate from {@link #injectInvalidValues} so a re-harvest can restore the unhappy path. */
+    private static void reapplyInvalidValues(FormSpec form) {
+        if (form.invalid) {
             form.fields.replaceAll((name, value) ->
                       name.endsWith(":name")     ? "forbidden"
                     : name.endsWith(":quantity") ? "not-a-number"
@@ -311,28 +319,71 @@ class PerfBenchIT extends BaseIT {
         if (vs.find()) {
             form.fields.put("jakarta.faces.ViewState", vs.group(1) != null ? vs.group(1) : vs.group(2));
         }
+        if (drifted(form, body)) {
+            replaceFields(form, parseForm(body, form.action, false));
+        }
     }
 
     /**
-     * Re-GET the scenario page to install a live ViewState into the form: in the block-wise measurement loop a
-     * form's stored ViewState goes stale (and, under server-side state saving, gets evicted) while the previous
-     * scenario's block runs, so the block's first post would otherwise submit an expired ViewState. Only the
-     * ViewState is replaced; the form's input values (including injected invalids) are left intact.
+     * Re-GET the scenario page to install a live view into the form: in the block-wise measurement loop a form's
+     * stored ViewState goes stale (and, under server-side state saving, gets evicted) while the previous
+     * scenario's block runs, so the block's first post would otherwise submit an expired ViewState. The field
+     * names are re-read from the same response, since the fresh view may name its components differently.
      */
     private void refreshViewState(HttpClient client, String scenario, FormSpec form) throws IOException, InterruptedException {
         String html = get(client, scenario + ".xhtml");
-        Matcher vs = VIEW_STATE.matcher(html);
-        if (vs.find()) {
-            form.fields.put("jakarta.faces.ViewState", vs.group(1) != null ? vs.group(1) : vs.group(2));
+        replaceFields(form, parseForm(html, form.action, isAjax(form)));
+    }
+
+    /**
+     * Walks the partial response once: the ViewState update refreshes the token, and the remaining updates carry
+     * the re-rendered markup the field names are re-read from when the ids drifted. Every {@code <update>} covers
+     * one container; across this suite those containers hold all of their form's inputs (each scenario renders
+     * either {@code @form} or the container wrapping every row), so together they are a complete source of fresh
+     * names. The {@code jakarta.faces.*} markers and the source button are kept as-is: they are generated rather
+     * than harvested, and the button sits outside the re-rendered container when the render target is not @form.
+     */
+    private void ajaxPostAndRefresh(HttpClient client, FormSpec form) throws IOException, InterruptedException {
+        String responseBody = ajaxPost(client, form);
+        boolean drifted = drifted(form, responseBody);
+        Map<String, String> fresh = new LinkedHashMap<>();
+        for (Matcher update = AJAX_UPDATE.matcher(responseBody); update.find(); ) {
+            if (update.group(1).contains("ViewState")) {
+                form.fields.put("jakarta.faces.ViewState", update.group(2));
+            }
+            else if (drifted) {
+                collectFields(update.group(2), fresh);
+            }
+        }
+        if (!fresh.isEmpty()) {
+            String source = form.fields.get("jakarta.faces.source");
+            form.fields.keySet().removeIf(name -> !name.startsWith("jakarta.faces.") && !name.equals(source));
+            form.fields.putAll(fresh);
+            form.probe = probeOf(form.fields, source);
+            reapplyInvalidValues(form);
         }
     }
 
-    private void ajaxPostAndRefresh(HttpClient client, FormSpec form) throws IOException, InterruptedException {
-        String responseBody = ajaxPost(client, form);
-        Matcher vs = AJAX_VIEW_STATE.matcher(responseBody);
-        if (vs.find()) {
-            form.fields.put("jakarta.faces.ViewState", vs.group(1));
-        }
+    /**
+     * Whether the component ids moved under us: an impl is free to hand a component a different auto-generated id
+     * on a later view build, and the field names harvested from an earlier response then address nothing. Faces
+     * silently ignores unmatched request parameters, so the postback would decode, convert, validate and update
+     * NOTHING while still reporting healthy per-phase timings -- an invisibly empty benchmark. The probe field is
+     * cheap to look for, so the common case (stable ids, nothing to do) costs one substring search per request.
+     */
+    private static boolean drifted(FormSpec form, String responseBody) {
+        return form.probe != null && !responseBody.contains(form.probe);
+    }
+
+    private static void replaceFields(FormSpec form, FormSpec fresh) {
+        form.fields.clear();
+        form.fields.putAll(fresh.fields);
+        form.probe = fresh.probe;
+        reapplyInvalidValues(form);
+    }
+
+    private static boolean isAjax(FormSpec form) {
+        return form.fields.containsKey("jakarta.faces.partial.ajax");
     }
 
     private String get(HttpClient client, String path) throws IOException, InterruptedException {
@@ -394,47 +445,9 @@ class PerfBenchIT extends BaseIT {
      */
     private static FormSpec parseForm(String html, String action, boolean ajax) {
         Map<String, String> fields = new LinkedHashMap<>();
-        Matcher m = INPUT_TAG.matcher(html);
-        boolean submitSeen = false;
-        String submitName = null;
-        String submitAttrs = null;
-        while (m.find()) {
-            String attrs = m.group(1);
-            String name = attribute(attrs, "name");
-            if (name == null) {
-                continue;
-            }
-            String type = attribute(attrs, "type");
-            String value = attribute(attrs, "value");
-            if ("checkbox".equalsIgnoreCase(type) || "radio".equalsIgnoreCase(type)) {
-                if (attrs.contains("checked")) {
-                    fields.put(name, value == null ? "on" : value);
-                }
-                continue;
-            }
-            if ("submit".equalsIgnoreCase(type)) {
-                if (!submitSeen) {
-                    fields.put(name, value == null ? "" : value);
-                    submitSeen = true;
-                    submitName = name;
-                    submitAttrs = attrs;
-                }
-                continue;
-            }
-            fields.put(name, value == null ? "" : value);
-        }
-        for (Matcher ta = TEXTAREA_TAG.matcher(html); ta.find(); ) {
-            String name = attribute(ta.group(1), "name");
-            if (name != null) {
-                fields.put(name, ta.group(2).trim());
-            }
-        }
-        for (Matcher se = SELECT_TAG.matcher(html); se.find(); ) {
-            String name = attribute(se.group(1), "name");
-            if (name != null) {
-                fields.put(name, selectedOptionValue(se.group(2)));
-            }
-        }
+        Submit submit = collectFields(html, fields);
+        String submitName = submit == null ? null : submit.name();
+        String submitAttrs = submit == null ? null : submit.attrs();
         Matcher vs = VIEW_STATE.matcher(html);
         if (vs.find()) {
             String v = vs.group(1) != null ? vs.group(1) : vs.group(2);
@@ -475,7 +488,62 @@ class PerfBenchIT extends BaseIT {
             fields.put("jakarta.faces.partial.execute", execute);
             fields.put("jakarta.faces.partial.render", resolveAjaxTargets(renderRaw, submitName, formId));
         }
-        return new FormSpec(action, fields);
+        FormSpec form = new FormSpec(action, fields);
+        form.probe = probeOf(fields, submitName);
+        return form;
+    }
+
+    /**
+     * Scans {@code html} for every named &lt;input&gt; (hidden, text, submit, etc.), &lt;textarea&gt; (its text
+     * content) and &lt;select&gt; (its selected, else first, option) into {@code fields}, and returns the first
+     * submit input found. Shared by the initial full-page parse and the re-harvest of an ajax partial response.
+     */
+    private static Submit collectFields(String html, Map<String, String> fields) {
+        Submit submit = null;
+        for (Matcher m = INPUT_TAG.matcher(html); m.find(); ) {
+            String attrs = m.group(1);
+            String name = attribute(attrs, "name");
+            if (name == null) {
+                continue;
+            }
+            String type = attribute(attrs, "type");
+            String value = attribute(attrs, "value");
+            if ("checkbox".equalsIgnoreCase(type) || "radio".equalsIgnoreCase(type)) {
+                if (attrs.contains("checked")) {
+                    fields.put(name, value == null ? "on" : value);
+                }
+                continue;
+            }
+            if ("submit".equalsIgnoreCase(type)) {
+                if (submit == null) {
+                    fields.put(name, value == null ? "" : value);
+                    submit = new Submit(name, attrs);
+                }
+                continue;
+            }
+            fields.put(name, value == null ? "" : value);
+        }
+        for (Matcher ta = TEXTAREA_TAG.matcher(html); ta.find(); ) {
+            String name = attribute(ta.group(1), "name");
+            if (name != null) {
+                fields.put(name, ta.group(2).trim());
+            }
+        }
+        for (Matcher se = SELECT_TAG.matcher(html); se.find(); ) {
+            String name = attribute(se.group(1), "name");
+            if (name != null) {
+                fields.put(name, selectedOptionValue(se.group(2)));
+            }
+        }
+        return submit;
+    }
+
+    /** First field name that can drift: not a {@code jakarta.faces.*} marker and not the stable submit button. */
+    private static String probeOf(Map<String, String> fields, String submitName) {
+        return fields.keySet().stream()
+                .filter(name -> !name.startsWith("jakarta.faces.") && !name.equals(submitName))
+                .findFirst()
+                .orElse(null);
     }
 
     /**
@@ -546,9 +614,21 @@ class PerfBenchIT extends BaseIT {
     private static final class FormSpec {
         final String action;
         final Map<String, String> fields;
+        /** Re-apply the unhappy-path values after a re-harvest; see {@link #injectInvalidValues}. */
+        boolean invalid;
+        /**
+         * A field name whose absence from a response means the component ids drifted, so the field names
+         * this form submits went stale. Deliberately an auto-generated id (never the explicitly-id'd
+         * submit button, which is stable by construction), because those are the ones that drift.
+         */
+        String probe;
         FormSpec(String action, Map<String, String> fields) {
             this.action = action;
             this.fields = fields;
         }
+    }
+
+    /** First named submit input of a parsed form, carrying the attributes its ajax markers are derived from. */
+    private record Submit(String name, String attrs) {
     }
 }
