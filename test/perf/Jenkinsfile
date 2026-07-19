@@ -4,10 +4,10 @@
 //
 // Runs test/perf twice against Tomcat in one job -- once with the freshly built Mojarra impl, once
 // with MyFaces -- and publishes a scenario x phase report. Both arms run back-to-back on the same
-// pod because only the within-run ratio is meaningful: Eclipse CI agents are shared containers with
-// no CPU-governor control, so absolute numbers drift between nights and comparing an arm against a
-// dump from an earlier build measures the host, not the code. For the same reason nothing here
-// asserts a threshold; the report is a trend signal, read by a human.
+// agent because only the within-run ratio is meaningful: Eclipse CI agents are shared containers
+// with no CPU-governor control, so absolute numbers drift between nights and comparing an arm
+// against a dump from an earlier build measures the host, not the code. For the same reason nothing
+// here asserts a threshold; the report is a trend signal, read by a human.
 //
 // Tomcat is the only server: it needs no application-server provisioning, which keeps a nightly
 // within a sane wall-clock and keeps the measured stack down to Faces + Weld + the container.
@@ -15,62 +15,9 @@
 pipeline {
 
     // The bench drives the server over HttpClient (PerfBenchIT overrides BaseIT's Selenium setup),
-    // so the plain Eclipse CI agent image suffices -- no Chrome layer needed. Sizing matches the
-    // Jiro namespace quota; raising it requires a helpdesk request.
-    agent {
-        kubernetes {
-            defaultContainer 'jnlp'
-            yaml """
-apiVersion: v1
-kind: Pod
-spec:
-  containers:
-    - name: jnlp
-      image: 'eclipsecbijenkins/jiro-agent-basic-ubuntu:latest'
-      tty: true
-      env:
-        - name: HOME
-          value: /home/jenkins
-        # The agent image sets JAVA_TOOL_OPTIONS globally with OpenJ9-only flags. They are inert on
-        # a Temurin JDK but would land in the measured JVM's command line; empty it for the pod.
-        - name: JAVA_TOOL_OPTIONS
-          value: ""
-      resources:
-        limits:
-          memory: 8Gi
-          cpu: '2'
-        requests:
-          memory: 8Gi
-          cpu: '2'
-      volumeMounts:
-        - name: jenkins-home
-          mountPath: /home/jenkins
-          readOnly: false
-        - name: settings-xml
-          mountPath: /home/jenkins/.m2/settings.xml
-          subPath: settings.xml
-          readOnly: true
-        - name: m2-repo
-          mountPath: /home/jenkins/.m2/repository
-        - name: tools
-          mountPath: /opt/tools
-  volumes:
-    - name: jenkins-home
-      emptyDir: {}
-    - name: settings-xml
-      secret:
-        secretName: m2-secret-dir
-        items:
-          - key: settings.xml
-            path: settings.xml
-    - name: m2-repo
-      emptyDir: {}
-    - name: tools
-      persistentVolumeClaim:
-        claimName: tools-claim-jiro-mojarra
-"""
-        }
-    }
+    // so the default Jiro agent suffices -- no Chrome layer, hence no custom pod template. That
+    // agent grants 2 CPU / 4Gi, which covers MAVEN_OPTS plus the managed Tomcat's heap.
+    agent any
 
     parameters {
         string(name: 'MYFACES_VERSION', defaultValue: '4.1.4-SNAPSHOT', description: 'MyFaces version.')
@@ -86,19 +33,21 @@ spec:
         buildDiscarder(logRotator(numToKeepStr: '60', artifactNumToKeepStr: '60'))
         timeout(time: 1, unit: 'HOURS')
         disableConcurrentBuilds()
+        timestamps()
     }
 
     environment {
         // JDK install root layout on Eclipse CI: /opt/tools/java/<distro>/jdk-<N>/latest.
-        JAVA_HOME = '/opt/tools/java/temurin/jdk-21/latest'
-        MVN_HOME  = '/opt/tools/apache-maven/latest'
-        PATH      = "${JAVA_HOME}/bin:${MVN_HOME}/bin:${PATH}"
-        MAVEN_OPTS = '-Xmx2g'
-        // -gs merges with the pod's mounted user settings.xml rather than replacing it, so the Apache
+        TOOLS_PREFIX = '/opt/tools'
+        JAVA_HOME    = "${TOOLS_PREFIX}/java/temurin/jdk-21/latest"
+        MVN_HOME     = "${TOOLS_PREFIX}/apache-maven/latest"
+        PATH         = "${MVN_HOME}/bin:${JAVA_HOME}/bin:${PATH}"
+        MAVEN_OPTS   = '-Xmx2g'
+        HELP_PLUGIN  = 'org.apache.maven.plugins:maven-help-plugin:3.5.1'
+        // -gs merges with the agent's own settings.xml rather than replacing it, so the Apache
         // snapshot repo can be added for a -SNAPSHOT MYFACES_VERSION without touching test/pom.xml.
-        MVN_EXTRA = "--batch-mode --no-transfer-progress -gs ${env.WORKSPACE}/apache-snapshots-settings.xml"
-        HELP_PLUGIN = 'org.apache.maven.plugins:maven-help-plugin:3.5.1'
-        PERF_FLAGS = "-Dperf=true -Dperf.warmup=${params.PERF_WARMUP} -Dperf.runs=${params.PERF_RUNS}"
+        MVN_EXTRA    = "--batch-mode --no-transfer-progress -gs ${env.WORKSPACE}/apache-snapshots-settings.xml"
+        PERF_FLAGS   = "-Dperf=true -Dperf.warmup=${params.PERF_WARMUP} -Dperf.runs=${params.PERF_RUNS}"
     }
 
     stages {
@@ -172,7 +121,13 @@ spec:
 
     post {
         always {
-            archiveArtifacts artifacts: 'target/perf/*', allowEmptyArchive: true
+            // Guarded: with no workspace (agent never allocated) archiveArtifacts throws a missing
+            // FilePath context, which would bury the actual failure at the bottom of the log.
+            script {
+                if (env.WORKSPACE) {
+                    archiveArtifacts artifacts: 'target/perf/*', allowEmptyArchive: true
+                }
+            }
         }
     }
 }

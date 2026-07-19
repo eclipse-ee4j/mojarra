@@ -173,7 +173,7 @@ against a dump from an earlier session measures the host, not the code.
 ## Nightly CI report
 
 `Jenkinsfile` in this directory is a nightly Eclipse CI pipeline that runs both
-arms — freshly built Mojarra, then MyFaces — back-to-back against Tomcat on one pod
+arms — freshly built Mojarra, then MyFaces — back-to-back against Tomcat on one agent
 and archives the `perfreport.py` output as `target/perf/report.md`. Nothing picks a
 non-root `Jenkinsfile` up by itself: it needs a Jiro job configured with this path
 as its pipeline script.
@@ -190,7 +190,7 @@ default: a moving baseline makes a trend unreadable, because a swing could be My
 trunk rather than Mojarra, and Apache purges old snapshot timestamps so an old build's
 numbers can never be reproduced. A `-SNAPSHOT` value does work — the pipeline passes
 Maven a `-gs` settings file adding the Apache snapshot repo, which merges with the
-pod's mounted user settings instead of replacing it — but prefer a release.
+agent's own settings instead of replacing it — but prefer a release.
 
 ## Tuning state saving
 
