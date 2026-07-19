@@ -152,6 +152,46 @@ diff /tmp/a.txt /tmp/b.txt
 
 Run both sides on the same server profile so the comparison is fair.
 
+## Reporting a comparison
+
+`perfreport.py` turns two dumps into a markdown scenario × phase report — a delta
+matrix, a timings matrix (`A / B` average µs per invocation) and a suite total per
+phase:
+
+```
+python3 perfreport.py /tmp/a.txt /tmp/b.txt \
+    --a-label Mojarra --b-label MyFaces --title "Tomcat" --out /tmp/report.md
+```
+
+Negative delta means A is faster. A phase whose per-invocation average is under
+100µs on both sides prints `noise` instead of a percentage; `-` means the scenario
+does not exercise that phase.
+
+Both dumps must come from the same bench session on the same host. Scoring a run
+against a dump from an earlier session measures the host, not the code.
+
+## Nightly CI report
+
+`Jenkinsfile` in this directory is a nightly Eclipse CI pipeline that runs both
+arms — freshly built Mojarra, then MyFaces — back-to-back against Tomcat on one pod
+and archives the `perfreport.py` output as `target/perf/report.md`. Nothing picks a
+non-root `Jenkinsfile` up by itself: it needs a Jiro job configured with this path
+as its pipeline script.
+
+It is deliberately reporting-only. CI agents are shared containers with no
+CPU-governor control, so absolute timings drift between nights; only the within-run
+Mojarra/MyFaces ratio carries signal, and even that is too noisy to gate a build on.
+Read the trend, don't assert it.
+
+Tomcat is the only server in the nightly: no application-server provisioning keeps
+the wall-clock sane and keeps the measured stack down to Faces + Weld + container.
+`MYFACES_VERSION` defaults to a released version rather than the pom's `-SNAPSHOT`
+default: a moving baseline makes a trend unreadable, because a swing could be MyFaces
+trunk rather than Mojarra, and Apache purges old snapshot timestamps so an old build's
+numbers can never be reproduced. A `-SNAPSHOT` value does work — the pipeline passes
+Maven a `-gs` settings file adding the Apache snapshot repo, which merges with the
+pod's mounted user settings instead of replacing it — but prefer a release.
+
 ## Tuning state saving
 
 The state-saving context parameters are filtered into the WAR's `web.xml`
