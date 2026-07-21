@@ -18,8 +18,11 @@ package org.glassfish.mojarra.renderkit.html_basic;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.component.html.HtmlPanelGroup;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
@@ -125,7 +128,26 @@ public class GroupRenderer extends HtmlBasicRenderer {
      */
     private boolean divOrSpan(UIComponent component, String styleClass) {
 
-        return shouldWriteIdAttribute(component) || styleClass != null || RenderKitUtils.getAttributeIfSet(component, "style") != null;
+        return shouldWriteIdAttribute(component) || styleClass != null || hasRenderablePassThroughAttribute(component) || hasClientBehavior(component);
+
+    }
+
+    private static boolean hasRenderablePassThroughAttribute(UIComponent component) {
+
+        List<String> setAttributes = RenderKitUtils.getAttributesThatAreSet(component);
+        for (Attribute attribute : ATTRIBUTES) {
+            if (RenderKitUtils.getAttributeIfSet(component, setAttributes, attribute.getName()) != null) {
+                return true;
+            }
+        }
+        Map<String, Object> passThroughAttributes = component.getPassThroughAttributes(false);
+        return passThroughAttributes != null && !passThroughAttributes.isEmpty();
+
+    }
+
+    private static boolean hasClientBehavior(UIComponent component) {
+
+        return component instanceof ClientBehaviorHolder holder && !holder.getClientBehaviors().isEmpty();
 
     }
 
