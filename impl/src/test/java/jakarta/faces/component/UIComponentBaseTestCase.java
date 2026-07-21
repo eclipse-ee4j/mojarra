@@ -447,6 +447,39 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         assertEquals(Arrays.asList("attr2"), c.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet"));
     }
 
+    /**
+     * The {@code attributesThatAreSet} delta list only carries entries added after
+     * {@code markInitialState()}. On restore it must therefore be <em>merged</em> onto the list that
+     * {@code buildView} already rebuilt for this request, not replace it. Replacing dropped every
+     * attribute the tag handlers re-registered before the delta was applied &mdash; e.g. a
+     * {@code styleClass} rendered on the first postback but gone from the second onward (issue #5880),
+     * triggered by any {@code setValueExpression(name, ve)} with a non-literal {@code ve} on a
+     * restored component, such as from a {@code PostRestoreStateEvent} listener.
+     */
+    @Test
+    public void testAttributesThatAreSetMergeOnRestore() throws Exception {
+        request.setAttribute("foo", "bar");
+
+        // buildView registers a tag attribute; a post-restore binding then adds a non-literal one.
+        ComponentTestImpl c = new ComponentTestImpl();
+        c.getAttributes().put("styleClass", "foo bar");
+        c.markInitialState();
+        c.setValueExpression("label", application.getExpressionFactory().createValueExpression(facesContext.getELContext(), "#{foo}", String.class));
+        assertEquals(Arrays.asList("styleClass", "label"), c.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet"));
+
+        Object state = c.saveState(facesContext); // delta carries only [label]
+
+        // Next postback: buildView rebuilds styleClass before the delta is restored on top of it.
+        c = new ComponentTestImpl();
+        c.getAttributes().put("styleClass", "foo bar");
+        c.markInitialState();
+        c.pushComponentToEL(facesContext, c);
+        c.restoreState(facesContext, state);
+        c.popComponentFromEL(facesContext);
+
+        assertEquals(Arrays.asList("styleClass", "label"), c.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet"));
+    }
+
     @Test
     public void testValueExpressions() throws Exception {
 
