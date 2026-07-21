@@ -145,6 +145,53 @@ diff /tmp/a.txt /tmp/b.txt
 If you already have two impl versions in `~/.m2`, swap with `-Dmojarra.version=<v>`
 between runs instead and skip the rebuilds.
 
+## Reporting a comparison
+
+`perfreport.py` turns two dumps into a markdown scenario × phase report — a delta
+matrix and a timings matrix (`A / B` average µs per invocation). Each closes with a
+`TOTAL` row (the suite for that phase) and a `TOTAL` column (one request through
+every phase):
+
+```
+python3 perfreport.py /tmp/a.txt /tmp/b.txt \
+    --a-label Mojarra --b-label MyFaces --title "Tomcat" --out /tmp/report.md
+```
+
+Negative delta means A is faster. A phase whose per-invocation average is under
+100µs on both sides prints `noise` instead of a percentage; `-` means the scenario
+does not exercise that phase.
+
+Both dumps must come from the same bench session on the same host. Scoring a run
+against a dump from an earlier session measures the host, not the code.
+
+`--fail-on-regression` exits non-zero when a phase's suite total is slower in A than
+in B, and `--fail-over PERCENT` widens the tolerance. That is how the CI job gates.
+
+## CI perf report
+
+`Jenkinsfile` in this directory drives the `mojarra-perf-report` Eclipse CI job,
+which runs nightly. It runs both
+arms — freshly built Mojarra, then MyFaces — back-to-back against Tomcat on one agent
+and archives the `perfreport.py` output as `target/perf/report.md`. Nothing picks a
+non-root `Jenkinsfile` up by itself: it needs a Jiro job configured with this path
+as its pipeline script.
+
+The build fails when a phase's suite total is slower than MyFaces. Only suite totals
+gate: CI agents are shared containers with no CPU-governor control, so absolute
+timings drift between nights and per-scenario cells are far too noisy to assert on.
+A single scenario going red is a lead to chase, not a broken build. A phase sitting
+near parity can still flip on agent noise alone — raise `FAIL_OVER` rather than
+letting the job cry wolf.
+
+Tomcat is the only server: no application-server provisioning keeps
+the wall-clock sane and keeps the measured stack down to Faces + Weld + container.
+`MYFACES_VERSION` defaults to a released version rather than the pom's `-SNAPSHOT`
+default: a moving baseline makes a trend unreadable, because a swing could be MyFaces
+trunk rather than Mojarra, and Apache purges old snapshot timestamps so an old build's
+numbers can never be reproduced. A `-SNAPSHOT` value does work — the pipeline passes
+Maven a `-gs` settings file adding the Apache snapshot repo, which merges with the
+agent's own settings instead of replacing it — but prefer a release.
+
 ## Tuning state saving
 
 The state-saving context parameters are filtered into the WAR's `web.xml`

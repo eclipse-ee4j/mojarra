@@ -1,0 +1,141 @@
+#!/usr/bin/env groovy
+//
+// Mojarra-vs-MyFaces perf bench, run nightly as the mojarra-perf-report job.
+//
+// Runs test/perf twice against Tomcat in one job -- once with the freshly built Mojarra impl, once
+// with MyFaces -- and publishes a scenario x phase report. Both arms run back-to-back on the same
+// agent because only the within-run ratio is meaningful: Eclipse CI agents are shared containers
+// with no CPU-governor control, so absolute numbers drift between nights and comparing an arm
+// against a dump from an earlier build measures the host, not the code.
+//
+// The build fails when a phase's suite total is slower than MyFaces. Only suite totals gate --
+// per-scenario cells are far noisier, and a single scenario being slower is a lead to chase, not a
+// broken build. FAIL_OVER widens the tolerance if a phase near parity starts flapping.
+//
+// Tomcat is the only server: it needs no application-server provisioning, which keeps a run
+// within a sane wall-clock and keeps the measured stack down to Faces + Weld + the container.
+
+pipeline {
+
+    // The bench drives the server over HttpClient (PerfBenchIT overrides BaseIT's Selenium setup),
+    // so the default Jiro agent suffices -- no Chrome layer, hence no custom pod template. That
+    // agent grants 2 CPU / 4Gi, which covers MAVEN_OPTS plus the managed Tomcat's heap.
+    agent any
+
+    parameters {
+        string(name: 'MYFACES_VERSION', defaultValue: '4.1.4-SNAPSHOT', description: 'MyFaces version.')
+        string(name: 'PERF_WARMUP', defaultValue: '50', description: 'Warmup iterations per scenario.')
+        string(name: 'PERF_RUNS', defaultValue: '1000', description: 'Measured iterations per scenario.')
+        string(name: 'FAIL_OVER', defaultValue: '0', description: 'Tolerance for the regression gate, in percent: the build fails when the suite total of a phase is slower than MyFaces by more than this. 0 fails on any regression. Raise it if a phase sitting near parity starts flapping on agent noise.')
+    }
+
+    triggers {
+        cron('H 2 * * *')
+    }
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '60', artifactNumToKeepStr: '60'))
+        timeout(time: 1, unit: 'HOURS')
+        disableConcurrentBuilds()
+        timestamps()
+    }
+
+    environment {
+        // JDK install root layout on Eclipse CI: /opt/tools/java/<distro>/jdk-<N>/latest.
+        TOOLS_PREFIX = '/opt/tools'
+        JAVA_HOME    = "${TOOLS_PREFIX}/java/temurin/jdk-21/latest"
+        MVN_HOME     = "${TOOLS_PREFIX}/apache-maven/latest"
+        PATH         = "${MVN_HOME}/bin:${JAVA_HOME}/bin:${PATH}"
+        MAVEN_OPTS   = '-Xmx2g'
+        HELP_PLUGIN  = 'org.apache.maven.plugins:maven-help-plugin:3.5.1'
+        // -gs merges with the agent's own settings.xml rather than replacing it, so the Apache
+        // snapshot repo can be added for a -SNAPSHOT MYFACES_VERSION without touching test/pom.xml.
+        MVN_EXTRA    = "--batch-mode --no-transfer-progress -gs ${env.WORKSPACE}/apache-snapshots-settings.xml"
+        PERF_FLAGS   = "-Dperf=true -Dperf.warmup=${params.PERF_WARMUP} -Dperf.runs=${params.PERF_RUNS}"
+    }
+
+    stages {
+
+        stage('Build Mojarra') {
+            steps {
+                // Preconfigure MyFaces snapshot repo so we can bench against its snapshots as well.
+                writeFile file: 'apache-snapshots-settings.xml', text: '''<settings>
+    <profiles>
+        <profile>
+            <id>apache-snapshots</id>
+            <repositories>
+                <repository>
+                    <id>apache-snapshots</id>
+                    <url>https://repository.apache.org/content/repositories/snapshots</url>
+                    <releases><enabled>false</enabled></releases>
+                    <snapshots><enabled>true</enabled></snapshots>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
+    <activeProfiles><activeProfile>apache-snapshots</activeProfile></activeProfiles>
+</settings>'''
+                // The bench bundles this freshly installed jar into the WAR, so it must be installed
+                // before either arm runs. `clean` is mandatory: a packaged artifact is never built
+                // incrementally.
+                // Nothing here is published, so the javadoc and source jars impl/pom.xml attaches are
+                // dead weight on a perf bench.
+                sh "mvn ${env.MVN_EXTRA} -pl impl,test/base -am clean install -DskipTests -Dmaven.javadoc.skip=true -Dsource.skip=true"
+                // Both arms stash their dump here, outside the target/ that the next arm's `clean` wipes.
+                sh 'mkdir -p target/perf'
+            }
+        }
+
+        stage('Bench Mojarra') {
+            steps {
+                dir('test/perf') {
+                    sh "mvn ${env.MVN_EXTRA} clean verify ${env.PERF_FLAGS} -Ptomcat"
+                    sh 'cp target/perf-stats-*.txt ../../target/perf/mojarra.txt'
+                }
+            }
+        }
+
+        stage('Bench MyFaces') {
+            steps {
+                dir('test/perf') {
+                    sh "mvn ${env.MVN_EXTRA} clean verify ${env.PERF_FLAGS} -Ptomcat-myfaces -Dmyfaces.version=${params.MYFACES_VERSION}"
+                    sh 'cp target/perf-stats-*.txt ../../target/perf/myfaces.txt'
+                }
+            }
+        }
+
+        stage('Report') {
+            steps {
+                script {
+                    // Read the version through a file rather than stdout: a stray Maven warning would
+                    // otherwise end up inside the captured value. The output path must be absolute --
+                    // help:evaluate resolves a relative one against the -f project's basedir, not the CWD.
+                    sh "mvn ${env.MVN_EXTRA} -q -f impl/pom.xml ${env.HELP_PLUGIN}:evaluate -Dexpression=project.version -Doutput=${env.WORKSPACE}/target/perf/mojarra.version"
+                    def mojarraVersion = readFile('target/perf/mojarra.version').trim()
+                    sh """
+                        python3 test/perf/perfreport.py \\
+                            target/perf/mojarra.txt target/perf/myfaces.txt \\
+                            --a-label 'Mojarra ${mojarraVersion}' \\
+                            --b-label 'MyFaces ${params.MYFACES_VERSION}' \\
+                            --title 'Perf report #${env.BUILD_NUMBER} — Tomcat' \\
+                            --out target/perf/report.md \\
+                            --fail-on-regression --fail-over ${params.FAIL_OVER}
+                    """
+                    currentBuild.description = "Mojarra ${mojarraVersion} vs MyFaces ${params.MYFACES_VERSION} (warmup=${params.PERF_WARMUP}, runs=${params.PERF_RUNS})"
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Guarded: with no workspace (agent never allocated) archiveArtifacts throws a missing
+            // FilePath context, which would bury the actual failure at the bottom of the log.
+            script {
+                if (env.WORKSPACE) {
+                    archiveArtifacts artifacts: 'target/perf/*', allowEmptyArchive: true
+                }
+            }
+        }
+    }
+}
