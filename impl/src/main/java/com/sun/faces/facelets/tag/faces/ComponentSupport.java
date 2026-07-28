@@ -253,9 +253,9 @@ public final class ComponentSupport {
      * calling this for a distinct id; the plain scan re-reads every sibling's MARK_CREATED (a string-keyed
      * AttributesMap.get) on every call, so reconciling a K-child parent costs O(K^2) map reads. Instead build a
      * MARK_CREATED -> component index once per parent and look up in O(1). The index is request-scoped and guarded
-     * by the parent's child+facet count: a body that creates a new child (count grows) rebuilds it, so it can never
-     * return a stale or detached component. The facetName fast-path and coverage mirror
-     * {@link #findChildByTagIdFullStateSaving} exactly.
+     * by the parent's child+facet count plus the child count of any implicit panel it indexed through: a body that
+     * creates a new child (count grows) rebuilds it, so it can never return a stale or detached component. The
+     * facetName fast-path and coverage mirror {@link #findChildByTagIdFullStateSaving} exactly.
      */
     private static UIComponent findChildByTagIdIndexed(FacesContext context, UIComponent parent, String id) {
         String facetName = getFacetName(parent);
@@ -271,38 +271,47 @@ public final class ComponentSupport {
 
     @SuppressWarnings("unchecked")
     private static Map<String, UIComponent> refreshIndex(FacesContext context, UIComponent parent) {
-        Map<UIComponent, Object[]> cache = (Map<UIComponent, Object[]>) context.getAttributes().get(REFRESH_INDEX);
+        Map<UIComponent, TagIdIndex> cache = (Map<UIComponent, TagIdIndex>) context.getAttributes().get(REFRESH_INDEX);
         if (cache == null) {
             cache = new IdentityHashMap<>();
             context.getAttributes().put(REFRESH_INDEX, cache);
         }
-        int generation = parent.getChildCount() + parent.getFacetCount();
-        Object[] entry = cache.get(parent);
-        if (entry == null || (Integer) entry[1] != generation) {
-            entry = new Object[] { buildTagIdIndex(parent), generation };
+        TagIdIndex entry = cache.get(parent);
+        if (entry == null || entry.isStale(parent)) {
+            entry = buildTagIdIndex(parent);
             cache.put(parent, entry);
         }
-        return (Map<String, UIComponent>) entry[0];
+        return entry.index;
     }
 
-    private static Map<String, UIComponent> buildTagIdIndex(UIComponent parent) {
+    private static TagIdIndex buildTagIdIndex(UIComponent parent) {
         Map<String, UIComponent> index = new HashMap<>();
+        List<UIComponent> implicitPanels = null;
         if (parent.getFacetCount() > 0) {
             for (UIComponent facet : parent.getFacets().values()) {
-                indexTagId(index, facet);
+                implicitPanels = indexTagId(index, facet, implicitPanels);
             }
         }
         List<UIComponent> children = parent.getChildren();
         for (int i = 0, len = children.size(); i < len; i++) {
-            UIComponent c = children.get(i);
-            indexTagId(index, c);
-            if (c instanceof UIPanel && c.getAttributes().containsKey(IMPLICIT_PANEL)) {
-                for (UIComponent c2 : c.getChildren()) {
-                    indexTagId(index, c2);
-                }
-            }
+            implicitPanels = indexTagId(index, children.get(i), implicitPanels);
         }
-        return index;
+        return new TagIdIndex(index, implicitPanels, generation(parent, implicitPanels));
+    }
+
+    private static List<UIComponent> indexTagId(Map<String, UIComponent> index, UIComponent c, List<UIComponent> implicitPanels) {
+        indexTagId(index, c);
+        if (c instanceof UIPanel && c.getAttributes().containsKey(IMPLICIT_PANEL)) {
+            List<UIComponent> panelChildren = c.getChildren();
+            for (int i = 0, len = panelChildren.size(); i < len; i++) {
+                indexTagId(index, panelChildren.get(i));
+            }
+            if (implicitPanels == null) {
+                implicitPanels = new ArrayList<>(2);
+            }
+            implicitPanels.add(c);
+        }
+        return implicitPanels;
     }
 
     private static void indexTagId(Map<String, UIComponent> index, UIComponent c) {
@@ -310,6 +319,33 @@ public final class ComponentSupport {
         if (cid != null) {
             // First put wins, matching the scan's facets-then-children, top-to-bottom first-match order.
             index.putIfAbsent(cid, c);
+        }
+    }
+
+    private static int generation(UIComponent parent, List<UIComponent> implicitPanels) {
+        int generation = parent.getChildCount() + parent.getFacetCount();
+        if (implicitPanels != null) {
+            for (int i = 0, len = implicitPanels.size(); i < len; i++) {
+                generation += implicitPanels.get(i).getChildCount();
+            }
+        }
+        return generation;
+    }
+
+    private static final class TagIdIndex {
+
+        private final Map<String, UIComponent> index;
+        private final List<UIComponent> implicitPanels;
+        private final int generation;
+
+        private TagIdIndex(Map<String, UIComponent> index, List<UIComponent> implicitPanels, int generation) {
+            this.index = index;
+            this.implicitPanels = implicitPanels;
+            this.generation = generation;
+        }
+
+        private boolean isStale(UIComponent parent) {
+            return generation != generation(parent, implicitPanels);
         }
     }
 
