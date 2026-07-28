@@ -28,9 +28,13 @@ import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParamet
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.ForceLoadFacesConfigFiles;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.VerifyFacesConfigObjects;
 import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.JakartaFacesProjectStage;
+import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.WebsocketEndpointIdleTimeout;
+import static com.sun.faces.config.WebConfiguration.WebContextInitParameter.WebsocketMaxSessionsPerChannel;
 import static com.sun.faces.context.SessionMap.createMutex;
 import static com.sun.faces.context.SessionMap.removeMutex;
 import static com.sun.faces.push.WebsocketEndpoint.URI_TEMPLATE;
+import static com.sun.faces.push.WebsocketEndpoint.USER_PROPERTY_IDLE_TIMEOUT;
+import static com.sun.faces.push.WebsocketEndpoint.USER_PROPERTY_MAX_SESSIONS_PER_CHANNEL;
 import static java.lang.Boolean.TRUE;
 import static java.text.MessageFormat.format;
 import static java.util.logging.Level.FINE;
@@ -98,6 +102,11 @@ import jakarta.websocket.server.ServerEndpointConfig;
 public class ConfigureListener implements ServletRequestListener, HttpSessionListener, ServletContextListener {
 
     private static final Logger LOGGER = FacesLogger.CONFIG.getLogger();
+
+    private static final String ERROR_INVALID_WEBSOCKET_ENDPOINT_IDLE_TIMEOUT =
+            "Context param ''{0}'' must represent a number of milliseconds of 0 or greater, but was: ''{1}''.";
+    private static final String ERROR_INVALID_WEBSOCKET_MAX_SESSIONS_PER_CHANNEL =
+            "Context param ''{0}'' must represent a number of 1 or greater, but was: ''{1}''.";
 
     private ScheduledThreadPoolExecutor webResourcePool;
 
@@ -230,7 +239,12 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                         " The current websocket container implementation does not support programmatically registering a container-provided endpoint.");
                 }
 
-                serverContainer.addEndpoint(ServerEndpointConfig.Builder.create(WebsocketEndpoint.class, URI_TEMPLATE).build());
+                ServerEndpointConfig endpointConfig = ServerEndpointConfig.Builder.create(WebsocketEndpoint.class, URI_TEMPLATE)
+                        .configurator(new WebsocketEndpoint.Configurator())
+                        .build();
+                endpointConfig.getUserProperties().put(USER_PROPERTY_IDLE_TIMEOUT, getWebsocketEndpointIdleTimeout(webConfig));
+                endpointConfig.getUserProperties().put(USER_PROPERTY_MAX_SESSIONS_PER_CHANNEL, getWebsocketMaxSessionsPerChannel(webConfig));
+                serverContainer.addEndpoint(endpointConfig);
             }
 
             webConfig.doPostBringupActions();
@@ -261,6 +275,45 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
             // a partially constructed FacesContext being made available
             // to other code that re-uses this Thread at init time.
             initFacesContext.releaseCurrentInstance();
+        }
+    }
+
+    private static long getWebsocketEndpointIdleTimeout(WebConfiguration webConfig) {
+        String value = webConfig.getOptionValue(WebsocketEndpointIdleTimeout);
+        long idleTimeout = toLong(value, -1); // A non-numeric value maps to -1 because 0 is a valid value meaning no timeout.
+
+        if (idleTimeout < 0) {
+            throw new IllegalArgumentException(format(ERROR_INVALID_WEBSOCKET_ENDPOINT_IDLE_TIMEOUT, WebsocketEndpointIdleTimeout.getQualifiedName(), value));
+        }
+
+        return idleTimeout;
+    }
+
+    private static int getWebsocketMaxSessionsPerChannel(WebConfiguration webConfig) {
+        String value = webConfig.getOptionValue(WebsocketMaxSessionsPerChannel);
+
+        if (value == null || value.isEmpty()) {
+            return Integer.MAX_VALUE;
+        }
+
+        long maxSessionsPerChannel = toLong(value, 0);
+
+        if (maxSessionsPerChannel < 1 || maxSessionsPerChannel > Integer.MAX_VALUE) {
+            throw new IllegalArgumentException(format(ERROR_INVALID_WEBSOCKET_MAX_SESSIONS_PER_CHANNEL, WebsocketMaxSessionsPerChannel.getQualifiedName(), value));
+        }
+
+        return (int) maxSessionsPerChannel;
+    }
+
+    private static long toLong(String value, long fallback) {
+        if (value == null) {
+            return fallback;
+        }
+
+        try {
+            return Long.parseLong(value.trim());
+        } catch (NumberFormatException e) {
+            return fallback;
         }
     }
 
