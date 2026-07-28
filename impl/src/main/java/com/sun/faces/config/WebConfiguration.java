@@ -784,6 +784,8 @@ public class WebConfiguration {
         WebAppContractsDirectory(ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME, "/contracts"),
         ExceptionTypesToIgnoreInLogging("com.sun.faces.exceptionTypesToIgnoreInLogging", ""),
         CspPolicy(ResourceHandlerImpl.CSP_POLICY_PARAM_NAME, ResourceHandlerImpl.DEFAULT_CSP_POLICY),
+        WebsocketEndpointIdleTimeout("com.sun.faces.websocketEndpointIdleTimeout", "0"), // in milliseconds; 0 means no timeout
+        WebsocketMaxSessionsPerChannel("com.sun.faces.websocketMaxSessionsPerChannel", ""), // empty means unbounded
         ;
 
         private final String defaultValue;
