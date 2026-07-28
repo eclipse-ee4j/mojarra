@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.SessionScoped;
@@ -38,6 +39,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.push.Push;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * <p class="changed_added_2_3">
@@ -67,6 +69,9 @@ public class WebsocketChannelManager implements Serializable {
     private static final int ESTIMATED_USERS_PER_SESSION = 1;
     static final int ESTIMATED_TOTAL_CHANNELS = ESTIMATED_CHANNELS_PER_APPLICATION + ESTIMATED_CHANNELS_PER_SESSION + ESTIMATED_CHANNELS_PER_VIEW;
     static final Map<String, String> EMPTY_SCOPE = emptyMap();
+
+    /** The HTTP session attribute name under which the session and view scoped channel identifiers owned by that HTTP session are held. */
+    private static final String SESSION_SCOPE_CHANNEL_IDS = "com.sun.faces.push.SESSION_SCOPE_CHANNEL_IDS";
 
     private enum Scope {
         APPLICATION, SESSION, VIEW;
@@ -153,7 +158,28 @@ public class WebsocketChannelManager implements Serializable {
         }
 
         socketSessions.register(channelId);
+
+        if (targetScope != APPLICATION_SCOPE) {
+            registerChannelIdInSession(context, channelId); // Session and view scoped channels may only be connected to by the owning HTTP session.
+        }
+
         return url + "?" + channelId;
+    }
+
+    private static void registerChannelIdInSession(FacesContext context, String channelId) {
+        HttpSession httpSession = (HttpSession) context.getExternalContext().getSession(true);
+
+        synchronized (httpSession) {
+            @SuppressWarnings("unchecked")
+            Set<String> channelIds = (Set<String>) httpSession.getAttribute(SESSION_SCOPE_CHANNEL_IDS);
+
+            if (channelIds == null) {
+                channelIds = new CopyOnWriteArraySet<>();
+                httpSession.setAttribute(SESSION_SCOPE_CHANNEL_IDS, channelIds);
+            }
+
+            channelIds.add(channelId);
+        }
     }
 
     /**
@@ -231,6 +257,29 @@ public class WebsocketChannelManager implements Serializable {
         }
 
         return channelId;
+    }
+
+    /**
+     * For internal usage only. This makes it possible for {@link WebsocketEndpoint.Configurator} to determine whether
+     * the given channel identifier represents an application scoped channel, which is by design not bound to any HTTP
+     * session.
+     */
+    static boolean isApplicationScopedChannelId(String channelId) {
+        return channelId != null && APPLICATION_SCOPE.containsValue(channelId);
+    }
+
+    /**
+     * For internal usage only. This makes it possible for {@link WebsocketEndpoint.Configurator} to determine whether
+     * the given session or view scoped channel identifier was registered by the given HTTP session.
+     */
+    static boolean isChannelIdRegisteredInSession(HttpSession httpSession, String channelId) {
+        if (httpSession == null) {
+            return false;
+        }
+
+        @SuppressWarnings("unchecked")
+        Set<String> channelIds = (Set<String>) httpSession.getAttribute(SESSION_SCOPE_CHANNEL_IDS);
+        return channelIds != null && channelIds.contains(channelId);
     }
 
     // Serialization --------------------------------------------------------------------------------------------------

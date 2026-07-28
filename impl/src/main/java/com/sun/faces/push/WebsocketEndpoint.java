@@ -25,10 +25,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jakarta.faces.push.Push;
+import jakarta.servlet.http.HttpSession;
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.Endpoint;
 import jakarta.websocket.EndpointConfig;
+import jakarta.websocket.HandshakeResponse;
 import jakarta.websocket.Session;
+import jakarta.websocket.server.HandshakeRequest;
+import jakarta.websocket.server.ServerEndpointConfig;
 
 /**
  * <p class="changed_added_2_3">
@@ -48,6 +52,12 @@ public class WebsocketEndpoint extends Endpoint {
     /** The context-relative URI template where the web socket endpoint should listen on. */
     public static final String URI_TEMPLATE = URI_PREFIX + "/{" + PARAM_CHANNEL + "}";
 
+    /** The endpoint config user property name holding the maximum idle timeout in milliseconds as a {@link Long}. */
+    public static final String USER_PROPERTY_IDLE_TIMEOUT = "com.sun.faces.push.IDLE_TIMEOUT";
+
+    /** The endpoint config user property name holding the maximum number of concurrent sessions per channel as an {@link Integer}. */
+    public static final String USER_PROPERTY_MAX_SESSIONS_PER_CHANNEL = "com.sun.faces.push.MAX_SESSIONS_PER_CHANNEL";
+
     private static final Logger logger = Logger.getLogger(WebsocketEndpoint.class.getName());
     private static final CloseReason REASON_UNKNOWN_CHANNEL = new CloseReason(VIOLATED_POLICY, "Unknown channel");
     private static final String ERROR_EXCEPTION = "WebsocketEndpoint: An exception occurred during processing web socket request.";
@@ -56,15 +66,16 @@ public class WebsocketEndpoint extends Endpoint {
 
     /**
      * Add given web socket session to the <code>WebocketSessionManager</code>. If web socket session is not accepted (i.e. the
-     * channel identifier is unknown), then immediately close with reason <code>VIOLATED_POLICY</code> (close code 1008).
+     * channel identifier is unknown or the channel has already reached its maximum number of concurrent sessions), then
+     * immediately close with reason <code>VIOLATED_POLICY</code> (close code 1008).
      *
      * @param session The opened web socket session.
      * @param config The endpoint configuration.
      */
     @Override
     public void onOpen(Session session, EndpointConfig config) {
-        if (WebsocketSessionManager.getInstance().add(session)) { // @Inject in Endpoint doesn't work in Tomcat+Weld/OWB.
-            session.setMaxIdleTimeout(0);
+        if (WebsocketSessionManager.getInstance().add(session, getMaxSessionsPerChannel(config))) { // @Inject in Endpoint doesn't work in Tomcat+Weld/OWB.
+            session.setMaxIdleTimeout(getIdleTimeout(config));
         } else {
             try {
                 session.close(REASON_UNKNOWN_CHANNEL);
@@ -105,6 +116,43 @@ public class WebsocketEndpoint extends Endpoint {
         if (throwable != null && reason.getCloseCode() != GOING_AWAY) {
             logger.log(Level.SEVERE, ERROR_EXCEPTION, throwable);
         }
+    }
+
+    // Helpers --------------------------------------------------------------------------------------------------------
+
+    private static long getIdleTimeout(EndpointConfig config) {
+        Object idleTimeout = config.getUserProperties().get(USER_PROPERTY_IDLE_TIMEOUT);
+        return idleTimeout instanceof Long ? (Long) idleTimeout : 0;
+    }
+
+    private static int getMaxSessionsPerChannel(EndpointConfig config) {
+        Object maxSessionsPerChannel = config.getUserProperties().get(USER_PROPERTY_MAX_SESSIONS_PER_CHANNEL);
+        return maxSessionsPerChannel instanceof Integer ? (Integer) maxSessionsPerChannel : Integer.MAX_VALUE;
+    }
+
+    // Nested classes -------------------------------------------------------------------------------------------------
+
+    /**
+     * This handshake configurator enforces that a session or view scoped channel can only be connected to by the HTTP
+     * session which registered it. Application scoped channels are by design not bound to any HTTP session.
+     *
+     * @author Bauke Scholtz
+     * @see WebsocketChannelManager
+     */
+    public static class Configurator extends ServerEndpointConfig.Configurator {
+
+        private static final String ERROR_UNAUTHORIZED_CHANNEL = "f:websocket channel is not registered in the current HTTP session.";
+
+        @Override
+        public void modifyHandshake(ServerEndpointConfig config, HandshakeRequest request, HandshakeResponse response) {
+            String channelId = request.getQueryString();
+
+            if (!WebsocketChannelManager.isApplicationScopedChannelId(channelId)
+                    && !WebsocketChannelManager.isChannelIdRegisteredInSession((HttpSession) request.getHttpSession(), channelId)) {
+                throw new IllegalStateException(ERROR_UNAUTHORIZED_CHANNEL);
+            }
+        }
+
     }
 
 }
