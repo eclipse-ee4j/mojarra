@@ -36,6 +36,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIData;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;

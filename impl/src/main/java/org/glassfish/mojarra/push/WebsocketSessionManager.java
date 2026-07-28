@@ -114,17 +114,19 @@ public class WebsocketSessionManager {
 
     /**
      * On open, add given web socket session to the mapping associated with its channel identifier and returns
-     * <code>true</code> if it's accepted (i.e. the channel identifier is known) and the same session hasn't been added
-     * before, otherwise <code>false</code>.
+     * <code>true</code> if it's accepted (i.e. the channel identifier is known, the channel has not yet reached the
+     * given maximum number of concurrent sessions, and the same session hasn't been added before), otherwise
+     * <code>false</code>.
      *
      * @param session The opened web socket session.
+     * @param maxSessionsPerChannel The maximum number of concurrent web socket sessions allowed per channel.
      * @return <code>true</code> if given web socket session is accepted and is new, otherwise <code>false</code>.
      */
-    protected boolean add(Session session) {
+    protected boolean add(Session session, int maxSessionsPerChannel) {
         String channelId = getChannelId(session);
         Collection<Session> sessions = socketSessions.get(channelId);
 
-        if (sessions != null && sessions.add(session)) {
+        if (sessions != null && !isChannelFull(sessions, maxSessionsPerChannel) && sessions.add(session)) {
             Serializable user = socketUsers.getUser(getChannel(session), channelId);
 
             if (user != null) {
@@ -280,6 +282,10 @@ public class WebsocketSessionManager {
     }
 
     // Helpers --------------------------------------------------------------------------------------------------------
+
+    private static boolean isChannelFull(Collection<Session> sessions, int maxSessionsPerChannel) {
+        return maxSessionsPerChannel != Integer.MAX_VALUE && sessions.size() >= maxSessionsPerChannel; // Size check is skipped when unbounded because it is O(n) on the underlying queue.
+    }
 
     private static String getChannel(Session session) {
         return session.getPathParameters().get(PARAM_CHANNEL);

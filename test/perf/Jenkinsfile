@@ -133,7 +133,7 @@ pipeline {
             // FilePath context, which would bury the actual failure at the bottom of the log.
             script {
                 if (env.WORKSPACE) {
-                    archiveArtifacts artifacts: 'target/perf/*', allowEmptyArchive: true
+                    archiveArtifacts artifacts: 'target/perf/mojarra.txt,target/perf/myfaces.txt,target/perf/report.md', allowEmptyArchive: true
                 }
             }
         }
