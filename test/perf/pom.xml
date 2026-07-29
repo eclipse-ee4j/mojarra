@@ -31,11 +31,8 @@
     <name>Mojarra ${project.version} - IT - ${project.artifactId}</name>
 
     <properties>
-        <!-- Faces state/view-pooling context params, filtered into WEB-INF/web.xml; defaults match the impl defaults. -->
-        <webapp.stateSavingMethod>server</webapp.stateSavingMethod>
-        <webapp.serializeServerState>false</webapp.serializeServerState>
+        <!-- The other webapp.* defaults live in the parent pom, shared with the other IT modules. -->
         <webapp.compressViewState>true</webapp.compressViewState>
-        <!-- webapp.additionalContextParams default lives in the parent pom so the server profiles (e.g. wildfly-myfaces) can override it. -->
     </properties>
 
     <dependencies>
@@ -48,16 +45,4 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <!-- Interpolate the ${webapp.*} context-param knobs in WEB-INF/web.xml at package time. -->
-                <configuration>
-                    <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>

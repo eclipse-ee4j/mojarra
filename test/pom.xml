@@ -54,11 +54,16 @@
         <liberty.version>26.0.0.6</liberty.version> <!-- https://mvnrepository.com/artifact/io.openliberty/openliberty-runtime -->
         <tomcat.version>11.0.24</tomcat.version> <!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat -->
 
+        <!-- web.xml defaults -->
+        <webapp.projectStage>Production</webapp.projectStage>
+        <webapp.stateSavingMethod>server</webapp.stateSavingMethod>
+        <webapp.partialStateSaving>true</webapp.partialStateSaving>
+        <webapp.serializeServerState>false</webapp.serializeServerState>
         <!-- Extra raw <context-param> XML filtered into perf web.xml; default empty. Here (not perf) so server profiles can inject server-specific params (e.g. wildfly-myfaces sets WAR_BUNDLES_JSF_IMPL). -->
         <webapp.additionalContextParams></webapp.additionalContextParams>
 
         <!-- Max heap aligned across every server profile (consumed by the server profiles below) so the
-             cross-server comparison is apples-to-apples. The webapp context-param knobs live in perf/pom.xml. -->
+             cross-server comparison is apples-to-apples. -->
         <perf.heapSize>1g</perf.heapSize>
         <perf.jvmArguments>-Xmx${perf.heapSize}</perf.jvmArguments>
     </properties>
@@ -111,6 +116,7 @@
                 <version>3.4.0</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors> <!-- Interpolate the ${webapp.*} context-param knobs in WEB-INF/web.xml at package time. -->
                 </configuration>
             </plugin>
             <plugin>
