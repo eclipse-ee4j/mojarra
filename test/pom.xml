@@ -41,6 +41,7 @@
     <properties>
         <tck.version>5.0.0-SNAPSHOT</tck.version>
         <test.selenium>true</test.selenium>
+        <failsafe.rerunFailingTestsCount>0</failsafe.rerunFailingTestsCount>
         <chromedriver.version>139</chromedriver.version>
         <arquillian.browser>chrome</arquillian.browser>
         <faces-api.version>5.0.0-SNAPSHOT</faces-api.version>
@@ -125,7 +126,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <rerunFailingTestsCount>2</rerunFailingTestsCount>
+                    <rerunFailingTestsCount>${failsafe.rerunFailingTestsCount}</rerunFailingTestsCount>
                     <systemPropertyVariables>
                         <finalName>${project.build.finalName}</finalName>
                         <test.selenium>${test.selenium}</test.selenium>
