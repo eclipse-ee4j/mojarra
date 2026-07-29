@@ -61,6 +61,20 @@ final class ValueHolderRule extends MetaRule {
         }
     }
 
+    final static class LiteralValueMetadata extends Metadata {
+
+        private final String value;
+
+        public LiteralValueMetadata(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public void applyMetadata(FaceletContext ctx, Object instance) {
+            ((ValueHolder) instance).setValue(value);
+        }
+    }
+
     final static class DynamicValueExpressionMetadata extends Metadata {
 
         private final TagAttribute attr;
@@ -93,6 +107,10 @@ final class ValueHolderRule extends MetaRule {
         }
 
         if ("value".equals(name)) {
+            if (attribute.isLiteral()) {
+                return new LiteralValueMetadata(attribute.getValue());
+            }
+
             return new DynamicValueExpressionMetadata(attribute);
         }
 

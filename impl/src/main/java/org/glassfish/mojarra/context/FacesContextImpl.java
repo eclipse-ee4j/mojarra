@@ -16,8 +16,6 @@
 
 package org.glassfish.mojarra.context;
 
-import static java.util.stream.Collectors.toSet;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,7 +24,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -55,7 +52,8 @@ import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
 
-import org.glassfish.mojarra.cdi.FacesContextProducer;
+import org.glassfish.mojarra.application.view.ViewScopeManager;
+import org.glassfish.mojarra.cdi.CdiUtils;
 import org.glassfish.mojarra.el.ELContextImpl;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.util.FacesLogger;
@@ -506,6 +504,7 @@ public class FacesContextImpl extends FacesContext {
     @Override
     public void release() {
         BeanManager beanManager = Util.getCdiBeanManager(this);
+        ViewScopeManager.releaseViewMaps(this);
 
         released = true;
         if (externalContext != null) {
@@ -552,8 +551,7 @@ public class FacesContextImpl extends FacesContext {
         DEFAULT_FACES_CONTEXT.remove();
 
         // Destroy our instance produced by FacesContextProducer.
-        Set<Bean<?>> beans = beanManager.getBeans(FacesContext.class).stream().filter(bean -> bean.getTypes().contains(FacesContextProducer.class)).collect(toSet());
-        Bean<?> bean = beanManager.resolve(beans);
+        Bean<?> bean = CdiUtils.resolveFacesContextProducerBean(beanManager);
         ((AlterableContext) beanManager.getContext(bean.getScope())).destroy(bean);
     }
 

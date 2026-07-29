@@ -64,17 +64,14 @@ public class ImageRenderer extends HtmlBasicRenderer {
         writeIdAttributeIfNecessary(context, writer, component);
         writer.writeURIAttribute("src", RenderKitUtils.getImageSource(context, component, "value"), "value");
         // if we're writing XHTML and we have a null alt attribute
-        if (writer.getContentType().equals(RIConstants.XHTML_CONTENT_TYPE) && null == component.getAttributes().get("alt")) {
+        if (writer.getContentType().equals(RIConstants.XHTML_CONTENT_TYPE) && null == RenderKitUtils.getAttributeIfSet(component, "alt")) {
             // write out an empty alt
             writer.writeAttribute("alt", "", "alt");
         }
 
         RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES);
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
-        String styleClass;
-        if (null != (styleClass = (String) component.getAttributes().get("styleClass"))) {
-            writer.writeAttribute("class", styleClass, "styleClass");
-        }
+        writeStyleClassAttributeIfNecessary(writer, component);
         writer.endElement("img");
         RenderKitUtils.flushPendingBehaviorEventListeners(context, component, null);
         if (logger.isLoggable(Level.FINER)) {

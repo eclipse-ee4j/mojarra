@@ -18,8 +18,12 @@ package org.glassfish.mojarra.renderkit.html_basic;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.component.html.HtmlPanelGroup;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
@@ -45,11 +49,12 @@ public class GroupRenderer extends HtmlBasicRenderer {
             return;
         }
         // Render a span around this group if necessary
-        String styleClass = (String) component.getAttributes().get("styleClass");
+        String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
         ResponseWriter writer = context.getResponseWriter();
 
-        if (divOrSpan(component)) {
-            if ("block".equals(component.getAttributes().get("layout"))) {
+        if (divOrSpan(component, styleClass)) {
+            if (component instanceof HtmlPanelGroup group ? "block".equals(group.getLayout())
+                    : "block".equals(component.getAttributes().get("layout"))) {
                 writer.startElement("div", component);
             } else {
                 writer.startElement("span", component);
@@ -58,8 +63,6 @@ public class GroupRenderer extends HtmlBasicRenderer {
             if (styleClass != null) {
                 writer.writeAttribute("class", styleClass, "styleClass");
             }
-            // JAVASERVERFACES-3270: do not manually render "style" as it is handled
-            // in renderPassThruAttributes().
         }
 
         RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES);
@@ -96,8 +99,10 @@ public class GroupRenderer extends HtmlBasicRenderer {
 
         // Close our span element if necessary
         ResponseWriter writer = context.getResponseWriter();
-        if (divOrSpan(component)) {
-            if ("block".equals(component.getAttributes().get("layout"))) {
+        String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
+        if (divOrSpan(component, styleClass)) {
+            if (component instanceof HtmlPanelGroup group ? "block".equals(group.getLayout())
+                    : "block".equals(component.getAttributes().get("layout"))) {
                 writer.endElement("div");
             } else {
                 writer.endElement("span");
@@ -117,12 +122,32 @@ public class GroupRenderer extends HtmlBasicRenderer {
 
     /**
      * @param component <code>UIComponent</code> for this group
+     * @param styleClass the already-resolved {@code styleClass} value
      *
      * @return <code>true</code> if we need to render a div or span element around this group.
      */
-    private boolean divOrSpan(UIComponent component) {
+    private boolean divOrSpan(UIComponent component, String styleClass) {
 
-        return shouldWriteIdAttribute(component) || component.getAttributes().get("style") != null || component.getAttributes().get("styleClass") != null;
+        return shouldWriteIdAttribute(component) || styleClass != null || hasRenderablePassThroughAttribute(component) || hasClientBehavior(component);
+
+    }
+
+    private static boolean hasRenderablePassThroughAttribute(UIComponent component) {
+
+        List<String> setAttributes = RenderKitUtils.getAttributesThatAreSet(component);
+        for (Attribute attribute : ATTRIBUTES) {
+            if (RenderKitUtils.getAttributeIfSet(component, setAttributes, attribute.getName()) != null) {
+                return true;
+            }
+        }
+        Map<String, Object> passThroughAttributes = component.getPassThroughAttributes(false);
+        return passThroughAttributes != null && !passThroughAttributes.isEmpty();
+
+    }
+
+    private static boolean hasClientBehavior(UIComponent component) {
+
+        return component instanceof ClientBehaviorHolder holder && !holder.getClientBehaviors().isEmpty();
 
     }
 

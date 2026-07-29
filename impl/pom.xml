@@ -103,7 +103,7 @@
         <dependency>
             <groupId>jakarta.el</groupId>
             <artifactId>jakarta.el-api</artifactId>
-            <version>6.1.0-M1</version>
+            <version>6.1.0-M2</version>
             <scope>provided</scope>
         </dependency>
     
@@ -221,6 +221,13 @@
             <version>9.1.0.Final</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.se</groupId>
+            <artifactId>weld-se-core</artifactId>
+            <version>5.1.2.Final</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <pluginRepositories>
@@ -277,6 +284,7 @@
                 <version>3.15.0</version>
                 <configuration>
                     <compilerArgument>-Xlint:all,-deprecation,-removal</compilerArgument>
+                    <proc>none</proc>
                 </configuration>
             </plugin>
 

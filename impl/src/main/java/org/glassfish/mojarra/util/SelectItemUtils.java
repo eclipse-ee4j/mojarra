@@ -68,8 +68,8 @@ public class SelectItemUtils {
         S selectItem = supplier.get();
         selectItem.setValue(itemValue);
         selectItem.setLabel(String.valueOf(itemLabel != null ? itemLabel : selectItem.getValue()));
-        selectItem.setEscape(itemEscaped == null || Boolean.parseBoolean(itemEscaped.toString()));
-        selectItem.setDisabled(itemDisabled != null && Boolean.parseBoolean(itemDisabled.toString()));
+        selectItem.setEscape(Util.toBoolean(itemEscaped, true));
+        selectItem.setDisabled(Util.toBoolean(itemDisabled, false));
         return selectItem;
     }
 

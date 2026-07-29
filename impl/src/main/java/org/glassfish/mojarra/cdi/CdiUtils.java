@@ -16,18 +16,27 @@
 
 package org.glassfish.mojarra.cdi;
 
+import static java.util.Collections.synchronizedMap;
 import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toSet;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,6 +61,7 @@ import jakarta.faces.validator.FacesValidator;
 import jakarta.faces.validator.Validator;
 
 import org.glassfish.mojarra.application.ApplicationAssociate;
+import org.glassfish.mojarra.context.FacesContextImpl;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.Util;
 
@@ -74,6 +84,74 @@ public final class CdiUtils {
     }.getType();
 
     /**
+     * Cache of resolved {@code (type, beanName, qualifiers) -> Bean<?>} lookups per {@link BeanManager}.
+     * Post-bootstrap the set of beans is immutable for the application lifetime, so {@code getBeans} +
+     * {@code resolve} (the expensive part: type/qualifier matching over the whole bean registry) is a
+     * pure function of its arguments. {@link BeanManager#getReference(Bean, Type, CreationalContext)}
+     * is intentionally kept out of the cache to preserve scope semantics &mdash; that call is cheap.
+     * Negative results are cached as {@link #NO_BEAN}; built-in Faces IDs such as
+     * {@code jakarta.faces.Integer} are not CDI beans, so caching the miss avoids repeated registry
+     * walks on every component creation.
+     *
+     * <p>Caveat: this assumes the {@link BeanManager} is fully bootstrapped when first observed.
+     * If a transient/incomplete BeanManager were probed here, negative entries against that
+     * identity would persist after bootstrap completes. Today the only callers are public
+     * {@code Application#create*} methods invoked during request processing, after CDI is ready.
+     *
+     * <p>The outer map uses weak keys to release the inner cache when a BeanManager becomes
+     * otherwise unreachable. Note that cached {@link Bean} instances may transitively hold a
+     * reference back to their owning BeanManager (Weld does), in which case reclamation only
+     * happens once those {@code Bean} references themselves are no longer reachable.
+     */
+    private static final Map<BeanManager, ConcurrentMap<BeanLookupKey, Bean<?>>> RESOLVED_BEANS =
+            synchronizedMap(new WeakHashMap<>());
+
+    /**
+     * Parallel cache for the {@link FacesContextImpl} release path: the single
+     * {@link FacesContextProducer}-typed {@link FacesContext} bean per {@link BeanManager}.
+     * Held separately because the lookup filters by {@code bean.getTypes().contains(...)}
+     * rather than by a CDI qualifier, so it does not fit the {@link BeanLookupKey} shape.
+     */
+    private static final Map<BeanManager, Bean<?>> FACES_CONTEXT_PRODUCER_BEANS =
+            synchronizedMap(new WeakHashMap<>());
+
+    /**
+     * Second-level caches keyed by the artifact's own identity -- the {@code @FacesConverter} value or
+     * {@code forClass}, the {@code @FacesValidator} id, the {@code @FacesBehavior} id -- of the resolved
+     * managed {@link Bean}. {@link #RESOLVED_BEANS} already memoizes the {@code getBeans}/{@code resolve}
+     * discovery, but reaching it still rebuilds the qualifier and the {@link BeanLookupKey} (and, for
+     * by-class converters, walks the superclass chain) on every call -- i.e. per cell during render.
+     * Keying directly by value/class collapses the hot path to a single map lookup; {@code getReference}
+     * stays per-call so scope semantics are preserved. Misses are cached as {@link #NO_BEAN}.
+     */
+    private static final Map<BeanManager, ConcurrentMap<Object, Bean<?>>> CONVERTER_BEANS_BY_KEY =
+            synchronizedMap(new WeakHashMap<>());
+    private static final Map<BeanManager, ConcurrentMap<Object, Bean<?>>> VALIDATOR_BEANS_BY_KEY =
+            synchronizedMap(new WeakHashMap<>());
+    private static final Map<BeanManager, ConcurrentMap<Object, Bean<?>>> BEHAVIOR_BEANS_BY_KEY =
+            synchronizedMap(new WeakHashMap<>());
+
+    private static final Bean<?> NO_BEAN = new NoBean();
+
+    /**
+     * Clears the bean-resolution caches. Invoked from {@link CdiExtension} on {@code BeforeShutdown}:
+     * a {@link Bean} transitively references its owning BeanManager (Weld does), which keeps the
+     * {@link WeakHashMap} entry reachable well past application undeployment. Leaving it would let a
+     * redeployment resolve against stale {@code Bean} instances whose context is gone, which surfaces
+     * as a {@code ContextNotActiveException} on first use. The caches are keyed by the (possibly
+     * wrapped) BeanManager, so a defunct deployment's entry cannot be reliably matched by the raw
+     * BeanManager handed to {@code BeforeShutdown}; clearing wholesale is correct because the entries
+     * repopulate lazily on next resolve.
+     */
+    public static void clearCaches() {
+        RESOLVED_BEANS.clear();
+        FACES_CONTEXT_PRODUCER_BEANS.clear();
+        CONVERTER_BEANS_BY_KEY.clear();
+        VALIDATOR_BEANS_BY_KEY.clear();
+        BEHAVIOR_BEANS_BY_KEY.clear();
+    }
+
+    /**
      * Constructor.
      */
     private CdiUtils() {
@@ -86,21 +164,17 @@ public final class CdiUtils {
      * @param value the value attribute.
      * @return the converter, or null if we could not match one.
      */
-    @SuppressWarnings("unchecked")
     public static Converter<?> createConverter(BeanManager beanManager, String value) {
-        // The managed attribute is deprecated since 5.0 and defaults to false, but existing applications may still
-        // explicitly set managed=true. Since @FacesConverter is a @Qualifier, CDI does exact matching on all attributes,
-        // so we must try both values.
-        Converter<Object> managedConverter = (Converter<Object>) createConverter(beanManager, FacesConverter.Literal.of(value, Object.class, true));
+        Bean<?> bean = cachedBean(CONVERTER_BEANS_BY_KEY, beanManager, value,
+                () -> resolveConverterBean(beanManager, FacesConverter.Literal.of(value, Object.class, false)));
 
-        if (managedConverter == null) {
-            managedConverter = (Converter<Object>) createConverter(beanManager, FacesConverter.Literal.of(value, Object.class, false));
+        if (bean == null) {
+            return null;
         }
 
-        if (managedConverter != null) {
-            ApplicationAssociate associate = ApplicationAssociate.getCurrentInstance();
-            associate.getAnnotationManager().applyConverterAnnotations(FacesContext.getCurrentInstance(), managedConverter); // #4913
-        }
+        Converter<?> managedConverter = (Converter<?>) getReferenceInstance(beanManager, bean.getBeanClass(), bean);
+        ApplicationAssociate associate = ApplicationAssociate.getCurrentInstance();
+        associate.getAnnotationManager().applyConverterAnnotations(FacesContext.getCurrentInstance(), managedConverter); // #4913
 
         return managedConverter;
     }
@@ -112,38 +186,60 @@ public final class CdiUtils {
      * @param forClass the for class.
      * @return the converter, or null if we could not match one.
      */
-    @SuppressWarnings("unchecked")
     public static Converter<?> createConverter(BeanManager beanManager, Class<?> forClass) {
-        Converter<Object> managedConverter = null;
+        Bean<?> bean = cachedBean(CONVERTER_BEANS_BY_KEY, beanManager, forClass,
+                () -> resolveConverterBeanForClass(beanManager, forClass));
 
-        for (Class<?> forClassOrSuperclass = forClass; managedConverter == null && forClassOrSuperclass != null
-                && forClassOrSuperclass != Object.class; forClassOrSuperclass = forClassOrSuperclass.getSuperclass()) {
-            managedConverter = (Converter<Object>) createConverter(beanManager, FacesConverter.Literal.of("", forClassOrSuperclass, true));
-
-            if (managedConverter == null) {
-                managedConverter = (Converter<Object>) createConverter(beanManager, FacesConverter.Literal.of("", forClassOrSuperclass, false));
-            }
+        if (bean == null) {
+            return null;
         }
 
-        if (managedConverter != null) {
-            ApplicationAssociate associate = ApplicationAssociate.getCurrentInstance();
-            associate.getAnnotationManager().applyConverterAnnotations(FacesContext.getCurrentInstance(), managedConverter); // #4913
-        }
+        Converter<?> managedConverter = (Converter<?>) getReferenceInstance(beanManager, bean.getBeanClass(), bean);
+        ApplicationAssociate associate = ApplicationAssociate.getCurrentInstance();
+        associate.getAnnotationManager().applyConverterAnnotations(FacesContext.getCurrentInstance(), managedConverter); // #4913
 
         return managedConverter;
     }
 
-    private static Converter<?> createConverter(BeanManager beanManager, Annotation qualifier) {
-
-        // Try to find parameterized converter first
-        Converter<?> managedConverter = (Converter<?>) getBeanReferenceByType(beanManager, CONVERTER_TYPE, qualifier);
-
-        if (managedConverter == null) {
-            // No parameterized converter, try raw converter
-            managedConverter = getBeanReference(beanManager, Converter.class, qualifier);
+    private static Bean<?> resolveConverterBeanForClass(BeanManager beanManager, Class<?> forClass) {
+        for (Class<?> forClassOrSuperclass = forClass; forClassOrSuperclass != null
+                && forClassOrSuperclass != Object.class; forClassOrSuperclass = forClassOrSuperclass.getSuperclass()) {
+            Bean<?> bean = resolveConverterBean(beanManager, FacesConverter.Literal.of("", forClassOrSuperclass, false));
+            if (bean != null) {
+                return bean;
+            }
         }
+        return null;
+    }
 
-        return managedConverter;
+    private static Bean<?> resolveConverterBean(BeanManager beanManager, Annotation qualifier) {
+        // Try the parameterized converter type first, then the raw converter type.
+        Bean<?> bean = resolveBean(beanManager, CONVERTER_TYPE, qualifier);
+        if (bean == null) {
+            bean = resolveBean(beanManager, Converter.class, qualifier);
+        }
+        return bean;
+    }
+
+    /**
+     * Returns the resolved managed {@link Bean} for {@code key}, computing it via {@code resolver} and caching
+     * the outcome (a miss as {@link #NO_BEAN}) on first use. {@code getReference} is left to the caller so
+     * scope stays per-invocation.
+     */
+    private static Bean<?> cachedBean(Map<BeanManager, ConcurrentMap<Object, Bean<?>>> cacheByManager,
+            BeanManager beanManager, Object key, Supplier<Bean<?>> resolver) {
+        ConcurrentMap<Object, Bean<?>> cache = cacheByManager.computeIfAbsent(beanManager, k -> new ConcurrentHashMap<>());
+        Bean<?> cached = cache.get(key);
+        if (cached != null) {
+            return cached == NO_BEAN ? null : cached;
+        }
+        Bean<?> bean = resolver.get();
+        cache.put(key, bean == null ? NO_BEAN : bean);
+        return bean;
+    }
+
+    private static Object getReferenceInstance(BeanManager beanManager, Type type, Bean<?> bean) {
+        return beanManager.getReference(bean, type, beanManager.createCreationalContext(bean));
     }
 
     /**
@@ -154,13 +250,14 @@ public final class CdiUtils {
      * @return the behavior, or null if we could not match one.
      */
     public static Behavior createBehavior(BeanManager beanManager, String value) {
-        Behavior managedBehavior = getBeanReference(beanManager, Behavior.class, FacesBehavior.Literal.of(value, true));
+        Bean<?> bean = cachedBean(BEHAVIOR_BEANS_BY_KEY, beanManager, value,
+                () -> resolveBean(beanManager, Behavior.class, FacesBehavior.Literal.of(value, false)));
 
-        if (managedBehavior == null) {
-            managedBehavior = getBeanReference(beanManager, Behavior.class, FacesBehavior.Literal.of(value, false));
+        if (bean == null) {
+            return null;
         }
 
-        return managedBehavior;
+        return (Behavior) getReferenceInstance(beanManager, bean.getBeanClass(), bean);
     }
 
     /**
@@ -170,66 +267,33 @@ public final class CdiUtils {
      * @param value the value attribute.
      * @return the validator, or null if we could not match one.
      */
-    @SuppressWarnings("unchecked")
     public static Validator<?> createValidator(BeanManager beanManager, String value) {
+        Bean<?> bean = cachedBean(VALIDATOR_BEANS_BY_KEY, beanManager, value,
+                () -> resolveValidatorBean(beanManager, value));
 
-        Annotation qualifier = FacesValidator.Literal.of(value, false, true);
-
-        // Try to find parameterized validator first
-        Validator<Object> managedValidator = (Validator<Object>) getBeanReferenceByType(beanManager, VALIDATOR_TYPE, qualifier);
-
-        if (managedValidator == null) {
-            // No parameterized validator, try raw validator
-            managedValidator = (Validator<Object>) getBeanReference(beanManager, Validator.class, qualifier);
+        if (bean == null) {
+            return null;
         }
 
-        if (managedValidator == null) {
-            // The managed attribute is deprecated since 5.0 and defaults to false. Retry with managed=false.
-            qualifier = FacesValidator.Literal.of(value, false, false);
-            managedValidator = (Validator<Object>) getBeanReferenceByType(beanManager, VALIDATOR_TYPE, qualifier);
+        return (Validator<?>) getReferenceInstance(beanManager, bean.getBeanClass(), bean);
+    }
 
-            if (managedValidator == null) {
-                managedValidator = (Validator<Object>) getBeanReference(beanManager, Validator.class, qualifier);
+    private static Bean<?> resolveValidatorBean(BeanManager beanManager, String value) {
+        // Try the parameterized validator type first, then the raw type.
+        Annotation qualifier = FacesValidator.Literal.of(value, false, false);
+        Bean<?> bean = resolveBean(beanManager, VALIDATOR_TYPE, qualifier);
+        if (bean == null) {
+            bean = resolveBean(beanManager, Validator.class, qualifier);
+        }
+        if (bean == null) {
+            // Still nothing found: try the default qualifier with value as the bean name.
+            Annotation defaultQualifier = FacesValidator.Literal.of("", false, false);
+            bean = resolveBean(beanManager, VALIDATOR_TYPE, value, defaultQualifier);
+            if (bean == null) {
+                bean = resolveBean(beanManager, Validator.class, value, defaultQualifier);
             }
         }
-
-        if (managedValidator == null) {
-            // Still nothing found, try default qualifier and value as bean name.
-            qualifier = FacesValidator.Literal.of("", false, true);
-            managedValidator = (Validator<Object>) getBeanReferenceByType(
-                    beanManager,
-                    VALIDATOR_TYPE,
-                    value,
-                    qualifier);
-        }
-
-        if (managedValidator == null) {
-            qualifier = FacesValidator.Literal.of("", false, false);
-            managedValidator = (Validator<Object>) getBeanReferenceByType(
-                    beanManager,
-                    VALIDATOR_TYPE,
-                    value,
-                    qualifier);
-        }
-
-        if (managedValidator == null) {
-            // No parameterized validator, try raw validator
-            managedValidator = (Validator<Object>) getBeanReference(
-                beanManager,
-                Validator.class,
-                value,
-                FacesValidator.Literal.of("", false, true));
-        }
-
-        if (managedValidator == null) {
-            managedValidator = (Validator<Object>) getBeanReference(
-                beanManager,
-                Validator.class,
-                value,
-                FacesValidator.Literal.of("", false, false));
-        }
-
-        return managedValidator;
+        return bean;
     }
 
     public static void addAnnotatedTypes(BeforeBeanDiscovery beforeBean, BeanManager beanManager, Class<?>... types) {
@@ -266,21 +330,124 @@ public final class CdiUtils {
     }
 
     private static Object getBeanReferenceByType(BeanManager beanManager, Type type, String beanName, Annotation... qualifiers) {
+        Bean<?> bean = resolveBean(beanManager, type, beanName, qualifiers);
+        if (bean == null) {
+            return null;
+        }
+        return beanManager.getReference(bean, type, beanManager.createCreationalContext(bean));
+    }
 
-        Object beanReference = null;
-
-        Set<Bean<? extends Object>> beans = beanManager.getBeans(type, qualifiers);
+    private static Bean<?> resolveBean(BeanManager beanManager, Type type, String beanName, Annotation... qualifiers) {
+        ConcurrentMap<BeanLookupKey, Bean<?>> cache = RESOLVED_BEANS.computeIfAbsent(beanManager, k -> new ConcurrentHashMap<>());
+        BeanLookupKey key = new BeanLookupKey(type, beanName, new HashSet<>(Arrays.asList(qualifiers)));
+        Bean<?> cached = cache.get(key);
+        if (cached != null) {
+            return cached == NO_BEAN ? null : cached;
+        }
+        Set<Bean<?>> beans = beanManager.getBeans(type, qualifiers);
         if (beanName != null) {
             beans = beans.stream()
                 .filter(bean -> beanName.equals(getBeanName(bean)))
                 .collect(toSet());
         }
-        Bean<?> bean = beanManager.resolve(beans);
-        if (bean != null) {
-            beanReference = beanManager.getReference(bean, type, beanManager.createCreationalContext(bean));
+        Bean<?> resolved = beanManager.resolve(beans);
+        cache.put(key, resolved == null ? NO_BEAN : resolved);
+        return resolved;
+    }
+
+    /**
+     * Resolves the {@link Bean} for the given required type and qualifiers using the application's
+     * cache. Returns {@code null} if no bean matches. Unlike {@link #getBeanReference}, this does
+     * not invoke {@code getReference} -- the caller is responsible for that when an instance is
+     * needed, so scope semantics remain correct on each invocation.
+     */
+    public static Bean<?> resolveBean(BeanManager beanManager, Type type, Annotation... qualifiers) {
+        return resolveBean(beanManager, type, null, qualifiers);
+    }
+
+    /**
+     * Resolves the {@link Bean} for the given EL name using the application's cache.
+     * Returns {@code null} if no bean has that name.
+     */
+    public static Bean<?> resolveBeanByName(BeanManager beanManager, String name) {
+        ConcurrentMap<BeanLookupKey, Bean<?>> cache = RESOLVED_BEANS.computeIfAbsent(beanManager, k -> new ConcurrentHashMap<>());
+        BeanLookupKey key = new BeanLookupKey(null, name, Collections.emptySet());
+        Bean<?> cached = cache.get(key);
+        if (cached != null) {
+            return cached == NO_BEAN ? null : cached;
+        }
+        Bean<?> resolved = beanManager.resolve(beanManager.getBeans(name));
+        cache.put(key, resolved == null ? NO_BEAN : resolved);
+        return resolved;
+    }
+
+    /**
+     * Resolves and caches the {@link FacesContextProducer}-typed {@link FacesContext} bean
+     * once per {@link BeanManager}. Used by the per-request {@link FacesContext#release()}
+     * destruction path: the producer is registered exactly once per application, so re-running
+     * the type-containment filter on every request is wasted work.
+     */
+    public static Bean<?> resolveFacesContextProducerBean(BeanManager beanManager) {
+        Bean<?> cached = FACES_CONTEXT_PRODUCER_BEANS.get(beanManager);
+        if (cached != null) {
+            return cached == NO_BEAN ? null : cached;
+        }
+        Set<Bean<?>> beans = beanManager.getBeans(FacesContext.class).stream()
+            .filter(bean -> bean.getTypes().contains(FacesContextProducer.class))
+            .collect(toSet());
+        Bean<?> resolved = beanManager.resolve(beans);
+        FACES_CONTEXT_PRODUCER_BEANS.put(beanManager, resolved == null ? NO_BEAN : resolved);
+        return resolved;
+    }
+
+    private static final class BeanLookupKey {
+        private final Type type;
+        private final String beanName;
+        private final Set<Annotation> qualifiers;
+        private final int hash;
+
+        BeanLookupKey(Type type, String beanName, Set<Annotation> qualifiers) {
+            this.type = type;
+            this.beanName = beanName;
+            this.qualifiers = qualifiers;
+            this.hash = Objects.hash(type, beanName, qualifiers);
         }
 
-        return beanReference;
+        @Override
+        public boolean equals(Object other) {
+            if (this == other) {
+                return true;
+            }
+            if (!(other instanceof BeanLookupKey)) {
+                return false;
+            }
+            BeanLookupKey k = (BeanLookupKey) other;
+            return hash == k.hash && Objects.equals(type, k.type)
+                    && Objects.equals(beanName, k.beanName) && qualifiers.equals(k.qualifiers);
+        }
+
+        @Override
+        public int hashCode() {
+            return hash;
+        }
+    }
+
+    /**
+     * Sentinel for "no bean resolves for this key". Cannot be a {@code null} value because
+     * {@link ConcurrentHashMap} forbids null values, and we want to distinguish "cached miss"
+     * from "not yet cached" without a second containsKey call.
+     */
+    private static final class NoBean implements Bean<Object> {
+        @Override public Set<Type> getTypes() { throw new UnsupportedOperationException(); }
+        @Override public Set<Annotation> getQualifiers() { throw new UnsupportedOperationException(); }
+        @Override public Class<? extends Annotation> getScope() { throw new UnsupportedOperationException(); }
+        @Override public String getName() { throw new UnsupportedOperationException(); }
+        @Override public Set<Class<? extends Annotation>> getStereotypes() { throw new UnsupportedOperationException(); }
+        @Override public Class<?> getBeanClass() { throw new UnsupportedOperationException(); }
+        @Override public boolean isAlternative() { throw new UnsupportedOperationException(); }
+        @Override public Object create(CreationalContext<Object> ctx) { throw new UnsupportedOperationException(); }
+        @Override public void destroy(Object instance, CreationalContext<Object> ctx) { throw new UnsupportedOperationException(); }
+        @Override public Set<InjectionPoint> getInjectionPoints() { throw new UnsupportedOperationException(); }
     }
 
     private static String getBeanName(Bean<?> bean) {
@@ -391,7 +558,7 @@ public final class CdiUtils {
         BeanManager beanManager = cdi.getBeanManager();
 
         // Get the Map with classes for which a custom DataModel implementation is available from CDI
-        Bean<?> bean = beanManager.resolve(beanManager.getBeans("comSunFacesDataModelClassesMap"));
+        Bean<?> bean = resolveBeanByName(beanManager, DataModelClassesMapProducer.DATA_MODEL_CLASSES_MAP_BEAN_NAME);
         Object beanReference = beanManager.getReference(bean, Map.class, beanManager.createCreationalContext(bean));
 
         return (Map<Class<?>, Class<? extends DataModel<?>>>) beanReference;
@@ -404,11 +571,11 @@ public final class CdiUtils {
      * @return the current injection point
      */
     public static InjectionPoint getCurrentInjectionPoint(BeanManager beanManager, CreationalContext<?> creationalContext) {
-        Bean<? extends Object> bean = beanManager.resolve(beanManager.getBeans(InjectionPoint.class));
+        Bean<?> bean = resolveBean(beanManager, InjectionPoint.class);
         InjectionPoint injectionPoint = (InjectionPoint) beanManager.getReference(bean, InjectionPoint.class, creationalContext);
 
         if (injectionPoint == null) { // It's broken in some Weld versions. Below is a work around.
-            bean = beanManager.resolve(beanManager.getBeans(InjectionPointGenerator.class));
+            bean = resolveBean(beanManager, InjectionPointGenerator.class);
             injectionPoint = (InjectionPoint) beanManager.getInjectableReference(bean.getInjectionPoints().iterator().next(), creationalContext);
         }
 

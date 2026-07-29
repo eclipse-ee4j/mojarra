@@ -16,14 +16,16 @@
 
 package org.glassfish.mojarra.facelets.tag.faces;
 
-import static org.glassfish.mojarra.RIConstants.DYNAMIC_COMPONENT;
 import static org.glassfish.mojarra.component.CompositeComponentStackManager.StackType.TreeCreation;
+import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.DYNAMIC_COMPONENT;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -125,7 +127,8 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
 
         // grab our component
         UIComponent c = findChild(ctx, parent, id);
-        if (null == c && context.isPostback() && UIComponent.isCompositeComponent(parent) && parent.getAttributes().get(id) != null) {
+        // Reparenting only ever applies to a child of a composite component, so that test gates the costlier ones.
+        if (null == c && UIComponent.isCompositeComponent(parent) && context.isPostback() && parent.getAttributes().get(id) != null) {
             c = findReparentedComponent(ctx, parent, id);
         } else {
             /**
@@ -159,6 +162,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         }
 
         CompositeComponentStackManager ccStackManager = CompositeComponentStackManager.getManager(context);
+        StateContext stateContext = StateContext.getStateContext(context);
         boolean compcompPushed = pushComponentToEL(ctx, c, ccStackManager);
 
         if (ProjectStage.Development == context.getApplication().getProjectStage()) {
@@ -172,10 +176,30 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
             isNaming = true;
             IterationIdManager.startNamingContainer(ctx);
         }
+
+        // Refresh-gate (see ComponentSupport.BUILDING_FRESH_SUBTREE): a freshly created component with no
+        // children yet begins an all-new subtree, so its descendants have nothing existing to reuse and
+        // findChildByTagId can skip scanning. A found or binding-supplied component (which arrives with its
+        // children already attached) may contain components to reuse, so the scan stays active for its subtree.
+        boolean freshSubtree = !componentFound && c.getChildCount() == 0;
+        Map<Object, Object> contextAttributes = context.getAttributes();
+        Object previousFreshSubtree = contextAttributes.get(ComponentSupport.BUILDING_FRESH_SUBTREE);
+        // The flag holds for a whole subtree, so it only has to be written when it actually flips.
+        boolean flipped = !Objects.equals(previousFreshSubtree, freshSubtree);
+        if (flipped) {
+            contextAttributes.put(ComponentSupport.BUILDING_FRESH_SUBTREE, freshSubtree);
+        }
         try {
             // first allow c to get populated
             owner.applyNextHandler(ctx, c);
         } finally {
+            if (flipped) {
+                if (previousFreshSubtree != null) {
+                    contextAttributes.put(ComponentSupport.BUILDING_FRESH_SUBTREE, previousFreshSubtree);
+                } else {
+                    contextAttributes.remove(ComponentSupport.BUILDING_FRESH_SUBTREE);
+                }
+            }
             if (isNaming) {
                 IterationIdManager.stopNamingContainer(ctx);
             }
@@ -192,9 +216,9 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         // add to the tree afterwards
         // this allows children to determine if it's
         // been part of the tree or not yet
-        addComponentToView(ctx, parent, c, componentFound, parentModified);
+        addComponentToView(ctx, parent, c, componentFound, parentModified, stateContext);
         ComponentSupport.copyPassthroughAttributes(ctx, c, owner.getTag());
-        adjustIndexOfDynamicChildren(context, c);
+        adjustIndexOfDynamicChildren(stateContext, c);
         popComponentFromEL(ctx, c, ccStackManager, compcompPushed);
     }
 
@@ -219,22 +243,35 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         return parent.getAttributes().get(ComponentSupport.MARK_CHILDREN_MODIFIED) != null;
     }
 
-    private void adjustIndexOfDynamicChildren(FacesContext context, UIComponent parent) {
-        StateContext stateContext = StateContext.getStateContext(context);
+    private void adjustIndexOfDynamicChildren(StateContext stateContext, UIComponent parent) {
         if (!stateContext.hasOneOrMoreDynamicChild(parent)) {
             return;
         }
 
         List<UIComponent> children = parent.getChildren();
         List<UIComponent> dynamicChildren = Collections.emptyList();
+        boolean allInPlace = true;
 
+        int index = 0;
         for (UIComponent cur : children) {
             if (stateContext.componentAddedDynamically(cur)) {
                 if (dynamicChildren.isEmpty()) {
                     dynamicChildren = new ArrayList<>(children.size());
                 }
                 dynamicChildren.add(cur);
+                int stored = stateContext.getIndexOfDynamicallyAddedChildInParent(cur);
+                if (stored != -1 && stored != index) {
+                    allInPlace = false;
+                }
             }
+            index++;
+        }
+
+        // reapplyDynamicActions already puts every dynamic child at its stored index, so in the steady state the
+        // remove-all/re-add-all below just reproduces the current list -- at O(dynamic * children) cost, i.e. O(n^2)
+        // for an all-dynamic parent (a large dynamically populated container). Skip it when nothing is out of place.
+        if (allInPlace) {
+            return;
         }
 
         // First remove all the dynamic children, this puts the non-dynamic children at
@@ -298,16 +335,17 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
 
     // ------------------------------------------------------- Protected Methods
 
-    private void addComponentToView(FaceletContext ctx, UIComponent parent, UIComponent c, boolean componentFound, boolean parentModified) {
+    private void addComponentToView(FaceletContext ctx, UIComponent parent, UIComponent c, boolean componentFound, boolean parentModified,
+            StateContext stateContext) {
         if (!componentFound || !parentModified) {
-            addComponentToView(ctx, parent, c, componentFound);
+            addComponentToView(ctx, parent, c, componentFound, stateContext);
         }
     }
 
-    protected void addComponentToView(FaceletContext ctx, UIComponent parent, UIComponent c, boolean componentFound) {
+    protected void addComponentToView(FaceletContext ctx, UIComponent parent, UIComponent c, boolean componentFound, StateContext stateContext) {
 
         FacesContext context = ctx.getFacesContext();
-        boolean suppressEvents = ComponentSupport.suppressViewModificationEvents(context);
+        boolean suppressEvents = ComponentSupport.suppressViewModificationEvents(context, stateContext);
         boolean compcomp = UIComponent.isCompositeComponent(c);
 
         if (suppressEvents && componentFound && !compcomp) {
@@ -383,20 +421,19 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         if (this.id != null && !(this.id.isLiteral() && IterationIdManager.registerLiteralId(ctx, this.id.getValue()))) {
             c.setId(this.id.getValue(ctx));
         } else {
-            UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
-            if (root != null) {
-                String uid;
-                IdMapper mapper = IdMapper.getMapper(ctx.getFacesContext());
-                String mid = mapper != null ? mapper.getAliasedId(id) : id;
-                UIComponent ancestorNamingContainer = parent.getNamingContainer();
-                if (null != ancestorNamingContainer && ancestorNamingContainer instanceof UniqueIdVendor) {
-                    uid = ((UniqueIdVendor) ancestorNamingContainer).createUniqueId(ctx.getFacesContext(), mid);
-                } else {
-                    uid = root.createUniqueId(ctx.getFacesContext(), mid);
+            IdMapper mapper = IdMapper.getMapper(ctx.getFacesContext());
+            String mid = mapper != null ? mapper.getAliasedId(id) : id;
+            UIComponent ancestorNamingContainer = parent.getNamingContainer();
+            if (ancestorNamingContainer instanceof UniqueIdVendor) {
+                c.setId(((UniqueIdVendor) ancestorNamingContainer).createUniqueId(ctx.getFacesContext(), mid));
+            } else {
+                // No UniqueIdVendor ancestor: fall back to the view root. getViewRoot walks the parent chain,
+                // so resolve it only on this branch instead of unconditionally for every component.
+                UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
+                if (root != null) {
+                    c.setId(root.createUniqueId(ctx.getFacesContext(), mid));
                 }
-                c.setId(uid);
             }
-
         }
 
         if (rendererType != null) {
@@ -461,7 +498,8 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
     protected UIComponent findReparentedComponent(FaceletContext ctx, UIComponent parent, String tagId) {
         UIComponent facet = parent.getFacets().get(UIComponent.COMPOSITE_FACET_NAME);
         if (facet != null) {
-            return findChild(ctx, facet, tagId);
+            // Relocated children may sit below intermediate containers in the implementation, so search deep.
+            return ComponentSupport.findChildByTagIdDeep(ctx.getFacesContext(), facet, tagId);
         }
         return null;
     }

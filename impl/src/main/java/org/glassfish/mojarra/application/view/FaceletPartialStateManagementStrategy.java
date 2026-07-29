@@ -18,11 +18,10 @@ package org.glassfish.mojarra.application.view;
 
 import static jakarta.faces.component.visit.VisitHint.SKIP_ITERATION;
 import static jakarta.faces.component.visit.VisitResult.ACCEPT;
-import static jakarta.faces.component.visit.VisitResult.COMPLETE;
-import static jakarta.faces.component.visit.VisitResult.REJECT;
 import static java.util.logging.Level.FINEST;
 import static org.glassfish.mojarra.RIConstants.DYNAMIC_ACTIONS;
-import static org.glassfish.mojarra.RIConstants.DYNAMIC_COMPONENT;
+import static org.glassfish.mojarra.RIConstants.VIEW_REBUILT_AT_RENDER;
+import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.DYNAMIC_COMPONENT;
 import static org.glassfish.mojarra.util.ComponentStruct.ADD;
 import static org.glassfish.mojarra.util.ComponentStruct.REMOVE;
 import static org.glassfish.mojarra.util.Util.isEmpty;
@@ -39,9 +38,7 @@ import java.util.logging.Logger;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.application.ProjectStage;
-import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
-import jakarta.faces.component.UIForm;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.visit.VisitContext;
 import jakarta.faces.component.visit.VisitHint;
@@ -95,90 +92,39 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
     }
 
     /**
-     * Find the given component in the component tree.
+     * Builds a {@code clientId -> component} index over the given subtree in a single {@code visitTree} pass.
+     *
+     * <p>
+     * Dynamic-action replay resolves each action's parent and child by client id against this index in O(1), so
+     * replay is O(n) in the number of dynamically added components; a per-action {@code visitTree} would be O(n&sup2;).
+     * </p>
      *
      * @param context the Faces context.
-     * @param clientId the client id of the component to find.
+     * @param root the subtree to index.
+     * @return a mutable {@code clientId -> component} map; callers keep it in sync as components are added/removed.
      */
-    private UIComponent locateComponentByClientId(final FacesContext context, final UIComponent subTree, final String clientId) {
-        if (LOGGER.isLoggable(FINEST)) {
-            LOGGER.log(FINEST, "FaceletPartialStateManagementStrategy.locateComponentByClientId", clientId);
-        }
-
-        final List<UIComponent> found = new ArrayList<>();
-        UIComponent result = null;
-
-        VisitContext visitContext = VisitContext.createVisitContext(context, null, SKIP_ITERATION_HINT);
-        subTree.visitTree(visitContext, (visitContext1, component) -> {
-            VisitResult result1 = ACCEPT;
-            if (component.getClientId(visitContext1.getFacesContext()).equals(clientId)) {
-                /*
-                 * If the client id matches up we have found our match.
-                 */
-                found.add(component);
-                result1 = COMPLETE;
-            } else if (component instanceof UIForm) {
-                /*
-                 * If the component is a UIForm and it is prepending its id then we can short circuit out of here if the the client id
-                 * of the component we are trying to find does not begin with the id of the UIForm.
-                 */
-                UIForm form = (UIForm) component;
-                if (form.isPrependId() && !clientId.startsWith(form.getClientId(visitContext1.getFacesContext()))) {
-                    result1 = REJECT;
-                }
-            } else if (component instanceof NamingContainer && !clientId.startsWith(component.getClientId(visitContext1.getFacesContext()))) {
-                /*
-                 * If the component is a naming container then assume it is prepending its id so if our client id we are looking for
-                 * does not start with the naming container id we can skip visiting this tree.
-                 */
-                result1 = REJECT;
-            }
-
-            return result1;
-        });
-
-        if (!found.isEmpty()) {
-            result = found.get(0);
-        }
-
-        return result;
+    private Map<String, UIComponent> buildClientIdIndex(FacesContext context, UIComponent root) {
+        Map<String, UIComponent> index = new HashMap<>();
+        indexSubtree(context, root, index);
+        return index;
     }
 
     /**
-     * Methods that takes care of pruning and re-adding an action to the dynamic action list.
+     * Adds {@code root} and every descendant to the {@code clientId -> component} index. Used both to build the
+     * initial index and to register a subtree that replay adds, so a later action targeting a descendant (a
+     * dynamically added component nested under another) resolves against the live tree rather than restoring a
+     * duplicate.
      *
-     * <p>
-     * If you remove a component, re-add it to the same parent and then remove it again, you only have to capture the FIRST
-     * remove. Similarly if you add a component, remove it, and then re-add it to the same parent you only need to capture
-     * the LAST add.
-     * </p>
-     *
-     * @param dynamicActionList the dynamic action list.
-     * @param struct the component struct to add.
+     * @param context the Faces context.
+     * @param root the subtree to index.
+     * @param index the index to populate.
      */
-    private void pruneAndReAddToDynamicActions(List<ComponentStruct> dynamicActionList, ComponentStruct struct) {
-        if (LOGGER.isLoggable(FINEST)) {
-            LOGGER.finest("FaceletPartialStateManagementStrategy.pruneAndReAddToDynamicActions");
-        }
-
-        int firstIndex = dynamicActionList.indexOf(struct);
-        if (firstIndex == -1) {
-            dynamicActionList.add(struct);
-        } else {
-            int lastIndex = dynamicActionList.lastIndexOf(struct);
-            if (lastIndex == -1 || lastIndex == firstIndex) {
-                dynamicActionList.add(struct);
-            } else {
-                if (ADD.equals(struct.getAction())) {
-                    dynamicActionList.remove(lastIndex);
-                    dynamicActionList.remove(firstIndex);
-                    dynamicActionList.add(struct);
-                }
-                if (REMOVE.equals(struct.getAction())) {
-                    dynamicActionList.remove(lastIndex);
-                }
-            }
-        }
+    private void indexSubtree(FacesContext context, UIComponent root, Map<String, UIComponent> index) {
+        VisitContext visitContext = VisitContext.createVisitContext(context, null, SKIP_ITERATION_HINT);
+        root.visitTree(visitContext, (visitContext1, component) -> {
+            index.put(component.getClientId(visitContext1.getFacesContext()), component);
+            return ACCEPT;
+        });
     }
 
     /**
@@ -199,18 +145,42 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
         List<ComponentStruct> actions = stateContext.getDynamicActions();
 
         if (!isEmpty(savedActions)) {
+            // Index the tree once (O(n)) so each action resolves its parent/child in O(1), keeping replay O(n);
+            // kept in sync as components are added/removed below.
+            Map<String, UIComponent> componentIndex = buildClientIdIndex(context, context.getViewRoot());
             for (Object savedAction : savedActions) {
                 ComponentStruct action = new ComponentStruct();
                 action.restoreState(context, savedAction);
                 if (ADD.equals(action.getAction())) {
-                    restoreDynamicAdd(context, stateMap, action);
+                    restoreDynamicAdd(context, stateMap, action, componentIndex);
                 }
                 if (REMOVE.equals(action.getAction())) {
-                    restoreDynamicRemove(context, action);
+                    restoreDynamicRemove(context, action, componentIndex);
                 }
-                pruneAndReAddToDynamicActions(actions, action);
+                // The saved list is already pruned (see saveDynamicActions), so just rebuild the live list in order.
+                actions.add(action);
             }
         }
+    }
+
+    /**
+     * Returns the index the given action's child must be restored at. The action carries it, as the component
+     * does not necessarily survive to hold it: a facelet-created child which was dynamically moved to another
+     * parent is deleted and recreated by the facelet refresh, losing its marker. The marker on the component
+     * is only consulted for state saved before the action carried the index.
+     *
+     * @param struct the component struct.
+     * @param child the child being restored.
+     * @return the index within the parent's children, or {@link ComponentStruct#APPEND} to append.
+     */
+    private static int indexOf(ComponentStruct struct, UIComponent child) {
+        if (struct.getIndex() != ComponentStruct.APPEND) {
+            return struct.getIndex();
+        }
+        if (child.getAttributes().get(DYNAMIC_COMPONENT) instanceof Integer index) {
+            return index;
+        }
+        return ComponentStruct.APPEND;
     }
 
     /**
@@ -220,21 +190,30 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
      * @param state the state.
      * @param struct the component struct.
      */
-    private void restoreDynamicAdd(FacesContext context, Map<String, Object> state, ComponentStruct struct) {
+    private void restoreDynamicAdd(FacesContext context, Map<String, Object> state, ComponentStruct struct, Map<String, UIComponent> componentIndex) {
         if (LOGGER.isLoggable(FINEST)) {
             LOGGER.finest("FaceletPartialStateManagementStrategy.restoreDynamicAdd");
         }
 
-        UIComponent parent = locateComponentByClientId(context, context.getViewRoot(), struct.getParentClientId());
+        UIComponent parent = componentIndex.get(struct.getParentClientId());
 
         if (parent != null) {
-            UIComponent child = locateComponentByClientId(context, parent, struct.getClientId());
+            UIComponent child = componentIndex.get(struct.getClientId());
+
+            /*
+             * The buildView reapply that runs earlier in restoreView preserves programmatically-added
+             * children across the facelet refresh in their original order, so the child often already sits
+             * correctly under its parent. In that case skip the remove + re-add: getChildren().remove and
+             * getChildren().add each scan for the child (O(n) indexOf), i.e. O(n^2) over a large dynamic
+             * subtree, only to reproduce the position it already holds.
+             */
+            boolean alreadyInPlace = child != null && struct.getFacetName() == null && child.getParent() == parent;
 
             /*
              * If Facelets engine restored the child before us we are going to use it, but we need to remove it before we can add it
              * in the correct place.
              */
-            if (child != null) {
+            if (child != null && !alreadyInPlace) {
                 if (struct.getFacetName() == null) {
                     parent.getChildren().remove(child);
                 } else {
@@ -265,23 +244,35 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
              * Now if we have the child we are going to add it back in.
              */
             if (child != null) {
-                if (struct.getFacetName() != null) {
+                if (alreadyInPlace) {
+                    // Child survived the facelet refresh under this parent; leave it where it is. The
+                    // bookkeeping below still runs.
+                } else if (struct.getFacetName() != null) {
                     parent.getFacets().put(struct.getFacetName(), child);
+                    child.getAttributes().put(DYNAMIC_COMPONENT, child.getParent().getChildren().indexOf(child));
                 } else {
-                    int childIndex = -1;
-                    if (child.getAttributes().containsKey(DYNAMIC_COMPONENT)) {
-                        childIndex = (Integer) child.getAttributes().get(DYNAMIC_COMPONENT);
-                    }
+                    int childIndex = indexOf(struct, child);
                     child.setId(struct.getId());
+                    int storedIndex;
                     if (childIndex >= parent.getChildCount() || childIndex == -1) {
                         parent.getChildren().add(child);
+                        storedIndex = parent.getChildCount() - 1;
                     } else {
                         parent.getChildren().add(childIndex, child);
+                        storedIndex = childIndex;
                     }
                     child.getClientId();
+                    // Position the child was added at; avoids an O(n) getChildren().indexOf(child) per dynamic add.
+                    child.getAttributes().put(DYNAMIC_COMPONENT, storedIndex);
                 }
-                child.getAttributes().put(DYNAMIC_COMPONENT, child.getParent().getChildren().indexOf(child));
                 stateContext.getDynamicComponents().put(struct.getClientId(), child);
+                if (child.getChildCount() == 0 && child.getFacetCount() == 0) {
+                    componentIndex.put(struct.getClientId(), child);
+                } else {
+                    // A subtree was (re)added: index its descendants too, so a later action targeting one of them
+                    // resolves to the live component instead of restoring a duplicate.
+                    indexSubtree(context, child, componentIndex);
+                }
             }
         }
     }
@@ -292,12 +283,12 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
      * @param context the Faces context.
      * @param struct the component struct.
      */
-    private void restoreDynamicRemove(FacesContext context, ComponentStruct struct) {
+    private void restoreDynamicRemove(FacesContext context, ComponentStruct struct, Map<String, UIComponent> componentIndex) {
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest("FaceletPartialStateManagementStrategy.restoreDynamicRemove");
         }
 
-        UIComponent child = locateComponentByClientId(context, context.getViewRoot(), struct.getClientId());
+        UIComponent child = componentIndex.get(struct.getClientId());
         if (child != null) {
             StateContext stateContext = StateContext.getStateContext(context);
             stateContext.getDynamicComponents().put(struct.getClientId(), child);
@@ -307,6 +298,7 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
             } else {
             	parent.getChildren().remove(child);
             }
+            componentIndex.remove(struct.getClientId());
         }
     }
 
@@ -341,31 +333,46 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
         if (state != null) {
             try {
                 stateContext.setTrackViewModifications(false);
+                // No saved dynamic actions => no component carries DYNAMIC_COMPONENT, so the per-component
+                // marker lookup in componentAddedDynamically can be skipped across the whole restore traversal.
+                @SuppressWarnings("unchecked")
+                List<Object> savedActions = (List<Object>) state.get(DYNAMIC_ACTIONS);
+                boolean hasDynamicActions = !isEmpty(savedActions);
+                stateContext.setHasDynamicComponents(hasDynamicActions);
 
-                VisitContext visitContext = VisitContext.createVisitContext(context, null, SKIP_ITERATION_AND_EXECUTE_LIFECYCLE_HINTS);
-                viewRoot.visitTree(visitContext, (context1, target) -> {
-                    VisitResult result = VisitResult.ACCEPT;
-                    String cid = target.getClientId(context1.getFacesContext());
-                    Object stateObj = state.get(cid);
-                    if (stateObj != null && !stateContext.componentAddedDynamically(target)) {
-                        boolean restoreStateNow = true;
-                        if (stateObj instanceof StateHolderSaver) {
-                            restoreStateNow = !((StateHolderSaver) stateObj).componentAddedDynamically();
-                        }
-                        if (restoreStateNow) {
-                            try {
-                                target.restoreState(context1.getFacesContext(), stateObj);
-                            } catch (Exception e) {
-                                String msg = MessageUtils.getExceptionMessageString(MessageUtils.PARTIAL_STATE_ERROR_RESTORING_ID, cid, e.toString());
-                                throw new FacesException(msg, e);
+                if (!hasDynamicActions && isViewRootOnlyState(context, viewRoot, state)) {
+                    // No dynamic actions and no per-component delta (or only the view root's): restore the
+                    // view root in isolation and skip the full O(N) restore traversal. Any component whose
+                    // state actually changed carries a non-null delta in the map, which forces the walk via
+                    // the else-branch, so this short-circuit is behavior-neutral for static / low-delta views.
+                    restoreViewRootOnly(context, viewRoot, state);
+                } else {
+                    VisitContext visitContext = VisitContext.createVisitContext(context, null, SKIP_ITERATION_AND_EXECUTE_LIFECYCLE_HINTS);
+                    viewRoot.visitTree(visitContext, (context1, target) -> {
+                        VisitResult result = VisitResult.ACCEPT;
+                        String cid = target.getClientId(context1.getFacesContext());
+                        Object stateObj = state.get(cid);
+                        if (stateObj != null && !stateContext.componentAddedDynamically(target)) {
+                            boolean restoreStateNow = true;
+                            if (stateObj instanceof StateHolderSaver) {
+                                restoreStateNow = !((StateHolderSaver) stateObj).componentAddedDynamically();
+                            }
+                            if (restoreStateNow) {
+                                try {
+                                    target.restoreState(context1.getFacesContext(), stateObj);
+                                } catch (Exception e) {
+                                    String msg = MessageUtils.getExceptionMessageString(MessageUtils.PARTIAL_STATE_ERROR_RESTORING_ID, cid, e.toString());
+                                    throw new FacesException(msg, e);
+                                }
                             }
                         }
-                    }
 
-                    return result;
-                });
-                restoreDynamicActions(context, stateContext, state);
+                        return result;
+                    });
+                    restoreDynamicActions(context, stateContext, state);
+                }
             } finally {
+                stateContext.setHasDynamicComponents(true);
                 stateContext.setTrackViewModifications(true);
             }
         } else {
@@ -373,6 +380,41 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
         }
         context.setProcessingEvents(processingEvents);
         return viewRoot;
+    }
+
+    /**
+     * Determine whether the saved state holds no per-component delta other than (optionally) the view
+     * root's own state. The {@code DYNAMIC_ACTIONS} entry is bookkeeping rather than a component delta,
+     * so it is excluded from the count.
+     *
+     * @param context the Faces context.
+     * @param viewRoot the view root.
+     * @param state the saved state map.
+     * @return true if only the view root needs restoring, allowing the full restore traversal to be skipped.
+     */
+    private boolean isViewRootOnlyState(FacesContext context, UIViewRoot viewRoot, Map<String, Object> state) {
+        int componentStateCount = state.containsKey(DYNAMIC_ACTIONS) ? state.size() - 1 : state.size();
+        return componentStateCount == 0
+                || componentStateCount == 1 && state.containsKey(viewRoot.getClientId(context));
+    }
+
+    /**
+     * Restore only the view root's own state, skipping the per-component restore traversal.
+     *
+     * @param context the Faces context.
+     * @param viewRoot the view root.
+     * @param state the saved state map.
+     */
+    private void restoreViewRootOnly(FacesContext context, UIViewRoot viewRoot, Map<String, Object> state) {
+        Object viewRootState = state.get(viewRoot.getClientId(context));
+        if (viewRootState != null) {
+            viewRoot.pushComponentToEL(context, viewRoot);
+            try {
+                viewRoot.restoreState(context, viewRootState);
+            } finally {
+                viewRoot.popComponentFromEL(context);
+            }
+        }
     }
 
     /**
@@ -391,14 +433,21 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
         HashMap<String, UIComponent> componentMap = stateContext.getDynamicComponents();
 
         if (actions != null) {
-            List<Object> savedActions = new ArrayList<>(actions.size());
-            for (ComponentStruct action : actions) {
+            // Actions are recorded raw (append-only) per event; collapse redundant add/remove pairs once here.
+            List<ComponentStruct> prunedActions = StateContext.pruneDynamicActions(actions);
+            List<Object> savedActions = new ArrayList<>(prunedActions.size());
+            for (ComponentStruct action : prunedActions) {
                 UIComponent component = componentMap.get(action.getClientId());
                 if (component == null && context.isProjectStage(ProjectStage.Development)) {
                     LOGGER.log(Level.WARNING, "Unable to save dynamic action with clientId ''{0}'' because the UIComponent cannot be found",
                             action.getClientId());
                 }
                 if (component != null) {
+                    // The tree walk above has just stamped each dynamically added component with the index it
+                    // actually ended up at, which supersedes the one recorded when the action was fired.
+                    if (ADD.equals(action.getAction()) && component.getAttributes().get(DYNAMIC_COMPONENT) instanceof Integer index) {
+                        action.setIndex(index);
+                    }
                     savedActions.add(action.saveState(context));
                 }
             }
@@ -427,7 +476,12 @@ public class FaceletPartialStateManagementStrategy extends StateManagementStrate
             return null;
         }
 
-        Util.checkIdUniqueness(context, viewRoot, new HashSet<>(viewRoot.getChildCount() << 1));
+        // Skip the whole-tree duplicate-id walk when the render-time build skipped the facelet re-apply: the tree is
+        // then identical to the one already validated when it was first built (see VIEW_REBUILT_AT_RENDER). A rebuilt
+        // or freshly-built (GET / navigation / JSTL) tree, or an unset flag, still runs the check.
+        if (!Boolean.FALSE.equals(context.getAttributes().get(VIEW_REBUILT_AT_RENDER))) {
+            Util.checkIdUniqueness(context, viewRoot, new HashSet<>(64));
+        }
 
         final Map<String, Object> stateMap = new HashMap<>();
         final StateContext stateContext = StateContext.getStateContext(context);

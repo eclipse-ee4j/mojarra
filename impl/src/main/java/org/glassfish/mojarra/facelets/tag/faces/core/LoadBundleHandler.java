@@ -198,6 +198,11 @@ public final class LoadBundleHandler extends TagHandlerImpl {
      */
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
+        if (!basename.isLiteral()) {
+            // A non-literal basename is re-evaluated per request, so the view must be re-applied on every (re)build
+            // instead of skipped (see refreshTransientBuildOnPSS) to re-resolve the bundle under var.
+            markDynamicTransientBuild(ctx);
+        }
         UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
         ResourceBundle bundle = null;
         try {

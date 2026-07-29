@@ -40,6 +40,24 @@ public class RIConstants {
 
     public static final String SAVED_STATE = RI_PREFIX + "savedState";
 
+    /**
+     * Request-scoped flag set during a view build when a build-time-dynamic handler (a JSTL conditional/iteration or a
+     * dynamic ui:include/ui:decorate/ui:composition) participates, marking the view as one whose facelet must be
+     * re-applied on every (re)build. Read by {@code FaceletViewHandlingStrategy.buildView} to decide whether the
+     * redundant render-time re-apply may be skipped (see {@code refreshTransientBuildOnPSS}).
+     */
+    public static final String DYNAMIC_TRANSIENT_BUILD = RI_PREFIX + "dynamicTransientBuild";
+
+    /**
+     * Request-scoped flag recording whether the render-time {@code buildView} re-applied the facelet ({@code TRUE}) or
+     * skipped the re-apply for an already-populated static view ({@code FALSE}, see {@code refreshTransientBuildOnPSS}).
+     * Since {@code buildView} runs immediately before {@code renderView}, this reflects whether the tree the state
+     * manager is about to save was (re)built from the facelet this request. {@code saveView} reads it to skip the
+     * redundant whole-tree duplicate-id walk when the tree was not rebuilt (its ids were already validated when it was
+     * first built). Absence is treated as rebuilt, so the check runs by default.
+     */
+    public static final String VIEW_REBUILT_AT_RENDER = RI_PREFIX + "viewRebuiltAtRender";
+
     /*
      * <p>TLV Resource Bundle Location </p>
      */
@@ -81,16 +99,6 @@ public class RIConstants {
      * Marker attached to a component that has dynamic children.
      */
     public static final String DYNAMIC_CHILD_COUNT = RI_PREFIX + "DynamicChildCount";
-
-    /**
-     * Marker attached to a component that was added dynamically.
-     */
-    public static final String DYNAMIC_COMPONENT = RI_PREFIX + "DynamicComponent";
-
-    /**
-     * Present in the attrs of UIViewRoot iff the tree has one or more dynamic modifications
-     */
-    public static final String TREE_HAS_DYNAMIC_COMPONENTS = RI_PREFIX + "TreeHasDynamicComponents";
 
     public static final String FLOW_DEFINITION_ID_SUFFIX = "-flow.xml";
 

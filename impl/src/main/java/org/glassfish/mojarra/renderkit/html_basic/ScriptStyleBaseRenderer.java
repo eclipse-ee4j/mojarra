@@ -37,6 +37,7 @@ import jakarta.faces.event.PostAddToViewEvent;
 import jakarta.faces.render.Renderer;
 
 import org.glassfish.mojarra.application.ApplicationAssociate;
+import org.glassfish.mojarra.renderkit.RenderKitUtils;
 import org.glassfish.mojarra.util.FacesLogger;
 
 /**
@@ -69,7 +70,7 @@ public abstract class ScriptStyleBaseRenderer extends Renderer<UIComponent> impl
         UIComponent component = event.getComponent();
         FacesContext context = FacesContext.getCurrentInstance();
 
-        String target = verifyTarget((String) component.getAttributes().get("target"));
+        String target = verifyTarget((String) RenderKitUtils.getAttributeIfSet(component, "target"));
         if (target != null) {
             // We're checking for a composite component here as if the resource
             // is relocated, it may still require it's composite component context

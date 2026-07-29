@@ -17,7 +17,7 @@
 package org.glassfish.mojarra.context;
 
 import static org.glassfish.mojarra.RIConstants.DYNAMIC_CHILD_COUNT;
-import static org.glassfish.mojarra.RIConstants.DYNAMIC_COMPONENT;
+import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.DYNAMIC_COMPONENT;
 import static org.glassfish.mojarra.util.ComponentStruct.ADD;
 import static org.glassfish.mojarra.util.ComponentStruct.REMOVE;
 
@@ -28,14 +28,16 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIData;
+import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
@@ -62,6 +64,10 @@ public class StateContext {
     private boolean partial;
     private boolean partialLocked;
     private boolean trackMods = true;
+    // A view whose saved state carries no dynamic add/remove actions has no component bearing the
+    // DYNAMIC_COMPONENT marker, so componentAddedDynamically can skip the per-component attribute
+    // lookup. The partial-state restore sets this false for such views; true (always check) otherwise.
+    private boolean hasDynamicComponents = true;
     private AddRemoveListener modListener;
     private ApplicationStateInfo stateInfo;
     private WeakReference<UIViewRoot> viewRootRef = new WeakReference<>(null);
@@ -192,7 +198,19 @@ public class StateContext {
      * @return <code>true</code> if the component was added after the initial view construction
      */
     public boolean componentAddedDynamically(UIComponent c) {
-        return c.getAttributes().containsKey(DYNAMIC_COMPONENT);
+        return hasDynamicComponents && c.getAttributes().containsKey(DYNAMIC_COMPONENT);
+    }
+
+    /**
+     * Hint from the state-management strategy: when a restored view's saved state carries no dynamic
+     * add/remove actions, no component can bear the {@code DYNAMIC_COMPONENT} marker, so
+     * {@link #componentAddedDynamically} skips the per-component attribute lookup. Defaults to
+     * {@code true} (always check) for every other call path.
+     *
+     * @param hasDynamicComponents whether the current view may contain dynamically added/removed components
+     */
+    public void setHasDynamicComponents(boolean hasDynamicComponents) {
+        this.hasDynamicComponents = hasDynamicComponents;
     }
 
     public int getIndexOfDynamicallyAddedChildInParent(UIComponent c) {
@@ -208,35 +226,16 @@ public class StateContext {
         return parent.getAttributes().containsKey(DYNAMIC_CHILD_COUNT);
     }
 
-    private int incrementDynamicChildCount(FacesContext context, UIComponent parent) {
-        int result;
+    /**
+     * Mark {@code parent} as having a dynamically added child. Read back by {@link #hasOneOrMoreDynamicChild} to gate
+     * the dynamic-child reorder during Facelets re-apply, which tests only for the key's presence -- so this is a
+     * set-once marker, not a count.
+     */
+    private void markHasDynamicChild(UIComponent parent) {
         Map<String, Object> attrs = parent.getAttributes();
-        Integer cur = (Integer) attrs.get(DYNAMIC_CHILD_COUNT);
-        if (null != cur) {
-            result = cur++;
-        } else {
-            result = 1;
+        if (!attrs.containsKey(DYNAMIC_CHILD_COUNT)) {
+            attrs.put(DYNAMIC_CHILD_COUNT, 1);
         }
-        attrs.put(DYNAMIC_CHILD_COUNT, result);
-        context.getViewRoot().getAttributes().put(RIConstants.TREE_HAS_DYNAMIC_COMPONENTS, Boolean.TRUE);
-
-        return result;
-    }
-
-    private int decrementDynamicChildCount(FacesContext context, UIComponent parent) {
-        int result = 0;
-        Map<String, Object> attrs = parent.getAttributes();
-        Integer cur = (Integer) attrs.get(DYNAMIC_CHILD_COUNT);
-        if (null != cur) {
-            result = 0 < cur ? cur-- : 0;
-
-        }
-        if (0 == result && null != cur) {
-            attrs.remove(DYNAMIC_CHILD_COUNT);
-        }
-        context.getViewRoot().getAttributes().put(RIConstants.TREE_HAS_DYNAMIC_COMPONENTS, Boolean.TRUE);
-
-        return result;
     }
 
     /**
@@ -254,6 +253,128 @@ public class StateContext {
      */
     public HashMap<String, UIComponent> getDynamicComponents() {
         return modListener != null ? modListener.getDynamicComponents() : null;
+    }
+
+    /**
+     * Collapses a raw, append-ordered dynamic action list into the minimal set to replay or save.
+     *
+     * <p>
+     * Actions are recorded append-only per event (see {@code recordDynamicAction}); redundant add/remove pairs for
+     * the same client id are collapsed here in a single O(n) pass rather than per event (a per-event prune is
+     * O(n&sup2;)). Per
+     * client id the net effect is one of: an ADD (added and still present), nothing (added then removed again), a
+     * REMOVE (a pre-existing component removed), or a REMOVE followed by an ADD (pre-existing removed then re-added).
+     * First-occurrence order is preserved so a parent is always replayed before its children.
+     * </p>
+     *
+     * @param rawActions the dynamic actions in the order they were recorded, or {@code null}.
+     * @return the pruned actions in replay order, or {@code null} if {@code rawActions} was {@code null}.
+     */
+    public static List<ComponentStruct> pruneDynamicActions(List<ComponentStruct> rawActions) {
+        if (rawActions == null) {
+            return null;
+        }
+        // Collapsing an ADD that a later REMOVE cancels (and coalescing a REMOVE with a re-ADD) for the same
+        // client id can only happen when the list holds both an ADD and a REMOVE. A homogeneous list -- all
+        // ADDs or all REMOVEs, i.e. the common bulk add or bulk clear in an action -- has nothing to collapse:
+        // each action is already a distinct net add/remove. Skip the per-id LinkedHashMap for it.
+        boolean hasAdd = false, hasRemove = false;
+        for (ComponentStruct action : rawActions) {
+            if (ADD.equals(action.getAction())) {
+                hasAdd = true;
+            } else if (REMOVE.equals(action.getAction())) {
+                hasRemove = true;
+            }
+            if (hasAdd && hasRemove) {
+                break;
+            }
+        }
+        if (!hasAdd || !hasRemove) {
+            return rawActions;
+        }
+        // value[0] = effective REMOVE for the client id (or null); value[1] = effective ADD (or null)
+        Map<String, ComponentStruct[]> netByClientId = new LinkedHashMap<>();
+        for (ComponentStruct action : rawActions) {
+            ComponentStruct[] net = netByClientId.computeIfAbsent(action.getClientId(), key -> new ComponentStruct[2]);
+            if (ADD.equals(action.getAction())) {
+                net[1] = action;
+            } else if (net[1] != null) {
+                net[1] = null;          // an earlier ADD is cancelled by this REMOVE
+            } else if (net[0] == null) {
+                net[0] = action;        // first REMOVE of a pre-existing component
+            }
+        }
+        List<ComponentStruct> pruned = new ArrayList<>(netByClientId.size());
+        for (ComponentStruct[] net : netByClientId.values()) {
+            if (net[0] != null) {
+                pruned.add(net[0]);
+            }
+            if (net[1] != null) {
+                pruned.add(net[1]);
+            }
+        }
+        return pruned;
+    }
+
+    /**
+     * Drops the iteration index of every iterating ancestor from the given client id, e.g.
+     * {@code form:table:1:group} becomes {@code form:table:group}.
+     *
+     * <p>
+     * An action is recorded whenever the tree is modified, which can be while an iterating component has a row
+     * index set -- an add performed by a command button inside a row, for instance, as {@link UIData#broadcast}
+     * sets the row index before the action runs. The client id then carries that row, but the component does not:
+     * a component inside an iterating one is a single instance shared by every row, so the modification belongs to
+     * all of them and the row says only when it happened. Recording it would key the action to a position which
+     * does not exist, which nothing can resolve it against afterwards.
+     * </p>
+     *
+     * <p>
+     * A numeric segment is unambiguous: a component id cannot be one, as {@link UIComponent#setId} requires the
+     * first character to be a letter or an underscore. Only an iterating component contributes one.
+     * </p>
+     *
+     * @param separatorChar the naming-container separator character.
+     * @param clientId the client id to strip.
+     * @return the given client id without the iteration index of any iterating ancestor.
+     */
+    static String stripIterationIndex(char separatorChar, String clientId) {
+        StringBuilder builder = new StringBuilder(clientId.length());
+        boolean stripped = false;
+        int segmentStart = 0;
+
+        for (int i = 0; i <= clientId.length(); i++) {
+            if (i < clientId.length() && clientId.charAt(i) != separatorChar) {
+                continue;
+            }
+
+            if (isIterationIndex(clientId, segmentStart, i)) {
+                stripped = true;
+            } else {
+                if (builder.length() > 0) {
+                    builder.append(separatorChar);
+                }
+                builder.append(clientId, segmentStart, i);
+            }
+
+            segmentStart = i + 1;
+        }
+
+        return stripped ? builder.toString() : clientId;
+    }
+
+    private static boolean isIterationIndex(String clientId, int start, int end) {
+        if (start >= end) {
+            return false;
+        }
+
+        for (int i = start; i < end; i++) {
+            if (!Character.isDigit(clientId.charAt(i))) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     // ---------------------------------------------------------- Nested Classes
@@ -304,12 +425,10 @@ public class StateContext {
             if (event instanceof PreRemoveFromViewEvent) {
                 if (stateCtx.trackViewModifications()) {
                     handleRemove(ctx, ((PreRemoveFromViewEvent) event).getComponent());
-                    ctx.getViewRoot().getAttributes().put(RIConstants.TREE_HAS_DYNAMIC_COMPONENTS, Boolean.TRUE);
                 }
             } else {
                 if (stateCtx.trackViewModifications()) {
                     handleAdd(ctx, ((PostAddToViewEvent) event).getComponent());
-                    ctx.getViewRoot().getAttributes().put(RIConstants.TREE_HAS_DYNAMIC_COMPONENTS, Boolean.TRUE);
                 }
             }
         }
@@ -552,12 +671,10 @@ public class StateContext {
          */
         @Override
         public List<ComponentStruct> getDynamicActions() {
-            synchronized (this) {
-                if (dynamicActions == null) {
-                    dynamicActions = new ArrayList<>();
-                }
+            if (dynamicActions == null) {
+                dynamicActions = new ArrayList<>();
             }
-            
+
             return dynamicActions;
         }
 
@@ -568,12 +685,10 @@ public class StateContext {
          */
         @Override
         public HashMap<String, UIComponent> getDynamicComponents() {
-            synchronized (this) {
-                if (dynamicComponents == null) {
-                    dynamicComponents = new HashMap<>();
-                }
+            if (dynamicComponents == null) {
+                dynamicComponents = new HashMap<>();
             }
-            
+
             return dynamicComponents;
         }
 
@@ -586,10 +701,10 @@ public class StateContext {
         @Override
         protected void handleRemove(FacesContext context, UIComponent component) {
             if (component.isInView()) {
-                decrementDynamicChildCount(context, component.getParent());
-                handleAddRemoveWithAutoPrune(
-                    component, 
-                    new ComponentStruct(REMOVE, findFacetNameForComponent(component), component.getClientId(context), component.getId())
+                recordDynamicAction(
+                    component,
+                    new ComponentStruct(REMOVE, findFacetNameForComponent(component),
+                        stripIterationIndex(UINamingContainer.getSeparatorChar(context), component.getClientId(context)), component.getId())
                 );
            }
         }
@@ -603,36 +718,22 @@ public class StateContext {
         @Override
         protected void handleAdd(FacesContext context, UIComponent component) {
             if (component.getParent() != null && component.getParent().isInView()) {
-                String id = component.getId();
-
-                /*
-                 * Since adding a component, can mean you are really reparenting it, we need to make sure the OLD clientId is not
-                 * cached, we do that by setting the id.
-                 */
-                if (id != null) {
-                    component.setId(id);
-                }
-
+                // The stale clientId that a reparent could leave behind is already invalidated by
+                // UIComponentBase.setParent, which runs before this event, so no setId is needed here.
                 String facetName = findFacetNameForComponent(component);
-                if (facetName != null) {
-                    incrementDynamicChildCount(context, component.getParent());
-                    component.clearInitialState();
-                    component.getAttributes().put(DYNAMIC_COMPONENT, component.getParent().getChildren().indexOf(component));
+                int index = indexInParent(component);
+                markHasDynamicChild(component.getParent());
+                component.clearInitialState();
+                component.getAttributes().put(DYNAMIC_COMPONENT, index);
 
-                    ComponentStruct struct = new ComponentStruct(ADD, facetName, component.getParent().getClientId(context), component.getClientId(context),
-                            component.getId());
+                char separatorChar = UINamingContainer.getSeparatorChar(context);
+                ComponentStruct struct = new ComponentStruct(ADD, facetName,
+                        stripIterationIndex(separatorChar, component.getParent().getClientId(context)),
+                        stripIterationIndex(separatorChar, component.getClientId(context)),
+                        component.getId());
+                struct.setIndex(index);
 
-                    handleAddRemoveWithAutoPrune(component, struct);
-                } else {
-                    incrementDynamicChildCount(context, component.getParent());
-                    component.clearInitialState();
-                    component.getAttributes().put(DYNAMIC_COMPONENT, component.getParent().getChildren().indexOf(component));
-
-                    ComponentStruct struct = new ComponentStruct(ADD, null, component.getParent().getClientId(context), component.getClientId(context),
-                            component.getId());
-
-                    handleAddRemoveWithAutoPrune(component, struct);
-                }
+                recordDynamicAction(component, struct);
             }
         }
 
@@ -655,77 +756,39 @@ public class StateContext {
         }
 
         /**
-         * Methods that takes care of pruning and adding an action to the dynamic action list.
+         * Records a dynamic add/remove action by appending it to the dynamic action list (O(1)).
          *
-         * <pre>
-         *  If you add a component and the dynamic action list does not contain
-         *  the component yet then add it to the dynamic action list, regardless
-         *  whether or not if was an ADD or REMOVE.
-         * </pre>
-         *
-         * <pre>
-         *  Else if you add a component and it is already in the dynamic action
-         *  list and it is the only action for that client id in the dynamic
-         *  action list then:
-         *   1) If the previous action was an ADD then
-         *      a) If the current action is a REMOVE then remove the component
-         *         out of the dynamic action list.
-         *      b) If the current action is an ADD then throw a FacesException.
-         *   2) If the previous action was a REMOVE then
-         *      a) If the current action is an ADD then add it to the dynamic
-         *         action list.
-         *      b) If the current action is a REMOVE then throw a FacesException.
-         * </pre>
-         *
-         * <pre>
-         *  Else if a REMOVE and ADD where captured before then:
-         *   1) If the current action is REMOVE then remove the last dynamic
-         *      action out of the dynamic action list.
-         *   2) If the current action is ADD then throw a FacesException.
-         * </pre>
+         * <p>
+         * Redundant add/remove pairs for the same client id (e.g. a component added then removed within a request)
+         * are collapsed in a single pass at save time (see
+         * {@code FaceletPartialStateManagementStrategy#saveDynamicActions}) rather than per event. A per-event prune
+         * has to {@code indexOf}/{@code remove} on the action list for every add or remove, which is O(n&sup2;) over
+         * n dynamically added components; appending and pruning once at save keeps recording O(1) per event.
+         * </p>
          *
          * @param component the UI component.
          * @param struct the dynamic action.
          */
-        private void handleAddRemoveWithAutoPrune(UIComponent component, ComponentStruct struct) {
-            List<ComponentStruct> actionList = getDynamicActions();
-            HashMap<String, UIComponent> componentMap = getDynamicComponents();
+        private void recordDynamicAction(UIComponent component, ComponentStruct struct) {
+            getDynamicActions().add(struct);
+            getDynamicComponents().put(struct.getClientId(), component);
+        }
 
-            int firstIndex = actionList.indexOf(struct);
-            if (firstIndex == -1) {
-                actionList.add(struct);
-                componentMap.put(struct.getClientId(), component);
-            } else {
-                int lastIndex = actionList.lastIndexOf(struct);
-                if (lastIndex == firstIndex) {
-                    ComponentStruct previousStruct = actionList.get(firstIndex);
-                    if (ADD.equals(previousStruct.getAction())) {
-                        if (ADD.equals(struct.getAction())) {
-                            throw new FacesException("Cannot add the same component twice: " + struct.getClientId());
-                        }
-                        if (REMOVE.equals(struct.getAction())) {
-                            actionList.remove(firstIndex);
-                            componentMap.remove(struct.getClientId());
-                        }
-                    }
-                    if (REMOVE.equals(previousStruct.getAction())) {
-                        if (ADD.equals(struct.getAction())) {
-                            actionList.add(struct);
-                            componentMap.put(struct.getClientId(), component);
-                        }
-                        if (REMOVE.equals(struct.getAction())) {
-                            throw new FacesException("Cannot remove the same component twice: " + struct.getClientId());
-                        }
-                    }
-                } else {
-                    if (ADD.equals(struct.getAction())) {
-                        throw new FacesException("Cannot add the same component twice: " + struct.getClientId());
-                    }
-                    if (REMOVE.equals(struct.getAction())) {
-                        actionList.remove(lastIndex);
-                    }
-                }
+        /**
+         * Index of the component within its parent's children list, computed in O(1) for the common case where the
+         * component was just appended (a dynamic add typically appends), with a scan fallback otherwise. Returns -1
+         * when the component is not in the children list (e.g. it is a facet).
+         *
+         * @param component the component whose position to report.
+         * @return the child index, or -1 if not a child of its parent.
+         */
+        private int indexInParent(UIComponent component) {
+            List<UIComponent> children = component.getParent().getChildren();
+            int last = children.size() - 1;
+            if (last >= 0 && children.get(last) == component) {
+                return last;
             }
+            return children.indexOf(component);
         }
     }
 

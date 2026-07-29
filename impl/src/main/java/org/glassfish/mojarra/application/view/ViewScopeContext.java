@@ -54,13 +54,19 @@ public class ViewScopeContext implements Context, Serializable {
     }
 
     /**
-     * Assert the context is active, otherwise throw ContextNotActiveException.
+     * Returns the current FacesContext, asserting the context is active (its view root is present) and otherwise
+     * throwing {@link ContextNotActiveException}. Resolving it once per {@code get} avoids the repeated thread-local
+     * lookups that a separate {@code assertNotReleased()} plus {@link #isActive()} would each incur.
+     *
+     * @return the active FacesContext.
      */
-    private void assertNotReleased() {
-        if (!isActive()) {
+    private static FacesContext getActiveFacesContext() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext == null || facesContext.getViewRoot() == null) {
             LOGGER.log(SEVERE, "Trying to access ViewScope CDI context while it is not active");
             throw new ContextNotActiveException();
         }
+        return facesContext;
     }
 
     /**
@@ -72,19 +78,15 @@ public class ViewScopeContext implements Context, Serializable {
      */
     @Override
     public <T> T get(Contextual<T> contextual) {
-        assertNotReleased();
+        FacesContext facesContext = getActiveFacesContext();
+        ViewScopeManager manager = ViewScopeManager.getInstance(facesContext);
 
-        T result = null;
-
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        if (facesContext != null) {
-            ViewScopeManager manager = ViewScopeManager.getInstance(facesContext);
-            if (manager != null) {
-                result = manager.getContextManager().getBean(facesContext, contextual);
-            }
+        if (manager == null) {
+            return null;
         }
 
-        return result;
+        ViewScopeManager.acquireViewMap(facesContext);
+        return manager.getContextManager().getBean(facesContext, contextual);
     }
 
     /**
@@ -98,19 +100,17 @@ public class ViewScopeContext implements Context, Serializable {
      */
     @Override
     public <T> T get(Contextual<T> contextual, CreationalContext<T> creational) {
-        assertNotReleased();
+        FacesContext facesContext = getActiveFacesContext();
+        ViewScopeManager manager = ViewScopeManager.getInstance(facesContext);
+        if (manager == null) {
+            return null;
+        }
 
-        T result = get(contextual);
+        ViewScopeManager.acquireViewMap(facesContext);
 
+        T result = manager.getContextManager().getBean(facesContext, contextual);
         if (result == null) {
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            if (facesContext != null) {
-                ViewScopeManager manager = ViewScopeManager.getInstance(facesContext);
-                result = manager.getContextManager().getBean(facesContext, contextual);
-                if (result == null) {
-                    result = manager.getContextManager().createBean(facesContext, contextual, creational);
-                }
-            }
+            result = manager.getContextManager().createBean(facesContext, contextual, creational);
         }
 
         return result;

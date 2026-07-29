@@ -59,6 +59,7 @@ public final class ChooseHandler extends TagHandlerImpl {
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
+        markDynamicTransientBuild(ctx);
         for (int i = 0; i < when.length; i++) {
             if (when[i].isTestTrue(ctx)) {
                 when[i].apply(ctx, parent);

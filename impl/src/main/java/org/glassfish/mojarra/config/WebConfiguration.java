@@ -78,7 +78,7 @@ public class WebConfiguration {
     // Key under which we store our WebConfiguration instance.
     private static final String WEB_CONFIG_KEY = "org.glassfish.mojarra.config.WebConfiguration";
 
-    public static final String META_INF_CONTRACTS_DIR = "META-INF" + ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE;
+    public static final String META_INF_CONTRACTS_DIR = "META-INF/" + ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_DEFAULT_VALUE;
 
     private static final int META_INF_CONTRACTS_DIR_LEN = META_INF_CONTRACTS_DIR.length();
 
@@ -657,10 +657,13 @@ public class WebConfiguration {
         ResourceUpdateCheckPeriod("org.glassfish.mojarra.resourceUpdateCheckPeriod", "5"), // in minutes
         CompressableMimeTypes("org.glassfish.mojarra.compressableMimeTypes", ""),
         DisableUnicodeEscaping("org.glassfish.mojarra.disableUnicodeEscaping", "auto"),
+        DisableIdUniquenessCheck("org.glassfish.mojarra.disableIdUniquenessCheck", "false"), // true|false|auto; default false (always check), opt-in auto skips it in Production
         DuplicateJARPattern("org.glassfish.mojarra.duplicateJARPattern", ""),
         FullStateSavingViewIds(StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME, ""),
 
         FaceletsProcessingFileExtensionProcessAs("", ""),
+        WebsocketEndpointIdleTimeout("org.glassfish.mojarra.websocketEndpointIdleTimeout", "0"), // in milliseconds; 0 means no timeout
+        WebsocketMaxSessionsPerChannel("org.glassfish.mojarra.websocketMaxSessionsPerChannel", ""), // empty means unbounded
         ;
 
         private final String qualifiedName;
@@ -704,6 +707,7 @@ public class WebConfiguration {
         RegisterConverterPropertyEditors("org.glassfish.mojarra.registerConverterPropertyEditors", false),
         EnableHttpMethodRestrictionPhaseListener("org.glassfish.mojarra.ENABLE_HTTP_METHOD_RESTRICTION_PHASE_LISTENER", false),
         PartialStateSaving(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, true),
+        RefreshTransientBuildOnPSS("org.glassfish.mojarra.refreshTransientBuildOnPSS", false),
         GenerateUniqueServerStateIds("org.glassfish.mojarra.generateUniqueServerStateIds", true),
         AutoCompleteOffOnViewState("org.glassfish.mojarra.autoCompleteOffOnViewState", false),
         EnableThreading("org.glassfish.mojarra.enableThreading", false),
@@ -711,7 +715,6 @@ public class WebConfiguration {
         CacheResourceModificationTimestamp("org.glassfish.mojarra.cacheResourceModificationTimestamp", false),
         EnableDistributable("org.glassfish.mojarra.enableDistributable", false), // NOTE: this is indeed implicitly set to true when web.xml distributable is also set, see ConfigureListener.
         EnableMissingResourceLibraryDetection("org.glassfish.mojarra.enableMissingResourceLibraryDetection", false),
-        DisableIdUniquenessCheck("org.glassfish.mojarra.disableIdUniquenessCheck", false),
         EnableTransitionTimeNoOpFlash("org.glassfish.mojarra.enableTransitionTimeNoOpFlash", false),
         ForceAlwaysWriteFlashCookie("org.glassfish.mojarra.forceAlwaysWriteFlashCookie", false),
         DisallowDoctypeDecl("org.glassfish.mojarra.disallowDoctypeDecl", false),

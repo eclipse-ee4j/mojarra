@@ -20,11 +20,13 @@ package org.glassfish.mojarra.renderkit.html_basic;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIMessage;
 import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.html.HtmlMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
@@ -123,6 +125,7 @@ public class MessageRenderer extends HtmlBasicRenderer {
         }
         curMessage.rendered();
 
+        HtmlMessage htmlMessage = component instanceof HtmlMessage ? (HtmlMessage) component : null;
         String severityStyle = null;
         String severityStyleClass = null;
         boolean showSummary = message.isShowSummary();
@@ -140,11 +143,12 @@ public class MessageRenderer extends HtmlBasicRenderer {
             severityStyleClass = (String) component.getAttributes().get(severityPrefix + "Class");
         }
 
-        String style = (String) component.getAttributes().get("style");
-        String styleClass = (String) component.getAttributes().get("styleClass");
-        String dir = (String) component.getAttributes().get("dir");
-        String lang = (String) component.getAttributes().get("lang");
-        String title = (String) component.getAttributes().get("title");
+        List<String> setAttributes = RenderKitUtils.getAttributesThatAreSet(component);
+        String style = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "style");
+        String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
+        String dir = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "dir");
+        String lang = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "lang");
+        String title = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "title");
 
         // if we have style and severityStyle
         if (style != null && severityStyle != null) {
@@ -194,8 +198,8 @@ public class MessageRenderer extends HtmlBasicRenderer {
 
         }
 
-        Object val = component.getAttributes().get("tooltip");
-        boolean isTooltip = val != null && Boolean.valueOf(val.toString());
+        boolean isTooltip = htmlMessage != null ? htmlMessage.isTooltip()
+                : RenderKitUtils.attributeIsTrue(component, "tooltip", false);
 
         boolean wroteTooltip = false;
         if ((showSummary || showDetail) && isTooltip) {

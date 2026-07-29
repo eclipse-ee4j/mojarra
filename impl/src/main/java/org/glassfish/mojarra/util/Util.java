@@ -96,6 +96,7 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIData;
 import jakarta.faces.component.UINamingContainer;
 import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.search.UntargetableComponent;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
@@ -202,7 +203,7 @@ public class Util {
     public static Optional<ServletRegistration> getFacesServletRegistration(FacesContext context) {
         Object unKnownContext = context.getExternalContext().getContext();
         if (unKnownContext instanceof ServletContext) {
-            return Optional.of((ServletRegistration) ((ServletContext) unKnownContext).getAttribute(FACES_SERVLET_REGISTRATION));
+            return Optional.ofNullable((ServletRegistration) ((ServletContext) unKnownContext).getAttribute(FACES_SERVLET_REGISTRATION));
         }
 
         return Optional.empty();
@@ -829,12 +830,27 @@ public class Util {
     }
 
     public static boolean componentIsDisabled(UIComponent component) {
-        return Boolean.parseBoolean(String.valueOf(component.getAttributes().get("disabled")));
+        return toBoolean(component.getAttributes().get("disabled"), false);
     }
 
     public static boolean componentIsDisabledOrReadonly(UIComponent component) {
-        return Boolean.parseBoolean(String.valueOf(component.getAttributes().get("disabled")))
-                || Boolean.parseBoolean(String.valueOf(component.getAttributes().get("readonly")));
+        return componentIsDisabled(component) || toBoolean(component.getAttributes().get("readonly"), false);
+    }
+
+    /**
+     * Coerces a boolean-attribute value to {@code boolean} without the {@code Boolean -> String -> boolean} round-trip
+     * on the common path: an absent value yields {@code defaultValue}, an already-{@code Boolean} value is returned
+     * directly, and only a non-{@code Boolean} (e.g. a literal String set on a non-typed component) is parsed. Prefer
+     * the typed getter via {@code instanceof} where the concrete {@code Html*} type is known; use this for the fallback.
+     */
+    public static boolean toBoolean(Object value, boolean defaultValue) {
+        if (value == null) {
+            return defaultValue;
+        }
+        if (value instanceof Boolean bool) {
+            return bool;
+        }
+        return Boolean.parseBoolean(value.toString());
     }
 
     // W3C XML specification refers to IETF RFC 1766 for language code
@@ -1176,36 +1192,51 @@ public class Util {
      * Utility method to validate ID uniqueness for the tree represented by <code>component</code>.
      */
     public static void checkIdUniqueness(FacesContext context, UIComponent component, Set<String> componentIds) {
-
-        boolean uniquenessCheckDisabled = false;
-
-        if (context.isProjectStage(ProjectStage.Production)) {
-            WebConfiguration config = WebConfiguration.getInstance(context.getExternalContext());
-            uniquenessCheckDisabled = config.isOptionEnabled(WebConfiguration.BooleanWebContextInitParameter.DisableIdUniquenessCheck);
+        if (!isIdUniquenessCheckDisabled(context)) {
+            doCheckIdUniqueness(context, component, componentIds);
         }
+    }
 
-        if (!uniquenessCheckDisabled) {
+    // org.glassfish.mojarra.disableIdUniquenessCheck is true|false|auto (default false: always run the check).
+    // Opt-in auto skips the whole-tree duplicate-id walk in Production only (a duplicate id would already
+    // have surfaced in Development). The default keeps the check on; the skip stays opt-in.
+    private static boolean isIdUniquenessCheckDisabled(FacesContext context) {
+        String value = WebConfiguration.getInstance(context.getExternalContext())
+                .getOptionValue(WebConfiguration.WebContextInitParameter.DisableIdUniquenessCheck);
+        if (value == null || "auto".equals(value)) {
+            return context.isProjectStage(ProjectStage.Production);
+        }
+        return Boolean.parseBoolean(value);
+    }
 
-            // deal with children/facets that are marked transient.
-            for (Iterator<UIComponent> kids = component.getFacetsAndChildren(); kids.hasNext();) {
+    private static void doCheckIdUniqueness(FacesContext context, UIComponent component, Set<String> componentIds) {
+        // deal with children/facets that are marked transient.
+        for (Iterator<UIComponent> kids = component.getFacetsAndChildren(); kids.hasNext();) {
 
-                UIComponent kid = kids.next();
-                // check for id uniqueness
-                String id = kid.getClientId(context);
-                if (componentIds.add(id)) {
-                    checkIdUniqueness(context, kid, componentIds);
-                } else {
-                    if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.log(Level.SEVERE, "faces.duplicate_component_id_error", id);
+            UIComponent kid = kids.next();
+            // Skip UntargetableComponent descendants (e.g. Facelets-compiler-generated
+            // UILeaf wrappers for static text/whitespace). They have auto-generated ids
+            // that cannot collide via user-authored templates, and they have no
+            // user-targetable descendants -- checking them is wasted work on every
+            // save-view.
+            if (kid instanceof UntargetableComponent) {
+                continue;
+            }
+            // check for id uniqueness
+            String id = kid.getClientId(context);
+            if (componentIds.add(id)) {
+                doCheckIdUniqueness(context, kid, componentIds);
+            } else {
+                if (LOGGER.isLoggable(Level.SEVERE)) {
+                    LOGGER.log(Level.SEVERE, "faces.duplicate_component_id_error", id);
 
-                        FastStringWriter writer = new FastStringWriter(128);
-                        DebugUtil.simplePrintTree(context.getViewRoot(), id, writer);
-                        LOGGER.severe(writer.toString());
-                    }
-
-                    String message = MessageUtils.getExceptionMessageString(MessageUtils.DUPLICATE_COMPONENT_ID_ERROR_ID, id);
-                    throw new IllegalStateException(message);
+                    FastStringWriter writer = new FastStringWriter(128);
+                    DebugUtil.simplePrintTree(context.getViewRoot(), id, writer);
+                    LOGGER.severe(writer.toString());
                 }
+
+                String message = MessageUtils.getExceptionMessageString(MessageUtils.DUPLICATE_COMPONENT_ID_ERROR_ID, id);
+                throw new IllegalStateException(message);
             }
         }
     }

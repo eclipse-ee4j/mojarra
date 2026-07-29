@@ -41,6 +41,7 @@ import org.glassfish.mojarra.application.view.FaceletViewHandlingStrategy;
 import org.glassfish.mojarra.facelets.tag.TagHandlerImpl;
 import org.glassfish.mojarra.facelets.tag.faces.ComponentSupport;
 import org.glassfish.mojarra.util.MessageUtils;
+import org.glassfish.mojarra.util.Util;
 
 public class InterfaceHandler extends TagHandlerImpl {
 
@@ -101,7 +102,7 @@ public class InterfaceHandler extends TagHandlerImpl {
             if (null != requiredValue) {
                 if (requiredValue instanceof ValueExpression) {
                     requiredValue = ((ValueExpression) requiredValue).getValue(context.getELContext());
-                    required = Boolean.parseBoolean(requiredValue.toString());
+                    required = Util.toBoolean(requiredValue, false);
                 }
             }
             if (required) {
@@ -119,6 +120,11 @@ public class InterfaceHandler extends TagHandlerImpl {
                         // Check if an EL expression was given.
                         found = null != cc.getValueExpression(key);
                     }
+                }
+                // A declared default value satisfies a required attribute the page author omitted: cc.attrs.<name>
+                // resolves to that default, so it is not a missing-value error (matches the non-Development render).
+                if (!found) {
+                    found = null != cur.getValue("default");
                 }
                 if (!found) {
                     if (null == buf) {
@@ -146,7 +152,7 @@ public class InterfaceHandler extends TagHandlerImpl {
                 if (null != requiredValue) {
                     if (requiredValue instanceof ValueExpression) {
                         requiredValue = ((ValueExpression) requiredValue).getValue(context.getELContext());
-                        required = Boolean.parseBoolean(requiredValue.toString());
+                        required = Util.toBoolean(requiredValue, false);
                     }
                 }
                 if (required) {

@@ -90,6 +90,9 @@ public final class DecorateHandler extends TagHandlerImpl implements TemplateCli
      */
     @Override
     public void apply(FaceletContext ctxObj, UIComponent parent) throws IOException {
+        if (!template.isLiteral()) {
+            markDynamicTransientBuild(ctxObj);
+        }
         FaceletContextImplBase ctx = (FaceletContextImplBase) ctxObj;
         VariableMapper orig = ctx.getVariableMapper();
         if (params != null) {

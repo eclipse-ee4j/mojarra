@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<!--
+
+    Copyright (c) Contributors to Eclipse Foundation.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<html lang="#{facesContext.viewRoot.locale.language}"
+    xmlns:h="jakarta.faces.html"
+    xmlns:ui="jakarta.faces.facelets"
+    xmlns:c="jakarta.tags.core"
+>
+    <h:head>
+        <title>foreach-nested</title>
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <c:forEach items="#{dataBean.groups}" var="group" varStatus="gloop">
+                <h:panelGroup id="group_#{gloop.index + 1}" layout="block">
+                    <h2>#{group.name}</h2>
+                    <c:forEach items="#{group.rows}" var="row" varStatus="rloop">
+                        <h:panelGroup id="row_#{gloop.index + 1}_#{rloop.index + 1}" layout="block">
+                            <ui:include src="/WEB-INF/includes/inputs.xhtml">
+                                <ui:param name="row" value="#{row}"/>
+                            </ui:include>
+                        </h:panelGroup>
+                    </c:forEach>
+                </h:panelGroup>
+            </c:forEach>
+            <h:commandButton id="submit" value="Save" action="#{dataBean.save}"/>
+            <h:messages globalOnly="false"/>
+        </h:form>
+    </h:body>
+</html>

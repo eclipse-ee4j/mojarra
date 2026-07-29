@@ -21,6 +21,7 @@ package org.glassfish.mojarra.renderkit.html_basic;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import jakarta.faces.application.FacesMessage;
@@ -31,6 +32,7 @@ import jakarta.faces.component.UIOutput;
 import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
 import jakarta.faces.component.html.HtmlInputFile;
 import jakarta.faces.component.html.HtmlInputText;
+import jakarta.faces.component.html.HtmlOutputText;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.BehaviorEvent.FacesComponentEvent;
@@ -66,6 +68,14 @@ public class TextRenderer extends HtmlBasicInputRenderer {
         return Collections.unmodifiableMap(map);
     }
 
+    private final boolean allowTextChildren;
+
+    // ------------------------------------------------------------ Constructors
+
+    public TextRenderer() {
+        allowTextChildren = WebConfiguration.getInstance().isOptionEnabled(WebConfiguration.BooleanWebContextInitParameter.AllowTextChildren);
+    }
+
     // ---------------------------------------------------------- Public Methods
 
     @Override
@@ -82,11 +92,12 @@ public class TextRenderer extends HtmlBasicInputRenderer {
         boolean shouldWriteIdAttribute = false;
         boolean isOutput = false;
 
-        String style = (String) component.getAttributes().get("style");
-        String styleClass = (String) component.getAttributes().get("styleClass");
-        String dir = (String) component.getAttributes().get("dir");
-        String lang = (String) component.getAttributes().get("lang");
-        String title = (String) component.getAttributes().get("title");
+        List<String> setAttributes = RenderKitUtils.getAttributesThatAreSet(component);
+        String style = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "style");
+        String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
+        String dir = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "dir");
+        String lang = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "lang");
+        String title = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "title");
         Map<String, Object> passthroughAttributes = component.getPassThroughAttributes(false);
         boolean hasPassthroughAttributes = null != passthroughAttributes && !passthroughAttributes.isEmpty();
         if (component instanceof UIInput) {
@@ -121,7 +132,8 @@ public class TextRenderer extends HtmlBasicInputRenderer {
             // only output the autocomplete attribute if the value
             // is 'off' since its lack of presence will be interpreted
             // as 'on' by the browser
-            if ("off".equals(component.getAttributes().get("autocomplete"))) {
+            if (component instanceof HtmlInputText text ? "off".equals(text.getAutocomplete())
+                    : "off".equals(component.getAttributes().get("autocomplete"))) {
                 writer.writeAttribute("autocomplete", "off", "autocomplete");
             }
 
@@ -135,7 +147,7 @@ public class TextRenderer extends HtmlBasicInputRenderer {
 
             // style is rendered as a passthru attribute
             Attribute[] attributes = component instanceof HtmlInputFile ? INPUTFILE_ATTRIBUTES : INPUTTEXT_ATTRIBUTES;
-            RenderKitUtils.renderPassThruAttributes(context, writer, component, null, hasPassthroughAttributes, attributes, HtmlDocumentElementEvent.change, FacesComponentEvent.valueChange);
+            RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, attributes, HtmlDocumentElementEvent.change, FacesComponentEvent.valueChange);
             RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
             writer.endElement("input");
@@ -155,8 +167,8 @@ public class TextRenderer extends HtmlBasicInputRenderer {
 
             }
             if (currentValue != null) {
-                Object val = component.getAttributes().get("escape");
-                if (val != null && Boolean.valueOf(val.toString())) {
+                if (component instanceof HtmlOutputText text ? text.isEscape()
+                        : RenderKitUtils.attributeIsTrue(component, "escape", false)) {
                     writer.writeText(currentValue, component, "value");
                 } else {
                     writer.write(currentValue);
@@ -177,9 +189,7 @@ public class TextRenderer extends HtmlBasicInputRenderer {
 
     @Override
     public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
-        boolean renderChildren = WebConfiguration.getInstance().isOptionEnabled(WebConfiguration.BooleanWebContextInitParameter.AllowTextChildren);
-
-        if (!renderChildren) {
+        if (!allowTextChildren) {
             return;
         }
 

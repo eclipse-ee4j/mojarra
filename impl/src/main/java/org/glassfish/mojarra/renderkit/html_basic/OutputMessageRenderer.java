@@ -26,6 +26,7 @@ import java.util.List;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIParameter;
+import jakarta.faces.component.html.HtmlOutputFormat;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
@@ -82,9 +83,7 @@ public class OutputMessageRenderer extends HtmlBasicInputRenderer {
         String message;
         if (parameterList.size() > 0) {
             MessageFormat fmt = new MessageFormat(currentValue, context.getViewRoot().getLocale());
-            StringBuffer buf = new StringBuffer(currentValue.length() * 2);
-            fmt.format(parameterList.toArray(new Object[parameterList.size()]), buf, null);
-            message = buf.toString();
+            message = fmt.format(parameterList.toArray());
         } else {
             message = currentValue;
         }
@@ -92,11 +91,12 @@ public class OutputMessageRenderer extends HtmlBasicInputRenderer {
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
 
-        String style = (String) component.getAttributes().get("style");
-        String styleClass = (String) component.getAttributes().get("styleClass");
-        String lang = (String) component.getAttributes().get("lang");
-        String dir = (String) component.getAttributes().get("dir");
-        String title = (String) component.getAttributes().get("title");
+        List<String> setAttributes = RenderKitUtils.getAttributesThatAreSet(component);
+        String style = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "style");
+        String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
+        String lang = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "lang");
+        String dir = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "dir");
+        String title = (String) RenderKitUtils.getAttributeIfSet(component, setAttributes, "title");
         boolean wroteSpan = false;
         if (styleClass != null || style != null || dir != null || lang != null || title != null || shouldWriteIdAttribute(component)) {
             writer.startElement("span", component);
@@ -120,8 +120,8 @@ public class OutputMessageRenderer extends HtmlBasicInputRenderer {
             }
         }
 
-        Object val = component.getAttributes().get("escape");
-        boolean escape = val != null && Boolean.valueOf(val.toString());
+        boolean escape = component instanceof HtmlOutputFormat format ? format.isEscape()
+                : RenderKitUtils.attributeIsTrue(component, "escape", false);
 
         if (escape) {
             writer.writeText(message, component, "value");

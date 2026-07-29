@@ -304,7 +304,7 @@ public class RenderKitUtils {
             behaviors = null;
         }
 
-        renderPassThruAttributesInternal(context, writer, component, attributes, behaviors);
+        renderPassThruAttributesInternal(context, writer, component, attributes, behaviors, null);
     }
 
     /**
@@ -365,7 +365,7 @@ public class RenderKitUtils {
             }
         }
 
-        renderPassThruAttributesInternal(context, writer, component, attributes, behaviors);
+        renderPassThruAttributesInternal(context, writer, component, attributes, behaviors, domEventName);
 
         if (defaultComponentEvent == FacesComponentEvent.valueChange) {
             renderValueChangeEventListener(context, component, clientId, defaultDomEvent, componentEventName,
@@ -373,9 +373,8 @@ public class RenderKitUtils {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private static void renderPassThruAttributesInternal(FacesContext context, ResponseWriter writer, UIComponent component,
-            Attribute[] attributes, Map<String, List<ClientBehavior>> behaviors) throws IOException {
+            Attribute[] attributes, Map<String, List<ClientBehavior>> behaviors, String defaultDomEvent) throws IOException {
 
         assert null != writer;
         assert null != component;
@@ -384,16 +383,71 @@ public class RenderKitUtils {
             behaviors = Collections.emptyMap();
         }
 
-        List<String> setAttributes = (List<String>) component.getAttributes().get(ATTRIBUTES_THAT_ARE_SET_KEY);
+        List<String> setAttributes = getAttributesThatAreSet(component);
 
-        if (setAttributes != null && canBeOptimized(component, behaviors)) {
-            renderPassThruAttributesOptimized(context, writer, component, attributes, setAttributes, behaviors);
+        // The handler attribute of the default DOM event (e.g. "onclick" for "click") is rendered separately by the
+        // caller through renderOnclickEventListener/renderValueChangeEventListener, which chain in any behavior and
+        // submit scripts. Skip it here so it is not additionally emitted as a raw attribute; that would duplicate it
+        // when it was set through a (non-literal) expression, as such attributes end up in getAttributesThatAreSet.
+        String excludedEventAttribute = defaultDomEvent != null ? BEHAVIOR_EVENT_ATTRIBUTE_PREFIX + defaultDomEvent : null;
+
+        if (canBeOptimized(component, behaviors)) {
+            // Iterates only the attributes actually set (none => renders nothing but the optional single behavior),
+            // instead of the unoptimized path's reflective read of every known attribute.
+            renderPassThruAttributesOptimized(context, writer, component, attributes, setAttributes, behaviors, excludedEventAttribute);
         } else {
             // this block should only be hit by custom components leveraging
             // the RI's rendering code, or in cases where we have behaviors
             // attached to multiple events. We make no assumptions and loop through
-            renderPassThruAttributesUnoptimized(context, writer, component, attributes, setAttributes, behaviors);
+            renderPassThruAttributesUnoptimized(context, writer, component, attributes, setAttributes, behaviors, excludedEventAttribute);
         }
+    }
+
+    /**
+     * Returns the names of the attributes that have been explicitly set on the given component, either as a literal value
+     * or as a value expression, or an empty list when none have been set. This is the same list that
+     * {@link #renderPassThruAttributes} consults to skip reflective reads of attributes that were never set.
+     */
+    @SuppressWarnings("unchecked")
+    public static List<String> getAttributesThatAreSet(UIComponent component) {
+        List<String> setAttributes = (List<String>) component.getAttributes().get(ATTRIBUTES_THAT_ARE_SET_KEY);
+        return setAttributes != null ? setAttributes : Collections.emptyList();
+    }
+
+    /**
+     * Returns the value of the named attribute, avoiding a reflective property read for an attribute that was never set.
+     * <p>
+     * This is only safe for attributes whose setters record into {@code setAttributes} and only for the standard
+     * components that maintain that list (those in {@code jakarta.faces.component}); for any other component the value
+     * is read directly, mirroring the fall-back in {@link #renderPassThruAttributes}. {@code styleClass} qualifies:
+     * although it is rendered inline as {@code class} rather than through the pass-through loop, its setter records into
+     * {@code setAttributes} like the pass-through attributes do, so it may be read through here to skip the reflective
+     * getter when it was never set -- the common case on large views.
+     */
+    public static Object getAttributeIfSet(UIComponent component, List<String> setAttributes, String name) {
+        if (component.getClass().getName().startsWith(OPTIMIZED_PACKAGE)) {
+            return setAttributes != null && setAttributes.contains(name) ? component.getAttributes().get(name) : null;
+        }
+        return component.getAttributes().get(name);
+    }
+
+    /**
+     * Convenience variant of {@link #getAttributeIfSet(UIComponent, List, String)} for a single read; callers reading
+     * several attributes should fetch {@link #getAttributesThatAreSet} once and use the three-argument form instead.
+     */
+    public static Object getAttributeIfSet(UIComponent component, String name) {
+        return getAttributeIfSet(component, getAttributesThatAreSet(component), name);
+    }
+
+    /**
+     * Returns the boolean value of the named component attribute, coerced via {@link Util#toBoolean}: an absent
+     * attribute yields {@code defaultValue}, an already-{@code Boolean} value is returned directly (no
+     * {@code Boolean -> String -> boolean} round-trip), and a non-{@code Boolean} (e.g. a literal String on a non-typed
+     * component) is parsed. Use this in a renderer fallback when the concrete {@code Html*} type whose typed getter
+     * would return the {@code boolean} directly is not known.
+     */
+    public static boolean attributeIsTrue(UIComponent component, String name, boolean defaultValue) {
+        return Util.toBoolean(component.getAttributes().get(name), defaultValue);
     }
 
     private static void renderValueChangeEventListener(FacesContext context, UIComponent component, String clientId,
@@ -624,7 +678,7 @@ public class RenderKitUtils {
      * @throws IOException if an error occurs during the write
      */
     private static void renderPassThruAttributesOptimized(FacesContext context, ResponseWriter writer, UIComponent component, Attribute[] knownAttributes,
-            List<String> setAttributes, Map<String, List<ClientBehavior>> behaviors) throws IOException {
+            List<String> setAttributes, Map<String, List<ClientBehavior>> behaviors, String excludedEventAttribute) throws IOException {
 
         // We should only come in here if we've got zero or one behavior event
         assert behaviors != null && behaviors.size() < 2;
@@ -635,6 +689,10 @@ public class RenderKitUtils {
         boolean isXhtml = RIConstants.XHTML_CONTENT_TYPE.equals(writer.getContentType());
         Map<String, Object> attrMap = component.getAttributes();
         for (String name : setAttributes) {
+
+            if (name.equals(excludedEventAttribute)) {
+                continue;
+            }
 
             // Note that this search can be optimized by switching from
             // an array to a Map<String, Attribute>. This would change
@@ -700,7 +758,7 @@ public class RenderKitUtils {
      * @throws IOException if an error occurs during the write
      */
     private static void renderPassThruAttributesUnoptimized(FacesContext context, ResponseWriter writer, UIComponent component, Attribute[] knownAttributes,
-            List<String> setAttributes, Map<String, List<ClientBehavior>> behaviors) throws IOException {
+            List<String> setAttributes, Map<String, List<ClientBehavior>> behaviors, String excludedEventAttribute) throws IOException {
 
         boolean isXhtml = RIConstants.XHTML_CONTENT_TYPE.equals(writer.getContentType());
 
@@ -715,6 +773,11 @@ public class RenderKitUtils {
 
         for (Attribute attribute : knownAttributes) {
             String attrName = attribute.getName();
+            if (attrName.equals(excludedEventAttribute)) {
+                // Skipping before the remove() below leaves the excluded event in behaviorEventNames, so the second
+                // loop must skip it too; otherwise it would re-emit the handler the caller renders separately.
+                continue;
+            }
             String[] events = attribute.getEvents();
             String eventName = events != null && events.length > 0 ? events[0] : null;
             renderPassthruAttribute(context, writer, component, behaviors, isXhtml, attrMap, attrName, eventName);
@@ -722,6 +785,9 @@ public class RenderKitUtils {
         }
 
         for (String eventName : behaviorEventNames) {
+            if ((BEHAVIOR_EVENT_ATTRIBUTE_PREFIX + eventName).equals(excludedEventAttribute)) {
+                continue;
+            }
             renderPassthruAttribute(context, writer, component, behaviors, isXhtml, attrMap, BEHAVIOR_EVENT_ATTRIBUTE_PREFIX + eventName, eventName);
         }
     }

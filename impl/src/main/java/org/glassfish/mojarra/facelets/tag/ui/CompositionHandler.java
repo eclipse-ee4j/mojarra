@@ -101,6 +101,10 @@ public final class CompositionHandler extends TagHandlerImpl implements Template
 
         if (template != null) {
 
+            if (!template.isLiteral()) {
+                markDynamicTransientBuild(ctx);
+            }
+
             FacesContext facesContext = ctx.getFacesContext();
             Integer compositionCount = (Integer) facesContext.getAttributes().get("org.glassfish.mojarra.uiCompositionCount");
             if (compositionCount == null) {

@@ -30,6 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,16 +40,20 @@ import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
 import jakarta.enterprise.inject.spi.AnnotatedField;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
+import jakarta.enterprise.inject.spi.BeforeShutdown;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import jakarta.enterprise.inject.spi.ProcessBean;
 import jakarta.enterprise.inject.spi.ProcessManagedBean;
+import jakarta.enterprise.inject.spi.ProcessObserverMethod;
 import jakarta.enterprise.inject.spi.WithAnnotations;
 import jakarta.faces.annotation.ManagedProperty;
 import jakarta.faces.component.FacesComponent;
 import jakarta.faces.component.behavior.FacesBehavior;
 import jakarta.faces.convert.FacesConverter;
 import jakarta.faces.event.NamedEvent;
+import jakarta.faces.event.PhaseEvent;
+import jakarta.faces.event.SystemEvent;
 import jakarta.faces.model.DataModel;
 import jakarta.faces.model.FacesDataModel;
 import jakarta.faces.render.FacesBehaviorRenderer;
@@ -92,6 +97,20 @@ public class CdiExtension implements Extension {
      * Map of {@code @ManagedProperty} target types
      */
     private final Set<Type> managedPropertyTargetTypes = new HashSet<>();
+
+    /**
+     * Observed types of every CDI observer that observes a Faces {@link SystemEvent} (sub)type. Lets
+     * {@code Events#publishEvent} skip the per-component CDI event dispatch when no observer can receive a
+     * given system event (the common case — see {@link #processSystemEventObserver(ProcessObserverMethod)}).
+     */
+    private final Set<Class<?>> observedSystemEventTypes = ConcurrentHashMap.newKeySet();
+
+    /**
+     * Whether any CDI observer observes a Faces {@link PhaseEvent}. Lets {@code Phase} skip the four CDI phase
+     * event dispatches (and their qualifier allocations) it would otherwise fire before and after every phase
+     * when no observer can receive them (the common case — see {@link #processPhaseEventObserver(ProcessObserverMethod)}).
+     */
+    private volatile boolean phaseEventObserved;
 
     /**
      * Stores the logger.
@@ -206,6 +225,48 @@ public class CdiExtension implements Extension {
     }
 
     /**
+     * ProcessObserverMethod:
+     * <ul>
+     * <li>record the observed type of every observer that observes a Faces {@link SystemEvent} (sub)type
+     * </ul>
+     * <p>
+     * Faces publishes system events per component per phase (Pre/PostValidateEvent, PostAddToViewEvent,
+     * PreRenderComponentEvent, ...), each of which is also dispatched as a CDI event. Collecting the observed
+     * types here lets {@code Events#publishEvent} skip that dispatch entirely for event types no observer
+     * listens to. Observers must observe a {@code SystemEvent} (sub)type to receive Faces system events as CDI
+     * events, which is the contract of the feature.
+     *
+     * @param <T> the observed system event type
+     * @param event the process observer method event
+     */
+    public <T extends SystemEvent> void processSystemEventObserver(@Observes ProcessObserverMethod<T, ?> event) {
+        Type observedType = event.getObserverMethod().getObservedType();
+        if (observedType instanceof Class<?> observedClass) {
+            observedSystemEventTypes.add(observedClass);
+        } else if (observedType instanceof ParameterizedType parameterizedType && parameterizedType.getRawType() instanceof Class<?> rawClass) {
+            observedSystemEventTypes.add(rawClass);
+        }
+    }
+
+    /**
+     * ProcessObserverMethod:
+     * <ul>
+     * <li>record whether any observer observes a Faces {@link PhaseEvent}
+     * </ul>
+     * <p>
+     * Faces dispatches a CDI {@link PhaseEvent} (qualified with {@link jakarta.faces.event.BeforePhase} and
+     * {@link jakarta.faces.event.AfterPhase}) before and after every lifecycle phase. Recording their presence
+     * here lets {@code Phase} skip that dispatch entirely when no observer listens for them. Observers must
+     * observe a {@code PhaseEvent} (or subtype) to receive Faces phase events as CDI events, which is the
+     * contract of the feature.
+     *
+     * @param event the process observer method event
+     */
+    public void processPhaseEventObserver(@Observes ProcessObserverMethod<PhaseEvent, ?> event) {
+        phaseEventObserved = true;
+    }
+
+    /**
      * AfterBeanDiscovery:
      * <ul>
      * <li>add all CDI producer beans allowing EL resolving of Faces specific artifacts
@@ -309,6 +370,19 @@ public class CdiExtension implements Extension {
     }
 
     /**
+     * BeforeShutdown: drop this application's cached CDI bean resolutions so a redeployment that
+     * reuses the BeanManager identity does not resolve against {@link jakarta.enterprise.inject.spi.Bean}
+     * instances left over from the now-defunct deployment (which fails with a
+     * {@code ContextNotActiveException} on first use).
+     *
+     * @param event the before shutdown event
+     * @param beanManager the current bean manager
+     */
+    public void beforeShutdown(@Observes BeforeShutdown event, BeanManager beanManager) {
+        CdiUtils.clearCaches();
+    }
+
+    /**
      * Gets the map of classes that can be wrapped by a data model to data model implementation classes
      *
      * @return Map of classes that can be wrapped by a data model to data model implementation classes
@@ -324,5 +398,21 @@ public class CdiExtension implements Extension {
      */
     public Map<Class<? extends Annotation>, Set<Class<?>>> getAnnotatedClasses() {
         return annotatedClasses;
+    }
+
+    /**
+     * Gets the observed types of all CDI observers that observe a Faces {@link SystemEvent} (sub)type.
+     *
+     * @return the observed Faces system event types, empty when the application defines no such observer
+     */
+    public Set<Class<?>> getObservedSystemEventTypes() {
+        return observedSystemEventTypes;
+    }
+
+    /**
+     * @return whether the application defines any CDI observer of a Faces {@link PhaseEvent}.
+     */
+    public boolean isPhaseEventObserved() {
+        return phaseEventObserved;
     }
 }

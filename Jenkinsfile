@@ -3,18 +3,22 @@
 // Mojarra release pipeline.
 //
 // Stages: Prepare -> Build & install -> TCK -> Deploy to Maven Central -> Bump to next snapshot
-//   -> Publish to GitHub. Maven Central deploy and GitHub push run only after the TCK passes,
-//   so a TCK failure leaves no half-published external state.
+//   -> Publish to GitHub. Maven Central deploy and GitHub push run only after the TCK passes, so a
+//   TCK failure leaves no half-published external state. On a real SKIP_TCK release, Prepare instead
+//   gates on a matching green tck-status record (see the SKIP_TCK reuse gate) and the TCK is skipped.
 //
-// On 5.0+ the standalone jakarta.faces-api lives in jakartaee/faces and is wired in as a git
-// submodule at faces/. The `api` profile on the mojarra-parent pom adds it to the reactor; with
-// `-Papi`, a single `mvn install`/`deploy` builds and publishes both artifacts. `versions:set`
-// runs twice — once on the mojarra reactor (cascades to impl) and once on faces/api/pom.xml
-// directly, because faces/api has a different parent (org.eclipse.ee4j:project).
+// This pipeline releases the mojarra IMPL only; it never publishes the standalone jakarta.faces-api
+// (5.0+), which is released separately via the jakartaee/faces release job. The api version is
+// auto-resolved from impl/pom.xml's jakarta.faces-api dependency: a concrete (milestone/GA) version
+// is used as-is; a -SNAPSHOT dep resolves to that dep's own base version (impl and api need not
+// share a version). On a real release the resolved version must already be on Maven
+// Central — the impl consumes it as a normal dependency (pinned into impl/pom.xml) and Prepare fails
+// fast if it is missing. As a convenience, a DRY_RUN against a -SNAPSHOT dep whose version is not yet
+// on Central instead builds the api from the faces/ submodule into the reactor (-Papi), so the impl
+// build can be validated before the api is published.
 //
-// Whether to release the API alongside the impl is auto-inferred from impl/pom.xml's
-// jakarta.faces-api dependency version: -SNAPSHOT triggers a joint release, a GA version means
-// impl-only.
+// The faces/ git submodule (5.0+) thus feeds two things: the -Papi dry-run fallback above, and the
+// TCK when it is built from source (tckVersion = -SNAPSHOT).
 //
 // Maven Central publication is gated by the EE4J parent's `-Poss-release` profile (activated only
 // by this Jenkinsfile). It wires central-publishing-maven-plugin (incl. GPG signing, sources and
@@ -43,18 +47,20 @@ def JDK_VERSION_CHOICES = [''] + JDK_DISTRO_BY_VERSION.keySet().toList()
 //
 // Fields:
 //   implBranch      : mojarra git branch holding the impl source for this release line.
-//   apiBranch       : faces-repo branch for the standalone jakarta.faces-api jar (null when no
-//                     separate API artifact exists for this release line). Must match .gitmodules.
-//                     When non-null, the API version the TCK runs against is read dynamically
-//                     from impl/pom.xml's jakarta.faces-api dep (so the TCK always tests against
-//                     exactly the API version the impl was built against). When null, apiVersion
-//                     below is used instead — 4.x bundles the API spec into the impl jar, so
-//                     impl/pom.xml has no jakarta.faces-api dep to read.
+//   apiBranch       : marks a release line that has a SEPARATE standalone jakarta.faces-api
+//                     artifact on Maven Central (5.0+); null for lines that bundle the API spec
+//                     into the impl jar (4.x). When non-null, the api version is resolved from
+//                     impl/pom.xml's jakarta.faces-api dep and consumed from Maven Central (pinned
+//                     into the impl), except on the DRY_RUN submodule fallback (see header). The
+//                     value is the faces branch name, used for the submodule/TCK label.
 //   apiVersion      : 4.x only. jakarta.faces-api version the TCK is run against (passed as
 //                     -Dfaces.version). Ignored when apiBranch != null.
 //   jdk             : major JDK version used to build the impl (per Faces spec).
 //   tckJdk          : major JDK version used to run the TCK. Differs from jdk when the GlassFish
-//                     container needs a newer JDK than the spec.
+//                     container needs a newer JDK than the spec. Also runs the Prepare-stage
+//                     Sonatype cred-check, whose central-staging plugin is compiled for Java 17,
+//                     so this must stay >= 17 on every line (the 4.x impl still builds on its own
+//                     older `jdk`).
 //   tckVersion      : Faces TCK version. A released version (e.g. "4.0.3") is downloaded as a zip
 //                     from download.eclipse.org/jakartaee/faces/<line>/. A -SNAPSHOT value (e.g.
 //                     "5.0.0-SNAPSHOT") instead builds the TCK from the faces submodule's tck/
@@ -69,8 +75,8 @@ def JDK_VERSION_CHOICES = [''] + JDK_DISTRO_BY_VERSION.keySet().toList()
 //                     stays at 1 there. The pod's cpu/memory should comfortably accommodate
 //                     this many concurrent GlassFish + test JVM pairs.
 def BRANCH_CONFIG = [
-    '4.0': [ implBranch: '4.0',    apiBranch: null,  apiVersion: '4.0.1', jdk: '11', tckJdk: '11', tckVersion: '4.0.3',          gfVersion: '7.0.25'  , seleniumEnabled: false, threadCount: 1 ],
-    '4.1': [ implBranch: '4.1',    apiBranch: null,  apiVersion: '4.1.0', jdk: '17', tckJdk: '21', tckVersion: '4.1.0',          gfVersion: '8.0.0-M6', seleniumEnabled: true , threadCount: 1 ],
+    '4.0': [ implBranch: '4.0',    apiBranch: null,  apiVersion: '4.0.1', jdk: '11', tckJdk: '17', tckVersion: '4.0.4',          gfVersion: '7.1.1'   , seleniumEnabled: false, threadCount: 1 ],
+    '4.1': [ implBranch: '4.1',    apiBranch: null,  apiVersion: '4.1.0', jdk: '17', tckJdk: '21', tckVersion: '4.1.2',          gfVersion: '8.0.3'   , seleniumEnabled: true , threadCount: 1 ],
     '5.0': [ implBranch: 'master', apiBranch: '5.0', apiVersion: null,    jdk: '17', tckJdk: '21', tckVersion: '5.0.0-SNAPSHOT', gfVersion: '9.0.0-M2', seleniumEnabled: true , threadCount: 2 ],
 ]
 
@@ -224,20 +230,20 @@ spec:
         choice(name: 'JDK', choices: JDK_VERSION_CHOICES, description: 'Leave blank to auto-infer from RELEASE_LINE (11 for 4.0, 17 for 4.1 and 5.0). This is the JDK used to run the build & install.')
         choice(name: 'TCK_JDK', choices: JDK_VERSION_CHOICES, description: 'Leave blank to auto-infer from RELEASE_LINE (11 for 4.0, 21 for 4.1 and 5.0). This is the JDK used to run the TCK (the GlassFish container may need a newer JDK than the spec).')
         string(name: 'TCK_VERSION', defaultValue: '', description: 'Leave blank to auto-infer from RELEASE_LINE. A released value (e.g. 4.0.3) downloads the published TCK zip from download.eclipse.org; a -SNAPSHOT value (e.g. 5.0.0-SNAPSHOT) builds the TCK from the faces/tck submodule directory instead.')
-        string(name: 'GF_VERSION', defaultValue: '', description: 'Leave blank to auto-infer from RELEASE_LINE. When using GF_BUNDLE_URL, set this to match the artifact version inside the zip (e.g. 8.0.0-X).')
+        string(name: 'GF_VERSION', defaultValue: '', description: 'Leave blank to auto-infer from RELEASE_LINE. When using GF_BUNDLE_URL, set this to match the artifact version inside the zip (e.g. 8.0.0).')
         string(name: 'GF_BUNDLE_URL', defaultValue: '', description: 'Leave blank to resolve GlassFish from Maven Central via GF_VERSION; otherwise an explicit zip URL override (GF_VERSION must match the artifact version inside the zip).')
-        string(name: 'API_RELEASE_VERSION', defaultValue: '', description: '5.0+ only. Leave blank to auto-infer from faces/api/pom.xml. Ignored when impl/pom.xml pins jakarta.faces-api to a GA version (impl-only release) or when MILESTONE_VERSION is set.')
         choice(name: 'THREAD_COUNT', choices: ['', '1', '2', '3', '4', '5', '6', '7', '8'], description: '5.0+ only. Leave blank to auto-infer from RELEASE_LINE (1 for 4.x, 2 for 5.0). Maven `-T` value and gf.pool.size for the TCK reactor. Values >1 only work on TCKs that ship gf-pool (5.0+); selecting one on 4.x errors out.')
-        booleanParam(name: 'RUN_TCK', defaultValue: true, description: 'Run the Faces TCK after build.')
-        booleanParam(name: 'SKIP_OLD_TCK', defaultValue: false, description: 'Requires RUN_TCK. 4.x only. Skip the old-tck JavaTest modules (excluded from the reactor entirely via -pl); cuts nearly 3 hours off the TCK run. No-op on 5.0+ where these modules no longer exist. The old-tck-selenium failsafe-driven modules are unaffected by this flag.')
-        booleanParam(name: 'SMOKE_TEST', defaultValue: false, description: 'Requires RUN_TCK and DRY_RUN. Filter the TCK to a tiny representative subset for fast iteration on the pipeline itself (one failsafe IT + one sigtest IT + one old-tck-selenium IT, plus one old-tck JavaTest path when SKIP_OLD_TCK is unchecked).')
         booleanParam(name: 'DRY_RUN', defaultValue: true, description: 'Skip Maven Central deploy and GitHub push.')
+        booleanParam(name: 'SMOKE_TEST', defaultValue: false, description: 'Requires DRY_RUN and unset SKIP_TCK. Filter the TCK to a tiny representative subset for fast iteration on the pipeline itself (one failsafe IT + one sigtest IT + one old-tck-selenium IT, plus one old-tck JavaTest path when SKIP_OLD_TCK is unchecked).')
+        booleanParam(name: 'SKIP_TCK', defaultValue: false, description: 'Skip the Faces TCK stage. On a DRY_RUN it is simply skipped. On a real release it is allowed only when the tck-status branch already carries a green record for this RELEASE_VERSION whose line, mojarraTree (impl source) and facesSha (the faces commit built) match this build — i.e. a prior DRY_RUN already ran the FULL TCK against identical bits; otherwise the release aborts. Records come only from full TCK runs, so a SMOKE_TEST or SKIP_OLD_TCK dry-run cannot enable a real SKIP_TCK release.')
+        booleanParam(name: 'SKIP_OLD_TCK', defaultValue: false, description: 'Requires DRY_RUN and unset SKIP_TCK. 4.x only (rejected on 5.0+ where these modules no longer exist). Skip the old-tck JavaTest modules (excluded from the reactor entirely via -pl); cuts over 2 hours off the TCK run. Because it drops conformance coverage it writes no validation record and is confined to dry-runs, so it can never publish. The old-tck-selenium failsafe-driven modules are unaffected by this flag.')
         booleanParam(name: 'SKIP_DEPLOY', defaultValue: false, description: 'Requires DRY_RUN unchecked. Skip the Maven Central deploy stage only (still pushes branch/tag and creates the GitHub release). Use for resuming a previous run after Maven Central already published, or for pipeline-debug runs that exercise Publish to GitHub without re-deploying.')
+        booleanParam(name: 'SKIP_CRED_CHECK', defaultValue: false, description: 'Skip the Prepare-stage credential checks (Sonatype Central, GitHub SSH push, GitHub bot token). Use for pipeline-debug runs where the publish credentials are unavailable or known-stale and should not abort the run; on a real release leave this unchecked so a bad credential fails fast.')
     }
 
     options {
         disableConcurrentBuilds()
-        buildDiscarder(logRotator(daysToKeepStr: '300', numToKeepStr: '20'))
+        buildDiscarder(logRotator(daysToKeepStr: '300', numToKeepStr: '20', artifactDaysToKeepStr: '30', artifactNumToKeepStr: '10'))
         timestamps()
     }
 
@@ -247,6 +253,7 @@ spec:
         MVN_EXTRA     = '--batch-mode --no-transfer-progress'
         VERSIONS_PLUGIN = 'org.codehaus.mojo:versions-maven-plugin:2.18.0'
         HELP_PLUGIN     = 'org.apache.maven.plugins:maven-help-plugin:3.5.1'
+        CENTRAL_PLUGIN  = 'org.eclipse.cbi.central:central-staging-plugins:1.4.7'
     }
 
     stages {
@@ -265,8 +272,10 @@ spec:
                     }
 
                     // Reject inert checkbox combinations up front rather than silently ignoring them.
-                    if (params.SKIP_OLD_TCK && !params.RUN_TCK) error "SKIP_OLD_TCK requires RUN_TCK."
-                    if (params.SMOKE_TEST   && !params.RUN_TCK) error "SMOKE_TEST requires RUN_TCK."
+                    if (params.SKIP_OLD_TCK && params.SKIP_TCK) error "SKIP_OLD_TCK requires the TCK (unset SKIP_TCK)."
+                    if (params.SKIP_OLD_TCK && !params.DRY_RUN) error "SKIP_OLD_TCK requires DRY_RUN (a partial TCK is not conformant and must never be published)."
+                    if (params.SKIP_OLD_TCK && !params.RELEASE_LINE.startsWith('4.')) error "SKIP_OLD_TCK is 4.x only (5.0+ has no old-tck modules; the -pl exclusion would fail the reactor)."
+                    if (params.SMOKE_TEST   && params.SKIP_TCK) error "SMOKE_TEST requires the TCK (unset SKIP_TCK)."
                     if (params.SMOKE_TEST   && !params.DRY_RUN) error "SMOKE_TEST requires DRY_RUN (filtered run is not TCK-conformant and must never be published)."
                     if (params.SKIP_DEPLOY  &&  params.DRY_RUN) error "SKIP_DEPLOY requires DRY_RUN unchecked (DRY_RUN already skips deploy)."
                     if (params.THREAD_COUNT?.trim() && cfg.threadCount == 1) error "THREAD_COUNT is 5.0+ only (4.x TCKs run a single managed GlassFish per module and cannot parallelize)."
@@ -293,8 +302,9 @@ spec:
                     sh 'java -version && mvn -v'
                 }
                 // Mojarra checkout. When .gitmodules is present (5.0+), initialize the faces/ submodule
-                // tracking the configured branch tip rather than the recorded SHA — the release should
-                // pull the latest API code, not whatever was pinned at last commit.
+                // tracking the configured branch tip rather than the recorded SHA, so a -SNAPSHOT TCK
+                // builds against the latest TCK sources. The submodule is used only by the TCK stage;
+                // the api artifact itself comes from Maven Central, not this checkout.
                 checkout([$class: 'GitSCM',
                     branches: [[name: "*/${env.IMPL_BRANCH}"]],
                     userRemoteConfigs: [[url: 'git@github.com:eclipse-ee4j/mojarra.git',
@@ -306,16 +316,6 @@ spec:
                          recursiveSubmodules: false,
                          trackingSubmodules: true]
                     ]])
-                // .gitmodules uses HTTPS for the faces submodule (contributor-friendly anonymous clone),
-                // but CI pushes back via the SSH credential. Override the remote URL inside the submodule
-                // so the later `git push origin` from `dir('faces')` uses SSH and authenticates correctly.
-                script {
-                    if (fileExists('faces/.git') || fileExists('.git/modules/faces')) {
-                        dir('faces') {
-                            sh 'git remote set-url origin git@github.com:jakartaee/faces.git'
-                        }
-                    }
-                }
                 script {
                     def cfg = BRANCH_CONFIG[params.RELEASE_LINE]
 
@@ -369,11 +369,17 @@ spec:
                         ? "-Dit.test=**/JSFSigTestIT.java,**/ChildCountTestIT.java,**/AjaxTestsIT.java -Dfailsafe.failIfNoSpecifiedTests=false -Drun.test=com/sun/ts/tests/jsf/api/jakarta_faces/application/facesmessage" \
                         : ''
 
-                    // Resolve the jakarta.faces-api version the TCK runs against (-Dfaces.version):
-                    //   - 5.0+ (apiBranch != null): read it dynamically from impl/pom.xml's
-                    //     jakarta.faces-api dep, so the TCK tests against exactly the API the
-                    //     impl was built against. A -SNAPSHOT dep also means the API is unreleased
-                    //     and must be co-released; anything else is impl-only (API on Maven Central).
+                    // Resolve the jakarta.faces-api version the impl depends on and the TCK runs
+                    // against (-Dfaces.version). Normally consumed from Maven Central (released via
+                    // the jakartaee/faces job) and NOT built here.
+                    //   - 5.0+ (apiBranch != null): read impl/pom.xml's jakarta.faces-api dep. A
+                    //     concrete (milestone/GA) dep is used as-is; a -SNAPSHOT dep resolves to that
+                    //     dep's own base version (impl and api need not share a version — the impl line
+                    //     can iterate several releases against one stable api version).
+                    //     If that version is on Central -> consume it (impl-only build). If it isn't:
+                    //       * DRY_RUN + -SNAPSHOT dep -> build the api from the faces/ submodule into
+                    //         the reactor (-Papi) so the impl build can still be validated;
+                    //       * otherwise -> error (release the api via the jakartaee/faces job first).
                     //   - 4.x (apiBranch == null): impl bundles the spec API into its own jar and
                     //     declares no jakarta.faces-api dep, so use the per-branch cfg.apiVersion.
                     if (cfg.apiBranch != null) {
@@ -381,127 +387,166 @@ spec:
                         if (apiDepVersion == '') {
                             error "impl/pom.xml does not declare a jakarta.faces-api dependency."
                         }
-                        env.IMPL_API_DEP_VERSION = apiDepVersion
-                        env.SHOULD_BUILD_API = apiDepVersion.endsWith('-SNAPSHOT') ? 'true' : 'false'
+                        def isSnapshotDep = apiDepVersion.endsWith('-SNAPSHOT')
+                        // Resolve the api version from the DEP, never from the impl's version (they can
+                        // differ). A concrete dep is taken as-is. A -SNAPSHOT dep encodes its target GA
+                        // version in the number (5.0.1-SNAPSHOT -> 5.0.1); on a milestone run, apply this
+                        // run's milestone suffix to the api's OWN base — matching what the faces job cuts
+                        // (its api-pom base + MILESTONE_VERSION) — so an impl milestone building an
+                        // unreleased api at a different base still attests the right api version.
+                        def concreteApi
+                        if (!isSnapshotDep) {
+                            concreteApi = apiDepVersion
+                        } else {
+                            def apiBase = apiDepVersion.replace('-SNAPSHOT', '')
+                            concreteApi = (env.IS_MILESTONE == 'true') ? "${apiBase}-${params.MILESTONE_VERSION.trim()}" : apiBase
+                        }
+                        // curl -fsI HEADs the Central pom; exit 0 iff the api is already published.
+                        def apiOnCentral = (sh(returnStatus: true, script: """#!/bin/bash
+                            curl -fsI 'https://repo1.maven.org/maven2/jakarta/faces/jakarta.faces-api/${concreteApi}/jakarta.faces-api-${concreteApi}.pom' >/dev/null
+                        """) == 0)
+                        if (apiOnCentral) {
+                            env.RESOLVED_API_VERSION = concreteApi
+                            env.MVN_API_PROFILE = ''
+                            env.API_SOURCE = 'Maven Central'
+                            echo "[api-check] jakarta.faces-api ${concreteApi} present on Maven Central."
+                        } else if (params.DRY_RUN && isSnapshotDep) {
+                            // DRY_RUN fallback: consume the unreleased -SNAPSHOT built from the faces/
+                            // submodule reactor, so a dry-run doesn't require the api to be published.
+                            env.RESOLVED_API_VERSION = apiDepVersion
+                            env.MVN_API_PROFILE = '-Papi'
+                            env.API_SOURCE = 'faces/ submodule'
+                            echo "[api-check] jakarta.faces-api ${concreteApi} not on Maven Central; DRY_RUN will build ${apiDepVersion} from the faces/ submodule."
+                        } else {
+                            error "jakarta.faces-api ${concreteApi} is not on Maven Central. Release it first via the jakartaee/faces release job, then re-run."
+                        }
+                        env.IMPL_API_DEP_VERSION = env.RESOLVED_API_VERSION
+                        // Build coordinate (IMPL_API_DEP_VERSION) vs. the api version stamped in the
+                        // record's apiVersion field (VALIDATED_API_VERSION) are distinct: on the DRY_RUN
+                        // submodule fallback the api is built at its -SNAPSHOT coordinate, but the record
+                        // must attest the concrete api version being validated (concreteApi = the dep's
+                        // base version), which is what the Faces API release job matches on and keys its
+                        // gate record file by. Impl and api versions can differ, so the api gate record is
+                        // keyed by VALIDATED_API_VERSION while the impl reuse record is keyed by RELEASE_VERSION.
+                        env.VALIDATED_API_VERSION = concreteApi
                     } else {
                         env.IMPL_API_DEP_VERSION = cfg.apiVersion
-                        env.SHOULD_BUILD_API = 'false'
-                    }
-                    env.MVN_API_PROFILE = (env.SHOULD_BUILD_API == 'true') ? '-Papi' : ''
-
-                    // Resolve API_RELEASE_VERSION from faces/api/pom.xml when releasing the API.
-                    if (env.SHOULD_BUILD_API == 'true') {
-                        sh "mvn -B -f faces/api/pom.xml ${env.HELP_PLUGIN}:evaluate -Dexpression=project.version -q -Doutput=api-pom-version.txt"
-                        def apiSnapshot = readFile('api-pom-version.txt').trim()
-                        if (!(apiSnapshot ==~ /.*-SNAPSHOT$/)) {
-                            error "faces api pom version '${apiSnapshot}' is not a -SNAPSHOT; refusing to release."
-                        }
-                        env.API_SNAPSHOT_VERSION = apiSnapshot
-                        if (env.IS_MILESTONE == 'true') {
-                            env.RESOLVED_API_VERSION = apiSnapshot.replace('-SNAPSHOT', '') + "-${milestoneSuffix}"
-                            env.API_RELEASE_TAG     = env.RESOLVED_API_VERSION
-                            env.API_RELEASE_BRANCH  = env.RESOLVED_API_VERSION
-                            echo "API snapshot: ${env.API_SNAPSHOT_VERSION} | API milestone: ${env.RESOLVED_API_VERSION}"
-                        } else {
-                            env.RESOLVED_API_VERSION = params.API_RELEASE_VERSION?.trim() ?: apiSnapshot.replace('-SNAPSHOT', '')
-                            requireGaVersion('API_RELEASE_VERSION', env.RESOLVED_API_VERSION, null)
-                            env.NEXT_API_VERSION    = bumpLastComponent(env.RESOLVED_API_VERSION) + '-SNAPSHOT'
-                            env.API_RELEASE_TAG     = "${env.RESOLVED_API_VERSION}-RELEASE"
-                            env.API_RELEASE_BRANCH  = env.RESOLVED_API_VERSION
-                            echo "API snapshot: ${env.API_SNAPSHOT_VERSION} | API release: ${env.RESOLVED_API_VERSION} | Next: ${env.NEXT_API_VERSION}"
-                        }
+                        env.VALIDATED_API_VERSION = cfg.apiVersion
+                        env.MVN_API_PROFILE = ''
                     }
 
                     def jdkLabel = (env.RESOLVED_JDK == env.RESOLVED_TCK_JDK)
                         ? "JDK${env.RESOLVED_JDK}"
                         : "JDK${env.RESOLVED_JDK}/TCK-JDK${env.RESOLVED_TCK_JDK}"
-                    def tckLabel = params.RUN_TCK
+                    def tckLabel = !params.SKIP_TCK
                         ? "TCK ${env.RESOLVED_TCK_VERSION}" + (env.TCK_THREAD_COUNT == '1' ? '' : " -T${env.TCK_THREAD_COUNT}")
                         : "TCK skipped"
                     // old-TCK exists only on 4.x; on 5.0+ the module is gone so the flag is a no-op.
-                    def skipOldTckLabel = (params.RELEASE_LINE.startsWith('4.') && params.RUN_TCK && params.SKIP_OLD_TCK) ? ', old-TCK skipped' : ''
-                    def smokeTestLabel = (params.RUN_TCK && params.SMOKE_TEST && params.DRY_RUN) ? ', smoke-test' : ''
+                    def skipOldTckLabel = (params.RELEASE_LINE.startsWith('4.') && !params.SKIP_TCK && params.SKIP_OLD_TCK) ? ', old-TCK skipped' : ''
+                    def smokeTestLabel = (!params.SKIP_TCK && params.SMOKE_TEST && params.DRY_RUN) ? ', smoke-test' : ''
                     def milestoneLabel = (env.IS_MILESTONE == 'true') ? ', milestone' : ''
                     def dryRunLabel = params.DRY_RUN ? ', dry-run' : ''
                     currentBuild.description = "${params.RELEASE_LINE} → ${env.RELEASE_VERSION}" +
-                        ((env.SHOULD_BUILD_API == 'true') ? " + API ${env.RESOLVED_API_VERSION}" : ' (impl-only)') +
+                        (env.RESOLVED_API_VERSION ? " (API ${env.RESOLVED_API_VERSION} from ${env.API_SOURCE})" : '') +
                         " (${jdkLabel}, GF ${env.RESOLVED_GF_VERSION}, ${tckLabel}${skipOldTckLabel}${smokeTestLabel}${milestoneLabel}${dryRunLabel})"
                     echo renderBanner(buildBannerLines(params, env, cfg))
                 }
-                // Validate every credential the publish path will need, even on DRY_RUN, so a
-                // revoked/expired credential fails in minute zero rather than after a multi-hour
-                // TCK run. GPG is not pinged here because Build & install signs sources/javadoc
-                // and would fail on a bad keyring within minutes. Maven offers no native dryRun
-                // for Central deploys; the curl probe below is the only zero-cost auth check.
-                sh '''#!/bin/bash -e
-                    # Decrypt <server id=central> creds from the mounted settings.xml via
-                    # SecDispatcher. Temp files are mode 600 + trap-deleted so neither the
-                    # cleartext settings nor Maven's output survives the step. Maven logs to
-                    # stdout, so its output is captured to a file (-DshowPasswords=true would
-                    # otherwise risk leaking decrypted creds into the build log); it is printed
-                    # only on failure, where the goal aborts before emitting the settings dump.
-                    EFF=$(mktemp); LOG=$(mktemp); chmod 600 "${EFF}" "${LOG}"
-                    trap 'rm -f "${EFF}" "${LOG}"' EXIT
-                    if ! mvn -q -B ${HELP_PLUGIN}:effective-settings -DshowPasswords=true -Doutput="${EFF}" >"${LOG}" 2>&1; then
-                        echo "[cred-check] mvn effective-settings failed:" >&2
-                        cat "${LOG}" >&2
-                        exit 1
-                    fi
-                    # Split on opening <server> tags, keep the block whose id is "central", then
-                    # pluck the inner text of <username>/<password>. \\K resets the match start so
-                    # only the inner text is captured (avoids greedy-.* corner cases).
-                    BLOCK=$(awk 'BEGIN{RS="<server>"} /<id>central<\\/id>/' "${EFF}")
-                    CENTRAL_USER=$(echo "${BLOCK}" | grep -oP '<username>\\K[^<]*' | head -1)
-                    CENTRAL_PASS=$(echo "${BLOCK}" | grep -oP '<password>\\K[^<]*' | head -1)
-                    if [ -z "${CENTRAL_USER}" ] || [ -z "${CENTRAL_PASS}" ]; then
-                        echo "[cred-check] Sonatype Central Portal: <server id=central> missing in settings.xml" >&2
-                        exit 1
-                    fi
-                    # GET /api/v1/publisher/deployments returns 404 on valid creds (Sonatype's
-                    # gateway routes only after auth) and 401 on invalid — the only zero-cost
-                    # auth probe the Portal exposes. 5xx is a transient outage (warn-only);
-                    # anything else surfaces as contract drift rather than silent success.
-                    CODE=$(curl -sS -o /dev/null -w '%{http_code}' \\
-                        -u "${CENTRAL_USER}:${CENTRAL_PASS}" \\
-                        https://central.sonatype.com/api/v1/publisher/deployments) || {
-                        echo "[cred-check] Sonatype Central Portal: curl failed (network/DNS)" >&2; exit 1
-                    }
-                    case "${CODE}" in
-                        2*|404)  echo "[cred-check] Sonatype Central Portal: ok (${CODE})" ;;
-                        5*)      echo "[cred-check] Sonatype Central Portal: WARNING transient ${CODE}" >&2 ;;
-                        401|403) echo "[cred-check] Sonatype Central Portal: bad creds (${CODE})" >&2; exit 1 ;;
-                        *)       echo "[cred-check] Sonatype Central Portal: unexpected ${CODE}" >&2; exit 1 ;;
-                    esac
-                '''
-                // GitHub SSH push: --dry-run performs the full receive-pack handshake (incl. the
-                // write-permission check on protected refs) but transmits no objects and never
-                // creates the remote ref. Probes both mojarra.git and (when releasing the API)
-                // jakartaee/faces.git, so a missing/revoked write grant on either fails fast.
-                sshagent(credentials: ['github-bot-ssh']) {
-                    sh '#!/bin/bash -e\n' + KNOWN_HOSTS_INIT + '''
-                        git push --dry-run git@github.com:eclipse-ee4j/mojarra.git HEAD:refs/heads/__cred_check__
-                        echo "[cred-check] GitHub SSH push (mojarra): ok"
-                    '''
-                    script {
-                        if (env.SHOULD_BUILD_API == 'true') {
-                            dir('faces') {
-                                sh '''#!/bin/bash -e
-                                    git push --dry-run git@github.com:jakartaee/faces.git HEAD:refs/heads/__cred_check__
-                                    echo "[cred-check] GitHub SSH push (faces): ok"
-                                '''
-                            }
-                        }
+                // Capture the source identity for the tck-status record and the SKIP_TCK reuse gate,
+                // before Build & install runs versions:set. MOJARRA_TREE (superproject tree sha) pins
+                // the impl source; FACES_SHA (the submodule tip, tracked to the faces branch — this is
+                // what the build actually compiles the api/TCK against, not the committed pin) pins the
+                // faces source. Both are deterministic across a DRY_RUN and its follow-up real release.
+                script {
+                    env.MOJARRA_TREE = sh(returnStdout: true, script: "git rev-parse 'HEAD^{tree}'").trim()
+                    env.FACES_SHA = env.API_BRANCH ? sh(returnStdout: true, script: 'git -C faces rev-parse HEAD').trim() : ''
+                }
+                // SKIP_TCK on a real release is honoured only when the tck-status branch already holds a
+                // green record for this RELEASE_VERSION matching THIS build (line + mojarraTree + facesSha)
+                // — i.e. a prior DRY_RUN already ran the full TCK against identical impl source and faces
+                // commit, reused instead of re-running the TCK. No matching record aborts here, before any
+                // build or publish. Works on every line (facesSha is empty on 4.x). Needs curl + awk.
+                // Skipped under SKIP_DEPLOY: that mode publishes nothing (resume-only, tag/GitHub
+                // release for an already-published version), so the gate — which exists solely to
+                // block an unvalidated *publish* — has nothing to guard.
+                script {
+                    if (params.SKIP_TCK && !params.DRY_RUN && !params.SKIP_DEPLOY) {
+                        sh '''#!/bin/bash
+                            set -o pipefail
+                            URL="https://raw.githubusercontent.com/eclipse-ee4j/mojarra/tck-status/tck-validation-impl-${RELEASE_VERSION}.json"
+                            if ! curl -fsS -o rec.json "${URL}"; then
+                                echo "[tck-reuse] ERROR: no TCK record at ${URL}; run a DRY_RUN with the full TCK first, or unset SKIP_TCK." >&2
+                                exit 1
+                            fi
+                            # rec.json is machine-generated one-field-per-line; -F'"' splits "key":  "value".
+                            field() { awk -F'"' -v k="$1" '$2==k {print $4; exit}' rec.json; }
+                            # No result/status check needed: a record only exists when a full TCK
+                            # passed (see the success-guard in the TCK stage), so matching identity
+                            # (line + impl tree + faces commit) is sufficient to reuse it.
+                            if [ "$(field line)" = "${RELEASE_LINE}" ] \\
+                                && [ "$(field mojarraTree)" = "${MOJARRA_TREE}" ] \\
+                                && [ "$(field facesSha)" = "${FACES_SHA}" ]; then
+                                echo "[tck-reuse] reusing green TCK $(field buildUrl) for ${RELEASE_VERSION} (tree ${MOJARRA_TREE}, faces ${FACES_SHA:-none})"
+                            else
+                                cat rec.json >&2
+                                echo "[tck-reuse] ERROR: no matching green tck-status record for ${RELEASE_VERSION} at this impl tree (${MOJARRA_TREE}) + faces commit (${FACES_SHA:-none}); run a DRY_RUN with the full TCK first, or unset SKIP_TCK." >&2
+                                exit 1
+                            fi
+                        '''
                     }
                 }
-                // GitHub bot token: gh auth status calls /user under the hood, so it fails on an
-                // expired/revoked token. Same withCredentials shape Publish to GitHub uses later.
-                withCredentials([usernamePassword(credentialsId: 'github-bot',
-                                                  usernameVariable: 'GH_USER',
-                                                  passwordVariable: 'GH_TOKEN')]) {
-                    sh '#!/bin/bash -e\n' + GH_INSTALL + '''
-                        gh auth status
-                        echo "[cred-check] GitHub bot token: ok"
-                    '''
+                // Validate every credential the publish path will need, even on DRY_RUN, so a
+                // revoked/expired credential fails in minute zero rather than after a multi-hour
+                // TCK run. Skippable via SKIP_CRED_CHECK for pipeline-debug runs where the publish
+                // credentials are unavailable or known-stale. GPG is not pinged here because Build
+                // & install signs sources/javadoc and would fail on a bad keyring within minutes.
+                // Maven offers no native dryRun for Central deploys; the rc-list probe below is the
+                // only zero-cost auth check.
+                script {
+                    if (!params.SKIP_CRED_CHECK) {
+                        // Probe the Sonatype Central Portal credentials by listing the namespace's
+                        // deployments via the eclipse-cbi central-staging plugin. The plugin reads
+                        // <server id=central> from the mounted settings.xml and decrypts a
+                        // maven-encrypted ({...}) password through SecDispatcher exactly as the real
+                        // deploy does, so the probe authenticates with the same token the deploy will
+                        // use whether it is stored plaintext or encrypted. A hand-rolled curl can't:
+                        // help:effective-settings -DshowPasswords=true only unmasks, it does not run
+                        // SecDispatcher, so an encrypted password reaches curl as the literal {...}
+                        // blob and yields a spurious 401. rc-list throws on any non-2xx (IOException ->
+                        // MojoFailureException -> non-zero exit), so a bad/expired token aborts the run
+                        // in minute zero rather than after a multi-hour TCK. central.bearerCreate builds
+                        // the Portal bearer token from the decrypted token user/password.
+                        sh '''#!/bin/bash -e
+                            # central-staging-plugins is compiled for Java 17; the 4.x impl builds on
+                            # JDK 11, so run this probe under TCK_JAVA_HOME (>= 17 on every line).
+                            export JAVA_HOME="${TCK_JAVA_HOME}"
+                            export PATH="${JAVA_HOME}/bin:${PATH}"
+                            mvn -B ${MVN_EXTRA} ${CENTRAL_PLUGIN}:rc-list \\
+                                -Dcentral.namespace=org.glassfish \\
+                                -Dcentral.bearerCreate=true \\
+                                -Dcentral.showAllDeployments=true \\
+                                -Dcentral.showArtifacts=false
+                            echo "[cred-check] Sonatype Central Portal: ok"
+                        '''
+                        // GitHub SSH push: --dry-run performs the full receive-pack handshake (incl. the
+                        // write-permission check on protected refs) but transmits no objects and never
+                        // creates the remote ref.
+                        sshagent(credentials: ['github-bot-ssh']) {
+                            sh '#!/bin/bash -e\n' + KNOWN_HOSTS_INIT + '''
+                                git push --dry-run git@github.com:eclipse-ee4j/mojarra.git HEAD:refs/heads/__cred_check__
+                                echo "[cred-check] GitHub SSH push (mojarra): ok"
+                            '''
+                        }
+                        // GitHub bot token: gh auth status calls /user under the hood, so it fails on an
+                        // expired/revoked token. Same withCredentials shape Publish to GitHub uses later.
+                        withCredentials([usernamePassword(credentialsId: 'github-bot',
+                                                          usernameVariable: 'GH_USER',
+                                                          passwordVariable: 'GH_TOKEN')]) {
+                            sh '#!/bin/bash -e\n' + GH_INSTALL + '''
+                                gh auth status
+                                echo "[cred-check] GitHub bot token: ok"
+                            '''
+                        }
+                    }
                 }
             }
         }
@@ -510,62 +555,31 @@ spec:
             steps {
                 sshagent(credentials: ['github-bot-ssh']) {
                     withCredentials([file(credentialsId: 'secret-subkeys.asc', variable: 'KEYRING')]) {
-                        // Mojarra: GPG init + git identity + branch/tag conflict check + local release branch.
+                        // GPG init + git identity + branch/tag conflict check + local release branch.
                         // TAG_ONLY=${IS_MILESTONE} skips the branch check on milestone runs (where the
                         // local branch is never pushed).
                         sh '#!/bin/bash -ex\nexport BRANCH_NAME="${RELEASE_BRANCH}" TAG_NAME="${RELEASE_TAG}" TAG_ONLY="${IS_MILESTONE}"\n' +
                            GPG_GIT_INIT + REMOTE_REF_CONFLICT_CHECK
-                        // Same ceremony for the faces submodule when releasing the API alongside.
-                        script {
-                            if (env.SHOULD_BUILD_API == 'true') {
-                                dir('faces') {
-                                    sh '#!/bin/bash -ex\nexport BRANCH_NAME="${API_RELEASE_BRANCH}" TAG_NAME="${API_RELEASE_TAG}" TAG_ONLY="${IS_MILESTONE}"\n' +
-                                       GIT_IDENTITY + REMOTE_REF_CONFLICT_CHECK
-                                }
-                            }
-                        }
-                        // Set release versions. Mojarra parent's versions:set cascades to impl; faces/api
-                        // has a different parent so it needs its own call. Then pin impl's jakarta.faces-api
-                        // dep to the just-set API version.
+                        // Set the release version (cascades to impl). When consuming the api from
+                        // Central, pin impl's jakarta.faces-api dep to the resolved concrete version so
+                        // the released impl declares it. On the DRY_RUN submodule fallback (-Papi) the
+                        // dep is left at its -SNAPSHOT to match the reactor-built api.
                         sh '''#!/bin/bash -ex
                             mvn -U -B ${MVN_EXTRA} \\
                                 -DnewVersion="${RELEASE_VERSION}" -DgenerateBackupPoms=false \\
                                 clean ${VERSIONS_PLUGIN}:set
 
-                            if [ -n "${RESOLVED_API_VERSION:-}" ]; then
-                                mvn -U -B ${MVN_EXTRA} -f faces/api/pom.xml \\
-                                    -DnewVersion="${RESOLVED_API_VERSION}" -DgenerateBackupPoms=false \\
-                                    ${VERSIONS_PLUGIN}:set
-
+                            if [ -z "${MVN_API_PROFILE}" ] && [ -n "${RESOLVED_API_VERSION:-}" ]; then
                                 mvn -U -B ${MVN_EXTRA} -pl impl ${VERSIONS_PLUGIN}:use-dep-version \\
                                     -Dincludes=jakarta.faces:jakarta.faces-api \\
                                     -DdepVersion="${RESOLVED_API_VERSION}" \\
                                     -DforceVersion=true -DgenerateBackupPoms=false
                             fi
-                        '''
-                        // Commit faces FIRST so its HEAD advances; the mojarra commit below then picks
-                        // up the updated submodule gitlink alongside its pom changes, so the mojarra
-                        // release tag references the matching faces release commit.
-                        script {
-                            if (env.SHOULD_BUILD_API == 'true') {
-                                dir('faces') {
-                                    sh '''#!/bin/bash -ex
-                                        git add -A '*pom.xml'
-                                        git commit -m "Prepare release jakarta.faces-api ${RESOLVED_API_VERSION}"
-                                    '''
-                                }
-                            }
-                        }
-                        sh '''#!/bin/bash -ex
-                            git add -A '*pom.xml'
-                            # Stage the updated faces submodule gitlink when present.
-                            if [ -d faces ]; then
-                                git add faces
-                            fi
+                            git add -u '*pom.xml'
                             git commit -m "Prepare release ${RELEASE_VERSION}"
                         '''
-                        // Single-reactor build & install. With -Papi, faces/api joins the reactor and
-                        // -pl impl -am pulls it in as a dependency.
+                        // Build & install. -Papi builds the api from the faces/ submodule into the
+                        // reactor (DRY_RUN fallback only); otherwise impl-only, api from Maven Central.
                         sh '''#!/bin/bash -ex
                             mvn -U -B ${MVN_EXTRA} ${MVN_API_PROFILE} \\
                                 -DskipTests -Ddoclint=none \\
@@ -575,22 +589,16 @@ spec:
                         sh '''#!/bin/bash -ex
                             git tag "${RELEASE_TAG}" -m "Release ${RELEASE_VERSION}"
                         '''
-                        script {
-                            if (env.SHOULD_BUILD_API == 'true') {
-                                dir('faces') {
-                                    sh '''#!/bin/bash -ex
-                                        git tag "${API_RELEASE_TAG}" -m "Release jakarta.faces-api ${RESOLVED_API_VERSION}"
-                                    '''
-                                }
-                            }
-                        }
                     }
                 }
+                // Attach the built jars so a DRY_RUN (which never deploys) is inspectable.
+                archiveArtifacts artifacts: 'impl/target/*.jar, faces/api/target/*.jar',
+                                 allowEmptyArchive: true, fingerprint: true
             }
         }
 
         stage('TCK') {
-            when { expression { return params.RUN_TCK } }
+            when { expression { return !params.SKIP_TCK } }
             steps {
                 sh '''#!/bin/bash -ex
                     set -o pipefail
@@ -739,11 +747,87 @@ spec:
                         echo "OS : $(lsb_release -ds 2>/dev/null || cat /etc/os-release | head -1)"
                         echo "******************************************************"
                     } > summary.txt
+
+                    # Machine-readable validation record, consumed by (a) the jakartaee/faces API
+                    # release job to gate its Central publish on a green TCK (5.0+), and (b) this
+                    # pipeline's own SKIP_TCK reuse gate. Written on every line, but only from a FULL
+                    # conformant TCK — SMOKE_TEST and SKIP_OLD_TCK both drop TCK coverage, so a record
+                    # from either must never gate or be reused. A record therefore attests success by its
+                    # mere existence; there is no result/runTck flag for a consumer to check. On publish
+                    # this same record is written to two files: the impl reuse record keyed by
+                    # RELEASE_VERSION, and (5.0+, unreleased api only) the api gate record keyed by
+                    # VALIDATED_API_VERSION.
+                    # FACES_SHA and MOJARRA_TREE are captured in Prepare (same values the reuse gate
+                    # matches against) and exported into this shell.
+                    if [ "${SMOKE_TEST}" != "true" ] && [ "${SKIP_OLD_TCK}" != "true" ] \\
+                        && [ "${FAILED}" -eq 0 ] && [ "${ERRORS}" -eq 0 ]; then
+                        cat > tck-validation.json <<EOF
+{
+  "line":       "${RELEASE_LINE}",
+  "apiVersion": "${VALIDATED_API_VERSION}",
+  "facesSha":   "${FACES_SHA}",
+  "mojarraSha": "$(git rev-parse HEAD)",
+  "mojarraTree": "${MOJARRA_TREE}",
+  "dryRun":     ${DRY_RUN},
+  "tckVersion": "${RESOLVED_TCK_VERSION}",
+  "gfVersion":  "${RESOLVED_GF_VERSION}",
+  "passed":     ${PASSED},
+  "buildUrl":   "${BUILD_URL}",
+  "timestamp":  "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+}
+EOF
+                    fi
                 '''
+                // Publish the validation record to an orphan tck-status branch of eclipse-ee4j/mojarra
+                // so the jakartaee/faces API release job (5.0+) and this pipeline's SKIP_TCK reuse gate
+                // can read it via a public raw URL (no cross-Jenkins auth). Written as two purpose-keyed
+                // files — impl reuse record by RELEASE_VERSION, api gate record by VALIDATED_API_VERSION —
+                // so the faces gate finds its record by api version even when impl and api versions
+                // differ. Touches only *.json at the root, so it does not trip build.yml (paths: impl/**)
+                // nor any code branch.
+                sshagent(credentials: ['github-bot-ssh']) {
+                    sh '#!/bin/bash -e\n' + KNOWN_HOSTS_INIT + '''
+                        [ -f tck-validation.json ] || exit 0
+                        rm -rf .tck-status
+                        mkdir .tck-status && cd .tck-status
+                        git init -q
+                        git remote add origin git@github.com:eclipse-ee4j/mojarra.git
+                        if git fetch -q --depth 1 origin tck-status 2>/dev/null; then
+                            git checkout -q -B tck-status FETCH_HEAD
+                        else
+                            git checkout -q --orphan tck-status
+                        fi
+                        # Impl reuse record: keyed by the impl RELEASE_VERSION, written on every line,
+                        # read back by this pipeline's own SKIP_TCK reuse gate.
+                        cp ../tck-validation.json "tck-validation-impl-${RELEASE_VERSION}.json"
+                        COMMIT_MSG="TCK validated impl ${RELEASE_VERSION}"
+                        # Api gate record: keyed by the api version (VALIDATED_API_VERSION), read by the
+                        # jakartaee/faces release job. Written only when the api was built from the faces/
+                        # submodule (MVN_API_PROFILE=-Papi) — i.e. an unreleased api this TCK validated,
+                        # the exact case that job gates on. An api already on Central needs no gate, so
+                        # writing one would only clobber that version's historical record.
+                        if [ -n "${API_BRANCH}" ] && [ "${MVN_API_PROFILE}" = "-Papi" ]; then
+                            cp ../tck-validation.json "tck-validation-api-${VALIDATED_API_VERSION}.json"
+                            COMMIT_MSG="${COMMIT_MSG} + api ${VALIDATED_API_VERSION}"
+                        fi
+                        git add -A
+                        # A re-run overwrites the same file(s): commit+push only when something changed
+                        # (buildUrl/timestamp normally differ), so an identical record is a clean no-op
+                        # rather than a "nothing to commit" failure under -e.
+                        if git diff --cached --quiet; then
+                            echo "[tck-status] TCK records for ${RELEASE_VERSION} unchanged; nothing to publish."
+                        else
+                            git -c user.email="mojarra-bot@eclipse.org" -c user.name="Eclipse Mojarra Bot" \\
+                                commit -q -m "${COMMIT_MSG}"
+                            git push -q origin HEAD:tck-status
+                            echo "[tck-status] published TCK records for ${RELEASE_VERSION} to eclipse-ee4j/mojarra@tck-status"
+                        fi
+                    '''
+                }
             }
             post {
                 always {
-                    archiveArtifacts artifacts: 'run.log, summary.txt',
+                    archiveArtifacts artifacts: 'run.log, summary.txt, tck-validation.json',
                                      allowEmptyArchive: true, fingerprint: true
                 }
             }
@@ -756,10 +840,10 @@ spec:
                     // -Poss-release activates the EE4J parent's release profile, which wires
                     // central-publishing-maven-plugin (Sonatype Portal), GPG signing, and the
                     // sources/javadoc jars Maven Central requires. Without this profile, `mvn deploy`
-                    // does not reach Maven Central, so only CI publishes.
-                    // With -Papi, api and impl deploy in a single reactor invocation.
+                    // does not reach Maven Central, so only CI publishes. Impl-only; jakarta.faces-api
+                    // resolves from Maven Central.
                     sh '#!/bin/bash -ex\n' + GPG_INIT + '''
-                        mvn -U -B ${MVN_EXTRA} ${MVN_API_PROFILE} -Poss-release \\
+                        mvn -U -B ${MVN_EXTRA} -Poss-release \\
                             -DskipTests -Ddoclint=none \\
                             -pl impl -am deploy
                     '''
@@ -770,33 +854,13 @@ spec:
         stage('Bump to next snapshot') {
             when { expression { return env.IS_MILESTONE != 'true' } }
             steps {
-                sshagent(credentials: ['github-bot-ssh']) {
-                    // Commit faces FIRST so the mojarra bump commit picks up the updated submodule
-                    // gitlink alongside its own pom change.
-                    script {
-                        if (env.SHOULD_BUILD_API == 'true') {
-                            dir('faces') {
-                                sh '''#!/bin/bash -ex
-                                    mvn -U -B ${MVN_EXTRA} -f api/pom.xml \\
-                                        -DnewVersion="${NEXT_API_VERSION}" -DgenerateBackupPoms=false \\
-                                        ${VERSIONS_PLUGIN}:set
-                                    git add -A '*pom.xml'
-                                    git commit -m "Prepare next development cycle for ${NEXT_API_VERSION}"
-                                '''
-                            }
-                        }
-                    }
-                    sh '''#!/bin/bash -ex
-                        mvn -U -B ${MVN_EXTRA} \\
-                            -DnewVersion="${NEXT_VERSION}" -DgenerateBackupPoms=false \\
-                            ${VERSIONS_PLUGIN}:set
-                        git add -A '*pom.xml'
-                        if [ -d faces ]; then
-                            git add faces
-                        fi
-                        git commit -m "Prepare next development cycle for ${NEXT_VERSION}"
-                    '''
-                }
+                sh '''#!/bin/bash -ex
+                    mvn -U -B ${MVN_EXTRA} \\
+                        -DnewVersion="${NEXT_VERSION}" -DgenerateBackupPoms=false \\
+                        ${VERSIONS_PLUGIN}:set
+                    git add -u '*pom.xml'
+                    git commit -m "Prepare next development cycle for ${NEXT_VERSION}"
+                '''
             }
         }
 
@@ -810,28 +874,14 @@ spec:
                         if [ "${IS_MILESTONE}" != "true" ]; then
                             git push origin "${RELEASE_BRANCH}"
                         fi
-                        git push origin "${RELEASE_TAG}"
+                        # Fully-qualified: on a milestone RELEASE_TAG equals the local release
+                        # branch name, so a bare ref would be ambiguous ("matches more than one").
+                        git push origin "refs/tags/${RELEASE_TAG}"
                     '''
-                    script {
-                        if (env.SHOULD_BUILD_API == 'true') {
-                            dir('faces') {
-                                sh '''#!/bin/bash -ex
-                                    if [ "${IS_MILESTONE}" != "true" ]; then
-                                        git push origin "${API_RELEASE_BRANCH}"
-                                    fi
-                                    git push origin "${API_RELEASE_TAG}"
-                                '''
-                            }
-                        }
-                    }
                 }
                 // GA-only: squash-merge the release branch into the source branch so "Prepare release"
                 // + "Prepare next development cycle" land as a single commit titled
                 // "<version> has been released", manage milestones, and draft+publish a GitHub release.
-                // For the API repo, only PR-merge when impl/pom.xml's jakarta.faces-api dep matches
-                // faces/api/pom.xml's version (i.e. impl + api are in lockstep); if they diverge we
-                // still push the API release branch but skip the PR-merge to avoid landing an
-                // unrelated version on the API source branch.
                 script {
                     if (env.IS_MILESTONE != 'true') {
                         withCredentials([usernamePassword(credentialsId: 'github-bot',
@@ -903,18 +953,6 @@ spec:
                                     --notes-file release-notes.md \\
                                     --latest=true
                             '''
-                            if (env.SHOULD_BUILD_API == 'true' && env.IMPL_API_DEP_VERSION == env.API_SNAPSHOT_VERSION) {
-                                dir('faces') {
-                                    sh '#!/bin/bash -ex\n' + GH_INSTALL + '''
-                                        gh pr create --base "${API_BRANCH}" --head "${API_RELEASE_BRANCH}" \\
-                                            --title "Faces API ${RESOLVED_API_VERSION} has been released" \\
-                                            --body "${BUILD_URL}"
-                                        gh pr merge "${API_RELEASE_BRANCH}" --squash \\
-                                            --subject "Faces API ${RESOLVED_API_VERSION} has been released" \\
-                                            --body "${BUILD_URL}"
-                                    '''
-                                }
-                            }
                         }
                     }
                 }
@@ -956,7 +994,7 @@ def requireGaVersion(String paramName, String version, String expectedPrefix) {
 
 // Compose the human-readable banner lines printed at the end of the Prepare stage. Always-on lines
 // describe the artifacts being released and the build/test environment; conditional lines call out
-// active toggles (DRY_RUN, SMOKE_TEST, SKIP_OLD_TCK, SKIP_DEPLOY, RUN_TCK off).
+// active toggles (DRY_RUN, SMOKE_TEST, SKIP_TCK, SKIP_OLD_TCK, SKIP_DEPLOY, SKIP_CRED_CHECK).
 def buildBannerLines(params, env, cfg) {
     def lines = []
     if (env.IS_MILESTONE == 'true') {
@@ -964,23 +1002,22 @@ def buildBannerLines(params, env, cfg) {
     } else {
         lines << "Mojarra ${env.RELEASE_VERSION} release (snapshot ${env.SNAPSHOT_VERSION}, next ${env.NEXT_VERSION})"
     }
-    if (env.SHOULD_BUILD_API == 'true') {
-        lines << "+ jakarta.faces-api ${env.RESOLVED_API_VERSION} (released alongside in same reactor)"
-    } else if (cfg.apiBranch != null) {
-        lines << "(impl-only: jakarta.faces-api dep is a GA version, API will not be rebuilt)"
+    if (cfg.apiBranch != null) {
+        lines << "depends on jakarta.faces-api ${env.RESOLVED_API_VERSION} (from ${env.API_SOURCE})"
     }
     def jdkLabel = (env.RESOLVED_JDK == env.RESOLVED_TCK_JDK) \
         ? "JDK${env.RESOLVED_JDK}" \
         : "JDK${env.RESOLVED_JDK} (build) / JDK${env.RESOLVED_TCK_JDK} (TCK)"
-    def tckBannerLabel = params.RUN_TCK
+    def tckBannerLabel = !params.SKIP_TCK
         ? ", Faces TCK ${env.RESOLVED_TCK_VERSION}" + (env.TCK_THREAD_COUNT == '1' ? '' : " (-T ${env.TCK_THREAD_COUNT})")
         : ''
     lines << "${jdkLabel}, GlassFish ${env.RESOLVED_GF_VERSION}${tckBannerLabel}"
-    if (!params.RUN_TCK)    lines << "- RUN_TCK off: TCK skipped entirely"
+    if (params.SKIP_TCK)    lines << "- SKIP_TCK: Faces TCK stage skipped (real release reuses a matching green tck-status record)"
     if (params.SKIP_OLD_TCK && params.RELEASE_LINE.startsWith('4.')) lines << "- SKIP_OLD_TCK: old-tck JavaTest modules excluded from reactor"
     if (params.SMOKE_TEST)  lines << "- SMOKE_TEST: smoke-test subset only (NOT TCK-conformant)"
     if (params.DRY_RUN)     lines << "- DRY_RUN: skips Maven Central deploy and GitHub push"
     if (params.SKIP_DEPLOY) lines << "- SKIP_DEPLOY: skips deploy but still pushes branch/tag and creates GitHub release"
+    if (params.SKIP_CRED_CHECK) lines << "- SKIP_CRED_CHECK: skips Prepare-stage credential checks"
     return lines
 }
 
@@ -1003,9 +1040,8 @@ def renderBanner(List<String> lines) {
 // help:effective-pom applies inheritance and interpolation, so the resolved <version> is present
 // even when it comes from a parent pom's dependencyManagement rather than a literal child of
 // impl/pom.xml. effective-pom builds only the project model and resolves no dependency artifacts,
-// so a milestone dependency carrying an unpublished -SNAPSHOT parent cannot break this read --
-// unlike dependency:tree, which resolves the whole graph. Invoked WITHOUT -Papi so the api
-// submodule's local -SNAPSHOT (5.0+) cannot override the literal version impl/pom.xml pins.
+// so a dependency carrying an unpublished -SNAPSHOT parent cannot break this read -- unlike
+// dependency:tree, which resolves the whole graph.
 def readImplApiDepVersion() {
     return sh(returnStdout: true, script: '''#!/bin/bash -e
         EFF=$(mktemp)

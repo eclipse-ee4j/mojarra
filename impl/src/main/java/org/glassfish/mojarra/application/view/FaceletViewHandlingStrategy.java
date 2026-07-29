@@ -36,10 +36,12 @@ import static java.util.Collections.emptyList;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.WARNING;
-import static org.glassfish.mojarra.RIConstants.DYNAMIC_COMPONENT;
+import static org.glassfish.mojarra.RIConstants.DYNAMIC_TRANSIENT_BUILD;
 import static org.glassfish.mojarra.RIConstants.FACELETS_ENCODING_KEY;
 import static org.glassfish.mojarra.RIConstants.FLOW_DEFINITION_ID_SUFFIX;
+import static org.glassfish.mojarra.RIConstants.VIEW_REBUILT_AT_RENDER;
 import static org.glassfish.mojarra.context.StateContext.getStateContext;
+import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.DYNAMIC_COMPONENT;
 import static org.glassfish.mojarra.facelets.tag.ui.UIDebug.debugRequest;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.getResponseStateManager;
 import static org.glassfish.mojarra.util.ComponentStruct.ADD;
@@ -60,6 +62,7 @@ import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -67,6 +70,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
@@ -123,7 +127,9 @@ import jakarta.faces.view.facelets.Facelet;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.servlet.http.HttpSession;
 
+import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.application.ApplicationAssociate;
+import org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter;
 import org.glassfish.mojarra.context.FacesContextParam;
 import org.glassfish.mojarra.context.StateContext;
 import org.glassfish.mojarra.facelets.compiler.FaceletDoctype;
@@ -168,11 +174,15 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     private final MethodRetargetHandlerManager retargetHandlerManager = new MethodRetargetHandlerManager();
 
     private int responseBufferSize;
+    private boolean refreshTransientBuildOnPSS;
 
     private Cache<Resource, BeanInfo> metadataCache;
     private Map<String, List<String>> contractMappings;
 
     private static final String NONCE_EXPRESSION = "#{nonce}";
+
+    private static final Set<VisitHint> SKIP_ITERATION_HINT = EnumSet.of(VisitHint.SKIP_ITERATION);
+
     private String cspHeader;
     private boolean dynamicCspHeader;
 
@@ -243,9 +253,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                         String clientId = viewRoot.getClientId(context);
                         Object stateObj = state.get(clientId);
                         if (stateObj != null) {
-                            context.getAttributes().put("org.glassfish.mojarra.application.view.restoreViewScopeOnly", true);
-                            viewRoot.restoreState(context, stateObj);
-                            context.getAttributes().remove("org.glassfish.mojarra.application.view.restoreViewScopeOnly");
+                            viewRoot.restoreViewScopeState(context, stateObj);
                         }
                     }
                 }
@@ -296,8 +304,16 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     @Override
     public void buildView(FacesContext ctx, UIViewRoot view) throws IOException {
         StateContext stateCtx = StateContext.getStateContext(ctx);
+        // Every path below rebuilds the tree from the facelet except the skip branch, which flips this to FALSE.
+        ctx.getAttributes().put(VIEW_REBUILT_AT_RENDER, Boolean.TRUE);
 
         if (isViewPopulated(ctx, view)) {
+            if (canSkipTransientBuildRefresh(ctx, view, stateCtx)) {
+                // The view was already (re)built this request and holds no build-time-dynamic content, so re-applying
+                // the facelet would reproduce the identical tree. Skip it (see refreshTransientBuildOnPSS).
+                ctx.getAttributes().put(VIEW_REBUILT_AT_RENDER, Boolean.FALSE);
+                return;
+            }
             Facelet facelet = faceletFactory.getFacelet(ctx, view.getViewId());
             // Disable events from being intercepted by the StateContext by
             // virute of re-applying the handlers.
@@ -306,7 +322,9 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                 facelet.apply(ctx, view);
                 reapplyDynamicActions(ctx);
                 if (stateCtx.isPartialStateSaving(ctx, view.getViewId())) {
-                    markInitialStateIfNotMarked(view);
+                    // reapplyDynamicActions ran above, so the dynamic-action list now reflects this view;
+                    // when it is empty no component bears DYNAMIC_COMPONENT and the per-node marker check is skipped.
+                    markInitialStateIfNotMarked(view, !isEmpty(stateCtx.getDynamicActions()));
                 }
             } finally {
                 stateCtx.setTrackViewModifications(true);
@@ -367,6 +385,21 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         markInitialState(ctx, view);
 
         setViewPopulated(ctx, view);
+    }
+
+    /**
+     * Determines whether the redundant re-apply of the facelet on an already-populated view may be skipped. Enabled by
+     * default; set {@code refreshTransientBuildOnPSS} to {@code true} to restore the legacy unconditional re-apply.
+     * The skip is only safe under partial state saving for a non-transient view whose build this request involved no
+     * build-time-dynamic content ({@link RIConstants#DYNAMIC_TRANSIENT_BUILD}) and no dynamic component add/remove,
+     * since re-applying would then reproduce the identical tree.
+     */
+    private boolean canSkipTransientBuildRefresh(FacesContext ctx, UIViewRoot view, StateContext stateCtx) {
+        return !refreshTransientBuildOnPSS
+                && !view.isTransient()
+                && stateCtx.isPartialStateSaving(ctx, view.getViewId())
+                && isEmpty(stateCtx.getDynamicActions())
+                && !ctx.getAttributes().containsKey(DYNAMIC_TRANSIENT_BUILD);
     }
 
     /**
@@ -829,6 +862,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         });
 
         responseBufferSize = FacesContextParam.FACELETS_BUFFER_SIZE.getValue(FacesContext.getCurrentInstance());
+        refreshTransientBuildOnPSS = webConfig.isOptionEnabled(BooleanWebContextInitParameter.RefreshTransientBuildOnPSS);
 
         LOGGER.fine("Initialization Successful");
 
@@ -924,10 +958,9 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         String encoding = Util.getResponseEncoding(context, initWriter.getCharacterEncoding());
 
         // apply them to the response
-        char[] buffer = new char[1028];
-        HtmlUtils.writeTextForXML(initWriter, contentType, buffer);
-        String str = String.valueOf(buffer).trim();
-        extContext.setResponseContentType(str);
+        StringWriter contentTypeWriter = new StringWriter();
+        HtmlUtils.writeTextForXML(contentTypeWriter, contentType);
+        extContext.setResponseContentType(contentTypeWriter.toString().trim());
         extContext.setResponseCharacterEncoding(encoding);
 
         // Save encoding in UIViewRoot for faster consult when Util#getResponseEncoding() is invoked again elsewhere.
@@ -1171,10 +1204,22 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
 
     private void markInitialState(final UIComponent component) {
         component.markInitialState();
-        for (Iterator<UIComponent> it = component.getFacetsAndChildren(); it.hasNext();) {
-            UIComponent child = it.next();
-            if (!child.isTransient()) {
-                markInitialState(child);
+        // Index loop over children + facet values rather than getFacetsAndChildren(), avoiding an iterator
+        // allocation at every node of this per-build full-tree walk.
+        if (component.getChildCount() > 0) {
+            List<UIComponent> children = component.getChildren();
+            for (int i = 0, size = children.size(); i < size; i++) {
+                UIComponent child = children.get(i);
+                if (!child.isTransient()) {
+                    markInitialState(child);
+                }
+            }
+        }
+        if (component.getFacetCount() > 0) {
+            for (UIComponent facet : component.getFacets().values()) {
+                if (!facet.isTransient()) {
+                    markInitialState(facet);
+                }
             }
         }
     }
@@ -1332,7 +1377,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
         public boolean isRequired(FacesContext ctx) {
 
             ValueExpression rd = (ValueExpression) propertyDescriptor.getValue("required");
-            return rd != null ? Boolean.valueOf(rd.getValue(ctx.getELContext()).toString()) : false;
+            return rd != null && Util.toBoolean(rd.getValue(ctx.getELContext()), false);
 
         }
 
@@ -1687,46 +1732,51 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     }
 
     /**
-     * Find the given component in the component tree.
+     * Builds a {@code clientId -> component} index over the given subtree in a single {@code visitTree} pass, so
+     * dynamic-action replay resolves each component by client id in O(1), so replay is O(n) in the number of
+     * dynamically added components; a per-action lookup would be O(n&sup2;).
      *
      * @param context the Faces context.
-     * @param clientId the client id of the component to find.
+     * @param root the subtree to index.
+     * @return a mutable {@code clientId -> component} map; callers keep it in sync as components are added/removed.
      */
-    private UIComponent locateComponentByClientId(final FacesContext context, final UIComponent parent, final String clientId, final boolean dynamic) {
-        final List<UIComponent> found = new ArrayList<>(1);
-        UIComponent result = null;
+    private Map<String, UIComponent> buildClientIdIndex(FacesContext context, UIComponent root) {
+        Map<String, UIComponent> index = new HashMap<>();
+        indexSubtree(context, root, index);
+        return index;
+    }
 
-        try {
-        	parent.invokeOnComponent(context, clientId, (context1, target) -> found.add(target));
-        } catch (FacesException e) {
-        	if (dynamic) {
-                LOGGER.log(FINE, e, () -> "Cannot find dynamic component " + clientId + " in " + parent.getClientId(context)
-		            	+ "; assuming it just doesn't exist anymore"
-		            	+ "; it will most likely emit a 'WARNING: Unable to save dynamic action' log later on anyway");
-        	} else {
-        		throw e;
-        	}
-        }
-
-        /*
-         * Since we did not find it the cheaper way we need to assume there is a UINamingContainer that does not prepend its ID.
-         * So we are going to walk the tree to find it.
-         */
-        if (found.isEmpty()) {
-            VisitContext visitContext = VisitContext.createVisitContext(context);
-            parent.visitTree(visitContext, (visitContext1, component) -> {
-                VisitResult result1 = VisitResult.ACCEPT;
-                if (component.getClientId(visitContext1.getFacesContext()).equals(clientId)) {
-                    found.add(component);
-                    result1 = VisitResult.COMPLETE;
-                }
-                return result1;
-            });
-        }
-        if (!found.isEmpty()) {
-            result = found.get(0);
-        }
-        return result;
+    /**
+     * Adds {@code root} and every descendant to the {@code clientId -> component} index. Used both to build the
+     * initial index and to register a subtree that replay adds, so a later action targeting a descendant (a
+     * dynamically added component nested under another) resolves against the live tree rather than restoring a
+     * duplicate.
+     *
+     * <p>
+     * The visit skips iteration, as the same lookup in {@link FaceletPartialStateManagementStrategy} always has.
+     * Iterating is not free of consequence: it sets the row index on every iterating component in the view, which a
+     * component can act on -- a data table backed by a lazily loaded model fetches a page of data per iteration --
+     * and replay must not provoke that merely to find components by client id.
+     * </p>
+     *
+     * <p>
+     * The index therefore holds no row-scoped client id, and an action recorded against one (an add performed while
+     * a row index was set) does not resolve here. That costs nothing: a component inside a row is a single instance
+     * shared by every row, so such an action denotes no position the index is missing, and the request which
+     * recorded it has the component attached already. Later requests never see it either way, as
+     * {@link FaceletPartialStateManagementStrategy} resolves against an equally row-free index when restoring.
+     * </p>
+     *
+     * @param context the Faces context.
+     * @param root the subtree to index.
+     * @param index the index to populate.
+     */
+    private void indexSubtree(FacesContext context, UIComponent root, Map<String, UIComponent> index) {
+        VisitContext visitContext = VisitContext.createVisitContext(context, null, SKIP_ITERATION_HINT);
+        root.visitTree(visitContext, (visitContext1, component) -> {
+            index.put(component.getClientId(visitContext1.getFacesContext()), component);
+            return VisitResult.ACCEPT;
+        });
     }
 
     /**
@@ -1741,17 +1791,44 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      */
     private void reapplyDynamicActions(FacesContext context) {
         StateContext stateContext = StateContext.getStateContext(context);
-        List<ComponentStruct> actions = stateContext.getDynamicActions();
-        if (actions != null) {
+        // Actions are recorded raw (append-only); prune to the net per-clientId effect so a collapsed subtree does
+        // not replay its now-cancelled add/remove pairs.
+        List<ComponentStruct> actions = StateContext.pruneDynamicActions(stateContext.getDynamicActions());
+        // Only walk the tree to build the index when there is at least one action to replay; pruneDynamicActions
+        // returns a non-null empty list for the common no-dynamic-component postback, which must not pay an O(n) walk.
+        if (!isEmpty(actions)) {
+            // Index the tree once (O(n)) so each replayed action resolves its parent/child in O(1), keeping replay
+            // O(n); kept in sync as we add/remove below.
+            Map<String, UIComponent> componentIndex = buildClientIdIndex(context, context.getViewRoot());
             for (ComponentStruct action : actions) {
                 if (REMOVE.equals(action.getAction())) {
-                    reapplyDynamicRemove(context, action);
+                    reapplyDynamicRemove(context, action, componentIndex);
                 }
                 if (ADD.equals(action.getAction())) {
-                    reapplyDynamicAdd(context, action);
+                    reapplyDynamicAdd(context, action, componentIndex);
                 }
             }
         }
+    }
+
+    /**
+     * Returns the index the given action's child must be reapplied at. The action carries it, as the component
+     * does not necessarily survive to hold it: a facelet-created child which was dynamically moved to another
+     * parent is deleted and recreated by this very refresh, losing its marker. The marker on the component is
+     * only consulted for state saved before the action carried the index.
+     *
+     * @param struct the component struct.
+     * @param child the child being reapplied.
+     * @return the index within the parent's children, or {@link ComponentStruct#APPEND} to append.
+     */
+    private static int indexOf(ComponentStruct struct, UIComponent child) {
+        if (struct.getIndex() != ComponentStruct.APPEND) {
+            return struct.getIndex();
+        }
+        if (child.getAttributes().get(DYNAMIC_COMPONENT) instanceof Integer index) {
+            return index;
+        }
+        return ComponentStruct.APPEND;
     }
 
     /**
@@ -1760,12 +1837,12 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * @param context the Faces context.
      * @param struct the component struct.
      */
-    private void reapplyDynamicAdd(FacesContext context, ComponentStruct struct) {
-        UIComponent parent = locateComponentByClientId(context, context.getViewRoot(), struct.getParentClientId(), false);
+    private void reapplyDynamicAdd(FacesContext context, ComponentStruct struct, Map<String, UIComponent> componentIndex) {
+        UIComponent parent = componentIndex.get(struct.getParentClientId());
 
         if (parent != null) {
 
-            UIComponent child = locateComponentByClientId(context, parent, struct.getClientId(), true);
+            UIComponent child = componentIndex.get(struct.getClientId());
             StateContext stateContext = StateContext.getStateContext(context);
 
             if (child == null) {
@@ -1777,21 +1854,35 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
                     parent.getFacets().remove(struct.getFacetName());
                     parent.getFacets().put(struct.getFacetName(), child);
                     child.getClientId();
-                } else {
-                    int childIndex = -1;
-                    if (child.getAttributes().containsKey(DYNAMIC_COMPONENT)) {
-                        childIndex = (Integer) child.getAttributes().get(DYNAMIC_COMPONENT);
-                    }
+                } else if (child.getParent() != parent) {
+                    int childIndex = indexOf(struct, child);
                     child.setId(struct.getId());
+                    int storedIndex;
                     if (childIndex >= parent.getChildCount() || childIndex == -1) {
                         parent.getChildren().add(child);
+                        storedIndex = parent.getChildCount() - 1;
                     } else {
                         parent.getChildren().add(childIndex, child);
+                        storedIndex = childIndex;
                     }
                     child.getClientId();
-                    child.getAttributes().put(DYNAMIC_COMPONENT, child.getParent().getChildren().indexOf(child));
+                    // Position the child was added at; avoids an O(n) getChildren().indexOf(child) per dynamic add.
+                    child.getAttributes().put(DYNAMIC_COMPONENT, storedIndex);
                 }
+                // else: the child survived the facelet refresh already attached under this parent
+                // (markForDeletion deletes only facelet-created MARK_CREATED siblings, never the
+                // programmatically-added ones) and the refresh preserves their relative order, so it is
+                // already in place. Re-inserting it would erase+re-add via getChildren().add — an O(n)
+                // indexOf per action, i.e. O(n^2) over a large dynamic subtree — only to reproduce the
+                // position it already holds. Leave it; the bookkeeping below still runs.
                 stateContext.getDynamicComponents().put(struct.getClientId(), child);
+                if (child.getChildCount() == 0 && child.getFacetCount() == 0) {
+                    componentIndex.put(struct.getClientId(), child);
+                } else {
+                    // A subtree was (re)added: index its descendants too, so a later action targeting one of them
+                    // resolves to the live component instead of restoring a duplicate.
+                    indexSubtree(context, child, componentIndex);
+                }
             }
         }
     }
@@ -1802,8 +1893,8 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
      * @param context the Faces context.
      * @param struct the component struct.
      */
-    private void reapplyDynamicRemove(FacesContext context, ComponentStruct struct) {
-        UIComponent child = locateComponentByClientId(context, context.getViewRoot(), struct.getClientId(), true);
+    private void reapplyDynamicRemove(FacesContext context, ComponentStruct struct, Map<String, UIComponent> componentIndex) {
+        UIComponent child = componentIndex.get(struct.getClientId());
         if (child != null) {
             StateContext stateContext = StateContext.getStateContext(context);
             stateContext.getDynamicComponents().put(struct.getClientId(), child);
@@ -1813,6 +1904,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             } else {
             	parent.getChildren().remove(child);
             }
+            componentIndex.remove(struct.getClientId());
         }
     }
 
@@ -1853,7 +1945,7 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
             return false;
         }
         boolean[] found = { false };
-        VisitContext visitContext = VisitContext.createVisitContext(context, null, EnumSet.of(VisitHint.SKIP_ITERATION));
+        VisitContext visitContext = VisitContext.createVisitContext(context, null, SKIP_ITERATION_HINT);
         viewRoot.visitTree(visitContext, (vc, target) -> {
             if (target instanceof UIForm) {
                 found[0] = true;
@@ -1979,14 +2071,27 @@ public class FaceletViewHandlingStrategy extends ViewHandlingStrategy {
     /**
      * Mark the initial state if not already marked.
      */
-    private void markInitialStateIfNotMarked(UIComponent component) {
-        if (!component.isTransient()) {
-            if (!component.getAttributes().containsKey(DYNAMIC_COMPONENT) && !component.initialStateMarked()) {
-                component.markInitialState();
+    private void markInitialStateIfNotMarked(UIComponent component, boolean hasDynamicComponents) {
+        if (component.isTransient()) {
+            return;
+        }
+        // The DYNAMIC_COMPONENT guard exists to leave dynamically added components unmarked. When the view
+        // carries no dynamic actions no component bears that marker, so skip the per-node reflective
+        // AttributesMap.containsKey probe entirely. Index loop over children + facet values rather than
+        // getFacetsAndChildren(), avoiding an iterator allocation at every node.
+        if (!component.initialStateMarked()
+                && (!hasDynamicComponents || !component.getAttributes().containsKey(DYNAMIC_COMPONENT))) {
+            component.markInitialState();
+        }
+        if (component.getChildCount() > 0) {
+            List<UIComponent> children = component.getChildren();
+            for (int i = 0, size = children.size(); i < size; i++) {
+                markInitialStateIfNotMarked(children.get(i), hasDynamicComponents);
             }
-            for (Iterator<UIComponent> it = component.getFacetsAndChildren(); it.hasNext();) {
-                UIComponent child = it.next();
-                markInitialStateIfNotMarked(child);
+        }
+        if (component.getFacetCount() > 0) {
+            for (UIComponent facet : component.getFacets().values()) {
+                markInitialStateIfNotMarked(facet, hasDynamicComponents);
             }
         }
     }

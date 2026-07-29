@@ -23,6 +23,7 @@ import java.util.List;
 import jakarta.faces.application.NavigationCase;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlOutcomeTargetLink;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
@@ -54,7 +55,7 @@ public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
 
         NavigationCase navCase = null;
         boolean failedToResolveNavigationCase = false;
-        boolean disabled = Util.componentIsDisabled(component);
+        boolean disabled = component instanceof HtmlOutcomeTargetLink link ? link.isDisabled() : Util.componentIsDisabled(component);
 
         if (!disabled) {
             navCase = getNavigationCase(context, component);
@@ -84,7 +85,8 @@ public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
 
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
-        String endElement = Util.componentIsDisabled(component) || context.getAttributes().remove(NO_NAV_CASE) != null ? "span" : "a";
+        boolean disabled = component instanceof HtmlOutcomeTargetLink link ? link.isDisabled() : Util.componentIsDisabled(component);
+        String endElement = disabled || context.getAttributes().remove(NO_NAV_CASE) != null ? "span" : "a";
         writer.endElement(endElement);
 
         RenderKitUtils.flushPendingBehaviorEventListeners(context, component, null);
@@ -99,7 +101,7 @@ public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
 
         writer.startElement("span", component);
         writeIdAndNameAttributes(context, writer, component);
-        renderLinkCommonAttributes(writer, component);
+        writeStyleClassAttributeIfNecessary(writer, component);
         renderPassThruAttributes(context, writer, component, ATTRIBUTES, EXCLUDED_ATTRIBUTES);
         writeValue(writer, component);
 
@@ -124,7 +126,7 @@ public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
         hrefVal += getFragment(component);
         writer.writeURIAttribute("href", hrefVal, "outcome");
 
-        renderLinkCommonAttributes(writer, component);
+        writeStyleClassAttributeIfNecessary(writer, component);
         renderPassThruAttributes(context, writer, component, ATTRIBUTES, null);
         writeValue(writer, component);
 
@@ -144,28 +146,6 @@ public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
         writer.writeText(getLabel(component), component, null);
         writer.flush();
 
-    }
-
-    protected void renderLinkCommonAttributes(ResponseWriter writer, UIComponent component) throws IOException {
-
-        // this is common to both link and button target renderers
-        String styleClass = (String) component.getAttributes().get("styleClass");
-        if (styleClass != null && styleClass.length() > 0) {
-            writer.writeAttribute("class", styleClass, "styleClass");
-        }
-
-        // target/onclick should be pass through, but right now, due to command Link,
-        // they all share the same base properties file which marks them as non
-        // pass-through
-        String target = (String) component.getAttributes().get("target");
-        if (target != null && target.length() > 0) {
-            writer.writeAttribute("target", target, "target");
-        }
-
-        String onclick = (String) component.getAttributes().get("onclick");
-        if (onclick != null && onclick.length() > 0) {
-            writer.writeAttribute("onclick", onclick, "onclick");
-        }
     }
 
 }

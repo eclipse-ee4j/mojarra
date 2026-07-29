@@ -150,6 +150,10 @@ public class InstanceFactory {
     private final ViewMemberInstanceFactoryMetadataMap<String, Object> behaviorMap;
     private final ViewMemberInstanceFactoryMetadataMap<String, Object> converterIdMap;
     private final ViewMemberInstanceFactoryMetadataMap<String, Object> validatorMap;
+    private final Map<Class<?>, Constructor<?>> constructorCache;
+
+    // Standard built-in (jakarta.faces.convert) by-type converters, reused per target class (see createConverter).
+    private final Map<Class<?>, Converter<?>> builtinConverterByType = new ConcurrentHashMap<>();
 
     private final Set<String> defaultValidatorIds;
     private volatile Map<String, String> defaultValidatorInfo;
@@ -165,6 +169,7 @@ public class InstanceFactory {
         validatorMap = new ViewMemberInstanceFactoryMetadataMap<>(new ConcurrentHashMap<>());
         defaultValidatorIds = new LinkedHashSet<>();
         behaviorMap = new ViewMemberInstanceFactoryMetadataMap<>(new ConcurrentHashMap<>());
+        constructorCache = new ConcurrentHashMap<>();
 
         FacesContext context = FacesContext.getCurrentInstance();
         WebConfiguration webConfig = WebConfiguration.getInstance(context.getExternalContext());
@@ -452,6 +457,11 @@ public class InstanceFactory {
     public Converter<?> createConverter(Class<?> targetClass) {
         notNull("targetClass", targetClass);
 
+        Converter<?> cached = builtinConverterByType.get(targetClass);
+        if (cached != null) {
+            return cached;
+        }
+
         Converter<?> returnVal = CdiUtils.createConverter(getBeanManager(), targetClass);
         if (returnVal != null) {
             return returnVal;
@@ -486,9 +496,25 @@ public class InstanceFactory {
                 ((DateTimeConverter) returnVal).setTimeZone(systemTimeZone);
             }
             associate.getAnnotationManager().applyConverterAnnotations(FacesContext.getCurrentInstance(), returnVal);
+
+            // Reuse standard built-in converters per target class: the resolution walk, reflective (re)creation and
+            // annotation application are otherwise paid on every conversion.
+            if (isReusableByType(returnVal)) {
+                builtinConverterByType.put(targetClass, returnVal);
+            }
         }
 
         return returnVal;
+    }
+
+    /**
+     * A by-type converter may be reused per target class when it is one of the standard built-in converters
+     * (package {@code jakarta.faces.convert}); these are effectively immutable once resolved for a given target class
+     * (EnumConverter's target enum type and any application-scoped default time zone are fixed). Custom
+     * {@code converter-for-class} registrations are excluded as they may be stateful or scoped.
+     */
+    private static boolean isReusableByType(Converter<?> converter) {
+        return converter.getClass().getName().startsWith("jakarta.faces.convert.");
     }
 
     /*
@@ -668,6 +694,8 @@ public class InstanceFactory {
             throw new FacesException(ex);
         }
 
+        ComponentBindingScopeChecker.check(ctx, componentExpression, c);
+
         return c;
 
     }
@@ -774,7 +802,7 @@ public class InstanceFactory {
         }
 
         try {
-            result = clazz.getDeclaredConstructor().newInstance();
+            result = getCachedConstructor(clazz).newInstance();
         } catch (Throwable t) {
             Throwable previousT;
             do {
@@ -789,6 +817,28 @@ public class InstanceFactory {
         }
 
         return (T) result;
+    }
+
+    /**
+     * Returns the cached no-arg constructor for the given class, resolving and caching it on first use. The access check
+     * is suppressed up front (mirroring the cached read/write accessors in {@code UIComponentBase}) since components have
+     * a public no-arg constructor; a rare suppression failure leaves the per-call check in place. Not cached in dev mode,
+     * where classes may be reloaded, matching {@link #newThing}'s handling of the resolved {@code Class}.
+     */
+    private Constructor<?> getCachedConstructor(Class<?> clazz) throws NoSuchMethodException {
+        Constructor<?> constructor = constructorCache.get(clazz);
+        if (constructor == null) {
+            constructor = clazz.getDeclaredConstructor();
+            try {
+                constructor.setAccessible(true);
+            } catch (RuntimeException accessNotGranted) {
+                // leave the per-call access check in place
+            }
+            if (!associate.isDevModeEnabled()) {
+                constructorCache.put(clazz, constructor);
+            }
+        }
+        return constructor;
     }
 
     /*

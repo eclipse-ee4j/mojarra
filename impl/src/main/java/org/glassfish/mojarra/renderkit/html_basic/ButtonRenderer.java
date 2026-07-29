@@ -26,7 +26,9 @@ import java.util.logging.Level;
 import jakarta.faces.component.UICommand;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
+import jakarta.faces.component.html.HtmlCommandButton;
 import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
+import jakarta.faces.component.html.HtmlOutcomeTargetButton;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.ActionEvent;
@@ -46,6 +48,17 @@ public class ButtonRenderer extends HtmlBasicRenderer {
     private static final Attribute[] ATTRIBUTES = AttributeManager.getAttributes(AttributeManager.Key.COMMANDBUTTON);
 
     // ---------------------------------------------------------- Public Methods
+
+    @Override
+    protected boolean isDisabledOrReadonly(UIComponent component) {
+        if (component instanceof HtmlCommandButton button) {
+            return button.isDisabled() || button.isReadonly();
+        }
+        if (component instanceof  HtmlOutcomeTargetButton button) {
+        	return button.isDisabled();
+        }
+        return super.isDisabledOrReadonly(component);
+    }
 
     @Override
     public void decode(FacesContext context, UIComponent component) {
@@ -96,7 +109,8 @@ public class ButtonRenderer extends HtmlBasicRenderer {
          * when we decide how to do script injection.
          */
 
-        String imageSrc = (String) component.getAttributes().get("image");
+        String imageSrc = component instanceof HtmlCommandButton button ? button.getImage()
+                : (String) component.getAttributes().get("image");
         writer.startElement("input", component);
         writeIdAttributeIfNecessary(context, writer, component);
         String clientId = component.getClientId(context);
@@ -105,7 +119,7 @@ public class ButtonRenderer extends HtmlBasicRenderer {
             writer.writeURIAttribute("src", RenderKitUtils.getImageSource(context, component, "image"), "image");
             writer.writeAttribute("name", clientId, "clientId");
 
-            String alt = (String) component.getAttributes().get("alt");
+            String alt = (String) RenderKitUtils.getAttributeIfSet(component, "alt");
             if (alt != null) {
                 writer.writeAttribute("alt", alt, "alt");
             }
@@ -121,7 +135,7 @@ public class ButtonRenderer extends HtmlBasicRenderer {
         RenderKitUtils.renderPassThruAttributes(context, writer, component, null, false, ATTRIBUTES, HtmlDocumentElementEvent.click, FacesComponentEvent.action);
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, component);
 
-        String styleClass = (String) component.getAttributes().get("styleClass");
+        String styleClass = (String) RenderKitUtils.getAttributeIfSet(component, "styleClass");
         if (styleClass != null && styleClass.length() > 0) {
             writer.writeAttribute("class", styleClass, "styleClass");
         }
@@ -198,7 +212,7 @@ public class ButtonRenderer extends HtmlBasicRenderer {
      */
     private static boolean isReset(UIComponent component) {
 
-        return "reset".equals(component.getAttributes().get("type"));
+        return "reset".equals(component instanceof HtmlCommandButton button ? button.getType() : component.getAttributes().get("type"));
 
     }
 
@@ -212,7 +226,8 @@ public class ButtonRenderer extends HtmlBasicRenderer {
      */
     private static String getButtonType(UIComponent component) {
 
-        String type = (String) component.getAttributes().get("type");
+        String type = component instanceof HtmlCommandButton button ? button.getType()
+                : (String) component.getAttributes().get("type");
         if (type == null || !"reset".equals(type) && !"submit".equals(type) && !"button".equals(type)) {
             type = "submit";
             // This is needed in the decode method

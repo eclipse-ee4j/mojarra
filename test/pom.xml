@@ -25,7 +25,7 @@
         <version>5.0.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.eclipse.mojarra.test</groupId>
+    <groupId>org.glassfish.mojarra.test</groupId>
     <artifactId>pom</artifactId>
     <packaging>pom</packaging>
 
@@ -33,19 +33,33 @@
 
     <modules>
         <module>../faces/tck/util</module> <!-- BaseITNG et.al. -->
+        <module>base</module>
         <module>issue5746</module>
+        <module>perf</module>
     </modules>
 
     <properties>
-        <glassfish.version>9.0.0-SNAPSHOT</glassfish.version>
-        <glassfish.home>glassfish9</glassfish.home>
-        <arquillian.glassfish.version>2.1.3</arquillian.glassfish.version>
         <tck.version>5.0.0-SNAPSHOT</tck.version>
         <test.selenium>true</test.selenium>
         <chromedriver.version>139</chromedriver.version>
-        <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
-        <maven-dependency-plugin.version>3.7.1</maven-dependency-plugin.version>
-        <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
+        <arquillian.browser>chrome</arquillian.browser>
+        <faces-api.version>5.0.0-SNAPSHOT</faces-api.version>
+        <mojarra.version>${project.version}</mojarra.version>
+        <myfaces.version>5.0.0-SNAPSHOT</myfaces.version> <!-- consumed by the *-myfaces profiles -->
+        <glassfish.version>9.0.0-SNAPSHOT</glassfish.version> <!-- https://mvnrepository.com/artifact/org.glassfish.main.distributions/glassfish -->
+        <wildfly.version>40.0.1.Final</wildfly.version> <!-- https://mvnrepository.com/artifact/org.wildfly/wildfly-dist -->
+        <tomee.version>10.1.5</tomee.version> <!-- https://mvnrepository.com/artifact/org.apache.tomee/apache-tomee -->
+        <payara.version>7.2026.6</payara.version> <!-- https://mvnrepository.com/artifact/fish.payara.distributions/payara-web -->
+        <liberty.version>26.0.0.6</liberty.version> <!-- https://mvnrepository.com/artifact/io.openliberty/openliberty-runtime -->
+        <tomcat.version>11.0.24</tomcat.version> <!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat -->
+
+        <!-- Extra raw <context-param> XML filtered into perf web.xml; default empty. Here (not perf) so server profiles can inject server-specific params (e.g. wildfly-myfaces sets WAR_BUNDLES_JSF_IMPL). -->
+        <webapp.additionalContextParams></webapp.additionalContextParams>
+
+        <!-- Max heap aligned across every server profile (consumed by the server profiles below) so the
+             cross-server comparison is apples-to-apples. The webapp context-param knobs live in perf/pom.xml. -->
+        <perf.heapSize>1g</perf.heapSize>
+        <perf.jvmArguments>-Xmx${perf.heapSize}</perf.jvmArguments>
     </properties>
 
     <dependencies>
@@ -65,11 +79,35 @@
 
     <build>
         <finalName>${project.artifactId}</finalName>
+        <pluginManagement>
+            <plugins>
+                <!-- Server-prep helpers used by the profiles below. gmavenplus (Groovy 4, JDK 21+ safe)
+                     replaces maven-antrun-plugin for the bits that need logic: in-place module.xml rewrite
+                     and stripping service entries from a jar via the JDK zip FileSystem (no external `zip`). -->
+                <plugin>
+                    <groupId>org.codehaus.gmavenplus</groupId>
+                    <artifactId>gmavenplus-plugin</artifactId>
+                    <version>4.1.1</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.groovy</groupId>
+                            <artifactId>groovy</artifactId>
+                            <version>4.0.24</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>3.4.0</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>${maven-war-plugin.version}</version>
+                <version>3.4.0</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
@@ -77,7 +115,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>${maven-failsafe-plugin.version}</version>
+                <version>3.5.2</version>
                 <executions>
                     <execution>
                         <goals>
@@ -87,6 +125,7 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <rerunFailingTestsCount>2</rerunFailingTestsCount>
                     <systemPropertyVariables>
                         <finalName>${project.build.finalName}</finalName>
                         <test.selenium>${test.selenium}</test.selenium>
@@ -104,6 +143,10 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+            <properties>
+        		<glassfish.home>glassfish9</glassfish.home>
+        		<arquillian.glassfish.version>2.1.3</arquillian.glassfish.version>
+            </properties>
             <dependencies>
                 <dependency>
                     <groupId>ee.omnifish.arquillian</groupId>
@@ -117,7 +160,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-dependency-plugin</artifactId>
-                        <version>${maven-dependency-plugin.version}</version>
+                        <version>3.7.1</version>
                         <executions>
                             <execution>
                                 <id>unpack-glassfish</id>
@@ -149,7 +192,7 @@
                                         <artifactItem>
                                             <groupId>jakarta.faces</groupId>
                                             <artifactId>jakarta.faces-api</artifactId>
-                                            <version>${project.version}</version>
+                                            <version>${faces-api.version}</version>
                                             <type>jar</type>
                                             <overWrite>true</overWrite>
                                             <destFileName>jakarta.faces-api.jar</destFileName>
@@ -157,7 +200,7 @@
                                         <artifactItem>
                                             <groupId>org.glassfish.mojarra</groupId>
                                             <artifactId>mojarra</artifactId>
-                                            <version>${project.version}</version>
+                                            <version>${mojarra.version}</version>
                                             <type>jar</type>
                                             <overWrite>true</overWrite>
                                             <destFileName>mojarra.jar</destFileName>
@@ -167,28 +210,1309 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <glassfish.home>${project.build.directory}/${glassfish.home}</glassfish.home>
+                                <glassfish.maxHeapSize>${perf.heapSize}</glassfish.maxHeapSize>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
                     <!--
                         The distribution zip ships a pre-populated OSGi bundle cache; without wiping it GlassFish would
                         keep serving the cached (pre-overlay) Mojarra and ignore the jar overlaid above.
                     -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <version>3.1.0</version>
+                        <artifactId>maven-clean-plugin</artifactId>
                         <executions>
                             <execution>
                                 <id>clear-osgi-cache</id>
                                 <phase>process-test-classes</phase>
                                 <goals>
-                                    <goal>run</goal>
+                                    <goal>clean</goal>
                                 </goals>
                                 <configuration>
-                                    <target>
-                                        <delete dir="${project.build.directory}/${glassfish.home}/glassfish/domains/domain1/osgi-cache" />
-                                    </target>
+                                    <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                                    <filesets>
+                                        <fileset>
+                                            <directory>${project.build.directory}/${glassfish.home}/glassfish/domains/domain1/osgi-cache</directory>
+                                        </fileset>
+                                    </filesets>
                                 </configuration>
                             </execution>
                         </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>wildfly</id>
+            <activation>
+                <property>
+                    <name>wildfly</name>
+                </property>
+            </activation>
+            <properties>
+                <wildfly.dir>${maven.multiModuleProjectDirectory}/target/wildfly</wildfly.dir>
+                <wildfly.feature-pack.artifactId>wildfly-ee-galleon-pack</wildfly.feature-pack.artifactId>
+                <wildfly.feature-pack.version>${wildfly.version}</wildfly.feature-pack.version>
+                <!-- JVM args for the managed WildFly process (arquillian reads jboss.options); defaults to the aligned heap. Override e.g. -Djboss.options="-Xms2g -Xmx2g". -->
+                <jboss.options>${perf.jvmArguments}</jboss.options>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.wildfly.arquillian</groupId>
+                    <artifactId>wildfly-arquillian-container-managed</artifactId>
+                    <version>5.1.0.Final</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-maven-plugin</artifactId>
+                        <version>5.1.5.Final</version>
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>provision-server</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>provision</goal>
+                                </goals>
+                                <configuration>
+                                    <provisioning-dir>${wildfly.dir}</provisioning-dir>
+                                    <galleon-options>
+                                        <jboss-fork-embedded>true</jboss-fork-embedded>
+                                    </galleon-options>
+                                    <feature-packs>
+                                        <feature-pack>
+                                            <groupId>org.wildfly</groupId>
+                                            <artifactId>${wildfly.feature-pack.artifactId}</artifactId>
+                                            <version>${wildfly.feature-pack.version}</version>
+                                        </feature-pack>
+                                    </feature-packs>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>update-mojarra</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.glassfish</groupId>
+                                            <artifactId>jakarta.faces</artifactId>
+                                            <version>${mojarra.version}</version>
+                                            <type>jar</type>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${wildfly.dir}/modules/system/layers/base/jakarta/faces/impl/main/</outputDirectory>
+                                            <destFileName>jakarta.faces-${mojarra.version}.jar</destFileName>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.gmavenplus</groupId>
+                        <artifactId>gmavenplus-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>update-module-xml</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <scripts>
+                                        <script><![CDATA[
+                                            def moduleXml = new File('${wildfly.dir}/modules/system/layers/base/jakarta/faces/impl/main/module.xml')
+                                            moduleXml.text = moduleXml.text.replaceAll(/jakarta\.faces-.*\.jar/, 'jakarta.faces-${mojarra.version}.jar')
+                                        ]]></script>
+                                    </scripts>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <jboss.home>${wildfly.dir}</jboss.home>
+                                <jboss.options>${jboss.options}</jboss.options>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>tomee</id>
+            <properties>
+                <tomee.classifier>plume</tomee.classifier>
+                <tomee.dir>${project.build.directory}/apache-tomee-${tomee.classifier}-${tomee.version}</tomee.dir>                <tomee.catalina_opts>${perf.jvmArguments}</tomee.catalina_opts>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.tomee</groupId>
+                    <artifactId>arquillian-tomee-remote</artifactId>
+                    <version>${tomee.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack-tomee</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.apache.tomee</groupId>
+                                            <artifactId>apache-tomee</artifactId>
+                                            <version>${tomee.version}</version>
+                                            <classifier>${tomee.classifier}</classifier>
+                                            <type>zip</type>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>update-mojarra</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.glassfish</groupId>
+                                            <artifactId>jakarta.faces</artifactId>
+                                            <version>${mojarra.version}</version>
+                                            <type>jar</type>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${tomee.dir}/lib</outputDirectory>
+                                            <destFileName>jakarta.faces.jar</destFileName>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>jakarta.el</groupId>
+                                            <artifactId>jakarta.el-api</artifactId>
+                                            <version>6.0.1</version>
+                                            <type>jar</type>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${tomee.dir}/lib</outputDirectory>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>jakarta.enterprise</groupId>
+                                            <artifactId>jakarta.enterprise.cdi-el-api</artifactId>
+                                            <version>4.1.0</version>
+                                            <type>jar</type>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${tomee.dir}/lib</outputDirectory>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>jakarta.enterprise</groupId>
+                                            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+                                            <version>4.1.0</version>
+                                            <type>jar</type>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${tomee.dir}/lib</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>remove-bundled-faces</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>clean</goal>
+                                </goals>
+                                <configuration>
+                                    <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                                    <filesets>
+                                        <!-- Drop Plume's bundled jakarta.faces-<version>.jar; ours is overlaid as jakarta.faces.jar (no hyphen, so this won't match it). -->
+                                        <fileset>
+                                            <directory>${tomee.dir}/lib</directory>
+                                            <includes>
+                                                <include>jakarta.faces-*.jar</include>
+                                            </includes>
+                                        </fileset>
+                                    </filesets>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <tomee.remote.dir>${tomee.dir}</tomee.remote.dir>
+                                <tomee.remote.catalina_opts>${tomee.catalina_opts}</tomee.remote.catalina_opts>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>payara</id>
+            <properties>
+                <payara.home>payara7</payara.home>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>ee.omnifish.arquillian</groupId>
+                    <artifactId>arquillian-glassfish-server-managed</artifactId>
+                    <version>2.1.3</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack-payara</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>fish.payara.distributions</groupId>
+                                            <artifactId>payara-web</artifactId>
+                                            <version>${payara.version}</version>
+                                            <type>zip</type>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>update-mojarra</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.glassfish</groupId>
+                                            <artifactId>jakarta.faces</artifactId>
+                                            <version>${mojarra.version}</version>
+                                            <type>jar</type>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${project.build.directory}/${payara.home}/glassfish/modules</outputDirectory>
+                                            <destFileName>jakarta.faces.jar</destFileName>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <glassfish.home>${project.build.directory}/${payara.home}</glassfish.home>
+                                <glassfish.maxHeapSize>${perf.heapSize}</glassfish.maxHeapSize>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>liberty</id>
+            <properties>
+                <liberty.support.version>2.1.3</liberty.support.version>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>io.openliberty.arquillian</groupId>
+                    <artifactId>arquillian-liberty-managed-jakarta</artifactId>
+                    <version>${liberty.support.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                <!-- OpenLiberty ships MyFaces via faces-4.1; the facesContainer-4.1 feature (see server.xml) omits the impl so this bundled Mojarra is used instead. -->
+                <dependency>
+                    <groupId>org.glassfish</groupId>
+                    <artifactId>jakarta.faces</artifactId>
+                    <version>${mojarra.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack-liberty</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>io.openliberty</groupId>
+                                            <artifactId>openliberty-runtime</artifactId>
+                                            <version>${liberty.version}</version>
+                                            <type>zip</type>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>io.openliberty.arquillian</groupId>
+                                            <artifactId>arquillian-liberty-support-jakarta</artifactId>
+                                            <version>${liberty.support.version}</version>
+                                            <type>zip</type>
+                                            <classifier>feature</classifier>
+                                            <outputDirectory>${project.build.directory}/wlp/usr</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>update-liberty-server</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/wlp/usr/servers/defaultServer</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.basedir}/../base/src/test/resources/arquillian/liberty</directory>
+                                            <includes>
+                                                <include>server.xml</include> <!-- server.xml enables facesContainer-4.1 to run bundled Mojarra. -->
+                                                <include>jvm.options</include> <!-- aligned -Xmx; filtered from ${perf.jvmArguments}. -->
+                                            </includes>
+                                            <filtering>true</filtering> <!-- interpolate ${perf.jvmArguments} in jvm.options. -->
+                                        </resource>
+                                    </resources>
+                                    <overwrite>true</overwrite>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <arquillian.launch>liberty</arquillian.launch>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>tomcat</id>
+            <properties>
+                <tomcat.dir>${project.build.directory}/apache-tomcat-${tomcat.version}</tomcat.dir>
+                <weld.version>6.0.4.Final</weld.version> <!-- https://mvnrepository.com/artifact/org.jboss.weld.servlet/weld-servlet-shaded -->
+                <hibernateValidator.version>9.1.2.Final</hibernateValidator.version> <!-- https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator -->
+                <jsonp.version>2.0.1</jsonp.version> <!-- https://mvnrepository.com/artifact/org.glassfish/jakarta.json -->
+                <jstl.version>3.0.1</jstl.version> <!-- https://mvnrepository.com/artifact/org.glassfish.web/jakarta.servlet.jsp.jstl -->
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.arquillian.container</groupId>
+                    <artifactId>arquillian-tomcat-managed-10</artifactId>
+                    <version>1.2.4.Final</version>
+                    <scope>test</scope>
+                </dependency>
+                <!-- APIs Tomcat itself ships in lib/ (so provided, for the compile classpath only). These used to come
+                     transitively from the fat jakarta.jakartaee-web-api jar, but it became an empty aggregator and a
+                     provided dependency does not propagate transitives, so declare them individually here. -->
+                <dependency>
+                    <groupId>jakarta.servlet</groupId>
+                    <artifactId>jakarta.servlet-api</artifactId>
+                    <version>6.1.0</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>jakarta.el</groupId>
+                    <artifactId>jakarta.el-api</artifactId>
+                    <version>6.0.1</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>jakarta.annotation</groupId>
+                    <artifactId>jakarta.annotation-api</artifactId>
+                    <version>3.0.0</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>jakarta.websocket</groupId>
+                    <artifactId>jakarta.websocket-api</artifactId>
+                    <version>2.2.0</version>
+                    <scope>provided</scope>
+                </dependency>
+                <!-- Tomcat is a bare servlet container: bundle Faces, CDI (Weld), Bean Validation, JSON-P and JSTL into the WAR.
+                     Faces 5.0 splits the former combined org.glassfish:jakarta.faces jar into the spec API
+                     (jakarta.faces:jakarta.faces-api) and the Mojarra impl (org.glassfish.mojarra:mojarra); bundle both.
+                     The API is compile-scoped (it is on the compile classpath and Tomcat does not ship Faces, so it is
+                     also bundled); the impl is runtime-scoped. -->
+                <dependency>
+                    <groupId>jakarta.faces</groupId>
+                    <artifactId>jakarta.faces-api</artifactId>
+                    <version>${faces-api.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.glassfish.mojarra</groupId>
+                    <artifactId>mojarra</artifactId>
+                    <version>${mojarra.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss.weld.servlet</groupId>
+                    <artifactId>weld-servlet-shaded</artifactId>
+                    <version>${weld.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.hibernate.validator</groupId>
+                    <artifactId>hibernate-validator</artifactId>
+                    <version>${hibernateValidator.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.glassfish</groupId>
+                    <artifactId>jakarta.json</artifactId>
+                    <version>${jsonp.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.glassfish.web</groupId>
+                    <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+                    <version>${jstl.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>3.7.1</version>
+                        <executions>
+                            <execution>
+                                <id>unpack-tomcat</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- Unpack into target/ (the plugin default is target/dependency) so the extracted
+                                         apache-tomcat-${tomcat.version}/ matches CATALINA_HOME (${tomcat.dir}); same as the
+                                         glassfish profile's unpack. -->
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.apache.tomcat</groupId>
+                                            <artifactId>tomcat</artifactId>
+                                            <version>${tomcat.version}</version>
+                                            <type>zip</type>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>update-tomcat-users</id> <!-- Manager user the arquillian-tomcat-managed adapter authenticates with. -->
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${tomcat.dir}/conf</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.basedir}/../base/src/test/resources/arquillian/tomcat</directory>
+                                            <includes>
+                                                <include>tomcat-users.xml</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                    <overwrite>true</overwrite>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <arquillian.launch>tomcat</arquillian.launch>
+                                <!-- Load the tomcat container config from test/base instead of the default arquillian.xml
+                                     (which the TCK util jar supplies for the pooled CI runs). -->
+                                <arquillian.xml>arquillian-server.xml</arquillian.xml>
+                                <perf.jvmArguments>${perf.jvmArguments}</perf.jvmArguments>
+                            </systemPropertyVariables>
+                            <environmentVariables>
+                                <CATALINA_HOME>${tomcat.dir}</CATALINA_HOME>
+                            </environmentVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- ===== MyFaces variants: same servers, MyFaces ${myfaces.version} instead of Mojarra ===== -->
+
+        <profile>
+            <id>glassfish-myfaces</id>
+            <properties>
+                <glassfish.home>glassfish9</glassfish.home>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>ee.omnifish.arquillian</groupId>
+                    <artifactId>arquillian-glassfish-server-managed</artifactId>
+                    <version>2.1.3</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.myfaces.core</groupId>
+                    <artifactId>myfaces-api</artifactId>
+                    <version>${myfaces.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.myfaces.core</groupId>
+                    <artifactId>myfaces-impl</artifactId>
+                    <version>${myfaces.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <configuration>
+                            <webResources>
+                                <resource>
+                                    <directory>${project.basedir}/src/myfaces/glassfish</directory>
+                                </resource>
+                            </webResources>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack-glassfish</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.glassfish.main.distributions</groupId>
+                                            <artifactId>glassfish</artifactId>
+                                            <version>${glassfish.version}</version>
+                                            <type>zip</type>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.gmavenplus</groupId>
+                        <artifactId>gmavenplus-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>neuter-mojarra-cdi-extension</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- Keep the Mojarra module (Weld integration needs it) but drop its CDI extension
+                                         registration so it doesn't clash with MyFaces' (WELD-001414 ambiguous requestScope).
+                                         Faces 5.0 split the combined jakarta.faces.jar into spec API + impl, so the
+                                         Extension/ServletContainerInitializer service entries now live in mojarra.jar. -->
+                                    <scripts>
+                                        <script><![CDATA[
+                                            def jar = new File('${project.build.directory}/${glassfish.home}/glassfish/modules/mojarra.jar').toPath()
+                                            def zipfs = java.nio.file.FileSystems.newFileSystem(jar, [:])
+                                            try {
+                                                ['META-INF/services/jakarta.enterprise.inject.spi.Extension',
+                                                 'META-INF/services/jakarta.servlet.ServletContainerInitializer'].each { entry ->
+                                                    java.nio.file.Files.deleteIfExists(zipfs.getPath(entry))
+                                                }
+                                            } finally {
+                                                zipfs.close()
+                                            }
+                                        ]]></script>
+                                    </scripts>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <glassfish.home>${project.build.directory}/${glassfish.home}</glassfish.home>
+                                <glassfish.maxHeapSize>${perf.heapSize}</glassfish.maxHeapSize>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>wildfly-myfaces</id>
+            <activation>
+                <property>
+                    <name>wildfly-myfaces</name>
+                </property>
+            </activation>
+            <properties>
+                <wildfly.dir>${maven.multiModuleProjectDirectory}/target/wildfly</wildfly.dir>
+                <wildfly.feature-pack.artifactId>wildfly-ee-galleon-pack</wildfly.feature-pack.artifactId>
+                <wildfly.feature-pack.version>${wildfly.version}</wildfly.feature-pack.version>
+                <jboss.options>${perf.jvmArguments}</jboss.options>
+                <!-- Tell WildFly the WAR bundles its own Faces impl (paired with the module exclusions in jboss-deployment-structure.xml). -->
+                <webapp.additionalContextParams><![CDATA[<context-param><param-name>org.jboss.jbossfaces.WAR_BUNDLES_JSF_IMPL</param-name><param-value>true</param-value></context-param>]]></webapp.additionalContextParams>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.wildfly.arquillian</groupId>
+                    <artifactId>wildfly-arquillian-container-managed</artifactId>
+                    <version>5.1.0.Final</version>
+                    <scope>test</scope>
+                </dependency>
+                <!-- Bundle MyFaces in the WAR; the container's Mojarra modules are excluded via jboss-deployment-structure.xml. -->
+                <dependency>
+                    <groupId>org.apache.myfaces.core</groupId>
+                    <artifactId>myfaces-api</artifactId>
+                    <version>${myfaces.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.myfaces.core</groupId>
+                    <artifactId>myfaces-impl</artifactId>
+                    <version>${myfaces.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-maven-plugin</artifactId>
+                        <version>5.1.5.Final</version>
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>provision-server</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>provision</goal>
+                                </goals>
+                                <configuration>
+                                    <provisioning-dir>${wildfly.dir}</provisioning-dir>
+                                    <galleon-options>
+                                        <jboss-fork-embedded>true</jboss-fork-embedded>
+                                    </galleon-options>
+                                    <feature-packs>
+                                        <feature-pack>
+                                            <groupId>org.wildfly</groupId>
+                                            <artifactId>${wildfly.feature-pack.artifactId}</artifactId>
+                                            <version>${wildfly.feature-pack.version}</version>
+                                        </feature-pack>
+                                    </feature-packs>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <configuration>
+                            <webResources>
+                                <resource>
+                                    <directory>${project.basedir}/src/myfaces/wildfly</directory>
+                                </resource>
+                            </webResources>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <jboss.home>${wildfly.dir}</jboss.home>
+                                <jboss.options>${jboss.options}</jboss.options>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>tomee-myfaces</id>
+            <properties>
+                <tomee.classifier>webprofile</tomee.classifier> <!-- WebProfile is the MyFaces flavour -->
+                <tomee.dir>${project.build.directory}/apache-tomee-${tomee.classifier}-${tomee.version}</tomee.dir>                <tomee.catalina_opts>${perf.jvmArguments}</tomee.catalina_opts>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.tomee</groupId>
+                    <artifactId>arquillian-tomee-remote</artifactId>
+                    <version>${tomee.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack-tomee</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.apache.tomee</groupId>
+                                            <artifactId>apache-tomee</artifactId>
+                                            <version>${tomee.version}</version>
+                                            <classifier>${tomee.classifier}</classifier>
+                                            <type>zip</type>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>update-myfaces</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <!-- Overlay our MyFaces with a hyphen-less name; the bundled myfaces-*.jar are deleted below. -->
+                                        <artifactItem>
+                                            <groupId>org.apache.myfaces.core</groupId>
+                                            <artifactId>myfaces-api</artifactId>
+                                            <version>${myfaces.version}</version>
+                                            <type>jar</type>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${tomee.dir}/lib</outputDirectory>
+                                            <destFileName>myfaces-api.jar</destFileName>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>org.apache.myfaces.core</groupId>
+                                            <artifactId>myfaces-impl</artifactId>
+                                            <version>${myfaces.version}</version>
+                                            <type>jar</type>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${tomee.dir}/lib</outputDirectory>
+                                            <destFileName>myfaces-impl.jar</destFileName>
+                                        </artifactItem>
+                                        <!-- EE 11 spec shim: WebProfile 10.1.5 is Jakarta EE 10, but MyFaces 4.1.x (Faces 4.1) is EE 11. -->
+                                        <artifactItem>
+                                            <groupId>jakarta.el</groupId>
+                                            <artifactId>jakarta.el-api</artifactId>
+                                            <version>6.0.1</version>
+                                            <type>jar</type>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${tomee.dir}/lib</outputDirectory>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>jakarta.enterprise</groupId>
+                                            <artifactId>jakarta.enterprise.cdi-el-api</artifactId>
+                                            <version>4.1.0</version>
+                                            <type>jar</type>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${tomee.dir}/lib</outputDirectory>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>jakarta.enterprise</groupId>
+                                            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+                                            <version>4.1.0</version>
+                                            <type>jar</type>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${tomee.dir}/lib</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>remove-bundled-myfaces</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>clean</goal>
+                                </goals>
+                                <configuration>
+                                    <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                                    <filesets>
+                                        <!-- Drop WebProfile's bundled myfaces-<version>.jar; ours are overlaid hyphen-less, so this won't match them. -->
+                                        <fileset>
+                                            <directory>${tomee.dir}/lib</directory>
+                                            <includes>
+                                                <include>myfaces-api-*.jar</include>
+                                                <include>myfaces-impl-*.jar</include>
+                                            </includes>
+                                        </fileset>
+                                    </filesets>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <tomee.remote.dir>${tomee.dir}</tomee.remote.dir>
+                                <tomee.remote.catalina_opts>${tomee.catalina_opts}</tomee.remote.catalina_opts>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>payara-myfaces</id>
+            <properties>
+                <payara.home>payara7</payara.home>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>ee.omnifish.arquillian</groupId>
+                    <artifactId>arquillian-glassfish-server-managed</artifactId>
+                    <version>2.1.3</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.myfaces.core</groupId>
+                    <artifactId>myfaces-api</artifactId>
+                    <version>${myfaces.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.myfaces.core</groupId>
+                    <artifactId>myfaces-impl</artifactId>
+                    <version>${myfaces.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <configuration>
+                            <webResources>
+                                <resource>
+                                    <directory>${project.basedir}/src/myfaces/glassfish</directory>
+                                </resource>
+                            </webResources>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack-payara</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>fish.payara.distributions</groupId>
+                                            <artifactId>payara-web</artifactId>
+                                            <version>${payara.version}</version>
+                                            <type>zip</type>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.gmavenplus</groupId>
+                        <artifactId>gmavenplus-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>neuter-mojarra-cdi-extension</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- Keep the Mojarra module (Weld integration needs it) but drop its CDI extension
+                                         registration so it doesn't clash with MyFaces' (WELD-001414 ambiguous requestScope). -->
+                                    <scripts>
+                                        <script><![CDATA[
+                                            def jar = new File('${project.build.directory}/${payara.home}/glassfish/modules/jakarta.faces.jar').toPath()
+                                            def zipfs = java.nio.file.FileSystems.newFileSystem(jar, [:])
+                                            try {
+                                                ['META-INF/services/jakarta.enterprise.inject.spi.Extension',
+                                                 'META-INF/services/jakarta.servlet.ServletContainerInitializer'].each { entry ->
+                                                    java.nio.file.Files.deleteIfExists(zipfs.getPath(entry))
+                                                }
+                                            } finally {
+                                                zipfs.close()
+                                            }
+                                        ]]></script>
+                                    </scripts>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <glassfish.home>${project.build.directory}/${payara.home}</glassfish.home>
+                                <glassfish.maxHeapSize>${perf.heapSize}</glassfish.maxHeapSize>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>liberty-myfaces</id>
+            <properties>
+                <liberty.support.version>2.1.3</liberty.support.version>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>io.openliberty.arquillian</groupId>
+                    <artifactId>arquillian-liberty-managed-jakarta</artifactId>
+                    <version>${liberty.support.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                <!-- facesContainer-4.1 omits the impl, so the WAR-bundled MyFaces is used as the Faces implementation. -->
+                <dependency>
+                    <groupId>org.apache.myfaces.core</groupId>
+                    <artifactId>myfaces-api</artifactId>
+                    <version>${myfaces.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.myfaces.core</groupId>
+                    <artifactId>myfaces-impl</artifactId>
+                    <version>${myfaces.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack-liberty</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>io.openliberty.beta</groupId>
+                                            <artifactId>openliberty-runtime</artifactId>
+                                            <version>${liberty.version}</version>
+                                            <type>zip</type>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>io.openliberty.arquillian</groupId>
+                                            <artifactId>arquillian-liberty-support-jakarta</artifactId>
+                                            <version>${liberty.support.version}</version>
+                                            <type>zip</type>
+                                            <classifier>feature</classifier>
+                                            <outputDirectory>${project.build.directory}/wlp/usr</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>update-liberty-server</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/wlp/usr/servers/defaultServer</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.basedir}/../base/src/test/resources/arquillian/liberty</directory>
+                                            <includes>
+                                                <include>server.xml</include>
+                                                <include>jvm.options</include>
+                                            </includes>
+                                            <filtering>true</filtering>
+                                        </resource>
+                                    </resources>
+                                    <overwrite>true</overwrite>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <arquillian.launch>liberty</arquillian.launch>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>tomcat-myfaces</id>
+            <properties>
+                <tomcat.dir>${project.build.directory}/apache-tomcat-${tomcat.version}</tomcat.dir>
+                <weld.version>6.0.4.Final</weld.version>
+                <hibernateValidator.version>9.1.0.Final</hibernateValidator.version>
+                <jsonp.version>2.0.1</jsonp.version>
+                <jstl.version>3.0.1</jstl.version>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.arquillian.container</groupId>
+                    <artifactId>arquillian-tomcat-managed-10</artifactId>
+                    <version>1.2.4.Final</version>
+                    <scope>test</scope>
+                </dependency>
+                <!-- APIs Tomcat itself ships in lib/ (provided, compile classpath only); mirrors the mojarra tomcat profile. -->
+                <dependency>
+                    <groupId>jakarta.servlet</groupId>
+                    <artifactId>jakarta.servlet-api</artifactId>
+                    <version>6.1.0</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>jakarta.el</groupId>
+                    <artifactId>jakarta.el-api</artifactId>
+                    <version>6.0.1</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>jakarta.annotation</groupId>
+                    <artifactId>jakarta.annotation-api</artifactId>
+                    <version>3.0.0</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>jakarta.websocket</groupId>
+                    <artifactId>jakarta.websocket-api</artifactId>
+                    <version>2.2.0</version>
+                    <scope>provided</scope>
+                </dependency>
+                <!-- Faces API for the compile classpath only; MyFaces bundles its own (myfaces-api) at runtime. -->
+                <dependency>
+                    <groupId>jakarta.faces</groupId>
+                    <artifactId>jakarta.faces-api</artifactId>
+                    <version>${faces-api.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <!-- Tomcat is a bare servlet container: bundle MyFaces, CDI (Weld), Bean Validation, JSON-P and JSTL into the WAR. -->
+                <dependency>
+                    <groupId>org.apache.myfaces.core</groupId>
+                    <artifactId>myfaces-api</artifactId>
+                    <version>${myfaces.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.myfaces.core</groupId>
+                    <artifactId>myfaces-impl</artifactId>
+                    <version>${myfaces.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss.weld.servlet</groupId>
+                    <artifactId>weld-servlet-shaded</artifactId>
+                    <version>${weld.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.hibernate.validator</groupId>
+                    <artifactId>hibernate-validator</artifactId>
+                    <version>${hibernateValidator.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.glassfish</groupId>
+                    <artifactId>jakarta.json</artifactId>
+                    <version>${jsonp.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.glassfish.web</groupId>
+                    <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+                    <version>${jstl.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>3.7.1</version>
+                        <executions>
+                            <execution>
+                                <id>unpack-tomcat</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- Unpack into target/ (the plugin default is target/dependency) so the extracted
+                                         apache-tomcat-${tomcat.version}/ matches CATALINA_HOME (${tomcat.dir}); same as the
+                                         glassfish profile's unpack. -->
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.apache.tomcat</groupId>
+                                            <artifactId>tomcat</artifactId>
+                                            <version>${tomcat.version}</version>
+                                            <type>zip</type>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>update-tomcat-users</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${tomcat.dir}/conf</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.basedir}/../base/src/test/resources/arquillian/tomcat</directory>
+                                            <includes>
+                                                <include>tomcat-users.xml</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                    <overwrite>true</overwrite>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <arquillian.launch>tomcat</arquillian.launch>
+                                <!-- Load the tomcat container config from test/base instead of the default arquillian.xml
+                                     (which the TCK util jar supplies for the pooled CI runs). -->
+                                <arquillian.xml>arquillian-server.xml</arquillian.xml>
+                                <perf.jvmArguments>${perf.jvmArguments}</perf.jvmArguments>
+                            </systemPropertyVariables>
+                            <environmentVariables>
+                                <CATALINA_HOME>${tomcat.dir}</CATALINA_HOME>
+                            </environmentVariables>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>

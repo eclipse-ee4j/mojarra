@@ -42,6 +42,7 @@ public final class CatchHandler extends TagHandlerImpl {
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
+        markDynamicTransientBuild(ctx);
         try {
             nextHandler.apply(ctx, parent);
         } catch (Exception e) {

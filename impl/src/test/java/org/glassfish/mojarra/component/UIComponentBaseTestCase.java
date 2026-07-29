@@ -37,6 +37,7 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIComponentBase;
 import jakarta.faces.component.UIForm;
 import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UIOutput;
 import jakarta.faces.component.UIPanel;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
@@ -92,6 +93,77 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         checkLifecycleSelfRendered();
         checkLifecycleSelfUnrendered();
 
+    }
+
+    // Adding a subtree to an in-view parent fires PostAddToViewEvent across it via publishAfterViewEvents,
+    // which iterates the live children list (no defensive copy). A listener may relocate a component out of its
+    // parent during its own event (h:outputScript moving itself to the head, composite cc:insertChildren, ...),
+    // shifting the next sibling into the vacated slot. Verify the walk tolerates that: no
+    // ConcurrentModificationException, and the shifted sibling is still visited rather than skipped.
+    @Test
+    public void testPublishAfterViewEventsToleratesSelfRelocation() {
+
+        UIComponent parent = new UIPanel();
+        parent.setInView(true);
+
+        UIComponent holder = new UIPanel();
+        UIOutput c0 = new UIOutput();
+        UIOutput c1 = new UIOutput();
+        UIOutput c2 = new UIOutput();
+        UIOutput c3 = new UIOutput();
+        holder.getChildren().addAll(Arrays.asList(c0, c1, c2, c3));
+
+        List<UIComponent> received = new ArrayList<>();
+        ComponentSystemEventListener recorder = event -> received.add(event.getComponent());
+        for (UIComponent c : Arrays.asList(holder, c0, c1, c2, c3)) {
+            c.subscribeToEvent(PostAddToViewEvent.class, recorder);
+        }
+
+        // c1 relocates itself out of holder during its own PostAddToViewEvent, shifting c2 into index 1.
+        c1.subscribeToEvent(PostAddToViewEvent.class, (ComponentSystemEventListener) event -> holder.getChildren().remove(c1));
+
+        // Triggers publishAfterViewEvents over the holder subtree; must not throw ConcurrentModificationException.
+        parent.getChildren().add(holder);
+
+        assertTrue(received.contains(holder));
+        assertTrue(received.contains(c0));
+        assertTrue(received.contains(c1)); // recorded before it relocated itself
+        assertTrue(received.contains(c2)); // shifted into c1's vacated slot mid-walk, must not be skipped
+        assertTrue(received.contains(c3));
+    }
+
+    // While the runtime has event processing suppressed (FacesContext.isProcessingEvents() == false, e.g. during a
+    // partial-state-saving restore), add/remove must NOT publish PostAddToViewEvent/PreRemoveFromViewEvent --
+    // publishEvent is a no-op while suppressed anyway -- but must still maintain the in-view flag across the subtree.
+    @Test
+    public void testInViewMaintainedWithoutEventsWhenProcessingSuppressed() {
+
+        UIComponent parent = new UIPanel();
+        parent.setInView(true);
+
+        UIComponent holder = new UIPanel();
+        UIOutput child = new UIOutput();
+        holder.getChildren().add(child);
+
+        List<UIComponent> received = new ArrayList<>();
+        ComponentSystemEventListener recorder = event -> received.add(event.getComponent());
+        holder.subscribeToEvent(PostAddToViewEvent.class, recorder);
+        child.subscribeToEvent(PostAddToViewEvent.class, recorder);
+
+        facesContext.setProcessingEvents(false);
+        try {
+            parent.getChildren().add(holder);
+            assertTrue(received.isEmpty());        // no event published while suppressed
+            assertTrue(holder.isInView());         // ...but in-view propagated across the added subtree
+            assertTrue(child.isInView());
+
+            parent.getChildren().remove(holder);
+            assertTrue(received.isEmpty());         // still no event published
+            assertTrue(!holder.isInView());         // in-view cleared across the removed subtree
+            assertTrue(!child.isInView());
+        } finally {
+            facesContext.setProcessingEvents(true);
+        }
     }
 
     @Test
@@ -381,6 +453,39 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
         c.restoreState(facesContext, state);
         c.popComponentFromEL(facesContext);
         assertEquals(Arrays.asList("attr2"), c.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet"));
+    }
+
+    /**
+     * The {@code attributesThatAreSet} delta list only carries entries added after
+     * {@code markInitialState()}. On restore it must therefore be <em>merged</em> onto the list that
+     * {@code buildView} already rebuilt for this request, not replace it. Replacing dropped every
+     * attribute the tag handlers re-registered before the delta was applied &mdash; e.g. a
+     * {@code styleClass} rendered on the first postback but gone from the second onward (issue #5880),
+     * triggered by any {@code setValueExpression(name, ve)} with a non-literal {@code ve} on a
+     * restored component, such as from a {@code PostRestoreStateEvent} listener.
+     */
+    @Test
+    public void testAttributesThatAreSetMergeOnRestore() throws Exception {
+        request.setAttribute("foo", "bar");
+
+        // buildView registers a tag attribute; a post-restore binding then adds a non-literal one.
+        ComponentTestImpl c = new ComponentTestImpl();
+        c.getAttributes().put("styleClass", "foo bar");
+        c.markInitialState();
+        c.setValueExpression("label", application.getExpressionFactory().createValueExpression(facesContext.getELContext(), "#{foo}", String.class));
+        assertEquals(Arrays.asList("styleClass", "label"), c.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet"));
+
+        Object state = c.saveState(facesContext); // delta carries only [label]
+
+        // Next postback: buildView rebuilds styleClass before the delta is restored on top of it.
+        c = new ComponentTestImpl();
+        c.getAttributes().put("styleClass", "foo bar");
+        c.markInitialState();
+        c.pushComponentToEL(facesContext, c);
+        c.restoreState(facesContext, state);
+        c.popComponentFromEL(facesContext);
+
+        assertEquals(Arrays.asList("styleClass", "label"), c.getAttributes().get("jakarta.faces.component.UIComponentBase.attributesThatAreSet"));
     }
 
     @Test
@@ -1449,7 +1554,137 @@ public class UIComponentBaseTestCase extends UIComponentTestCase {
 
     }
 
+    /**
+     * Verifies the per-component {@code cachedRenderer} invariants: cached on first lookup,
+     * invalidated on {@code setRendererType}, {@code setParent}, and {@code restoreState}.
+     */
+    @Test
+    public void testCachedRendererInvariants() throws Exception {
+        jakarta.faces.render.RenderKit renderKit = facesContext.getRenderKit();
+        jakarta.faces.render.Renderer<?> rA = new jakarta.faces.render.Renderer<UIComponent>() { };
+        jakarta.faces.render.Renderer<?> rB = new jakarta.faces.render.Renderer<UIComponent>() { };
+        renderKit.addRenderer("Test", "TR_A", rA);
+        renderKit.addRenderer("Test", "TR_B", rB);
+
+        // Wire under a UIViewRoot so getRenderer resolves against the right render kit.
+        UIViewRoot root = facesContext.getViewRoot();
+        ComponentTestImpl test = new ComponentTestImpl("cached");
+        root.getChildren().add(test);
+
+        // First lookup populates the cache; repeated lookups return same instance.
+        test.setRendererType("TR_A");
+        jakarta.faces.render.Renderer<?> firstLookup = invokeGetRenderer(test);
+        assertTrue(firstLookup == rA, "should resolve to rA");
+        assertTrue(invokeGetRenderer(test) == rA, "second lookup should return cached rA");
+
+        // setRendererType invalidates the cache.
+        test.setRendererType("TR_B");
+        assertTrue(invokeGetRenderer(test) == rB, "after setRendererType, lookup must return rB");
+
+        // setParent invalidates the cache.
+        UIPanel newParent = new UIPanel();
+        newParent.setId("p");
+        root.getChildren().add(newParent);
+        // Resolve once on the test component, then re-parent it under a different parent.
+        invokeGetRenderer(test);
+        newParent.getChildren().add(test); // triggers setParent(newParent) on test
+        // Mutate rendererType via the StateHelper path (bypass setRendererType) just to prove
+        // the parent-invalidation path is what we're testing here.
+        test.setRendererType("TR_A");
+        assertTrue(invokeGetRenderer(test) == rA, "after setParent + setRendererType, lookup must return rA");
+
+        // restoreState invalidates the cache: rebuild from a saved snapshot taken with TR_A.
+        Object savedWithA = test.saveState(facesContext);
+        invokeGetRenderer(test); // populate cache with rA
+        test.setRendererType("TR_B"); // direct setter, also invalidates and re-caches on next lookup
+        invokeGetRenderer(test); // re-cache as rB
+        test.restoreState(facesContext, savedWithA); // bring rendererType back to "TR_A" via the saved full state
+        assertTrue(invokeGetRenderer(test) == rA, "after restoreState, lookup must reflect restored rendererType");
+    }
+
+    /**
+     * Verifies the partial-state contract for the field-backed {@code rendererType}: a value set before
+     * {@code markInitialState} (as every component's constructor does) is reconstructed by buildView and
+     * therefore carries no partial state, a value changed afterwards rides along in the delta and stays
+     * there across repeated postbacks, and full state persists the value unconditionally.
+     */
+    @Test
+    public void testRendererTypeStateHolder() throws Exception {
+        // Pre-mark rendererType is "initial" (buildView re-establishes it): no partial state to save.
+        ComponentTestImpl pristine = new ComponentTestImpl();
+        pristine.setRendererType("Foo");
+        pristine.markInitialState();
+        assertNull(pristine.saveState(facesContext), "constructor-set rendererType must not produce partial state");
+
+        // A post-mark change must ride along in the delta and restore on top of the reconstructed initial value.
+        ComponentTestImpl changed = new ComponentTestImpl();
+        changed.setRendererType("Foo");
+        changed.markInitialState();
+        changed.setRendererType("Bar");
+        Object delta = changed.saveState(facesContext);
+        assertNotNull(delta, "post-mark rendererType change must produce partial state");
+
+        ComponentTestImpl restored = newReconstructed("Foo");
+        restored.restoreState(facesContext, delta);
+        assertEquals("Bar", restored.getRendererType(), "post-mark rendererType change must restore");
+
+        // Stability across a second postback: re-saving the restored component must keep the delta.
+        Object delta2 = restored.saveState(facesContext);
+        assertNotNull(delta2, "restored post-mark rendererType must persist across re-save");
+        ComponentTestImpl restored2 = newReconstructed("Foo");
+        restored2.restoreState(facesContext, delta2);
+        assertEquals("Bar", restored2.getRendererType(), "rendererType delta must survive repeated postbacks");
+
+        // Full state (component never marked) persists rendererType unconditionally, with no reconstruction.
+        ComponentTestImpl full = new ComponentTestImpl();
+        full.setRendererType("Baz");
+        Object fullState = full.saveState(facesContext);
+        ComponentTestImpl fullRestored = new ComponentTestImpl();
+        fullRestored.restoreState(facesContext, fullState);
+        assertEquals("Baz", fullRestored.getRendererType(), "full state must persist rendererType");
+
+        // Full state must restore an explicit null rendererType, overwriting a constructor-set default.
+        ComponentTestImpl nulled = new ComponentTestImpl();
+        nulled.setRendererType(null);
+        Object nulledState = nulled.saveState(facesContext);
+        ComponentTestImpl nulledRestored = new ComponentTestImpl();
+        nulledRestored.setRendererType("jakarta.faces.Text"); // a constructor-set default
+        nulledRestored.restoreState(facesContext, nulledState);
+        assertNull(nulledRestored.getRendererType(), "full state must restore an explicit null rendererType over a default");
+    }
+
+    /** A component as buildView hands it back on a postback: constructor-equivalent rendererType, then marked. */
+    private ComponentTestImpl newReconstructed(String rendererType) {
+        ComponentTestImpl component = new ComponentTestImpl();
+        component.setRendererType(rendererType);
+        component.markInitialState();
+        return component;
+    }
+
+    /**
+     * Reading a bean-property attribute through {@code getAttributes()} invokes the cached,
+     * access-suppressed property getter (the readMap fast path). It must return the live typed value on
+     * every call — the cache holds the {@code Method}, not the value, so it must reflect later mutations.
+     */
+    @Test
+    public void testPropertyBackedAttributeReadIsRepeatableAndLive() {
+        ComponentTestImpl c = new ComponentTestImpl();
+        c.setRendererType("Foo");
+        assertEquals("Foo", c.getAttributes().get("rendererType"));
+        assertEquals("Foo", c.getAttributes().get("rendererType")); // second read hits the cached getter
+        c.setRendererType("Bar");
+        assertEquals("Bar", c.getAttributes().get("rendererType")); // cached Method, so it sees the new value
+    }
+
+    /** Calls the protected {@code getRenderer(FacesContext)} via reflection. */
+    private jakarta.faces.render.Renderer<?> invokeGetRenderer(UIComponent component) throws Exception {
+        java.lang.reflect.Method m = UIComponentBase.class.getDeclaredMethod("getRenderer", FacesContext.class);
+        m.setAccessible(true);
+        return (jakarta.faces.render.Renderer<?>) m.invoke(component, facesContext);
+    }
+
     // --------------------------------------------------------- Private Classes
+
     public static final class Listener implements SystemEventListener {
 
         private SystemEvent event;

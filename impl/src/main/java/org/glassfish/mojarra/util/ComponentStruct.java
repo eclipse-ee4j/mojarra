@@ -34,11 +34,17 @@ public class ComponentStruct implements StateHolder {
      */
     public static final String REMOVE = "REMOVE";
 
+    /**
+     * Index which an ADD must restore its child at, or -1 when it must be appended.
+     */
+    public static final int APPEND = -1;
+
     private String action;
     private String facetName;
     private String parentClientId;
     private String clientId;
     private String id;
+    private int index = APPEND;
 
     public ComponentStruct() {
     }
@@ -79,6 +85,7 @@ public class ComponentStruct implements StateHolder {
         clientId = (String) s[2];
         id = (String) s[3];
         facetName = (String) s[4];
+        index = (Integer) s[5];
     }
 
     @Override
@@ -87,12 +94,13 @@ public class ComponentStruct implements StateHolder {
             throw new NullPointerException();
         }
 
-        Object[] state = new Object[5];
+        Object[] state = new Object[6];
         state[0] = action;
         state[1] = parentClientId;
         state[2] = clientId;
         state[3] = id;
         state[4] = facetName;
+        state[5] = index;
 
         return state;
     }
@@ -143,6 +151,26 @@ public class ComponentStruct implements StateHolder {
 
     public String getId() {
         return id;
+    }
+
+    /**
+     * Returns the index within the parent's children which this action's child must be restored at, or
+     * {@link #APPEND} when it must be appended.
+     *
+     * <p>
+     * The index travels with the action rather than with the component, because the component itself does
+     * not necessarily survive: a facelet-created child which was dynamically moved to another parent is
+     * deleted and recreated by the facelet refresh, which loses any marker held in its attribute map.
+     * </p>
+     *
+     * @return the index within the parent's children, or {@link #APPEND}.
+     */
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
 }

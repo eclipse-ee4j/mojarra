@@ -1,0 +1,314 @@
+<!--
+
+    Copyright (c) Contributors to Eclipse Foundation.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<!--
+    Shared field body for the form-* scenarios: one realistic multi-section form (product, contact,
+    address, company, payment, preferences, shipping) over a mix of input types, converters, validators
+    and select items, each field paired with its own h:message (label / input / message per grid row).
+    The optional #{ajax} param enables the live-validation client-behavior chain on the "name" field
+    (two f:ajax on distinct events, re-rendering its message by id) — the unoptimized pass-through-
+    attribute renderer path in Mojarra — for the ajax variant only; the plain variants leave those
+    behaviors disabled so their character stays a pure POST.
+-->
+<ui:composition
+    xmlns:h="jakarta.faces.html"
+    xmlns:f="jakarta.faces.core"
+    xmlns:ui="jakarta.faces.facelets"
+>
+    <h:panelGroup id="product" layout="block">
+        <h:outputText value="Product"/>
+        <h:panelGrid columns="3">
+            <h:outputLabel for="name" value="Name"/>
+            <h:inputText id="name" value="#{formBean.name}" required="true">
+                <f:converter converterId="trimConverter"/>
+                <f:validator validatorId="lengthRangeValidator"/>
+                <f:validator validatorId="prohibitedWordsValidator"/>
+                <f:ajax event="keyup" render="nameMessage" disabled="#{empty ajax or !ajax}"/>
+                <f:ajax event="blur" execute="@this" render="nameMessage" disabled="#{empty ajax or !ajax}"/>
+            </h:inputText>
+            <h:message for="name" id="nameMessage"/>
+
+            <h:outputLabel for="description" value="Description"/>
+            <h:inputTextarea id="description" value="#{formBean.description}">
+                <f:validator validatorId="lengthRangeValidator"/>
+            </h:inputTextarea>
+            <h:message for="description"/>
+
+            <h:outputLabel for="quantity" value="Quantity"/>
+            <h:inputText id="quantity" value="#{formBean.quantity}">
+                <f:convertNumber integerOnly="true"/>
+                <f:validateLongRange minimum="0" maximum="10000"/>
+            </h:inputText>
+            <h:message for="quantity"/>
+
+            <h:outputLabel for="price" value="Price"/>
+            <h:inputText id="price" value="#{formBean.price}">
+                <f:convertNumber type="currency" currencyCode="EUR"/>
+            </h:inputText>
+            <h:message for="price"/>
+
+            <h:outputLabel for="date" value="Date"/>
+            <h:inputText id="date" value="#{formBean.date}">
+                <f:convertDateTime type="localDate"/>
+            </h:inputText>
+            <h:message for="date"/>
+
+            <h:outputLabel for="active" value="Active"/>
+            <h:selectBooleanCheckbox id="active" value="#{formBean.active}"/>
+            <h:message for="active"/>
+
+            <h:outputLabel for="country" value="Country"/>
+            <h:selectOneMenu id="country" value="#{formBean.country}">
+                <f:converter converterId="upperCaseConverter"/>
+                <f:selectItems value="#{appConfig.countries}"/>
+            </h:selectOneMenu>
+            <h:message for="country"/>
+
+            <h:outputLabel for="category" value="Category"/>
+            <h:selectOneRadio id="category" value="#{formBean.category}">
+                <f:selectItems value="#{appConfig.categories}"/>
+            </h:selectOneRadio>
+            <h:message for="category"/>
+        </h:panelGrid>
+    </h:panelGroup>
+
+    <h:panelGroup id="contact" layout="block">
+        <h:outputText value="Contact"/>
+        <h:panelGrid columns="3">
+            <h:outputLabel for="email" value="Email"/>
+            <h:inputText id="email" value="#{formBean.contact.email}">
+                <f:validateRegex pattern="[^@\s]+@[^@\s]+\.[^@\s]+"/>
+            </h:inputText>
+            <h:message for="email"/>
+
+            <h:outputLabel for="phone" value="Phone"/>
+            <h:inputText id="phone" value="#{formBean.contact.phone}"/>
+            <h:message for="phone"/>
+
+            <h:outputLabel for="mobile" value="Mobile"/>
+            <h:inputText id="mobile" value="#{formBean.contact.mobile}"/>
+            <h:message for="mobile"/>
+
+            <h:outputLabel for="fax" value="Fax"/>
+            <h:inputText id="fax" value="#{formBean.contact.fax}"/>
+            <h:message for="fax"/>
+
+            <h:outputLabel for="skype" value="Skype"/>
+            <h:inputText id="skype" value="#{formBean.contact.skype}"/>
+            <h:message for="skype"/>
+        </h:panelGrid>
+    </h:panelGroup>
+
+    <h:panelGroup id="address" layout="block">
+        <h:outputText value="Address"/>
+        <h:panelGrid columns="3">
+            <h:outputLabel for="street" value="Street"/>
+            <h:inputText id="street" value="#{formBean.address.street}"/>
+            <h:message for="street"/>
+
+            <h:outputLabel for="houseNumber" value="House number"/>
+            <h:inputText id="houseNumber" value="#{formBean.address.houseNumber}">
+                <f:convertNumber integerOnly="true"/>
+            </h:inputText>
+            <h:message for="houseNumber"/>
+
+            <h:outputLabel for="addition" value="Addition"/>
+            <h:inputText id="addition" value="#{formBean.address.addition}"/>
+            <h:message for="addition"/>
+
+            <h:outputLabel for="postalCode" value="Postal code"/>
+            <h:inputText id="postalCode" value="#{formBean.address.postalCode}"/>
+            <h:message for="postalCode"/>
+
+            <h:outputLabel for="city" value="City"/>
+            <h:inputText id="city" value="#{formBean.address.city}"/>
+            <h:message for="city"/>
+
+            <h:outputLabel for="state" value="State"/>
+            <h:inputText id="state" value="#{formBean.address.state}"/>
+            <h:message for="state"/>
+
+            <h:outputLabel for="region" value="Region"/>
+            <h:inputText id="region" value="#{formBean.address.region}"/>
+            <h:message for="region"/>
+        </h:panelGrid>
+    </h:panelGroup>
+
+    <h:panelGroup id="company" layout="block">
+        <h:outputText value="Company"/>
+        <h:panelGrid columns="3">
+            <h:outputLabel for="companyName" value="Company name"/>
+            <h:inputText id="companyName" value="#{formBean.company.companyName}"/>
+            <h:message for="companyName"/>
+
+            <h:outputLabel for="department" value="Department"/>
+            <h:inputText id="department" value="#{formBean.company.department}"/>
+            <h:message for="department"/>
+
+            <h:outputLabel for="jobTitle" value="Job title"/>
+            <h:inputText id="jobTitle" value="#{formBean.company.jobTitle}"/>
+            <h:message for="jobTitle"/>
+
+            <h:outputLabel for="vatNumber" value="VAT number"/>
+            <h:inputText id="vatNumber" value="#{formBean.company.vatNumber}">
+                <f:validateLength minimum="4" maximum="20"/>
+            </h:inputText>
+            <h:message for="vatNumber"/>
+
+            <h:outputLabel for="employees" value="Employees"/>
+            <h:inputText id="employees" value="#{formBean.company.employees}">
+                <f:convertNumber integerOnly="true"/>
+            </h:inputText>
+            <h:message for="employees"/>
+
+            <h:outputLabel for="website" value="Website"/>
+            <h:inputText id="website" value="#{formBean.company.website}"/>
+            <h:message for="website"/>
+
+            <h:outputLabel for="industry" value="Industry"/>
+            <h:selectOneMenu id="industry" value="#{formBean.company.industry}">
+                <f:selectItems value="#{appConfig.categories}"/>
+            </h:selectOneMenu>
+            <h:message for="industry"/>
+        </h:panelGrid>
+    </h:panelGroup>
+
+    <h:panelGroup id="payment" layout="block">
+        <h:outputText value="Payment"/>
+        <h:panelGrid columns="3">
+            <h:outputLabel for="cardName" value="Cardholder"/>
+            <h:inputText id="cardName" value="#{formBean.payment.cardName}"/>
+            <h:message for="cardName"/>
+
+            <h:outputLabel for="cardNumber" value="Card number"/>
+            <h:inputText id="cardNumber" value="#{formBean.payment.cardNumber}">
+                <f:validateLength minimum="12" maximum="19"/>
+            </h:inputText>
+            <h:message for="cardNumber"/>
+
+            <h:outputLabel for="expiryMonth" value="Expiry month"/>
+            <h:inputText id="expiryMonth" value="#{formBean.payment.expiryMonth}">
+                <f:convertNumber integerOnly="true"/>
+            </h:inputText>
+            <h:message for="expiryMonth"/>
+
+            <h:outputLabel for="expiryYear" value="Expiry year"/>
+            <h:inputText id="expiryYear" value="#{formBean.payment.expiryYear}">
+                <f:convertNumber integerOnly="true"/>
+            </h:inputText>
+            <h:message for="expiryYear"/>
+
+            <h:outputLabel for="cvc" value="CVC"/>
+            <h:inputSecret id="cvc" value="#{formBean.payment.cvc}" redisplay="true"/>
+            <h:message for="cvc"/>
+
+            <h:outputLabel for="iban" value="IBAN"/>
+            <h:inputText id="iban" value="#{formBean.payment.iban}"/>
+            <h:message for="iban"/>
+
+            <h:outputLabel for="currency" value="Currency"/>
+            <h:inputText id="currency" value="#{formBean.payment.currency}"/>
+            <h:message for="currency"/>
+        </h:panelGrid>
+    </h:panelGroup>
+
+    <h:panelGroup id="preferences" layout="block">
+        <h:outputText value="Preferences"/>
+        <h:panelGrid columns="3">
+            <h:outputLabel for="newsletter" value="Newsletter"/>
+            <h:selectBooleanCheckbox id="newsletter" value="#{formBean.preferences.newsletter}"/>
+            <h:message for="newsletter"/>
+
+            <h:outputLabel for="language" value="Language"/>
+            <h:selectOneMenu id="language" value="#{formBean.preferences.language}">
+                <f:selectItems value="#{appConfig.languages}"/>
+            </h:selectOneMenu>
+            <h:message for="language"/>
+
+            <h:outputLabel for="timezone" value="Timezone"/>
+            <h:selectOneMenu id="timezone" value="#{formBean.preferences.timezone}">
+                <f:selectItems value="#{appConfig.timezones}"/>
+            </h:selectOneMenu>
+            <h:message for="timezone"/>
+
+            <h:outputLabel for="theme" value="Theme"/>
+            <h:selectOneRadio id="theme" value="#{formBean.preferences.theme}">
+                <f:selectItems value="#{appConfig.themes}"/>
+            </h:selectOneRadio>
+            <h:message for="theme"/>
+
+            <h:outputLabel for="referral" value="Referral"/>
+            <h:inputText id="referral" value="#{formBean.preferences.referral}"/>
+            <h:message for="referral"/>
+
+            <h:outputLabel for="comments" value="Comments"/>
+            <h:inputTextarea id="comments" value="#{formBean.preferences.comments}"/>
+            <h:message for="comments"/>
+
+            <h:outputLabel for="acceptTerms" value="Accept terms"/>
+            <h:selectBooleanCheckbox id="acceptTerms" value="#{formBean.preferences.acceptTerms}"/>
+            <h:message for="acceptTerms"/>
+        </h:panelGrid>
+    </h:panelGroup>
+
+    <h:panelGroup id="shipping" layout="block">
+        <h:outputText value="Shipping"/>
+        <h:panelGrid columns="3">
+            <h:outputLabel for="shipStreet" value="Street"/>
+            <h:inputText id="shipStreet" value="#{formBean.shipping.street}"/>
+            <h:message for="shipStreet"/>
+
+            <h:outputLabel for="shipHouseNumber" value="House number"/>
+            <h:inputText id="shipHouseNumber" value="#{formBean.shipping.houseNumber}">
+                <f:convertNumber integerOnly="true"/>
+            </h:inputText>
+            <h:message for="shipHouseNumber"/>
+
+            <h:outputLabel for="shipPostalCode" value="Postal code"/>
+            <h:inputText id="shipPostalCode" value="#{formBean.shipping.postalCode}"/>
+            <h:message for="shipPostalCode"/>
+
+            <h:outputLabel for="shipCity" value="City"/>
+            <h:inputText id="shipCity" value="#{formBean.shipping.city}"/>
+            <h:message for="shipCity"/>
+
+            <h:outputLabel for="shipCountry" value="Country"/>
+            <h:selectOneMenu id="shipCountry" value="#{formBean.shipping.country}">
+                <f:selectItems value="#{appConfig.countries}"/>
+            </h:selectOneMenu>
+            <h:message for="shipCountry"/>
+
+            <h:outputLabel for="shipMethod" value="Method"/>
+            <h:inputText id="shipMethod" value="#{formBean.shipping.method}"/>
+            <h:message for="shipMethod"/>
+
+            <h:outputLabel for="shipInstructions" value="Instructions"/>
+            <h:inputTextarea id="shipInstructions" value="#{formBean.shipping.instructions}"/>
+            <h:message for="shipInstructions"/>
+
+            <h:outputLabel for="shipGiftWrap" value="Gift wrap"/>
+            <h:selectBooleanCheckbox id="shipGiftWrap" value="#{formBean.shipping.giftWrap}"/>
+            <h:message for="shipGiftWrap"/>
+
+            <h:outputLabel for="shipDeliveryDate" value="Delivery date"/>
+            <h:inputText id="shipDeliveryDate" value="#{formBean.shipping.deliveryDate}">
+                <f:convertDateTime type="localDate"/>
+            </h:inputText>
+            <h:message for="shipDeliveryDate"/>
+        </h:panelGrid>
+    </h:panelGroup>
+</ui:composition>

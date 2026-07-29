@@ -23,6 +23,7 @@ import static org.glassfish.mojarra.context.UrlBuilder.PROTOCOL_SEPARATOR;
 import static org.glassfish.mojarra.context.UrlBuilder.WEBSOCKET_PROTOCOL;
 import static org.glassfish.mojarra.util.Util.isEmpty;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -83,6 +84,12 @@ public class ExternalContextImpl extends ExternalContext {
     private ServletContext servletContext;
     private ServletRequest request;
     private ServletResponse response;
+    // Cached response writer (lazily created). A buffering writer so the many small render-time writes --
+    // and any writes by render-view listeners that obtain this same writer -- coalesce into larger chunks
+    // before the container's writer (some servlet writers, e.g. undertow, pay a per-write encode cost).
+    // Caching means every caller shares one buffer, preserving write order; flushed in release() and
+    // responseFlushBuffer(), and emptied in responseReset() and responseSendError().
+    private ResponseOutputWriter responseOutputWriter;
     private ClientWindow clientWindow = null;
 
     private Map<String, Object> applicationMap = null;
@@ -810,7 +817,23 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public Writer getResponseOutputWriter() throws IOException {
-        return response.getWriter();
+        if (responseOutputWriter == null) {
+            responseOutputWriter = new ResponseOutputWriter(response.getWriter());
+        }
+        return responseOutputWriter;
+    }
+
+    /**
+     * Empty the cached {@link ResponseOutputWriter} without flushing it. Both {@code response.reset()} and
+     * {@code response.sendError()} only clear the container buffer, so output still buffered in the wrapping
+     * writer would survive and get flushed at {@link #release()}, re-committing the aborted response and
+     * defeating the container's error page. The writer itself is deliberately kept, as the response writer
+     * created earlier in the request holds on to it and keeps writing into it after the reset.
+     */
+    private void discardResponseOutputWriter() {
+        if (responseOutputWriter != null) {
+            responseOutputWriter.discard();
+        }
     }
 
     /**
@@ -882,6 +905,7 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public void responseReset() {
+        discardResponseOutputWriter();
         response.reset();
     }
 
@@ -890,6 +914,7 @@ public class ExternalContextImpl extends ExternalContext {
      */
     @Override
     public void responseSendError(int statusCode, String message) throws IOException {
+        discardResponseOutputWriter();
         if (message == null) {
             ((HttpServletResponse) response).sendError(statusCode);
         } else {
@@ -913,6 +938,10 @@ public class ExternalContextImpl extends ExternalContext {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (facesContext != null) {
             doLastPhaseActions(facesContext, false);
+        }
+
+        if (responseOutputWriter != null) {
+            responseOutputWriter.flush();
         }
 
         response.flushBuffer();
@@ -1015,6 +1044,21 @@ public class ExternalContextImpl extends ExternalContext {
 
     @Override
     public void release() {
+        // Flush buffered render output to the container's writer before discarding the response. This is
+        // the guaranteed end-of-request hook (FacesContext.release runs in the FacesServlet finally), so it
+        // covers output written after renderView -- e.g. by PostRenderViewEvent listeners.
+        if (responseOutputWriter != null) {
+            try {
+                // Deliberately only drain, not flush: flushing the container's writer would commit the response, even
+                // when nothing is left to write, and thereby defeat the error page of a request which is being aborted.
+                // The container flushes its own buffer when the request ends.
+                responseOutputWriter.drain();
+            } catch (IOException ignored) {
+                // Best-effort at teardown; a genuine write failure surfaces via the container.
+            }
+            responseOutputWriter = null;
+        }
+
         servletContext = null;
         request = null;
         response = null;
@@ -1166,5 +1210,86 @@ public class ExternalContextImpl extends ExternalContext {
 
     // ----------------------------------------------------------- Inner Classes
 
+
+    /**
+     * Buffering writer which coalesces the many small render-time writes into larger chunks before handing them to the
+     * container's writer, and which can additionally discard whatever is still buffered.
+     * <p>
+     * The discard is what {@link BufferedWriter} cannot offer: aborting a partially rendered response requires
+     * dropping the output that has not reached the container yet, as {@code response.reset()} only clears the
+     * container's own buffer. Output already drained to the container's writer is beyond reach, which matches the
+     * container's own semantics -- once it is committed it can no longer be taken back.
+     */
+    private static class ResponseOutputWriter extends Writer {
+
+        private static final int BUFFER_SIZE = 8192;
+
+        private final Writer wrapped;
+        private final char[] buffer = new char[BUFFER_SIZE];
+        private int count;
+
+        private ResponseOutputWriter(Writer wrapped) {
+            this.wrapped = wrapped;
+        }
+
+        @Override
+        public void write(char[] chars, int offset, int length) throws IOException {
+            if (length >= BUFFER_SIZE) {
+                drain();
+                wrapped.write(chars, offset, length);
+                return;
+            }
+
+            if (count + length > BUFFER_SIZE) {
+                drain();
+            }
+
+            System.arraycopy(chars, offset, buffer, count, length);
+            count += length;
+        }
+
+        @Override
+        public void write(String string, int offset, int length) throws IOException {
+            if (length >= BUFFER_SIZE) {
+                drain();
+                wrapped.write(string, offset, length);
+                return;
+            }
+
+            if (count + length > BUFFER_SIZE) {
+                drain();
+            }
+
+            string.getChars(offset, offset + length, buffer, count);
+            count += length;
+        }
+
+        @Override
+        public void flush() throws IOException {
+            drain();
+            wrapped.flush();
+        }
+
+        @Override
+        public void close() throws IOException {
+            drain();
+            wrapped.close();
+        }
+
+        /**
+         * Drop what is still buffered, so that it never reaches the container's writer.
+         */
+        private void discard() {
+            count = 0;
+        }
+
+        private void drain() throws IOException {
+            if (count > 0) {
+                wrapped.write(buffer, 0, count);
+                count = 0;
+            }
+        }
+
+    }
 
 }

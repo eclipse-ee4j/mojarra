@@ -18,6 +18,8 @@
 
 package org.glassfish.mojarra.renderkit.html_basic;
 
+import static org.glassfish.mojarra.util.Util.componentIsDisabled;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
@@ -26,6 +28,7 @@ import java.util.logging.Level;
 import jakarta.faces.component.UICommand;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
+import jakarta.faces.component.html.HtmlCommandLink;
 import jakarta.faces.component.html.HtmlEvents.HtmlDocumentElementEvent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
@@ -77,7 +80,8 @@ public class CommandLinkRenderer extends LinkRenderer {
             return;
         }
 
-        boolean componentDisabled = Boolean.TRUE.equals(component.getAttributes().get("disabled"));
+        boolean componentDisabled = component instanceof HtmlCommandLink link ? link.isDisabled()
+                : componentIsDisabled(component);
 
         if (componentDisabled) {
             renderAsDisabled(context, component);
@@ -117,12 +121,13 @@ public class CommandLinkRenderer extends LinkRenderer {
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
 
-        if (Boolean.TRUE.equals(component.getAttributes().get("disabled"))) {
+        if (component instanceof HtmlCommandLink link ? link.isDisabled() : componentIsDisabled(component)) {
             writer.endElement("span");
         } else {
             writer.endElement("a");
 
-            String target = (String) component.getAttributes().get("target");
+            String target = component instanceof HtmlCommandLink link ? link.getTarget()
+                    : (String) component.getAttributes().get("target");
             if (target != null) {
                 target = target.trim();
             } else {
@@ -169,7 +174,7 @@ public class CommandLinkRenderer extends LinkRenderer {
 
         RenderKitUtils.renderXHTMLStyleBooleanAttributes(writer, command);
 
-        writeCommonLinkAttributes(writer, command);
+        writeStyleClassAttributeIfNecessary(writer, command);
 
         // render the current value as link text.
         writeValue(command, writer);

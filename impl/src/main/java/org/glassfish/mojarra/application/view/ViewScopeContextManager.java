@@ -336,16 +336,26 @@ public class ViewScopeContextManager {
         Map<Object, Map<String, ViewScopeContextObject>> activeViewScopeContexts = (Map<Object, Map<String, ViewScopeContextObject>>)
                 session.getAttribute(ACTIVE_VIEW_CONTEXTS);
         if (activeViewScopeContexts != null) {
-            Map<String, Object> activeViewMaps = (Map<String, Object>) session.getAttribute(ViewScopeManager.ACTIVE_VIEW_MAPS);
-            if (activeViewMaps != null) {
-                for (Map.Entry<String, Object> viewMapEntry : activeViewMaps.entrySet()) {
-                    Map<String, ViewScopeContextObject> contextMap = activeViewScopeContexts.get(viewMapEntry.getKey());
-                    destroyBeans((Map<String, Object>) viewMapEntry.getValue(), contextMap);
-                }
-            }
+            destroyAllBeans((Map<String, ?>) session.getAttribute(ViewScopeManager.ACTIVE_VIEW_MAPS), activeViewScopeContexts);
+            destroyAllBeans(ViewScopeManager.getEvictedViewMaps(session), activeViewScopeContexts);
 
             activeViewScopeContexts.clear();
             session.removeAttribute(ACTIVE_VIEW_CONTEXTS);
+        }
+    }
+
+    /**
+     * Destroy the view scoped beans of each of the given view maps.
+     *
+     * @param viewMaps the view maps, mapped by their id, or null when there are none.
+     * @param activeViewScopeContexts the context maps of all view maps.
+     */
+    @SuppressWarnings("unchecked")
+    private void destroyAllBeans(Map<String, ?> viewMaps, Map<Object, Map<String, ViewScopeContextObject>> activeViewScopeContexts) {
+        if (viewMaps != null) {
+            for (Map.Entry<String, ?> viewMapEntry : viewMaps.entrySet()) {
+                destroyBeans((Map<String, Object>) viewMapEntry.getValue(), activeViewScopeContexts.get(viewMapEntry.getKey()));
+            }
         }
     }
 

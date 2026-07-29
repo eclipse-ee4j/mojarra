@@ -1,40 +1,36 @@
+# Maven
+bin/
 target/
-api/src/main/java/
-api/src/main/resources/
-impl/yuicompressor.jar
-changebundle.txt
-dependencies
-build.properties
-**/*.iml
-*.class
-*.jar
-*.jsfdia
-target/
-/bin/
-/dist/
-/dependencies/
-/jsf-demo/dist/
-/build.properties
-.settings/
+.flattened-pom.xml
+
+# Node.js
+node_modules/
+dist/
+npm-debug.log
+
+# Eclipse
 .classpath
 .project
-test/**/.classpath
-test/**/.project
-spi/**/.classpath
-spi/**/.project
-impl/**/.classpath
-impl/**/.project
-impl/bnd.bnd
-api/**/.classpath
-api/**/.project
-/nbproject/private/
-/dependencies
-glassfish-8.0/
+.metadata/
+.settings/
+*.jsfdia
+*.pageflow
+
+# IntelliJ
+.idea
+*.ipr
+*.iml
+*.iws
+
+# NetBeans
 nbactions.xml
 nb-configuration.xml
-*.DS_Store
-.idea/
-Mojarra.iml
+
+# emacs
 *~
-.flattened-pom.xml
-node_modules/
+
+# OSX
+.DS_Store
+
+# Local
+/tmp/

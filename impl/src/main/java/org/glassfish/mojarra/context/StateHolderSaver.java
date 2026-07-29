@@ -16,6 +16,8 @@
 
 package org.glassfish.mojarra.context;
 
+import static org.glassfish.mojarra.facelets.tag.faces.ComponentSupport.DYNAMIC_COMPONENT;
+
 import java.io.Serializable;
 
 import jakarta.faces.component.StateHolder;
@@ -33,8 +35,6 @@ class StateHolderSaver implements Serializable {
 
     private String className = null;
     private Serializable savedState = null;
-
-    private static final String DYNAMIC_COMPONENT = "org.glassfish.mojarra.DynamicComponent";
 
     private enum StateHolderTupleIndices {
         StateHolderSaverInstance, ComponentAddedDynamically, LastMember

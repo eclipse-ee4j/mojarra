@@ -45,284 +45,247 @@ public class HtmlUtils {
     // escape characters....
     // -------------------------------------------------
 
-    static public void writeText(Writer out, boolean escapeUnicode, boolean escapeIsocode, char[] buffer, char[] text, boolean forXml) throws IOException {
-        writeText(out, escapeUnicode, escapeIsocode, buffer, text, 0, text.length, forXml);
+    static public void writeText(Writer out, boolean escapeUnicode, boolean escapeIsocode, char[] text, boolean forXml) throws IOException {
+        writeText(out, escapeUnicode, escapeIsocode, text, 0, text.length, forXml);
     }
 
     /**
-     * Write char array text.
+     * Write char array text, escaping HTML special characters as needed.
+     *
+     * <p>Uses a range-emit strategy: walks the input character by character, tracking the start
+     * of the current safe run. When a character requires escaping (or dropping), the pending
+     * safe run is bulk-written to the underlying writer via {@code Writer.write(char[], off, len)},
+     * the escape sequence is emitted, and a new run begins. At the end the remaining tail is
+     * flushed. For plain ASCII content this collapses to a single underlying write.
+     *
+     * @param out the writer to emit to
+     * @param escapeUnicode if true, chars &gt; 0xFF are emitted as numeric character references
+     * @param escapeIsocode if true, chars in [0xA0, 0xFF] are emitted as named ISO-8859-1 entities
+     * @param text the input characters
+     * @param start start offset into {@code text}
+     * @param length number of characters to write
+     * @param forXml if true, drop characters not valid in XML (per XML 1.0 spec)
      */
-    static public void writeText(Writer out, boolean escapeUnicode, boolean escapeIsocode, char[] buff, char[] text, int start, int length, boolean forXml) throws IOException {
-        int buffLength = buff.length;
-        int buffIndex = 0;
-
+    static public void writeText(Writer out, boolean escapeUnicode, boolean escapeIsocode, char[] text, int start, int length, boolean forXml) throws IOException {
         int end = start + length;
-        for (int i = start; i < end; i++) {
-            buffIndex = writeTextChar(out, escapeUnicode, escapeIsocode, text, i, text[i], buffIndex, buff, buffLength, forXml);
-        }
+        int runStart = start;
 
-        flushBuffer(out, buff, buffIndex);
-    }
-
-    /**
-     * Write String text.
-     */
-    static public void writeText(Writer out, boolean escapeUnicode, boolean escapeIsocode, char[] buff, String text, char[] textBuff, boolean forXml) throws IOException {
-
-        int length = text.length();
-
-        if (length >= 16) {
-            text.getChars(0, length, textBuff, 0);
-            writeText(out, escapeUnicode, escapeIsocode, buff, textBuff, 0, length, forXml);
-        } else {
-            int buffLength = buff.length;
-            int buffIndex = 0;
-            for (int i = 0; i < length; i++) {
-                char ch = text.charAt(i);
-                buffIndex = writeTextChar(out, escapeUnicode, escapeIsocode, text, i, ch, buffIndex, buff, buffLength, forXml);
-            }
-            flushBuffer(out, buff, buffIndex);
-        }
-
-    }
-
-    private static int writeTextChar(Writer out, boolean escapeUnicode, boolean escapeIsocode, Object originalChars, int charIndex, char ch, int buffIndex, char[] buff, int buffLength, boolean forXml)
-            throws IOException {
-        int nextIndex;
-        if (ch <= 0x1f) {
-            if (!isPrintableControlChar(ch, forXml)) {
-                return buffIndex;
-            }
-        }
-        if (ch < 0xA0) {
-            // If "?" or over, no escaping is needed (this covers
-            // most of the Latin alphabet)
-            if (ch >= 0x3f) {
-                nextIndex = addToBuffer(out, buff, buffIndex, buffLength, ch);
-            } else if (ch >= 0x27) { // If above "'"...
-                // If between "'" and ";", no escaping is needed
-                if (ch < 0x3c) {
-                    nextIndex = addToBuffer(out, buff, buffIndex, buffLength, ch);
-                } else if (ch == '<') {
-                    nextIndex = addToBuffer(out, buff, buffIndex, buffLength, LT_CHARS);
-                } else if (ch == '>') {
-                    nextIndex = addToBuffer(out, buff, buffIndex, buffLength, GT_CHARS);
-                } else {
-                    nextIndex = addToBuffer(out, buff, buffIndex, buffLength, ch);
-                }
-            } else {
-                if (ch == '&') {
-                    nextIndex = addToBuffer(out, buff, buffIndex, buffLength, AMP_CHARS);
-                } else if (ch == '"') {
-                    nextIndex = addToBuffer(out, buff, buffIndex, buffLength, "\"".toCharArray());
-                } else {
-                    nextIndex = addToBuffer(out, buff, buffIndex, buffLength, ch);
-                }
-            }
-        } else if (ch <= 0xff) {
-            if (escapeIsocode) {
-                // ISO-8859-1 entities: encode as needed
-                nextIndex = addToBuffer(out, buff, buffIndex, buffLength, sISO8859_1_Entities[ch - 0xA0]);
-            } else {
-                nextIndex = addToBuffer(out, buff, buffIndex, buffLength, ch);
-            }
-        } else {
-            if (escapeUnicode) {
-                // UNICODE entities: encode as needed
-                nextIndex = _writeDecRef(out, buff, buffIndex, buffLength, ch);
-            } else {
-                if (forXml && !(isAllowedXmlCharacter(ch) || isAllowedSurrogateCharacter(ch, charIndex, originalChars))) {
-                    return buffIndex;
-                }
-
-                nextIndex = addToBuffer(out, buff, buffIndex, buffLength, ch);
-            }
-        }
-        return nextIndex;
-    }
-
-    /**
-     * Write a string attribute. Note that this code is duplicated below for character arrays - change both places if you
-     * make any changes!!!
-     */
-    static public void writeAttribute(Writer out, boolean escapeUnicode, boolean escapeIsocode, char[] buff, String text, char[] textBuff,
-            boolean isScriptInAttributeValueEnabled, boolean forXml) throws IOException {
-
-        int length = text.length();
-        if (length >= 16) {
-            if (length > textBuff.length) {
-                // resize our buffer
-                textBuff = new char[length * 2];
-            }
-            text.getChars(0, length, textBuff, 0);
-            writeAttribute(out, escapeUnicode, escapeIsocode, buff, textBuff, 0, length, isScriptInAttributeValueEnabled, forXml);
-        } else {
-            int buffLength = buff.length;
-            int buffIndex = 0;
-            for (int i = 0; i < length; i++) {
-                char ch = text.charAt(i);
-
-                if (ch <= 0x1f) {
-                    if (!isPrintableControlChar(ch, forXml)) {
-                        continue;
-                    }
-                }
-                // Tilde or less...
-                if (ch < 0xA0) {
-                    // If "?" or over, no escaping is needed (this covers
-                    // most of the Latin alphabet)
-                    if (ch >= 0x3f) {
-                        if (ch == 's') {
-                            // If putting scripts in attribute values
-                            // has been disabled (the defualt), look for
-                            // script: in the attribute value.
-                            // ensure the attribute value is long enough
-                            // to accomodate "script:"
-                            if (!isScriptInAttributeValueEnabled && i + 6 < text.length()) {
-                                if ('c' == text.charAt(i + 1) && 'r' == text.charAt(i + 2) && 'i' == text.charAt(i + 3) && 'p' == text.charAt(i + 4)
-                                        && 't' == text.charAt(i + 5) && ':' == text.charAt(i + 6)) {
-                                    return;
-                                }
-                            }
-                        }
-                        buffIndex = addToBuffer(out, buff, buffIndex, buffLength, ch);
-                    } else if (ch >= 0x27) { // If above "'"...
-                        // If between "'" and ";", no escaping is needed
-                        if (ch < 0x3c) {
-                            buffIndex = addToBuffer(out, buff, buffIndex, buffLength, ch);
-                        } else if (ch == '<') {
-                            buffIndex = addToBuffer(out, buff, buffIndex, buffLength, LT_CHARS);
-                        } else if (ch == '>') {
-                            buffIndex = addToBuffer(out, buff, buffIndex, buffLength, GT_CHARS);
-                        } else {
-                            buffIndex = addToBuffer(out, buff, buffIndex, buffLength, ch);
-                        }
-                    } else {
-                        if (ch == '&') {
-                            // HTML 4.0, section B.7.1: ampersands followed by
-                            // an open brace don't get escaped
-                            if (i + 1 < length && text.charAt(i + 1) == '{') {
-                                buffIndex = addToBuffer(out, buff, buffIndex, buffLength, ch);
-                            } else {
-                                buffIndex = addToBuffer(out, buff, buffIndex, buffLength, AMP_CHARS);
-                            }
-                        } else if (ch == '"') {
-                            buffIndex = addToBuffer(out, buff, buffIndex, buffLength, QUOT_CHARS);
-                        } else {
-                            buffIndex = addToBuffer(out, buff, buffIndex, buffLength, ch);
-                        }
-                    }
-                } else if (ch <= 0xff) {
-                    if (escapeIsocode) {
-                        // ISO-8859-1 entities: encode as needed
-                        buffIndex = addToBuffer(out, buff, buffIndex, buffLength, sISO8859_1_Entities[ch - 0xA0]);
-                    } else {
-                        buffIndex = addToBuffer(out, buff, buffIndex, buffLength, ch);
-                    }
-                } else {
-                    if (escapeUnicode) {
-                        // UNICODE entities: encode as needed
-                        buffIndex = _writeDecRef(out, buff, buffIndex, buffLength, ch);
-                    } else {
-                        if (forXml && !(isAllowedXmlCharacter(ch) || isAllowedSurrogateCharacter(ch, i, text))) {
-                            continue;
-                        }
-
-                        buffIndex = addToBuffer(out, buff, buffIndex, buffLength, ch);
-                    }
-                }
-            }
-
-            flushBuffer(out, buff, buffIndex);
-        }
-    }
-
-    /**
-     * Write a character array attribute. Note that this code is duplicated above for string - change both places if you
-     * make any changes!!!
-     */
-    static public void writeAttribute(Writer out, boolean escapeUnicode, boolean escapeIsocode, char[] buff, char[] text, int start, int length,
-            boolean isScriptInAttributeValueEnabled, boolean forXml) throws IOException {
-        int buffLength = buff.length;
-        int buffIndex = 0;
-
-        int end = start + length;
         for (int i = start; i < end; i++) {
             char ch = text[i];
 
-            // "Application Program Command" or less...
-            if (ch <= 0x1f) {
-                if (!isPrintableControlChar(ch, forXml)) {
-                    continue;
-                }
+            // Fast path: ASCII printable except <>& (writeText does NOT escape '"' or "'").
+            // Hits 99%+ of characters in typical HTML5+UTF-8 output.
+            if (ch >= 0x20 && ch < 0x7f && ch != '<' && ch != '>' && ch != '&') {
+                continue;
             }
-            if (ch < 0xA0) {
-                // If "?" or over, no escaping is needed (this covers
-                // most of the Latin alphabet)
-                if (ch >= 0x3f) {
-                    if (ch == 's') {
-                        // If putting scripts in attribute values
-                        // has been disabled (the defualt), look for
-                        // script: in the attribute value.
-                        // ensure the attribute value is long enough
-                        // to accomodate "script:"
-                        if (!isScriptInAttributeValueEnabled && i + 6 < text.length) {
-                            if ('c' == text[i + 1] && 'r' == text[i + 2] && 'i' == text[i + 3] && 'p' == text[i + 4] && 't' == text[i + 5]
-                                    && ':' == text[i + 6]) {
-                                return;
-                            }
-                        }
-                    }
 
-                    buffIndex = addToBuffer(out, buff, buffIndex, buffLength, ch);
-                } else if (ch >= 0x27) { // If above "'"...
-                    if (ch < 0x3c) {
-                        // If between "'" and ";", no escaping is needed
-                        buffIndex = addToBuffer(out, buff, buffIndex, buffLength, ch);
-                    } else if (ch == '<') {
-                        buffIndex = addToBuffer(out, buff, buffIndex, buffLength, LT_CHARS);
-                    } else if (ch == '>') {
-                        buffIndex = addToBuffer(out, buff, buffIndex, buffLength, GT_CHARS);
-                    } else {
-                        buffIndex = addToBuffer(out, buff, buffIndex, buffLength, ch);
-                    }
-                } else {
-                    if (ch == '&') {
-                        // HTML 4.0, section B.7.1: ampersands followed by
-                        // an open brace don't get escaped
-                        if (i + 1 < end && text[i + 1] == '{') {
-                            buffIndex = addToBuffer(out, buff, buffIndex, buffLength, ch);
-                        } else {
-                            buffIndex = addToBuffer(out, buff, buffIndex, buffLength, AMP_CHARS);
-                        }
-                    } else if (ch == '"') {
-                        buffIndex = addToBuffer(out, buff, buffIndex, buffLength, QUOT_CHARS);
-                    } else {
-                        buffIndex = addToBuffer(out, buff, buffIndex, buffLength, ch);
-                    }
+            // Flush the pending safe run before handling this character.
+            if (i > runStart) {
+                out.write(text, runStart, i - runStart);
+            }
+            runStart = i + 1;
+
+            if (ch < 0x20) {
+                if (isPrintableControlChar(ch, forXml)) {
+                    out.write(ch);
                 }
+                // else: drop (already advanced runStart past it)
+            } else if (ch == '<') {
+                out.write(LT_CHARS);
+            } else if (ch == '>') {
+                out.write(GT_CHARS);
+            } else if (ch == '&') {
+                out.write(AMP_CHARS);
+            } else if (ch < 0xA0) {
+                // 0x7F (DEL) and 0x80-0x9F (Latin-1 Supplement control range): pass through as-is,
+                // matching the legacy behavior. These weren't on the fast path because ch < 0x7f
+                // bounded it.
+                out.write(ch);
             } else if (ch <= 0xff) {
                 if (escapeIsocode) {
-                    // ISO-8859-1 entities: encode as needed
-                    buffIndex = addToBuffer(out, buff, buffIndex, buffLength, sISO8859_1_Entities[ch - 0xA0]);
+                    out.write(sISO8859_1_Entities[ch - 0xA0]);
                 } else {
-                    buffIndex = addToBuffer(out, buff, buffIndex, buffLength, ch);
+                    out.write(ch);
                 }
             } else {
+                // ch > 0xff
                 if (escapeUnicode) {
-                    // UNICODE entities: encode as needed
-                    buffIndex = _writeDecRef(out, buff, buffIndex, buffLength, ch);
+                    writeDecRefDirect(out, ch);
+                } else if (forXml && !(isAllowedXmlCharacter(ch) || isAllowedSurrogateCharacter(ch, i, text))) {
+                    // drop (already advanced runStart)
                 } else {
-                    if (forXml && !(isAllowedXmlCharacter(ch) || isAllowedSurrogateCharacter(ch, i, text))) {
-                        continue;
-                    }
-
-                    buffIndex = addToBuffer(out, buff, buffIndex, buffLength, ch);
+                    out.write(ch);
                 }
             }
         }
 
-        flushBuffer(out, buff, buffIndex);
+        if (runStart < end) {
+            out.write(text, runStart, end - runStart);
+        }
+    }
+
+    /**
+     * Write String text, escaping HTML special characters as needed. Routes through the char[]
+     * variant via {@link String#getChars(int, int, char[], int)}; the {@code textBuff} parameter
+     * is reused unless the input exceeds its capacity (uncommon for typical attribute values).
+     */
+    static public void writeText(Writer out, boolean escapeUnicode, boolean escapeIsocode, String text, char[] textBuff, boolean forXml) throws IOException {
+        int length = text.length();
+        if (length == 0) {
+            return;
+        }
+        char[] target = (length > textBuff.length) ? new char[length] : textBuff;
+        text.getChars(0, length, target, 0);
+        writeText(out, escapeUnicode, escapeIsocode, target, 0, length, forXml);
+    }
+
+    /**
+     * Write String attribute, escaping HTML special characters. Routes through the char[] variant
+     * via {@link String#getChars(int, int, char[], int)}; the {@code textBuff} parameter is reused
+     * unless the input exceeds its capacity.
+     */
+    static public void writeAttribute(Writer out, boolean escapeUnicode, boolean escapeIsocode, String text, char[] textBuff,
+            boolean isScriptInAttributeValueEnabled, boolean forXml) throws IOException {
+        int length = text.length();
+        if (length == 0) {
+            return;
+        }
+        char[] target = (length > textBuff.length) ? new char[length] : textBuff;
+        text.getChars(0, length, target, 0);
+        writeAttribute(out, escapeUnicode, escapeIsocode, target, 0, length, isScriptInAttributeValueEnabled, forXml);
+    }
+
+    /**
+     * Write char array attribute, escaping HTML special characters as needed.
+     *
+     * <p>Range-emit strategy (see {@link #writeText(Writer, boolean, boolean, char[], int, int, boolean)}):
+     * walks the input character by character, tracking the start of the current safe run, and
+     * bulk-writes safe runs to the underlying writer. Differences from {@code writeText}:
+     * <ul>
+     *   <li>The {@code "} double quote is escaped to {@code &quot;}</li>
+     *   <li>An ampersand immediately followed by an open brace is NOT escaped (HTML 4 spec B.7.1 -
+     *       Netscape-style JavaScript object literal in attribute value)</li>
+     *   <li>When {@code !isScriptInAttributeValueEnabled} (default), encountering the literal string
+     *       {@code "script:"} in the value causes the method to return WITHOUT writing the pending
+     *       safe run -- effectively dropping the entire attribute output as a defence against
+     *       JavaScript-URL injection.</li>
+     * </ul>
+     */
+    static public void writeAttribute(Writer out, boolean escapeUnicode, boolean escapeIsocode, char[] text, int start, int length,
+            boolean isScriptInAttributeValueEnabled, boolean forXml) throws IOException {
+        int end = start + length;
+        int runStart = start;
+
+        for (int i = start; i < end; i++) {
+            char ch = text[i];
+
+            // Fast path: ASCII printable except <>&" (writeAttribute escapes '"' but not "'").
+            // 's' is also fast-path; the script:-injection check happens in the slow path on
+            // any hit, since the security check needs to fire BEFORE flushing the safe run.
+            if (ch >= 0x20 && ch < 0x7f && ch != '<' && ch != '>' && ch != '&' && ch != '"') {
+                // Special case: 's' may begin the literal "script:". Check inline so we can
+                // abort BEFORE flushing the safe run (matching the legacy buffer-discard behavior
+                // when the script:-disabled path returns mid-method).
+                if (ch == 's' && !isScriptInAttributeValueEnabled && i + 6 < end
+                        && text[i + 1] == 'c' && text[i + 2] == 'r' && text[i + 3] == 'i'
+                        && text[i + 4] == 'p' && text[i + 5] == 't' && text[i + 6] == ':') {
+                    return;
+                }
+                continue;
+            }
+
+            // Flush the pending safe run before handling this character.
+            if (i > runStart) {
+                out.write(text, runStart, i - runStart);
+            }
+            runStart = i + 1;
+
+            if (ch < 0x20) {
+                if (isPrintableControlChar(ch, forXml)) {
+                    out.write(ch);
+                }
+                // else: drop (already advanced runStart past it)
+            } else if (ch == '<') {
+                out.write(LT_CHARS);
+            } else if (ch == '>') {
+                out.write(GT_CHARS);
+            } else if (ch == '&') {
+                // HTML 4.0 section B.7.1: '&{' is the start of a JS object literal in attribute
+                // values; preserve the '&' as-is.
+                if (i + 1 < end && text[i + 1] == '{') {
+                    out.write('&');
+                } else {
+                    out.write(AMP_CHARS);
+                }
+            } else if (ch == '"') {
+                out.write(QUOT_CHARS);
+            } else if (ch < 0xA0) {
+                // 0x7F (DEL) and 0x80-0x9F: pass through as-is, matching legacy behavior.
+                out.write(ch);
+            } else if (ch <= 0xff) {
+                if (escapeIsocode) {
+                    out.write(sISO8859_1_Entities[ch - 0xA0]);
+                } else {
+                    out.write(ch);
+                }
+            } else {
+                // ch > 0xff
+                if (escapeUnicode) {
+                    writeDecRefDirect(out, ch);
+                } else if (forXml && !(isAllowedXmlCharacter(ch) || isAllowedSurrogateCharacter(ch, i, text))) {
+                    // drop (runStart already advanced)
+                } else {
+                    out.write(ch);
+                }
+            }
+        }
+
+        if (runStart < end) {
+            out.write(text, runStart, end - runStart);
+        }
+    }
+
+    /**
+     * Emits a numeric character reference {@code &#NNN;} for the given character directly via
+     * {@link Writer#write(int)} calls -- no intermediate buffer. Always uses the numeric form,
+     * which is universally valid across HTML 4, HTML5, XHTML and XML (whereas named entities
+     * like {@code &euro;} are invalid in XHTML/XML without a DTD declaration).
+     */
+    private static void writeDecRefDirect(Writer out, char ch) throws IOException {
+        out.write(DEC_REF_START);
+        int v = ch;
+        if (v >= 10000) {
+            out.write('0' + v / 10000);
+            v %= 10000;
+            out.write('0' + v / 1000);
+            v %= 1000;
+            out.write('0' + v / 100);
+            v %= 100;
+            out.write('0' + v / 10);
+            v %= 10;
+            out.write('0' + v);
+        } else if (v >= 1000) {
+            out.write('0' + v / 1000);
+            v %= 1000;
+            out.write('0' + v / 100);
+            v %= 100;
+            out.write('0' + v / 10);
+            v %= 10;
+            out.write('0' + v);
+        } else if (v >= 100) {
+            out.write('0' + v / 100);
+            v %= 100;
+            out.write('0' + v / 10);
+            v %= 10;
+            out.write('0' + v);
+        } else if (v >= 10) {
+            out.write('0' + v / 10);
+            v %= 10;
+            out.write('0' + v);
+        } else {
+            out.write('0' + v);
+        }
+        out.write(';');
     }
 
     private static boolean isPrintableControlChar(char ch, boolean forXml) {
@@ -363,50 +326,6 @@ public class HtmlUtils {
         }
     }
 
-    /**
-     * Writes a character as a decimal escape. Hex escapes are smaller than the decimal version, but Netscape didn't support
-     * hex escapes until 4.7.4.
-     */
-    static private int _writeDecRef(Writer out, char[] buffer, int bufferIndex, int bufferLength, char ch) throws IOException {
-        if (ch == '\u20ac') {
-            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, EURO_CHARS);
-            return bufferIndex;
-        }
-        bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, DEC_REF_START);
-        // Formerly used String.valueOf(). This version tests out
-        // about 40% faster in a microbenchmark (and on systems where GC is
-        // going gonzo, it should be even better)
-        int i = ch;
-        if (i > 10000) {
-            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, (char) ('0' + i / 10000));
-            i = i % 10000;
-            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, (char) ('0' + i / 1000));
-            i = i % 1000;
-            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, (char) ('0' + i / 100));
-            i = i % 100;
-            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, (char) ('0' + i / 10));
-            i = i % 10;
-            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, (char) ('0' + i));
-        } else if (i > 1000) {
-            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, (char) ('0' + i / 1000));
-            i = i % 1000;
-            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, (char) ('0' + i / 100));
-            i = i % 100;
-            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, (char) ('0' + i / 10));
-            i = i % 10;
-            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, (char) ('0' + i));
-        } else {
-            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, (char) ('0' + i / 100));
-            i = i % 100;
-            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, (char) ('0' + i / 10));
-            i = i % 10;
-            bufferIndex = addToBuffer(out, buffer, bufferIndex, bufferLength, (char) ('0' + i));
-        }
-
-        return addToBuffer(out, buffer, bufferIndex, bufferLength, ';');
-
-    }
-
     //
     // Buffering scheme: we use a tremendously simple buffering
     // scheme that greatly reduces the number of calls into the
@@ -414,181 +333,117 @@ public class HtmlUtils {
     // measured performance gains (at least in JDK 1.3.1).
     //
 
-    /**
-     * Add a character to the buffer, flushing the buffer if the buffer is full, and returning the new buffer index
-     */
-    private static int addToBuffer(Writer out, char[] buffer, int bufferIndex, int bufferLength, char ch) throws IOException {
-        if (bufferIndex >= bufferLength) {
-            out.write(buffer, 0, bufferIndex);
-            bufferIndex = 0;
-        }
-
-        buffer[bufferIndex] = ch;
-
-        return bufferIndex + 1;
-    }
-
-    /**
-     * Add an array of characters to the buffer, flushing the buffer if the buffer is full, and returning the new buffer
-     * index.
-     */
-    private static int addToBuffer(Writer out, char[] buffer, int bufferIndex, int bufferLength, char[] toAdd) throws IOException {
-
-        if (bufferIndex >= bufferLength || toAdd.length + bufferIndex >= bufferLength) {
-            out.write(buffer, 0, bufferIndex);
-            bufferIndex = 0;
-        }
-        System.arraycopy(toAdd, 0, buffer, bufferIndex, toAdd.length);
-        return bufferIndex + toAdd.length;
-
-    }
-
-    /**
-     * Flush the contents of the buffer to the output stream and return the reset buffer index
-     */
-    private static int flushBuffer(Writer out, char[] buffer, int bufferIndex) throws IOException {
-        if (bufferIndex > 0) {
-            out.write(buffer, 0, bufferIndex);
-        }
-
-        return 0;
-    }
-
     private HtmlUtils() {
     }
 
     /**
      * Writes a string into URL-encoded format out to a Writer.
-     * 
-     * All characters before the start of the query string will be encoded using UTF-8.
-     * 
-     * Characters after the start of the query string will be encoded using a client-defined encoding. You'll need to use
-     * the encoding that the server will expect. (HTML forms will generate query strings using the character encoding that
-     * the HTML itself was generated in.)
-     * 
-     * All characters will be encoded as needed for URLs, with the exception of the percent symbol ("%"). Because this is
-     * the character itself used for escaping, attempting to escape this character would cause this code to double-escape
-     * some strings. It also may be necessary to pre-escape some characters. In particular, a question mark ("?") is
-     * considered the start of the query string.
-     * 
      *
-     * <p>
-     * NOTE: This is method is duplicated below. The difference being the acceptance of a char[] for the text to write. Any
-     * changes made here, should be made below.
-     * </p>
+     * <p>All characters before the start of the query string will be encoded using UTF-8.
+     * Characters after the start of the query string will be encoded using the client-defined
+     * {@code queryEncoding} -- this needs to match the encoding the server will use to decode
+     * the query string (HTML forms generate query strings using the character encoding the HTML
+     * itself was generated in).
+     *
+     * <p>All characters will be encoded as needed for URLs, with the exception of the percent
+     * symbol ({@code %}). Because that's the character used for escaping itself, attempting to
+     * escape it would double-encode anything already pre-encoded. It also may be necessary to
+     * pre-escape some characters; in particular, the first {@code ?} is treated as the start of
+     * the query string.
+     *
+     * <p>Delegates to {@link #writeURL(Writer, char[], int, int, String)} via {@code getChars} --
+     * a single range-emit pass over the char buffer is faster than per-char {@code charAt} +
+     * branch-per-char for any non-trivial input, and avoids duplicating the per-character logic.
      *
      * @param out a Writer for the output
      * @param text the unencoded (or partially encoded) String
+     * @param textBuff scratch buffer, reused when sized large enough to hold {@code text}
      * @param queryEncoding the character set encoding for after the first question mark
      */
     static public void writeURL(Writer out, String text, char[] textBuff, String queryEncoding) throws IOException, UnsupportedEncodingException {
-
         int length = text.length();
-        if (length >= 16) {
-            text.getChars(0, length, textBuff, 0);
-            writeURL(out, textBuff, 0, length, queryEncoding);
-        } else {
-            for (int i = 0; i < length; i++) {
-                char ch = text.charAt(i);
-
-                if (ch < 33 || ch > 126) {
-                    if (ch == ' ') {
-                        out.write('+');
-                    } else {
-                        textBuff[i] = ch;
-                        encodeURIString(out, textBuff, "UTF-8", i, i + 1);
-                    }
-                }
-                // DO NOT encode '%'. If you do, then for starters,
-                // we'll double-encode anything that's pre-encoded.
-                // And, what's worse, there becomes no way to use
-                // characters that must be encoded if you
-                // don't want them to be interpreted, like '?' or '&'.
-                // else if('%' == ch)
-                // {
-                // writeURIDoubleHex(out, ch);
-                // }
-                else if (ch == '"') {
-                    out.write("%22");
-                }
-                // Everything in the query parameters will be decoded
-                // as if it were in the request's character set. So use
-                // the real encoding for those!
-                else if (ch == '?') {
-                    out.write('?');
-                    encodeURIString(out, text, queryEncoding, i + 1);
-                    return;
-                } else {
-                    out.write(ch);
-                }
-            }
+        if (length == 0) {
+            return;
         }
+        char[] target = (length > textBuff.length) ? new char[length] : textBuff;
+        text.getChars(0, length, target, 0);
+        writeURL(out, target, 0, length, queryEncoding);
     }
 
     /**
-     * Writes a string into URL-encoded format out to a Writer.
-     * 
-     * All characters before the start of the query string will be encoded using UTF-8.
-     * 
-     * Characters after the start of the query string will be encoded using a client-defined encoding. You'll need to use
-     * the encoding that the server will expect. (HTML forms will generate query strings using the character encoding that
-     * the HTML itself was generated in.)
-     * 
-     * All characters will be encoded as needed for URLs, with the exception of the percent symbol ("%"). Because this is
-     * the character itself used for escaping, attempting to escape this character would cause this code to double-escape
-     * some strings. It also may be necessary to pre-escape some characters. In particular, a question mark ("?") is
-     * considered the start of the query string.
-     * 
-     * <p>
-     * NOTE: This is method is duplicated above. The difference being the acceptance of a String for the text to write. Any
-     * changes made here, should be made above.
-     * </p>
+     * Writes a char-array slice into URL-encoded format out to a Writer.
+     *
+     * <p>Range-emit strategy: walk the input character by character, tracking the start of the
+     * current safe run, and bulk-write safe runs to the underlying Writer instead of dispatching
+     * a single {@code out.write(ch)} per character. The safe-run check is one bounds-check plus
+     * two exclusions ({@code ch > 32 && ch < 127 && ch != '"' && ch != '?'}). Inputs consisting
+     * entirely of unreserved ASCII (the common case) collapse to a single underlying write.
+     *
+     * <p>For chars outside the safe run:
+     * <ul>
+     *   <li>{@code ?} -- writes {@code ?}, then delegates the remainder to
+     *       {@link #encodeURIString(Writer, char[], String, int, int)} using {@code queryEncoding}
+     *       and returns.</li>
+     *   <li>{@code "} -- escaped to {@code %22} (HTML attribute value safety).</li>
+     *   <li>{@code ch < 33} or {@code ch > 126} -- percent-encoded through UTF-8.</li>
+     * </ul>
+     *
+     * <p>Importantly, {@code %} is NOT encoded: encoding it would double-encode anything already
+     * pre-encoded and would defeat callers who need to embed already-encoded {@code ?}/{@code &}
+     * etc.
      *
      * @param out a Writer for the output
      * @param textBuff char[] containing the content to write
+     * @param start the offset in {@code textBuff} at which to start
+     * @param len the number of chars to process starting at {@code start}
      * @param queryEncoding the character set encoding for after the first question mark
      */
     static public void writeURL(Writer out, char[] textBuff, int start, int len, String queryEncoding) throws IOException, UnsupportedEncodingException {
-
         int end = start + len;
+        int runStart = start;
+        MyByteArrayOutputStream buf = null;
+        OutputStreamWriter writer = null;
+        char[] charArray = null;
+
         for (int i = start; i < end; i++) {
             char ch = textBuff[i];
 
-            if (ch < 33 || ch > 126) {
-                encodeURIString(out, textBuff, "UTF-8", i, i + 1);
+            if (ch > 32 && ch < 127 && ch != '"' && ch != '?') {
+                continue;
             }
-            // DO NOT encode '%'. If you do, then for starters,
-            // we'll double-encode anything that's pre-encoded.
-            // And, what's worse, there becomes no way to use
-            // characters that must be encoded if you
-            // don't want them to be interpreted, like '?' or '&'.
-            // else if('%' == ch)
-            // {
-            // writeURIDoubleHex(out, ch);
-            // }
-            else if (ch == '"') {
-                out.write("%22");
+
+            if (i > runStart) {
+                out.write(textBuff, runStart, i - runStart);
             }
-            // Everything in the query parameters will be decoded
-            // as if it were in the request's character set. So use
-            // the real encoding for those!
-            else if (ch == '?') {
+
+            if (ch == '?') {
                 out.write('?');
                 encodeURIString(out, textBuff, queryEncoding, i + 1, end);
                 return;
-            } else {
-                out.write(ch);
             }
+            if (ch == '"') {
+                out.write("%22");
+                runStart = i + 1;
+                continue;
+            }
+            if (buf == null) {
+                buf = new MyByteArrayOutputStream(MAX_BYTES_PER_CHAR);
+                writer = new OutputStreamWriter(buf, "UTF-8");
+                charArray = new char[1];
+            }
+            encodeCharPercentBytes(out, ch, buf, writer, charArray);
+            runStart = i + 1;
+        }
+
+        if (runStart < end) {
+            out.write(textBuff, runStart, end - runStart);
         }
     }
 
-    static public void writeTextForXML(Writer out, String text, char[] outbuf) throws IOException {
-        char[] textBuffer = new char[128];
+    static public void writeTextForXML(Writer out, String text) throws IOException {
         int len = text.length();
-        if (textBuffer.length < len) {
-            textBuffer = new char[len * 2];
-        }
-        HtmlUtils.writeText(out, true, true, outbuf, text, textBuffer, true);
+        char[] textBuffer = new char[Math.max(128, len)];
+        HtmlUtils.writeText(out, true, true, text, textBuffer, true);
     }
 
     static public void writeUnescapedTextForXML(Writer out, String text) throws IOException {
@@ -603,149 +458,108 @@ public class HtmlUtils {
         }
     }
 
-    // Encode a String into URI-encoded form. This code will
-    // appear rather (ahem) similar to java.net.URLEncoder
-    // This is duplicated below accepting a char[] for the content
-    // to write. Any changes here, should be made there as well.
-    static private void encodeURIString(Writer out, String text, String encoding, int start) throws IOException {
-        MyByteArrayOutputStream buf = null;
-        OutputStreamWriter writer = null;
-        char[] charArray = null;
-        boolean fragment = false;
-
-        int length = text.length();
-        for (int i = start; i < length; i++) {
-            char ch = text.charAt(i);
-            if (DONT_ENCODE_SET.get(ch) || (fragment && ch == '?')) {
-                if (ch == '#') {
-                    fragment = true; // RFC3986 section 3.5
-                }
-
-                if (ch == '&') {
-                    if (i + 1 < length && isAmpEscaped(text, i + 1)) {
-                        out.write(ch);
-                        continue;
-                    }
-                    out.write(AMP_CHARS);
-                } else {
-                    out.write(ch);
-                }
-            } else {
-                if (buf == null) {
-                    buf = new MyByteArrayOutputStream(MAX_BYTES_PER_CHAR);
-                    if (encoding != null) {
-                        writer = new OutputStreamWriter(buf, encoding);
-                    } else {
-                        writer = new OutputStreamWriter(buf, RIConstants.CHAR_ENCODING);
-                    }
-                    charArray = new char[1];
-                }
-
-                // convert to external encoding before hex conversion
-                try {
-                    // An inspection of OutputStreamWriter reveals
-                    // that write(char) always allocates a one element
-                    // character array. We can reuse our own.
-                    charArray[0] = ch;
-                    writer.write(charArray, 0, 1);
-                    writer.flush();
-                } catch (IOException e) {
-                    buf.reset();
-                    continue;
-                }
-
-                byte[] ba = buf.getBuf();
-                for (int j = 0, size = buf.size(); j < size; j++) {
-                    writeURIDoubleHex(out, ba[j] + 256);
-                }
-
-                buf.reset();
-            }
-        }
-    }
-
-    // Encode a String into URI-encoded form. This code will
-    // appear rather (ahem) similar to java.net.URLEncoder
-    // This is duplicated above accepting a String for the content
-    // to write. Any changes here, should be made there as well.
+    /**
+     * Encodes a char-array slice into URI-encoded form (rather similar to {@link java.net.URLEncoder}).
+     *
+     * <p>Range-emit: walks the input tracking the start of the current safe run, and bulk-writes
+     * safe runs to the underlying Writer. A character is "safe" if it's in {@link #DONT_ENCODE_SET}
+     * AND not {@code &} (needs lookahead for {@code &amp;} non-double-escape) AND not {@code #}
+     * (sets fragment mode). Within fragment mode (after the first {@code #}, per RFC 3986 section
+     * 3.5) the {@code ?} character is also safe.
+     *
+     * <p>Characters not in the safe run are dispatched as follows:
+     * <ul>
+     *   <li>{@code &} -- if immediately followed by {@code amp;}, write the bare {@code &}
+     *       (don't double-escape); otherwise emit {@code &amp;}.</li>
+     *   <li>{@code #} -- write {@code #} and enter fragment mode.</li>
+     *   <li>Anything else -- percent-encode through the requested external encoding.</li>
+     * </ul>
+     *
+     * <p>The {@link MyByteArrayOutputStream}/{@link OutputStreamWriter} pair used for non-ASCII
+     * percent-encoding is lazily allocated on first need and shared across all encode calls in
+     * a single invocation -- matching the original allocation amortization.
+     */
     static private void encodeURIString(Writer out, char[] textBuff, String encoding, int start, int end) throws IOException {
+        int runStart = start;
+        boolean fragment = false;
         MyByteArrayOutputStream buf = null;
         OutputStreamWriter writer = null;
         char[] charArray = null;
-        boolean fragment = false;
 
         for (int i = start; i < end; i++) {
             char ch = textBuff[i];
-            if (DONT_ENCODE_SET.get(ch) || (fragment && ch == '?')) {
-                if (ch == '#') {
-                    fragment = true; // RFC3986 section 3.5
-                }
 
-                if (ch == '&') {
-                    if (i + 1 < end && isAmpEscaped(textBuff, i + 1)) {
-                        out.write(ch);
-                        continue;
-                    }
-                    out.write(AMP_CHARS);
+            if (DONT_ENCODE_SET.get(ch) && ch != '&' && ch != '#') {
+                continue;
+            }
+            if (fragment && ch == '?') {
+                continue;
+            }
+
+            if (i > runStart) {
+                out.write(textBuff, runStart, i - runStart);
+            }
+            runStart = i + 1;
+
+            if (ch == '#') {
+                out.write('#');
+                fragment = true; // RFC 3986 section 3.5
+                continue;
+            }
+            if (ch == '&') {
+                if (i + 1 < end && isAmpEscaped(textBuff, i + 1)) {
+                    out.write('&');
                 } else {
-                    out.write(ch);
+                    out.write(AMP_CHARS);
                 }
-            } else {
-                if (buf == null) {
-                    buf = new MyByteArrayOutputStream(MAX_BYTES_PER_CHAR);
-                    if (encoding != null) {
-                        writer = new OutputStreamWriter(buf, encoding);
-                    } else {
-                        writer = new OutputStreamWriter(buf, RIConstants.CHAR_ENCODING);
-                    }
-                    charArray = new char[1];
-                }
-
-                // convert to external encoding before hex conversion
-                try {
-                    // An inspection of OutputStreamWriter reveals
-                    // that write(char) always allocates a one element
-                    // character array. We can reuse our own.
-                    charArray[0] = ch;
-                    writer.write(charArray, 0, 1);
-                    writer.flush();
-                } catch (IOException e) {
-                    buf.reset();
-                    continue;
-                }
-
-                byte[] ba = buf.getBuf();
-                for (int j = 0, size = buf.size(); j < size; j++) {
-                    writeURIDoubleHex(out, ba[j] + 256);
-                }
-
-                buf.reset();
-            }
-        }
-    }
-
-    // NOTE: Any changes made to this method should be made
-    // in the associated method that accepts a char[] instead
-    // of String
-    static private boolean isAmpEscaped(String text, int idx) {
-        for (int i = 1, ix = idx; i < AMP_CHARS.length; i++, ix++) {
-            if (text.charAt(ix) == AMP_CHARS[i]) {
                 continue;
             }
-            return false;
+
+            if (buf == null) {
+                buf = new MyByteArrayOutputStream(MAX_BYTES_PER_CHAR);
+                writer = new OutputStreamWriter(buf, encoding != null ? encoding : RIConstants.CHAR_ENCODING);
+                charArray = new char[1];
+            }
+            encodeCharPercentBytes(out, ch, buf, writer, charArray);
         }
-        return true;
+
+        if (runStart < end) {
+            out.write(textBuff, runStart, end - runStart);
+        }
     }
 
-    // NOTE: Any changes made to this method should be made
-    // in the associated method that accepts a String instead
-    // of char[]
+    /**
+     * Percent-encode a single char by routing it through {@code writer} (which wraps {@code buf}
+     * with the desired charset) and emitting {@code %XX} for each resulting byte. The shared
+     * {@code buf}/{@code writer}/{@code charArray} are reused across calls in the same enclosing
+     * encode loop.
+     */
+    static private void encodeCharPercentBytes(Writer out, char ch, MyByteArrayOutputStream buf,
+            OutputStreamWriter writer, char[] charArray) throws IOException {
+        try {
+            // OutputStreamWriter#write(char) always allocates a one-element char array; we reuse our own.
+            charArray[0] = ch;
+            writer.write(charArray, 0, 1);
+            writer.flush();
+        } catch (IOException e) {
+            buf.reset();
+            return;
+        }
+        byte[] ba = buf.getBuf();
+        for (int j = 0, size = buf.size(); j < size; j++) {
+            writeURIDoubleHex(out, ba[j] + 256);
+        }
+        buf.reset();
+    }
+
     static private boolean isAmpEscaped(char[] text, int idx) {
-        for (int i = 1, ix = idx; i < AMP_CHARS.length; i++, ix++) {
-            if (text[ix] == AMP_CHARS[i]) {
-                continue;
-            }
+        if (idx + AMP_CHARS.length - 1 > text.length) {
             return false;
+        }
+        for (int i = 1, ix = idx; i < AMP_CHARS.length; i++, ix++) {
+            if (text[ix] != AMP_CHARS[i]) {
+                return false;
+            }
         }
         return true;
     }
@@ -768,7 +582,6 @@ public class HtmlUtils {
     static private final char[] QUOT_CHARS = "&quot;".toCharArray();
     static private final char[] GT_CHARS = "&gt;".toCharArray();
     static private final char[] LT_CHARS = "&lt;".toCharArray();
-    static private final char[] EURO_CHARS = "&euro;".toCharArray();
     static private final char[] DEC_REF_START = "&#".toCharArray();
     static private final int MAX_BYTES_PER_CHAR = 10;
     static private final BitSet DONT_ENCODE_SET = new BitSet(256);

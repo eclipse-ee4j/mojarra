@@ -28,6 +28,7 @@ import static org.glassfish.mojarra.util.Util.isNestedInIterator;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -42,6 +43,7 @@ import jakarta.faces.application.FacesMessage;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.component.ContextCallback;
 import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.NamingContainer;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIForm;
 import jakarta.faces.component.UINamingContainer;
@@ -367,11 +369,11 @@ public class UIRepeat extends UINamingContainer {
         this.value = value;
     }
 
-    private transient StringBuffer buffer;
+    private transient StringBuilder buffer;
 
-    private StringBuffer getBuffer() {
+    private StringBuilder getBuffer() {
         if (buffer == null) {
-            buffer = new StringBuffer();
+            buffer = new StringBuilder();
         }
         buffer.setLength(0);
         return buffer;
@@ -421,103 +423,146 @@ public class UIRepeat extends UINamingContainer {
         }
     }
 
-    private Map<String, SavedState> childState;
+    // Per-row transient state of the stateful descendants, keyed by this repeat's own row-scoped clientId. The value
+    // array is positionally aligned to iterationStatefulList (the EditableValueHolder descendants in deterministic
+    // tree order), so save and restore index by position instead of recomputing a clientId and hashing it per child
+    // per row. The array length is guarded on restore so a tree-shape change between requests degrades to NULL_STATE
+    // rather than misaligning. The key must be the clientId rather than the bare index: a nested repeat is one
+    // component instance reused across the enclosing iteration's rows, so an index alone identifies the same key
+    // under every enclosing row and the rows would overwrite each other's state. This repeat's own clientId already
+    // carries the enclosing rows' indices, and is computed once per index change rather than once per child per row.
+    private Map<String, SavedState[]> childState;
 
-    private Map<String, SavedState> getChildState() {
+    /**
+     * Per-iteration cache of the descendants the per-row save/restore walks act on, collected by
+     * {@link #ensureIterationLists()} on first need and cleared when iteration ends
+     * ({@link #setIndex} to {@code -1}) so the next iteration re-evaluates the tree shape.
+     * {@code iterationResetList} is every descendant -- all need their cached clientId reset each
+     * row; {@code iterationStatefulList} is the {@link EditableValueHolder} subset carrying per-row
+     * state. {@code null} means not yet collected. Iterating these flat lists replaces the previous
+     * per-row recursive tree walk; a read-only repeat has an empty stateful list, so save is a no-op.
+     */
+    private transient List<UIComponent> iterationResetList;
+    private transient List<UIComponent> iterationStatefulList;
+
+    private Map<String, SavedState[]> getChildState() {
         if (childState == null) {
             childState = new HashMap<>();
         }
         return childState;
     }
 
+    /**
+     * The key this repeat's per-row child state is stored under: its own clientId, which carries the row indices of
+     * any enclosing iterating components, plus its current index. Nesting therefore yields distinct keys where the
+     * bare index would collide.
+     */
+    private String getRowStateKey(FacesContext ctx) {
+        // Deliberately super.getClientId(): this repeat's own getClientId() appends the index and
+        // rebuilds the id through a buffer on every call. The inherited one is cached in the clientId
+        // field and invalidated by the iterationResetList walk whenever an enclosing row changes, so
+        // it yields the enclosing rows' indices without rebuilding them per row.
+        return super.getClientId(ctx) + NamingContainer.SEPARATOR_CHAR + index;
+    }
+
     private void clearChildState() {
         childState = null;
     }
 
-    private void saveChildState(FacesContext ctx) {
+    /**
+     * Collects, once per iteration, the descendants the per-row save/restore walks act on, so those
+     * walks become flat-list iterations instead of recursive tree traversals re-done every row.
+     * {@code iterationResetList} is every descendant (each needs its cached clientId reset per row);
+     * {@code iterationStatefulList} is the {@link EditableValueHolder} subset. Cleared on
+     * {@code setIndex(-1)} so the next iteration re-evaluates the tree shape.
+     */
+    private void ensureIterationLists() {
+        if (iterationResetList != null) {
+            return;
+        }
+        List<UIComponent> reset = new ArrayList<>();
+        List<UIComponent> stateful = new ArrayList<>();
         if (getChildCount() > 0) {
+            for (UIComponent kid : getChildren()) {
+                collectIterationState(kid, reset, stateful);
+            }
+        }
+        iterationResetList = reset;
+        iterationStatefulList = stateful;
+    }
 
-            for (UIComponent uiComponent : getChildren()) {
-                this.saveChildState(ctx, uiComponent);
+    private void collectIterationState(UIComponent component, List<UIComponent> reset, List<UIComponent> stateful) {
+        reset.add(component);
+        if (component instanceof EditableValueHolder || component instanceof UIForm) {
+            // UIForm carries per-row state too: with one form per row only the submitted one may
+            // validate and update its model, so its submitted flag must be restored per row rather
+            // than leaking whichever row was decoded last. Mirrors UIData#collectIterationState.
+            stateful.add(component);
+        }
+        Iterator<UIComponent> itr = component.getFacetsAndChildren();
+        while (itr.hasNext()) {
+            collectIterationState(itr.next(), reset, stateful);
+        }
+    }
+
+    private void saveChildState(FacesContext ctx) {
+        ensureIterationLists();
+        int count = iterationStatefulList.size();
+        if (count == 0) {
+            return;
+        }
+        String rowStateKey = getRowStateKey(ctx);
+        SavedState[] rowState = getChildState().get(rowStateKey);
+        if (rowState == null || rowState.length != count) {
+            rowState = new SavedState[count];
+            getChildState().put(rowStateKey, rowState);
+        }
+        for (int i = 0; i < count; i++) {
+            UIComponent c = iterationStatefulList.get(i);
+            if (!c.isTransient()) {
+                SavedState ss = rowState[i];
+                if (ss == null) {
+                    ss = new SavedState();
+                    rowState[i] = ss;
+                }
+                if (c instanceof UIForm) {
+                    ss.populate((UIForm) c);
+                } else {
+                    ss.populate((EditableValueHolder) c);
+                }
             }
         }
     }
 
     private void removeChildState(FacesContext ctx) {
-        if (getChildCount() > 0) {
-
-            for (UIComponent uiComponent : getChildren()) {
-                this.removeChildState(ctx, uiComponent);
-            }
-
-            if (childState != null) {
-                childState.remove(this.getClientId(ctx));
-            }
-        }
-    }
-
-    private void removeChildState(FacesContext faces, UIComponent c) {
-        String id = c.getId();
-        c.setId(id);
-
-        Iterator<UIComponent> itr = c.getFacetsAndChildren();
-        while (itr.hasNext()) {
-            removeChildState(faces, itr.next());
-        }
         if (childState != null) {
-            childState.remove(c.getClientId(faces));
-        }
-    }
-
-    private void saveChildState(FacesContext faces, UIComponent c) {
-
-        if (c instanceof EditableValueHolder && !c.isTransient()) {
-            String clientId = c.getClientId(faces);
-            SavedState ss = getChildState().get(clientId);
-            if (ss == null) {
-                ss = new SavedState();
-                getChildState().put(clientId, ss);
-            }
-            ss.populate((EditableValueHolder) c);
-        }
-
-        // continue hack
-        Iterator<UIComponent> itr = c.getFacetsAndChildren();
-        while (itr.hasNext()) {
-            saveChildState(faces, itr.next());
+            childState.remove(getRowStateKey(ctx));
         }
     }
 
     private void restoreChildState(FacesContext ctx) {
-        if (getChildCount() > 0) {
-
-            for (UIComponent uiComponent : getChildren()) {
-                this.restoreChildState(ctx, uiComponent);
-            }
+        // The clientId reset must run for every descendant (not just stateful ones): each row needs a
+        // row-specific clientId (e.g. repeat:N:foo), else rows render duplicate id="...". The descendant
+        // set is constant within an iteration, so it is collected once and walked here as a flat list.
+        ensureIterationLists();
+        for (UIComponent component : iterationResetList) {
+            component.setId(component.getId()); // forces the cached clientId to be recomputed
         }
-    }
-
-    private void restoreChildState(FacesContext faces, UIComponent c) {
-        // reset id
-        String id = c.getId();
-        c.setId(id);
-
-        // hack
-        if (c instanceof EditableValueHolder) {
-            EditableValueHolder evh = (EditableValueHolder) c;
-            String clientId = c.getClientId(faces);
-            SavedState ss = getChildState().get(clientId);
-            if (ss != null) {
-                ss.apply(evh);
+        int count = iterationStatefulList.size();
+        if (count == 0) {
+            return;
+        }
+        // Positional restore: index into this row's saved-state array rather than rebuilding/hashing a clientId per
+        // child. A null array (row never saved) or short array (tree shape changed) falls back to NULL_STATE per slot.
+        SavedState[] rowState = childState == null ? null : childState.get(getRowStateKey(ctx));
+        for (int i = 0; i < count; i++) {
+            UIComponent c = iterationStatefulList.get(i);
+            SavedState ss = rowState != null && i < rowState.length ? rowState[i] : null;
+            if (c instanceof UIForm) {
+                (ss != null ? ss : NULL_STATE).apply((UIForm) c);
             } else {
-                NULL_STATE.apply(evh);
+                (ss != null ? ss : NULL_STATE).apply((EditableValueHolder) c);
             }
-        }
-
-        // continue hack
-        Iterator<UIComponent> itr = c.getFacetsAndChildren();
-        while (itr.hasNext()) {
-            restoreChildState(faces, itr.next());
         }
     }
 
@@ -604,6 +649,12 @@ public class UIRepeat extends UINamingContainer {
 
     private void setRowIndexWithoutRowStatePreserved(FacesContext ctx, int index) {
 
+        // No-op short-circuit when the index is already current. Common when callers
+        // restore the iterator to -1 at end-of-iteration on a repeat that was already at -1.
+        if (this.index == index) {
+            return;
+        }
+
         DataModel<?> localModel = getDataModel();
 
         // save child state
@@ -624,6 +675,14 @@ public class UIRepeat extends UINamingContainer {
         // restore child state
         if (this.index != -1 && localModel.isRowAvailable()) {
             this.restoreChildState(ctx);
+        }
+
+        // Iteration ended: clear the per-iteration stateful-descendants cache so the next
+        // iteration re-evaluates the tree shape (children can change between iterations).
+        // Cleared after restoreChildState() so the in-iteration walks still hit the cache.
+        if (this.index == -1) {
+            iterationResetList = null;
+            iterationStatefulList = null;
         }
     }
 
@@ -984,6 +1043,16 @@ public class UIRepeat extends UINamingContainer {
             localValueSet = evh.isLocalValueSet();
         }
 
+        private boolean submitted;
+
+        public void populate(UIForm form) {
+            submitted = form.isSubmitted();
+        }
+
+        public void apply(UIForm form) {
+            form.setSubmitted(submitted);
+        }
+
         public void apply(EditableValueHolder evh) {
             evh.setValue(value);
             evh.setValid(valid);
@@ -1137,7 +1206,7 @@ public class UIRepeat extends UINamingContainer {
         }
         Object[] state = (Object[]) object;
         super.restoreState(faces, state[0]);
-        childState = (Map<String, SavedState>) state[1];
+        childState = (Map<String, SavedState[]>) state[1];
         begin = (Integer) state[2];
         end = (Integer) state[3];
         step = (Integer) state[4];

@@ -22,6 +22,9 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlCommandLink;
+import jakarta.faces.component.html.HtmlOutcomeTargetLink;
+import jakarta.faces.component.html.HtmlOutputLink;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
@@ -41,6 +44,20 @@ public abstract class LinkRenderer extends HtmlBasicRenderer {
 
     protected abstract void renderAsActive(FacesContext context, UIComponent component) throws IOException;
 
+    @Override
+    protected boolean isDisabledOrReadonly(UIComponent component) {
+    	if (component instanceof HtmlOutputLink link) {
+    		return link.isDisabled();
+    	}
+    	if (component instanceof HtmlCommandLink link) {
+    		return link.isDisabled();
+    	}
+    	if (component instanceof HtmlOutcomeTargetLink link) {
+    		return link.isDisabled();
+    	}
+    	return super.isDisabledOrReadonly(component);
+    }
+    
     protected void renderAsDisabled(FacesContext context, UIComponent component) throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
@@ -54,19 +71,9 @@ public abstract class LinkRenderer extends HtmlBasicRenderer {
 
         RenderKitUtils.renderPassThruAttributes(context, writer, component, ATTRIBUTES);
 
-        writeCommonLinkAttributes(writer, component);
+        writeStyleClassAttributeIfNecessary(writer, component);
         writeValue(component, writer);
         writer.flush();
-
-    }
-
-    protected void writeCommonLinkAttributes(ResponseWriter writer, UIComponent component) throws IOException {
-
-        // handle styleClass
-        String styleClass = (String) component.getAttributes().get("styleClass");
-        if (styleClass != null) {
-            writer.writeAttribute("class", styleClass, "styleClass");
-        }
 
     }
 

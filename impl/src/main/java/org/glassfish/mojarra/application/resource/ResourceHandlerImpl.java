@@ -38,13 +38,10 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.security.SecureRandom;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import jakarta.faces.application.Resource;
@@ -73,7 +70,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
     private static final String CURRENT_NONCE = ResourceHandlerImpl.class.getName() + ".currentNonce";
     
     ResourceManager manager;
-    List<Pattern> excludePatterns;
+    private String[] excludedExtensions;
     private long creationTime;
     private long maxAge;
     private boolean cspEnabled;
@@ -264,7 +261,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
 
         ExternalContext extContext = context.getExternalContext();
 
-        if (isExcluded(resourceId)) {
+        if (isExcluded(excludedExtensions, resourceId)) {
             extContext.setResponseStatus(SC_NOT_FOUND);
             return;
         }
@@ -560,13 +557,14 @@ public class ResourceHandlerImpl extends ResourceHandler {
     }
 
     /**
+     * @param excludedExtensions the excluded file extensions as returned by {@link #parseExcludedExtensions(String[])}
      * @param resourceId the normalized request path as returned by
      * {@link #normalizeResourceRequest(jakarta.faces.context.FacesContext)}
      * @return <code>true</code> if the request matces an excluded resource, otherwise <code>false</code>
      */
-    private boolean isExcluded(String resourceId) {
-        for (Pattern pattern : excludePatterns) {
-            if (pattern.matcher(resourceId).matches()) {
+    static boolean isExcluded(String[] excludedExtensions, String resourceId) {
+        for (String excludedExtension : excludedExtensions) {
+            if (resourceId.endsWith(excludedExtension)) {
                 return true;
             }
         }
@@ -576,20 +574,18 @@ public class ResourceHandlerImpl extends ResourceHandler {
 
     /**
      * Initialize the exclusions for this application. If no explicit exclusions are configured, the defaults of
-     * <ul>
-     * <li>.class</li>
-     * <li>.properties</li>
-     * <li>.xhtml</li>
-     * <ul>
-     * will be used.
+     * {@link ResourceHandler#RESOURCE_EXCLUDES_DEFAULT_VALUE} will be used.
      */
     private void initExclusions(FacesContext context) {
-        String[] patterns = FacesContextParam.RESOURCE_EXCLUDES.getValue(context);
+        excludedExtensions = parseExcludedExtensions(FacesContextParam.RESOURCE_EXCLUDES.getValue(context));
+    }
 
-        excludePatterns = new ArrayList<>(patterns.length);
-        for (String pattern : patterns) {
-            excludePatterns.add(Pattern.compile(".*\\" + pattern));
-        }
+    /**
+     * @param extensions the excluded file extensions, including the leading '.' character
+     * @return the excluded file extensions, without empty entries, as an empty entry would exclude every resource
+     */
+    static String[] parseExcludedExtensions(String[] extensions) {
+        return Stream.of(extensions).filter(extension -> !extension.isEmpty()).toArray(String[]::new);
     }
 
     private void initMaxAge() {

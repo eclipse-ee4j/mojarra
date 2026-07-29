@@ -47,6 +47,7 @@ public final class IfHandler extends TagHandlerImpl {
 
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, ELException {
+        markDynamicTransientBuild(ctx);
         boolean b = test.getBoolean(ctx);
         if (var != null) {
             ctx.setAttribute(var.getValue(ctx), b);

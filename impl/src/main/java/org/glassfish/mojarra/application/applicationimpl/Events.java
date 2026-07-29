@@ -28,10 +28,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
+import jakarta.enterprise.inject.spi.el.ELAwareBeanManager;
 import jakarta.faces.annotation.View;
 import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
@@ -45,6 +48,7 @@ import org.glassfish.mojarra.application.applicationimpl.events.ComponentSystemE
 import org.glassfish.mojarra.application.applicationimpl.events.EventInfo;
 import org.glassfish.mojarra.application.applicationimpl.events.ReentrantLisneterInvocationGuard;
 import org.glassfish.mojarra.application.applicationimpl.events.SystemEventHelper;
+import org.glassfish.mojarra.cdi.CdiExtension;
 import org.glassfish.mojarra.util.FacesLogger;
 
 public class Events {
@@ -58,6 +62,23 @@ public class Events {
 
     private final SystemEventHelper systemEventHelper = new SystemEventHelper();
     private final ComponentSystemEventHelper compSysEventHelper = new ComponentSystemEventHelper();
+
+    // Application-level (global) listener subscriptions, by event class. Lets publishEvent skip the
+    // global listener lookup for events nobody subscribed to globally (the common case for the
+    // per-component Pre/PostValidateEvent, PreRenderComponentEvent, etc.). Over-approximating: classes
+    // are never removed on unsubscribe, so a stale entry only costs an empty lookup, never a missed event.
+    private final Set<Class<? extends SystemEvent>> globallySubscribedEventClasses = ConcurrentHashMap.newKeySet();
+
+    // Per-event-class cache of whether any CDI observer observes a (super)type of the event. Lets
+    // fireCdiSystemEvent decide once per event class -- rather than per publish -- whether to dispatch the
+    // in-scope (jakartaee/faces#1501) application/view events into CDI at all.
+    private final Map<Class<? extends SystemEvent>, Boolean> cdiObserverPresenceCache = new ConcurrentHashMap<>();
+
+    // The system-event types observed by some CDI observer, collected by CdiExtension during CDI bootstrap and
+    // immutable thereafter. Captured once and reused so the shutdown path does not call
+    // BeanManager.getExtension(CdiExtension.class), which throws IllegalArgumentException (WELD-001325) once the
+    // container has deregistered the extension during contextDestroyed.
+    private volatile Set<Class<?>> cdiObservedSystemEventTypes;
 
     /*
      * This class encapsulates the behavior to prevent infinite loops when the publishing of one event leads to the queueing
@@ -102,11 +123,15 @@ public class Events {
             // Look for and invoke any 'view' listeners
             event = invokeViewListenersFor(context, systemEventClass, event, source);
 
-            // Look for and invoke any listeners stored on the application using source type.
-            event = invokeListenersFor(systemEventClass, event, source, sourceBaseType, true);
+            // Look for and invoke any application-level listeners. Skip the lookup entirely when no
+            // global listener was ever registered for this event class (the common case).
+            if (globallySubscribedEventClasses.contains(systemEventClass)) {
+                // Look for and invoke any listeners stored on the application using source type.
+                event = invokeListenersFor(systemEventClass, event, source, sourceBaseType, true);
 
-            // Look for and invoke any listeners not specific to the source class
-            invokeListenersFor(systemEventClass, event, source, null, false);
+                // Look for and invoke any listeners not specific to the source class
+                invokeListenersFor(systemEventClass, event, source, null, false);
+            }
 
             // Fire system event as CDI event
             fireCdiSystemEvent(context, systemEventClass, event, source);
@@ -131,6 +156,7 @@ public class Events {
         notNull(LISTENER, listener);
 
         getListeners(systemEventClass, sourceClass).add(listener);
+        globallySubscribedEventClasses.add(systemEventClass);
     }
 
     /*
@@ -175,7 +201,7 @@ public class Events {
         if (source instanceof SystemEventListenerHolder) {
 
             List<SystemEventListener> listeners = ((SystemEventListenerHolder) source).getListenersForEventClass(systemEventClass);
-            if (null == listeners) {
+            if (listeners == null || listeners.isEmpty()) {
                 return null;
             }
             EventInfo eventInfo = compSysEventHelper.getEventInfo(systemEventClass, source.getClass());
@@ -186,30 +212,28 @@ public class Events {
     }
 
     private SystemEvent invokeViewListenersFor(FacesContext ctx, Class<? extends SystemEvent> systemEventClass, SystemEvent event, Object source) {
-        SystemEvent result = event;
+        UIViewRoot root = ctx.getViewRoot();
+        if (root == null) {
+            return event;
+        }
+
+        // Resolve the view listeners before touching the reentrancy guard: the common case has none,
+        // and the guard's bookkeeping (a per-request map) is only needed while actually invoking them.
+        List<SystemEventListener> listeners = root.getViewListenersForEventClass(systemEventClass);
+        if (null == listeners) {
+            return null;
+        }
 
         if (listenerInvocationGuard.isGuardSet(ctx, systemEventClass)) {
-            return result;
+            return event;
         }
         listenerInvocationGuard.setGuard(ctx, systemEventClass);
-
-        UIViewRoot root = ctx.getViewRoot();
         try {
-            if (root != null) {
-                List<SystemEventListener> listeners = root.getViewListenersForEventClass(systemEventClass);
-                if (null == listeners) {
-                    return null;
-                }
-
-                EventInfo rootEventInfo = systemEventHelper.getEventInfo(systemEventClass, UIViewRoot.class);
-                // process view listeners
-                result = processListenersAccountingForAdds(listeners, event, source, rootEventInfo);
-            }
+            EventInfo rootEventInfo = systemEventHelper.getEventInfo(systemEventClass, UIViewRoot.class);
+            return processListenersAccountingForAdds(listeners, event, source, rootEventInfo);
         } finally {
             listenerInvocationGuard.clearGuard(ctx, systemEventClass);
         }
-        return result;
-
     }
 
     /**
@@ -256,51 +280,83 @@ public class Events {
 
     private SystemEvent processListenersAccountingForAdds(List<SystemEventListener> listeners, SystemEvent event, Object source, EventInfo eventInfo) {
 
-        if (listeners != null && !listeners.isEmpty()) {
+        if (listeners == null || listeners.isEmpty()) {
+            return event;
+        }
 
-            // copy listeners
-            // go thru copy completely
-            // compare copy to original
-            // if original differs from copy, make a new copy.
-            // The new copy consists of the original list - processed
-
-            SystemEventListener[] listenersCopy = new SystemEventListener[listeners.size()];
-            int i = 0;
-            for (i = 0; i < listenersCopy.length; i++) {
-                listenersCopy[i] = listeners.get(i);
+        // Fast path: invoke the listeners by walking the live list directly, re-reading size() each step so a
+        // listener that subscribes another listener while being invoked (an append -- the only change the
+        // listener list undergoes during dispatch) is still invoked, in order, exactly once. This avoids the
+        // per-event SystemEventListener[] copy and HashMap that the snapshot path allocates on EVERY published
+        // system event -- the hot path for PostAddToViewEvent during bulk dynamic add/remove. A non-append
+        // change (the listener list shrinking mid-invoke, which Faces' view-event dispatch does not do) falls
+        // back to the snapshot path.
+        int size = listeners.size();
+        for (int i = 0; i < listeners.size(); i++) {
+            if (listeners.size() < size) {
+                return processListenersOnSnapshot(listeners, event, source, eventInfo);
             }
-
-            Map<SystemEventListener, Boolean> processedListeners = new HashMap<>(listeners.size());
-            boolean processedSomeEvents = false, originalDiffersFromCopy = false;
-
-            do {
-                i = 0;
-                originalDiffersFromCopy = false;
-                if (0 < listenersCopy.length) {
-                    for (i = 0; i < listenersCopy.length; i++) {
-                        SystemEventListener curListener = listenersCopy[i];
-                        if (curListener != null && curListener.isListenerForSource(source)) {
-                            if (event == null) {
-                                event = eventInfo.createSystemEvent(source);
-                            }
-                            assert event != null;
-                            if (!processedListeners.containsKey(curListener) && event.isAppropriateListener(curListener)) {
-                                processedSomeEvents = true;
-                                event.processListener(curListener);
-                                processedListeners.put(curListener, Boolean.TRUE);
-                            }
-                        }
-                    }
-                    if (originalDiffersFromCopy(listeners, listenersCopy)) {
-                        originalDiffersFromCopy = true;
-                        listenersCopy = copyListWithExclusions(listeners, processedListeners);
-                    }
+            size = listeners.size();
+            SystemEventListener curListener = listeners.get(i);
+            if (curListener != null && curListener.isListenerForSource(source)) {
+                if (event == null) {
+                    event = eventInfo.createSystemEvent(source);
                 }
-            } while (originalDiffersFromCopy && processedSomeEvents);
+                if (event.isAppropriateListener(curListener)) {
+                    event.processListener(curListener);
+                }
+            }
         }
 
         return event;
+    }
 
+    // Snapshot fallback preserving the original copy + processed-set accounting (tolerates listeners being added
+    // to or removed from the list while they are being invoked). Reached only if the live listener list shrinks
+    // mid-dispatch, which Faces' view-event dispatch does not produce.
+    private SystemEvent processListenersOnSnapshot(List<SystemEventListener> listeners, SystemEvent event, Object source, EventInfo eventInfo) {
+
+        // copy listeners
+        // go thru copy completely
+        // compare copy to original
+        // if original differs from copy, make a new copy.
+        // The new copy consists of the original list - processed
+
+        SystemEventListener[] listenersCopy = new SystemEventListener[listeners.size()];
+        int i = 0;
+        for (i = 0; i < listenersCopy.length; i++) {
+            listenersCopy[i] = listeners.get(i);
+        }
+
+        Map<SystemEventListener, Boolean> processedListeners = new HashMap<>(listeners.size());
+        boolean processedSomeEvents = false, originalDiffersFromCopy = false;
+
+        do {
+            i = 0;
+            originalDiffersFromCopy = false;
+            if (0 < listenersCopy.length) {
+                for (i = 0; i < listenersCopy.length; i++) {
+                    SystemEventListener curListener = listenersCopy[i];
+                    if (curListener != null && curListener.isListenerForSource(source)) {
+                        if (event == null) {
+                            event = eventInfo.createSystemEvent(source);
+                        }
+                        assert event != null;
+                        if (!processedListeners.containsKey(curListener) && event.isAppropriateListener(curListener)) {
+                            processedSomeEvents = true;
+                            event.processListener(curListener);
+                            processedListeners.put(curListener, Boolean.TRUE);
+                        }
+                    }
+                }
+                if (originalDiffersFromCopy(listeners, listenersCopy)) {
+                    originalDiffersFromCopy = true;
+                    listenersCopy = copyListWithExclusions(listeners, processedListeners);
+                }
+            }
+        } while (originalDiffersFromCopy && processedSomeEvents);
+
+        return event;
     }
 
     private boolean originalDiffersFromCopy(Collection<SystemEventListener> original, SystemEventListener[] copy) {
@@ -337,16 +393,34 @@ public class Events {
     }
 
     private void fireCdiSystemEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass, SystemEvent event, Object source) {
+        // Per issue jakartaee/faces#1501 the CDI dispatch of Faces system events is scoped to application-
+        // and view-level events (ExceptionQueuedEvent, Pre/PostConstruct/PreDestroy application+viewmap
+        // events, PreRenderViewEvent) -- all sourced on the application or the UIViewRoot. The events Faces
+        // publishes per component per phase (Pre/PostValidateEvent, PostAddToViewEvent, PreRenderComponentEvent,
+        // PreRemoveFromViewEvent, ...) are out of that scope, so skip them rather than pay a CDI dispatch per
+        // component per phase.
+        if (source instanceof UIComponent && !(source instanceof UIViewRoot)) {
+            return;
+        }
+
+        ELAwareBeanManager beanManager = getCdiBeanManager(context);
+
+        // Of the in-scope events, skip the dispatch -- and the event allocation below -- when no observer can
+        // receive this event type (the common case where the application defines no matching observer).
+        if (!hasCdiObserverFor(beanManager, systemEventClass)) {
+            return;
+        }
+
         if (event == null) {
-            var eventInfo = (source instanceof SystemEventListenerHolder) 
+            var eventInfo = (source instanceof SystemEventListenerHolder)
                     ? compSysEventHelper.getEventInfo(systemEventClass, source.getClass())
                     : systemEventHelper.getEventInfo(systemEventClass, source.getClass());
             event = eventInfo.createSystemEvent(source);
         }
 
-        var cdi = getCdiBeanManager(context).getEvent();
+        var cdi = beanManager.getEvent();
         cdi.fire(event);
-        
+
         if (source instanceof UIViewRoot root) {
             var viewId = root.getViewId();
 
@@ -354,6 +428,48 @@ public class Events {
                 cdi.select(View.Literal.of(viewId)).fire(event);
             }
         }
+    }
+
+    /**
+     * @return whether any CDI observer observes a type assignable from the given system event class, so that
+     * an observer registered for it (or any supertype, e.g. {@code SystemEvent} or {@code ComponentSystemEvent})
+     * would be notified. Decided once per event class against the types collected by
+     * {@link CdiExtension#getObservedSystemEventTypes()}.
+     */
+    private boolean hasCdiObserverFor(ELAwareBeanManager beanManager, Class<? extends SystemEvent> systemEventClass) {
+        Set<Class<?>> observedTypes = cdiObservedSystemEventTypes(beanManager);
+        if (observedTypes == null) {
+            // CdiExtension is not (or no longer) registered -- the deployment is shutting down. No CDI observers
+            // to dispatch to; the caller publishes the event without CDI.
+            return false;
+        }
+        return cdiObserverPresenceCache.computeIfAbsent(systemEventClass, eventClass -> {
+            for (Class<?> observedType : observedTypes) {
+                if (observedType.isAssignableFrom(eventClass)) {
+                    return true;
+                }
+            }
+            return false;
+        });
+    }
+
+    /**
+     * @return the system-event types observed by some CDI observer (immutable after CDI bootstrap, so captured
+     * once and reused), or {@code null} when {@link CdiExtension} is not registered -- notably during
+     * {@code contextDestroyed}, where {@code BeanManager.getExtension(CdiExtension.class)} throws
+     * {@code IllegalArgumentException} (WELD-001325) because the container has already deregistered it.
+     */
+    private Set<Class<?>> cdiObservedSystemEventTypes(ELAwareBeanManager beanManager) {
+        Set<Class<?>> observedTypes = cdiObservedSystemEventTypes;
+        if (observedTypes == null) {
+            try {
+                observedTypes = beanManager.getExtension(CdiExtension.class).getObservedSystemEventTypes();
+                cdiObservedSystemEventTypes = observedTypes;
+            } catch (IllegalArgumentException e) {
+                return null;
+            }
+        }
+        return observedTypes;
     }
 
 }

@@ -97,6 +97,16 @@ final class BeanPropertyTagRule extends MetaRule {
 
         // if the property is writable
         if (m != null) {
+            // Suppress the per-invoke reflective access check once on the (public) component setter that the
+            // returned Metadata invokes on every buildView. The Metadata is strongly held by the compiled tag
+            // handler's cached MetaRuleset, so the suppression stays durable across builds rather than being
+            // re-run per invoke. Mirrors the read-method suppression on the component side
+            // (UIComponentBase.AttributesMap). The module system may forbid it for a setter in a non-exported
+            // package, in which case the normal per-invoke access check simply remains.
+            try {
+                m.setAccessible(true);
+            } catch (RuntimeException accessNotSuppressed) {
+            }
             if (attribute.isLiteral()) {
                 return new LiteralPropertyMetadata(m, attribute);
             } else {
