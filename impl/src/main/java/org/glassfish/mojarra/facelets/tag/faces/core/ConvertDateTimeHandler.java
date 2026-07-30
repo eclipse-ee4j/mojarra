@@ -16,6 +16,7 @@
 
 package org.glassfish.mojarra.facelets.tag.faces.core;
 
+import java.util.Set;
 import java.util.TimeZone;
 
 import jakarta.el.ELException;
@@ -43,6 +44,14 @@ import org.glassfish.mojarra.facelets.tag.faces.ComponentSupport;
  * @version $Id$
  */
 public final class ConvertDateTimeHandler extends ConverterHandler {
+
+    /**
+     * The values of the {@code type} attribute which represent a {@code java.time} class, as listed in
+     * {@link DateTimeConverter#setType(String)}. Only for these may {@code pattern} and {@code type} co-exist.
+     */
+    private static final Set<String> JAVA_TIME_TYPES = Set.of(
+        "localDate", "localDateTime", "localTime", "offsetTime", "offsetDateTime", "zonedDateTime",
+        "instant", "year", "yearMonth", "monthDay");
 
     private final TagAttribute dateStyle;
 
@@ -94,7 +103,7 @@ public final class ConvertDateTimeHandler extends ConverterHandler {
             // for java.time values
             if (type != null) {
                 String typeStr = type.getValue(ctx);
-                if (isJavaTimeType(typeStr)) {
+                if (JAVA_TIME_TYPES.contains(typeStr)) {
                     c.setType(typeStr);
                 }
             }
@@ -125,16 +134,6 @@ public final class ConvertDateTimeHandler extends ConverterHandler {
                 }
             }
         }
-    }
-
-    private static boolean isJavaTimeType(String type) {
-        boolean result = false;
-        if (null != type && type.length() > 1) {
-            char c = type.charAt(0);
-            result = c == 'l' || c == 'o' || c == 'z';
-        }
-
-        return result;
     }
 
     @Override
