@@ -19,7 +19,9 @@ package org.glassfish.mojarra.facelets.impl;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -66,6 +68,14 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     private FunctionMapper fnMapper;
 
     private final Map<String, Integer> ids;
+    /**
+     * Per-tag unique-id counters for this build, one {@code int[]} per Facelet, indexed by the slot a tag handler
+     * reserved through {@link DefaultFacelet#getIdSlot(String)}. Shared across the whole context chain (like
+     * {@link #ids}) so a Facelet included twice in one build keeps counting where the first inclusion left off.
+     */
+    private final Map<DefaultFacelet, int[]> idCounters;
+    /** {@link #facelet}'s entry in {@link #idCounters}, resolved on first use. See {@link #localCounters()}. */
+    private int[] localCounters;
     private final Map<Integer, Integer> prefixes;
     private String prefix;
     private final StringBuilder uniqueIdBuilder = new StringBuilder(30);
@@ -76,6 +86,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
         faces = ctx.faces;
         fnMapper = ctx.fnMapper;
         ids = ctx.ids;
+        idCounters = ctx.idCounters;
         prefixes = ctx.prefixes;
         varMapper = ctx.varMapper;
         faceletHierarchy = new ArrayList<>(ctx.faceletHierarchy.size() + 1);
@@ -88,6 +99,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     public DefaultFaceletContext(FacesContext faces, DefaultFacelet facelet) {
         ctx = faces.getELContext();
         ids = new HashMap<>();
+        idCounters = new IdentityHashMap<>();
         prefixes = new HashMap<>();
         clients = new ArrayList<>(5);
         this.faces = faces;
@@ -202,6 +214,83 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     @Override
     public String generateUniqueId(String base) {
 
+        ensurePrefix();
+
+        Integer cnt = ids.get(base);
+        if (cnt == null) {
+            ids.put(base, 0);
+            return buildUniqueId(base, 0);
+        } else {
+            int i = cnt.intValue() + 1;
+            ids.put(base, i);
+            return buildUniqueId(base, i);
+        }
+    }
+
+    @Override
+    public Facelet getUniqueIdSlotOwner() {
+        return facelet;
+    }
+
+    @Override
+    public int getUniqueIdSlot(String tagId) {
+        return facelet.getIdSlot(tagId);
+    }
+
+    /**
+     * Slot-based counterpart of {@link #generateUniqueId(String)}: same id, but the counter for {@code base} is read
+     * from {@code owner}'s counter array at {@code slot} rather than looked up by tag id in a map. A tag handler
+     * reserves its slot once and reuses it for every build, which is what keeps the per-component build cost of a
+     * view free of map inserts.
+     *
+     * @param base the tag id, as passed to {@link #generateUniqueId(String)}
+     * @param owner the Facelet the slot was reserved from
+     * @param slot the reserved slot
+     * @return the generated unique id
+     */
+    @Override
+    public String generateUniqueId(String base, Facelet owner, int slot) {
+
+        ensurePrefix();
+
+        int[] counters = owner == facelet ? localCounters() : counters((DefaultFacelet) owner);
+
+        if (slot >= counters.length) {
+            counters = grow((DefaultFacelet) owner, counters);
+        }
+
+        return buildUniqueId(base, counters[slot]++);
+    }
+
+    /**
+     * Returns the counter array of the Facelet this context is applying, holding onto it so that the common case --
+     * a tag counting ids in its own Facelet -- costs an array index rather than a map lookup per component.
+     */
+    private int[] localCounters() {
+        if (localCounters == null) {
+            localCounters = counters(facelet);
+        }
+        return localCounters;
+    }
+
+    private int[] counters(DefaultFacelet owner) {
+        return idCounters.computeIfAbsent(owner, f -> new int[f.getIdSlotCount()]);
+    }
+
+    /**
+     * Resizes {@code owner}'s counter array to its current slot count, for when it handed out more slots since the
+     * array was sized -- a Facelet applied for the first time reserves its slots as its tags are first applied.
+     */
+    private int[] grow(DefaultFacelet owner, int[] counters) {
+        int[] grown = Arrays.copyOf(counters, owner.getIdSlotCount());
+        idCounters.put(owner, grown);
+        if (owner == facelet) {
+            localCounters = grown;
+        }
+        return grown;
+    }
+
+    private void ensurePrefix() {
         if (prefix == null) {
             StringBuilder builder = new StringBuilder(faceletHierarchy.size() * 30);
             for (int i = 0; i < faceletHierarchy.size(); i++) {
@@ -220,26 +309,18 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
                 prefix = prefixInt + "_" + i;
             }
         }
+    }
 
-        Integer cnt = ids.get(base);
-        if (cnt == null) {
-            ids.put(base, 0);
-            uniqueIdBuilder.delete(0, uniqueIdBuilder.length());
-            uniqueIdBuilder.append(prefix);
+    private String buildUniqueId(String base, int count) {
+        uniqueIdBuilder.delete(0, uniqueIdBuilder.length());
+        uniqueIdBuilder.append(prefix);
+        uniqueIdBuilder.append("_");
+        uniqueIdBuilder.append(base);
+        if (count > 0) {
             uniqueIdBuilder.append("_");
-            uniqueIdBuilder.append(base);
-            return uniqueIdBuilder.toString();
-        } else {
-            int i = cnt.intValue() + 1;
-            ids.put(base, i);
-            uniqueIdBuilder.delete(0, uniqueIdBuilder.length());
-            uniqueIdBuilder.append(prefix);
-            uniqueIdBuilder.append("_");
-            uniqueIdBuilder.append(base);
-            uniqueIdBuilder.append("_");
-            uniqueIdBuilder.append(i);
-            return uniqueIdBuilder.toString();
+            uniqueIdBuilder.append(count);
         }
+        return uniqueIdBuilder.toString();
     }
 
     /*

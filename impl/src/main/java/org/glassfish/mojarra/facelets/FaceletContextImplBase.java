@@ -21,6 +21,7 @@ import java.io.IOException;
 import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.Facelet;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.FaceletException;
 
@@ -29,6 +30,43 @@ import jakarta.faces.view.facelets.FaceletException;
  * @author edburns
  */
 public abstract class FaceletContextImplBase extends FaceletContext {
+
+    /**
+     * Returns the Facelet a tag handler applying under this context reserves its unique-id counter slot from, or
+     * {@code null} when this context generates unique ids by tag id alone. A handler pairs the returned Facelet with
+     * the slot it reserves, so that it can tell an unchanged pairing (the common case, where its counter is a plain
+     * array index) from one it has to resolve again.
+     *
+     * @return the Facelet being applied, or {@code null} when slot-based id generation is unsupported
+     */
+    public Facelet getUniqueIdSlotOwner() {
+        return null;
+    }
+
+    /**
+     * Returns the unique-id counter slot the Facelet returned by {@link #getUniqueIdSlotOwner()} holds for the given
+     * tag, for a tag handler to hold onto for as long as it lives. Asking twice for the same tag yields the same slot.
+     *
+     * @param tagId the tag id to get a slot for
+     * @return the tag's slot, or -1 when slot-based id generation is unsupported
+     */
+    public int getUniqueIdSlot(String tagId) {
+        return -1;
+    }
+
+    /**
+     * Slot-based variant of {@link #generateUniqueId(String)}, generating the same id from a counter held at
+     * {@code slot} in {@code owner}'s counter array. Implementations that do not support slot-based generation
+     * ignore both and count by tag id.
+     *
+     * @param base the tag id
+     * @param owner the Facelet the slot was reserved from
+     * @param slot the reserved slot
+     * @return the generated unique id
+     */
+    public String generateUniqueId(String base, Facelet owner, int slot) {
+        return generateUniqueId(base);
+    }
 
     /**
      * Push the passed TemplateClient onto the stack for Definition Resolution
