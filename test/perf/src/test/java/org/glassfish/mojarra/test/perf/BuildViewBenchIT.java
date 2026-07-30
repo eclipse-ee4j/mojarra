@@ -19,12 +19,15 @@ import static java.lang.Integer.getInteger;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.time.Duration.ofSeconds;
+import static java.util.function.Predicate.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
@@ -48,9 +51,13 @@ class BuildViewBenchIT extends BaseITNG {
 
     @Test
     void buildView() throws Exception {
-        String scenario = System.getProperty("perf.scenarios", "composite-build").trim();
-        if (scenario.isEmpty() || scenario.contains(",")) {
-            scenario = "composite-build";
+        List<String> scenarios = Stream.of(System.getProperty("perf.scenarios", "composite-build").split(","))
+                .map(String::trim)
+                .filter(not(String::isEmpty))
+                .toList();
+
+        if (scenarios.isEmpty()) {
+            scenarios = List.of("composite-build");
         }
 
         HttpClient client = HttpClient.newBuilder()
@@ -58,12 +65,15 @@ class BuildViewBenchIT extends BaseITNG {
                 .connectTimeout(ofSeconds(10))
                 .build();
 
-        String url = webUrl + "buildview-bench?scenario=" + scenario + "&warmup=" + WARMUP + "&runs=" + RUNS;
-        HttpRequest request = HttpRequest.newBuilder(URI.create(url)).timeout(ofSeconds(600)).GET().build();
-        HttpResponse<String> response = client.send(request, ofString(UTF_8));
-
-        assertEquals(200, response.statusCode(), "buildview-bench");
         System.out.println();
-        System.out.println(response.body());
+
+        for (String scenario : scenarios) {
+            String url = webUrl + "buildview-bench?scenario=" + scenario + "&warmup=" + WARMUP + "&runs=" + RUNS;
+            HttpRequest request = HttpRequest.newBuilder(URI.create(url)).timeout(ofSeconds(600)).GET().build();
+            HttpResponse<String> response = client.send(request, ofString(UTF_8));
+
+            assertEquals(200, response.statusCode(), "buildview-bench " + scenario);
+            System.out.print(response.body());
+        }
     }
 }
