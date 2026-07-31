@@ -77,6 +77,9 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     /** Dense per-tag counter slots, keyed by tag id. See {@link #getIdSlot(String)}. */
     private final Map<String, Integer> idSlots = new ConcurrentHashMap<>();
 
+    /** The first id each of this Facelet's tags generates, per id prefix. See {@link #firstIds(String)}. */
+    private final FirstIdCache firstIds = new FirstIdCache(this::getIdSlotCount);
+
     private final URL src;
 
     private IdMapper mapper;
@@ -236,6 +239,30 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
      */
     int getIdSlotCount() {
         return idSlots.size();
+    }
+
+    /**
+     * Returns the first id each of this Facelet's tags generates under {@code prefix}, indexed by counter slot, for a
+     * build to reuse instead of building the same strings again, or {@code null} when nothing is cached for this
+     * prefix.
+     *
+     * @param prefix the id prefix the calling build is generating under
+     * @return the per-slot first ids, or {@code null} when this Facelet caches no more prefixes
+     */
+    String[] firstIds(String prefix) {
+        return firstIds.ids(prefix);
+    }
+
+    /**
+     * Returns {@code prefix}'s first ids resized to hold every slot handed out so far, for a build that reached a slot
+     * past the end of what {@link #firstIds(String)} returned.
+     *
+     * @param prefix the id prefix the calling build is generating under
+     * @param ids the array to grow
+     * @return the grown array
+     */
+    String[] growFirstIds(String prefix, String[] ids) {
+        return firstIds.grow(prefix, ids);
     }
 
     /**

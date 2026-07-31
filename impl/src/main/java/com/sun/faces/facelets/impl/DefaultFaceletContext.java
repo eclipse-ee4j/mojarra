@@ -56,6 +56,9 @@ import jakarta.faces.view.facelets.FaceletContext;
  */
 final class DefaultFaceletContext extends FaceletContextImplBase {
 
+    /** Stands in for {@link #localIds} once resolved, for a Facelet that caches no first ids for this context. */
+    private static final String[] NOT_CACHED = new String[0];
+
     private final FacesContext faces;
 
     private final ELContext ctx;
@@ -76,6 +79,11 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     private final Map<DefaultFacelet, int[]> idCounters;
     /** {@link #facelet}'s entry in {@link #idCounters}, resolved on first use. See {@link #localCounters()}. */
     private int[] localCounters;
+    /**
+     * {@link #facelet}'s first ids for the prefix this context generates under, resolved on first use, or
+     * {@link #NOT_CACHED} once resolved to a Facelet holding none for that prefix. See {@link #localIds(String)}.
+     */
+    private String[] localIds;
     private final Map<Integer, Integer> prefixes;
     private String prefix;
     private final StringBuilder uniqueIdBuilder = new StringBuilder(30);
@@ -251,15 +259,63 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     @Override
     public String generateUniqueId(String base, Facelet owner, int slot) {
 
-        ensurePrefix();
+        String prefix = ensurePrefix();
 
-        int[] counters = owner == facelet ? localCounters() : counters((DefaultFacelet) owner);
+        boolean local = owner == facelet;
+        int[] counters = local ? localCounters() : counters((DefaultFacelet) owner);
 
         if (slot >= counters.length) {
             counters = grow((DefaultFacelet) owner, counters);
         }
 
-        return buildUniqueId(base, counters[slot]++);
+        int count = counters[slot]++;
+
+        // Only a tag's first id within a build is worth caching, and only for the Facelet this context applies, whose
+        // ids this context holds on a field. Anything else is built.
+        if (count > 0 || !local) {
+            return buildUniqueId(base, count);
+        }
+
+        return firstUniqueId(base, slot, prefix);
+    }
+
+    /**
+     * Returns the id {@code base} generates the first time it is applied under {@code prefix}, from the Facelet being
+     * applied when it caches one and by building it otherwise. Taking the prefix as an argument rather than reading the
+     * field keeps this callable only once the prefix exists, which is what selects the right cache entry.
+     */
+    private String firstUniqueId(String base, int slot, String prefix) {
+        String[] ids = localIds(prefix);
+
+        if (ids == NOT_CACHED) {
+            return buildUniqueId(base, 0);
+        }
+
+        if (slot >= ids.length) {
+            ids = facelet.growFirstIds(prefix, ids);
+            localIds = ids;
+        }
+
+        String id = ids[slot];
+
+        if (id == null) {
+            id = buildUniqueId(base, 0);
+            ids[slot] = id;
+        }
+
+        return id;
+    }
+
+    /**
+     * Returns the Facelet being applied's first ids for {@code prefix}, holding onto it so that the common case -- a
+     * tag generating its first id in its own Facelet -- costs an array index rather than a map lookup per component.
+     */
+    private String[] localIds(String prefix) {
+        if (localIds == null) {
+            String[] ids = facelet.firstIds(prefix);
+            localIds = ids == null ? NOT_CACHED : ids;
+        }
+        return localIds;
     }
 
     /**
@@ -290,7 +346,12 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
         return grown;
     }
 
-    private void ensurePrefix() {
+    /**
+     * Settles this context's id prefix if it has not been settled yet.
+     *
+     * @return the prefix every id this context generates carries
+     */
+    private String ensurePrefix() {
         if (prefix == null) {
             StringBuilder builder = new StringBuilder(faceletHierarchy.size() * 30);
             for (int i = 0; i < faceletHierarchy.size(); i++) {
@@ -309,6 +370,8 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
                 prefix = prefixInt + "_" + i;
             }
         }
+
+        return prefix;
     }
 
     private String buildUniqueId(String base, int count) {
