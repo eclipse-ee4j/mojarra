@@ -27,6 +27,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -71,6 +73,12 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
     private final long refreshPeriodInMillis;
 
     private final FaceletHandler root;
+
+    /** Dense per-tag counter slots, keyed by tag id. See {@link #getIdSlot(String)}. */
+    private final Map<String, Integer> idSlots = new ConcurrentHashMap<>();
+
+    /** The first id each of this Facelet's tags generates, per id prefix. See {@link #firstIds(String)}. */
+    private final FirstIdCache firstIds = new FirstIdCache(this::getIdSlotCount);
 
     private final URL src;
 
@@ -209,6 +217,52 @@ final class DefaultFacelet extends Facelet implements XMLFrontMatterSaver {
      */
     public String getAlias() {
         return alias;
+    }
+
+    /**
+     * Returns this Facelet's unique-id counter slot for the given tag, assigning the next free one if the tag has
+     * none yet, for a tag handler to hold onto for as long as this (application-scoped) Facelet lives. Slots are
+     * dense per Facelet, so a build can keep its per-tag id counters in an {@code int[]} of {@link #getIdSlotCount()}
+     * entries instead of a map keyed by tag id. Keying by tag id rather than handing out a fresh slot per call keeps
+     * a tag on one slot even if it asks twice, which two handler delegates racing to resolve the same tag would
+     * otherwise turn into two counters, and so into a duplicate id.
+     *
+     * @param tagId the tag id to assign a slot to
+     * @return the tag's slot
+     */
+    int getIdSlot(String tagId) {
+        return idSlots.computeIfAbsent(tagId, id -> idSlots.size());
+    }
+
+    /**
+     * @return how many slots {@link #getIdSlot(String)} has assigned, i.e. the counter array size a build needs.
+     */
+    int getIdSlotCount() {
+        return idSlots.size();
+    }
+
+    /**
+     * Returns the first id each of this Facelet's tags generates under {@code prefix}, indexed by counter slot, for a
+     * build to reuse instead of building the same strings again, or {@code null} when nothing is cached for this
+     * prefix.
+     *
+     * @param prefix the id prefix the calling build is generating under
+     * @return the per-slot first ids, or {@code null} when this Facelet caches no more prefixes
+     */
+    String[] firstIds(String prefix) {
+        return firstIds.ids(prefix);
+    }
+
+    /**
+     * Returns {@code prefix}'s first ids resized to hold every slot handed out so far, for a build that reached a slot
+     * past the end of what {@link #firstIds(String)} returned.
+     *
+     * @param prefix the id prefix the calling build is generating under
+     * @param ids the array to grow
+     * @return the grown array
+     */
+    String[] growFirstIds(String prefix, String[] ids) {
+        return firstIds.grow(prefix, ids);
     }
 
     /**

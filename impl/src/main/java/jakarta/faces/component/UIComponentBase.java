@@ -2384,17 +2384,14 @@ public abstract class UIComponentBase extends UIComponent {
                 throw new NullPointerException();
             }
 
-            // markerPut keeps the field cache in sync for framework markers. Persistent markers (MARK_CREATED etc.)
-            // are still mirrored into the attributes map below so full-state restore can read them back. MARK_DELETED
-            // is a transient build-time flag (markForDeletion/finalizeForDeletion set and clear it on every component
-            // each refresh) that is never present when state is saved, so it stays field-only to avoid per-component
-            // StateHelper traffic.
+            // markerPut keeps the field cache in sync for framework markers; a marker not exempted below is also
+            // mirrored into the attributes map so full-state restore can read it back. The exempted three are
+            // field-only, which is what keeps them out of the StateHelper on every Facelets build: MARK_DELETED and
+            // the facet name are build-time flags that are always cleared again before state is saved, and
+            // MARK_CREATED is re-attached to the attributes map at full-state save (saveState), partial state
+            // rebuilding it via buildView. Exempting a further marker requires it to meet that same condition.
             boolean marker = component.markerPut(keyValue, value);
-            if (marker && (MARK_DELETED.equals(keyValue) || MARK_CREATED.equals(keyValue))) {
-                // MARK_DELETED is a transient build-time flag; MARK_CREATED is field-backed (markCreated) and set on
-                // every component during buildView. Neither needs the per-component StateHelper mirror on the hot
-                // c:forEach re-apply path: MARK_DELETED is never saved, and MARK_CREATED is re-attached to the
-                // attributes map once at full-state save (saveState) -- partial state rebuilds it via buildView.
+            if (marker && (MARK_DELETED.equals(keyValue) || MARK_CREATED.equals(keyValue) || KEY.equals(keyValue))) {
                 return null;
             }
 
@@ -2475,7 +2472,7 @@ public abstract class UIComponentBase extends UIComponent {
                 throw new NullPointerException();
             }
             boolean marker = component.markerRemove(key);
-            if (marker && MARK_DELETED.equals(key)) {
+            if (marker && (MARK_DELETED.equals(key) || KEY.equals(key))) {
                 return null;
             }
             if (ATTRIBUTES_THAT_ARE_SET_KEY.equals(key)) {

@@ -19,8 +19,10 @@ package com.sun.faces.facelets.impl;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +56,9 @@ import jakarta.faces.view.facelets.FaceletContext;
  */
 final class DefaultFaceletContext extends FaceletContextImplBase {
 
+    /** Stands in for {@link #localIds} once resolved, for a Facelet that caches no first ids for this context. */
+    private static final String[] NOT_CACHED = new String[0];
+
     private final FacesContext faces;
 
     private final ELContext ctx;
@@ -66,6 +71,19 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     private FunctionMapper fnMapper;
 
     private final Map<String, Integer> ids;
+    /**
+     * Per-tag unique-id counters for this build, one {@code int[]} per Facelet, indexed by the slot a tag handler
+     * reserved through {@link DefaultFacelet#getIdSlot(String)}. Shared across the whole context chain (like
+     * {@link #ids}) so a Facelet included twice in one build keeps counting where the first inclusion left off.
+     */
+    private final Map<DefaultFacelet, int[]> idCounters;
+    /** {@link #facelet}'s entry in {@link #idCounters}, resolved on first use. See {@link #localCounters()}. */
+    private int[] localCounters;
+    /**
+     * {@link #facelet}'s first ids for the prefix this context generates under, resolved on first use, or
+     * {@link #NOT_CACHED} once resolved to a Facelet holding none for that prefix. See {@link #localIds(String)}.
+     */
+    private String[] localIds;
     private final Map<Integer, Integer> prefixes;
     private String prefix;
     private final StringBuilder uniqueIdBuilder = new StringBuilder(30);
@@ -76,6 +94,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
         faces = ctx.faces;
         fnMapper = ctx.fnMapper;
         ids = ctx.ids;
+        idCounters = ctx.idCounters;
         prefixes = ctx.prefixes;
         varMapper = ctx.varMapper;
         faceletHierarchy = new ArrayList<>(ctx.faceletHierarchy.size() + 1);
@@ -88,6 +107,7 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     public DefaultFaceletContext(FacesContext faces, DefaultFacelet facelet) {
         ctx = faces.getELContext();
         ids = new HashMap<>();
+        idCounters = new IdentityHashMap<>();
         prefixes = new HashMap<>();
         clients = new ArrayList<>(5);
         this.faces = faces;
@@ -202,6 +222,136 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
     @Override
     public String generateUniqueId(String base) {
 
+        ensurePrefix();
+
+        Integer cnt = ids.get(base);
+        if (cnt == null) {
+            ids.put(base, 0);
+            return buildUniqueId(base, 0);
+        } else {
+            int i = cnt.intValue() + 1;
+            ids.put(base, i);
+            return buildUniqueId(base, i);
+        }
+    }
+
+    @Override
+    public Facelet getUniqueIdSlotOwner() {
+        return facelet;
+    }
+
+    @Override
+    public int getUniqueIdSlot(String tagId) {
+        return facelet.getIdSlot(tagId);
+    }
+
+    /**
+     * Slot-based counterpart of {@link #generateUniqueId(String)}: same id, but the counter for {@code base} is read
+     * from {@code owner}'s counter array at {@code slot} rather than looked up by tag id in a map. A tag handler
+     * reserves its slot once and reuses it for every build, which is what keeps the per-component build cost of a
+     * view free of map inserts.
+     *
+     * @param base the tag id, as passed to {@link #generateUniqueId(String)}
+     * @param owner the Facelet the slot was reserved from
+     * @param slot the reserved slot
+     * @return the generated unique id
+     */
+    @Override
+    public String generateUniqueId(String base, Facelet owner, int slot) {
+
+        String prefix = ensurePrefix();
+
+        boolean local = owner == facelet;
+        int[] counters = local ? localCounters() : counters((DefaultFacelet) owner);
+
+        if (slot >= counters.length) {
+            counters = grow((DefaultFacelet) owner, counters);
+        }
+
+        int count = counters[slot]++;
+
+        // Only a tag's first id within a build is worth caching, and only for the Facelet this context applies, whose
+        // ids this context holds on a field. Anything else is built.
+        if (count > 0 || !local) {
+            return buildUniqueId(base, count);
+        }
+
+        return firstUniqueId(base, slot, prefix);
+    }
+
+    /**
+     * Returns the id {@code base} generates the first time it is applied under {@code prefix}, from the Facelet being
+     * applied when it caches one and by building it otherwise. Taking the prefix as an argument rather than reading the
+     * field keeps this callable only once the prefix exists, which is what selects the right cache entry.
+     */
+    private String firstUniqueId(String base, int slot, String prefix) {
+        String[] ids = localIds(prefix);
+
+        if (ids == NOT_CACHED) {
+            return buildUniqueId(base, 0);
+        }
+
+        if (slot >= ids.length) {
+            ids = facelet.growFirstIds(prefix, ids);
+            localIds = ids;
+        }
+
+        String id = ids[slot];
+
+        if (id == null) {
+            id = buildUniqueId(base, 0);
+            ids[slot] = id;
+        }
+
+        return id;
+    }
+
+    /**
+     * Returns the Facelet being applied's first ids for {@code prefix}, holding onto it so that the common case -- a
+     * tag generating its first id in its own Facelet -- costs an array index rather than a map lookup per component.
+     */
+    private String[] localIds(String prefix) {
+        if (localIds == null) {
+            String[] ids = facelet.firstIds(prefix);
+            localIds = ids == null ? NOT_CACHED : ids;
+        }
+        return localIds;
+    }
+
+    /**
+     * Returns the counter array of the Facelet this context is applying, holding onto it so that the common case --
+     * a tag counting ids in its own Facelet -- costs an array index rather than a map lookup per component.
+     */
+    private int[] localCounters() {
+        if (localCounters == null) {
+            localCounters = counters(facelet);
+        }
+        return localCounters;
+    }
+
+    private int[] counters(DefaultFacelet owner) {
+        return idCounters.computeIfAbsent(owner, f -> new int[f.getIdSlotCount()]);
+    }
+
+    /**
+     * Resizes {@code owner}'s counter array to its current slot count, for when it handed out more slots since the
+     * array was sized -- a Facelet applied for the first time reserves its slots as its tags are first applied.
+     */
+    private int[] grow(DefaultFacelet owner, int[] counters) {
+        int[] grown = Arrays.copyOf(counters, owner.getIdSlotCount());
+        idCounters.put(owner, grown);
+        if (owner == facelet) {
+            localCounters = grown;
+        }
+        return grown;
+    }
+
+    /**
+     * Settles this context's id prefix if it has not been settled yet.
+     *
+     * @return the prefix every id this context generates carries
+     */
+    private String ensurePrefix() {
         if (prefix == null) {
             StringBuilder builder = new StringBuilder(faceletHierarchy.size() * 30);
             for (int i = 0; i < faceletHierarchy.size(); i++) {
@@ -221,25 +371,19 @@ final class DefaultFaceletContext extends FaceletContextImplBase {
             }
         }
 
-        Integer cnt = ids.get(base);
-        if (cnt == null) {
-            ids.put(base, 0);
-            uniqueIdBuilder.delete(0, uniqueIdBuilder.length());
-            uniqueIdBuilder.append(prefix);
+        return prefix;
+    }
+
+    private String buildUniqueId(String base, int count) {
+        uniqueIdBuilder.delete(0, uniqueIdBuilder.length());
+        uniqueIdBuilder.append(prefix);
+        uniqueIdBuilder.append("_");
+        uniqueIdBuilder.append(base);
+        if (count > 0) {
             uniqueIdBuilder.append("_");
-            uniqueIdBuilder.append(base);
-            return uniqueIdBuilder.toString();
-        } else {
-            int i = cnt.intValue() + 1;
-            ids.put(base, i);
-            uniqueIdBuilder.delete(0, uniqueIdBuilder.length());
-            uniqueIdBuilder.append(prefix);
-            uniqueIdBuilder.append("_");
-            uniqueIdBuilder.append(base);
-            uniqueIdBuilder.append("_");
-            uniqueIdBuilder.append(i);
-            return uniqueIdBuilder.toString();
+            uniqueIdBuilder.append(count);
         }
+        return uniqueIdBuilder.toString();
     }
 
     /*
