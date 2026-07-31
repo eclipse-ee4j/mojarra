@@ -681,6 +681,18 @@ public class Util {
     }
 
     /**
+     * Returns the first argument if is non-null, otherwise the second argument.
+     *
+     * @param <T> The generic object type.
+     * @param o1 The value to be tested for to be tested for non-<code>null</code>.
+     * @param o2 The alternative value to be returned if value is null
+     * @return value if is not null, otherwise return alternative
+     */
+    public static <T> T coalesce(T o1, T o2) {
+        return o1 != null ? o1 : o2;
+    }
+
+    /**
      * Returns the first non-<code>null</code> object of the argument list, or <code>null</code> if there is no such
      * element.
      *

@@ -34,6 +34,7 @@ import com.sun.faces.component.behavior.AjaxBehaviors;
 import com.sun.faces.component.validator.ComponentValidators;
 import com.sun.faces.context.StateContext;
 import com.sun.faces.facelets.impl.IdMapper;
+import com.sun.faces.facelets.FaceletContextImplBase;
 import com.sun.faces.facelets.tag.MetaRulesetImpl;
 import com.sun.faces.facelets.tag.faces.core.FacetHandler;
 import com.sun.faces.util.FacesLogger;
@@ -55,6 +56,7 @@ import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.facelets.ComponentConfig;
 import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.Facelet;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.MetaRuleset;
 import jakarta.faces.view.facelets.TagAttribute;
@@ -76,6 +78,26 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
     private final String rendererType;
 
     private CreateComponentDelegate createCompositeComponentDelegate;
+
+    /**
+     * This tag's unique-id counter slot and the Facelet holding it, so {@link #apply} can count this tag's generated
+     * ids by array index instead of by a per-build map lookup on the tag id. Held as one object so that both are read
+     * together: a build that saw the owner must see that owner's slot. Bound to the Facelet being applied rather than
+     * the one this tag was compiled in, because a {@code ui:define} body applies under the template it is inserted
+     * into; a tag that alternates between templates simply rebinds.
+     */
+    private static final class IdSlot {
+
+        private final Facelet owner;
+        private final int slot;
+
+        private IdSlot(Facelet owner, int slot) {
+            this.owner = owner;
+            this.slot = slot;
+        }
+    }
+
+    private volatile IdSlot idSlot;
 
     public ComponentTagHandlerDelegateImpl(ComponentHandler owner) {
         this.owner = owner;
@@ -123,7 +145,7 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
         }
 
         // our id
-        String id = ctx.generateUniqueId(owner.getTagId());
+        String id = generateUniqueId(ctx);
 
         // grab our component
         UIComponent c = findChild(ctx, parent, id);
@@ -439,6 +461,35 @@ public class ComponentTagHandlerDelegateImpl extends TagHandlerDelegate {
             c.setRendererType(rendererType);
         }
 
+    }
+
+
+    /**
+     * Generates this tag's unique id through {@link com.sun.faces.facelets.impl.DefaultFaceletContext}'s slot-based
+     * counter where the context supports it (the only implementation Facelets builds views with), and through the
+     * public {@link FaceletContext} API otherwise, which a wrapping context or a foreign implementation may supply.
+     */
+    private String generateUniqueId(FaceletContext ctx) {
+
+        if (!(ctx instanceof FaceletContextImplBase)) {
+            return ctx.generateUniqueId(owner.getTagId());
+        }
+
+        FaceletContextImplBase context = (FaceletContextImplBase) ctx;
+        Facelet slotOwner = context.getUniqueIdSlotOwner();
+
+        if (slotOwner == null) {
+            return ctx.generateUniqueId(owner.getTagId());
+        }
+
+        IdSlot slot = idSlot;
+
+        if (slot == null || slot.owner != slotOwner) {
+            slot = new IdSlot(slotOwner, context.getUniqueIdSlot(owner.getTagId()));
+            idSlot = slot;
+        }
+
+        return context.generateUniqueId(owner.getTagId(), slot.owner, slot.slot);
     }
 
     protected void doNewComponentActions(FaceletContext ctx, String id, UIComponent c) {
