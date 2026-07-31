@@ -48,9 +48,9 @@ import jakarta.el.ELContext;
 import jakarta.el.MethodExpression;
 import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
+import jakarta.faces.application.ConfigurableNavigationHandler;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.application.NavigationCase;
-import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
@@ -83,7 +83,9 @@ import org.glassfish.mojarra.util.Util;
  * 7.4.2 of the specification for more details. PENDING: Make independent of ApplicationAssociate.
  */
 
-public class NavigationHandlerImpl extends NavigationHandler {
+@SuppressWarnings("removal") // ConfigurableNavigationHandler is deprecated for removal, but must be kept as the supertype until it is actually removed, else
+                            // every third party which obtains navigation cases through the documented instanceof check silently stops working on Faces 5.
+public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
     // Private Constants
     private static final String RESET_FLOW_HANDLER_STATE_KEY = NavigationHandlerImpl.class.getName() + "_RESET_FLOW_HANDLER_STATE_KEY";
