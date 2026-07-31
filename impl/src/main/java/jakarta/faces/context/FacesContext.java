@@ -16,11 +16,15 @@
 
 package jakarta.faces.context;
 
+import static java.lang.StackWalker.Option.RETAIN_CLASS_REFERENCE;
+
+import java.lang.StackWalker.StackFrame;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import jakarta.el.ELContext;
@@ -66,27 +70,33 @@ public abstract class FacesContext {
     private static ConcurrentHashMap initContextServletContext = new ConcurrentHashMap(2);
 
     /**
+     * Frames between this constructor and the caller that decides whether this instance came from a factory: the walk
+     * starts at this constructor, the concrete context's constructor follows, and its caller is next.
+     */
+    private static final int CALLER_FRAME = 2;
+
+    /**
+     * Walks the caller of this class' constructor. Retaining class references hands back the declaring class itself, so
+     * the caller is identified without resolving its name through a class loader, and the walk is bounded because only
+     * one frame past the concrete context's own constructor is ever inspected.
+     */
+    private static final StackWalker CALLER_WALKER = StackWalker.getInstance(Set.of(RETAIN_CLASS_REFERENCE), CALLER_FRAME + 1);
+
+    /**
      * Default constructor.
      * <p>
      * This looks at the callstack to see if we're created from a factory.
      * </p>
      */
     public FacesContext() {
-        Thread curThread = Thread.currentThread();
-        StackTraceElement[] callstack = curThread.getStackTrace();
-        if (null != callstack) {
-            String declaringClassName = callstack[3].getClassName();
-            try {
-                ClassLoader curLoader = curThread.getContextClassLoader();
-                Class<?> declaringClass = curLoader.loadClass(declaringClassName);
-                if (!FacesContextFactory.class.isAssignableFrom(declaringClass)) {
-                    isCreatedFromValidFactory = false;
-                }
-            } catch (ClassNotFoundException cnfe) {
+        Class<?> declaringClass = CALLER_WALKER.walk(frames -> frames.skip(CALLER_FRAME)
+                .map(StackFrame::getDeclaringClass)
+                .findFirst()
+                .orElse(null));
 
-            }
+        if (declaringClass != null && !FacesContextFactory.class.isAssignableFrom(declaringClass)) {
+            isCreatedFromValidFactory = false;
         }
-
     }
 
     // -------------------------------------------------------------- Properties
