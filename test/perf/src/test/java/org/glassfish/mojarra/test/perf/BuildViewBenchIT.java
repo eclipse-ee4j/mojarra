@@ -41,13 +41,15 @@ import ee.jakarta.tck.faces.util.selenium.BaseITNG;
  *
  * <p>Gated behind {@code -Dbuildview=true}. Iteration counts reuse {@code -Dperf.warmup}/{@code
  * -Dperf.runs} (defaults 50/2000); {@code -Dperf.scenarios=<one>} selects the view (default
- * composite-build).
+ * composite-build). {@code -Dperf.split=true} additionally reports where one build's nanoseconds go,
+ * which is what separates a fixed per-build cost from a per-component one.
  */
 @EnabledIfSystemProperty(named = "buildview", matches = "true")
 class BuildViewBenchIT extends BaseITNG {
 
     private static final int WARMUP = getInteger("perf.warmup", 50);
     private static final int RUNS = getInteger("perf.runs", 2000);
+    private static final boolean SPLIT = Boolean.getBoolean("perf.split");
 
     @Test
     void buildView() throws Exception {
@@ -68,7 +70,8 @@ class BuildViewBenchIT extends BaseITNG {
         System.out.println();
 
         for (String scenario : scenarios) {
-            String url = webUrl + "buildview-bench?scenario=" + scenario + "&warmup=" + WARMUP + "&runs=" + RUNS;
+            String url = webUrl + "buildview-bench?scenario=" + scenario + "&warmup=" + WARMUP + "&runs=" + RUNS
+                    + "&split=" + SPLIT;
             HttpRequest request = HttpRequest.newBuilder(URI.create(url)).timeout(ofSeconds(600)).GET().build();
             HttpResponse<String> response = client.send(request, ofString(UTF_8));
 
