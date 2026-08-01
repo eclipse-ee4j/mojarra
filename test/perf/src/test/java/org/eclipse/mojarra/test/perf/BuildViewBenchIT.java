@@ -19,12 +19,15 @@ import static java.lang.Integer.getInteger;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.time.Duration.ofSeconds;
+import static java.util.function.Predicate.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
+import java.util.stream.Stream;
 
 import org.eclipse.mojarra.test.base.BaseIT;
 import org.junit.jupiter.api.Test;
@@ -37,14 +40,17 @@ import org.openqa.selenium.WebDriver;
  * profiles) and diff the recordings to see where Mojarra's buildView does more work.
  *
  * <p>Gated behind {@code -Dbuildview=true}. Iteration counts reuse {@code -Dperf.warmup}/{@code
- * -Dperf.runs} (defaults 50/2000); {@code -Dperf.scenarios=<one>} selects the view (default
- * composite-build).
+ * -Dperf.runs} (defaults 50/2000); {@code -Dperf.scenarios=<comma-separated>} selects the views to
+ * run in order (default composite-build), so one server start covers a whole sweep.
+ * {@code -Dperf.split=true} additionally reports where one build's nanoseconds go, which is what
+ * separates a fixed per-build cost from a per-component one.
  */
 @EnabledIfSystemProperty(named = "buildview", matches = "true")
 class BuildViewBenchIT extends BaseIT {
 
     private static final int WARMUP = getInteger("perf.warmup", 50);
     private static final int RUNS = getInteger("perf.runs", 2000);
+    private static final boolean SPLIT = Boolean.getBoolean("perf.split");
 
     @Override
     public void setup() {
@@ -61,9 +67,13 @@ class BuildViewBenchIT extends BaseIT {
 
     @Test
     void buildView() throws Exception {
-        String scenario = System.getProperty("perf.scenarios", "composite-build").trim();
-        if (scenario.isEmpty() || scenario.contains(",")) {
-            scenario = "composite-build";
+        List<String> scenarios = Stream.of(System.getProperty("perf.scenarios", "composite-build").split(","))
+                .map(String::trim)
+                .filter(not(String::isEmpty))
+                .toList();
+
+        if (scenarios.isEmpty()) {
+            scenarios = List.of("composite-build");
         }
 
         HttpClient client = HttpClient.newBuilder()
@@ -71,12 +81,16 @@ class BuildViewBenchIT extends BaseIT {
                 .connectTimeout(ofSeconds(10))
                 .build();
 
-        String url = baseURL + "buildview-bench?scenario=" + scenario + "&warmup=" + WARMUP + "&runs=" + RUNS;
-        HttpRequest request = HttpRequest.newBuilder(URI.create(url)).timeout(ofSeconds(600)).GET().build();
-        HttpResponse<String> response = client.send(request, ofString(UTF_8));
-
-        assertEquals(200, response.statusCode(), "buildview-bench");
         System.out.println();
-        System.out.println(response.body());
+
+        for (String scenario : scenarios) {
+            String url = baseURL + "buildview-bench?scenario=" + scenario + "&warmup=" + WARMUP + "&runs=" + RUNS
+                    + "&split=" + SPLIT;
+            HttpRequest request = HttpRequest.newBuilder(URI.create(url)).timeout(ofSeconds(600)).GET().build();
+            HttpResponse<String> response = client.send(request, ofString(UTF_8));
+
+            assertEquals(200, response.statusCode(), "buildview-bench " + scenario);
+            System.out.print(response.body());
+        }
     }
 }
