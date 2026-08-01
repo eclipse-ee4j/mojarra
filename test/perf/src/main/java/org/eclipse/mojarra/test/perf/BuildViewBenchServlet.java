@@ -16,6 +16,7 @@
 package org.eclipse.mojarra.test.perf;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Iterator;
 
 import jakarta.faces.FactoryFinder;
@@ -42,11 +43,21 @@ import jakarta.servlet.http.HttpServletResponse;
  * {@link UIViewRoot} and calls {@link ViewDeclarationLanguage#buildView} that many times (the
  * compiled Facelet is cached after warmup, so each measured run rebuilds the component tree without
  * recompiling), then reports ns per build and the component count of the last tree.
+ *
+ * <p>Add {@code &split=true} to also report where those nanoseconds go: creating and releasing the
+ * {@link FacesContext}, resolving the declaration language, {@code createView}, {@code buildView}
+ * itself and the component count walk. A per-build cost that does not scale with the number of
+ * components lives in one of the surrounding steps rather than in the Facelets build, and only a
+ * split run can tell those apart. Timing costs four extra {@code nanoTime} reads per build, so leave
+ * it off when comparing totals.
  */
 @WebServlet("/buildview-bench")
 public class BuildViewBenchServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
+
+    /** Steps of one build, in the order {@link #buildOnce} runs them. */
+    private static final String[] STEPS = { "context", "vdl", "createView", "buildView", "count", "release" };
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -56,20 +67,23 @@ public class BuildViewBenchServlet extends HttpServlet {
         }
         int warmup = intParam(request, "warmup", 50);
         int runs = intParam(request, "runs", 2000);
+        boolean split = Boolean.parseBoolean(request.getParameter("split"));
         String viewId = "/" + scenario + ".xhtml";
 
         LifecycleFactory lifecycleFactory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
         Lifecycle lifecycle = lifecycleFactory.getLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE);
         FacesContextFactory facesContextFactory = (FacesContextFactory) FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
 
+        long[] steps = new long[STEPS.length];
         for (int i = 0; i < warmup; i++) {
-            buildOnce(facesContextFactory, lifecycle, request, response, viewId);
+            buildOnce(facesContextFactory, lifecycle, request, response, viewId, split ? steps : null);
         }
 
         int count = 0;
+        Arrays.fill(steps, 0);
         long start = System.nanoTime();
         for (int i = 0; i < runs; i++) {
-            count = buildOnce(facesContextFactory, lifecycle, request, response, viewId);
+            count = buildOnce(facesContextFactory, lifecycle, request, response, viewId, split ? steps : null);
         }
         long elapsedNanos = System.nanoTime() - start;
 
@@ -78,24 +92,59 @@ public class BuildViewBenchServlet extends HttpServlet {
         response.getWriter().printf(
                 "# buildview-bench scenario=%s warmup=%d runs=%d components=%d ns_per_build=%d total_ms=%d%n",
                 scenario, warmup, runs, count, elapsedNanos / runs, elapsedNanos / 1_000_000L);
+
+        if (split) {
+            for (int i = 0; i < STEPS.length; i++) {
+                response.getWriter().printf("# buildview-split scenario=%s step=%s ns_per_build=%d%n",
+                        scenario, STEPS[i], steps[i] / runs);
+            }
+        }
     }
 
     /**
      * One build under its own FacesContext — mirrors a real request, so each build's per-view state and
-     * events are released and collectible rather than accumulating across the loop.
+     * events are released and collectible rather than accumulating across the loop. When {@code steps} is
+     * given, each step's elapsed time is accumulated into it, indexed as in {@link #STEPS}.
      */
     private int buildOnce(FacesContextFactory facesContextFactory, Lifecycle lifecycle,
-            HttpServletRequest request, HttpServletResponse response, String viewId) throws IOException {
+            HttpServletRequest request, HttpServletResponse response, String viewId, long[] steps) throws IOException {
+        if (steps == null) {
+            FacesContext context = facesContextFactory.getFacesContext(getServletContext(), request, response, lifecycle);
+            try {
+                ViewDeclarationLanguage vdl = context.getApplication().getViewHandler().getViewDeclarationLanguage(context, viewId);
+                UIViewRoot root = vdl.createView(context, viewId);
+                context.setViewRoot(root);
+                vdl.buildView(context, root);
+                return countComponents(root);
+            } finally {
+                context.release();
+            }
+        }
+
+        long mark = System.nanoTime();
         FacesContext context = facesContextFactory.getFacesContext(getServletContext(), request, response, lifecycle);
+        mark = record(steps, 0, mark);
         try {
             ViewDeclarationLanguage vdl = context.getApplication().getViewHandler().getViewDeclarationLanguage(context, viewId);
+            mark = record(steps, 1, mark);
             UIViewRoot root = vdl.createView(context, viewId);
             context.setViewRoot(root);
+            mark = record(steps, 2, mark);
             vdl.buildView(context, root);
-            return countComponents(root);
+            mark = record(steps, 3, mark);
+            int count = countComponents(root);
+            mark = record(steps, 4, mark);
+            return count;
         } finally {
             context.release();
+            record(steps, 5, mark);
         }
+    }
+
+    private static long record(long[] steps, int step, long mark) {
+        long now = System.nanoTime();
+        steps[step] += now - mark;
+        return now;
     }
 
     private static int countComponents(UIComponent component) {
