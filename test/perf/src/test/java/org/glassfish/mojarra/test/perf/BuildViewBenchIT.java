@@ -40,9 +40,10 @@ import ee.jakarta.tck.faces.util.selenium.BaseITNG;
  * profiles) and diff the recordings to see where Mojarra's buildView does more work.
  *
  * <p>Gated behind {@code -Dbuildview=true}. Iteration counts reuse {@code -Dperf.warmup}/{@code
- * -Dperf.runs} (defaults 50/2000); {@code -Dperf.scenarios=<one>} selects the view (default
- * composite-build). {@code -Dperf.split=true} additionally reports where one build's nanoseconds go,
- * which is what separates a fixed per-build cost from a per-component one.
+ * -Dperf.runs} (defaults 50/2000); {@code -Dperf.scenarios=<comma-separated>} selects the views to
+ * run in order (default composite-build), so one server start covers a whole sweep.
+ * {@code -Dperf.split=true} additionally reports where one build's nanoseconds go, which is what
+ * separates a fixed per-build cost from a per-component one.
  */
 @EnabledIfSystemProperty(named = "buildview", matches = "true")
 class BuildViewBenchIT extends BaseITNG {
