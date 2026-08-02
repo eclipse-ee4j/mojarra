@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import jakarta.el.ELContext;
 import jakarta.faces.FactoryFinder;
@@ -83,16 +85,27 @@ public abstract class FacesContext {
     private static final StackWalker CALLER_WALKER = StackWalker.getInstance(Set.of(RETAIN_CLASS_REFERENCE), CALLER_FRAME + 1);
 
     /**
+     * Picks the caller's class out of the walked frames. Deliberately an anonymous class: this class must not declare any
+     * method which a concrete context does not have, and a lambda compiles into a synthetic one.
+     */
+    private static final Function<Stream<StackFrame>, Class<?>> CALLER_EXTRACTOR = new Function<>() {
+        @Override
+        public Class<?> apply(Stream<StackFrame> frames) {
+            return frames.skip(CALLER_FRAME)
+                    .map(StackFrame::getDeclaringClass)
+                    .findFirst()
+                    .orElse(null);
+        }
+    };
+
+    /**
      * Default constructor.
      * <p>
      * This looks at the callstack to see if we're created from a factory.
      * </p>
      */
     public FacesContext() {
-        Class<?> declaringClass = CALLER_WALKER.walk(frames -> frames.skip(CALLER_FRAME)
-                .map(StackFrame::getDeclaringClass)
-                .findFirst()
-                .orElse(null));
+        Class<?> declaringClass = CALLER_WALKER.walk(CALLER_EXTRACTOR);
 
         if (declaringClass != null && !FacesContextFactory.class.isAssignableFrom(declaringClass)) {
             isCreatedFromValidFactory = false;
