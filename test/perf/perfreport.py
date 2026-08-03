@@ -44,9 +44,10 @@ SHORT = {"RESTORE_VIEW": "RV", "APPLY_REQUEST_VALUES": "ARV", "PROCESS_VALIDATIO
 # Report scenarios in the same order as the perf-bench index.xhtml page (component family, then
 # variant) rather than alphabetically, so the tables read like the WAR's navigation. Unknown
 # families/variants sort to the end.
-FAMILY_ORDER = ["form", "table", "repeat", "composite", "foreach", "dynamic", "viewparam"]
-VARIANT_ORDER = ["readonly", "build", "inputs", "inputs-ajax", "invalid", "invalid-ajax",
-                 "nested", "nested-ajax", "form-ajax", "toggle-ajax", "get"]
+FAMILY_ORDER = ["form", "table", "repeat", "composite", "foreach", "flat", "dynamic", "viewparam"]
+VARIANT_ORDER = ["readonly", "build", "wide", "passthru", "text", "table-facets", "table-nofacets",
+                 "inputs", "inputs-ajax", "invalid", "invalid-ajax", "nested", "nested-ajax",
+                 "form-ajax", "toggle-ajax", "get"]
 
 # Under this per-invocation average the phase is too short to time meaningfully; a percentage
 # over it says more about the clock than about the code.
