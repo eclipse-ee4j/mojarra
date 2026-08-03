@@ -234,6 +234,12 @@ CDI is activated by default in Jakarta Faces 4.0 and can´t be deactivated.
 It´s not required anymore to add `@FacesConfig` to a CDI managed bean to accomplish this.
 As of Jakarta Faces 4.0 `@FacesConfig` still removes the need to explicitly add a `FacesServlet` entry to `web.xml`.
 
+## Configuration
+
+Every context parameter this version recognizes is listed in [CONTEXT-PARAMS.md][31], the Jakarta Faces API ones as well as the Mojarra specific ones, grouped per category and stating the type, the default value, the version it exists since, where its performance cost lands and what it does.
+
+They are configured as a `<context-param>` in `web.xml`.
+
 ## Building
 
 In case you want to checkout this repository and manually build from source yourself (if necessary after editing source code), here are the instructions:
@@ -360,3 +366,4 @@ mvn versions:set -DgroupId=* -DartifactId=* -DoldVersion=* -DgenerateBackupPoms=
   [28]: https://github.com/eclipse-ee4j/mojarra
   [29]: https://github.com/eclipse-ee4j/mojarra/tree/3.0
   [30]: https://github.com/eclipse-ee4j/mojarra/tree/2.3
+  [31]: CONTEXT-PARAMS.md
