@@ -702,7 +702,6 @@ public class WebConfiguration {
         EnableJSStyleHiding("org.glassfish.mojarra.enableJSStyleHiding", false),
         EnableScriptInAttributeValue("org.glassfish.mojarra.enableScriptsInAttributeValues", true),
         WriteStateAtFormEnd("org.glassfish.mojarra.writeStateAtFormEnd", true),
-        EnableLazyBeanValidation("org.glassfish.mojarra.enableLazyBeanValidation", true),
         EnableViewStateIdRendering("org.glassfish.mojarra.enableViewStateIdRendering", true),
         RegisterConverterPropertyEditors("org.glassfish.mojarra.registerConverterPropertyEditors", false),
         EnableHttpMethodRestrictionPhaseListener("org.glassfish.mojarra.ENABLE_HTTP_METHOD_RESTRICTION_PHASE_LISTENER", false),

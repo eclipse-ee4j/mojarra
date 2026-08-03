@@ -27,7 +27,6 @@ import static org.glassfish.mojarra.RIConstants.ERROR_PAGE_PRESENT_KEY_NAME;
 import static org.glassfish.mojarra.RIConstants.FACES_SERVLET_MAPPINGS;
 import static org.glassfish.mojarra.RIConstants.FACES_SERVLET_REGISTRATION;
 import static org.glassfish.mojarra.RIConstants.MOJARRA_VERSION;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableLazyBeanValidation;
 import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableThreading;
 import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.ForceLoadFacesConfigFiles;
 import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.VerifyFacesConfigObjects;
@@ -198,8 +197,6 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                     "It shouldn't be enabled if using an IDE, or if this application is being deployed for production as it " +
                     "will impact application start times.");
 
-                // If we're verifying, force bean validation to occur at startup as well
-                webConfig.overrideContextInitParameter(EnableLazyBeanValidation, false);
                 Verifier.setCurrentInstance(new Verifier());
             }
 
