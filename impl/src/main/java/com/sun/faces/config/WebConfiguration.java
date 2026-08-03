@@ -88,7 +88,7 @@ public class WebConfiguration {
     // Key under which we store our WebConfiguration instance.
     private static final String WEB_CONFIG_KEY = "com.sun.faces.config.WebConfiguration";
 
-    public static final String META_INF_CONTRACTS_DIR = "META-INF" + WebContextInitParameter.WebAppContractsDirectory.getDefaultValue();
+    public static final String META_INF_CONTRACTS_DIR = "META-INF/" + WebContextInitParameter.WebAppContractsDirectory.getDefaultValue();
 
     private static final int META_INF_CONTRACTS_DIR_LEN = META_INF_CONTRACTS_DIR.length();
 
@@ -781,8 +781,8 @@ public class WebConfiguration {
         AnnotationScanPackages("com.sun.faces.annotationScanPackages", ""),
         FaceletsProcessingFileExtensionProcessAs("", ""),
         ClientWindowMode(ClientWindow.CLIENT_WINDOW_MODE_PARAM_NAME, "none"),
-        WebAppResourcesDirectory(ResourceHandler.WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME, "/resources"),
-        WebAppContractsDirectory(ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME, "/contracts"),
+        WebAppResourcesDirectory(ResourceHandler.WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME, "resources"),
+        WebAppContractsDirectory(ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME, "contracts"),
         ExceptionTypesToIgnoreInLogging("com.sun.faces.exceptionTypesToIgnoreInLogging", ""),
         CspPolicy(ResourceHandlerImpl.CSP_POLICY_PARAM_NAME, ResourceHandlerImpl.DEFAULT_CSP_POLICY),
         WebsocketEndpointIdleTimeout("com.sun.faces.websocketEndpointIdleTimeout", "0"), // in milliseconds; 0 means no timeout
@@ -866,7 +866,6 @@ public class WebConfiguration {
         EnableJSStyleHiding("com.sun.faces.enableJSStyleHiding", false),
         EnableScriptInAttributeValue("com.sun.faces.enableScriptsInAttributeValues", true),
         WriteStateAtFormEnd("com.sun.faces.writeStateAtFormEnd", true),
-        EnableLazyBeanValidation("com.sun.faces.enableLazyBeanValidation", true),
         SerializeServerState(StateManager.SERIALIZE_SERVER_STATE_PARAM_NAME, false),
         EnableViewStateIdRendering("com.sun.faces.enableViewStateIdRendering", true),
         RegisterConverterPropertyEditors("com.sun.faces.registerConverterPropertyEditors", false),

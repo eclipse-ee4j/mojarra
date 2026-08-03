@@ -22,7 +22,6 @@ import static com.sun.faces.RIConstants.FACES_SERVLET_MAPPINGS;
 import static com.sun.faces.RIConstants.FACES_SERVLET_REGISTRATION;
 import static com.sun.faces.RIConstants.MOJARRA_VERSION;
 import static com.sun.faces.config.InitFacesContext.getInitContextServletContextMap;
-import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableLazyBeanValidation;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableThreading;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.EnableWebsocketEndpoint;
 import static com.sun.faces.config.WebConfiguration.BooleanWebContextInitParameter.ForceLoadFacesConfigFiles;
@@ -190,8 +189,6 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                     "It shouldn't be enabled if using an IDE, or if this application is being deployed for production as it " +
                     "will impact application start times.");
 
-                // If we're verifying, force bean validation to occur at startup as well
-                webConfig.overrideContextInitParameter(EnableLazyBeanValidation, false);
                 Verifier.setCurrentInstance(new Verifier());
             }
 
