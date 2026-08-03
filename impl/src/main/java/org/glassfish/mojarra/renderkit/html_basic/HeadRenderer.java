@@ -23,6 +23,7 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 
+import org.glassfish.mojarra.context.ExternalContextImpl;
 import org.glassfish.mojarra.renderkit.Attribute;
 import org.glassfish.mojarra.renderkit.AttributeManager;
 import org.glassfish.mojarra.renderkit.RenderKitUtils;
@@ -62,6 +63,7 @@ public class HeadRenderer extends HtmlBasicRenderer {
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         encodeHeadResources(context);
+        ExternalContextImpl.sendEarlyHints(context);
         RenderKitUtils.flushPendingBehaviorEventListeners(context, component, null);
         writer.endElement("head");
     }

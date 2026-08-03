@@ -25,24 +25,8 @@
         <version>5.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>perf</artifactId>
+    <artifactId>issue5746</artifactId>
     <packaging>war</packaging>
 
     <name>Mojarra ${project.version} - IT - ${project.artifactId}</name>
-
-    <properties>
-        <!-- The other webapp.* defaults live in the parent pom, shared with the other IT modules. -->
-        <webapp.compressViewState>true</webapp.compressViewState>
-    </properties>
-
-    <dependencies>
-        <!-- Supplies arquillian-server.xml (the bare-container server-profile Arquillian config, e.g. Tomcat). -->
-        <dependency>
-            <groupId>org.glassfish.mojarra.test</groupId>
-            <artifactId>base</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-
 </project>
