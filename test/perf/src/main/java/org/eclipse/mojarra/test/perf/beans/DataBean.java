@@ -25,10 +25,10 @@ import jakarta.inject.Named;
 
 /**
  * Row data for the table ({@code h:dataTable}), repeat ({@code ui:repeat}), composite and foreach
- * ({@code c:forEach items}) scenarios. Scenarios group into four size tiers, each a single tunable constant below:
+ * ({@code c:forEach items}) scenarios. Scenarios group into five size tiers, each a single tunable constant below:
  * {@link #getReadonlyRows() readonly} rows, {@link #getInputRows() input} rows (also the tier the flat forms match),
- * {@link #getForeachRows() foreach} rows, and nested {@link #getGroups() groups}. Each getter builds its list lazily
- * so a view generates only the rows it renders.
+ * {@link #getForeachRows() foreach} rows, nested {@link #getGroups() groups}, and {@link #getWideRows() wide} rows.
+ * Each getter builds its list lazily so a view generates only the rows it renders.
  */
 @Named
 @ViewScoped
@@ -41,6 +41,7 @@ public class DataBean implements Serializable {
     private static final int FOREACH_ROWS = 100;
     private static final int GROUPS = 5;
     private static final int GROUP_ROWS = 10;
+    private static final int WIDE_ROWS = 5;
 
     @Inject
     private RowFactory rowFactory;
@@ -49,6 +50,7 @@ public class DataBean implements Serializable {
     private List<Row> inputRows;
     private List<Row> foreachRows;
     private List<Group> groups;
+    private List<Row> wideRows;
 
     /** Readonly (outputs-only) table/repeat/composite rows, e.g. {@code #{dataBean.readonlyRows}}. */
     public List<Row> getReadonlyRows() {
@@ -64,6 +66,17 @@ public class DataBean implements Serializable {
             inputRows = rowFactory.generate(INPUT_ROWS);
         }
         return inputRows;
+    }
+
+    /**
+     * Rows for the wide (many-column) table, e.g. {@code #{dataBean.wideRows}}. Deliberately few: the
+     * facet cost that scenario isolates is fixed per column, so every extra row only dilutes it.
+     */
+    public List<Row> getWideRows() {
+        if (wideRows == null) {
+            wideRows = rowFactory.generate(WIDE_ROWS);
+        }
+        return wideRows;
     }
 
     /** Rows the {@code foreach-*} {@code c:forEach} iterates, e.g. {@code #{dataBean.foreachRows}}. */
