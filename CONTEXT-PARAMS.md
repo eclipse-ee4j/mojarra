@@ -24,7 +24,7 @@ The *Performance* column tells where the cost of changing the parameter lands: `
 <tr><th colspan="5" align="left"><br/><code>jakarta.faces.DISABLE_FACESSERVLET_TO_XHTML</code></th></tr>
 <tr><td><code>boolean</code></td><td><code>false</code></td><td>2.3</td><td>-</td><td>Disables the automatic mapping of the <code>FacesServlet</code> to <code>*.xhtml</code>.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>jakarta.faces.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING</code></th></tr>
-<tr><td><code>String[]</code></td><td><em>(none)</em></td><td>5.0</td><td>-</td><td>4.0.14</td><td>-</td><td>Comma separated list of fully qualified exception class names the default <code>ExceptionHandler</code> must not log.</td></tr>
+<tr><td><code>String[]</code></td><td><em>(none)</em></td><td>5.0</td><td>-</td><td>Comma separated list of fully qualified exception class names the default <code>ExceptionHandler</code> must not log.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>jakarta.faces.LIFECYCLE_ID</code></th></tr>
 <tr><td><code>String</code></td><td><em>(none)</em></td><td>1.0</td><td>-</td><td>Identifier under which a <code>jakarta.faces.lifecycle.Lifecycle</code> was registered in the <code>jakarta.faces.lifecycle.LifecycleFactory</code>, which the <code>FacesServlet</code> must use. This is not a class name but the key passed to <code>LifecycleFactory.addLifecycle()</code>, so it only resolves when something registered a lifecycle under it. Empty means <code>DEFAULT</code>, the standard lifecycle.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>jakarta.faces.PROJECT_STAGE</code></th></tr>
@@ -86,7 +86,7 @@ The *Performance* column tells where the cost of changing the parameter lands: `
 <tr><th colspan="5" align="left"><br/><code>jakarta.faces.FACELETS_BUFFER_SIZE</code></th></tr>
 <tr><td><code>int</code></td><td><code>1024</code></td><td>2.0</td><td>request</td><td>Amount of bytes the response is buffered with while a view is being rendered. <code>-1</code> leaves the buffer size of the response untouched. A larger buffer flushes less often at the price of more memory per concurrent request, and guarantees during development that an error cannot arrive after the response was already partially flushed.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>jakarta.faces.SEPARATOR_CHAR</code></th></tr>
-<tr><td><code>Character</code></td><td><code>:</code></td><td>2.0</td><td>-</td><td>Character which separates the segments of a client ID. Only the first character of the value is used.</td></tr>
+<tr><td><code>Character</code></td><td><code>:</code></td><td>2.0</td><td>-</td><td>Character which separates the segments of a client ID. The value must be exactly one character, anything else is rejected with an <code>IllegalArgumentException</code> when the parameter is first read.</td></tr>
 </tbody>
 </table>
 
@@ -164,9 +164,9 @@ The *Performance* column tells where the cost of changing the parameter lands: `
 </thead>
 <tbody>
 <tr><th colspan="5" align="left"><br/><code>jakarta.faces.CSP_POLICY</code></th></tr>
-<tr><td><code>String</code></td><td><code>script-src 'self' 'nonce-#{nonce}' 'strict-dynamic'</code></td><td>5.0</td><td>-</td><td>4.0.16</td><td>-</td><td>Value of the <code>Content-Security-Policy</code> response header sent when <code>jakarta.faces.ENABLE_CSP_NONCE</code> is enabled. Every <code>#{nonce}</code> in it is substituted by the nonce generated for the current response.</td></tr>
+<tr><td><code>String</code></td><td><code>script-src 'self' 'nonce-#{nonce}' 'strict-dynamic'</code></td><td>5.0</td><td>-</td><td>Value of the <code>Content-Security-Policy</code> response header sent when <code>jakarta.faces.ENABLE_CSP_NONCE</code> is enabled. Every <code>#{nonce}</code> in it is substituted by the nonce generated for the current response.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>jakarta.faces.ENABLE_CSP_NONCE</code></th></tr>
-<tr><td><code>boolean</code></td><td><code>false</code></td><td>5.0</td><td>request</td><td>4.0.16</td><td>request</td><td>Generates a nonce per request, stamps it on every script it renders and sends it in the <code>Content-Security-Policy</code> response header configured by <code>jakarta.faces.CSP_POLICY</code>. An ajax postback reuses the nonce of the view it updates, since the browser still enforces the policy sent with the full page. <code>true</code> costs one secure random draw and a header per response, which is a small price for the protection.</td></tr>
+<tr><td><code>boolean</code></td><td><code>false</code></td><td>5.0</td><td>request</td><td>Generates a nonce per request, stamps it on every script it renders and sends it in the <code>Content-Security-Policy</code> response header configured by <code>jakarta.faces.CSP_POLICY</code>. An ajax postback reuses the nonce of the view it updates, since the browser still enforces the policy sent with the full page. <code>true</code> costs one secure random draw and a header per response, which is a small price for the protection.</td></tr>
 </tbody>
 </table>
 

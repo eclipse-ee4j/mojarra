@@ -48,16 +48,13 @@ import org.glassfish.mojarra.context.MojarraContextParam;
  * The parameters recognized by this implementation are collected from {@link WebContextInitParameter},
  * {@link BooleanWebContextInitParameter}, {@link MojarraContextParam} and {@link FacesContextParam}, plus a scan of the
  * main sources for <code>getInitParameter()</code> call sites which read a parameter declared outside of those enums.
- * <p>
- * The legacy <code>com.sun.faces.*</code> spelling which {@link WebConfiguration} still accepts is not documented per
- * parameter, the page states the rule once, so names carrying that prefix are skipped while collecting.
+
  * <p>
  * This test only verifies, it never writes the page. When it fails, edit the page by hand.
  */
 class ContextParamsMdTest {
 
     private static final String NONE = "(none)";
-    private static final String LEGACY_PARAM_PREFIX = "com.sun.faces.";
     private static final String TYPE = "Type";
     private static final String DEFAULT = "Default";
     private static final String DESCRIPTION = "Description";
@@ -139,6 +136,33 @@ class ContextParamsMdTest {
         }
 
         assertTrue(incomplete.isEmpty(), () -> "Incomplete rows in " + markdownFile() + ": " + incomplete);
+    }
+
+    @Test
+    void documentsEveryRowWithAsManyCellsAsItsTableHasColumns() {
+        List<String> malformed = new ArrayList<>();
+        List<String> columns = List.of();
+        String name = null;
+
+        for (String line : readString(markdownFile()).split("\n")) {
+            Matcher parameter = PARAMETER_ROW.matcher(line);
+
+            if (parameter.find()) {
+                name = unescape(parameter.group(1));
+            } else if (line.contains("<th>")) {
+                columns = matchesOf(HEADER_CELL, line);
+            } else if (name != null && line.contains("<td>")) {
+                int cells = matchesOf(DATA_CELL, line).size();
+
+                if (cells != columns.size()) {
+                    malformed.add(name + " has " + cells + " cells where its table has " + columns.size() + " columns");
+                }
+
+                name = null;
+            }
+        }
+
+        assertTrue(malformed.isEmpty(), () -> "Malformed rows in " + markdownFile() + ": " + malformed);
     }
 
     @Test
@@ -277,7 +301,7 @@ class ContextParamsMdTest {
             while (matcher.find()) {
                 String name = resolveArgument(matcher.group(1).trim(), constants);
 
-                if (name != null && name.contains(".") && !name.startsWith(LEGACY_PARAM_PREFIX)) {
+                if (name != null && name.contains(".")) {
                     names.add(name);
                 }
             }
