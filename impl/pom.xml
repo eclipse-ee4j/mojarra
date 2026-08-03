@@ -303,6 +303,7 @@
                     <argLine>--add-opens java.base/java.lang=ALL-UNNAMED</argLine>
                     <systemPropertyVariables>
                         <java.util.logging.config.file>${project.build.testOutputDirectory}/logging.properties</java.util.logging.config.file>
+                        <contextparams.md>${project.basedir}/../CONTEXT-PARAMS.md</contextparams.md>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

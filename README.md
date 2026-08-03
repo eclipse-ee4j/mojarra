@@ -231,6 +231,12 @@ Since Jakarta Faces 4.0, it's no longer required to add `@FacesConfig` to a CDI 
 The `@FacesConfig` does, however, still remove the need to explicitly add a `FacesServlet` entry to `web.xml`.
 If you already have a `FacesServlet` entry in `web.xml`, then the `@FacesConfig` is not needed anywhere.
 
+## Configuration
+
+Every context parameter this version recognizes is listed in [CONTEXT-PARAMS.md][31], the Jakarta Faces API ones as well as the Mojarra specific ones, grouped per category and stating the type, the default value, the version it exists since, where its performance cost lands and what it does.
+
+They are configured as a `<context-param>` in `web.xml`.
+
 ## Building and Contributing
 
 Instructions for checking out the source, building from source, importing into an IDE, and submitting pull requests are available in [DEVELOPERS.md](DEVELOPERS.md).
@@ -271,3 +277,4 @@ Instructions for checking out the source, building from source, importing into a
   [23]: https://jakarta.ee/specifications/faces/4.1/vdldoc/
   [24]: https://jakarta.ee/specifications/faces/4.1/jsdoc/faces
   [26]: https://balusc.omnifaces.org/2024/06/whats-new-in-faces-41.html
+  [31]: CONTEXT-PARAMS.md

@@ -1399,7 +1399,7 @@ public class RenderKitUtils {
                 return "";
             }
             WebConfiguration webConfig = WebConfiguration.getInstance();
-            if (value.startsWith(webConfig.getOptionValue(WebConfiguration.WebContextInitParameter.WebAppContractsDirectory))) {
+            if (Util.ensureLeadingSlash(value).startsWith(Util.ensureLeadingSlash(webConfig.getOptionValue(WebConfiguration.WebContextInitParameter.WebAppContractsDirectory)))) {
                 if (context.isProjectStage(ProjectStage.Development)) {
                     String msg = "Illegal path, direct contract references are not allowed: " + value;
                     context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, msg));
