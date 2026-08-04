@@ -21,8 +21,6 @@ import java.nio.charset.StandardCharsets;
 
 import jakarta.faces.render.RenderKitFactory;
 
-import org.glassfish.mojarra.config.manager.FacesSchema;
-
 /**
  * This class contains literal strings used throughout the Faces RI.
  */
@@ -109,10 +107,6 @@ public class RIConstants {
     public static final int FLOW_IN_JAR_PREFIX_LENGTH = FLOW_IN_JAR_PREFIX.length();
 
     public static final String FLOW_DISCOVERY_CDI_HELPER_BEAN_NAME = "csfFLOWDISCOVERYCDIHELPER";
-
-    public static final String DOCUMENT_NAMESPACE = FacesSchema.Schemas.JAKARTAEE_SCHEMA_DEFAULT_NS;
-
-    public static final String DOCUMENT_VERSION = "4.0";
 
     /**
      * Convenience key to store / get BeanManager.

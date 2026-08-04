@@ -18,7 +18,6 @@ package org.glassfish.mojarra.application.resource;
 
 import static jakarta.faces.application.ProjectStage.Development;
 import static org.glassfish.mojarra.config.WebConfiguration.META_INF_CONTRACTS_DIR;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.CacheResourceModificationTimestamp;
 import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableMissingResourceLibraryDetection;
 
 import java.io.IOException;
@@ -54,7 +53,7 @@ public class ClasspathResourceHelper extends ResourceHelper {
 
     public ClasspathResourceHelper() {
         WebConfiguration webconfig = WebConfiguration.getInstance();
-        cacheTimestamp = webconfig.isOptionEnabled(CacheResourceModificationTimestamp);
+        cacheTimestamp = webconfig.isResourceModificationTimestampCached();
         enableMissingResourceLibraryDetection = webconfig.isOptionEnabled(EnableMissingResourceLibraryDetection);
 
     }

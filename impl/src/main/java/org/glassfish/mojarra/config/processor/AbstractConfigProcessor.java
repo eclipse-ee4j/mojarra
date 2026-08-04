@@ -275,7 +275,7 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
         if (clazz == null) {
             try {
                 clazz = Util.loadClass(className, fallback);
-                if (!isDevModeEnabled(sc, facesContext)) {
+                if (!isDevelopment(sc, facesContext)) {
                     classMetadataMap.put(className, clazz);
                 } else {
                     classMetadataMap.scanForAnnotations(className, clazz);
@@ -320,7 +320,7 @@ public abstract class AbstractConfigProcessor implements ConfigProcessor {
         return MessageFormat.format("\n  Source Document: {0}\n  Cause: {1}", source.getOwnerDocument().getDocumentURI(), cause);
     }
 
-    private boolean isDevModeEnabled(ServletContext sc, FacesContext facesContext) {
+    private boolean isDevelopment(ServletContext sc, FacesContext facesContext) {
         return getProjectStage(sc, facesContext).equals(Development);
     }
 

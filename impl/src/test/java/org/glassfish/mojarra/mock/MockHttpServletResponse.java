@@ -20,7 +20,9 @@ package org.glassfish.mojarra.mock;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.Cookie;
@@ -32,6 +34,8 @@ public class MockHttpServletResponse implements HttpServletResponse {
     private String encoding = "ISO-8859-1";
     private String contentType = "text/html";
     private int status;
+    private int contentLength = -1;
+    private final Map<String, String> headers = new LinkedHashMap<>();
 
     // -------------------------------------------- HttpServletResponse Methods
     @Override
@@ -91,7 +95,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     @Override
     public void setHeader(String name, String value) {
-        throw new UnsupportedOperationException();
+        headers.put(name, value);
     }
 
     @Override
@@ -172,7 +176,11 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     @Override
     public void setContentLength(int length) {
-        throw new UnsupportedOperationException();
+        contentLength = length;
+    }
+
+    public int getContentLength() {
+        return contentLength;
     }
 
     @Override
@@ -187,7 +195,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     @Override
     public String getHeader(String string) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return headers.get(string);
     }
 
     @Override
@@ -197,7 +205,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     @Override
     public Collection<String> getHeaderNames() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return headers.keySet();
     }
 
     @Override

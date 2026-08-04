@@ -21,16 +21,18 @@ import static java.util.Collections.emptyMap;
 import static java.util.logging.Level.FINE;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
+import static java.util.stream.Collectors.toSet;
 import static org.glassfish.mojarra.util.Util.split;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,25 +40,23 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.event.PhaseListener;
-import jakarta.faces.lifecycle.Lifecycle;
-import jakarta.faces.lifecycle.LifecycleFactory;
 import jakarta.servlet.ServletContext;
 
 import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.application.view.FaceletViewHandlingStrategy;
+import org.glassfish.mojarra.context.FacesContextParam;
 import org.glassfish.mojarra.facelets.util.Classpath;
-import org.glassfish.mojarra.lifecycle.HttpMethodRestrictionsPhaseListener;
 import org.glassfish.mojarra.util.FacesLogger;
 import org.glassfish.mojarra.util.MojarraVersion;
 import org.glassfish.mojarra.util.Util;
@@ -72,6 +72,45 @@ public class WebConfiguration {
     // A Simple regular expression of allowable boolean values
     private static final Pattern ALLOWABLE_BOOLEANS = compile("true|false", CASE_INSENSITIVE);
 
+    /**
+     * <p>
+     * Maps a specification context parameter to the unqualified name it had while it was Mojarra specific. Both
+     * prefixes are accepted for it: the one it actually carried, and the one the 5.0 rename produces for anybody
+     * replacing com.sun.faces with org.glassfish.mojarra throughout, which is a name it never had, but is the single
+     * most likely wrong spelling in this release.
+     * </p>
+     *
+     * <p>
+     * This lives here rather than beside the parameters themselves because it is Mojarra's own history. Those
+     * parameters belong to the specification now, and so does the enum which declares them.
+     * </p>
+     */
+    private static final Map<FacesContextParam, String> PROMOTED_PARAMETERS = Map.of(
+            FacesContextParam.ENABLE_CSP_NONCE, "enableCspNonce",
+            FacesContextParam.CSP_POLICY, "cspPolicy",
+            FacesContextParam.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING, "exceptionTypesToIgnoreInLogging");
+
+    /**
+     * The value of a tri-state parameter which leaves the decision to the project stage.
+     */
+    private static final String AUTO = "auto";
+
+    /**
+     * How often, in minutes, a changed resource is noticed while developing.
+     */
+    private static final long RESOURCE_UPDATE_CHECK_PERIOD_IN_DEVELOPMENT = 5;
+
+    /**
+     * Parameters which exist to make debugging easier and would weaken a deployment if honored anywhere else, so outside
+     * Development they revert to their default, which is in each case the safe value.
+     */
+    private static final Set<BooleanWebContextInitParameter> DEVELOPMENT_ONLY_OPTIONS = EnumSet.of(
+            BooleanWebContextInitParameter.EnableClientStateDebugging,
+            BooleanWebContextInitParameter.GenerateUniqueServerStateIds);
+
+    // Reads better than a bare boolean at the deprecated parameter declarations below.
+    private static final boolean DEPRECATED = true;
+
     private static final String LEGACY_PARAM_PREFIX = "com.sun.faces.";
     private static final String CURRENT_PARAM_PREFIX = "org.glassfish.mojarra.";
 
@@ -84,8 +123,7 @@ public class WebConfiguration {
 
     private static final String RESOURCE_CONTRACT_SUFFIX = "/" + ResourceHandler.RESOURCE_CONTRACT_XML;
 
-    // Logging level. Defaults to FINE
-    private Level loggingLevel = Level.FINE;
+    private final Level loggingLevel;
 
     private final Map<BooleanWebContextInitParameter, Boolean> booleanContextParameters = new EnumMap<>(BooleanWebContextInitParameter.class);
 
@@ -101,6 +139,8 @@ public class WebConfiguration {
 
     private final ServletContext servletContext;
 
+    private final ProjectStage projectStage;
+
     private FaceletsConfiguration faceletsConfig;
 
     private boolean hasFlows;
@@ -113,12 +153,136 @@ public class WebConfiguration {
         String contextName = servletContext.getContextPath();
 
         initSetList(servletContext);
-        processBooleanParameters(servletContext, contextName);
-        processInitParameters(servletContext, contextName);
+
+        // Before the parameters, because displayConfiguration decides at which level they are logged, and some of the
+        // others derive their default from the stage.
         if (canProcessJndiEntries()) {
             processJndiEntries(contextName);
         }
+        projectStage = resolveProjectStage(servletContext);
+        loggingLevel = resolveLoggingLevel(servletContext, contextName);
+        logEnvironmentEntries(contextName);
 
+        processBooleanParameters(servletContext, contextName);
+        processInitParameters(servletContext, contextName);
+
+        processDeprecatedParameters(contextName);
+        warnAboutUnrecognizedParameters(contextName);
+    }
+
+    /**
+     * <p>
+     * Reports every <code>org.glassfish.mojarra.*</code> name the application declared which this release does not
+     * recognize, so that a typo or a parameter which has been removed says so rather than being silently ignored.
+     * </p>
+     *
+     * <p>
+     * Only Mojarra's own namespace is checked, because it is the only one this release is authoritative about. It also
+     * covers the legacy <code>com.sun.faces</code> spelling, which {@link #initSetList(ServletContext)} normalizes into
+     * it. This does not run in Production, where nothing can be done about it any more anyway.
+     * </p>
+     */
+    private void warnAboutUnrecognizedParameters(String contextName) {
+        if (projectStage == ProjectStage.Production) {
+            return;
+        }
+
+        Set<String> recognized = new HashSet<>(getPromotedParameterAliases());
+
+        for (WebContextInitParameter param : WebContextInitParameter.values()) {
+            recognized.add(param.getQualifiedName());
+        }
+
+        for (BooleanWebContextInitParameter param : BooleanWebContextInitParameter.values()) {
+            recognized.add(param.getQualifiedName());
+        }
+
+        setParams.stream()
+                 .filter(name -> name.startsWith(CURRENT_PARAM_PREFIX) && !recognized.contains(name))
+                 .sorted()
+                 .forEach(name -> LOGGER.log(Level.WARNING, "faces.config.webconfig.param.unrecognized", new Object[] { contextName, name }));
+    }
+
+    /**
+     * <p>
+     * Reports the JNDI environment entries, which have to be read before the level at which they are reported can be
+     * resolved, because one of them decides the project stage which that level derives from.
+     * </p>
+     */
+    private void logEnvironmentEntries(String contextName) {
+        if (LOGGER.isLoggable(loggingLevel)) {
+            envEntries.forEach((entry, value) -> LOGGER.log(loggingLevel, "faces.config.webconfig.enventryinfo",
+                    new Object[] { contextName, entry.getQualifiedName(), value }));
+        }
+    }
+
+    /**
+     * <p>
+     * The level at which every recognized parameter is logged, which is informational outside Production so that a
+     * deployment can be read back from its own log, and fine grained there so that it stays out of the way. Setting
+     * <code>displayConfiguration</code> explicitly overrules that either way, which is what keeps it usable in
+     * Production for a deployment whose parameters are substituted at build time.
+     * </p>
+     *
+     * <p>
+     * This resolves the tri-state itself rather than through {@link #isOptionEnabled(WebContextInitParameter, boolean)},
+     * because it runs before the parameters that one reads are populated.
+     * </p>
+     */
+    private Level resolveLoggingLevel(ServletContext servletContext, String contextName) {
+        Level derived = projectStage == ProjectStage.Production ? Level.FINE : Level.INFO;
+        String value = getRawInitParameter(servletContext, WebContextInitParameter.DisplayConfiguration.getQualifiedName());
+
+        if (value == null || AUTO.equalsIgnoreCase(value)) {
+            return derived;
+        }
+
+        if (!ALLOWABLE_BOOLEANS.matcher(value).matches()) {
+            LOGGER.log(Level.WARNING, "faces.config.webconfig.boolconfig.invalidvalue", new Object[] { contextName, value,
+                    WebContextInitParameter.DisplayConfiguration.getQualifiedName(), "true|false|" + AUTO, AUTO });
+            return derived;
+        }
+
+        return Boolean.parseBoolean(value) ? Level.INFO : Level.FINE;
+    }
+
+    /**
+     * <p>
+     * The value as declared, under either prefix and without reporting the legacy one, which the regular pass over the
+     * parameters does later. This exists because the level at which that pass reports has to be known before it runs.
+     * </p>
+     */
+    private static String getRawInitParameter(ServletContext servletContext, String qualifiedName) {
+        String value = servletContext.getInitParameter(qualifiedName);
+
+        if (value == null) {
+            value = servletContext.getInitParameter(LEGACY_PARAM_PREFIX + qualifiedName.substring(CURRENT_PARAM_PREFIX.length()));
+        }
+
+        return value == null ? null : value.trim();
+    }
+
+    /**
+     * <p>
+     * Resolves the project stage from its JNDI environment entry, falling back to the context parameter, which is what
+     * {@link jakarta.faces.application.Application#getProjectStage()} ends up doing as well.
+     * </p>
+     */
+    private ProjectStage resolveProjectStage(ServletContext servletContext) {
+        String value = getEnvironmentEntry(WebEnvironmentEntry.ProjectStage);
+
+        if (value == null) {
+            value = servletContext.getInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME);
+        }
+
+        try {
+            // Via the parameter itself, whose conversion matches an enum constant regardless of case.
+            return FacesContextParam.PROJECT_STAGE.<ProjectStage>toValue(value).orElse(ProjectStage.Production);
+        } catch (IllegalArgumentException e) {
+            LOGGER.log(Level.WARNING, "faces.config.webconfig.boolconfig.invalidvalue", new Object[] { servletContext.getContextPath(), value,
+                    ProjectStage.PROJECT_STAGE_PARAM_NAME, Arrays.toString(ProjectStage.values()), ProjectStage.Production });
+            return ProjectStage.Production;
+        }
     }
 
     // ---------------------------------------------------------- Public Methods
@@ -315,33 +479,189 @@ public class WebConfiguration {
         }
     }
 
-    public void doPostBringupActions() {
-        // Add the HttpMethodRestrictionPhaseListener if the parameter is enabled.
-        boolean enabled = isOptionEnabled(BooleanWebContextInitParameter.EnableHttpMethodRestrictionPhaseListener);
-        if (enabled) {
-            LifecycleFactory factory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-            PhaseListener listener = null;
+    /**
+     * <p>
+     * Returns the value to write as the <code>autocomplete</code> attribute of the hidden fields which carry the view
+     * state.
+     * </p>
+     *
+     * <p>
+     * The deprecated <code>autoCompleteOffOnViewState</code> is honored when the replacement was not set, where
+     * <code>true</code> maps to <code>off</code> and <code>false</code> to the default, which is what those two meant
+     * before the replacement existed.
+     * </p>
+     *
+     * @return the attribute value.
+     */
+    public String getViewStateAutocomplete() {
+        String value = getOptionValue(WebContextInitParameter.ViewStateAutocomplete);
 
-            for (String lifecycleId : toIterable(factory.getLifecycleIds())) {
-                Lifecycle lifecycle = factory.getLifecycle(lifecycleId);
-                boolean foundExistingListenerInstance = false;
-                for (PhaseListener curListener : lifecycle.getPhaseListeners()) {
-                    if (curListener instanceof HttpMethodRestrictionsPhaseListener) {
-                        foundExistingListenerInstance = true;
-                        break;
-                    }
-                }
+        if (!isSet(WebContextInitParameter.ViewStateAutocomplete.getQualifiedName())
+                && isOptionEnabled(BooleanWebContextInitParameter.AutoCompleteOffOnViewState)) {
+            value = "off";
+        }
 
-                if (!foundExistingListenerInstance) {
-                    if (listener == null) {
-                        listener = new HttpMethodRestrictionsPhaseListener();
-                    }
-                    lifecycle.addPhaseListener(listener);
+        return value;
+    }
+
+    /**
+     * <p>
+     * Returns the value of a specification context parameter which used to be a Mojarra one, honoring the name it had
+     * when the specification name is not set, and warning when it does.
+     * </p>
+     *
+     * @param <T> the expected type of the value.
+     * @param param the parameter of interest.
+     * @param context the involved faces context.
+     * @return the value of the parameter.
+     */
+    public static <T> T getValue(FacesContextParam param, FacesContext context) {
+        String suffix = PROMOTED_PARAMETERS.get(param);
+
+        if (suffix != null && context.getExternalContext().getInitParameter(param.getName()) == null) {
+            for (String legacyName : List.of(LEGACY_PARAM_PREFIX + suffix, CURRENT_PARAM_PREFIX + suffix)) {
+                String value = context.getExternalContext().getInitParameter(legacyName);
+
+                if (value != null) {
+                    LOGGER.log(Level.WARNING, "faces.config.webconfig.param.deprecated",
+                            new Object[] { context.getExternalContext().getContextName(), legacyName, param.getName() });
+
+                    return param.<T>toValue(value).orElseThrow();
                 }
             }
         }
 
+        return param.getValue(context);
+    }
+
+    /**
+     * @return every name a promoted parameter may still be spelled as, which the unrecognized parameter check has to
+     * treat as known.
+     */
+    private static Set<String> getPromotedParameterAliases() {
+        return PROMOTED_PARAMETERS.values().stream()
+                .flatMap(suffix -> Stream.of(LEGACY_PARAM_PREFIX + suffix, CURRENT_PARAM_PREFIX + suffix))
+                .collect(toSet());
+    }
+
+    /**
+     * <p>
+     * Whether the last modified timestamp of a resource is remembered rather than read on every request. The stage
+     * decides it unless the parameter says otherwise, since a resource which changed on disk has to be noticed while
+     * developing and cannot change under a deployed application without a redeploy.
+     * </p>
+     *
+     * @return whether the timestamp is cached.
+     */
+    public boolean isResourceModificationTimestampCached() {
+        return isOptionEnabled(WebContextInitParameter.CacheResourceModificationTimestamp, projectStage != ProjectStage.Development);
+    }
+
+    /**
+     * <p>
+     * How many minutes apart a cached resource is checked for modification, where <code>-1</code> drops the check. The
+     * stage decides it unless the parameter says otherwise, for the same reason.
+     * </p>
+     *
+     * @return the period in minutes.
+     */
+    public long getResourceUpdateCheckPeriod() {
+        String value = getOptionValue(WebContextInitParameter.ResourceUpdateCheckPeriod);
+        long whenAuto = projectStage == ProjectStage.Development ? RESOURCE_UPDATE_CHECK_PERIOD_IN_DEVELOPMENT : -1;
+
+        if (value == null || AUTO.equalsIgnoreCase(value.trim())) {
+            return whenAuto;
+        }
+
+        try {
+            return Long.parseLong(value.trim());
+        } catch (NumberFormatException e) {
+            warnAboutUnusableValue(WebContextInitParameter.ResourceUpdateCheckPeriod, value, "a number or " + AUTO);
+            return whenAuto;
+        }
+    }
+
+    /**
+     * <p>
+     * Resolves a tri-state parameter, whose value is <code>true</code>, <code>false</code> or <code>auto</code>. An
+     * unusable value is reported and behaves as though the parameter was never set, rather than as <code>false</code>,
+     * which is what a bare {@link Boolean#parseBoolean(String)} would silently make of a typo.
+     * </p>
+     *
+     * @param param the parameter of interest.
+     * @param whenAuto what <code>auto</code> means for it.
+     * @return whether the option is enabled.
+     */
+    public boolean isOptionEnabled(WebContextInitParameter param, boolean whenAuto) {
+        String value = getTriStateValue(param);
+
+        return value == null ? whenAuto : Boolean.parseBoolean(value);
+    }
+
+    /**
+     * @return the trimmed value of a tri-state parameter, or <code>null</code> when it says <code>auto</code> or
+     * says something which cannot be used, in which case that is reported first.
+     */
+    private String getTriStateValue(WebContextInitParameter param) {
+        String value = getOptionValue(param);
+
+        if (value == null || AUTO.equalsIgnoreCase(value.trim())) {
+            return null;
+        }
+
+        value = value.trim();
+
+        if (!ALLOWABLE_BOOLEANS.matcher(value).matches()) {
+            warnAboutUnusableValue(param, value, "true|false|" + AUTO);
+            return null;
+        }
+
+        return value;
+    }
+
+    private void warnAboutUnusableValue(WebContextInitParameter param, String value, String allowed) {
+        LOGGER.log(Level.WARNING, "faces.config.webconfig.boolconfig.invalidvalue",
+                new Object[] { servletContext.getContextPath(), value, param.getQualifiedName(), allowed, AUTO });
+    }
+
+    public ProjectStage getProjectStage() {
+        return projectStage;
+    }
+
+    public void doPostBringupActions() {
+        processDevelopmentOnlyParameters();
         discoverResourceLibraryContracts();
+    }
+
+    /**
+     * <p>
+     * Reverts every development only parameter which was explicitly set away from its default to that default, unless
+     * the project stage is Development, and says so. Silently ignoring a setting which weakens the deployment would be
+     * worse than honoring it, so the warning matters as much as the gating.
+     * </p>
+     *
+     * <p>
+     * This runs after bringup rather than during construction because it needs the project stage, and therefore a
+     * FacesContext, which does not exist yet while the parameters are being read.
+     * </p>
+     */
+    void processDevelopmentOnlyParameters() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        ProjectStage projectStage = getProjectStage();
+
+        if (projectStage == ProjectStage.Development) {
+            return;
+        }
+
+        for (BooleanWebContextInitParameter param : DEVELOPMENT_ONLY_OPTIONS) {
+            if (isOptionEnabled(param) != param.getDefaultValue()) {
+                LOGGER.log(Level.WARNING, "faces.config.webconfig.param.development_only",
+                        new Object[] { context.getExternalContext().getContextName(), param.getQualifiedName(), projectStage,
+                                param.getDefaultValue() });
+
+                booleanContextParameters.put(param, param.getDefaultValue());
+            }
+        }
     }
 
     private void discoverResourceLibraryContracts() {
@@ -489,12 +809,6 @@ public class WebConfiguration {
                 }
             }
 
-            // first param processed should be
-            // org.glassfish.mojarra.displayConfiguration
-            if (BooleanWebContextInitParameter.DisplayConfiguration.equals(param) && value) {
-                loggingLevel = Level.INFO;
-            }
-
             if (LOGGER.isLoggable(loggingLevel)) {
                 LOGGER.log(loggingLevel, value ? "faces.config.webconfig.boolconfiginfo.enabled" : "faces.config.webconfig.boolconfiginfo.disabled",
                         new Object[] { contextName, param.getQualifiedName() });
@@ -503,6 +817,62 @@ public class WebConfiguration {
             booleanContextParameters.put(param, value);
         }
 
+    }
+
+    /**
+     * <p>
+     * Warn about every deprecated context initialization parameter which was explicitly set, and carry the value of each
+     * one over to the parameter which replaces it, unless that one was explicitly set as well.
+     * </p>
+     *
+     * @param contextName the context name
+     */
+    private void processDeprecatedParameters(String contextName) {
+
+        for (WebContextInitParameter param : WebContextInitParameter.values()) {
+            if (!param.isDeprecated() || !isSet(param.getQualifiedName())) {
+                continue;
+            }
+
+            WebContextInitParameter alternate = param.getAlternate();
+            warnAboutDeprecatedParameter(contextName, param.getQualifiedName(), alternate == null ? null : alternate.getQualifiedName());
+
+            if (alternate != null && !isSet(alternate.getQualifiedName())) {
+                contextParameters.put(alternate, contextParameters.get(param));
+            }
+        }
+
+        for (BooleanWebContextInitParameter param : BooleanWebContextInitParameter.values()) {
+            if (!param.isDeprecated() || !isSet(param.getQualifiedName())) {
+                continue;
+            }
+
+            warnAboutDeprecatedParameter(contextName, param.getQualifiedName(), param.getAlternateName());
+
+            BooleanWebContextInitParameter alternate = param.getAlternate();
+
+            if (alternate != null && !isSet(alternate.getQualifiedName())) {
+                booleanContextParameters.put(alternate, booleanContextParameters.get(param));
+            }
+        }
+    }
+
+    /**
+     * <p>
+     * The warning is deliberately not gated on the project stage. It announces a change in the runtime rather than a
+     * mistake in the application, and an application which is going to break on the next upgrade needs to hear about that
+     * in production too.
+     * </p>
+     *
+     * @param alternateName the qualified name of the replacement, or <code>null</code> when there is no replacement.
+     */
+    private static void warnAboutDeprecatedParameter(String contextName, String qualifiedName, String alternateName) {
+
+        if (alternateName == null) {
+            LOGGER.log(Level.WARNING, "faces.config.webconfig.param.deprecated.no_replacement", new Object[] { contextName, qualifiedName });
+        } else {
+            LOGGER.log(Level.WARNING, "faces.config.webconfig.param.deprecated", new Object[] { contextName, qualifiedName, alternateName });
+        }
     }
 
     /**
@@ -609,11 +979,6 @@ public class WebConfiguration {
                 }
 
                 if (value != null) {
-                    if (LOGGER.isLoggable(Level.INFO)) {
-                        if (LOGGER.isLoggable(loggingLevel)) {
-                            LOGGER.log(loggingLevel, "faces.config.webconfig.enventryinfo", new Object[] { contextName, entryName, value });
-                        }
-                    }
                     envEntries.put(entry, value);
                 }
             }
@@ -630,10 +995,6 @@ public class WebConfiguration {
         return true;
     }
 
-    public <T> Iterable<T> toIterable(Iterator<T> iterator) {
-        return () -> iterator;
-    }
-
     // ------------------------------------------------------------------- Enums
 
     /**
@@ -643,8 +1004,10 @@ public class WebConfiguration {
      */
     public enum WebContextInitParameter {
 
-        NumberOfViews("org.glassfish.mojarra.numberOfViewsInSession", "15"),
-        NumberOfLogicalViews("org.glassfish.mojarra.numberOfLogicalViews", "15"),
+        NumberOfStatefulPagesPerSession("org.glassfish.mojarra.numberOfStatefulPagesPerSession", "15"),
+        NumberOfViewStatesPerStatefulPage("org.glassfish.mojarra.numberOfViewStatesPerStatefulPage", "15"),
+        NumberOfLogicalViewsDeprecated("org.glassfish.mojarra.numberOfLogicalViews", "15", NumberOfStatefulPagesPerSession),
+        NumberOfViewsInSessionDeprecated("org.glassfish.mojarra.numberOfViewsInSession", "15", NumberOfViewStatesPerStatefulPage),
         NumberOfActiveViewMaps("org.glassfish.mojarra.numberOfActiveViewMaps", "25"),
         NumberOfConcurrentFlashUsers("org.glassfish.mojarra.numberOfConcurrentFlashUsers", "5000"),
         NumberOfFlashesBetweenFlashReapings("org.glassfish.mojarra.numberOfFlashesBetweenFlashReapings", "5000"),
@@ -654,11 +1017,15 @@ public class WebConfiguration {
         ResourceBufferSize("org.glassfish.mojarra.resourceBufferSize", "2048"),
         ClientStateTimeout("org.glassfish.mojarra.clientStateTimeout", ""),
         DefaultResourceMaxAge("org.glassfish.mojarra.defaultResourceMaxAge", "604800000"), // 7 days
-        ResourceUpdateCheckPeriod("org.glassfish.mojarra.resourceUpdateCheckPeriod", "5"), // in minutes
+        ResourceUpdateCheckPeriod("org.glassfish.mojarra.resourceUpdateCheckPeriod", AUTO), // in minutes; -1 disables the check, auto leaves it to the stage
+        CacheResourceModificationTimestamp("org.glassfish.mojarra.cacheResourceModificationTimestamp", AUTO), // true|false|auto
         CompressableMimeTypes("org.glassfish.mojarra.compressableMimeTypes", ""),
         DisableUnicodeEscaping("org.glassfish.mojarra.disableUnicodeEscaping", "auto"),
-        DisableIdUniquenessCheck("org.glassfish.mojarra.disableIdUniquenessCheck", "false"), // true|false|auto; default false (always check), opt-in auto skips it in Production
+        DisableIdUniquenessCheck("org.glassfish.mojarra.disableIdUniquenessCheck", AUTO), // true|false|auto
+        DisplayConfiguration("org.glassfish.mojarra.displayConfiguration", AUTO), // true|false|auto
         DuplicateJARPattern("org.glassfish.mojarra.duplicateJARPattern", ""),
+        AllowedHttpMethods("org.glassfish.mojarra.allowedHttpMethods", ""), // white space separated, upper case; * means allow all
+        ViewStateAutocomplete("org.glassfish.mojarra.viewStateAutocomplete", "one-time-code"),
         FullStateSavingViewIds(StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME, ""),
 
         FaceletsProcessingFileExtensionProcessAs("", ""),
@@ -668,6 +1035,8 @@ public class WebConfiguration {
 
         private final String qualifiedName;
         private final String defaultValue;
+        private final WebContextInitParameter alternate;
+        private final boolean deprecated;
 
         public String getQualifiedName() {
             return qualifiedName;
@@ -677,9 +1046,34 @@ public class WebConfiguration {
             return defaultValue;
         }
 
+        /**
+         * @return the parameter which replaces this one, or <code>null</code> when there is no replacement.
+         */
+        public WebContextInitParameter getAlternate() {
+            return alternate;
+        }
+
+        public boolean isDeprecated() {
+            return deprecated;
+        }
+
         WebContextInitParameter(String qualifiedName, String defaultValue) {
+            this(qualifiedName, defaultValue, null, false);
+        }
+
+        WebContextInitParameter(String qualifiedName, String defaultValue, WebContextInitParameter alternate) {
+            this(qualifiedName, defaultValue, alternate, true);
+        }
+
+        WebContextInitParameter(String qualifiedName, String defaultValue, boolean deprecated) {
+            this(qualifiedName, defaultValue, null, deprecated);
+        }
+
+        private WebContextInitParameter(String qualifiedName, String defaultValue, WebContextInitParameter alternate, boolean deprecated) {
             this.qualifiedName = qualifiedName;
             this.defaultValue = defaultValue;
+            this.alternate = alternate;
+            this.deprecated = deprecated;
         }
 
     }
@@ -691,27 +1085,20 @@ public class WebConfiguration {
      */
     public enum BooleanWebContextInitParameter {
 
-        DisplayConfiguration("org.glassfish.mojarra.displayConfiguration", false),
-        ValidateFacesConfigFiles("org.glassfish.mojarra.validateXml", false),
-        VerifyFacesConfigObjects("org.glassfish.mojarra.verifyObjects", false),
         ForceLoadFacesConfigFiles("org.glassfish.mojarra.forceLoadConfiguration", false),
-        DisableClientStateEncryption("org.glassfish.mojarra.disableClientStateEncryption", false),
         EnableClientStateDebugging("org.glassfish.mojarra.enableClientStateDebugging", false),
+        DisableClientStateEncryption("org.glassfish.mojarra.disableClientStateEncryption", false, EnableClientStateDebugging),
         PreferXHTMLContentType("org.glassfish.mojarra.preferXHTML", false),
         CompressViewState("org.glassfish.mojarra.compressViewState", true),
-        EnableJSStyleHiding("org.glassfish.mojarra.enableJSStyleHiding", false),
         EnableScriptInAttributeValue("org.glassfish.mojarra.enableScriptsInAttributeValues", true),
         WriteStateAtFormEnd("org.glassfish.mojarra.writeStateAtFormEnd", true),
         EnableViewStateIdRendering("org.glassfish.mojarra.enableViewStateIdRendering", true),
         RegisterConverterPropertyEditors("org.glassfish.mojarra.registerConverterPropertyEditors", false),
-        EnableHttpMethodRestrictionPhaseListener("org.glassfish.mojarra.ENABLE_HTTP_METHOD_RESTRICTION_PHASE_LISTENER", false),
         PartialStateSaving(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, true),
         RefreshTransientBuildOnPSS("org.glassfish.mojarra.refreshTransientBuildOnPSS", false),
         GenerateUniqueServerStateIds("org.glassfish.mojarra.generateUniqueServerStateIds", true),
-        AutoCompleteOffOnViewState("org.glassfish.mojarra.autoCompleteOffOnViewState", false),
-        EnableThreading("org.glassfish.mojarra.enableThreading", false),
-        AllowTextChildren("org.glassfish.mojarra.allowTextChildren", false),
-        CacheResourceModificationTimestamp("org.glassfish.mojarra.cacheResourceModificationTimestamp", false),
+        AutoCompleteOffOnViewState("org.glassfish.mojarra.autoCompleteOffOnViewState", false, WebContextInitParameter.ViewStateAutocomplete.getQualifiedName()),
+        AllowTextChildren("org.glassfish.mojarra.allowTextChildren", false, DEPRECATED),
         EnableDistributable("org.glassfish.mojarra.enableDistributable", false), // NOTE: this is indeed implicitly set to true when web.xml distributable is also set, see ConfigureListener.
         EnableMissingResourceLibraryDetection("org.glassfish.mojarra.enableMissingResourceLibraryDetection", false),
         EnableTransitionTimeNoOpFlash("org.glassfish.mojarra.enableTransitionTimeNoOpFlash", false),
@@ -719,10 +1106,14 @@ public class WebConfiguration {
         DisallowDoctypeDecl("org.glassfish.mojarra.disallowDoctypeDecl", false),
         UseFaceletsID("org.glassfish.mojarra.useFaceletsID", false),
         DisableOptionalELResolver("org.glassfish.mojarra.disableOptionalELResolver", false),
+        SendPoweredByHeader("org.glassfish.mojarra.sendPoweredByHeader", false),
         ;
 
         private final String qualifiedName;
         private final boolean defaultValue;
+        private final BooleanWebContextInitParameter alternate;
+        private final String alternateName;
+        private final boolean deprecated;
 
         public String getQualifiedName() {
             return qualifiedName;
@@ -732,9 +1123,48 @@ public class WebConfiguration {
             return defaultValue;
         }
 
+        /**
+         * @return the parameter which replaces this one and inherits its value, or <code>null</code> when there is none.
+         */
+        public BooleanWebContextInitParameter getAlternate() {
+            return alternate;
+        }
+
+        /**
+         * @return the qualified name of the replacement, which may live in another enum and then only gets named rather
+         * than handed the value, or <code>null</code> when there is no replacement.
+         */
+        public String getAlternateName() {
+            return alternateName;
+        }
+
+        public boolean isDeprecated() {
+            return deprecated;
+        }
+
         BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue) {
+            this(qualifiedName, defaultValue, null, null, false);
+        }
+
+        BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue, BooleanWebContextInitParameter alternate) {
+            this(qualifiedName, defaultValue, alternate, alternate.getQualifiedName(), true);
+        }
+
+        BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue, String alternateName) {
+            this(qualifiedName, defaultValue, null, alternateName, true);
+        }
+
+        BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue, boolean deprecated) {
+            this(qualifiedName, defaultValue, null, null, deprecated);
+        }
+
+        private BooleanWebContextInitParameter(String qualifiedName, boolean defaultValue, BooleanWebContextInitParameter alternate, String alternateName,
+                boolean deprecated) {
             this.qualifiedName = qualifiedName;
             this.defaultValue = defaultValue;
+            this.alternate = alternate;
+            this.alternateName = alternateName;
+            this.deprecated = deprecated;
         }
 
     }

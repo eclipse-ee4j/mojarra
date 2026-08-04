@@ -34,19 +34,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
-
 import org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter;
 import org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter;
 import org.glassfish.mojarra.context.FacesContextParam;
-import org.glassfish.mojarra.context.MojarraContextParam;
+import org.junit.jupiter.api.Test;
 
 /**
  * Validates <code>CONTEXT-PARAMS.md</code> in the repository root against the sources, so that a context parameter
  * cannot be added, removed, renamed or given another default value without that page being updated.
  * <p>
  * The parameters recognized by this implementation are collected from {@link WebContextInitParameter},
- * {@link BooleanWebContextInitParameter}, {@link MojarraContextParam} and {@link FacesContextParam}, plus a scan of the
+ * {@link BooleanWebContextInitParameter} and {@link FacesContextParam}, plus a scan of the
  * main sources for <code>getInitParameter()</code> call sites which read a parameter declared outside of those enums.
 
  * <p>
@@ -202,10 +200,6 @@ class ContextParamsMdTest {
 
         for (BooleanWebContextInitParameter param : BooleanWebContextInitParameter.values()) {
             put(params, new Param(param.getQualifiedName(), "boolean", String.valueOf(param.getDefaultValue()), alternateOf(param)));
-        }
-
-        for (MojarraContextParam param : MojarraContextParam.values()) {
-            put(params, new Param(param.getName(), typeOf(param.getType()), String.valueOf(param.getDefaultValue()), null));
         }
 
         for (FacesContextParam param : FacesContextParam.values()) {

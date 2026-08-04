@@ -56,14 +56,15 @@ public class RequestStateManager {
     public static final String RENDER_KIT_IMPL_REQ = RIConstants.RI_PREFIX + "renderKitImplForRequest";
 
     /**
-     * This attribute is used by the StateMangaer during restore view. The values are stored in the request for later use.
+     * Identifies the stateful page, being one initially requested view and all of its postbacks, whose state was
+     * restored for this request. Stored during restore view so that save view writes back into the same page.
      */
-    public static final String LOGICAL_VIEW_MAP = RIConstants.RI_PREFIX + "logicalViewMap";
+    public static final String STATEFUL_PAGE_MAP = RIConstants.RI_PREFIX + "statefulPageMap";
 
     /**
-     * This attribute is used by the StateMangaer during restore view. The values are stored in the request for later use.
+     * Identifies which view state of that page was restored for this request.
      */
-    public static final String ACTUAL_VIEW_MAP = RIConstants.RI_PREFIX + "actualViewMap";
+    public static final String VIEW_STATE_MAP = RIConstants.RI_PREFIX + "viewStateMap";
 
     /**
      * This attribute is used by the loadBundle tag for tracking views/subviews within the logical view (this is only used

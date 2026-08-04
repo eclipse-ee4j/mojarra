@@ -68,7 +68,7 @@ public class ResourceCache {
     }
 
     private ResourceCache(WebConfiguration config) {
-        this(getCheckPeriod(config));
+        this(config.getResourceUpdateCheckPeriod());
 
         if (LOGGER.isLoggable(FINE)) {
             ServletContext sc = config.getServletContext();
@@ -135,15 +135,6 @@ public class ResourceCache {
     }
 
     // --------------------------------------------------------- Private Methods
-
-    private static Long getCheckPeriod(WebConfiguration webConfig) {
-        String val = webConfig.getOptionValue(WebContextInitParameter.ResourceUpdateCheckPeriod);
-        try {
-            return Long.parseLong(val);
-        } catch (NumberFormatException nfe) {
-            return Long.parseLong(WebContextInitParameter.ResourceUpdateCheckPeriod.getDefaultValue());
-        }
-    }
 
     private static String getServletContextIdentifier(ServletContext context) {
         return context.getContextPath();

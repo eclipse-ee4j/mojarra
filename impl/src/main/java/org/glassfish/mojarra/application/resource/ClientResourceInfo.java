@@ -55,8 +55,7 @@ public class ClientResourceInfo extends ResourceInfo {
      * @param compressible if this resource should be compressed
      * @param supportsEL <code>true</code> if this resource may contain EL expressions
      * @param isDevStage true if this context is development stage
-     * @param cacheTimestamp <code>true</code> if the modification time of the resource should be cached. The value of this
-     * parameter will be ignored when {@link #isDevStage} is <code>true</code>
+     * @param cacheTimestamp <code>true</code> if the modification time of the resource should be cached
      */
     public ClientResourceInfo(LibraryInfo library, ContractInfo contract, String name, VersionInfo version, boolean compressible, boolean supportsEL,
             boolean isDevStage, boolean cacheTimestamp) {
@@ -64,7 +63,7 @@ public class ClientResourceInfo extends ResourceInfo {
         this.compressible = compressible;
         this.supportsEL = supportsEL;
         this.isDevStage = isDevStage;
-        this.cacheTimestamp = !isDevStage && cacheTimestamp;
+        this.cacheTimestamp = cacheTimestamp;
         initPath(isDevStage);
     }
 
@@ -78,8 +77,7 @@ public class ClientResourceInfo extends ResourceInfo {
      * @param compressible if this resource should be compressed
      * @param supportsEL <code>true</code> if this resource may contain EL expressions
      * @param isDevStage true if this context is development stage
-     * @param cacheTimestamp <code>true</code> if the modification time of the resource should be cached. The value of this
-     * parameter will be ignored when {@link #isDevStage} is <code>true</code>
+     * @param cacheTimestamp <code>true</code> if the modification time of the resource should be cached
      */
     ClientResourceInfo(ContractInfo contract, String name, VersionInfo version, String localePrefix, ResourceHelper helper, boolean compressible,
             boolean supportsEL, boolean isDevStage, boolean cacheTimestamp) {
@@ -91,7 +89,7 @@ public class ClientResourceInfo extends ResourceInfo {
         this.compressible = compressible;
         this.supportsEL = supportsEL;
         this.isDevStage = isDevStage;
-        this.cacheTimestamp = !isDevStage && cacheTimestamp;
+        this.cacheTimestamp = cacheTimestamp;
         initPath(isDevStage);
     }
 
@@ -149,9 +147,9 @@ public class ClientResourceInfo extends ResourceInfo {
     }
 
     /**
-     * Returns the time this resource was last modified. If
-     * {@link org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter#CacheResourceModificationTimestamp} is
-     * true, the value will be cached for the lifetime if this <code>ClientResourceInfo</code> instance.
+     * Returns the time this resource was last modified. When
+     * {@link org.glassfish.mojarra.config.WebConfiguration#isResourceModificationTimestampCached()} says so, the value
+     * is read once and kept for the lifetime of this <code>ClientResourceInfo</code> instance.
      *
      * @param ctx the {@link FacesContext} for the current request
      *

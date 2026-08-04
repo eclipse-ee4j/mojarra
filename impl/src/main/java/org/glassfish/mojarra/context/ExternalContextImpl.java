@@ -18,7 +18,8 @@
 package org.glassfish.mojarra.context;
 
 import static org.glassfish.mojarra.RIConstants.PUSH_RESOURCE_URLS_KEY_NAME;
-import static org.glassfish.mojarra.context.MojarraContextParam.SendPoweredByHeader;
+import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
+import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.SendPoweredByHeader;
 import static org.glassfish.mojarra.context.UrlBuilder.PROTOCOL_SEPARATOR;
 import static org.glassfish.mojarra.context.UrlBuilder.WEBSOCKET_PROTOCOL;
 import static org.glassfish.mojarra.util.Util.isEmpty;
@@ -141,17 +142,18 @@ public class ExternalContextImpl extends ExternalContext {
         this.request = request;
         this.response = response;
 
-        boolean enabled = ContextParamUtils.getValue(servletContext, SendPoweredByHeader, Boolean.class);
-        if (enabled) {
+        WebConfiguration webConfiguration = WebConfiguration.getInstance(servletContext);
+
+        if (webConfiguration.isOptionEnabled(SendPoweredByHeader)) {
             String poweredBy = "Faces";
-            String specificationVersion = WebConfiguration.getInstance(sc).getSpecificationVersion();
+            String specificationVersion = webConfiguration.getSpecificationVersion();
             if (specificationVersion != null) {
                 poweredBy += "/" + specificationVersion;
             }
             ((HttpServletResponse) response).addHeader("X-Powered-By", poweredBy);
         }
 
-        distributable = ContextParamUtils.getValue(servletContext, MojarraContextParam.EnableDistributable, Boolean.class);
+        distributable = webConfiguration.isOptionEnabled(EnableDistributable);
 
     }
 

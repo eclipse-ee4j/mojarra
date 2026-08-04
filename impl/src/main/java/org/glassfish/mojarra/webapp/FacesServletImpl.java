@@ -22,6 +22,7 @@ import static jakarta.faces.FactoryFinder.LIFECYCLE_FACTORY;
 import static jakarta.faces.lifecycle.LifecycleFactory.DEFAULT_LIFECYCLE;
 import static jakarta.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+import static jakarta.servlet.http.HttpServletResponse.SC_OK;
 import static java.util.Collections.emptySet;
 import static java.util.EnumSet.allOf;
 import static java.util.EnumSet.range;
@@ -29,6 +30,9 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINER;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Stream.concat;
+import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.AllowedHttpMethods;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -54,6 +58,8 @@ import jakarta.servlet.UnavailableException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import org.glassfish.mojarra.config.WebConfiguration;
 
 /**
  * <p>
@@ -264,12 +270,6 @@ public final class FacesServletImpl implements Servlet {
      */
     private static final Logger LOGGER = Logger.getLogger("jakarta.faces.webapp", "jakarta.faces.LogStrings");
 
-    /**
-     * A white space separated list of case sensitive HTTP method names that are allowed to be processed by this servlet. *
-     * means allow all
-     */
-    private static final String ALLOWED_HTTP_METHODS_ATTR = "org.glassfish.mojarra.allowedHttpMethods";
-
     // Http method names must be upper case. http://www.w3.org/Protocols/HTTP/NoteMethodCS.html
     // List of valid methods in Http 1.1 http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9
 
@@ -432,6 +432,11 @@ public final class FacesServletImpl implements Servlet {
             return;
         }
 
+        if (HttpMethod.OPTIONS.toString().equals(request.getMethod())) {
+            respondToOptions(response);
+            return;
+        }
+
         logIfThreadInterrupted();
 
         // If prefix mapped, then ensure requests for /WEB-INF are not processed.
@@ -554,8 +559,8 @@ public final class FacesServletImpl implements Servlet {
         allowedUnknownHttpMethods = emptySet();
         allowedKnownHttpMethods = defaultAllowedHttpMethods;
 
-        String allowedHttpMethodsString = servletConfig.getServletContext().getInitParameter(ALLOWED_HTTP_METHODS_ATTR);
-        if (allowedHttpMethodsString != null) {
+        String allowedHttpMethodsString = WebConfiguration.getInstance(servletConfig.getServletContext()).getOptionValue(AllowedHttpMethods);
+        if (allowedHttpMethodsString != null && !allowedHttpMethodsString.isEmpty()) {
             String[] methods = allowedHttpMethodsString.split("\\s+");
 
             allowedUnknownHttpMethods = new HashSet<>(methods.length);
@@ -741,6 +746,27 @@ public final class FacesServletImpl implements Servlet {
         }
 
         return result;
+    }
+
+    /**
+     * <p>
+     * Answers an <code>OPTIONS</code> request with the methods this servlet accepts, as required by RFC 9110 section
+     * 9.3.7, without running the lifecycle. A Faces view has nothing to contribute to the answer, and rendering one
+     * would hand the page content to a request which did not ask for it.
+     * </p>
+     */
+    private void respondToOptions(HttpServletResponse response) {
+        response.setStatus(SC_OK);
+        response.setHeader("Allow", getAllowedHttpMethods());
+        response.setContentLength(0);
+    }
+
+    private String getAllowedHttpMethods() {
+        if (allowAllMethods) {
+            return allHttpMethods.stream().map(HttpMethod::toString).collect(joining(", "));
+        }
+
+        return concat(allowedKnownHttpMethods.stream().map(HttpMethod::toString), allowedUnknownHttpMethods.stream()).collect(joining(", "));
     }
 
 }

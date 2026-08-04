@@ -63,6 +63,7 @@ import org.glassfish.mojarra.RIConstants;
 import org.glassfish.mojarra.application.ApplicationAssociate;
 import org.glassfish.mojarra.application.JavaFlowLoaderHelper;
 import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.config.manager.FacesSchema;
 import org.glassfish.mojarra.config.manager.documents.DocumentInfo;
 import org.glassfish.mojarra.facelets.util.ReflectionUtil;
 import org.glassfish.mojarra.flow.FlowImpl;
@@ -132,24 +133,24 @@ public class FacesFlowDefinitionConfigProcessor extends AbstractConfigProcessor 
         dbf.setNamespaceAware(true);
         DocumentBuilder builder = dbf.newDocumentBuilder();
         DOMImplementation domImpl = builder.getDOMImplementation();
-        newDoc = domImpl.createDocument(RIConstants.DOCUMENT_NAMESPACE, "faces-config", null);
+        newDoc = domImpl.createDocument(FacesSchema.CURRENT_NAMESPACE, "faces-config", null);
         Node documentElement = newDoc.getDocumentElement();
         Attr versionAttribute = newDoc.createAttribute("version");
-        versionAttribute.setValue(RIConstants.DOCUMENT_VERSION);
+        versionAttribute.setValue(FacesSchema.CURRENT_VERSION);
         documentElement.getAttributes().setNamedItem(versionAttribute);
 
         Node facesConfig = newDoc.getFirstChild();
 
-        Element flowDefinition = newDoc.createElementNS(RIConstants.DOCUMENT_NAMESPACE, "flow-definition");
+        Element flowDefinition = newDoc.createElementNS(FacesSchema.CURRENT_NAMESPACE, "flow-definition");
         flowDefinition.setAttribute("id", flowName);
         facesConfig.appendChild(flowDefinition);
         final String flowReturnStr = flowName + "-return";
 
-        Element flowReturn = newDoc.createElementNS(RIConstants.DOCUMENT_NAMESPACE, "flow-return");
+        Element flowReturn = newDoc.createElementNS(FacesSchema.CURRENT_NAMESPACE, "flow-return");
         flowReturn.setAttribute("id", flowReturnStr);
         flowDefinition.appendChild(flowReturn);
 
-        Element fromOutcome = newDoc.createElementNS(RIConstants.DOCUMENT_NAMESPACE, "from-outcome");
+        Element fromOutcome = newDoc.createElementNS(FacesSchema.CURRENT_NAMESPACE, "from-outcome");
         flowReturn.appendChild(fromOutcome);
         fromOutcome.setTextContent("/" + flowReturnStr);
 

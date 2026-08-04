@@ -107,7 +107,7 @@ public class OutcomeTargetLinkRenderer extends OutcomeTargetRenderer {
 
         // shame that we can't put this in encodeEnd, but then we have to attempt to resolve the navigation case again
         if (failedToResolveNavigationCase) {
-            if (!context.isProjectStage(ProjectStage.Production)) {
+            if (context.isProjectStage(ProjectStage.Development)) {
                 writer.write(MessageUtils.getExceptionMessageString(MessageUtils.OUTCOME_TARGET_LINK_NO_MATCH));
             }
         }

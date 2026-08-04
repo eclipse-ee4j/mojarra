@@ -27,9 +27,7 @@ import static org.glassfish.mojarra.RIConstants.ERROR_PAGE_PRESENT_KEY_NAME;
 import static org.glassfish.mojarra.RIConstants.FACES_SERVLET_MAPPINGS;
 import static org.glassfish.mojarra.RIConstants.FACES_SERVLET_REGISTRATION;
 import static org.glassfish.mojarra.RIConstants.MOJARRA_VERSION;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableThreading;
 import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.ForceLoadFacesConfigFiles;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.VerifyFacesConfigObjects;
 import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.WebsocketEndpointIdleTimeout;
 import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.WebsocketMaxSessionsPerChannel;
 import static org.glassfish.mojarra.context.SessionMap.createMutex;
@@ -191,18 +189,16 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
                 LOGGER.log(INFO, "faces.config.listener.version", servletContext.getContextPath());
             }
 
-            if (webConfig.isOptionEnabled(VerifyFacesConfigObjects)) {
-                LOGGER.warning(
-                    "JSF1059: WARNING!  The org.glassfish.mojarra.verifyObjects feature is to aid developers not using tools.  " +
-                    "It shouldn't be enabled if using an IDE, or if this application is being deployed for production as it " +
-                    "will impact application start times.");
+            if (!isProduction()) {
+                LOGGER.log(WARNING, "faces.config.listener.projectstage.not_production",
+                        new Object[] { servletContext.getContextPath(), getProjectStage() });
 
                 Verifier.setCurrentInstance(new Verifier());
             }
 
             configManager.initialize(servletContext, initFacesContext);
 
-            if (shouldInitConfigMonitoring()) {
+            if (isDevelopment()) {
                 initConfigMonitoring(servletContext);
             }
 
@@ -435,24 +431,12 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
     // --------------------------------------------------------- Private Methods
 
-    private boolean shouldInitConfigMonitoring() {
-
-        boolean development = isDevModeEnabled();
-        boolean threadingOptionSpecified = webConfig.isSet(EnableThreading);
-
-        if (development && !threadingOptionSpecified) {
-            return true;
-        }
-
-        return development && threadingOptionSpecified && webConfig.isOptionEnabled(EnableThreading);
-    }
-
     private void initConfigMonitoring(ServletContext context) {
 
         @SuppressWarnings("unchecked")
         Collection<URI> webURIs = (Collection<URI>) context.getAttribute("org.glassfish.mojarra.webresources");
 
-        if (isDevModeEnabled() && webURIs != null && !webURIs.isEmpty()) {
+        if (isDevelopment() && webURIs != null && !webURIs.isEmpty()) {
             webResourcePool = new ScheduledThreadPoolExecutor(1, new MojarraThreadFactory("WebResourceMonitor"));
             webResourcePool.scheduleAtFixedRate(new WebConfigResourceMonitor(context, webURIs), 2000, 2000, TimeUnit.MILLISECONDS);
         }
@@ -460,9 +444,21 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         context.removeAttribute("org.glassfish.mojarra.webresources");
     }
 
-    private boolean isDevModeEnabled() {
-        // interrogate the init parameter directly vs looking up the application
-        return FacesContextParam.PROJECT_STAGE.getValue(FacesContext.getCurrentInstance()) == ProjectStage.Development;
+    private boolean isDevelopment() {
+        return getProjectStage() == ProjectStage.Development;
+    }
+
+    /**
+     * Startup validation runs in every stage which is not Production, so that a configuration mistake is caught before
+     * it ships rather than only while developing.
+     */
+    private boolean isProduction() {
+        return getProjectStage() == ProjectStage.Production;
+    }
+
+    private ProjectStage getProjectStage() {
+        // Ask the configuration rather than the Application, which does not exist yet at this point.
+        return webConfig.getProjectStage();
     }
 
     /**

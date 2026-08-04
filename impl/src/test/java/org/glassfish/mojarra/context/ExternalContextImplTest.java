@@ -16,6 +16,7 @@
 
 package org.glassfish.mojarra.context;
 
+import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableDistributable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -27,6 +28,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -39,6 +41,13 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.glassfish.mojarra.config.WebConfiguration;
+import org.glassfish.mojarra.mock.MockApplication;
+import org.glassfish.mojarra.mock.MockFacesContext;
+import org.glassfish.mojarra.mock.MockHttpServletRequest;
+import org.glassfish.mojarra.mock.MockHttpServletResponse;
+import org.glassfish.mojarra.mock.MockHttpSession;
+import org.glassfish.mojarra.mock.MockServletContext;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -48,11 +57,29 @@ import org.mockito.Mockito;
 public class ExternalContextImplTest {
 
     /**
+     * ConfigureListener enables enableDistributable when web.xml declares &lt;distributable/&gt; without the context
+     * parameter being set, so reading the parameter straight off the ServletContext misses it and the session map is
+     * silently not the replicating one.
+     */
+    @Test
+    public void testSessionMapReplicatesWhenWebXmlDeclaresDistributable() {
+        MockServletContext servletContext = new MockServletContext();
+        WebConfiguration.getInstance(servletContext).setOptionEnabled(EnableDistributable, true);
+
+        ExternalContextImpl externalContext = new ExternalContextImpl(servletContext, new MockHttpServletRequest(new MockHttpSession()),
+                new MockHttpServletResponse());
+        MockFacesContext facesContext = new MockFacesContext(externalContext);
+        facesContext.setApplication(new MockApplication());
+
+        assertTrue(externalContext.getSessionMap() instanceof AlwaysPuttingSessionMap);
+    }
+
+    /**
      * Test getRequestCookieMap method.
      */
     @Test
     public void testGetRequestCookieMap() {
-        ServletContext servletContext = Mockito.mock(ServletContext.class);
+        ServletContext servletContext = mockServletContext();
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
@@ -66,7 +93,7 @@ public class ExternalContextImplTest {
      */
     @Test
     public void testGetRequestCookieMap2() {
-        ServletContext servletContext = Mockito.mock(ServletContext.class);
+        ServletContext servletContext = mockServletContext();
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
         Cookie cookie = new Cookie("foo", "bar");
@@ -93,7 +120,7 @@ public class ExternalContextImplTest {
      */
     @Test
     public void testGetRequestCookieMap3() {
-        ServletContext servletContext = Mockito.mock(ServletContext.class);
+        ServletContext servletContext = mockServletContext();
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
         Cookie cookie = new Cookie("foo", "bar");
@@ -151,7 +178,7 @@ public class ExternalContextImplTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testGetRequestCookieMap4() {
-        ServletContext servletContext = Mockito.mock(ServletContext.class);
+        ServletContext servletContext = mockServletContext();
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
         Cookie cookie = new Cookie("foo", "bar");
@@ -255,7 +282,7 @@ public class ExternalContextImplTest {
     }
 
     private ExternalContextImpl createExternalContext(StringWriter container) throws IOException {
-        ServletContext servletContext = Mockito.mock(ServletContext.class);
+        ServletContext servletContext = mockServletContext();
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
         when(response.getWriter()).thenReturn(new PrintWriter(container));
@@ -295,5 +322,14 @@ public class ExternalContextImplTest {
         }
 
         assertTrue(exceptionThrown);
+    }
+
+    /**
+     * ExternalContextImpl builds a WebConfiguration, which walks the init parameter names, so a bare mock is not enough.
+     */
+    private static ServletContext mockServletContext() {
+        ServletContext servletContext = Mockito.mock(ServletContext.class);
+        when(servletContext.getInitParameterNames()).thenAnswer(invocation -> Collections.enumeration(Collections.emptyList()));
+        return servletContext;
     }
 }

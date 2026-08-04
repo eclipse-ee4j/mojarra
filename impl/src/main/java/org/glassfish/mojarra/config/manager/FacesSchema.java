@@ -33,6 +33,8 @@ import static org.glassfish.mojarra.config.manager.FacesSchema.Schemas.FACES_4_0
 import static org.glassfish.mojarra.config.manager.FacesSchema.Schemas.FACES_4_0_XSD_FILE;
 import static org.glassfish.mojarra.config.manager.FacesSchema.Schemas.FACES_4_1_XSD;
 import static org.glassfish.mojarra.config.manager.FacesSchema.Schemas.FACES_4_1_XSD_FILE;
+import static org.glassfish.mojarra.config.manager.FacesSchema.Schemas.FACES_5_0_XSD;
+import static org.glassfish.mojarra.config.manager.FacesSchema.Schemas.FACES_5_0_XSD_FILE;
 import static org.glassfish.mojarra.config.manager.FacesSchema.Schemas.FACES_CONFIG_1_X_DEFAULT_NS;
 import static org.glassfish.mojarra.config.manager.FacesSchema.Schemas.JAKARTAEE_SCHEMA_DEFAULT_NS;
 import static org.glassfish.mojarra.config.manager.FacesSchema.Schemas.JAVAEE_SCHEMA_DEFAULT_NS;
@@ -65,6 +67,7 @@ public enum FacesSchema {
         FACES_30(FACES_3_0_XSD, FACES_3_0_XSD_FILE),
         FACES_40(FACES_4_0_XSD, FACES_4_0_XSD_FILE),
         FACES_41(FACES_4_1_XSD, FACES_4_1_XSD_FILE),
+        FACES_50(FACES_5_0_XSD, FACES_5_0_XSD_FILE),
 
         // taglib.xml
         FACELET_TAGLIB_20(Schemas.FACELET_TAGLIB_2_0_XSD, Schemas.FACELET_TAGLIB_2_0_XSD_FILE),
@@ -72,7 +75,8 @@ public enum FacesSchema {
         FACELET_TAGLIB_23(Schemas.FACELET_TAGLIB_2_3_XSD, Schemas.FACELET_TAGLIB_2_3_XSD_FILE),
         FACELET_TAGLIB_30(Schemas.FACELET_TAGLIB_3_0_XSD, Schemas.FACELET_TAGLIB_3_0_XSD_FILE),
         FACELET_TAGLIB_40(Schemas.FACELET_TAGLIB_4_0_XSD, Schemas.FACELET_TAGLIB_4_0_XSD_FILE),
-        FACELET_TAGLIB_41(Schemas.FACELET_TAGLIB_4_1_XSD, Schemas.FACELET_TAGLIB_4_1_XSD_FILE);
+        FACELET_TAGLIB_41(Schemas.FACELET_TAGLIB_4_1_XSD, Schemas.FACELET_TAGLIB_4_1_XSD_FILE),
+        FACELET_TAGLIB_50(Schemas.FACELET_TAGLIB_5_0_XSD, Schemas.FACELET_TAGLIB_5_0_XSD_FILE);
 
         /**
          * Constants for individual schema files
@@ -94,6 +98,7 @@ public enum FacesSchema {
             public static final String FACELET_TAGLIB_3_0_XSD = "/org/glassfish/mojarra/web-facelettaglibrary_3_0.xsd";
             public static final String FACELET_TAGLIB_4_0_XSD = "/org/glassfish/mojarra/web-facelettaglibrary_4_0.xsd";
             public static final String FACELET_TAGLIB_4_1_XSD = "/org/glassfish/mojarra/web-facelettaglibrary_4_1.xsd";
+            public static final String FACELET_TAGLIB_5_0_XSD = "/org/glassfish/mojarra/web-facelettaglibrary_5_0.xsd";
 
             public static final String FACES_1_2_XSD = "/org/glassfish/mojarra/web-facesconfig_1_2.xsd";
             public static final String FACES_1_1_XSD = "/org/glassfish/mojarra/web-facesconfig_1_1.xsd";
@@ -104,6 +109,7 @@ public enum FacesSchema {
             public static final String FACES_3_0_XSD = "/org/glassfish/mojarra/web-facesconfig_3_0.xsd";
             public static final String FACES_4_0_XSD = "/org/glassfish/mojarra/web-facesconfig_4_0.xsd";
             public static final String FACES_4_1_XSD = "/org/glassfish/mojarra/web-facesconfig_4_1.xsd";
+            public static final String FACES_5_0_XSD = "/org/glassfish/mojarra/web-facesconfig_5_0.xsd";
 
             public static final String FACELET_TAGLIB_2_0_XSD_FILE = AS_SCHEMA_DIR + "web-facelettaglibrary_2_0.xsd";
             public static final String FACELET_TAGLIB_2_2_XSD_FILE = AS_SCHEMA_DIR + "web-facelettaglibrary_2_2.xsd";
@@ -111,6 +117,7 @@ public enum FacesSchema {
             public static final String FACELET_TAGLIB_3_0_XSD_FILE = AS_SCHEMA_DIR + "web-facelettaglibrary_3_0.xsd";
             public static final String FACELET_TAGLIB_4_0_XSD_FILE = AS_SCHEMA_DIR + "web-facelettaglibrary_4_0.xsd";
             public static final String FACELET_TAGLIB_4_1_XSD_FILE = AS_SCHEMA_DIR + "web-facelettaglibrary_4_1.xsd";
+            public static final String FACELET_TAGLIB_5_0_XSD_FILE = AS_SCHEMA_DIR + "web-facelettaglibrary_5_0.xsd";
 
             // #### faces-config.xml XSDs within GlassFish
 
@@ -122,6 +129,7 @@ public enum FacesSchema {
             public static final String FACES_3_0_XSD_FILE = AS_SCHEMA_DIR + "web-facesconfig_3_0.xsd";
             public static final String FACES_4_0_XSD_FILE = AS_SCHEMA_DIR + "web-facesconfig_4_0.xsd";
             public static final String FACES_4_1_XSD_FILE = AS_SCHEMA_DIR + "web-facesconfig_4_1.xsd";
+            public static final String FACES_5_0_XSD_FILE = AS_SCHEMA_DIR + "web-facesconfig_5_0.xsd";
 
             /**
              * Contains associations between grammar name and the physical resource.
@@ -173,6 +181,11 @@ public enum FacesSchema {
                       FACES_4_1_XSD_FILE
                  },
                  {
+                     "web-facesconfig_5_0.xsd",
+                      FACES_5_0_XSD,
+                      FACES_5_0_XSD_FILE
+                 },
+                 {
                      "facelet-taglib_1_0.dtd",
                      "/org/glassfish/mojarra/facelet-taglib_1_0.dtd",
                      null
@@ -206,6 +219,11 @@ public enum FacesSchema {
                      "web-facelettaglibrary_4_1.xsd",
                       FACELET_TAGLIB_4_1_XSD,
                       FACELET_TAGLIB_4_1_XSD_FILE
+                 },
+                 {
+                     "web-facelettaglibrary_5_0.xsd",
+                      FACELET_TAGLIB_5_0_XSD,
+                      FACELET_TAGLIB_5_0_XSD_FILE
                  },
                  {
                      "web-facesconfig_1_2.xsd",
@@ -253,6 +271,11 @@ public enum FacesSchema {
                      AS_SCHEMA_DIR + "jakartaee_11.xsd"
                  },
                  {
+                     "jakartaee_12.xsd",
+                     "/org/glassfish/mojarra/jakartaee_12.xsd",
+                     AS_SCHEMA_DIR + "jakartaee_12.xsd"
+                 },
+                 {
                      "javaee_web_services_client_1_2.xsd",
                      "/org/glassfish/mojarra/javaee_web_services_client_1_2.xsd",
                      AS_SCHEMA_DIR + "javaee_web_services_client_1_2.xsd"
@@ -291,6 +314,17 @@ public enum FacesSchema {
         }
 
 
+        /**
+         * The namespace of the configuration documents this release reads and synthesizes.
+         */
+        public static final String CURRENT_NAMESPACE = Schemas.JAKARTAEE_SCHEMA_DEFAULT_NS;
+
+        /**
+         * The version of the configuration documents this release synthesizes, which
+         * {@link #fromDocumentId(String, String, String)} therefore has to recognize.
+         */
+        public static final String CURRENT_VERSION = "5.0";
+
         private String resourceName;
         private String fileName;
 
@@ -315,6 +349,12 @@ public enum FacesSchema {
             switch (documentNS) {
                 case JAKARTAEE_SCHEMA_DEFAULT_NS: {
                     switch (version) {
+                        case "5.0":
+                            if ("facelet-taglib".equals(localName)) {
+                                return FACELET_TAGLIB_50;
+                            } else {
+                                return FACES_50;
+                            }
                         case "4.1":
                             if ("facelet-taglib".equals(localName)) {
                                 return FACELET_TAGLIB_41;

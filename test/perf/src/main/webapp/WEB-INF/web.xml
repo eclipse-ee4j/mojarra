@@ -51,7 +51,7 @@
 
     <!-- Must match amount of stateful pages in this perf bench WAR. -->
     <context-param>
-        <param-name>org.glassfish.mojarra.numberOfLogicalViews</param-name>
+        <param-name>org.glassfish.mojarra.numberOfStatefulPagesPerSession</param-name>
         <param-value>29</param-value>
     </context-param>
     <context-param>

@@ -139,7 +139,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler {
 
         ApplicationAssociate associate = ApplicationAssociate.getInstance(FacesContext.getCurrentInstance().getExternalContext());
         if (associate != null) {
-            development = associate.isDevModeEnabled();
+            development = associate.isDevelopment();
         }
 
     }

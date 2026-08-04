@@ -17,7 +17,7 @@
 
 package org.glassfish.mojarra.application.resource;
 
-import static jakarta.faces.application.ProjectStage.Production;
+import static jakarta.faces.application.ProjectStage.Development;
 import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static jakarta.servlet.http.HttpServletResponse.SC_NOT_MODIFIED;
 import static jakarta.servlet.http.MappingMatch.EXTENSION;
@@ -90,7 +90,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
         manager = ApplicationAssociate.getInstance(extContext).getResourceManager();
         initExclusions(context);
         initMaxAge();
-        cspEnabled = FacesContextParam.ENABLE_CSP_NONCE.isSet(context);
+        cspEnabled = WebConfiguration.getValue(FacesContextParam.ENABLE_CSP_NONCE, context);
         if (cspEnabled) {
             secureRandom = new SecureRandom();
             secureRandom.nextBytes(new byte[1]);
@@ -471,7 +471,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
     private void logMissingResource(FacesContext ctx, String resourceName, String libraryName, Throwable t) {
 
         Level level;
-        if (!ctx.isProjectStage(Production)) {
+        if (ctx.isProjectStage(Development)) {
             level = WARNING;
         } else {
             level = t != null ? WARNING : FINE;
@@ -506,7 +506,7 @@ public class ResourceHandlerImpl extends ResourceHandler {
      */
     private void logMissingResource(FacesContext ctx, String resourceId, Throwable t) {
         Level level;
-        if (!ctx.isProjectStage(Production)) {
+        if (ctx.isProjectStage(Development)) {
             level = WARNING;
         } else {
             level = t != null ? WARNING : FINE;

@@ -4,7 +4,7 @@
             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
             elementFormDefault="qualified"
             attributeFormDefault="unqualified"
-            version="11">
+            version="12">
   <xsd:annotation>
     <xsd:documentation>
 
@@ -50,8 +50,6 @@
 
   <xsd:import namespace="http://www.w3.org/XML/1998/namespace"
               schemaLocation="https://www.w3.org/2001/xml.xsd"/>
-
-  <xsd:include schemaLocation="jakartaee_web_services_client_2_0.xsd"/>
 
   <xsd:group name="descriptionGroup">
     <xsd:annotation>
@@ -103,7 +101,6 @@
                    type="jakartaee:ejb-local-refType"
                    minOccurs="0"
                    maxOccurs="unbounded"/>
-      <xsd:group ref="jakartaee:service-refGroup"/>
       <xsd:element name="resource-ref"
                    type="jakartaee:resource-refType"
                    minOccurs="0"

@@ -268,13 +268,13 @@ public class InstanceFactory {
                     clazz = loadClass(className, this);
                 }
                 if (clazz != ComponentResourceClassNotFound.class) {
-                    if (!associate.isDevModeEnabled()) {
+                    if (!associate.isDevelopment()) {
                         componentMap.put(className, clazz);
                     }
                     result = (UIComponent) clazz.getDeclaredConstructor().newInstance();
                 }
             } catch (ClassNotFoundException ex) {
-                if (!associate.isDevModeEnabled()) {
+                if (!associate.isDevelopment()) {
                     componentMap.put(className, ComponentResourceClassNotFound.class);
                 }
             } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException ie) {
@@ -643,7 +643,7 @@ public class InstanceFactory {
             if (componentClass == null) {
                 componentClass = Util.loadClass(className, this);
             }
-            if (!associate.isDevModeEnabled()) {
+            if (!associate.isDevelopment()) {
                 componentMap.put(className, componentClass);
             }
             result = (UIComponent) componentClass.getDeclaredConstructor().newInstance();
@@ -790,7 +790,7 @@ public class InstanceFactory {
             String cValue = (String) value;
             try {
                 clazz = Util.loadClass(cValue, value);
-                if (!associate.isDevModeEnabled()) {
+                if (!associate.isDevelopment()) {
                     map.put(key, clazz);
                 }
                 assert clazz != null;
@@ -834,7 +834,7 @@ public class InstanceFactory {
             } catch (RuntimeException accessNotGranted) {
                 // leave the per-call access check in place
             }
-            if (!associate.isDevModeEnabled()) {
+            if (!associate.isDevelopment()) {
                 constructorCache.put(clazz, constructor);
             }
         }
@@ -998,7 +998,7 @@ public class InstanceFactory {
             String cValue = (String) value;
             try {
                 clazz = Util.loadClass(cValue, value);
-                if (!associate.isDevModeEnabled()) {
+                if (!associate.isDevelopment()) {
                     map.put(key, clazz);
                 }
                 assert clazz != null;
