@@ -66,6 +66,9 @@ public class WebConfiguration {
     // A Simple regular expression of allowable boolean values
     private static final Pattern ALLOWABLE_BOOLEANS = compile("true|false", CASE_INSENSITIVE);
 
+    // Reads better than a bare boolean at the deprecated parameter declarations below.
+    private static final boolean DEPRECATED = true;
+
     private static final String LEGACY_PARAM_PREFIX = "com.sun.faces.";
     private static final String CURRENT_PARAM_PREFIX = "org.glassfish.mojarra.";
 
@@ -757,7 +760,7 @@ public class WebConfiguration {
         GenerateUniqueServerStateIds("org.glassfish.mojarra.generateUniqueServerStateIds", true),
         AutoCompleteOffOnViewState("org.glassfish.mojarra.autoCompleteOffOnViewState", false),
         EnableThreading("org.glassfish.mojarra.enableThreading", false),
-        AllowTextChildren("org.glassfish.mojarra.allowTextChildren", false),
+        AllowTextChildren("org.glassfish.mojarra.allowTextChildren", false, DEPRECATED),
         CacheResourceModificationTimestamp("org.glassfish.mojarra.cacheResourceModificationTimestamp", false),
         EnableDistributable("org.glassfish.mojarra.enableDistributable", false), // NOTE: this is indeed implicitly set to true when web.xml distributable is also set, see ConfigureListener.
         EnableMissingResourceLibraryDetection("org.glassfish.mojarra.enableMissingResourceLibraryDetection", false),
