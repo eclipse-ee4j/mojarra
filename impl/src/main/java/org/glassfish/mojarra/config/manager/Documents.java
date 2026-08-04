@@ -18,8 +18,8 @@ package org.glassfish.mojarra.config.manager;
 
 import static java.util.Arrays.asList;
 import static java.util.logging.Level.INFO;
-import static org.glassfish.mojarra.RIConstants.DOCUMENT_NAMESPACE;
-import static org.glassfish.mojarra.RIConstants.DOCUMENT_VERSION;
+import static org.glassfish.mojarra.config.manager.FacesSchema.CURRENT_NAMESPACE;
+import static org.glassfish.mojarra.config.manager.FacesSchema.CURRENT_VERSION;
 import static org.glassfish.mojarra.util.Util.createLocalDocumentBuilderFactory;
 import static org.glassfish.mojarra.util.Util.isEmpty;
 
@@ -202,10 +202,10 @@ public class Documents {
     }
 
     private static Document createEmptyFacesConfigDocument(DOMImplementation domImpl) {
-        Document document = domImpl.createDocument(DOCUMENT_NAMESPACE, "faces-config", null);
+        Document document = domImpl.createDocument(CURRENT_NAMESPACE, "faces-config", null);
 
         Attr versionAttribute = document.createAttribute("version");
-        versionAttribute.setValue(DOCUMENT_VERSION);
+        versionAttribute.setValue(CURRENT_VERSION);
         document.getDocumentElement().getAttributes().setNamedItem(versionAttribute);
 
         return document;

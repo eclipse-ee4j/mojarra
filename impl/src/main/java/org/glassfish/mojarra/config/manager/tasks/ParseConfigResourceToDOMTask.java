@@ -20,7 +20,7 @@ import static java.lang.System.arraycopy;
 import static java.text.MessageFormat.format;
 import static java.util.logging.Level.WARNING;
 import static org.glassfish.mojarra.RIConstants.CHAR_ENCODING;
-import static org.glassfish.mojarra.RIConstants.DOCUMENT_NAMESPACE;
+import static org.glassfish.mojarra.config.manager.FacesSchema.CURRENT_NAMESPACE;
 import static org.glassfish.mojarra.config.manager.DbfFactory.FACES_ENTITY_RESOLVER;
 import static org.glassfish.mojarra.config.manager.DbfFactory.FACES_ERROR_HANDLER;
 import static org.glassfish.mojarra.config.manager.FacesSchema.Schemas.FACES_CONFIG_1_X_DEFAULT_NS;
@@ -160,7 +160,7 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
         String documentNS = null;
         if (configDocument == null) {
             if (uriIsFlowDefinition(documentURI)) {
-                documentNS = DOCUMENT_NAMESPACE;
+                documentNS = CURRENT_NAMESPACE;
                 configDocument = synthesizeEmptyFlowDefinition(documentURI);
             }
         } else {
