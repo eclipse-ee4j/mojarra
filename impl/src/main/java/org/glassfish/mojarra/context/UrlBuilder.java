@@ -297,26 +297,20 @@ class UrlBuilder {
 
     private void cleanFragment() {
         if (fragment != null) {
-            // trim
             String f = fragment.trim();
-            // remove '#'
-            if ( f.charAt(0) == FRAGMENT_SEPARATOR_CHAR ) {
+            if (f.startsWith(FRAGMENT_SEPARATOR)) {
                 f = f.substring(1);
             }
-            // null if empty
             fragment = f.isEmpty() ? null : f;
         }
     }
 
     private void cleanQueryString() {
         if (queryString != null) {
-            // trim
             String q = queryString.trim();
-            // remove '?'
-            if ( q.charAt(0) == QUERY_STRING_SEPARATOR_CHAR ) {
+            if (q.startsWith(QUERY_STRING_SEPARATOR)) {
                 q = q.substring(1);
             }
-            // null if empty
             queryString = q.isEmpty() ? null : q;
         }
     }
