@@ -6,6 +6,12 @@ The *Default* column holds the value the runtime falls back to when the paramete
 
 The *Performance* column tells where the cost of changing the parameter lands: `startup` at application startup, `request` on every request, `memory` in the size of the session or application, and `-` when it is not a performance knob.
 
+A description starting with **Deprecated** marks a parameter which is on its way out. It is still honored and it warns at startup when set, and where a replacement exists the description names it and the replacement wins when both are set.
+
+Several parameters derive their behavior from `jakarta.faces.PROJECT_STAGE` rather than from a fixed default, which the description says where it applies. A parameter which only makes debugging easier is honored in `Development` alone, and reverts to its default elsewhere with a warning.
+
+An `org.glassfish.mojarra.*` name which this page does not list is not recognized, and is reported at startup unless the stage is `Production`.
+
 [`ContextParamsMdTest`](impl/src/test/java/org/glassfish/mojarra/config/ContextParamsMdTest.java) validates this page against the enums which declare the parameters, so a parameter cannot be added, renamed or given another default without this page being updated.
 
 ## Jakarta Faces API context parameters
@@ -20,15 +26,15 @@ The *Performance* column tells where the cost of changing the parameter lands: `
 <tr><th colspan="5" align="left"><br/><code>jakarta.faces.AUTOMATIC_EXTENSIONLESS_MAPPING</code></th></tr>
 <tr><td><code>boolean</code></td><td><code>false</code></td><td>4.0</td><td>startup</td><td>Additionally maps the <code>FacesServlet</code> to the extensionless variant of every view, so that <code>/foo</code> serves <code>/foo.xhtml</code>. Enabling it walks the entire web application root during startup and registers a servlet mapping per view found, so the cost grows with the amount of views.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>jakarta.faces.CONFIG_FILES</code></th></tr>
-<tr><td><code>String[]</code></td><td><em>(none)</em></td><td>1.0</td><td>startup</td><td>Comma separated list of context relative paths to additional Faces configuration files. <code>/WEB-INF/faces-config.xml</code> is always loaded and must not be listed. Every listed file is parsed and validated at startup, so a shorter list starts faster.</td></tr>
+<tr><td><code>String[]</code></td><td><em>(none)</em></td><td>1.0</td><td>startup</td><td>Comma separated list of context relative paths to additional Faces configuration files. <code>/WEB-INF/faces-config.xml</code> is always loaded and must not be listed. Every listed file is parsed at startup, and validated against its schema unless the stage is <code>Production</code>, so a shorter list starts faster.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>jakarta.faces.DISABLE_FACESSERVLET_TO_XHTML</code></th></tr>
 <tr><td><code>boolean</code></td><td><code>false</code></td><td>2.3</td><td>-</td><td>Disables the automatic mapping of the <code>FacesServlet</code> to <code>*.xhtml</code>.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>jakarta.faces.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING</code></th></tr>
-<tr><td><code>String[]</code></td><td><em>(none)</em></td><td>5.0</td><td>-</td><td>Comma separated list of fully qualified exception class names the default <code>ExceptionHandler</code> must not log.</td></tr>
+<tr><td><code>String[]</code></td><td><em>(none)</em></td><td>5.0</td><td>-</td><td>Comma separated list of fully qualified exception class names the default <code>ExceptionHandler</code> must not log. It was <code>com.sun.faces.exceptionTypesToIgnoreInLogging</code> before 5.0, which is still accepted, as is <code>org.glassfish.mojarra.exceptionTypesToIgnoreInLogging</code>, and either warns.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>jakarta.faces.LIFECYCLE_ID</code></th></tr>
 <tr><td><code>String</code></td><td><em>(none)</em></td><td>1.0</td><td>-</td><td>Identifier under which a <code>jakarta.faces.lifecycle.Lifecycle</code> was registered in the <code>jakarta.faces.lifecycle.LifecycleFactory</code>, which the <code>FacesServlet</code> must use. This is not a class name but the key passed to <code>LifecycleFactory.addLifecycle()</code>, so it only resolves when something registered a lifecycle under it. Empty means <code>DEFAULT</code>, the standard lifecycle.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>jakarta.faces.PROJECT_STAGE</code></th></tr>
-<tr><td><code>ProjectStage</code></td><td><code>Production</code></td><td>2.0</td><td>request</td><td>Stage the application currently runs in. The runtime recognizes <code>Development</code>, <code>UnitTest</code>, <code>SystemTest</code> and <code>Production</code>, and a custom value is allowed. <code>Production</code> is by far the fastest, <code>Development</code> adds diagnostics and disables several caches.</td></tr>
+<tr><td><code>ProjectStage</code></td><td><code>Production</code></td><td>2.0</td><td>request</td><td>Stage the application currently runs in. The runtime recognizes <code>Development</code>, <code>UnitTest</code>, <code>SystemTest</code> and <code>Production</code>, and a custom value is allowed. <code>Production</code> is by far the fastest, <code>Development</code> adds diagnostics and disables several caches. It also decides what a number of other parameters do: the configuration is validated at startup unless the stage is <code>Production</code>, resources are cached unless it is <code>Development</code>, and a parameter which only makes debugging easier is honored in <code>Development</code> alone. Anything other than <code>Production</code> is reported once at startup, since none of it belongs in a deployed application. It may also be set through the JNDI environment entry <code>java:comp/env/faces/ProjectStage</code>, which takes precedence.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>jakarta.faces.VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS</code></th></tr>
 <tr><td><code>boolean</code></td><td><code>false</code></td><td>2.3</td><td>-</td><td>Queues an exception thrown by a phase listener installed on the <code>UIViewRoot</code> to the <code>ExceptionHandler</code>, instead of logging and swallowing it.</td></tr>
 </tbody>
@@ -164,9 +170,9 @@ The *Performance* column tells where the cost of changing the parameter lands: `
 </thead>
 <tbody>
 <tr><th colspan="5" align="left"><br/><code>jakarta.faces.CSP_POLICY</code></th></tr>
-<tr><td><code>String</code></td><td><code>script-src 'self' 'nonce-#{nonce}' 'strict-dynamic'</code></td><td>5.0</td><td>-</td><td>Value of the <code>Content-Security-Policy</code> response header sent when <code>jakarta.faces.ENABLE_CSP_NONCE</code> is enabled. Every <code>#{nonce}</code> in it is substituted by the nonce generated for the current response.</td></tr>
+<tr><td><code>String</code></td><td><code>script-src 'self' 'nonce-#{nonce}' 'strict-dynamic'</code></td><td>5.0</td><td>-</td><td>Value of the <code>Content-Security-Policy</code> response header sent when <code>jakarta.faces.ENABLE_CSP_NONCE</code> is enabled. Every <code>#{nonce}</code> in it is substituted by the nonce generated for the current response. It was <code>com.sun.faces.cspPolicy</code> before 5.0, which is still accepted, as is <code>org.glassfish.mojarra.cspPolicy</code>, and either warns.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>jakarta.faces.ENABLE_CSP_NONCE</code></th></tr>
-<tr><td><code>boolean</code></td><td><code>false</code></td><td>5.0</td><td>request</td><td>Generates a nonce per request, stamps it on every script it renders and sends it in the <code>Content-Security-Policy</code> response header configured by <code>jakarta.faces.CSP_POLICY</code>. An ajax postback reuses the nonce of the view it updates, since the browser still enforces the policy sent with the full page. <code>true</code> costs one secure random draw and a header per response, which is a small price for the protection.</td></tr>
+<tr><td><code>boolean</code></td><td><code>false</code></td><td>5.0</td><td>request</td><td>Generates a nonce per request, stamps it on every script it renders and sends it in the <code>Content-Security-Policy</code> response header configured by <code>jakarta.faces.CSP_POLICY</code>. An ajax postback reuses the nonce of the view it updates, since the browser still enforces the policy sent with the full page. <code>true</code> costs one secure random draw and a header per response, which is a small price for the protection. It was <code>com.sun.faces.enableCspNonce</code> before 5.0, which is still accepted, as is <code>org.glassfish.mojarra.enableCspNonce</code>, and either warns.</td></tr>
 </tbody>
 </table>
 
