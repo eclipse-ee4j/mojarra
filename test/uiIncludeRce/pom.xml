@@ -9,7 +9,7 @@
         <version>4.0.23-SNAPSHOT</version>
     </parent>
 
-    <artifactId>rce</artifactId>
+    <artifactId>uiIncludeRce</artifactId>
     <packaging>war</packaging>
 
     <name>Mojarra ${project.version} - INTEGRATION TESTS - ${project.artifactId}</name>
