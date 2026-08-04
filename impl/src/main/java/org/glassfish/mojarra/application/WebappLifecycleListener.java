@@ -118,7 +118,7 @@ public class WebappLifecycleListener {
      */
     public void sessionCreated(HttpSessionEvent event) {
         ApplicationAssociate associate = getAssociate();
-        if (isDevModeEnabled(associate)) {
+        if (isDevelopment(associate)) {
             activeSessions.add(event.getSession());
         }
 
@@ -187,8 +187,8 @@ public class WebappLifecycleListener {
         return WebConfiguration.getInstance(event.getServletContext()).isOptionEnabled(EnableDistributable);
     }
 
-    private boolean isDevModeEnabled(ApplicationAssociate associate) {
-        return associate != null && associate.isDevModeEnabled();
+    private boolean isDevelopment(ApplicationAssociate associate) {
+        return associate != null && associate.isDevelopment();
     }
 
     private boolean haveProtectedViews(ApplicationAssociate associate) {

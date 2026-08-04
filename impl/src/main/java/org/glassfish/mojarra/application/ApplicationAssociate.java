@@ -145,7 +145,7 @@ public class ApplicationAssociate {
     private boolean errorPagePresent;
 
     private final AnnotationManager annotationManager;
-    private final boolean devModeEnabled;
+    private final boolean development;
     private Compiler compiler;
     private DefaultFaceletFactory faceletFactory;
     private ResourceManager resourceManager;
@@ -238,9 +238,9 @@ public class ApplicationAssociate {
 
         annotationManager = new AnnotationManager();
 
-        devModeEnabled = appImpl.getProjectStage() == Development;
+        development = appImpl.getProjectStage() == Development;
 
-        if (!devModeEnabled) {
+        if (!development) {
             resourceCache = new ResourceCache();
         }
 
@@ -403,8 +403,8 @@ public class ApplicationAssociate {
         }
     }
 
-    public boolean isDevModeEnabled() {
-        return devModeEnabled;
+    public boolean isDevelopment() {
+        return development;
     }
 
     /**
@@ -678,7 +678,7 @@ public class ApplicationAssociate {
         PassThroughElementLibrary.NAMESPACES.forEach(namespace -> newCompiler.addTagLibrary(new PassThroughElementLibrary(namespace)));
         FunctionLibrary.NAMESPACES.forEach(namespace -> newCompiler.addTagLibrary(new FunctionLibrary(JstlFunction.class, namespace)));
 
-        if (isDevModeEnabled()) {
+        if (isDevelopment()) {
             DevTools.NAMESPACES.forEach(namespace -> newCompiler.addTagLibrary(new FunctionLibrary(DevTools.class, namespace)));
         }
 

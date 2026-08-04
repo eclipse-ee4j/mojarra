@@ -431,7 +431,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
 
     private boolean shouldInitConfigMonitoring() {
 
-        boolean development = isDevModeEnabled();
+        boolean development = isDevelopment();
         boolean threadingOptionSpecified = webConfig.isSet(EnableThreading);
 
         if (development && !threadingOptionSpecified) {
@@ -446,7 +446,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         @SuppressWarnings("unchecked")
         Collection<URI> webURIs = (Collection<URI>) context.getAttribute("org.glassfish.mojarra.webresources");
 
-        if (isDevModeEnabled() && webURIs != null && !webURIs.isEmpty()) {
+        if (isDevelopment() && webURIs != null && !webURIs.isEmpty()) {
             webResourcePool = new ScheduledThreadPoolExecutor(1, new MojarraThreadFactory("WebResourceMonitor"));
             webResourcePool.scheduleAtFixedRate(new WebConfigResourceMonitor(context, webURIs), 2000, 2000, TimeUnit.MILLISECONDS);
         }
@@ -454,7 +454,7 @@ public class ConfigureListener implements ServletRequestListener, HttpSessionLis
         context.removeAttribute("org.glassfish.mojarra.webresources");
     }
 
-    private boolean isDevModeEnabled() {
+    private boolean isDevelopment() {
         return getProjectStage() == ProjectStage.Development;
     }
 
