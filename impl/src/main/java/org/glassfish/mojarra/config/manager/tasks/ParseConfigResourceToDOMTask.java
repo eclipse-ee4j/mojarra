@@ -48,6 +48,7 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
+import javax.xml.validation.Validator;
 
 import jakarta.servlet.ServletContext;
 
@@ -61,6 +62,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -90,7 +92,6 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
 
     private final ServletContext servletContext;
     private final URI documentURI;
-    private DocumentBuilderFactory factory;
     private final boolean validating;
 
 
@@ -200,7 +201,7 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
                 // If the Document in question is 1.2+ (i.e. it has a namespace matching JAVAEE_SCHEMA_LEGACY_DEFAULT_NS or later,
                 // then perform validation using the cached schema and return.
 
-                returnDoc = loadDocument(
+                returnDoc = validateDocument(
                     findMatchingSchema(documentNS, getVersion(documentElement), documentElement.getLocalName()),
                     domSource);
                 break;
@@ -210,7 +211,7 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
                 // Assume a 1.0 or 1.1 faces-config in which case we need to transform it to reference a special 1.1 schema
                 // before validating.
 
-                returnDoc = loadDocument(
+                returnDoc = validateDocument(
                     findMatchingSchema(documentNS, null, null),
                     transformDocument(documentNS, domSource));
             }
@@ -249,26 +250,68 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
         return null;
     }
 
+    /**
+     * <p>
+     * Returns <code>null</code> when the version is not one this release ships a schema for, which skips validation of
+     * that document rather than failing the deployment. A library on the classpath may legitimately declare a newer
+     * configuration version than the runtime knows.
+     * </p>
+     */
     private Schema findMatchingSchema(String documentNS, String version, String localName) {
-        return DbfFactory.getSchema(servletContext, documentNS, version, localName);
+        try {
+            return DbfFactory.getSchema(servletContext, documentNS, version, localName);
+        } catch (ConfigurationException e) {
+            LOGGER.log(WARNING, "faces.config.schema.unknown", new Object[] { documentURI, e.getMessage() });
+            return null;
+        }
     }
 
-    private Document loadDocument(Schema schema, DOMSource domSource) throws Exception {
-        DocumentBuilder builder = getBuilderForSchema(schema);
-        if (builder.isValidating()) {
-            builder.getSchema().newValidator().validate(domSource);
-        }
-
+    private Document validateDocument(Schema schema, DOMSource domSource) throws Exception {
+        validate(schema, domSource);
         return (Document) domSource.getNode();
     }
 
-    private Document loadDocument(Schema schema, DOMResult domResult) throws Exception {
-        DocumentBuilder builder = getBuilderForSchema(schema);
-        if (builder.isValidating()) {
-            builder.getSchema().newValidator().validate(new DOMSource(domResult.getNode()));
+    private Document validateDocument(Schema schema, DOMResult domResult) throws Exception {
+        validate(schema, new DOMSource(domResult.getNode()));
+        return (Document) domResult.getNode();
+    }
+
+    /**
+     * <p>
+     * Reports every way in which the document departs from its schema, rather than stopping at the first one and taking
+     * the deployment down with it. A configuration file which a previous release accepted has to keep deploying.
+     * </p>
+     */
+    private void validate(Schema schema, DOMSource domSource) throws Exception {
+        if (schema == null) {
+            return;
         }
 
-        return (Document) domResult.getNode();
+        Validator validator = schema.newValidator();
+        validator.setErrorHandler(new SchemaViolationReporter());
+        validator.validate(domSource);
+    }
+
+    /**
+     * Logs each schema violation and lets the validation continue, so that one run reports all of them.
+     */
+    private final class SchemaViolationReporter implements ErrorHandler {
+
+        @Override
+        public void warning(SAXParseException exception) {
+            // Not a violation, and the schemas themselves produce these.
+        }
+
+        @Override
+        public void error(SAXParseException exception) {
+            LOGGER.log(WARNING, "faces.config.schema.violation",
+                    new Object[] { documentURI, exception.getLineNumber(), exception.getColumnNumber(), exception.getMessage() });
+        }
+
+        @Override
+        public void fatalError(SAXParseException exception) throws SAXException {
+            throw exception;
+        }
     }
 
     private String getVersion(Node documentElement) {
@@ -348,22 +391,6 @@ public class ParseConfigResourceToDOMTask implements Callable<DocumentInfo> {
         tBuilder.setErrorHandler(FACES_ERROR_HANDLER);
 
         return tBuilder;
-    }
-
-    private DocumentBuilder getBuilderForSchema(Schema schema) throws Exception {
-        factory = DbfFactory.getFactory();
-
-        try {
-            factory.setSchema(schema);
-        } catch (UnsupportedOperationException upe) {
-            return getNonValidatingBuilder();
-        }
-
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        builder.setEntityResolver(FACES_ENTITY_RESOLVER);
-        builder.setErrorHandler(FACES_ERROR_HANDLER);
-
-        return builder;
     }
 
     private boolean isNonFacesConfigDocument(String rootElementTagName) {
