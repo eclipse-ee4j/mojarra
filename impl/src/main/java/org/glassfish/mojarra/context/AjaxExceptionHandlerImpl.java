@@ -162,14 +162,14 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandlerWrapper {
             writer.startDocument();
             writer.startError(t.getClass().toString());
             String msg;
-            if (context.isProjectStage(ProjectStage.Production)) {
-                msg = "See your server log for more information";
-            } else {
+            if (context.isProjectStage(ProjectStage.Development)) {
                 if (t.getCause() != null) {
                     msg = t.getCause().getMessage();
                 } else {
                     msg = t.getMessage();
                 }
+            } else {
+                msg = "See your server log for more information";
             }
             writer.write(msg != null ? msg : "");
             writer.endError();

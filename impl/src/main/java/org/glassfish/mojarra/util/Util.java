@@ -1210,13 +1210,13 @@ public class Util {
     }
 
     // org.glassfish.mojarra.disableIdUniquenessCheck is true|false|auto (default false: always run the check).
-    // Opt-in auto skips the whole-tree duplicate-id walk in Production only (a duplicate id would already
-    // have surfaced in Development). The default keeps the check on; the skip stays opt-in.
+    // Opt-in auto skips the whole-tree duplicate-id walk outside Development, where a duplicate id would already
+    // have surfaced. The default keeps the check on; the skip stays opt-in.
     private static boolean isIdUniquenessCheckDisabled(FacesContext context) {
         String value = WebConfiguration.getInstance(context.getExternalContext())
                 .getOptionValue(WebConfiguration.WebContextInitParameter.DisableIdUniquenessCheck);
         if (value == null || "auto".equals(value)) {
-            return context.isProjectStage(ProjectStage.Production);
+            return !context.isProjectStage(ProjectStage.Development);
         }
         return Boolean.parseBoolean(value);
     }
