@@ -941,10 +941,10 @@ public class WebConfiguration {
      */
     public enum WebContextInitParameter {
 
-        NumberOfViewSequencesInSession("org.glassfish.mojarra.numberOfViewSequencesInSession", "15"),
-        NumberOfViewsPerViewSequence("org.glassfish.mojarra.numberOfViewsPerViewSequence", "15"),
-        NumberOfLogicalViewsDeprecated("org.glassfish.mojarra.numberOfLogicalViews", "15", NumberOfViewSequencesInSession),
-        NumberOfViewsInSessionDeprecated("org.glassfish.mojarra.numberOfViewsInSession", "15", NumberOfViewsPerViewSequence),
+        NumberOfStatefulPagesPerSession("org.glassfish.mojarra.numberOfStatefulPagesPerSession", "15"),
+        NumberOfViewStatesPerStatefulPage("org.glassfish.mojarra.numberOfViewStatesPerStatefulPage", "15"),
+        NumberOfLogicalViewsDeprecated("org.glassfish.mojarra.numberOfLogicalViews", "15", NumberOfStatefulPagesPerSession),
+        NumberOfViewsInSessionDeprecated("org.glassfish.mojarra.numberOfViewsInSession", "15", NumberOfViewStatesPerStatefulPage),
         NumberOfActiveViewMaps("org.glassfish.mojarra.numberOfActiveViewMaps", "25"),
         NumberOfConcurrentFlashUsers("org.glassfish.mojarra.numberOfConcurrentFlashUsers", "5000"),
         NumberOfFlashesBetweenFlashReapings("org.glassfish.mojarra.numberOfFlashesBetweenFlashReapings", "5000"),

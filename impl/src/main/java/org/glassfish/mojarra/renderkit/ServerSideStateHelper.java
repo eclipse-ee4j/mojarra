@@ -21,8 +21,8 @@ import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.WARNING;
 import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.EnableViewStateIdRendering;
 import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.GenerateUniqueServerStateIds;
-import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.NumberOfViewSequencesInSession;
-import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.NumberOfViewsPerViewSequence;
+import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.NumberOfStatefulPagesPerSession;
+import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.NumberOfViewStatesPerStatefulPage;
 import static org.glassfish.mojarra.context.SessionMap.getMutex;
 import static org.glassfish.mojarra.renderkit.RenderKitUtils.PredefinedPostbackParameter.VIEW_STATE_PARAM;
 import static org.glassfish.mojarra.util.Util.notNull;
@@ -69,20 +69,20 @@ public class ServerSideStateHelper extends StateHelper {
     public static final String STATEMANAGED_SERIAL_ID_KEY = ServerSideStateHelper.class.getName() + ".SerialId";
 
     /**
-     * The top level attribute name for storing the state structures within the session. It holds one entry per view
-     * sequence, and each of those holds one entry per view within that sequence.
+     * The top level attribute name for storing the state structures within the session. It holds one entry per stateful
+     * page, and each of those holds one entry per view state of that page.
      */
-    public static final String VIEW_SEQUENCE_MAP = ServerSideStateHelper.class.getName() + ".ViewSequenceMap";
+    public static final String STATEFUL_PAGE_MAP = ServerSideStateHelper.class.getName() + ".StatefulPageMap";
 
     /**
-     * The number of view sequences retained per session, as configured by the user.
+     * The number of stateful pages retained per session, as configured by the user.
      */
-    protected final Integer numberOfViewSequences;
+    protected final Integer numberOfStatefulPages;
 
     /**
-     * The number of views retained per view sequence, as configured by the user.
+     * The number of view states retained per stateful page, as configured by the user.
      */
-    protected final Integer numberOfViewsPerSequence;
+    protected final Integer numberOfViewStatesPerPage;
 
     /**
      * Flag determining how server state IDs are generated.
@@ -100,8 +100,8 @@ public class ServerSideStateHelper extends StateHelper {
      * Construct a new <code>ServerSideStateHelper</code> instance.
      */
     public ServerSideStateHelper() {
-        numberOfViewSequences = getIntegerConfigValue(NumberOfViewSequencesInSession);
-        numberOfViewsPerSequence = getIntegerConfigValue(NumberOfViewsPerViewSequence);
+        numberOfStatefulPages = getIntegerConfigValue(NumberOfStatefulPagesPerSession);
+        numberOfViewStatesPerPage = getIntegerConfigValue(NumberOfViewStatesPerStatefulPage);
         WebConfiguration webConfig = WebConfiguration.getInstance();
         generateUniqueStateIds = webConfig.isOptionEnabled(GenerateUniqueServerStateIds);
         if (generateUniqueStateIds) {
@@ -152,47 +152,47 @@ public class ServerSideStateHelper extends StateHelper {
                 Map<String, Object> sessionMap = externalContext.getSessionMap();
 
                 synchronized (getMutex(sessionObj)) {
-                    Map<String, Map> sequenceMap = TypedCollections.dynamicallyCastMap((Map) sessionMap.get(VIEW_SEQUENCE_MAP), String.class, Map.class);
-                    if (sequenceMap == null) {
-                        sequenceMap = Collections.synchronizedMap(new LRUMap<String, Map>(numberOfViewSequences));
-                        sessionMap.put(VIEW_SEQUENCE_MAP, sequenceMap);
+                    Map<String, Map> pageMap = TypedCollections.dynamicallyCastMap((Map) sessionMap.get(STATEFUL_PAGE_MAP), String.class, Map.class);
+                    if (pageMap == null) {
+                        pageMap = Collections.synchronizedMap(new LRUMap<String, Map>(numberOfStatefulPages));
+                        sessionMap.put(STATEFUL_PAGE_MAP, pageMap);
                     }
 
                     Object structure = stateToWrite[0];
                     Object savedState = handleSaveState(stateToWrite[1]);
 
-                    String idInSequenceMap = (String) RequestStateManager.get(ctx, RequestStateManager.VIEW_SEQUENCE_MAP);
-                    if (idInSequenceMap == null) {
-                        idInSequenceMap = generateUniqueStateIds ? createRandomId() : createIncrementalRequestId(ctx);
+                    String idInPageMap = (String) RequestStateManager.get(ctx, RequestStateManager.STATEFUL_PAGE_MAP);
+                    if (idInPageMap == null) {
+                        idInPageMap = generateUniqueStateIds ? createRandomId() : createIncrementalRequestId(ctx);
                     }
-                    String idInViewMap = null;
+                    String idInStateMap = null;
                     if (ctx.getPartialViewContext().isPartialRequest()) {
                         // If partial request, do not change actual view Id, because page not actually changed.
                         // Otherwise partial requests will soon overflow cache with values that would be never used.
-                        idInViewMap = (String) RequestStateManager.get(ctx, RequestStateManager.VIEW_MAP);
+                        idInStateMap = (String) RequestStateManager.get(ctx, RequestStateManager.VIEW_STATE_MAP);
                     }
-                    if (null == idInViewMap) {
-                        idInViewMap = generateUniqueStateIds ? createRandomId() : createIncrementalRequestId(ctx);
+                    if (null == idInStateMap) {
+                        idInStateMap = generateUniqueStateIds ? createRandomId() : createIncrementalRequestId(ctx);
                     }
-                    Map<String, Object[]> viewMap = TypedCollections.dynamicallyCastMap(sequenceMap.get(idInSequenceMap), String.class, Object[].class);
-                    if (viewMap == null) {
-                        viewMap = Collections.synchronizedMap(new LRUMap<>(numberOfViewsPerSequence));
-                        sequenceMap.put(idInSequenceMap, viewMap);
+                    Map<String, Object[]> stateMap = TypedCollections.dynamicallyCastMap(pageMap.get(idInPageMap), String.class, Object[].class);
+                    if (stateMap == null) {
+                        stateMap = Collections.synchronizedMap(new LRUMap<>(numberOfViewStatesPerPage));
+                        pageMap.put(idInPageMap, stateMap);
                     }
 
-                    id = idInSequenceMap + ':' + idInViewMap;
+                    id = idInPageMap + ':' + idInStateMap;
 
-                    Object[] stateArray = viewMap.get(idInViewMap);
+                    Object[] stateArray = stateMap.get(idInStateMap);
                     // reuse the array if possible
                     if (stateArray != null) {
                         stateArray[0] = structure;
                         stateArray[1] = savedState;
                     } else {
-                        viewMap.put(idInViewMap, new Object[] { structure, savedState });
+                        stateMap.put(idInStateMap, new Object[] { structure, savedState });
                     }
 
                     // always call put/setAttribute as we may be in a clustered environment.
-                    sessionMap.put(VIEW_SEQUENCE_MAP, sequenceMap);
+                    sessionMap.put(STATEFUL_PAGE_MAP, pageMap);
                     ctx.getAttributes().put("org.glassfish.mojarra.ViewStateValue", id);
                 }
             } else {
@@ -252,8 +252,8 @@ public class ServerSideStateHelper extends StateHelper {
             return null;
         }
 
-        String idInSequenceMap = compoundId.substring(0, sep);
-        String idInViewMap = compoundId.substring(sep + 1);
+        String idInPageMap = compoundId.substring(0, sep);
+        String idInStateMap = compoundId.substring(sep + 1);
 
         ExternalContext externalCtx = ctx.getExternalContext();
         Object sessionObj = externalCtx.getSession(false);
@@ -266,19 +266,19 @@ public class ServerSideStateHelper extends StateHelper {
 
         synchronized (getMutex(sessionObj)) {
             @SuppressWarnings("unchecked")
-            Map<String, Map<String, Object[]>> sequenceMap = (Map<String, Map<String, Object[]>>) externalCtx.getSessionMap().get(VIEW_SEQUENCE_MAP);
-            if (sequenceMap != null) {
-                Map<String, Object[]> viewMap = sequenceMap.get(idInSequenceMap);
-                if (viewMap != null) {
-                    RequestStateManager.set(ctx, RequestStateManager.VIEW_SEQUENCE_MAP, idInSequenceMap);
+            Map<String, Map<String, Object[]>> pageMap = (Map<String, Map<String, Object[]>>) externalCtx.getSessionMap().get(STATEFUL_PAGE_MAP);
+            if (pageMap != null) {
+                Map<String, Object[]> stateMap = pageMap.get(idInPageMap);
+                if (stateMap != null) {
+                    RequestStateManager.set(ctx, RequestStateManager.STATEFUL_PAGE_MAP, idInPageMap);
 
                     Object[] restoredState = new Object[2];
-                    Object[] state = viewMap.get(idInViewMap);
+                    Object[] state = stateMap.get(idInStateMap);
                     if (state != null) {
                         restoredState[0] = state[0];
                         restoredState[1] = state[1];
 
-                        RequestStateManager.set(ctx, RequestStateManager.VIEW_MAP, idInViewMap);
+                        RequestStateManager.set(ctx, RequestStateManager.VIEW_STATE_MAP, idInStateMap);
                         if (state.length == 2 && state[1] != null) {
                             restoredState[1] = handleRestoreState(state[1]);
                         }

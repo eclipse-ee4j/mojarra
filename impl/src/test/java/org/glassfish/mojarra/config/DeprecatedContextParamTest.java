@@ -20,7 +20,7 @@ import static java.util.logging.Level.WARNING;
 import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.AllowTextChildren;
 import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.CompressViewState;
 import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.NumberOfLogicalViewsDeprecated;
-import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.NumberOfViewSequencesInSession;
+import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.NumberOfStatefulPagesPerSession;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -122,7 +122,7 @@ class DeprecatedContextParamTest {
 
         WebConfiguration webConfiguration = WebConfiguration.getInstance(servletContext);
 
-        assertEquals("3", webConfiguration.getOptionValue(NumberOfViewSequencesInSession));
+        assertEquals("3", webConfiguration.getOptionValue(NumberOfStatefulPagesPerSession));
         assertEquals(List.of(NumberOfLogicalViewsDeprecated.getQualifiedName()), replacedParameterNames());
     }
 
@@ -133,9 +133,9 @@ class DeprecatedContextParamTest {
     void theReplacementWinsWhenBothAreSet() {
         MockServletContext servletContext = new MockServletContext();
         servletContext.addInitParameter(NumberOfLogicalViewsDeprecated.getQualifiedName(), "3");
-        servletContext.addInitParameter(NumberOfViewSequencesInSession.getQualifiedName(), "7");
+        servletContext.addInitParameter(NumberOfStatefulPagesPerSession.getQualifiedName(), "7");
 
-        assertEquals("7", WebConfiguration.getInstance(servletContext).getOptionValue(NumberOfViewSequencesInSession));
+        assertEquals("7", WebConfiguration.getInstance(servletContext).getOptionValue(NumberOfStatefulPagesPerSession));
     }
 
     private List<String> replacedParameterNames() {
