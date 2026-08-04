@@ -340,7 +340,7 @@ The *Performance* column tells where the cost of changing the parameter lands: `
 </thead>
 <tbody>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.allowedHttpMethods</code></th></tr>
-<tr><td><code>String</code></td><td><code>OPTIONS GET HEAD POST PUT DELETE TRACE CONNECT</code></td><td>2.0.6</td><td>-</td><td>Space separated list of case sensitive HTTP method names the <code>FacesServlet</code> accepts. <code>*</code> allows every method. Any other method is rejected.</td></tr>
+<tr><td><code>String</code></td><td><em>(none)</em></td><td>2.0.6</td><td>-</td><td>Space separated list of case sensitive HTTP method names the <code>FacesServlet</code> accepts, which when unset is every method it knows: <code>OPTIONS GET HEAD POST PUT DELETE TRACE CONNECT</code>. <code>*</code> allows every method, including ones it does not know. Any other method is rejected with <code>400</code>.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.disableClientStateEncryption</code></th></tr>
 <tr><td><code>boolean</code></td><td><code>false</code></td><td>2.1.14</td><td>request</td><td>Disables encryption of client side saved state. It exists to make the state readable while debugging, together with <code>org.glassfish.mojarra.enableClientStateDebugging</code>, and drops the <code>ByteArrayGuard</code> which makes the state both unreadable and tamper evident, so never set it in production. Encryption is only set up at all when JNDI entries can be processed.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.disallowDoctypeDecl</code></th></tr>

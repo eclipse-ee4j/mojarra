@@ -30,6 +30,7 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINER;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
+import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.AllowedHttpMethods;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Stream.concat;
 
@@ -57,6 +58,8 @@ import jakarta.servlet.UnavailableException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import org.glassfish.mojarra.config.WebConfiguration;
 
 /**
  * <p>
@@ -266,12 +269,6 @@ public final class FacesServletImpl implements Servlet {
      * The <code>Logger</code> for this class.
      */
     private static final Logger LOGGER = Logger.getLogger("jakarta.faces.webapp", "jakarta.faces.LogStrings");
-
-    /**
-     * A white space separated list of case sensitive HTTP method names that are allowed to be processed by this servlet. *
-     * means allow all
-     */
-    private static final String ALLOWED_HTTP_METHODS_ATTR = "org.glassfish.mojarra.allowedHttpMethods";
 
     // Http method names must be upper case. http://www.w3.org/Protocols/HTTP/NoteMethodCS.html
     // List of valid methods in Http 1.1 http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9
@@ -562,8 +559,8 @@ public final class FacesServletImpl implements Servlet {
         allowedUnknownHttpMethods = emptySet();
         allowedKnownHttpMethods = defaultAllowedHttpMethods;
 
-        String allowedHttpMethodsString = servletConfig.getServletContext().getInitParameter(ALLOWED_HTTP_METHODS_ATTR);
-        if (allowedHttpMethodsString != null) {
+        String allowedHttpMethodsString = WebConfiguration.getInstance(servletConfig.getServletContext()).getOptionValue(AllowedHttpMethods);
+        if (allowedHttpMethodsString != null && !allowedHttpMethodsString.isEmpty()) {
             String[] methods = allowedHttpMethodsString.split("\\s+");
 
             allowedUnknownHttpMethods = new HashSet<>(methods.length);

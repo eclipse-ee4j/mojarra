@@ -16,6 +16,7 @@
 
 package org.glassfish.mojarra.webapp;
 
+import static org.glassfish.mojarra.config.WebConfiguration.WebContextInitParameter.AllowedHttpMethods;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import jakarta.faces.FactoryFinder;
@@ -31,10 +32,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class FacesServletTestCase extends JUnitFacesTestCaseBase {
-
-    // this is private in FacesServlet to not break backwards compatibility
-    private static final String ALLOWED_HTTP_METHODS_ATTR_COPY
-            = "org.glassfish.mojarra.allowedHttpMethods";
 
     @Override
     @BeforeEach
@@ -83,7 +80,7 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
     @Test
     public void testPositiveInitWithContextParamsOfKnownHttpMethods() throws Exception {
         FacesServlet me = new FacesServlet();
-        servletContext.addInitParameter(ALLOWED_HTTP_METHODS_ATTR_COPY, "GET   POST");
+        servletContext.addInitParameter(AllowedHttpMethods.getQualifiedName(), "GET   POST");
         me.init(config);
         this.sendRequest(me, "OPTIONS");
         assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
@@ -106,7 +103,7 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
     @Test
     public void testNegativeInitWithContextParamsOfKnownHttpMethods() throws Exception {
         FacesServlet me = new FacesServlet();
-        servletContext.addInitParameter(ALLOWED_HTTP_METHODS_ATTR_COPY, "GET   POST GET  POST");
+        servletContext.addInitParameter(AllowedHttpMethods.getQualifiedName(), "GET   POST GET  POST");
         me.init(config);
         this.sendRequest(me, "OPTIONS");
         assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
@@ -129,7 +126,7 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
     @Test
     public void testPositiveInitWithContextParamsOfWildcardHttpMethods() throws Exception {
         FacesServlet me = new FacesServlet();
-        servletContext.addInitParameter(ALLOWED_HTTP_METHODS_ATTR_COPY, "*");
+        servletContext.addInitParameter(AllowedHttpMethods.getQualifiedName(), "*");
         me.init(config);
         this.sendRequest(me, "OPTIONS");
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
@@ -154,7 +151,7 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
     @Test
     public void testNegativeInitWithContextParamsOfWildcardHttpMethods() throws Exception {
         FacesServlet me = new FacesServlet();
-        servletContext.addInitParameter(ALLOWED_HTTP_METHODS_ATTR_COPY, "* * * *");
+        servletContext.addInitParameter(AllowedHttpMethods.getQualifiedName(), "* * * *");
         me.init(config);
         this.sendRequest(me, "OPTIONS");
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
@@ -179,7 +176,7 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
     @Test
     public void testPositiveInitWithContextParamsOfUnknownAndKnownHttpMethods() throws Exception {
         FacesServlet me = new FacesServlet();
-        servletContext.addInitParameter(ALLOWED_HTTP_METHODS_ATTR_COPY, "GET\tPOST\tGETAAAAA");
+        servletContext.addInitParameter(AllowedHttpMethods.getQualifiedName(), "GET\tPOST\tGETAAAAA");
         me.init(config);
         this.sendRequest(me, "OPTIONS");
         assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
@@ -204,6 +201,22 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
     }
 
     /**
+     * Going through WebConfiguration rather than reading the init parameter directly is what makes the legacy
+     * com.sun.faces spelling work here, as it does for every other Mojarra context parameter.
+     */
+    @Test
+    public void testAllowedHttpMethodsHonorsLegacyPrefix() throws Exception {
+        FacesServlet me = new FacesServlet();
+        servletContext.addInitParameter("com.sun.faces.allowedHttpMethods", "GET POST");
+        me.init(config);
+
+        this.sendRequest(me, "GET");
+        assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+        this.sendRequest(me, "DELETE");
+        assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
+    }
+
+    /**
      * An OPTIONS request is answered by the servlet itself, with the methods it accepts, and never reaches the
      * lifecycle. Rendering a view would hand the page content to a request which did not ask for it.
      */
@@ -225,7 +238,7 @@ public class FacesServletTestCase extends JUnitFacesTestCaseBase {
     @Test
     public void testOptionsAllowHeaderReflectsAllowedHttpMethods() throws Exception {
         FacesServlet me = new FacesServlet();
-        servletContext.addInitParameter(ALLOWED_HTTP_METHODS_ATTR_COPY, "GET POST OPTIONS");
+        servletContext.addInitParameter(AllowedHttpMethods.getQualifiedName(), "GET POST OPTIONS");
         me.init(config);
 
         this.sendRequest(me, "OPTIONS");

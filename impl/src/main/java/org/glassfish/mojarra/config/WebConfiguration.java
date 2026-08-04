@@ -680,6 +680,7 @@ public class WebConfiguration {
         DisableUnicodeEscaping("org.glassfish.mojarra.disableUnicodeEscaping", "auto"),
         DisableIdUniquenessCheck("org.glassfish.mojarra.disableIdUniquenessCheck", "false"), // true|false|auto; default false (always check), opt-in auto skips it in Production
         DuplicateJARPattern("org.glassfish.mojarra.duplicateJARPattern", ""),
+        AllowedHttpMethods("org.glassfish.mojarra.allowedHttpMethods", ""), // white space separated, upper case; * means allow all
         FullStateSavingViewIds(StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME, ""),
 
         FaceletsProcessingFileExtensionProcessAs("", ""),
