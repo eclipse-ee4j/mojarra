@@ -2,15 +2,19 @@ package org.glassfish.mojarra.context;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toSet;
 import static org.glassfish.mojarra.RIConstants.EMPTY_STRING_ARRAY;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
@@ -240,10 +244,6 @@ public enum FacesContextParam {
      * Maps spec context-parameter names to their legacy Mojarra-specific equivalents from 4.x.
      * When a spec name is unset but its legacy alias is, the legacy value is used and a deprecation warning is logged.
      */
-    private static final Map<String, String> LEGACY_ALIASES = Map.of(
-            ResourceHandler.ENABLE_CSP_NONCE_PARAM_NAME, "com.sun.faces.enableCspNonce",
-            ResourceHandler.CSP_POLICY_PARAM_NAME, "com.sun.faces.cspPolicy");
-
     private <T> FacesContextParam(String name, T defaultValue) {
         this(name, defaultValue, null, null);
     }
@@ -347,21 +347,19 @@ public enum FacesContextParam {
 
     @SuppressWarnings("unchecked")
     private <T> Optional<T> getContextParamValue(FacesContext context) {
-        String value = context.getExternalContext().getInitParameter(name);
+        return toValue(context.getExternalContext().getInitParameter(name));
+    }
 
-        if (value == null) {
-            String legacyName = LEGACY_ALIASES.get(name);
-
-            if (legacyName != null) {
-                value = context.getExternalContext().getInitParameter(legacyName);
-
-                if (value != null && LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.log(Level.WARNING,
-                            "Context initialization parameter ''{0}'' is deprecated. The option will still be configured, but please use ''{1}'' in the future.",
-                            new Object[] { legacyName, name });
-                }
-            }
-        }
+    /**
+     * <p>
+     * Converts a raw context parameter value to the expected type as indicated by {@link #getType()}.
+     * @param <T> The expected return type.
+     * @param value The raw value, which may be {@code null}.
+     * @return The converted value, or empty when there was none.
+     * @throws IllegalArgumentException When the value cannot be converted to the expected type.
+     */
+    @SuppressWarnings("unchecked")
+    public <T> Optional<T> toValue(String value) {
 
         if (value == null) {
             return Optional.empty();

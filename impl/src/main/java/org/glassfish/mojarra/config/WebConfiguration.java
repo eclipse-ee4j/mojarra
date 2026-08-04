@@ -21,6 +21,7 @@ import static java.util.Collections.emptyMap;
 import static java.util.logging.Level.FINE;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
+import static java.util.stream.Collectors.toSet;
 import static org.glassfish.mojarra.util.Util.split;
 
 import java.io.IOException;
@@ -39,6 +40,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -69,6 +71,24 @@ public class WebConfiguration {
 
     // A Simple regular expression of allowable boolean values
     private static final Pattern ALLOWABLE_BOOLEANS = compile("true|false", CASE_INSENSITIVE);
+
+    /**
+     * <p>
+     * Maps a specification context parameter to the unqualified name it had while it was Mojarra specific. Both
+     * prefixes are accepted for it: the one it actually carried, and the one the 5.0 rename produces for anybody
+     * replacing com.sun.faces with org.glassfish.mojarra throughout, which is a name it never had, but is the single
+     * most likely wrong spelling in this release.
+     * </p>
+     *
+     * <p>
+     * This lives here rather than beside the parameters themselves because it is Mojarra's own history. Those
+     * parameters belong to the specification now, and so does the enum which declares them.
+     * </p>
+     */
+    private static final Map<FacesContextParam, String> PROMOTED_PARAMETERS = Map.of(
+            FacesContextParam.ENABLE_CSP_NONCE, "enableCspNonce",
+            FacesContextParam.CSP_POLICY, "cspPolicy",
+            FacesContextParam.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING, "exceptionTypesToIgnoreInLogging");
 
     /**
      * The value of a tri-state parameter which leaves the decision to the project stage.
@@ -149,6 +169,40 @@ public class WebConfiguration {
         // Before the deprecated ones, so that a value carried over from a legacy name still wins over a stage default.
         processDevelopmentDefaults();
         processDeprecatedParameters(contextName);
+        warnAboutUnrecognizedParameters(contextName);
+    }
+
+    /**
+     * <p>
+     * Reports every <code>org.glassfish.mojarra.*</code> name the application declared which this release does not
+     * recognize, so that a typo or a parameter which has been removed says so rather than being silently ignored.
+     * </p>
+     *
+     * <p>
+     * Only Mojarra's own namespace is checked, because it is the only one this release is authoritative about. It also
+     * covers the legacy <code>com.sun.faces</code> spelling, which {@link #initSetList(ServletContext)} normalizes into
+     * it. This does not run in Production, where nothing can be done about it any more anyway.
+     * </p>
+     */
+    private void warnAboutUnrecognizedParameters(String contextName) {
+        if (projectStage == ProjectStage.Production) {
+            return;
+        }
+
+        Set<String> recognized = new HashSet<>(getPromotedParameterAliases());
+
+        for (WebContextInitParameter param : WebContextInitParameter.values()) {
+            recognized.add(param.getQualifiedName());
+        }
+
+        for (BooleanWebContextInitParameter param : BooleanWebContextInitParameter.values()) {
+            recognized.add(param.getQualifiedName());
+        }
+
+        setParams.stream()
+                 .filter(name -> name.startsWith(CURRENT_PARAM_PREFIX) && !recognized.contains(name))
+                 .sorted()
+                 .forEach(name -> LOGGER.log(Level.WARNING, "faces.config.webconfig.param.unrecognized", new Object[] { contextName, name }));
     }
 
     /**
@@ -440,6 +494,46 @@ public class WebConfiguration {
      *
      * @return the project stage.
      */
+    /**
+     * <p>
+     * Returns the value of a specification context parameter which used to be a Mojarra one, honoring the name it had
+     * when the specification name is not set, and warning when it does.
+     * </p>
+     *
+     * @param <T> the expected type of the value.
+     * @param param the parameter of interest.
+     * @param context the involved faces context.
+     * @return the value of the parameter.
+     */
+    public static <T> T getValue(FacesContextParam param, FacesContext context) {
+        String suffix = PROMOTED_PARAMETERS.get(param);
+
+        if (suffix != null && context.getExternalContext().getInitParameter(param.getName()) == null) {
+            for (String legacyName : List.of(LEGACY_PARAM_PREFIX + suffix, CURRENT_PARAM_PREFIX + suffix)) {
+                String value = context.getExternalContext().getInitParameter(legacyName);
+
+                if (value != null) {
+                    LOGGER.log(Level.WARNING, "faces.config.webconfig.param.deprecated",
+                            new Object[] { context.getExternalContext().getContextName(), legacyName, param.getName() });
+
+                    return param.<T>toValue(value).orElseGet(() -> param.getDefaultValue(context));
+                }
+            }
+        }
+
+        return param.getValue(context);
+    }
+
+    /**
+     * @return every name a promoted parameter may still be spelled as, which the unrecognized parameter check has to
+     * treat as known.
+     */
+    private static Set<String> getPromotedParameterAliases() {
+        return PROMOTED_PARAMETERS.values().stream()
+                .flatMap(suffix -> Stream.of(LEGACY_PARAM_PREFIX + suffix, CURRENT_PARAM_PREFIX + suffix))
+                .collect(toSet());
+    }
+
     public ProjectStage getProjectStage() {
         return projectStage;
     }
