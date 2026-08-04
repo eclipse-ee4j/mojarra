@@ -42,6 +42,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.context.ExternalContext;
@@ -49,6 +50,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletContext;
 
 import org.glassfish.mojarra.application.ApplicationAssociate;
+import org.glassfish.mojarra.context.FacesContextParam;
 import org.glassfish.mojarra.application.view.FaceletViewHandlingStrategy;
 import org.glassfish.mojarra.facelets.util.Classpath;
 import org.glassfish.mojarra.util.FacesLogger;
@@ -336,6 +338,22 @@ public class WebConfiguration {
         }
 
         return value;
+    }
+
+    /**
+     * <p>
+     * Resolves the project stage from its JNDI environment entry, falling back to the context parameter, which is what
+     * {@link jakarta.faces.application.Application#getProjectStage()} ends up doing as well. Unlike that one this is
+     * answerable while the configuration is still being processed, when there is no <code>Application</code> yet.
+     * </p>
+     *
+     * @param context the involved faces context.
+     * @return the project stage.
+     */
+    public ProjectStage getProjectStage(FacesContext context) {
+        String value = getEnvironmentEntry(WebEnvironmentEntry.ProjectStage);
+
+        return value != null ? ProjectStage.valueOf(value) : FacesContextParam.PROJECT_STAGE.getValue(context);
     }
 
     public void doPostBringupActions() {
@@ -773,8 +791,6 @@ public class WebConfiguration {
     public enum BooleanWebContextInitParameter {
 
         DisplayConfiguration("org.glassfish.mojarra.displayConfiguration", false),
-        ValidateFacesConfigFiles("org.glassfish.mojarra.validateXml", false),
-        VerifyFacesConfigObjects("org.glassfish.mojarra.verifyObjects", false),
         ForceLoadFacesConfigFiles("org.glassfish.mojarra.forceLoadConfiguration", false),
         DisableClientStateEncryption("org.glassfish.mojarra.disableClientStateEncryption", false),
         EnableClientStateDebugging("org.glassfish.mojarra.enableClientStateDebugging", false),

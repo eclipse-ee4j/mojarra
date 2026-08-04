@@ -19,7 +19,6 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.logging.Level.FINE;
 import static org.glassfish.mojarra.RIConstants.RI_PREFIX;
-import static org.glassfish.mojarra.config.WebConfiguration.BooleanWebContextInitParameter.ValidateFacesConfigFiles;
 import static org.glassfish.mojarra.config.manager.Documents.getProgrammaticDocuments;
 import static org.glassfish.mojarra.config.manager.Documents.getXMLDocuments;
 import static org.glassfish.mojarra.config.manager.Documents.mergeDocuments;
@@ -44,6 +43,7 @@ import jakarta.enterprise.inject.spi.CDI;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
+import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.ApplicationConfigurationPopulator;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PostConstructApplicationEvent;
@@ -191,8 +191,8 @@ public class ConfigManager {
             initializeConfigProcessors(servletContext, facesContext);
 
             try {
-                WebConfiguration webConfig = WebConfiguration.getInstance(servletContext);
-                boolean validating = webConfig.isOptionEnabled(ValidateFacesConfigFiles);
+                // Validate outside Production, so that a configuration mistake is caught before it ships.
+                boolean validating = WebConfiguration.getInstance(servletContext).getProjectStage(facesContext) != ProjectStage.Production;
 
                 // Obtain and merge the XML and Programmatic documents
                 DocumentInfo[] facesDocuments = mergeDocuments(getXMLDocuments(servletContext, getFacesConfigResourceProviders(), validating),

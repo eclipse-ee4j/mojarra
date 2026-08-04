@@ -57,20 +57,9 @@ public class Stage {
 
     private ProjectStage fetchProjectStageFromConfig() {
         FacesContext context = FacesContext.getCurrentInstance();
-        WebConfiguration webConfig = WebConfiguration.getInstance(context.getExternalContext());
-        String value = webConfig.getEnvironmentEntry(WebConfiguration.WebEnvironmentEntry.ProjectStage);
+        projectStage = WebConfiguration.getInstance(context.getExternalContext()).getProjectStage(context);
 
-        if (value != null) {
-            projectStage = ProjectStage.valueOf(value);
-            if (LOGGER.isLoggable(FINE)) {
-                LOGGER.log(FINE, "ProjectStage configured via JNDI: {0}", value);
-            }
-        } else {
-            projectStage = FacesContextParam.PROJECT_STAGE.getValue(context);
-            if (LOGGER.isLoggable(FINE)) {
-                LOGGER.log(FINE, "ProjectStage configured via servlet context init parameter: {0}", value);
-            }
-        }
+        LOGGER.log(FINE, "ProjectStage is {0}", projectStage);
 
         return projectStage;
     }

@@ -193,10 +193,6 @@ The *Performance* column tells where the cost of changing the parameter lands: `
 <tr><td><code>String</code></td><td><em>(none)</em></td><td>1.2_01</td><td>-</td><td>Fully qualified class name of the <code>org.glassfish.mojarra.spi.InjectionProvider</code> implementation which injects resources into Faces artifacts.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.sendPoweredByHeader</code></th></tr>
 <tr><td><code>boolean</code></td><td><code>false</code></td><td>1.2</td><td>-</td><td>Sends the <code>X-Powered-By</code> response header.</td></tr>
-<tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.validateXml</code></th></tr>
-<tr><td><code>boolean</code></td><td><code>false</code></td><td>1.2</td><td>startup</td><td>Validates every Faces configuration file against its schema during startup. <code>false</code> is faster, the validation only pays off while developing those files.</td></tr>
-<tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.verifyObjects</code></th></tr>
-<tr><td><code>boolean</code></td><td><code>false</code></td><td>1.2</td><td>startup</td><td>Checks during startup that every component, converter, validator and renderer named in the Faces configuration really exists, has a public constructor without arguments and is of the expected type. <code>false</code> is faster because the check has to load every one of those classes. It catches mistakes in the configuration, so it is only useful while developing.</td></tr>
 <tr><th colspan="5" align="left"><br/><code>org.glassfish.mojarra.viewStateAutocomplete</code></th></tr>
 <tr><td><code>String</code></td><td><code>one-time-code</code></td><td>5.0</td><td>-</td><td>Value of the <code>autocomplete</code> attribute rendered on the hidden view state field, which keeps password managers and browser autofill away from it. <code>one-time-code</code> is the default because several browsers ignore <code>off</code> on a hidden input but do honor the one time code hint. Set it to <code>off</code> for the older behavior, or to any other token a browser is known to honor.</td></tr>
 </tbody>
